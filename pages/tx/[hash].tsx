@@ -38,7 +38,7 @@ const Tx = (props: any) => {
         
             {blobs?.map((blob: any) => {
               return (
-            <Tr>
+            <Tr key={blob.hash}>
               <Td><Link
                       href={`/blob/${blob.hash}`}
                     >

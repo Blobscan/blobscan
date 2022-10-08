@@ -28,7 +28,7 @@ const Block = (props: any) => {
       {txs?.map((tx: any) => {
         // TODO: Change the tx hash to one from the database
         return (
-      <Tr>
+      <Tr key={tx.hash}>
         <Td><Link
                 href={`/tx/${tx.hash}`}
               >

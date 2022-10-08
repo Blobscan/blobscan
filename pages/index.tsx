@@ -10,7 +10,7 @@ const Home: NextPage = ({ blocks }: any) => {
 <Grid templateColumns='repeat(5, 1fr)' gap={6} mt="30">
     {blocks?.map((b: any) => {
       return (
-        <GridItem>
+        <GridItem key={b.hash}>
           <Box>
         <Link href={`/block/${b.number}`}>
         Block #{b.number}
