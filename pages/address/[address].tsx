@@ -1,4 +1,4 @@
-import { Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
+import { Table, TableCaption, TableContainer, Tag, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
 import Link from "next/link";
 import Layout from "../../components/layout";
 import { connectToDatabase } from "../../util/mongodb";
@@ -15,6 +15,7 @@ const Address = (props: any) => {
     <Thead>
       <Tr>
         <Th>Hash</Th>
+        <Th>Type</Th>
         <Th>From</Th>
         <Th>To</Th>
       </Tr>
@@ -29,6 +30,7 @@ const Address = (props: any) => {
               >
                 {tx.hash}
               </Link></Td>
+        <Td><Tag bg={tx.to === address ? 'green' : 'red'}>{tx.to === address ? 'In' : 'Out'}</Tag></Td>
         <Td><Link
                 href={`/address/${tx.from}`}
               >{tx.from}</Link></Td>
