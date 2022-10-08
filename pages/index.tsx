@@ -2,8 +2,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
+import { connectToDatabase } from "../util/mongodb";
 
-const Home: NextPage = () => {
+const Home: NextPage = ({ blocks }: any) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -14,12 +15,36 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Welcome to blobscan</h1>
-        <Link href={`/block/${123456}`}>Take me there!</Link>
+        {blocks?.map((b: any) => {
+          return (
+            <Link href={`/block/${b.number}`}>
+              <a>Block #{b.number}</a>
+            </Link>
+          );
+        })}
       </main>
 
       <footer className={styles.footer}></footer>
     </div>
   );
+};
+
+export const getServerSideProps = async () => {
+  try {
+    const { db } = await connectToDatabase();
+    const blocks = await db
+      .collection("blocks")
+      .find({})
+      //   .sort({ metacritic: -1 })
+      .limit(5)
+      .toArray();
+
+    return {
+      props: { blocks: JSON.parse(JSON.stringify(blocks)) },
+    };
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export default Home;
