@@ -18,7 +18,7 @@ const Home: NextPage = ({ blocks }: any) => {
         {blocks?.map((b: any) => {
           return (
             <Link href={`/block/${b.number}`}>
-              <a>Block #{b.number}</a>
+              <a style={{ textDecoration: "underline" }}>Block #{b.number}</a>
             </Link>
           );
         })}
