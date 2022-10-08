@@ -1,24 +1,35 @@
+import { Breadcrumb, BreadcrumbLink, BreadcrumbItem } from "@chakra-ui/react";
 import Link from "next/link";
+import Layout from "../../components/layout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Blob = (props: any) => {
-  const { blob } = props;
-  const data = blob && blob[0];
+  const { tx, blob } = props;
   return (
-    <div style={{ margin: 20 }}>
+    <Layout>
+            <Breadcrumb>
+        <BreadcrumbItem>
+          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem>
+          <BreadcrumbLink href={`/block/${tx?.block}`}>Block #{tx?.block}</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem>
+          <BreadcrumbLink href={`/tx/${tx?.hash}`}>Tx {tx?.index}</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href='#'>Blob {blob.index}</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <div style={{ paddingBottom: 10, width: "100%", wordWrap: "break-word" }}>
         <h3>Blob</h3>
-        <p>Hash: {data.hash}</p>
-        <p>Data: {data.data}</p>
-        <p>Commitment: {data.commitment}</p>
-        <p>Tx:</p>
-        <Link href={`/tx/${data.tx}`}>
-          <a style={{ textDecoration: "underline", cursor: "pointer" }}>
-            {data.tx}
-          </a>
-        </Link>
+        <p>Hash: {blob.hash}</p>
+        <p>Commitment: {blob.commitment}</p>
+        <p>Data: {blob.data}</p>
       </div>
-    </div>
+    </Layout>
   );
 };
 
@@ -26,15 +37,30 @@ export const getServerSideProps = async ({ query }: any) => {
   try {
     const { db } = await connectToDatabase();
     const { hash } = query;
-    const blocks = await db
+
+
+    let mongoQuery
+    if (hash.length === 64) {
+      mongoQuery = { hash }
+    } else if (hash.length > 64) {
+      mongoQuery = { commitment: hash }
+    }
+
+    const blob = await db
       .collection("blobs")
-      .find({ hash: hash })
-      //   .sort({ metacritic: -1 })
-      .limit(20)
+      .find(mongoQuery)
+      .limit(1)
+      .toArray();
+
+    const txs = await db
+      .collection("txs")
+      .find({ hash: blob[0].tx })
+      .limit(1)
       .toArray();
 
     return {
-      props: { blob: JSON.parse(JSON.stringify(blocks)) },
+      props: { blob: JSON.parse(JSON.stringify(blob[0])),
+        tx: JSON.parse(JSON.stringify(txs[0])) },
     };
   } catch (e) {
     console.error(e);

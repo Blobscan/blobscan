@@ -9,10 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.3.5",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@fontsource/lato": "^4.5.10",
+    "framer-motion": "^6",
     "mongodb": "^4.10.0",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
     "react-spring": "^9.5.5",
     "styled-components": "^5.3.6"
   },

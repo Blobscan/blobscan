@@ -1,29 +1,58 @@
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import Link from "next/link";
+import Layout from "../../components/layout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Tx = (props: any) => {
-  const { tx } = props;
-  const data = tx && tx[0];
-  const blob =
-    "0x1fe496dbcd00922f574b8b288b9daae1fb5276d350e02251eaeec5122287b126";
+  const { tx, blobs } = props;
   return (
-    <div style={{ margin: 20 }}>
+    <Layout>
       <h3>Transaction Info</h3>
-      <div style={{ borderBottom: "2px solid black" }}>
-        <p>Hash: {data.hash}</p>
-        <Link href={`/blob/${blob}`}>
-          <p>
-            Blob:{" "}
-            <a style={{ textDecoration: "underline", cursor: "pointer" }}>
-              {blob}
-            </a>
-          </p>
-        </Link>
-        <p>From: {data.from}</p>
-        <p>To: {data.to}</p>
-        <p>Block: {data.block}</p>
-      </div>
-    </div>
+      <Breadcrumb>
+        <BreadcrumbItem>
+          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem>
+          <BreadcrumbLink href={`/block/${tx.block}`}>Block #{tx.block}</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href='#'>Tx {tx.index}</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+        <p>Hash: {tx.hash}</p>
+        <p>From: <Link href={`/address/${tx.from}`}>{tx.from}</Link></p>
+        <p>To: <Link href={`/address/${tx.to}`}>{tx.to}</Link></p>
+        {!blobs.length ?
+        <Text>No blobs in this transaction</Text> : 
+        
+        <Table variant='simple'>
+          <Thead>
+            <Tr>
+              <Th>Hash</Th>
+              <Th>Size</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+        
+            {blobs?.map((blob: any) => {
+              return (
+            <Tr>
+              <Td><Link
+                      href={`/blob/${blob.hash}`}
+                    >
+                      {blob.hash}
+                    </Link></Td>
+                    <Td>{blob.data.length}</Td>
+            </Tr>
+              );
+            })}
+            </Tbody>
+        </Table>
+      }
+        
+    </Layout>
   );
 };
 
@@ -31,15 +60,20 @@ export const getServerSideProps = async ({ query }: any) => {
   try {
     const { db } = await connectToDatabase();
     const { hash } = query;
-    const tx = await db
+    const txs = await db
       .collection("txs")
       .find({ hash })
-      //   .sort({ metacritic: -1 })
-      .limit(20)
+      .limit(1)
       .toArray();
 
+    const blobs = await db
+    .collection("blobs")
+    .find({tx: hash})
+    .toArray();
+
     return {
-      props: { tx: JSON.parse(JSON.stringify(tx)) },
+      props: { tx: JSON.parse(JSON.stringify(txs[0])),
+      blobs: JSON.parse(JSON.stringify(blobs)) },
     };
   } catch (e) {
     console.error(e);
