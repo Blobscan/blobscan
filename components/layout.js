@@ -10,6 +10,8 @@ import {
   Link,
 } from "@chakra-ui/react";
 
+import { BiSearchAlt } from "react-icons/fa";
+
 const Layout = ({ children }) => (
   <Container minWidth="100%" centerContent>
     <Box maxW="2xl" m="0 auto">
@@ -20,12 +22,14 @@ const Layout = ({ children }) => (
       <InputGroup size="lg" mt="30px">
         <Input
           width="lg"
-          placeholder="Block hash, Transaction hash, address  or blob hash"
+          placeholder="Search by block/transaction/blob Hash or address "
           variant="filled"
-          _placeholder={{ opacity: 0.3, color: "inherit" }}
+          focusBorderColor="#502eb4"
+          _placeholder={{ opacity: 0.4, color: "#502eb4" }}
         />
         <InputRightElement width="4.5rem" mr={"1rem"}>
           <Button h="1.75rem" size="sm">
+            {/* <BiSearchAlt /> ? */}
             Search
           </Button>
         </InputRightElement>
