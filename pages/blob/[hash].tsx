@@ -79,16 +79,9 @@ export const getServerSideProps = async ({ query }: any) => {
     const { db } = await connectToDatabase();
     const { hash } = query;
 
-    let mongoQuery;
-    if (hash.length === 64) {
-      mongoQuery = { hash };
-    } else if (hash.length > 64) {
-      mongoQuery = { commitment: hash };
-    }
-
     const blob = await db
       .collection("blobs")
-      .find(mongoQuery)
+      .find({ $or: [ { hash }, { commitment: hash }]})
       .limit(1)
       .toArray();
 
