@@ -14,9 +14,11 @@ import {
 import Link from "next/link";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
+import { utils } from 'ethers'
 
 const Blob = (props: any) => {
   const { tx, blob } = props;
+  const utf8 = utils.toUtf8String(blob.data).replace(/\0/g, '')
   return (
     <LinkLayout>
       <Box ml="20px">
@@ -105,13 +107,26 @@ const Blob = (props: any) => {
             <h2>
               <AccordionButton>
                 <Box flex="1" textAlign="left">
+                  Show data as utf8 string
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <code>{utf8}</code>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box flex="1" textAlign="left">
                   Show data as base64 image
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              <img src={blob.data} />
+              <img src={utf8} />
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
