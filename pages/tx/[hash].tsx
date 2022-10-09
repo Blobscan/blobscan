@@ -1,33 +1,47 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  Heading,
+  Button,
+  Box,
+} from "@chakra-ui/react";
 import Link from "next/link";
-import Layout from "../../components/layout";
+import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Tx = (props: any) => {
   const { tx, blobs } = props;
   return (
-    <Layout>
-      <h3>Transaction Info</h3>
-      <Breadcrumb>
-        <BreadcrumbItem>
-          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
-        </BreadcrumbItem>
+    <LinkLayout>
+      <Box ml="20px">
+        <Button colorScheme="purple" size="sm" mb="5px" href="/">
+          Home
+        </Button>
 
-        <BreadcrumbItem>
-          <BreadcrumbLink href={`/block/${tx.block}`}>Block #{tx.block}</BreadcrumbLink>
-        </BreadcrumbItem>
+        <Heading as="h1" color="#502eb4" width="xs" mb="15px" fontSize="1.5rem">
+          Block #{tx.block} / Tx: <Link href="#">{tx.index}</Link>
+        </Heading>
+        <Box mb="3px"> Hash: {tx.hash}</Box>
+        <Box mb="3px">
+          From: <Link href={`/address/${tx.from}`}>{tx.from}</Link>
+        </Box>
+        <Box mb="3px">
+          To: <Link href={`/address/${tx.to}`}>{tx.to}</Link>
+        </Box>
+      </Box>
 
-        <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href='#'>Tx {tx.index}</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
-        <p>Hash: {tx.hash}</p>
-        <p>From: <Link href={`/address/${tx.from}`}>{tx.from}</Link></p>
-        <p>To: <Link href={`/address/${tx.to}`}>{tx.to}</Link></p>
-        {!blobs.length ?
-        <Text>No blobs in this transaction</Text> : 
-        
-        <Table variant='simple'>
+      {!blobs.length ? (
+        <Text>No blobs in this transaction</Text>
+      ) : (
+        <Table variant="simple" mt="40px">
           <Thead>
             <Tr>
               <Th>Hash</Th>
@@ -35,24 +49,20 @@ const Tx = (props: any) => {
             </Tr>
           </Thead>
           <Tbody>
-        
             {blobs?.map((blob: any) => {
               return (
-            <Tr key={blob.hash}>
-              <Td><Link
-                      href={`/blob/${blob.hash}`}
-                    >
-                      {blob.hash}
-                    </Link></Td>
-                    <Td>{blob.data.length}</Td>
-            </Tr>
+                <Tr key={blob.hash}>
+                  <Td>
+                    <Link href={`/blob/${blob.hash}`}>{blob.hash}</Link>
+                  </Td>
+                  <Td>{blob.data.length}</Td>
+                </Tr>
               );
             })}
-            </Tbody>
+          </Tbody>
         </Table>
-      }
-        
-    </Layout>
+      )}
+    </LinkLayout>
   );
 };
 
@@ -60,20 +70,15 @@ export const getServerSideProps = async ({ query }: any) => {
   try {
     const { db } = await connectToDatabase();
     const { hash } = query;
-    const txs = await db
-      .collection("txs")
-      .find({ hash })
-      .limit(1)
-      .toArray();
+    const txs = await db.collection("txs").find({ hash }).limit(1).toArray();
 
-    const blobs = await db
-    .collection("blobs")
-    .find({tx: hash})
-    .toArray();
+    const blobs = await db.collection("blobs").find({ tx: hash }).toArray();
 
     return {
-      props: { tx: JSON.parse(JSON.stringify(txs[0])),
-      blobs: JSON.parse(JSON.stringify(blobs)) },
+      props: {
+        tx: JSON.parse(JSON.stringify(txs[0])),
+        blobs: JSON.parse(JSON.stringify(blobs)),
+      },
     };
   } catch (e) {
     console.error(e);

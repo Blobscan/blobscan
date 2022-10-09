@@ -1,25 +1,39 @@
-import { Breadcrumb, BreadcrumbLink, BreadcrumbItem, Accordion, AccordionItem, AccordionButton, Box, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
-import Layout from "../../components/layout";
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbItem,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  Box,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/react";
+import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Blob = (props: any) => {
   const { tx, blob } = props;
   return (
-    <Layout>
-            <Breadcrumb>
+    <LinkLayout>
+      <Breadcrumb>
         <BreadcrumbItem>
-          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
         </BreadcrumbItem>
 
         <BreadcrumbItem>
-          <BreadcrumbLink href={`/block/${tx?.block}`}>Block #{tx?.block}</BreadcrumbLink>
+          <BreadcrumbLink href={`/block/${tx?.block}`}>
+            Block #{tx?.block}
+          </BreadcrumbLink>
         </BreadcrumbItem>
 
         <BreadcrumbItem>
-          <BreadcrumbLink href={`/tx/${tx?.hash}`}>Tx {tx?.index}</BreadcrumbLink>
+          <BreadcrumbLink href={`/tx/${tx?.hash}`}>
+            Tx {tx?.index}
+          </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink href='#'>Blob {blob.index}</BreadcrumbLink>
+          <BreadcrumbLink href="#">Blob {blob.index}</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
       <div style={{ paddingBottom: 10, width: "100%", wordWrap: "break-word" }}>
@@ -31,7 +45,7 @@ const Blob = (props: any) => {
           <AccordionItem>
             <h2>
               <AccordionButton>
-                <Box flex='1' textAlign='left'>
+                <Box flex="1" textAlign="left">
                   Show data
                 </Box>
                 <AccordionIcon />
@@ -44,7 +58,7 @@ const Blob = (props: any) => {
           <AccordionItem>
             <h2>
               <AccordionButton>
-                <Box flex='1' textAlign='left'>
+                <Box flex="1" textAlign="left">
                   Show data as base64 image
                 </Box>
                 <AccordionIcon />
@@ -56,7 +70,7 @@ const Blob = (props: any) => {
           </AccordionItem>
         </Accordion>
       </div>
-    </Layout>
+    </LinkLayout>
   );
 };
 
@@ -65,12 +79,11 @@ export const getServerSideProps = async ({ query }: any) => {
     const { db } = await connectToDatabase();
     const { hash } = query;
 
-
-    let mongoQuery
+    let mongoQuery;
     if (hash.length === 64) {
-      mongoQuery = { hash }
+      mongoQuery = { hash };
     } else if (hash.length > 64) {
-      mongoQuery = { commitment: hash }
+      mongoQuery = { commitment: hash };
     }
 
     const blob = await db
@@ -86,8 +99,10 @@ export const getServerSideProps = async ({ query }: any) => {
       .toArray();
 
     return {
-      props: { blob: JSON.parse(JSON.stringify(blob[0])),
-        tx: JSON.parse(JSON.stringify(txs[0])) },
+      props: {
+        blob: JSON.parse(JSON.stringify(blob[0])),
+        tx: JSON.parse(JSON.stringify(txs[0])),
+      },
     };
   } catch (e) {
     console.error(e);

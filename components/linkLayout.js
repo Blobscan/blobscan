@@ -6,29 +6,35 @@ import {
   Text,
   Link,
   Flex,
+  Container,
   Spacer,
 } from "@chakra-ui/react";
-import Search from './search'
+import Search from "./search";
 
 import { BiSearchAlt } from "react-icons/fa";
 
 const LinkLayout = ({ children }) => (
   <>
-    <Flex mt="50px" pl="100px" pr="100px" pt="20px" pb="25px" bg="#f4f4f4">
+    <Flex mt="50px" pl="120px" pr="120px" pt="20px" pb="25px" bg="#f4f4f4">
       <Box>
-        <Heading as="h1" textAlign="center" fontSize="7xl">
+        <Heading as="h1" textAlign="center" fontSize="7xl" color="#502eb4">
           bl<span>⍥</span>bscan
-          {/* blöbscan */}
         </Heading>
-        <Text fontSize="xs" textAlign="center" mt="5px">
+        <Text fontSize="xs" textAlign="center" mt="5px" color="#502eb4">
           Blob transactions explorer for{" "}
           <Link href="https://www.eip4844.com/">EIP-4844</Link>
         </Text>
       </Box>
+
       <Spacer />
-      <Search noButton />
+      <Box>
+        <Search noButton />
+      </Box>
     </Flex>
-    {children}
+    <Box ml="100px" mr="100px" mt="50px">
+      {children}
+    </Box>
+    {/* <Container minWidth="100%">{children}</Container> */}
   </>
 );
 

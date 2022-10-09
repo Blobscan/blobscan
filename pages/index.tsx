@@ -4,32 +4,6 @@ import Layout from "../components/layout";
 import { connectToDatabase } from "../util/mongodb";
 
 const Home: NextPage = ({ blocks }: any) => {
-  const testBlocks = [
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-    {
-      block: "9755test",
-    },
-  ];
   return (
     <Layout>
       <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
@@ -45,21 +19,6 @@ const Home: NextPage = ({ blocks }: any) => {
               h={20}
             >
               <Link href={`/block/${b.number}`}>Block #{b.number}</Link>
-            </Box>
-          );
-        })}
-        {testBlocks.map((b: any) => {
-          return (
-            <Box
-              key={b.hash}
-              as="button"
-              borderRadius="md"
-              bg="#502eb4"
-              color="white"
-              px={10}
-              h={20}
-            >
-              <p>Block #{b.block}</p>
             </Box>
           );
         })}
