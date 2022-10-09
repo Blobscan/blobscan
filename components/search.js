@@ -1,4 +1,6 @@
 import { Button, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Search2Icon } from "@chakra-ui/icons";
+
 import Router from "next/router";
 import { useState } from "react";
 const Search = ({ noButton }) => {
@@ -28,7 +30,7 @@ const Search = ({ noButton }) => {
         <InputRightElement width="4.5rem" mr={"1rem"}>
           {noButton ? null : (
             <Button h="1.75rem" size="sm" type="submit" mb="8px">
-              Search
+              <Search2Icon w={5} h={5} color="purple.800" />
             </Button>
           )}
         </InputRightElement>

@@ -4,6 +4,11 @@ import Layout from "../components/layout";
 import { connectToDatabase } from "../util/mongodb";
 
 const Home: NextPage = ({ blocks }: any) => {
+  function compareNumbers(a, b) {
+    return b - a;
+  }
+
+  console.log(blocks);
   return (
     <Layout>
       <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
