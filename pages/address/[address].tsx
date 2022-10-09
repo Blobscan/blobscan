@@ -7,6 +7,9 @@ import {
   Thead,
   Tr,
   Heading,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import Link from "next/link";
@@ -18,6 +21,11 @@ const Address = (props: any) => {
 
   return (
     <LinkLayout>
+      <Breadcrumb ml="20px" mb="5px">
+        <BreadcrumbItem separator="-" fontWeight="medium" fontSize="lg">
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <Heading
         as="h1"
         color="#502eb4"
@@ -60,12 +68,7 @@ const Address = (props: any) => {
                   <Link href={`/address/${tx.from}`}>{tx.from}</Link>
                 </Td>
                 <Td>
-                  <ArrowForwardIcon
-                    color="green.700"
-                    bg="green.100"
-                    borderRadius="100%"
-                    p="2px"
-                  />
+                  <ArrowForwardIcon color="green.700" w={5} h={5} />
                 </Td>
                 <Td>
                   <Link href={`/address/${tx.to}`}>{tx.to}</Link>

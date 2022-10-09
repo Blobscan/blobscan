@@ -22,7 +22,7 @@ const Tx = (props: any) => {
   return (
     <LinkLayout>
       <Box ml="20px">
-        <Breadcrumb>
+        <Breadcrumb separator="-" fontWeight="medium" fontSize="lg" mb="5px">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>

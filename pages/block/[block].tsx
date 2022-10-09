@@ -8,6 +8,9 @@ import {
   Box,
   Flex,
   Heading,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import LinkLayout from "../../components/linkLayout";
@@ -27,6 +30,11 @@ const Block = (props: any) => {
         ml="20px"
         mb="30px"
       >
+        <Breadcrumb mb="5px">
+          <BreadcrumbItem separator="-" fontWeight="medium" fontSize="lg">
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
         <Heading as="h1" color="#502eb4" width="xs" mb="5px" fontSize="1.5rem">
           Block: #{block?.number}
         </Heading>
