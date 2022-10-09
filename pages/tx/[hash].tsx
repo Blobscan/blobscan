@@ -12,6 +12,7 @@ import {
   Heading,
   Button,
   Box,
+  Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import LinkLayout from "../../components/linkLayout";
@@ -48,10 +49,16 @@ const Tx = (props: any) => {
           Transaction: {tx.hash}
         </Heading>
         <Box mb="3px">
-          From: <Link href={`/address/${tx.from}`}>{tx.from}</Link>
+          <Tag color="#502eb4" mb="3px">
+            From:
+          </Tag>{" "}
+          <Link href={`/address/${tx.from}`}>{tx.from}</Link>
         </Box>
         <Box mb="3px">
-          To: <Link href={`/address/${tx.to}`}>{tx.to}</Link>
+          <Tag color="#502eb4" mb="3px">
+            To:
+          </Tag>{" "}
+          <Link href={`/address/${tx.to}`}>{tx.to}</Link>
         </Box>
       </Box>
 
@@ -63,7 +70,7 @@ const Tx = (props: any) => {
         <Table variant="simple" mt="50px">
           <Thead>
             <Tr>
-              <Th>Hash</Th>
+              <Th>Data Hash</Th>
               <Th>Size</Th>
             </Tr>
           </Thead>

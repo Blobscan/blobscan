@@ -11,6 +11,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import LinkLayout from "../../components/linkLayout";
@@ -38,9 +39,24 @@ const Block = (props: any) => {
         <Heading as="h1" color="#502eb4" width="xs" mb="5px" fontSize="1.5rem">
           Block: #{block?.number}
         </Heading>
-        <Box>Timestamp: {formatDate(block?.timestamp)}</Box>
-        <Box>Slot: {block?.slot}</Box>
-        <Box>Block hash: {block?.hash}</Box>
+        <Box>
+          <Tag color="#502eb4" mb="3px">
+            Timestamp:
+          </Tag>{" "}
+          {formatDate(block?.timestamp)}
+        </Box>
+        <Box>
+          <Tag color="#502eb4" mb="3px">
+            Slot:
+          </Tag>{" "}
+          {block?.slot}
+        </Box>
+        <Box>
+          <Tag color="#502eb4" mb="3px">
+            Block hash:
+          </Tag>{" "}
+          {block?.hash}
+        </Box>
       </Flex>
 
       <Box>

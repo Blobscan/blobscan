@@ -9,6 +9,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   Heading,
+  Tag,
 } from "@chakra-ui/react";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
@@ -52,10 +53,25 @@ const Blob = (props: any) => {
           Blob
         </Heading>
         <Box ml="20px">
-          <Box mb="3px">Hash: {blob.hash}</Box>
-          <Box mb="3px">Commitment: {blob.commitment}</Box>
+          <Box mb="3px">
+            <Tag color="#502eb4" mb="3px">
+              Hash:
+            </Tag>{" "}
+            {blob.hash}
+          </Box>
+          <Box mb="3px">
+            <Tag color="#502eb4" mb="3px">
+              Commitment:
+            </Tag>{" "}
+            {blob.commitment}
+          </Box>
+          <Box mb="3px">
+            <Tag color="#502eb4" mb="3px">
+              Data gas:
+            </Tag>
+          </Box>
           <Box mb="3px" mt="50px">
-            Data:
+            Data
           </Box>
         </Box>
         <Accordion allowToggle mt="15px">
