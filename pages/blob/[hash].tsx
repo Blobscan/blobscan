@@ -1,5 +1,4 @@
 import { Breadcrumb, BreadcrumbLink, BreadcrumbItem, Accordion, AccordionItem, AccordionButton, Box, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
-import Link from "next/link";
 import Layout from "../../components/layout";
 import { connectToDatabase } from "../../util/mongodb";
 

@@ -8,6 +8,7 @@ import {
   Flex,
   Spacer,
 } from "@chakra-ui/react";
+import Search from './search'
 
 import { BiSearchAlt } from "react-icons/fa";
 
@@ -25,18 +26,7 @@ const LinkLayout = ({ children }) => (
         </Text>
       </Box>
       <Spacer />
-      <Box>
-        <InputGroup size="md" mt="30px">
-          <Input
-            width="md"
-            placeholder="Search by block/transaction/blob Hash or address "
-            variant="filled"
-            focusBorderColor="#502eb4"
-            _placeholder={{ opacity: 0.6, color: "#502eb4" }}
-            textAlign="center"
-          />
-        </InputGroup>
-      </Box>
+      <Search noButton />
     </Flex>
     {children}
   </>

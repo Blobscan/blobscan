@@ -103,22 +103,13 @@ export const getServerSideProps = async ({ query }: any) => {
   try {
     const { db } = await connectToDatabase();
     const { block } = query;
-    let mongoQuery;
-    if (/^\d+$/.test(block)) {
-      mongoQuery = { number: parseInt(block) };
-    } else if (/^0x[a-fA-F0-9]+$/.test(block)) {
-      mongoQuery = { hash: block };
-    }
     const blocks = await db
       .collection("blocks")
-      .find(mongoQuery)
+      .find({ $or: [ { number: parseInt(block) }, { hash: block }]})
       .limit(1)
       .toArray();
 
-    const txs = await db
-      .collection("txs")
-      .find({ block: parseInt(block) })
-      .toArray();
+    const txs = await db.collection("txs").find({block: blocks[0].number}).toArray()
 
     return {
       props: {
