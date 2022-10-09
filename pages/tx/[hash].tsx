@@ -15,11 +15,30 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import ethers, { BigNumber } from "ethers";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Tx = (props: any) => {
-  const { tx, blobs } = props;
+  const { tx, blobs, block } = props;
+
+  const txHasBlobs = blobs.length;
+
+  const gas = BigNumber.from(tx.gas).toNumber();
+
+  const baseFee = BigNumber.from(block.baseFeePerGas).toNumber();
+
+  let dataGas;
+  let callDataEstimation;
+  let reductionPrc;
+  if (txHasBlobs) {
+    dataGas = 120000 * blobs.length;
+    callDataEstimation = baseFee * 16 * 4096 * blobs.length;
+    reductionPrc = Number(
+      (1 - (dataGas + gas) / callDataEstimation) * 100
+    ).toFixed(2);
+  }
+
   return (
     <LinkLayout>
       <Box ml="20px">
@@ -60,9 +79,29 @@ const Tx = (props: any) => {
           </Tag>{" "}
           <Link href={`/address/${tx.to}`}>{tx.to}</Link>
         </Box>
+        <Box mb="3px">
+          <Tag color="#502eb4" mb="3px">
+            Gas:
+          </Tag>{" "}
+          {gas} gas
+        </Box>
+        {txHasBlobs && (
+          <Box>
+            <Box mb="3px">
+              <Tag color="#502eb4" mb="3px">
+                Data gas:
+              </Tag>{" "}
+              {dataGas} gas
+            </Box>
+            <Text color="#502eb4" mt="5px">
+              Compare with {callDataEstimation} when using <span>calldata</span>{" "}
+              ({reductionPrc}% reduction)
+            </Text>
+          </Box>
+        )}
       </Box>
 
-      {!blobs.length ? (
+      {!txHasBlobs ? (
         <Text color="#502eb4" ml="20px" mt="20px">
           No blobs in this transaction
         </Text>
@@ -98,12 +137,23 @@ export const getServerSideProps = async ({ query }: any) => {
     const { hash } = query;
     const txs = await db.collection("txs").find({ hash }).limit(1).toArray();
 
+    const parsedTx = JSON.parse(JSON.stringify(txs[0]));
+
+    const block = parsedTx.block;
+
+    const blocks = await db
+      .collection("blocks")
+      .find({ number: parseInt(block) })
+      .limit(1)
+      .toArray();
+
     const blobs = await db.collection("blobs").find({ tx: hash }).toArray();
 
     return {
       props: {
-        tx: JSON.parse(JSON.stringify(txs[0])),
+        tx: parsedTx,
         blobs: JSON.parse(JSON.stringify(blobs)),
+        block: JSON.parse(JSON.stringify(blocks[0])),
       },
     };
   } catch (e) {

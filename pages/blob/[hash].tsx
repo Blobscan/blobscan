@@ -65,11 +65,6 @@ const Blob = (props: any) => {
             </Tag>{" "}
             {blob.commitment}
           </Box>
-          <Box mb="3px">
-            <Tag color="#502eb4" mb="3px">
-              Data gas:
-            </Tag>
-          </Box>
           <Box mb="3px" mt="50px">
             Data
           </Box>
