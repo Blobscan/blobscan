@@ -74,11 +74,6 @@ const Blob = (props: any) => {
             </Tag>{" "}
             <Link href={`/address/${tx.from}`}>{tx.from}</Link>
           </Box>
-          <Box mb="3px">
-            <Tag color="#502eb4" mb="3px">
-              Data gas:
-            </Tag>
-          </Box>
           <Heading
             as="h2"
             color="#502eb4"

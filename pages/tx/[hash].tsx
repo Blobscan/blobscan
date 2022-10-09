@@ -24,14 +24,17 @@ const Tx = (props: any) => {
 
   const txHasBlobs = blobs.length;
 
-  const gas = BigNumber.from(tx.gas).toNumber();
+  const showGas = txHasBlobs && tx.gas && block.baseFeePerGas;
 
-  const baseFee = BigNumber.from(block.baseFeePerGas).toNumber();
-
+  let gas;
   let dataGas;
   let callDataEstimation;
   let reductionPrc;
-  if (txHasBlobs) {
+  if (showGas) {
+    gas = BigNumber.from(tx.gas).toNumber();
+
+    const baseFee = BigNumber.from(block?.baseFeePerGas).toNumber() ?? 0;
+
     dataGas = 120000 * blobs.length;
     callDataEstimation = baseFee * 16 * 4096 * blobs.length;
     reductionPrc = Number(
@@ -79,24 +82,26 @@ const Tx = (props: any) => {
           </Tag>{" "}
           <Link href={`/address/${tx.to}`}>{tx.to}</Link>
         </Box>
-        <Box mb="3px">
-          <Tag color="#502eb4" mb="3px">
-            Gas:
-          </Tag>{" "}
-          {gas} gas
-        </Box>
-        {txHasBlobs && (
+        {showGas && (
           <Box>
             <Box mb="3px">
               <Tag color="#502eb4" mb="3px">
-                Data gas:
+                Gas:
               </Tag>{" "}
-              {dataGas} gas
+              {gas} gas
             </Box>
-            <Text color="#502eb4" mt="5px">
-              Compare with {callDataEstimation} when using <span>calldata</span>{" "}
-              ({reductionPrc}% reduction)
-            </Text>
+            <Box>
+              <Box mb="3px">
+                <Tag color="#502eb4" mb="3px">
+                  Data gas:
+                </Tag>{" "}
+                {dataGas} gas
+              </Box>
+              <Text color="#502eb4" mt="5px">
+                Compare with {callDataEstimation} when using{" "}
+                <span>calldata</span> ({reductionPrc}% reduction)
+              </Text>
+            </Box>
           </Box>
         )}
       </Box>
