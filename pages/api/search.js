@@ -9,15 +9,15 @@ async function search(term) {
   const { db } = await connectToDatabase();
 
   const blocks = await db
-  .collection("blocks")
-  .find({ $or: [ { number: parseInt(term) }, { hash: term }]})
-  .limit(1)
-  .toArray();
+    .collection("blocks")
+    .find({ $or: [{ number: parseInt(term) }, { hash: term }] })
+    .limit(1)
+    .toArray();
 
   if (blocks.length > 0) {
     return `/block/${blocks[0].number}`;
   }
-  
+
   const txs = await db
     .collection("txs")
     .find({ hash: term })
@@ -30,30 +30,25 @@ async function search(term) {
   }
 
   const blobs = await db
-  .collection("blobs")
-  .find({ $or: [ { hash: term }, { commitment: term }]})
-  .toArray();
+    .collection("blobs")
+    .find({ $or: [{ hash: term }, { commitment: term }] })
+    .toArray();
 
   if (blobs.length > 0) {
     return `/blob/${blobs[0].hash}`;
   }
+
+  return '/empty'
 }
 
 export default async function handler(req, res) {
   const { query: { term } } = req;
   try {
     const url = await search(term)
-    if (!url) {
-      res.status(404).json({ error: "Not found" })
-    } else{
-      res.status(200).json({ url })
-    }
-    
-
+    res.status(200).json({ url })
   } catch (e) {
     console.error(e);
     res.status(501).json({ error: e.message })
   }
-    
-  }
-  
+
+}
