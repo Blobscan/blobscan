@@ -107,6 +107,10 @@ export const getServerSideProps = async ({ query }: any) => {
   } catch (e) {
     console.error(e);
   }
+
+  return {
+    props: {}
+  }
 };
 
 export default Block;

@@ -1,5 +1,7 @@
-import { Box, Link, SimpleGrid } from "@chakra-ui/react";
+import { Box, Button, Center, Container, Link, SimpleGrid, Spinner } from "@chakra-ui/react";
+import { Signer } from "ethers";
 import type { NextPage } from "next";
+import { DonateButton } from "../components/DonateButton";
 import Layout from "../components/layout";
 import { connectToDatabase } from "../util/mongodb";
 
@@ -23,6 +25,11 @@ const Home: NextPage = ({ blocks }: any) => {
           );
         })}
       </SimpleGrid>
+      <Container marginTop="20">
+        <Center>
+          <DonateButton />
+        </Center>
+      </Container>
     </Layout>
   );
 };
@@ -42,6 +49,10 @@ export const getServerSideProps = async () => {
     };
   } catch (e) {
     console.error(e);
+  }
+
+  return {
+    props: {}
   }
 };
 
