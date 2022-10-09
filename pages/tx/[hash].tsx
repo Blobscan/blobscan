@@ -23,7 +23,7 @@ const Tx = (props: any) => {
   return (
     <LinkLayout>
       <Box ml="20px">
-        <Breadcrumb separator="-" fontWeight="medium" fontSize="lg" mb="5px">
+        <Breadcrumb separator="-" fontWeight="medium" fontSize="md" mb="5px">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -46,7 +46,7 @@ const Tx = (props: any) => {
           mb="15px"
           fontSize="1.5rem"
         >
-          Transaction: {tx.hash}
+          Transaction {tx.hash}
         </Heading>
         <Box mb="3px">
           <Tag color="#502eb4" mb="3px">
@@ -62,12 +62,23 @@ const Tx = (props: any) => {
         </Box>
       </Box>
 
+      <Box>
+      <Heading
+          as="h2"
+          color="#502eb4"
+          width="xs"
+          fontSize="1.2rem"
+          mt="50px"
+          ml="20px"
+        >
+          Blobs
+        </Heading>
       {!blobs.length ? (
         <Text color="#502eb4" ml="20px" mt="20px">
           No blobs in this transaction
         </Text>
       ) : (
-        <Table variant="simple" mt="50px">
+        <Table variant="simple">
           <Thead>
             <Tr>
               <Th>Data Hash</Th>
@@ -88,6 +99,7 @@ const Tx = (props: any) => {
           </Tbody>
         </Table>
       )}
+      </Box>
     </LinkLayout>
   );
 };

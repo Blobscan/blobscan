@@ -11,6 +11,7 @@ import {
   Heading,
   Tag,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
@@ -19,7 +20,7 @@ const Blob = (props: any) => {
   return (
     <LinkLayout>
       <Box ml="20px">
-        <Breadcrumb separator="-" fontWeight="medium" fontSize="lg" mb="5px">
+        <Breadcrumb separator="-" fontWeight="medium" fontSize="md" mb="5px">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -44,13 +45,13 @@ const Blob = (props: any) => {
         <Heading
           as="h1"
           color="#502eb4"
-          width="xl"
+          width="100%"
           mb="15px"
           ml="20px"
           fontSize="1.5rem"
           mt="3px"
         >
-          Blob
+          Blob {blob.hash}
         </Heading>
         <Box ml="20px">
           <Box mb="3px">
@@ -67,12 +68,24 @@ const Blob = (props: any) => {
           </Box>
           <Box mb="3px">
             <Tag color="#502eb4" mb="3px">
+              Submitted by:
+            </Tag>{" "}
+            <Link href={`/address/${tx.from}`}>{tx.from}</Link>
+          </Box>
+          <Box mb="3px">
+            <Tag color="#502eb4" mb="3px">
               Data gas:
             </Tag>
           </Box>
-          <Box mb="3px" mt="50px">
-            Data
-          </Box>
+          <Heading
+          as="h2"
+          color="#502eb4"
+          width="xs"
+          fontSize="1.2rem"
+          mt="50px"
+        >
+          Data
+        </Heading>
         </Box>
         <Accordion allowToggle mt="15px">
           <AccordionItem>

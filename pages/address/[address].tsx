@@ -21,9 +21,12 @@ const Address = (props: any) => {
 
   return (
     <LinkLayout>
-      <Breadcrumb ml="20px" mb="5px">
-        <BreadcrumbItem separator="-" fontWeight="medium" fontSize="lg">
+      <Breadcrumb ml="20px" mb="5px" separator="-" fontWeight="medium" fontSize="md">
+        <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href="/">Address {address}</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
       <Heading
@@ -34,10 +37,21 @@ const Address = (props: any) => {
         ml="20px"
         fontSize="1.5rem"
       >
-        Transactions for address: {address}
+        Address {address}
       </Heading>
 
-      <Table variant="simple" mt="50px">
+        <Heading
+          as="h2"
+          color="#502eb4"
+          width="xs"
+          fontSize="1.2rem"
+          mt="50px"
+          ml="20px"
+        >
+          Transactions
+        </Heading>
+
+      <Table variant="simple">
         <Thead>
           <Tr>
             <Th>Hash</Th>
