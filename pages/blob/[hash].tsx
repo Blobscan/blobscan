@@ -1,4 +1,4 @@
-import { Breadcrumb, BreadcrumbLink, BreadcrumbItem } from "@chakra-ui/react";
+import { Breadcrumb, BreadcrumbLink, BreadcrumbItem, Accordion, AccordionItem, AccordionButton, Box, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
 import Link from "next/link";
 import Layout from "../../components/layout";
 import { connectToDatabase } from "../../util/mongodb";
@@ -27,7 +27,35 @@ const Blob = (props: any) => {
         <h3>Blob</h3>
         <p>Hash: {blob.hash}</p>
         <p>Commitment: {blob.commitment}</p>
-        <p>Data: {blob.data}</p>
+        <p>Data:</p>
+        <Accordion allowToggle>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box flex='1' textAlign='left'>
+                  Show data
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <code>{blob.data}</code>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box flex='1' textAlign='left'>
+                  Show data as base64 image
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <img src={blob.data} />
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
       </div>
     </Layout>
   );
