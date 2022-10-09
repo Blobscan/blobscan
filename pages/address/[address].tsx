@@ -8,6 +8,7 @@ import {
   Tr,
   Heading,
 } from "@chakra-ui/react";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
@@ -20,7 +21,7 @@ const Address = (props: any) => {
       <Heading
         as="h1"
         color="#502eb4"
-        width="xl"
+        width="100%"
         mb="15px"
         ml="20px"
         fontSize="1.5rem"
@@ -28,7 +29,7 @@ const Address = (props: any) => {
         Transactions for address: {address}
       </Heading>
 
-      <Table variant="simple">
+      <Table variant="simple" mt="50px">
         <Thead>
           <Tr>
             <Th>Hash</Th>
@@ -58,7 +59,14 @@ const Address = (props: any) => {
                 <Td>
                   <Link href={`/address/${tx.from}`}>{tx.from}</Link>
                 </Td>
-                <Td>A</Td>
+                <Td>
+                  <ArrowForwardIcon
+                    color="green.700"
+                    bg="green.100"
+                    borderRadius="100%"
+                    p="2px"
+                  />
+                </Td>
                 <Td>
                   <Link href={`/address/${tx.to}`}>{tx.to}</Link>
                 </Td>

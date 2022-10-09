@@ -1,5 +1,5 @@
 export const formatDate = (date) => {
-  const newDate = new Date(date * 1000).toDateString();
+  const newDate = new Date(date * 1000).toUTCString();
 
   return newDate;
 };

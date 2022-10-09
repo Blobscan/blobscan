@@ -38,10 +38,15 @@ const Tx = (props: any) => {
           </BreadcrumbItem>
         </Breadcrumb>
 
-        <Heading as="h1" color="#502eb4" width="xs" mb="15px" fontSize="1.5rem">
-          Block #{tx.block} / Tx: <Link href="#">{tx.index}</Link>
+        <Heading
+          as="h1"
+          color="#502eb4"
+          width="100%"
+          mb="15px"
+          fontSize="1.5rem"
+        >
+          Transaction: {tx.hash}
         </Heading>
-        <Box mb="3px"> Hash: {tx.hash}</Box>
         <Box mb="3px">
           From: <Link href={`/address/${tx.from}`}>{tx.from}</Link>
         </Box>
@@ -55,7 +60,7 @@ const Tx = (props: any) => {
           No blobs in this transaction
         </Text>
       ) : (
-        <Table variant="simple" mt="40px">
+        <Table variant="simple" mt="50px">
           <Thead>
             <Tr>
               <Th>Hash</Th>
