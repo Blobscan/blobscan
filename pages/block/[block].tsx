@@ -59,7 +59,7 @@ const Block = (props: any) => {
             {txs?.map((tx: any, i: any) => {
               // TODO: Change the tx hash to one from the database
               return (
-                <Tr key={tx.hash}>
+                <Tr key={tx.hash} fontSize="0.9rem">
                   <Td>
                     <p>{i}</p>
                   </Td>

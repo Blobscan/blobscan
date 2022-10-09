@@ -22,9 +22,21 @@ const Tx = (props: any) => {
   return (
     <LinkLayout>
       <Box ml="20px">
-        <Button colorScheme="purple" size="sm" mb="5px" href="/">
-          Home
-        </Button>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/block/${tx.block}`}>
+              Block #{tx.block}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem isCurrentPage>
+            <BreadcrumbLink href="#">Tx {tx.index}</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
 
         <Heading as="h1" color="#502eb4" width="xs" mb="15px" fontSize="1.5rem">
           Block #{tx.block} / Tx: <Link href="#">{tx.index}</Link>
@@ -39,7 +51,9 @@ const Tx = (props: any) => {
       </Box>
 
       {!blobs.length ? (
-        <Text>No blobs in this transaction</Text>
+        <Text color="#502eb4" ml="20px" mt="20px">
+          No blobs in this transaction
+        </Text>
       ) : (
         <Table variant="simple" mt="40px">
           <Thead>
@@ -51,7 +65,7 @@ const Tx = (props: any) => {
           <Tbody>
             {blobs?.map((blob: any) => {
               return (
-                <Tr key={blob.hash}>
+                <Tr key={blob.hash} fontSize="0.9rem">
                   <Td>
                     <Link href={`/blob/${blob.hash}`}>{blob.hash}</Link>
                   </Td>
