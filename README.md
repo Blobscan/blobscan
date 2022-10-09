@@ -1,34 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Blobscan
+========
 
-## Getting Started
+Blobscan is the first blockchain explorer that helps to navigate and visualize those EIP-4844 blobs, providing the necessary infrastructure to scale Ethereum.
 
-First, run the development server:
+The architecture of our system has the following parts:
+- Modified consensus and execution layer clients
+- A blockchain indexer that saves the data in a MongoDB database
+- A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 
-```bash
-npm run dev
-# or
-yarn dev
+We are running an execution and a consensus client (geth and prysm respectively) that syncs with the EIP-4844 devchain. In addition, and more precisely, we use a specific branch of the prysm repository that contains a new HTTP API to retrieve the EIP-4844 sidecars (the detachable data that can be pruned after one month).
+
+We coded a daemon that retrieves the data from the execution layer (EL) and the consensus layer (CL), matching the transactions (stored in EL) with their correspondent blobs (stored in CL) and indexes them in a MongoDB database. However, we only index finalized blocks, so we extended the ethers.js provider to be able to read them.
+
+We also provide a simple blockchain explorer frontend available at https://blobscan.com that reads the database's information and allows navigating it.
+
+With blobscan we can navigate and visualize the blob data. For example, the search box can find block numbers and hashes, transaction hashes, addresses, blob-versioned hashes, and blob KZG commitments.
+
+## How to run it?
+
+Two environment variables are necessary to connect to the MongoDB database with the blockchain data. Write the following lines in a new `.env` file:
+
+```
+MONGODB_URI=mongodb+srv://<user>:<pass>@<host>/?retryWrites=true&w=majority
+MONGODB_DB=<db-name>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then run the following command:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+npm run dev
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The MongoDB can be filled running the script in the [blob-indexer](https://github.com/BlossomLabs/blob-indexer) repository.
