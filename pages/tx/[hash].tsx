@@ -15,7 +15,7 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import ethers, { BigNumber } from "ethers";
+import { BigNumber } from "ethers";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
@@ -42,7 +42,7 @@ const Tx = (props: any) => {
   return (
     <LinkLayout>
       <Box ml="20px">
-        <Breadcrumb separator="-" fontWeight="medium" fontSize="lg" mb="5px">
+        <Breadcrumb separator="-" fontWeight="medium" fontSize="md" mb="5px">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -65,7 +65,7 @@ const Tx = (props: any) => {
           mb="15px"
           fontSize="1.5rem"
         >
-          Transaction: {tx.hash}
+          Transaction {tx.hash}
         </Heading>
         <Box mb="3px">
           <Tag color="#502eb4" mb="3px">
@@ -101,32 +101,44 @@ const Tx = (props: any) => {
         )}
       </Box>
 
-      {!txHasBlobs ? (
-        <Text color="#502eb4" ml="20px" mt="20px">
-          No blobs in this transaction
-        </Text>
-      ) : (
-        <Table variant="simple" mt="50px">
-          <Thead>
-            <Tr>
-              <Th>Data Hash</Th>
-              <Th>Size</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {blobs?.map((blob: any) => {
-              return (
-                <Tr key={blob.hash} fontSize="0.9rem">
-                  <Td>
-                    <Link href={`/blob/${blob.hash}`}>{blob.hash}</Link>
-                  </Td>
-                  <Td>{blob.data.length}</Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      )}
+      <Box>
+        <Heading
+          as="h2"
+          color="#502eb4"
+          width="xs"
+          fontSize="1.2rem"
+          mt="50px"
+          ml="20px"
+        >
+          Blobs
+        </Heading>
+        {!blobs.length ? (
+          <Text color="#502eb4" ml="20px" mt="20px">
+            No blobs in this transaction
+          </Text>
+        ) : (
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Data Hash</Th>
+                <Th>Size</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {blobs?.map((blob: any) => {
+                return (
+                  <Tr key={blob.hash} fontSize="0.9rem">
+                    <Td>
+                      <Link href={`/blob/${blob.hash}`}>{blob.hash}</Link>
+                    </Td>
+                    <Td>{blob.data.length}</Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        )}
+      </Box>
     </LinkLayout>
   );
 };
