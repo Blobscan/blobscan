@@ -12,7 +12,6 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import Image from "next/image";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 import { utils } from "ethers";
@@ -122,7 +121,7 @@ const Blob = (props: any) => {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              <Image src={utf8} alt="" />
+              <img src={utf8} />
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
