@@ -91,7 +91,9 @@ const Tx = (props: any) => {
                 return (
                   <Tr key={blob.hash} fontSize="0.9rem">
                     <Td>
-                      <Link href={`/blob/${blob.hash}`}>{blob.hash}</Link>
+                      <Link href={`/blob/${blob.tx}-${blob.index}`}>
+                        {blob.hash}
+                      </Link>
                     </Td>
                     <Td>{blob.data.length}</Td>
                   </Tr>

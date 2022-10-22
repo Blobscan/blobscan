@@ -34,7 +34,7 @@ const Blob = (props: any) => {
           </BreadcrumbItem>
 
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/tx/${tx?.hash}`}>
+            <BreadcrumbLink href={`/tx/${blob.tx}`}>
               Tx {tx?.index}
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -133,11 +133,11 @@ const Blob = (props: any) => {
 export const getServerSideProps = async ({ query }: any) => {
   try {
     const { db } = await connectToDatabase();
-    const { hash } = query;
+    const { id } = query;
 
     const blob = await db
       .collection("blobs")
-      .find({ $or: [{ hash }, { commitment: hash }] })
+      .find({ $or: [{ _id: id }] })
       .limit(1)
       .toArray();
 
