@@ -1,27 +1,13 @@
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
+// import "@fontsource/inter/400.css";
+// import "@fontsource/inter/500.css";
 import "@fontsource/lato/700.css";
 import Head from "next/head";
 
+import theme from "../theme/blobscanTheme";
+
 // 2. Extend the theme to include custom colors, fonts, etc
-const colors = {
-  brand: {
-    900: "#502eb4",
-  },
-};
-
-const config: ThemeConfig = {
-  initialColorMode: "light",
-  useSystemColorMode: false,
-};
-
-const fonts = {
-  heading: "Lato",
-  body: "Lato",
-};
-
-const theme = extendTheme({ colors, config, fonts });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
