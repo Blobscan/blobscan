@@ -5,6 +5,7 @@ specifiers:
   '@chakra-ui/react': ^2.3.5
   '@emotion/react': ^11
   '@emotion/styled': ^11
+  '@fontsource/inter': ^4.5.14
   '@fontsource/lato': ^4.5.10
   '@types/node': 18.8.3
   '@types/react': 18.0.21
@@ -30,6 +31,7 @@ dependencies:
   '@chakra-ui/react': 2.4.4_bcbhrns62chvt3cdxy6p73cevy
   '@emotion/react': 11.10.5_iapumuv4e6jcjznwuxpf4tt22e
   '@emotion/styled': 11.10.5_avbifwq3am6trntrguk62pydsi
+  '@fontsource/inter': 4.5.14
   '@fontsource/lato': 4.5.10
   ethers: 5.7.2
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
@@ -2537,6 +2539,10 @@ packages:
       '@ethersproject/logger': 5.7.0
       '@ethersproject/properties': 5.7.0
       '@ethersproject/strings': 5.7.0
+    dev: false
+
+  /@fontsource/inter/4.5.14:
+    resolution: {integrity: sha512-JDC9AocdPLuGsASkvWw9hS5gtHE7K9dOwL98XLrk5yjYqxy4uVnScG58NUvFMJDVJRl/7c8Wnap6PEs+7Zvj1Q==}
     dev: false
 
   /@fontsource/lato/4.5.10:

@@ -15,7 +15,7 @@
     "@chakra-ui/react": "^2.3.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@fontsource/lato": "^4.5.10",
+    "@fontsource/inter": "^4.5.14",
     "ethers": "^5.7.2",
     "framer-motion": "^6",
     "mongodb": "^4.10.0",
