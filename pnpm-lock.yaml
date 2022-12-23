@@ -1,12 +1,13 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@chakra-ui/anatomy': ^2.1.0
   '@chakra-ui/icons': ^2.0.11
   '@chakra-ui/react': ^2.3.5
+  '@chakra-ui/styled-system': ^2.5.0
   '@emotion/react': ^11
   '@emotion/styled': ^11
   '@fontsource/inter': ^4.5.14
-  '@fontsource/lato': ^4.5.10
   '@types/node': 18.8.3
   '@types/react': 18.0.21
   '@types/react-dom': 18.0.6
@@ -27,12 +28,13 @@ specifiers:
   typescript: 4.8.4
 
 dependencies:
+  '@chakra-ui/anatomy': 2.1.0
   '@chakra-ui/icons': 2.0.14_react@18.2.0
   '@chakra-ui/react': 2.4.4_bcbhrns62chvt3cdxy6p73cevy
+  '@chakra-ui/styled-system': 2.5.0
   '@emotion/react': 11.10.5_iapumuv4e6jcjznwuxpf4tt22e
   '@emotion/styled': 11.10.5_avbifwq3am6trntrguk62pydsi
   '@fontsource/inter': 4.5.14
-  '@fontsource/lato': 4.5.10
   ethers: 5.7.2
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   mongodb: 4.13.0
@@ -2543,10 +2545,6 @@ packages:
 
   /@fontsource/inter/4.5.14:
     resolution: {integrity: sha512-JDC9AocdPLuGsASkvWw9hS5gtHE7K9dOwL98XLrk5yjYqxy4uVnScG58NUvFMJDVJRl/7c8Wnap6PEs+7Zvj1Q==}
-    dev: false
-
-  /@fontsource/lato/4.5.10:
-    resolution: {integrity: sha512-2hYR6r661Cq9B8zugtu6yxuOKqrVhAgfOSaPSq8XoxbC4ebsl0KOTy/vPoP+9U7JuQVLfrmikirW4a9Z0nDUug==}
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:

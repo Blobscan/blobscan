@@ -1,6 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Link, SimpleGrid, Text, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Link,
+  SimpleGrid,
+  Text,
+  Heading,
+  InputGroup,
+  Input,
+  Icon,
+  InputRightElement,
+  InputLeftAddon,
+  InputRightAddon,
+  InputLeftElement,
+  Flex,
+  Stack,
+} from "@chakra-ui/react";
 
+import { SearchIcon, CheckIcon, PhoneIcon } from "@chakra-ui/icons";
 import type { NextPage } from "next";
 
 import Layout from "../components/layout";
@@ -10,13 +26,10 @@ const Home: NextPage = ({}: any) => {
   return (
     <Layout>
       <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
-        <Box bg={"neutral.500"}>HELLO</Box>
-        <Text textStyle={"h1"} bg={"primary.300"} fontWeight="">
-          BLOBSCAN
-        </Text>
-        <Heading variant={"primary"} size="md">
-          CHECK OR CALL
-        </Heading>
+        <InputGroup w="md">
+          <Input placeholder="Enter amount" />
+          <InputRightElement children={<SearchIcon />} />
+        </InputGroup>
 
         {/* {blocks.map((b: any) => {
           return (

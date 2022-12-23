@@ -11,8 +11,10 @@
     "export": "next export"
   },
   "dependencies": {
+    "@chakra-ui/anatomy": "^2.1.0",
     "@chakra-ui/icons": "^2.0.11",
     "@chakra-ui/react": "^2.3.5",
+    "@chakra-ui/styled-system": "^2.5.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/inter": "^4.5.14",

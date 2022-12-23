@@ -5,48 +5,56 @@ import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
-const stateFilled = definePartsStyle({
+const filled = definePartsStyle({
   field: {
+    fontSize: "0.875rem",
     color: "neutral.200",
-    borderRightRadius: "6px",
+    borderLeftRadius: "6px",
+    borderRightRadius: "none",
+    border: "1px solid",
     borderColor: "neutral.200",
     bgColor: "shades.0o0",
-    padding: "4px, 4px, 4px, 16px",
+    h: "40px",
+    p: "4px",
+    pr: "1rem",
+    _placeholder: {
+      fontWeight: "regular",
+      color: "neutral.300",
+      textStyle: "",
+    },
+
+    //to do : _dark
+    _focus: {
+      color: "neutral.700",
+      borderColor: "primary.200",
+      bgColor: "primary.50",
+      _placeholder: {
+        color: "neutral.700",
+      },
+    },
+    _hover: {
+      bgColor: "primary.50",
+    },
+    _disabled: {
+      color: "neutral.200",
+      borderColor: "neutral.300",
+      bgColor: "neutral.200",
+      opacity: "0.9",
+    },
   },
-  //provide dark mode
-  //_dark
-  _focus: {
-    color: "primary.200",
-    border: "1px solid",
-    borderColor: "primary.200",
-    bgColor: "primary.50",
-  },
-  _hover: {
-    bgColor: "primary.50",
-  },
-  _disabled: {
-    opacity: "0.8",
-    bgColor: "secondary.800",
+  element: {
+    w: "52px",
+    h: "40px",
+    borderLeftRadius: "none",
+    borderRightRadius: "6px",
+    bgColor: "primary.300",
+    color: "neutral.50",
   },
 });
 
-const stateSearch = {
-  field: {
-    ...stateFilled,
-    border: "1px solid",
-    borderColor: "primary.200",
-    bgColor: "primary.50",
-  },
-};
-
-const inputTheme = defineMultiStyleConfig({
-  variants: {
-    filled: definePartsStyle(stateFilled),
-    search: definePartsStyle(stateSearch),
-  },
+export const inputTheme = defineMultiStyleConfig({
+  variants: { filled },
   defaultProps: {
     variant: "filled",
   },
 });
-
-export default inputTheme;
