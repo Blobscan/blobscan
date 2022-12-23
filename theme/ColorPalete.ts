@@ -55,6 +55,10 @@ const colors = {
     800: "#991B1B",
     900: "#7F1D1D",
   },
+  shades: {
+    0o0: "#FFFFFF",
+    100: "#000000",
+  },
 };
 
 export default colors;
