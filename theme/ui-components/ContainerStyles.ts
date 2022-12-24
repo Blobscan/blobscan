@@ -2,12 +2,12 @@ import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
 const baseStyle = {
   fontWeight: "medium",
-  // margin: "0",
+  p: "0",
   _light: {
-    //works ok..
+    bgColor: "shades.0o0",
   },
   _dark: {
-    //works ok ..
+    bgColor: "success.200", //example, need figma
   },
 };
 
@@ -18,24 +18,25 @@ const sizes = {
   }),
   md: defineStyle({
     minW: "864px",
-    // p: "6" ... ???
   }),
   lg: defineStyle({
     minW: "1024px",
-    // p: "8" ... ?
   }),
 };
 
-const shadowRadiusVariant = defineStyle((props) => {
+const shadowWithRadiusVariant = defineStyle((props) => {
   return {
     borderRadius: "8px",
-    border: "2px solid",
-    borderColor: "neutral.200",
+    shadow: "0px 4px 12px 0px #EEEBEB",
+    p: "20px",
+    _dark: {
+      // ...
+    },
   };
 });
 
 const variants = {
-  border: shadowRadiusVariant,
+  shadows: shadowWithRadiusVariant,
 };
 
 export const containerTheme = defineStyleConfig({ baseStyle, sizes, variants });
