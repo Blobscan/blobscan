@@ -10,11 +10,14 @@ const baseStyle = (props: unknown) =>
   definePartsStyle({
     container: {
       position: "relative",
+      p: "0px",
     },
     thumb: {
       position: "absolute",
-      top: "-1",
-      left: "-1",
+      top: "-0.5",
+      left: "0.25",
+      w: "18px",
+      h: "18px",
       bgColor: "shades.0o0",
       border: "1px solid",
       borderColor: "primary.200",
@@ -25,7 +28,7 @@ const baseStyle = (props: unknown) =>
     track: {
       border: "none",
       bgColor: mode("neutral.300", "")(props),
-      w: "30px",
+      w: "27px",
       h: "10px",
       _checked: {
         bgColor: mode("", "primary.100")(props),
