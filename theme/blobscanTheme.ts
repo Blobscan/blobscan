@@ -6,9 +6,10 @@ import Heading from "./ui-components/HeadingStyles";
 import Text from "./ui-components/TextStyles";
 import { inputTheme } from "./ui-components/InputStyles";
 import { switchTheme } from "./ui-components/SwitchStyles";
+import { containerTheme } from "./ui-components/ContainerStyles";
 
 const config: ThemeConfig = {
-  initialColorMode: "dark",
+  initialColorMode: "light",
   useSystemColorMode: false,
 };
 
@@ -26,6 +27,7 @@ const theme = extendTheme({
     Text,
     Input: inputTheme,
     Switch: switchTheme,
+    Container: containerTheme,
   },
   fontWeights: {
     regular: 400,

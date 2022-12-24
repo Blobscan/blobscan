@@ -6,7 +6,7 @@ import { mode } from "@chakra-ui/theme-tools";
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(switchAnatomy.keys);
 
-const baseStyle = (props) =>
+const baseStyle = (props: unknown) =>
   definePartsStyle({
     container: {
       position: "relative",
