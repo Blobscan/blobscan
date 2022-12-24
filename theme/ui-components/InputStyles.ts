@@ -23,7 +23,7 @@ const filled = definePartsStyle({
       textStyle: "",
     },
 
-    //to do : _dark
+    //to do : _dark mode
     _focus: {
       color: "neutral.700",
       borderColor: "primary.200",
@@ -35,6 +35,7 @@ const filled = definePartsStyle({
     _hover: {
       bgColor: "primary.50",
     },
+
     _disabled: {
       color: "neutral.200",
       borderColor: "neutral.300",
@@ -42,6 +43,7 @@ const filled = definePartsStyle({
       opacity: "0.9",
     },
   },
+
   element: {
     w: "52px",
     h: "40px",

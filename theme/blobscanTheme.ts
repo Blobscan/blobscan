@@ -3,11 +3,12 @@ import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 import colors from "./ColorPalete";
 import textStyles from "./TextStyles";
 import Heading from "./ui-components/HeadingStyles";
-import Text from "./ui-components/Textstyle";
-import { inputTheme } from "./ui-components/InputSyle";
+import Text from "./ui-components/TextStyles";
+import { inputTheme } from "./ui-components/InputStyles";
+import { switchTheme } from "./ui-components/SwitchStyles";
 
 const config: ThemeConfig = {
-  initialColorMode: "light",
+  initialColorMode: "dark",
   useSystemColorMode: false,
 };
 
@@ -24,6 +25,7 @@ const theme = extendTheme({
     Heading,
     Text,
     Input: inputTheme,
+    Switch: switchTheme,
   },
   fontWeights: {
     regular: 400,
