@@ -7,7 +7,7 @@ const baseStyle = {
     bgColor: "shades.0o0",
   },
   _dark: {
-    bgColor: "success.200", //example, need figma
+    bgColor: "success.200", //example, need figma for dark-mode
   },
 };
 

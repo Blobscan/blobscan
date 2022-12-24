@@ -1,6 +1,6 @@
 import { Box, Container, Heading, Text, Link } from "@chakra-ui/react";
 
-import Search from "./search";
+import Search from "../search-input/search";
 
 const Layout = ({ children }) => (
   <Container minWidth="100%" centerContent>

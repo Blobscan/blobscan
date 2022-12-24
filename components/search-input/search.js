@@ -3,8 +3,8 @@ import { Search2Icon } from "@chakra-ui/icons";
 
 import Router from "next/router";
 import { useState } from "react";
-import Custom404 from "../pages/404";
 
+import Custom404 from "../../pages/404";
 const Search = ({ noButton }) => {
   const [term, setTerm] = useState("");
 
