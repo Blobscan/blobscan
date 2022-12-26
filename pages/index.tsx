@@ -1,22 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Link, SimpleGrid, Switch, useColorMode } from "@chakra-ui/react";
+import {
+  Box,
+  Link,
+  SimpleGrid,
+  Switch,
+  useColorMode,
+  Heading,
+  Container,
+} from "@chakra-ui/react";
 
 import { SearchIcon, CheckIcon, PhoneIcon } from "@chakra-ui/icons";
 import type { NextPage } from "next";
 
-import Layout from "../components/layout";
+import Layout from "../components/layouts/layout";
+
+import Switcher from "../components/dark-mode-switcher/Switcher";
+import InputSearch from "../components/input-search";
+
 import { connectToDatabase } from "../util/mongodb";
 
 const Home: NextPage = ({}: any) => {
-  const { colorMode, toggleColorMode } = useColorMode();
-
   return (
-    <Layout>
-      <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
-        <Switch onChange={toggleColorMode} />
-        Toggle {colorMode === "light" ? "Dark" : "Light"}
-        <p></p>
-        {/* {blocks.map((b: any) => {
+    <>
+      <Layout>
+        <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
+          {/* {blocks.map((b: any) => {
           return (
             <Box
               key={b.hash}
@@ -31,8 +39,12 @@ const Home: NextPage = ({}: any) => {
             </Box>
           );
         })} */}
-      </SimpleGrid>
-    </Layout>
+        </SimpleGrid>
+      </Layout>
+      <Switcher />
+      <br></br>
+      <InputSearch />
+    </>
   );
 };
 

@@ -19,6 +19,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/inter": "^4.5.14",
+    "@fontsource/public-sans": "^4.5.11",
     "ethers": "^5.7.2",
     "framer-motion": "^6",
     "mongodb": "^4.10.0",
