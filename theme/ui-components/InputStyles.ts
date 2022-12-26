@@ -16,7 +16,7 @@ const filled = (props: unknown) =>
       borderRightRadius: "none",
       border: "1px solid",
       borderColor: "neutral.200",
-      bgColor: "shades.0o0",
+      bgColor: "shades.0",
       h: "40px",
       p: "4px",
       pr: "1rem",
@@ -27,6 +27,7 @@ const filled = (props: unknown) =>
       },
       //to do : _dark mode
       _focus: {
+        fontFamily: "sans",
         color: "neutral.700",
         borderColor: "primary.200",
         bgColor: "primary.50",
@@ -46,7 +47,7 @@ const filled = (props: unknown) =>
       },
     },
 
-    element: {
+    addon: {
       w: "52px",
       h: "40px",
       borderLeftRadius: "none",

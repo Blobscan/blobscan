@@ -56,7 +56,7 @@ const colors = {
     900: "#7F1D1D",
   },
   shades: {
-    0o0: "#FFFFFF",
+    0: "#FFFFFF",
     100: "#000000",
   },
 };
