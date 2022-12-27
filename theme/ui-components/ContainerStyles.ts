@@ -5,8 +5,8 @@ const baseStyle = {
   p: "0",
 
   //borders for visualization, delete afterwards
-  border: "2px solid",
-  borderColor: "neutral.200",
+  // border: "2px solid",
+  // borderColor: "neutral.200",
   //
 
   mt: "230px", //14.375rem",
@@ -37,6 +37,7 @@ const shadowWithRadiusVariant = defineStyle((props) => {
     shadow: "0px 4px 12px 0px #EEEBEB",
     p: "20px",
     mt: "110px",
+    mb: "120px",
     _dark: {
       // ...
     },

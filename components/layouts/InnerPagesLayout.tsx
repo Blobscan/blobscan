@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "@chakra-ui/react";
+import { Container, Box } from "@chakra-ui/react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -7,9 +7,11 @@ interface LayoutProps {
 
 const InnerPagesLayout = ({ children }: LayoutProps) => {
   return (
-    <Container size={["sm", "lg"]} variant="shadow">
-      {children}
-    </Container>
+    <Box pos="absolute" bgColor="neutral.50" minW="100vw" minH="100vh">
+      <Container size={["sm", "lg"]} variant="shadow">
+        {children}
+      </Container>
+    </Box>
   );
 };
 
