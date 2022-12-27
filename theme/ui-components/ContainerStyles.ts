@@ -4,12 +4,12 @@ const baseStyle = {
   fontWeight: "medium",
   p: "0",
 
-  //borders for visualization, delete afterwards
-  // border: "2px solid",
-  // borderColor: "neutral.200",
-  //
+  // borders for visualization, delete afterwards
+  border: "2px solid",
+  borderColor: "neutral.200",
 
-  mt: "230px", //14.375rem",
+  // mt: "171px",
+  //", del borde conatiner al borde de la topnav
   _light: {
     bgColor: "shades.0",
   },
@@ -20,14 +20,15 @@ const baseStyle = {
 
 const sizes = {
   sm: defineStyle({
-    minW: "390", // the min widths on iphone is 490px ...check with rafael this size
+    maxW: "490", // the min widths on iphone is 490px ...check with rafael this size
     px: "20px",
+    mt: "56px",
   }),
   md: defineStyle({
-    minW: "864px",
+    maxW: "864px",
   }),
   lg: defineStyle({
-    minW: "1165px",
+    maxW: "1165px",
   }),
 };
 
