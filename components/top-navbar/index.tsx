@@ -1,4 +1,10 @@
-import { HStack, Flex, IconButton, useDisclosure } from "@chakra-ui/react";
+import {
+  HStack,
+  Flex,
+  IconButton,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
 import {
   Drawer,
   DrawerBody,
@@ -57,17 +63,27 @@ export const MobileNav = () => {
           color="neutral.500"
         />
       </IconButton>
-      {/* <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+
+      {/*posible componente Drawer para mobile -- ejemplo de test -- armar component aparte, los stylos van en DrawerHeader y DrawerBody*/}
+
+      <Drawer
+        placement="left"
+        size="xs"
+        onClose={onClose}
+        isOpen={isOpen}
+        closeOnEsc={true}
+      >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Basic Drawer</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Basic Drawer Test</DrawerHeader>
           <DrawerBody>
+            <Button onClick={onClose}>CLOSE</Button>
             <p>Some contents...</p>
             <p>Some contents...</p>
             <p>Some contents...</p>
           </DrawerBody>
         </DrawerContent>
-      </Drawer> */}
+      </Drawer>
     </>
   );
 };
