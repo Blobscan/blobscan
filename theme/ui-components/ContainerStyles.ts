@@ -7,9 +7,7 @@ const baseStyle = {
   // borders for visualization, delete afterwards
   border: "2px solid",
   borderColor: "neutral.200",
-
-  // mt: "171px",
-  //", del borde conatiner al borde de la topnav
+  //
   _light: {
     bgColor: "shades.0",
   },
