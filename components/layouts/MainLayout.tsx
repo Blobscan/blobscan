@@ -8,9 +8,11 @@ interface LayoutProps {
 
 const MainLayout = ({ children }: LayoutProps) => {
   return (
-    <Container size={["sm", "md"]} centerContent={true}>
-      {children}
-    </Container>
+    <>
+      <Container size={["sm", "md"]} centerContent={true}>
+        {children}
+      </Container>
+    </>
   );
 };
 

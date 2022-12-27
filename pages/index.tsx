@@ -1,52 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Box,
-  Link,
-  SimpleGrid,
-  Switch,
-  useColorMode,
-  Heading,
-  Container,
-} from "@chakra-ui/react";
-
-import { SearchIcon, CheckIcon, PhoneIcon } from "@chakra-ui/icons";
+import {} from "@chakra-ui/react";
 import type { NextPage } from "next";
 
-import Layout from "../components/layouts/layout";
-
-import Switcher from "../components/dark-mode-switcher/Switcher";
+import MainLayout from "../components/layouts/MainLayout";
 import InputSearch from "../components/input-search";
+import { DesktopNav, MobileNav, TopNav } from "../components/top-navbar/index";
 
 import { connectToDatabase } from "../util/mongodb";
 
 const Home: NextPage = ({}: any) => {
   return (
     <>
-      <Layout>
-        <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
-          {/* {blocks.map((b: any) => {
-          return (
-            <Box
-              key={b.hash}
-              as="button"
-              borderRadius="md"
-              bg="#502eb4"
-              color="white"
-              px={10}
-              h={20}
-            >
-              <Link href={`/block/${b.number}`}>Block #{b.number}</Link>
-            </Box>
-          );
-        })} */}
-        </SimpleGrid>
-      </Layout>
-      <Switcher />
-      <br></br>
-      <InputSearch />
+      <TopNav />
+      {/* <DesktopNav />
+      <MobileNav /> */}
+      <MainLayout>
+        <InputSearch />
+      </MainLayout>
     </>
   );
 };
+
+export default Home;
+
+//codigo anterior de la hackaton: ..
 
 // export const getServerSideProps = async () => {
 //   try {
@@ -66,4 +43,22 @@ const Home: NextPage = ({}: any) => {
 //   }
 // };
 
-export default Home;
+{
+  /* <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
+          {blocks.map((b: any) => {
+          return (
+            <Box
+              key={b.hash}
+              as="button"
+              borderRadius="md"
+              bg="#502eb4"
+              color="white"
+              px={10}
+              h={20}
+            >
+              <Link href={`/block/${b.number}`}>Block #{b.number}</Link>
+            </Box>
+          );
+        })}
+  </SimpleGrid> */
+}
