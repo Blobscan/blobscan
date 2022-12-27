@@ -1,11 +1,11 @@
 import { extendTheme, type ThemeConfig, Text } from "@chakra-ui/react";
 
-import colors from "./ColorPalete";
-import textStyles from "./TextStyles";
+import colors from "./colorPalete";
+import textStyles from "./textStyles";
 import Heading from "./ui-components/HeadingStyles";
 
 import { inputTheme } from "./ui-components/InputStyles";
-import { switchTheme } from "./ui-components/SwitchStyles";
+import { switchTheme } from "./ui-components/SwitcherStyles";
 import { containerTheme } from "./ui-components/ContainerStyles";
 
 const config: ThemeConfig = {

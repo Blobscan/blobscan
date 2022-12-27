@@ -27,7 +27,7 @@ const filled = (props: unknown) =>
       },
       //to do : _dark mode
       _focus: {
-        fontFamily: "sans",
+        fontFamily: "sans-serif",
         color: "neutral.700",
         borderColor: "primary.200",
         bgColor: "primary.50",

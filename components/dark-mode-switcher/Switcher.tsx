@@ -33,7 +33,7 @@ const Switcher: React.FC<SwitcherProps> = ({ title = "Dark Mode" }) => {
     >
       <Flex alignItems="center" justifyContent="space-between">
         <MoonIcon boxSize="1rem" color={iconMoonColor} />
-        <Text fontSize={"14px"} fontWeight="regular">
+        <Text fontSize={"14px"} fontWeight="regular" fontFamily={"sans"}>
           {title}
         </Text>
         <Switch size="md" onChange={toggleColorMode} defaultChecked={false} />

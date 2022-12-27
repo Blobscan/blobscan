@@ -2,7 +2,8 @@ import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
-import "@fontsource/public-sans";
+import "@fontsource/public-sans/400.css";
+import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
 import theme from "../theme/blobscanTheme";

@@ -14,12 +14,12 @@ import { useState } from "react";
 
 interface Props {
   helperText?: string;
-  noButton: boolean;
-  error: string;
+  noIconButton?: boolean;
+  error?: string;
   RightElementChildren?: React.ReactNode;
 }
 
-const InputSearch = ({ noButton, error, helperText }: Props) => {
+const InputSearch = ({ noIconButton, error, helperText }: Props) => {
   const [term, setTerm] = useState("");
 
   const handleChange = (e) => setTerm(e.target.value);
@@ -33,13 +33,13 @@ const InputSearch = ({ noButton, error, helperText }: Props) => {
     }
   };
   return (
-    <FormControl onSubmit={handleSubmit}>
-      <InputGroup w={440}>
+    <FormControl onSubmit={handleSubmit} w={440}>
+      <InputGroup>
         <Input
           onChange={handleChange}
           placeholder="Search by block, transaction, blob, datahash or address"
         />
-        {noButton ? null : (
+        {noIconButton ? null : (
           <InputRightAddon>
             <SearchIcon />
           </InputRightAddon>
