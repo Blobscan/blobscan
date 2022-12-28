@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Box } from "@chakra-ui/react";
 
+import Footer from "../footer/Footer";
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -11,6 +13,7 @@ const InnerPagesLayout = ({ children }: LayoutProps) => {
       <Container size={["sm", "lg"]} variant="shadow">
         {children}
       </Container>
+      <Footer />
     </Box>
   );
 };

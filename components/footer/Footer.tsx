@@ -2,8 +2,8 @@ import React from "react";
 import { Text, useColorModeValue } from "@chakra-ui/react";
 
 const Footer = () => {
-  //ver color para dark-mode
-  const color = useColorModeValue("nuetral.700", "");
+  //ver color para dark-mode:
+  const color = useColorModeValue("nuetral.700", "git c");
   return (
     <Text
       align={"center"}
