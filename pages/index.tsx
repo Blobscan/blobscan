@@ -1,10 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {} from "@chakra-ui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Image,
+  Stack,
+  Text,
+  Heading,
+  Button,
+} from "@chakra-ui/react";
+
 import type { NextPage } from "next";
 
 import MainLayout from "../components/layouts/MainLayout";
 import InputSearch from "../components/input-search";
-import { DesktopNav, MobileNav, TopNav } from "../components/top-navbar/index";
+import { TopNav, MobileNav } from "../components/top-navbar/index";
 
 import { connectToDatabase } from "../util/mongodb";
 
@@ -12,10 +23,24 @@ const Home: NextPage = ({}: any) => {
   return (
     <>
       <TopNav />
-      {/* <DesktopNav />
-      <MobileNav /> */}
       <MainLayout>
         <InputSearch />
+        <Card
+          direction={{ base: "row", sm: "row" }}
+          overflow="hidden"
+          mt={"20px"}
+        >
+          <Stack>
+            <CardBody>
+              <Heading size="md">The perfect latte</Heading>
+
+              <Text py="2">
+                Caffè latte is a coffee beverage of Italian origin made with
+                espresso and steamed milk.
+              </Text>
+            </CardBody>
+          </Stack>
+        </Card>
       </MainLayout>
     </>
   );

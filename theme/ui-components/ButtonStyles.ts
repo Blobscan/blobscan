@@ -19,7 +19,7 @@ const Button = defineStyleConfig({
     color: "white",
     //add this, not specification on figma
     animationTimingFunction: "ease-in-out",
-    animationDuration: "200ms",
+    animationDuration: "400ms",
   },
   variants: {
     primary: {
@@ -42,13 +42,20 @@ const Button = defineStyleConfig({
       bgColor: "transparent",
       border: "1px solid",
       borderColor: "primary.300",
+      _active: {
+        color: "primary.200",
+        bgColor: "transparent",
+      },
       _hover: {
         bgColor: "transparent",
         color: "primary.200",
+        borderColor: "primary.200",
       },
       _disabled: {
+        borderColor: "neutral.400",
+
         color: "neutral.400",
-        bgColor: "neutral.500",
+        bgColor: "transparent",
       },
     },
   },

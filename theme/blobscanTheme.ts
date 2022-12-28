@@ -7,6 +7,7 @@ import Button from "./ui-components/ButtonStyles";
 import { inputTheme } from "./ui-components/InputStyles";
 import { switchTheme } from "./ui-components/SwitcherStyles";
 import { containerTheme } from "./ui-components/ContainerStyles";
+import { cardTheme } from "./ui-components/CardStyles";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -30,6 +31,7 @@ const theme = extendTheme({
     Input: inputTheme,
     Switch: switchTheme,
     Container: containerTheme,
+    Card: cardTheme,
   },
   fontWeights: {
     regular: 400,
