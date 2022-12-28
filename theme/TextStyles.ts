@@ -19,17 +19,17 @@ const textStyles = {
     lg: {
       fontSize: "1.125rem",
       lineHeight: "28px",
-      color: "neutral.900",
+      color: "neutral.700",
     },
     md: {
       fontSize: "1rem",
       lineHeight: "24px",
-      color: "neutral.900",
+      color: "neutral.700",
     },
     sm: {
       fontSize: "0.875rem",
       lineHeight: "20px",
-      color: "neutral.900",
+      color: "neutral.700",
     },
   },
 };
