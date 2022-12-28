@@ -33,7 +33,7 @@ const InputSearch = ({ noIconButton, error, helperText }: Props) => {
     }
   };
   return (
-    <FormControl onSubmit={handleSubmit} w={440}>
+    <FormControl onSubmit={handleSubmit} w={["full", "440px"]}>
       <InputGroup>
         <Input
           onChange={handleChange}

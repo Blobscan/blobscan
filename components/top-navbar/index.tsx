@@ -45,6 +45,19 @@ export const MobileNav = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
+      {/* Posible varainte para icon Button <IconButton
+            onClick={onToggle}
+            icon={
+              isOpen ? <CloseIcon boxSize={5} /> : <HamburgerIcon w={5} h={5} />
+            }
+            variant={"link"}
+            size={"sm"}
+            aria-label={"Toggle Navigation"}
+            color={"white"}
+            _hover={{
+              color: "primary.300",
+            }}
+          /> */}
       <IconButton
         onClick={onOpen}
         aria-label="Toogle Mobile Menu"
@@ -64,7 +77,7 @@ export const MobileNav = () => {
         />
       </IconButton>
 
-      {/*posible componente Drawer para mobile -- ejemplo de test -- armar component aparte, los stylos van en DrawerHeader y DrawerBody*/}
+      {/*posible componente Drawer para mobile -- ejemplo de test -- armar component aparte, los styles van en DrawerHeader y DrawerBody*/}
 
       <Drawer
         placement="left"
@@ -77,7 +90,7 @@ export const MobileNav = () => {
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Basic Drawer Test</DrawerHeader>
           <DrawerBody>
-            <Button onClick={onClose}>CLOSE</Button>
+            <DrawerCloseButton>close</DrawerCloseButton>
             <p>Some contents...</p>
             <p>Some contents...</p>
             <p>Some contents...</p>

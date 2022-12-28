@@ -6,7 +6,7 @@ const baseStyle = {
 
   // borders for visualization, delete afterwards
   border: "2px solid",
-  borderColor: "neutral.200",
+  borderColor: "neutral.400",
   //
   _light: {
     bgColor: "shades.0",
@@ -18,9 +18,11 @@ const baseStyle = {
 
 const sizes = {
   sm: defineStyle({
-    maxW: "490", // the min widths on iphone is 490px ...check with rafael this size
+    maxW: "490px", // the min widths on iphone is 490px ...check with rafael this size
     px: "20px",
     mt: "56px",
+    border: "2px solid",
+    borderColor: "success.200",
   }),
   md: defineStyle({
     maxW: "864px",
