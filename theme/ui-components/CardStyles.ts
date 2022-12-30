@@ -5,37 +5,60 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(cardAnatomy.keys);
 
 const baseStyle = definePartsStyle({
-  // define the part you're going to style
   container: {
-    backgroundColor: "#e7e7e7",
-    border: "3px solid",
-    borderColor: "red",
-  },
-  header: {
-    paddingBottom: "2px",
-  },
-  body: {
-    paddingTop: "2px",
-  },
-  footer: {
-    paddingTop: "2px",
-  },
-});
+    backgroundColor: "none",
+    border: "1px solid",
+    borderColor: "neutral.200",
+    borderRadius: "8px",
+    shadow: "none",
 
-const sizes = definePartsStyle({
-  xl: {
-    container: {
-      width: "100%",
+    _hover: {
+      borderColor: "primary.200",
+      cursor: "pointer",
     },
   },
+  header: {
+    bgColor: "primary.50",
+    borderTopRadius: "8px",
+    p: "14px",
+    // _dark: {
+    //   bgColor: "success.200",
+    // },
+  },
+  body: {
+    p: "14px",
+    // _dark:{
+    //     bgColor:""
+    // }
+  },
 });
 
+const variants = {
+  expanded: definePartsStyle({
+    container: {
+      flexDirection: "row",
+    },
+    header: {
+      borderBottomLeftRadius: "8px",
+      borderTopRightRadius: "none",
+      flexBasis: "15%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      textAlign: "center",
+    },
+    body: {
+      p: "20px",
+    },
+  }),
+};
+
 const defaultProps = {
-  size: "xl",
+  size: "",
 };
 
 export const cardTheme = defineMultiStyleConfig({
   baseStyle,
-  sizes,
+  variants,
   defaultProps,
 });

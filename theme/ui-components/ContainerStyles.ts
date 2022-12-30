@@ -27,7 +27,7 @@ const sizes = {
     borderColor: "success.200",
   }),
   md: defineStyle({
-    maxW: "864px",
+    maxW: "1156px",
   }),
   lg: defineStyle({
     maxW: "1165px",
