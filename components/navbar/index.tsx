@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
-import Switcher from "../dark-mode-switcher/Switcher";
+import Switcher from "../Switcher";
 
 export const TopNav = () => {
   return (

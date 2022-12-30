@@ -10,8 +10,7 @@ const baseStyle = definePartsStyle({
     border: "1px solid",
     borderColor: "neutral.200",
     borderRadius: "8px",
-    shadow: "none",
-
+    shadow: "n",
     _hover: {
       borderColor: "primary.200",
       cursor: "pointer",

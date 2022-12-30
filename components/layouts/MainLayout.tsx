@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "@chakra-ui/react";
 
-import Footer from "../footer/Footer";
+import Footer from "../Footer";
 
 interface LayoutProps {
   children: React.ReactNode;

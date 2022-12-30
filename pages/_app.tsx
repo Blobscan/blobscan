@@ -6,7 +6,7 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
-import theme from "../theme/blobscanTheme";
+import theme from "../theme/index";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
