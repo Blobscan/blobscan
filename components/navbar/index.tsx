@@ -18,7 +18,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 
 import Switcher from "../Switcher";
 
-export const TopNav = () => {
+export const TopNavbar = () => {
   return (
     <HStack
       justify={"end"}
