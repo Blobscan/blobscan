@@ -18,6 +18,7 @@ export const PageTopBar = () => {
         mb={["60px", "92px"]}
         alignItems={"center"}
         justifyContent="space-between"
+        bgColor="white"
       >
         <Heading>LOGO</Heading>
         <InputSearch />

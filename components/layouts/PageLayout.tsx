@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Box } from "@chakra-ui/react";
 
+import { PageTopBar } from "../top-bar/PageTopBar";
 import Footer from "../Footer";
 
 interface LayoutProps {
@@ -11,6 +12,7 @@ interface LayoutProps {
 const PageLayout = ({ children }: LayoutProps) => {
   return (
     <Box pos="absolute" bgColor="neutral.50" minW="100vw" minH="100vh">
+      <PageTopBar />
       <Container size={["sm", "lg"]} variant="shadow">
         {children}
       </Container>

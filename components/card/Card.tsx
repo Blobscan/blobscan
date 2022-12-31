@@ -1,14 +1,20 @@
 import {
-  Card as CardChakra,
+  Card as ChakraCard,
   CardHeader,
   CardBody,
   Stack,
   Text,
 } from "@chakra-ui/react";
 
-export const Card = () => {
+type CardProps = {
+  title: string;
+  // ....
+};
+
+//TO DO: ... bastara solo con pasar via props el la data , pero ya va  estar toda customizada
+export const Card: React.FC<CardProps> = () => {
   return (
-    <CardChakra w={["full", "280px"]} mt={"50px"}>
+    <ChakraCard w={["full", "280px"]} mt={"50px"}>
       <Stack>
         <CardHeader>
           <Text fontSize={"14px"}>Block #71645</Text>
@@ -24,6 +30,6 @@ export const Card = () => {
           </Text>
         </CardBody>
       </Stack>
-    </CardChakra>
+    </ChakraCard>
   );
 };

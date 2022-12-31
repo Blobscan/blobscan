@@ -1,16 +1,16 @@
 import { Container, Box, Heading } from "@chakra-ui/react";
 
-import { PageTopBar } from "../../components/navbar/PageTopBar";
+import { PageTopBar } from "../../components/top-bar/PageTopBar";
+import PageLayout from "../../components/layouts/PageLayout";
 
 const index = () => {
   return (
     <>
-      <PageTopBar />
-      <Container size={"lg"} variant="shadow">
+      <PageLayout>
         <Box>
-          <Heading>Test</Heading>
+          <Heading>TESTING PAGES</Heading>
         </Box>
-      </Container>
+      </PageLayout>
     </>
   );
 };

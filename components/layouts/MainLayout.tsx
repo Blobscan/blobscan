@@ -2,7 +2,7 @@ import React from "react";
 import { Container } from "@chakra-ui/react";
 
 import Footer from "../Footer";
-import { TopBar } from "../navbar/TopBar";
+import { TopBar } from "../top-bar/TopBar";
 
 interface LayoutProps {
   children: React.ReactNode;
