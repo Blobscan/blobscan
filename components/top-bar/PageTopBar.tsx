@@ -15,7 +15,7 @@ export const PageTopBar = () => {
         borderColor={"neutral.200"}
         py="10px"
         px="20px"
-        mb={["60px", "92px"]}
+        mb={["20px", "40px"]}
         alignItems={"center"}
         justifyContent="space-between"
         bgColor="white"

@@ -18,7 +18,7 @@ const Home: NextPage = ({}: any) => {
         <Card />
       </MainLayout>
       {/* link page to test layouts and ui-components */}
-      <Link href="/testing">GO TO page</Link>
+      <Link href="/testing">GO TO TEST pages layout</Link>
     </>
   );
 };

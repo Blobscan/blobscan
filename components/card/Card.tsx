@@ -11,13 +11,13 @@ type CardProps = {
   // ....
 };
 
-//TO DO: ... bastara solo con pasar via props el la data , pero ya va  estar toda customizada
-export const Card: React.FC<CardProps> = () => {
+//... bastara solo con pasar via props la data , pero ya va  estar toda customizada
+export const Card: React.FC<CardProps> = ({ title = "Block #71645" }) => {
   return (
     <ChakraCard w={["full", "280px"]} mt={"50px"}>
       <Stack>
         <CardHeader>
-          <Text fontSize={"14px"}>Block #71645</Text>
+          <Text fontSize={"14px"}>{title}</Text>
         </CardHeader>
         <CardBody>
           <Text fontSize={"12px"}>19 seconds ago 118 Transactions</Text>
