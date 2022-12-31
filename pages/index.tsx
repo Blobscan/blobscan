@@ -1,47 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Image,
-  Stack,
-  Text,
-  Heading,
-  Button,
-} from "@chakra-ui/react";
 
 import type { NextPage } from "next";
 
 import MainLayout from "../components/layouts/MainLayout";
 import InputSearch from "../components/input-search";
-import { TopNav, MobileNav } from "../components/top-navbar/index";
+import { Card } from "../components/card/Card";
+
+import Link from "next/link";
 
 import { connectToDatabase } from "../util/mongodb";
 
 const Home: NextPage = ({}: any) => {
   return (
     <>
-      <TopNav />
       <MainLayout>
         <InputSearch />
-        <Card
-          direction={{ base: "row", sm: "row" }}
-          overflow="hidden"
-          mt={"20px"}
-        >
-          <Stack>
-            <CardBody>
-              <Heading size="md">The perfect latte</Heading>
-
-              <Text py="2">
-                Caffè latte is a coffee beverage of Italian origin made with
-                espresso and steamed milk.
-              </Text>
-            </CardBody>
-          </Stack>
-        </Card>
+        <Card />
       </MainLayout>
+      {/* link page to test layouts and ui-components */}
+      <Link href="/testing">GO TO page</Link>
     </>
   );
 };
@@ -67,23 +44,3 @@ export default Home;
 //     console.error(e);
 //   }
 // };
-
-{
-  /* <SimpleGrid columns={{ sm: 2, md: 4, xl: 6 }} gap={6} mt="140">
-          {blocks.map((b: any) => {
-          return (
-            <Box
-              key={b.hash}
-              as="button"
-              borderRadius="md"
-              bg="#502eb4"
-              color="white"
-              px={10}
-              h={20}
-            >
-              <Link href={`/block/${b.number}`}>Block #{b.number}</Link>
-            </Box>
-          );
-        })}
-  </SimpleGrid> */
-}

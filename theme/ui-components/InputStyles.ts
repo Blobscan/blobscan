@@ -18,8 +18,8 @@ const filled = (props: unknown) =>
       borderColor: "neutral.200",
       bgColor: "shades.0",
       h: "40px",
-      p: "4px",
-      pr: "1rem",
+      p: "10px",
+      pl: "1rem",
       _placeholder: {
         fontWeight: "regular",
         color: "neutral.300",

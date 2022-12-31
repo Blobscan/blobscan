@@ -5,8 +5,8 @@ const baseStyle = {
   p: "0",
 
   // borders for visualization, delete afterwards
-  border: "2px solid",
-  borderColor: "neutral.400",
+  // border: "2px solid",
+  // borderColor: "neutral.400",
   //
   _light: {
     bgColor: "shades.0",
@@ -23,14 +23,14 @@ const sizes = {
     mt: "56px",
 
     // borders for visualization, delete afterwards
-    border: "2px solid",
-    borderColor: "success.200",
+    // border: "2px solid",
+    // borderColor: "success.200",
   }),
   md: defineStyle({
     maxW: "1156px",
   }),
   lg: defineStyle({
-    maxW: "1165px",
+    maxW: "1181px",
   }),
 };
 

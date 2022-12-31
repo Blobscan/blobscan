@@ -2,6 +2,7 @@ import React from "react";
 import { Container } from "@chakra-ui/react";
 
 import Footer from "../Footer";
+import { TopBar } from "../navbar/TopBar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface LayoutProps {
 const MainLayout = ({ children }: LayoutProps) => {
   return (
     <>
+      <TopBar />
       <Container size={["sm", "md"]} centerContent={true}>
         {children}
       </Container>

@@ -1,14 +1,7 @@
-import {
-  HStack,
-  Flex,
-  IconButton,
-  Button,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { HStack, Flex, IconButton, useDisclosure } from "@chakra-ui/react";
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
@@ -18,14 +11,16 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 
 import Switcher from "../Switcher";
 
-export const TopNavbar = () => {
+export const TopBar = () => {
   return (
     <HStack
       justify={"end"}
       maxW="100vw"
-      pt={["10px", "19px"]}
+      py="10px"
       px={["10px", "40px"]}
       mb={["60px", "171px"]}
+      borderBottom="1px solid"
+      borderColor={"neutral.200"}
     >
       <Flex display={["none", "block"]}>
         <DesktopNav />
