@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Stack } from "@chakra-ui/react";
 
 import type { NextPage } from "next";
 
 import MainLayout from "../components/layouts/MainLayout";
-import InputSearch from "../components/input-search";
+import { Header } from "../components/heading/Header";
 import { Card } from "../components/card/Card";
 
 import Link from "next/link";
@@ -14,11 +15,19 @@ const Home: NextPage = ({}: any) => {
   return (
     <>
       <MainLayout>
-        <InputSearch />
-        <Card />
+        <Header />
+
+        {/* testing ui visibiulity, note real data */}
+        <Stack w="full" direction={["column", "row"]} border="3px solid black">
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+        </Stack>
       </MainLayout>
-      {/* link page to test layouts and ui-components */}
-      <Link href="/testing">GO TO TEST pages layout</Link>
+
+      {/*link to test page component  */}
+      {/* <Link href="/testing">GO TO TEST pages layout</Link> */}
     </>
   );
 };

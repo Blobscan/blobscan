@@ -1,8 +1,7 @@
-import { HStack, Flex, Button } from "@chakra-ui/react";
+import { HStack, Flex } from "@chakra-ui/react";
 
-import Switcher from "../Switcher";
-import { MobileNav } from "./MobileNav";
-import { EnableAccount } from "../button/EnableAccount";
+import { MobileNav } from "./MobileTopBar";
+import { DesktopTopBar } from "./DesktopTopBar";
 export const TopBar = () => {
   return (
     <HStack
@@ -10,12 +9,12 @@ export const TopBar = () => {
       maxW="100vw"
       py="10px"
       px={["16px", "40px"]}
-      mb={["60px", "171px"]}
+      mb={["60px", "198px"]}
       borderBottom="1px solid"
       borderColor={"neutral.200"}
     >
       <Flex display={["none", "block"]}>
-        <DesktopNav />
+        <DesktopTopBar />
       </Flex>
       <Flex display={["block", "none"]}>
         <MobileNav />
@@ -25,6 +24,3 @@ export const TopBar = () => {
 };
 
 //waiting for design to finish ...
-export const DesktopNav = () => {
-  return <EnableAccount />;
-};
