@@ -1,6 +1,7 @@
 import { Center, Flex, Heading } from "@chakra-ui/react";
 import Image from "next/image";
-import LinkLayout from "../components/linkLayout";
+
+import LinkLayout from "../components/layouts/linkLayout";
 import emptyImg from "../public/logo.png";
 
 const Empty = () => {
