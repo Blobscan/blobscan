@@ -17,6 +17,7 @@ const AppLayout = ({ children }: LayoutProps) => {
     <>
       {pathname === "/" ? <TopBar /> : <PageTopBar />}
       {pathname === "/" ? (
+        //TODO: isolate containers in components
         <Container size={["sm", "md"]} centerContent={true}>
           {children}
         </Container>

@@ -4,16 +4,8 @@ import { MdSettings } from "react-icons/md";
 import { EnableAccount } from "../Button/EnableAccount";
 import { MobileNav } from "./AppLayoutMobileTopBar";
 
-export const DesktopNav = () => {
-  return (
-    <Flex alignItems={"center"} justify="center">
-      <EnableAccount />
-      <Icon as={MdSettings} fill="neutral.700" ml="24px" w="17px" h="17px" />
-    </Flex>
-  );
-};
 export const TopBar = () => {
-  const [isMobile] = useMediaQuery("(min-width: 490px)", {
+  const [isDeskTop] = useMediaQuery("(min-width: 490px)", {
     ssr: true,
     fallback: false,
   });
@@ -27,7 +19,16 @@ export const TopBar = () => {
       borderBottom="1px solid"
       borderColor={"neutral.200"}
     >
-      {isMobile ? <DesktopNav /> : <MobileNav />}
+      {isDeskTop ? <DesktopNav /> : <MobileNav />}
     </HStack>
+  );
+};
+
+export const DesktopNav = () => {
+  return (
+    <Flex alignItems={"center"} justify="center">
+      <EnableAccount />
+      <Icon as={MdSettings} fill="neutral.700" ml="24px" w="17px" h="17px" />
+    </Flex>
   );
 };

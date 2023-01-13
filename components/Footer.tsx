@@ -13,6 +13,7 @@ const Footer = () => {
       textStyle={"paragraph.sm"}
       w="100%"
       color={color}
+      border="3px solid red"
     >
       Blobscan @ 2022 | v1.0.0
     </Text>

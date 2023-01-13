@@ -5,7 +5,7 @@ import InputSearch from "../Input-search";
 
 import Switcher from "../Switcher";
 
-//no tenemos la version mobile ...
+//TODO: mobile ...
 export const PageTopBar = () => {
   return (
     <>
