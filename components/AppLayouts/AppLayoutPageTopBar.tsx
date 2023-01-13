@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Heading } from "@chakra-ui/react";
 
-import InputSearch from "../input-search";
+import InputSearch from "../Input-search";
 
 import Switcher from "../Switcher";
 
@@ -15,7 +15,7 @@ export const PageTopBar = () => {
         borderColor={"neutral.200"}
         py="10px"
         px="20px"
-        mb={["20px", "40px"]}
+        // mb={["20px", "40px"]}
         alignItems={"center"}
         justifyContent="space-between"
         bgColor="white"

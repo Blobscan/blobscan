@@ -12,7 +12,7 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import LinkLayout from "../../components/layouts/linkLayout";
+import LinkLayout from "../../components/AppLayouts/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 import { utils } from "ethers";
 

@@ -15,11 +15,11 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 
-import LinkLayout from "../../components/layouts/linkLayout";
+import LinkLayout from "../../components/AppLayouts/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 import { formatDate } from "../../util/helpers";
 
-const Block = (props: any) => {
+const Block = (...props: any) => {
   const { block, txs } = props;
 
   return (

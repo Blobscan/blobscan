@@ -1,33 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Stack } from "@chakra-ui/react";
-
 import type { NextPage } from "next";
 
-import MainLayout from "../components/layouts/MainLayout";
-import { Header } from "../components/heading/Header";
-import { Card } from "../components/card/Card";
-
-import Link from "next/link";
+import { Header } from "../components/Heading/Header";
+import { Card } from "../components/Card/Card";
 
 import { connectToDatabase } from "../util/mongodb";
 
 const Home: NextPage = ({}: any) => {
   return (
     <>
-      <MainLayout>
-        <Header />
-
-        {/* testing ui visibiulity, note real data */}
-        <Stack w="full" direction={["column", "row"]} border="3px solid black">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-        </Stack>
-      </MainLayout>
-
-      {/*link to test page component  */}
-      {/* <Link href="/testing">GO TO TEST pages layout</Link> */}
+      <Header />
+      {/*TODO: testing ui visibiulity with <Card /> component, note real data */}
+      <Stack w="full" direction={["column", "row"]}>
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+      </Stack>
     </>
   );
 };

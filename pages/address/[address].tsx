@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import Link from "next/link";
-import LinkLayout from "../../components/layouts/linkLayout";
+import LinkLayout from "../../components/AppLayouts/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Address = (props: any) => {

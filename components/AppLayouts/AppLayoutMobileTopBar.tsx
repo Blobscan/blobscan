@@ -1,13 +1,14 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
-import { Drawer } from "../drawer/Drawer";
+import { Drawer } from "../Drawer/Drawer";
 
 export const MobileNav = () => {
   const { onClose, isOpen, onOpen } = useDisclosure();
   return (
     <>
-      {/* Posible varainte para icon Button <IconButton
+      {/* TODO: variante  */}
+      {/* <IconButton
               onClick={onToggle}
               icon={
                 isOpen ? <CloseIcon boxSize={5} /> : <HamburgerIcon w={5} h={5} />
@@ -39,8 +40,6 @@ export const MobileNav = () => {
         />
       </IconButton>
       <Drawer onOpen={onOpen} onClose={onClose} isOpen={isOpen} />
-
-      {/*posible componente Drawer para mobile -- ejemplo de test -- armar component aparte, los styles van en DrawerHeader y DrawerBody*/}
     </>
   );
 };

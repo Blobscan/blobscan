@@ -4,9 +4,9 @@ const baseStyle = {
   fontWeight: "medium",
   p: "0",
 
-  // borders for visualization, delete afterwards
-  border: "2px solid",
-  borderColor: "neutral.400",
+  //TODO: delete container borders, use only for for visualization
+  // border: "2px solid",
+  // borderColor: "neutral.400",
   //
 
   _light: {
@@ -23,7 +23,7 @@ const sizes = {
     px: "20px",
     mt: "56px",
 
-    // borders for visualization, delete afterwards
+    //TODO: delete container borders, use only for for visualization
     border: "2px solid",
     borderColor: "success.200",
     //

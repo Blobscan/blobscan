@@ -1,7 +1,7 @@
 import { VStack, Text, Box, HStack, Flex } from "@chakra-ui/react";
 import Image from "next/image";
 
-import InputSearch from "../input-search";
+import InputSearch from "../Input-search";
 
 import Logo from "../../assests/logo-light.svg";
 
