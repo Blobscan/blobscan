@@ -7,12 +7,12 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 
-// type DrawerProps = {
-//   isOpen: () => void;
-//   onClose: () => boolean;
-// };
+type DrawerProps = {
+  isOpen: boolean;
+  onClose(): void;
+};
 
-export const Drawer = ({ isOpen, onClose }) => {
+export const Drawer = ({ isOpen, onClose }: DrawerProps) => {
   return (
     <ChakraDrawer
       placement="left"
