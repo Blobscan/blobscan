@@ -4,7 +4,7 @@ import { MdSettings } from "react-icons/md";
 import { EnableAccount } from "../Button/EnableAccount";
 import { MobileNav } from "./AppLayoutMobileTopBar";
 
-export const DesktopTopBar = () => {
+export const DesktopNav = () => {
   return (
     <Flex alignItems={"center"} justify="center">
       <EnableAccount />
@@ -27,7 +27,7 @@ export const TopBar = () => {
       borderBottom="1px solid"
       borderColor={"neutral.200"}
     >
-      {isMobile ? <DesktopTopBar /> : <MobileNav />}
+      {isMobile ? <DesktopNav /> : <MobileNav />}
     </HStack>
   );
 };
