@@ -29,33 +29,9 @@ const AppLayout = ({ children }: LayoutProps) => {
         </Box>
       )}
 
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
-
-  // TODO: alternative to code above ... which is better?
-  // if (pathname === "/") {
-  //   return (
-  //     <>
-  //       <TopBar />
-  //       <Container size={["sm", "md"]} centerContent={true}>
-  //         {children}
-  //       </Container>
-  //     </>
-  //   );
-  // }
-  // if (pathname !== "/") {
-  //   return (
-  //     <>
-  //       <PageTopBar />
-  //       <Box pos="absolute" bgColor="neutral.50" minW="100vw" minH="100vh">
-  //         <Container size={["sm", "lg"]} variant="shadow">
-  //           {children}
-  //         </Container>
-  //       </Box>
-  //     </>
-  //   );
-  // }
 };
 
 export default AppLayout;
