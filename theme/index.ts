@@ -1,9 +1,12 @@
-import { extendTheme, type ThemeConfig, Text } from "@chakra-ui/react";
+import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 
-import colors from "./colorPalete";
-import textStyles from "./textStyles";
+import { mode } from "@chakra-ui/theme-tools";
+
+import colors from "./ColorPalete";
+import Text from "./ui-components/TextStyle";
 import Heading from "./ui-components/HeadingStyles";
 import Button from "./ui-components/ButtonStyles";
+import textStyles from "./TextStyles";
 import { inputTheme } from "./ui-components/InputStyles";
 import { switchTheme } from "./ui-components/SwitcherStyles";
 import { containerTheme } from "./ui-components/ContainerStyles";
@@ -14,8 +17,14 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
-//Extend the theme to include custom colors, fonts, etc..
 const theme = extendTheme({
+  styles: {
+    global: (props) => ({
+      body: {
+        bg: mode("shades.white", "shades.200")(props),
+      },
+    }),
+  },
   colors,
   config,
   textStyles,

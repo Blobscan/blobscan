@@ -11,7 +11,7 @@ import {
 
 type SwitcherProps = {
   title?: string;
-  //defaultChecked: string; // como aplico un type a un react component de chackra ? onChange: () => boolean
+  //TODO: defaultChecked: string; // como aplico un type a un react component de chackra ? onChange: () => boolean
 };
 
 const Switcher: React.FC<SwitcherProps> = ({ title = "Dark Mode" }) => {

@@ -4,6 +4,9 @@ const textStyles = {
     fontSize: ["2.25rem", "2.5rem"], //mobile, desktop and up
     fontWeight: "medium",
     lineHeight: ["2.75rem", "3rem"], //mobile, desktop and up
+    _dark: {
+      color: "success.200",
+    },
   },
   h2: {
     fontSize: ["2rem", "2.25rem"],

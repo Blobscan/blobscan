@@ -16,20 +16,26 @@ const baseStyle = definePartsStyle({
       borderColor: "primary.200",
       cursor: "pointer",
     },
+    _dark: {
+      borderColor: "neutral.dark.200",
+      _hover: {
+        borderColor: "primary.dark.300",
+      },
+    },
   },
   header: {
     bgColor: "primary.50",
     borderTopRadius: "8px",
     p: "14px",
-    // _dark: {
-    //   bgColor: "success.200",
-    // },
+    _dark: {
+      bgColor: "primary.dark.400",
+      _active: {
+        bgColor: "primary.dark.300",
+      },
+    },
   },
   body: {
     p: "14px",
-    // _dark:{
-    //     bgColor:""
-    // }
   },
 });
 

@@ -11,9 +11,9 @@ export const Header = () => {
       <Box mb="22px">
         <Image src={Logo} alt="blobscan-logo" />
       </Box>
-      <InputSearch />h
+      <InputSearch />
       <Flex>
-        <Text fontWeight={"regular"} fontSize="14px" color={"neutral.700"}>
+        <Text fontWeight={"regular"} fontSize="14px">
           Blob transaction explorer for{" "}
         </Text>
         <Text
@@ -25,6 +25,7 @@ export const Header = () => {
           EIP-4844
         </Text>
       </Flex>
+      <Text variant={"primary"}>TEST</Text>
     </VStack>
   );
 };

@@ -6,32 +6,39 @@ import { mode } from "@chakra-ui/theme-tools";
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(switchAnatomy.keys);
 
-const baseStyle = (props: unknown) =>
+const baseStyle = () =>
   definePartsStyle({
     container: {
       position: "relative",
-      p: "0px",
+      // p: "0px",
     },
     thumb: {
       position: "absolute",
       top: "-0.5",
-      left: "0.25",
+      left: "-0.5",
       w: "18px",
       h: "18px",
-      bgColor: "shades.0o0",
+      bgColor: "shades.white",
       border: "1px solid",
       borderColor: "primary.200",
       _checked: {
-        bgColor: "primary.200",
+        left: "1.5",
+      },
+      _dark: {
+        bgColor: "primary.dark.100",
+        borderColor: "white",
       },
     },
     track: {
       border: "none",
-      bgColor: mode("neutral.300", "")(props),
-      w: "27px",
+      bgColor: mode("neutral.500", ""),
+      w: "30px",
       h: "10px",
       _checked: {
-        bgColor: mode("", "primary.100")(props),
+        bgColor: mode("", "primary.100"),
+      },
+      _dark: {
+        bgColor: "primary.dark.200",
       },
     },
   });

@@ -17,7 +17,7 @@ const Button = defineStyleConfig({
     px: "16px",
     fontWeight: "medium",
     color: "white",
-    //add this, not specification on figma
+    //TODO: added this, not specification on figma
     animationTimingFunction: "ease-in-out",
     animationDuration: "400ms",
   },
@@ -34,8 +34,21 @@ const Button = defineStyleConfig({
         color: "neutral.400",
         bgColor: "neutral.500",
       },
-      //dark mode ????
-      _dark: {},
+
+      _dark: {
+        bgColor: "primary.dark.300",
+        color: "shades.100",
+        _active: {
+          color: "primary.dark.300",
+        },
+        _hover: {
+          bgColor: "primary.dark.200",
+        },
+        _disabled: {
+          bgColor: "neutral.dark.400",
+          color: "neutral.dark.300",
+        },
+      },
     },
     outline: {
       color: "primary.300",
@@ -56,6 +69,24 @@ const Button = defineStyleConfig({
 
         color: "neutral.400",
         bgColor: "transparent",
+      },
+      _dark: {
+        bgColor: "shades.200",
+        color: "primary.dark.300",
+        borderColor: "primary.dark.300",
+        // TODO: check active
+        _active: {
+          bgColor: "shades.200",
+          color: "primary.dark.200",
+        },
+        _hover: {
+          bgColor: "primary.dark.200",
+          color: "shades.100",
+        },
+        _disabled: {
+          bgcolor: "shades.dark.200",
+          color: "neutral.dark.300",
+        },
       },
     },
   },
