@@ -3,6 +3,7 @@ import { Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 
 import { Header } from "../components/Heading/Header";
+
 import { Card } from "../components/Card/Card";
 
 import { connectToDatabase } from "../util/mongodb";
