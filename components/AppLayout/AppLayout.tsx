@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { TopBar } from "./AppLayoutTopBar";
 import { PageTopBar } from "./AppLayoutPageTopBar";
-import Footer from "../Footer";
+import Footer from "./Footer";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,19 +17,19 @@ const AppLayout = ({ children }: LayoutProps) => {
     <>
       {pathname === "/" ? <TopBar /> : <PageTopBar />}
       {pathname === "/" ? (
-        //TODO: isolate containers in components
+        //TODO: isolate containers in components ?
         <Container size={["sm", "md"]} centerContent={true}>
           {children}
         </Container>
       ) : (
-        <Box pos="absolute" bgColor="neutral.50" minW="100vw" minH="100vh">
+        <Box pos={"absolute"} bgColor="neutral.50" w="100%" minH="100vh">
           <Container size={["sm", "lg"]} variant="shadow">
             {children}
           </Container>
         </Box>
       )}
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 

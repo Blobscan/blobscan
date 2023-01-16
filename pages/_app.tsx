@@ -6,7 +6,7 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
-import AppLayout from "../components/AppLayouts/AppLayout";
+import AppLayout from "../components/AppLayout/AppLayout";
 
 import theme from "../theme/index";
 

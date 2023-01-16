@@ -14,8 +14,8 @@ export const PageTopBar = () => {
         borderBottom="1px solid"
         borderColor={"neutral.200"}
         py="10px"
-        px="20px"
-        // mb={["20px", "40px"]}
+        // TODO: note clear the padding in figma, check it later
+        px="30px"
         alignItems={"center"}
         justifyContent="space-between"
         bgColor="white"

@@ -36,13 +36,13 @@ const sizes = {
   }),
 };
 
-const shadowWithRadiusVariant = defineStyle((props) => {
+const shadowWithRadius = defineStyle((props) => {
   return {
     borderRadius: "8px",
     shadow: "0px 4px 12px 0px #EEEBEB",
     p: "20px",
-    mt: "110px",
-    mb: "120px",
+    mt: "50px",
+
     _dark: {
       // ...
     },
@@ -50,7 +50,7 @@ const shadowWithRadiusVariant = defineStyle((props) => {
 });
 
 const variants = {
-  shadow: shadowWithRadiusVariant,
+  shadow: shadowWithRadius,
 };
 
 export const containerTheme = defineStyleConfig({ baseStyle, sizes, variants });

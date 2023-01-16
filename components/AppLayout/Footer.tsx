@@ -8,12 +8,12 @@ const Footer = () => {
     <Text
       align={"center"}
       py="30px"
-      position={"fixed"}
+      position={"relative"}
       bottom={"0px"}
       textStyle={"paragraph.sm"}
+      mt="40px"
       w="100%"
       color={color}
-      border="3px solid red"
     >
       Blobscan @ 2022 | v1.0.0
     </Text>

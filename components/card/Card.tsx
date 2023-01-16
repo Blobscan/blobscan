@@ -19,6 +19,7 @@ export const Card: React.FC<CardProps> = ({ title = "Block #71645" }) => {
         <CardHeader>
           <Text fontSize={"14px"}>{title}</Text>
         </CardHeader>
+        {/* TODO: fix 8px from body to header card */}
         <CardBody>
           <Text fontSize={"12px"}>19 seconds ago 118 Transactions</Text>
 

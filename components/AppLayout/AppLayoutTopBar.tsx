@@ -14,7 +14,7 @@ export const TopBar = () => {
       justify={"end"}
       maxW="100vw"
       py="10px"
-      px={["16px", "40px"]}
+      px={["16px", "41px"]}
       mb={["60px", "198px"]}
       borderBottom="1px solid"
       borderColor={"neutral.200"}

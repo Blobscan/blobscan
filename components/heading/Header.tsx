@@ -1,4 +1,4 @@
-import { VStack, Text, Box, HStack, Flex } from "@chakra-ui/react";
+import { VStack, Text, Box, Flex } from "@chakra-ui/react";
 import Image from "next/image";
 
 import InputSearch from "../Input-search";
@@ -8,7 +8,7 @@ import Logo from "../../assests/logo-light.svg";
 export const Header = () => {
   return (
     <VStack as={"header"} w="full" mb="100px">
-      <Box mb="30px">
+      <Box mb="22px">
         <Image src={Logo} alt="blobscan-logo" />
       </Box>
       <InputSearch />h
