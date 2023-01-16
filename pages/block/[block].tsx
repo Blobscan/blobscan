@@ -14,11 +14,12 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import LinkLayout from "../../components/linkLayout";
+
+import LinkLayout from "../../components/AppLayout/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 import { formatDate } from "../../util/helpers";
 
-const Block = (props: any) => {
+const Block = (...props: any) => {
   const { block, txs } = props;
 
   return (
@@ -32,7 +33,7 @@ const Block = (props: any) => {
         mb="30px"
       >
         <Breadcrumb mb="5px" separator="-" fontWeight="medium" fontSize="md">
-          <BreadcrumbItem >
+          <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
