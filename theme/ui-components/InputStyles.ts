@@ -15,30 +15,27 @@ const filled = (props: unknown) =>
       borderLeftRadius: "6px",
       borderRightRadius: "none",
       border: "1px solid",
-      borderColor: "neutral.200",
+      fontWeight: "regular",
+      borderColor: mode("neutral.200", "neutral.dark.400")(props),
       bgColor: "shades.0",
       h: "40px",
       p: "10px",
       pl: "1rem",
       _placeholder: {
-        fontWeight: "regular",
-        color: "neutral.300",
-        textStyle: "",
+        color: mode("neutral.300", "neutral.dark.300")(props),
       },
-      //to do : _dark mode
       _focus: {
         fontFamily: "sans-serif",
-        color: "neutral.700",
+        color: mode("neutral.900", "shades.100")(props),
         borderColor: "primary.200",
-        bgColor: "primary.50",
+        bgColor: mode("primary.50", "neutral.dark.400")(props),
         _placeholder: {
           color: "neutral.700",
         },
       },
       _hover: {
-        bgColor: "primary.50",
+        bgColor: mode("primary.50", "neutral.dark.400")(props),
       },
-
       _disabled: {
         color: "neutral.200",
         borderColor: "neutral.300",
@@ -52,8 +49,12 @@ const filled = (props: unknown) =>
       h: "40px",
       borderLeftRadius: "none",
       borderRightRadius: "6px",
-      bgColor: "primary.300",
+      cursor: "pointer",
+      bgColor: mode("primary.300", "primary.dark.300")(props),
       color: "neutral.50",
+      _hover: {
+        bgColor: mode("primary.200", "primary.dark.200")(props),
+      },
     },
   });
 
