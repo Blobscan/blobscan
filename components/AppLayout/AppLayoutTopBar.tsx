@@ -1,9 +1,8 @@
-import { HStack, Flex, Icon, Button, useMediaQuery } from "@chakra-ui/react";
+import { HStack, Flex, Icon, Text, useMediaQuery } from "@chakra-ui/react";
 import { MdSettings } from "react-icons/md";
 
 import { EnableAccount } from "../Button/EnableAccount";
 import { MobileNav } from "./AppLayoutMobileTopBar";
-import Switcher from "../Switcher";
 
 export const TopBar = () => {
   const [isDeskTop] = useMediaQuery("(min-width: 490px)", {
@@ -28,9 +27,7 @@ export const TopBar = () => {
 export const DesktopNav = () => {
   return (
     <Flex alignItems={"center"} justify="center">
-      {/* TODO: uncomment this  */}
       <EnableAccount />
-      {/* <Switcher /> */}
       <Icon as={MdSettings} fill="neutral.700" ml="24px" w="17px" h="17px" />
     </Flex>
   );
