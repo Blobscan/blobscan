@@ -17,16 +17,18 @@ export const Card: React.FC<CardProps> = ({ title = "Block #71645" }) => {
     <ChakraCard w={["full", "282px"]}>
       <Stack>
         <CardHeader>
-          <Text fontSize={"14px"}>{title}</Text>
+          <Text textStyle={"md"}>{title}</Text>
         </CardHeader>
         {/* TODO: fix 8px from body to header card */}
         <CardBody>
-          <Text fontSize={"12px"}>19 seconds ago 118 Transactions</Text>
+          <Text textStyle={"sm"} fontWeight="regular">
+            19 seconds ago 118 Transactions
+          </Text>
 
-          <Text fontSize={"12px"} mt="8px">
+          <Text textStyle={"sm"} fontWeight="regular" mt="8px">
             Miner 0xDAFEA492D9c6733ae3d56b7Efj...
           </Text>
-          <Text fontSize={"12px"} mt="4px">
+          <Text textStyle={"sm"} fontWeight="regular" mt="4px">
             Reward 0.034811301196471468 ETH
           </Text>
         </CardBody>

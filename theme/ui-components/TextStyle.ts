@@ -6,11 +6,12 @@ const Text = defineStyleConfig({
     fontFamily: "body",
     lineHeight: "none",
     color: mode("neutral.700", "neutral.dark.100")(props),
+    mt: "0px",
   }),
 
   variants: {
     primary: {
-      color: "success.200",
+      color: "primary.300",
       _dark: {
         color: "primary.dark.200",
       },

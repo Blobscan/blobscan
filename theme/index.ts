@@ -6,7 +6,6 @@ import colors from "./ColorPalete";
 import Text from "./ui-components/TextStyle";
 import Heading from "./ui-components/HeadingStyles";
 import Button from "./ui-components/ButtonStyles";
-import textStyles from "./TextStyles";
 import { inputTheme } from "./ui-components/InputStyles";
 import { switchTheme } from "./ui-components/SwitcherStyles";
 import { containerTheme } from "./ui-components/ContainerStyles";
@@ -27,7 +26,6 @@ const theme = extendTheme({
   },
   colors,
   config,
-  textStyles,
   fonts: {
     heading: "Inter, sans-serif",
     body: "Inter, sans-serif",
@@ -46,6 +44,24 @@ const theme = extendTheme({
     regular: 400,
     medium: 500,
     bold: 700,
+  },
+  textStyles: {
+    xl: {
+      fontSize: "20px",
+      fontWeight: "medium",
+    },
+    lg: {
+      fontSize: "16px",
+      fontWeight: "medium",
+    },
+    md: {
+      fontSize: "14px",
+      fontWeight: "medium",
+    },
+    sm: {
+      fontSize: "12px",
+      fontWeight: "medium",
+    },
   },
 });
 

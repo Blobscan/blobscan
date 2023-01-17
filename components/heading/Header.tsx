@@ -13,19 +13,13 @@ export const Header = () => {
       </Box>
       <InputSearch />
       <Flex>
-        <Text fontWeight={"regular"} fontSize="14px">
+        <Text textStyle={"md"} mt="4px">
           Blob transaction explorer for{" "}
         </Text>
-        <Text
-          pl="4px"
-          fontWeight={"medium"}
-          color="primary.300"
-          fontSize={"14px"}
-        >
+        <Text mt="4px" pl="4px" textStyle={"md"} variant="primary">
           EIP-4844
         </Text>
       </Flex>
-      <Text variant={"primary"}>TEST</Text>
     </VStack>
   );
 };
