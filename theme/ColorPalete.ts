@@ -70,7 +70,7 @@ const colors = {
   shades: {
     white: "#FFFFFF",
     black: "#000000",
-    100: "#FAFAFA",
+    100: "#FAFAFF",
     200: "#1A1B29",
   },
 };
