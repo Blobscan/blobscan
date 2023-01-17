@@ -1,34 +1,3 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 8,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "impliedStrict": true,
-      "experimentalObjectRestSpread": true
-    },
-    "allowImportExportEverywhere": true
-  },
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript"
-  ],
-  "plugins": ["@typescript-eslint", "import"],
-  "rules": {
-    "import/order": [
-      "error",
-      {
-        "groups": ["external", "internal"],
-        "newlines-between": "always-and-inside-groups"
-      }
-    ]
-  },
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true,
-    "mocha": true
-  }
+  "extends": "next/core-web-vitals"
 }

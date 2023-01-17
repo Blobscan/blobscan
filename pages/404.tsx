@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Box, Container } from "@chakra-ui/react";
-
 import notFoundImg from "../public/404.png";
 
 export default function Custom404() {
