@@ -7,75 +7,98 @@ import {
   PopoverBody,
   Button,
   useColorModeValue,
+  useColorMode,
 } from "@chakra-ui/react";
+import Image from "next/image";
+
 import { MdSettings } from "react-icons/md";
 
 import { EnableAccount } from "../Button/EnableAccount";
 import Switcher from "../Switcher";
+import InputSearch from "../Input-search";
 
-export const DesktopNav = () => {
+import Logo from "../../assests/logo-mini-light.svg";
+import LogoDark from "../../assests/logo-mini-dark.svg";
+
+export const DesktopNav = ({ withLogoInput }) => {
+  const { colorMode } = useColorMode();
+
   const bgColor = useColorModeValue("body", "neutral.dark.200");
   const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
   return (
     <>
-      <Flex alignItems={"center"} justify="center">
-        <EnableAccount />
+      <Flex
+        alignItems={"center"}
+        justify={withLogoInput ? "space-between" : "end"}
+        w="100%"
+      >
+        {withLogoInput && (
+          <>
+            {colorMode === "light" ? (
+              <Image src={Logo} alt="blobscan-logo-light" />
+            ) : (
+              <Image src={LogoDark} alt="blobscan-logo-dark" />
+            )}
+            <InputSearch />
+          </>
+        )}
 
-        {/* TODO: optimize Icon Setting  */}
-
-        <Popover>
-          <PopoverTrigger>
-            <Button
-              ml="24px"
-              padding={"8px"}
-              bgColor={"body"}
-              borderRadius="100%"
-              w="40px"
-              h="40px"
-              _hover={{ bgColor: "primary.100" }}
-              _dark={{
-                bgColor: "neutral.darl.500",
-                _hover: { bgColor: "primary.dark.500" },
-              }}
-            >
-              {" "}
-              <Icon
-                as={MdSettings}
-                _dark={{
-                  fill: "neutral.dark.300",
-                  bgColor: "body",
-                  _hover: { fill: "primary.dark.200" },
-                }}
-                _hover={{ fill: "primary.300" }}
-                fill={"neutral.700"}
-                w="17px"
-                h="17px"
-              />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            w="content"
-            p="8px"
-            borderRadius={"8px"}
-            border="1px solid"
-            borderColor={borderColor}
-            bgColor={bgColor}
-          >
-            <PopoverBody>
-              {/* TODO: do APIs styles button */}
+        <Flex>
+          <EnableAccount />
+          <Popover>
+            <PopoverTrigger>
               <Button
-                mb="12px"
-                bgColor={"transparent"}
-                color="body"
-                _dark={{ bgColor: "body" }}
+                ml="24px"
+                padding={"8px"}
+                bgColor={"body"}
+                borderRadius="100%"
+                w="40px"
+                h="40px"
+                _hover={{ bgColor: "primary.100" }}
+                _dark={{
+                  bgColor: "neutral.darl.500",
+                  _hover: { bgColor: "primary.dark.500" },
+                }}
               >
-                API
+                {" "}
+                <Icon
+                  as={MdSettings}
+                  _dark={{
+                    fill: "neutral.dark.300",
+                    bgColor: "body",
+                    _hover: { fill: "primary.dark.200" },
+                  }}
+                  _hover={{ fill: "primary.300" }}
+                  fill={"neutral.700"}
+                  w="17px"
+                  h="17px"
+                />
               </Button>
-              <Switcher />
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+            </PopoverTrigger>
+            <PopoverContent
+              w="content"
+              p="8px"
+              borderRadius={"8px"}
+              border="1px solid"
+              borderColor={borderColor}
+              bgColor={bgColor}
+            >
+              <PopoverBody>
+                {/* TODO: do APIs styles button */}
+                <Button
+                  mb="12px"
+                  bgColor={"transparent"}
+                  color="body"
+                  _dark={{ bgColor: "body" }}
+                >
+                  API
+                </Button>
+                <Switcher />
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+        </Flex>
       </Flex>
     </>
   );

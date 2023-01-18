@@ -1,9 +1,18 @@
-import { HStack, useMediaQuery, useColorModeValue } from "@chakra-ui/react";
+import {
+  HStack,
+  Flex,
+  useMediaQuery,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";
 
-export const TopBar = () => {
+type TopBarProps = {
+  withLogoInput: boolean;
+};
+
+export const TopBar: React.FC<TopBarProps> = ({ withLogoInput = false }) => {
   const [isDeskTop] = useMediaQuery("(min-width: 490px)", {
     ssr: true,
     fallback: false,
@@ -12,8 +21,7 @@ export const TopBar = () => {
   const bordeColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
   return (
-    <HStack
-      justify={"end"}
+    <Flex
       maxW="100vw"
       py="10px"
       px={["16px", "41px"]}
@@ -22,7 +30,7 @@ export const TopBar = () => {
       borderColor={bordeColor}
       bgColor={bgColor}
     >
-      {isDeskTop ? <DesktopNav /> : <MobileNav />}
-    </HStack>
+      {isDeskTop ? <DesktopNav withLogoInput={withLogoInput} /> : <MobileNav />}
+    </Flex>
   );
 };
