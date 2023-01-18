@@ -7,38 +7,65 @@ import {
   Switch,
   useColorMode,
   useColorModeValue,
+  Icon,
 } from "@chakra-ui/react";
+
+import Image from "next/image";
 
 type SwitcherProps = {
   title?: string;
-  //TODO: defaultChecked: string; // como aplico un type a un react component de chackra ? onChange: () => boolean
 };
+import IconMoonLight from "../assests/moon-light.svg";
+import IconMoonDark from "../assests/moon-dark.svg";
 
 const Switcher: React.FC<SwitcherProps> = ({ title = "Dark Mode" }) => {
-  const { toggleColorMode } = useColorMode();
+  const { toggleColorMode, colorMode } = useColorMode();
 
-  const borderColor = useColorModeValue("neutral.200", "error.200");
-  const iconMoonColor = useColorModeValue("neutral.300", "");
+  const textColor = useColorModeValue("body", "shades.100");
+  const bgColor = useColorModeValue("body", "neutral.dark.200");
+  const bgColorHover = useColorModeValue("primary.100", "primary.dark.300");
+  const bgColorActive = useColorModeValue("primary.50", "primary.dark.400");
 
   return (
-    <Box
-      borderRadius="8px"
-      border="1px solid"
-      borderColor={borderColor}
-      w="10.625rem"
+    <Flex
+      maxW="237px"
+      alignItems="center"
+      justifyContent="space-between"
+      borderRadius="50px"
       h="2.5rem"
-      //review sizes de padding con figma
       py="8px"
-      px="4px"
+      pl="9px"
+      pr="12px"
+      cursor={"pointer"}
+      bgColor={bgColor}
+      _hover={{ bgColor: bgColorHover }}
+      _active={{ bgColor: bgColorActive }}
     >
       <Flex alignItems="center" justifyContent="space-between">
-        <MoonIcon boxSize="1rem" color={iconMoonColor} />
-        <Text fontSize={"14px"} fontWeight="regular" fontFamily={"sans"}>
+        {colorMode === "light" ? (
+          <Image src={IconMoonLight} alt="light-mode"></Image>
+        ) : (
+          <Image src={IconMoonDark} alt="dark-mode"></Image>
+        )}
+        <Text
+          textStyle={"md"}
+          fontWeight="regular"
+          fontFamily={"sans"}
+          lineHeight="16px"
+          letterSpacing={"0.25px"}
+          pl="10px"
+          pr="80px"
+          color={textColor}
+        >
           {title}
         </Text>
-        <Switch size="md" onChange={toggleColorMode} defaultChecked={false} />
       </Flex>
-    </Box>
+      <Switch
+        size="md"
+        onChange={toggleColorMode}
+        defaultChecked={colorMode === "light" ? false : true}
+      />
+    </Flex>
   );
 };
 

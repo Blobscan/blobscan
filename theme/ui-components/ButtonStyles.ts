@@ -17,7 +17,6 @@ const Button = defineStyleConfig({
     px: "16px",
     fontWeight: "medium",
     color: "white",
-    //TODO: added this, not specification on figma
     animationTimingFunction: "ease-in-out",
     animationDuration: "400ms",
   },

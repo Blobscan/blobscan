@@ -1,0 +1,82 @@
+import {
+  Flex,
+  Icon,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  Button,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { MdSettings } from "react-icons/md";
+
+import { EnableAccount } from "../Button/EnableAccount";
+import Switcher from "../Switcher";
+
+export const DesktopNav = () => {
+  const bgColor = useColorModeValue("body", "neutral.dark.200");
+  const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
+
+  return (
+    <>
+      <Flex alignItems={"center"} justify="center">
+        <EnableAccount />
+
+        {/* TODO: optimize Icon Setting  */}
+
+        <Popover>
+          <PopoverTrigger>
+            <Button
+              ml="24px"
+              padding={"8px"}
+              bgColor={"body"}
+              borderRadius="100%"
+              w="40px"
+              h="40px"
+              _hover={{ bgColor: "primary.100" }}
+              _dark={{
+                bgColor: "neutral.darl.500",
+                _hover: { bgColor: "primary.dark.500" },
+              }}
+            >
+              {" "}
+              <Icon
+                as={MdSettings}
+                _dark={{
+                  fill: "neutral.dark.300",
+                  bgColor: "body",
+                  _hover: { fill: "primary.dark.200" },
+                }}
+                _hover={{ fill: "primary.300" }}
+                fill={"neutral.700"}
+                w="17px"
+                h="17px"
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            w="content"
+            p="8px"
+            borderRadius={"8px"}
+            border="1px solid"
+            borderColor={borderColor}
+            bgColor={bgColor}
+          >
+            <PopoverBody>
+              {/* TODO: do APIs styles button */}
+              <Button
+                mb="12px"
+                bgColor={"transparent"}
+                color="body"
+                _dark={{ bgColor: "body" }}
+              >
+                API
+              </Button>
+              <Switcher />
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+      </Flex>
+    </>
+  );
+};

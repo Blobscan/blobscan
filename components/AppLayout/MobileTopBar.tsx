@@ -1,31 +1,30 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
 import { Drawer } from "../Drawer/Drawer";
 
 export const MobileNav = () => {
-  const { onClose, isOpen, onOpen } = useDisclosure();
+  const { onClose, isOpen, onOpen, onToggle } = useDisclosure();
   return (
     <>
       {/* TODO: variante  */}
       {/* <IconButton
-              onClick={onToggle}
-              icon={
-                isOpen ? <CloseIcon boxSize={5} /> : <HamburgerIcon w={5} h={5} />
-              }
-              variant={"link"}
-              size={"sm"}
-              aria-label={"Toggle Navigation"}
-              color={"white"}
-              _hover={{
-                color: "primary.300",
-              }}
-            /> */}
+        onClick={onToggle}
+        icon={
+          isOpen ? <CloseIcon boxSize={5} /> : <HamburgerIcon w={5} h={5} />
+        }
+        size={"sm"}
+        aria-label={"Toggle Navigation"}
+        color={"black"}
+        _hover={{
+          color: "primary.300",
+        }}
+      /> */}
       <IconButton
         onClick={onOpen}
         aria-label="Toogle Mobile Menu"
         p={"0px"}
-        bgColor="shades.0"
+        bgColor="white"
         border={"1px solid"}
         borderColor="neutral.200"
         borderRadius={"6px"}
