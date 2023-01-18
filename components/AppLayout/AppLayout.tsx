@@ -1,4 +1,4 @@
-import { Container, Box } from "@chakra-ui/react";
+import { Container, Box, useColorModeValue } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { TopBar } from "./AppLayoutTopBar";
@@ -11,10 +11,11 @@ interface LayoutProps {
 
 const AppLayout = ({ children }: LayoutProps) => {
   const { pathname } = useRouter();
-
+  const bgColor = useColorModeValue("neutral.50", "shades.200");
   return (
     <>
-      {pathname === "/" ? <TopBar /> : <TopBar withLogoInput={true} />}
+      <TopBar withLogoInput={pathname === "/" ? false : true} />
+
       {pathname === "/" ? (
         //TODO: isolate containers in components ?
         <Container size={["sm", "md"]} centerContent={true}>
@@ -25,7 +26,7 @@ const AppLayout = ({ children }: LayoutProps) => {
           <Box
             pos={"absolute"}
             top="61px"
-            bgColor="neutral.50"
+            bgColor={bgColor}
             w="100%"
             minH="100vh"
           >
@@ -35,6 +36,7 @@ const AppLayout = ({ children }: LayoutProps) => {
           </Box>
         </>
       )}
+      {/* TODO: breaks on pages ...fix */}
       <Footer />
     </>
   );
