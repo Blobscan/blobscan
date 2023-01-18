@@ -4,7 +4,7 @@ const index = () => {
   return (
     <>
       <Box>
-        <Heading h={"500px"}>Test Container Variant</Heading>
+        <Heading h={"900px"}>Test Container Variant</Heading>
       </Box>
     </>
   );

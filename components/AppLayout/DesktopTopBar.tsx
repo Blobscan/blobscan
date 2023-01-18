@@ -20,10 +20,13 @@ import InputSearch from "../Input-search";
 import Logo from "../../assests/logo-mini-light.svg";
 import LogoDark from "../../assests/logo-mini-dark.svg";
 
-export const DesktopNav = ({ withLogoInput }) => {
-  const { colorMode } = useColorMode();
+type DesktopNavProps = {
+  withLogoInput: boolean;
+};
 
-  const bgColor = useColorModeValue("body", "neutral.dark.200");
+export const DesktopNav: React.FC<DesktopNavProps> = ({ withLogoInput }) => {
+  const { colorMode } = useColorMode();
+  const bgColor = useColorModeValue("body", "neutral.dark.500");
   const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
   return (
@@ -49,9 +52,10 @@ export const DesktopNav = ({ withLogoInput }) => {
           <Popover>
             <PopoverTrigger>
               <Button
-                ml="24px"
-                padding={"8px"}
-                bgColor={"body"}
+                ml="11px"
+                mr="-13px"
+                // padding={"8px"}
+                bgColor={"shades.white"}
                 borderRadius="100%"
                 w="40px"
                 h="40px"
@@ -92,7 +96,7 @@ export const DesktopNav = ({ withLogoInput }) => {
                   color="body"
                   _dark={{ bgColor: "body" }}
                 >
-                  API
+                  APIs
                 </Button>
                 <Switcher />
               </PopoverBody>

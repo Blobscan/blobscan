@@ -1,7 +1,6 @@
 import { defineStyleConfig, defineStyle } from "@chakra-ui/react";
 
 const normal = defineStyle({
-  h: "40px",
   fontSize: "14px",
   lineHeight: "20px",
 });

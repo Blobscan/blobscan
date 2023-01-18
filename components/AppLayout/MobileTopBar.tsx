@@ -7,7 +7,7 @@ export const MobileNav = () => {
   const { onClose, isOpen, onOpen, onToggle } = useDisclosure();
   return (
     <>
-      {/* TODO: variante  */}
+      {/* TODO: chequear esta posible variante  */}
       {/* <IconButton
         onClick={onToggle}
         icon={

@@ -12,12 +12,12 @@ type TopBarProps = {
   withLogoInput: boolean;
 };
 
-export const TopBar: React.FC<TopBarProps> = ({ withLogoInput = false }) => {
+export const TopBar: React.FC<TopBarProps> = ({ withLogoInput }) => {
   const [isDeskTop] = useMediaQuery("(min-width: 490px)", {
     ssr: true,
     fallback: false,
   });
-  const bgColor = useColorModeValue("body", "neutral.dark.500");
+  const bgColor = useColorModeValue("shades.white", "neutral.dark.500");
   const bordeColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
   return (

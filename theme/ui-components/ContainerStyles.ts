@@ -4,7 +4,7 @@ const baseStyle = {
   fontWeight: "medium",
   p: "0",
   _light: {
-    bgColor: "shades.0",
+    bgColor: "body",
   },
   _dark: {
     bgColor: "body",
@@ -30,7 +30,7 @@ const shadowWithRadius = defineStyle((props) => {
     borderRadius: "8px",
     shadow: "0px 4px 12px 0px #EEEBEB",
     p: "20px",
-    mt: "50px",
+    mt: "-158px",
     _dark: {
       bgColor: "neutral.dark.500",
       shadow: "none",

@@ -11,7 +11,6 @@ export const Header = () => {
   return (
     <VStack as={"header"} w="full" mb="100px">
       <Box mb="22px">
-        {/* TODO: check logo width and height */}
         {colorMode === "light" ? (
           <Image src={Logo} alt="blobscan-logo-light" />
         ) : (
