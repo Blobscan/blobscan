@@ -19,7 +19,7 @@ const theme = extendTheme({
   styles: {
     global: (props) => ({
       body: {
-        bg: mode("shades.white", "shades.200")(props),
+        bg: mode("neutral.50", "shades.200")(props),
         lineHeight: "14px",
       },
     }),

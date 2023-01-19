@@ -23,20 +23,11 @@ const AppLayout = ({ children }: LayoutProps) => {
         </Container>
       ) : (
         <>
-          {/* <Box
-            pos={"absolute"}
-            top="61px"
-            bgColor={bgColor}
-            w="100%"
-            minH="100vh"
-          > */}
           <Container size={["sm", "lg"]} variant="shadow">
             {children}
           </Container>
-          {/* </Box> */}
         </>
       )}
-      {/* TODO: Footer breaks on pages ...fix  ==> ver de cambiar el fonde con el router en el body?*/}
       <Footer />
     </>
   );

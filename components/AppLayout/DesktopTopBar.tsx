@@ -55,7 +55,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ withLogoInput }) => {
                 ml="11px"
                 mr="-13px"
                 // padding={"8px"}
-                bgColor={"shades.white"}
+                bgColor={"body"}
                 borderRadius="100%"
                 w="40px"
                 h="40px"
