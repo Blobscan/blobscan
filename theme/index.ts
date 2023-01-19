@@ -12,7 +12,7 @@ import { containerTheme } from "./ui-components/ContainerStyles";
 import { cardTheme } from "./ui-components/CardStyles";
 
 const config: ThemeConfig = {
-  initialColorMode: "light",
+  initialColorMode: "dark",
   useSystemColorMode: false,
 };
 const theme = extendTheme({

@@ -31,6 +31,7 @@ const shadowWithRadius = defineStyle((props) => {
     shadow: "0px 4px 12px 0px #EEEBEB",
     p: "20px",
     mt: "-158px",
+    bgColor: "shades.white",
     _dark: {
       bgColor: "neutral.dark.500",
       shadow: "none",
