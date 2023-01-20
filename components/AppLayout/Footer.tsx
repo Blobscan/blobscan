@@ -5,7 +5,7 @@ const Footer = () => {
   const color = useColorModeValue("nuetral.700", "neutral.dark.100");
   return (
     <Text
-      position={"relative"}
+      position={"fixed"}
       bottom={"0px"}
       align={"center"}
       py="30px"

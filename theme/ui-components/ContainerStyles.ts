@@ -13,7 +13,7 @@ const baseStyle = {
 
 const sizes = {
   sm: defineStyle({
-    maxW: "390px", // TODO:the min widths on iphone is 490px ...check with rafael this size
+    maxW: "390px",
     px: "20px",
     mt: "56px",
   }),

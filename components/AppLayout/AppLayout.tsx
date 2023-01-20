@@ -11,13 +11,12 @@ interface LayoutProps {
 
 const AppLayout = ({ children }: LayoutProps) => {
   const { pathname } = useRouter();
-  const bgColor = useColorModeValue("neutral.50", "shades.200");
+
   return (
     <>
       <TopBar withLogoInput={pathname === "/" ? false : true} />
 
       {pathname === "/" ? (
-        //TODO: isolate containers in components ?
         <Container size={["sm", "md"]} centerContent={true}>
           {children}
         </Container>

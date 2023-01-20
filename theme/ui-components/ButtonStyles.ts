@@ -72,7 +72,6 @@ const Button = defineStyleConfig({
         bgColor: "shades.200",
         color: "primary.dark.300",
         borderColor: "primary.dark.300",
-        // TODO: check active
         _active: {
           bgColor: "shades.200",
           color: "primary.dark.200",

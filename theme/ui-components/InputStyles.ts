@@ -7,7 +7,7 @@ import { mode } from "@chakra-ui/theme-tools";
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
-const filled = (props: unknown) =>
+const filled = (props: any) =>
   definePartsStyle({
     field: {
       fontSize: "0.875rem",

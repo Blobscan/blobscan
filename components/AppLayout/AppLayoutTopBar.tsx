@@ -1,9 +1,4 @@
-import {
-  HStack,
-  Flex,
-  useMediaQuery,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Flex, useMediaQuery, useColorModeValue } from "@chakra-ui/react";
 
 import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";

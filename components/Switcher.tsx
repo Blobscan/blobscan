@@ -1,13 +1,9 @@
-import { MoonIcon } from "@chakra-ui/icons";
-
 import {
-  Box,
   Flex,
   Text,
   Switch,
   useColorMode,
   useColorModeValue,
-  Icon,
 } from "@chakra-ui/react";
 
 import Image from "next/image";

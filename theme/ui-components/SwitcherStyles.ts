@@ -10,7 +10,6 @@ const baseStyle = () =>
   definePartsStyle({
     container: {
       position: "relative",
-      // p: "0px",
     },
     thumb: {
       position: "absolute",
