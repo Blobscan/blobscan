@@ -1,46 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Stack } from "@chakra-ui/react";
-import type { NextPage } from "next";
+import { Flex } from "@chakra-ui/react";
+import type { GetServerSideProps, NextPage } from "next";
 
 import { Header } from "../components/Header";
-
-import { Card } from "../components/Card/Card";
+import { BlockCard } from "../components/BlockCard";
 
 import { connectToDatabase } from "../util/mongodb";
+import { Block } from "../types";
 
-const Home: NextPage = ({}: any) => {
-  return (
-    <>
-      <Header />
-      {/*TODO: testing ui visibiulity with <Card /> component, note real data */}
-      <Stack w="full" direction={["column", "row"]}>
-        <Card title="" />
-        <Card title="" />
-        <Card title="" />
-        <Card title="" />
-      </Stack>
-    </>
-  );
+type HomeProps = {
+  blocks: Block[];
 };
 
+// TODO: handle possible server-side errors on the client
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const { db } = await connectToDatabase();
+  const blocks = await db
+    .collection("blocks")
+    .find({})
+    .sort({ number: -1 })
+    .limit(4)
+    .toArray();
+
+  return {
+    props: { blocks },
+  };
+};
+
+const Home: NextPage<HomeProps> = ({ blocks = [] }: HomeProps) => (
+  <>
+    <Header />
+    <Flex gap={6}>
+      {blocks.map((b: any) => (
+        <BlockCard key={b.hash} block={b} />
+      ))}
+    </Flex>
+  </>
+);
+
 export default Home;
-
-//codigo anterior de la hackaton: ..
-
-// export const getServerSideProps = async () => {
-//   try {
-//     const { db } = await connectToDatabase();
-//     const blocks = await db
-//       .collection("blocks")
-//       .find({})
-//       .sort({ number: -1 })
-//       .limit(12)
-//       .toArray();
-
-//     return {
-//       props: { blocks: JSON.parse(JSON.stringify(blocks)) },
-//     };
-//   } catch (e) {
-//     console.error(e);
-//   }
-// };

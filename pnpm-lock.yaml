@@ -15,6 +15,7 @@ specifiers:
   '@types/react-dom': 18.0.6
   '@typescript-eslint/eslint-plugin': ^5.47.0
   '@typescript-eslint/parser': ^5.47.0
+  dayjs: ^1.11.7
   eslint: 8.25.0
   eslint-config-next: 12.3.1
   eslint-plugin-import: ^2.26.0
@@ -39,6 +40,7 @@ dependencies:
   '@emotion/styled': 11.10.5_avbifwq3am6trntrguk62pydsi
   '@fontsource/inter': 4.5.14
   '@fontsource/public-sans': 4.5.11
+  dayjs: 1.11.7
   ethers: 5.7.2
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
   mongodb: 4.13.0
@@ -3465,6 +3467,10 @@ packages:
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
+
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
