@@ -4,4 +4,11 @@ export type Block = {
   number: number;
   timestamp: number;
   transactions: string[];
+  slot?: number;
+};
+
+export type Transaction = {
+  hash: string;
+  from: string;
+  to: string;
 };
