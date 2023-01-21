@@ -11,16 +11,16 @@ import {
   Heading,
   Tag,
 } from "@chakra-ui/react";
-import Link from "next/link";
-import LinkLayout from "../../components/AppLayout/linkLayout";
-import { connectToDatabase } from "../../util/mongodb";
 import { utils } from "ethers";
+import Link from "next/link";
+
+import { connectToDatabase } from "../../util/mongodb";
 
 const Blob = (props: any) => {
   const { tx, blob } = props;
   const utf8 = utils.toUtf8String(blob.data).replace(/\0/g, "");
   return (
-    <LinkLayout>
+    <>
       <Box ml="20px">
         <Breadcrumb separator="-" fontWeight="medium" fontSize="md" mb="5px">
           <BreadcrumbItem>
@@ -126,7 +126,7 @@ const Blob = (props: any) => {
           </AccordionItem>
         </Accordion>
       </div>
-    </LinkLayout>
+    </>
   );
 };
 

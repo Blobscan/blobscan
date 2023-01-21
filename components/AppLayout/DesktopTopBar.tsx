@@ -13,9 +13,8 @@ import Image from "next/image";
 
 import { MdSettings } from "react-icons/md";
 
-import { EnableAccount } from "../Button/EnableAccount";
 import Switcher from "../Switcher";
-import InputSearch from "../Input-search";
+import InputSearch from "../InputSearch";
 
 import Logo from "../../assests/logo-mini-light.svg";
 import LogoDark from "../../assests/logo-mini-dark.svg";
@@ -48,7 +47,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ withLogoInput }) => {
         )}
 
         <Flex>
-          <EnableAccount />
           <Popover>
             <PopoverTrigger>
               <Button

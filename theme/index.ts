@@ -17,7 +17,7 @@ const config: ThemeConfig = {
 };
 const theme = extendTheme({
   styles: {
-    global: (props) => ({
+    global: (props: any) => ({
       body: {
         bg: mode("neutral.50", "shades.200")(props),
         lineHeight: "14px",

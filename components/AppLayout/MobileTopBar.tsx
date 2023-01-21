@@ -1,10 +1,9 @@
 import { IconButton, useDisclosure } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
-import { Drawer } from "../Drawer/Drawer";
-
 export const MobileNav = () => {
-  const { onClose, isOpen, onOpen } = useDisclosure();
+  const { onOpen } = useDisclosure();
+
   return (
     <>
       <IconButton
@@ -25,7 +24,6 @@ export const MobileNav = () => {
           color="neutral.500"
         />
       </IconButton>
-      <Drawer onOpen={onOpen} onClose={onClose} isOpen={isOpen} />
     </>
   );
 };

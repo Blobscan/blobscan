@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 
-import LinkLayout from "../../components/AppLayout/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 import { formatDate } from "../../util/helpers";
 
@@ -23,7 +22,7 @@ const Block = (...props: any) => {
   const { block, txs } = props;
 
   return (
-    <LinkLayout>
+    <>
       <Flex
         direction="column"
         flexWrap="wrap"
@@ -107,7 +106,7 @@ const Block = (...props: any) => {
         </Table>
       </Box>
       {/* </Box> */}
-    </LinkLayout>
+    </>
   );
 };
 

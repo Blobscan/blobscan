@@ -2,7 +2,7 @@
 import { Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 
-import { Header } from "../components/Heading/Header";
+import { Header } from "../components/Header";
 
 import { Card } from "../components/Card/Card";
 
@@ -14,10 +14,10 @@ const Home: NextPage = ({}: any) => {
       <Header />
       {/*TODO: testing ui visibiulity with <Card /> component, note real data */}
       <Stack w="full" direction={["column", "row"]}>
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        <Card title="" />
+        <Card title="" />
+        <Card title="" />
+        <Card title="" />
       </Stack>
     </>
   );

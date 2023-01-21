@@ -10,20 +10,18 @@ import {
   Thead,
   Tr,
   Heading,
-  Button,
   Box,
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
 
-import LinkLayout from "../../components/AppLayout/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
 
 const Tx = (props: any) => {
   const { tx, blobs } = props;
 
   return (
-    <LinkLayout>
+    <>
       <Box ml="20px">
         <Breadcrumb separator="-" fontWeight="medium" fontSize="md" mb="5px">
           <BreadcrumbItem>
@@ -104,7 +102,7 @@ const Tx = (props: any) => {
           </Table>
         )}
       </Box>
-    </LinkLayout>
+    </>
   );
 };
 

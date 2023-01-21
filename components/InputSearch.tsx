@@ -22,9 +22,9 @@ interface Props {
 const InputSearch = ({ noIconButton, error, helperText }: Props) => {
   const [term, setTerm] = useState("");
 
-  const handleChange = (e) => setTerm(e.target.value);
+  const handleChange = (e: any) => setTerm(e.target.value);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const res = await fetch(`/api/search?term=${term}`);
     if (res.status == 200) {

@@ -1,10 +1,10 @@
 import { VStack, Text, Box, Flex, useColorMode } from "@chakra-ui/react";
 import Image from "next/image";
 
-import InputSearch from "../Input-search";
+import InputSearch from "./InputSearch";
 
-import Logo from "../../assests/logo-light.svg";
-import LogoDark from "../../assests/logo-dark.svg";
+import Logo from "../assests/logo-light.svg";
+import LogoDark from "../assests/logo-dark.svg";
 
 export const Header = () => {
   const { colorMode } = useColorMode();
