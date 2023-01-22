@@ -1,4 +1,4 @@
-import { Container, Box, useColorModeValue } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { TopBar } from "./AppLayoutTopBar";
@@ -12,11 +12,12 @@ interface LayoutProps {
 const AppLayout = ({ children }: LayoutProps) => {
   const { pathname } = useRouter();
 
+  const isHomePage = pathname;
   return (
     <>
-      <TopBar withLogoInput={pathname === "/" ? false : true} />
+      <TopBar displayLogo={isHomePage === "/" ? false : true} />
 
-      {pathname === "/" ? (
+      {isHomePage === "/" ? (
         <Container size={["sm", "md"]} centerContent={true}>
           {children}
         </Container>

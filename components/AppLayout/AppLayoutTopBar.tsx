@@ -4,10 +4,10 @@ import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";
 
 type TopBarProps = {
-  withLogoInput: boolean;
+  displayLogo: boolean;
 };
 
-export const TopBar: React.FC<TopBarProps> = ({ withLogoInput }) => {
+export const TopBar: React.FC<TopBarProps> = ({ displayLogo }) => {
   const [isDeskTop] = useMediaQuery("(min-width: 490px)", {
     ssr: true,
     fallback: false,
@@ -25,7 +25,7 @@ export const TopBar: React.FC<TopBarProps> = ({ withLogoInput }) => {
       borderColor={bordeColor}
       bgColor={bgColor}
     >
-      {isDeskTop ? <DesktopNav withLogoInput={withLogoInput} /> : <MobileNav />}
+      {isDeskTop ? <DesktopNav displayLogo={displayLogo} /> : <MobileNav />}
     </Flex>
   );
 };

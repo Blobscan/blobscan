@@ -20,10 +20,10 @@ import Logo from "../../assests/logo-mini-light.svg";
 import LogoDark from "../../assests/logo-mini-dark.svg";
 
 type DesktopNavProps = {
-  withLogoInput: boolean;
+  displayLogo: boolean;
 };
 
-export const DesktopNav: React.FC<DesktopNavProps> = ({ withLogoInput }) => {
+export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
   const { colorMode } = useColorMode();
   const bgColor = useColorModeValue("body", "neutral.dark.500");
   const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
@@ -32,10 +32,10 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ withLogoInput }) => {
     <>
       <Flex
         alignItems={"center"}
-        justify={withLogoInput ? "space-between" : "end"}
+        justify={displayLogo ? "space-between" : "end"}
         w="100%"
       >
-        {withLogoInput && (
+        {displayLogo && (
           <>
             {colorMode === "light" ? (
               <Image src={Logo} alt="blobscan-logo-light" />
@@ -86,7 +86,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ withLogoInput }) => {
               bgColor={bgColor}
             >
               <PopoverBody>
-                {/* TODO: do APIs styles button */}
+                {/* TODO: APIs styles button */}
                 <Button
                   mb="12px"
                   bgColor={"transparent"}
