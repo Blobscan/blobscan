@@ -11,10 +11,11 @@ interface LayoutProps {
 
 const AppLayout = ({ children }: LayoutProps) => {
   const { pathname } = useRouter();
-
   const isHomePage = pathname;
+
   return (
     <>
+      {/* TODO: improve this ternary */}
       <TopBar displayLogo={isHomePage === "/" ? false : true} />
 
       {isHomePage === "/" ? (

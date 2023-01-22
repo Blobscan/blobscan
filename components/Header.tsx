@@ -1,21 +1,13 @@
-import { VStack, Text, Box, Flex, useColorMode } from "@chakra-ui/react";
-import Image from "next/image";
+import { VStack, Text, Box, Flex } from "@chakra-ui/react";
 
 import InputSearch from "./InputSearch";
-
-import Logo from "../assests/logo-light.svg";
-import LogoDark from "../assests/logo-dark.svg";
+import { Logo } from "./BlobscanLogo";
 
 export const Header = () => {
-  const { colorMode } = useColorMode();
   return (
     <VStack as={"header"} w="full" mb="100px">
       <Box mb="22px">
-        {colorMode === "light" ? (
-          <Image src={Logo} alt="blobscan-logo-light" />
-        ) : (
-          <Image src={LogoDark} alt="blobscan-logo-dark" />
-        )}
+        <Logo size="md" />
       </Box>
       <InputSearch />
       <Flex>

@@ -8,26 +8,33 @@ import {
 } from "@chakra-ui/react";
 
 import Image from "next/image";
+import { ImageProps } from "next/image";
+
+import IconMoonLight from "../assests/moon-light.svg";
+import IconMoonDark from "../assests/moon-dark.svg";
 
 type SwitcherProps = {
   title?: string;
 };
-import IconMoonLight from "../assests/moon-light.svg";
-import IconMoonDark from "../assests/moon-dark.svg";
-
 const Switcher: React.FC<SwitcherProps> = ({ title = "Dark Mode" }) => {
   const { toggleColorMode, colorMode } = useColorMode();
-
   const textColor = useColorModeValue("nuetral.700", "shades.100");
+
+  const imageProps: ImageProps =
+    colorMode === "light"
+      ? {
+          src: IconMoonLight,
+          alt: "icon-light",
+        }
+      : {
+          src: IconMoonDark,
+          alt: "icon-dark",
+        };
 
   return (
     <Button variant={"switch"} maxW="237px" py="8px" pl="9px" pr="12px">
       <Flex alignItems="center" justifyContent="space-between">
-        {colorMode === "light" ? (
-          <Image src={IconMoonLight} alt="light-mode"></Image>
-        ) : (
-          <Image src={IconMoonDark} alt="dark-mode"></Image>
-        )}
+        <Image {...imageProps} />
         <Text
           textStyle={"md"}
           fontWeight="regular"

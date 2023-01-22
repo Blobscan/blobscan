@@ -7,25 +7,18 @@ import {
   PopoverBody,
   Button,
   useColorModeValue,
-  useColorMode,
 } from "@chakra-ui/react";
-import Image from "next/image";
-
 import { MdSettings } from "react-icons/md";
 
 import Switcher from "../Switcher";
 import InputSearch from "../InputSearch";
-
-import Logo from "../../assests/logo-mini-light.svg";
-import LogoDark from "../../assests/logo-mini-dark.svg";
+import { Logo } from "../BlobscanLogo";
 
 type DesktopNavProps = {
   displayLogo: boolean;
 };
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
-  const { colorMode } = useColorMode();
-
   const bgColor = useColorModeValue("body", "neutral.dark.500");
   const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
@@ -38,11 +31,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
       >
         {displayLogo && (
           <>
-            {colorMode === "light" ? (
-              <Image src={Logo} alt="blobscan-logo-light" />
-            ) : (
-              <Image src={LogoDark} alt="blobscan-logo-dark" />
-            )}
+            <Logo size="sm" />
             <InputSearch />
           </>
         )}
