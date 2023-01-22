@@ -25,6 +25,7 @@ type DesktopNavProps = {
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
   const { colorMode } = useColorMode();
+
   const bgColor = useColorModeValue("body", "neutral.dark.500");
   const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
@@ -50,13 +51,14 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
           <Popover>
             <PopoverTrigger>
               <Button
+                variant={"switch"}
+                justifyContent="center"
                 ml="11px"
                 mr="-13px"
-                bgColor={"body"}
                 borderRadius="100%"
                 w="40px"
                 h="40px"
-                _hover={{ bgColor: "primary.100" }}
+                bgColor={"body"}
                 _dark={{
                   bgColor: "neutral.darl.500",
                   _hover: { bgColor: "primary.dark.500" },

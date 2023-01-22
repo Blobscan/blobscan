@@ -86,6 +86,24 @@ const Button = defineStyleConfig({
         },
       },
     },
+    switch: {
+      justifyContent: "space-between",
+      borderRadius: "50px",
+      bgColor: "shades.white",
+      color: "neutral.700",
+      _hover: { bgColor: "primary.100" },
+      _active: { bgColor: "primary.50" },
+
+      _dark: {
+        bgColor: "neutral.dark.200",
+        _hover: {
+          bgColor: "primary.dark.300",
+        },
+        _active: {
+          bgColor: "primary.dark.400",
+        },
+      },
+    },
   },
   sizes: { normal },
   defaultProps: {

@@ -2,6 +2,7 @@ import {
   Flex,
   Text,
   Switch,
+  Button,
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
@@ -17,26 +18,10 @@ import IconMoonDark from "../assests/moon-dark.svg";
 const Switcher: React.FC<SwitcherProps> = ({ title = "Dark Mode" }) => {
   const { toggleColorMode, colorMode } = useColorMode();
 
-  const textColor = useColorModeValue("body", "shades.100");
-  const bgColor = useColorModeValue("body", "neutral.dark.200");
-  const bgColorHover = useColorModeValue("primary.100", "primary.dark.300");
-  const bgColorActive = useColorModeValue("primary.50", "primary.dark.400");
+  const textColor = useColorModeValue("nuetral.700", "shades.100");
 
   return (
-    <Flex
-      maxW="237px"
-      alignItems="center"
-      justifyContent="space-between"
-      borderRadius="50px"
-      h="2.5rem"
-      py="8px"
-      pl="9px"
-      pr="12px"
-      cursor={"pointer"}
-      bgColor={bgColor}
-      _hover={{ bgColor: bgColorHover }}
-      _active={{ bgColor: bgColorActive }}
-    >
+    <Button variant={"switch"} maxW="237px" py="8px" pl="9px" pr="12px">
       <Flex alignItems="center" justifyContent="space-between">
         {colorMode === "light" ? (
           <Image src={IconMoonLight} alt="light-mode"></Image>
@@ -59,9 +44,9 @@ const Switcher: React.FC<SwitcherProps> = ({ title = "Dark Mode" }) => {
       <Switch
         size="md"
         onChange={toggleColorMode}
-        defaultChecked={colorMode === "light" ? false : true}
+        defaultChecked={colorMode !== "light" && true}
       />
-    </Flex>
+    </Button>
   );
 };
 
