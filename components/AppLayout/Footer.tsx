@@ -9,7 +9,7 @@ const Footer = () => {
       bottom={"0px"}
       align={"center"}
       py="30px"
-      textStyle={"paragraph.sm"}
+      textStyle={"md"}
       mt="40px"
       w="100%"
       color={color}
