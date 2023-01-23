@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Flex } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import type { GetServerSideProps, NextPage } from "next";
 
 import { Header } from "../components/Header";
@@ -30,11 +30,11 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 const Home: NextPage<HomeProps> = ({ blocks = [] }: HomeProps) => (
   <>
     <Header />
-    <Flex gap={6}>
+    <Stack direction={["column", "row"]}>
       {blocks.map((b: any) => (
         <BlockCard key={b.hash} block={b} />
       ))}
-    </Flex>
+    </Stack>
   </>
 );
 

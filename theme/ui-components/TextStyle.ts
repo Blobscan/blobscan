@@ -16,6 +16,12 @@ const Text = defineStyleConfig({
         color: "primary.dark.200",
       },
     },
+    title1: {
+      color: "neutral.900",
+      _dark: {
+        color: "shades.100",
+      },
+    },
   },
 });
 

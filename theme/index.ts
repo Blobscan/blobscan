@@ -51,7 +51,7 @@ const theme = extendTheme({
       fontWeight: "medium",
     },
     lg: {
-      fontSize: "16px",
+      fontSize: "18px",
       fontWeight: "medium",
     },
     md: {

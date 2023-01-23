@@ -2,6 +2,7 @@ import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
 const baseStyle = {
   fontWeight: "medium",
+  overflow: "hidden",
   p: "0",
   _light: {
     bgColor: "body",

@@ -3,8 +3,8 @@ import {
   CardHeader,
   CardBody,
   Stack,
+  Flex,
   Text,
-  useTheme,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
@@ -21,34 +21,38 @@ type CardProps = {
 export const BlockCard: React.FC<CardProps> = ({ block }) => {
   const router = useRouter();
   const { number, timestamp, miner, transactions } = block;
-  const { colors } = useTheme();
   const isOne = transactions.length === 1;
 
   return (
     <ChakraCard
-      w={["full", "282px"]}
+      maxW={["full", "282px"]}
       onClick={() => router.push(`/block/${block.number}`)}
     >
       <Stack>
         <CardHeader>
-          <Text fontSize={"18px"}>Block #{number}</Text>
+          <Text variant={"title1"} textStyle={"lg"}>
+            Block #{number}
+          </Text>
         </CardHeader>
-        {/* TODO: fix 8px from body to header card */}
         <CardBody>
-          <Text fontSize={"12px"} color={colors.neutral[600]}>
+          <Text textStyle={"sm"} fontWeight={"regular"}>
             {dayjs.unix(timestamp).fromNow()} {transactions.length} Transaction
             {isOne ? "" : "s"}
           </Text>
 
-          <Text
-            fontSize={"12px"}
-            mt="8px"
-            whiteSpace={"nowrap"}
-            overflow="hidden"
-            textOverflow="ellipsis"
-          >
-            Miner {miner}
-          </Text>
+          <Flex mt="8px">
+            <Text textStyle={"sm"}>Miner</Text>
+            <Text
+              variant={"primary"}
+              textStyle={"sm"}
+              whiteSpace={"nowrap"}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              pl="4px"
+            >
+              {miner}
+            </Text>
+          </Flex>
         </CardBody>
       </Stack>
     </ChakraCard>
