@@ -2,12 +2,12 @@ import { inputAnatomy } from "@chakra-ui/anatomy";
 
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
-import { mode } from "@chakra-ui/theme-tools";
+import { mode, StyleFunctionProps } from "@chakra-ui/theme-tools";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
-const filled = (props: any) =>
+const filled = (props: StyleFunctionProps) =>
   definePartsStyle({
     field: {
       fontSize: "0.875rem",
@@ -58,8 +58,9 @@ const filled = (props: any) =>
     },
   });
 
-export const inputTheme = defineMultiStyleConfig({
+export const Input = defineMultiStyleConfig({
   variants: { filled },
+
   defaultProps: {
     variant: "filled",
   },

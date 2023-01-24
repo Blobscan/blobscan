@@ -1,4 +1,4 @@
-const colors = {
+export const colors = {
   neutral: {
     50: "#FAFAFA",
     100: "#F5F5F5",
@@ -75,5 +75,3 @@ const colors = {
     200: "#1A1B29",
   },
 };
-
-export default colors;

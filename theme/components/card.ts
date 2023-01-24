@@ -63,7 +63,7 @@ const defaultProps = {
   size: "",
 };
 
-export const cardTheme = defineMultiStyleConfig({
+export const Card = defineMultiStyleConfig({
   baseStyle,
   variants,
   defaultProps,

@@ -5,7 +5,7 @@ const normal = defineStyle({
   lineHeight: "20px",
 });
 
-const Button = defineStyleConfig({
+export const Button = defineStyleConfig({
   baseStyle: {
     display: "flex",
     alignItems: "center",
@@ -111,5 +111,3 @@ const Button = defineStyleConfig({
     variant: "primary",
   },
 });
-
-export default Button;

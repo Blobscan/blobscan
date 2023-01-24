@@ -42,7 +42,7 @@ const baseStyle = () =>
     },
   });
 
-export const switchTheme = defineMultiStyleConfig({
+export const Switch = defineMultiStyleConfig({
   baseStyle,
   defaultProps: {
     size: "lg",

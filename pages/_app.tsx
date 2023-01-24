@@ -7,8 +7,7 @@ import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
 import AppLayout from "../components/AppLayout/AppLayout";
-
-import theme from "../theme/index";
+import { theme } from "../theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

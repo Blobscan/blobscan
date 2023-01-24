@@ -1,8 +1,8 @@
 import { defineStyleConfig } from "@chakra-ui/react";
-import { mode } from "@chakra-ui/theme-tools";
+import { mode, StyleFunctionProps } from "@chakra-ui/theme-tools";
 
-const Text = defineStyleConfig({
-  baseStyle: (props) => ({
+export const Text = defineStyleConfig({
+  baseStyle: (props: StyleFunctionProps) => ({
     fontFamily: "body",
     lineHeight: "none",
     color: mode("neutral.700", "neutral.dark.100")(props),
@@ -24,5 +24,3 @@ const Text = defineStyleConfig({
     },
   },
 });
-
-export default Text;

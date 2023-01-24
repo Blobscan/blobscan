@@ -2,20 +2,21 @@ import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 
 import { mode } from "@chakra-ui/theme-tools";
 
-import colors from "./ColorPalete";
-import Text from "./ui-components/TextStyle";
-import Heading from "./ui-components/HeadingStyles";
-import Button from "./ui-components/ButtonStyles";
-import { inputTheme } from "./ui-components/InputStyles";
-import { switchTheme } from "./ui-components/SwitcherStyles";
-import { containerTheme } from "./ui-components/ContainerStyles";
-import { cardTheme } from "./ui-components/CardStyles";
+import { colors } from "./color-palette";
+import { Text } from "./components/text";
+import { Heading } from "./components/heading";
+import { Button } from "./components/button";
+import { Input } from "./components/input";
+import { Switch } from "./components/switch";
+import { Container } from "./components/container";
+import { Card } from "./components/card";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
   useSystemColorMode: false,
 };
-const theme = extendTheme({
+
+export const theme = extendTheme({
   styles: {
     global: (props: any) => ({
       body: {
@@ -35,10 +36,10 @@ const theme = extendTheme({
     Heading,
     Text,
     Button,
-    Input: inputTheme,
-    Switch: switchTheme,
-    Container: containerTheme,
-    Card: cardTheme,
+    Input,
+    Switch,
+    Container,
+    Card,
   },
   fontWeights: {
     regular: 400,
@@ -64,5 +65,3 @@ const theme = extendTheme({
     },
   },
 });
-
-export default theme;
