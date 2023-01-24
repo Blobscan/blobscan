@@ -1,16 +1,6 @@
-import {
-  Flex,
-  Icon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Button,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { MdSettings } from "react-icons/md";
+import { Flex, useColorMode, IconButton } from "@chakra-ui/react";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
-import Switcher from "../Switcher";
 import InputSearch from "../InputSearch";
 import { Logo } from "../BlobscanLogo";
 
@@ -19,8 +9,7 @@ type DesktopNavProps = {
 };
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
-  const bgColor = useColorModeValue("body", "neutral.dark.500");
-  const borderColor = useColorModeValue("neutral.200", "neutral.dark.400");
+  const { toggleColorMode, colorMode } = useColorMode();
 
   return (
     <>
@@ -36,61 +25,14 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
           </>
         )}
 
-        <Flex>
-          <Popover>
-            <PopoverTrigger>
-              <Button
-                variant={"switch"}
-                justifyContent="center"
-                ml="11px"
-                mr="-13px"
-                borderRadius="100%"
-                w="40px"
-                h="40px"
-                bgColor={"body"}
-                _dark={{
-                  bgColor: "neutral.darl.500",
-                  _hover: { bgColor: "primary.dark.500" },
-                }}
-              >
-                {" "}
-                <Icon
-                  as={MdSettings}
-                  _dark={{
-                    fill: "neutral.dark.300",
-                    bgColor: "body",
-                    _hover: { fill: "primary.dark.200" },
-                  }}
-                  _hover={{ fill: "primary.300" }}
-                  fill={"neutral.700"}
-                  w="17px"
-                  h="17px"
-                />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              w="content"
-              p="8px"
-              borderRadius={"8px"}
-              border="1px solid"
-              borderColor={borderColor}
-              bgColor={bgColor}
-            >
-              <PopoverBody>
-                {/* TODO: APIs styles button */}
-                <Button
-                  mb="12px"
-                  bgColor={"transparent"}
-                  color="body"
-                  _dark={{ bgColor: "body" }}
-                >
-                  APIs
-                </Button>
-                <Switcher />
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </Flex>
+        <IconButton
+          variant="ghost"
+          padding="2"
+          borderRadius="100%"
+          icon={colorMode === "light" ? <MoonIcon /> : <SunIcon boxSize={4} />}
+          aria-label="Color mode switcher"
+          onClick={toggleColorMode}
+        />
       </Flex>
     </>
   );
