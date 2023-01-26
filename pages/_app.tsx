@@ -1,5 +1,4 @@
-import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+import type { AppProps as NextAppProps } from "next/app";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/public-sans/400.css";
@@ -7,11 +6,15 @@ import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
 import AppLayout from "../components/AppLayout/AppLayout";
-import { theme } from "../theme";
+import { Chakra } from "../providers/Chakra";
 
-function MyApp({ Component, pageProps }: AppProps) {
+interface AppProps extends NextAppProps {
+  cookies: string;
+}
+
+function MyApp({ Component, pageProps, cookies }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
+    <Chakra cookies={cookies}>
       <AppLayout>
         <Head>
           <title>Blobscan</title>
@@ -20,8 +23,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
         <Component {...pageProps} />
       </AppLayout>
-    </ChakraProvider>
+    </Chakra>
   );
 }
+
+export { getServerSideProps } from "@/providers/Chakra";
 
 export default MyApp;

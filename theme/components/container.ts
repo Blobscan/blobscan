@@ -1,47 +1,32 @@
-import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
+import { defineStyleConfig } from "@chakra-ui/react";
 
-const baseStyle = {
-  fontWeight: "medium",
-  overflow: "hidden",
-  p: "0",
-  _light: {
-    bgColor: "body",
+export const Container = defineStyleConfig({
+  baseStyle: {
+    fontWeight: "medium",
+    overflow: "hidden",
+    bgColor: "surface",
+    border: "border",
   },
-  _dark: {
-    bgColor: "body",
-  },
-};
-
-const sizes = {
-  sm: defineStyle({
-    maxW: "390px",
-    px: "20px",
-    mt: "56px",
-  }),
-  md: defineStyle({
-    maxW: "1156px",
-  }),
-  lg: defineStyle({
-    maxW: "1181px",
-  }),
-};
-
-const shadowWithRadius = defineStyle(() => {
-  return {
-    borderRadius: "8px",
-    shadow: "0px 4px 12px 0px #EEEBEB",
-    p: "20px",
-    mt: "-158px",
-    bgColor: "shades.white",
-    _dark: {
-      bgColor: "neutral.dark.500",
-      shadow: "none",
+  sizes: {
+    sm: {
+      maxW: "390px",
+      px: "20px",
+      mt: "56px",
     },
-  };
+    md: {
+      maxW: "768",
+    },
+    lg: {
+      minW: "1181px",
+    },
+  },
+  variants: {
+    shadow: {
+      borderRadius: "8px",
+      shadow: "0px 4px 12px 0px surfaceShadow",
+      p: "20px",
+      mt: "-158px",
+      bgColor: "surface",
+    },
+  },
 });
-
-const variants = {
-  shadow: shadowWithRadius,
-};
-
-export const Container = defineStyleConfig({ baseStyle, sizes, variants });

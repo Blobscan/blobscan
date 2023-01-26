@@ -6,33 +6,21 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
   container: {
-    backgroundColor: "none",
+    bgColor: "surface",
     border: "1px solid",
-    borderColor: "neutral.200",
+    borderColor: "border",
     borderRadius: "8px",
     p: "0px",
     shadow: "none",
     _hover: {
-      borderColor: "primary.200",
+      borderColor: "surfaceHighlight",
       cursor: "pointer",
-    },
-    _dark: {
-      borderColor: "neutral.dark.200",
-      _hover: {
-        borderColor: "primary.dark.300",
-      },
     },
   },
   header: {
-    bgColor: "primary.50",
+    bgColor: "surfaceHeader",
     borderTopRadius: "8px",
     p: "14px",
-    _dark: {
-      bgColor: "primary.dark.400",
-      _active: {
-        bgColor: "primary.dark.300",
-      },
-    },
   },
   body: {
     p: "14px",

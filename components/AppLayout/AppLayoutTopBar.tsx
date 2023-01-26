@@ -1,19 +1,20 @@
-import { Flex, useMediaQuery, useColorModeValue } from "@chakra-ui/react";
+import { Flex, useMediaQuery } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";
 
-type TopBarProps = {
-  displayLogo: boolean;
-};
+export const AppLayoutTopBar: React.FC = () => {
+  const { pathname } = useRouter();
+  const isHomePage = pathname === "/";
+  const homePageProps = isHomePage
+    ? { border: 0, bgColor: "background" }
+    : { borderColor: "border", bgColor: "surface" };
 
-export const TopBar: React.FC<TopBarProps> = ({ displayLogo }) => {
   const [isDeskTop] = useMediaQuery("(min-width: 490px)", {
     ssr: true,
     fallback: false,
   });
-  const bgColor = useColorModeValue("shades.white", "neutral.dark.500");
-  const bordeColor = useColorModeValue("neutral.200", "neutral.dark.400");
 
   return (
     <Flex
@@ -22,10 +23,9 @@ export const TopBar: React.FC<TopBarProps> = ({ displayLogo }) => {
       px={["16px", "41px"]}
       mb={["60px", "198px"]}
       borderBottom="1px solid"
-      borderColor={bordeColor}
-      bgColor={bgColor}
+      {...homePageProps}
     >
-      {isDeskTop ? <DesktopNav displayLogo={displayLogo} /> : <MobileNav />}
+      {isDeskTop ? <DesktopNav isHomePage={isHomePage} /> : <MobileNav />}
     </Flex>
   );
 };

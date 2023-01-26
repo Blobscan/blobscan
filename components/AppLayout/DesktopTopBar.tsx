@@ -1,38 +1,29 @@
-import { Flex, useColorMode, IconButton } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { Flex } from "@chakra-ui/react";
 
-import InputSearch from "../InputSearch";
+import { InputSearch } from "../InputSearch";
 import { Logo } from "../BlobscanLogo";
+import { DarkModeButton } from "../DarkModeButton";
 
 type DesktopNavProps = {
-  displayLogo: boolean;
+  isHomePage: boolean;
 };
 
-export const DesktopNav: React.FC<DesktopNavProps> = ({ displayLogo }) => {
-  const { toggleColorMode, colorMode } = useColorMode();
-
+export const DesktopNav: React.FC<DesktopNavProps> = ({ isHomePage }) => {
   return (
     <>
       <Flex
         alignItems={"center"}
-        justify={displayLogo ? "space-between" : "end"}
+        justify={!isHomePage ? "space-between" : "end"}
         w="100%"
       >
-        {displayLogo && (
+        {!isHomePage && (
           <>
             <Logo size="sm" />
             <InputSearch />
           </>
         )}
 
-        <IconButton
-          variant="ghost"
-          padding="2"
-          borderRadius="100%"
-          icon={colorMode === "light" ? <MoonIcon /> : <SunIcon boxSize={4} />}
-          aria-label="Color mode switcher"
-          onClick={toggleColorMode}
-        />
+        <DarkModeButton />
       </Flex>
     </>
   );

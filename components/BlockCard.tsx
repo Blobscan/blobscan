@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+import { Link } from "./Link";
 import { Block } from "../types";
 
 dayjs.extend(relativeTime);
@@ -30,27 +31,34 @@ export const BlockCard: React.FC<CardProps> = ({ block }) => {
     >
       <Stack>
         <CardHeader>
-          <Text variant={"title1"} textStyle={"lg"}>
-            Block #{number}
-          </Text>
+          <Text textStyle={"lg"}>Block #{number}</Text>
         </CardHeader>
         <CardBody>
-          <Text textStyle={"sm"} fontWeight={"regular"}>
+          <Text variant="secondary" textStyle={"sm"}>
             {dayjs.unix(timestamp).fromNow()} {transactions.length} Transaction
             {isOne ? "" : "s"}
           </Text>
 
           <Flex mt="8px">
             <Text textStyle={"sm"}>Miner</Text>
+
             <Text
-              variant={"primary"}
-              textStyle={"sm"}
-              whiteSpace={"nowrap"}
+              textStyle="sm"
+              whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
-              pl="4px"
+              ml={1}
             >
-              {miner}
+              <Link
+                href={`/address/${miner}`}
+                passHref
+                onClick={(e) => {
+                  console.log("clicking link");
+                  e.stopPropagation();
+                }}
+              >
+                {miner}
+              </Link>
             </Text>
           </Flex>
         </CardBody>

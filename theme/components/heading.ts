@@ -5,11 +5,11 @@ export const Heading = defineStyleConfig({
     fontFamily: "heading",
     fontWeight: "medium",
     lineHeight: "none",
-    color: "neutral.700",
+    color: "contentSecondary",
   },
   variants: {
     primary: {
-      color: "primary.200",
+      color: "contentSecondary",
     },
   },
   sizes: {

@@ -1,8 +1,8 @@
 import { Container } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
-import { TopBar } from "./AppLayoutTopBar";
-import Footer from "./Footer";
+import { AppLayoutTopBar } from "./AppLayoutTopBar";
+import { AppLayoutBottomBar } from "./AppLayoutBottomBar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,15 +11,13 @@ interface LayoutProps {
 
 const AppLayout = ({ children }: LayoutProps) => {
   const { pathname } = useRouter();
-  const isHomePage = pathname;
+  const isHomePage = pathname === "/";
 
   return (
     <>
-      {/* TODO: improve this ternary */}
-      <TopBar displayLogo={isHomePage === "/" ? false : true} />
-
-      {isHomePage === "/" ? (
-        <Container size={["sm", "md"]} centerContent={true}>
+      <AppLayoutTopBar />
+      {isHomePage ? (
+        <Container maxWidth="90vw" bgColor="background">
           {children}
         </Container>
       ) : (
@@ -29,7 +27,7 @@ const AppLayout = ({ children }: LayoutProps) => {
           </Container>
         </>
       )}
-      <Footer />
+      <AppLayoutBottomBar />
     </>
   );
 };

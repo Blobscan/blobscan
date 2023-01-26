@@ -10,7 +10,7 @@ import {
 import { SearchIcon } from "@chakra-ui/icons";
 
 import Router from "next/router";
-import { useState } from "react";
+import { ChangeEventHandler, FormEventHandler, useState } from "react";
 
 interface Props {
   helperText?: string;
@@ -19,12 +19,13 @@ interface Props {
   RightElementChildren?: React.ReactNode;
 }
 
-const InputSearch = ({ noIconButton, error, helperText }: Props) => {
+export const InputSearch = ({ noIconButton, error, helperText }: Props) => {
   const [term, setTerm] = useState("");
 
-  const handleChange = (e: any) => setTerm(e.target.value);
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
+    setTerm(e.target.value);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit: FormEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
     const res = await fetch(`/api/search?term=${term}`);
     if (res.status == 200) {
@@ -32,6 +33,7 @@ const InputSearch = ({ noIconButton, error, helperText }: Props) => {
       Router.push(url);
     }
   };
+
   return (
     <FormControl onSubmit={handleSubmit} maxW={["full", "492px"]}>
       <InputGroup>
@@ -51,5 +53,3 @@ const InputSearch = ({ noIconButton, error, helperText }: Props) => {
     </FormControl>
   );
 };
-
-export default InputSearch;
