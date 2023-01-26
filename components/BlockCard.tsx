@@ -40,7 +40,9 @@ export const BlockCard: React.FC<CardProps> = ({ block }) => {
           </Text>
 
           <Flex mt="8px">
-            <Text textStyle={"sm"}>Miner</Text>
+            <Text textStyle={"sm"} variant="secondary">
+              Miner
+            </Text>
 
             <Text
               textStyle="sm"

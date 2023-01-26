@@ -10,10 +10,9 @@ const baseStyle = definePartsStyle({
     border: "1px solid",
     borderColor: "border",
     borderRadius: "8px",
-    p: "0px",
     shadow: "none",
     _hover: {
-      borderColor: "surfaceHighlight",
+      borderColor: "controlBorderActive",
       cursor: "pointer",
     },
   },
@@ -23,7 +22,9 @@ const baseStyle = definePartsStyle({
     p: "14px",
   },
   body: {
-    p: "14px",
+    px: "14px",
+    pt: "6px",
+    pb: "14px",
   },
 });
 

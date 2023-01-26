@@ -29,12 +29,12 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 const Home: NextPage<HomeProps> = ({ blocks = [] }) => {
   return (
-    <VStack maxW="90vw" h="700px" spacing="150">
-      <VStack spacing={12} bgColor="background" as={"header"} w="100%">
+    <VStack maxW="90vw" height="fit-content" spacing="100">
+      <VStack spacing={8} bgColor="background" as={"header"} w="100%">
         <Logo size="md" />
-        <VStack w="100%">
+        <VStack w="100%" spacing={3}>
           <InputSearch />
-          <Text textStyle={"md"}>
+          <Text textStyle={"md"} color="surfaceContentSecondary">
             Blob transaction explorer for{" "}
             <Link
               mt="4px"
