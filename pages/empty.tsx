@@ -1,11 +1,11 @@
 import { Center, Flex, Heading } from "@chakra-ui/react";
 import Image from "next/image";
-import LinkLayout from "../components/linkLayout";
+
 import emptyImg from "../public/logo.png";
 
 const Empty = () => {
   return (
-    <LinkLayout>
+    <>
       <Center>
         <Flex direction="column" flexWrap="wrap">
           <Heading
@@ -20,7 +20,7 @@ const Empty = () => {
           <Image width={350} height={350} src={emptyImg} alt="" />
         </Flex>
       </Center>
-    </LinkLayout>
+    </>
   );
 };
 

@@ -13,15 +13,21 @@ import {
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import Link from "next/link";
-import LinkLayout from "../../components/linkLayout";
+
 import { connectToDatabase } from "../../util/mongodb";
 
 const Address = (props: any) => {
   const { txs, address } = props;
 
   return (
-    <LinkLayout>
-      <Breadcrumb ml="20px" mb="5px" separator="-" fontWeight="medium" fontSize="md">
+    <>
+      <Breadcrumb
+        ml="20px"
+        mb="5px"
+        separator="-"
+        fontWeight="medium"
+        fontSize="md"
+      >
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
         </BreadcrumbItem>
@@ -40,16 +46,16 @@ const Address = (props: any) => {
         Address {address}
       </Heading>
 
-        <Heading
-          as="h2"
-          color="#502eb4"
-          width="xs"
-          fontSize="1.2rem"
-          mt="50px"
-          ml="20px"
-        >
-          Transactions
-        </Heading>
+      <Heading
+        as="h2"
+        color="#502eb4"
+        width="xs"
+        fontSize="1.2rem"
+        mt="50px"
+        ml="20px"
+      >
+        Transactions
+      </Heading>
 
       <Table variant="simple">
         <Thead>
@@ -92,7 +98,7 @@ const Address = (props: any) => {
           })}
         </Tbody>
       </Table>
-    </LinkLayout>
+    </>
   );
 };
 
