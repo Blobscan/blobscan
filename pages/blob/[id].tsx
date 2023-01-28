@@ -2,23 +2,35 @@ import {
   Breadcrumb,
   BreadcrumbLink,
   BreadcrumbItem,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
   Box,
-  AccordionPanel,
-  AccordionIcon,
   Heading,
   Tag,
+  Collapse,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import LinkLayout from "../../components/linkLayout";
 import { connectToDatabase } from "../../util/mongodb";
-import { utils } from "ethers";
+
+const COLLAPSE_THRESHOLD = 100;
 
 const Blob = (props: any) => {
+  const [showCollapse, setShowCollapse] = useState<boolean>(false);
+  const [showExpandBtn, setShowExpandBtn] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
   const { tx, blob } = props;
-  const utf8 = utils.toUtf8String(blob.data).replace(/\0/g, "");
+
+  useEffect(() => {
+    if (!blob.data?.length) {
+      setShowExpandBtn(false);
+    } else if (contentRef.current) {
+      setShowExpandBtn(contentRef.current.clientHeight > COLLAPSE_THRESHOLD);
+    }
+  }, [blob.data]);
+
   return (
     <LinkLayout>
       <Box ml="20px">
@@ -43,7 +55,9 @@ const Blob = (props: any) => {
           </BreadcrumbItem>
         </Breadcrumb>
       </Box>
-      <div style={{ paddingBottom: 10, width: "100%", wordWrap: "break-word" }}>
+      <div
+        style={{ paddingBottom: 10, width: "95%", wordWrap: "break-word" }}
+      >
         <Heading
           as="h1"
           color="#502eb4"
@@ -74,57 +88,27 @@ const Blob = (props: any) => {
             </Tag>{" "}
             <Link href={`/address/${tx.from}`}>{tx.from}</Link>
           </Box>
-          <Heading
-            as="h2"
-            color="#502eb4"
-            width="xs"
-            fontSize="1.2rem"
-            mt="50px"
-          >
-            Data
+          <Heading as="h2" color="#502eb4" fontSize="1.2rem" mt="50px">
+            <HStack justifyContent="space-between" mb="4">
+              <Box>Data</Box>
+              {showExpandBtn && (
+                <Button
+                  width="30"
+                  size="sm"
+                  onClick={() => setShowCollapse((show) => !show)}
+                  mt="1rem"
+                >
+                  Show {showCollapse ? "Less" : "More"}
+                </Button>
+              )}
+            </HStack>
           </Heading>
         </Box>
-        <Accordion allowToggle mt="15px">
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  Show data
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <code>{blob.data}</code>
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  Show data as utf8 string
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <code>{utf8}</code>
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box flex="1" textAlign="left">
-                  Show data as base64 image
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}>
-              <img src={utf8} />
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
+        <Box>
+          <Collapse startingHeight={COLLAPSE_THRESHOLD} in={showCollapse}>
+            <div ref={contentRef}>{blob.data}</div>
+          </Collapse>
+        </Box>
       </div>
     </LinkLayout>
   );
