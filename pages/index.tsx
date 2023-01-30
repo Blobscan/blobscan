@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 const Home: NextPage<HomeProps> = ({ blocks = [] }) => {
   return (
-    <VStack maxW="90vw" height="fit-content" spacing="100">
+    <VStack height="fit-content" spacing="100" width="100%">
       <VStack spacing={8} bgColor="background" as={"header"} w="100%">
         <Logo size="md" />
         <VStack w="100%" spacing={3}>

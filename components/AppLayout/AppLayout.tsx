@@ -13,20 +13,15 @@ const AppLayout = ({ children }: LayoutProps) => {
   const { pathname } = useRouter();
   const isHomePage = pathname === "/";
 
+  const containerProps = !isHomePage && {
+    mt: "-158px",
+    variant: "shadow",
+  };
+
   return (
     <>
       <AppLayoutTopBar />
-      {isHomePage ? (
-        <Container maxWidth="90vw" bgColor="background">
-          {children}
-        </Container>
-      ) : (
-        <>
-          <Container size={["sm", "lg"]} variant="shadow">
-            {children}
-          </Container>
-        </>
-      )}
+      <Container {...containerProps}>{children}</Container>
       <AppLayoutBottomBar />
     </>
   );

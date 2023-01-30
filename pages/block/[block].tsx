@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps<
   { block: string }
 > = async ({ query }) => {
   const { db } = await connectToDatabase();
-  const blockId = query.block as string
+  const blockId = query.block as string;
   const blocks = await db
     .collection("blocks")
     .find({ $or: [{ number: parseInt(blockId) }, { hash: blockId }] })

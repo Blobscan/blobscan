@@ -25,5 +25,6 @@ export const darkColors = {
     "00": "#000000",
     50: "#1A1B29",
     100: "#FAFAFF",
+    200: "#EEEBEB",
   },
 };

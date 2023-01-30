@@ -26,7 +26,7 @@ export const BlockCard: React.FC<CardProps> = ({ block }) => {
 
   return (
     <ChakraCard
-      maxW={["full", "282px"]}
+      maxW={["full", "full", "282px"]}
       onClick={() => router.push(`/block/${block.number}`)}
     >
       <Stack>

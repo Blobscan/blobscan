@@ -23,6 +23,14 @@ function token(
   };
 }
 
+const breakpoints = {
+  sm: "391px",
+  md: "835px",
+  lg: "960px",
+  xl: "1200px",
+  "2xl": "1536px",
+};
+
 export const theme = extendTheme({
   config: {
     initialColorMode: "dark",
@@ -46,7 +54,7 @@ export const theme = extendTheme({
       backgroundSurface: token("shades.100", "neutral.200"),
       border: token("neutral.200", "neutral.100"),
       content: token("neutral.700", "shades.100"),
-      contentSecondary: token("neutral.500", "neutral.500"),
+      contentSecondary: token("neutral.600", "neutral.600"),
       contentDisabled: token("neutral.400"),
       control: token("shades.00"),
       controlActive: token("primary.500"),
@@ -60,9 +68,11 @@ export const theme = extendTheme({
       surfaceContent: token("neutral.900", "shades.100"),
       surfaceContentSecondary: token("neutral.700", "neutral.700"),
       surfaceHeader: token("primary.50", "primary.50"),
+      surfaceShadow: token("shades.200"),
     },
   },
   colors,
+  breakpoints,
   fonts: {
     heading: "Inter, sans-serif",
     body: "Inter, sans-serif",
