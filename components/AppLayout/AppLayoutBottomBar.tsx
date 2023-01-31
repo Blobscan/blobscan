@@ -4,7 +4,7 @@ import { Text } from "@chakra-ui/react";
 export const AppLayoutBottomBar = () => {
   return (
     <Text
-      position={"fixed"}
+      position={"relative"}
       bottom={"0px"}
       align={"center"}
       py="30px"

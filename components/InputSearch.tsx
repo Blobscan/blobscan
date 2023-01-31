@@ -40,6 +40,7 @@ export const InputSearch = ({ noIconButton, error, helperText }: Props) => {
         <Input
           onChange={handleChange}
           placeholder="Search by block, transaction, blob, datahash or address"
+          textOverflow="ellipsis"
         />
         {noIconButton ? null : (
           <InputRightAddon>

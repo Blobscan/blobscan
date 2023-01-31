@@ -17,7 +17,7 @@ export const Container = defineStyleConfig({
       shadow: "0px 4px 12px 0px #EEEBEB",
       p: "20px",
       bgColor: "surface",
-      maxW: ["92vw", "94vw", "82vw"],
+      maxW: ["92vw", "95vw", "82vw"],
       _dark: {
         shadow: "none",
       },

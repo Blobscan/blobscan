@@ -14,7 +14,6 @@ const AppLayout = ({ children }: LayoutProps) => {
   const isHomePage = pathname === "/";
 
   const containerProps = !isHomePage && {
-    mt: "-158px",
     variant: "shadow",
   };
 

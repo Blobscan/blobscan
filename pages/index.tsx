@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 const Home: NextPage<HomeProps> = ({ blocks = [] }) => {
   return (
-    <VStack height="fit-content" spacing="100" width="100%">
+    <VStack height="900px" spacing={100} width="100%">
       <VStack spacing={8} bgColor="background" as={"header"} w="100%">
         <Logo size="md" />
         <VStack w="100%" spacing={3}>
@@ -52,6 +52,7 @@ const Home: NextPage<HomeProps> = ({ blocks = [] }) => {
         direction={["column", "column", "row"]}
         justifyContent="center"
         width="100%"
+        spacing={2.5}
       >
         {blocks.map((b) => (
           <BlockCard key={b.hash} block={b} />

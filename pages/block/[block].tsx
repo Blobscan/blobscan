@@ -52,14 +52,7 @@ export const getServerSideProps: GetServerSideProps<
 
 const Block: NextPage<BlockProps> = ({ block, txs }) => (
   <>
-    <Flex
-      direction="column"
-      flexWrap="wrap"
-      width="100vw"
-      mr="20px"
-      ml="20px"
-      mb="30px"
-    >
+    <Flex direction="column" flexWrap="wrap" width="100vw" mr="20px" mb="30px">
       <Breadcrumb mb="5px" separator="-" fontWeight="medium" fontSize="md">
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
