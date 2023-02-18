@@ -20,6 +20,7 @@ MONGODB_DB=<db-name>
 Then run the following command:
 
 ```
+pnpm install
 pnpm dev
 ```
 
