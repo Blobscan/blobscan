@@ -34,10 +34,9 @@ export const InputSearch = ({ noIconButton }: Props) => {
           width="lg"
           placeholder="Search by block, transaction, blob, datahash or address"
         />
-        <InputRightAddon
-          children={noIconButton ? null : <SearchIcon />}
-          onClick={handleSubmit}
-        />
+        <InputRightAddon onClick={handleSubmit}>
+          {noIconButton ? null : <SearchIcon />}
+        </InputRightAddon>
       </InputGroup>
     </form>
   );
