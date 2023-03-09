@@ -8,13 +8,7 @@ const Empty = () => {
     <>
       <Center>
         <Flex direction="column" flexWrap="wrap">
-          <Heading
-            as="h3"
-            textAlign="center"
-            fontSize="7xl"
-            color="#502eb4"
-            marginBottom={75}
-          >
+          <Heading as="h3" textAlign="center" fontSize="7xl" marginBottom={75}>
             No results
           </Heading>
           <Image width={350} height={350} src={emptyImg} alt="" />

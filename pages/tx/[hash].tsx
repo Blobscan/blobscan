@@ -39,42 +39,25 @@ const Tx = (props: any) => {
           </BreadcrumbItem>
         </Breadcrumb>
 
-        <Heading
-          as="h1"
-          color="#502eb4"
-          width="100%"
-          mb="15px"
-          fontSize="1.5rem"
-        >
+        <Heading as="h1" width="100%" mb="15px" fontSize="1.5rem">
           Transaction {tx.hash}
         </Heading>
         <Box mb="3px">
-          <Tag color="#502eb4" mb="3px">
-            From:
-          </Tag>{" "}
+          <Tag mb="3px">From:</Tag>{" "}
           <Link href={`/address/${tx.from}`}>{tx.from}</Link>
         </Box>
         <Box mb="3px">
-          <Tag color="#502eb4" mb="3px">
-            To:
-          </Tag>{" "}
+          <Tag mb="3px">To:</Tag>{" "}
           <Link href={`/address/${tx.to}`}>{tx.to}</Link>
         </Box>
       </Box>
 
       <Box>
-        <Heading
-          as="h2"
-          color="#502eb4"
-          width="xs"
-          fontSize="1.2rem"
-          mt="50px"
-          ml="20px"
-        >
+        <Heading as="h2" width="xs" fontSize="1.2rem" mt="50px" ml="20px">
           Blobs
         </Heading>
         {!blobs.length ? (
-          <Text color="#502eb4" ml="20px" mt="20px">
+          <Text ml="20px" mt="20px">
             No blobs in this transaction
           </Text>
         ) : (
