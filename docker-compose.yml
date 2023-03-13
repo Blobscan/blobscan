@@ -11,6 +11,16 @@ services:
       MONGODB_URI: "${MONGODB_URI}"
       MONGODB_DB: "${MONGODB_DB}"
 
+  indexer:
+    # The indexer runs in host mode so that it is easier for developing
+    # by connecting to remote devnet-v4 nodes through SSH local forwarding
+    image: blossomlabs/blobscan-indexer:master
+    restart: always
+    network_mode: host
+    environment:
+      MONGODB_URI: mongodb://blobscan:secret@127.0.0.1:27017
+      MONGODB_DB: "${MONGODB_DB}"
+
   mongo:
     image: mongo
     restart: always
