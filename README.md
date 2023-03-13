@@ -29,7 +29,20 @@ pnpm dev
 
 The MongoDB can be filled running the script in the [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer) repository. If you prefer to use docker we have created an image for the indexer at [blossomlabs/blobscan-indexer](https://hub.docker.com/repository/docker/blossomlabs/blobscan-indexer/general).
 
+### Docker
+
+Docker images are automatically published.
+
+A docker-compose file is provided to set up the whole blobscan project with its dependencies (MongoDB and [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer/)):
+
+```
+docker-compose up -d
+```
+
+Note that you also need to run your own [devnet-v4 node](https://github.com/Blobscan/devnet-v4) or connect to any of the existing ones.
+
 # About Blossom Labs
+
 ![blossom labs](https://blossom.software/img/logo.svg)
 
 Blobscan is being developed by [Blossom Labs](https://blossom.software/), a developer team specialized in building blockchain-based infrastructure for online communities.
