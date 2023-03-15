@@ -13,7 +13,7 @@ export const AppLayoutBottomBar = () => {
       w="100%"
       color="contentSecondary"
     >
-      Blobscan @ 2022 | v1.0.0
+      Blobscan @ 2023 | v1.0.0
     </Text>
   );
 };
