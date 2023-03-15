@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps<
   { block: string }
 > = async ({ query }) => {
   const { db } = await connectToDatabase();
-  const blockId = query.block as string
+  const blockId = query.block as string;
   const blocks = await db
     .collection("blocks")
     .find({ $or: [{ number: parseInt(blockId) }, { hash: blockId }] })
@@ -68,38 +68,22 @@ const Block: NextPage<BlockProps> = ({ block, txs }) => (
           <BreadcrumbLink href="/">Block #{block?.number}</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      <Heading as="h1" color="#502eb4" width="xs" mb="5px" fontSize="1.5rem">
+      <Heading as="h1" width="xs" mb="5px" fontSize="1.5rem">
         Block: #{block?.number}
       </Heading>
       <Box>
-        <Tag color="#502eb4" mb="3px">
-          Timestamp:
-        </Tag>{" "}
-        {formatDate(block?.timestamp)}
+        <Tag mb="3px">Timestamp:</Tag> {formatDate(block?.timestamp)}
       </Box>
       <Box>
-        <Tag color="#502eb4" mb="3px">
-          Slot:
-        </Tag>{" "}
-        {block?.slot}
+        <Tag mb="3px">Slot:</Tag> {block?.slot}
       </Box>
       <Box>
-        <Tag color="#502eb4" mb="3px">
-          Block hash:
-        </Tag>{" "}
-        {block?.hash}
+        <Tag mb="3px">Block hash:</Tag> {block?.hash}
       </Box>
     </Flex>
 
     <Box>
-      <Heading
-        as="h2"
-        color="#502eb4"
-        width="xs"
-        fontSize="1.2rem"
-        mt="50px"
-        ml="20px"
-      >
+      <Heading as="h2" width="xs" fontSize="1.2rem" mt="50px" ml="20px">
         Transactions
       </Heading>
       <Table variant="simple" mt="5px">

@@ -1,11 +1,4 @@
-import {
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  InputGroup,
-  InputRightAddon,
-} from "@chakra-ui/react";
+import { Input, InputGroup, InputRightAddon } from "@chakra-ui/react";
 
 import { SearchIcon } from "@chakra-ui/icons";
 
@@ -13,19 +6,18 @@ import Router from "next/router";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 
 interface Props {
-  helperText?: string;
   noIconButton?: boolean;
-  error?: string;
-  RightElementChildren?: React.ReactNode;
 }
 
-export const InputSearch = ({ noIconButton, error, helperText }: Props) => {
+export const InputSearch = ({ noIconButton }: Props) => {
   const [term, setTerm] = useState("");
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
     setTerm(e.target.value);
 
-  const handleSubmit: FormEventHandler<HTMLDivElement> = async (e) => {
+  const handleSubmit: FormEventHandler<
+    HTMLFormElement | HTMLDivElement
+  > = async (e) => {
     e.preventDefault();
     const res = await fetch(`/api/search?term=${term}`);
     if (res.status == 200) {
@@ -35,21 +27,17 @@ export const InputSearch = ({ noIconButton, error, helperText }: Props) => {
   };
 
   return (
-    <FormControl onSubmit={handleSubmit} maxW={["full", "492px"]}>
-      <InputGroup>
+    <form onSubmit={handleSubmit}>
+      <InputGroup maxW={["full", "492px"]}>
         <Input
           onChange={handleChange}
+          width="lg"
           placeholder="Search by block, transaction, blob, datahash or address"
         />
-        {noIconButton ? null : (
-          <InputRightAddon>
-            <SearchIcon />
-          </InputRightAddon>
-        )}
+        <InputRightAddon onClick={handleSubmit}>
+          {noIconButton ? null : <SearchIcon />}
+        </InputRightAddon>
       </InputGroup>
-      {/* in case wanna handle erros messages */}
-      <FormErrorMessage>{error}</FormErrorMessage>
-      {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
-    </FormControl>
+    </form>
   );
 };

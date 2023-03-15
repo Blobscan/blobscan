@@ -1,10 +1,10 @@
+import { utils } from "ethers";
 
 import { connectToDatabase } from "../../util/mongodb";
 
 async function search(term) {
-
-  if (term.length === 42) {
-    return `/address/${term}`
+  if (utils.isAddress(term)) {
+    return `/address/${term}`;
   }
   const { db } = await connectToDatabase();
 
@@ -24,7 +24,6 @@ async function search(term) {
     .limit(1)
     .toArray();
 
-
   if (txs.length > 0) {
     return `/tx/${txs[0].hash}`;
   }
@@ -38,17 +37,18 @@ async function search(term) {
     return `/blob/${blobs[0].hash}`;
   }
 
-  return '/empty'
+  return "/empty";
 }
 
 export default async function handler(req, res) {
-  const { query: { term } } = req;
+  const {
+    query: { term },
+  } = req;
   try {
-    const url = await search(term)
-    res.status(200).json({ url })
+    const url = await search(term);
+    res.status(200).json({ url });
   } catch (e) {
     console.error(e);
-    res.status(501).json({ error: e.message })
+    res.status(501).json({ error: e.message });
   }
-
 }

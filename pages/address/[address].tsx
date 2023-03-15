@@ -35,25 +35,11 @@ const Address = (props: any) => {
           <BreadcrumbLink href="/">Address {address}</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      <Heading
-        as="h1"
-        color="#502eb4"
-        width="100%"
-        mb="15px"
-        ml="20px"
-        fontSize="1.5rem"
-      >
+      <Heading as="h1" width="100%" mb="15px" ml="20px" fontSize="1.5rem">
         Address {address}
       </Heading>
 
-      <Heading
-        as="h2"
-        color="#502eb4"
-        width="xs"
-        fontSize="1.2rem"
-        mt="50px"
-        ml="20px"
-      >
+      <Heading as="h2" width="xs" fontSize="1.2rem" mt="50px" ml="20px">
         Transactions
       </Heading>
 
