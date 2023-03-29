@@ -18,8 +18,8 @@ services:
     restart: always
     network_mode: host
     environment:
-      MONGODB_URI: mongodb://blobscan:secret@127.0.0.1:27017
-      MONGODB_DB: "${MONGODB_DB}"
+      DB_CONNECTION_URI: mongodb://blobscan:secret@127.0.0.1:27017
+      DB_NAME: "${MONGODB_DB}"
 
   mongo:
     image: mongo
