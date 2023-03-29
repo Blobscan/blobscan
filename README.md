@@ -5,7 +5,7 @@ Blobscan is the first blockchain explorer that helps to navigate and visualize t
 The architecture of our system has the following parts:
 
 - Modified consensus and execution layer clients
-- A blockchain indexer that saves the data in a MongoDB database
+- A blockchain indexer that saves the data in a MongoDB database (we are migrating to PostgreSQL)
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 
 Blobscan was one of the [finalists](https://twitter.com/ETHGlobal/status/1579249265557192704) of the [ETHBogota hackathon](https://bogota.ethglobal.com/) in 2022,
@@ -13,21 +13,24 @@ and it is currently [funded](https://blog.ethereum.org/2023/02/14/layer-2-grants
 
 ## How to run it?
 
-Two environment variables are necessary to connect to the MongoDB database with the blockchain data. Write the following lines in a new `.env` file:
+Some environment variables are necessary to connect to the database that stores transactions, blocks and blobs data. Just copy `.env.example` to `.env` or use the following example:
 
 ```
+DATABASE_URL=postgresql://blobscan:secret@postgres:5432/blobscan_dev?schema=public
+
+# DEPRECATED
 MONGODB_URI=mongodb+srv://<user>:<pass>@<host>/?retryWrites=true&w=majority
 MONGODB_DB=<db-name>
 ```
 
-Then run the following command:
+Then run the following commands:
 
 ```
 pnpm install
 pnpm dev
 ```
 
-The MongoDB can be filled running the script in the [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer) repository. If you prefer to use docker we have created an image for the indexer at [blossomlabs/blobscan-indexer](https://hub.docker.com/repository/docker/blossomlabs/blobscan-indexer/general).
+The database can be filled running the script in the [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer) repository. If you prefer to use docker we have created an image for the indexer at [blossomlabs/blobscan-indexer](https://hub.docker.com/repository/docker/blossomlabs/blobscan-indexer/general).
 
 ### Docker
 
@@ -36,7 +39,7 @@ Docker images are automatically published.
 A docker-compose file is provided to set up the whole blobscan project with its dependencies (MongoDB and [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer/)):
 
 ```
-docker-compose up -d
+docker-compose up -d  # or 'make up'
 ```
 
 Note that you also need to run your own [devnet-v4 node](https://github.com/Blobscan/devnet-v4) or connect to any of the existing ones.

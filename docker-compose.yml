@@ -8,8 +8,10 @@ services:
     ports:
       - 3000:3000
     environment:
-      MONGODB_URI: "${MONGODB_URI}"
-      MONGODB_DB: "${MONGODB_DB}"
+      DATABASE_URL: "${DATABASE_URL}"
+      # TODO: DEPRECATED: migrate to postgresql
+      MONGODB_URI: "${MONGODB_URI}" # DEPRECATED
+      MONGODB_DB: "${MONGODB_DB}"   # DEPRECATED
 
   indexer:
     # The indexer runs in host mode so that it is easier for developing
@@ -18,9 +20,29 @@ services:
     restart: always
     network_mode: host
     environment:
-      DB_CONNECTION_URI: mongodb://blobscan:secret@127.0.0.1:27017
-      DB_NAME: "${MONGODB_DB}"
+      DATABASE_URL: "${DATABASE_URL}"
+      # TODO: DEPRECATED: migrate to postgresql
+      DB_CONNECTION_URI: mongodb://blobscan:secret@127.0.0.1:27017 # DEPRECATED
+      DB_NAME: "${MONGODB_DB}" # DEPRECATED
 
+  postgres:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=blobscan
+      - POSTGRES_DB=blobscan_dev
+      - POSTGRES_PASSWORD=s3cr3t
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  # DEPRECATED
   mongo:
     image: mongo
     restart: always
@@ -30,6 +52,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: blobscan
       MONGO_INITDB_ROOT_PASSWORD: secret
 
+  # DEPRECATED
   mongo-express:
     image: mongo-express
     restart: always
@@ -39,3 +62,6 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: blobscan
       ME_CONFIG_MONGODB_ADMINPASSWORD: secret
       ME_CONFIG_MONGODB_URL: "${MONGODB_URI}"
+
+volumes:
+  postgres-data:
