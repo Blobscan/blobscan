@@ -22,8 +22,8 @@ services:
     environment:
       DATABASE_URL: "${DATABASE_URL}"
       # TODO: DEPRECATED: migrate to postgresql
-      MONGODB_URI: mongodb://blobscan:secret@127.0.0.1:27017 # DEPRECATED
-      MONGODB_DB: "${MONGODB_DB}" # DEPRECATED
+      DB_CONNECTION_URI: mongodb://blobscan:secret@127.0.0.1:27017 # DEPRECATED
+      DB_NAME: "${MONGODB_DB}" # DEPRECATED
 
   postgres:
     image: postgres:15
