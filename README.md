@@ -11,6 +11,13 @@ The architecture of our system has the following parts:
 Blobscan was one of the [finalists](https://twitter.com/ETHGlobal/status/1579249265557192704) of the [ETHBogota hackathon](https://bogota.ethglobal.com/) in 2022,
 and it is currently [funded](https://blog.ethereum.org/2023/02/14/layer-2-grants-roundup#-data-visualization) by the Ethereum Foundation.
 
+## Deployments
+
+We have two active deployments:
+
+- Staging: pointing to the `next` branch, always having the latest changes. Deployed at https://staging.
+- Production: https://www.blobscan.com: our produc
+
 ## How to run it?
 
 Some environment variables are necessary to connect to the database that stores transactions, blocks and blobs data. Just copy `.env.example` to `.env` or use the following example:

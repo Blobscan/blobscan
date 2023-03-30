@@ -5,7 +5,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import { BlockCard } from "@/components/BlockCard";
 import { Logo } from "@/components/BlobscanLogo";
 import { InputSearch } from "@/components/InputSearch";
-import { connectToDatabase } from "@/util/mongodb";
+import prisma from "@/lib/prisma";
 import { Block } from "@/types";
 
 type HomeProps = {
@@ -14,13 +14,11 @@ type HomeProps = {
 
 // TODO: handle possible server-side errors on the client
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const { db } = await connectToDatabase();
-  const blocks = await db
-    .collection("blocks")
-    .find({})
-    .sort({ number: -1 })
-    .limit(4)
-    .toArray();
+  const blocks = await prisma.block.findMany({
+    select: { hash: true, number: true, timestamp: true, slot: true },
+    orderBy: { number: "desc" },
+    take: 4,
+  });
 
   return {
     props: { blocks },

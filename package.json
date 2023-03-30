@@ -20,10 +20,10 @@
     "@emotion/styled": "^11",
     "@fontsource/inter": "^4.5.14",
     "@fontsource/public-sans": "^4.5.11",
+    "@prisma/client": "^4.12.0",
     "dayjs": "^1.11.7",
     "ethers": "^5.7.2",
     "framer-motion": "^6",
-    "mongodb": "^4.10.0",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -40,6 +40,7 @@
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
     "eslint-plugin-import": "^2.26.0",
+    "prisma": "^4.12.0",
     "typescript": "4.8.4"
   },
   "license": "AGPL-3.0-or-later"

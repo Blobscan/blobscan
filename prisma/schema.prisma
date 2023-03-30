@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Blob {
+  id          String      @id
+  hash        String
+  commitment  String
+  data        String
+  tx          String
+  index       Int
+  Transaction Transaction @relation(fields: [tx], references: [id])
+}
+
+model Block {
+  id          String        @id
+  hash        String
+  parentHash  String
+  number      Int
+  timestamp   Int
+  slot        Int
+  miner       String
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id        String @id
+  blockHash String
+  from      String
+  hash      String
+  to        String
+  index     Int
+  block     Int
+  Blob      Blob[]
+  Block     Block  @relation(fields: [blockHash], references: [id])
+}
