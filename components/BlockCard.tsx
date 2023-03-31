@@ -13,13 +13,13 @@ import { Block, Transaction } from "@prisma/client";
 dayjs.extend(relativeTime);
 
 type CardProps = {
-  block: Block & { transactions: Transaction[] };
+  block: Block & { Transactions: Transaction[] };
 };
 
 export const BlockCard: React.FC<CardProps> = ({ block }) => {
   const router = useRouter();
-  const { number, timestamp, transactions } = block;
-  const isOne = transactions.length === 1;
+  const { number, timestamp, Transactions } = block;
+  const isOne = Transactions.length === 1;
 
   return (
     <ChakraCard
@@ -32,7 +32,7 @@ export const BlockCard: React.FC<CardProps> = ({ block }) => {
         </CardHeader>
         <CardBody>
           <Text variant="secondary" textStyle={"sm"}>
-            {dayjs.unix(timestamp).fromNow()} {transactions.length} Transaction
+            {dayjs.unix(timestamp).fromNow()} {Transactions.length} Transaction
             {isOne ? "" : "s"}
           </Text>
         </CardBody>

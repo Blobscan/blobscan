@@ -11,6 +11,9 @@ import prisma from "@/lib/prisma";
 export const getServerSideProps: GetServerSideProps = async () => {
   const blocks = await prisma.block.findMany({
     orderBy: { number: "desc" },
+    include: {
+      Transaction: true,
+    },
     take: 4,
   });
 
@@ -20,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 type HomeProps = {
-  blocks: (Block & { transactions: Transaction[] })[];
+  blocks: (Block & { Transactions: Transaction[] })[];
 };
 
 const Home: NextPage<HomeProps> = ({ blocks }) => {
