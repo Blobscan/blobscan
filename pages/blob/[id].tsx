@@ -13,12 +13,40 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import { utils } from "ethers";
+import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 
-import { connectToDatabase } from "../../util/mongodb";
+import prisma from "@/lib/prisma";
+import { Blob, Transaction } from "@prisma/client";
 
-const Blob = (props: any) => {
-  const { tx, blob } = props;
+type BlobProps = {
+  blob: Blob;
+  tx: Transaction;
+};
+
+export const getServerSideProps: GetServerSideProps<BlobProps> = async ({
+  query,
+}) => {
+  const blobId = query.id as string;
+  const blobs = await prisma.blob.findMany({
+    where: { id: blobId },
+    take: 1,
+  });
+
+  const txs = await prisma.transaction.findMany({
+    where: { hash: blobs[0].tx },
+    take: 1,
+  });
+
+  return {
+    props: {
+      blob: blobs[0],
+      tx: txs[0],
+    },
+  };
+};
+
+const Blob: NextPage<BlobProps> = ({ tx, blob }) => {
   const [utf8, setUtf8] = useState("");
 
   useEffect(() => {
@@ -127,34 +155,6 @@ const Blob = (props: any) => {
       </div>
     </>
   );
-};
-
-export const getServerSideProps = async ({ query }: any) => {
-  try {
-    const { db } = await connectToDatabase();
-    const { id } = query;
-
-    const blob = await db
-      .collection("blobs")
-      .find({ $or: [{ _id: id }] })
-      .limit(1)
-      .toArray();
-
-    const txs = await db
-      .collection("txs")
-      .find({ hash: blob[0].tx })
-      .limit(1)
-      .toArray();
-
-    return {
-      props: {
-        blob: JSON.parse(JSON.stringify(blob[0])),
-        tx: JSON.parse(JSON.stringify(txs[0])),
-      },
-    };
-  } catch (e) {
-    console.error(e);
-  }
 };
 
 export default Blob;

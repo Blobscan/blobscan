@@ -15,38 +15,31 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
+import { Block, Transaction } from "@prisma/client";
 
-import { connectToDatabase } from "../../util/mongodb";
-import { formatDate } from "../../util/helpers";
-import { Block, Transaction } from "../../types";
+import prisma from "@/lib/prisma";
+import { formatDate } from "@/util/helpers";
 
 type BlockProps = {
   block: Block;
   txs: Transaction[];
 };
 
-export const getServerSideProps: GetServerSideProps<
-  BlockProps,
-  { block: string }
-> = async ({ query }) => {
-  const { db } = await connectToDatabase();
+export const getServerSideProps: GetServerSideProps<BlockProps> = async ({
+  query,
+}) => {
   const blockId = query.block as string;
-  const blocks = await db
-    .collection("blocks")
-    .find({ $or: [{ number: parseInt(blockId) }, { hash: blockId }] })
-    .limit(1)
-    .toArray();
+  const blocks = await prisma.block.findMany({
+    where: { OR: [{ number: parseInt(blockId) }, { hash: blockId }] },
+    take: 1,
+  });
 
-  const txs = await db
-    .collection("txs")
-    .find({ block: blocks[0].number })
-    .toArray();
+  const txs = await prisma.transaction.findMany({
+    where: { block: blocks[0].number },
+  });
 
   return {
-    props: {
-      block: JSON.parse(JSON.stringify(blocks[0])),
-      txs: JSON.parse(JSON.stringify(txs)),
-    },
+    props: { block: blocks[0], txs },
   };
 };
 
@@ -97,7 +90,6 @@ const Block: NextPage<BlockProps> = ({ block, txs }) => (
         </Thead>
         <Tbody>
           {txs?.map((tx, i) => {
-            // TODO: Change the tx hash to one from the database
             return (
               <Tr key={tx.hash} fontSize="0.9rem">
                 <Td>

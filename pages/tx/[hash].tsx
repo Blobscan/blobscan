@@ -14,12 +14,36 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { GetServerSideProps, NextPage } from "next";
+import { Blob, Transaction } from "@prisma/client";
 
-import { connectToDatabase } from "../../util/mongodb";
+import prisma from "@/lib/prisma";
 
-const Tx = (props: any) => {
-  const { tx, blobs } = props;
+type TransactionProps = {
+  tx: Transaction;
+  blobs: Blob[];
+};
 
+export const getServerSideProps: GetServerSideProps<TransactionProps> = async ({
+  query,
+}) => {
+  const hash = query.hash as string;
+
+  const txs = await prisma.transaction.findMany({
+    where: { hash: hash },
+    take: 1,
+  });
+
+  const blobs = await prisma.blob.findMany({
+    where: { tx: hash },
+  });
+
+  return {
+    props: { tx: txs[0], blobs },
+  };
+};
+
+const Tx: NextPage<TransactionProps> = ({ tx, blobs }) => {
   return (
     <>
       <Box ml="20px">
@@ -73,9 +97,7 @@ const Tx = (props: any) => {
                 return (
                   <Tr key={blob.hash} fontSize="0.9rem">
                     <Td>
-                      <Link href={`/blob/${blob.tx}-${blob.index}`}>
-                        {blob.hash}
-                      </Link>
+                      <Link href={`/blob/${blob.hash}`}>{blob.hash}</Link>
                     </Td>
                     <Td>{blob.data.length}</Td>
                   </Tr>
@@ -87,25 +109,6 @@ const Tx = (props: any) => {
       </Box>
     </>
   );
-};
-
-export const getServerSideProps = async ({ query }: any) => {
-  try {
-    const { db } = await connectToDatabase();
-    const { hash } = query;
-    const txs = await db.collection("txs").find({ hash }).limit(1).toArray();
-
-    const blobs = await db.collection("blobs").find({ tx: hash }).toArray();
-
-    return {
-      props: {
-        tx: JSON.parse(JSON.stringify(txs[0])),
-        blobs: JSON.parse(JSON.stringify(blobs)),
-      },
-    };
-  } catch (e) {
-    console.error(e);
-  }
 };
 
 export default Tx;

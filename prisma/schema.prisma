@@ -20,11 +20,9 @@ model Blob {
 model Block {
   id          String        @id
   hash        String
-  parentHash  String
   number      Int
   timestamp   Int
   slot        Int
-  miner       String
   Transaction Transaction[]
 }
 
