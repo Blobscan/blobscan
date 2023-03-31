@@ -15,8 +15,8 @@ and it is currently [funded](https://blog.ethereum.org/2023/02/14/layer-2-grants
 
 We have two active deployments:
 
-- Staging: pointing to the `next` branch, always having the latest changes. Deployed at https://staging.
-- Production: https://www.blobscan.com: our produc
+- Staging: points `next` branch, will have the latest changes (expect things to break). Deployed at https://staging.
+- Production: points `master` branch, stable version. Deployed at https://www.blobscan.com.
 
 ## How to run it?
 

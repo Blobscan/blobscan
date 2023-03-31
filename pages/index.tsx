@@ -1,18 +1,14 @@
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link, Stack, Text, VStack } from "@chakra-ui/react";
-import { Block } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
+import { Block, Transaction } from "@prisma/client";
 
 import { BlockCard } from "@/components/BlockCard";
 import { Logo } from "@/components/BlobscanLogo";
 import { InputSearch } from "@/components/InputSearch";
 import prisma from "@/lib/prisma";
 
-type HomeProps = {
-  blocks: Block[];
-};
-
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const blocks = await prisma.block.findMany({
     orderBy: { number: "desc" },
     take: 4,
@@ -23,7 +19,11 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   };
 };
 
-const Home: NextPage<HomeProps> = ({ blocks = [] }) => {
+type HomeProps = {
+  blocks: (Block & { transactions: Transaction[] })[];
+};
+
+const Home: NextPage<HomeProps> = ({ blocks }) => {
   return (
     <VStack maxW="90vw" h="700px" spacing="150">
       <VStack spacing={12} bgColor="background" as={"header"} w="100%">

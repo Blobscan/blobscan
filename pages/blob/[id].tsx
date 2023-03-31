@@ -15,9 +15,9 @@ import {
 import { utils } from "ethers";
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
+import { Blob, Transaction } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
-import { Blob, Transaction } from "@prisma/client";
 
 type BlobProps = {
   blob: Blob;

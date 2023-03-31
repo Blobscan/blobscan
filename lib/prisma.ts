@@ -1,4 +1,5 @@
 declare global {
+  // eslint-disable-next-line
   var prisma: PrismaClient; // This must be a `var` and not a `let / const`
 }
 

@@ -3,19 +3,17 @@ import {
   CardHeader,
   CardBody,
   Stack,
-  Flex,
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
-import { Block } from "../types";
+import { Block, Transaction } from "@prisma/client";
 
 dayjs.extend(relativeTime);
 
 type CardProps = {
-  block: Block;
+  block: Block & { transactions: Transaction[] };
 };
 
 export const BlockCard: React.FC<CardProps> = ({ block }) => {

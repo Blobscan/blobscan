@@ -13,12 +13,31 @@ import {
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import Link from "next/link";
+import { GetServerSideProps, NextPage } from "next";
+import { Transaction } from "@prisma/client";
 
-import { connectToDatabase } from "../../util/mongodb";
+import prisma from "@/lib/prisma";
 
-const Address = (props: any) => {
-  const { txs, address } = props;
+type AddressProps = {
+  address: string;
+  txs: Transaction[];
+};
 
+export const getServerSideProps: GetServerSideProps<AddressProps> = async ({
+  query,
+}) => {
+  const address = query.address as string;
+
+  const txs = await prisma.transaction.findMany({
+    where: { OR: [{ from: address }, { to: address }] },
+  });
+
+  return {
+    props: { address, txs },
+  };
+};
+
+const Address: NextPage<AddressProps> = ({ address, txs }) => {
   return (
     <>
       <Breadcrumb
@@ -86,27 +105,6 @@ const Address = (props: any) => {
       </Table>
     </>
   );
-};
-
-export const getServerSideProps = async ({ query }: any) => {
-  try {
-    const { db } = await connectToDatabase();
-    const { address } = query;
-
-    const txs = await db
-      .collection("txs")
-      .find({ $or: [{ from: address }, { to: address }] })
-      .toArray();
-
-    return {
-      props: {
-        address,
-        txs: JSON.parse(JSON.stringify(txs)),
-      },
-    };
-  } catch (e) {
-    console.error(e);
-  }
 };
 
 export default Address;
