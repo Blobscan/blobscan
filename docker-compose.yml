@@ -9,9 +9,6 @@ services:
       - 3000:3000
     environment:
       DATABASE_URL: "${DATABASE_URL}"
-      # TODO: DEPRECATED: migrate to postgresql
-      MONGODB_URI: "${MONGODB_URI}" # DEPRECATED
-      MONGODB_DB: "${MONGODB_DB}"   # DEPRECATED
 
   indexer:
     # The indexer runs in host mode so that it is easier for developing
