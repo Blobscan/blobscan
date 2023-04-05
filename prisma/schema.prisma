@@ -11,7 +11,7 @@ model Blob {
   id          String      @id
   hash        String
   commitment  String
-  data        String
+  data        String      @db.Text
   tx          String
   index       Int
   Transaction Transaction @relation(fields: [tx], references: [id])
