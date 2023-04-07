@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { utils } from "ethers";
 
-import { api } from "~/utils/api";
-
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const term = (req.query.term as string | undefined) ?? "";
 
@@ -22,27 +20,7 @@ function search(term: string) {
     return `/address/${term}`;
   }
 
-  const { data: block } = api.block.byId.useQuery({
-    id: term,
-  });
-
-  if (block) {
-    return `/block/${block.number}`;
-  }
-
-  const { data: tx } = api.tx.byId.useQuery({ id: term });
-
-  if (tx) {
-    return `/tx/${tx.hash}`;
-  }
-
-  const { data: blob } = api.blob.byId.useQuery({
-    id: term,
-  });
-
-  if (blob) {
-    return `/blob/${blob.hash}`;
-  }
+  // TODO: Decide how to implement search logic
 
   return "/empty";
 }

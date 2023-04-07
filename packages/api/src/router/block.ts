@@ -7,19 +7,12 @@ export const blockRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        id: z.string().optional(),
         transactions: z.boolean().optional(),
         take: z.number().optional(),
       }),
     )
     .query(({ ctx, input }) => {
       return ctx.prisma.block.findMany({
-        where: {
-          OR: [
-            { number: input.id ? parseInt(input.id) : undefined },
-            { hash: input.id },
-          ],
-        },
         orderBy: { number: "desc" },
         include: {
           Transaction: input.transactions,
@@ -35,8 +28,10 @@ export const blockRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      const block = await ctx.prisma.block.findUnique({
-        where: { id },
+      const block = await ctx.prisma.block.findFirst({
+        where: {
+          OR: [{ number: id ? parseInt(id) : undefined }, { hash: id }],
+        },
         include: {
           Transaction: true,
         },

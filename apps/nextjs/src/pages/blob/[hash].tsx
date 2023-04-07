@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -123,19 +122,6 @@ const Blob: NextPage = () => {
                 </h2>
                 <AccordionPanel pb={4}>
                   <code>{utf8}</code>
-                </AccordionPanel>
-              </AccordionItem>
-              <AccordionItem>
-                <h2>
-                  <AccordionButton>
-                    <Box flex="1" textAlign="left">
-                      Show data as base64 image
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                  <Image src={utf8} alt="blob" />
                 </AccordionPanel>
               </AccordionItem>
             </>

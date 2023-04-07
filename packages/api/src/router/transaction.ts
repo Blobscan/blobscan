@@ -7,7 +7,6 @@ export const transactionRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        hash: z.string().optional(),
         blobs: z.boolean().optional(),
         take: z.number().optional(),
         from: z.string().optional(),
@@ -17,10 +16,7 @@ export const transactionRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.transaction.findMany({
         where: {
-          AND: [
-            { hash: input.hash },
-            { OR: [{ from: input.from }, { to: input.to }] },
-          ],
+          OR: [{ from: input.from }, { to: input.to }],
         },
         include: {
           Blob: input.blobs,

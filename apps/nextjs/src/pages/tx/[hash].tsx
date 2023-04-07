@@ -78,7 +78,7 @@ const Tx: NextPage = () => {
         <Heading as="h2" width="xs" fontSize="1.2rem" mt="50px" ml="20px">
           Blobs
         </Heading>
-        {tx.Blob.length ? (
+        {tx.Blob.length == 0 ? (
           <Text ml="20px" mt="20px">
             No blobs in this transaction
           </Text>
