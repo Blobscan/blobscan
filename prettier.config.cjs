@@ -1,8 +1,7 @@
 /** @typedef  {import("@ianvs/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig*/
 /** @typedef  {import("prettier").Config} PrettierConfig*/
-/** @typedef  {{ tailwindConfig: string }} TailwindConfig*/
 
-/** @type { PrettierConfig | SortImportsConfig | TailwindConfig } */
+/** @type { PrettierConfig | SortImportsConfig } */
 const config = {
   arrowParens: "always",
   printWidth: 80,
@@ -14,16 +13,14 @@ const config = {
   // pluginSearchDirs: false,
   plugins: [
     "@ianvs/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss",
   ],
-  tailwindConfig: "./packages/config/tailwind",
   importOrder: [
     "^(react/(.*)$)|^(react$)|^(react-native(.*)$)",
     "^(next/(.*)$)|^(next$)",
     "^(expo(.*)$)|^(expo$)",
     "<THIRD_PARTY_MODULES>",
     "",
-    "^@acme/(.*)$",
+    "^@blobscan/(.*)$",
     "",
     "^~/utils/(.*)$",
     "^~/components/(.*)$",
