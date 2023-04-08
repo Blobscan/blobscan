@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { Center, Flex, Heading } from "@chakra-ui/react";
 
-import emptyImg from "~/../public/logo.png";
-
 const Empty = () => {
   return (
     <>
@@ -11,7 +9,7 @@ const Empty = () => {
           <Heading as="h3" textAlign="center" fontSize="7xl" marginBottom={75}>
             No results
           </Heading>
-          <Image width={350} height={350} src={emptyImg} alt="" />
+          <Image width={350} height={350} src="/logo.png" alt="" />
         </Flex>
       </Center>
     </>

@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Image from "next/image";
 import Link from "next/link";
 import { useColorMode } from "@chakra-ui/react";
-
-import LogoDark from "~/../public/logo-dark.svg";
-import LogoLight from "~/../public/logo-light.svg";
 
 type LogoProps = {
   size: "sm" | "md";
@@ -27,7 +23,7 @@ export const Logo: React.FC<LogoProps> = ({ size }) => {
   return (
     <Link href="/">
       <Image
-        src={colorMode === "light" ? LogoLight : LogoDark}
+        src={colorMode === "light" ? "/logo-light.svg" : "/logo-dark.svg"}
         {...sizes[size]}
         alt="blobscan-logo"
       />
