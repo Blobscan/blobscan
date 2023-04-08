@@ -2,19 +2,45 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Post {
-    id      String @id @default(cuid())
-    title   String
-    content String
+model Blob {
+  id          String      @id
+  hash        String
+  commitment  String
+  data        String      @db.Text
+  tx          String
+  index       Int
+  Transaction Transaction @relation(fields: [tx], references: [id])
 }
+
+model Block {
+  id          String        @id
+  hash        String
+  number      Int
+  timestamp   Int
+  slot        Int
+  Transaction Transaction[]
+}
+
+model Transaction {
+  id        String @id
+  blockHash String
+  from      String
+  hash      String
+  to        String
+  index     Int
+  block     Int
+  Blob      Blob[]
+  Block     Block  @relation(fields: [blockHash], references: [id])
+}
+
 
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
@@ -26,12 +52,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String?  @db.Text
+    access_token      String?  @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String?  @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 

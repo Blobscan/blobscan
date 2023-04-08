@@ -1,10 +1,21 @@
 import { authRouter } from "./router/auth";
-import { postRouter } from "./router/post";
-import { createTRPCRouter } from "./trpc";
+import { blobRouter } from "./router/blob";
+import { blockRouter } from "./router/block";
+import { transactionRouter } from "./router/transaction";
+import { createTRPCRouter, publicProcedure } from "./trpc";
 
+/**
+ * This is the primary router for your server.
+ *
+ * All routers added in /api/routers should be manually added here.
+ */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  healthcheck: publicProcedure.query(() => "yay!"),
+
   auth: authRouter,
+  block: blockRouter,
+  tx: transactionRouter,
+  blob: blobRouter,
 });
 
 // export type definition of API
