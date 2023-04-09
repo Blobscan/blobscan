@@ -1,0 +1,32 @@
+---
+version: "3.7"
+
+services:
+  web:
+    build: .
+    restart: always
+    ports:
+      - 3000:3000
+      - 5556:5556
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=blobscan
+      - POSTGRES_DB=blobscan_dev
+      - POSTGRES_PASSWORD=s3cr3t
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres-data:
