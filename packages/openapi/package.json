@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/api",
+  "name": "@blobscan/openapi",
   "version": "0.1.0",
   "main": "./index.ts",
   "types": "./index.ts",
@@ -14,12 +14,12 @@
     "@blobscan/auth": "^0.1.0",
     "@blobscan/db": "^0.1.0",
     "@trpc/server": "^10.18.0",
-    "superjson": "1.9.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.1.0",
     "eslint": "^8.37.0",
+    "trpc-openapi": "^1.1.2",
     "typescript": "^5.0.3"
   }
 }

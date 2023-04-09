@@ -1,7 +1,8 @@
 packages:
   - apps/nextjs
-  - apps/openapi
+  - apps/swagger
   - packages/api
   - packages/auth
   - packages/db
+  - packages/openapi
   - packages/config/*

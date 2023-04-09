@@ -2,7 +2,7 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import cors from "nextjs-cors";
 import { createOpenApiNextHandler } from "trpc-openapi";
 
-import { appRouter, createContext } from "../../server/router";
+import { appRouter, createTRPCContext } from "@blobscan/openapi";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Setup CORS
@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Handle incoming OpenAPI requests
   return createOpenApiNextHandler({
     router: appRouter,
-    createContext,
+    createContext: createTRPCContext,
   })(req, res);
 };
 

@@ -14,7 +14,7 @@ const config = {
   },
   settings: {
     next: {
-      rootDir: ["apps/nextjs", "apps/openapi"],
+      rootDir: ["apps/nextjs", "apps/swagger"],
     },
   },
 };
