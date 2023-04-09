@@ -13,8 +13,8 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@blobscan/api": "^0.1.0",
     "@blobscan/db": "^0.1.0",
-    "@blobscan/openapi": "^0.1.0",
     "@trpc/server": "^10.18.0",
     "next": "^13.2.4",
     "nextjs-cors": "^2.1.2",

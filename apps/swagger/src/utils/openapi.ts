@@ -1,6 +1,6 @@
 import { generateOpenApiDocument } from "trpc-openapi";
 
-import { appRouter } from "@blobscan/openapi";
+import { appRouter } from "@blobscan/api";
 
 // Generate OpenAPI schema document
 export const openApiDocument = generateOpenApiDocument(appRouter, {

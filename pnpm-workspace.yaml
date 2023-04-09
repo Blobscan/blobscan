@@ -4,5 +4,4 @@ packages:
   - packages/api
   - packages/auth
   - packages/db
-  - packages/openapi
   - packages/config/*
