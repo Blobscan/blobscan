@@ -5,7 +5,7 @@ Blobscan is the first blockchain explorer that helps to navigate and visualize t
 The architecture of our system has the following parts:
 
 - Modified consensus and execution layer clients
-- A blockchain indexer that saves the data in a MongoDB database (we are migrating to PostgreSQL)
+- A blockchain indexer that saves the data in a PostgreSQL database (we are migrating from MongoDB)
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 
 Blobscan was one of the [finalists](https://twitter.com/ETHGlobal/status/1579249265557192704) of the [ETHBogota hackathon](https://bogota.ethglobal.com/) in 2022,
@@ -17,10 +17,6 @@ Some environment variables are necessary to connect to the database that stores 
 
 ```
 DATABASE_URL=postgresql://blobscan:secret@postgres:5432/blobscan_dev?schema=public
-
-# DEPRECATED
-MONGODB_URI=mongodb+srv://<user>:<pass>@<host>/?retryWrites=true&w=majority
-MONGODB_DB=<db-name>
 ```
 
 Then run the following commands:
