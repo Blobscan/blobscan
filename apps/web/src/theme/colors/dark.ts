@@ -26,4 +26,6 @@ export const darkColors = {
     50: "#1A1B29",
     100: "#FFFFFF",
   },
+
+  
 };

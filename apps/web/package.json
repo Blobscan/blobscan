@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/nextjs",
+  "name": "@blobscan/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,16 +13,18 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@blobscan/api": "^0.1.0",
-    "@blobscan/auth": "^0.1.0",
-    "@blobscan/db": "^0.1.0",
-    "@blobscan/tailwind-config": "^0.1.0",
+    "@blobscan/api": "workspace:^0.1.0",
+    "@blobscan/auth": "workspace:^0.1.0",
+    "@blobscan/db": "workspace:^0.1.0",
+    "@blobscan/tailwind-config": "workspace:^0.1.0",
     "@chakra-ui/icons": "^2.0.18",
     "@chakra-ui/react": "^2.5.5",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.17",
     "@tanstack/react-query": "^4.28.0",
     "@trpc/client": "^10.18.0",
     "@trpc/next": "^10.18.0",
@@ -39,7 +41,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.1.0",
+    "@blobscan/eslint-config": "workspace:^0.1.0",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",

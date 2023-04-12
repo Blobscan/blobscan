@@ -1,3 +1,4 @@
+import "../styles/globals.css";
 import type { AppProps as NextAppProps } from "next/app";
 
 import "@fontsource/inter/400.css";

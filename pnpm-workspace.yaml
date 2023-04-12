@@ -1,5 +1,5 @@
 packages:
-  - apps/nextjs
+  - apps/web
   - apps/swagger
   - packages/api
   - packages/auth
