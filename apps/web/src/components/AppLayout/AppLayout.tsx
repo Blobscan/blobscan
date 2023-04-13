@@ -1,8 +1,5 @@
-import { useRouter } from "next/router";
-import { Container } from "@chakra-ui/react";
-
-import { AppLayoutBottomBar } from "./AppLayoutBottomBar";
-import { AppLayoutTopBar } from "./AppLayoutTopBar";
+import { BottomBarLayout } from "./BottomBarLayout";
+import { TopBarLayout } from "./TopBarLayout";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,25 +7,12 @@ interface LayoutProps {
 }
 
 const AppLayout = ({ children }: LayoutProps) => {
-  const { pathname } = useRouter();
-  const isHomePage = pathname === "/";
-
   return (
-    <>
-      <AppLayoutTopBar />
-      {isHomePage ? (
-        <Container maxWidth="90vw" bgColor="background">
-          {children}
-        </Container>
-      ) : (
-        <>
-          <Container size={["sm", "lg"]} variant="shadow">
-            {children}
-          </Container>
-        </>
-      )}
-      <AppLayoutBottomBar />
-    </>
+    <div className="flex min-h-screen flex-col">
+      <TopBarLayout />
+      <main className="container mx-auto grow py-20">{children}</main>
+      <BottomBarLayout />
+    </div>
   );
 };
 

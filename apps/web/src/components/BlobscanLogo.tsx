@@ -1,18 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useColorMode } from "@chakra-ui/react";
 
 type LogoProps = {
   size: "sm" | "md";
 };
 
 export const Logo: React.FC<LogoProps> = ({ size }) => {
-  const { colorMode } = useColorMode();
-
   const sizes = {
     md: {
-      width: 257,
-      height: 60,
+      width: 330,
+      height: 130,
     },
     sm: {
       width: 118,
@@ -23,7 +20,8 @@ export const Logo: React.FC<LogoProps> = ({ size }) => {
   return (
     <Link href="/">
       <Image
-        src={colorMode === "light" ? "/logo-light.svg" : "/logo-dark.svg"}
+        src="/logo-dark.svg"
+        // src={colorMode === "light" ? "/logo-light.svg" : "/logo-dark.svg"}
         {...sizes[size]}
         alt="blobscan-logo"
       />

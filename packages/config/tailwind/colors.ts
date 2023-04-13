@@ -16,6 +16,7 @@ export const baseColors = {
     500: "#A3A3A3",
     600: "#737373",
     700: "#404040",
+    750: "#ADAFD0",
     800: "#36385B",
     850: "#24243B",
     900: "#1F1F32",
@@ -33,46 +34,6 @@ export const baseColors = {
     800: "#3A3369",
     900: "#2E2854",
   },
-  // neutral: {
-  //   dark: {
-  //     50: "#1F1F32",
-  //     100: "#24243B",
-  //     200: "#36385B",
-  //     300: "#434672",
-  //     400: "#7D80AB",
-  //     500: "#ADAFD0",
-  //     600: "#C5C9D3",
-  //     700: "#BFC1DE",
-  //   },
-  //   light: {
-  //     50: "#FAFAFA",
-  //     100: "#F5F5F5",
-  //     200: "#E5E5E5",
-  //     300: "#D4D4D4",
-  //     400: "#A3A3A3",
-  //     500: "#737373",
-  //     600: "#404040",
-  //     700: "#171717",
-  //   },
-  // },
-
-  // primary: {
-  //   dark: {
-  //     50: "#2E2854",
-  //     100: "#3A3369",
-  //     200: "#9A71F2",
-  //     300: "#AE8CF5",
-  //     400: "#E2CFFF",
-  //     500: "#F7F1FF",
-  //   },
-  //   light: {
-  //     50: "#F7F5FD",
-  //     100: "#EADEFD",
-  //     200: "#896EE1",
-  //     300: "#5D25D4",
-  //     400: "#372779",
-  //   },
-  // },
   success: {
     50: "#F0FDF4",
     100: "#DCFCE7",
@@ -118,7 +79,7 @@ const shades = baseColors.shades;
 export const semanticColors = {
   accent: {
     light: primary[600],
-    dark: primary[400],
+    dark: primary[500],
   },
   accentContent: {
     light: neutral[100],
@@ -126,7 +87,7 @@ export const semanticColors = {
   },
   accentHighlight: {
     light: primary[500],
-    dark: primary[300],
+    dark: primary[400],
   },
   accentDisabled: {
     light: neutral[500],
@@ -146,7 +107,7 @@ export const semanticColors = {
   },
   contentSecondary: {
     light: neutral[500],
-    dark: neutral[600],
+    dark: neutral[750],
   },
   contentDisabled: {
     light: neutral[400],
@@ -181,8 +142,8 @@ export const semanticColors = {
     dark: primary[500],
   },
   link: {
-    light: primary[300],
-    dark: primary[300],
+    light: primary[400],
+    dark: primary[400],
   },
   surface: {
     light: shades["00"],
