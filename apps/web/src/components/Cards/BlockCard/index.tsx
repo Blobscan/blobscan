@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 
 import dayjs from "~/dayjs";
 import type { Block } from "~/types";
-import { Link } from "../Link";
-import { SurfaceCardBase } from "./SurfaceCardBase";
+import { Link } from "../../Link";
+import { CardHeaderBase, SurfaceCardBase } from "../Bases";
 
 type BlockCardProps = {
   block: Block;
@@ -22,19 +22,10 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
 
   return (
     <SurfaceCardBase>
-      <div
-        className={`
-        bg-surfaceHeader-light
-        px-3
-        text-base
-        font-semibold
-        dark:bg-surfaceHeader-dark
-        sm:p-3
-      `}
-      >
+      <CardHeaderBase>
         Block <Link href="#">#{number}</Link>
-      </div>
-      <div className="px-4 py-2 text-sm sm:px-6">
+      </CardHeaderBase>
+      <div className="px-3 py-2 text-sm">
         <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
           {dayjs.unix(timestamp).fromNow()}
         </div>

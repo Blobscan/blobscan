@@ -7,16 +7,21 @@ import { api } from "~/utils/api";
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { BlockCard } from "~/components/Cards/BlockCard";
+import { BlockCardSkeleton } from "~/components/Cards/BlockCard/Skeleton";
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { TransactionCard } from "~/components/Cards/TransactionCard";
+import { TransactionCardSkeleton } from "~/components/Cards/TransactionCard/Skeleton";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 
+const BLOCKS_LIMIT = 4;
+const TXS_LIMIT = 5;
+
 const Home: NextPage = () => {
   const blocksQuery = api.block.getAll.useQuery({
-    limit: 4,
+    limit: BLOCKS_LIMIT,
   });
-  const txsQuery = api.tx.getAll.useQuery({ limit: 5 });
+  const txsQuery = api.tx.getAll.useQuery({ limit: TXS_LIMIT });
   const error = blocksQuery.error || txsQuery.error;
 
   if (error) {
@@ -28,14 +33,8 @@ const Home: NextPage = () => {
     );
   }
 
-  // if (blocksQuery.status !== "success") {
-  //   return <Spinner />;
-  // }
-
   const { data: blocks } = blocksQuery;
   const { data: txs } = txsQuery;
-
-  console.log(txs);
 
   return (
     <div>
@@ -64,9 +63,15 @@ const Home: NextPage = () => {
             }
           >
             <div className="flex space-x-3">
-              {blocks?.map((b) => (
-                <BlockCard key={b.hash} block={b} />
-              ))}
+              {blocksQuery.isLoading
+                ? Array(BLOCKS_LIMIT)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className="flex-grow" key={i}>
+                        <BlockCardSkeleton />
+                      </div>
+                    ))
+                : blocks?.map((b) => <BlockCard key={b.hash} block={b} />)}
             </div>
           </SectionCard>
           <SectionCard
@@ -80,9 +85,13 @@ const Home: NextPage = () => {
             }
           >
             <div className=" flex flex-col space-y-5">
-              {txs?.map((tx) => (
-                <TransactionCard key={tx.hash} transaction={tx} />
-              ))}
+              {txsQuery.isLoading
+                ? Array(TXS_LIMIT)
+                    .fill(0)
+                    .map((_, i) => <TransactionCardSkeleton key={i} />)
+                : txs?.map((tx) => (
+                    <TransactionCard key={tx.hash} transaction={tx} />
+                  ))}
             </div>
           </SectionCard>
         </div>

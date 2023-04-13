@@ -99,7 +99,7 @@ export const semanticColors = {
   },
   border: {
     light: neutral[300],
-    dark: neutral[850],
+    dark: neutral[800],
   },
   content: {
     light: neutral[700],
@@ -160,5 +160,9 @@ export const semanticColors = {
   surfaceHeader: {
     light: primary[100],
     dark: primary[900],
+  },
+  skeleton: {
+    light: "#e2e8f0",
+    dark: "#334454",
   },
 };

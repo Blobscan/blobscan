@@ -3,8 +3,8 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 import dayjs from "~/dayjs";
 import { type Transaction } from "~/types";
-import { Link } from "../Link";
-import { SurfaceCardBase } from "./SurfaceCardBase";
+import { Link } from "../../Link";
+import { SurfaceCardBase } from "../Bases";
 
 type TransactionCardProps = {
   transaction: Transaction;
@@ -26,7 +26,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = function ({
 }) {
   return (
     <SurfaceCardBase>
-      <div className="flex justify-between p-4 text-sm ">
+      <div className="flex justify-between p-4 text-sm">
         <div className="flex flex-col space-y-2">
           <div>
             Transaction <Link href="#">{hash}</Link>
