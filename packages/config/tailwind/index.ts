@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 import { baseColors, semanticColors } from "./colors";
 
@@ -6,11 +7,15 @@ export default {
   content: [""],
   darkMode: "class",
   theme: {
-    colors: {
-      ...baseColors,
-      ...semanticColors,
+    extend: {
+      colors: {
+        ...baseColors,
+        ...semanticColors,
+      },
+      fontFamily: {
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+      },
     },
-    extend: {},
   },
   plugins: [require("@tailwindcss/forms")],
 } satisfies Config;
