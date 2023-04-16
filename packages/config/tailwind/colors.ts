@@ -17,6 +17,7 @@ export const baseColors = {
     600: "#737373",
     700: "#404040",
     750: "#ADAFD0",
+    760: "#7D80AB",
     800: "#36385B",
     850: "#24243B",
     900: "#1F1F32",
@@ -79,7 +80,7 @@ const shades = baseColors.shades;
 export const semanticColors = {
   accent: {
     light: primary[600],
-    dark: primary[500],
+    dark: primary[600],
   },
   accentContent: {
     light: neutral[100],
@@ -87,7 +88,7 @@ export const semanticColors = {
   },
   accentHighlight: {
     light: primary[500],
-    dark: primary[400],
+    dark: primary[500],
   },
   accentDisabled: {
     light: neutral[500],
