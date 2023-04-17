@@ -18,7 +18,7 @@ export const Link: React.FC<LinkProps> = function ({
       target={isExternal ? "_blank" : "_self"}
       className="relative inline-flex items-center text-link-light hover:underline dark:text-link-dark"
     >
-      {children}{" "}
+      <span className="truncate">{children}</span>
       {isExternal && (
         <ArrowTopRightOnSquareIcon
           className="relative bottom-[1px] ml-1 h-5 w-5"

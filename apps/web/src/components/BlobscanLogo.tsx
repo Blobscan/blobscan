@@ -1,28 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const SIZES = {
+  lg: {
+    width: 330,
+    height: 130,
+  },
+  md: {
+    width: 150,
+    height: 32,
+  },
+  sm: {
+    width: 130,
+    height: 30,
+  },
+};
+
 type LogoProps = {
-  size: "sm" | "md";
+  size: keyof typeof SIZES;
 };
 
 export const Logo: React.FC<LogoProps> = ({ size }) => {
-  const sizes = {
-    md: {
-      width: 330,
-      height: 130,
-    },
-    sm: {
-      width: 118,
-      height: 27,
-    },
-  };
-
   return (
     <Link href="/">
       <Image
         src="/logo-dark.svg"
         // src={colorMode === "light" ? "/logo-light.svg" : "/logo-dark.svg"}
-        {...sizes[size]}
+        {...SIZES[size]}
         alt="blobscan-logo"
       />
     </Link>

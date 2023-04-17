@@ -1,34 +1,32 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import {
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  Flex,
-  Heading,
-  Spinner,
-  Table,
-  Tag,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
 
-import { api } from "~/utils/api";
-import { formatDate } from "~/utils/helpers";
+import { SectionCard } from "~/components/Cards/SectionCard";
+import { TransactionCard } from "~/components/Cards/TransactionCard";
+import { InfoGrid } from "~/components/InfoGrid";
+import { Link } from "~/components/Link";
+import { Spinner } from "~/components/Spinner";
+import { api } from "~/api";
+import dayjs from "~/dayjs";
+import { buildBlockExternalUrl } from "~/utils";
 
-const Block: NextPage = () => {
+function fetchBlock(blockNumberOrHash: string) {
+  const blockNumber = Number(blockNumberOrHash);
+
+  if (!Number.isNaN(blockNumber)) {
+    return api.block.getByBlockNumber.useQuery({ number: blockNumber });
+  }
+
+  return api.block.getByHash.useQuery({ hash: blockNumberOrHash });
+}
+
+const Block: NextPage = function () {
   const router = useRouter();
   const id = router.query.id as string;
+  const blockQuery = fetchBlock(id);
 
-  const blockQuery = api.block.byId.useQuery({ id: id });
-
-  if (blockQuery.error) {
+  if (blockQuery?.error) {
     return (
       <NextError
         title={blockQuery.error.message}
@@ -38,79 +36,56 @@ const Block: NextPage = () => {
   }
 
   if (blockQuery.status !== "success") {
-    return <Spinner />;
+    return (
+      <div className="mt-52 flex h-48 items-center justify-center">
+        <Spinner label="Loading block" />
+      </div>
+    );
   }
 
-  const { data: block } = blockQuery;
+  if (!blockQuery.data) {
+    return <div>Block not found</div>;
+  }
+
+  const block = blockQuery.data;
+  const unixHandler = dayjs.unix(block.timestamp);
 
   return (
-    <>
-      <Flex
-        direction="column"
-        flexWrap="wrap"
-        width="100vw"
-        mr="20px"
-        ml="20px"
-        mb="30px"
+    <div className="mx-auto w-9/12 space-y-12">
+      <SectionCard
+        header={
+          <div className="flex flex-col justify-between gap-1 md:flex-row">
+            <div>Block Details</div>
+            <div className="text-base">
+              <Link href={buildBlockExternalUrl(block.number)} isExternal>
+                View in Etherscan
+              </Link>
+            </div>
+          </div>
+        }
       >
-        <Breadcrumb mb="5px" separator="-" fontWeight="medium" fontSize="md">
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink href="/">Block #{block.number}</BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
-        <Heading as="h1" width="xs" mb="5px" fontSize="1.5rem">
-          Block: #{block.number}
-        </Heading>
-        <Box>
-          <Tag mb="3px">Timestamp:</Tag> {formatDate(block.timestamp)}
-        </Box>
-        <Box>
-          <Tag mb="3px">Slot:</Tag> {block?.slot}
-        </Box>
-        <Box>
-          <Tag mb="3px">Block hash:</Tag> {block?.hash}
-        </Box>
-      </Flex>
-
-      <Box>
-        <Heading as="h2" width="xs" fontSize="1.2rem" mt="50px" ml="20px">
-          Transactions
-        </Heading>
-        <Table variant="simple" mt="5px">
-          <Thead>
-            <Tr>
-              <Th>Index</Th>
-              <Th>Hash</Th>
-              <Th>From</Th>
-              <Th>To</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {block.Transaction.map((tx, i) => {
-              return (
-                <Tr key={tx.hash} fontSize="0.9rem">
-                  <Td>
-                    <p>{i}</p>
-                  </Td>
-                  <Td>
-                    <Link href={`/tx/${tx.hash}`}>{tx.hash}</Link>
-                  </Td>
-                  <Td>
-                    <Link href={`/address/${tx.from}`}>{tx.from}</Link>
-                  </Td>
-                  <Td>
-                    <Link href={`/address/${tx.to}`}>{tx.to}</Link>
-                  </Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </Box>
-    </>
+        <InfoGrid
+          fields={[
+            { name: "Block Height", value: block.number },
+            { name: "Hash", value: block.hash },
+            {
+              name: "Timestamp",
+              value: `${unixHandler.fromNow()} (${unixHandler.format(
+                "MMM D, YYYY h:mm AZ",
+              )})`,
+            },
+            { name: "Slot", value: block.slot },
+          ]}
+        />
+      </SectionCard>
+      <SectionCard
+        header={<div>Blob Transactions ({block.transactions.length})</div>}
+      >
+        {block.transactions.map((t) => (
+          <TransactionCard key={t.hash} transaction={t} />
+        ))}
+      </SectionCard>
+    </div>
   );
 };
 

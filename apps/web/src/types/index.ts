@@ -1,4 +1,4 @@
-import type { RouterOutputs } from "~/utils/api";
+import type { RouterOutputs } from "~/api";
 
 export type Block = RouterOutputs["block"]["getByHash"];
 

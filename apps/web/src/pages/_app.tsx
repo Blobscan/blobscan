@@ -7,7 +7,7 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
-import { api } from "~/utils/api";
+import { api } from "~/api";
 import AppLayout from "~/components/AppLayout/AppLayout";
 
 function MyApp({ Component, pageProps }: NextAppProps) {

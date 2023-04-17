@@ -1,15 +1,13 @@
 import { type ReactNode } from "react";
 
 type SectionCardProps = {
-  actionBtn?: ReactNode;
+  header?: ReactNode;
   children: ReactNode;
-  title: string;
 };
 
 export const SectionCard: React.FC<SectionCardProps> = function ({
-  actionBtn,
-  title,
   children,
+  header,
 }) {
   return (
     <div
@@ -25,10 +23,7 @@ export const SectionCard: React.FC<SectionCardProps> = function ({
     dark:bg-surface-dark
     `}
     >
-      <div className="flex justify-between">
-        <div className="text-xl font-medium ">{title}</div>
-        {actionBtn && <div>{actionBtn}</div>}
-      </div>
+      {header && <div className="text-xl font-medium">{header}</div>}
       <div className="mt-5">
         {children}
         {/* We use less vertical padding on card footers at all sizes than on headers or body sections */}

@@ -13,21 +13,16 @@ import {
 import { animated, useSpring } from "@react-spring/web";
 
 import dayjs from "~/dayjs";
-import { type Transaction } from "~/types";
+import { type Block, type Transaction } from "~/types";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "../Bases";
 
-type TransactionCardProps = {
-  transaction: Transaction;
-};
-
 const AddressLabel: React.FC<{
-  className?: HTMLAttributes<HTMLSpanElement>["className"];
   address: string;
-}> = function ({ address, className }) {
+}> = function ({ address }) {
   return (
     <Link href="#">
-      {<span className={`truncate text-xs ${className ?? ""}`}>{address}</span>}
+      {<span className={`truncate text-xs`}>{address}</span>}
     </Link>
   );
 };
@@ -53,8 +48,14 @@ const CollapseIcon: React.FC<{
   );
 };
 
+type TransactionCardProps = {
+  block?: Pick<Block, "timestamp" | "number">;
+  transaction: Omit<Transaction, "block" | "blockNumber">;
+};
+
 export const TransactionCard: React.FC<TransactionCardProps> = function ({
-  transaction: { hash, from, to, block, blockNumber, blobs },
+  block,
+  transaction: { hash, from, to, blobs },
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -83,40 +84,42 @@ export const TransactionCard: React.FC<TransactionCardProps> = function ({
   return (
     <div>
       <SurfaceCardBase>
-        <div className="p-4">
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center gap-3 ">
-              <CollapseIcon
-                opened={opened}
-                onClick={() => {
-                  setOpened((op) => !op);
-                }}
-              />
-              <div className="flex w-full flex-col space-y-2">
-                <div>
-                  <span className="font-semibold">Transaction</span>{" "}
-                  <Link href="#">{hash}</Link>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <AddressLabel address={from} />
-                  <ArrowRightIcon className="h-2 w-2" />
-                  <AddressLabel address={to} />
-                </div>
-                <div className="mb-2 text-sm">{blobs.length} Blobs</div>
+        <div className="flex flex-col justify-between p-4 text-sm md:flex-row">
+          <div className="flex w-full items-center gap-3">
+            <CollapseIcon
+              opened={opened}
+              onClick={() => {
+                setOpened((op) => !op);
+              }}
+            />
+            <div className="flex w-10/12 flex-col space-y-2">
+              <div className="flex flex-col gap-2 md:flex-row">
+                <div className="font-semibold">Transaction</div>
+                <Link href="#">{hash}</Link>
               </div>
+              <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
+                <div className="md:hidden">From</div>
+                <AddressLabel address={from} />
+                <ArrowRightIcon className="hidden h-2 w-2 md:block" />
+                <div className="md:hidden">To</div>
+                <AddressLabel address={to} />
+              </div>
+              <div className="mb-2 text-sm">{blobs.length} Blobs</div>
             </div>
-            <div className="flex flex-col space-y-2 self-center">
+          </div>
+          {block && (
+            <div className="hidden space-y-2 self-center md:flex md:flex-col">
               <Link href="#">
-                <span>Block #{blockNumber}</span>
+                <span>Block #{block.number}</span>
               </Link>
               <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
                 {dayjs.unix(block.timestamp).fromNow()}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </SurfaceCardBase>
-      <div className="overflow-hidden dark:bg-primary-900">
+      <div className="overflow-hidden pr-4 dark:bg-primary-900">
         <animated.div
           style={{
             height: props.openProgress.to(
@@ -130,9 +133,9 @@ export const TransactionCard: React.FC<TransactionCardProps> = function ({
           >
             <div className="font-semibold">Data Hash</div>
             {blobs.map((b) => (
-              <div key={b.hash}>
-                <Link href="#">{b.hash}</Link>
-              </div>
+              <Link key={b.hash} href="#">
+                {b.hash}
+              </Link>
             ))}
           </div>
         </animated.div>

@@ -5,9 +5,7 @@ import {
   type HTMLAttributes,
 } from "react";
 import Router from "next/router";
-// import { SearchIcon } from "@chakra-ui/icons";
-// import { Input, InputGroup, InputRightAddon } from "@chakra-ui/react";
-import { MagnifyingGlassIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import { Button } from "./Button";
 
@@ -41,7 +39,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   return (
     <form onSubmit={handleSubmit}>
       <div
-        className={`border, mt-2 flex  rounded-md border-border-light shadow-sm dark:border-border-dark ${className}`}
+        className={`border, flex  rounded-md border-border-light shadow-sm dark:border-border-dark ${className}`}
       >
         <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <input

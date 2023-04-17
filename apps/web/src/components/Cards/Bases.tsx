@@ -10,7 +10,8 @@ export const SurfaceCardBase: React.FC<SurfaceCardBaseProps> = function ({
       className={`
     w-full
     overflow-hidden
-    rounded-lg
+    text-ellipsis
+    rounded-t-lg
     border
     border-border-light
     dark:border-border-dark

@@ -19,6 +19,8 @@ const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   transactions: {
     select: {
       hash: true,
+      from: true,
+      to: true,
       blobs: {
         select: {
           hash: true,
@@ -44,6 +46,16 @@ export const blockRouter = createTRPCRouter({
         take,
       });
     }),
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      const { id } = input;
+
+      return ctx.prisma.block.findUnique({
+        select: fullBlockSelect,
+        where: { id },
+      });
+    }),
   getByHash: publicProcedure
     .input(
       z.object({
@@ -53,7 +65,7 @@ export const blockRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { hash } = input;
 
-      const block = await ctx.prisma.block.findFirst({
+      const block = await ctx.prisma.block.findUnique({
         select: fullBlockSelect,
         where: {
           hash,
