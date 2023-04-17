@@ -1,10 +1,10 @@
 import { SkeletonRow } from "~/components/SkeletonItems";
-import { SurfaceCardBase } from "../Bases";
+import { CardBase } from "../Bases";
 
 export const TransactionCardSkeleton: React.FC = function () {
   return (
     <div className="animate-pulse">
-      <SurfaceCardBase>
+      <CardBase>
         <div className="flex justify-between px-3 py-4">
           <div className="flex w-9/12 flex-col space-y-2">
             <SkeletonRow className="h-5 w-10/12" />
@@ -17,7 +17,7 @@ export const TransactionCardSkeleton: React.FC = function () {
             <SkeletonRow className="h-4 w-20" />
           </div>
         </div>
-      </SurfaceCardBase>
+      </CardBase>
     </div>
   );
 };

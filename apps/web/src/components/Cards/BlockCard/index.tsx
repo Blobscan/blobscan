@@ -5,7 +5,7 @@ import dayjs from "~/dayjs";
 import type { Block } from "~/types";
 import { buildRoute } from "~/utils";
 import { Link } from "../../Link";
-import { CardHeaderBase, SurfaceCardBase } from "../Bases";
+import { CardBase, CardHeaderBase } from "../Bases";
 
 type BlockCardProps = {
   block: Block;
@@ -22,7 +22,7 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
   const hasOneBlob = blobCount === 1;
 
   return (
-    <SurfaceCardBase>
+    <CardBase>
       <CardHeaderBase>
         Block{" "}
         <Link href={buildRoute("block", block.number.toString())}>
@@ -47,6 +47,6 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
           </Link>
         </div>
       </div>
-    </SurfaceCardBase>
+    </CardBase>
   );
 };

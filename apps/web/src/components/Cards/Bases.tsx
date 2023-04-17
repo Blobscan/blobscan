@@ -3,7 +3,7 @@ type SurfaceCardBaseProps = {
   className?: string;
 };
 
-export const SurfaceCardBase: React.FC<SurfaceCardBaseProps> = function ({
+export const CardBase: React.FC<SurfaceCardBaseProps> = function ({
   children,
   className,
 }) {

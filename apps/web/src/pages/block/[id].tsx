@@ -2,8 +2,8 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
-import { TransactionCard } from "~/components/Cards/TransactionCard";
 import {
   DetailsLayout,
   PageLayout,
@@ -74,7 +74,7 @@ const Block: NextPage = function () {
       >
         <div className="space-y-6">
           {block.transactions.map((t) => (
-            <TransactionCard key={t.hash} transaction={t} />
+            <BlobTransactionCard key={t.hash} transaction={t} />
           ))}
         </div>
       </SectionCard>
