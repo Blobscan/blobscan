@@ -39,9 +39,6 @@ export const blobRouter = createTRPCRouter({
       const { id } = input;
       const blob = await ctx.prisma.blob.findUnique({
         where: { id },
-        include: {
-          transaction: true,
-        },
       });
 
       if (!blob) {

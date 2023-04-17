@@ -4,9 +4,12 @@ import { useRouter } from "next/router";
 
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { TransactionCard } from "~/components/Cards/TransactionCard";
+import {
+  DetailsLayout,
+  PageLayout,
+} from "~/components/DetailsUtilityComponents";
 import { InfoGrid } from "~/components/InfoGrid";
-import { Link } from "~/components/Link";
-import { Spinner } from "~/components/Spinner";
+import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import { api } from "~/api";
 import dayjs from "~/dayjs";
 import { buildBlockExternalUrl } from "~/utils";
@@ -36,11 +39,7 @@ const Block: NextPage = function () {
   }
 
   if (blockQuery.status !== "success") {
-    return (
-      <div className="mt-52 flex h-48 items-center justify-center">
-        <Spinner label="Loading block" />
-      </div>
-    );
+    return <PageSpinner label="Loading block" />;
   }
 
   if (!blockQuery.data) {
@@ -51,18 +50,10 @@ const Block: NextPage = function () {
   const unixHandler = dayjs.unix(block.timestamp);
 
   return (
-    <div className="mx-auto w-9/12 space-y-12">
-      <SectionCard
-        header={
-          <div className="flex flex-col justify-between gap-1 md:flex-row">
-            <div>Block Details</div>
-            <div className="text-base">
-              <Link href={buildBlockExternalUrl(block.number)} isExternal>
-                View in Etherscan
-              </Link>
-            </div>
-          </div>
-        }
+    <PageLayout>
+      <DetailsLayout
+        title="Block Details"
+        externalLink={buildBlockExternalUrl(block.number)}
       >
         <InfoGrid
           fields={[
@@ -77,15 +68,17 @@ const Block: NextPage = function () {
             { name: "Slot", value: block.slot },
           ]}
         />
-      </SectionCard>
+      </DetailsLayout>
       <SectionCard
         header={<div>Blob Transactions ({block.transactions.length})</div>}
       >
-        {block.transactions.map((t) => (
-          <TransactionCard key={t.hash} transaction={t} />
-        ))}
+        <div className="space-y-6">
+          {block.transactions.map((t) => (
+            <TransactionCard key={t.hash} transaction={t} />
+          ))}
+        </div>
       </SectionCard>
-    </div>
+    </PageLayout>
   );
 };
 

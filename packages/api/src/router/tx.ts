@@ -23,7 +23,9 @@ const fullTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   },
   blobs: {
     select: {
+      id: false,
       hash: true,
+      commitment: true,
     },
   },
 });

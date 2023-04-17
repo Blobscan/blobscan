@@ -14,6 +14,7 @@ import { animated, useSpring } from "@react-spring/web";
 
 import dayjs from "~/dayjs";
 import { type Block, type Transaction } from "~/types";
+import { buildRoute } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "../Bases";
 
@@ -50,7 +51,7 @@ const CollapseIcon: React.FC<{
 
 type TransactionCardProps = {
   block?: Pick<Block, "timestamp" | "number">;
-  transaction: Omit<Transaction, "block" | "blockNumber">;
+  transaction: Block["transactions"][0];
 };
 
 export const TransactionCard: React.FC<TransactionCardProps> = function ({
@@ -83,8 +84,8 @@ export const TransactionCard: React.FC<TransactionCardProps> = function ({
 
   return (
     <div>
-      <SurfaceCardBase>
-        <div className="flex flex-col justify-between p-4 text-sm md:flex-row">
+      <SurfaceCardBase className="rounded-none rounded-t-md">
+        <div className="flex flex-col justify-between text-sm md:flex-row">
           <div className="flex w-full items-center gap-3">
             <CollapseIcon
               opened={opened}
@@ -95,7 +96,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = function ({
             <div className="flex w-10/12 flex-col space-y-2">
               <div className="flex flex-col gap-2 md:flex-row">
                 <div className="font-semibold">Transaction</div>
-                <Link href="#">{hash}</Link>
+                <Link href={buildRoute("transaction", hash)}>{hash}</Link>
               </div>
               <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
                 <div className="md:hidden">From</div>

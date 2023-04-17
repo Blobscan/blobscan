@@ -1,22 +1,24 @@
 type SurfaceCardBaseProps = {
   children: React.ReactNode;
+  className?: string;
 };
 
 export const SurfaceCardBase: React.FC<SurfaceCardBaseProps> = function ({
   children,
+  className,
 }) {
   return (
     <div
       className={`
     w-full
-    overflow-hidden
-    text-ellipsis
-    rounded-t-lg
+    truncate
+    rounded-md
     border
     border-border-light
+    p-4
     dark:border-border-dark
-    dark:bg-neutral-850 
-
+    dark:bg-neutral-850
+    ${className}
     `}
     >
       {children}
