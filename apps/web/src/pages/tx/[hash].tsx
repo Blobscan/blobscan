@@ -12,7 +12,11 @@ import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import { api } from "~/api";
-import { buildRoute, buildTransactionExternalUrl } from "~/utils";
+import {
+  buildBlockRoute,
+  buildTransactionExternalUrl,
+  formatTimestamp,
+} from "~/utils";
 
 const Tx: NextPage = () => {
   const router = useRouter();
@@ -34,6 +38,7 @@ const Tx: NextPage = () => {
   }
 
   const { data: tx } = txQuery;
+  const sortedBlobs = tx.blobs.sort((a, b) => a.index - b.index);
 
   return (
     <PageLayout>
@@ -47,14 +52,14 @@ const Tx: NextPage = () => {
             {
               name: "Block",
               value: (
-                <Link href={buildRoute("block", tx.blockNumber)}>
+                <Link href={buildBlockRoute(tx.blockNumber)}>
                   {tx.blockNumber}
                 </Link>
               ),
             },
             {
               name: "Timestamp",
-              value: tx.block.timestamp,
+              value: formatTimestamp(tx.timestamp),
             },
             { name: "From", value: tx.from },
             { name: "To", value: tx.to },
@@ -63,8 +68,8 @@ const Tx: NextPage = () => {
       </DetailsLayout>
       <SectionCard header={<div>Blobs ({tx.blobs.length})</div>}>
         <div className="space-y-6">
-          {tx.blobs.map((b, i) => (
-            <BlobCard key={b.hash} blob={b} index={i + 1} />
+          {sortedBlobs.map((b) => (
+            <BlobCard key={b.versionedHash} blob={b} txHash={tx.hash} />
           ))}
         </div>
       </SectionCard>

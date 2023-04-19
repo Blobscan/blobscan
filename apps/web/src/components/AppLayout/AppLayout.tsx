@@ -10,7 +10,9 @@ const AppLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <TopBarLayout />
-      <main className="container mx-auto grow py-20">{children}</main>
+      <main className="container mx-auto mb-24 mt-12 grow md:my-24">
+        {children}
+      </main>
       <BottomBarLayout />
     </div>
   );

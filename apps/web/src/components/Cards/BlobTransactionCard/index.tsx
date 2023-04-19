@@ -8,7 +8,7 @@ import { animated, useSpring } from "@react-spring/web";
 
 import dayjs from "~/dayjs";
 import { type Block } from "~/types";
-import { buildRoute } from "~/utils";
+import { buildBlobRoute, buildTransactionRoute } from "~/utils";
 import { Link } from "../../Link";
 import { CardBase } from "../Bases";
 
@@ -85,10 +85,10 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
                   setOpened((op) => !op);
                 }}
               />
-              <div className="flex w-10/12 flex-col space-y-2">
+              <div className="flex flex-col space-y-2 truncate">
                 <div className="flex flex-col gap-2 md:flex-row">
                   <div className="font-semibold">Transaction</div>
-                  <Link href={buildRoute("transaction", hash)}>{hash}</Link>
+                  <Link href={buildTransactionRoute(hash)}>{hash}</Link>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
                   <div className="md:hidden">From</div>
@@ -122,13 +122,22 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
           >
             <div
               ref={handleContentRef}
-              className="ml-10 grid grid-cols-1 gap-2 p-2 text-sm"
+              className="ml-10 grid grid-cols-[1fr_6fr]	 gap-2 p-2 text-sm"
             >
-              <div className="font-semibold">Data Hash</div>
+              <div></div>
+              <div className="font-semibold">Versioned Hash</div>
               {blobs.map((b) => (
-                <Link key={b.hash} href="#">
-                  {b.hash}
-                </Link>
+                <>
+                  <div>
+                    <Link
+                      key={b.versionedHash}
+                      href={buildBlobRoute(hash, b.index)}
+                    >
+                      Blob {b.index}
+                    </Link>
+                  </div>
+                  <div className=" truncate text-xs">{b.versionedHash}</div>
+                </>
               ))}
             </div>
           </animated.div>

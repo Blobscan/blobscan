@@ -1,5 +1,9 @@
-export const formatDate = (date: number) => {
-  const newDate = new Date(date * 1000).toUTCString();
+import dayjs from "../dayjs";
 
-  return newDate;
-};
+export function formatTimestamp(timestamp: number) {
+  const unixHandler = dayjs.unix(timestamp);
+
+  return `${unixHandler.fromNow()} (${unixHandler.format(
+    "MMM D, YYYY h:mm AZ",
+  )})`;
+}

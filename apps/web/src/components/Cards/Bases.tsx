@@ -37,10 +37,10 @@ export const CardHeaderBase: React.FC<CardHeaderBaseProps> = function ({
     <div
       className={`
         bg-surfaceHeader-light
+        p-3
         text-base
         font-semibold
         dark:bg-surfaceHeader-dark
-        sm:p-3
       `}
     >
       {children}

@@ -10,9 +10,7 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
       {fields.map(({ name, value }, i) => (
         <Fragment key={i}>
           <div className="font-bold dark:text-neutral-760">{name}</div>
-          <div className="col-span-3 overflow-hidden text-ellipsis text-sm">
-            {value}
-          </div>
+          <div className="col-span-3 truncate text-sm">{value}</div>
         </Fragment>
       ))}
     </div>

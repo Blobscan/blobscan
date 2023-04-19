@@ -9,10 +9,14 @@ import {
   PageLayout,
 } from "~/components/DetailsUtilityComponents";
 import { InfoGrid } from "~/components/InfoGrid";
+import { Link } from "~/components/Link";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import { api } from "~/api";
-import dayjs from "~/dayjs";
-import { buildBlockExternalUrl } from "~/utils";
+import {
+  buildBlockExternalUrl,
+  buildSlotExternalUrl,
+  formatTimestamp,
+} from "~/utils";
 
 function fetchBlock(blockNumberOrHash: string) {
   const blockNumber = Number(blockNumberOrHash);
@@ -47,7 +51,6 @@ const Block: NextPage = function () {
   }
 
   const block = blockQuery.data;
-  const unixHandler = dayjs.unix(block.timestamp);
 
   return (
     <PageLayout>
@@ -61,11 +64,16 @@ const Block: NextPage = function () {
             { name: "Hash", value: block.hash },
             {
               name: "Timestamp",
-              value: `${unixHandler.fromNow()} (${unixHandler.format(
-                "MMM D, YYYY h:mm AZ",
-              )})`,
+              value: formatTimestamp(block.timestamp),
             },
-            { name: "Slot", value: block.slot },
+            {
+              name: "Slot",
+              value: (
+                <Link href={buildSlotExternalUrl(block.slot)} isExternal>
+                  {block.slot}
+                </Link>
+              ),
+            },
           ]}
         />
       </DetailsLayout>

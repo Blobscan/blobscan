@@ -11,11 +11,13 @@ datasource db {
 }
 
 model Blob {
-  id          String      @id
-  hash        String
+  id          Int      @id @default(autoincrement())
+  versionedHash String
   commitment  String
   data        String      @db.Text
   txHash      String
+  index       Int
+  @@unique([txHash, index])
   transaction Transaction @relation(fields: [txHash], references: [hash])
 }
 
@@ -33,7 +35,7 @@ model Transaction {
   hash      String          @unique
   from      String
   to        String
-  blockNumber Int           @unique
+  blockNumber Int
   blobs      Blob[]
   block     Block  @relation(fields: [blockNumber], references: [number])
 }

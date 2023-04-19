@@ -1,12 +1,11 @@
-const ROUTES = {
-  block: "/block",
-  transaction: "/tx",
-  blob: "/blob",
-};
+export function buildBlobRoute(txHash: string, blobIndex: number) {
+  return `/tx/${txHash}/blob/${blobIndex}`;
+}
 
-export function buildRoute(
-  route: keyof typeof ROUTES,
-  resource: string | number,
-) {
-  return `${ROUTES[route]}/${resource}`;
+export function buildBlockRoute(blockNumberOrHash: string | number) {
+  return `/block/${blockNumberOrHash}`;
+}
+
+export function buildTransactionRoute(hash: string) {
+  return `/tx/${hash}`;
 }

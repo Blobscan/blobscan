@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
+import { useRouter } from "next/router";
 
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
@@ -18,6 +19,7 @@ const BLOCKS_LIMIT = 4;
 const TXS_LIMIT = 5;
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const blocksQuery = api.block.getAll.useQuery({
     limit: BLOCKS_LIMIT,
   });
@@ -37,10 +39,10 @@ const Home: NextPage = () => {
   const { data: txs } = txsQuery;
 
   return (
-    <div className="mt-3 flex flex-col items-center justify-center space-y-24">
-      <div className=" flex w-7/12 flex-col items-center justify-center space-y-8">
+    <div className="flex flex-col items-center justify-center gap-12 md:gap-24">
+      <div className=" flex flex-col items-center justify-center gap-8 md:w-7/12">
         <Logo size="lg" />
-        <div className="flex w-7/12 flex-col items-stretch justify-center  space-y-2">
+        <div className="flex flex-col items-stretch justify-center space-y-2  md:w-7/12">
           <SearchInput />
           <span className="text-center text-sm text-contentSecondary-light  dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
@@ -50,10 +52,10 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
-      <div className="flex w-9/12 flex-col space-y-16">
+      <div className="flex w-9/12 flex-col gap-8 md:gap-16">
         <SectionCard
           header={
-            <div className="flex justify-between">
+            <div className="flex items-center justify-between">
               <div>Header</div>{" "}
               <Button
                 variant="outline"
@@ -63,7 +65,7 @@ const Home: NextPage = () => {
             </div>
           }
         >
-          <div className="flex space-x-3">
+          <div className="flex flex-col gap-5 md:flex-row">
             {blocksQuery.isLoading
               ? Array(BLOCKS_LIMIT)
                   .fill(0)
@@ -77,23 +79,25 @@ const Home: NextPage = () => {
         </SectionCard>
         <SectionCard
           header={
-            <div className="flex justify-between">
+            <div className="flex items-center justify-between">
               <div>Blob Transactions</div>{" "}
               <Button
                 variant="outline"
                 label="View All Transactions"
-                onClick={() => console.log("TODO: View all transactions")}
+                onClick={() => router.push("/txs")}
               />
             </div>
           }
         >
-          <div className=" flex flex-col space-y-5">
+          <div className=" flex flex-col gap-5">
             {txsQuery.isLoading
               ? Array(TXS_LIMIT)
                   .fill(0)
                   .map((_, i) => <TransactionCardSkeleton key={i} />)
               : txs?.map((tx) => {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { block, blockNumber, ...filteredTx } = tx;
+
                   return (
                     <BlobTransactionCard
                       key={tx.hash}

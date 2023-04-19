@@ -24,8 +24,9 @@ const fullTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   blobs: {
     select: {
       id: false,
-      hash: true,
+      versionedHash: true,
       commitment: true,
+      index: true,
     },
   },
 });
@@ -64,6 +65,11 @@ export const transactionRouter = createTRPCRouter({
           message: `No tx with hash '${hash}'`,
         });
       }
-      return tx;
+
+      const { block, ...txBase } = tx;
+      return {
+        ...txBase,
+        timestamp: block.timestamp,
+      };
     }),
 });

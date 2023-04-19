@@ -17,7 +17,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 
-import { api } from "~/utils/api";
+import { api } from "~/api";
 
 const Address: NextPage = () => {
   const router = useRouter();
