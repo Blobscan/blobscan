@@ -17,7 +17,7 @@ const AddressLabel: React.FC<{
 }> = function ({ address }) {
   return (
     <Link href="#">
-      {<span className={`truncate text-xs`}>{address}</span>}
+      <span className="text-xs">{address}</span>
     </Link>
   );
 };
@@ -87,15 +87,21 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
               />
               <div className="flex flex-col space-y-2 truncate">
                 <div className="flex flex-col gap-2 md:flex-row">
-                  <div className="font-semibold">Transaction</div>
+                  <div className="font-semibold text-hint-light">
+                    Transaction
+                  </div>
                   <Link href={buildTransactionRoute(hash)}>{hash}</Link>
                 </div>
-                <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
-                  <div className="md:hidden">From</div>
-                  <AddressLabel address={from} />
+                <div className="flex flex-col gap-1 md:flex-row md:items-center">
+                  <div className="mb-1 text-error-50 md:hidden">From</div>
+                  <Link href="#">
+                    <span className="text-xs">{from}</span>
+                  </Link>
                   <ArrowRightIcon className="hidden h-2 w-2 md:block" />
-                  <div className="md:hidden">To</div>
-                  <AddressLabel address={to} />
+                  <div className="mt-1 md:hidden">To</div>
+                  <Link href="#">
+                    <span className="text-xs">{to}</span>
+                  </Link>
                 </div>
                 <div className="mb-2 text-sm">{blobs.length} Blobs</div>
               </div>

@@ -4,10 +4,7 @@ import { useRouter } from "next/router";
 
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
-import {
-  DetailsLayout,
-  PageLayout,
-} from "~/components/DetailsUtilityComponents";
+import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
@@ -43,7 +40,7 @@ const Block: NextPage = function () {
   }
 
   if (blockQuery.status !== "success") {
-    return <PageSpinner label="Loading block" />;
+    return <PageSpinner label="Loading block…" />;
   }
 
   if (!blockQuery.data) {
@@ -53,7 +50,7 @@ const Block: NextPage = function () {
   const block = blockQuery.data;
 
   return (
-    <PageLayout>
+    <>
       <DetailsLayout
         title="Block Details"
         externalLink={buildBlockExternalUrl(block.number)}
@@ -64,7 +61,11 @@ const Block: NextPage = function () {
             { name: "Hash", value: block.hash },
             {
               name: "Timestamp",
-              value: formatTimestamp(block.timestamp),
+              value: (
+                <div className="whitespace-break-spaces">
+                  {formatTimestamp(block.timestamp)}
+                </div>
+              ),
             },
             {
               name: "Slot",
@@ -86,7 +87,7 @@ const Block: NextPage = function () {
           ))}
         </div>
       </SectionCard>
-    </PageLayout>
+    </>
   );
 };
 

@@ -40,11 +40,11 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 md:gap-24">
-      <div className=" flex flex-col items-center justify-center gap-8 md:w-7/12">
+      <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
         <Logo size="lg" />
-        <div className="flex flex-col items-stretch justify-center space-y-2  md:w-7/12">
+        <div className="flex flex-col items-stretch justify-center space-y-2  md:w-8/12">
           <SearchInput />
-          <span className="text-center text-sm text-contentSecondary-light  dark:text-contentSecondary-dark">
+          <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
             <Link href="https://www.eip4844.com/" isExternal>
               EIP-4844
@@ -52,11 +52,11 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
-      <div className="flex w-9/12 flex-col gap-8 md:gap-16">
+      <div className="flex w-11/12 flex-col gap-8 md:gap-16">
         <SectionCard
           header={
             <div className="flex items-center justify-between">
-              <div>Header</div>{" "}
+              <div>Latest Blocks</div>{" "}
               <Button
                 variant="outline"
                 label="View All Blocks"
@@ -80,7 +80,7 @@ const Home: NextPage = () => {
         <SectionCard
           header={
             <div className="flex items-center justify-between">
-              <div>Blob Transactions</div>{" "}
+              <div>Latest Blob Transactions</div>{" "}
               <Button
                 variant="outline"
                 label="View All Transactions"

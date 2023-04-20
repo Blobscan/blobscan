@@ -17,12 +17,12 @@ export const BlobCard: React.FC<BlobCardProps> = ({ blob, txHash }) => {
             Blob #{blob.index}
           </Link>
         </div>
-        <div className="flex flex-col">
-          <div>Versioned Hash</div>
+        <div className="flex flex-col gap-1">
+          <div className="font-semibold">Versioned Hash</div>
           <div className="truncate">{blob.versionedHash}</div>
         </div>
         <div>
-          <div>Commitment</div>
+          <div className="gap-1 font-semibold">Commitment</div>
           <div className="truncate">{blob.commitment}</div>
         </div>
       </div>

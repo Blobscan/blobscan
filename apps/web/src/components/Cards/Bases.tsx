@@ -10,6 +10,7 @@ export const CardBase: React.FC<SurfaceCardBaseProps> = function ({
   return (
     <div
       className={`
+    dark:bg-neutral-850
     w-full
     truncate
     rounded-md
@@ -17,7 +18,6 @@ export const CardBase: React.FC<SurfaceCardBaseProps> = function ({
     border-border-light
     p-4
     dark:border-border-dark
-    dark:bg-neutral-850
     ${className}
     `}
     >
@@ -36,11 +36,13 @@ export const CardHeaderBase: React.FC<CardHeaderBaseProps> = function ({
   return (
     <div
       className={`
+        -mx-4
+        -mt-4
         bg-surfaceHeader-light
         p-3
         text-base
         font-semibold
-        dark:bg-surfaceHeader-dark
+        dark:bg-primary-900
       `}
     >
       {children}

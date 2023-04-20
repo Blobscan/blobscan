@@ -3,38 +3,48 @@ export const baseColors = {
     100: "#C9E5FF",
     200: "#5D88F4",
   },
-  shades: {
-    "00": "#000000",
-    50: "#1A1B29",
-    100: "#FFFFFF",
+  coolGray: {
+    50: "#1F1F32",
+    100: "#24243B",
+    200: "#36385B",
+    300: "#434672",
+    400: "#7D80AB",
+    500: "#ADAFD0",
+    600: "#C5C9D3",
+    700: "#BFC1DE",
   },
-  neutral: {
-    100: "#FAFAFA",
-    200: "#F5F5F5",
-    300: "#E5E5E5",
-    400: "#D4D4D4",
-    500: "#A3A3A3",
-    600: "#737373",
-    700: "#404040",
-    750: "#ADAFD0",
-    760: "#7D80AB",
-    800: "#36385B",
-    850: "#24243B",
-    900: "#1F1F32",
-    950: "#171717",
-    1000: "#0D0D0D",
+
+  warmGray: {
+    50: "#FAFAFA",
+    100: "#F5F5F5",
+    200: "#E5E5E5",
+    300: "#D4D4D4",
+    400: "#A3A3A3",
+    500: "#737373",
+    600: "#404040",
+    700: "#171717",
   },
+
   primary: {
+    50: "#F7F1FF",
     100: "#F7F5FD",
-    200: "#EADFFD",
-    300: "#D9C6F9",
+    200: "#EADEFD",
+    300: "#E2CFFF",
     400: "#AE8CF5",
-    500: "#896EE1",
-    600: "#5D25D4",
-    700: "#47348A",
+    500: "#9A71F2",
+    600: "#896EE1",
+    700: "#5D25D4",
     800: "#3A3369",
     900: "#2E2854",
+    1000: "#372779",
   },
+
+  shades: {
+    "00": "#FFFFFF",
+    50: "#1A1B29",
+    100: "#000000",
+  },
+
   success: {
     50: "#F0FDF4",
     100: "#DCFCE7",
@@ -47,6 +57,7 @@ export const baseColors = {
     800: "#166534",
     900: "#14532D",
   },
+
   warning: {
     50: "#FFFBEB",
     100: "#FEF3C7",
@@ -59,6 +70,7 @@ export const baseColors = {
     800: "#92400E",
     900: "#78350F",
   },
+
   error: {
     50: "#FEF2F2",
     100: "#FEE2E2",
@@ -74,73 +86,82 @@ export const baseColors = {
 };
 
 const primary = baseColors.primary;
-const neutral = baseColors.neutral;
+const coolGray = baseColors.coolGray;
+const warmGray = baseColors.warmGray;
 const shades = baseColors.shades;
 
 export const semanticColors = {
   accent: {
-    light: primary[600],
-    dark: primary[600],
-  },
-  accentContent: {
-    light: neutral[100],
-    dark: shades[100],
-  },
-  accentHighlight: {
-    light: primary[500],
+    light: primary[700],
     dark: primary[500],
   },
+  accentContent: {
+    light: shades["00"],
+    dark: warmGray[50],
+  },
+  accentHighlight: {
+    light: primary[600],
+    dark: primary[400],
+  },
   accentDisabled: {
-    light: neutral[500],
-    dark: neutral[800],
+    light: warmGray[500],
+    dark: coolGray[300],
   },
   background: {
-    light: neutral[100],
+    light: warmGray[100],
     dark: shades[50],
   },
   border: {
-    light: neutral[300],
-    dark: neutral[800],
+    light: warmGray[200],
+    dark: coolGray[300],
   },
   content: {
-    light: neutral[700],
-    dark: shades[100],
+    light: warmGray[700],
+    dark: warmGray[50],
   },
   contentSecondary: {
-    light: neutral[500],
-    dark: neutral[750],
+    light: warmGray[600],
+    dark: coolGray[700],
   },
   contentDisabled: {
-    light: neutral[400],
-    dark: neutral[800],
+    light: warmGray[400],
+    dark: coolGray[400],
   },
   control: {
     light: shades["00"],
     dark: shades["00"],
   },
+  controlBackground: {
+    light: shades["00"],
+    dark: coolGray[200],
+  },
   controlActive: {
-    light: primary[300],
+    light: primary[100],
     dark: primary[500],
+  },
+  controlBorder: {
+    light: warmGray[200],
+    dark: primary[300],
   },
   controlBorderActive: {
-    light: primary[200],
-    dark: primary[300],
+    light: primary[700],
+    dark: primary[400],
   },
   controlBorderHighlight: {
-    light: neutral[300],
-    dark: neutral[800],
+    light: warmGray[200],
+    dark: primary[400],
   },
   hint: {
-    light: neutral[300],
-    dark: neutral[800],
+    light: warmGray[300],
+    dark: coolGray[400],
   },
   icon: {
-    light: primary[300],
-    dark: primary[300],
+    light: warmGray[700],
+    dark: coolGray[400],
   },
   iconHighlight: {
-    light: primary[300],
-    dark: primary[500],
+    light: primary[700],
+    dark: primary[400],
   },
   link: {
     light: primary[400],
@@ -148,19 +169,23 @@ export const semanticColors = {
   },
   surface: {
     light: shades["00"],
-    dark: neutral[900],
+    dark: coolGray[50],
+  },
+  surfaceBorder: {
+    light: warmGray[200],
+    dark: coolGray[300],
   },
   surfaceContent: {
-    light: neutral[950],
-    dark: shades[100],
+    light: warmGray[700],
+    dark: warmGray[200],
   },
   surfaceContentSecondary: {
-    light: neutral[700],
-    dark: neutral[1000],
+    light: warmGray[600],
+    dark: coolGray[700],
   },
   surfaceHeader: {
     light: primary[100],
-    dark: primary[900],
+    dark: coolGray[200],
   },
   skeleton: {
     light: "#e2e8f0",

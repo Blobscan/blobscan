@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useRouter } from "next/router";
 
 import dayjs from "~/dayjs";
 import type { Block } from "~/types";
@@ -12,7 +11,6 @@ type BlockCardProps = {
 };
 
 export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
-  const router = useRouter();
   const { number, timestamp, transactions } = block;
   const hasOneTx = transactions.length === 1;
   const blobCount = useMemo(
@@ -26,22 +24,18 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
       <CardHeaderBase>
         Block <Link href={buildBlockRoute(number)}>#{number}</Link>
       </CardHeaderBase>
-      <div className="px-3 py-2 text-sm">
+      <div className="pt-2 text-sm">
         <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
           {dayjs.unix(timestamp).fromNow()}
         </div>
         <div className="flex">
-          <Link href="#">
-            <span>
-              {transactions.length} Blob Transaction{hasOneTx ? "" : "s"}
-            </span>
-          </Link>
+          <span>
+            {transactions.length} Blob Transaction{hasOneTx ? "" : "s"}
+          </span>
           <span className="mx-1 inline-block">･</span>
-          <Link href="#">
-            <span>
-              {blobCount} Blob{hasOneBlob ? "" : "s"}
-            </span>
-          </Link>
+          <span>
+            {blobCount} Blob{hasOneBlob ? "" : "s"}
+          </span>
         </div>
       </div>
     </CardBase>

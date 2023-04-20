@@ -4,10 +4,7 @@ import { useRouter } from "next/router";
 
 import { BlobCard } from "~/components/Cards/BlobCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
-import {
-  DetailsLayout,
-  PageLayout,
-} from "~/components/DetailsUtilityComponents";
+import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
@@ -34,14 +31,14 @@ const Tx: NextPage = () => {
   }
 
   if (txQuery.status !== "success") {
-    return <PageSpinner label="Loading transaction" />;
+    return <PageSpinner label="Loading transaction…" />;
   }
 
   const { data: tx } = txQuery;
   const sortedBlobs = tx.blobs.sort((a, b) => a.index - b.index);
 
   return (
-    <PageLayout>
+    <>
       <DetailsLayout
         title="Transaction Details"
         externalLink={buildTransactionExternalUrl(tx.hash)}
@@ -59,7 +56,11 @@ const Tx: NextPage = () => {
             },
             {
               name: "Timestamp",
-              value: formatTimestamp(tx.timestamp),
+              value: (
+                <div className="whitespace-break-spaces">
+                  {formatTimestamp(tx.timestamp)}
+                </div>
+              ),
             },
             { name: "From", value: tx.from },
             { name: "To", value: tx.to },
@@ -73,7 +74,7 @@ const Tx: NextPage = () => {
           ))}
         </div>
       </SectionCard>
-    </PageLayout>
+    </>
   );
 };
 

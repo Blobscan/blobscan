@@ -5,10 +5,7 @@ import { useRouter } from "next/router";
 import { utils } from "ethers";
 
 import { SectionCard } from "~/components/Cards/SectionCard";
-import {
-  DetailsLayout,
-  PageLayout,
-} from "~/components/DetailsUtilityComponents";
+import { DetailsLayout } from "~/components/DetailsLayout";
 import { Dropdown } from "~/components/Dropdown";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
@@ -68,17 +65,17 @@ const Blob: NextPage = () => {
   }
 
   if (blobQuery.status !== "success") {
-    return <PageSpinner label="Loading blob" />;
+    return <PageSpinner label="Loading blob…" />;
   }
 
   if (!blobQuery.data) {
-    return <PageLayout>Blob not found</PageLayout>;
+    return <>Blob not found</>;
   }
 
   const { data: blob } = blobQuery;
 
   return (
-    <PageLayout>
+    <>
       <DetailsLayout title="Blob Details">
         <InfoGrid
           fields={[
@@ -100,7 +97,14 @@ const Blob: NextPage = () => {
                 </Link>
               ),
             },
-            { name: "Timestamp", value: formatTimestamp(blob.timestamp) },
+            {
+              name: "Timestamp",
+              value: (
+                <div className="whitespace-break-spaces">
+                  {formatTimestamp(blob.timestamp)}
+                </div>
+              ),
+            },
             { name: "Commitment", value: blob.commitment },
           ]}
         />
@@ -110,8 +114,8 @@ const Blob: NextPage = () => {
         header={
           <div className="flex items-center justify-between">
             Data
-            <div className="flex items-center">
-              <div className="hidden text-sm text-contentSecondary-light dark:text-contentSecondary-dark md:block">
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
                 View as:
               </div>
               <Dropdown
@@ -125,7 +129,7 @@ const Blob: NextPage = () => {
           </div>
         }
       >
-        <div className="break-words rounded-xl border border-border-light p-3 dark:border-border-dark">
+        <div className="break-words  rounded-xl border border-border-light p-3 dark:border-border-dark">
           {formattedDataErr ? (
             <span className="text-error-400">
               Couldn&rsquo;t format blob data.
@@ -135,7 +139,7 @@ const Blob: NextPage = () => {
           )}
         </div>
       </SectionCard>
-    </PageLayout>
+    </>
   );
 };
 
