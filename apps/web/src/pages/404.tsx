@@ -6,7 +6,7 @@ export default function Custom404() {
           404
         </p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-content-light dark:text-content-dark sm:text-5xl">
-          Blob page not found
+          Page not found
         </h1>
         <p className="mt-6 text-base leading-7 dark:text-contentSecondary-dark">
           Sorry, we couldn’t find the page you’re looking for.
@@ -14,7 +14,18 @@ export default function Custom404() {
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <a
             href="/"
-            className="w-9/12 rounded-md bg-primary-600 px-3.5 py-2.5 text-sm font-semibold text-surfaceContent-light shadow-sm transition-colors active:scale-[0.99] dark:bg-primary-600 dark:text-surfaceContent-dark dark:hover:bg-accentHighlight-dark"
+            className={`
+              w-9/12 rounded-md
+              bg-primary-600
+              px-3.5
+              py-2.5 text-sm font-semibold 
+              text-control-light 
+              shadow-sm transition-colors 
+              active:scale-[0.99] 
+              dark:bg-primary-600 
+              dark:text-surfaceContent-dark 
+              dark:hover:bg-accentHighlight-dark
+          `}
           >
             Go back home
           </a>

@@ -164,7 +164,7 @@ export const semanticColors = {
     dark: primary[400],
   },
   link: {
-    light: primary[400],
+    light: primary[700],
     dark: primary[400],
   },
   surface: {

@@ -13,11 +13,11 @@ export default class Document extends NextDocument {
         </Head>
         <body
           className={`
-        dark:bg-background-dark
-        bg-background-light
-        dark:text-content-dark
-        text-content-light
         h-full
+        bg-background-light
+        text-content-light
+        dark:bg-background-dark
+        dark:text-content-dark
         `}
         >
           <Main />

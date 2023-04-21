@@ -1,4 +1,4 @@
-import { Bars3Icon } from "@heroicons/react/24/outline";
+// import { Bars3Icon } from "@heroicons/react/24/outline";
 
 import { Logo } from "../../BlobscanLogo";
 import { DarkModeButton } from "../../DarkModeButton";
@@ -22,7 +22,7 @@ export const MobileNav = function () {
             <div className="w-full">
               <SearchInput />
             </div>
-            <Bars3Icon className="h-8 w-8 text-icon-light dark:text-icon-dark" />
+            {/* <Bars3Icon className="h-8 w-8 text-icon-light dark:text-icon-dark" /> */}
           </div>
         </TopBarSurface>
       </div>

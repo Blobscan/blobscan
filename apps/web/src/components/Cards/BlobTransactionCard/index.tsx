@@ -87,7 +87,7 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
               />
               <div className="flex flex-col space-y-2 truncate">
                 <div className="flex flex-col gap-2 md:flex-row">
-                  <div className="font-semibold text-hint-light">
+                  <div className="font-semibold dark:text-hint-light">
                     Transaction
                   </div>
                   <Link href={buildTransactionRoute(hash)}>{hash}</Link>
@@ -118,7 +118,7 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
             )}
           </div>
         </CardBase>
-        <div className="overflow-hidden pr-4 dark:bg-primary-900">
+        <div className="overflow-hidden bg-primary-200 pr-4 dark:bg-primary-900">
           <animated.div
             style={{
               height: props.openProgress.to(

@@ -17,7 +17,7 @@ export const SectionCard: React.FC<SectionCardProps> = function ({
     rounded-lg
     border 
     border-surface-light
-    bg-surface-dark  
+    bg-surface-light  
     p-6
     dark:border-surface-dark
     dark:bg-surface-dark
