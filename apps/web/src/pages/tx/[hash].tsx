@@ -10,6 +10,7 @@ import { Link } from "~/components/Link";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import { api } from "~/api";
 import {
+  buildAddressRoute,
   buildBlockRoute,
   buildTransactionExternalUrl,
   formatTimestamp,
@@ -62,8 +63,14 @@ const Tx: NextPage = () => {
                 </div>
               ),
             },
-            { name: "From", value: tx.from },
-            { name: "To", value: tx.to },
+            {
+              name: "From",
+              value: <Link href={buildAddressRoute(tx.from)}>{tx.from}</Link>,
+            },
+            {
+              name: "To",
+              value: <Link href={buildAddressRoute(tx.to)}>{tx.to}</Link>,
+            },
           ]}
         />
       </DetailsLayout>

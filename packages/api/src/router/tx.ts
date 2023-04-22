@@ -47,6 +47,26 @@ export const transactionRouter = createTRPCRouter({
         take,
       });
     }),
+  getByAddress: publicProcedure
+    .input(
+      z.object({
+        address: z.string(),
+        limit: z.number().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { address, limit } = input;
+      const take = limit ?? DEFAULT_LIMIT;
+
+      return ctx.prisma.transaction.findMany({
+        select: fullTransactionSelect,
+        where: {
+          OR: [{ from: address }, { to: address }],
+        },
+        orderBy: { blockNumber: "desc" },
+        take,
+      });
+    }),
   getByHash: publicProcedure
     .input(
       z.object({

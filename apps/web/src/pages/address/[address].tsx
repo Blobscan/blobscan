@@ -1,90 +1,60 @@
-// import type { NextPage } from "next";
-// import Link from "next/link";
-// import { useRouter } from "next/router";
+import type { NextPage } from "next";
+import NextError from "next/error";
+import { useRouter } from "next/router";
 
-// import { api } from "~/api";
+import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
+import { SectionCard } from "~/components/Cards/SectionCard";
+import { EthIdenticon } from "~/components/EthIdenticon";
+import { PageSpinner } from "~/components/Spinners/PageSpinner";
+import { api } from "~/api";
 
-// const Address: NextPage = () => {
-//   const router = useRouter();
-//   const address = router.query.address as string;
+const TXS_LIMIT = 20;
 
-//   const { data: txs } = api.tx.getAll.useQuery({
-//     from: address,
-//     to: address,
-//     take: 20,
-//   });
+const Address: NextPage = () => {
+  const router = useRouter();
+  const address = router.query.address as string;
 
-//   if (!txs) {
-//     return <Spinner />;
-//   }
+  const txQuery = api.tx.getByAddress.useQuery({ address, limit: TXS_LIMIT });
 
-//   return (
-//     <>
-//       <Breadcrumb
-//         ml="20px"
-//         mb="5px"
-//         separator="-"
-//         fontWeight="medium"
-//         fontSize="md"
-//       >
-//         <BreadcrumbItem>
-//           <BreadcrumbLink href="/">Home</BreadcrumbLink>
-//         </BreadcrumbItem>
-//         <BreadcrumbItem isCurrentPage>
-//           <BreadcrumbLink href="/">Address {address}</BreadcrumbLink>
-//         </BreadcrumbItem>
-//       </Breadcrumb>
-//       <Heading as="h1" width="100%" mb="15px" ml="20px" fontSize="1.5rem">
-//         Address {address}
-//       </Heading>
+  if (txQuery.error) {
+    return (
+      <NextError
+        title={txQuery.error.message}
+        statusCode={txQuery.error.data?.httpStatus ?? 500}
+      />
+    );
+    l;
+  }
 
-//       <Heading as="h2" width="xs" fontSize="1.2rem" mt="50px" ml="20px">
-//         Transactions
-//       </Heading>
+  if (txQuery.status !== "success") {
+    return <PageSpinner label="Loading address data..." />;
+  }
 
-//       <Table variant="simple">
-//         <Thead>
-//           <Tr>
-//             <Th>Hash</Th>
-//             <Th>Type</Th>
-//             <Th>From</Th>
-//             <Th></Th>
-//             <Th>To</Th>
-//           </Tr>
-//         </Thead>
-//         <Tbody>
-//           {txs.map((tx) => {
-//             return (
-//               <Tr key={tx.hash} fontSize="0.9rem">
-//                 <Td>
-//                   <Link href={`/tx/${tx.hash}`}>{tx.hash}</Link>
-//                 </Td>
-//                 <Td>
-//                   <Tag
-//                     size="md"
-//                     textAlign="center"
-//                     variant="subtle"
-//                     colorScheme={tx.to === address ? "green" : "red"}
-//                   >
-//                     {tx.to === address ? "IN" : "OUT"}
-//                   </Tag>
-//                 </Td>
-//                 <Td>
-//                   <Link href={`/address/${tx.from}`}>{tx.from}</Link>
-//                 </Td>
-//                 <Td>
-//                   <ArrowForwardIcon color="green.700" w={5} h={5} />
-//                 </Td>
-//                 <Td>
-//                   <Link href={`/address/${tx.to}`}>{tx.to}</Link>
-//                 </Td>
-//               </Tr>
-//             );
-//           })}
-//         </Tbody>
-//       </Table>
-//     </>
-//   );
-// };
+  if (!txQuery.data) {
+    return <>Address has no data</>;
+  }
 
-// export default Address;
+  const txs = txQuery.data;
+
+  return (
+    <>
+      <div className="md:flex md:items-center ">
+        <EthIdenticon address={address} scale={0} />
+        <h2 className="ml-2 text-sm font-bold leading-7 text-content-light dark:text-content-dark sm:truncate sm:text-2xl sm:tracking-tight">
+          Address {address}
+        </h2>
+      </div>
+      <div className="flex w-11/12 flex-col gap-8 md:gap-16">
+        <SectionCard header={<div>Blob Transactions ({txs.length})</div>}>
+          <div className="space-y-6">
+            {txs.map((t) => (
+              <BlobTransactionCard key={t.hash} transaction={t} />
+            ))}
+          </div>
+        </SectionCard>
+      </div>
+    </>
+  );
+};
+
+export default Address;

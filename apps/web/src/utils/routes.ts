@@ -1,3 +1,7 @@
+export function buildAddressRoute(address: string) {
+  return `/address/${address}`;
+}
+
 export function buildBlobRoute(txHash: string, blobIndex: number) {
   return `/tx/${txHash}/blob/${blobIndex}`;
 }

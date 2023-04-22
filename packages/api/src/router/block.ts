@@ -14,7 +14,7 @@ const blockSelect = Prisma.validator<Prisma.BlockSelect>()({
   slot: true,
 });
 
-const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
+export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   ...blockSelect,
   transactions: {
     select: {
@@ -49,13 +49,22 @@ export const blockRouter = createTRPCRouter({
     }),
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { id } = input;
 
-      return ctx.prisma.block.findUnique({
+      const block = await ctx.prisma.block.findUnique({
         select: fullBlockSelect,
         where: { id },
       });
+
+      if (!block) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No block with id '${id}'`,
+        });
+      }
+
+      return block;
     }),
   getByHash: publicProcedure
     .input(
