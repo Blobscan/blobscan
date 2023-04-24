@@ -6,7 +6,7 @@ import { Prisma } from "@blobscan/db";
 import { DEFAULT_LIMIT } from "../constants";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
+export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
   id: false,
   versionedHash: true,
   index: true,

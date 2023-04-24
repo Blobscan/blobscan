@@ -1,12 +1,16 @@
 import {
+  useEffect,
   useState,
   type ChangeEventHandler,
   type FormEventHandler,
   type HTMLAttributes,
 } from "react";
+import NextError from "next/error";
 import Router from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { utils } from "ethers";
 
+import { api } from "~/api";
 import { Button } from "./Button";
 
 type SearchInputProps = {
@@ -18,23 +22,94 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
 }: SearchInputProps) {
   const [term, setTerm] = useState("");
+  const [submittedTerm, setSubmittedTerm] = useState<string | null>(null);
+
+  const searchByHash = api.search.searchByHash.useQuery(
+    {
+      hash: submittedTerm as string,
+    },
+    {
+      enabled: false,
+    },
+  );
+  const searchByNumber = api.search.searchByNumber.useQuery(
+    {
+      number: Number(submittedTerm),
+    },
+    {
+      enabled: false,
+    },
+  );
+  const error = searchByNumber.error || searchByHash.error;
+
+  useEffect(() => {
+    if (submittedTerm === null) {
+      return;
+    }
+
+    async function handleSearch() {
+      if (utils.isAddress(submittedTerm as string)) {
+        await Router.push(`/address/${submittedTerm}`);
+      }
+
+      if (submittedTerm?.startsWith("0x") && submittedTerm?.length === 66) {
+        await searchByHash.refetch();
+
+        const { data } = searchByHash;
+
+        if (data?.type === "transaction") {
+          await Router.push(`/tx/${data.id}`);
+        }
+
+        if (data?.type === "blob") {
+          await Router.push(`/tx/${data.id?.replace("-", "/blob/")}`);
+        }
+
+        if (data?.type === "block") {
+          await Router.push(`/block/${data.id}`);
+        }
+
+        console.log(data);
+
+        return;
+      }
+
+      if (typeof Number(submittedTerm) === "number") {
+        await searchByNumber.refetch();
+
+        const { data } = searchByNumber;
+
+        console.log(data);
+
+        return;
+      }
+
+      await Router.push(`/empty`);
+    }
+
+    void handleSearch().then(() => {
+      setSubmittedTerm(null);
+    });
+  }, [searchByHash, searchByNumber, submittedTerm]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
     setTerm(e.target.value);
 
-  const handleSubmit: FormEventHandler<
-    HTMLFormElement | HTMLDivElement
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  > = async (e) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
+    e,
+  ) => {
     e.preventDefault();
-    const res = await fetch(`/api/search?term=${term}`);
-    if (res.status == 200) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const url = (await res.json()).url;
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
-      Router.push(url);
-    }
+    setSubmittedTerm(term);
   };
+
+  if (error) {
+    return (
+      <NextError
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
+      />
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -46,6 +121,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             type="text"
             name="search"
             id="search"
+            onChange={handleChange}
             className={`
             block
             w-full
@@ -73,6 +149,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
         </div>
         <Button
           variant="primary"
+          onClick={handleSubmit}
           className={`
           relative
           -ml-px
