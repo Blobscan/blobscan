@@ -93,16 +93,16 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.1.0
+        specifier: 0.1.0
         version: link:../../packages/api
       '@blobscan/auth':
-        specifier: workspace:^0.1.0
+        specifier: 0.1.0
         version: link:../../packages/auth
       '@blobscan/db':
-        specifier: workspace:^0.1.0
+        specifier: 0.1.0
         version: link:../../packages/db
       '@blobscan/tailwind-config':
-        specifier: workspace:^0.1.0
+        specifier: 0.1.0
         version: link:../../packages/config/tailwind
       '@fontsource/inter':
         specifier: ^4.5.15
@@ -172,7 +172,7 @@ importers:
         version: 3.21.4
     devDependencies:
       '@blobscan/eslint-config':
-        specifier: workspace:^0.1.0
+        specifier: 0.1.0
         version: link:../../packages/config/eslint
       '@tailwindcss/forms':
         specifier: ^0.5.3

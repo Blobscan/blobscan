@@ -47,7 +47,6 @@ const VARIANT_STYLES: VariantStyles = {
 
 export function Button({
   className,
-  size = "md",
   icon,
   label,
   onClick,

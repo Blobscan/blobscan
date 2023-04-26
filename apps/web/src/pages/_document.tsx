@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import NextDocument, { Head, Html, Main, NextScript } from "next/document";
 
 //boilerplate for persistent mode when reload page
