@@ -48,7 +48,7 @@ export const blockRouter = createTRPCRouter({
       });
     }),
   getById: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
 

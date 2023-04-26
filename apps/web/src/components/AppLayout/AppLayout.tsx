@@ -1,5 +1,3 @@
-import { useRouter } from "next/router";
-
 import { BottomBarLayout } from "./BottomBarLayout";
 import { TopBarLayout } from "./TopBarLayout";
 
@@ -9,9 +7,6 @@ interface LayoutProps {
 }
 
 const AppLayout = ({ children }: LayoutProps) => {
-  const { pathname } = useRouter();
-  const isHomePage = pathname === "/";
-
   return (
     <div className="flex min-h-screen flex-col">
       <TopBarLayout />

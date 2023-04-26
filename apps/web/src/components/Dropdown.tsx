@@ -1,9 +1,6 @@
 import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import {
-  ChevronRightIcon,
-  ChevronUpDownIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
 type DropdownProps = {
   items: string[];

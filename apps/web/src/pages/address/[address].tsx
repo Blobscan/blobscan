@@ -23,7 +23,6 @@ const Address: NextPage = () => {
         statusCode={txQuery.error.data?.httpStatus ?? 500}
       />
     );
-    l;
   }
 
   if (txQuery.status !== "success") {

@@ -13,10 +13,10 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@blobscan/api": "workspace:^0.1.0",
-    "@blobscan/auth": "workspace:^0.1.0",
-    "@blobscan/db": "workspace:^0.1.0",
-    "@blobscan/tailwind-config": "workspace:^0.1.0",
+    "@blobscan/api": "0.1.0",
+    "@blobscan/auth": "0.1.0",
+    "@blobscan/db": "0.1.0",
+    "@blobscan/tailwind-config": "0.1.0",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",
     "@headlessui/react": "^1.7.13",
@@ -41,7 +41,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "workspace:^0.1.0",
+    "@blobscan/eslint-config": "0.1.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.33",
