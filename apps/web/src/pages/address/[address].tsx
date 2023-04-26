@@ -37,23 +37,27 @@ const Address: NextPage = () => {
   const txs = txQuery.data;
 
   return (
-    <>
-      <div className="md:flex md:items-center ">
-        <EthIdenticon address={address} scale={0} />
-        <h2 className="ml-2 text-sm font-bold leading-7 text-content-light dark:text-content-dark sm:truncate sm:text-2xl sm:tracking-tight">
-          Address {address}
-        </h2>
-      </div>
-      <div className="flex w-11/12 flex-col gap-8 md:gap-16">
-        <SectionCard header={<div>Blob Transactions ({txs.length})</div>}>
-          <div className="space-y-6">
-            {txs.map((t) => (
-              <BlobTransactionCard key={t.hash} transaction={t} />
-            ))}
+    <div className="flex w-11/12 flex-col gap-8 md:gap-16">
+      <SectionCard
+        header={
+          <div className="flex">
+            <EthIdenticon address={address} scale={0} />
+            <div className="sm:text-lge ml-2 text-base">Address</div>
           </div>
-        </SectionCard>
-      </div>
-    </>
+        }
+      >
+        <h2 className="truncate text-xs font-bold text-content-light dark:text-content-dark sm:text-lg">
+          {address}
+        </h2>
+      </SectionCard>
+      <SectionCard header={<div>Blob Transactions ({txs.length})</div>}>
+        <div className="space-y-6">
+          {txs.map((t) => (
+            <BlobTransactionCard key={t.hash} transaction={t} />
+          ))}
+        </div>
+      </SectionCard>
+    </div>
   );
 };
 

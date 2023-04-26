@@ -1,12 +1,15 @@
 import {
+  useEffect,
   useState,
   type ChangeEventHandler,
   type FormEventHandler,
   type HTMLAttributes,
 } from "react";
+import NextError from "next/error";
 import Router from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
+import { api } from "~/api";
 import { Button } from "./Button";
 
 type SearchInputProps = {
@@ -18,23 +21,56 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
 }: SearchInputProps) {
   const [term, setTerm] = useState("");
+  const [submittedTerm, setSubmittedTerm] = useState("");
+
+  const searchQuery = api.search.byTerm.useQuery(
+    {
+      term: submittedTerm,
+    },
+    {
+      enabled: !!submittedTerm,
+    },
+  );
+
+  useEffect(() => {
+    if (searchQuery.status !== "success") {
+      return;
+    }
+
+    async function handleSearch() {
+      const { data: response } = searchQuery;
+
+      if (response?.length === 0) {
+        await Router.push(`/empty?term=${submittedTerm}`);
+      }
+
+      if (response?.length === 1 && response[0]) {
+        await Router.push(response[0].path);
+      }
+    }
+
+    void handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery.status, searchQuery.data, submittedTerm]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
     setTerm(e.target.value);
 
-  const handleSubmit: FormEventHandler<
-    HTMLFormElement | HTMLDivElement
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  > = async (e) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
+    e,
+  ) => {
     e.preventDefault();
-    const res = await fetch(`/api/search?term=${term}`);
-    if (res.status == 200) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const url = (await res.json()).url;
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-unsafe-argument
-      Router.push(url);
-    }
+    setSubmittedTerm(term);
   };
+
+  if (searchQuery.error) {
+    return (
+      <NextError
+        title={searchQuery.error.message}
+        statusCode={searchQuery.error.data?.httpStatus ?? 500}
+      />
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -46,6 +82,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             type="text"
             name="search"
             id="search"
+            onChange={handleChange}
             className={`
             block
             w-full
@@ -68,11 +105,12 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             sm:leading-6
             lg:text-base
             `}
-            placeholder="Search by Blob Hash / Txn Hash / Block /Address"
+            placeholder="Search by Blob / KZG / Txn / Block / Slot / Address"
           />
         </div>
         <Button
           variant="primary"
+          onClick={handleSubmit}
           className={`
           relative
           -ml-px

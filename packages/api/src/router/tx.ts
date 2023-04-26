@@ -14,22 +14,23 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   blockNumber: true,
 });
 
-const fullTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
-  ...transactionSelect,
-  block: {
-    select: {
-      timestamp: true,
+export const fullTransactionSelect =
+  Prisma.validator<Prisma.TransactionSelect>()({
+    ...transactionSelect,
+    block: {
+      select: {
+        timestamp: true,
+      },
     },
-  },
-  blobs: {
-    select: {
-      id: false,
-      versionedHash: true,
-      commitment: true,
-      index: true,
+    blobs: {
+      select: {
+        id: false,
+        versionedHash: true,
+        commitment: true,
+        index: true,
+      },
     },
-  },
-});
+  });
 
 export const transactionRouter = createTRPCRouter({
   getAll: publicProcedure
