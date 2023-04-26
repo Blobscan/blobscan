@@ -105,7 +105,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             sm:leading-6
             lg:text-base
             `}
-            placeholder={"Search by Blob / KZG / Txn / Block / Slot / Address"}
+            // placeholder={`Search by Blob / KZG / Txn / Block / Slot / Address`}
           />
         </div>
         <Button
