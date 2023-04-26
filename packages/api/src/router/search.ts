@@ -1,82 +1,102 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { blobSelect } from "./blob";
-import { fullBlockSelect } from "./block";
-import { fullTransactionSelect } from "./tx";
+import { isAddress, isCommitment, isHash, isNumber } from "../utils";
+
+type HashResponse = {
+  entity: string;
+  hash: string;
+  index?: number;
+  txHash?: string;
+};
 
 export const searchRouter = createTRPCRouter({
-  searchByHash: publicProcedure
+  byTerm: publicProcedure
     .input(
       z.object({
-        hash: z.string(),
+        term: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { hash } = input;
+      const { term } = input;
 
-      const transaction = await ctx.prisma.transaction.findUnique({
-        select: fullTransactionSelect,
-        where: {
-          hash,
-        },
-      });
-
-      if (transaction) {
-        return {
-          type: "transaction",
-          id: transaction.hash,
-        };
+      if (isAddress(term)) {
+        return [
+          {
+            title: "Address",
+            path: `/address/${term}`,
+            value: term,
+          },
+        ];
       }
 
-      const blobs = await ctx.prisma.blob.findMany({
-        select: blobSelect,
-        where: {
-          versionedHash: hash,
-        },
-      });
+      if (isCommitment(term)) {
+        const blobs = await ctx.prisma.blob.findMany({
+          select: { index: true, txHash: true },
+          where: {
+            commitment: term,
+          },
+        });
 
-      if (blobs.length > 0) {
-        return {
-          type: "blob",
-          id: `${blobs[0]?.txHash}-${blobs[0]?.index}`,
-        };
+        return blobs.map((blob) => ({
+          title: "Blob",
+          path: `/tx/${blob.txHash}/blob/${blob.index}`,
+          value: term,
+        }));
       }
 
-      const block = await ctx.prisma.block.findUnique({
-        select: fullBlockSelect,
-        where: {
-          hash,
-        },
-      });
+      if (isHash(term)) {
+        const response = await ctx.prisma.$queryRaw<HashResponse[]>`
+          SELECT
+            'Blob' AS entity,
+            "versionedHash" AS hash,
+            "index",
+            "txHash"
+          FROM
+            "Blob"
+          WHERE
+            "versionedHash" = ${term}
+            
+          UNION
 
-      if (block) {
-        return {
-          type: "block",
-          data: block.hash,
-        };
+          SELECT
+            'Transaction' AS entity,
+            "hash" AS hash,
+            NULL AS index,
+            NULL AS txHash
+          FROM
+            "Transaction" "t"
+          WHERE
+            "hash" = ${term}
+        `;
+
+        return response.map((e) => {
+          return {
+            title: e.entity,
+            path:
+              e.entity === "Transaction"
+                ? `/tx/${e.hash}`
+                : `/tx/${e.txHash}/blob/${e.index}`,
+            value: term,
+          };
+        });
       }
 
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `No data with hash '${hash}'`,
-      });
-    }),
-  searchByNumber: publicProcedure
-    .input(
-      z.object({
-        number: z.number(),
-      }),
-    )
-    .query(({ ctx, input }) => {
-      const { number } = input;
+      if (isNumber(term)) {
+        const blocks = await ctx.prisma.block.findMany({
+          select: { number: true },
+          where: {
+            OR: [{ number: Number(term) }, { slot: Number(term) }],
+          },
+        });
 
-      return ctx.prisma.block.findMany({
-        select: fullBlockSelect,
-        where: {
-          OR: [{ number }, { slot: number }],
-        },
-      });
+        return blocks.map((block) => ({
+          title: block.number === Number(term) ? "Block" : "Slot",
+          path: `/block/${block.number}`,
+          value: term,
+        }));
+      }
+
+      return [];
     }),
 });

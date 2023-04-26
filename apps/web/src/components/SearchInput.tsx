@@ -8,7 +8,6 @@ import {
 import NextError from "next/error";
 import Router from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { utils } from "ethers";
 
 import { api } from "~/api";
 import { Button } from "./Button";
@@ -22,75 +21,37 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
 }: SearchInputProps) {
   const [term, setTerm] = useState("");
-  const [submittedTerm, setSubmittedTerm] = useState<string | null>(null);
+  const [submittedTerm, setSubmittedTerm] = useState("");
 
-  const searchByHash = api.search.searchByHash.useQuery(
+  const searchQuery = api.search.byTerm.useQuery(
     {
-      hash: submittedTerm as string,
+      term: submittedTerm,
     },
     {
-      enabled: false,
-    },
-  );
-  const searchByNumber = api.search.searchByNumber.useQuery(
-    {
-      number: Number(submittedTerm),
-    },
-    {
-      enabled: false,
+      enabled: !!submittedTerm,
     },
   );
-  const error = searchByNumber.error || searchByHash.error;
 
   useEffect(() => {
-    if (submittedTerm === null) {
+    if (searchQuery.status !== "success") {
       return;
     }
 
     async function handleSearch() {
-      if (utils.isAddress(submittedTerm as string)) {
-        await Router.push(`/address/${submittedTerm}`);
+      const { data: response } = searchQuery;
+
+      if (response?.length === 0) {
+        await Router.push(`/empty?term=${submittedTerm}`);
       }
 
-      if (submittedTerm?.startsWith("0x") && submittedTerm?.length === 66) {
-        await searchByHash.refetch();
-
-        const { data } = searchByHash;
-
-        if (data?.type === "transaction") {
-          await Router.push(`/tx/${data.id}`);
-        }
-
-        if (data?.type === "blob") {
-          await Router.push(`/tx/${data.id?.replace("-", "/blob/")}`);
-        }
-
-        if (data?.type === "block") {
-          await Router.push(`/block/${data.id}`);
-        }
-
-        console.log(data);
-
-        return;
+      if (response?.length === 1 && response[0]) {
+        await Router.push(response[0].path);
       }
-
-      if (typeof Number(submittedTerm) === "number") {
-        await searchByNumber.refetch();
-
-        const { data } = searchByNumber;
-
-        console.log(data);
-
-        return;
-      }
-
-      await Router.push(`/empty`);
     }
 
-    void handleSearch().then(() => {
-      setSubmittedTerm(null);
-    });
-  }, [searchByHash, searchByNumber, submittedTerm]);
+    void handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery.status, searchQuery.data, submittedTerm]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
     setTerm(e.target.value);
@@ -102,11 +63,11 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     setSubmittedTerm(term);
   };
 
-  if (error) {
+  if (searchQuery.error) {
     return (
       <NextError
-        title={error.message}
-        statusCode={error.data?.httpStatus ?? 500}
+        title={searchQuery.error.message}
+        statusCode={searchQuery.error.data?.httpStatus ?? 500}
       />
     );
   }
@@ -144,7 +105,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             sm:leading-6
             lg:text-base
             `}
-            placeholder="Search by Blob Hash / Txn Hash / Block /Address"
+            placeholder="Search by Blob / KZG / Txn / Block / Slot / Address"
           />
         </div>
         <Button

@@ -16,7 +16,7 @@ type EthIdenticonProps = {
 export const EthIdenticon: React.FC<EthIdenticonProps> = ({
   address,
   scale = 1,
-  radius = 10,
+  // radius = 5,
   soften = 0.3,
 }) => {
   const blockiesScale = scale * BASE_SCALE;
@@ -29,7 +29,7 @@ export const EthIdenticon: React.FC<EthIdenticonProps> = ({
         align-middle 
         w-[${BLOCKIES_SQUARES * blockiesScale}px] 
         h-[${BLOCKIES_SQUARES * blockiesScale}px]
-        rounded-[${radius}px]
+        rounded-[5px]
       `}
     >
       <div
