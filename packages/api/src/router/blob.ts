@@ -29,7 +29,6 @@ export const blobRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        transaction: z.boolean().optional(),
         limit: z.number().optional(),
       }),
     )

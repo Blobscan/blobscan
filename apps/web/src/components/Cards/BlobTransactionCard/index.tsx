@@ -8,19 +8,14 @@ import { animated, useSpring } from "@react-spring/web";
 
 import dayjs from "~/dayjs";
 import { type Block } from "~/types";
-import { buildBlobRoute, buildTransactionRoute } from "~/utils";
+import {
+  buildAddressRoute,
+  buildBlobRoute,
+  buildBlockRoute,
+  buildTransactionRoute,
+} from "~/utils";
 import { Link } from "../../Link";
 import { CardBase } from "../Bases";
-
-const AddressLabel: React.FC<{
-  address: string;
-}> = function ({ address }) {
-  return (
-    <Link href="#">
-      <span className="text-xs">{address}</span>
-    </Link>
-  );
-};
 
 const CollapseIcon: React.FC<{
   opened: boolean;
@@ -94,12 +89,12 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
                 </div>
                 <div className="flex flex-col gap-1 md:flex-row md:items-center">
                   <div className="mb-1 text-error-50 md:hidden">From</div>
-                  <Link href="#">
+                  <Link href={buildAddressRoute(from)}>
                     <span className="text-xs">{from}</span>
                   </Link>
                   <ArrowRightIcon className="hidden h-2 w-2 md:block" />
                   <div className="mt-1 md:hidden">To</div>
-                  <Link href="#">
+                  <Link href={buildAddressRoute(to)}>
                     <span className="text-xs">{to}</span>
                   </Link>
                 </div>
@@ -108,7 +103,7 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
             </div>
             {block && (
               <div className="hidden space-y-2 self-center md:flex md:flex-col">
-                <Link href="#">
+                <Link href={buildBlockRoute(block.number)}>
                   <span>Block #{block.number}</span>
                 </Link>
                 <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
