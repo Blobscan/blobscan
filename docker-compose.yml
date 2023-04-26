@@ -3,6 +3,7 @@ version: "3.7"
 
 services:
   web:
+    image: blossomlabs/blobscan:next
     build: .
     restart: always
     ports:
@@ -25,6 +26,8 @@ services:
   adminer:
     image: adminer
     restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: blobscan_dev
     ports:
       - 8080:8080
 
