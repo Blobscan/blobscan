@@ -52,8 +52,9 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             rounded-none
             rounded-l-md
             border-border-light
-            bg-background-light
+            bg-controlBackground-light
             py-1.5
+            text-sm
             transition-colors
             placeholder:text-hint-light
             hover:border-controlBorderHighlight-light
@@ -64,10 +65,10 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             dark:placeholder:text-hint-dark
             dark:hover:border-controlBorderHighlight-dark
             dark:focus:border-accentHighlight-dark
-            sm:text-sm
             sm:leading-6
+            lg:text-base
             `}
-            placeholder="Search by block, transaction, blob, datahash or address"
+            placeholder="Search by Blob Hash / Txn Hash / Block /Address"
           />
         </div>
         <Button

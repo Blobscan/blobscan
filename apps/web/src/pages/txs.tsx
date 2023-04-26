@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import NextError from "next/error";
 
 import { SectionCard } from "~/components/Cards/SectionCard";
-import { PageLayout } from "~/components/DetailsUtilityComponents";
 import { api } from "~/api";
 
 const Txs: NextPage = function () {
@@ -17,11 +16,7 @@ const Txs: NextPage = function () {
     );
   }
 
-  return (
-    <PageLayout>
-      <SectionCard header="Transactions">aasdasda</SectionCard>
-    </PageLayout>
-  );
+  return <SectionCard header="Transactions">aasdasda</SectionCard>;
 };
 
 export default Txs;

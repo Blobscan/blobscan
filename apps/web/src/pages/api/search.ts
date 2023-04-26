@@ -16,9 +16,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 function search(term: string) {
-  if (utils.isAddress(term)) {
-    return `/address/${term}`;
-  }
+  // if (utils.isAddress(term)) {
+  //   return `/address/${term}`;
+  // }
 
   // TODO: Decide how to implement search logic
 

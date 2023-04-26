@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 const SIZES = {
   lg: {
-    width: 330,
+    width: 320,
     height: 130,
   },
   md: {
@@ -21,11 +22,13 @@ type LogoProps = {
 };
 
 export const Logo: React.FC<LogoProps> = ({ size }) => {
+  const { systemTheme, theme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
+
   return (
     <Link href="/">
       <Image
-        src="/logo-dark.svg"
-        // src={colorMode === "light" ? "/logo-light.svg" : "/logo-dark.svg"}
+        src={currentTheme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
         {...SIZES[size]}
         alt="blobscan-logo"
       />
