@@ -14,7 +14,7 @@ const config = {
   },
   settings: {
     next: {
-      rootDir: ["apps/nextjs", "apps/swagger"],
+      rootDir: ["apps/web", "apps/swagger"],
     },
   },
 };

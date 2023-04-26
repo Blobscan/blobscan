@@ -11,34 +11,33 @@ datasource db {
 }
 
 model Blob {
-  id          String      @id
-  hash        String
+  id          Int      @id @default(autoincrement())
+  versionedHash String
   commitment  String
   data        String      @db.Text
-  tx          String
+  txHash      String
   index       Int
-  Transaction Transaction @relation(fields: [tx], references: [id])
+  @@unique([txHash, index])
+  transaction Transaction @relation(fields: [txHash], references: [hash])
 }
 
 model Block {
   id          String        @id
-  hash        String
-  number      Int
-  timestamp   Int
-  slot        Int
-  Transaction Transaction[]
+  hash        String        @unique 
+  number      Int           @unique
+  timestamp   Int           @unique
+  slot        Int           @unique
+  transactions Transaction[]
 }
 
 model Transaction {
-  id        String @id
-  blockHash String
+  id        String          @id
+  hash      String          @unique
   from      String
-  hash      String
   to        String
-  index     Int
-  block     Int
-  Blob      Blob[]
-  Block     Block  @relation(fields: [blockHash], references: [id])
+  blockNumber Int
+  blobs      Blob[]
+  block     Block  @relation(fields: [blockNumber], references: [number])
 }
 
 
