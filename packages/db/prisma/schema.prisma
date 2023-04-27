@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Config {
+  id          Int         @id @default(autoincrement())
+  lastSlot    Int         @unique
+}
+
 model Blob {
   id          Int         @id @default(autoincrement())
   versionedHash String

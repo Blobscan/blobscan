@@ -6,6 +6,7 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+
 import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
@@ -72,13 +73,6 @@ const t = initTRPC
   .create({
     transformer: superjson,
     errorFormatter({ shape, error }) {
-      if (
-        error.code === "INTERNAL_SERVER_ERROR" &&
-        process.env.NODE_ENV === "production"
-      ) {
-        return { ...shape, message: "Internal server error" };
-      }
-
       return {
         ...shape,
         data: {
