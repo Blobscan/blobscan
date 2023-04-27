@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { authRouter } from "./router/auth";
+// import { authRouter } from "./router/auth";
 import { blobRouter } from "./router/blob";
 import { blockRouter } from "./router/block";
 import { indexerRouter } from "./router/indexer";
@@ -26,7 +26,7 @@ export const appRouter = createTRPCRouter({
     .output(z.string())
     .query(() => "yay!"),
 
-  auth: authRouter,
+  // auth: authRouter,
   block: blockRouter,
   tx: transactionRouter,
   blob: blobRouter,
