@@ -204,9 +204,6 @@ importers:
 
   packages/api:
     dependencies:
-      '@blobscan/auth':
-        specifier: ^0.1.0
-        version: link:../auth
       '@blobscan/db':
         specifier: ^0.1.0
         version: link:../db
