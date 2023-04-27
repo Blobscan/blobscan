@@ -12,7 +12,7 @@ import superjson from "superjson";
 import { type OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
-import { getServerSession, type Session } from "@blobscan/auth";
+// import { getServerSession, type Session } from "@blobscan/auth";
 import { prisma } from "@blobscan/db";
 
 /**
@@ -25,7 +25,7 @@ import { prisma } from "@blobscan/db";
  *
  */
 type CreateContextOptions = {
-  session: Session | null;
+  // session: Session | null;
 };
 
 /**
@@ -37,9 +37,9 @@ type CreateContextOptions = {
  * - trpc's `createSSGHelpers` where we don't have req/res
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = (opts: CreateContextOptions) => {
+const createInnerTRPCContext = () => {
   return {
-    session: opts.session,
+    // session: opts.session,
     prisma,
   };
 };
@@ -49,15 +49,14 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  * process every request that goes through your tRPC endpoint
  * @link https://trpc.io/docs/context
  */
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const { req, res } = opts;
+
+export const createTRPCContext = () => {
+  // const { req, res } = opts;
 
   // Get the session from the server using the unstable_getServerSession wrapper function
-  const session = await getServerSession({ req, res });
+  // const session = await getServerSession({ req, res });
 
-  return createInnerTRPCContext({
-    session,
-  });
+  return createInnerTRPCContext();
 };
 
 /**
