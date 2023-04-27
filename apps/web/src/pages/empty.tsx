@@ -1,13 +1,7 @@
-import { useRouter } from "next/router";
-
 export default function Empty() {
-  const router = useRouter();
-  const term = router.query.term as string;
-
   return (
     <main className="grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
-        <p className="text-base font-semibold text-error-700">{term}</p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-content-light dark:text-content-dark sm:text-5xl">
           Search not found
         </h1>

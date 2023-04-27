@@ -2,13 +2,13 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import { api } from "~/utils/api";
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
-import { api } from "~/api";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,

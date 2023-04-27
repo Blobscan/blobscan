@@ -2,11 +2,11 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import { api } from "~/utils/api";
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
-import { api } from "~/api";
 
 const TXS_LIMIT = 20;
 
@@ -40,7 +40,7 @@ const Address: NextPage = () => {
       <SectionCard
         header={
           <div className="flex">
-            <EthIdenticon address={address} scale={0} />
+            <EthIdenticon address={address} />
             <div className="sm:text-lge ml-2 text-base">Address</div>
           </div>
         }

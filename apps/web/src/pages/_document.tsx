@@ -1,7 +1,5 @@
 import NextDocument, { Head, Html, Main, NextScript } from "next/document";
 
-//boilerplate for persistent mode when reload page
-//not working correctly..
 export default class Document extends NextDocument {
   render() {
     return (

@@ -1,5 +1,5 @@
 type SpinnerProps = {
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xlg";
   label?: string;
 };
 

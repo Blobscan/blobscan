@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import type { AppProps as NextAppProps } from "next/app";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "next-themes";
 
 import "@fontsource/inter/400.css";
@@ -9,8 +8,8 @@ import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 
+import { api } from "~/utils/api";
 import AppLayout from "~/components/AppLayout/AppLayout";
-import { api } from "~/api";
 
 function MyApp({ Component, pageProps }: NextAppProps) {
   return (
@@ -26,7 +25,6 @@ function MyApp({ Component, pageProps }: NextAppProps) {
       <AppLayout>
         <Component {...pageProps} />
       </AppLayout>
-      <ReactQueryDevtools initialIsOpen={false} />
     </ThemeProvider>
   );
 }
