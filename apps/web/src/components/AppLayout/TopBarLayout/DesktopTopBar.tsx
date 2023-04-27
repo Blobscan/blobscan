@@ -8,7 +8,7 @@ export const DesktopNav: React.FC = () => {
     <TopBarSurface>
       <div className="flex h-full justify-between">
         <Logo size="md" />
-        <div className="lg:w-1/4">
+        <div className="w-1/2 md:w-1/2 lg:w-1/3">
           <SearchInput />
         </div>
         <DarkModeButton />

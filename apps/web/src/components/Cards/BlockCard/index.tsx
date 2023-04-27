@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import dayjs from "~/dayjs";
+import dayjs from "~/utils/dayjs";
 import type { Block } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";

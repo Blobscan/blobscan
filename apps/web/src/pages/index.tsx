@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import { api } from "~/utils/api";
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
@@ -11,7 +12,6 @@ import { BlockCardSkeleton } from "~/components/Cards/BlockCard/Skeleton";
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
-import { api } from "~/api";
 
 const BLOCKS_LIMIT = 4;
 const TXS_LIMIT = 5;
@@ -58,7 +58,8 @@ const Home: NextPage = () => {
               <Button
                 variant="outline"
                 label="View All Blocks"
-                onClick={() => console.log("TODO: View all blocks")}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={() => router.push("/blocks")}
               />
             </div>
           }

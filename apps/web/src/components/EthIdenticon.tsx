@@ -8,37 +8,49 @@ const BASE_SCALE = 3;
 
 type EthIdenticonProps = {
   address: string;
-  scale?: number;
-  radius?: number;
+  size?: "sm" | "md" | "lg" | "xlg";
   soften?: number;
+};
+
+const SCALES = {
+  sm: 1,
+  md: 2,
+  lg: 3,
+  xlg: 4,
+};
+
+const RADIUS = {
+  sm: "rounded-[3px]",
+  md: "rounded-[5px]",
+  lg: "rounded-[5px]",
+  xlg: "rounded-[5px]",
 };
 
 export const EthIdenticon: React.FC<EthIdenticonProps> = ({
   address,
-  scale = 1,
-  // radius = 5,
+  size = "md",
   soften = 0.3,
 }) => {
-  const blockiesScale = scale * BASE_SCALE;
+  const blockiesScale = SCALES[size] * BASE_SCALE;
 
   return utils.isAddress(address) ? (
     <div
       className={`
+        w-[${BLOCKIES_SQUARES * blockiesScale}px] 
+        h-[${BLOCKIES_SQUARES * blockiesScale}px]
+        ${RADIUS[size]}
         inline-flex 
         overflow-hidden
         align-middle 
-        w-[${BLOCKIES_SQUARES * blockiesScale}px] 
-        h-[${BLOCKIES_SQUARES * blockiesScale}px]
-        rounded-[5px]
       `}
     >
       <div
         className={`
-          flex
-          bg-white
           w-[${BLOCKIES_SQUARES * blockiesScale * PX_RATIO}px] 
           h-[${BLOCKIES_SQUARES * blockiesScale * PX_RATIO}px]
+          flex
           origin-top-left
+          bg-white
           scale-{${1 / PX_RATIO}}
         `}
       >
@@ -46,7 +58,7 @@ export const EthIdenticon: React.FC<EthIdenticonProps> = ({
           <Blockies
             seed={address.toLowerCase()}
             size={BLOCKIES_SQUARES}
-            scale={blockiesScale * PX_RATIO}
+            scale={SCALES[size] * PX_RATIO}
           />
         </div>
       </div>

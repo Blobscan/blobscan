@@ -9,7 +9,7 @@ import NextError from "next/error";
 import Router from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-import { api } from "~/api";
+import { api } from "~/utils/api";
 import { Button } from "./Button";
 
 type SearchInputProps = {
@@ -41,7 +41,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       const { data: response } = searchQuery;
 
       if (response?.length === 0) {
-        await Router.push(`/empty?term=${submittedTerm}`);
+        await Router.push(`/empty`);
       }
 
       if (response?.length === 1 && response[0]) {
@@ -51,7 +51,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
     void handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery.status, searchQuery.data, submittedTerm]);
+  }, [searchQuery.status, searchQuery.data]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
     setTerm(e.target.value);
@@ -105,7 +105,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             sm:leading-6
             lg:text-base
             `}
-            placeholder={"Search by Blob / KZG / Txn / Block / Slot / Address"}
+            placeholder={`Search by Blob / KZG / Txn / Block / Slot / Address`}
           />
         </div>
         <Button

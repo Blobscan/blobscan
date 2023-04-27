@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { animated, useSpring } from "@react-spring/web";
 
-import dayjs from "~/dayjs";
+import dayjs from "~/utils/dayjs";
 import { type Block } from "~/types";
 import {
   buildAddressRoute,
