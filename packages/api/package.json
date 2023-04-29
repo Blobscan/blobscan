@@ -11,8 +11,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/db": "^0.1.0",
-    "@trpc/server": "^10.18.0",
+    "@blobscan/db": "workspace:*",
+    "@trpc/server": "^10.23.0",
     "superjson": "1.9.1",
     "zod": "^3.21.4"
   },
