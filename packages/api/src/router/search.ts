@@ -10,6 +10,27 @@ type HashResponse = {
   txHash?: string;
 };
 
+type SearchCategory = "address" | "blob" | "block" | "slot" | "transaction";
+
+type SearchOutput = {
+  [K in SearchCategory]?: { id: string }[];
+};
+
+function entityToCategory(entity: string): SearchCategory {
+  switch (entity) {
+    case "Blob":
+      return "blob";
+    case "Block":
+      return "block";
+    case "Slot":
+      return "slot";
+    case "Transaction":
+      return "transaction";
+    default:
+      throw new Error(`Unknown entity ${entity}`);
+  }
+}
+
 export const searchRouter = createTRPCRouter({
   byTerm: publicProcedure
     .input(
@@ -17,17 +38,13 @@ export const searchRouter = createTRPCRouter({
         term: z.string(),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .query<SearchOutput>(async ({ ctx, input }) => {
       const { term } = input;
 
       if (isAddress(term)) {
-        return [
-          {
-            title: "Address",
-            path: `/address/${term}`,
-            value: term,
-          },
-        ];
+        return {
+          address: [{ id: term }],
+        };
       }
 
       if (isCommitment(term)) {
@@ -38,11 +55,11 @@ export const searchRouter = createTRPCRouter({
           },
         });
 
-        return blobs.map((blob) => ({
-          title: "Blob",
-          path: `/tx/${blob.txHash}/blob/${blob.index}`,
-          value: term,
-        }));
+        return {
+          blob: blobs.map((blob) => ({
+            id: `${blob.txHash}-${blob.index}`,
+          })),
+        };
       }
 
       if (isHash(term)) {
@@ -70,16 +87,18 @@ export const searchRouter = createTRPCRouter({
             "hash" = ${term}
         `;
 
-        return response.map((e) => {
-          return {
-            title: e.entity,
-            path:
-              e.entity === "Transaction"
-                ? `/tx/${e.hash}`
-                : `/tx/${e.txHash}/blob/${e.index}`,
-            value: term,
-          };
-        });
+        return response.reduce<SearchOutput>((output, el) => {
+          const category = entityToCategory(el.entity);
+          const id =
+            el.txHash && el.index !== undefined
+              ? `${el.txHash}-${el.index}`
+              : el.hash;
+          const searchElement = { id };
+
+          output[category] = [...(output[category] || []), searchElement];
+
+          return output;
+        }, {});
       }
 
       if (isNumber(term)) {
@@ -90,13 +109,20 @@ export const searchRouter = createTRPCRouter({
           },
         });
 
-        return blocks.map((block) => ({
-          title: block.number === Number(term) ? "Block" : "Slot",
-          path: `/block/${block.number}`,
-          value: term,
-        }));
+        const term_ = Number(term);
+
+        return blocks.reduce<SearchOutput>((output, block) => {
+          const category: SearchCategory =
+            block.number === term_ ? "block" : "slot";
+          output[category] = [
+            ...(output[category] || []),
+            { id: block.number.toString() },
+          ];
+
+          return output;
+        }, {});
       }
 
-      return [];
+      return {};
     }),
 });

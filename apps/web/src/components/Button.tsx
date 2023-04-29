@@ -1,4 +1,8 @@
-import { type DOMAttributes, type HTMLAttributes } from "react";
+import {
+  type ButtonHTMLAttributes,
+  type DOMAttributes,
+  type HTMLAttributes,
+} from "react";
 
 type VariantName = "outline" | "primary";
 type VariantStyles = Record<
@@ -7,6 +11,7 @@ type VariantStyles = Record<
 >;
 
 type ButtonProps = {
+  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
   variant: keyof VariantStyles;
   className?: HTMLAttributes<HTMLButtonElement>["className"];
   size?: string;
@@ -46,6 +51,7 @@ const VARIANT_STYLES: VariantStyles = {
 };
 
 export function Button({
+  type,
   className,
   icon,
   label,
@@ -54,7 +60,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      type="button"
+      type={type ?? "button"}
       className={`
       ${VARIANT_STYLES[variant]}
       rounded
