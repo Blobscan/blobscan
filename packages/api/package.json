@@ -17,7 +17,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.1.0",
+    "@blobscan/eslint-config": "workspace:*",
     "eslint": "^8.37.0",
     "trpc-openapi": "^1.1.2",
     "typescript": "^5.0.3"

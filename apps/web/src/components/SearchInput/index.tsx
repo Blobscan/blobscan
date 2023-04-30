@@ -2,7 +2,6 @@ import {
   useCallback,
   useRef,
   useState,
-  type ChangeEventHandler,
   type FormEventHandler,
   type HTMLAttributes,
 } from "react";
@@ -13,48 +12,16 @@ import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { api, type RouterOutputs } from "~/utils/api";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
-import {
-  NO_RESULTS_ROUTE,
-  buildAddressRoute,
-  buildBlobRoute,
-  buildBlockRoute,
-  buildTransactionRoute,
-} from "~/utils";
+import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
 import { SearchResults, type SearchResultsProps } from "./SearchResults";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];
-
+type SearchCategory = keyof SearchOutput;
 type SearchInputProps = {
   className?: HTMLAttributes<HTMLInputElement>["className"];
   noIconButton?: boolean;
 };
-
-function getRouteBySearchCategory(
-  category: keyof SearchOutput,
-  id: string,
-): string {
-  switch (category) {
-    case "address":
-      return buildAddressRoute(id);
-    case "blob": {
-      const [txHash, txIndex] = id.split("-");
-
-      if (!txHash || !txIndex) {
-        return NO_RESULTS_ROUTE;
-      }
-
-      return buildBlobRoute(txHash, txIndex);
-    }
-    case "block":
-    case "slot":
-      return buildBlockRoute(id);
-    case "transaction":
-      return buildTransactionRoute(id);
-    default:
-      return NO_RESULTS_ROUTE;
-  }
-}
 
 export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
@@ -76,43 +43,37 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     },
   );
 
-  const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (e) => setTerm(e.target.value),
-    [],
-  );
+  const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
+    e,
+  ) => {
+    e.preventDefault();
 
-  const handleSubmit = useCallback<
-    FormEventHandler<HTMLFormElement | HTMLButtonElement>
-  >(
-    (e) => {
-      e.preventDefault();
+    const searchResults = searchQuery.data;
 
-      const searchResults = searchQuery.data;
+    setTerm("");
 
-      if (!searchResults) {
-        return;
-      }
+    if (!searchResults || !Object.keys(searchResults).length) {
+      void router.push(`/search?q=${term}`);
+      return;
+    }
 
-      setTerm("");
-      const searchedCategories = Object.keys(searchResults);
+    const categories = Object.keys(searchResults) as SearchCategory[];
 
-      if (!searchedCategories.length) {
-        void router.push(NO_RESULTS_ROUTE);
-        return;
-      }
-      const firstCategory = searchedCategories[0] as keyof typeof searchResults;
+    if (categories.length > 1) {
+      void router.push(`/search?q=${term}`);
+      return;
+    }
 
-      const results = searchResults[firstCategory];
+    const category = categories[0] as SearchCategory;
+    const results = searchResults[category];
 
-      if (!results || !results[0]?.id) {
-        void router.push(NO_RESULTS_ROUTE);
-        return;
-      }
+    if (!results || !results.length || results.length > 1 || !results[0]?.id) {
+      void router.push(`/search?q=${term}`);
+      return;
+    }
 
-      void router.push(getRouteBySearchCategory(firstCategory, results[0].id));
-    },
-    [searchQuery.data, router],
-  );
+    void router.push(getRouteBySearchCategory(category, results[0].id));
+  };
 
   const handleResultClick = useCallback<SearchResultsProps["onResultClick"]>(
     (category, id) => {
@@ -149,7 +110,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             name="search"
             id="search"
             value={term}
-            onChange={handleChange}
+            onChange={(e) => setTerm(e.target.value)}
             className={`
             block
             w-full

@@ -1,5 +1,3 @@
-export const NO_RESULTS_ROUTE = "/empty";
-
 export function buildAddressRoute(address: string) {
   return `/address/${address}`;
 }
