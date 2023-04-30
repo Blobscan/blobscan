@@ -37,7 +37,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
 }) {
   return (
     <div className="flex flex-col" onClick={() => onClick(category, id)}>
-      <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md py-2 pl-1 pr-3 text-sm text-contentSecondary-light transition-colors dark:text-contentSecondary-dark hover:dark:bg-primary-800/20">
+      <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md py-2 pl-1 pr-3 text-sm text-contentSecondary-light transition-colors hover:bg-primary-100 dark:text-contentSecondary-dark hover:dark:bg-primary-800/20">
         <div className="flex w-11/12 items-center gap-2">
           {typeToIcon(category)}
           {category === "blob" ? (
