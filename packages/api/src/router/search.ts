@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { Prisma } from "@blobscan/db";
+
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { isAddress, isCommitment, isHash, isNumber } from "../utils";
+import { isAddress, isBlockNumber, isCommitment, isHash } from "../utils";
 
 type HashResponse = {
   entity: string;
@@ -101,15 +103,15 @@ export const searchRouter = createTRPCRouter({
         }, {});
       }
 
-      if (isNumber(term)) {
+      if (isBlockNumber(term)) {
+        const term_ = Number(term);
+
         const blocks = await ctx.prisma.block.findMany({
           select: { number: true },
           where: {
-            OR: [{ number: Number(term) }, { slot: Number(term) }],
+            OR: [{ number: term_ }, { slot: term_ }],
           },
         });
-
-        const term_ = Number(term);
 
         return blocks.reduce<SearchOutput>((output, block) => {
           const category: SearchCategory =
