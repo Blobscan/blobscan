@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/swagger",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "pnpm with-env next build",
@@ -13,8 +13,8 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@blobscan/api": "^0.1.0",
-    "@blobscan/db": "^0.1.0",
+    "@blobscan/api": "0.0.1",
+    "@blobscan/db": "0.0.1",
     "@trpc/server": "^10.23.0",
     "next": "^13.2.4",
     "nextjs-cors": "^2.1.2",
@@ -25,7 +25,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.1.0",
+    "@blobscan/eslint-config": "0.0.1",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",

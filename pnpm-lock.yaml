@@ -5,7 +5,7 @@ importers:
   .:
     dependencies:
       '@blobscan/eslint-config':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:packages/config/eslint
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^3.7.2
@@ -35,10 +35,10 @@ importers:
   apps/swagger:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:../../packages/api
       '@blobscan/db':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:../../packages/db
       '@trpc/server':
         specifier: ^10.23.0
@@ -66,7 +66,7 @@ importers:
         version: 3.21.4
     devDependencies:
       '@blobscan/eslint-config':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:../../packages/config/eslint
       '@types/node':
         specifier: ^18.15.11
@@ -93,13 +93,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../../packages/api
       '@blobscan/db':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../../packages/db
       '@blobscan/tailwind-config':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../../packages/config/tailwind
       '@fontsource/inter':
         specifier: ^4.5.15
@@ -166,7 +166,7 @@ importers:
         version: 3.21.4
     devDependencies:
       '@blobscan/eslint-config':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../../packages/config/eslint
       '@tailwindcss/forms':
         specifier: ^0.5.3
@@ -205,7 +205,7 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../db
       '@trpc/server':
         specifier: ^10.23.0
@@ -218,7 +218,7 @@ importers:
         version: 3.21.4
     devDependencies:
       '@blobscan/eslint-config':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:../config/eslint
       eslint:
         specifier: ^8.37.0
@@ -233,7 +233,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -252,7 +252,7 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       '@blobscan/eslint-config':
-        specifier: ^0.1.0
+        specifier: 0.0.1
         version: link:../config/eslint
       eslint:
         specifier: ^8.37.0
@@ -1687,7 +1687,7 @@ packages:
       '@swagger-api/apidom-json-pointer': 0.69.2
       '@swagger-api/apidom-ns-asyncapi-2': 0.69.3
       '@swagger-api/apidom-ns-openapi-3-0': 0.69.3
-      '@swagger-api/apidom-ns-openapi-3-1': 0.69.2
+      '@swagger-api/apidom-ns-openapi-3-1': 0.69.3
       '@swagger-api/apidom-parser-adapter-api-design-systems-json': 0.69.3
       '@swagger-api/apidom-parser-adapter-api-design-systems-yaml': 0.69.3
       '@swagger-api/apidom-parser-adapter-asyncapi-json-2': 0.69.3
