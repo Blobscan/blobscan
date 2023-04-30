@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
 
 export default function Search({ term }: SearchProps) {
   const router = useRouter();
-
+  console.log(term);
   return (
     <div className="grid w-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
@@ -87,7 +87,7 @@ export default function Search({ term }: SearchProps) {
         {term ? (
           <p>
             &quot;
-            <span className="inline-block max-w-[112px] truncate align-middle text-sm md:max-w-lg">
+            <span className="inline-block max-w-[112px] truncate whitespace-pre align-middle text-sm md:max-w-lg">
               {term}
             </span>
             &quot;

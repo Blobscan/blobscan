@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { Prisma } from "@blobscan/db";
-
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { isAddress, isBlockNumber, isCommitment, isHash } from "../utils";
 
