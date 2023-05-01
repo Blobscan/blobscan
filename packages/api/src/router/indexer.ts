@@ -15,7 +15,7 @@ export const indexerRouter = createTRPCRouter({
     .input(z.number())
     .output(z.number())
     .mutation(async ({ ctx, input }) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+       
       await ctx.prisma.config.upsert({
         where: { id: 1 },
         update: {

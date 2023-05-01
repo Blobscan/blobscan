@@ -1,6 +1,7 @@
 {
   "name": "@blobscan/auth",
-  "version": "0.1.0",
+  "version": "0.0.1",
+  "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
   "license": "MIT",
@@ -11,7 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/db": "^0.1.0",
+    "@blobscan/db": "0.0.1",
     "@next-auth/prisma-adapter": "^1.0.5",
     "next": "^13.2.4",
     "next-auth": "^4.21.1",
@@ -19,7 +20,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.1.0",
+    "@blobscan/eslint-config": "0.0.1",
     "eslint": "^8.37.0",
     "typescript": "^5.0.3"
   }

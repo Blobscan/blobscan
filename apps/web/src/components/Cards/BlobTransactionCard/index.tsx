@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowRightIcon,
   ChevronDownIcon,
@@ -128,17 +128,14 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
               <div></div>
               <div className="font-semibold">Versioned Hash</div>
               {blobs.map((b) => (
-                <>
-                  <div>
-                    <Link
-                      key={b.versionedHash}
-                      href={buildBlobRoute(hash, b.index)}
-                    >
+                <React.Fragment key={`${hash}-${b.index}`}>
+                  <div key={`${hash}-${b.index}`}>
+                    <Link href={buildBlobRoute(hash, b.index)}>
                       Blob {b.index}
                     </Link>
                   </div>
                   <div className=" truncate text-xs">{b.versionedHash}</div>
-                </>
+                </React.Fragment>
               ))}
             </div>
           </animated.div>

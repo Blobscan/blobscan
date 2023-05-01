@@ -2,7 +2,7 @@ export function buildAddressRoute(address: string) {
   return `/address/${address}`;
 }
 
-export function buildBlobRoute(txHash: string, blobIndex: number) {
+export function buildBlobRoute(txHash: string, blobIndex: number | string) {
   return `/tx/${txHash}/blob/${blobIndex}`;
 }
 
