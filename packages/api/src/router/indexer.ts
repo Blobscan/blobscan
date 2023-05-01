@@ -3,44 +3,62 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const indexerRouter = createTRPCRouter({
-  slot: publicProcedure
+  getSlot: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/slot",
+        tags: ["indexer"],
+        summary: "Get the latest known slot from the database",
+      },
+    })
+    .input(z.void())
+    .output(z.object({ slot: z.number() }))
+    .query(async ({ ctx }) => {
+      const config = await ctx.prisma.config.findUnique({
+        where: { id: 1 },
+      });
+
+      return { slot: config?.lastSlot ?? 0 };
+    }),
+  updateSlot: publicProcedure
     .meta({
       openapi: {
         method: "POST",
-        path: "/update/slot",
+        path: "/slot",
         tags: ["indexer"],
         summary: "Update the latest known slot in the database",
       },
     })
-    .input(z.number())
-    .output(z.number())
+    .input(z.object({ slot: z.number() }))
+    .output(z.object({ slot: z.number() }))
     .mutation(async ({ ctx, input }) => {
-       
+      const slot = input.slot;
+
       await ctx.prisma.config.upsert({
         where: { id: 1 },
         update: {
-          lastSlot: input,
+          lastSlot: slot,
         },
         create: {
-          lastSlot: input,
+          lastSlot: slot,
         },
       });
 
-      return input;
+      return { slot };
     }),
-  block: publicProcedure
+  index: publicProcedure
     .meta({
       openapi: {
         method: "POST",
-        path: "/index/block",
+        path: "/index",
         tags: ["indexer"],
-        summary: "Index a block in the database",
+        summary: "Index data in the database",
       },
     })
     .input(
       z.object({
         block: z.object({
-          id: z.number(),
           number: z.number(),
           hash: z.string(),
           timestamp: z.number(),
@@ -48,7 +66,6 @@ export const indexerRouter = createTRPCRouter({
         }),
         transactions: z.array(
           z.object({
-            id: z.string(),
             hash: z.string(),
             from: z.string(),
             to: z.string(),
@@ -70,7 +87,7 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const createBlock = ctx.prisma.block.create({
         data: {
-          id: input.block.id,
+          id: input.block.number,
           number: input.block.number,
           hash: input.block.hash,
           timestamp: input.block.timestamp,
@@ -80,7 +97,7 @@ export const indexerRouter = createTRPCRouter({
 
       const createTransactions = ctx.prisma.transaction.createMany({
         data: input.transactions.map((transaction) => ({
-          id: transaction.id,
+          id: transaction.hash,
           hash: transaction.hash,
           from: transaction.from,
           to: transaction.to,
@@ -104,6 +121,6 @@ export const indexerRouter = createTRPCRouter({
         createBlobs,
       ]);
 
-      return input.block.id;
+      return input.block.number;
     }),
 });
