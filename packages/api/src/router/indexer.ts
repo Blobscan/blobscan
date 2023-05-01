@@ -59,17 +59,17 @@ export const indexerRouter = createTRPCRouter({
     .input(
       z.object({
         block: z.object({
-          number: z.number(),
+          number: z.coerce.number(),
           hash: z.string(),
-          timestamp: z.number(),
-          slot: z.number(),
+          timestamp: z.coerce.number(),
+          slot: z.coerce.number(),
         }),
         transactions: z.array(
           z.object({
             hash: z.string(),
             from: z.string(),
             to: z.string(),
-            blockNumber: z.number(),
+            blockNumber: z.coerce.number(),
           }),
         ),
         blobs: z.array(
@@ -78,12 +78,12 @@ export const indexerRouter = createTRPCRouter({
             commitment: z.string(),
             data: z.string(),
             txHash: z.string(),
-            index: z.number(),
+            index: z.coerce.number(),
           }),
         ),
       }),
     )
-    .output(z.number())
+    .output(z.object({ block: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const createBlock = ctx.prisma.block.create({
         data: {
@@ -121,6 +121,6 @@ export const indexerRouter = createTRPCRouter({
         createBlobs,
       ]);
 
-      return input.block.number;
+      return { block: input.block.number };
     }),
 });
