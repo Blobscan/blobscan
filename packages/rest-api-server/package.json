@@ -1,0 +1,27 @@
+{
+  "name": "@blobscan/rest-api-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "clean": "git clean -xdf node_modules",
+    "dev": "pnpm with-env ts-node-dev --respawn --transpile-only --exit-child ./src/index.ts",
+    "start": "pnpm with-env ts-node src/index.ts",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@blobscan/api": "0.0.1",
+    "@trpc/server": "^10.23.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "swagger-ui-express": "^4.6.2",
+    "trpc-openapi": "^1.1.2",
+    "zod": "^3.20.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/swagger-ui-express": "^4.1.3"
+  }
+}

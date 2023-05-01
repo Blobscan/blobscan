@@ -1,7 +1,4 @@
 packages:
-  - apps/web
-  - apps/swagger
-  - packages/api
-  - packages/auth
-  - packages/db
-  - packages/config/*
+  - "apps/*"
+  - "packages/config/*"
+  - "packages/*"
