@@ -31,7 +31,7 @@ export const appRouter = createTRPCRouter({
   tx: transactionRouter,
   blob: blobRouter,
   search: searchRouter,
-  index: indexerRouter,
+  indexer: indexerRouter,
 });
 
 // export type definition of API

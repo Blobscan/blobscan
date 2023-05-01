@@ -27,6 +27,7 @@ build
 # misc
 .DS_Store
 *.pem
+cloud-sql-proxy
 
 # debug
 npm-debug.log*

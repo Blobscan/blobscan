@@ -77,6 +77,12 @@ const t = initTRPC
   .create({
     transformer: superjson,
     errorFormatter({ shape, error }) {
+      if (
+        error.code === "INTERNAL_SERVER_ERROR" &&
+        process.env.NODE_ENV === "production"
+      ) {
+        return { ...shape, message: "Internal server error" };
+      }
       return {
         ...shape,
         data: {

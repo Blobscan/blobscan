@@ -77,7 +77,6 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
 
 export default function Search({ term }: SearchProps) {
   const router = useRouter();
-  console.log(term);
   return (
     <div className="grid w-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
