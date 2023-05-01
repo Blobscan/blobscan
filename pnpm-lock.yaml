@@ -92,9 +92,6 @@ importers:
       '@types/swagger-ui-react':
         specifier: ^4.11.0
         version: 4.11.0
-      dotenv-cli:
-        specifier: ^7.1.0
-        version: 7.1.0
       eslint:
         specifier: ^8.37.0
         version: 8.37.0
@@ -198,9 +195,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.14
         version: 10.4.14(postcss@8.4.21)
-      dotenv-cli:
-        specifier: ^7.1.0
-        version: 7.1.0
       eslint:
         specifier: ^8.37.0
         version: 8.37.0
@@ -322,9 +316,6 @@ importers:
         specifier: ^4.12.0
         version: 4.12.0(prisma@4.12.0)
     devDependencies:
-      dotenv-cli:
-        specifier: ^7.1.0
-        version: 7.1.0
       prisma:
         specifier: ^4.12.0
         version: 4.12.0
@@ -2957,14 +2948,17 @@ packages:
       dotenv: 16.0.3
       dotenv-expand: 10.0.0
       minimist: 1.2.8
+    dev: false
 
   /dotenv-expand@10.0.0:
     resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
     engines: {node: '>=12'}
+    dev: false
 
   /dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
+    dev: false
 
   /drange@1.1.1:
     resolution: {integrity: sha512-pYxfDYpued//QpnLIm4Avk7rsNtAtQkUES2cwAYSvD/wd2pKD71gN2Ebj3e7klzXwjocvE8c5vx/1fxwpqmSxA==}
@@ -4575,6 +4569,7 @@ packages:
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+    dev: false
 
   /mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
