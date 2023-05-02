@@ -22,7 +22,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
           {externalLink && (
             <div className="text-base font-normal">
               <Link href={externalLink} isExternal>
-                View in Etherscan
+                View in Explorer
               </Link>
             </div>
           )}

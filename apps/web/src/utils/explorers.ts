@@ -1,5 +1,7 @@
-const BASE_URL = "https://etherscan.io/";
-const BEACON_BASE_URL = "https://beaconscan.com/";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_EXPLORER_BASE_URL ?? "https://etherscan.io/";
+const BEACON_BASE_URL =
+  process.env.NEXT_PUBLIC_BEACON_BASE_URL ?? "https://beaconscan.com/";
 
 export function buildBlockExternalUrl(id: number): string {
   return `${BASE_URL}block/${id}`;
