@@ -1,3 +1,4 @@
+import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
@@ -11,9 +12,12 @@ import { openApiDocument } from "./openapi";
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json({ limit: "2mb" }));
 
 // Handle incoming OpenAPI requests
-app.use("/api", () =>
+app.use(
+  "/api",
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   createOpenApiExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext,
