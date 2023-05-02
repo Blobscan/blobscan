@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
 
 export const indexerRouter = createTRPCRouter({
-  getSlot: publicProcedure
+  getSlot: jwtAuthedProcedure
     .meta({
       openapi: {
         method: "GET",

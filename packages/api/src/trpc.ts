@@ -7,14 +7,14 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
-import { initTRPC } from "@trpc/server";
-// import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { type OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
+import { type createTRPCContext } from "./context";
+
 // import { getServerSession, type Session } from "@blobscan/auth";
-import { prisma } from "@blobscan/db";
 
 /**
  * 1. CONTEXT
@@ -61,16 +61,6 @@ import { prisma } from "@blobscan/db";
 //   });
 // };
 
-export const createTRPCContext = () => {
-  return { prisma };
-};
-
-/**
- * 2. INITIALIZATION
- *
- * This is where the trpc api is initialized, connecting the context and
- * transformer
- */
 const t = initTRPC
   .context<typeof createTRPCContext>()
   .meta<OpenApiMeta>()
@@ -94,27 +84,17 @@ const t = initTRPC
     },
   });
 
-/**
- * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
- *
- * These are the pieces you use to build your tRPC API. You should import these
- * a lot in the /src/server/api/routers folder
- */
+// MIDDLEWARES
 
-/**
- * This is how you create new routers and subrouters in your tRPC API
- * @see https://trpc.io/docs/router
- */
-export const createTRPCRouter = t.router;
+const isJWTAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.apiClient) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
-/**
- * Public (unauthed) procedure
- *
- * This is the base piece you use to build new queries and mutations on your
- * tRPC API. It does not guarantee that a user querying is authorized, but you
- * can still access user session data if they are logged in
- */
-export const publicProcedure = t.procedure;
+  return next({
+    ctx,
+  });
+});
 
 /**
  * Reusable middleware that enforces users are logged in before running the
@@ -132,13 +112,7 @@ export const publicProcedure = t.procedure;
 //   });
 // });
 
-/**
- * Protected (authed) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users, use
- * this. It verifies the session is valid and guarantees ctx.session.user is not
- * null
- *
- * @see https://trpc.io/docs/procedures
- */
-// export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const createTRPCRouter = t.router;
+
+export const publicProcedure = t.procedure;
+export const jwtAuthedProcedure = t.procedure.use(isJWTAuthed);

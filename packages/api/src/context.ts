@@ -1,0 +1,58 @@
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import {
+  type NodeHTTPCreateContextFnOptions,
+  type NodeHTTPRequest,
+  type NodeHTTPResponse,
+} from "@trpc/server/adapters/node-http";
+import jwt from "jsonwebtoken";
+
+import { prisma } from "@blobscan/db";
+
+import { SECRET } from "./env";
+
+type CreateContextOptions =
+  | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
+  | CreateNextContextOptions;
+
+type CreateInnerContextOptions = Partial<CreateContextOptions> & {
+  apiClient: string | null;
+};
+
+function getJWTFromRequest(
+  req: NodeHTTPRequest | CreateNextContextOptions["req"],
+) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return null;
+  }
+
+  const [type, token] = authHeader.split(" ");
+  if (type !== "Bearer" || !token) {
+    return null;
+  }
+
+  const decoded = jwt.verify(token, SECRET) as string;
+
+  return decoded;
+}
+
+function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
+  return {
+    prisma,
+    apiClient: opts?.apiClient,
+  };
+}
+
+export function createTRPCContext(opts: CreateContextOptions) {
+  const apiClient = getJWTFromRequest(opts.req);
+
+  const innerContext = createTRPCInnerContext({ apiClient });
+
+  return {
+    ...innerContext,
+    req: opts.req,
+    res: opts.res,
+  };
+}
+
+export type TRPCContext = typeof createTRPCContext;
