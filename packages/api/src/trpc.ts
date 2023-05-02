@@ -12,7 +12,7 @@ import superjson from "superjson";
 import { type OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
-import { type createTRPCContext } from "./context";
+import { type TRPCContext } from "./context";
 
 // import { getServerSession, type Session } from "@blobscan/auth";
 
@@ -62,7 +62,7 @@ import { type createTRPCContext } from "./context";
 // };
 
 const t = initTRPC
-  .context<typeof createTRPCContext>()
+  .context<TRPCContext>()
   .meta<OpenApiMeta>()
   .create({
     transformer: superjson,

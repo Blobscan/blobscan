@@ -1,3 +1,4 @@
+import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import {
   type NodeHTTPCreateContextFnOptions,
@@ -36,7 +37,7 @@ function getJWTFromRequest(
   return decoded;
 }
 
-function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
+export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,
     apiClient: opts?.apiClient,
@@ -55,4 +56,4 @@ export function createTRPCContext(opts: CreateContextOptions) {
   };
 }
 
-export type TRPCContext = typeof createTRPCContext;
+export type TRPCContext = inferAsyncReturnType<typeof createTRPCInnerContext>;
