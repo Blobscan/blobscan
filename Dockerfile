@@ -3,8 +3,9 @@ RUN npm install -g pnpm
 WORKDIR /app
 COPY . .
 RUN pnpm install
-RUN npm run build
-
+RUN --mount=type=secret,id=NEXTAUTH_SECRET \
+  export NEXTAUTH_SECRET=$(cat /run/secrets/NEXTAUTH_SECRET) && \
+  npm run build
 FROM node:18.15-alpine AS production
 RUN npm install -g pnpm
 WORKDIR /app
