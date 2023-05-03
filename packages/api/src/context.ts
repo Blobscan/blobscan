@@ -1,4 +1,4 @@
-import { type inferAsyncReturnType } from "@trpc/server";
+import { TRPCError, type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import {
   type NodeHTTPCreateContextFnOptions,
@@ -27,14 +27,22 @@ function getJWTFromRequest(
     return null;
   }
 
-  const [type, token] = authHeader.split(" ");
-  if (type !== "Bearer" || !token) {
-    return null;
+  try {
+    const [type, token] = authHeader.split(" ");
+    if (type !== "Bearer" || !token) {
+      return null;
+    }
+
+    const decoded = jwt.verify(token, SECRET) as string;
+
+    return decoded;
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return null;
+    }
+
+    throw new TRPCError({ code: "BAD_REQUEST" });
   }
-
-  const decoded = jwt.verify(token, SECRET) as string;
-
-  return decoded;
 }
 
 export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
