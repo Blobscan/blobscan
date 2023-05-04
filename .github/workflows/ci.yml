@@ -17,6 +17,7 @@ jobs:
   build-lint:
     env:
       DATABASE_URL: file:./db.sqlite
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     runs-on: ubuntu-latest
 
     steps:
