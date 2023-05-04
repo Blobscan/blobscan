@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, jwtAuthedProcedure } from "../trpc";
 
 export const indexerRouter = createTRPCRouter({
   getSlot: jwtAuthedProcedure
@@ -21,7 +21,7 @@ export const indexerRouter = createTRPCRouter({
 
       return { slot: config?.lastSlot ?? 0 };
     }),
-  updateSlot: publicProcedure
+  updateSlot: jwtAuthedProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -47,7 +47,7 @@ export const indexerRouter = createTRPCRouter({
 
       return { slot };
     }),
-  index: publicProcedure
+  index: jwtAuthedProcedure
     .meta({
       openapi: {
         method: "POST",
