@@ -69,15 +69,15 @@ export const indexerRouter = createTRPCRouter({
             hash: z.string(),
             from: z.string(),
             to: z.string(),
-            block_number: z.coerce.number(),
+            blockNumber: z.coerce.number(),
           }),
         ),
         blobs: z.array(
           z.object({
-            versioned_hash: z.string(),
+            versionedHash: z.string(),
             commitment: z.string(),
             data: z.string(),
-            tx_hash: z.string(),
+            txHash: z.string(),
             index: z.coerce.number(),
           }),
         ),
@@ -101,16 +101,16 @@ export const indexerRouter = createTRPCRouter({
           hash: transaction.hash,
           from: transaction.from,
           to: transaction.to,
-          blockNumber: transaction.block_number,
+          blockNumber: transaction.blockNumber,
         })),
       });
 
       const createBlobs = ctx.prisma.blob.createMany({
         data: input.blobs.map((blob) => ({
-          versionedHash: blob.versioned_hash,
+          versionedHash: blob.versionedHash,
           commitment: blob.commitment,
           data: blob.data,
-          txHash: blob.tx_hash,
+          txHash: blob.txHash,
           index: blob.index,
         })),
       });
