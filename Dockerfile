@@ -1,21 +1,40 @@
-FROM node:18.15-alpine as builder
+#FROM node:18-alpine as builder
+FROM node:18.15-alpine
+
+RUN apk add bash
+
+ENV NEXTAUTH_SECRET supersecret
+
 RUN npm install -g pnpm
 WORKDIR /app
-COPY . .
-RUN pnpm install
-RUN --mount=type=secret,id=NEXTAUTH_SECRET \
-  export NEXTAUTH_SECRET=$(cat /run/secrets/NEXTAUTH_SECRET) && \
-  npm run build
-FROM node:18.15-alpine AS production
-RUN npm install -g pnpm
-WORKDIR /app
-COPY --chown=node --from=builder /app/apps/web/next.config.mjs ./
-COPY --chown=node --from=builder /app/apps/web/package.json ./
-COPY --chown=node --from=builder /app/apps/web/public ./public
-COPY --chown=node --from=builder /app/apps/web/.next ./.next
-COPY --chown=node --from=builder /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/turbo.json ./
-COPY --chown=node --from=builder /app/node_modules ./node_modules
+
+# pnpm fetch does require only lockfile
+COPY pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm fetch -r
+
+ADD . ./
+RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
+
+RUN npm run build
+
+ADD docker-entrypoint.sh /
 USER node
-EXPOSE 3000
-EXPOSE 5556
-CMD ["pnpm", "start"]
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["--help"]
+
+# FROM node:18-alpine AS production
+# RUN npm install -g pnpm
+# WORKDIR /app
+# COPY --chown=node --from=builder /app/apps/web/next.config.mjs ./
+# COPY --chown=node --from=builder /app/apps/web/package.json ./
+# COPY --chown=node --from=builder /app/apps/web/postcss.config.cjs ./
+# COPY --chown=node --from=builder /app/apps/web/tailwind.config.ts.json ./
+# COPY --chown=node --from=builder /app/apps/web/tsconfig.json ./
+# COPY --chown=node --from=builder /app/apps/web/public ./public
+# COPY --chown=node --from=builder /app/apps/web/.next ./.next
+# COPY --chown=node --from=builder /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/turbo.json ./
+# COPY --chown=node --from=builder /app/node_modules ./node_modules
+# USER node
+#
+# CMD ["pnpm", "start"]
