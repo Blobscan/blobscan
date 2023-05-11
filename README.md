@@ -19,6 +19,14 @@ Some environment variables are necessary to connect to the database that stores 
 DATABASE_URL=postgresql://blobscan:secret@postgres:5432/blobscan_dev?schema=public
 ```
 
+Install a recent Node.js version and pnpm:
+
+```
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&\
+sudo apt-get install -y nodejs
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+```
+
 Then run the following commands:
 
 ```
@@ -26,19 +34,51 @@ pnpm install
 pnpm dev
 ```
 
-The database can be filled running the script in the [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer) repository. If you prefer to use docker we have created an image for the indexer at [blossomlabs/blobscan-indexer](https://hub.docker.com/repository/docker/blossomlabs/blobscan-indexer/general).
+Lastly, create the database schema:
+
+```
+# Update DATABASE_URL
+vi .env
+pnpm db:push
+```
 
 ### Docker
 
-Docker images are automatically published.
-
-A docker-compose file is provided to set up the whole blobscan project with its dependencies (MongoDB and [blobscan-indexer](https://github.com/Blobscan/blobscan-indexer/)):
+Docker images are automatically published and a docker-compose file is provided for convenience:
 
 ```
-docker-compose up -d  # or 'make up'
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d --build
 ```
 
-Note that you also need to run your own [devnet-v4 node](https://github.com/Blobscan/devnet-v4) or connect to any of the existing ones.
+Note that you also need to run your own [devnet-v5 node](https://github.com/Blobscan/devnet-v5) or connect to any of the existing ones.
+
+Create database:
+
+```
+docker-compose run web npx prisma migrate dev --schema /app/packages/db/prisma/schema.prisma
+```
+
+## Environment variables
+
+Create a `.env` file with environment variables. You can use the `.env.example` file as a reference.
+
+Below you can find a list of optional variables:
+
+### Blobscan Website
+
+| Env variable                    | Description                                                                                     | Default value                                                            |
+| -----------------------         | ----------------------------------------------------------------------------------------------- | -----------------------                                                  |
+| `DATABASE_URL`                  | Postgresql database URI                                                                         | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=pbulic` |
+| `NEXTAUTH_URL`                  | -                                                                                               | `http://localhost:3000`                                                  |
+| `NEXTAUTH_SECRET`               | -                                                                                               | `supersecret`                                                            |
+| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                                                                                               | `http://134.209.87.158:8080/`                                            |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL` | -                                                                                               | `https://explorer.4844-devnet-5.etpandaops.io/`                          |
+
+### Blobscan API
+
+| Env variable                    | Description                                                                                     | Default value                                                            |
+| -----------------------         | ----------------------------------------------------------------------------------------------- | -----------------------                                                  |
+| `BLOBSCAN_API_PORT`             | -                                                                                               | `3001`                                                                   |
 
 # About Blossom Labs
 

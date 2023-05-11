@@ -5,12 +5,36 @@ services:
   web:
     image: blossomlabs/blobscan:next
     build: .
+    command: web
     restart: always
     ports:
       - 3000:3000
       - 5556:5556
     env_file:
       - .env
+    depends_on:
+      - api
+
+  api:
+    image: blossomlabs/blobscan:next
+    build: .
+    command: api
+    restart: always
+    ports:
+      - 3001:3001
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  indexer:
+    image: blossomlabs/blobscan-indexer:master
+    network_mode: host
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - api
 
   postgres:
     image: postgres:14
@@ -22,14 +46,6 @@ services:
       - POSTGRES_USER=blobscan
       - POSTGRES_DB=blobscan_dev
       - POSTGRES_PASSWORD=s3cr3t
-
-  adminer:
-    image: adminer
-    restart: always
-    environment:
-      ADMINER_DEFAULT_SERVER: blobscan_dev
-    ports:
-      - 8080:8080
 
 volumes:
   postgres-data:
