@@ -34,7 +34,7 @@ model Transaction {
   id        String          @id
   hash      String          @unique
   from      String
-  to        String
+  to        String?
   blockNumber Int
   blobs      Blob[]
   block     Block  @relation(fields: [blockNumber], references: [number])
