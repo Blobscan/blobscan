@@ -10,8 +10,12 @@ services:
     ports:
       - 3000:3000
       - 5556:5556
-    env_file:
-      - .env
+    environment:
+      DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: supersecret
+      NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/
+      NEXT_PUBLIC_EXPLORER_BASE_URL: https://explorer.4844-devnet-5.etpandaops.io/
     depends_on:
       - api
 
@@ -22,8 +26,8 @@ services:
     restart: always
     ports:
       - 3001:3001
-    env_file:
-      - .env
+    environment:
+      BLOBSCAN_API_PORT: 3001
     depends_on:
       - postgres
 
@@ -31,8 +35,11 @@ services:
     image: blossomlabs/blobscan-indexer:master
     network_mode: host
     restart: always
-    env_file:
-      - .env
+    environment:
+      SECRET_KEY: supersecret
+      BLOBSCAN_API_ENDPOINT: http://localhost:3001
+      BEACON_NODE_RPC: http://localhost:3500
+      EXECUTION_NODE_URL: http://localhost:8545
     depends_on:
       - api
 

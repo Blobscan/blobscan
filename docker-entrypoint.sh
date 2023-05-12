@@ -28,6 +28,8 @@ _is_sourced() {
 
 _main() {
 	if [ "$1" = 'web' ]; then
+		cd /app
+		pnpm db:push
 		cd /app/apps/web
 		pnpm start
 	elif [ "$1" = 'api' ]; then

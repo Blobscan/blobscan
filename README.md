@@ -44,18 +44,25 @@ pnpm db:push
 
 ### Docker
 
-Docker images are automatically published and a docker-compose file is provided for convenience:
+Docker images are automatically published and a docker-compose file is provided for convenience.
+
+Note that you also need to run your own [devnet-v5 node](https://github.com/Blobscan/devnet-v5) or connect to any of the existing ones.
+You can use SSH tunnels like this:
+
+```
+ssh -L 3500:localhost:3500 -L 8545:localhost:8545 my-devnet5-node
+```
+
+Then spin up the containers:
 
 ```
 COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d --build
 ```
 
-Note that you also need to run your own [devnet-v5 node](https://github.com/Blobscan/devnet-v5) or connect to any of the existing ones.
-
-Create database:
+Create database (only the first time):
 
 ```
-docker-compose run web npx prisma migrate dev --schema /app/packages/db/prisma/schema.prisma
+docker-compose exec web pnpm db:push
 ```
 
 ## Environment variables
@@ -85,3 +92,5 @@ Below you can find a list of optional variables:
 ![blossom labs](https://blossom.software/img/logo.svg)
 
 Blobscan is being developed by [Blossom Labs](https://blossom.software/), a developer team specialized in building blockchain-based infrastructure for online communities.
+
+[Join us on Discord!](https://discordapp.com/invite/fmqrqhkjHY/)
