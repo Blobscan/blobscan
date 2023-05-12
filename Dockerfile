@@ -16,6 +16,7 @@ ADD . ./
 RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
 
 RUN npm run build
+RUN chown node:node . -R
 
 ADD docker-entrypoint.sh /
 USER node
