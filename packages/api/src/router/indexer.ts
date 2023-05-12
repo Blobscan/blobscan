@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, jwtAuthedProcedure } from "../trpc";
 
+const INDEXER_ID = 1;
+
 export const indexerRouter = createTRPCRouter({
   getSlot: jwtAuthedProcedure
     .meta({
@@ -15,11 +17,11 @@ export const indexerRouter = createTRPCRouter({
     .input(z.void())
     .output(z.object({ slot: z.number() }))
     .query(async ({ ctx }) => {
-      const config = await ctx.prisma.config.findUnique({
+      const indexerMetadata = await ctx.prisma.indexerMetadata.findUnique({
         where: { id: 1 },
       });
 
-      return { slot: config?.lastSlot ?? 0 };
+      return { slot: indexerMetadata?.lastSlot ?? 0 };
     }),
   updateSlot: jwtAuthedProcedure
     .meta({
@@ -35,8 +37,8 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const slot = input.slot;
 
-      await ctx.prisma.config.upsert({
-        where: { id: 1 },
+      await ctx.prisma.indexerMetadata.upsert({
+        where: { id: INDEXER_ID },
         update: {
           lastSlot: slot,
         },
@@ -46,6 +48,37 @@ export const indexerRouter = createTRPCRouter({
       });
 
       return { slot };
+    }),
+  addFailedSlots: jwtAuthedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/failed-slots-chunks",
+        tags: ["indexer"],
+        summary: "Add slots chunks failed to be indexed to the database",
+      },
+    })
+    .input(
+      z.object({
+        chunks: z.array(
+          z.object({
+            initialSlot: z.number(),
+            finalSlot: z.number(),
+          }),
+        ),
+      }),
+    )
+    .output(
+      z.object({
+        count: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const chunks = input.chunks;
+
+      return await ctx.prisma.indexerFailedSlotsChunk.createMany({
+        data: chunks,
+      });
     }),
   index: jwtAuthedProcedure
     .meta({

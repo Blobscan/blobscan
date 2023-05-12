@@ -10,11 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Config {
-  id          Int         @id @default(autoincrement())
-  lastSlot    Int         @unique
-}
-
 model Blob {
   id          Int         @id @default(autoincrement())
   versionedHash String
@@ -43,6 +38,17 @@ model Transaction {
   blockNumber Int
   blobs      Blob[]
   block     Block  @relation(fields: [blockNumber], references: [number])
+}
+
+model IndexerMetadata {
+  id          Int         @id @default(autoincrement())
+  lastSlot    Int
+}
+
+model IndexerFailedSlotsChunk {
+  id          Int         @id @default(autoincrement())
+  initialSlot Int         @unique
+  finalSlot   Int         @unique
 }
 
 
