@@ -3,3 +3,7 @@ docker-compose.yml
 README.md
 LICENSE
 node_modules
+.env*
+.env.example
+.git*
+.vscode
