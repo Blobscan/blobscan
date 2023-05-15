@@ -1,8 +1,17 @@
 import { z } from "zod";
 
+import { Prisma } from "@blobscan/db";
+
 import { createTRPCRouter, jwtAuthedProcedure } from "../trpc";
 
 const INDEXER_ID = 1;
+
+const failedSlotsChunkSelect =
+  Prisma.validator<Prisma.IndexerFailedSlotsChunkSelect>()({
+    id: true,
+    initialSlot: true,
+    finalSlot: true,
+  });
 
 export const indexerRouter = createTRPCRouter({
   getSlot: jwtAuthedProcedure
@@ -79,6 +88,75 @@ export const indexerRouter = createTRPCRouter({
       return await ctx.prisma.indexerFailedSlotsChunk.createMany({
         data: chunks,
       });
+    }),
+  getFailedSlots: jwtAuthedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/failed-slots-chunks",
+        tags: ["indexer"],
+        summary: "Get slots chunks failed to be index from the database",
+      },
+    })
+    .input(
+      z.object({
+        limit: z.number().optional(),
+      }),
+    )
+    .output(
+      z.object({
+        chunks: z.array(
+          z.object({
+            id: z.number(),
+            initialSlot: z.number(),
+            finalSlot: z.number(),
+          }),
+        ),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const take = input.limit ?? 1000;
+
+      const result = await ctx.prisma.indexerFailedSlotsChunk.findMany({
+        select: failedSlotsChunkSelect,
+        take,
+      });
+
+      return {
+        chunks: result,
+      };
+    }),
+  removeFailedSlots: jwtAuthedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/delete-failed-slots-chunks",
+        tags: ["indexer"],
+        summary: "Delete slots chunks failed to be index from the database",
+      },
+    })
+    .input(
+      z.object({
+        chunkIds: z.array(z.number()),
+      }),
+    )
+    .output(
+      z.object({
+        count: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const chunkIds = input.chunkIds;
+
+      const result = await ctx.prisma.indexerFailedSlotsChunk.deleteMany({
+        where: {
+          id: {
+            in: chunkIds,
+          },
+        },
+      });
+
+      return result;
     }),
   index: jwtAuthedProcedure
     .meta({
