@@ -68,7 +68,7 @@ export const indexerRouter = createTRPCRouter({
           z.object({
             hash: z.string(),
             from: z.string(),
-            to: z.string(),
+            to: z.string().optional(),
             blockNumber: z.coerce.number(),
           }),
         ),
