@@ -15,7 +15,7 @@ export const indexerRouter = createTRPCRouter({
     .input(z.void())
     .output(z.object({ slot: z.number() }))
     .query(async ({ ctx }) => {
-      const config = await ctx.prisma.config.findUnique({
+      const config = await ctx.prisma.indexerMetadata.findUnique({
         where: { id: 1 },
       });
 
@@ -35,7 +35,7 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const slot = input.slot;
 
-      await ctx.prisma.config.upsert({
+      await ctx.prisma.indexerMetadata.upsert({
         where: { id: 1 },
         update: {
           lastSlot: slot,

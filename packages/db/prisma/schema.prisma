@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Config {
+model IndexerMetadata {
   id          Int         @id @default(autoincrement())
   lastSlot    Int         @unique
 }
