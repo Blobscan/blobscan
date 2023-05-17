@@ -41,6 +41,7 @@ export const indexerRouter = createTRPCRouter({
           lastSlot: slot,
         },
         create: {
+          id: 1,
           lastSlot: slot,
         },
       });
@@ -50,7 +51,7 @@ export const indexerRouter = createTRPCRouter({
   index: jwtAuthedProcedure
     .meta({
       openapi: {
-        method: "POST",
+        method: "PUT",
         path: "/index",
         tags: ["indexer"],
         summary: "Index data in the database",
@@ -85,14 +86,19 @@ export const indexerRouter = createTRPCRouter({
     )
     .output(z.object({ block: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      const createBlock = ctx.prisma.block.create({
-        data: {
+      const blockData = {
+        number: input.block.number,
+        hash: input.block.hash,
+        timestamp: input.block.timestamp,
+        slot: input.block.slot,
+      };
+      const createBlock = ctx.prisma.block.upsert({
+        where: { id: input.block.number },
+        create: {
           id: input.block.number,
-          number: input.block.number,
-          hash: input.block.hash,
-          timestamp: input.block.timestamp,
-          slot: input.block.slot,
+          ...blockData,
         },
+        update: blockData,
       });
 
       const createTransactions = ctx.prisma.transaction.createMany({
@@ -103,6 +109,7 @@ export const indexerRouter = createTRPCRouter({
           to: transaction.to,
           blockNumber: transaction.blockNumber,
         })),
+        skipDuplicates: true,
       });
 
       const createBlobs = ctx.prisma.blob.createMany({
@@ -113,6 +120,7 @@ export const indexerRouter = createTRPCRouter({
           txHash: blob.txHash,
           index: blob.index,
         })),
+        skipDuplicates: true,
       });
 
       await ctx.prisma.$transaction([
