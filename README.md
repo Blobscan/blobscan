@@ -44,6 +44,8 @@ pnpm db:push
 
 ### Docker
 
+**NOTE: Recent versions of docker and docker-compose with BuildKit support are required.**
+
 Docker images are automatically published and a docker-compose file is provided for convenience.
 
 Note that you also need to run your own [devnet-v5 node](https://github.com/Blobscan/devnet-v5) or connect to any of the existing ones.
