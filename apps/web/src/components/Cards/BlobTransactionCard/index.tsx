@@ -92,11 +92,15 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
                   <Link href={buildAddressRoute(from)}>
                     <span className="text-xs">{from}</span>
                   </Link>
-                  <ArrowRightIcon className="hidden h-2 w-2 md:block" />
-                  <div className="mt-1 md:hidden">To</div>
-                  <Link href={buildAddressRoute(to)}>
-                    <span className="text-xs">{to}</span>
-                  </Link>
+                  {to && (
+                    <>
+                      <ArrowRightIcon className="hidden h-2 w-2 md:block" />
+                      <div className="mt-1 md:hidden">To</div>
+                      <Link href={buildAddressRoute(to)}>
+                        <span className="text-xs">{to}</span>
+                      </Link>
+                    </>
+                  )}
                 </div>
                 <div className="mb-2 text-sm">{blobs.length} Blobs</div>
               </div>

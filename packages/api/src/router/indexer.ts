@@ -15,11 +15,11 @@ export const indexerRouter = createTRPCRouter({
     .input(z.void())
     .output(z.object({ slot: z.number() }))
     .query(async ({ ctx }) => {
-      const config = await ctx.prisma.indexerMetadata.findUnique({
+      const indexerMetadata = await ctx.prisma.indexerMetadata.findUnique({
         where: { id: 1 },
       });
 
-      return { slot: config?.lastSlot ?? 0 };
+      return { slot: indexerMetadata?.lastSlot ?? 0 };
     }),
   updateSlot: jwtAuthedProcedure
     .meta({
