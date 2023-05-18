@@ -1,0 +1,44 @@
+---
+version: "3.7"
+
+services:
+  web:
+    image: blossomlabs/blobscan:next
+    command: web
+    restart: always
+    ports:
+      - 3000:3000
+      - 5556:5556
+    environment:
+      DATABASE_URL: "${DATABASE_URL}"
+      NEXTAUTH_URL: "${NEXTAUTH_URL}"
+      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET}"
+      NEXT_PUBLIC_BEACON_BASE_URL: "${NEXT_PUBLIC_BEACON_BASE_URL}"
+      NEXT_PUBLIC_EXPLORER_BASE_URL: "${NEXT_PUBLIC_EXPLORER_BASE_URL}"
+    depends_on:
+      - api
+
+  api:
+    image: blossomlabs/blobscan:next
+    command: api
+    restart: always
+    ports:
+      - 3001:3001
+    environment:
+      DATABASE_URL: "${DATABASE_URL}"
+      BLOBSCAN_API_PORT: "${BLOBSCAN_API_PORT}"
+
+  indexer:
+    image: blossomlabs/blobscan-indexer:master
+    network_mode: host
+    restart: always
+    environment:
+      SECRET_KEY: "${SECRET_KEY}"
+      BLOBSCAN_API_ENDPOINT: "${BLOBSCAN_API_ENDPOINT}"
+      BEACON_NODE_RPC: "${BEACON_NODE_RPC}"
+      EXECUTION_NODE_URL: "${EXECUTION_NODE_URL}"
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:
