@@ -28,9 +28,8 @@ _is_sourced() {
 
 _main() {
 	if [ "$1" = 'web' ]; then
-		# XXX: Disabled temporarily until a working solution is found
-		# cd /app
-		# pnpm db:push
+		cd /app
+		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 		cd /app/apps/web
 		pnpm start
 	elif [ "$1" = 'api' ]; then
