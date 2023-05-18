@@ -73,19 +73,19 @@ Below you can find a list of optional variables:
 
 ### Blobscan Website
 
-| Env variable                    | Description                                                                                     | Default value                                                            |
-| -----------------------         | ----------------------------------------------------------------------------------------------- | -----------------------                                                  |
-| `DATABASE_URL`                  | Postgresql database URI                                                                         | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=pbulic` |
-| `NEXTAUTH_URL`                  | -                                                                                               | `http://localhost:3000`                                                  |
-| `NEXTAUTH_SECRET`               | -                                                                                               | `supersecret`                                                            |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                                                                                               | `http://134.209.87.158:8080/`                                            |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | -                                                                                               | `https://explorer.4844-devnet-5.etpandaops.io/`                          |
+| Env variable                    | Description             | Default value                                                            |
+| ------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `DATABASE_URL`                  | Postgresql database URI | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=pbulic` |
+| `NEXTAUTH_URL`                  | -                       | `http://localhost:3000`                                                  |
+| `SECRET_KEY`                    | -                       | `supersecret`                                                            |
+| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                       | `http://134.209.87.158:8080/`                                            |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL` | -                       | `https://explorer.4844-devnet-5.etpandaops.io/`                          |
 
 ### Blobscan API
 
-| Env variable                    | Description                                                                                     | Default value                                                            |
-| -----------------------         | ----------------------------------------------------------------------------------------------- | -----------------------                                                  |
-| `BLOBSCAN_API_PORT`             | -                                                                                               | `3001`                                                                   |
+| Env variable        | Description | Default value |
+| ------------------- | ----------- | ------------- |
+| `BLOBSCAN_API_PORT` | -           | `3001`        |
 
 # About Blossom Labs
 

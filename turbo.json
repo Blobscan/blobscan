@@ -37,7 +37,7 @@
     "AUTH0_ISSUER",
     "CI",
     "DATABASE_URL",
-    "NEXTAUTH_SECRET",
+    "SECRET_KEY",
     "NEXTAUTH_URL",
     "NODE_ENV",
     "SKIP_ENV_VALIDATION",

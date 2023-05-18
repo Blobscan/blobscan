@@ -1,9 +1,9 @@
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
+const SECRET_KEY = process.env.SECRET_KEY;
 
-if (!NEXTAUTH_SECRET) {
-  throw new Error("NEXTAUTH_SECRET is not set");
+if (!SECRET_KEY) {
+  throw new Error("SECRET_KEY is not set");
 }
 
-const SECRET = NEXTAUTH_SECRET;
+const SECRET = SECRET_KEY;
 
 export { SECRET };
