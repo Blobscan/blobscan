@@ -11,7 +11,6 @@ services:
       - 5556:5556
     environment:
       DATABASE_URL: "${DATABASE_URL}"
-      NEXTAUTH_URL: "${NEXTAUTH_URL}"
       SECRET_KEY: "${SECRET_KEY}"
       NEXT_PUBLIC_BEACON_BASE_URL: "${NEXT_PUBLIC_BEACON_BASE_URL}"
       NEXT_PUBLIC_EXPLORER_BASE_URL: "${NEXT_PUBLIC_EXPLORER_BASE_URL}"
@@ -26,6 +25,7 @@ services:
       - 3001:3001
     environment:
       DATABASE_URL: "${DATABASE_URL}"
+      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET}"
       BLOBSCAN_API_PORT: "${BLOBSCAN_API_PORT}"
 
   indexer:
