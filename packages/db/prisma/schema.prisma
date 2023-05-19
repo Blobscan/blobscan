@@ -10,8 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Config {
-  id          Int         @id @default(autoincrement())
+model IndexerMetadata {
+  id          Int         @id
   lastSlot    Int         @unique
 }
 
@@ -39,7 +39,7 @@ model Transaction {
   id        String          @id
   hash      String          @unique
   from      String
-  to        String
+  to        String?
   blockNumber Int
   blobs      Blob[]
   block     Block  @relation(fields: [blockNumber], references: [number])

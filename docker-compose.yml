@@ -13,6 +13,7 @@ services:
     environment:
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
       NEXTAUTH_URL: http://localhost:23000
+      SECRET_KEY: supersecret
       NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/
       NEXT_PUBLIC_EXPLORER_BASE_URL: https://explorer.4844-devnet-5.etpandaops.io/
     depends_on:

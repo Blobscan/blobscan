@@ -3,7 +3,7 @@ FROM node:18.15-alpine
 
 RUN apk add bash
 
-ENV NEXTAUTH_SECRET supersecret
+ENV SECRET_KEY supersecret
 
 RUN npm install -g pnpm
 WORKDIR /app
