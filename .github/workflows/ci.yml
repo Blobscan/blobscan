@@ -18,6 +18,8 @@ jobs:
     env:
       DATABASE_URL: file:./db.sqlite
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      # Deprecated:
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     runs-on: ubuntu-latest
 
     steps:

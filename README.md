@@ -61,10 +61,11 @@ Then spin up the containers:
 COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d --build
 ```
 
-Create database (only the first time):
+The first time you run the docker container, it will automatically apply any pending migration.
+You can also force to apply pending migrations with the following command:
 
 ```
-docker-compose exec web pnpm db:push
+docker-compose exec web npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 ```
 
 ## Environment variables
