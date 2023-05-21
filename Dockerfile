@@ -1,7 +1,7 @@
 #FROM node:18-alpine as builder
 FROM node:18.15-alpine
 
-RUN apk add bash
+RUN apk add bash curl
 
 ENV SECRET_KEY supersecret
 
