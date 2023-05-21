@@ -12,12 +12,9 @@ services:
       - 25556:5556
     environment:
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
-      NEXTAUTH_URL: http://localhost:23000
       SECRET_KEY: supersecret
       NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/
       NEXT_PUBLIC_EXPLORER_BASE_URL: https://explorer.4844-devnet-5.etpandaops.io/
-    depends_on:
-      - api
 
   api:
     image: blossomlabs/blobscan:local
@@ -26,10 +23,16 @@ services:
     restart: always
     ports:
       - 23001:3001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
     environment:
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
+      SECRET_KEY: supersecret
       BLOBSCAN_API_PORT: 3001
-      NEXTAUTH_SECRET: supersecret
     depends_on:
       - postgres
 
@@ -43,7 +46,8 @@ services:
       BEACON_NODE_RPC: http://localhost:5052
       EXECUTION_NODE_URL: http://localhost:8545
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
   postgres:
     image: postgres:14
