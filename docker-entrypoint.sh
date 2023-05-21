@@ -33,6 +33,8 @@ _main() {
 		cd /app/apps/web
 		pnpm start
 	elif [ "$1" = 'api' ]; then
+		cd /app
+		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 		cd /app/apps/rest-api-server
 		pnpm start
 	elif [ "$1" = '--help' ]; then
