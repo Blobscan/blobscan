@@ -2,14 +2,16 @@ import { z } from "zod";
 
 import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
 
+const INDEXER_PATH = "/indexer";
+
 export const indexerRouter = createTRPCRouter({
   getSlot: publicProcedure
     .meta({
       openapi: {
         method: "GET",
-        path: "/indexer/slot",
+        path: `${INDEXER_PATH}/slot`,
         tags: ["indexer"],
-        summary: "Get the latest known slot from the database",
+        summary: "Get the indexer's latest indexed slot",
       },
     })
     .input(z.void())
@@ -25,9 +27,9 @@ export const indexerRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "PUT",
-        path: "/indexer/slot",
+        path: `${INDEXER_PATH}/slot`,
         tags: ["indexer"],
-        summary: "Update the latest known slot in the database",
+        summary: "Update the indexer's latest indexed slot",
         protect: true,
       },
     })
@@ -51,7 +53,7 @@ export const indexerRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "PUT",
-        path: "/indexer/block-txs-blobs",
+        path: `${INDEXER_PATH}/block-txs-blobs`,
         tags: ["indexer"],
         summary: "Index data in the database",
         protect: true,
