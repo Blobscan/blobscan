@@ -40,7 +40,7 @@ services:
       SECRET_KEY: "${SECRET_KEY}"
       BLOBSCAN_API_ENDPOINT: "${BLOBSCAN_API_ENDPOINT}"
       BEACON_NODE_RPC: "${BEACON_NODE_RPC}"
-      EXECUTION_NODE_URL: "${EXECUTION_NODE_URL}"
+      EXECUTION_NODE_RPC: "${EXECUTION_NODE_RPC}"
     depends_on:
       api:
         condition: service_healthy

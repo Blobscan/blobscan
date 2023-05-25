@@ -44,7 +44,7 @@ services:
       SECRET_KEY: supersecret
       BLOBSCAN_API_ENDPOINT: http://localhost:23001
       BEACON_NODE_RPC: http://localhost:5052
-      EXECUTION_NODE_URL: http://localhost:8545
+      EXECUTION_NODE_RPC: http://localhost:8545
     depends_on:
       api:
         condition: service_healthy
