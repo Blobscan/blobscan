@@ -1,15 +1,17 @@
 import { z } from "zod";
 
-import { createTRPCRouter, jwtAuthedProcedure } from "../trpc";
+import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+
+const INDEXER_PATH = "/indexer";
 
 export const indexerRouter = createTRPCRouter({
-  getSlot: jwtAuthedProcedure
+  getSlot: publicProcedure
     .meta({
       openapi: {
         method: "GET",
-        path: "/slot",
+        path: `${INDEXER_PATH}/slot`,
         tags: ["indexer"],
-        summary: "Get the latest known slot from the database",
+        summary: "Get the indexer's latest indexed slot",
       },
     })
     .input(z.void())
@@ -24,14 +26,15 @@ export const indexerRouter = createTRPCRouter({
   updateSlot: jwtAuthedProcedure
     .meta({
       openapi: {
-        method: "POST",
-        path: "/slot",
+        method: "PUT",
+        path: `${INDEXER_PATH}/slot`,
         tags: ["indexer"],
-        summary: "Update the latest known slot in the database",
+        summary: "Update the indexer's latest indexed slot",
+        protect: true,
       },
     })
     .input(z.object({ slot: z.number() }))
-    .output(z.object({ slot: z.number() }))
+    .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const slot = input.slot;
 
@@ -45,16 +48,15 @@ export const indexerRouter = createTRPCRouter({
           lastSlot: slot,
         },
       });
-
-      return { slot };
     }),
   index: jwtAuthedProcedure
     .meta({
       openapi: {
         method: "PUT",
-        path: "/index",
+        path: `${INDEXER_PATH}/block-txs-blobs`,
         tags: ["indexer"],
         summary: "Index data in the database",
+        protect: true,
       },
     })
     .input(
@@ -84,7 +86,7 @@ export const indexerRouter = createTRPCRouter({
         ),
       }),
     )
-    .output(z.object({ block: z.number() }))
+    .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const blockData = {
         number: input.block.number,
@@ -128,7 +130,5 @@ export const indexerRouter = createTRPCRouter({
         createTransactions,
         createBlobs,
       ]);
-
-      return { block: input.block.number };
     }),
 });
