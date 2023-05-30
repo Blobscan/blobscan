@@ -1,18 +1,9 @@
-/**
- * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
- * 1. You want to modify request context (see Part 1)
- * 2. You want to create a new middleware or type of procedure (see Part 3)
- *
- * tl;dr - this is where all the tRPC server stuff is created and plugged in.
- * The pieces you will need to use are documented accordingly near the end
- */
-
-import { TRPCError, initTRPC } from "@trpc/server";
-import superjson from "superjson";
-import { type OpenApiMeta } from "trpc-openapi";
-import { ZodError } from "zod";
-
-import { type TRPCContext } from "./context";
+import { t } from "./client";
+import { isJWTAuthed } from "./middlewares/isJWTAuthed";
+import {
+  PAGINATION_SCHEMA,
+  withPagination,
+} from "./middlewares/withPagination";
 
 // import { getServerSession, type Session } from "@blobscan/auth";
 
@@ -61,41 +52,6 @@ import { type TRPCContext } from "./context";
 //   });
 // };
 
-const t = initTRPC
-  .context<TRPCContext>()
-  .meta<OpenApiMeta>()
-  .create({
-    transformer: superjson,
-    errorFormatter({ shape, error }) {
-      if (
-        error.code === "INTERNAL_SERVER_ERROR" &&
-        process.env.NODE_ENV === "production"
-      ) {
-        return { ...shape, message: "Internal server error" };
-      }
-      return {
-        ...shape,
-        data: {
-          ...shape.data,
-          zodError:
-            error.cause instanceof ZodError ? error.cause.flatten() : null,
-        },
-      };
-    },
-  });
-
-// MIDDLEWARES
-
-const isJWTAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.apiClient) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-
-  return next({
-    ctx,
-  });
-});
-
 /**
  * Reusable middleware that enforces users are logged in before running the
  * procedure
@@ -114,5 +70,8 @@ const isJWTAuthed = t.middleware(({ ctx, next }) => {
 
 export const createTRPCRouter = t.router;
 
+export const paginatedProcedure = t.procedure
+  .input(PAGINATION_SCHEMA)
+  .use(withPagination);
 export const publicProcedure = t.procedure;
 export const jwtAuthedProcedure = t.procedure.use(isJWTAuthed);

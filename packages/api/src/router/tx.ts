@@ -3,8 +3,7 @@ import { z } from "zod";
 
 import { Prisma } from "@blobscan/db";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
-import { PAGINATION_INPUTS, getPaginationParams } from "../utils/pagination";
+import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
 
 const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   id: false,
@@ -33,45 +32,50 @@ export const fullTransactionSelect =
   });
 
 export const transactionRouter = createTRPCRouter({
-  getAll: publicProcedure
+  getAll: paginatedProcedure.query(async ({ ctx }) => {
+    const [transactions, totalTransactions] = await Promise.all([
+      ctx.prisma.transaction.findMany({
+        select: fullTransactionSelect,
+        orderBy: { blockNumber: "desc" },
+        ...ctx.pagination,
+      }),
+      ctx.prisma.transaction.count(),
+    ]);
+
+    return {
+      transactions,
+      totalTransactions,
+    };
+  }),
+  getByAddress: paginatedProcedure
     .input(
       z.object({
-        ...PAGINATION_INPUTS,
+        address: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
+      const { address } = input;
+
       const [transactions, totalTransactions] = await Promise.all([
         ctx.prisma.transaction.findMany({
           select: fullTransactionSelect,
+          where: {
+            OR: [{ from: address }, { to: address }],
+          },
           orderBy: { blockNumber: "desc" },
-          ...getPaginationParams(input),
+          ...ctx.pagination,
         }),
-        ctx.prisma.transaction.count(),
+        ctx.prisma.transaction.count({
+          where: {
+            OR: [{ from: address }, { to: address }],
+          },
+        }),
       ]);
 
       return {
         transactions,
         totalTransactions,
       };
-    }),
-  getByAddress: publicProcedure
-    .input(
-      z.object({
-        address: z.string(),
-        ...PAGINATION_INPUTS,
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { address } = input;
-
-      return ctx.prisma.transaction.findMany({
-        select: fullTransactionSelect,
-        where: {
-          OR: [{ from: address }, { to: address }],
-        },
-        orderBy: { blockNumber: "desc" },
-        ...getPaginationParams(input),
-      });
     }),
   getByHash: publicProcedure
     .input(
