@@ -3,18 +3,24 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
+import { getPaginationParams } from "~/utils/pagination";
+import {
+  BlobTransactionCard,
+  BlobTransactionCardSkeleton,
+} from "~/components/Cards/BlobTransactionCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
-
-const TXS_LIMIT = 20;
+import {
+  PaginatedListSection,
+  PaginatedListSectionSkeleton,
+} from "~/components/PaginatedListSection";
 
 const Address: NextPage = () => {
   const router = useRouter();
+  const { p, ps } = getPaginationParams(router.query);
   const address = router.query.address as string;
 
-  const txQuery = api.tx.getByAddress.useQuery({ address, limit: TXS_LIMIT });
+  const txQuery = api.tx.getByAddress.useQuery({ address, p, ps });
 
   if (txQuery.error) {
     return (
@@ -24,16 +30,6 @@ const Address: NextPage = () => {
       />
     );
   }
-
-  if (txQuery.status !== "success") {
-    return <PageSpinner label="Loading address data..." />;
-  }
-
-  if (!txQuery.data) {
-    return <>Address has no data</>;
-  }
-
-  const txs = txQuery.data;
 
   return (
     <div className="flex w-11/12 flex-col gap-8 md:gap-16">
@@ -49,13 +45,22 @@ const Address: NextPage = () => {
           {address}
         </h2>
       </SectionCard>
-      <SectionCard header={<div>Blob Transactions ({txs.length})</div>}>
-        <div className="space-y-6">
-          {txs.map((t) => (
+      {txQuery.status === "success" ? (
+        <PaginatedListSection
+          header={`Blob Transactions (${txQuery.data.totalTransactions})`}
+          items={txQuery.data.transactions.map((t) => (
             <BlobTransactionCard key={t.hash} transaction={t} />
           ))}
-        </div>
-      </SectionCard>
+          totalItems={txQuery.data.totalTransactions}
+          page={p}
+          pageSize={ps}
+        />
+      ) : (
+        <PaginatedListSectionSkeleton
+          header="Blob Transactions"
+          skeletonItem={<BlobTransactionCardSkeleton />}
+        />
+      )}
     </div>
   );
 };

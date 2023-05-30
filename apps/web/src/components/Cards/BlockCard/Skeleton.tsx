@@ -1,18 +1,18 @@
-import { SkeletonRow } from "~/components/SkeletonItems";
+import { SkeletonBase, SkeletonRow } from "~/components/SkeletonItems";
 import { CardBase, CardHeaderBase } from "../Bases";
 
 export const BlockCardSkeleton: React.FC = function () {
   return (
-    <div className="animate-pulse">
+    <SkeletonBase>
       <CardBase>
         <CardHeaderBase>
-          <SkeletonRow className="h-5 w-20" />
+          <SkeletonRow className="h-5 w-32" />
         </CardHeaderBase>
-        <div className="px-3 py-4">
-          <SkeletonRow className="mb-2 h-3.5 w-28" />
-          <SkeletonRow className="h-4" />
+        <div className="pt-4">
+          <SkeletonRow className="mb-2 h-4 w-20" />
+          <SkeletonRow className="h-4 w-60" />
         </div>
       </CardBase>
-    </div>
+    </SkeletonBase>
   );
 };

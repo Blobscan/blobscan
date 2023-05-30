@@ -5,10 +5,11 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import { TransactionCardSkeleton } from "~/components/Cards/BlobTransactionCard/Skeleton";
-import { BlockCard } from "~/components/Cards/BlockCard";
-import { BlockCardSkeleton } from "~/components/Cards/BlockCard/Skeleton";
+import {
+  BlobTransactionCard,
+  BlobTransactionCardSkeleton,
+} from "~/components/Cards/BlobTransactionCard";
+import { BlockCard, BlockCardSkeleton } from "~/components/Cards/BlockCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
@@ -93,7 +94,7 @@ const Home: NextPage = () => {
             {txsQuery.isLoading
               ? Array(TOTAL_TXS)
                   .fill(0)
-                  .map((_, i) => <TransactionCardSkeleton key={i} />)
+                  .map((_, i) => <BlobTransactionCardSkeleton key={i} />)
               : txs?.map((tx) => {
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { block, blockNumber, ...filteredTx } = tx;

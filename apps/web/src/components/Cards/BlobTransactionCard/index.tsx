@@ -147,3 +147,5 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
       </div>
     );
   };
+
+export { BlobTransactionCardSkeleton } from "./Skeleton";

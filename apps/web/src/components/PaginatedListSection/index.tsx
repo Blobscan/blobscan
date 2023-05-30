@@ -1,8 +1,9 @@
 import { useCallback, type FC, type ReactNode } from "react";
+import { useRouter } from "next/router";
 
-import { SectionCard } from "./Cards/SectionCard";
-import { Dropdown, type DropdownProps } from "./Dropdown";
-import { Pagination, type PaginationProps } from "./Pagination";
+import { SectionCard } from "../Cards/SectionCard";
+import { Dropdown, type DropdownProps } from "../Dropdown";
+import { Pagination, type PaginationProps } from "../Pagination";
 
 export type PaginatedListSectionProps = {
   header: ReactNode;
@@ -10,7 +11,6 @@ export type PaginatedListSectionProps = {
   totalItems: number;
   page: number;
   pageSize: number;
-  onPageSelected(page: number, limit: number): void;
 };
 
 const PAGE_SIZES = [10, 25, 50, 100];
@@ -21,18 +21,35 @@ export const PaginatedListSection: FC<PaginatedListSectionProps> = function ({
   totalItems,
   page,
   pageSize,
-  onPageSelected,
 }) {
+  const router = useRouter();
+
   const pages = Math.ceil(totalItems / pageSize);
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (newPageSize: number) => onPageSelected(page, newPageSize),
-    [page, onPageSelected],
+    (newPageSize: number) =>
+      void router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          p: page,
+          ps: newPageSize,
+        },
+      }),
+    [page, router],
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) => onPageSelected(newPage, pageSize),
-    [pageSize, onPageSelected],
+    (newPage) =>
+      void router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          p: newPage,
+          ps: pageSize,
+        },
+      }),
+    [pageSize, router],
   );
 
   return (
@@ -49,7 +66,7 @@ export const PaginatedListSection: FC<PaginatedListSectionProps> = function ({
       }
     >
       <div className="flex flex-col gap-6">
-        <div className="space-y-6">{items.map((i) => i)}</div>
+        <div className="space-y-4">{items.map((i) => i)}</div>
         <div className="flex w-full justify-between text-sm">
           <div className="flex items-center gap-2">
             Displayed items:
@@ -69,3 +86,5 @@ export const PaginatedListSection: FC<PaginatedListSectionProps> = function ({
     </SectionCard>
   );
 };
+
+export { Skeleton as PaginatedListSectionSkeleton } from "./Skeleton";
