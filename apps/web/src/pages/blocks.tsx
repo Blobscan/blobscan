@@ -1,13 +1,36 @@
+import { useCallback } from "react";
 import { type NextPage } from "next";
 import NextError from "next/error";
+import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
+import {
+  buildRouteWithPagination,
+  getPaginationParams,
+} from "~/utils/pagination";
 import { BlockCard } from "~/components/Cards/BlockCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  PaginatedListSection,
+  type PaginatedListSectionProps,
+} from "~/components/PaginatedListSection";
 import { PageSpinner } from "~/components/Spinners/PageSpinner";
 
 const Blocks: NextPage = function () {
-  const blocksQuery = api.block.getAll.useQuery({ limit: 100 });
+  const router = useRouter();
+  const { p, ps } = getPaginationParams(router.query);
+
+  const blocksQuery = api.block.getAll.useQuery({ p, ps });
+
+  const handlePageSelected = useCallback<
+    PaginatedListSectionProps["onPageSelected"]
+  >(
+    (page, pageSize) => {
+      void router.push(
+        buildRouteWithPagination(router.pathname, page, pageSize),
+      );
+    },
+    [router],
+  );
 
   if (blocksQuery?.error) {
     return (
@@ -22,16 +45,19 @@ const Blocks: NextPage = function () {
     return <PageSpinner label="Loading blocks..." />;
   }
 
-  const blocks = blocksQuery.data;
+  const { blocks, totalBlocks } = blocksQuery.data;
 
   return (
-    <SectionCard header={<div>Blocks</div>}>
-      <div className="space-y-6">
-        {blocks.map((b) => (
-          <BlockCard key={b.hash} block={b} />
-        ))}
-      </div>
-    </SectionCard>
+    <PaginatedListSection
+      header={<div>Blocks ({totalBlocks})</div>}
+      items={blocks.map((b) => (
+        <BlockCard key={b.hash} block={b} />
+      ))}
+      totalItems={totalBlocks}
+      page={p}
+      pageSize={ps}
+      onPageSelected={handlePageSelected}
+    />
   );
 };
 

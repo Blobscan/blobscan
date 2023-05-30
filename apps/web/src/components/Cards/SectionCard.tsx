@@ -15,7 +15,6 @@ export const SectionCard: React.FC<SectionCardProps> = function ({
     <div
       className={`
     w-full 
-    overflow-hidden 
     rounded-lg
     border 
     border-surface-light

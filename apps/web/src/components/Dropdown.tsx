@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
-type DropdownProps = {
+export type DropdownProps = {
   items: (string | number)[];
   selected: string | number;
   onChange(newValue: string | number): void;
