@@ -2,21 +2,28 @@ import {
   type ButtonHTMLAttributes,
   type DOMAttributes,
   type HTMLAttributes,
+  type HtmlHTMLAttributes,
 } from "react";
 
-type VariantName = "outline" | "primary";
+type Size = "sm" | "md" | "lg";
+type SizeStyles = Record<
+  Size,
+  HtmlHTMLAttributes<HTMLButtonElement>["className"]
+>;
+type Variant = "outline" | "primary";
 type VariantStyles = Record<
-  VariantName,
+  Variant,
   HTMLAttributes<HTMLButtonElement>["className"]
 >;
 
 type ButtonProps = {
+  disabled?: boolean;
   type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
   variant: keyof VariantStyles;
   className?: HTMLAttributes<HTMLButtonElement>["className"];
-  size?: string;
+  size?: Size;
   icon?: React.ReactNode;
-  label?: string;
+  label?: React.ReactNode;
   onClick?: DOMAttributes<HTMLButtonElement>["onClick"];
 };
 
@@ -34,6 +41,7 @@ const VARIANT_STYLES: VariantStyles = {
   dark:active:bg-accent-dark
   `,
   outline: `
+    dark:disabled:text-
     bg-transparent
     dark:bg-transparent
     border-accent-light
@@ -50,27 +58,46 @@ const VARIANT_STYLES: VariantStyles = {
   `,
 };
 
+const SIZES: SizeStyles = {
+  sm: `
+    px-2
+    py-1
+  `,
+  md: `
+    px-4
+    py-2
+  `,
+  lg: `
+    px-4
+    py-3
+  `,
+};
+
 export function Button({
-  type,
+  disabled = false,
+  type = "button",
   className,
   icon,
   label,
   onClick,
+  size = "md",
   variant,
 }: ButtonProps) {
   return (
     <button
-      type={type ?? "button"}
+      disabled={disabled}
+      type={type}
       className={`
       ${VARIANT_STYLES[variant]}
+      ${SIZES[size]}
+      cursor-pointer
       rounded
-      px-3
-      py-2
       text-sm
       font-semibold
       shadow-sm
       transition-colors
       active:scale-[0.99]
+      disabled:cursor-default
       ${className}
       `}
       onClick={onClick}
