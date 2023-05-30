@@ -3,10 +3,9 @@ import { Listbox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
 type DropdownProps = {
-  items: string[];
-  placeholder?: string;
-  selected: string;
-  onChange(newValue: string): void;
+  items: (string | number)[];
+  selected: string | number;
+  onChange(newValue: string | number): void;
 };
 
 export const Dropdown: React.FC<DropdownProps> = function ({
@@ -17,8 +16,10 @@ export const Dropdown: React.FC<DropdownProps> = function ({
   return (
     <Listbox value={selected} onChange={onChange}>
       <div className="relative">
-        <Listbox.Button className="relative w-full cursor-pointer rounded-lg border border-transparent bg-controlBackground-light py-2 pl-3 pr-10 text-left shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark sm:text-sm">
-          <span className="block truncate text-base font-normal">
+        <Listbox.Button
+          className={`relative h-9 w-full cursor-pointer rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark sm:text-sm`}
+        >
+          <span className="block truncate align-middle font-normal">
             {selected}
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
