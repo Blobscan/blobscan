@@ -3,8 +3,8 @@ import { z } from "zod";
 
 import { Prisma } from "@blobscan/db";
 
-import { DEFAULT_LIMIT } from "../constants";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { PAGINATION_INPUTS, getPaginationParams } from "../utils/pagination";
 
 const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   id: false,
@@ -36,28 +36,25 @@ export const transactionRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        limit: z.number().optional(),
+        ...PAGINATION_INPUTS,
       }),
     )
     .query(({ ctx, input }) => {
-      const take = input.limit ?? DEFAULT_LIMIT;
-
       return ctx.prisma.transaction.findMany({
         select: fullTransactionSelect,
         orderBy: { blockNumber: "desc" },
-        take,
+        ...getPaginationParams(input),
       });
     }),
   getByAddress: publicProcedure
     .input(
       z.object({
         address: z.string(),
-        limit: z.number().optional(),
+        ...PAGINATION_INPUTS,
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { address, limit } = input;
-      const take = limit ?? DEFAULT_LIMIT;
+      const { address } = input;
 
       return ctx.prisma.transaction.findMany({
         select: fullTransactionSelect,
@@ -65,7 +62,7 @@ export const transactionRouter = createTRPCRouter({
           OR: [{ from: address }, { to: address }],
         },
         orderBy: { blockNumber: "desc" },
-        take,
+        ...getPaginationParams(input),
       });
     }),
   getByHash: publicProcedure
