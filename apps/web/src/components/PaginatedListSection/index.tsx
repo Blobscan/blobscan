@@ -32,11 +32,15 @@ export const PaginatedListSection: FC<PaginatedListSectionProps> = function ({
         pathname: router.pathname,
         query: {
           ...router.query,
-          p: page,
+          /**
+           * Update the selected page to a lower value if we require less pages to show the
+           * new amount of elements per page.
+           */
+          p: Math.min(Math.ceil(totalItems / newPageSize), page),
           ps: newPageSize,
         },
       }),
-    [page, router],
+    [page, totalItems, router],
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
