@@ -35,13 +35,17 @@ const VARIANT_STYLES: VariantStyles = {
   dark:text-accentContent-dark
   hover:bg-accentHighlight-light
   dark:hover:bg-accentHighlight-dark
-  disabled:bg-accentDisabled-light
-  dark:disabled:bg-accentDisabled-dark
   active:bg-accent-light
   dark:active:bg-accent-dark
+
+  disabled:text-warmGray-400
+  dark:disabled:text-coolGray-400
+  disabled:bg-warmGray-500
+  dark:disabled:bg-coolGray-300
+  disabled:border-warmGray-500
+  dark:disabled:border-coolGray-300
   `,
   outline: `
-    dark:disabled:text-
     bg-transparent
     dark:bg-transparent
     border-accent-light
@@ -55,6 +59,11 @@ const VARIANT_STYLES: VariantStyles = {
     active:bg-accent-light
     dark:active:bg-accent-dark
     border
+
+    disabled:text-contentDisabled-light
+    disabled:border-accentDisabled-light
+    dark:disabled:text-contentDisabled-dark
+    dark:disabled:border-accentDisabled-dark
   `,
 };
 
@@ -97,6 +106,7 @@ export function Button({
       shadow-sm
       transition-colors
       active:scale-[0.99]
+      disabled:pointer-events-none
       disabled:cursor-default
       ${className}
       `}
