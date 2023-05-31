@@ -16,6 +16,8 @@ export const Pagination: FC<PaginationProps> = function ({
   onChange,
 }) {
   const [pageInput, setPageInput] = useState(selected);
+  const isFirstPage = selected === 1;
+  const isLastPage = selected === pages;
 
   // Keep inner page input value in sync
   useEffect(() => {
@@ -31,7 +33,7 @@ export const Pagination: FC<PaginationProps> = function ({
     >
       <nav className="flex h-8 gap-2 align-middle">
         <Button
-          disabled
+          disabled={isFirstPage}
           variant="outline"
           size="sm"
           label="First"
@@ -40,6 +42,7 @@ export const Pagination: FC<PaginationProps> = function ({
           }}
         />
         <Button
+          disabled={isFirstPage}
           variant="outline"
           size="sm"
           icon={
@@ -51,7 +54,7 @@ export const Pagination: FC<PaginationProps> = function ({
           onClick={() => onChange(Math.max(1, selected - 1))}
         />
         <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
-          <div className="w-20 font-normal ">
+          <div className="w-20 font-light">
             <Input
               type="number"
               min={1}
@@ -63,6 +66,7 @@ export const Pagination: FC<PaginationProps> = function ({
           <div className="self-center font-normal"> of {pages}</div>
         </div>
         <Button
+          disabled={isLastPage}
           variant="outline"
           size="sm"
           icon={
@@ -74,6 +78,7 @@ export const Pagination: FC<PaginationProps> = function ({
           onClick={() => onChange(Math.min(pages, selected + 1))}
         />
         <Button
+          disabled={isLastPage}
           variant="outline"
           size="sm"
           label="Last"
