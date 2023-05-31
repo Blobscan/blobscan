@@ -14,6 +14,7 @@ import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
+import { Input } from "../Input";
 import { SearchResults, type SearchResultsProps } from "./SearchResults";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];
@@ -105,34 +106,13 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
         className={`relative flex rounded-md border-border-light shadow-sm dark:border-border-dark ${className}`}
       >
         <div className="relative flex flex-grow items-stretch focus-within:z-10">
-          <input
+          <Input
             type="text"
             name="search"
             id="search"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            className={`
-            block
-            w-full
-            rounded-none
-            rounded-l-md
-            border-border-light
-            bg-controlBackground-light
-            py-1.5
-            text-sm
-            transition-colors
-            placeholder:text-hint-light
-            hover:border-controlBorderHighlight-light
-            focus:border-accentHighlight-light
-            focus:ring-0
-            dark:border-border-dark
-            dark:bg-background-dark
-            dark:placeholder:text-hint-dark
-            dark:hover:border-controlBorderHighlight-dark
-            dark:focus:border-accentHighlight-dark
-            sm:leading-6
-            lg:text-base
-            `}
+            className={"rounded-none rounded-l-md"}
             placeholder={`Search by Blob / KZG / Txn / Block / Slot / Address`}
           />
         </div>

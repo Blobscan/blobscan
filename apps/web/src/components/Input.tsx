@@ -1,12 +1,14 @@
 import {
   type DetailedHTMLProps,
   type FC,
+  type HTMLAttributes,
   type InputHTMLAttributes,
 } from "react";
 
 export const Input: FC<
-  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
-> = function (props) {
+  | DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+  | { className: HTMLAttributes<HTMLInputElement> }
+> = function ({ className, ...props }) {
   return (
     <input
       className={`
@@ -17,7 +19,7 @@ export const Input: FC<
     border-border-light
     bg-controlBackground-light
     p-0.5
-    px-1
+    px-2
     transition-colors
     placeholder:text-hint-light
     hover:border-controlBorderHighlight-light
@@ -28,8 +30,7 @@ export const Input: FC<
     dark:placeholder:text-hint-dark
     dark:hover:border-controlBorderHighlight-dark
     dark:focus:border-accentHighlight-dark
-    sm:leading-6
-    lg:text-base
+    ${className}
     `}
       {...props}
     />

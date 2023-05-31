@@ -56,9 +56,11 @@ export const Pagination: FC<PaginationProps> = function ({
         <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
           <div className="w-20 font-light">
             <Input
+              className="text-sm"
               type="number"
               min={1}
               max={pages}
+              step={1}
               value={pageInput}
               onChange={(e) => setPageInput(Number(e.target.value))}
             />
