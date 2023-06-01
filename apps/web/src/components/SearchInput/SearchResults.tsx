@@ -47,7 +47,10 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
               <span className="truncate">Tx: {id.split("-")[0]}</span>
             </div>
           ) : (
-            <span className="truncate">{id}</span>
+            <span className="flex truncate">
+              {category === "slot" && <div className="mr-1">Block</div>}
+              {id}
+            </span>
           )}
         </div>
         <ChevronRightIcon className="inline-block h-4 w-4 text-icon-light dark:text-icon-dark" />
