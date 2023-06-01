@@ -8,7 +8,10 @@ import {
   BlobTransactionCard,
   BlobTransactionCardSkeleton,
 } from "~/components/Cards/BlobTransactionCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import {
   PaginatedListSection,
@@ -32,6 +35,10 @@ const Address: NextPage = () => {
         statusCode={txQuery.error.data?.httpStatus ?? 500}
       />
     );
+  }
+
+  if (txQuery.status !== "success") {
+    return <SectionCardSkeleton />;
   }
 
   return (

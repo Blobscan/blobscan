@@ -35,3 +35,5 @@ export const SectionCard: React.FC<SectionCardProps> = function ({
     </div>
   );
 };
+
+export { SectionCardSkeleton } from "./Skeleton";

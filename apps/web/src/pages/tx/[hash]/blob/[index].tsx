@@ -5,13 +5,15 @@ import { useRouter } from "next/router";
 import { utils } from "ethers";
 
 import { api } from "~/utils/api";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import {
   buildBlockRoute,
   buildTransactionRoute,
@@ -71,7 +73,7 @@ const Blob: NextPage = () => {
   }
 
   if (blobQuery.status !== "success") {
-    return <PageSpinner label="Loading blob…" />;
+    return <SectionCardSkeleton />;
   }
 
   if (!blobQuery.data) {

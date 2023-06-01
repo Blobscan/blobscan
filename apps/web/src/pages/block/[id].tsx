@@ -4,11 +4,13 @@ import { useRouter, type NextRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
@@ -44,7 +46,7 @@ const Block: NextPage = function () {
   }
 
   if (blockQuery.status !== "success") {
-    return <PageSpinner label="Loading block…" />;
+    return <SectionCardSkeleton />;
   }
 
   if (!blockQuery.data) {

@@ -4,11 +4,13 @@ import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { BlobCard } from "~/components/Cards/BlobCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -35,7 +37,7 @@ const Tx: NextPage = () => {
   }
 
   if (txQuery.status !== "success") {
-    return <PageSpinner label="Loading transaction…" />;
+    return <SectionCardSkeleton />;
   }
 
   const { data: tx } = txQuery;
