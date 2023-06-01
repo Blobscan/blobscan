@@ -1,16 +1,21 @@
 import React from "react";
-import { SunIcon } from "@heroicons/react/24/outline";
-import { MoonIcon } from "@heroicons/react/24/solid";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import { useTheme } from "next-themes";
 
+import { useIsMounted } from "~/hooks/useIsMounted";
+
 export function DarkModeButton() {
-  const { systemTheme, theme, setTheme } = useTheme();
-  const currentTheme = theme === "system" ? systemTheme : theme;
+  const { resolvedTheme, setTheme } = useTheme();
+  const isMounted = useIsMounted();
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <button
       type="button"
-      onClick={() => (theme == "dark" ? setTheme("light") : setTheme("dark"))}
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       className={`
         rounded-full p-2
         text-icon-light 
@@ -24,7 +29,7 @@ export function DarkModeButton() {
         hover:dark:bg-primary-800
       `}
     >
-      {currentTheme === "dark" ? (
+      {resolvedTheme === "dark" ? (
         <SunIcon className="h-5 w-5" aria-hidden="true" />
       ) : (
         <MoonIcon className="h-5 w-5" aria-hidden="true" />
