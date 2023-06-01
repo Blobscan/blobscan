@@ -18,9 +18,12 @@ import {
 const Address: NextPage = () => {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const address = router.query.address as string;
+  const address = (router.query.address as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByAddress.useQuery({ address, p, ps });
+  const txQuery = api.tx.getByAddress.useQuery(
+    { address, p, ps },
+    { enabled: router.isReady },
+  );
 
   if (txQuery.error) {
     return (

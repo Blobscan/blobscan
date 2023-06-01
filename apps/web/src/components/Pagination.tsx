@@ -2,7 +2,6 @@ import { useEffect, useState, type FC } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 import { Button } from "./Button";
-import { ResponsiveDisplay } from "./CompactOnly";
 import { Input } from "./Input";
 
 type NavigationButton = {

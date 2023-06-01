@@ -35,12 +35,17 @@ function formatBlob(blob: string, viewMode: BlobViewMode): string {
 
 const Blob: NextPage = () => {
   const router = useRouter();
-  const index = router.query.index as string;
-  const txHash = router.query.hash as string;
-  const blobQuery = api.blob.getByIndex.useQuery({
-    index: parseInt(index),
-    txHash,
-  });
+  const index = (router.query.index as string | undefined) ?? "0";
+  const txHash = (router.query.hash as string | undefined) ?? "";
+  const blobQuery = api.blob.getByIndex.useQuery(
+    {
+      index: parseInt(index),
+      txHash,
+    },
+    {
+      enabled: router.isReady,
+    },
+  );
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
   const [formattedData, formattedDataErr] = useMemo(() => {

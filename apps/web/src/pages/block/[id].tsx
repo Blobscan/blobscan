@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
-import { useRouter } from "next/router";
+import { useRouter, type NextRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
@@ -15,20 +15,24 @@ import {
   formatTimestamp,
 } from "~/utils";
 
-function fetchBlock(blockNumberOrHash: string) {
+function performBlockQuery(router: NextRouter) {
+  const isReady = router.isReady;
+  const blockNumberOrHash = router.query.id as string | undefined;
   const blockNumber = Number(blockNumberOrHash);
 
   if (!Number.isNaN(blockNumber)) {
     return api.block.getByBlockNumber.useQuery({ number: blockNumber });
   }
 
-  return api.block.getByHash.useQuery({ hash: blockNumberOrHash });
+  return api.block.getByHash.useQuery(
+    { hash: blockNumberOrHash ?? "" },
+    { enabled: isReady },
+  );
 }
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const id = router.query.id as string;
-  const blockQuery = fetchBlock(id);
+  const blockQuery = performBlockQuery(router);
 
   if (blockQuery?.error) {
     return (

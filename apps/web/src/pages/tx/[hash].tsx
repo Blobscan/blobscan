@@ -18,9 +18,12 @@ import {
 
 const Tx: NextPage = () => {
   const router = useRouter();
-  const hash = router.query.hash as string;
+  const hash = (router.query.hash as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByHash.useQuery({ hash });
+  const txQuery = api.tx.getByHash.useQuery(
+    { hash },
+    { enabled: router.isReady },
+  );
 
   if (txQuery.error) {
     return (
