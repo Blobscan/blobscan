@@ -6,7 +6,7 @@ import { SkeletonBase } from "../SkeletonItems";
 export const Skeleton: FC<{ header: ReactNode; skeletonItem: ReactNode }> =
   function ({ header, skeletonItem }) {
     return (
-      <SectionCard header={header}>
+      <SectionCard header={<div className="h-32 sm:h-auto">{header}</div>}>
         <SkeletonBase>
           <div className="space-y-4">
             {Array(6)

@@ -59,20 +59,22 @@ export const PaginatedListSection: FC<PaginatedListSectionProps> = function ({
   return (
     <SectionCard
       header={
-        <div className="flex justify-between">
+        <div className="flex flex-col justify-between gap-6 md:flex-row">
           {header}
-          <Pagination
-            selected={page}
-            pages={pages}
-            onChange={handlePageSelection}
-          />
+          <div className="w-full self-center sm:w-auto">
+            <Pagination
+              selected={page}
+              pages={pages}
+              onChange={handlePageSelection}
+            />
+          </div>
         </div>
       }
     >
       <div className="flex flex-col gap-6">
         <div className="space-y-4">{items.map((i) => i)}</div>
-        <div className="flex w-full justify-between text-sm">
-          <div className="flex items-center gap-2">
+        <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
+          <div className="flex items-center justify-start gap-2">
             Displayed items:
             <Dropdown
               items={PAGE_SIZES}
@@ -80,11 +82,14 @@ export const PaginatedListSection: FC<PaginatedListSectionProps> = function ({
               onChange={handlePageSizeSelection}
             />
           </div>
-          <Pagination
-            selected={page}
-            pages={pages}
-            onChange={handlePageSelection}
-          />
+          <div className="w-full sm:w-auto">
+            <Pagination
+              selected={page}
+              pages={pages}
+              inverseCompact
+              onChange={handlePageSelection}
+            />
+          </div>
         </div>
       </div>
     </SectionCard>
