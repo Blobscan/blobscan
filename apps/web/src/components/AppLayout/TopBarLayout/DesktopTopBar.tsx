@@ -1,17 +1,17 @@
 import { Logo } from "../../BlobscanLogo";
-import { DarkModeButton } from "../../DarkModeButton";
 import { SearchInput } from "../../SearchInput";
+import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const DesktopNav: React.FC = () => {
   return (
     <TopBarSurface>
       <div className="flex h-full justify-between">
-        <Logo className="h-8 w-32 md:h-9 md:w-36" />
-        <div className="w-1/2 md:w-1/2 lg:w-1/3">
+        <Logo className="h-8 w-32 sm:h-9 sm:w-36" />
+        <div className="w-1/2 sm:max-w-xl">
           <SearchInput />
         </div>
-        <DarkModeButton />
+        <ThemeModeButton />
       </div>
     </TopBarSurface>
   );

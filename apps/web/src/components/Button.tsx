@@ -10,7 +10,7 @@ type SizeStyles = Record<
   Size,
   HtmlHTMLAttributes<HTMLButtonElement>["className"]
 >;
-type Variant = "outline" | "primary";
+type Variant = "outline" | "primary" | "icon";
 type VariantStyles = Record<
   Variant,
   HTMLAttributes<HTMLButtonElement>["className"]
@@ -19,7 +19,7 @@ type VariantStyles = Record<
 type ButtonProps = {
   disabled?: boolean;
   type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
-  variant: keyof VariantStyles;
+  variant?: keyof VariantStyles;
   className?: HTMLAttributes<HTMLButtonElement>["className"];
   size?: Size;
   icon?: React.ReactNode;
@@ -65,6 +65,18 @@ const VARIANT_STYLES: VariantStyles = {
     dark:disabled:text-contentDisabled-dark
     dark:disabled:border-accentDisabled-dark
   `,
+  icon: `
+    rounded-full p-2
+    text-icon-light
+    shadow-sm transition-colors
+    hover:bg-primary-200
+    focus-visible:outline
+    focus-visible:outline-2
+    focus-visible:outline-offset-2
+    focus-visible:outline-iconHighlight-dark
+    dark:text-icon-dark
+    hover:dark:bg-primary-800
+  `,
 };
 
 const SIZES: SizeStyles = {
@@ -97,8 +109,8 @@ export function Button({
       disabled={disabled}
       type={type}
       className={`
-      ${VARIANT_STYLES[variant]}
-      ${SIZES[size]}
+      ${VARIANT_STYLES[variant ?? "primary"]}
+      ${variant !== "icon" && SIZES[size]}
       cursor-pointer
       rounded
       text-sm

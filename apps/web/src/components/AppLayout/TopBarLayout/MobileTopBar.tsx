@@ -1,6 +1,6 @@
 import { Logo } from "../../BlobscanLogo";
-import { DarkModeButton } from "../../DarkModeButton";
 import { SearchInput } from "../../SearchInput";
+import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const MobileNav = function () {
@@ -10,7 +10,7 @@ export const MobileNav = function () {
         <TopBarSurface>
           <div className="flex w-full justify-between">
             <Logo className="h-8 w-32 md:h-9 md:w-36" />
-            <DarkModeButton />
+            <ThemeModeButton />
           </div>
         </TopBarSurface>
       </div>
