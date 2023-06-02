@@ -74,7 +74,11 @@ const Home: NextPage = () => {
                       <BlockCardSkeleton />
                     </div>
                   ))
-              : blocks?.map((b) => <BlockCard key={b.hash} block={b} />)}
+              : blocks?.map((b) => (
+                  <div className="flex-grow" key={b.hash}>
+                    <BlockCard block={b} />
+                  </div>
+                ))}
           </div>
         </SectionCard>
         <SectionCard
@@ -83,7 +87,7 @@ const Home: NextPage = () => {
               <div>Latest Blob Transactions</div>{" "}
               <Button
                 variant="outline"
-                label="View All Transactions"
+                label="View All Txs"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={() => router.push("/txs")}
               />
