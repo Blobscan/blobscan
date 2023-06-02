@@ -37,7 +37,7 @@ const Tx: NextPage = () => {
   }
 
   if (txQuery.status !== "success") {
-    return <SectionCardSkeleton />;
+    return <SectionCardSkeleton header="Transaction Details" />;
   }
 
   const { data: tx } = txQuery;

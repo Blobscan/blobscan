@@ -73,7 +73,7 @@ const Blob: NextPage = () => {
   }
 
   if (blobQuery.status !== "success") {
-    return <SectionCardSkeleton />;
+    return <SectionCardSkeleton header="Blob Details" />;
   }
 
   if (!blobQuery.data) {

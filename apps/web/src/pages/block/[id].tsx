@@ -46,7 +46,7 @@ const Block: NextPage = function () {
   }
 
   if (blockQuery.status !== "success") {
-    return <SectionCardSkeleton />;
+    return <SectionCardSkeleton header="Block Details" />;
   }
 
   if (!blockQuery.data) {
