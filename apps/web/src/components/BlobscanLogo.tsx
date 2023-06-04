@@ -11,7 +11,7 @@ export const Logo: React.FC<{ className?: string }> = ({ className = "" }) => {
     resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png";
 
   if (!isMounted) {
-    return null;
+    return <div className={className} />;
   }
 
   return (

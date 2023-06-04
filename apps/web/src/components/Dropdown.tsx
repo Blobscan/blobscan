@@ -17,7 +17,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
     <Listbox value={selected} onChange={onChange}>
       <div className="relative">
         <Listbox.Button
-          className={`relative h-9 w-full cursor-pointer rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark sm:text-sm`}
+          className={`relative h-9 w-full cursor-pointer rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
           <span className="block truncate align-middle font-normal">
             {selected}
