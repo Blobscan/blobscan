@@ -4,6 +4,7 @@ import {
   PAGINATION_SCHEMA,
   withPagination,
 } from "./middlewares/withPagination";
+import { TIME_FRAME_SCHEMA, withTimeFrame } from "./middlewares/withTimeFrame";
 
 // import { getServerSession, type Session } from "@blobscan/auth";
 
@@ -75,3 +76,6 @@ export const paginatedProcedure = t.procedure
   .use(withPagination);
 export const publicProcedure = t.procedure;
 export const jwtAuthedProcedure = t.procedure.use(isJWTAuthed);
+export const timeSeriesProcedure = t.procedure
+  .input(TIME_FRAME_SCHEMA)
+  .use(withTimeFrame);

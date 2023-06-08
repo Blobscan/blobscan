@@ -45,6 +45,67 @@ model Transaction {
   block     Block  @relation(fields: [blockNumber], references: [number])
 }
 
+// Block Metrics
+model BlockOverallStats {
+  id              Int      @id @default(autoincrement())
+  // avgDataGasUsed  Float
+  totalBlocks     Int
+  updatedAt DateTime
+}
+
+model BlockDailyStats {
+  id               Int    @id @default(autoincrement())
+  day             DateTime
+  totalBlocks      Int
+  // avgDataGasUsed   Float?
+  @@index([day])
+  @@unique([day])
+}
+
+// Transaction metrics
+
+model TransactionOverallStats {
+  id                Int      @id @default(autoincrement())
+  // avgSize         Float
+  // avgGasUsed        Float
+  totalTransactions Int
+  updatedAt DateTime
+  // totalSize Int
+  // uniqueSenders     Int
+  // uniqueReceivers   Int
+}
+
+model TransactionDailyStats {
+  id               Int    @id @default(autoincrement())
+  day             DateTime
+  totalTransactions Int
+  // uniqueSenders    Int?
+  // uniqueReceivers  Int?
+  @@unique([day])
+}
+
+// Blob metrics
+
+model BlobOverallStats {
+  id                  Int      @id @default(autoincrement())
+  totalBlobs          Int
+  updatedAt DateTime
+  // totalDataSize Float
+  // avgDataSize         Float
+  // dataSizeDistribution Json
+}
+
+model BlobDailyStats {
+  id              Int    @id @default(autoincrement())
+  day            DateTime
+  totalBlobs Int
+  // avgBlobSize     Float?
+  // sizeDistribution Json?
+  @@unique([day])
+}
+
+
+
 
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
