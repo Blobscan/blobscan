@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { isAddress, isBlockNumber, isCommitment, isHash } from "../utils";
+import {
+  isAddress,
+  isBlockNumber,
+  isCommitment,
+  isHash,
+} from "../utils/search";
 
 type HashResponse = {
   entity: string;

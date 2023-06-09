@@ -3,6 +3,7 @@ import process from "node:process";
 import Graceful from "@ladjs/graceful";
 import Bree from "bree";
 
+import { configureHttp } from "./http/configure-http";
 import { jobs } from "./jobs";
 
 const bree = new Bree({
@@ -28,5 +29,7 @@ const graceful = new Graceful({ brees: [bree] });
 graceful.listen();
 
 void (async () => {
+  configureHttp();
+
   await bree.start();
 })();
