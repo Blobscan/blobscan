@@ -5,12 +5,15 @@ import { useRouter } from "next/router";
 import { utils } from "ethers";
 
 import { api } from "~/utils/api";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { Dropdown } from "~/components/Dropdown";
+import { ExpandableContent } from "~/components/ExpandableContent";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import {
   buildBlockRoute,
   buildTransactionRoute,
@@ -34,12 +37,17 @@ function formatBlob(blob: string, viewMode: BlobViewMode): string {
 
 const Blob: NextPage = () => {
   const router = useRouter();
-  const index = router.query.index as string;
-  const txHash = router.query.hash as string;
-  const blobQuery = api.blob.getByIndex.useQuery({
-    index: parseInt(index),
-    txHash,
-  });
+  const index = (router.query.index as string | undefined) ?? "0";
+  const txHash = (router.query.hash as string | undefined) ?? "";
+  const blobQuery = api.blob.getByIndex.useQuery(
+    {
+      index: parseInt(index),
+      txHash,
+    },
+    {
+      enabled: router.isReady,
+    },
+  );
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
   const [formattedData, formattedDataErr] = useMemo(() => {
@@ -65,7 +73,7 @@ const Blob: NextPage = () => {
   }
 
   if (blobQuery.status !== "success") {
-    return <PageSpinner label="Loading blob…" />;
+    return <SectionCardSkeleton header="Blob Details" />;
   }
 
   if (!blobQuery.data) {
@@ -129,13 +137,13 @@ const Blob: NextPage = () => {
           </div>
         }
       >
-        <div className="break-words  rounded-xl border border-border-light p-3 dark:border-border-dark">
+        <div className="break-words rounded-xl border border-border-light p-3 text-left leading-7  dark:border-border-dark">
           {formattedDataErr ? (
             <span className="text-error-400">
               Couldn&rsquo;t format blob data.
             </span>
           ) : (
-            formattedData
+            <ExpandableContent>{formattedData}</ExpandableContent>
           )}
         </div>
       </SectionCard>

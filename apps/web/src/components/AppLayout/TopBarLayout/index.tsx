@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-import { DarkModeButton } from "~/components/DarkModeButton";
+import { ThemeModeButton } from "~/components/ThemeModeButton";
 import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";
 
@@ -12,7 +12,7 @@ export const TopBarLayout: React.FC = () => {
   if (isHomePage) {
     return (
       <nav className="z-10 flex h-16 w-full items-center justify-end px-4">
-        <DarkModeButton />
+        <ThemeModeButton />
       </nav>
     );
   }

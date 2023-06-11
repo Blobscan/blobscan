@@ -20,7 +20,7 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
   const hasOneBlob = blobCount === 1;
 
   return (
-    <CardBase className="p-0">
+    <CardBase>
       <CardHeaderBase>
         Block <Link href={buildBlockRoute(number)}>#{number}</Link>
       </CardHeaderBase>

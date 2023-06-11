@@ -1,34 +1,40 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
-import { useRouter } from "next/router";
+import { useRouter, type NextRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
   formatTimestamp,
 } from "~/utils";
 
-function fetchBlock(blockNumberOrHash: string) {
+function performBlockQuery(router: NextRouter) {
+  const isReady = router.isReady;
+  const blockNumberOrHash = router.query.id as string | undefined;
   const blockNumber = Number(blockNumberOrHash);
 
   if (!Number.isNaN(blockNumber)) {
     return api.block.getByBlockNumber.useQuery({ number: blockNumber });
   }
 
-  return api.block.getByHash.useQuery({ hash: blockNumberOrHash });
+  return api.block.getByHash.useQuery(
+    { hash: blockNumberOrHash ?? "" },
+    { enabled: isReady },
+  );
 }
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const id = router.query.id as string;
-  const blockQuery = fetchBlock(id);
+  const blockQuery = performBlockQuery(router);
 
   if (blockQuery?.error) {
     return (
@@ -40,7 +46,7 @@ const Block: NextPage = function () {
   }
 
   if (blockQuery.status !== "success") {
-    return <PageSpinner label="Loading block…" />;
+    return <SectionCardSkeleton header="Block Details" />;
   }
 
   if (!blockQuery.data) {

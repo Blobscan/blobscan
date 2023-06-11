@@ -11,7 +11,6 @@ export const CardBase: React.FC<SurfaceCardBaseProps> = function ({
     <div
       className={`
     dark:bg-neutral-850
-    w-full
     truncate
     rounded-md
     border

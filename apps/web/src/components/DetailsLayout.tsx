@@ -4,8 +4,8 @@ import { SectionCard } from "./Cards/SectionCard";
 import { Link } from "./Link";
 
 type DetailsLayoutProps = {
-  children: ReactNode;
-  title: string;
+  children?: ReactNode;
+  title: ReactNode;
   externalLink?: string;
 };
 
@@ -18,7 +18,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
     <SectionCard
       header={
         <div className="flex flex-col justify-between gap-1 md:flex-row">
-          <div>{title}</div>
+          <div className="truncate">{title}</div>
           {externalLink && (
             <div className="text-base font-normal">
               <Link href={externalLink} isExternal>

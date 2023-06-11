@@ -41,7 +41,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-12 md:gap-24">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
-        <Logo size="lg" />
+        <Logo className="h-16 w-64 md:h-24 md:w-96" />
         <div className="flex flex-col items-stretch justify-center space-y-2  md:w-8/12">
           <SearchInput />
           <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -74,7 +74,11 @@ const Home: NextPage = () => {
                       <BlockCardSkeleton />
                     </div>
                   ))
-              : blocks?.map((b) => <BlockCard key={b.hash} block={b} />)}
+              : blocks?.map((b) => (
+                  <div className="flex-grow" key={b.hash}>
+                    <BlockCard block={b} />
+                  </div>
+                ))}
           </div>
         </SectionCard>
         <SectionCard
@@ -83,7 +87,7 @@ const Home: NextPage = () => {
               <div>Latest Blob Transactions</div>{" "}
               <Button
                 variant="outline"
-                label="View All Transactions"
+                label="View All Txs"
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={() => router.push("/txs")}
               />

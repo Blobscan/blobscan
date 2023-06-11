@@ -4,11 +4,13 @@ import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { BlobCard } from "~/components/Cards/BlobCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import {
+  SectionCard,
+  SectionCardSkeleton,
+} from "~/components/Cards/SectionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -18,9 +20,12 @@ import {
 
 const Tx: NextPage = () => {
   const router = useRouter();
-  const hash = router.query.hash as string;
+  const hash = (router.query.hash as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByHash.useQuery({ hash });
+  const txQuery = api.tx.getByHash.useQuery(
+    { hash },
+    { enabled: router.isReady },
+  );
 
   if (txQuery.error) {
     return (
@@ -32,7 +37,7 @@ const Tx: NextPage = () => {
   }
 
   if (txQuery.status !== "success") {
-    return <PageSpinner label="Loading transaction…" />;
+    return <SectionCardSkeleton header="Transaction Details" />;
   }
 
   const { data: tx } = txQuery;

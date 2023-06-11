@@ -8,19 +8,24 @@ import {
   BlobTransactionCard,
   BlobTransactionCardSkeleton,
 } from "~/components/Cards/BlobTransactionCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import { DetailsLayout } from "~/components/DetailsLayout";
 import { EthIdenticon } from "~/components/EthIdenticon";
+import { InfoGrid } from "~/components/InfoGrid";
 import {
   PaginatedListSection,
   PaginatedListSectionSkeleton,
 } from "~/components/PaginatedListSection";
+import { buildAddressExternalUrl } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const address = router.query.address as string;
+  const address = (router.query.address as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByAddress.useQuery({ address, p, ps });
+  const txQuery = api.tx.getByAddress.useQuery(
+    { address, p, ps },
+    { enabled: router.isReady },
+  );
 
   if (txQuery.error) {
     return (
@@ -32,19 +37,27 @@ const Address: NextPage = () => {
   }
 
   return (
-    <div className="flex w-11/12 flex-col gap-8 md:gap-16">
-      <SectionCard
-        header={
-          <div className="flex">
-            <EthIdenticon address={address} />
-            <div className="sm:text-lge ml-2 text-base">Address</div>
-          </div>
-        }
+    <>
+      <DetailsLayout
+        title="Address Details"
+        externalLink={buildAddressExternalUrl(address)}
       >
-        <h2 className="truncate text-xs font-bold text-content-light dark:text-content-dark sm:text-lg">
-          {address}
-        </h2>
-      </SectionCard>
+        <InfoGrid
+          fields={[
+            {
+              name: "Address",
+              value: (
+                <div className="flex items-center gap-2">
+                  <div className="relative bottom-0.5">
+                    <EthIdenticon address={address} />
+                  </div>
+                  <div className="">{address}</div>
+                </div>
+              ),
+            },
+          ]}
+        />
+      </DetailsLayout>
       {txQuery.status === "success" ? (
         <PaginatedListSection
           header={`Blob Transactions (${txQuery.data.totalTransactions})`}
@@ -61,7 +74,7 @@ const Address: NextPage = () => {
           skeletonItem={<BlobTransactionCardSkeleton />}
         />
       )}
-    </div>
+    </>
   );
 };
 
