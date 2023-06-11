@@ -148,7 +148,7 @@ export const semanticColors = {
     dark: primary[400],
   },
   controlBorderHighlight: {
-    light: warmGray[200],
+    light: primary[400],
     dark: primary[400],
   },
   hint: {

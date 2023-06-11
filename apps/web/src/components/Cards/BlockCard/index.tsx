@@ -41,3 +41,5 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
     </CardBase>
   );
 };
+
+export { BlockCardSkeleton } from "./Skeleton";

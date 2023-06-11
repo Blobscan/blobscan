@@ -3,8 +3,7 @@ import { z } from "zod";
 
 import { Prisma } from "@blobscan/db";
 
-import { DEFAULT_LIMIT } from "../constants";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
 
 export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
   id: false,
@@ -26,20 +25,20 @@ export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
 });
 
 export const blobRouter = createTRPCRouter({
-  getAll: publicProcedure
-    .input(
-      z.object({
-        limit: z.number().optional(),
+  getAll: paginatedProcedure.query(async ({ ctx }) => {
+    const [blobs, totalBlobs] = await Promise.all([
+      ctx.prisma.blob.findMany({
+        select: { ...blobSelect, data: false },
+        ...ctx.pagination,
       }),
-    )
-    .query(({ ctx, input }) => {
-      const take = input.limit ?? DEFAULT_LIMIT;
+      ctx.prisma.blob.count(),
+    ]);
 
-      return ctx.prisma.blob.findMany({
-        select: blobSelect,
-        take,
-      });
-    }),
+    return {
+      blobs,
+      totalBlobs,
+    };
+  }),
   getByIndex: publicProcedure
     .input(
       z.object({

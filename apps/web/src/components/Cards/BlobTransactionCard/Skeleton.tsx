@@ -1,9 +1,9 @@
-import { SkeletonRow } from "~/components/SkeletonItems";
+import { SkeletonBase, SkeletonRow } from "~/components/SkeletonItems";
 import { CardBase } from "../Bases";
 
-export const TransactionCardSkeleton: React.FC = function () {
+export const BlobTransactionCardSkeleton: React.FC = function () {
   return (
-    <div className="animate-pulse">
+    <SkeletonBase>
       <CardBase>
         <div className="flex justify-between px-3 py-4">
           <div className="flex w-9/12 flex-col space-y-2">
@@ -18,6 +18,6 @@ export const TransactionCardSkeleton: React.FC = function () {
           </div>
         </div>
       </CardBase>
-    </div>
+    </SkeletonBase>
   );
 };
