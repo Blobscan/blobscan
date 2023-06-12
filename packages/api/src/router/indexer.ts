@@ -88,10 +88,12 @@ export const indexerRouter = createTRPCRouter({
     )
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
+      const timestamp = new Date(input.block.timestamp * 1000);
+
       const blockData = {
         number: input.block.number,
         hash: input.block.hash,
-        timestamp: input.block.timestamp,
+        timestamp,
         slot: input.block.slot,
       };
       const createBlock = ctx.prisma.block.upsert({
@@ -110,6 +112,7 @@ export const indexerRouter = createTRPCRouter({
           from: transaction.from,
           to: transaction.to,
           blockNumber: transaction.blockNumber,
+          timestamp,
         })),
         skipDuplicates: true,
       });
@@ -121,6 +124,7 @@ export const indexerRouter = createTRPCRouter({
           data: blob.data,
           txHash: blob.txHash,
           index: blob.index,
+          timestamp,
         })),
         skipDuplicates: true,
       });
