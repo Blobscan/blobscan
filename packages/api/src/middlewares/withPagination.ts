@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { t } from "../client";
+import { t } from "../clients/trpc";
 
 const DEFAULT_LIMIT = 25;
 
