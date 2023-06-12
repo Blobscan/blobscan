@@ -1,7 +1,7 @@
 import type Bree from "bree";
 
 export const jobs: (Bree.JobOptions | string)[] = [
-  "backfill-blob-stats",
-  "backfill-block-stats",
-  "backfill-transaction-stats",
+  "backfill-daily-blob-stats",
+  "backfill-daily-block-stats",
+  "backfill-daily-transaction-stats",
 ];

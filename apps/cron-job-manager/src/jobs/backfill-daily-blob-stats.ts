@@ -7,7 +7,7 @@ import { client } from "../client";
 void (async () => {
   const now = dayjs().startOf("day");
 
-  await client.stats.blob.backfillTimeSeriesStats.mutate({
+  await client.stats.blob.backfillDailyStats.mutate({
     to: now.toISOString(),
   });
 

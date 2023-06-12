@@ -39,7 +39,7 @@ export const blockStatsRouter = createTRPCRouter({
         updatedAt: overallBlockStats.updatedAt,
       };
     }),
-  getTimeSeriesStats: timeSeriesProcedure
+  getDailyStats: timeSeriesProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -71,7 +71,7 @@ export const blockStatsRouter = createTRPCRouter({
         },
       });
     }),
-  backfillTimeSeriesStats: datesProcedure.mutation(async ({ ctx }) => {
+  backfillDailyStats: datesProcedure.mutation(async ({ ctx }) => {
     const prisma = ctx.prisma;
     const dates = ctx.dates;
     // TODO: implement some sort of bulk processing mechanism.

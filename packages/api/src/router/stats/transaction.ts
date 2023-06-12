@@ -40,7 +40,7 @@ export const transactionStatsRouter = createTRPCRouter({
         updatedAt: overallTransactionStats.updatedAt,
       };
     }),
-  getTimeSeriesStats: timeSeriesProcedure
+  getDailyStats: timeSeriesProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -75,7 +75,7 @@ export const transactionStatsRouter = createTRPCRouter({
         },
       });
     }),
-  backfillTimeSeriesStats: datesProcedure.mutation(async ({ ctx }) => {
+  backfillDailyStats: datesProcedure.mutation(async ({ ctx }) => {
     const prisma = ctx.prisma;
     const dates = ctx.dates;
 
