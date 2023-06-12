@@ -1,8 +1,36 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { BUCKET_NAME } from "../env";
 import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+import { buildGoogleStorageUri } from "../utils";
 
 const INDEXER_PATH = "/indexer";
+const INDEX_REQUEST_DATA = z.object({
+  block: z.object({
+    number: z.coerce.number(),
+    hash: z.string(),
+    timestamp: z.coerce.number(),
+    slot: z.coerce.number(),
+  }),
+  transactions: z.array(
+    z.object({
+      hash: z.string(),
+      from: z.string(),
+      to: z.string().optional(),
+      blockNumber: z.coerce.number(),
+    }),
+  ),
+  blobs: z.array(
+    z.object({
+      versionedHash: z.string(),
+      commitment: z.string(),
+      data: z.string(),
+      txHash: z.string(),
+      index: z.coerce.number(),
+    }),
+  ),
+});
 
 export const indexerRouter = createTRPCRouter({
   getSlot: publicProcedure
@@ -59,35 +87,19 @@ export const indexerRouter = createTRPCRouter({
         protect: true,
       },
     })
-    .input(
-      z.object({
-        block: z.object({
-          number: z.coerce.number(),
-          hash: z.string(),
-          timestamp: z.coerce.number(),
-          slot: z.coerce.number(),
-        }),
-        transactions: z.array(
-          z.object({
-            hash: z.string(),
-            from: z.string(),
-            to: z.string().optional(),
-            blockNumber: z.coerce.number(),
-          }),
-        ),
-        blobs: z.array(
-          z.object({
-            versionedHash: z.string(),
-            commitment: z.string(),
-            data: z.string(),
-            txHash: z.string(),
-            index: z.coerce.number(),
-          }),
-        ),
-      }),
-    )
+    .input(INDEX_REQUEST_DATA)
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
+      // Check we have enough swarm postages
+      const batches = await ctx.swarm.beeDebug.getAllPostageBatch();
+
+      if (batches.length === 0 || batches[0]?.batchID === undefined) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Not available Swarm postages`,
+        });
+      }
+
       const blockData = {
         number: input.block.number,
         hash: input.block.hash,
@@ -118,17 +130,61 @@ export const indexerRouter = createTRPCRouter({
         data: input.blobs.map((blob) => ({
           versionedHash: blob.versionedHash,
           commitment: blob.commitment,
-          data: blob.data,
           txHash: blob.txHash,
           index: blob.index,
         })),
         skipDuplicates: true,
       });
 
+      const existingBlobDataHashes = await ctx.prisma.blobData
+        .findMany({
+          select: { versionedHash: true },
+          where: {
+            id: { in: input.blobs.map((blob) => blob.versionedHash) },
+          },
+        })
+        .then((blobDatas) => blobDatas.map((b) => b.versionedHash));
+
+      const blobDatas = input.blobs
+        .filter((b) => !existingBlobDataHashes.includes(b.versionedHash))
+        .map((b) => ({
+          id: b.versionedHash,
+          versionedHash: b.versionedHash,
+          swarmHash: undefined,
+          gsUri: buildGoogleStorageUri(b.versionedHash),
+          data: b.data,
+        }));
+
+      const batchId = batches[0].batchID;
+      const swarmResults = await ctx.swarm.bee.uploadFiles(batchId, [], {
+        pin: true,
+      });
+
+      blobDatas.map((bd, index) => ({
+        ...bd,
+        swarmHash: swarmResults[index].reference,
+      }));
+
+      await Promise.all(
+        blobDatas.map(async (bd) => {
+          await ctx.storage.bucket(BUCKET_NAME).file(bd.gsUri).save(bd.data);
+        }),
+      );
+
+      const createBlobDatas = ctx.prisma.blobData.createMany({
+        data: blobDatas.map((bd) => ({
+          id: bd.versionedHash,
+          hash: bd.versionedHash,
+          gsUri: bd.gsUri,
+          swarmHash: bd.swarmHash,
+        })),
+      });
+
       await ctx.prisma.$transaction([
         createBlock,
         createTransactions,
         createBlobs,
+        createBlobDatas,
       ]);
     }),
 });
