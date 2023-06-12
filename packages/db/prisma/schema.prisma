@@ -56,9 +56,12 @@ model BlockOverallStats {
 }
 
 model BlockDailyStats {
-  dayId             DateTime @id
+  id          Int         @id @default(autoincrement())
+  day         DateTime    @db.Date
   totalBlocks     Int
   // avgDataGasUsed   Float?
+  @@unique([day])
+  @@index([day])  
 }
 
 // Transaction metrics
@@ -75,10 +78,13 @@ model TransactionOverallStats {
 }
 
 model TransactionDailyStats {
-  dayId             DateTime @id
+  id          Int         @id @default(autoincrement())
+  day         DateTime    @db.Date
   totalTransactions Int
   // uniqueSenders    Int?
   // uniqueReceivers  Int?
+  @@unique([day])
+  @@index([day])
 }
 
 // Blob metrics
@@ -93,10 +99,13 @@ model BlobOverallStats {
 }
 
 model BlobDailyStats {
-  dayId              DateTime    @id 
+  id          Int         @id @default(autoincrement())
+  day         DateTime    @db.Date
   totalBlobs Int
   // avgBlobSize     Float?
   // sizeDistribution Json?
+  @@unique([day])
+  @@index([day])
 }
 
 

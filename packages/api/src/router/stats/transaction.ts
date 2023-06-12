@@ -53,7 +53,7 @@ export const transactionStatsRouter = createTRPCRouter({
       z.array(
         z
           .object({
-            dayId: z.date(),
+            day: z.date(),
             totalTransactions: z.number(),
           })
           .optional(),
@@ -64,11 +64,11 @@ export const transactionStatsRouter = createTRPCRouter({
 
       return ctx.prisma.transactionDailyStats.findMany({
         select: {
-          dayId: true,
+          day: true,
           totalTransactions: true,
         },
         where: {
-          dayId: {
+          day: {
             lte: timeFrame.final.toDate(),
             gte: timeFrame.initial.toDate(),
           },
@@ -84,7 +84,7 @@ export const transactionStatsRouter = createTRPCRouter({
       await prisma.$executeRawUnsafe(`TRUNCATE TABLE "TransactionDailyStats"`);
     } else {
       await prisma.blockDailyStats.deleteMany({
-        where: dates.buildWhereClause("dayId"),
+        where: dates.buildWhereClause("day"),
       });
     }
 
@@ -93,10 +93,10 @@ export const transactionStatsRouter = createTRPCRouter({
     const dailyTransactionStats = await prisma.$queryRaw<
       Prisma.TransactionDailyStatsCreateManyInput[]
     >`
-        SELECT COUNT(id)::Int as "totalTransactions", DATE_TRUNC('day', timestamp) as "dayId"
+        SELECT COUNT(id)::Int as "totalTransactions", DATE_TRUNC('day', timestamp) as "day"
         FROM "Transaction"
         ${whereClause}
-        GROUP BY "dayId";
+        GROUP BY "day";
       `;
 
     return prisma.transactionDailyStats.createMany({

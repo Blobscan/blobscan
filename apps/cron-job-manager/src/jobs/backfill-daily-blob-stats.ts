@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { client } from "../client";
 
 void (async () => {
-  const now = dayjs().startOf("day");
+  const now = dayjs().subtract(1, "day");
 
   await client.stats.blob.backfillDailyStats.mutate({
     to: now.toISOString(),

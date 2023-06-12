@@ -4,13 +4,14 @@ import { z } from "zod";
 import { Prisma } from "@blobscan/db";
 
 import { t } from "../client";
+import { toDailyDate } from "../utils/stats";
 
 type FilteringDates = {
   from?: string;
   to?: string;
 };
 
-function buildRawWhereClause(
+function _buildRawWhereClause(
   dateField: Prisma.Sql,
   { from, to }: FilteringDates,
 ): Prisma.Sql {
@@ -25,7 +26,7 @@ function buildRawWhereClause(
   return Prisma.empty;
 }
 
-function buildWhereClause(dateField: string, { from, to }: FilteringDates) {
+function _buildWhereClause(dateField: string, { from, to }: FilteringDates) {
   return { [dateField]: { gte: from, lte: to } };
 }
 
@@ -37,8 +38,8 @@ export const DATES_SCHEMA = z.object({
 export const withDates = t.middleware(({ next, input }) => {
   const { from, to } = DATES_SCHEMA.parse(input);
   const dates: FilteringDates = {
-    from: from ? dayjs(from).toISOString() : undefined,
-    to: (to ? dayjs(to) : dayjs()).toISOString(),
+    from: from ? toDailyDate(from) : undefined,
+    to: toDailyDate(to ?? dayjs()),
   };
 
   return next({
@@ -46,9 +47,9 @@ export const withDates = t.middleware(({ next, input }) => {
       dates: {
         ...dates,
         buildWhereClause: (dateField: string) =>
-          buildWhereClause(dateField, dates),
+          _buildWhereClause(dateField, dates),
         buildRawWhereClause: (dateField: Prisma.Sql) =>
-          buildRawWhereClause(dateField, dates),
+          _buildRawWhereClause(dateField, dates),
       },
     },
   });
