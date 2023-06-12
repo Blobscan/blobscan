@@ -1,8 +1,9 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 
 import { t } from "../client";
 
-export const TIME_FRAME_SCHEMA = z.enum([
+export const TIME_FRAME_ENUM = z.enum([
   "1d",
   "7d",
   "30d",
@@ -10,15 +11,15 @@ export const TIME_FRAME_SCHEMA = z.enum([
   "360d",
   "All",
 ]);
-export type TimeFrame = z.infer<typeof TIME_FRAME_SCHEMA>;
+export const TIME_FRAME_SCHEMA = z.object({
+  timeFrame: TIME_FRAME_ENUM,
+});
 
-function substractDays(date: Date, days: number) {
-  return new Date(new Date().setDate(date.getDate() - days));
-}
+export type TimeFrame = z.infer<typeof TIME_FRAME_ENUM>;
 
 function getTimeFrameIntervals(timeFrame: TimeFrame): {
-  initial: Date;
-  final: Date;
+  initial: dayjs.Dayjs;
+  final: dayjs.Dayjs;
 } {
   switch (timeFrame) {
     case "1d":
@@ -27,8 +28,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
     case "360d":
     default: {
       const day = parseInt(timeFrame.split("d")[0] ?? "1d");
-      const now = new Date();
-      const final = substractDays(now, 1);
+      const final = dayjs().subtract(day, "day");
 
       if (day === 1) {
         return {
@@ -38,7 +38,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
       }
 
       return {
-        initial: substractDays(final, day),
+        initial: final.subtract(day, "day"),
         final,
       };
     }
@@ -46,7 +46,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
 }
 
 export const withTimeFrame = t.middleware(({ next, input }) => {
-  const timeFrame = TIME_FRAME_SCHEMA.parse(input);
+  const { timeFrame } = TIME_FRAME_SCHEMA.parse(input);
 
   return next({
     ctx: {

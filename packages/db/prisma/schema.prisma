@@ -22,6 +22,7 @@ model Blob {
   data        String      @db.Text
   txHash      String
   index       Int
+  timestamp   DateTime
   @@unique([txHash, index])
   transaction Transaction @relation(fields: [txHash], references: [hash])
 }
@@ -30,7 +31,7 @@ model Block {
   id          Int           @id
   hash        String        @unique 
   number      Int           @unique
-  timestamp   Int           @unique
+  timestamp   DateTime      @unique
   slot        Int           @unique
   transactions Transaction[]
 }
@@ -41,6 +42,7 @@ model Transaction {
   from      String
   to        String?
   blockNumber Int
+  timestamp DateTime
   blobs      Blob[]
   block     Block  @relation(fields: [blockNumber], references: [number])
 }
@@ -54,12 +56,9 @@ model BlockOverallStats {
 }
 
 model BlockDailyStats {
-  id               Int    @id @default(autoincrement())
-  day             DateTime
-  totalBlocks      Int
+  dayId             DateTime @id
+  totalBlocks     Int
   // avgDataGasUsed   Float?
-  @@index([day])
-  @@unique([day])
 }
 
 // Transaction metrics
@@ -67,7 +66,7 @@ model BlockDailyStats {
 model TransactionOverallStats {
   id                Int      @id @default(autoincrement())
   // avgSize         Float
-  // avgGasUsed        Float
+  // avgDataGasUsed        Float
   totalTransactions Int
   updatedAt DateTime
   // totalSize Int
@@ -76,12 +75,10 @@ model TransactionOverallStats {
 }
 
 model TransactionDailyStats {
-  id               Int    @id @default(autoincrement())
-  day             DateTime
+  dayId             DateTime @id
   totalTransactions Int
   // uniqueSenders    Int?
   // uniqueReceivers  Int?
-  @@unique([day])
 }
 
 // Blob metrics
@@ -96,12 +93,10 @@ model BlobOverallStats {
 }
 
 model BlobDailyStats {
-  id              Int    @id @default(autoincrement())
-  day            DateTime
+  dayId              DateTime    @id 
   totalBlobs Int
   // avgBlobSize     Float?
   // sizeDistribution Json?
-  @@unique([day])
 }
 
 

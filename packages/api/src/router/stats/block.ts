@@ -1,7 +1,14 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 
+import { Prisma } from "@blobscan/db";
+
 import { createTRPCRouter, publicProcedure } from "../../trpc";
-import { STATS_PATH, timeSeriesProcedure } from "../../utils/stats";
+import {
+  STATS_PATH,
+  datesProcedure,
+  timeSeriesProcedure,
+} from "../../utils/stats";
 
 export const blockStatsRouter = createTRPCRouter({
   getOverallStats: publicProcedure
@@ -45,7 +52,7 @@ export const blockStatsRouter = createTRPCRouter({
       z.array(
         z
           .object({
-            day: z.date(),
+            dayId: z.date(),
             totalBlocks: z.number(),
           })
           .optional(),
@@ -56,13 +63,41 @@ export const blockStatsRouter = createTRPCRouter({
 
       return ctx.prisma.blockDailyStats.findMany({
         select: {
-          id: false,
-          day: true,
+          dayId: true,
           totalBlocks: true,
         },
         where: {
-          day: { gte: timeFrame.initial },
+          dayId: { gte: timeFrame.initial.toDate() },
         },
       });
     }),
+  backfillTimeSeriesStats: datesProcedure.mutation(async ({ ctx }) => {
+    const prisma = ctx.prisma;
+    const dates = ctx.dates;
+    // TODO: implement some sort of bulk processing mechanism.
+
+    // Delete all the rows if current date is set as target date
+    if (!dates.from && dates.to && dayjs(dates.to).isSame(dayjs(), "day")) {
+      await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlockDailyStats"`);
+    } else {
+      await prisma.blockDailyStats.deleteMany({
+        where: dates.buildWhereClause("dayId"),
+      });
+    }
+
+    const whereClause = dates.buildRawWhereClause(Prisma.sql`timestamp`);
+
+    const dailyBlockStats = await prisma.$queryRaw<
+      Prisma.BlockDailyStatsCreateManyInput[]
+    >`
+        SELECT COUNT(id)::Int as "totalBlocks", DATE_TRUNC('day', timestamp) as "dayId"
+        FROM "Block"
+        ${whereClause}
+        GROUP BY "dayId";
+      `;
+
+    return prisma.blockDailyStats.createMany({
+      data: dailyBlockStats,
+    });
+  }),
 });

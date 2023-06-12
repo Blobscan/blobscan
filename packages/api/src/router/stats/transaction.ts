@@ -1,7 +1,14 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 
+import { Prisma } from "@blobscan/db";
+
 import { createTRPCRouter, publicProcedure } from "../../trpc";
-import { STATS_PATH, timeSeriesProcedure } from "../../utils/stats";
+import {
+  STATS_PATH,
+  datesProcedure,
+  timeSeriesProcedure,
+} from "../../utils/stats";
 
 export const transactionStatsRouter = createTRPCRouter({
   getOverallStats: publicProcedure
@@ -46,7 +53,7 @@ export const transactionStatsRouter = createTRPCRouter({
       z.array(
         z
           .object({
-            day: z.date(),
+            dayId: z.date(),
             totalTransactions: z.number(),
           })
           .optional(),
@@ -57,13 +64,43 @@ export const transactionStatsRouter = createTRPCRouter({
 
       return ctx.prisma.transactionDailyStats.findMany({
         select: {
-          id: false,
-          day: true,
+          dayId: true,
           totalTransactions: true,
         },
         where: {
-          day: { lte: timeFrame.final, gte: timeFrame.initial },
+          dayId: {
+            lte: timeFrame.final.toDate(),
+            gte: timeFrame.initial.toDate(),
+          },
         },
       });
     }),
+  backfillTimeSeriesStats: datesProcedure.mutation(async ({ ctx }) => {
+    const prisma = ctx.prisma;
+    const dates = ctx.dates;
+
+    // Delete all the rows if current date is set as target date
+    if (!dates.from && dates.to && dayjs(dates.to).isSame(dayjs(), "day")) {
+      await prisma.$executeRawUnsafe(`TRUNCATE TABLE "TransactionDailyStats"`);
+    } else {
+      await prisma.blockDailyStats.deleteMany({
+        where: dates.buildWhereClause("dayId"),
+      });
+    }
+
+    const whereClause = dates.buildRawWhereClause(Prisma.sql`timestamp`);
+
+    const dailyTransactionStats = await prisma.$queryRaw<
+      Prisma.TransactionDailyStatsCreateManyInput[]
+    >`
+        SELECT COUNT(id)::Int as "totalTransactions", DATE_TRUNC('day', timestamp) as "dayId"
+        FROM "Transaction"
+        ${whereClause}
+        GROUP BY "dayId";
+      `;
+
+    return prisma.transactionDailyStats.createMany({
+      data: dailyTransactionStats,
+    });
+  }),
 });

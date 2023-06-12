@@ -14,6 +14,7 @@
   "dependencies": {
     "@blobscan/db": "0.0.1",
     "@trpc/server": "^10.23.0",
+    "dayjs": "^1.11.7",
     "jsonwebtoken": "^9.0.0",
     "superjson": "1.9.1",
     "zod": "^3.21.4"

@@ -1,7 +1,14 @@
+import dayjs from "dayjs";
 import { z } from "zod";
 
+import { Prisma } from "@blobscan/db";
+
 import { createTRPCRouter, publicProcedure } from "../../trpc";
-import { STATS_PATH, timeSeriesProcedure } from "../../utils/stats";
+import {
+  STATS_PATH,
+  datesProcedure,
+  timeSeriesProcedure,
+} from "../../utils/stats";
 
 export const blobStatsRouter = createTRPCRouter({
   getOverallStats: publicProcedure
@@ -45,7 +52,7 @@ export const blobStatsRouter = createTRPCRouter({
       z.array(
         z
           .object({
-            day: z.date(),
+            dayId: z.date(),
             totalBlobs: z.number(),
           })
           .optional(),
@@ -56,13 +63,44 @@ export const blobStatsRouter = createTRPCRouter({
 
       return ctx.prisma.blobDailyStats.findMany({
         select: {
-          id: false,
-          day: true,
+          dayId: true,
           totalBlobs: true,
         },
         where: {
-          day: { lte: timeFrame.final, gte: timeFrame.initial },
+          dayId: {
+            lte: timeFrame.final.toDate(),
+            gte: timeFrame.initial.toDate(),
+          },
         },
       });
     }),
+  backfillTimeSeriesStats: datesProcedure.mutation(async ({ ctx }) => {
+    const prisma = ctx.prisma;
+    const dates = ctx.dates;
+    // TODO: implement some sort of bulk processing mechanism.
+
+    // Delete all the rows if current date is set as target date
+    if (!dates.from && dates.to && dayjs(dates.to).isSame(dayjs(), "day")) {
+      await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobDailyStats"`);
+    } else {
+      await prisma.blockDailyStats.deleteMany({
+        where: dates.buildWhereClause("dayId"),
+      });
+    }
+
+    const whereClause = dates.buildRawWhereClause(Prisma.sql`timestamp`);
+
+    const dailyBlobStats = await prisma.$queryRaw<
+      Prisma.BlobDailyStatsCreateManyInput[]
+    >`
+          SELECT COUNT(id)::Int as "totalBlobs", DATE_TRUNC('day', timestamp) as "dayId"
+          FROM "Blob"
+          ${whereClause}
+          GROUP BY "dayId";
+        `;
+
+    return prisma.blobDailyStats.createMany({
+      data: dailyBlobStats,
+    });
+  }),
 });
