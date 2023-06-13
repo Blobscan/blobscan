@@ -56,3 +56,7 @@ export function buildGoogleStorageUri(hash: string): string {
     8,
   )}/${hash.slice(2)}.blob`;
 }
+
+export function notUndefined<T>(x: T | undefined): x is T {
+  return x !== undefined;
+}

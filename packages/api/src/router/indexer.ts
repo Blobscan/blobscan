@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { BUCKET_NAME } from "../env";
 import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
-import { buildGoogleStorageUri } from "../utils";
+import { buildGoogleStorageUri, notUndefined } from "../utils";
 
 const INDEXER_PATH = "/indexer";
 const INDEX_REQUEST_DATA = z.object({
@@ -92,7 +92,6 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Check we have enough swarm postages
       const batches = await ctx.swarm.beeDebug.getAllPostageBatch();
-
       if (batches.length === 0 || batches[0]?.batchID === undefined) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -136,6 +135,7 @@ export const indexerRouter = createTRPCRouter({
         skipDuplicates: true,
       });
 
+      // Check if we already have the blob data in the database
       const existingBlobDataHashes = await ctx.prisma.blobData
         .findMany({
           select: { versionedHash: true },
@@ -144,37 +144,44 @@ export const indexerRouter = createTRPCRouter({
           },
         })
         .then((blobDatas) => blobDatas.map((b) => b.versionedHash));
-
-      const blobDatas = input.blobs
-        .filter((b) => !existingBlobDataHashes.includes(b.versionedHash))
-        .map((b) => ({
-          id: b.versionedHash,
-          versionedHash: b.versionedHash,
-          swarmHash: undefined,
-          gsUri: buildGoogleStorageUri(b.versionedHash),
-          data: b.data,
-        }));
-
-      const batchId = batches[0].batchID;
-      const swarmResults = await ctx.swarm.bee.uploadFiles(batchId, [], {
-        pin: true,
-      });
-
-      blobDatas.map((bd, index) => ({
-        ...bd,
-        swarmHash: swarmResults[index].reference,
-      }));
-
-      await Promise.all(
-        blobDatas.map(async (bd) => {
-          await ctx.storage.bucket(BUCKET_NAME).file(bd.gsUri).save(bd.data);
-        }),
+      const newBlobs = input.blobs.filter(
+        (b) => !existingBlobDataHashes.includes(b.versionedHash),
       );
 
+      const uploadBlobsToGoogleStorage = newBlobs.map(async (b) => {
+        await ctx.storage
+          .bucket(BUCKET_NAME)
+          .file(buildGoogleStorageUri(b.versionedHash))
+          .save(b.data);
+        return undefined;
+      });
+
+      const batchId = batches[0].batchID;
+      const uploadBlobsToSwarm = newBlobs.map(async (b) => {
+        const { reference } = await ctx.swarm.bee.uploadData(batchId, b.data, {
+          pin: true,
+        });
+
+        return {
+          id: b.versionedHash,
+          versionedHash: b.versionedHash,
+          gsUri: buildGoogleStorageUri(b.versionedHash),
+          swarmHash: reference.toString(),
+          data: b.data,
+        };
+      });
+
+      const newBlobDatas = (
+        await Promise.all([
+          ...uploadBlobsToSwarm,
+          ...uploadBlobsToGoogleStorage,
+        ])
+      ).filter(notUndefined);
+
       const createBlobDatas = ctx.prisma.blobData.createMany({
-        data: blobDatas.map((bd) => ({
+        data: newBlobDatas.map((bd) => ({
           id: bd.versionedHash,
-          hash: bd.versionedHash,
+          versionedHash: bd.versionedHash,
           gsUri: bd.gsUri,
           swarmHash: bd.swarmHash,
         })),
