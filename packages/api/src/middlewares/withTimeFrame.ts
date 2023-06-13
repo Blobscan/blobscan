@@ -11,6 +11,7 @@ export const TIME_FRAME_ENUM = z.enum([
   "360d",
   "All",
 ]);
+
 export const TIME_FRAME_SCHEMA = z.object({
   timeFrame: TIME_FRAME_ENUM,
 });
@@ -54,3 +55,7 @@ export const withTimeFrame = t.middleware(({ next, input }) => {
     },
   });
 });
+
+export const timeFrameProcedure = t.procedure
+  .input(TIME_FRAME_SCHEMA)
+  .use(withTimeFrame);

@@ -1,14 +1,35 @@
 import dayjs from "dayjs";
 import { z } from "zod";
 
-import { Prisma } from "@blobscan/db";
+import { Prisma, type PrismaClient } from "@blobscan/db";
 
+import {
+  dailyDateProcedure,
+  datePeriodProcedure,
+} from "../../middlewares/withDates";
+import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import {
-  STATS_PATH,
-  datesProcedure,
-  timeSeriesProcedure,
-} from "../../utils/stats";
+  buildRawWhereClause,
+  buildWhereClause,
+  type DatePeriod,
+} from "../../utils/dates";
+import { STATS_PATH } from "../../utils/stats";
+
+function queryDailyBlobStats(
+  prisma: PrismaClient,
+  datePeriod: DatePeriod,
+): Prisma.PrismaPromise<Prisma.BlobDailyStatsCreateManyInput[]> {
+  const dateField = Prisma.sql`timestamp`;
+  const whereClause = buildRawWhereClause(dateField, datePeriod);
+
+  return prisma.$queryRaw<Prisma.BlobDailyStatsCreateManyInput[]>`
+    SELECT COUNT(id)::Int as "totalBlobs", DATE_TRUNC('day', ${dateField}) as "day"
+    FROM "Blob"
+    ${whereClause}
+    GROUP BY "day"
+  `;
+}
 
 export const blobStatsRouter = createTRPCRouter({
   getOverallStats: publicProcedure
@@ -39,7 +60,7 @@ export const blobStatsRouter = createTRPCRouter({
         updatedAt: overallBlobStats.updatedAt,
       };
     }),
-  getDailyStats: timeSeriesProcedure
+  getDailyStats: timeFrameProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -74,33 +95,43 @@ export const blobStatsRouter = createTRPCRouter({
         },
       });
     }),
-  backfillDailyStats: datesProcedure.mutation(async ({ ctx }) => {
-    const prisma = ctx.prisma;
-    const dates = ctx.dates;
-    // TODO: implement some sort of bulk processing mechanism.
+  updateDailyStats: dailyDateProcedure.mutation(
+    async ({ ctx: { prisma, datePeriod } }) => {
+      const [dailyBlobStats] = await queryDailyBlobStats(prisma, datePeriod);
 
-    // Delete all the rows if current date is set as target date
-    if (!dates.from && dates.to && dayjs(dates.to).isSame(dayjs(), "day")) {
-      await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobDailyStats"`);
-    } else {
-      await prisma.blockDailyStats.deleteMany({
-        where: dates.buildWhereClause("day"),
+      if (!dailyBlobStats) {
+        return;
+      }
+
+      return prisma.blobDailyStats.upsert({
+        create: dailyBlobStats,
+        update: dailyBlobStats,
+        where: { day: datePeriod.to },
       });
-    }
+    },
+  ),
+  backfillDailyStats: datePeriodProcedure.mutation(
+    async ({ ctx: { prisma, datePeriod } }) => {
+      // TODO: implement some sort of bulk processing mechanism.
 
-    const whereClause = dates.buildRawWhereClause(Prisma.sql`timestamp`);
+      // Delete all the rows if current date is set as target date
+      if (
+        !datePeriod.from &&
+        datePeriod.to &&
+        dayjs(datePeriod.to).isSame(dayjs(), "day")
+      ) {
+        await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobDailyStats"`);
+      } else {
+        await prisma.blockDailyStats.deleteMany({
+          where: buildWhereClause("day", datePeriod),
+        });
+      }
 
-    const dailyBlobStats = await prisma.$queryRaw<
-      Prisma.BlobDailyStatsCreateManyInput[]
-    >`
-          SELECT COUNT(id)::Int as "totalBlobs", DATE_TRUNC('day', timestamp) as "day"
-          FROM "Blob"
-          ${whereClause}
-          GROUP BY "day";
-        `;
+      const dailyBlobStats = await queryDailyBlobStats(prisma, datePeriod);
 
-    return prisma.blobDailyStats.createMany({
-      data: dailyBlobStats,
-    });
-  }),
+      return prisma.blobDailyStats.createMany({
+        data: dailyBlobStats,
+      });
+    },
+  ),
 });

@@ -1,14 +1,35 @@
 import dayjs from "dayjs";
 import { z } from "zod";
 
-import { Prisma } from "@blobscan/db";
+import { Prisma, type PrismaClient } from "@blobscan/db";
 
+import {
+  dailyDateProcedure,
+  datePeriodProcedure,
+} from "../../middlewares/withDates";
+import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import {
-  STATS_PATH,
-  datesProcedure,
-  timeSeriesProcedure,
-} from "../../utils/stats";
+  buildRawWhereClause,
+  buildWhereClause,
+  type DatePeriod,
+} from "../../utils/dates";
+import { STATS_PATH } from "../../utils/stats";
+
+function queryDailyTransactionStats(
+  prisma: PrismaClient,
+  datePeriod: DatePeriod,
+): Prisma.PrismaPromise<Prisma.TransactionDailyStatsCreateManyInput[]> {
+  const dateField = Prisma.sql`timestamp`;
+  const whereClause = buildRawWhereClause(dateField, datePeriod);
+
+  return prisma.$queryRaw<Prisma.TransactionDailyStatsCreateManyInput[]>`
+    SELECT COUNT(id)::Int as "totalTransactions", DATE_TRUNC('day', ${dateField}) as "day"
+    FROM "Transaction"
+    ${whereClause}
+    GROUP BY "day"
+  `;
+}
 
 export const transactionStatsRouter = createTRPCRouter({
   getOverallStats: publicProcedure
@@ -40,7 +61,7 @@ export const transactionStatsRouter = createTRPCRouter({
         updatedAt: overallTransactionStats.updatedAt,
       };
     }),
-  getDailyStats: timeSeriesProcedure
+  getDailyStats: timeFrameProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -75,32 +96,49 @@ export const transactionStatsRouter = createTRPCRouter({
         },
       });
     }),
-  backfillDailyStats: datesProcedure.mutation(async ({ ctx }) => {
-    const prisma = ctx.prisma;
-    const dates = ctx.dates;
+  updateDailyStats: dailyDateProcedure.mutation(
+    async ({ ctx: { prisma, datePeriod } }) => {
+      const [dailyTransactionStats] = await queryDailyTransactionStats(
+        prisma,
+        datePeriod,
+      );
 
-    // Delete all the rows if current date is set as target date
-    if (!dates.from && dates.to && dayjs(dates.to).isSame(dayjs(), "day")) {
-      await prisma.$executeRawUnsafe(`TRUNCATE TABLE "TransactionDailyStats"`);
-    } else {
-      await prisma.blockDailyStats.deleteMany({
-        where: dates.buildWhereClause("day"),
+      if (!dailyTransactionStats) {
+        return;
+      }
+
+      return prisma.transactionDailyStats.upsert({
+        create: dailyTransactionStats,
+        update: dailyTransactionStats,
+        where: { day: datePeriod.to },
       });
-    }
+    },
+  ),
+  backfillDailyStats: datePeriodProcedure.mutation(
+    async ({ ctx: { prisma, datePeriod } }) => {
+      // Delete all the rows if current date is set as target date
+      if (
+        !datePeriod.from &&
+        datePeriod.to &&
+        dayjs(datePeriod.to).isSame(dayjs(), "day")
+      ) {
+        await prisma.$executeRawUnsafe(
+          `TRUNCATE TABLE "TransactionDailyStats"`,
+        );
+      } else {
+        await prisma.blockDailyStats.deleteMany({
+          where: buildWhereClause("day", datePeriod),
+        });
+      }
 
-    const whereClause = dates.buildRawWhereClause(Prisma.sql`timestamp`);
+      const dailyTransactionStats = await queryDailyTransactionStats(
+        prisma,
+        datePeriod,
+      );
 
-    const dailyTransactionStats = await prisma.$queryRaw<
-      Prisma.TransactionDailyStatsCreateManyInput[]
-    >`
-        SELECT COUNT(id)::Int as "totalTransactions", DATE_TRUNC('day', timestamp) as "day"
-        FROM "Transaction"
-        ${whereClause}
-        GROUP BY "day";
-      `;
-
-    return prisma.transactionDailyStats.createMany({
-      data: dailyTransactionStats,
-    });
-  }),
+      return prisma.transactionDailyStats.createMany({
+        data: dailyTransactionStats,
+      });
+    },
+  ),
 });
