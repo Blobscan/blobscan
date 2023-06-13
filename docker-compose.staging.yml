@@ -39,8 +39,10 @@ services:
     environment:
       SECRET_KEY: "${SECRET_KEY}"
       BLOBSCAN_API_ENDPOINT: "${BLOBSCAN_API_ENDPOINT}"
-      BEACON_NODE_RPC: "${BEACON_NODE_RPC}"
-      EXECUTION_NODE_RPC: "${EXECUTION_NODE_RPC}"
+      BEACON_NODE_ENDPOINT: "${BEACON_NODE_ENDPOINT}"
+      EXECUTION_NODE_ENDPOINT: "${EXECUTION_NODE_ENDPOINT}"
+      SENTRY_DSN: "${SENTRY_DSN}"
+      RUST_LOG: "${RUST_LOG}"
     depends_on:
       api:
         condition: service_healthy
