@@ -9,7 +9,7 @@ type DailyAvgBlobSizeProps = {
   avgBlobSizes: AggregatedDailyBlobStats["avgBlobSizes"];
 };
 
-export const DailyAvgBlobSize: FC<DailyAvgBlobSizeProps> = function ({
+export const DailyAvgBlobSizeChart: FC<DailyAvgBlobSizeProps> = function ({
   days,
   avgBlobSizes,
 }) {

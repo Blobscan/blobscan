@@ -8,7 +8,7 @@ export type DailyBlobsSizeProps = {
   days: AggregatedDailyBlobStats["days"];
   blobSizes: AggregatedDailyBlobStats["blobSizes"];
 };
-export const DailyBlobsSize: FC<DailyBlobsSizeProps> = function ({
+export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
   days,
   blobSizes,
 }) {
