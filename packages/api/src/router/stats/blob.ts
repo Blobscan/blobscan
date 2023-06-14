@@ -76,15 +76,13 @@ export const blobStatsRouter = createTRPCRouter({
     })
     .output(
       z.array(
-        z
-          .object({
-            day: z.date(),
-            totalBlobs: z.number(),
-            totalUniqueBlobs: z.number(),
-            totalBlobSize: z.bigint(),
-            avgBlobSize: z.number(),
-          })
-          .optional(),
+        z.object({
+          day: z.date(),
+          totalBlobs: z.number(),
+          totalUniqueBlobs: z.number(),
+          totalBlobSize: z.bigint(),
+          avgBlobSize: z.number(),
+        }),
       ),
     )
     .query(({ ctx }) => {
@@ -104,6 +102,7 @@ export const blobStatsRouter = createTRPCRouter({
             lte: timeFrame.final.toDate(),
           },
         },
+        orderBy: { day: "asc" },
       });
     }),
   updateDailyStats: dailyDateProcedure.mutation(

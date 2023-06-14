@@ -29,7 +29,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
     case "360d":
     default: {
       const day = parseInt(timeFrame.split("d")[0] ?? "1d");
-      const final = dayjs().subtract(day, "day");
+      const final = dayjs().subtract(1, "day").endOf("day");
 
       if (day === 1) {
         return {
@@ -39,7 +39,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
       }
 
       return {
-        initial: final.subtract(day, "day"),
+        initial: final.subtract(day, "day").startOf("day"),
         final,
       };
     }

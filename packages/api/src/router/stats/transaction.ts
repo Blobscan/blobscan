@@ -76,14 +76,12 @@ export const transactionStatsRouter = createTRPCRouter({
     })
     .output(
       z.array(
-        z
-          .object({
-            day: z.date(),
-            totalTransactions: z.number(),
-            totalUniqueSenders: z.number(),
-            totalUniqueReceivers: z.number(),
-          })
-          .optional(),
+        z.object({
+          day: z.date(),
+          totalTransactions: z.number(),
+          totalUniqueSenders: z.number(),
+          totalUniqueReceivers: z.number(),
+        }),
       ),
     )
     .query(({ ctx: { prisma, timeFrame } }) =>
@@ -96,10 +94,11 @@ export const transactionStatsRouter = createTRPCRouter({
         },
         where: {
           day: {
-            lte: timeFrame.final.toDate(),
             gte: timeFrame.initial.toDate(),
+            lte: timeFrame.final.toDate(),
           },
         },
+        orderBy: { day: "asc" },
       }),
     ),
   updateDailyStats: dailyDateProcedure.mutation(

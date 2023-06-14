@@ -71,27 +71,27 @@ export const blockStatsRouter = createTRPCRouter({
     })
     .output(
       z.array(
-        z
-          .object({
-            day: z.date(),
-            totalBlocks: z.number(),
-          })
-          .optional(),
+        z.object({
+          day: z.date(),
+          totalBlocks: z.number(),
+        }),
       ),
     )
-    .query(({ ctx }) => {
-      const timeFrame = ctx.timeFrame;
-
-      return ctx.prisma.blockDailyStats.findMany({
+    .query(({ ctx: { prisma, timeFrame } }) =>
+      prisma.blockDailyStats.findMany({
         select: {
           day: true,
           totalBlocks: true,
         },
         where: {
-          day: { gte: timeFrame.initial.toDate() },
+          day: {
+            gte: timeFrame.initial.toDate(),
+            lte: timeFrame.final.toDate(),
+          },
         },
-      });
-    }),
+        orderBy: { day: "asc" },
+      }),
+    ),
   updateDailyStats: dailyDateProcedure.mutation(
     async ({ ctx: { prisma, datePeriod } }) => {
       const [dailyBlockStats] = await queryDailyBlockStats(prisma, datePeriod);
