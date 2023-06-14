@@ -133,7 +133,7 @@ export const blobStatsRouter = createTRPCRouter({
       ) {
         await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobDailyStats"`);
       } else {
-        await prisma.blockDailyStats.deleteMany({
+        await prisma.blobDailyStats.deleteMany({
           where: buildWhereClause("day", datePeriod),
         });
       }

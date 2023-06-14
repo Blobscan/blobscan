@@ -29,7 +29,6 @@ model Blob {
 }
 
 model Block {
-  
   id          Int           @id
   hash        String        @unique 
   number      Int           @unique
@@ -72,23 +71,22 @@ model TransactionOverallStats {
   id                Int      @id @default(autoincrement())
   // avgDataGasUsed        Float
   totalTransactions Int
+  uniqueSenders     Int
+  uniqueReceivers   Int
   updatedAt DateTime
-  // uniqueSenders     Int
-  // uniqueReceivers   Int
 }
 
 model TransactionDailyStats {
   id          Int         @id @default(autoincrement())
   day         DateTime    @db.Date
   totalTransactions Int
-  // uniqueSenders    Int?
-  // uniqueReceivers  Int?
+  totalUniqueSenders    Int
+  totalUniqueReceivers  Int
   @@unique([day])
   @@index([day])
 }
 
 // Blob metrics
-
 model BlobOverallStats {
   id                  Int      @id @default(autoincrement())
   totalBlobs          Int

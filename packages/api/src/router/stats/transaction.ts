@@ -24,7 +24,11 @@ function queryDailyTransactionStats(
   const whereClause = buildRawWhereClause(dateField, datePeriod);
 
   return prisma.$queryRaw<Prisma.TransactionDailyStatsCreateManyInput[]>`
-    SELECT COUNT(id)::Int as "totalTransactions", DATE_TRUNC('day', ${dateField}) as "day"
+    SELECT
+      DATE_TRUNC('day', ${dateField}) as "day",
+      COUNT(id)::Int as "totalTransactions",
+      COUNT(DISTINCT "from")::Int as "totalUniqueSenders",
+      COUNT(DISTINCT "to")::Int as "totalUniqueReceivers"
     FROM "Transaction"
     ${whereClause}
     GROUP BY "day"
@@ -76,17 +80,19 @@ export const transactionStatsRouter = createTRPCRouter({
           .object({
             day: z.date(),
             totalTransactions: z.number(),
+            totalUniqueSenders: z.number(),
+            totalUniqueReceivers: z.number(),
           })
           .optional(),
       ),
     )
-    .query(({ ctx }) => {
-      const timeFrame = ctx.timeFrame;
-
-      return ctx.prisma.transactionDailyStats.findMany({
+    .query(({ ctx: { prisma, timeFrame } }) =>
+      prisma.transactionDailyStats.findMany({
         select: {
           day: true,
           totalTransactions: true,
+          totalUniqueSenders: true,
+          totalUniqueReceivers: true,
         },
         where: {
           day: {
@@ -94,8 +100,8 @@ export const transactionStatsRouter = createTRPCRouter({
             gte: timeFrame.initial.toDate(),
           },
         },
-      });
-    }),
+      }),
+    ),
   updateDailyStats: dailyDateProcedure.mutation(
     async ({ ctx: { prisma, datePeriod } }) => {
       const [dailyTransactionStats] = await queryDailyTransactionStats(
@@ -126,7 +132,7 @@ export const transactionStatsRouter = createTRPCRouter({
           `TRUNCATE TABLE "TransactionDailyStats"`,
         );
       } else {
-        await prisma.blockDailyStats.deleteMany({
+        await prisma.transactionDailyStats.deleteMany({
           where: buildWhereClause("day", datePeriod),
         });
       }

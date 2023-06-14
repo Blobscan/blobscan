@@ -11,16 +11,19 @@ const MAX_BLOCKS_PER_DAY = 500;
 
 const MAX_BLOBS_PER_BLOCK = 6;
 const MAX_BLOBS_PER_TX = 2;
-const BLOBS_AMOUNT = 250;
+
+const UNIQUE_BLOBS_AMOUNT = 250;
+const UNIQUE_ADDRESSES_AMOUNT = 1000;
+
 // const BLOB_SIZE = 131_072;
 const MAX_BLOB_BYTES_SIZE = 2048; // in bytes
 
-function generateTimestamps(
+function generateUniqueTimestamps(
   days: number,
   minTimestamps: number,
   maxTimestamps: number,
 ) {
-  const resultTimestamps: Date[] = [];
+  const uniqueTimestamps: Date[] = [];
 
   let startDay = dayjs().subtract(days, "day");
 
@@ -39,16 +42,16 @@ function generateTimestamps(
       );
     }
 
-    resultTimestamps.push(...Array.from(timestamps).sort());
+    uniqueTimestamps.push(...Array.from(timestamps).sort());
 
     startDay = startDay.add(1, "day");
   });
 
-  return resultTimestamps;
+  return uniqueTimestamps;
 }
 
-function generateBlobs(size: number) {
-  return Array.from({ length: size }).map(() => {
+function generateUniqueBlobs(amount: number) {
+  return Array.from({ length: amount }).map(() => {
     const commitment = faker.string.hexadecimal({
       length: 96,
     });
@@ -70,13 +73,20 @@ function generateBlobs(size: number) {
   });
 }
 
+function generateUniqueAddresses(amount: number) {
+  return Array.from({ length: amount }).map(() =>
+    faker.finance.ethereumAddress(),
+  );
+}
+
 async function main() {
-  const timestamps = generateTimestamps(
+  const timestamps = generateUniqueTimestamps(
     TOTAL_DAYS,
     MIN_BLOCKS_PER_DAY,
     MAX_BLOCKS_PER_DAY,
   );
-  const blobs = generateBlobs(BLOBS_AMOUNT);
+  const uniqueBlobs = generateUniqueBlobs(UNIQUE_BLOBS_AMOUNT);
+  const uniqueAddresses = generateUniqueAddresses(UNIQUE_ADDRESSES_AMOUNT);
 
   let prevBlockNumber = 0;
   let prevSlot = 0;
@@ -101,11 +111,18 @@ async function main() {
 
     return Array.from({ length: txCount }).map(() => {
       const txHash = faker.string.hexadecimal({ length: 64 });
+      const from =
+        uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
+      const to = uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
+
+      // Unreachable code, done only for type checking
+      if (!from || !to) throw new Error("Address not found");
+
       return {
         id: txHash,
         hash: txHash,
-        from: faker.finance.ethereumAddress(),
-        to: faker.finance.ethereumAddress(),
+        from,
+        to,
         blockNumber: block.number,
         timestamp: block.timestamp,
       };
@@ -130,8 +147,8 @@ async function main() {
         blockBlobsRemaining -= txBlobsCount;
 
         return Array.from({ length: txBlobsCount }).map((_, txBlobIndex) => {
-          const blobIndex = faker.number.int(blobs.length - 1);
-          const blob = blobs[blobIndex];
+          const blobIndex = faker.number.int(uniqueBlobs.length - 1);
+          const blob = uniqueBlobs[blobIndex];
 
           // Unreachable code, done only for type checking
           if (!blob) {
