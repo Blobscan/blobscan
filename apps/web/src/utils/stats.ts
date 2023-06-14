@@ -1,7 +1,9 @@
 import {
   type DailyBlobStats,
+  type DailyBlockStats,
   type DailyTransactionStats,
   type SingleDailyBlobStats,
+  type SingleDailyBlockStats,
   type SingleDailyTransactionStats,
 } from "~/types";
 
@@ -11,6 +13,11 @@ export type AggregatedDailyBlobStats = {
   uniqueBlobs: SingleDailyBlobStats["totalUniqueBlobs"][];
   blobSizes: number[];
   avgBlobSizes: SingleDailyBlobStats["avgBlobSize"][];
+};
+
+export type AggregatedDailyBlockStats = {
+  days: string[];
+  blocks: SingleDailyBlockStats["totalBlocks"][];
 };
 
 export type AggregatedDailyTransactionStats = {
@@ -45,6 +52,23 @@ export function aggregateDailyBlobStats(
       return aggregatedStats;
     },
     { days: [], blobs: [], uniqueBlobs: [], blobSizes: [], avgBlobSizes: [] },
+  );
+}
+
+export function aggregateDailyBlockStats(
+  stats: DailyBlockStats,
+): AggregatedDailyBlockStats {
+  return stats.reduce<AggregatedDailyBlockStats>(
+    (aggregatedStats, { day, totalBlocks }) => {
+      aggregatedStats.days.push(getDateFromDateTime(day));
+      aggregatedStats.blocks.push(totalBlocks);
+
+      return aggregatedStats;
+    },
+    {
+      days: [],
+      blocks: [],
+    },
   );
 }
 
