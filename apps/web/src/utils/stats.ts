@@ -1,4 +1,9 @@
-import { type DailyBlobStats, type SingleDailyBlobStats } from "~/types";
+import {
+  type DailyBlobStats,
+  type DailyTransactionStats,
+  type SingleDailyBlobStats,
+  type SingleDailyTransactionStats,
+} from "~/types";
 
 export type AggregatedDailyBlobStats = {
   days: string[];
@@ -6,6 +11,13 @@ export type AggregatedDailyBlobStats = {
   uniqueBlobs: SingleDailyBlobStats["totalUniqueBlobs"][];
   blobSizes: number[];
   avgBlobSizes: SingleDailyBlobStats["avgBlobSize"][];
+};
+
+export type AggregatedDailyTransactionStats = {
+  days: string[];
+  transactions: SingleDailyTransactionStats["totalTransactions"][];
+  uniqueReceivers: SingleDailyTransactionStats["totalUniqueReceivers"][];
+  uniqueSenders: SingleDailyTransactionStats["totalUniqueSenders"][];
 };
 
 function getDateFromDateTime(date: Date): string {
@@ -33,5 +45,29 @@ export function aggregateDailyBlobStats(
       return aggregatedStats;
     },
     { days: [], blobs: [], uniqueBlobs: [], blobSizes: [], avgBlobSizes: [] },
+  );
+}
+
+export function aggregateDailyTransactionStats(
+  stats: DailyTransactionStats,
+): AggregatedDailyTransactionStats {
+  return stats.reduce<AggregatedDailyTransactionStats>(
+    (
+      aggregatedStats,
+      { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders },
+    ) => {
+      aggregatedStats.days.push(getDateFromDateTime(day));
+      aggregatedStats.transactions.push(totalTransactions);
+      aggregatedStats.uniqueReceivers.push(totalUniqueReceivers);
+      aggregatedStats.uniqueSenders.push(totalUniqueSenders);
+
+      return aggregatedStats;
+    },
+    {
+      days: [],
+      transactions: [],
+      uniqueReceivers: [],
+      uniqueSenders: [],
+    },
   );
 }

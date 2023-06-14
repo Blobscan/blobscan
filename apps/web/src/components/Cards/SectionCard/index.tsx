@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 
-type SectionCardProps = {
+export type SectionCardProps = {
   header?: ReactNode;
   children: ReactNode;
   className?: string;

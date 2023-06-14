@@ -9,3 +9,8 @@ export type Blob = RouterOutputs["blob"]["getByIndex"];
 export type DailyBlobStats = RouterOutputs["stats"]["blob"]["getDailyStats"];
 
 export type SingleDailyBlobStats = DailyBlobStats[number];
+
+export type DailyTransactionStats =
+  RouterOutputs["stats"]["transaction"]["getDailyStats"];
+
+export type SingleDailyTransactionStats = DailyTransactionStats[number];
