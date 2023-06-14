@@ -1,9 +1,11 @@
+import { type FC, type ReactNode } from "react";
+
 type SurfaceCardBaseProps = {
   children: React.ReactNode;
   className?: string;
 };
 
-export const CardBase: React.FC<SurfaceCardBaseProps> = function ({
+export const CardBase: FC<SurfaceCardBaseProps> = function ({
   children,
   className,
 }) {
@@ -25,18 +27,20 @@ export const CardBase: React.FC<SurfaceCardBaseProps> = function ({
   );
 };
 
-type CardHeaderBaseProps = {
-  children: React.ReactNode;
+type CardTitleBaseProps = {
+  children: ReactNode;
+  type?: "header" | "footer";
 };
 
-export const CardHeaderBase: React.FC<CardHeaderBaseProps> = function ({
+export const CardTitleBase: FC<CardTitleBaseProps> = function ({
   children,
+  type = "header",
 }) {
   return (
     <div
       className={`
         -mx-4
-        -mt-4
+        ${type === "header" ? "-mt-4" : "-mb-4"}
         bg-surfaceHeader-light
         p-3
         text-base

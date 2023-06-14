@@ -4,7 +4,7 @@ import dayjs from "~/utils/dayjs";
 import type { Block } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";
-import { CardBase, CardHeaderBase } from "../Bases";
+import { CardBase, CardTitleBase } from "../Bases";
 
 type BlockCardProps = {
   block: Block;
@@ -21,9 +21,9 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
 
   return (
     <CardBase>
-      <CardHeaderBase>
+      <CardTitleBase>
         Block <Link href={buildBlockRoute(number)}>#{number}</Link>
-      </CardHeaderBase>
+      </CardTitleBase>
       <div className="pt-2 text-sm">
         <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
           {dayjs.unix(timestamp).fromNow()}
