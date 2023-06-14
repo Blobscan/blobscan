@@ -5,7 +5,9 @@ import { api } from "~/utils/api";
 import { aggregateDailyBlobStats } from "~/utils/stats";
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { SectionCard } from "~/components/Cards/SectionCard";
-import { DailyBlobsChart } from "~/components/Charts/DailyBlobsChart";
+import { DailyAvgBlobSize } from "~/components/Charts/Blob/DailyAvgBlobSize";
+import { DailyBlobsChart } from "~/components/Charts/Blob/DailyBlobsChart";
+import { DailyBlobsSize } from "~/components/Charts/Blob/DailyBlobsSize";
 import { Spinner } from "~/components/Spinners/Spinner";
 
 const Stats: NextPage = function () {
@@ -14,7 +16,7 @@ const Stats: NextPage = function () {
   });
   const blobDailyData = blobDailyStatsQuery.data;
 
-  const { days, blobs, uniqueBlobs } = useMemo(
+  const { days, blobs, uniqueBlobs, avgBlobSizes, blobSizes } = useMemo(
     () => aggregateDailyBlobStats(blobDailyData ?? []),
     [blobDailyData],
   );
@@ -25,14 +27,20 @@ const Stats: NextPage = function () {
 
   return (
     <>
-      <SectionCard header="Blob Charts"></SectionCard>
-      <div className="flex flex-col gap-6 sm:flex-row [&>div]:w-full">
+      <SectionCard header="Blob Stats"></SectionCard>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 [&>div]:w-full">
         <ChartCard title="Daily Blobs">
           <DailyBlobsChart
             days={days}
             blobs={blobs}
             uniqueBlobs={uniqueBlobs}
           />
+        </ChartCard>
+        <ChartCard title="Daily Blob Sizes">
+          <DailyBlobsSize days={days} blobSizes={blobSizes} />
+        </ChartCard>
+        <ChartCard title="Daily Average Blob Size">
+          <DailyAvgBlobSize days={days} avgBlobSizes={avgBlobSizes} />
         </ChartCard>
       </div>
     </>

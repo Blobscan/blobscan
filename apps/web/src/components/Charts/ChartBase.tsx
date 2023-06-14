@@ -7,7 +7,7 @@ type ChartBaseProps = {
 };
 
 const COMMON_OPTIONS: EChartOption = {
-  grid: { top: 10, right: 20, bottom: 24, left: 40 },
+  grid: { top: 10, right: 10, bottom: 24, left: 60 },
   tooltip: {
     trigger: "axis",
   },

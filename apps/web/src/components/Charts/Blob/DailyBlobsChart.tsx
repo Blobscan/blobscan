@@ -1,12 +1,13 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { ChartBase } from "./ChartBase";
+import { type AggregatedDailyBlobStats } from "~/utils/stats";
+import { ChartBase } from "../ChartBase";
 
 export type DailyBlobsChartProps = {
-  days: string[];
-  blobs: number[];
-  uniqueBlobs: number[];
+  days: AggregatedDailyBlobStats["days"];
+  blobs: AggregatedDailyBlobStats["blobs"];
+  uniqueBlobs: AggregatedDailyBlobStats["uniqueBlobs"];
 };
 
 export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
@@ -14,7 +15,7 @@ export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
   blobs,
   uniqueBlobs,
 }) {
-  const options: EChartOption<EChartOption.SeriesLine> = {
+  const options: EChartOption<EChartOption.SeriesBar> = {
     xAxis: {
       type: "category",
       data: days,
@@ -27,22 +28,20 @@ export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
       {
         name: "Blobs",
         data: blobs,
-        type: "line",
+        type: "bar",
         smooth: true,
         emphasis: { focus: "series" },
       },
       {
         name: "Unique Blobs",
         data: uniqueBlobs,
-        type: "line",
+        type: "bar",
         smooth: true,
         areaStyle: { opacity: 0 },
         emphasis: { focus: "series" },
       },
     ],
-    tooltip: {
-      trigger: "axis",
-    },
+    animationEasing: "cubicOut",
   };
 
   return <ChartBase options={options} />;

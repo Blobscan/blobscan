@@ -4,12 +4,16 @@ export type AggregatedDailyBlobStats = {
   days: string[];
   blobs: SingleDailyBlobStats["totalBlobs"][];
   uniqueBlobs: SingleDailyBlobStats["totalUniqueBlobs"][];
-  blobSizes: SingleDailyBlobStats["totalBlobSize"][];
+  blobSizes: number[];
   avgBlobSizes: SingleDailyBlobStats["avgBlobSize"][];
 };
 
 function getDateFromDateTime(date: Date): string {
   return date.toISOString().split("T")[0] as string;
+}
+
+function bytesToKilobytes(bytes: bigint): number {
+  return Number(bytes / BigInt(1000));
 }
 
 export function aggregateDailyBlobStats(
@@ -23,7 +27,7 @@ export function aggregateDailyBlobStats(
       aggregatedStats.days.push(getDateFromDateTime(day));
       aggregatedStats.blobs.push(totalBlobs);
       aggregatedStats.uniqueBlobs.push(totalUniqueBlobs);
-      aggregatedStats.blobSizes.push(totalBlobSize);
+      aggregatedStats.blobSizes.push(bytesToKilobytes(totalBlobSize));
       aggregatedStats.avgBlobSizes.push(avgBlobSize);
 
       return aggregatedStats;
