@@ -24,7 +24,12 @@ function queryDailyBlobStats(
   const whereClause = buildRawWhereClause(dateField, datePeriod);
 
   return prisma.$queryRaw<Prisma.BlobDailyStatsCreateManyInput[]>`
-    SELECT COUNT(id)::Int as "totalBlobs", DATE_TRUNC('day', ${dateField}) as "day"
+    SELECT 
+      DATE_TRUNC('day', ${dateField}) as "day",
+      COUNT(id)::Int as "totalBlobs",
+      COUNT(DISTINCT "versionedHash")::Int as "totalUniqueBlobs",
+      SUM(size) as "totalBlobSize",
+      AVG(size)::FLOAT as "avgBlobSize"
     FROM "Blob"
     ${whereClause}
     GROUP BY "day"
@@ -75,6 +80,9 @@ export const blobStatsRouter = createTRPCRouter({
           .object({
             day: z.date(),
             totalBlobs: z.number(),
+            totalUniqueBlobs: z.number(),
+            totalBlobSize: z.bigint(),
+            avgBlobSize: z.number(),
           })
           .optional(),
       ),
@@ -86,11 +94,14 @@ export const blobStatsRouter = createTRPCRouter({
         select: {
           day: true,
           totalBlobs: true,
+          totalUniqueBlobs: true,
+          totalBlobSize: true,
+          avgBlobSize: true,
         },
         where: {
           day: {
-            lte: timeFrame.final.toDate(),
             gte: timeFrame.initial.toDate(),
+            lte: timeFrame.final.toDate(),
           },
         },
       });

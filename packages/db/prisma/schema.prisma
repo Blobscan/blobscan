@@ -17,17 +17,19 @@ model IndexerMetadata {
 
 model Blob {
   id          Int         @id @default(autoincrement())
-  versionedHash String
+  versionedHash String    
   commitment  String
   data        String      @db.Text
   txHash      String
   index       Int
   timestamp   DateTime
+  size        Int
   @@unique([txHash, index])
   transaction Transaction @relation(fields: [txHash], references: [hash])
 }
 
 model Block {
+  
   id          Int           @id
   hash        String        @unique 
   number      Int           @unique
@@ -50,8 +52,8 @@ model Transaction {
 // Block Metrics
 model BlockOverallStats {
   id              Int      @id @default(autoincrement())
-  // avgDataGasUsed  Float
   totalBlocks     Int
+  // avgDataGasUsed  Float
   updatedAt DateTime
 }
 
@@ -68,11 +70,9 @@ model BlockDailyStats {
 
 model TransactionOverallStats {
   id                Int      @id @default(autoincrement())
-  // avgSize         Float
   // avgDataGasUsed        Float
   totalTransactions Int
   updatedAt DateTime
-  // totalSize Int
   // uniqueSenders     Int
   // uniqueReceivers   Int
 }
@@ -92,9 +92,10 @@ model TransactionDailyStats {
 model BlobOverallStats {
   id                  Int      @id @default(autoincrement())
   totalBlobs          Int
+  totalUniqueBlobs    Int
+  totalBlobSize       BigInt
+  avgBlobSize         Float
   updatedAt DateTime
-  // totalDataSize Float
-  // avgDataSize         Float
   // dataSizeDistribution Json
 }
 
@@ -102,7 +103,9 @@ model BlobDailyStats {
   id          Int         @id @default(autoincrement())
   day         DateTime    @db.Date
   totalBlobs Int
-  // avgBlobSize     Float?
+  totalUniqueBlobs Int
+  totalBlobSize BigInt
+  avgBlobSize Float
   // sizeDistribution Json?
   @@unique([day])
   @@index([day])

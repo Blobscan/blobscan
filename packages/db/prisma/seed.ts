@@ -13,7 +13,7 @@ const MAX_BLOBS_PER_BLOCK = 6;
 const MAX_BLOBS_PER_TX = 2;
 const BLOBS_AMOUNT = 250;
 // const BLOB_SIZE = 131_072;
-const BLOB_SIZE = 2500;
+const MAX_BLOB_BYTES_SIZE = 2048; // in bytes
 
 function generateTimestamps(
   days: number,
@@ -47,19 +47,25 @@ function generateTimestamps(
   return resultTimestamps;
 }
 
-function generateBlobs(
-  size: number,
-): { versionedHash: string; commitment: string; data: string }[] {
+function generateBlobs(size: number) {
   return Array.from({ length: size }).map(() => {
     const commitment = faker.string.hexadecimal({
       length: 96,
     });
     const versionedHash = `0x01${sha256(commitment).slice(2)}`;
+    const dataLength = faker.number.int({
+      min: MAX_BLOB_BYTES_SIZE,
+      max: MAX_BLOB_BYTES_SIZE * 2,
+    });
+    const data = faker.string.hexadecimal({
+      length: dataLength % 2 === 0 ? dataLength : dataLength + 1,
+    });
 
     return {
       versionedHash,
       commitment,
-      data: faker.string.hexadecimal({ length: BLOB_SIZE }),
+      data,
+      size: data.slice(2).length / 2,
     };
   });
 }
