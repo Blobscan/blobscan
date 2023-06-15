@@ -7,7 +7,7 @@ import {
   type SingleDailyTransactionStats,
 } from "~/types";
 
-export type AggregatedDailyBlobStats = {
+export type FormattedDailyBlobStats = {
   days: string[];
   blobs: SingleDailyBlobStats["totalBlobs"][];
   uniqueBlobs: SingleDailyBlobStats["totalUniqueBlobs"][];
@@ -15,12 +15,12 @@ export type AggregatedDailyBlobStats = {
   avgBlobSizes: SingleDailyBlobStats["avgBlobSize"][];
 };
 
-export type AggregatedDailyBlockStats = {
+export type FormattedDailyBlockStats = {
   days: string[];
   blocks: SingleDailyBlockStats["totalBlocks"][];
 };
 
-export type AggregatedDailyTransactionStats = {
+export type FormattedDailyTransactionStats = {
   days: string[];
   transactions: SingleDailyTransactionStats["totalTransactions"][];
   uniqueReceivers: SingleDailyTransactionStats["totalUniqueReceivers"][];
@@ -31,34 +31,38 @@ function getDateFromDateTime(date: Date): string {
   return date.toISOString().split("T")[0] as string;
 }
 
-function bytesToKilobytes(bytes: bigint): number {
-  return Number(bytes / BigInt(1000));
+export function bytesToKilobytes(bytes: bigint | number): number {
+  if (typeof bytes === "bigint") {
+    return Number(bytes / BigInt(1000));
+  } else {
+    return Number(bytes / 1000);
+  }
 }
 
-export function aggregateDailyBlobStats(
+export function formatDailyBlobStats(
   stats: DailyBlobStats,
-): AggregatedDailyBlobStats {
-  return stats.reduce<AggregatedDailyBlobStats>(
+): FormattedDailyBlobStats {
+  return stats.reduce<FormattedDailyBlobStats>(
     (
-      aggregatedStats,
+      formattedStats,
       { day, avgBlobSize, totalBlobSize, totalBlobs, totalUniqueBlobs },
     ) => {
-      aggregatedStats.days.push(getDateFromDateTime(day));
-      aggregatedStats.blobs.push(totalBlobs);
-      aggregatedStats.uniqueBlobs.push(totalUniqueBlobs);
-      aggregatedStats.blobSizes.push(bytesToKilobytes(totalBlobSize));
-      aggregatedStats.avgBlobSizes.push(avgBlobSize);
+      formattedStats.days.push(getDateFromDateTime(day));
+      formattedStats.blobs.push(totalBlobs);
+      formattedStats.uniqueBlobs.push(totalUniqueBlobs);
+      formattedStats.blobSizes.push(bytesToKilobytes(totalBlobSize));
+      formattedStats.avgBlobSizes.push(avgBlobSize);
 
-      return aggregatedStats;
+      return formattedStats;
     },
     { days: [], blobs: [], uniqueBlobs: [], blobSizes: [], avgBlobSizes: [] },
   );
 }
 
-export function aggregateDailyBlockStats(
+export function formatDailyBlockStats(
   stats: DailyBlockStats,
-): AggregatedDailyBlockStats {
-  return stats.reduce<AggregatedDailyBlockStats>(
+): FormattedDailyBlockStats {
+  return stats.reduce<FormattedDailyBlockStats>(
     (aggregatedStats, { day, totalBlocks }) => {
       aggregatedStats.days.push(getDateFromDateTime(day));
       aggregatedStats.blocks.push(totalBlocks);
@@ -72,10 +76,10 @@ export function aggregateDailyBlockStats(
   );
 }
 
-export function aggregateDailyTransactionStats(
+export function formatDailyTransactionStats(
   stats: DailyTransactionStats,
-): AggregatedDailyTransactionStats {
-  return stats.reduce<AggregatedDailyTransactionStats>(
+): FormattedDailyTransactionStats {
+  return stats.reduce<FormattedDailyTransactionStats>(
     (
       aggregatedStats,
       { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders },

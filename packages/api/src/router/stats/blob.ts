@@ -1,24 +1,24 @@
-import dayjs from "dayjs";
 import { z } from "zod";
 
 import { Prisma, type PrismaClient } from "@blobscan/db";
 
 import {
-  dailyDateProcedure,
   datePeriodProcedure,
+  dateProcedure,
 } from "../../middlewares/withDates";
 import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import {
   buildRawWhereClause,
   buildWhereClause,
+  getDefaultDatePeriod,
   type DatePeriod,
 } from "../../utils/dates";
 import { STATS_PATH } from "../../utils/stats";
 
 function queryDailyBlobStats(
   prisma: PrismaClient,
-  datePeriod: DatePeriod,
+  datePeriod: DatePeriod = getDefaultDatePeriod(),
 ): Prisma.PrismaPromise<Prisma.BlobDailyStatsCreateManyInput[]> {
   const dateField = Prisma.sql`timestamp`;
   const whereClause = buildRawWhereClause(dateField, datePeriod);
@@ -47,23 +47,31 @@ export const blobStatsRouter = createTRPCRouter({
       },
     })
     .input(z.void())
-    .output(z.object({ totalBlobs: z.number(), updatedAt: z.date() }))
-    .query(async ({ ctx }) => {
-      const overallBlobStats = await ctx.prisma.blobOverallStats.findUnique({
+    .output(
+      z.object({
+        totalBlobs: z.number(),
+        totalUniqueBlobs: z.number(),
+        totalBlobSize: z.bigint(),
+        avgBlobSize: z.number(),
+        updatedAt: z.date(),
+      }),
+    )
+    .query(async ({ ctx: { prisma } }) => {
+      const overallBlobStats = await prisma.blobOverallStats.findUnique({
         where: { id: 1 },
       });
 
       if (!overallBlobStats) {
         return {
           totalBlobs: 0,
+          avgBlobSize: 0,
+          totalBlobSize: BigInt(0),
+          totalUniqueBlobs: 0,
           updatedAt: new Date(),
         };
       }
 
-      return {
-        totalBlobs: overallBlobStats.totalBlobs,
-        updatedAt: overallBlobStats.updatedAt,
-      };
+      return overallBlobStats;
     }),
   getDailyStats: timeFrameProcedure
     .meta({
@@ -105,7 +113,7 @@ export const blobStatsRouter = createTRPCRouter({
         orderBy: { day: "asc" },
       });
     }),
-  updateDailyStats: dailyDateProcedure.mutation(
+  updateDailyStats: dateProcedure.mutation(
     async ({ ctx: { prisma, datePeriod } }) => {
       const [dailyBlobStats] = await queryDailyBlobStats(prisma, datePeriod);
 
@@ -125,11 +133,7 @@ export const blobStatsRouter = createTRPCRouter({
       // TODO: implement some sort of bulk processing mechanism.
 
       // Delete all the rows if current date is set as target date
-      if (
-        !datePeriod.from &&
-        datePeriod.to &&
-        dayjs(datePeriod.to).isSame(dayjs(), "day")
-      ) {
+      if (!datePeriod) {
         await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobDailyStats"`);
       } else {
         await prisma.blobDailyStats.deleteMany({
@@ -143,5 +147,20 @@ export const blobStatsRouter = createTRPCRouter({
         data: dailyBlobStats,
       });
     },
+  ),
+  backfillOverallStats: publicProcedure.mutation(async ({ ctx: { prisma } }) =>
+    prisma.$transaction([
+      prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobOverallStats"`),
+      prisma.$executeRaw`
+          INSERT INTO "BlobOverallStats" ("totalBlobs", "totalUniqueBlobs", "totalBlobSize", "avgBlobSize", "updatedAt")
+          SELECT
+            COUNT("versionedHash")::INT as "totalBlobs",
+            COUNT(DISTINCT "versionedHash")::INT as "totalUniqueBlobs",
+            SUM(size) as "totalBlobSize",
+            AVG(size)::FLOAT as "avgBlobSize",
+            NOW() as "updatedAt"
+          FROM "Blob"
+        `,
+    ]),
   ),
 });

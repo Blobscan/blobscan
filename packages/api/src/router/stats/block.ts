@@ -1,24 +1,24 @@
-import dayjs from "dayjs";
 import { z } from "zod";
 
 import { Prisma, type PrismaClient } from "@blobscan/db";
 
 import {
-  dailyDateProcedure,
   datePeriodProcedure,
+  dateProcedure,
 } from "../../middlewares/withDates";
 import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import {
   buildRawWhereClause,
   buildWhereClause,
+  getDefaultDatePeriod,
   type DatePeriod,
 } from "../../utils/dates";
 import { STATS_PATH } from "../../utils/stats";
 
 function queryDailyBlockStats(
   prisma: PrismaClient,
-  datePeriod: DatePeriod,
+  datePeriod: DatePeriod = getDefaultDatePeriod(),
 ): Prisma.PrismaPromise<Prisma.BlockDailyStatsCreateManyInput[]> {
   const dateField = Prisma.sql`timestamp`;
   const whereClause = buildRawWhereClause(dateField, datePeriod);
@@ -92,7 +92,7 @@ export const blockStatsRouter = createTRPCRouter({
         orderBy: { day: "asc" },
       }),
     ),
-  updateDailyStats: dailyDateProcedure.mutation(
+  updateDailyStats: dateProcedure.mutation(
     async ({ ctx: { prisma, datePeriod } }) => {
       const [dailyBlockStats] = await queryDailyBlockStats(prisma, datePeriod);
 
@@ -112,11 +112,7 @@ export const blockStatsRouter = createTRPCRouter({
       // TODO: implement some sort of bulk processing mechanism.
 
       // Delete all the rows if current date is set as target date
-      if (
-        !datePeriod.from &&
-        datePeriod.to &&
-        dayjs(datePeriod.to).isSame(dayjs(), "day")
-      ) {
+      if (!datePeriod) {
         await prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlockDailyStats"`);
       } else {
         await prisma.blockDailyStats.deleteMany({
