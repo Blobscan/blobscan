@@ -4,8 +4,8 @@ import { type NextPage } from "next";
 import { api } from "~/utils/api";
 import { formatDailyBlockStats } from "~/utils/stats";
 import { DailyBlocksChart } from "~/components/Charts/Block";
+import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { Spinner } from "~/components/Spinners/Spinner";
-import { StatsSection } from "~/components/StatsSection";
 
 const BlockStats: NextPage = function () {
   const dailyStatsQuery = api.stats.block.getDailyStats.useQuery({
@@ -30,7 +30,7 @@ const BlockStats: NextPage = function () {
 
   return (
     <>
-      <StatsSection
+      <StatsLayout
         header="Block Stats"
         metrics={[
           {

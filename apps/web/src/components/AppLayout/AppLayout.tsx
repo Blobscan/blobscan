@@ -10,8 +10,8 @@ const AppLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <TopBarLayout />
-      <main className="container mx-auto mb-24 mt-12 grow md:my-24">
-        <div className="mx-auto w-10/12 space-y-12">{children}</div>
+      <main className="container mx-auto mb-24 mt-12 grow md:my-14">
+        <div className="mx-auto flex w-10/12 flex-col gap-8">{children}</div>
       </main>
       <BottomBarLayout />
     </div>

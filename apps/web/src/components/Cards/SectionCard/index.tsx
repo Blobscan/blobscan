@@ -26,7 +26,7 @@ export const SectionCard: React.FC<SectionCardProps> = function ({
     `}
     >
       {header && (
-        <div className="text-xl font-bold dark:text-warmGray-50">{header}</div>
+        <div className="text-lg font-bold dark:text-warmGray-50">{header}</div>
       )}
       <div className={header ? "mt-5" : ""}>
         {children}

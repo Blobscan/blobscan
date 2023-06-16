@@ -8,8 +8,8 @@ import {
   DailyBlobSizeChart,
   DailyBlobsChart,
 } from "~/components/Charts/Blob/";
+import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { Spinner } from "~/components/Spinners/Spinner";
-import { StatsSection } from "~/components/StatsSection";
 
 const BlobStats: NextPage = function () {
   const dailyStatsQuery = api.stats.blob.getDailyStats.useQuery({
@@ -31,7 +31,7 @@ const BlobStats: NextPage = function () {
   const overallStats = overallStatsQuery.data;
 
   return (
-    <StatsSection
+    <StatsLayout
       header="Blob Stats"
       metrics={[
         { name: "Total Blobs", value: overallStats.totalBlobs },

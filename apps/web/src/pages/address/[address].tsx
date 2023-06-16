@@ -8,13 +8,12 @@ import {
   BlobTransactionCard,
   BlobTransactionCardSkeleton,
 } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
-import { DetailsLayout } from "~/components/DetailsLayout";
 import { EthIdenticon } from "~/components/EthIdenticon";
-import { InfoGrid } from "~/components/InfoGrid";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout/";
 import {
-  PaginatedListSection,
-  PaginatedListSectionSkeleton,
-} from "~/components/PaginatedListSection";
+  PaginatedListLayout,
+  PaginatedListLayoutSkeleton,
+} from "~/components/Layouts/PaginatedListLayout";
 import { buildAddressExternalUrl } from "~/utils";
 
 const Address: NextPage = () => {
@@ -39,28 +38,25 @@ const Address: NextPage = () => {
   return (
     <>
       <DetailsLayout
-        title="Address Details"
+        header="Address Details"
         externalLink={buildAddressExternalUrl(address)}
-      >
-        <InfoGrid
-          fields={[
-            {
-              name: "Address",
-              value: (
-                <div className="flex items-center gap-2">
-                  <div className="relative bottom-0.5">
-                    <EthIdenticon address={address} />
-                  </div>
-                  <div className="">{address}</div>
+        fields={[
+          {
+            name: "Address",
+            value: (
+              <div className="flex items-center gap-2">
+                <div className="relative bottom-0.5">
+                  <EthIdenticon address={address} />
                 </div>
-              ),
-            },
-          ]}
-        />
-      </DetailsLayout>
+                <div className="">{address}</div>
+              </div>
+            ),
+          },
+        ]}
+      />
       {txQuery.status === "success" ? (
-        <PaginatedListSection
-          header={`Blob Transactions (${txQuery.data.totalTransactions})`}
+        <PaginatedListLayout
+          subHeader={`Blob Transactions (${txQuery.data.totalTransactions})`}
           items={txQuery.data.transactions.map((t) => (
             <BlobTransactionCard key={t.hash} transaction={t} />
           ))}
@@ -69,7 +65,7 @@ const Address: NextPage = () => {
           pageSize={ps}
         />
       ) : (
-        <PaginatedListSectionSkeleton
+        <PaginatedListLayoutSkeleton
           header="Blob Transactions"
           skeletonItem={<BlobTransactionCardSkeleton />}
         />

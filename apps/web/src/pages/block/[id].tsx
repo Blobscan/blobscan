@@ -8,8 +8,7 @@ import {
   SectionCardSkeleton,
 } from "~/components/Cards/SectionCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
-import { DetailsLayout } from "~/components/DetailsLayout";
-import { InfoGrid } from "~/components/InfoGrid";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import {
   buildBlockExternalUrl,
@@ -58,32 +57,30 @@ const Block: NextPage = function () {
   return (
     <>
       <DetailsLayout
-        title="Block Details"
+        header="Block Details"
         externalLink={buildBlockExternalUrl(block.number)}
-      >
-        <InfoGrid
-          fields={[
-            { name: "Block Height", value: block.number },
-            { name: "Hash", value: block.hash },
-            {
-              name: "Timestamp",
-              value: (
-                <div className="whitespace-break-spaces">
-                  {formatTimestamp(block.timestamp)}
-                </div>
-              ),
-            },
-            {
-              name: "Slot",
-              value: (
-                <Link href={buildSlotExternalUrl(block.slot)} isExternal>
-                  {block.slot}
-                </Link>
-              ),
-            },
-          ]}
-        />
-      </DetailsLayout>
+        fields={[
+          { name: "Block Height", value: block.number },
+          { name: "Hash", value: block.hash },
+          {
+            name: "Timestamp",
+            value: (
+              <div className="whitespace-break-spaces">
+                {formatTimestamp(block.timestamp)}
+              </div>
+            ),
+          },
+          {
+            name: "Slot",
+            value: (
+              <Link href={buildSlotExternalUrl(block.slot)} isExternal>
+                {block.slot}
+              </Link>
+            ),
+          },
+        ]}
+      />
+
       <SectionCard
         header={<div>Blob Transactions ({block.transactions.length})</div>}
       >

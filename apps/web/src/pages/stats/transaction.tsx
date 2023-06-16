@@ -7,8 +7,8 @@ import {
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
 } from "~/components/Charts/Transaction";
+import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { Spinner } from "~/components/Spinners/Spinner";
-import { StatsSection } from "~/components/StatsSection";
 
 const TransactionStats: NextPage = function () {
   const dailyStatsQuery = api.stats.transaction.getDailyStats.useQuery({
@@ -32,7 +32,7 @@ const TransactionStats: NextPage = function () {
 
   return (
     <>
-      <StatsSection
+      <StatsLayout
         header="Transaction Stats"
         metrics={[
           {

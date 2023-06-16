@@ -8,8 +8,7 @@ import {
   SectionCardSkeleton,
 } from "~/components/Cards/SectionCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
-import { DetailsLayout } from "~/components/DetailsLayout";
-import { InfoGrid } from "~/components/InfoGrid";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import {
   buildAddressRoute,
@@ -46,43 +45,41 @@ const Tx: NextPage = () => {
   return (
     <>
       <DetailsLayout
-        title="Transaction Details"
+        header="Transaction Details"
         externalLink={buildTransactionExternalUrl(tx.hash)}
-      >
-        <InfoGrid
-          fields={[
-            { name: "Hash", value: tx.hash },
-            {
-              name: "Block",
-              value: (
-                <Link href={buildBlockRoute(tx.blockNumber)}>
-                  {tx.blockNumber}
-                </Link>
-              ),
-            },
-            {
-              name: "Timestamp",
-              value: (
-                <div className="whitespace-break-spaces">
-                  {formatTimestamp(tx.timestamp)}
-                </div>
-              ),
-            },
-            {
-              name: "From",
-              value: <Link href={buildAddressRoute(tx.from)}>{tx.from}</Link>,
-            },
-            ...(tx.to
-              ? [
-                  {
-                    name: "To",
-                    value: <Link href={buildAddressRoute(tx.to)}>{tx.to}</Link>,
-                  },
-                ]
-              : []),
-          ]}
-        />
-      </DetailsLayout>
+        fields={[
+          { name: "Hash", value: tx.hash },
+          {
+            name: "Block",
+            value: (
+              <Link href={buildBlockRoute(tx.blockNumber)}>
+                {tx.blockNumber}
+              </Link>
+            ),
+          },
+          {
+            name: "Timestamp",
+            value: (
+              <div className="whitespace-break-spaces">
+                {formatTimestamp(tx.timestamp)}
+              </div>
+            ),
+          },
+          {
+            name: "From",
+            value: <Link href={buildAddressRoute(tx.from)}>{tx.from}</Link>,
+          },
+          ...(tx.to
+            ? [
+                {
+                  name: "To",
+                  value: <Link href={buildAddressRoute(tx.to)}>{tx.to}</Link>,
+                },
+              ]
+            : []),
+        ]}
+      />
+
       <SectionCard header={<div>Blobs ({tx.blobs.length})</div>}>
         <div className="space-y-6">
           {sortedBlobs.map((b) => (

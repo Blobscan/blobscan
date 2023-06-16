@@ -9,9 +9,9 @@ import {
   BlockCardSkeleton,
 } from "~/components/Cards/SurfaceCards/BlockCard";
 import {
-  PaginatedListSection,
-  PaginatedListSectionSkeleton,
-} from "~/components/PaginatedListSection";
+  PaginatedListLayout,
+  PaginatedListLayoutSkeleton,
+} from "~/components/Layouts/PaginatedListLayout";
 
 const Blocks: NextPage = function () {
   const router = useRouter();
@@ -30,8 +30,8 @@ const Blocks: NextPage = function () {
 
   if (blocksQuery.status !== "success") {
     return (
-      <PaginatedListSectionSkeleton
-        header="Blocks"
+      <PaginatedListLayoutSkeleton
+        header="Blocks ()"
         skeletonItem={<BlockCardSkeleton />}
       />
     );
@@ -40,7 +40,7 @@ const Blocks: NextPage = function () {
   const { blocks, totalBlocks } = blocksQuery.data;
 
   return (
-    <PaginatedListSection
+    <PaginatedListLayout
       header={`Blocks (${totalBlocks})`}
       items={blocks.map((b) => (
         <BlockCard key={b.hash} block={b} />

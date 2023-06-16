@@ -9,9 +9,9 @@ import {
   BlobTransactionCardSkeleton,
 } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import {
-  PaginatedListSection,
-  PaginatedListSectionSkeleton,
-} from "~/components/PaginatedListSection";
+  PaginatedListLayout,
+  PaginatedListLayoutSkeleton,
+} from "~/components/Layouts/PaginatedListLayout";
 
 const Txs: NextPage = function () {
   const router = useRouter();
@@ -30,7 +30,7 @@ const Txs: NextPage = function () {
 
   if (txsQuery.status !== "success") {
     return (
-      <PaginatedListSectionSkeleton
+      <PaginatedListLayoutSkeleton
         header="Blob Transactions"
         skeletonItem={<BlobTransactionCardSkeleton />}
       />
@@ -40,7 +40,7 @@ const Txs: NextPage = function () {
   const { transactions, totalTransactions } = txsQuery.data;
 
   return (
-    <PaginatedListSection
+    <PaginatedListLayout
       header={`Blob Transactions (${totalTransactions})`}
       items={transactions.map((t) => (
         <BlobTransactionCard key={t.hash} transaction={t} />

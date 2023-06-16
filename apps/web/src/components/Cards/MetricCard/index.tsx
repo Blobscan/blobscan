@@ -1,7 +1,7 @@
 import { type FC } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
-import { SurfaceCardBase } from "../SurfaceCards/SurfaceCardBase";
+import { SectionCard } from "../SectionCard";
 
 export type MetricCardProps = {
   name: string;
@@ -17,10 +17,10 @@ export const MetricCard: FC<MetricCardProps> = function ({
   const props = useSpring({ value: Number(value), from: { value: 0 } });
 
   return (
-    <SurfaceCardBase>
+    <SectionCard>
       <div className="flex items-center gap-4 pl-4">
         <div className="flex flex-col gap-4">
-          <div className="font-semibold">{name}</div>
+          <div className="text-sm font-semibold">{name}</div>
           <div className="flex gap-2 ">
             <div className="text-3xl font-semibold sm:text-4xl">
               {value ? (
@@ -46,6 +46,6 @@ export const MetricCard: FC<MetricCardProps> = function ({
           </div>
         </div>
       </div>
-    </SurfaceCardBase>
+    </SectionCard>
   );
 };

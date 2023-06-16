@@ -9,10 +9,9 @@ import {
   SectionCard,
   SectionCardSkeleton,
 } from "~/components/Cards/SectionCard";
-import { DetailsLayout } from "~/components/DetailsLayout";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
-import { InfoGrid } from "~/components/InfoGrid";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import {
   buildBlockRoute,
@@ -84,39 +83,38 @@ const Blob: NextPage = () => {
 
   return (
     <>
-      <DetailsLayout title="Blob Details">
-        <InfoGrid
-          fields={[
-            { name: "Index", value: blob.index },
-            { name: "Versioned Hash", value: blob.versionedHash },
-            {
-              name: "Block",
-              value: (
-                <Link href={buildBlockRoute(blob.blockNumber)}>
-                  {blob.blockNumber}
-                </Link>
-              ),
-            },
-            {
-              name: "Transaction",
-              value: (
-                <Link href={buildTransactionRoute(blob.txHash)}>
-                  {blob.txHash}
-                </Link>
-              ),
-            },
-            {
-              name: "Timestamp",
-              value: (
-                <div className="whitespace-break-spaces">
-                  {formatTimestamp(blob.timestamp)}
-                </div>
-              ),
-            },
-            { name: "Commitment", value: blob.commitment },
-          ]}
-        />
-      </DetailsLayout>
+      <DetailsLayout
+        header="Blob Details"
+        fields={[
+          { name: "Index", value: blob.index },
+          { name: "Versioned Hash", value: blob.versionedHash },
+          {
+            name: "Block",
+            value: (
+              <Link href={buildBlockRoute(blob.blockNumber)}>
+                {blob.blockNumber}
+              </Link>
+            ),
+          },
+          {
+            name: "Transaction",
+            value: (
+              <Link href={buildTransactionRoute(blob.txHash)}>
+                {blob.txHash}
+              </Link>
+            ),
+          },
+          {
+            name: "Timestamp",
+            value: (
+              <div className="whitespace-break-spaces">
+                {formatTimestamp(blob.timestamp)}
+              </div>
+            ),
+          },
+          { name: "Commitment", value: blob.commitment },
+        ]}
+      />
 
       <SectionCard
         header={
