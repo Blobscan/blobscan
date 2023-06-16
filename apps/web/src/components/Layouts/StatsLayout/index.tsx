@@ -1,12 +1,12 @@
 import { type FC, type ReactNode } from "react";
 
 import { Header } from "~/components/Header";
+import { type CardBaseProps } from "../../Cards/CardBase";
 import { ChartCard } from "../../Cards/ChartCard";
 import { MetricCard, type MetricCardProps } from "../../Cards/MetricCard";
-import { type SectionCardProps } from "../../Cards/SectionCard";
 
 export type StatsSectionsProps = {
-  header: SectionCardProps["header"];
+  header: CardBaseProps["header"];
   charts: { chart: ReactNode; name: ReactNode }[];
   metrics: MetricCardProps[];
 };

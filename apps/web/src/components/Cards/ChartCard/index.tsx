@@ -1,7 +1,7 @@
 import { type FC, type ReactNode } from "react";
 
 import { CardTitleBase } from "../Bases";
-import { SectionCard } from "../SectionCard";
+import { CardBase } from "../CardBase";
 
 type ChardCardProps = {
   title: ReactNode;
@@ -15,13 +15,13 @@ export const ChartCard: FC<ChardCardProps> = function ({
   className = "",
 }) {
   return (
-    <SectionCard className={className}>
+    <CardBase className={className}>
       <div className="flex flex-col gap-7">
         {children}
         <CardTitleBase type="footer">
           <div className="flex justify-center text-sm">{title}</div>
         </CardTitleBase>
       </div>
-    </SectionCard>
+    </CardBase>
   );
 };

@@ -3,10 +3,7 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import {
-  SectionCard,
-  SectionCardSkeleton,
-} from "~/components/Cards/SectionCard";
+import { CardBase, SectionCardSkeleton } from "~/components/Cards/CardBase";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -80,13 +77,13 @@ const Tx: NextPage = () => {
         ]}
       />
 
-      <SectionCard header={<div>Blobs ({tx.blobs.length})</div>}>
+      <CardBase header={<div>Blobs ({tx.blobs.length})</div>}>
         <div className="space-y-6">
           {sortedBlobs.map((b) => (
             <BlobCard key={b.versionedHash} blob={b} txHash={tx.hash} />
           ))}
         </div>
-      </SectionCard>
+      </CardBase>
     </>
   );
 };

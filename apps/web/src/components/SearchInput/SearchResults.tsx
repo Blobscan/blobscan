@@ -4,7 +4,7 @@ import { CpuChipIcon, CubeIcon } from "@heroicons/react/24/solid";
 
 import { type RouterOutputs } from "~/utils/api";
 import { capitalize } from "~/utils";
-import { SectionCard } from "../Cards/SectionCard";
+import { CardBase } from "../Cards/CardBase";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];
 type SearchCategory = keyof SearchOutput;
@@ -75,7 +75,7 @@ export const SearchResults: React.FC<SearchResultsProps> = function ({
   if (!categories.length) return null;
 
   return (
-    <SectionCard className="px-3 py-4">
+    <CardBase className="px-3 py-4">
       <div className="flex flex-col">
         {categories.map((c) => (
           <React.Fragment key={c}>
@@ -93,6 +93,6 @@ export const SearchResults: React.FC<SearchResultsProps> = function ({
           </React.Fragment>
         ))}
       </div>
-    </SectionCard>
+    </CardBase>
   );
 };

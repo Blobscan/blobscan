@@ -1,7 +1,7 @@
 import { Fragment, type FC, type ReactNode } from "react";
 
 import { Header } from "~/components/Header";
-import { SectionCard } from "../../Cards/SectionCard";
+import { CardBase } from "../../Cards/CardBase";
 import { SkeletonBase } from "../../SkeletonItems";
 
 export const Skeleton: FC<{ header: ReactNode; skeletonItem: ReactNode }> =
@@ -9,7 +9,7 @@ export const Skeleton: FC<{ header: ReactNode; skeletonItem: ReactNode }> =
     return (
       <>
         <Header>{header}</Header>
-        <SectionCard>
+        <CardBase>
           <SkeletonBase>
             <div className="h-10" />
             <div className="space-y-6">
@@ -20,7 +20,7 @@ export const Skeleton: FC<{ header: ReactNode; skeletonItem: ReactNode }> =
                 ))}
             </div>
           </SkeletonBase>
-        </SectionCard>
+        </CardBase>
       </>
     );
   };

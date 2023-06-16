@@ -3,10 +3,7 @@ import NextError from "next/error";
 import { useRouter, type NextRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import {
-  SectionCard,
-  SectionCardSkeleton,
-} from "~/components/Cards/SectionCard";
+import { CardBase, SectionCardSkeleton } from "~/components/Cards/CardBase";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -81,7 +78,7 @@ const Block: NextPage = function () {
         ]}
       />
 
-      <SectionCard
+      <CardBase
         header={<div>Blob Transactions ({block.transactions.length})</div>}
       >
         <div className="space-y-6">
@@ -89,7 +86,7 @@ const Block: NextPage = function () {
             <BlobTransactionCard key={t.hash} transaction={t} />
           ))}
         </div>
-      </SectionCard>
+      </CardBase>
     </>
   );
 };

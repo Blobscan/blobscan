@@ -2,7 +2,7 @@ import { useCallback, type FC, type ReactNode } from "react";
 import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
-import { SectionCard } from "../../Cards/SectionCard";
+import { CardBase } from "../../Cards/CardBase";
 import { Dropdown, type DropdownProps } from "../../Dropdown";
 import { Pagination, type PaginationProps } from "../../Pagination";
 
@@ -61,7 +61,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   return (
     <>
       <Header>{header}</Header>
-      <SectionCard
+      <CardBase
         header={
           <div
             className={`flex flex-col ${
@@ -100,7 +100,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             </div>
           </div>
         </div>
-      </SectionCard>
+      </CardBase>
     </>
   );
 };

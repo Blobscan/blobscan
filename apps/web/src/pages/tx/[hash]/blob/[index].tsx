@@ -5,10 +5,7 @@ import { useRouter } from "next/router";
 import { utils } from "ethers";
 
 import { api } from "~/utils/api";
-import {
-  SectionCard,
-  SectionCardSkeleton,
-} from "~/components/Cards/SectionCard";
+import { CardBase, SectionCardSkeleton } from "~/components/Cards/CardBase";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -116,7 +113,7 @@ const Blob: NextPage = () => {
         ]}
       />
 
-      <SectionCard
+      <CardBase
         header={
           <div className="flex items-center justify-between">
             Data
@@ -144,7 +141,7 @@ const Blob: NextPage = () => {
             <ExpandableContent>{formattedData}</ExpandableContent>
           )}
         </div>
-      </SectionCard>
+      </CardBase>
     </>
   );
 };
