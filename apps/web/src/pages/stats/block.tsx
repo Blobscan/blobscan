@@ -2,34 +2,46 @@ import { useMemo } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/utils/api";
-import { aggregateDailyBlockStats } from "~/utils/stats";
+import { formatDailyBlockStats } from "~/utils/stats";
 import { DailyBlocksChart } from "~/components/Charts/Block";
 import { Spinner } from "~/components/Spinners/Spinner";
 import { StatsSection } from "~/components/StatsSection";
 
 const BlockStats: NextPage = function () {
-  const blockDailyStatsQuery = api.stats.block.getDailyStats.useQuery({
+  const dailyStatsQuery = api.stats.block.getDailyStats.useQuery({
     timeFrame: "30d",
   });
+  const overallStatsQuery = api.stats.block.getOverallStats.useQuery();
 
-  const blockDailyData = blockDailyStatsQuery.data;
+  const dailyData = dailyStatsQuery.data;
   const { days, blocks } = useMemo(
-    () => aggregateDailyBlockStats(blockDailyData ?? []),
-    [blockDailyData],
+    () => formatDailyBlockStats(dailyData ?? []),
+    [dailyData],
   );
 
-  if (blockDailyStatsQuery.status !== "success") {
+  if (
+    dailyStatsQuery.status !== "success" ||
+    overallStatsQuery.status !== "success"
+  ) {
     return <Spinner />;
   }
+
+  const overallStats = overallStatsQuery.data;
 
   return (
     <>
       <StatsSection
         header="Block Stats"
+        metrics={[
+          {
+            name: "Total Blocks",
+            value: overallStats?.totalBlocks,
+          },
+        ]}
         charts={[
           {
-            title: "Daily Blocks",
-            element: <DailyBlocksChart days={days} blocks={blocks} />,
+            name: "Daily Blocks",
+            chart: <DailyBlocksChart days={days} blocks={blocks} />,
           },
         ]}
       />

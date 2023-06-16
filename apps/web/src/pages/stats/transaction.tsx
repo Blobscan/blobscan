@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/utils/api";
-import { aggregateDailyTransactionStats } from "~/utils/stats";
+import { formatDailyTransactionStats } from "~/utils/stats";
 import {
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
@@ -11,34 +11,53 @@ import { Spinner } from "~/components/Spinners/Spinner";
 import { StatsSection } from "~/components/StatsSection";
 
 const TransactionStats: NextPage = function () {
-  const transactionDailyStatsQuery =
-    api.stats.transaction.getDailyStats.useQuery({
-      timeFrame: "30d",
-    });
-  const transactionDailyData = transactionDailyStatsQuery.data;
+  const dailyStatsQuery = api.stats.transaction.getDailyStats.useQuery({
+    timeFrame: "30d",
+  });
+  const overallStatsQuery = api.stats.transaction.getOverallStats.useQuery();
+
   const { days, transactions, uniqueReceivers, uniqueSenders } = useMemo(
-    () => aggregateDailyTransactionStats(transactionDailyData ?? []),
-    [transactionDailyData],
+    () => formatDailyTransactionStats(dailyStatsQuery.data ?? []),
+    [dailyStatsQuery.data],
   );
 
-  if (transactionDailyStatsQuery.status !== "success") {
+  if (
+    dailyStatsQuery.status !== "success" ||
+    overallStatsQuery.status !== "success"
+  ) {
     return <Spinner />;
   }
+
+  const overallStats = overallStatsQuery.data;
 
   return (
     <>
       <StatsSection
         header="Transaction Stats"
+        metrics={[
+          {
+            name: "Total Transactions",
+            value: overallStats?.totalTransactions,
+          },
+          {
+            name: "Total Unique Receivers",
+            value: overallStats?.totalUniqueReceivers,
+          },
+          {
+            name: "Total Unique Senders",
+            value: overallStats?.totalUniqueSenders,
+          },
+        ]}
         charts={[
           {
-            title: "Daily Transactions",
-            element: (
+            name: "Daily Transactions",
+            chart: (
               <DailyTransactionsChart days={days} transactions={transactions} />
             ),
           },
           {
-            title: "Daily Unique Addresses",
-            element: (
+            name: "Daily Unique Addresses",
+            chart: (
               <DailyUniqueAddressesChart
                 days={days}
                 uniqueReceivers={uniqueReceivers}

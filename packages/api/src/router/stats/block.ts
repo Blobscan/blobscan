@@ -42,23 +42,15 @@ export const blockStatsRouter = createTRPCRouter({
       },
     })
     .input(z.void())
-    .output(z.object({ total: z.number(), updatedAt: z.date() }))
-    .query(async ({ ctx }) => {
-      const overallBlockStats = await ctx.prisma.blockOverallStats.findUnique({
+    .output(
+      z.object({ totalBlocks: z.number(), updatedAt: z.date() }).nullable(),
+    )
+    .query(async ({ ctx: { prisma } }) => {
+      const overallBlockStats = await prisma.blockOverallStats.findUnique({
         where: { id: 1 },
       });
 
-      if (!overallBlockStats) {
-        return {
-          total: 0,
-          updatedAt: new Date(),
-        };
-      }
-
-      return {
-        total: overallBlockStats.totalBlocks,
-        updatedAt: overallBlockStats.updatedAt,
-      };
+      return overallBlockStats;
     }),
   getDailyStats: timeFrameProcedure
     .meta({
@@ -126,5 +118,23 @@ export const blockStatsRouter = createTRPCRouter({
         data: dailyBlockStats,
       });
     },
+  ),
+  backfillOverallStats: publicProcedure.mutation(
+    async ({ ctx: { prisma } }) =>
+      prisma.$executeRaw`
+        INSERT INTO "BlockOverallStats" (
+          id,
+          "totalBlocks",
+          "updatedAt"
+        )
+        SELECT
+          1 as id,
+          COUNT("id")::INT as "totalBlocks",
+          NOW() as "updatedAt"
+        FROM "Block"
+        ON CONFLICT(id) DO UPDATE SET
+          "totalBlocks" = EXCLUDED."totalBlocks",
+          "updatedAt" = EXCLUDED."updatedAt"
+      `,
   ),
 });

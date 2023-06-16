@@ -148,19 +148,31 @@ export const blobStatsRouter = createTRPCRouter({
       });
     },
   ),
-  backfillOverallStats: publicProcedure.mutation(async ({ ctx: { prisma } }) =>
-    prisma.$transaction([
-      prisma.$executeRawUnsafe(`TRUNCATE TABLE "BlobOverallStats"`),
+  backfillOverallStats: publicProcedure.mutation(
+    async ({ ctx: { prisma } }) =>
       prisma.$executeRaw`
-          INSERT INTO "BlobOverallStats" ("totalBlobs", "totalUniqueBlobs", "totalBlobSize", "avgBlobSize", "updatedAt")
-          SELECT
-            COUNT("versionedHash")::INT as "totalBlobs",
-            COUNT(DISTINCT "versionedHash")::INT as "totalUniqueBlobs",
-            SUM(size) as "totalBlobSize",
-            AVG(size)::FLOAT as "avgBlobSize",
-            NOW() as "updatedAt"
-          FROM "Blob"
-        `,
-    ]),
+        INSERT INTO "BlobOverallStats" (
+          id,
+          "totalBlobs",
+          "totalUniqueBlobs",
+          "totalBlobSize",
+          "avgBlobSize",
+          "updatedAt"
+        )
+        SELECT
+          1 as id,
+          COUNT("versionedHash")::INT as "totalBlobs",
+          COUNT(DISTINCT "versionedHash")::INT as "totalUniqueBlobs",
+          SUM(size) as "totalBlobSize",
+          AVG(size)::FLOAT as "avgBlobSize",
+          NOW() as "updatedAt"
+        FROM "Blob"
+        ON CONFLICT(id) DO UPDATE SET
+          "totalBlobs" = EXCLUDED."totalBlobs",
+          "totalUniqueBlobs" = EXCLUDED."totalUniqueBlobs",
+          "totalBlobSize" = EXCLUDED."totalBlobSize",
+          "avgBlobSize" = EXCLUDED."avgBlobSize",
+          "updatedAt" = EXCLUDED."updatedAt"
+      `,
   ),
 });

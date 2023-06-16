@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/utils/api";
-import { aggregateDailyBlobStats } from "~/utils/stats";
+import { bytesToKilobytes, formatDailyBlobStats } from "~/utils/stats";
 import {
   DailyAvgBlobSizeChart,
   DailyBlobSizeChart,
@@ -12,27 +12,48 @@ import { Spinner } from "~/components/Spinners/Spinner";
 import { StatsSection } from "~/components/StatsSection";
 
 const BlobStats: NextPage = function () {
-  const blobDailyStatsQuery = api.stats.blob.getDailyStats.useQuery({
+  const dailyStatsQuery = api.stats.blob.getDailyStats.useQuery({
     timeFrame: "30d",
   });
-  const blobDailyData = blobDailyStatsQuery.data;
-
+  const overallStatsQuery = api.stats.blob.getOverallStats.useQuery();
   const { days, blobs, uniqueBlobs, avgBlobSizes, blobSizes } = useMemo(
-    () => aggregateDailyBlobStats(blobDailyData ?? []),
-    [blobDailyData],
+    () => formatDailyBlobStats(dailyStatsQuery.data ?? []),
+    [dailyStatsQuery.data],
   );
 
-  if (blobDailyStatsQuery.status !== "success") {
+  if (
+    dailyStatsQuery.status !== "success" ||
+    overallStatsQuery.status !== "success"
+  ) {
     return <Spinner />;
   }
+
+  const overallStats = overallStatsQuery.data;
 
   return (
     <StatsSection
       header="Blob Stats"
+      metrics={[
+        { name: "Total Blobs", value: overallStats.totalBlobs },
+        {
+          name: "Total Blob Size",
+          value: bytesToKilobytes(overallStats.totalBlobSize),
+          unit: "KB",
+        },
+        {
+          name: "Total Unique Blobs",
+          value: overallStats.totalUniqueBlobs,
+        },
+        {
+          name: "Average Blob Size",
+          value: Number(bytesToKilobytes(overallStats.avgBlobSize).toFixed(2)),
+          unit: "KB",
+        },
+      ]}
       charts={[
         {
-          title: "Daily Blobs",
-          element: (
+          name: "Daily Blobs",
+          chart: (
             <DailyBlobsChart
               days={days}
               blobs={blobs}
@@ -41,12 +62,12 @@ const BlobStats: NextPage = function () {
           ),
         },
         {
-          title: "Daily Blob Sizes",
-          element: <DailyBlobSizeChart days={days} blobSizes={blobSizes} />,
+          name: "Daily Blob Sizes",
+          chart: <DailyBlobSizeChart days={days} blobSizes={blobSizes} />,
         },
         {
-          title: "Daily Average Blob Size",
-          element: (
+          name: "Daily Average Blob Size",
+          chart: (
             <DailyAvgBlobSizeChart days={days} avgBlobSizes={avgBlobSizes} />
           ),
         },

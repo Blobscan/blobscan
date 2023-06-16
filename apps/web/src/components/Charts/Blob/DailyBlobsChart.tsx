@@ -1,13 +1,13 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type AggregatedDailyBlobStats } from "~/utils/stats";
+import { type FormattedDailyBlobStats } from "~/utils/stats";
 import { ChartBase } from "../ChartBase";
 
 export type DailyBlobsChartProps = {
-  days: AggregatedDailyBlobStats["days"];
-  blobs: AggregatedDailyBlobStats["blobs"];
-  uniqueBlobs: AggregatedDailyBlobStats["uniqueBlobs"];
+  days: FormattedDailyBlobStats["days"];
+  blobs: FormattedDailyBlobStats["blobs"];
+  uniqueBlobs: FormattedDailyBlobStats["uniqueBlobs"];
 };
 
 export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({

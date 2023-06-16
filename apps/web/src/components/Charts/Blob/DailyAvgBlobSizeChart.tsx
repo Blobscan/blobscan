@@ -1,12 +1,12 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type AggregatedDailyBlobStats } from "~/utils/stats";
+import { type FormattedDailyBlobStats } from "~/utils/stats";
 import { ChartBase } from "../ChartBase";
 
 type DailyAvgBlobSizeProps = {
-  days: AggregatedDailyBlobStats["days"];
-  avgBlobSizes: AggregatedDailyBlobStats["avgBlobSizes"];
+  days: FormattedDailyBlobStats["days"];
+  avgBlobSizes: FormattedDailyBlobStats["avgBlobSizes"];
 };
 
 export const DailyAvgBlobSizeChart: FC<DailyAvgBlobSizeProps> = function ({

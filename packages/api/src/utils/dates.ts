@@ -34,3 +34,7 @@ export function buildRawWhereClause(
 export function buildWhereClause(dateField: string, { from, to }: DatePeriod) {
   return { [dateField]: { gte: from, lte: to } };
 }
+
+export function getDefaultDatePeriod(): DatePeriod {
+  return { to: normalizeDate(dayjs()) };
+}

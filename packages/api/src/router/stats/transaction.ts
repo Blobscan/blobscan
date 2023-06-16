@@ -46,24 +46,22 @@ export const transactionStatsRouter = createTRPCRouter({
       },
     })
     .input(z.void())
-    .output(z.object({ total: z.number(), updatedAt: z.date() }))
+    .output(
+      z
+        .object({
+          totalTransactions: z.number(),
+          totalUniqueReceivers: z.number(),
+          totalUniqueSenders: z.number(),
+          updatedAt: z.date(),
+        })
+        .nullable(),
+    )
     .query(async ({ ctx }) => {
-      const overallTransactionStats =
-        await ctx.prisma.transactionOverallStats.findUnique({
-          where: { id: 1 },
-        });
+      const overallStats = await ctx.prisma.transactionOverallStats.findUnique({
+        where: { id: 1 },
+      });
 
-      if (!overallTransactionStats) {
-        return {
-          total: 0,
-          updatedAt: new Date(),
-        };
-      }
-
-      return {
-        total: overallTransactionStats.totalTransactions,
-        updatedAt: overallTransactionStats.updatedAt,
-      };
+      return overallStats;
     }),
   getDailyStats: timeFrameProcedure
     .meta({
@@ -141,5 +139,29 @@ export const transactionStatsRouter = createTRPCRouter({
         data: dailyTransactionStats,
       });
     },
+  ),
+  backfillOverallStats: publicProcedure.mutation(
+    async ({ ctx: { prisma } }) =>
+      prisma.$executeRaw`
+        INSERT INTO "TransactionOverallStats" (
+          id,
+          "totalTransactions",
+          "totalUniqueReceivers",
+          "totalUniqueSenders",
+          "updatedAt"
+        )
+        SELECT
+          1 as id,
+          COUNT("id")::INT as "totalTransactions",
+          COUNT(DISTINCT "to")::INT as "totalUniqueReceivers",
+          COUNT(DISTINCT "from")::INT as "totalUniqueSenders",
+          NOW() as "updatedAt"
+        FROM "Transaction"
+        ON CONFLICT(id) DO UPDATE SET
+          "totalTransactions" = EXCLUDED."totalTransactions",
+          "totalUniqueReceivers" = EXCLUDED."totalUniqueReceivers",
+          "totalUniqueSenders" = EXCLUDED."totalUniqueSenders",
+          "updatedAt" = EXCLUDED."updatedAt"
+      `,
   ),
 });

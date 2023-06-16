@@ -1,13 +1,13 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type AggregatedDailyTransactionStats } from "~/utils/stats";
+import { type FormattedDailyTransactionStats } from "~/utils/stats";
 import { ChartBase } from "../ChartBase";
 
 export type DailyUniqueAddressesChartProps = {
-  days: AggregatedDailyTransactionStats["days"];
-  uniqueReceivers: AggregatedDailyTransactionStats["uniqueReceivers"];
-  uniqueSenders: AggregatedDailyTransactionStats["uniqueSenders"];
+  days: FormattedDailyTransactionStats["days"];
+  uniqueReceivers: FormattedDailyTransactionStats["uniqueReceivers"];
+  uniqueSenders: FormattedDailyTransactionStats["uniqueSenders"];
 };
 
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =

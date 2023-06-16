@@ -1,12 +1,12 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type AggregatedDailyTransactionStats } from "~/utils/stats";
+import { type FormattedDailyTransactionStats } from "~/utils/stats";
 import { ChartBase } from "../ChartBase";
 
 export type DailyTransactionsProps = {
-  days: AggregatedDailyTransactionStats["days"];
-  transactions: AggregatedDailyTransactionStats["transactions"];
+  days: FormattedDailyTransactionStats["days"];
+  transactions: FormattedDailyTransactionStats["transactions"];
 };
 
 export const DailyTransactionsChart: FC<DailyTransactionsProps> = function ({

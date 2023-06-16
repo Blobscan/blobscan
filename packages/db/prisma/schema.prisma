@@ -60,6 +60,7 @@ model BlockDailyStats {
   id          Int         @id @default(autoincrement())
   day         DateTime    @db.Date
   totalBlocks     Int
+  // avgBlobsPerBlock Float
   // avgDataGasUsed   Float?
   @@unique([day])
   @@index([day])  
@@ -69,10 +70,10 @@ model BlockDailyStats {
 
 model TransactionOverallStats {
   id                Int      @id @default(autoincrement())
-  // avgDataGasUsed        Float
   totalTransactions Int
-  uniqueSenders     Int
-  uniqueReceivers   Int
+  totalUniqueReceivers   Int
+  totalUniqueSenders     Int
+  // avgDataGasUsed        Float
   updatedAt DateTime
 }
 
