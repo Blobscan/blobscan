@@ -28,7 +28,7 @@ model Blob {
   versionedHash String
   commitment    String
   data          BlobData    @relation(fields: [versionedHash], references: [id])
-  txHash        String      @unique
+  txHash        String
   index         Int
   @@unique([txHash, index])
   transaction   Transaction @relation(fields: [txHash], references: [id])
