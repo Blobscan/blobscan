@@ -20,11 +20,11 @@ export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
     yAxis: {
       type: "value",
       splitLine: { show: false },
-      axisLabel: { formatter: (name: string) => `${name} KBs` },
+      axisLabel: { formatter: (name: string) => `${name} KB` },
     },
     series: [
       {
-        name: "Blobs Size (in KBs)",
+        name: "Blobs Size",
         data: blobSizes,
         type: "bar",
       },

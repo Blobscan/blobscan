@@ -22,7 +22,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
         <div className="flex flex-col gap-4">
           <div className="font-semibold">{name}</div>
           <div className="flex gap-2 ">
-            <div className="text-4xl font-semibold">
+            <div className="text-3xl font-semibold sm:text-4xl">
               {value ? (
                 <animated.div>
                   {props.value.to((x) =>
@@ -35,7 +35,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
             </div>
             {unit && (
               <div className="absolute flex items-end gap-3">
-                <div className="invisible text-4xl">
+                <div className="invisible text-3xl sm:text-4xl">
                   {value.toLocaleString()}
                 </div>
                 <div className="relative bottom-0.5 font-semibold text-contentSecondary-light dark:text-contentSecondary-dark">

@@ -11,13 +11,14 @@ export type StatsSectionsProps = {
 };
 
 export const StatsSection: FC<StatsSectionsProps> = function ({
+  header,
   charts,
   metrics,
 }) {
   return (
     <>
-      <SectionCard header="Metrics">
-        <div className="grid grid-cols-4 gap-4">
+      <SectionCard header={header}>
+        <div className="grid gap-4 sm:grid-cols-4">
           {metrics.map((metric, i) => (
             <MetricCard key={i} {...metric} />
           ))}
