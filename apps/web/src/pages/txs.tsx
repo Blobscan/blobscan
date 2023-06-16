@@ -7,7 +7,7 @@ import { getPaginationParams } from "~/utils/pagination";
 import {
   BlobTransactionCard,
   BlobTransactionCardSkeleton,
-} from "~/components/Cards/BlobTransactionCard";
+} from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import {
   PaginatedListSection,
   PaginatedListSectionSkeleton,

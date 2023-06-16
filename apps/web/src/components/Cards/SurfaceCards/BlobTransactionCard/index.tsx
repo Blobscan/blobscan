@@ -14,8 +14,8 @@ import {
   buildBlockRoute,
   buildTransactionRoute,
 } from "~/utils";
-import { Link } from "../../Link";
-import { CardBase } from "../Bases";
+import { Link } from "../../../Link";
+import { SurfaceCardBase } from "../SurfaceCardBase";
 
 const CollapseIcon: React.FC<{
   opened: boolean;
@@ -71,7 +71,7 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
 
     return (
       <div>
-        <CardBase className="rounded-none rounded-t-md">
+        <SurfaceCardBase className="rounded-none rounded-t-md">
           <div className="flex flex-col justify-between text-sm md:flex-row">
             <div className="flex w-full items-center gap-3">
               <CollapseIcon
@@ -111,12 +111,12 @@ export const BlobTransactionCard: React.FC<BlobTransactionCardProps> =
                   <span>Block #{block.number}</span>
                 </Link>
                 <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                  {dayjs.unix(block.timestamp).fromNow()}
+                  {dayjs(block.timestamp).fromNow()}
                 </div>
               </div>
             )}
           </div>
-        </CardBase>
+        </SurfaceCardBase>
         <div className="overflow-hidden bg-primary-200 pr-4 dark:bg-primary-900">
           <animated.div
             style={{

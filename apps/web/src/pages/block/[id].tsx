@@ -3,11 +3,11 @@ import NextError from "next/error";
 import { useRouter, type NextRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
 import {
   SectionCard,
   SectionCardSkeleton,
 } from "~/components/Cards/SectionCard";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";

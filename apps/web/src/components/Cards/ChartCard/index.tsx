@@ -1,6 +1,7 @@
 import { type FC, type ReactNode } from "react";
 
-import { CardBase, CardTitleBase } from "../Bases";
+import { CardTitleBase } from "../Bases";
+import { SurfaceCardBase } from "../SurfaceCards/SurfaceCardBase";
 
 type ChardCardProps = {
   title: ReactNode;
@@ -14,13 +15,13 @@ export const ChartCard: FC<ChardCardProps> = function ({
   className = "",
 }) {
   return (
-    <CardBase className={className}>
+    <SurfaceCardBase className={className}>
       <div className="flex flex-col gap-7">
         {children}
         <CardTitleBase type="footer">
           <div className="flex justify-center">{title}</div>
         </CardTitleBase>
       </div>
-    </CardBase>
+    </SurfaceCardBase>
   );
 };

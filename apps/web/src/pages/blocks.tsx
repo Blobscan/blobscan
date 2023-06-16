@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { getPaginationParams } from "~/utils/pagination";
-import { BlockCard, BlockCardSkeleton } from "~/components/Cards/BlockCard";
+import {
+  BlockCard,
+  BlockCardSkeleton,
+} from "~/components/Cards/SurfaceCards/BlockCard";
 import {
   PaginatedListSection,
   PaginatedListSectionSkeleton,

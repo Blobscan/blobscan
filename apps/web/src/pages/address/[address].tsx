@@ -7,7 +7,7 @@ import { getPaginationParams } from "~/utils/pagination";
 import {
   BlobTransactionCard,
   BlobTransactionCardSkeleton,
-} from "~/components/Cards/BlobTransactionCard";
+} from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/DetailsLayout";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { InfoGrid } from "~/components/InfoGrid";

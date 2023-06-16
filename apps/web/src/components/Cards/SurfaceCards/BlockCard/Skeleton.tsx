@@ -1,10 +1,11 @@
 import { SkeletonBase, SkeletonRow } from "~/components/SkeletonItems";
-import { CardBase, CardTitleBase } from "../Bases";
+import { CardTitleBase } from "../../Bases";
+import { SurfaceCardBase } from "../SurfaceCardBase";
 
 export const BlockCardSkeleton: React.FC = function () {
   return (
     <SkeletonBase>
-      <CardBase>
+      <SurfaceCardBase>
         <CardTitleBase>
           <SkeletonRow className="h-5 w-32" />
         </CardTitleBase>
@@ -12,7 +13,7 @@ export const BlockCardSkeleton: React.FC = function () {
           <SkeletonRow className="mb-2 h-4 w-60 max-w-[90px]" />
           <SkeletonRow className="h-4 max-w-[300px]" />
         </div>
-      </CardBase>
+      </SurfaceCardBase>
     </SkeletonBase>
   );
 };

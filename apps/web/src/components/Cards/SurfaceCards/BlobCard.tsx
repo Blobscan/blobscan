@@ -1,7 +1,7 @@
 import { type Transaction } from "~/types";
 import { buildBlobRoute } from "~/utils";
-import { Link } from "../Link";
-import { CardBase } from "./Bases";
+import { Link } from "../../Link";
+import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlobCardProps = {
   blob: Transaction["blobs"][0];
@@ -10,7 +10,7 @@ type BlobCardProps = {
 
 export const BlobCard: React.FC<BlobCardProps> = ({ blob, txHash }) => {
   return (
-    <CardBase>
+    <SurfaceCardBase>
       <div className="space-y-2 text-sm">
         <div className="font-semibold">
           <Link href={buildBlobRoute(txHash, blob.index)}>
@@ -26,6 +26,6 @@ export const BlobCard: React.FC<BlobCardProps> = ({ blob, txHash }) => {
           <div className="truncate">{blob.commitment}</div>
         </div>
       </div>
-    </CardBase>
+    </SurfaceCardBase>
   );
 };

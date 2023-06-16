@@ -3,8 +3,9 @@ import { useMemo } from "react";
 import dayjs from "~/utils/dayjs";
 import type { Block } from "~/types";
 import { buildBlockRoute } from "~/utils";
-import { Link } from "../../Link";
-import { CardBase, CardTitleBase } from "../Bases";
+import { Link } from "../../../Link";
+import { CardTitleBase } from "../../Bases";
+import { SurfaceCardBase } from "../SurfaceCardBase";
 
 type BlockCardProps = {
   block: Block;
@@ -20,13 +21,13 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
   const hasOneBlob = blobCount === 1;
 
   return (
-    <CardBase>
+    <SurfaceCardBase>
       <CardTitleBase>
         Block <Link href={buildBlockRoute(number)}>#{number}</Link>
       </CardTitleBase>
       <div className="pt-2 text-sm">
         <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-          {dayjs.unix(timestamp).fromNow()}
+          {dayjs(timestamp).fromNow()}
         </div>
         <div className="flex">
           <span>
@@ -38,7 +39,7 @@ export const BlockCard: React.FC<BlockCardProps> = function ({ block }) {
           </span>
         </div>
       </div>
-    </CardBase>
+    </SurfaceCardBase>
   );
 };
 
