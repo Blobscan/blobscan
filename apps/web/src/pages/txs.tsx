@@ -4,50 +4,38 @@ import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { getPaginationParams } from "~/utils/pagination";
-import {
-  BlobTransactionCard,
-  BlobTransactionCardSkeleton,
-} from "~/components/Cards/SurfaceCards/BlobTransactionCard";
-import {
-  PaginatedListLayout,
-  PaginatedListLayoutSkeleton,
-} from "~/components/Layouts/PaginatedListLayout";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 
 const Txs: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
-  const txsQuery = api.tx.getAll.useQuery({ p, ps });
+  const { error, data } = api.tx.getAll.useQuery({ p, ps });
 
-  if (txsQuery?.error) {
+  if (error) {
     return (
       <NextError
-        title={txsQuery.error.message}
-        statusCode={txsQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (txsQuery.status !== "success") {
-    return (
-      <PaginatedListLayoutSkeleton
-        header="Blob Transactions"
-        skeletonItem={<BlobTransactionCardSkeleton />}
-      />
-    );
-  }
-
-  const { transactions, totalTransactions } = txsQuery.data;
+  const { transactions, totalTransactions } = data || {};
 
   return (
     <PaginatedListLayout
-      header={`Blob Transactions (${totalTransactions})`}
-      items={transactions.map((t) => (
+      header={`Blob Transactions ${
+        totalTransactions ? `(${totalTransactions})` : ""
+      }`}
+      items={transactions?.map((t) => (
         <BlobTransactionCard key={t.hash} transaction={t} />
       ))}
       totalItems={totalTransactions}
       page={p}
       pageSize={ps}
+      itemSkeleton={<BlobTransactionCard />}
     />
   );
 };

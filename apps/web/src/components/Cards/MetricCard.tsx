@@ -1,7 +1,7 @@
 import { type FC } from "react";
 import { animated, useSpring } from "@react-spring/web";
 
-import { CardBase } from "../CardBase";
+import { Card } from "./Card";
 
 export type MetricCardProps = {
   name: string;
@@ -17,7 +17,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
   const props = useSpring({ value: Number(value), from: { value: 0 } });
 
   return (
-    <CardBase>
+    <Card>
       <div className="flex items-center gap-4 pl-4">
         <div className="flex flex-col gap-4">
           <div className="text-sm font-semibold">{name}</div>
@@ -46,6 +46,6 @@ export const MetricCard: FC<MetricCardProps> = function ({
           </div>
         </div>
       </div>
-    </CardBase>
+    </Card>
   );
 };

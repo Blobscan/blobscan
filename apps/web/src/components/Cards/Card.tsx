@@ -1,12 +1,12 @@
 import { type ReactNode } from "react";
 
-export type CardBaseProps = {
+export type CardProps = {
   header?: ReactNode;
   children: ReactNode;
   className?: string;
 };
 
-export const CardBase: React.FC<CardBaseProps> = function ({
+export const Card: React.FC<CardProps> = function ({
   children,
   header,
   className,
@@ -35,5 +35,3 @@ export const CardBase: React.FC<CardBaseProps> = function ({
     </div>
   );
 };
-
-export { CardBaseSkeleton as SectionCardSkeleton } from "./Skeleton";

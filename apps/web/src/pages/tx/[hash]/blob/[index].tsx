@@ -4,8 +4,12 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 import { utils } from "ethers";
 
+import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "react-loading-skeleton";
+
 import { api } from "~/utils/api";
-import { CardBase, SectionCardSkeleton } from "~/components/Cards/CardBase";
+import { Card } from "~/components/Cards/Card";
+import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -35,7 +39,11 @@ const Blob: NextPage = () => {
   const router = useRouter();
   const index = (router.query.index as string | undefined) ?? "0";
   const txHash = (router.query.hash as string | undefined) ?? "";
-  const blobQuery = api.blob.getByIndex.useQuery(
+  const {
+    data: blobData,
+    error,
+    isLoading,
+  } = api.blob.getByIndex.useQuery(
     {
       index: parseInt(index),
       txHash,
@@ -47,73 +55,71 @@ const Blob: NextPage = () => {
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
   const [formattedData, formattedDataErr] = useMemo(() => {
-    const blobData = blobQuery?.data?.data;
-    if (!blobData) {
+    const data = blobData?.data;
+    if (!data) {
       return [""];
     }
 
     try {
-      return [formatBlob(blobData, selectedBlobViewMode)];
+      return [formatBlob(data, selectedBlobViewMode)];
     } catch (err) {
       return [, "Couldn't format blob data"];
     }
-  }, [blobQuery?.data?.data, selectedBlobViewMode]);
+  }, [blobData?.data, selectedBlobViewMode]);
 
-  if (blobQuery.error) {
+  if (error) {
     return (
       <NextError
-        title={blobQuery.error.message}
-        statusCode={blobQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (blobQuery.status !== "success") {
-    return <SectionCardSkeleton header="Blob Details" />;
-  }
-
-  if (!blobQuery.data) {
+  if (!blobData) {
     return <>Blob not found</>;
   }
-
-  const { data: blob } = blobQuery;
 
   return (
     <>
       <DetailsLayout
         header="Blob Details"
-        fields={[
-          { name: "Index", value: blob.index },
-          { name: "Versioned Hash", value: blob.versionedHash },
-          {
-            name: "Block",
-            value: (
-              <Link href={buildBlockRoute(blob.blockNumber)}>
-                {blob.blockNumber}
-              </Link>
-            ),
-          },
-          {
-            name: "Transaction",
-            value: (
-              <Link href={buildTransactionRoute(blob.txHash)}>
-                {blob.txHash}
-              </Link>
-            ),
-          },
-          {
-            name: "Timestamp",
-            value: (
-              <div className="whitespace-break-spaces">
-                {formatTimestamp(blob.timestamp)}
-              </div>
-            ),
-          },
-          { name: "Commitment", value: blob.commitment },
-        ]}
+        fields={
+          blobData
+            ? [
+                { name: "Index", value: blobData.index },
+                { name: "Versioned Hash", value: blobData.versionedHash },
+                {
+                  name: "Block",
+                  value: (
+                    <Link href={buildBlockRoute(blobData.blockNumber)}>
+                      {blobData.blockNumber}
+                    </Link>
+                  ),
+                },
+                {
+                  name: "Transaction",
+                  value: (
+                    <Link href={buildTransactionRoute(blobData.txHash)}>
+                      {blobData.txHash}
+                    </Link>
+                  ),
+                },
+                {
+                  name: "Timestamp",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(blobData.timestamp)}
+                    </div>
+                  ),
+                },
+                { name: "Commitment", value: blobData.commitment },
+              ]
+            : undefined
+        }
       />
 
-      <CardBase
+      <Card
         header={
           <div className="flex items-center justify-between">
             Data
@@ -132,16 +138,22 @@ const Blob: NextPage = () => {
           </div>
         }
       >
-        <div className="break-words rounded-xl border border-border-light p-3 text-left leading-7  dark:border-border-dark">
-          {formattedDataErr ? (
-            <span className="text-error-400">
-              Couldn&rsquo;t format blob data.
-            </span>
+        <SurfaceCardBase truncateText={false}>
+          {isLoading ? (
+            <Skeleton count={10} />
           ) : (
-            <ExpandableContent>{formattedData}</ExpandableContent>
+            <div className="t break-words p-3 text-left text-sm leading-7">
+              {formattedDataErr ? (
+                <span className="text-error-400">
+                  Couldn&rsquo;t format blob data.
+                </span>
+              ) : (
+                <ExpandableContent>{formattedData}</ExpandableContent>
+              )}
+            </div>
           )}
-        </div>
-      </CardBase>
+        </SurfaceCardBase>
+      </Card>
     </>
   );
 };

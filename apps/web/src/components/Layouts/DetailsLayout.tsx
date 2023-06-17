@@ -2,8 +2,8 @@ import { type FC, type ReactNode } from "react";
 
 import { Header } from "~/components/Header";
 import { InfoGrid, type InfoGridProps } from "~/components/InfoGrid";
-import { CardBase } from "../../Cards/CardBase";
-import { Link } from "../../Link";
+import { Card } from "../Cards/Card";
+import { Link } from "../Link";
 
 type DetailsLayoutProps = {
   children?: ReactNode;
@@ -20,7 +20,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
   return (
     <>
       <Header>{header}</Header>
-      <CardBase
+      <Card
         header={
           <div className="flex flex-col justify-between gap-1 md:flex-row">
             <div className="truncate">Overview</div>
@@ -35,7 +35,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
         }
       >
         <InfoGrid fields={fields} />
-      </CardBase>
+      </Card>
     </>
   );
 };

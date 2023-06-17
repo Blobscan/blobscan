@@ -4,16 +4,10 @@ import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
 import { getPaginationParams } from "~/utils/pagination";
-import {
-  BlobTransactionCard,
-  BlobTransactionCardSkeleton,
-} from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout/";
-import {
-  PaginatedListLayout,
-  PaginatedListLayoutSkeleton,
-} from "~/components/Layouts/PaginatedListLayout";
+import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { buildAddressExternalUrl } from "~/utils";
 
 const Address: NextPage = () => {
@@ -21,16 +15,16 @@ const Address: NextPage = () => {
   const { p, ps } = getPaginationParams(router.query);
   const address = (router.query.address as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByAddress.useQuery(
+  const { data: addressData, error } = api.tx.getByAddress.useQuery(
     { address, p, ps },
     { enabled: router.isReady },
   );
 
-  if (txQuery.error) {
+  if (error) {
     return (
       <NextError
-        title={txQuery.error.message}
-        statusCode={txQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
@@ -54,22 +48,18 @@ const Address: NextPage = () => {
           },
         ]}
       />
-      {txQuery.status === "success" ? (
-        <PaginatedListLayout
-          subHeader={`Blob Transactions (${txQuery.data.totalTransactions})`}
-          items={txQuery.data.transactions.map((t) => (
-            <BlobTransactionCard key={t.hash} transaction={t} />
-          ))}
-          totalItems={txQuery.data.totalTransactions}
-          page={p}
-          pageSize={ps}
-        />
-      ) : (
-        <PaginatedListLayoutSkeleton
-          header="Blob Transactions"
-          skeletonItem={<BlobTransactionCardSkeleton />}
-        />
-      )}
+      <PaginatedListLayout
+        title={`Blob Transactions ${
+          addressData ? `(${addressData.totalTransactions})` : ""
+        }`}
+        items={addressData?.transactions.map((t) => (
+          <BlobTransactionCard key={t.hash} transaction={t} />
+        ))}
+        totalItems={addressData?.totalTransactions}
+        page={p}
+        pageSize={ps}
+        itemSkeleton={<BlobTransactionCard />}
+      />
     </>
   );
 };

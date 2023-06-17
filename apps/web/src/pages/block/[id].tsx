@@ -3,7 +3,7 @@ import NextError from "next/error";
 import { useRouter, type NextRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import { CardBase, SectionCardSkeleton } from "~/components/Cards/CardBase";
+import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -30,63 +30,72 @@ function performBlockQuery(router: NextRouter) {
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const blockQuery = performBlockQuery(router);
+  const { data: blockData, error, isLoading } = performBlockQuery(router);
 
-  if (blockQuery?.error) {
+  if (error) {
     return (
       <NextError
-        title={blockQuery.error.message}
-        statusCode={blockQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (blockQuery.status !== "success") {
-    return <SectionCardSkeleton header="Block Details" />;
-  }
-
-  if (!blockQuery.data) {
+  if (!isLoading && !blockData) {
     return <div>Block not found</div>;
   }
-
-  const block = blockQuery.data;
 
   return (
     <>
       <DetailsLayout
         header="Block Details"
-        externalLink={buildBlockExternalUrl(block.number)}
-        fields={[
-          { name: "Block Height", value: block.number },
-          { name: "Hash", value: block.hash },
-          {
-            name: "Timestamp",
-            value: (
-              <div className="whitespace-break-spaces">
-                {formatTimestamp(block.timestamp)}
-              </div>
-            ),
-          },
-          {
-            name: "Slot",
-            value: (
-              <Link href={buildSlotExternalUrl(block.slot)} isExternal>
-                {block.slot}
-              </Link>
-            ),
-          },
-        ]}
+        externalLink={
+          blockData ? buildBlockExternalUrl(blockData.number) : undefined
+        }
+        fields={
+          blockData
+            ? [
+                { name: "Block Height", value: blockData.number },
+                { name: "Hash", value: blockData.hash },
+                {
+                  name: "Timestamp",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(blockData.timestamp)}
+                    </div>
+                  ),
+                },
+                {
+                  name: "Slot",
+                  value: (
+                    <Link
+                      href={buildSlotExternalUrl(blockData.slot)}
+                      isExternal
+                    >
+                      {blockData.slot}
+                    </Link>
+                  ),
+                },
+              ]
+            : undefined
+        }
       />
 
-      <CardBase
-        header={<div>Blob Transactions ({block.transactions.length})</div>}
+      <Card
+        header={`Blob Transactions ${
+          blockData ? `(${blockData.transactions.length})` : ""
+        }`}
       >
         <div className="space-y-6">
-          {block.transactions.map((t) => (
-            <BlobTransactionCard key={t.hash} transaction={t} />
-          ))}
+          {isLoading || !blockData
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <BlobTransactionCard key={i} />
+              ))
+            : blockData.transactions.map((t) => (
+                <BlobTransactionCard key={t.hash} transaction={t} />
+              ))}
         </div>
-      </CardBase>
+      </Card>
     </>
   );
 };

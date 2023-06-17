@@ -3,7 +3,7 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 
 import { api } from "~/utils/api";
-import { CardBase, SectionCardSkeleton } from "~/components/Cards/CardBase";
+import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -18,72 +18,88 @@ const Tx: NextPage = () => {
   const router = useRouter();
   const hash = (router.query.hash as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByHash.useQuery(
-    { hash },
-    { enabled: router.isReady },
-  );
+  const {
+    data: txData,
+    error,
+    isLoading,
+  } = api.tx.getByHash.useQuery({ hash }, { enabled: router.isReady });
 
-  if (txQuery.error) {
+  if (error) {
     return (
       <NextError
-        title={txQuery.error.message}
-        statusCode={txQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (txQuery.status !== "success") {
-    return <SectionCardSkeleton header="Transaction Details" />;
+  if (!isLoading && !txData) {
+    return <div>Transaction not found</div>;
   }
 
-  const { data: tx } = txQuery;
-  const sortedBlobs = tx.blobs.sort((a, b) => a.index - b.index);
+  const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
 
   return (
     <>
       <DetailsLayout
         header="Transaction Details"
-        externalLink={buildTransactionExternalUrl(tx.hash)}
-        fields={[
-          { name: "Hash", value: tx.hash },
-          {
-            name: "Block",
-            value: (
-              <Link href={buildBlockRoute(tx.blockNumber)}>
-                {tx.blockNumber}
-              </Link>
-            ),
-          },
-          {
-            name: "Timestamp",
-            value: (
-              <div className="whitespace-break-spaces">
-                {formatTimestamp(tx.timestamp)}
-              </div>
-            ),
-          },
-          {
-            name: "From",
-            value: <Link href={buildAddressRoute(tx.from)}>{tx.from}</Link>,
-          },
-          ...(tx.to
+        externalLink={
+          txData ? buildTransactionExternalUrl(txData.hash) : undefined
+        }
+        fields={
+          txData
             ? [
+                { name: "Hash", value: txData.hash },
                 {
-                  name: "To",
-                  value: <Link href={buildAddressRoute(tx.to)}>{tx.to}</Link>,
+                  name: "Block",
+                  value: (
+                    <Link href={buildBlockRoute(txData.blockNumber)}>
+                      {txData.blockNumber}
+                    </Link>
+                  ),
                 },
+                {
+                  name: "Timestamp",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(txData.timestamp)}
+                    </div>
+                  ),
+                },
+                {
+                  name: "From",
+                  value: (
+                    <Link href={buildAddressRoute(txData.from)}>
+                      {txData.from}
+                    </Link>
+                  ),
+                },
+                ...(txData.to
+                  ? [
+                      {
+                        name: "To",
+                        value: (
+                          <Link href={buildAddressRoute(txData.to)}>
+                            {txData.to}
+                          </Link>
+                        ),
+                      },
+                    ]
+                  : []),
               ]
-            : []),
-        ]}
+            : undefined
+        }
       />
 
-      <CardBase header={<div>Blobs ({tx.blobs.length})</div>}>
+      <Card header={`Blobs ${txData ? `(${txData.blobs.length})` : ""}`}>
         <div className="space-y-6">
-          {sortedBlobs.map((b) => (
-            <BlobCard key={b.versionedHash} blob={b} txHash={tx.hash} />
-          ))}
+          {isLoading || !txData || !sortedBlobs
+            ? Array.from({ length: 2 }).map((_, i) => <BlobCard key={i} />)
+            : sortedBlobs.map((b) => (
+                <BlobCard key={b.versionedHash} blob={b} txHash={txData.hash} />
+              ))}
         </div>
-      </CardBase>
+      </Card>
     </>
   );
 };
