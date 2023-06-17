@@ -19,7 +19,6 @@ export const DesktopNav: React.FC = () => {
               label="Blockchain"
               icon={<Squares2X2Icon />}
               items={[
-                { label: "Blobs", href: "/blobs" },
                 { label: "Blocks", href: "/blocks" },
                 { label: "Transactions", href: "/txs" },
               ]}
