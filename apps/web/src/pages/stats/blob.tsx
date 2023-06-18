@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/utils/api";
-import { bytesToKilobytes, formatDailyBlobStats } from "~/utils/stats";
 import {
   DailyAvgBlobSizeChart,
   DailyBlobSizeChart,
@@ -10,6 +9,7 @@ import {
 } from "~/components/Charts/Blob/";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { Spinner } from "~/components/Spinners/Spinner";
+import { bytesToKilobytes, formatDailyBlobStats } from "~/utils";
 
 const BlobStats: NextPage = function () {
   const dailyStatsQuery = api.stats.blob.getDailyStats.useQuery({

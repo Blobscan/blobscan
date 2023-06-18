@@ -7,7 +7,7 @@ import dayjs from "~/utils/dayjs";
 import type { Block } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";
-import { CardTitleBase } from "../Bases";
+import { CardHeader } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlockCardProps = {
@@ -26,7 +26,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
 
   return (
     <SurfaceCardBase>
-      <CardTitleBase>
+      <CardHeader>
         {number ? (
           <>
             Block <Link href={buildBlockRoute(number)}>#{number}</Link>
@@ -34,7 +34,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
         ) : (
           <Skeleton width={130} />
         )}
-      </CardTitleBase>
+      </CardHeader>
       <div className="pt-2 text-sm">
         {timestamp ? (
           <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">

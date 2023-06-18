@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/utils/api";
-import { formatDailyBlockStats } from "~/utils/stats";
 import { DailyBlocksChart } from "~/components/Charts/Block";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { Spinner } from "~/components/Spinners/Spinner";
+import { formatDailyBlockStats } from "~/utils";
 
 const BlockStats: NextPage = function () {
   const dailyStatsQuery = api.stats.block.getDailyStats.useQuery({

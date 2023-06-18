@@ -27,8 +27,19 @@ export type FormattedDailyTransactionStats = {
   uniqueSenders: SingleDailyTransactionStats["totalUniqueSenders"][];
 };
 
-function getDateFromDateTime(date: Date): string {
-  return date.toISOString().split("T")[0] as string;
+function getDateFromDateTime(dateTime: Date): string {
+  return dateTime.toISOString().split("T")[0] as string;
+}
+
+export function formatDate(
+  date: string,
+  options: Partial<{ hideYear: boolean }>,
+) {
+  if (options.hideYear) {
+    return date.split("-").slice(1).join("-");
+  }
+
+  return date;
 }
 
 export function bytesToKilobytes(bytes: bigint | number): number {
@@ -37,6 +48,23 @@ export function bytesToKilobytes(bytes: bigint | number): number {
   } else {
     return Number(bytes / 1000);
   }
+}
+
+export function abbreviateNumber(value: number | string): string {
+  const suffixes = ["", "K", "M", "B", "T"];
+  let suffixNum = 0;
+  let value_ = Number(value);
+
+  while (value_ >= 1000) {
+    value_ /= 1000;
+    suffixNum++;
+  }
+
+  let formattedValue = value_.toPrecision(3);
+
+  formattedValue += suffixes[suffixNum];
+
+  return formattedValue;
 }
 
 export function formatDailyBlobStats(

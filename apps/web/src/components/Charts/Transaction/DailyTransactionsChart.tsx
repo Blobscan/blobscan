@@ -1,19 +1,24 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type FormattedDailyTransactionStats } from "~/utils/stats";
+import { type FormattedDailyTransactionStats } from "~/utils";
 import { ChartBase } from "../ChartBase";
 
 export type DailyTransactionsProps = {
   days: FormattedDailyTransactionStats["days"];
   transactions: FormattedDailyTransactionStats["transactions"];
+  seriesType?: EChartOption.Series["type"];
+  compact?: boolean;
 };
 
 export const DailyTransactionsChart: FC<DailyTransactionsProps> = function ({
   days,
   transactions,
+  compact = false,
 }) {
-  const options: EChartOption<EChartOption.SeriesBar> = {
+  const options: EChartOption<
+    EChartOption.SeriesBar | EChartOption.SeriesLine
+  > = {
     xAxis: {
       type: "category",
       data: days,
@@ -26,11 +31,11 @@ export const DailyTransactionsChart: FC<DailyTransactionsProps> = function ({
       {
         name: "Transactions",
         data: transactions,
-        type: "bar",
+        type: compact ? "line" : "bar",
+        smooth: true,
       },
     ],
-    animationEasing: "cubicOut",
   };
 
-  return <ChartBase options={options} />;
+  return <ChartBase options={options} compact={compact} />;
 };

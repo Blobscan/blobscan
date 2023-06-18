@@ -1,7 +1,7 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type FormattedDailyBlockStats } from "~/utils/stats";
+import { type FormattedDailyBlockStats } from "~/utils";
 import { ChartBase } from "../ChartBase";
 
 export type DailyBlocksChartProps = {

@@ -2,13 +2,13 @@ import { useMemo } from "react";
 import { type NextPage } from "next";
 
 import { api } from "~/utils/api";
-import { formatDailyTransactionStats } from "~/utils/stats";
 import {
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
 } from "~/components/Charts/Transaction";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { Spinner } from "~/components/Spinners/Spinner";
+import { formatDailyTransactionStats } from "~/utils";
 
 const TransactionStats: NextPage = function () {
   const dailyStatsQuery = api.stats.transaction.getDailyStats.useQuery({

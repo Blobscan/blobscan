@@ -5,7 +5,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 import { useHover } from "~/hooks/useHover";
 
-type MenuNavItemProps = {
+type NavMenuItemProps = {
   label: string;
   icon?: ReactNode;
   items: { label: string; href: string; icon?: ReactNode }[];
@@ -38,7 +38,7 @@ const MenuItem: FC<NavItemProps> = function ({
   );
 };
 
-export const MenuNavItem: FC<MenuNavItemProps> = function ({
+export const NavMenuItem: FC<NavMenuItemProps> = function ({
   label,
   items,
   icon,

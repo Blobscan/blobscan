@@ -6,6 +6,7 @@ import { t } from "../client";
 export const TIME_FRAME_ENUM = z.enum([
   "1d",
   "7d",
+  "15d",
   "30d",
   "180d",
   "360d",
@@ -25,6 +26,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
   switch (timeFrame) {
     case "1d":
     case "7d":
+    case "15d":
     case "30d":
     case "360d":
     default: {

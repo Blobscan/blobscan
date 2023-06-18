@@ -19,19 +19,15 @@ export const StatsLayout: FC<StatsSectionsProps> = function ({
   return (
     <>
       <Header>{header}</Header>
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {metrics.map((metric, i) => (
           <MetricCard key={i} {...metric} />
         ))}
       </div>
-      <div
-        className={`grid grid-cols-1 gap-6 ${
-          charts.length === 1 ? "sm:grid-cols-1" : "sm:grid-cols-2"
-        } [&>div]:w-full`}
-      >
+      <div className={`grid grid-cols-1 gap-6 lg:grid-cols-2 [&>div]:w-full`}>
         {charts.map(({ chart, name }, i) => (
           <ChartCard key={i} title={name}>
-            {chart}
+            <div className="h-48 md:h-64 lg:h-80">{chart}</div>
           </ChartCard>
         ))}
       </div>

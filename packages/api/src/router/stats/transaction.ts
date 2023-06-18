@@ -72,6 +72,13 @@ export const transactionStatsRouter = createTRPCRouter({
         summary: "Get transaction time series stats",
       },
     })
+    .input(
+      z.object({
+        totalTransactions: z.boolean().optional(),
+        totalUniqueSenders: z.boolean().optional(),
+        totalUniqueReceivers: z.boolean().optional(),
+      }),
+    )
     .output(
       z.array(
         z.object({

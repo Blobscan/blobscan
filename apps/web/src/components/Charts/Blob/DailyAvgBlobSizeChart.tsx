@@ -1,7 +1,7 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type FormattedDailyBlobStats } from "~/utils/stats";
+import { type FormattedDailyBlobStats } from "~/utils";
 import { ChartBase } from "../ChartBase";
 
 type DailyAvgBlobSizeProps = {

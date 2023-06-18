@@ -1,26 +1,20 @@
 import { type FC, type ReactNode } from "react";
 
-import { CardTitleBase } from "./Bases";
-import { Card } from "./Card";
+import { Card, CardHeader } from "./Card";
 
 type ChardCardProps = {
   title: ReactNode;
   children: React.ReactNode;
-  className?: string;
 };
 
-export const ChartCard: FC<ChardCardProps> = function ({
-  children,
-  title,
-  className = "",
-}) {
+export const ChartCard: FC<ChardCardProps> = function ({ children, title }) {
   return (
-    <Card className={className}>
-      <div className="flex flex-col gap-7">
+    <Card compact>
+      <div className="flex h-full flex-col gap-2">
         {children}
-        <CardTitleBase type="footer">
+        <CardHeader inverse compact>
           <div className="flex justify-center text-sm">{title}</div>
-        </CardTitleBase>
+        </CardHeader>
       </div>
     </Card>
   );
