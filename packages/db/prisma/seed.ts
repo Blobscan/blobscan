@@ -168,18 +168,22 @@ async function main() {
       .flat();
   });
 
-  const blocksResult = await prisma.block.createMany({
-    data: blocks,
-    skipDuplicates: true,
-  });
+  const txs = blocksTxs.flat();
+  const blobs = txsBlobs.flat();
 
-  const txsResult = await prisma.transaction.createMany({
-    data: blocksTxs.flat(),
-  });
-
-  const blobsResult = await prisma.blob.createMany({
-    data: txsBlobs.flat(),
-  });
+  const [blocksResult, txsResult, blobsResult] = await Promise.all([
+    // Insert data
+    prisma.block.createMany({
+      data: blocks,
+      skipDuplicates: true,
+    }),
+    prisma.transaction.createMany({
+      data: txs,
+    }),
+    prisma.blob.createMany({
+      data: blobs,
+    }),
+  ]);
 
   console.log(
     "========================================================================",
