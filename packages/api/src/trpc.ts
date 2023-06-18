@@ -1,4 +1,4 @@
-import { t } from "./client";
+import { t } from "./clients/trpc";
 import { isJWTAuthed } from "./middlewares/isJWTAuthed";
 import {
   PAGINATION_SCHEMA,

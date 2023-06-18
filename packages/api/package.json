@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@blobscan/db": "0.0.1",
+    "@ethersphere/bee-js": "^6.0.0",
+    "@google-cloud/storage": "^6.10.1",
     "@trpc/server": "^10.23.0",
     "dayjs": "^1.11.7",
     "jsonwebtoken": "^9.0.0",

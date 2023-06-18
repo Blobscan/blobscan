@@ -1,8 +1,36 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { BUCKET_NAME } from "../env";
 import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+import { buildGoogleStorageUri } from "../utils/storages";
 
 const INDEXER_PATH = "/indexer";
+const INDEX_REQUEST_DATA = z.object({
+  block: z.object({
+    number: z.coerce.number(),
+    hash: z.string(),
+    timestamp: z.coerce.number(),
+    slot: z.coerce.number(),
+  }),
+  transactions: z.array(
+    z.object({
+      hash: z.string(),
+      from: z.string(),
+      to: z.string().optional(),
+      blockNumber: z.coerce.number(),
+    }),
+  ),
+  blobs: z.array(
+    z.object({
+      versionedHash: z.string(),
+      commitment: z.string(),
+      data: z.string(),
+      txHash: z.string(),
+      index: z.coerce.number(),
+    }),
+  ),
+});
 
 export const indexerRouter = createTRPCRouter({
   getSlot: publicProcedure
@@ -59,36 +87,18 @@ export const indexerRouter = createTRPCRouter({
         protect: true,
       },
     })
-    .input(
-      z.object({
-        block: z.object({
-          number: z.coerce.number(),
-          hash: z.string(),
-          timestamp: z.coerce.number(),
-          slot: z.coerce.number(),
-        }),
-        transactions: z.array(
-          z.object({
-            hash: z.string(),
-            from: z.string(),
-            to: z.string().optional(),
-            blockNumber: z.coerce.number(),
-          }),
-        ),
-        blobs: z.array(
-          z.object({
-            versionedHash: z.string(),
-            commitment: z.string(),
-            data: z.string(),
-            txHash: z.string(),
-            index: z.coerce.number(),
-          }),
-        ),
-      }),
-    )
+    .input(INDEX_REQUEST_DATA)
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const timestamp = new Date(input.block.timestamp * 1000);
+      // Check we have enough swarm postages
+      const batches = await ctx.swarm.beeDebug.getAllPostageBatch();
+      if (batches.length === 0 || batches[0]?.batchID === undefined) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Not available Swarm postages`,
+        });
+      }
 
       const blockData = {
         number: input.block.number,
@@ -121,7 +131,6 @@ export const indexerRouter = createTRPCRouter({
         data: input.blobs.map((blob) => ({
           versionedHash: blob.versionedHash,
           commitment: blob.commitment,
-          data: blob.data,
           txHash: blob.txHash,
           index: blob.index,
           timestamp,
@@ -129,9 +138,58 @@ export const indexerRouter = createTRPCRouter({
         skipDuplicates: true,
       });
 
+      // Check if we already have the blob data in the database
+      const existingBlobDataHashes = await ctx.prisma.blobData
+        .findMany({
+          select: { versionedHash: true },
+          where: {
+            id: { in: input.blobs.map((blob) => blob.versionedHash) },
+          },
+        })
+        .then((blobDatas) => blobDatas.map((b) => b.versionedHash));
+      const newBlobs = input.blobs.filter(
+        (b) => !existingBlobDataHashes.includes(b.versionedHash),
+      );
+
+      const batchId = batches[0].batchID;
+      const uploadBlobsDataPromise = newBlobs.map(async (b) => {
+        const uploadBlobsToGoogleStoragePromise = ctx.storage
+          .bucket(BUCKET_NAME)
+          .file(buildGoogleStorageUri(b.versionedHash))
+          .save(b.data);
+
+        const uploadBlobsToSwarmPromise = ctx.swarm.bee.uploadFile(
+          batchId,
+          b.data,
+          buildGoogleStorageUri(b.versionedHash),
+          {
+            pin: true,
+            contentType: "text/plain",
+          },
+        );
+
+        const [, swarmUploadData] = await Promise.all([
+          uploadBlobsToGoogleStoragePromise,
+          uploadBlobsToSwarmPromise,
+        ]);
+
+        return {
+          id: b.versionedHash,
+          versionedHash: b.versionedHash,
+          gsUri: buildGoogleStorageUri(b.versionedHash),
+          swarmHash: swarmUploadData.reference.toString(),
+        };
+      });
+      const blobDatas = await Promise.all(uploadBlobsDataPromise);
+
+      const createBlobDatas = ctx.prisma.blobData.createMany({
+        data: blobDatas,
+      });
+
       await ctx.prisma.$transaction([
         createBlock,
         createTransactions,
+        createBlobDatas,
         createBlobs,
       ]);
     }),

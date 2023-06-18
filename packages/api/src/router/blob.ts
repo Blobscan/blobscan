@@ -1,28 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { Prisma } from "@blobscan/db";
-
+import { blobSelect } from "../queries/blob";
 import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
-
-export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
-  id: false,
-  versionedHash: true,
-  index: true,
-  commitment: true,
-  data: true,
-  txHash: true,
-  transaction: {
-    select: {
-      block: {
-        select: {
-          number: true,
-          timestamp: true,
-        },
-      },
-    },
-  },
-});
 
 export const blobRouter = createTRPCRouter({
   getAll: paginatedProcedure.query(async ({ ctx }) => {

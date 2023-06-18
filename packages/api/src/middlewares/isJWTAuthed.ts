@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { t } from "../client";
+import { t } from "../clients/trpc";
 
 export const isJWTAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.apiClient) {

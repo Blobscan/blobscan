@@ -15,23 +15,31 @@ model IndexerMetadata {
   lastSlot    Int         @unique
 }
 
+model BlobData {
+  id             String      @id
+  versionedHash  String      @unique
+  gsUri          String      @unique
+  swarmHash      String      @unique
+  blobs          Blob[]
+}
+
 model Blob {
-  id          Int         @id @default(autoincrement())
-  versionedHash String    
-  commitment  String
-  data        String      @db.Text
-  txHash      String
-  index       Int
+  id            Int         @id @default(autoincrement())
+  versionedHash String
+  commitment    String
+  data          BlobData    @relation(fields: [versionedHash], references: [versionedHash])
+  txHash        String
+  index         Int
   timestamp   DateTime
   size        Int
-  transaction Transaction @relation(fields: [txHash], references: [hash])
-  
+  transaction   Transaction @relation(fields: [txHash], references: [hash])
+
   @@unique([txHash, index])
 }
 
 model Block {
   id          Int           @id
-  hash        String        @unique 
+  hash        String        @unique
   number      Int           @unique
   timestamp   DateTime      @unique
   slot        Int           @unique
@@ -39,10 +47,10 @@ model Block {
 }
 
 model Transaction {
-  id        String          @id
-  hash      String          @unique
-  from      String
-  to        String?
+  id          String    @id
+  hash        String    @unique
+  from        String
+  to          String?
   blockNumber Int
   timestamp DateTime
   blobs      Blob[]
