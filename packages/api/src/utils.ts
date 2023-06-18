@@ -54,9 +54,5 @@ export function buildGoogleStorageUri(hash: string): string {
   return `${CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(4, 6)}/${hash.slice(
     6,
     8,
-  )}/${hash.slice(2)}.blob`;
-}
-
-export function notUndefined<T>(x: T | undefined): x is T {
-  return x !== undefined;
+  )}/${hash.slice(2)}.txt`;
 }

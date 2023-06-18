@@ -92,7 +92,7 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Check we have enough swarm postages
       const batches = await ctx.swarm.beeDebug.getAllPostageBatch();
-      if (batches.length === 0 || batches[1]?.batchID === undefined) {
+      if (batches.length === 0 || batches[0]?.batchID === undefined) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: `Not available Swarm postages`,
@@ -148,18 +148,20 @@ export const indexerRouter = createTRPCRouter({
         (b) => !existingBlobDataHashes.includes(b.versionedHash),
       );
 
-      const batchId = batches[1].batchID;
+      const batchId = batches[0].batchID;
       const uploadBlobsDataPromise = newBlobs.map(async (b) => {
         const uploadBlobsToGoogleStoragePromise = ctx.storage
           .bucket(BUCKET_NAME)
           .file(buildGoogleStorageUri(b.versionedHash))
           .save(b.data);
 
-        const uploadBlobsToSwarmPromise = ctx.swarm.bee.uploadData(
+        const uploadBlobsToSwarmPromise = ctx.swarm.bee.uploadFile(
           batchId,
           b.data,
+          buildGoogleStorageUri(b.versionedHash),
           {
             pin: true,
+            contentType: "text/plain",
           },
         );
 
@@ -176,8 +178,6 @@ export const indexerRouter = createTRPCRouter({
         };
       });
       const blobDatas = await Promise.all(uploadBlobsDataPromise);
-
-      console.log(blobDatas);
 
       const createBlobDatas = ctx.prisma.blobData.createMany({
         data: blobDatas,
