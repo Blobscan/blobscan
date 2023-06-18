@@ -15,7 +15,7 @@ import { animated, useSpring } from "@react-spring/web";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import dayjs from "~/utils/dayjs";
+import dayjs from "~/dayjs";
 import { type Block } from "~/types";
 import {
   buildAddressRoute,

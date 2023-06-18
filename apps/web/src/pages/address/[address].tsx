@@ -2,12 +2,12 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
 import { getPaginationParams } from "~/utils/pagination";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
-import { DetailsLayout } from "~/components/Layouts/DetailsLayout/";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { api } from "~/api-client";
 import { buildAddressExternalUrl } from "~/utils";
 
 const Address: NextPage = () => {

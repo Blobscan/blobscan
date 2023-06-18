@@ -1,53 +1,59 @@
 import { useMemo } from "react";
 import { type NextPage } from "next";
+import NextError from "next/error";
 
-import { api } from "~/utils/api";
 import {
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
 } from "~/components/Charts/Transaction";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
-import { Spinner } from "~/components/Spinners/Spinner";
+import { api } from "~/api-client";
 import { formatDailyTransactionStats } from "~/utils";
 
 const TransactionStats: NextPage = function () {
-  const dailyStatsQuery = api.stats.transaction.getDailyStats.useQuery({
-    timeFrame: "30d",
-  });
-  const overallStatsQuery = api.stats.transaction.getOverallStats.useQuery();
-
+  const { data: dailyStatsData, error: dailyStatsError } =
+    api.stats.transaction.getDailyStats.useQuery({
+      timeFrame: "30d",
+    });
+  const { data: overallStats, error: overallStatsError } =
+    api.stats.transaction.getOverallStats.useQuery();
   const { days, transactions, uniqueReceivers, uniqueSenders } = useMemo(
-    () => formatDailyTransactionStats(dailyStatsQuery.data ?? []),
-    [dailyStatsQuery.data],
+    () => formatDailyTransactionStats(dailyStatsData ?? []),
+    [dailyStatsData],
   );
+  const error = dailyStatsError || overallStatsError;
 
-  if (
-    dailyStatsQuery.status !== "success" ||
-    overallStatsQuery.status !== "success"
-  ) {
-    return <Spinner />;
+  if (error) {
+    return (
+      <NextError
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
+      />
+    );
   }
-
-  const overallStats = overallStatsQuery.data;
 
   return (
     <>
       <StatsLayout
         header="Transaction Stats"
-        metrics={[
-          {
-            name: "Total Transactions",
-            value: overallStats?.totalTransactions,
-          },
-          {
-            name: "Total Unique Receivers",
-            value: overallStats?.totalUniqueReceivers,
-          },
-          {
-            name: "Total Unique Senders",
-            value: overallStats?.totalUniqueSenders,
-          },
-        ]}
+        metrics={
+          overallStats
+            ? [
+                {
+                  name: "Total Transactions",
+                  value: overallStats.totalTransactions,
+                },
+                {
+                  name: "Total Unique Receivers",
+                  value: overallStats.totalUniqueReceivers,
+                },
+                {
+                  name: "Total Unique Senders",
+                  value: overallStats.totalUniqueSenders,
+                },
+              ]
+            : undefined
+        }
         charts={[
           {
             name: "Daily Transactions",

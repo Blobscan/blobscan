@@ -1,43 +1,48 @@
 import { useMemo } from "react";
 import { type NextPage } from "next";
+import NextError from "next/error";
 
-import { api } from "~/utils/api";
 import { DailyBlocksChart } from "~/components/Charts/Block";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
-import { Spinner } from "~/components/Spinners/Spinner";
+import { api } from "~/api-client";
 import { formatDailyBlockStats } from "~/utils";
 
 const BlockStats: NextPage = function () {
-  const dailyStatsQuery = api.stats.block.getDailyStats.useQuery({
-    timeFrame: "30d",
-  });
-  const overallStatsQuery = api.stats.block.getOverallStats.useQuery();
-
-  const dailyData = dailyStatsQuery.data;
+  const { data: dailyStatsData, error: dailyStatsError } =
+    api.stats.block.getDailyStats.useQuery({
+      timeFrame: "30d",
+    });
+  const { data: overallStats, error: overallStatsError } =
+    api.stats.block.getOverallStats.useQuery();
   const { days, blocks } = useMemo(
-    () => formatDailyBlockStats(dailyData ?? []),
-    [dailyData],
+    () => formatDailyBlockStats(dailyStatsData ?? []),
+    [dailyStatsData],
   );
+  const error = dailyStatsError || overallStatsError;
 
-  if (
-    dailyStatsQuery.status !== "success" ||
-    overallStatsQuery.status !== "success"
-  ) {
-    return <Spinner />;
+  if (error) {
+    return (
+      <NextError
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
+      />
+    );
   }
-
-  const overallStats = overallStatsQuery.data;
 
   return (
     <>
       <StatsLayout
         header="Block Stats"
-        metrics={[
-          {
-            name: "Total Blocks",
-            value: overallStats?.totalBlocks,
-          },
-        ]}
+        metrics={
+          overallStats
+            ? [
+                {
+                  name: "Total Blocks",
+                  value: overallStats.totalBlocks,
+                },
+              ]
+            : undefined
+        }
         charts={[
           {
             name: "Daily Blocks",

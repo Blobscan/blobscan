@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
@@ -14,6 +13,7 @@ import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
+import { api } from "~/api-client";
 import { bytesToKilobytes, formatDailyTransactionStats } from "~/utils";
 
 const TOTAL_BLOCKS = 4;
@@ -44,7 +44,10 @@ const Home: NextPage = () => {
       timeFrame: "15d",
     });
   const dailyTxStats = useMemo(
-    () => formatDailyTransactionStats(dailyTxStatsData ?? []),
+    () =>
+      dailyTxStatsData
+        ? formatDailyTransactionStats(dailyTxStatsData)
+        : undefined,
     [dailyTxStatsData],
   );
 
@@ -130,17 +133,15 @@ const Home: NextPage = () => {
           </div>
 
           <div className="col-span-2 sm:col-span-6">
-            {dailyTxStats && (
-              <ChartCard title="Daily Transactions">
-                <div className="h-48 md:h-60 lg:h-48">
-                  <DailyTransactionsChart
-                    days={dailyTxStats.days}
-                    transactions={dailyTxStats.transactions}
-                    compact
-                  />
-                </div>
-              </ChartCard>
-            )}
+            <ChartCard title="Daily Transactions" size="sm">
+              {dailyTxStats && (
+                <DailyTransactionsChart
+                  days={dailyTxStats.days}
+                  transactions={dailyTxStats.transactions}
+                  compact
+                />
+              )}
+            </ChartCard>
           </div>
         </div>
         <Card

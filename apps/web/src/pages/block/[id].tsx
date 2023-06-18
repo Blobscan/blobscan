@@ -2,11 +2,11 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter, type NextRouter } from "next/router";
 
-import { api } from "~/utils/api";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { api } from "~/api-client";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,

@@ -9,8 +9,8 @@ import "@fontsource/public-sans/500.css";
 import Head from "next/head";
 import { SkeletonTheme } from "react-loading-skeleton";
 
-import { api } from "~/utils/api";
 import AppLayout from "~/components/AppLayout/AppLayout";
+import { api } from "~/api-client";
 import { useIsMounted } from "~/hooks/useIsMounted";
 
 function App({ Component, pageProps }: NextAppProps) {

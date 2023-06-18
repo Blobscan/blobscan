@@ -7,8 +7,8 @@ import { MetricCard, type MetricCardProps } from "../Cards/MetricCard";
 
 export type StatsSectionsProps = {
   header: CardProps["header"];
-  charts: { chart: ReactNode; name: ReactNode }[];
-  metrics: MetricCardProps[];
+  charts?: { chart: ReactNode; name: ReactNode }[];
+  metrics?: MetricCardProps[];
 };
 
 export const StatsLayout: FC<StatsSectionsProps> = function ({
@@ -20,16 +20,24 @@ export const StatsLayout: FC<StatsSectionsProps> = function ({
     <>
       <Header>{header}</Header>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {metrics.map((metric, i) => (
-          <MetricCard key={i} {...metric} />
-        ))}
+        {metrics ? (
+          metrics.map((metric, i) => <MetricCard key={i} {...metric} />)
+        ) : (
+          <>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <MetricCard key={i} />
+            ))}
+          </>
+        )}
       </div>
       <div className={`grid grid-cols-1 gap-6 lg:grid-cols-2 [&>div]:w-full`}>
-        {charts.map(({ chart, name }, i) => (
-          <ChartCard key={i} title={name}>
-            <div className="h-48 md:h-64 lg:h-80">{chart}</div>
-          </ChartCard>
-        ))}
+        {charts
+          ? charts.map(({ chart, name }, i) => (
+              <ChartCard key={i} title={name}>
+                {chart}
+              </ChartCard>
+            ))
+          : Array.from({ length: 2 }).map((_, i) => <ChartCard key={i} />)}
       </div>
     </>
   );

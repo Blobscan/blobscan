@@ -7,13 +7,13 @@ import { utils } from "ethers";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { api } from "~/utils/api";
 import { Card } from "~/components/Cards/Card";
 import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { api } from "~/api-client";
 import {
   buildBlockRoute,
   buildTransactionRoute,

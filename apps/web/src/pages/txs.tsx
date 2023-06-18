@@ -2,10 +2,10 @@ import { type NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
 import { getPaginationParams } from "~/utils/pagination";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { api } from "~/api-client";
 
 const Txs: NextPage = function () {
   const router = useRouter();

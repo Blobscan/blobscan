@@ -93,10 +93,8 @@ export const blobStatsRouter = createTRPCRouter({
         }),
       ),
     )
-    .query(({ ctx }) => {
-      const timeFrame = ctx.timeFrame;
-
-      return ctx.prisma.blobDailyStats.findMany({
+    .query(({ ctx: { prisma, timeFrame } }) =>
+      prisma.blobDailyStats.findMany({
         select: {
           day: true,
           totalBlobs: true,
@@ -111,8 +109,8 @@ export const blobStatsRouter = createTRPCRouter({
           },
         },
         orderBy: { day: "asc" },
-      });
-    }),
+      }),
+    ),
   updateDailyStats: dateProcedure.mutation(
     async ({ ctx: { prisma, datePeriod } }) => {
       const [dailyBlobStats] = await queryDailyBlobStats(prisma, datePeriod);

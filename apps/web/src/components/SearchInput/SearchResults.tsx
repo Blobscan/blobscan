@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CpuChipIcon, CubeIcon } from "@heroicons/react/24/solid";
 
-import { type RouterOutputs } from "~/utils/api";
+import { type RouterOutputs } from "~/api-client";
 import { capitalize } from "~/utils";
 import { Card } from "../Cards/Card";
 
