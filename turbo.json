@@ -2,11 +2,11 @@
   "$schema": "https://turborepo.org/schema.json",
   "globalDependencies": ["**/.env"],
   "pipeline": {
-    "db:generate": {
+    "generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
-    "db:push": {
+    "push": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
