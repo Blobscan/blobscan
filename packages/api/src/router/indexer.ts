@@ -11,7 +11,7 @@ export const indexerRouter = createTRPCRouter({
         method: "GET",
         path: `${INDEXER_PATH}/slot`,
         tags: ["indexer"],
-        summary: "Get the indexer's latest indexed slot",
+        summary: "Get the latest processed slot from the database",
       },
     })
     .input(z.void())
@@ -29,7 +29,7 @@ export const indexerRouter = createTRPCRouter({
         method: "PUT",
         path: `${INDEXER_PATH}/slot`,
         tags: ["indexer"],
-        summary: "Update the indexer's latest indexed slot",
+        summary: "Update the latest processed slot in the database",
         protect: true,
       },
     })
