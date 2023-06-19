@@ -204,32 +204,32 @@ async function main() {
   console.log(`Transactions inserted: ${txsResult.count}`);
   console.log(`Blobs inserted: ${blobsResult.count}`);
 
-  // console.log(
-  //   "========================================================================",
-  // );
-  // await statsAggregator.executeAllOverallStatsQueries();
-  // console.log("Overall stats created.");
+  console.log(
+    "========================================================================",
+  );
+  await statsAggregator.executeAllOverallStatsQueries();
+  console.log("Overall stats created.");
 
-  // console.log(
-  //   "========================================================================",
-  // );
+  console.log(
+    "========================================================================",
+  );
 
-  // const [dailyBlobStats, dailyBlockStats, dailyTransactionStats] =
-  //   await statsAggregator.getAllDailyAggregates();
+  const [dailyBlobStats, dailyBlockStats, dailyTransactionStats] =
+    await statsAggregator.getAllDailyAggregates();
 
-  // console.log("Daily stats created");
+  console.log("Daily stats created");
 
-  // await Promise.all([
-  //   prisma.blobDailyStats.createMany({
-  //     data: dailyBlobStats,
-  //   }),
-  //   prisma.blockDailyStats.createMany({
-  //     data: dailyBlockStats,
-  //   }),
-  //   prisma.transactionDailyStats.createMany({
-  //     data: dailyTransactionStats,
-  //   }),
-  // ]);
+  await Promise.all([
+    prisma.blobDailyStats.createMany({
+      data: dailyBlobStats,
+    }),
+    prisma.blockDailyStats.createMany({
+      data: dailyBlockStats,
+    }),
+    prisma.transactionDailyStats.createMany({
+      data: dailyTransactionStats,
+    }),
+  ]);
 }
 
 main()
