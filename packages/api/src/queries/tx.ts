@@ -18,10 +18,16 @@ export const fullTransactionSelect =
     },
     blobs: {
       select: {
-        id: false,
-        versionedHash: true,
-        commitment: true,
+        blobHash: true,
         index: true,
+        blob: {
+          select: {
+            commitment: true,
+            gsUri: true,
+            swarmHash: true,
+            size: true,
+          },
+        },
       },
     },
   });

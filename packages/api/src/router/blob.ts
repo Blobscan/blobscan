@@ -2,14 +2,14 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { BUCKET_NAME } from "../env";
-import { blobSelect } from "../queries/blob";
+import { blobSelect, blobsOnTransactionsSelect } from "../queries/blob";
 import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
 
 export const blobRouter = createTRPCRouter({
   getAll: paginatedProcedure.query(async ({ ctx }) => {
     const [blobs, totalBlobs] = await Promise.all([
       ctx.prisma.blob.findMany({
-        select: { ...blobSelect, data: false },
+        select: { ...blobSelect },
         ...ctx.pagination,
       }),
       ctx.prisma.blob.count(),
@@ -29,33 +29,35 @@ export const blobRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { txHash, index } = input;
-      const blob = await ctx.prisma.blob.findUnique({
-        select: blobSelect,
-        where: { txHash_index: { txHash, index } },
-      });
+      const blobOnTransaction = await ctx.prisma.blobsOnTransactions.findUnique(
+        {
+          select: blobsOnTransactionsSelect,
+          where: { txHash_index: { txHash, index } },
+        },
+      );
 
-      if (!blob) {
+      if (!blobOnTransaction) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `No blob with tx hash ${txHash} and index ${index}`,
         });
       }
 
-      const block = blob.transaction.block;
+      const { blob, blobHash, transaction } = blobOnTransaction;
 
       const blobData = await ctx.storage
         .bucket(BUCKET_NAME)
-        .file(blob.data.gsUri)
+        .file(blob.gsUri)
         .download();
 
       return {
-        versionedHash: blob.versionedHash,
-        index: blob.index,
+        versionedHash: blobHash,
+        txHash,
+        index,
+        blockNumber: transaction.blockNumber,
+        timestamp: transaction.timestamp,
         commitment: blob.commitment,
         data: blobData.toString(),
-        txHash: blob.txHash,
-        blockNumber: block.number,
-        timestamp: block.timestamp,
       };
     }),
 });

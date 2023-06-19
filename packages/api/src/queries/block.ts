@@ -17,7 +17,7 @@ export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
       to: true,
       blobs: {
         select: {
-          versionedHash: true,
+          blobHash: true,
           index: true,
         },
       },
