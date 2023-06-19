@@ -14,7 +14,7 @@ type BlobCardProps = Partial<{
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blob: { index, versionedHash, commitment } = {},
+  blob: { index, blobHash: versionedHash, blob } = {},
   txHash,
 }) => {
   const isIndexDefined = index !== undefined;
@@ -45,10 +45,10 @@ const BlobCard: FC<BlobCardProps> = ({
         </div>
         <div>
           <div className="gap-1 font-semibold">
-            {commitment ? "Commitment" : <Skeleton width={90} />}
+            {blob?.commitment ? "Commitment" : <Skeleton width={90} />}
           </div>
           <div className="truncate">
-            {commitment ?? <Skeleton width={700} />}
+            {blob?.commitment ?? <Skeleton width={700} />}
           </div>
         </div>
       </div>

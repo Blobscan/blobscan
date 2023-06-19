@@ -53,10 +53,12 @@ export const searchRouter = createTRPCRouter({
       }
 
       if (isCommitment(term)) {
-        const blobs = await ctx.prisma.blob.findMany({
+        const blobs = await ctx.prisma.blobsOnTransactions.findMany({
           select: { index: true, txHash: true },
           where: {
-            commitment: term,
+            blob: {
+              commitment: term,
+            },
           },
         });
 

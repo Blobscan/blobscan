@@ -166,7 +166,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       Blob {b.index}
                     </Link>
                   </div>
-                  <div className=" truncate text-xs">{b.versionedHash}</div>
+                  <div className=" truncate text-xs">{b.blobHash}</div>
                 </React.Fragment>
               ))}
             </div>
