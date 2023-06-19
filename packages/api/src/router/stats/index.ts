@@ -4,7 +4,7 @@ import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { STATS_PATH } from "../../utils/stats";
 import { blobStatsRouter } from "./blob";
 import { blockStatsRouter } from "./block";
-import { transactionStatsRouter } from "./transaction";
+import { transactionStatsRouter } from "./tx";
 
 export const statsRouter = createTRPCRouter({
   blob: blobStatsRouter,

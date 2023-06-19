@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
 import { z } from "zod";
 
+import { normalizeDate, type DatePeriod } from "@blobscan/db";
+
 import { t } from "../clients/trpc";
-import { normalizeDate, type DatePeriod } from "../utils/dates";
 
 export const DATE_PERIOD_SCHEMA = z
   .object({

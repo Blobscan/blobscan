@@ -3,14 +3,10 @@ import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
 import { sha256 } from "js-sha256";
 
-import {
-  backfillDailyStatsPromise,
-  queryDailyBlobStats,
-  queryDailyBlockStats,
-  queryDailyTransactionStats,
-} from "./stats";
+import { StatsAggregator } from "../StatsAggregator";
 
 const prisma = new PrismaClient();
+const statsAggregator = new StatsAggregator(prisma);
 
 const TOTAL_DAYS = 30;
 const MIN_BLOCKS_PER_DAY = 100;
@@ -208,35 +204,32 @@ async function main() {
   console.log(`Transactions inserted: ${txsResult.count}`);
   console.log(`Blobs inserted: ${blobsResult.count}`);
 
-  console.log(
-    "========================================================================",
-  );
-  console.log("Backfilling overall stats.");
-  await Promise.all(backfillDailyStatsPromise(prisma));
+  // console.log(
+  //   "========================================================================",
+  // );
+  // await statsAggregator.executeAllOverallStatsQueries();
+  // console.log("Overall stats created.");
 
-  console.log(
-    "========================================================================",
-  );
-  console.log("Daily stats.");
+  // console.log(
+  //   "========================================================================",
+  // );
 
-  const [dailyBlockStats, dailyTransactionStats, dailyBlobStats] =
-    await Promise.all([
-      queryDailyBlockStats(prisma),
-      queryDailyTransactionStats(prisma),
-      queryDailyBlobStats(prisma),
-    ]);
+  // const [dailyBlobStats, dailyBlockStats, dailyTransactionStats] =
+  //   await statsAggregator.getAllDailyAggregates();
 
-  await Promise.all([
-    prisma.blockDailyStats.createMany({
-      data: dailyBlockStats,
-    }),
-    prisma.transactionDailyStats.createMany({
-      data: dailyTransactionStats,
-    }),
-    prisma.blobDailyStats.createMany({
-      data: dailyBlobStats,
-    }),
-  ]);
+  // console.log("Daily stats created");
+
+  // await Promise.all([
+  //   prisma.blobDailyStats.createMany({
+  //     data: dailyBlobStats,
+  //   }),
+  //   prisma.blockDailyStats.createMany({
+  //     data: dailyBlockStats,
+  //   }),
+  //   prisma.transactionDailyStats.createMany({
+  //     data: dailyTransactionStats,
+  //   }),
+  // ]);
 }
 
 main()
