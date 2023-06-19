@@ -13,8 +13,8 @@ export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   transactions: {
     select: {
       hash: true,
-      from: true,
-      to: true,
+      fromId: true,
+      toId: true,
       blobs: {
         select: {
           blobHash: true,

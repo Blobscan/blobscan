@@ -64,4 +64,14 @@ export class BlockAggregator {
       "updatedAt" = EXCLUDED."updatedAt"
   `;
   }
+
+  updateOverallBlockStats(newBlocks: number) {
+    return this.#prisma.$executeRaw`
+      UPDATE "BlockOverallStats"
+      SET
+        "totalBlocks" = "totalBlocks" + ${newBlocks},
+        "updatedAt" = NOW()
+      WHERE id = 1
+    `;
+  }
 }

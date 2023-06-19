@@ -45,8 +45,8 @@ export class TxAggregator {
       SELECT
         DATE_TRUNC('day', ${dateField}) as "day",
         COUNT(id)::Int as "totalTransactions",
-        COUNT(DISTINCT "from")::Int as "totalUniqueSenders",
-        COUNT(DISTINCT "to")::Int as "totalUniqueReceivers"
+        COUNT(DISTINCT "fromId")::Int as "totalUniqueSenders",
+        COUNT(DISTINCT "toId")::Int as "totalUniqueReceivers"
       FROM "Transaction"
       ${whereClause}
       GROUP BY "day"
@@ -65,8 +65,8 @@ export class TxAggregator {
       SELECT
         1 as id,
         COUNT("id")::INT as "totalTransactions",
-        COUNT(DISTINCT "to")::INT as "totalUniqueReceivers",
-        COUNT(DISTINCT "from")::INT as "totalUniqueSenders",
+        COUNT(DISTINCT "toId")::INT as "totalUniqueReceivers",
+        COUNT(DISTINCT "fromId")::INT as "totalUniqueSenders",
         NOW() as "updatedAt"
       FROM "Transaction"
       ON CONFLICT(id) DO UPDATE SET
@@ -74,6 +74,22 @@ export class TxAggregator {
         "totalUniqueReceivers" = EXCLUDED."totalUniqueReceivers",
         "totalUniqueSenders" = EXCLUDED."totalUniqueSenders",
         "updatedAt" = EXCLUDED."updatedAt"
+    `;
+  }
+
+  updateOverallTxStats(
+    newTxs: number,
+    newUniqueReceivers: number,
+    newUniqueSenders: number,
+  ) {
+    return this.#prisma.$executeRaw`
+      UPDATE "TransactionOverallStats"
+        SET
+          "totalTransactions" = "totalTransactions" + ${newTxs},
+          "totalUniqueReceivers" = "totalUniqueReceivers" + ${newUniqueReceivers},
+          "totalUniqueSenders" = "totalUniqueSenders" + ${newUniqueSenders},
+          "updatedAt" = NOW()
+        WHERE id = 1
     `;
   }
 }

@@ -33,14 +33,14 @@ export const transactionRouter = createTRPCRouter({
         ctx.prisma.transaction.findMany({
           select: fullTransactionSelect,
           where: {
-            OR: [{ from: address }, { to: address }],
+            OR: [{ fromId: address }, { toId: address }],
           },
           orderBy: { blockNumber: "desc" },
           ...ctx.pagination,
         }),
         ctx.prisma.transaction.count({
           where: {
-            OR: [{ from: address }, { to: address }],
+            OR: [{ fromId: address }, { toId: address }],
           },
         }),
       ]);
