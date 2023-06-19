@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
@@ -26,12 +27,14 @@ export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
           name: "Unique Receivers",
           data: uniqueReceivers,
           type: "bar",
+          // @ts-ignore
           emphasis: { focus: "series" },
         },
         {
           name: "Unique Senders",
           data: uniqueSenders,
           type: "bar",
+          // @ts-ignore
           emphasis: { focus: "series" },
         },
       ],

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { z } from "zod";
 
-import { t } from "../client";
+import { t } from "../clients/trpc";
 import { normalizeDate, type DatePeriod } from "../utils/dates";
 
 export const DATE_PERIOD_SCHEMA = z

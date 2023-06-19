@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { BUCKET_NAME } from "../env";
 import { blobSelect } from "../queries/blob";
 import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
 
@@ -42,11 +43,16 @@ export const blobRouter = createTRPCRouter({
 
       const block = blob.transaction.block;
 
+      const blobData = await ctx.storage
+        .bucket(BUCKET_NAME)
+        .file(blob.data.gsUri)
+        .download();
+
       return {
         versionedHash: blob.versionedHash,
         index: blob.index,
         commitment: blob.commitment,
-        data: blob.data,
+        data: blobData.toString(),
         txHash: blob.txHash,
         blockNumber: block.number,
         timestamp: block.timestamp,

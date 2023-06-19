@@ -15,26 +15,24 @@ model IndexerMetadata {
   lastSlot    Int         @unique
 }
 
-model BlobData {
+model Blob {
   id             String      @id
   versionedHash  String      @unique
+  commitment     String      @unique
   gsUri          String      @unique
   swarmHash      String      @unique
-  blobs          Blob[]
+  size           Int
+  transactions   BlobsOnTransactions[]
 }
 
-model Blob {
-  id            Int         @id @default(autoincrement())
-  versionedHash String
-  commitment    String
-  data          BlobData    @relation(fields: [versionedHash], references: [versionedHash])
+model BlobsOnTransactions {
+  blob          Blob        @relation(fields: [blobHash], references: [versionedHash])
+  blobHash      String
+  transaction   Transaction @relation(fields: [txHash], references: [hash])
   txHash        String
   index         Int
-  timestamp   DateTime
-  size        Int
-  transaction   Transaction @relation(fields: [txHash], references: [hash])
 
-  @@unique([txHash, index])
+  @@id([txHash, index])
 }
 
 model Block {
@@ -52,9 +50,9 @@ model Transaction {
   from        String
   to          String?
   blockNumber Int
-  timestamp DateTime
-  blobs      Blob[]
-  block     Block  @relation(fields: [blockNumber], references: [number])
+  timestamp   DateTime
+  blobs       BlobsOnTransactions[]
+  block       Block  @relation(fields: [blockNumber], references: [number])
 }
 
 // Block Metrics
@@ -114,8 +112,6 @@ model BlobDailyStats {
   @@unique([day])
   @@index([day])
 }
-
-
 
 
 // NextAuth.js Models

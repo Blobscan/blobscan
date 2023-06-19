@@ -65,9 +65,11 @@ function generateUniqueBlobs(amount: number) {
     });
 
     return {
+      id: versionedHash,
       versionedHash,
       commitment,
-      data,
+      gsUri: `${versionedHash.slice(2)}.txt`,
+      swarmHash: sha256(data),
       size: data.slice(2).length / 2,
     };
   });
@@ -158,10 +160,9 @@ async function main() {
           }
 
           return {
-            ...blob,
+            blobHash: blob.versionedHash,
             txHash: blockTx.hash,
             index: txBlobIndex,
-            timestamp: blockTx.timestamp,
           };
         });
       })
@@ -169,7 +170,10 @@ async function main() {
   });
 
   const txs = blocksTxs.flat();
-  const blobs = txsBlobs.flat();
+  const blobsOnTxs = txsBlobs.flat();
+  const blobs = uniqueBlobs.filter((b) =>
+    blobsOnTxs.some((bot) => bot.blobHash === b.versionedHash),
+  );
 
   const [blocksResult, txsResult, blobsResult] = await Promise.all([
     // Insert data
@@ -182,6 +186,10 @@ async function main() {
     }),
     prisma.blob.createMany({
       data: blobs,
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    prisma.blobsOnTransactions.createMany({
+      data: blobsOnTxs,
     }),
   ]);
 

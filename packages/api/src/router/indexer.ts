@@ -178,6 +178,7 @@ export const indexerRouter = createTRPCRouter({
           versionedHash: b.versionedHash,
           gsUri: buildGoogleStorageUri(b.versionedHash),
           swarmHash: swarmUploadData.reference.toString(),
+          size: b.data.slice(2).length / 2,
         };
       });
       const blobDatas = await Promise.all(uploadBlobsDataPromise);
