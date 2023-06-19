@@ -187,11 +187,12 @@ async function main() {
     prisma.blob.createMany({
       data: blobs,
     }),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    prisma.blobsOnTransactions.createMany({
-      data: blobsOnTxs,
-    }),
   ]);
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  await prisma.blobsOnTransactions.createMany({
+    data: blobsOnTxs,
+  });
 
   console.log(
     "========================================================================",
