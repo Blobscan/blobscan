@@ -22,14 +22,6 @@ if (!GOOGLE_STORAGE_BUCKET_NAME) {
   throw new Error("GOOGLE_STORAGE_BUCKET_NAME is not set");
 }
 
-if (!GOOGLE_STORAGE_PROJECT_ID) {
-  throw new Error("GOOGLE_STORAGE_PROJECT_ID is not set");
-}
-
-if (!GOOGLE_SERVICE_KEY) {
-  throw new Error("GOOGLE_SERVICE_KEY is not set");
-}
-
 if (!SECRET_KEY) {
   throw new Error("SECRET_KEY is not set");
 }

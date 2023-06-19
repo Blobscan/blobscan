@@ -7,14 +7,11 @@ type GoogleCredential = {
   private_key: string;
 };
 
-const credential = JSON.parse(
-  Buffer.from(GOOGLE_SERVICE_KEY, "base64").toString(),
-) as GoogleCredential;
+const credentials =
+  GOOGLE_SERVICE_KEY && STORAGE_PROJECT_ID
+    ? (JSON.parse(
+        Buffer.from(GOOGLE_SERVICE_KEY, "base64").toString(),
+      ) as GoogleCredential)
+    : undefined;
 
-export const storage = new Storage({
-  projectId: STORAGE_PROJECT_ID,
-  credentials: {
-    client_email: credential.client_email,
-    private_key: credential.private_key,
-  },
-});
+export const storage = new Storage(credentials ? { credentials } : undefined);
