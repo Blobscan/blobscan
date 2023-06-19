@@ -3,6 +3,13 @@ import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
 import { sha256 } from "js-sha256";
 
+import {
+  backfillDailyStatsPromise,
+  queryDailyBlobStats,
+  queryDailyBlockStats,
+  queryDailyTransactionStats,
+} from "./stats";
+
 const prisma = new PrismaClient();
 
 const TOTAL_DAYS = 30;
@@ -189,7 +196,6 @@ async function main() {
     }),
   ]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   await prisma.blobsOnTransactions.createMany({
     data: blobsOnTxs,
   });
@@ -201,6 +207,36 @@ async function main() {
   console.log(`Blocks inserted: ${blocksResult.count}`);
   console.log(`Transactions inserted: ${txsResult.count}`);
   console.log(`Blobs inserted: ${blobsResult.count}`);
+
+  console.log(
+    "========================================================================",
+  );
+  console.log("Backfilling overall stats.");
+  await Promise.all(backfillDailyStatsPromise(prisma));
+
+  console.log(
+    "========================================================================",
+  );
+  console.log("Daily stats.");
+
+  const [dailyBlockStats, dailyTransactionStats, dailyBlobStats] =
+    await Promise.all([
+      queryDailyBlockStats(prisma),
+      queryDailyTransactionStats(prisma),
+      queryDailyBlobStats(prisma),
+    ]);
+
+  await Promise.all([
+    prisma.blockDailyStats.createMany({
+      data: dailyBlockStats,
+    }),
+    prisma.transactionDailyStats.createMany({
+      data: dailyTransactionStats,
+    }),
+    prisma.blobDailyStats.createMany({
+      data: dailyBlobStats,
+    }),
+  ]);
 }
 
 main()
