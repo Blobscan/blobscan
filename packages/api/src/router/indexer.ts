@@ -127,32 +127,31 @@ export const indexerRouter = createTRPCRouter({
         skipDuplicates: true,
       });
 
-      const createBlobs = ctx.prisma.blob.createMany({
-        data: input.blobs.map((blob) => ({
-          versionedHash: blob.versionedHash,
-          commitment: blob.commitment,
-          txHash: blob.txHash,
-          index: blob.index,
-          timestamp,
-        })),
-        skipDuplicates: true,
-      });
+      const createBlobsOnTransactios =
+        ctx.prisma.blobsOnTransactions.createMany({
+          data: input.blobs.map((blob) => ({
+            blobHash: blob.versionedHash,
+            txHash: blob.txHash,
+            index: blob.index,
+          })),
+          skipDuplicates: true,
+        });
 
       // Check if we already have the blob data in the database
-      const existingBlobDataHashes = await ctx.prisma.blobData
+      const existingBlobsHashes = await ctx.prisma.blob
         .findMany({
           select: { versionedHash: true },
           where: {
             id: { in: input.blobs.map((blob) => blob.versionedHash) },
           },
         })
-        .then((blobDatas) => blobDatas.map((b) => b.versionedHash));
+        .then((blobs) => blobs.map((b) => b.versionedHash));
       const newBlobs = input.blobs.filter(
-        (b) => !existingBlobDataHashes.includes(b.versionedHash),
+        (b) => !existingBlobsHashes.includes(b.versionedHash),
       );
 
       const batchId = batches[0].batchID;
-      const uploadBlobsDataPromise = newBlobs.map(async (b) => {
+      const uploadBlobsPromise = newBlobs.map(async (b) => {
         const uploadBlobsToGoogleStoragePromise = ctx.storage
           .bucket(BUCKET_NAME)
           .file(buildGoogleStorageUri(b.versionedHash))
@@ -176,22 +175,23 @@ export const indexerRouter = createTRPCRouter({
         return {
           id: b.versionedHash,
           versionedHash: b.versionedHash,
+          commitment: b.commitment,
           gsUri: buildGoogleStorageUri(b.versionedHash),
           swarmHash: swarmUploadData.reference.toString(),
           size: b.data.slice(2).length / 2,
         };
       });
-      const blobDatas = await Promise.all(uploadBlobsDataPromise);
+      const blobs = await Promise.all(uploadBlobsPromise);
 
-      const createBlobDatas = ctx.prisma.blobData.createMany({
-        data: blobDatas,
+      const createBlobDatas = ctx.prisma.blob.createMany({
+        data: blobs,
       });
 
       await ctx.prisma.$transaction([
         createBlock,
         createTransactions,
         createBlobDatas,
-        createBlobs,
+        createBlobsOnTransactios,
       ]);
     }),
 });

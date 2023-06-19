@@ -40,7 +40,7 @@ const Blob: NextPage = () => {
   const index = (router.query.index as string | undefined) ?? "0";
   const txHash = (router.query.hash as string | undefined) ?? "";
   const {
-    data: blobData,
+    data: blob,
     error,
     isLoading,
   } = api.blob.getByIndex.useQuery(
@@ -55,7 +55,7 @@ const Blob: NextPage = () => {
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
   const [formattedData, formattedDataErr] = useMemo(() => {
-    const data = blobData?.data;
+    const data = blob?.data;
     if (!data) {
       return [""];
     }
@@ -65,7 +65,7 @@ const Blob: NextPage = () => {
     } catch (err) {
       return [, "Couldn't format blob data"];
     }
-  }, [blobData?.data, selectedBlobViewMode]);
+  }, [blob?.data, selectedBlobViewMode]);
 
   if (error) {
     return (
@@ -76,7 +76,7 @@ const Blob: NextPage = () => {
     );
   }
 
-  if (!blobData) {
+  if (!blob) {
     return <>Blob not found</>;
   }
 
@@ -85,23 +85,23 @@ const Blob: NextPage = () => {
       <DetailsLayout
         header="Blob Details"
         fields={
-          blobData
+          blob
             ? [
-                { name: "Index", value: blobData.index },
-                { name: "Versioned Hash", value: blobData.versionedHash },
+                { name: "Index", value: blob.index },
+                { name: "Versioned Hash", value: blob.versionedHash },
                 {
                   name: "Block",
                   value: (
-                    <Link href={buildBlockRoute(blobData.blockNumber)}>
-                      {blobData.blockNumber}
+                    <Link href={buildBlockRoute(blob.blockNumber)}>
+                      {blob.blockNumber}
                     </Link>
                   ),
                 },
                 {
                   name: "Transaction",
                   value: (
-                    <Link href={buildTransactionRoute(blobData.txHash)}>
-                      {blobData.txHash}
+                    <Link href={buildTransactionRoute(blob.txHash)}>
+                      {blob.txHash}
                     </Link>
                   ),
                 },
@@ -109,11 +109,11 @@ const Blob: NextPage = () => {
                   name: "Timestamp",
                   value: (
                     <div className="whitespace-break-spaces">
-                      {formatTimestamp(blobData.timestamp)}
+                      {formatTimestamp(blob.timestamp)}
                     </div>
                   ),
                 },
-                { name: "Commitment", value: blobData.commitment },
+                { name: "Commitment", value: blob.commitment },
               ]
             : undefined
         }
