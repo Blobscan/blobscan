@@ -24,6 +24,7 @@ type SearchOutput = {
 function entityToCategory(entity: string): SearchCategory {
   switch (entity) {
     case "Blob":
+    case "BlobsOnTransactions":
       return "blob";
     case "Block":
       return "block";
@@ -72,14 +73,14 @@ export const searchRouter = createTRPCRouter({
       if (isHash(term)) {
         const response = await ctx.prisma.$queryRaw<HashResponse[]>`
           SELECT
-            'Blob' AS entity,
-            "versionedHash" AS hash,
+            'BlobsOnTransactions' AS entity,
+            "blobHash" AS hash,
             "index",
             "txHash"
           FROM
-            "Blob"
+            "BlobsOnTransactions"
           WHERE
-            "versionedHash" = ${term}
+            "blobHash" = ${term}
             
           UNION
 
