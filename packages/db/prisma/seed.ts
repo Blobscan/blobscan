@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Storage } from "@google-cloud/storage";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { sha256 } from "js-sha256";
 
@@ -66,7 +66,7 @@ function generateUniqueTimestamps(
 }
 
 function generateUniqueBlobs(amount: number) {
-  return Array.from({ length: amount }).map(() => {
+  return Array.from({ length: amount }).map<Prisma.BlobCreateManyInput>(() => {
     const commitment = faker.string.hexadecimal({
       length: 96,
     });
@@ -108,7 +108,7 @@ async function main() {
 
   let prevBlockNumber = 0;
   let prevSlot = 0;
-  const blocks = timestamps.map((timestamp) => {
+  const blocks = timestamps.map<Prisma.BlockCreateManyInput>((timestamp) => {
     const number = prevBlockNumber + faker.number.int({ min: 1, max: 220 });
     const slot = prevSlot + faker.number.int({ min: 1, max: 200 });
 
@@ -127,7 +127,9 @@ async function main() {
   const blocksTxs = blocks.map((block) => {
     const txCount = faker.number.int({ min: 1, max: MAX_BLOBS_PER_BLOCK });
 
-    return Array.from({ length: txCount }).map(() => {
+    return Array.from({
+      length: txCount,
+    }).map<Prisma.TransactionCreateManyInput>(() => {
       const txHash = faker.string.hexadecimal({ length: 64 });
       const from =
         uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
@@ -139,8 +141,8 @@ async function main() {
       return {
         id: txHash,
         hash: txHash,
-        from,
-        to,
+        fromId: from,
+        toId: to,
         blockNumber: block.number,
         timestamp: block.timestamp,
       };
@@ -164,7 +166,9 @@ async function main() {
 
         blockBlobsRemaining -= txBlobsCount;
 
-        return Array.from({ length: txBlobsCount }).map((_, txBlobIndex) => {
+        return Array.from({
+          length: txBlobsCount,
+        }).map<Prisma.BlobsOnTransactionsCreateManyInput>((_, txBlobIndex) => {
           const blobIndex = faker.number.int(uniqueBlobs.length - 1);
           const blob = uniqueBlobs[blobIndex];
 
@@ -206,35 +210,62 @@ async function main() {
   });
   await Promise.all(uploadBlobsPromise);
 
-  const [blocksResult, txsResult, blobsResult] = await Promise.all([
-    // Insert data
-    prisma.block.createMany({
-      data: blocks,
-      skipDuplicates: true,
-    }),
-    prisma.transaction.createMany({
-      data: txs,
-    }),
-    prisma.blob.createMany({
-      data: blobs.map((b) => ({
-        id: b.versionedHash,
-        versionedHash: b.versionedHash,
-        commitment: b.commitment,
-        gsUri: b.gsUri,
-        swarmHash: b.swarmHash,
-        size: b.size,
-      })),
-    }),
-  ]);
+  const addressToAddressEntity = txs.reduce<
+    Record<string, Prisma.AddressCreateManyInput>
+  >((addressToTxData, tx) => {
+    addressToTxData[tx.fromId] = {
+      address: tx.fromId,
+      isReceiver: false,
+      ...addressToTxData[tx.fromId],
+      isSender: true,
+    };
 
-  await prisma.blobsOnTransactions.createMany({
-    data: blobsOnTxs,
-  });
+    if (tx.toId) {
+      addressToTxData[tx.toId] = {
+        address: tx.toId,
+        isSender: false,
+        ...addressToTxData[tx.toId],
+        isReceiver: true,
+      };
+    }
+
+    return addressToTxData;
+  }, {} as Record<string, Prisma.AddressCreateInput>);
+
+  const [addessesResult, blocksResult, txsResult, blobsResult] =
+    await prisma.$transaction([
+      prisma.address.createMany({
+        data: Object.keys(addressToAddressEntity).map(
+          (key) => addressToAddressEntity[key] as Prisma.AddressCreateInput,
+        ),
+      }),
+      prisma.block.createMany({
+        data: blocks,
+        skipDuplicates: true,
+      }),
+      prisma.transaction.createMany({
+        data: txs,
+      }),
+      prisma.blob.createMany({
+        data: blobs.map((b) => ({
+          id: b.versionedHash,
+          versionedHash: b.versionedHash,
+          commitment: b.commitment,
+          gsUri: b.gsUri,
+          swarmHash: b.swarmHash,
+          size: b.size,
+        })),
+      }),
+      prisma.blobsOnTransactions.createMany({
+        data: blobsOnTxs,
+      }),
+    ]);
 
   console.log(
     "========================================================================",
   );
   console.log(`Data inserted for the last ${TOTAL_DAYS} days`);
+  console.log(`Addresses inserted: ${addessesResult.count}`);
   console.log(`Blocks inserted: ${blocksResult.count}`);
   console.log(`Transactions inserted: ${txsResult.count}`);
   console.log(`Blobs inserted: ${blobsResult.count}`);
@@ -242,8 +273,9 @@ async function main() {
   console.log(
     "========================================================================",
   );
-  await statsAggregator.executeAllOverallStatsQueries();
-  console.log("Overall stats created.");
+
+  await statsAggregator.executeAllOverallStatsQueries(),
+    console.log("Overall stats created.");
 
   console.log(
     "========================================================================",
@@ -251,9 +283,6 @@ async function main() {
 
   const [dailyBlobStats, dailyBlockStats, dailyTransactionStats] =
     await statsAggregator.getAllDailyAggregates();
-
-  console.log("Daily stats created");
-
   await Promise.all([
     prisma.blobDailyStats.createMany({
       data: dailyBlobStats,
@@ -265,6 +294,11 @@ async function main() {
       data: dailyTransactionStats,
     }),
   ]);
+  console.log("Daily stats created");
+
+  console.log(
+    "========================================================================",
+  );
 }
 
 main()

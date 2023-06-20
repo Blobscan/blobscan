@@ -69,18 +69,18 @@ const Tx: NextPage = () => {
                 {
                   name: "From",
                   value: (
-                    <Link href={buildAddressRoute(txData.from)}>
-                      {txData.from}
+                    <Link href={buildAddressRoute(txData.fromId)}>
+                      {txData.fromId}
                     </Link>
                   ),
                 },
-                ...(txData.to
+                ...(txData.toId
                   ? [
                       {
                         name: "To",
                         value: (
-                          <Link href={buildAddressRoute(txData.to)}>
-                            {txData.to}
+                          <Link href={buildAddressRoute(txData.toId)}>
+                            {txData.toId}
                           </Link>
                         ),
                       },

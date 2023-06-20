@@ -54,7 +54,7 @@ type BlobTransactionCardProps = Partial<{
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   block: { number, timestamp } = {},
-  transaction: { hash, from, to, blobs } = {},
+  transaction: { hash, fromId, toId, blobs } = {},
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -105,18 +105,18 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 )}
               </div>
               <div className="flex flex-col gap-1 md:flex-row md:items-center">
-                {from && to ? (
+                {fromId && toId ? (
                   <>
                     <div className="mb-1 text-error-50 md:hidden">From</div>
-                    <Link href={buildAddressRoute(from)}>
-                      <span className="text-xs">{from}</span>
+                    <Link href={buildAddressRoute(fromId)}>
+                      <span className="text-xs">{fromId}</span>
                     </Link>
-                    {to && (
+                    {toId && (
                       <>
                         <ArrowRightIcon className="hidden h-2 w-2 md:block" />
                         <div className="mt-1 md:hidden">To</div>
-                        <Link href={buildAddressRoute(to)}>
-                          <span className="text-xs">{to}</span>
+                        <Link href={buildAddressRoute(toId)}>
+                          <span className="text-xs">{toId}</span>
                         </Link>
                       </>
                     )}

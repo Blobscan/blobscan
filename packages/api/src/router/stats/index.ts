@@ -20,6 +20,34 @@ export const statsRouter = createTRPCRouter({
       },
     })
     .input(z.void())
+    // TODO: Find a better way to do this by trying to convert prisma types to zod types
+    .output(
+      z.object({
+        blob: z
+          .object({
+            totalBlobs: z.number(),
+            totalUniqueBlobs: z.number(),
+            totalBlobSize: z.bigint(),
+            avgBlobSize: z.number(),
+            updatedAt: z.date(),
+          })
+          .nullable(),
+        block: z
+          .object({
+            totalBlocks: z.number(),
+            updatedAt: z.date(),
+          })
+          .nullable(),
+        transaction: z
+          .object({
+            totalTransactions: z.number(),
+            totalUniqueReceivers: z.number(),
+            totalUniqueSenders: z.number(),
+            updatedAt: z.date(),
+          })
+          .nullable(),
+      }),
+    )
     .query(({ ctx: { prisma } }) =>
       Promise.all([
         prisma.blobOverallStats.findUnique({ where: { id: 1 } }),

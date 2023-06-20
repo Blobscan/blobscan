@@ -1,8 +1,12 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { statsAggregator } from "@blobscan/db";
+
 import { BUCKET_NAME } from "../env";
 import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+import { calculateBlobSize } from "../utils/blob";
+import { getNewBlobs, getUniqueAddressesFromTxs } from "../utils/indexer";
 import { buildGoogleStorageUri } from "../utils/storages";
 
 const INDEXER_PATH = "/indexer";
@@ -89,10 +93,13 @@ export const indexerRouter = createTRPCRouter({
     })
     .input(INDEX_REQUEST_DATA)
     .output(z.void())
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx: { prisma, storage, swarm }, input }) => {
       const timestamp = new Date(input.block.timestamp * 1000);
-      // Check we have enough swarm postages
-      const batches = await ctx.swarm.beeDebug.getAllPostageBatch();
+
+      // 1. Check we have enough swarm postages
+
+      const batches = await swarm.beeDebug.getAllPostageBatch();
+
       if (batches.length === 0 || batches[0]?.batchID === undefined) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -100,64 +107,24 @@ export const indexerRouter = createTRPCRouter({
         });
       }
 
-      const blockData = {
-        number: input.block.number,
-        hash: input.block.hash,
-        timestamp,
-        slot: input.block.slot,
-      };
-      const createBlock = ctx.prisma.block.upsert({
-        where: { id: input.block.number },
-        create: {
-          id: input.block.number,
-          ...blockData,
-        },
-        update: blockData,
-      });
+      // 2. Fetch unique addresses from transactions & check for existing blobs
 
-      const createTransactions = ctx.prisma.transaction.createMany({
-        data: input.transactions.map((transaction) => ({
-          id: transaction.hash,
-          hash: transaction.hash,
-          from: transaction.from,
-          to: transaction.to,
-          blockNumber: transaction.blockNumber,
-          timestamp,
-        })),
-        skipDuplicates: true,
-      });
+      const [{ uniqueFromAddresses, uniqueToAddresses }, newBlobs] =
+        await Promise.all([
+          getUniqueAddressesFromTxs(prisma, input.transactions),
+          getNewBlobs(prisma, input.blobs),
+        ]);
 
-      const createBlobsOnTransactios =
-        ctx.prisma.blobsOnTransactions.createMany({
-          data: input.blobs.map((blob) => ({
-            blobHash: blob.versionedHash,
-            txHash: blob.txHash,
-            index: blob.index,
-          })),
-          skipDuplicates: true,
-        });
-
-      // Check if we already have the blob data in the database
-      const existingBlobsHashes = await ctx.prisma.blob
-        .findMany({
-          select: { versionedHash: true },
-          where: {
-            id: { in: input.blobs.map((blob) => blob.versionedHash) },
-          },
-        })
-        .then((blobs) => blobs.map((b) => b.versionedHash));
-      const newBlobs = input.blobs.filter(
-        (b) => !existingBlobsHashes.includes(b.versionedHash),
-      );
+      // 3. Upload blobs' data to Google Storage and Swarm
 
       const batchId = batches[0].batchID;
       const uploadBlobsPromise = newBlobs.map(async (b) => {
-        const uploadBlobsToGoogleStoragePromise = ctx.storage
+        const uploadBlobsToGoogleStoragePromise = storage
           .bucket(BUCKET_NAME)
           .file(buildGoogleStorageUri(b.versionedHash))
           .save(b.data);
 
-        const uploadBlobsToSwarmPromise = ctx.swarm.bee.uploadFile(
+        const uploadBlobsToSwarmPromise = swarm.bee.uploadFile(
           batchId,
           b.data,
           buildGoogleStorageUri(b.versionedHash),
@@ -178,20 +145,98 @@ export const indexerRouter = createTRPCRouter({
           commitment: b.commitment,
           gsUri: buildGoogleStorageUri(b.versionedHash),
           swarmHash: swarmUploadData.reference.toString(),
-          size: b.data.slice(2).length / 2,
+          size: calculateBlobSize(b.data),
         };
       });
-      const blobs = await Promise.all(uploadBlobsPromise);
+      const uploadedBlobs = await Promise.all(uploadBlobsPromise);
 
-      const createBlobDatas = ctx.prisma.blob.createMany({
-        data: blobs,
+      // 4. Prepare block, transaction and blob insertions
+
+      const createBlobsDataPromise = prisma.blob.createMany({
+        data: uploadedBlobs,
       });
 
-      await ctx.prisma.$transaction([
-        createBlock,
-        createTransactions,
-        createBlobDatas,
-        createBlobsOnTransactios,
+      const blockData = {
+        number: input.block.number,
+        hash: input.block.hash,
+        timestamp,
+        slot: input.block.slot,
+      };
+
+      const createBlockPromise = prisma.block.upsert({
+        where: { id: input.block.number },
+        create: {
+          id: input.block.number,
+          ...blockData,
+        },
+        update: blockData,
+      });
+      const createAddressesPromise = prisma.address.createMany({
+        data: [...uniqueFromAddresses.new, ...uniqueToAddresses.new],
+      });
+      const updateAddressesPromise = prisma.address.updateMany({
+        data: [...uniqueFromAddresses.existing, ...uniqueToAddresses.existing],
+      });
+      const createTransactionsPromises = prisma.transaction.createMany({
+        data: input.transactions.map((transaction) => ({
+          id: transaction.hash,
+          hash: transaction.hash,
+          fromId: transaction.from,
+          toId: transaction.to,
+          blockNumber: transaction.blockNumber,
+          timestamp,
+        })),
+        // TODO: to make the endpoint truly idempotent we should not skip duplicates but update them when re-indexing
+        skipDuplicates: true,
+      });
+      const createBlobsOnTransactionPromise =
+        prisma.blobsOnTransactions.createMany({
+          data: input.blobs.map((blob) => ({
+            blobHash: blob.versionedHash,
+            txHash: blob.txHash,
+            index: blob.index,
+          })),
+          skipDuplicates: true,
+        });
+
+      // 5. Prepare overall stats incremental updates
+
+      const uploadedBlobsSize = uploadedBlobs.reduce(
+        (totalBlobSize, b) => totalBlobSize + b.size,
+        0,
+      );
+      const totalReceivers =
+        uniqueToAddresses.existing.length + uniqueToAddresses.new.length;
+      const totalSenders =
+        uniqueFromAddresses.existing.length + uniqueFromAddresses.new.length;
+
+      const updateBlockOverallStatsPromise =
+        statsAggregator.block.updateOverallBlockStats(1);
+      const updateTxOverallStatsPromise =
+        statsAggregator.tx.updateOverallTxStats(
+          input.transactions.length,
+          totalReceivers,
+          totalSenders,
+        );
+      const updateBlobOverallStatsPromise =
+        statsAggregator.blob.updateOverallBlobStats(
+          input.blobs.length,
+          uploadedBlobs.length,
+          uploadedBlobsSize,
+        );
+
+      // 6. Execute all database operations in a single transaction
+
+      await prisma.$transaction([
+        createBlockPromise,
+        updateAddressesPromise,
+        createAddressesPromise,
+        createTransactionsPromises,
+        createBlobsDataPromise,
+        createBlobsOnTransactionPromise,
+        updateBlockOverallStatsPromise,
+        updateTxOverallStatsPromise,
+        updateBlobOverallStatsPromise,
       ]);
     }),
 });

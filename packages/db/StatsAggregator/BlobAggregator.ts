@@ -81,4 +81,21 @@ export class BlobAggregator {
         "updatedAt" = EXCLUDED."updatedAt"
     `;
   }
+
+  updateOverallBlobStats(
+    newBlobs: number,
+    newUniqueBlobs: number,
+    newBlobSize: number,
+  ) {
+    return this.#prisma.$executeRaw`
+      UPDATE "BlobOverallStats"
+      SET
+        "totalBlobs" = "totalBlobs" + ${newBlobs},
+        "totalUniqueBlobs" = "totalUniqueBlobs" + ${newUniqueBlobs},
+        "totalBlobSize" = "totalBlobSize" + ${newBlobSize},
+        "avgBlobSize" = "avgBlobSize" + (${newBlobSize} - "avgBlobSize") / ("totalBlobs" + ${newBlobs})
+      WHERE
+        id = 1
+    `;
+  }
 }
