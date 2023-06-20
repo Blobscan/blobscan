@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { Storage } from "@google-cloud/storage";
 import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
 import { sha256 } from "js-sha256";
@@ -7,6 +8,10 @@ import { StatsAggregator } from "../StatsAggregator";
 
 const prisma = new PrismaClient();
 const statsAggregator = new StatsAggregator(prisma);
+
+const storage = new Storage({ apiEndpoint: "http://localhost:4443" });
+const BUCKET_NAME = process.env.GOOGLE_STORAGE_BUCKET_NAME ?? "blobscan-dev";
+const CHAIN_ID = process.env.CHAIN_ID ?? 100;
 
 const TOTAL_DAYS = 30;
 const MIN_BLOCKS_PER_DAY = 100;
@@ -20,6 +25,13 @@ const UNIQUE_ADDRESSES_AMOUNT = 1000;
 
 // const BLOB_SIZE = 131_072;
 const MAX_BLOB_BYTES_SIZE = 2048; // in bytes
+
+function buildGoogleStorageUri(hash: string): string {
+  return `${CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(4, 6)}/${hash.slice(
+    6,
+    8,
+  )}/${hash.slice(2)}.txt`;
+}
 
 function generateUniqueTimestamps(
   days: number,
@@ -71,9 +83,10 @@ function generateUniqueBlobs(amount: number) {
       id: versionedHash,
       versionedHash,
       commitment,
-      gsUri: `${versionedHash.slice(2)}.txt`,
+      gsUri: buildGoogleStorageUri(versionedHash),
       swarmHash: sha256(data),
       size: data.slice(2).length / 2,
+      data,
     };
   });
 }
@@ -178,6 +191,21 @@ async function main() {
     blobsOnTxs.some((bot) => bot.blobHash === b.versionedHash),
   );
 
+  const uploadBlobsPromise = blobs.map(async (b) => {
+    const [blobExists] = await storage
+      .bucket(BUCKET_NAME)
+      .file(b.gsUri)
+      .exists();
+
+    if (!blobExists) {
+      await storage
+        .bucket(BUCKET_NAME)
+        .file(buildGoogleStorageUri(b.versionedHash))
+        .save(b.data);
+    }
+  });
+  await Promise.all(uploadBlobsPromise);
+
   const [blocksResult, txsResult, blobsResult] = await Promise.all([
     // Insert data
     prisma.block.createMany({
@@ -188,7 +216,14 @@ async function main() {
       data: txs,
     }),
     prisma.blob.createMany({
-      data: blobs,
+      data: blobs.map((b) => ({
+        id: b.versionedHash,
+        versionedHash: b.versionedHash,
+        commitment: b.commitment,
+        gsUri: b.gsUri,
+        swarmHash: b.swarmHash,
+        size: b.size,
+      })),
     }),
   ]);
 
