@@ -4,6 +4,9 @@ importers:
 
   .:
     dependencies:
+      '@blobscan/db':
+        specifier: 0.0.1
+        version: link:packages/db
       '@blobscan/eslint-config':
         specifier: 0.0.1
         version: link:packages/config/eslint

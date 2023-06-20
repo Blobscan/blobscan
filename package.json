@@ -21,6 +21,7 @@
     "backfill:daily": "ts-node scripts/backfill-all-daily-stats.ts"
   },
   "dependencies": {
+    "@blobscan/db": "0.0.1",
     "@blobscan/eslint-config": "0.0.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.20.0",

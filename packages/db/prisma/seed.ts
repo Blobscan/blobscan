@@ -65,8 +65,12 @@ function generateUniqueTimestamps(
   return uniqueTimestamps;
 }
 
+type Blob = Prisma.BlobCreateManyInput & {
+  data: string;
+};
+
 function generateUniqueBlobs(amount: number) {
-  return Array.from({ length: amount }).map<Prisma.BlobCreateManyInput>(() => {
+  return Array.from({ length: amount }).map<Blob>(() => {
     const commitment = faker.string.hexadecimal({
       length: 96,
     });

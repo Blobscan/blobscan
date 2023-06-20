@@ -50,6 +50,14 @@ services:
       api:
         condition: service_healthy
 
+  storage:
+    image: fsouza/fake-gcs-server
+    ports:
+      - "4443:4443"
+    command: -scheme http
+    volumes:
+      - storage_data:/storage
+
   postgres:
     image: postgres:14
     ports:
@@ -63,3 +71,4 @@ services:
 
 volumes:
   postgres-data:
+  storage_data:

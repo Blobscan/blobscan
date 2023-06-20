@@ -14,4 +14,12 @@ const credentials =
       ) as GoogleCredential)
     : undefined;
 
-export const storage = new Storage(credentials ? { credentials } : undefined);
+export function getStorage() {
+  if (process.env.NODE_ENV === "development") {
+    return new Storage({ apiEndpoint: "http://localhost:4443" });
+  } else {
+    return new Storage(credentials ? { credentials } : undefined);
+  }
+}
+
+export const storage = getStorage();
