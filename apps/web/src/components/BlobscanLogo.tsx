@@ -1,35 +1,28 @@
-import Image from "next/image";
+import NextImage from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
-const SIZES = {
-  lg: {
-    width: 320,
-    height: 130,
-  },
-  md: {
-    width: 150,
-    height: 32,
-  },
-  sm: {
-    width: 130,
-    height: 30,
-  },
-};
+import { useIsMounted } from "~/hooks/useIsMounted";
 
-type LogoProps = {
-  size: keyof typeof SIZES;
-};
+export const Logo: React.FC<{ className?: string }> = ({ className = "" }) => {
+  const { resolvedTheme } = useTheme();
+  const isMounted = useIsMounted();
+  const logoSrc =
+    resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png";
 
-export const Logo: React.FC<LogoProps> = ({ size }) => {
-  const { systemTheme, theme } = useTheme();
-  const currentTheme = theme === "system" ? systemTheme : theme;
+  if (!isMounted) {
+    return <div className={className} />;
+  }
 
   return (
     <Link href="/">
-      <Image
-        src={currentTheme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
-        {...SIZES[size]}
+      <NextImage
+        className={className}
+        src={logoSrc}
+        width="0"
+        height="0"
+        sizes="100vw"
+        priority
         alt="blobscan-logo"
       />
     </Link>

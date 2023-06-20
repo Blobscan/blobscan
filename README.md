@@ -44,11 +44,11 @@ pnpm db:push
 
 ### Docker
 
-**NOTE: Recent versions of docker and docker-compose with BuildKit support are required.**
+**NOTE: Recent version of docker with BuildKit support is required.**
 
 Docker images are automatically published and a docker-compose file is provided for convenience.
 
-Note that you also need to run your own [devnet-v5 node](https://github.com/Blobscan/devnet-v5) or connect to any of the existing ones.
+Note that you also need to run your own [devnet-v6 node](https://github.com/Blobscan/4844-devnet) or connect to any of the existing ones.
 You can use SSH tunnels like this:
 
 ```
@@ -58,15 +58,48 @@ ssh -L 3500:localhost:3500 -L 8545:localhost:8545 my-devnet5-node
 Then spin up the containers:
 
 ```
-COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d --build
+docker compose up -d --build
 ```
 
 The first time you run the docker container, it will automatically apply any pending migration.
 You can also force to apply pending migrations with the following command:
 
 ```
-docker-compose exec web npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+docker compose exec api npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 ```
+
+In case you want to reset the database and wipe the data:
+
+```
+docker compose exec api npx prisma migrate reset --schema packages/db/prisma/schema.prisma
+```
+
+### Staging environment
+
+Example `.env` file
+
+```
+COMPOSE_FILE=docker-compose.staging.yml
+DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
+SECRET_KEY=42424242424242424242424242424242
+
+NEXT_PUBLIC_BEACON_BASE_URL=http://134.209.87.158:8080/
+NEXT_PUBLIC_EXPLORER_BASE_URL=https://explorer.4844-devnet-6.ethpandaops.io/
+
+### rest api server
+
+BLOBSCAN_API_PORT=3001
+
+#### blobscan indexer
+
+BLOBSCAN_API_ENDPOINT=http://localhost:3001
+BEACON_NODE_ENDPOINT=http://localhost:9596
+EXECUTION_NODE_ENDPOINT=http://localhost:8545
+SENTRY_DSN=https://username:password@host/path
+RUST_LOG=blob_indexer=INFO
+```
+
+Then just run `docker compose up -d`.
 
 ## Environment variables
 

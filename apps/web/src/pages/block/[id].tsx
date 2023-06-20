@@ -1,92 +1,101 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
-import { useRouter } from "next/router";
+import { useRouter, type NextRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
-import { DetailsLayout } from "~/components/DetailsLayout";
-import { InfoGrid } from "~/components/InfoGrid";
+import { Card } from "~/components/Cards/Card";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
+import { api } from "~/api-client";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
   formatTimestamp,
 } from "~/utils";
 
-function fetchBlock(blockNumberOrHash: string) {
+function performBlockQuery(router: NextRouter) {
+  const isReady = router.isReady;
+  const blockNumberOrHash = router.query.id as string | undefined;
   const blockNumber = Number(blockNumberOrHash);
 
   if (!Number.isNaN(blockNumber)) {
     return api.block.getByBlockNumber.useQuery({ number: blockNumber });
   }
 
-  return api.block.getByHash.useQuery({ hash: blockNumberOrHash });
+  return api.block.getByHash.useQuery(
+    { hash: blockNumberOrHash ?? "" },
+    { enabled: isReady },
+  );
 }
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const id = router.query.id as string;
-  const blockQuery = fetchBlock(id);
+  const { data: blockData, error, isLoading } = performBlockQuery(router);
 
-  if (blockQuery?.error) {
+  if (error) {
     return (
       <NextError
-        title={blockQuery.error.message}
-        statusCode={blockQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (blockQuery.status !== "success") {
-    return <PageSpinner label="Loading block…" />;
-  }
-
-  if (!blockQuery.data) {
+  if (!isLoading && !blockData) {
     return <div>Block not found</div>;
   }
-
-  const block = blockQuery.data;
 
   return (
     <>
       <DetailsLayout
-        title="Block Details"
-        externalLink={buildBlockExternalUrl(block.number)}
-      >
-        <InfoGrid
-          fields={[
-            { name: "Block Height", value: block.number },
-            { name: "Hash", value: block.hash },
-            {
-              name: "Timestamp",
-              value: (
-                <div className="whitespace-break-spaces">
-                  {formatTimestamp(block.timestamp)}
-                </div>
-              ),
-            },
-            {
-              name: "Slot",
-              value: (
-                <Link href={buildSlotExternalUrl(block.slot)} isExternal>
-                  {block.slot}
-                </Link>
-              ),
-            },
-          ]}
-        />
-      </DetailsLayout>
-      <SectionCard
-        header={<div>Blob Transactions ({block.transactions.length})</div>}
+        header="Block Details"
+        externalLink={
+          blockData ? buildBlockExternalUrl(blockData.number) : undefined
+        }
+        fields={
+          blockData
+            ? [
+                { name: "Block Height", value: blockData.number },
+                { name: "Hash", value: blockData.hash },
+                {
+                  name: "Timestamp",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(blockData.timestamp)}
+                    </div>
+                  ),
+                },
+                {
+                  name: "Slot",
+                  value: (
+                    <Link
+                      href={buildSlotExternalUrl(blockData.slot)}
+                      isExternal
+                    >
+                      {blockData.slot}
+                    </Link>
+                  ),
+                },
+              ]
+            : undefined
+        }
+      />
+
+      <Card
+        header={`Blob Transactions ${
+          blockData ? `(${blockData.transactions.length})` : ""
+        }`}
       >
         <div className="space-y-6">
-          {block.transactions.map((t) => (
-            <BlobTransactionCard key={t.hash} transaction={t} />
-          ))}
+          {isLoading || !blockData
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <BlobTransactionCard key={i} />
+              ))
+            : blockData.transactions.map((t) => (
+                <BlobTransactionCard key={t.hash} transaction={t} />
+              ))}
         </div>
-      </SectionCard>
+      </Card>
     </>
   );
 };

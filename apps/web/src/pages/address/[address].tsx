@@ -2,61 +2,65 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import { getPaginationParams } from "~/utils/pagination";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
-import { PageSpinner } from "~/components/Spinners/PageSpinner";
-
-const TXS_LIMIT = 20;
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
+import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { api } from "~/api-client";
+import { buildAddressExternalUrl } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
-  const address = router.query.address as string;
+  const { p, ps } = getPaginationParams(router.query);
+  const address = (router.query.address as string | undefined) ?? "";
 
-  const txQuery = api.tx.getByAddress.useQuery({ address, limit: TXS_LIMIT });
+  const { data: addressData, error } = api.tx.getByAddress.useQuery(
+    { address, p, ps },
+    { enabled: router.isReady },
+  );
 
-  if (txQuery.error) {
+  if (error) {
     return (
       <NextError
-        title={txQuery.error.message}
-        statusCode={txQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (txQuery.status !== "success") {
-    return <PageSpinner label="Loading address data..." />;
-  }
-
-  if (!txQuery.data) {
-    return <>Address has no data</>;
-  }
-
-  const txs = txQuery.data;
-
   return (
-    <div className="flex w-11/12 flex-col gap-8 md:gap-16">
-      <SectionCard
-        header={
-          <div className="flex">
-            <EthIdenticon address={address} />
-            <div className="sm:text-lge ml-2 text-base">Address</div>
-          </div>
-        }
-      >
-        <h2 className="truncate text-xs font-bold text-content-light dark:text-content-dark sm:text-lg">
-          {address}
-        </h2>
-      </SectionCard>
-      <SectionCard header={<div>Blob Transactions ({txs.length})</div>}>
-        <div className="space-y-6">
-          {txs.map((t) => (
-            <BlobTransactionCard key={t.hash} transaction={t} />
-          ))}
-        </div>
-      </SectionCard>
-    </div>
+    <>
+      <DetailsLayout
+        header="Address Details"
+        externalLink={buildAddressExternalUrl(address)}
+        fields={[
+          {
+            name: "Address",
+            value: (
+              <div className="flex items-center gap-2">
+                <div className="relative bottom-0.5">
+                  <EthIdenticon address={address} />
+                </div>
+                <div className="">{address}</div>
+              </div>
+            ),
+          },
+        ]}
+      />
+      <PaginatedListLayout
+        title={`Blob Transactions ${
+          addressData ? `(${addressData.totalTransactions})` : ""
+        }`}
+        items={addressData?.transactions.map((t) => (
+          <BlobTransactionCard key={t.hash} transaction={t} />
+        ))}
+        totalItems={addressData?.totalTransactions}
+        page={p}
+        pageSize={ps}
+        itemSkeleton={<BlobTransactionCard />}
+      />
+    </>
   );
 };
 

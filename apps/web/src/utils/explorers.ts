@@ -14,3 +14,7 @@ export function buildTransactionExternalUrl(id: string): string {
 export function buildSlotExternalUrl(slot: number) {
   return `${BEACON_BASE_URL}slot/${slot}`;
 }
+
+export function buildAddressExternalUrl(address: string) {
+  return `${BASE_URL}address/${address}`;
+}

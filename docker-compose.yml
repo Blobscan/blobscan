@@ -43,11 +43,20 @@ services:
     environment:
       SECRET_KEY: supersecret
       BLOBSCAN_API_ENDPOINT: http://localhost:23001
-      BEACON_NODE_RPC: http://localhost:5052
-      EXECUTION_NODE_URL: http://localhost:8545
+      BEACON_NODE_ENDPOINT: http://localhost:5052
+      EXECUTION_NODE_ENDPOINT: http://localhost:8545
+      RUST_LOG: "${RUST_LOG}"
     depends_on:
       api:
         condition: service_healthy
+
+  storage:
+    image: fsouza/fake-gcs-server
+    ports:
+      - "4443:4443"
+    command: -scheme http
+    volumes:
+      - storage_data:/storage
 
   postgres:
     image: postgres:14
@@ -62,3 +71,4 @@ services:
 
 volumes:
   postgres-data:
+  storage_data:

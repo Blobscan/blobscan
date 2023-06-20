@@ -1,18 +1,19 @@
 import React from "react";
-import { useRouter } from "next/router";
 
-import { DarkModeButton } from "~/components/DarkModeButton";
+import { ThemeModeButton } from "~/components/ThemeModeButton";
+import { useIsHomepage } from "~/hooks/useIsHomePage";
 import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";
+import { NavMenusSection } from "./NavMenusSection";
 
 export const TopBarLayout: React.FC = () => {
-  const { pathname } = useRouter();
-  const isHomePage = pathname === "/";
+  const isHomepage = useIsHomepage();
 
-  if (isHomePage) {
+  if (isHomepage) {
     return (
-      <nav className="z-10 flex h-16 w-full items-center justify-end px-4">
-        <DarkModeButton />
+      <nav className="z-10 flex h-16 w-full items-center justify-between px-4">
+        <NavMenusSection />
+        <ThemeModeButton />
       </nav>
     );
   }

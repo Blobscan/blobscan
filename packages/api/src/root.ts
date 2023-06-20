@@ -5,6 +5,7 @@ import { blobRouter } from "./router/blob";
 import { blockRouter } from "./router/block";
 import { indexerRouter } from "./router/indexer";
 import { searchRouter } from "./router/search";
+import { statsRouter } from "./router/stats";
 import { transactionRouter } from "./router/tx";
 import { createTRPCRouter, publicProcedure } from "./trpc";
 
@@ -32,6 +33,7 @@ export const appRouter = createTRPCRouter({
   blob: blobRouter,
   search: searchRouter,
   indexer: indexerRouter,
+  stats: statsRouter,
 });
 
 // export type definition of API

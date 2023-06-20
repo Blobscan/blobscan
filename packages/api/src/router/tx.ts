@@ -1,72 +1,54 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { Prisma } from "@blobscan/db";
-
-import { DEFAULT_LIMIT } from "../constants";
-import { createTRPCRouter, publicProcedure } from "../trpc";
-
-const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
-  id: false,
-  hash: true,
-  from: true,
-  to: true,
-  blockNumber: true,
-});
-
-export const fullTransactionSelect =
-  Prisma.validator<Prisma.TransactionSelect>()({
-    ...transactionSelect,
-    block: {
-      select: {
-        timestamp: true,
-      },
-    },
-    blobs: {
-      select: {
-        id: false,
-        versionedHash: true,
-        commitment: true,
-        index: true,
-      },
-    },
-  });
+import { fullTransactionSelect } from "../queries/tx";
+import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
 
 export const transactionRouter = createTRPCRouter({
-  getAll: publicProcedure
-    .input(
-      z.object({
-        limit: z.number().optional(),
-      }),
-    )
-    .query(({ ctx, input }) => {
-      const take = input.limit ?? DEFAULT_LIMIT;
-
-      return ctx.prisma.transaction.findMany({
+  getAll: paginatedProcedure.query(async ({ ctx }) => {
+    const [transactions, totalTransactions] = await Promise.all([
+      ctx.prisma.transaction.findMany({
         select: fullTransactionSelect,
         orderBy: { blockNumber: "desc" },
-        take,
-      });
-    }),
-  getByAddress: publicProcedure
+        ...ctx.pagination,
+      }),
+      ctx.prisma.transaction.count(),
+    ]);
+
+    return {
+      transactions,
+      totalTransactions,
+    };
+  }),
+  getByAddress: paginatedProcedure
     .input(
       z.object({
         address: z.string(),
-        limit: z.number().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { address, limit } = input;
-      const take = limit ?? DEFAULT_LIMIT;
+      const { address } = input;
 
-      return ctx.prisma.transaction.findMany({
-        select: fullTransactionSelect,
-        where: {
-          OR: [{ from: address }, { to: address }],
-        },
-        orderBy: { blockNumber: "desc" },
-        take,
-      });
+      const [transactions, totalTransactions] = await Promise.all([
+        ctx.prisma.transaction.findMany({
+          select: fullTransactionSelect,
+          where: {
+            OR: [{ fromId: address }, { toId: address }],
+          },
+          orderBy: { blockNumber: "desc" },
+          ...ctx.pagination,
+        }),
+        ctx.prisma.transaction.count({
+          where: {
+            OR: [{ fromId: address }, { toId: address }],
+          },
+        }),
+      ]);
+
+      return {
+        transactions,
+        totalTransactions,
+      };
     }),
   getByHash: publicProcedure
     .input(

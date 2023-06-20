@@ -1,28 +1,61 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import { TransactionCardSkeleton } from "~/components/Cards/BlobTransactionCard/Skeleton";
-import { BlockCard } from "~/components/Cards/BlockCard";
-import { BlockCardSkeleton } from "~/components/Cards/BlockCard/Skeleton";
-import { SectionCard } from "~/components/Cards/SectionCard";
+import { Card } from "~/components/Cards/Card";
+import { ChartCard } from "~/components/Cards/ChartCard";
+import { MetricCard } from "~/components/Cards/MetricCard";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
+import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
+import { api } from "~/api-client";
+import { bytesToKilobytes, formatDailyTransactionStats } from "~/utils";
 
-const BLOCKS_LIMIT = 4;
-const TXS_LIMIT = 5;
+const TOTAL_BLOCKS = 4;
+const TOTAL_TXS = 5;
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const blocksQuery = api.block.getAll.useQuery({
-    limit: BLOCKS_LIMIT,
+  const {
+    data: latestBlocks,
+    error: latestBlocksError,
+    isLoading: latestBlocksLoading,
+  } = api.block.getAll.useQuery({
+    p: 1,
+    ps: TOTAL_BLOCKS,
   });
-  const txsQuery = api.tx.getAll.useQuery({ limit: TXS_LIMIT });
-  const error = blocksQuery.error || txsQuery.error;
+  const {
+    data: latestTxs,
+    error: latestTxsError,
+    isLoading: latestTxsLoading,
+  } = api.tx.getAll.useQuery({
+    p: 1,
+    ps: TOTAL_TXS,
+  });
+  const { data: allOverallStats, error: allOverallStatsError } =
+    api.stats.getAllOverallStats.useQuery();
+  const { data: dailyTxStatsData, error: dailyTxStatsError } =
+    api.stats.transaction.getDailyStats.useQuery({
+      timeFrame: "15d",
+    });
+  const dailyTxStats = useMemo(
+    () =>
+      dailyTxStatsData
+        ? formatDailyTransactionStats(dailyTxStatsData)
+        : undefined,
+    [dailyTxStatsData],
+  );
+
+  const error =
+    latestBlocksError ||
+    latestTxsError ||
+    allOverallStatsError ||
+    dailyTxStatsError;
 
   if (error) {
     return (
@@ -33,14 +66,14 @@ const Home: NextPage = () => {
     );
   }
 
-  const { data: blocks } = blocksQuery;
-  const { data: txs } = txsQuery;
+  const blocks = latestBlocks?.blocks ?? [];
+  const txs = latestTxs?.transactions ?? [];
 
   return (
-    <div className="flex flex-col items-center justify-center gap-12 md:gap-24">
+    <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
-        <Logo size="lg" />
-        <div className="flex flex-col items-stretch justify-center space-y-2  md:w-8/12">
+        <Logo className="h-16 w-64 md:h-20 md:w-80 lg:h-20 lg:w-80" />
+        <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
           <SearchInput />
           <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
@@ -50,50 +83,112 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
-      <div className="flex w-11/12 flex-col gap-8 md:gap-16">
-        <SectionCard
+      <div className="flex w-11/12 flex-col gap-8 sm:gap-16">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
+          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
+            <MetricCard
+              name="Total Blocks"
+              value={allOverallStats?.block?.totalBlocks}
+              compact
+            />
+            <MetricCard
+              name="Total Transactions"
+              value={allOverallStats?.transaction?.totalTransactions}
+              compact
+            />
+            <MetricCard
+              name="Total Blobs"
+              value={allOverallStats?.blob?.totalBlobs}
+              compact
+            />
+            <MetricCard
+              name="Total Blob Size"
+              value={
+                allOverallStats?.blob?.totalBlobSize
+                  ? bytesToKilobytes(allOverallStats.blob.totalBlobSize)
+                  : 0
+              }
+              unit="KB"
+              compact
+            />
+            <MetricCard
+              name="Avg. Blob Size"
+              value={
+                allOverallStats?.blob?.avgBlobSize
+                  ? Number(
+                      bytesToKilobytes(
+                        allOverallStats?.blob?.avgBlobSize,
+                      ).toFixed(2),
+                    )
+                  : 0
+              }
+              unit="KB"
+              compact
+            />
+            <MetricCard
+              name="Total Unique Blobs"
+              value={allOverallStats?.blob?.totalUniqueBlobs ?? 0}
+              compact
+            />
+          </div>
+
+          <div className="col-span-2 sm:col-span-6">
+            <ChartCard title="Daily Transactions" size="sm">
+              {dailyTxStats && (
+                <DailyTransactionsChart
+                  days={dailyTxStats.days}
+                  transactions={dailyTxStats.transactions}
+                  compact
+                />
+              )}
+            </ChartCard>
+          </div>
+        </div>
+        <Card
           header={
             <div className="flex items-center justify-between">
               <div>Latest Blocks</div>{" "}
               <Button
                 variant="outline"
                 label="View All Blocks"
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={() => router.push("/blocks")}
+                onClick={() => void router.push("/blocks")}
               />
             </div>
           }
         >
-          <div className="flex flex-col gap-5 md:flex-row">
-            {blocksQuery.isLoading
-              ? Array(BLOCKS_LIMIT)
+          <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
+            {latestBlocksLoading
+              ? Array(TOTAL_BLOCKS)
                   .fill(0)
                   .map((_, i) => (
                     <div className="flex-grow" key={i}>
-                      <BlockCardSkeleton />
+                      <BlockCard />
                     </div>
                   ))
-              : blocks?.map((b) => <BlockCard key={b.hash} block={b} />)}
+              : blocks.map((b) => (
+                  <div className="flex-grow" key={b.hash}>
+                    <BlockCard block={b} />
+                  </div>
+                ))}
           </div>
-        </SectionCard>
-        <SectionCard
+        </Card>
+        <Card
           header={
             <div className="flex items-center justify-between">
               <div>Latest Blob Transactions</div>{" "}
               <Button
                 variant="outline"
-                label="View All Transactions"
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={() => router.push("/txs")}
+                label="View All Txs"
+                onClick={() => void router.push("/txs")}
               />
             </div>
           }
         >
           <div className=" flex flex-col gap-5">
-            {txsQuery.isLoading
-              ? Array(TXS_LIMIT)
+            {latestTxsLoading
+              ? Array(TOTAL_TXS)
                   .fill(0)
-                  .map((_, i) => <TransactionCardSkeleton key={i} />)
+                  .map((_, i) => <BlobTransactionCard key={i} />)
               : txs?.map((tx) => {
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   const { block, blockNumber, ...filteredTx } = tx;
@@ -107,7 +202,7 @@ const Home: NextPage = () => {
                   );
                 })}
           </div>
-        </SectionCard>
+        </Card>
       </div>
     </div>
   );
