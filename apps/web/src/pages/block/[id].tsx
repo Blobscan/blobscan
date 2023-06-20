@@ -2,15 +2,11 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter, type NextRouter } from "next/router";
 
-import { api } from "~/utils/api";
-import { BlobTransactionCard } from "~/components/Cards/BlobTransactionCard";
-import {
-  SectionCard,
-  SectionCardSkeleton,
-} from "~/components/Cards/SectionCard";
-import { DetailsLayout } from "~/components/DetailsLayout";
-import { InfoGrid } from "~/components/InfoGrid";
+import { Card } from "~/components/Cards/Card";
+import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { api } from "~/api-client";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
@@ -34,65 +30,72 @@ function performBlockQuery(router: NextRouter) {
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const blockQuery = performBlockQuery(router);
+  const { data: blockData, error, isLoading } = performBlockQuery(router);
 
-  if (blockQuery?.error) {
+  if (error) {
     return (
       <NextError
-        title={blockQuery.error.message}
-        statusCode={blockQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (blockQuery.status !== "success") {
-    return <SectionCardSkeleton header="Block Details" />;
-  }
-
-  if (!blockQuery.data) {
+  if (!isLoading && !blockData) {
     return <div>Block not found</div>;
   }
-
-  const block = blockQuery.data;
 
   return (
     <>
       <DetailsLayout
-        title="Block Details"
-        externalLink={buildBlockExternalUrl(block.number)}
-      >
-        <InfoGrid
-          fields={[
-            { name: "Block Height", value: block.number },
-            { name: "Hash", value: block.hash },
-            {
-              name: "Timestamp",
-              value: (
-                <div className="whitespace-break-spaces">
-                  {formatTimestamp(block.timestamp)}
-                </div>
-              ),
-            },
-            {
-              name: "Slot",
-              value: (
-                <Link href={buildSlotExternalUrl(block.slot)} isExternal>
-                  {block.slot}
-                </Link>
-              ),
-            },
-          ]}
-        />
-      </DetailsLayout>
-      <SectionCard
-        header={<div>Blob Transactions ({block.transactions.length})</div>}
+        header="Block Details"
+        externalLink={
+          blockData ? buildBlockExternalUrl(blockData.number) : undefined
+        }
+        fields={
+          blockData
+            ? [
+                { name: "Block Height", value: blockData.number },
+                { name: "Hash", value: blockData.hash },
+                {
+                  name: "Timestamp",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(blockData.timestamp)}
+                    </div>
+                  ),
+                },
+                {
+                  name: "Slot",
+                  value: (
+                    <Link
+                      href={buildSlotExternalUrl(blockData.slot)}
+                      isExternal
+                    >
+                      {blockData.slot}
+                    </Link>
+                  ),
+                },
+              ]
+            : undefined
+        }
+      />
+
+      <Card
+        header={`Blob Transactions ${
+          blockData ? `(${blockData.transactions.length})` : ""
+        }`}
       >
         <div className="space-y-6">
-          {block.transactions.map((t) => (
-            <BlobTransactionCard key={t.hash} transaction={t} />
-          ))}
+          {isLoading || !blockData
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <BlobTransactionCard key={i} />
+              ))
+            : blockData.transactions.map((t) => (
+                <BlobTransactionCard key={t.hash} transaction={t} />
+              ))}
         </div>
-      </SectionCard>
+      </Card>
     </>
   );
 };

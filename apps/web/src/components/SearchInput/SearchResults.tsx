@@ -2,9 +2,9 @@ import React from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CpuChipIcon, CubeIcon } from "@heroicons/react/24/solid";
 
-import { type RouterOutputs } from "~/utils/api";
+import { type RouterOutputs } from "~/api-client";
 import { capitalize } from "~/utils";
-import { SectionCard } from "../Cards/SectionCard";
+import { Card } from "../Cards/Card";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];
 type SearchCategory = keyof SearchOutput;
@@ -75,7 +75,7 @@ export const SearchResults: React.FC<SearchResultsProps> = function ({
   if (!categories.length) return null;
 
   return (
-    <SectionCard className="px-3 py-4">
+    <Card className="px-3 py-4">
       <div className="flex flex-col">
         {categories.map((c) => (
           <React.Fragment key={c}>
@@ -93,6 +93,6 @@ export const SearchResults: React.FC<SearchResultsProps> = function ({
           </React.Fragment>
         ))}
       </div>
-    </SectionCard>
+    </Card>
   );
 };

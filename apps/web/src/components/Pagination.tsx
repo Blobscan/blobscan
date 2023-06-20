@@ -1,6 +1,10 @@
 import { useEffect, useState, type FC } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
+import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "react-loading-skeleton";
+
+import { NOOP } from "~/utils";
 import { Button } from "./Button";
 import { Input } from "./Input";
 
@@ -10,7 +14,7 @@ type NavigationButton = {
 };
 
 export type PaginationProps = {
-  pages: number;
+  pages?: number;
   selected: number;
   inverseCompact?: boolean;
   onChange(page: number): void;
@@ -55,8 +59,9 @@ export const Pagination: FC<PaginationProps> = function ({
   inverseCompact = false,
 }) {
   const [pageInput, setPageInput] = useState(selected);
-  const isFirstPage = selected === 1;
-  const isLastPage = selected === pages;
+  const isUndefined = pages === undefined;
+  const disableFirst = selected === 1 || isUndefined;
+  const disableLast = selected === pages || isUndefined;
 
   // Keep inner page input value in sync
   useEffect(() => {
@@ -77,20 +82,20 @@ export const Pagination: FC<PaginationProps> = function ({
       >
         <div className="block sm:hidden">
           <div className="flex justify-between gap-2">
-            <FirstButton disabled={isFirstPage} onChange={onChange} />
+            <FirstButton disabled={disableFirst} onChange={onChange} />
             <LastButton
-              disabled={isLastPage}
-              lastPage={pages}
+              disabled={disableLast}
+              lastPage={pages ?? 0}
               onChange={onChange}
             />
           </div>
         </div>
         <div className="flex w-full justify-between gap-2 align-middle">
           <div className="hidden sm:block">
-            <FirstButton disabled={isFirstPage} onChange={onChange} />
+            <FirstButton disabled={disableFirst} onChange={onChange} />
           </div>
           <Button
-            disabled={isFirstPage}
+            disabled={disableFirst}
             variant="outline"
             size="sm"
             icon={
@@ -104,6 +109,7 @@ export const Pagination: FC<PaginationProps> = function ({
           <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
             <div className="w-20 font-light">
               <Input
+                disabled={isUndefined}
                 className="text-sm"
                 type="number"
                 min={1}
@@ -113,10 +119,20 @@ export const Pagination: FC<PaginationProps> = function ({
                 onChange={(e) => setPageInput(Number(e.target.value))}
               />
             </div>
-            <div className="self-center font-normal"> of {pages}</div>
+            <div className="self-center font-normal">
+              {" "}
+              of{" "}
+              {isUndefined ? (
+                <span>
+                  <Skeleton width={33} />
+                </span>
+              ) : (
+                pages
+              )}
+            </div>
           </div>
           <Button
-            disabled={isLastPage}
+            disabled={disableLast}
             variant="outline"
             size="sm"
             icon={
@@ -125,12 +141,14 @@ export const Pagination: FC<PaginationProps> = function ({
                 <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
               </div>
             }
-            onClick={() => onChange(Math.min(pages, selected + 1))}
+            onClick={
+              pages ? () => onChange(Math.min(pages, selected + 1)) : NOOP
+            }
           />
           <div className="hidden sm:block">
             <LastButton
-              disabled={isLastPage}
-              lastPage={pages}
+              disabled={disableLast}
+              lastPage={pages ?? 0}
               onChange={onChange}
             />
           </div>

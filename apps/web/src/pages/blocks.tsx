@@ -2,49 +2,38 @@ import { type NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
-import { api } from "~/utils/api";
 import { getPaginationParams } from "~/utils/pagination";
-import { BlockCard, BlockCardSkeleton } from "~/components/Cards/BlockCard";
-import {
-  PaginatedListSection,
-  PaginatedListSectionSkeleton,
-} from "~/components/PaginatedListSection";
+import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
+import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { api } from "~/api-client";
 
 const Blocks: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
-  const blocksQuery = api.block.getAll.useQuery({ p, ps });
+  const { error, data } = api.block.getAll.useQuery({ p, ps });
 
-  if (blocksQuery?.error) {
+  if (error) {
     return (
       <NextError
-        title={blocksQuery.error.message}
-        statusCode={blocksQuery.error.data?.httpStatus ?? 500}
+        title={error.message}
+        statusCode={error.data?.httpStatus ?? 500}
       />
     );
   }
 
-  if (blocksQuery.status !== "success") {
-    return (
-      <PaginatedListSectionSkeleton
-        header="Blocks"
-        skeletonItem={<BlockCardSkeleton />}
-      />
-    );
-  }
-
-  const { blocks, totalBlocks } = blocksQuery.data;
+  const { blocks, totalBlocks } = data ?? {};
 
   return (
-    <PaginatedListSection
-      header={`Blocks (${totalBlocks})`}
-      items={blocks.map((b) => (
+    <PaginatedListLayout
+      header={`Blocks ${totalBlocks ? `(${totalBlocks})` : ""}`}
+      items={blocks?.map((b) => (
         <BlockCard key={b.hash} block={b} />
       ))}
       totalItems={totalBlocks}
       page={p}
       pageSize={ps}
+      itemSkeleton={<BlockCard />}
     />
   );
 };

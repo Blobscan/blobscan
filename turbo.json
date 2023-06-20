@@ -2,20 +2,21 @@
   "$schema": "https://turborepo.org/schema.json",
   "globalDependencies": ["**/.env"],
   "pipeline": {
-    "db:generate": {
+    "generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
-    "db:push": {
+    "push": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
     "dev": {
+      "dependsOn": ["generate"],
       "persistent": true,
       "cache": false
     },
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
+      "dependsOn": ["^build", "^generate"],
       "outputs": [".next/**"]
     },
     "lint": {},
@@ -27,7 +28,7 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": ["^generate"],
       "cache": false
     }
   },
@@ -35,16 +36,22 @@
     "AUTH0_CLIENT_ID",
     "AUTH0_CLIENT_SECRET",
     "AUTH0_ISSUER",
+    "BEE_DEBUG_ENDPOINT",
+    "BEE_ENDPOINT",
+    "BLOBSCAN_API_PORT",
+    "CHAIN_ID",
     "CI",
     "DATABASE_URL",
-    "SECRET_KEY",
+    "GOOGLE_STORAGE_BUCKET_NAME",
+    "GOOGLE_STORAGE_PROJECT_ID",
+    "GOOGLE_SERVICE_KEY",
     "NEXTAUTH_URL",
-    "NODE_ENV",
-    "SKIP_ENV_VALIDATION",
-    "VERCEL",
-    "VERCEL_URL",
-    "BLOBSCAN_API_PORT",
     "NEXT_PUBLIC_EXPLORER_BASE_URL",
-    "NEXT_PUBLIC_BEACON_BASE_URL"
+    "NEXT_PUBLIC_BEACON_BASE_URL",
+    "NODE_ENV",
+    "SECRET_KEY",
+    "SKIP_ENV_VALIDATION",
+    "VERCEL_URL",
+    "TS_NODE"
   ]
 }

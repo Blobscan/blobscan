@@ -5,8 +5,8 @@ import superjson from "superjson";
 
 import { appRouter, createTRPCInnerContext } from "@blobscan/api";
 
-import { type RouterOutputs } from "~/utils/api";
 import { Button } from "~/components/Button";
+import { type RouterOutputs } from "~/api-client";
 import { getRouteBySearchCategory } from "~/utils";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];

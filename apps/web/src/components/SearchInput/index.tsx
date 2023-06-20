@@ -9,7 +9,7 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-import { api, type RouterOutputs } from "~/utils/api";
+import { api, type RouterOutputs } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
 import { getRouteBySearchCategory } from "~/utils";

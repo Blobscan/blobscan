@@ -1,35 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { Prisma } from "@blobscan/db";
-
+import { fullTransactionSelect } from "../queries/tx";
 import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
-
-const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
-  id: false,
-  hash: true,
-  from: true,
-  to: true,
-  blockNumber: true,
-});
-
-export const fullTransactionSelect =
-  Prisma.validator<Prisma.TransactionSelect>()({
-    ...transactionSelect,
-    block: {
-      select: {
-        timestamp: true,
-      },
-    },
-    blobs: {
-      select: {
-        id: false,
-        versionedHash: true,
-        commitment: true,
-        index: true,
-      },
-    },
-  });
 
 export const transactionRouter = createTRPCRouter({
   getAll: paginatedProcedure.query(async ({ ctx }) => {
@@ -60,14 +33,14 @@ export const transactionRouter = createTRPCRouter({
         ctx.prisma.transaction.findMany({
           select: fullTransactionSelect,
           where: {
-            OR: [{ from: address }, { to: address }],
+            OR: [{ fromId: address }, { toId: address }],
           },
           orderBy: { blockNumber: "desc" },
           ...ctx.pagination,
         }),
         ctx.prisma.transaction.count({
           where: {
-            OR: [{ from: address }, { to: address }],
+            OR: [{ fromId: address }, { toId: address }],
           },
         }),
       ]);

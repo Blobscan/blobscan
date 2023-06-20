@@ -15,6 +15,7 @@ export function ThemeModeButton() {
 
   return (
     <Button
+      className="text-icon-light hover:text-iconHighlight-light dark:text-icon-dark hover:dark:text-iconHighlight-dark"
       variant="icon"
       icon={
         resolvedTheme === "dark" ? (

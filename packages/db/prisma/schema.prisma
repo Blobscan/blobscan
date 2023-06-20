@@ -11,40 +11,118 @@ datasource db {
 }
 
 model IndexerMetadata {
-  id          Int         @id
-  lastSlot    Int         @unique
+  id       Int @id
+  lastSlot Int @unique
+}
+
+model Address {
+  address                String        @id
+  isSender               Boolean
+  isReceiver             Boolean
+  transactionsAsSender   Transaction[] @relation("fromRelation")
+  transactionsAsReceiver Transaction[] @relation("toRelation")
 }
 
 model Blob {
-  id          Int         @id @default(autoincrement())
-  versionedHash String
-  commitment  String
-  data        String      @db.Text
-  txHash      String
-  index       Int
-  @@unique([txHash, index])
-  transaction Transaction @relation(fields: [txHash], references: [hash])
+  id            String                @id
+  versionedHash String                @unique
+  commitment    String                @unique
+  gsUri         String                @unique
+  swarmHash     String                @unique
+  size          Int
+  transactions  BlobsOnTransactions[]
 }
 
 model Block {
-  id          Int           @id
-  hash        String        @unique 
-  number      Int           @unique
-  timestamp   Int           @unique
-  slot        Int           @unique
+  id           Int           @id
+  hash         String        @unique
+  number       Int           @unique
+  timestamp    DateTime      @unique
+  slot         Int           @unique
   transactions Transaction[]
 }
 
 model Transaction {
-  id        String          @id
-  hash      String          @unique
-  from      String
-  to        String?
+  id          String                @id
+  hash        String                @unique
+  fromId      String
+  toId        String?
   blockNumber Int
-  blobs      Blob[]
-  block     Block  @relation(fields: [blockNumber], references: [number])
+  timestamp   DateTime
+  blobs       BlobsOnTransactions[]
+  block       Block                 @relation(fields: [blockNumber], references: [number])
+  from        Address               @relation("fromRelation", fields: [fromId], references: [address])
+  to          Address?              @relation("toRelation", fields: [toId], references: [address])
 }
 
+model BlobsOnTransactions {
+  blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
+  blobHash    String
+  transaction Transaction @relation(fields: [txHash], references: [hash])
+  txHash      String
+  index       Int
+
+  @@id([txHash, index])
+}
+
+// Block Metrics
+model BlockOverallStats {
+  id          Int      @id @default(autoincrement())
+  totalBlocks Int
+  updatedAt   DateTime
+}
+
+model BlockDailyStats {
+  id          Int      @id @default(autoincrement())
+  day         DateTime @db.Date
+  totalBlocks Int
+
+  @@unique([day])
+  @@index([day])
+}
+
+// Transaction metrics
+
+model TransactionOverallStats {
+  id                   Int      @id @default(autoincrement())
+  totalTransactions    Int
+  totalUniqueReceivers Int
+  totalUniqueSenders   Int
+  updatedAt            DateTime
+}
+
+model TransactionDailyStats {
+  id                   Int      @id @default(autoincrement())
+  day                  DateTime @db.Date
+  totalTransactions    Int
+  totalUniqueSenders   Int
+  totalUniqueReceivers Int
+
+  @@unique([day])
+  @@index([day])
+}
+
+// Blob metrics
+model BlobOverallStats {
+  id               Int      @id @default(autoincrement())
+  totalBlobs       Int
+  totalUniqueBlobs Int
+  totalBlobSize    BigInt
+  avgBlobSize      Float
+  updatedAt        DateTime
+}
+
+model BlobDailyStats {
+  id               Int      @id @default(autoincrement())
+  day              DateTime @db.Date
+  totalBlobs       Int
+  totalUniqueBlobs Int
+  totalBlobSize    BigInt
+  avgBlobSize      Float
+
+  @@unique([day])
+  @@index([day])
+}
 
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
