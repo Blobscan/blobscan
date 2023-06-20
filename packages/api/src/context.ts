@@ -11,7 +11,7 @@ import { prisma } from "@blobscan/db";
 
 import { storage } from "./clients/google";
 import { swarm } from "./clients/swarm";
-import { SECRET } from "./env";
+import { env } from "./env";
 
 type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
@@ -35,7 +35,7 @@ function getJWTFromRequest(
       return null;
     }
 
-    const decoded = jwt.verify(token, SECRET) as string;
+    const decoded = jwt.verify(token, env.SECRET_KEY) as string;
 
     return decoded;
   } catch (err) {

@@ -1,45 +1,31 @@
-const BEE_DEBUG_ENDPOINT = process.env.BEE_DEBUG_ENDPOINT;
-const BEE_ENDPOINT = process.env.BEE_ENDPOINT;
-const CHAIN_ID = process.env.CHAIN_ID;
-const GOOGLE_STORAGE_BUCKET_NAME = process.env.GOOGLE_STORAGE_BUCKET_NAME;
-const GOOGLE_STORAGE_PROJECT_ID = process.env.GOOGLE_STORAGE_PROJECT_ID;
-const GOOGLE_SERVICE_KEY = process.env.GOOGLE_SERVICE_KEY;
-const SECRET_KEY = process.env.SECRET_KEY;
+import { z } from "zod";
 
-if (!BEE_DEBUG_ENDPOINT) {
-  throw new Error("BEE_DEBUG_ENDPOINT is not set");
-}
+export const env = z
+  .object({
+    BEE_DEBUG_ENDPOINT: z.string().url(),
+    BEE_ENDPOINT: z.string().url(),
+    CHAIN_ID: z
+      .string()
+      .min(1)
+      .transform((value, ctx) => {
+        const chainId = parseInt(value, 10);
 
-if (!BEE_ENDPOINT) {
-  throw new Error("BEE_ENDPOINT is not set");
-}
+        if (isNaN(chainId) || chainId <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "CHAIN_ID must be a number greater than 0",
+          });
 
-if (!CHAIN_ID) {
-  throw new Error("CHAIN_ID is not set");
-}
+          return z.NEVER;
+        }
 
-if (!GOOGLE_STORAGE_BUCKET_NAME) {
-  throw new Error("GOOGLE_STORAGE_BUCKET_NAME is not set");
-}
+        return chainId;
+      }),
+    GOOGLE_STORAGE_BUCKET_NAME: z.string().default("blobscan-storage"),
+    GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
+    GOOGLE_SERVICE_KEY: z.string().optional(),
+    SECRET_KEY: z.string().default("supersecret"),
 
-if (!SECRET_KEY) {
-  throw new Error("SECRET_KEY is not set");
-}
-
-const BUCKET_NAME = GOOGLE_STORAGE_BUCKET_NAME;
-const BEE_DEBUG = BEE_DEBUG_ENDPOINT;
-const BEE = BEE_ENDPOINT;
-const NETWORK = CHAIN_ID;
-const SECRET = SECRET_KEY;
-const SERVICE_KEY = GOOGLE_SERVICE_KEY;
-const STORAGE_PROJECT_ID = GOOGLE_STORAGE_PROJECT_ID;
-
-export {
-  BUCKET_NAME,
-  BEE_DEBUG as BEE_DEBUG_ENDPOINT,
-  BEE as BEE_ENDPOINT,
-  NETWORK as CHAIN_ID,
-  SECRET,
-  SERVICE_KEY as GOOGLE_SERVICE_KEY,
-  STORAGE_PROJECT_ID,
-};
+    NODE_ENV: z.string(),
+  })
+  .parse(process.env);

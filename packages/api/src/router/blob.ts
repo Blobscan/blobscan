@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { BUCKET_NAME } from "../env";
+import { env } from "../env";
 import { blobSelect, blobsOnTransactionsSelect } from "../queries/blob";
 import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
 
@@ -46,7 +46,7 @@ export const blobRouter = createTRPCRouter({
       const { blob, blobHash, transaction } = blobOnTransaction;
 
       const blobData = await ctx.storage
-        .bucket(BUCKET_NAME)
+        .bucket(env.GOOGLE_STORAGE_BUCKET_NAME)
         .file(blob.gsUri)
         .download();
 

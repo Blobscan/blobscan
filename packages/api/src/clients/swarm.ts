@@ -1,8 +1,8 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
-import { BEE_DEBUG_ENDPOINT, BEE_ENDPOINT } from "../env";
+import { env } from "../env";
 
 export const swarm = {
-  bee: new Bee(BEE_ENDPOINT),
-  beeDebug: new BeeDebug(BEE_DEBUG_ENDPOINT),
+  bee: new Bee(env.BEE_ENDPOINT),
+  beeDebug: new BeeDebug(env.BEE_DEBUG_ENDPOINT),
 };

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { statsAggregator } from "@blobscan/db";
 
-import { BUCKET_NAME } from "../env";
+import { env } from "../env";
 import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
 import { getNewBlobs, getUniqueAddressesFromTxs } from "../utils/indexer";
@@ -120,7 +120,7 @@ export const indexerRouter = createTRPCRouter({
       const batchId = batches[0].batchID;
       const uploadBlobsPromise = newBlobs.map(async (b) => {
         const uploadBlobsToGoogleStoragePromise = storage
-          .bucket(BUCKET_NAME)
+          .bucket(env.GOOGLE_STORAGE_BUCKET_NAME)
           .file(buildGoogleStorageUri(b.versionedHash))
           .save(b.data);
 
@@ -211,15 +211,15 @@ export const indexerRouter = createTRPCRouter({
         uniqueFromAddresses.existing.length + uniqueFromAddresses.new.length;
 
       const updateBlockOverallStatsPromise =
-        statsAggregator.block.updateOverallBlockStats(1);
+        statsAggregator.block.upsertOverallBlockStats(1);
       const updateTxOverallStatsPromise =
-        statsAggregator.tx.updateOverallTxStats(
+        statsAggregator.tx.upsertOverallTxStats(
           input.transactions.length,
           totalReceivers,
           totalSenders,
         );
       const updateBlobOverallStatsPromise =
-        statsAggregator.blob.updateOverallBlobStats(
+        statsAggregator.blob.upsertOverallBlobStats(
           input.blobs.length,
           uploadedBlobs.length,
           uploadedBlobsSize,
