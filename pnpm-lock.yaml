@@ -4,6 +4,9 @@ importers:
 
   .:
     dependencies:
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:packages/dayjs
       '@blobscan/db':
         specifier: 0.0.1
         version: link:packages/db
@@ -89,6 +92,9 @@ importers:
       '@blobscan/api':
         specifier: 0.0.1
         version: link:../../packages/api
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../../packages/dayjs
       '@blobscan/db':
         specifier: 0.0.1
         version: link:../../packages/db
@@ -134,9 +140,6 @@ importers:
       classnames:
         specifier: ^2.3.2
         version: 2.3.2
-      dayjs:
-        specifier: ^1.11.7
-        version: 1.11.7
       echarts:
         specifier: ^5.4.2
         version: 5.4.2
@@ -210,6 +213,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../dayjs
       '@blobscan/db':
         specifier: 0.0.1
         version: link:../db
@@ -222,9 +228,6 @@ importers:
       '@trpc/server':
         specifier: ^10.23.0
         version: 10.23.0
-      dayjs:
-        specifier: ^1.11.7
-        version: 1.11.7
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.0
@@ -325,8 +328,17 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1(postcss@8.4.21)(ts-node@10.9.1)
 
+  packages/dayjs:
+    dependencies:
+      dayjs:
+        specifier: ^1.11.7
+        version: 1.11.7
+
   packages/db:
     dependencies:
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../dayjs
       '@prisma/client':
         specifier: ^4.12.0
         version: 4.12.0(prisma@4.12.0)
@@ -334,9 +346,6 @@ importers:
       '@faker-js/faker':
         specifier: ^8.0.2
         version: 8.0.2
-      dayjs:
-        specifier: ^1.11.7
-        version: 1.11.7
       js-sha256:
         specifier: ^0.9.0
         version: 0.9.0
@@ -346,8 +355,6 @@ importers:
       typescript:
         specifier: ^5.0.3
         version: 5.0.3
-
-  packages/zod: {}
 
 packages:
 
@@ -2395,6 +2402,7 @@ packages:
 
   /dayjs@1.11.7:
     resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: false
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}

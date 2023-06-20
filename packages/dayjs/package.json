@@ -1,0 +1,10 @@
+{
+  "name": "@blobscan/dayjs",
+  "description": "Blobscan's Day.js shared library",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./index.ts",
+  "dependencies": {
+    "dayjs": "^1.11.7"
+  }
+}

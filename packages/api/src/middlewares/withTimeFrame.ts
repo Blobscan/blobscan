@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
 import { z } from "zod";
+
+import dayjs from "@blobscan/dayjs";
 
 import { t } from "../clients/trpc";
 

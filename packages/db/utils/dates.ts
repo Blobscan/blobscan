@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
-import dayjs, { type Dayjs } from "dayjs";
+
+import dayjs from "@blobscan/dayjs";
 
 export type DatePeriod = {
   from?: string;
@@ -7,7 +8,7 @@ export type DatePeriod = {
 };
 
 export function normalizeDate(
-  date: Dayjs | string | Date,
+  date: dayjs.Dayjs | string | Date,
   startOfOrEndOfDay: "startOf" | "endOf" = "endOf",
 ) {
   const date_ = dayjs(date);

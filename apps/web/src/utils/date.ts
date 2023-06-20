@@ -1,4 +1,4 @@
-import dayjs from "../dayjs";
+import dayjs from "@blobscan/dayjs";
 
 export function formatTimestamp(timestamp: number | Date) {
   const unixHandler =

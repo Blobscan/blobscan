@@ -25,7 +25,5 @@ export const env = z
     GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
     GOOGLE_SERVICE_KEY: z.string().optional(),
     SECRET_KEY: z.string().default("supersecret"),
-
-    NODE_ENV: z.string(),
   })
   .parse(process.env);

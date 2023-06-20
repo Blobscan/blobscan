@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { Storage } from "@google-cloud/storage";
 import { PrismaClient, type Prisma } from "@prisma/client";
-import dayjs from "dayjs";
 import { sha256 } from "js-sha256";
+
+import dayjs from "@blobscan/dayjs";
 
 import { StatsAggregator } from "../StatsAggregator";
 
