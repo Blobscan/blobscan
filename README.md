@@ -74,6 +74,12 @@ In case you want to reset the database and wipe the data:
 docker compose exec api npx prisma migrate reset --schema packages/db/prisma/schema.prisma
 ```
 
+If the container is rebooting all the time because it is failing, you can still get a shell on it:
+
+```
+docker compose run --entrypoint bash api
+```
+
 ### Staging environment
 
 Example `.env` file
