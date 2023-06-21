@@ -1,13 +1,12 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { statsAggregator } from "@blobscan/db";
+import { statsAggregator, type Prisma } from "@blobscan/db";
 
-import { env } from "../env";
-import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
 import { getNewBlobs, getUniqueAddressesFromTxs } from "../utils/indexer";
-import { buildGoogleStorageUri } from "../utils/storages";
 
 const INDEXER_PATH = "/indexer";
 const INDEX_REQUEST_DATA = z.object({
@@ -93,21 +92,10 @@ export const indexerRouter = createTRPCRouter({
     })
     .input(INDEX_REQUEST_DATA)
     .output(z.void())
-    .mutation(async ({ ctx: { prisma, storage, swarm }, input }) => {
+    .mutation(async ({ ctx: { prisma, blobStorageManager }, input }) => {
       const timestamp = new Date(input.block.timestamp * 1000);
 
-      // 1. Check we have enough swarm postages
-
-      const batches = await swarm.beeDebug.getAllPostageBatch();
-
-      if (batches.length === 0 || batches[0]?.batchID === undefined) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Not available Swarm postages`,
-        });
-      }
-
-      // 2. Fetch unique addresses from transactions & check for existing blobs
+      // 1. Fetch unique addresses from transactions & check for existing blobs
 
       const [{ uniqueFromAddresses, uniqueToAddresses }, newBlobs] =
         await Promise.all([
@@ -115,42 +103,34 @@ export const indexerRouter = createTRPCRouter({
           getNewBlobs(prisma, input.blobs),
         ]);
 
-      // 3. Upload blobs' data to Google Storage and Swarm
+      // 2. Upload blobs' data to storages
+      let uploadedBlobs: Prisma.BlobCreateInput[] = [];
+      try {
+        const uploadBlobsPromises = newBlobs.map<
+          Promise<Prisma.BlobCreateInput>
+        >(async (b) => {
+          const blobReferences = await blobStorageManager.storeBlob(b);
 
-      const batchId = batches[0].batchID;
-      const uploadBlobsPromise = newBlobs.map(async (b) => {
-        const uploadBlobsToGoogleStoragePromise = storage
-          .bucket(env.GOOGLE_STORAGE_BUCKET_NAME)
-          .file(buildGoogleStorageUri(b.versionedHash))
-          .save(b.data);
+          return {
+            id: b.versionedHash,
+            versionedHash: b.versionedHash,
+            commitment: b.commitment,
+            gsUri: blobReferences.google,
+            swarmHash: blobReferences.swarm,
+            size: calculateBlobSize(b.data),
+          };
+        });
 
-        const uploadBlobsToSwarmPromise = swarm.bee.uploadFile(
-          batchId,
-          b.data,
-          buildGoogleStorageUri(b.versionedHash),
-          {
-            pin: true,
-            contentType: "text/plain",
-          },
-        );
+        uploadedBlobs = await Promise.all(uploadBlobsPromises);
+      } catch (err_) {
+        const err = err_ as Error;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to upload blobs to storages: ${err.message}`,
+        });
+      }
 
-        const [, swarmUploadData] = await Promise.all([
-          uploadBlobsToGoogleStoragePromise,
-          uploadBlobsToSwarmPromise,
-        ]);
-
-        return {
-          id: b.versionedHash,
-          versionedHash: b.versionedHash,
-          commitment: b.commitment,
-          gsUri: buildGoogleStorageUri(b.versionedHash),
-          swarmHash: swarmUploadData.reference.toString(),
-          size: calculateBlobSize(b.data),
-        };
-      });
-      const uploadedBlobs = await Promise.all(uploadBlobsPromise);
-
-      // 4. Prepare block, transaction and blob insertions
+      // 3. Prepare block, transaction and blob insertions
 
       const createBlobsDataPromise = prisma.blob.createMany({
         data: uploadedBlobs,
@@ -199,7 +179,7 @@ export const indexerRouter = createTRPCRouter({
           skipDuplicates: true,
         });
 
-      // 5. Prepare overall stats incremental updates
+      // 4. Prepare overall stats incremental updates
 
       const uploadedBlobsSize = uploadedBlobs.reduce(
         (totalBlobSize, b) => totalBlobSize + b.size,
@@ -225,7 +205,7 @@ export const indexerRouter = createTRPCRouter({
           uploadedBlobsSize,
         );
 
-      // 6. Execute all database operations in a single transaction
+      // 5. Execute all database operations in a single transaction
 
       await prisma.$transaction([
         createBlockPromise,

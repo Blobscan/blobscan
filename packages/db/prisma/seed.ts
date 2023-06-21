@@ -1,18 +1,17 @@
 import { faker } from "@faker-js/faker";
-import { Storage } from "@google-cloud/storage";
 import { PrismaClient, type Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
+import {
+  blobStorageManager,
+  type GoogleStorage,
+} from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { StatsAggregator } from "../StatsAggregator";
 
 const prisma = new PrismaClient();
 const statsAggregator = new StatsAggregator(prisma);
-
-const storage = new Storage({ apiEndpoint: "http://localhost:4443" });
-const BUCKET_NAME = process.env.GOOGLE_STORAGE_BUCKET_NAME ?? "blobscan-dev";
-const CHAIN_ID = process.env.CHAIN_ID ?? 100;
 
 const TOTAL_DAYS = 30;
 const MIN_BLOCKS_PER_DAY = 100;
@@ -28,10 +27,10 @@ const UNIQUE_ADDRESSES_AMOUNT = 1000;
 const MAX_BLOB_BYTES_SIZE = 2048; // in bytes
 
 function buildGoogleStorageUri(hash: string): string {
-  return `${CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(4, 6)}/${hash.slice(
+  return `${process.env.CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(
+    4,
     6,
-    8,
-  )}/${hash.slice(2)}.txt`;
+  )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
 }
 
 function generateUniqueTimestamps(
@@ -103,6 +102,9 @@ function generateUniqueAddresses(amount: number) {
 }
 
 async function main() {
+  const google = blobStorageManager.getStorage("google") as GoogleStorage;
+  await google.setUpBucket();
+
   const timestamps = generateUniqueTimestamps(
     TOTAL_DAYS,
     MIN_BLOCKS_PER_DAY,
@@ -200,19 +202,9 @@ async function main() {
     blobsOnTxs.some((bot) => bot.blobHash === b.versionedHash),
   );
 
-  const uploadBlobsPromise = blobs.map(async (b) => {
-    const [blobExists] = await storage
-      .bucket(BUCKET_NAME)
-      .file(b.gsUri)
-      .exists();
-
-    if (!blobExists) {
-      await storage
-        .bucket(BUCKET_NAME)
-        .file(buildGoogleStorageUri(b.versionedHash))
-        .save(b.data);
-    }
-  });
+  const uploadBlobsPromise = uniqueBlobs.map(async (b) =>
+    blobStorageManager.storeBlob(b),
+  );
   await Promise.all(uploadBlobsPromise);
 
   const addressToAddressEntity = txs.reduce<

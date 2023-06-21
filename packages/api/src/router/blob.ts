@@ -1,9 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { env } from "../env";
+import { paginatedProcedure } from "../middlewares/withPagination";
 import { blobSelect, blobsOnTransactionsSelect } from "../queries/blob";
-import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const blobRouter = createTRPCRouter({
   getAll: paginatedProcedure.query(async ({ ctx }) => {
@@ -27,14 +27,12 @@ export const blobRouter = createTRPCRouter({
         index: z.number(),
       }),
     )
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
       const { txHash, index } = input;
-      const blobOnTransaction = await ctx.prisma.blobsOnTransactions.findUnique(
-        {
-          select: blobsOnTransactionsSelect,
-          where: { txHash_index: { txHash, index } },
-        },
-      );
+      const blobOnTransaction = await prisma.blobsOnTransactions.findUnique({
+        select: blobsOnTransactionsSelect,
+        where: { txHash_index: { txHash, index } },
+      });
 
       if (!blobOnTransaction) {
         throw new TRPCError({
@@ -45,10 +43,20 @@ export const blobRouter = createTRPCRouter({
 
       const { blob, blobHash, transaction } = blobOnTransaction;
 
-      const blobData = await ctx.storage
-        .bucket(env.GOOGLE_STORAGE_BUCKET_NAME)
-        .file(blob.gsUri)
-        .download();
+      const blobData = await blobStorageManager.getBlob([
+        {
+          storage: "google",
+          reference: blob.gsUri,
+        },
+        { storage: "swarm", reference: blob.swarmHash },
+      ]);
+
+      if (!blobData) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No blob data with gs uri ${blob.gsUri} or swarm hash ${blob.swarmHash}`,
+        });
+      }
 
       return {
         versionedHash: blobHash,

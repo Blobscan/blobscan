@@ -12,17 +12,16 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/dayjs": "^0.0.1",
-    "@blobscan/db": "0.0.1",
-    "@ethersphere/bee-js": "^6.0.0",
-    "@google-cloud/storage": "^6.10.1",
+    "@blobscan/db": "^0.0.1",
     "@trpc/server": "^10.23.0",
     "jsonwebtoken": "^9.0.0",
     "superjson": "1.9.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "0.0.1",
+    "@blobscan/eslint-config": "^0.0.1",
     "@types/jsonwebtoken": "^9.0.2",
     "eslint": "^8.37.0",
     "trpc-openapi": "^1.1.2",

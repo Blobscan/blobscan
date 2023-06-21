@@ -1,8 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { paginatedProcedure } from "../middlewares/withPagination";
 import { fullTransactionSelect } from "../queries/tx";
-import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const transactionRouter = createTRPCRouter({
   getAll: paginatedProcedure.query(async ({ ctx }) => {

@@ -7,10 +7,9 @@ import {
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
+import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
-import { storage } from "./clients/google";
-import { swarm } from "./clients/swarm";
 import { env } from "./env";
 
 type CreateContextOptions =
@@ -50,8 +49,7 @@ function getJWTFromRequest(
 export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,
-    storage,
-    swarm,
+    blobStorageManager,
     apiClient: opts?.apiClient,
   };
 }

@@ -19,6 +19,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/dayjs": "^0.0.1",
     "@prisma/client": "^4.12.0"
   },

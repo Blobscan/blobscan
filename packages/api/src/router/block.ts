@@ -1,8 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { paginatedProcedure } from "../middlewares/withPagination";
 import { fullBlockSelect } from "../queries/block";
-import { createTRPCRouter, paginatedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const blockRouter = createTRPCRouter({
   getAll: paginatedProcedure.query(async ({ ctx }) => {
