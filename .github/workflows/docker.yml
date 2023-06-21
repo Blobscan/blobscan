@@ -23,7 +23,7 @@ jobs:
     steps:
 
       - name: Print env variables
-        shell: env
+        run: env
 
       - name: Dump GitHub context
         env:
