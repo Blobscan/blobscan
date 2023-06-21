@@ -17,7 +17,6 @@ type GoogleCredentials = {
 export class GoogleStorage extends BlobStorage {
   #storageClient: Storage;
   #bucketName: string;
-  #bucketCreated = false;
 
   constructor({
     bucketName,

@@ -51,7 +51,7 @@ export class BlobStorageManager<
   async storeBlob({
     data,
     versionedHash,
-  }: Blob): Promise<Record<SName, string>> {
+  }: Blob): Promise<Record<SName, string | undefined>> {
     const availableStorages = Object.entries(this.#blobStorages).filter(
       ([, storage]) => storage,
     ) as [SName, BlobStorage][];
