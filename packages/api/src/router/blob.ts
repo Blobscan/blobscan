@@ -42,14 +42,15 @@ export const blobRouter = createTRPCRouter({
       }
 
       const { blob, blobHash, transaction } = blobOnTransaction;
+      const blobReferences: Parameters<typeof blobStorageManager.getBlob> = [
+        { storage: "google", reference: blob.gsUri },
+      ];
 
-      const blobData = await blobStorageManager.getBlob([
-        {
-          storage: "google",
-          reference: blob.gsUri,
-        },
-        { storage: "swarm", reference: blob.swarmHash },
-      ]);
+      if (blob.swarmHash) {
+        blobReferences.push({ storage: "swarm", reference: blob.swarmHash });
+      }
+
+      const blobData = await blobStorageManager.getBlob(...blobReferences);
 
       if (!blobData) {
         throw new TRPCError({

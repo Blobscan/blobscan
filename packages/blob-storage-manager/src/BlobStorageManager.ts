@@ -31,7 +31,7 @@ export class BlobStorageManager<
   }
 
   async getBlob(
-    blobReferences: BlobReference<SName>[],
+    ...blobReferences: BlobReference<SName>[]
   ): Promise<{ data: string; storage: SName } | null> {
     const availableReferences = blobReferences.filter(
       ({ storage }) => this.#blobStorages[storage],
