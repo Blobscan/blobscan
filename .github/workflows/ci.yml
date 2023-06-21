@@ -12,16 +12,15 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DATABASE_URL: file:./db.sqlite
+  BEE_DEBUG_ENDPOINT: "http://localhost:1635"
+  BEE_ENDPOINT: "http://localhost:1633"
+  CHAIN_ID: "100"
+  GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
 
 jobs:
   build-lint:
-    env:
-      DATABASE_URL: file:./db.sqlite
-      BEE_DEBUG_ENDPOINT: ${{ secrets.BEE_DEBUG_ENDPOINT }}
-      BEE_ENDPOINT: ${{ secrets.BEE_ENDPOINT }}
-      CHAIN_ID: ${{ secrets.CHAIN_ID }}
-      GOOGLE_STORAGE_BUCKET_NAME: ${{ secrets.GOOGLE_STORAGE_BUCKET_NAME }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
       # Deprecated:
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}

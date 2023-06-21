@@ -9,6 +9,13 @@ on:
     tags:
       - "v*"
 
+# TODO: These should not be required and defaults should be used instead
+env:
+  BEE_DEBUG_ENDPOINT: "http://localhost:1635"
+  BEE_ENDPOINT: "http://localhost:1633"
+  CHAIN_ID: "100"
+  GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
+
 jobs:
   docker:
     runs-on: ubuntu-latest
