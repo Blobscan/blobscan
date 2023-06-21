@@ -22,8 +22,6 @@ env:
 jobs:
   build-lint:
 
-      # Deprecated:
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     runs-on: ubuntu-latest
 
     steps:
