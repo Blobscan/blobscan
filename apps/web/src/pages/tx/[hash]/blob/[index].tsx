@@ -17,6 +17,7 @@ import { api } from "~/api-client";
 import {
   buildBlockRoute,
   buildTransactionRoute,
+  bytesToKilobytes,
   formatTimestamp,
 } from "~/utils";
 
@@ -87,8 +88,17 @@ const Blob: NextPage = () => {
         fields={
           blob
             ? [
-                { name: "Index", value: blob.index },
                 { name: "Versioned Hash", value: blob.versionedHash },
+                { name: "Commitment", value: blob.commitment },
+                { name: "Size", value: `${bytesToKilobytes(blob.size)} KB` },
+                {
+                  name: "Timestamp",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(blob.timestamp)}
+                    </div>
+                  ),
+                },
                 {
                   name: "Block",
                   value: (
@@ -105,15 +115,7 @@ const Blob: NextPage = () => {
                     </Link>
                   ),
                 },
-                {
-                  name: "Timestamp",
-                  value: (
-                    <div className="whitespace-break-spaces">
-                      {formatTimestamp(blob.timestamp)}
-                    </div>
-                  ),
-                },
-                { name: "Commitment", value: blob.commitment },
+                { name: "Index", value: blob.index },
               ]
             : undefined
         }

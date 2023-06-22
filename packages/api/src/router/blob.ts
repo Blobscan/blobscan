@@ -66,7 +66,9 @@ export const blobRouter = createTRPCRouter({
         blockNumber: transaction.blockNumber,
         timestamp: transaction.timestamp,
         commitment: blob.commitment,
-        data: blobData.toString(),
+        data: blobData.data.toString(),
+        size: blob.size,
+        swarmHash: blob.swarmHash,
       };
     }),
 });
