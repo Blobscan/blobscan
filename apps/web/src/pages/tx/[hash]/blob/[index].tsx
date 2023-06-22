@@ -77,7 +77,7 @@ const Blob: NextPage = () => {
     );
   }
 
-  if (!blob) {
+  if (!blob && !isLoading) {
     return <>Blob not found</>;
   }
 
