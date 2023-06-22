@@ -1,18 +1,20 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type FormattedDailyBlockStats } from "~/utils";
+import { ChartCard } from "~/components/Cards/ChartCard";
+import { type TransformedDailyBlockStats } from "~/types";
 import { ChartBase } from "../ChartBase";
 
 export type DailyBlocksChartProps = {
-  days: FormattedDailyBlockStats["days"];
-  blocks: FormattedDailyBlockStats["blocks"];
+  days?: TransformedDailyBlockStats["days"];
+  blocks?: TransformedDailyBlockStats["blocks"];
 };
 
 export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
   days,
   blocks,
 }) {
+  const isEmpty = !days?.length || !blocks?.length;
   const options: EChartOption<EChartOption.SeriesBar> = {
     xAxis: {
       type: "category",
@@ -32,5 +34,9 @@ export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
     animationEasing: "cubicOut",
   };
 
-  return <ChartBase options={options} />;
+  return (
+    <ChartCard title="Daily Blocks" size="sm" isEmptyChart={isEmpty}>
+      <ChartBase options={options} />
+    </ChartCard>
+  );
 };

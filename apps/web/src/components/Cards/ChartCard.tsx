@@ -5,10 +5,11 @@ import { Card, CardHeader } from "./Card";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-type ChardCardProps = Partial<{
+type ChartCardProps = Partial<{
   title: ReactNode;
   children: React.ReactNode;
   size: "sm" | "md" | "lg";
+  isEmptyChart?: boolean;
 }>;
 
 const ChartSkeleton: FC = function () {
@@ -25,10 +26,11 @@ const ChartSkeleton: FC = function () {
   );
 };
 
-export const ChartCard: FC<ChardCardProps> = function ({
+export const ChartCard: FC<ChartCardProps> = function ({
   children,
   title,
   size = "md",
+  isEmptyChart,
 }) {
   return (
     <Card compact>
@@ -40,10 +42,18 @@ export const ChartCard: FC<ChardCardProps> = function ({
             "h-48 md:h-64 lg:h-96": size === "lg",
           })}
         >
-          {children ?? (
-            <div className="flex h-full w-full items-center justify-center">
-              <ChartSkeleton />
+          {isEmptyChart ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-sm font-thin uppercase text-contentSecondary-light dark:text-contentSecondary-dark">
+                No data
+              </div>
             </div>
+          ) : (
+            children ?? (
+              <div className="flex h-full w-full items-center justify-center">
+                <ChartSkeleton />
+              </div>
+            )
           )}
         </div>
 

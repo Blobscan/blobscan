@@ -1,24 +1,30 @@
-import { useMemo } from "react";
 import { type NextPage } from "next";
 import NextError from "next/error";
 
 import { DailyBlocksChart } from "~/components/Charts/Block";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
-import { formatDailyBlockStats } from "~/utils";
+import { useTransformResult } from "~/hooks/useTransformResult";
+import {
+  transformDailyBlockStatsResult,
+  transformOverallBlockStatsResult,
+} from "~/query-transformers";
 
 const BlockStats: NextPage = function () {
-  const { data: dailyStatsData, error: dailyStatsError } =
-    api.stats.block.getDailyStats.useQuery({
-      timeFrame: "30d",
-    });
-  const { data: overallStats, error: overallStatsError } =
-    api.stats.block.getOverallStats.useQuery();
-  const { days, blocks } = useMemo(
-    () => formatDailyBlockStats(dailyStatsData ?? []),
-    [dailyStatsData],
+  const dailyBlockStatsRes = api.stats.block.getDailyStats.useQuery({
+    timeFrame: "30d",
+  });
+  const overallBlockStatsRes = api.stats.block.getOverallStats.useQuery();
+  const dailyBlockStats = useTransformResult(
+    dailyBlockStatsRes,
+    transformDailyBlockStatsResult,
   );
-  const error = dailyStatsError || overallStatsError;
+  const blockOverallStats = useTransformResult(
+    overallBlockStatsRes,
+    transformOverallBlockStatsResult,
+  );
+
+  const error = dailyBlockStatsRes.error || overallBlockStatsRes.error;
 
   if (error) {
     return (
@@ -34,20 +40,21 @@ const BlockStats: NextPage = function () {
       <StatsLayout
         header="Block Stats"
         metrics={
-          overallStats
+          blockOverallStats
             ? [
                 {
                   name: "Total Blocks",
-                  value: overallStats.totalBlocks,
+                  value: blockOverallStats.totalBlocks,
                 },
               ]
             : undefined
         }
         charts={[
-          {
-            name: "Daily Blocks",
-            chart: <DailyBlocksChart days={days} blocks={blocks} />,
-          },
+          <DailyBlocksChart
+            key={0}
+            days={dailyBlockStats?.days}
+            blocks={dailyBlockStats?.blocks}
+          />,
         ]}
       />
     </>

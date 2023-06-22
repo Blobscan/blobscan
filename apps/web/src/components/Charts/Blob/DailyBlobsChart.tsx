@@ -1,13 +1,14 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type FormattedDailyBlobStats } from "~/utils";
+import { ChartCard } from "~/components/Cards/ChartCard";
+import { type TransformedDailyBlobStats } from "~/types";
 import { ChartBase } from "../ChartBase";
 
 export type DailyBlobsChartProps = {
-  days: FormattedDailyBlobStats["days"];
-  blobs: FormattedDailyBlobStats["blobs"];
-  uniqueBlobs: FormattedDailyBlobStats["uniqueBlobs"];
+  days?: TransformedDailyBlobStats["days"];
+  blobs?: TransformedDailyBlobStats["blobs"];
+  uniqueBlobs: TransformedDailyBlobStats["uniqueBlobs"];
 };
 
 export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
@@ -15,6 +16,7 @@ export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
   blobs,
   uniqueBlobs,
 }) {
+  const isEmpty = !days?.length || !blobs?.length;
   const options: EChartOption<EChartOption.SeriesBar> = {
     xAxis: {
       type: "category",
@@ -45,5 +47,9 @@ export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
     animationEasing: "cubicOut",
   };
 
-  return <ChartBase options={options} />;
+  return (
+    <ChartCard title="Daily Blobs" size="sm" isEmptyChart={isEmpty}>
+      <ChartBase options={options} />
+    </ChartCard>
+  );
 };

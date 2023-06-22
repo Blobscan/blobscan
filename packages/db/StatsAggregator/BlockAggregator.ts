@@ -59,7 +59,7 @@ export class BlockAggregator {
       COUNT("id")::INT as "totalBlocks",
       NOW() as "updatedAt"
     FROM "Block"
-    ON CONFLICT (stats.id) DO UPDATE SET
+    ON CONFLICT (id) DO UPDATE SET
       "totalBlocks" = EXCLUDED."totalBlocks",
       "updatedAt" = EXCLUDED."updatedAt"
   `;

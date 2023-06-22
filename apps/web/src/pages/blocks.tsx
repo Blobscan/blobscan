@@ -6,12 +6,17 @@ import { getPaginationParams } from "~/utils/pagination";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
+import { useTransformResult } from "~/hooks/useTransformResult";
+import { transformBlocksResult } from "~/query-transformers";
 
 const Blocks: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
-  const { error, data } = api.block.getAll.useQuery({ p, ps });
+  const blocksRes = api.block.getAll.useQuery({ p, ps });
+  const { blocks, totalBlocks } =
+    useTransformResult(blocksRes, transformBlocksResult) ?? {};
+  const error = blocksRes.error;
 
   if (error) {
     return (
@@ -21,8 +26,6 @@ const Blocks: NextPage = function () {
       />
     );
   }
-
-  const { blocks, totalBlocks } = data ?? {};
 
   return (
     <PaginatedListLayout

@@ -29,6 +29,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
 }) {
   const router = useRouter();
   const pages = totalItems ? Math.ceil(totalItems / pageSize) : undefined;
+  const hasItems = !items || items.length;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
     (newPageSize: number) =>
@@ -65,51 +66,56 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
       <Header>{header}</Header>
       <Card
         header={
-          <div
-            className={`flex flex-col ${
-              title ? "justify-between" : "justify-end"
-            } md:flex-row`}
-          >
-            {title && <div>{title}</div>}
-            <div className="w-full self-center sm:w-auto">
-              <Pagination
-                selected={page}
-                pages={pages}
-                onChange={handlePageSelection}
-              />
+          hasItems ? (
+            <div
+              className={`flex flex-col ${
+                title ? "justify-between" : "justify-end"
+              } md:flex-row`}
+            >
+              {title && <div>{title}</div>}
+              <div className="w-full self-center sm:w-auto">
+                <Pagination
+                  selected={page}
+                  pages={pages}
+                  onChange={handlePageSelection}
+                />
+              </div>
             </div>
-          </div>
+          ) : undefined
         }
+        emptyState="No blocks"
       >
-        <div className="flex flex-col gap-6">
-          <div className="space-y-4">
-            {!items
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <Fragment key={i}>{itemSkeleton}</Fragment>
-                ))
-              : (items ?? []).map((item, i) => (
-                  <Fragment key={i}>{item}</Fragment>
-                ))}
-          </div>
-          <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
-            <div className="flex items-center justify-start gap-2">
-              Displayed items:
-              <Dropdown
-                items={PAGE_SIZES}
-                selected={pageSize}
-                onChange={handlePageSizeSelection}
-              />
+        {hasItems ? (
+          <div className="flex flex-col gap-6">
+            <div className="space-y-4">
+              {!items
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <Fragment key={i}>{itemSkeleton}</Fragment>
+                  ))
+                : (items ?? []).map((item, i) => (
+                    <Fragment key={i}>{item}</Fragment>
+                  ))}
             </div>
-            <div className="w-full sm:w-auto">
-              <Pagination
-                selected={page}
-                pages={pages}
-                inverseCompact
-                onChange={handlePageSelection}
-              />
+            <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
+              <div className="flex items-center justify-start gap-2">
+                Displayed items:
+                <Dropdown
+                  items={PAGE_SIZES}
+                  selected={pageSize}
+                  onChange={handlePageSizeSelection}
+                />
+              </div>
+              <div className="w-full sm:w-auto">
+                <Pagination
+                  selected={page}
+                  pages={pages}
+                  inverseCompact
+                  onChange={handlePageSelection}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        ) : undefined}
       </Card>
     </>
   );

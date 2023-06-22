@@ -1,11 +1,14 @@
 import { type FC, type ReactNode } from "react";
 import cn from "classnames";
 
+import { Centered } from "../Centered";
+
 export type CardProps = {
   header?: ReactNode;
   children: ReactNode;
   className?: string;
   compact?: boolean;
+  emptyState?: ReactNode;
 };
 
 export const Card: React.FC<CardProps> = function ({
@@ -13,6 +16,7 @@ export const Card: React.FC<CardProps> = function ({
   header,
   compact = false,
   className,
+  emptyState,
 }) {
   return (
     <div
@@ -37,7 +41,13 @@ export const Card: React.FC<CardProps> = function ({
         <div className="text-lg font-bold dark:text-warmGray-50">{header}</div>
       )}
       <div className={header ? "mt-5" : ""}>
-        {children}
+        {children ?? (
+          <Centered>
+            <div className="text-sm font-thin uppercase text-contentSecondary-light dark:text-contentSecondary-dark">
+              {emptyState ?? "No Data"}
+            </div>
+          </Centered>
+        )}
         {/* We use less vertical padding on card footers at all sizes than on headers or body sections */}
       </div>
     </div>
@@ -58,7 +68,7 @@ export const CardHeader: FC<CardHeaderProps> = function ({
   return (
     <div
       className={cn(
-        "bg-surfaceHeader-light text-base font-semibold dark:bg-surfaceHeader-dark",
+        "bg-primary-300/30 text-base font-semibold dark:bg-surfaceHeader-dark",
         {
           "-mx-[13px] -mb-4 rounded-b-md": inverse,
           "-mx-4 -mt-4 rounded-t-md": !inverse,

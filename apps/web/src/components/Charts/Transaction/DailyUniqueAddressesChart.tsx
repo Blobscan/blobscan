@@ -2,17 +2,20 @@
 import { type FC } from "react";
 import { type EChartOption } from "echarts";
 
-import { type FormattedDailyTransactionStats } from "~/utils";
+import { ChartCard } from "~/components/Cards/ChartCard";
+import { type TransformedDailyTransactionStats } from "~/types";
 import { ChartBase } from "../ChartBase";
 
 export type DailyUniqueAddressesChartProps = {
-  days: FormattedDailyTransactionStats["days"];
-  uniqueReceivers: FormattedDailyTransactionStats["uniqueReceivers"];
-  uniqueSenders: FormattedDailyTransactionStats["uniqueSenders"];
+  days?: TransformedDailyTransactionStats["days"];
+  uniqueReceivers?: TransformedDailyTransactionStats["uniqueReceivers"];
+  uniqueSenders?: TransformedDailyTransactionStats["uniqueSenders"];
 };
 
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
   function ({ days, uniqueReceivers, uniqueSenders }) {
+    const isEmpty =
+      !days?.length || !uniqueReceivers?.length || !uniqueSenders?.length;
     const options: EChartOption<EChartOption.SeriesBar> = {
       xAxis: {
         type: "category",
@@ -41,5 +44,13 @@ export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
       animationEasing: "cubicOut",
     };
 
-    return <ChartBase options={options} />;
+    return (
+      <ChartCard
+        title="Daily Unique Addresses"
+        size="sm"
+        isEmptyChart={isEmpty}
+      >
+        <ChartBase options={options} />
+      </ChartCard>
+    );
   };

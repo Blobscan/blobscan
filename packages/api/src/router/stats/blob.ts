@@ -16,31 +16,21 @@ export const blobStatsRouter = createTRPCRouter({
     })
     .input(z.void())
     .output(
-      z.object({
-        totalBlobs: z.number(),
-        totalUniqueBlobs: z.number(),
-        totalBlobSize: z.bigint(),
-        avgBlobSize: z.number(),
-        updatedAt: z.date(),
-      }),
+      z
+        .object({
+          totalBlobs: z.number(),
+          totalUniqueBlobs: z.number(),
+          totalBlobSize: z.bigint(),
+          avgBlobSize: z.number(),
+          updatedAt: z.date(),
+        })
+        .nullable(),
     )
-    .query(async ({ ctx: { prisma } }) => {
-      const overallBlobStats = await prisma.blobOverallStats.findUnique({
+    .query(async ({ ctx: { prisma } }) =>
+      prisma.blobOverallStats.findUnique({
         where: { id: 1 },
-      });
-
-      if (!overallBlobStats) {
-        return {
-          totalBlobs: 0,
-          avgBlobSize: 0,
-          totalBlobSize: BigInt(0),
-          totalUniqueBlobs: 0,
-          updatedAt: new Date(),
-        };
-      }
-
-      return overallBlobStats;
-    }),
+      }),
+    ),
   getDailyStats: timeFrameProcedure
     .meta({
       openapi: {
