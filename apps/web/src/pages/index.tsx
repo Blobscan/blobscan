@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -6,7 +5,6 @@ import { useRouter } from "next/router";
 import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
-import { ChartCard } from "~/components/Cards/ChartCard";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
@@ -14,7 +12,12 @@ import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { api } from "~/api-client";
-import { bytesToKilobytes, formatDailyTransactionStats } from "~/utils";
+import { useTransformResult } from "~/hooks/useTransformResult";
+import {
+  transformAllOverallStatsResult,
+  transformDailyTxStatsResult,
+} from "~/query-transformers";
+import { bytesToKilobytes } from "~/utils";
 
 const TOTAL_BLOCKS = 4;
 const TOTAL_TXS = 5;
@@ -29,33 +32,28 @@ const Home: NextPage = () => {
     p: 1,
     ps: TOTAL_BLOCKS,
   });
-  const {
-    data: latestTxs,
-    error: latestTxsError,
-    isLoading: latestTxsLoading,
-  } = api.tx.getAll.useQuery({
+  const { data: latestTxs, error: latestTxsError } = api.tx.getAll.useQuery({
     p: 1,
     ps: TOTAL_TXS,
   });
-  const { data: allOverallStats, error: allOverallStatsError } =
-    api.stats.getAllOverallStats.useQuery();
-  const { data: dailyTxStatsData, error: dailyTxStatsError } =
-    api.stats.transaction.getDailyStats.useQuery({
-      timeFrame: "15d",
-    });
-  const dailyTxStats = useMemo(
-    () =>
-      dailyTxStatsData
-        ? formatDailyTransactionStats(dailyTxStatsData)
-        : undefined,
-    [dailyTxStatsData],
+  const allOverallStatsRes = api.stats.getAllOverallStats.useQuery();
+  const dailyTxStatsRes = api.stats.transaction.getDailyStats.useQuery({
+    timeFrame: "15d",
+  });
+  const dailyTxStats = useTransformResult(
+    dailyTxStatsRes,
+    transformDailyTxStatsResult,
+  );
+  const allOverallStats = useTransformResult(
+    allOverallStatsRes,
+    transformAllOverallStatsResult,
   );
 
   const error =
     latestBlocksError ||
     latestTxsError ||
-    allOverallStatsError ||
-    dailyTxStatsError;
+    allOverallStatsRes.error ||
+    dailyTxStatsRes.error;
 
   if (error) {
     return (
@@ -133,15 +131,11 @@ const Home: NextPage = () => {
           </div>
 
           <div className="col-span-2 sm:col-span-6">
-            <ChartCard title="Daily Transactions" size="sm">
-              {dailyTxStats && (
-                <DailyTransactionsChart
-                  days={dailyTxStats.days}
-                  transactions={dailyTxStats.transactions}
-                  compact
-                />
-              )}
-            </ChartCard>
+            <DailyTransactionsChart
+              days={dailyTxStats?.days}
+              transactions={dailyTxStats?.transactions}
+              compact
+            />
           </div>
         </div>
         <Card
@@ -155,22 +149,25 @@ const Home: NextPage = () => {
               />
             </div>
           }
+          emptyState="No blocks"
         >
-          <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
-            {latestBlocksLoading
-              ? Array(TOTAL_BLOCKS)
-                  .fill(0)
-                  .map((_, i) => (
-                    <div className="flex-grow" key={i}>
-                      <BlockCard />
+          {!blocks || blocks.length ? (
+            <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
+              {latestBlocksLoading
+                ? Array(TOTAL_BLOCKS)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className="flex-grow" key={i}>
+                        <BlockCard />
+                      </div>
+                    ))
+                : blocks.map((b) => (
+                    <div className="flex-grow" key={b.hash}>
+                      <BlockCard block={b} />
                     </div>
-                  ))
-              : blocks.map((b) => (
-                  <div className="flex-grow" key={b.hash}>
-                    <BlockCard block={b} />
-                  </div>
-                ))}
-          </div>
+                  ))}
+            </div>
+          ) : undefined}
         </Card>
         <Card
           header={
@@ -183,25 +180,28 @@ const Home: NextPage = () => {
               />
             </div>
           }
+          emptyState="No transactions"
         >
-          <div className=" flex flex-col gap-5">
-            {latestTxsLoading
-              ? Array(TOTAL_TXS)
-                  .fill(0)
-                  .map((_, i) => <BlobTransactionCard key={i} />)
-              : txs?.map((tx) => {
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  const { block, blockNumber, ...filteredTx } = tx;
+          {!txs || !!txs.length ? (
+            <div className=" flex flex-col gap-5">
+              {!txs
+                ? Array(TOTAL_TXS)
+                    .fill(0)
+                    .map((_, i) => <BlobTransactionCard key={i} />)
+                : txs.map((tx) => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { block, blockNumber, ...filteredTx } = tx;
 
-                  return (
-                    <BlobTransactionCard
-                      key={tx.hash}
-                      transaction={filteredTx}
-                      block={{ ...tx.block, number: blockNumber }}
-                    />
-                  );
-                })}
-          </div>
+                    return (
+                      <BlobTransactionCard
+                        key={tx.hash}
+                        transaction={filteredTx}
+                        block={{ ...tx.block, number: blockNumber }}
+                      />
+                    );
+                  })}
+            </div>
+          ) : undefined}
         </Card>
       </div>
     </div>

@@ -28,7 +28,7 @@ model Blob {
   versionedHash String                @unique
   commitment    String                @unique
   gsUri         String                @unique
-  swarmHash     String                @unique
+  swarmHash     String?               @unique
   size          Int
   transactions  BlobsOnTransactions[]
 }

@@ -1,4 +1,4 @@
-import { type Prisma, type PrismaClient } from "@blobscan/db";
+import { Prisma, type PrismaClient } from "@blobscan/db";
 
 // TODO: get this type from zod somehow
 type RequestBlob = {
@@ -9,100 +9,92 @@ type RequestBlob = {
   data: string;
 };
 
-export type UniqueAddresses = {
-  new: Prisma.AddressCreateManyInput[];
-  existing: Prisma.AddressUpdateManyMutationInput[];
+export type AddressData = {
+  address: string;
+  isSender: boolean;
+  isReceiver: boolean;
+  isUniqueSender: boolean;
+  isUniqueReceiver: boolean;
 };
 
-export function getUniqueAddressesFromTxs(
+function updateAddressData(
+  addressesData: Record<string, AddressData>,
+  address: string,
+  isSender: boolean,
+) {
+  const addressData = addressesData[address];
+
+  // Treat addresses as unique at fist until demonstrated otherwise
+  if (!addressData) {
+    addressesData[address] = {
+      address,
+      isSender: isSender,
+      isUniqueSender: isSender,
+      isReceiver: !isSender,
+      isUniqueReceiver: !isSender,
+    };
+  } else {
+    if (isSender) {
+      addressData.isSender = true;
+
+      if (addressData.isUniqueSender) {
+        addressData.isUniqueSender = false;
+      }
+    } else {
+      addressData.isReceiver = true;
+
+      if (addressData.isUniqueReceiver) {
+        addressData.isUniqueReceiver = false;
+      }
+    }
+  }
+}
+
+export async function getDataFromTxsAddresses(
   prisma: PrismaClient,
   txs: { from: string; to?: string }[],
-): Promise<{
-  uniqueFromAddresses: UniqueAddresses;
-  uniqueToAddresses: UniqueAddresses;
-}> {
+): Promise<AddressData[]> {
   // Get the unique from/to addresses from the transactions
-  const [uniqueTxsFromAddresses, uniqueTxsToAddresses] = txs
-    .reduce<[Set<string>, Set<string>]>(
-      ([fromAddresses, toAddresses], tx) => {
-        fromAddresses.add(tx.from);
+  const addressesData = txs.reduce<Record<string, AddressData>>(
+    (addressesData, { from, to }) => {
+      updateAddressData(addressesData, from, true);
 
-        if (tx.to) {
-          toAddresses.add(tx.to);
-        }
+      if (to) {
+        updateAddressData(addressesData, to, false);
+      }
 
-        return [fromAddresses, toAddresses];
-      },
-      [new Set(), new Set()],
-    )
-    .map<string[]>(Array.from) as [string[], string[]];
-
-  const uniqueTxsAddresses = [
-    ...uniqueTxsFromAddresses,
-    ...uniqueTxsToAddresses,
-  ];
-
-  return (
-    prisma.address
-      .findMany({
-        select: { address: true, isReceiver: true, isSender: true },
-        where: {
-          address: { in: uniqueTxsAddresses },
-          AND: {
-            OR: {
-              isReceiver: false,
-              isSender: false,
-            },
-          },
-        },
-      })
-      // Filter out addreses that are already flag as sender/receiver
-      .then((addressEntities) => {
-        const uniqueFromAddresses: UniqueAddresses = { new: [], existing: [] };
-        const uniqueToAddresses: UniqueAddresses = { new: [], existing: [] };
-
-        uniqueTxsFromAddresses.forEach((address) => {
-          const addressEntity = addressEntities.find(
-            (e) => address === e.address,
-          );
-
-          if (addressEntity) {
-            if (!addressEntity.isSender) {
-              uniqueFromAddresses.existing.push({ address, isSender: true });
-            }
-          } else {
-            uniqueFromAddresses.new.push({
-              address,
-              isSender: true,
-              isReceiver: false,
-            });
-          }
-        });
-
-        uniqueTxsToAddresses.forEach((address) => {
-          const addressEntity = addressEntities.find(
-            (e) => address === e.address,
-          );
-
-          if (addressEntity) {
-            if (!addressEntity.isReceiver) {
-              uniqueToAddresses.existing.push({ address, isReceiver: true });
-            }
-          } else {
-            uniqueToAddresses.new.push({
-              address,
-              isReceiver: true,
-              isSender: false,
-            });
-          }
-        });
-
-        return {
-          uniqueFromAddresses,
-          uniqueToAddresses,
-        };
-      })
+      return addressesData;
+    },
+    {},
   );
+
+  const addressDBEntities = await prisma.address.findMany({
+    select: { address: true, isReceiver: true, isSender: true },
+    where: {
+      address: { in: Object.keys(addressesData) },
+      AND: {
+        OR: {
+          isReceiver: false,
+          isSender: false,
+        },
+      },
+    },
+  });
+
+  // Update the unique from/to addresses given the existing stored addresses
+  addressDBEntities.forEach((addressEntity) => {
+    const addressData = addressesData[addressEntity.address];
+
+    if (!addressData) {
+      return;
+    }
+
+    addressData.address = addressEntity.address;
+    addressData.isUniqueReceiver = !addressEntity.isReceiver;
+    addressData.isUniqueSender = !addressEntity.isSender;
+  });
+
+  return Object.values(addressesData);
 }
 
 export async function getNewBlobs(
@@ -119,4 +111,24 @@ export async function getNewBlobs(
     .then((blobs) => blobs.map((b) => b.versionedHash));
 
   return blobs.filter((b) => !existingBlobHashes.includes(b.versionedHash));
+}
+
+export function upsertAddresses(
+  prisma: PrismaClient,
+  addressEntities: AddressData[],
+) {
+  const formattedValues = addressEntities
+    .map(({ address, isSender, isReceiver }) => [address, isSender, isReceiver])
+    .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
+
+  return prisma.$executeRaw`
+    INSERT INTO "Address" as addr (
+      "address",
+      "isSender",
+      "isReceiver"
+    ) VALUES ${Prisma.join(formattedValues)}
+    ON CONFLICT ("address") DO UPDATE SET
+      "isSender" = addr."isSender" OR EXCLUDED."isSender",
+      "isReceiver" = addr."isReceiver" OR EXCLUDED."isReceiver"
+  `;
 }

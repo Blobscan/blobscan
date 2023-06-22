@@ -11,3 +11,5 @@ export const isJWTAuthed = t.middleware(({ ctx, next }) => {
     ctx,
   });
 });
+
+export const jwtAuthedProcedure = t.procedure.use(isJWTAuthed);

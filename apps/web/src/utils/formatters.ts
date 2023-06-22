@@ -1,33 +1,15 @@
-import {
-  type DailyBlobStats,
-  type DailyBlockStats,
-  type DailyTransactionStats,
-  type SingleDailyBlobStats,
-  type SingleDailyBlockStats,
-  type SingleDailyTransactionStats,
-} from "~/types";
+import dayjs from "@blobscan/dayjs";
 
-export type FormattedDailyBlobStats = {
-  days: string[];
-  blobs: SingleDailyBlobStats["totalBlobs"][];
-  uniqueBlobs: SingleDailyBlobStats["totalUniqueBlobs"][];
-  blobSizes: number[];
-  avgBlobSizes: SingleDailyBlobStats["avgBlobSize"][];
-};
+export function formatTimestamp(timestamp: number | Date) {
+  const unixHandler =
+    typeof timestamp === "number" ? dayjs.unix(timestamp) : dayjs(timestamp);
 
-export type FormattedDailyBlockStats = {
-  days: string[];
-  blocks: SingleDailyBlockStats["totalBlocks"][];
-};
+  return `${unixHandler.fromNow()} (${unixHandler.format(
+    "MMM D, YYYY h:mm AZ",
+  )})`;
+}
 
-export type FormattedDailyTransactionStats = {
-  days: string[];
-  transactions: SingleDailyTransactionStats["totalTransactions"][];
-  uniqueReceivers: SingleDailyTransactionStats["totalUniqueReceivers"][];
-  uniqueSenders: SingleDailyTransactionStats["totalUniqueSenders"][];
-};
-
-function getDateFromDateTime(dateTime: Date): string {
+export function getDateFromDateTime(dateTime: Date): string {
   return dateTime.toISOString().split("T")[0] as string;
 }
 
@@ -65,65 +47,4 @@ export function abbreviateNumber(value: number | string): string {
   formattedValue += suffixes[suffixNum];
 
   return formattedValue;
-}
-
-export function formatDailyBlobStats(
-  stats: DailyBlobStats,
-): FormattedDailyBlobStats {
-  return stats.reduce<FormattedDailyBlobStats>(
-    (
-      formattedStats,
-      { day, avgBlobSize, totalBlobSize, totalBlobs, totalUniqueBlobs },
-    ) => {
-      formattedStats.days.push(getDateFromDateTime(day));
-      formattedStats.blobs.push(totalBlobs);
-      formattedStats.uniqueBlobs.push(totalUniqueBlobs);
-      formattedStats.blobSizes.push(bytesToKilobytes(totalBlobSize));
-      formattedStats.avgBlobSizes.push(avgBlobSize);
-
-      return formattedStats;
-    },
-    { days: [], blobs: [], uniqueBlobs: [], blobSizes: [], avgBlobSizes: [] },
-  );
-}
-
-export function formatDailyBlockStats(
-  stats: DailyBlockStats,
-): FormattedDailyBlockStats {
-  return stats.reduce<FormattedDailyBlockStats>(
-    (aggregatedStats, { day, totalBlocks }) => {
-      aggregatedStats.days.push(getDateFromDateTime(day));
-      aggregatedStats.blocks.push(totalBlocks);
-
-      return aggregatedStats;
-    },
-    {
-      days: [],
-      blocks: [],
-    },
-  );
-}
-
-export function formatDailyTransactionStats(
-  stats: DailyTransactionStats,
-): FormattedDailyTransactionStats {
-  return stats.reduce<FormattedDailyTransactionStats>(
-    (
-      aggregatedStats,
-      { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders },
-    ) => {
-      aggregatedStats.days.push(getDateFromDateTime(day));
-      aggregatedStats.transactions.push(totalTransactions);
-      aggregatedStats.uniqueReceivers.push(totalUniqueReceivers);
-      aggregatedStats.uniqueSenders.push(totalUniqueSenders);
-
-      return aggregatedStats;
-    },
-    {
-      days: [],
-      transactions: [],
-      uniqueReceivers: [],
-      uniqueSenders: [],
-    },
-  );
 }

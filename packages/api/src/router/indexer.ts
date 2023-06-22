@@ -1,13 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { statsAggregator } from "@blobscan/db";
+import { statsAggregator, type Prisma } from "@blobscan/db";
 
-import { BUCKET_NAME } from "../env";
-import { createTRPCRouter, jwtAuthedProcedure, publicProcedure } from "../trpc";
+import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
-import { getNewBlobs, getUniqueAddressesFromTxs } from "../utils/indexer";
-import { buildGoogleStorageUri } from "../utils/storages";
+import {
+  getDataFromTxsAddresses,
+  getNewBlobs,
+  upsertAddresses,
+} from "../utils/indexer";
 
 const INDEXER_PATH = "/indexer";
 const INDEX_REQUEST_DATA = z.object({
@@ -93,64 +96,53 @@ export const indexerRouter = createTRPCRouter({
     })
     .input(INDEX_REQUEST_DATA)
     .output(z.void())
-    .mutation(async ({ ctx: { prisma, storage, swarm }, input }) => {
+    .mutation(async ({ ctx: { prisma, blobStorageManager }, input }) => {
       const timestamp = new Date(input.block.timestamp * 1000);
 
-      // 1. Check we have enough swarm postages
+      // 1. Fetch unique addresses from transactions & check for existing blobs
+      const [existingBlock, txsAddressesInfo, newBlobs] = await Promise.all([
+        prisma.block.findUnique({
+          where: { id: input.block.number },
+        }),
+        getDataFromTxsAddresses(prisma, input.transactions),
+        getNewBlobs(prisma, input.blobs),
+      ]);
 
-      const batches = await swarm.beeDebug.getAllPostageBatch();
+      // 2. Upload blobs' data to storages
+      let uploadedBlobs: Prisma.BlobCreateInput[] = [];
+      try {
+        const uploadBlobsPromises = newBlobs.map<
+          Promise<Prisma.BlobCreateInput>
+        >(async (b) => {
+          const blobReferences = await blobStorageManager.storeBlob(b);
 
-      if (batches.length === 0 || batches[0]?.batchID === undefined) {
+          if (!blobReferences.google) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: `Failed to upload blob to Google Cloud Storage`,
+            });
+          }
+
+          return {
+            id: b.versionedHash,
+            versionedHash: b.versionedHash,
+            commitment: b.commitment,
+            gsUri: blobReferences.google,
+            swarmHash: blobReferences?.swarm ?? null,
+            size: calculateBlobSize(b.data),
+          };
+        });
+
+        uploadedBlobs = await Promise.all(uploadBlobsPromises);
+      } catch (err_) {
+        const err = err_ as Error;
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: `Not available Swarm postages`,
+          message: `Failed to upload blobs to storages: ${err.message}`,
         });
       }
 
-      // 2. Fetch unique addresses from transactions & check for existing blobs
-
-      const [{ uniqueFromAddresses, uniqueToAddresses }, newBlobs] =
-        await Promise.all([
-          getUniqueAddressesFromTxs(prisma, input.transactions),
-          getNewBlobs(prisma, input.blobs),
-        ]);
-
-      // 3. Upload blobs' data to Google Storage and Swarm
-
-      const batchId = batches[0].batchID;
-      const uploadBlobsPromise = newBlobs.map(async (b) => {
-        const uploadBlobsToGoogleStoragePromise = storage
-          .bucket(BUCKET_NAME)
-          .file(buildGoogleStorageUri(b.versionedHash))
-          .save(b.data);
-
-        const uploadBlobsToSwarmPromise = swarm.bee.uploadFile(
-          batchId,
-          b.data,
-          buildGoogleStorageUri(b.versionedHash),
-          {
-            pin: true,
-            contentType: "text/plain",
-          },
-        );
-
-        const [, swarmUploadData] = await Promise.all([
-          uploadBlobsToGoogleStoragePromise,
-          uploadBlobsToSwarmPromise,
-        ]);
-
-        return {
-          id: b.versionedHash,
-          versionedHash: b.versionedHash,
-          commitment: b.commitment,
-          gsUri: buildGoogleStorageUri(b.versionedHash),
-          swarmHash: swarmUploadData.reference.toString(),
-          size: calculateBlobSize(b.data),
-        };
-      });
-      const uploadedBlobs = await Promise.all(uploadBlobsPromise);
-
-      // 4. Prepare block, transaction and blob insertions
+      // 3. Prepare block, transaction and blob insertions
 
       const createBlobsDataPromise = prisma.blob.createMany({
         data: uploadedBlobs,
@@ -171,12 +163,7 @@ export const indexerRouter = createTRPCRouter({
         },
         update: blockData,
       });
-      const createAddressesPromise = prisma.address.createMany({
-        data: [...uniqueFromAddresses.new, ...uniqueToAddresses.new],
-      });
-      const updateAddressesPromise = prisma.address.updateMany({
-        data: [...uniqueFromAddresses.existing, ...uniqueToAddresses.existing],
-      });
+      const upsertAddressesPromise = upsertAddresses(prisma, txsAddressesInfo);
       const createTransactionsPromises = prisma.transaction.createMany({
         data: input.transactions.map((transaction) => ({
           id: transaction.hash,
@@ -199,44 +186,51 @@ export const indexerRouter = createTRPCRouter({
           skipDuplicates: true,
         });
 
-      // 5. Prepare overall stats incremental updates
-
-      const uploadedBlobsSize = uploadedBlobs.reduce(
-        (totalBlobSize, b) => totalBlobSize + b.size,
-        0,
-      );
-      const totalReceivers =
-        uniqueToAddresses.existing.length + uniqueToAddresses.new.length;
-      const totalSenders =
-        uniqueFromAddresses.existing.length + uniqueFromAddresses.new.length;
-
-      const updateBlockOverallStatsPromise =
-        statsAggregator.block.updateOverallBlockStats(1);
-      const updateTxOverallStatsPromise =
-        statsAggregator.tx.updateOverallTxStats(
-          input.transactions.length,
-          totalReceivers,
-          totalSenders,
-        );
-      const updateBlobOverallStatsPromise =
-        statsAggregator.blob.updateOverallBlobStats(
-          input.blobs.length,
-          uploadedBlobs.length,
-          uploadedBlobsSize,
-        );
-
-      // 6. Execute all database operations in a single transaction
-
-      await prisma.$transaction([
+      const operations = [
+        upsertAddressesPromise,
         createBlockPromise,
-        updateAddressesPromise,
-        createAddressesPromise,
         createTransactionsPromises,
         createBlobsDataPromise,
         createBlobsOnTransactionPromise,
-        updateBlockOverallStatsPromise,
-        updateTxOverallStatsPromise,
-        updateBlobOverallStatsPromise,
-      ]);
+      ];
+
+      // 4. Prepare overall stats incremental updates if the block is new
+      // TODO: this is a temporary workaround until we implement proper triggers
+      if (!existingBlock) {
+        const uploadedBlobsSize = uploadedBlobs.reduce(
+          (totalBlobSize, b) => totalBlobSize + b.size,
+          0,
+        );
+        const totalReceivers = txsAddressesInfo.filter(
+          (addrInfo) => addrInfo.isUniqueReceiver,
+        ).length;
+        const totalSenders = txsAddressesInfo.filter(
+          (addrInfo) => addrInfo.isUniqueSender,
+        ).length;
+
+        const updateBlockOverallStatsPromise =
+          statsAggregator.block.upsertOverallBlockStats(1);
+        const updateTxOverallStatsPromise =
+          statsAggregator.tx.upsertOverallTxStats(
+            input.transactions.length,
+            totalReceivers,
+            totalSenders,
+          );
+        const updateBlobOverallStatsPromise =
+          statsAggregator.blob.upsertOverallBlobStats(
+            input.blobs.length,
+            uploadedBlobs.length,
+            uploadedBlobsSize,
+          );
+
+        operations.push(
+          updateBlockOverallStatsPromise,
+          updateTxOverallStatsPromise,
+          updateBlobOverallStatsPromise,
+        );
+      }
+
+      // 5. Execute all database operations in a single transaction
+      await prisma.$transaction(operations);
     }),
 });

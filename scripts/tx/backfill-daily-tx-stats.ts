@@ -1,5 +1,4 @@
-import dayjs from "dayjs";
-
+import dayjs from "@blobscan/dayjs";
 import { prisma, statsAggregator } from "@blobscan/db";
 
 async function main() {

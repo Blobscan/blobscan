@@ -6,12 +6,17 @@ import { getPaginationParams } from "~/utils/pagination";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
+import { useTransformResult } from "~/hooks/useTransformResult";
+import { transformTxsResult } from "~/query-transformers";
 
 const Txs: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
-  const { error, data } = api.tx.getAll.useQuery({ p, ps });
+  const txsRes = api.tx.getAll.useQuery({ p, ps });
+  const { totalTransactions, transactions } =
+    useTransformResult(txsRes, transformTxsResult) || {};
+  const error = txsRes.error;
 
   if (error) {
     return (
@@ -21,8 +26,6 @@ const Txs: NextPage = function () {
       />
     );
   }
-
-  const { transactions, totalTransactions } = data || {};
 
   return (
     <PaginatedListLayout

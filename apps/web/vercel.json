@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/upsert-daily-stats",
-      "schedule": "0 5 * * *"
+      "schedule": "5 0 * * *"
     }
   ]
 }
