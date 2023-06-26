@@ -1,9 +1,4 @@
 import { t } from "./clients/trpc";
-import { isJWTAuthed } from "./middlewares/isJWTAuthed";
-import {
-  PAGINATION_SCHEMA,
-  withPagination,
-} from "./middlewares/withPagination";
 
 // import { getServerSession, type Session } from "@blobscan/auth";
 
@@ -70,8 +65,4 @@ import {
 
 export const createTRPCRouter = t.router;
 
-export const paginatedProcedure = t.procedure
-  .input(PAGINATION_SCHEMA)
-  .use(withPagination);
 export const publicProcedure = t.procedure;
-export const jwtAuthedProcedure = t.procedure.use(isJWTAuthed);

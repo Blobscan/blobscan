@@ -10,18 +10,22 @@ import { Card } from "./Card";
 export type MetricCardProps = Partial<{
   name: string;
   compact: boolean;
-  value: number;
+  value?: number;
   unit: string;
 }>;
 
 export const MetricCard: FC<MetricCardProps> = function ({
   name,
   compact = false,
-  value = 0,
+  value,
   unit,
 }) {
   const isInteger = Number.isInteger(value);
-  const props = useSpring({ value: Number(value), from: { value: 0 } });
+  const props = useSpring({
+    value: Number(value),
+    from: { value: 0 },
+    cancel: !value,
+  });
 
   return (
     <Card compact={compact}>
@@ -43,7 +47,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
           {name ?? <Skeleton width={80} height={20} />}
         </div>
         <div className="flex gap-2">
-          {value ? (
+          {value !== undefined ? (
             <>
               <div
                 className={cn(
@@ -54,7 +58,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
                   "font-semibold",
                 )}
               >
-                {value ? (
+                {value !== undefined ? (
                   <animated.div>
                     {props.value.to((x) =>
                       (isInteger

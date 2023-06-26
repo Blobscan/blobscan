@@ -3,7 +3,8 @@ import { useMemo, type FC } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import dayjs from "~/dayjs";
+import dayjs from "@blobscan/dayjs";
+
 import type { Block } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";

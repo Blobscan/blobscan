@@ -24,3 +24,7 @@ export const withPagination = t.middleware(({ next, input }) => {
     },
   });
 });
+
+export const paginatedProcedure = t.procedure
+  .input(PAGINATION_SCHEMA)
+  .use(withPagination);

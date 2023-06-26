@@ -4,6 +4,10 @@ FROM node:18.15-alpine
 RUN apk add bash curl
 
 ENV SECRET_KEY supersecret
+ENV BEE_DEBUG_ENDPOINT http://localhost:1635
+ENV BEE_ENDPOINT http://localhost:1633
+ENV CHAIN_ID 100
+ENV GOOGLE_STORAGE_BUCKET_NAME blobscan-staging
 
 RUN npm install -g pnpm
 WORKDIR /app

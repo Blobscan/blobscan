@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { type NextPage } from "next";
 import NextError from "next/error";
 
@@ -9,29 +8,29 @@ import {
 } from "~/components/Charts/Blob/";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
-import { bytesToKilobytes, formatDailyBlobStats } from "~/utils";
+import { useTransformResult } from "~/hooks/useTransformResult";
+import {
+  transformDailyBlobStatsResult,
+  transformOverallBlobStatsResult,
+} from "~/query-transformers";
+import { bytesToKilobytes } from "~/utils";
 
 const BlobStats: NextPage = function () {
-  const {
-    data: dailyStatsData,
-    error: dailyStatsError,
-    isLoading,
-  } = api.stats.blob.getDailyStats.useQuery({
+  const dailyBlobStatsRes = api.stats.blob.getDailyStats.useQuery({
     timeFrame: "30d",
   });
-  const {
-    data: overallStats,
-    error: overallStatsError,
-    isLoading: loading,
-  } = api.stats.blob.getOverallStats.useQuery();
-  const dailyStats = useMemo(
-    () => (dailyStatsData ? formatDailyBlobStats(dailyStatsData) : undefined),
-    [dailyStatsData],
+  const dailyBlobStats = useTransformResult(
+    dailyBlobStatsRes,
+    transformDailyBlobStatsResult,
   );
-  const error = overallStatsError || dailyStatsError;
+  const overallBlobStatsRes = api.stats.blob.getOverallStats.useQuery();
+  const overallBlobStats = useTransformResult(
+    overallBlobStatsRes,
+    transformOverallBlobStatsResult,
+  );
 
-  console.log("daily Loading ", isLoading);
-  console.log("overall Loading ", loading);
+  const error = dailyBlobStatsRes.error || overallBlobStatsRes.error;
+
   if (error) {
     return (
       <NextError
@@ -45,22 +44,22 @@ const BlobStats: NextPage = function () {
     <StatsLayout
       header="Blob Stats"
       metrics={
-        overallStats
+        overallBlobStats
           ? [
-              { name: "Total Blobs", value: overallStats.totalBlobs },
+              { name: "Total Blobs", value: overallBlobStats.totalBlobs },
               {
                 name: "Total Blob Size",
-                value: bytesToKilobytes(overallStats.totalBlobSize),
+                value: bytesToKilobytes(overallBlobStats.totalBlobSize),
                 unit: "KB",
               },
               {
                 name: "Total Unique Blobs",
-                value: overallStats.totalUniqueBlobs,
+                value: overallBlobStats.totalUniqueBlobs,
               },
               {
                 name: "Average Blob Size",
                 value: Number(
-                  bytesToKilobytes(overallStats.avgBlobSize).toFixed(2),
+                  bytesToKilobytes(overallBlobStats.avgBlobSize).toFixed(2),
                 ),
                 unit: "KB",
               },
@@ -68,36 +67,24 @@ const BlobStats: NextPage = function () {
           : undefined
       }
       charts={
-        dailyStats
+        dailyBlobStats
           ? [
-              {
-                name: "Daily Blobs",
-                chart: (
-                  <DailyBlobsChart
-                    days={dailyStats.days}
-                    blobs={dailyStats.blobs}
-                    uniqueBlobs={dailyStats.uniqueBlobs}
-                  />
-                ),
-              },
-              {
-                name: "Daily Blob Sizes",
-                chart: (
-                  <DailyBlobSizeChart
-                    days={dailyStats.days}
-                    blobSizes={dailyStats.blobSizes}
-                  />
-                ),
-              },
-              {
-                name: "Daily Average Blob Size",
-                chart: (
-                  <DailyAvgBlobSizeChart
-                    days={dailyStats.days}
-                    avgBlobSizes={dailyStats.avgBlobSizes}
-                  />
-                ),
-              },
+              <DailyBlobsChart
+                key={0}
+                days={dailyBlobStats.days}
+                blobs={dailyBlobStats.blobs}
+                uniqueBlobs={dailyBlobStats.uniqueBlobs}
+              />,
+              <DailyBlobSizeChart
+                key={1}
+                days={dailyBlobStats.days}
+                blobSizes={dailyBlobStats.blobSizes}
+              />,
+              <DailyAvgBlobSizeChart
+                key={2}
+                days={dailyBlobStats.days}
+                avgBlobSizes={dailyBlobStats.avgBlobSizes}
+              />,
             ]
           : undefined
       }

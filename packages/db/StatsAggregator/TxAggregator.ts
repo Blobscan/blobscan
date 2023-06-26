@@ -77,19 +77,33 @@ export class TxAggregator {
     `;
   }
 
-  updateOverallTxStats(
+  upsertOverallTxStats(
     newTxs: number,
     newUniqueReceivers: number,
     newUniqueSenders: number,
   ) {
     return this.#prisma.$executeRaw`
-      UPDATE "TransactionOverallStats"
+      INSERT INTO "TransactionOverallStats" as stats (
+        id,
+        "totalTransactions",
+        "totalUniqueReceivers",
+        "totalUniqueSenders",
+        "updatedAt"
+      )
+      VALUES (
+        1,
+        ${newTxs},
+        ${newUniqueReceivers},
+        ${newUniqueSenders},
+        NOW()
+      )
+      ON CONFLICT (id) DO UPDATE
         SET
-          "totalTransactions" = "totalTransactions" + ${newTxs},
-          "totalUniqueReceivers" = "totalUniqueReceivers" + ${newUniqueReceivers},
-          "totalUniqueSenders" = "totalUniqueSenders" + ${newUniqueSenders},
-          "updatedAt" = NOW()
-        WHERE id = 1
+          "totalTransactions" = stats."totalTransactions" + EXCLUDED."totalTransactions",
+          "totalUniqueReceivers" = stats."totalUniqueReceivers" + EXCLUDED."totalUniqueReceivers",
+          "totalUniqueSenders" = stats."totalUniqueSenders" + EXCLUDED."totalUniqueSenders",
+          "updatedAt" = EXCLUDED."updatedAt"
+        WHERE stats.id = 1
     `;
   }
 }

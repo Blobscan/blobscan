@@ -49,7 +49,7 @@ export class BlockAggregator {
 
   executeOverallBlockStatsQuery() {
     return this.#prisma.$executeRaw`
-    INSERT INTO "BlockOverallStats" (
+    INSERT INTO "BlockOverallStats" as stats (
       id,
       "totalBlocks",
       "updatedAt"
@@ -59,19 +59,28 @@ export class BlockAggregator {
       COUNT("id")::INT as "totalBlocks",
       NOW() as "updatedAt"
     FROM "Block"
-    ON CONFLICT(id) DO UPDATE SET
+    ON CONFLICT (id) DO UPDATE SET
       "totalBlocks" = EXCLUDED."totalBlocks",
       "updatedAt" = EXCLUDED."updatedAt"
   `;
   }
 
-  updateOverallBlockStats(newBlocks: number) {
+  upsertOverallBlockStats(newBlocks: number) {
     return this.#prisma.$executeRaw`
-      UPDATE "BlockOverallStats"
-      SET
-        "totalBlocks" = "totalBlocks" + ${newBlocks},
-        "updatedAt" = NOW()
-      WHERE id = 1
+      INSERT INTO "BlockOverallStats" as stats (
+        id,
+        "totalBlocks",
+        "updatedAt"
+      )
+      VALUES (
+        1,
+        ${newBlocks},
+        NOW()
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        "totalBlocks" = stats."totalBlocks" + EXCLUDED."totalBlocks",
+        "updatedAt" = EXCLUDED."updatedAt"
+      WHERE stats.id = 1
     `;
   }
 }

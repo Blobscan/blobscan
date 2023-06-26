@@ -7,11 +7,10 @@ import {
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
+import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
-import { storage } from "./clients/google";
-import { swarm } from "./clients/swarm";
-import { SECRET } from "./env";
+import { env } from "./env";
 
 type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
@@ -35,7 +34,7 @@ function getJWTFromRequest(
       return null;
     }
 
-    const decoded = jwt.verify(token, SECRET) as string;
+    const decoded = jwt.verify(token, env.SECRET_KEY) as string;
 
     return decoded;
   } catch (err) {
@@ -50,8 +49,7 @@ function getJWTFromRequest(
 export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,
-    storage,
-    swarm,
+    blobStorageManager,
     apiClient: opts?.apiClient,
   };
 }

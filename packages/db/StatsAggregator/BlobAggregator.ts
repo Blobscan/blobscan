@@ -73,7 +73,7 @@ export class BlobAggregator {
         NOW() as "updatedAt"
       FROM "Blob"
       JOIN "BlobsOnTransactions" ON "BlobsOnTransactions"."blobHash" = "Blob"."versionedHash"
-      ON CONFLICT(id) DO UPDATE SET
+      ON CONFLICT (id) DO UPDATE SET
         "totalBlobs" = EXCLUDED."totalBlobs",
         "totalUniqueBlobs" = EXCLUDED."totalUniqueBlobs",
         "totalBlobSize" = EXCLUDED."totalBlobSize",
@@ -82,20 +82,36 @@ export class BlobAggregator {
     `;
   }
 
-  updateOverallBlobStats(
+  upsertOverallBlobStats(
     newBlobs: number,
     newUniqueBlobs: number,
     newBlobSize: number,
   ) {
     return this.#prisma.$executeRaw`
-      UPDATE "BlobOverallStats"
-      SET
-        "totalBlobs" = "totalBlobs" + ${newBlobs},
-        "totalUniqueBlobs" = "totalUniqueBlobs" + ${newUniqueBlobs},
-        "totalBlobSize" = "totalBlobSize" + ${newBlobSize},
-        "avgBlobSize" = "avgBlobSize" + (${newBlobSize} - "avgBlobSize") / ("totalBlobs" + ${newBlobs})
+      INSERT INTO "BlobOverallStats" as stats (
+        id,
+        "totalBlobs",
+        "totalUniqueBlobs",
+        "totalBlobSize",
+        "avgBlobSize",
+        "updatedAt"
+      )
+      VALUES (
+        1,
+        ${newBlobs},
+        ${newUniqueBlobs},
+        ${newBlobSize},
+        ${newBlobSize / newBlobs},
+        NOW()
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        "totalBlobs" = stats."totalBlobs" + EXCLUDED."totalBlobs",
+        "totalUniqueBlobs" = stats."totalUniqueBlobs" + EXCLUDED."totalUniqueBlobs",
+        "totalBlobSize" = stats."totalBlobSize" + EXCLUDED."totalBlobSize",
+        "avgBlobSize" = stats."avgBlobSize" + (EXCLUDED."totalBlobSize" - stats."avgBlobSize") / (stats."totalBlobs" + EXCLUDED."totalBlobs"),
+        "updatedAt" = EXCLUDED."updatedAt"
       WHERE
-        id = 1
+        stats.id = 1
     `;
   }
 }
