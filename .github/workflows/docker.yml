@@ -11,9 +11,8 @@ on:
 
 # TODO: These should not be required and defaults should be used instead
 env:
-  CHAIN_ID: "100"
+  CHAIN_ID: "7011893055"
   GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
-
 
 jobs:
   docker:
