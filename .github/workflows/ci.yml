@@ -16,12 +16,11 @@ env:
   DATABASE_URL: file:./db.sqlite
   BEE_DEBUG_ENDPOINT: "http://localhost:1635"
   BEE_ENDPOINT: "http://localhost:1633"
-  CHAIN_ID: "100"
+  CHAIN_ID: "7011893055"
   GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
 
 jobs:
   build-lint:
-
     runs-on: ubuntu-latest
 
     steps:
