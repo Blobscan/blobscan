@@ -20,7 +20,9 @@ services:
     command: api
     restart: always
     ports:
-      - 3001:3001
+      - ${EXTERNAL_API_PORT}:3001
+    networks:
+      - ethswarm
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/healthcheck"]
       interval: 30s
@@ -31,6 +33,8 @@ services:
       DATABASE_URL: "${DATABASE_URL}"
       SECRET_KEY: "${SECRET_KEY}"
       BLOBSCAN_API_PORT: "${BLOBSCAN_API_PORT}"
+      BEE_DEBUG_ENDPOINT: "http://bee:1635"
+      BEE_ENDPOINT: "http://bee:1633"
 
   indexer:
     image: blossomlabs/blobscan-indexer:master
@@ -49,3 +53,7 @@ services:
 
 volumes:
   postgres-data:
+
+networks:
+  ethswarm:
+    external: true
