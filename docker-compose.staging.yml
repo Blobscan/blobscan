@@ -3,7 +3,7 @@ version: "3.7"
 
 services:
   web:
-    image: blossomlabs/blobscan:next
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
     command: web
     restart: always
     ports:
@@ -19,7 +19,7 @@ services:
       GOOGLE_SERVICE_KEY: "${GOOGLE_SERVICE_KEY}"
 
   api:
-    image: blossomlabs/blobscan:next
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
     command: api
     restart: always
     ports:
