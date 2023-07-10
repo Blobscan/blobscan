@@ -3,7 +3,6 @@ import { type EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { type TransformedDailyBlobStats } from "~/types";
-import { ChartBase } from "../ChartBase";
 
 export type DailyBlobsSizeProps = {
   days?: TransformedDailyBlobStats["days"];
@@ -15,7 +14,6 @@ export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
   blobSizes,
   compact = false,
 }) {
-  const isEmpty = !days?.length || !blobSizes?.length;
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
   > = {
@@ -40,9 +38,5 @@ export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
     ],
   };
 
-  return (
-    <ChartCard title="Daily Blob Size" size="sm" isEmptyChart={isEmpty}>
-      <ChartBase options={options} compact={compact} />
-    </ChartCard>
-  );
+  return <ChartCard title="Daily Blob Size" size="sm" options={options} />;
 };

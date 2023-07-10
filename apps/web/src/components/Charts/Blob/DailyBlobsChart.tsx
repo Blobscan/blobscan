@@ -3,20 +3,18 @@ import { type EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { type TransformedDailyBlobStats } from "~/types";
-import { ChartBase } from "../ChartBase";
 
-export type DailyBlobsChartProps = {
-  days?: TransformedDailyBlobStats["days"];
-  blobs?: TransformedDailyBlobStats["blobs"];
+export type DailyBlobsChartProps = Partial<{
+  days: TransformedDailyBlobStats["days"];
+  blobs: TransformedDailyBlobStats["blobs"];
   uniqueBlobs: TransformedDailyBlobStats["uniqueBlobs"];
-};
+}>;
 
 export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
   days,
   blobs,
   uniqueBlobs,
 }) {
-  const isEmpty = !days?.length || !blobs?.length;
   const options: EChartOption<EChartOption.SeriesBar> = {
     xAxis: {
       type: "category",
@@ -47,9 +45,5 @@ export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
     animationEasing: "cubicOut",
   };
 
-  return (
-    <ChartCard title="Daily Blobs" size="sm" isEmptyChart={isEmpty}>
-      <ChartBase options={options} />
-    </ChartCard>
-  );
+  return <ChartCard title="Daily Blobs" size="sm" options={options} />;
 };

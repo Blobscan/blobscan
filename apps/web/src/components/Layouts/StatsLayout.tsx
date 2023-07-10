@@ -2,12 +2,11 @@ import { Fragment, type FC, type ReactNode } from "react";
 
 import { Header } from "~/components/Header";
 import { type CardProps } from "../Cards/Card";
-import { ChartCard } from "../Cards/ChartCard";
 import { MetricCard, type MetricCardProps } from "../Cards/MetricCard";
 
 export type StatsSectionsProps = {
   header: CardProps["header"];
-  charts?: ReactNode[];
+  charts: ReactNode[];
   metrics?: MetricCardProps[];
 };
 
@@ -31,9 +30,9 @@ export const StatsLayout: FC<StatsSectionsProps> = function ({
         )}
       </div>
       <div className={`grid grid-cols-1 gap-6 lg:grid-cols-2 [&>div]:w-full`}>
-        {charts
-          ? charts.map((chart, i) => <Fragment key={i}>{chart}</Fragment>)
-          : Array.from({ length: 2 }).map((_, i) => <ChartCard key={i} />)}
+        {charts.map((chart, i) => (
+          <Fragment key={i}>{chart}</Fragment>
+        ))}
       </div>
     </>
   );

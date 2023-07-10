@@ -55,7 +55,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
             </span>
           </div>
         ) : (
-          <Skeleton width={200} />
+          <Skeleton width={170} />
         )}
       </div>
     </SurfaceCardBase>

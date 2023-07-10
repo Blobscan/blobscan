@@ -3,7 +3,6 @@ import { type EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { type TransformedDailyTransactionStats } from "~/types";
-import { ChartBase } from "../ChartBase";
 
 export type DailyTransactionsProps = {
   days?: TransformedDailyTransactionStats["days"];
@@ -16,7 +15,6 @@ export const DailyTransactionsChart: FC<DailyTransactionsProps> = function ({
   transactions,
   compact = false,
 }) {
-  const isEmpty = !days?.length || !transactions?.length;
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
   > = {
@@ -38,9 +36,5 @@ export const DailyTransactionsChart: FC<DailyTransactionsProps> = function ({
     ],
   };
 
-  return (
-    <ChartCard title="Daily Transactions" size="sm" isEmptyChart={isEmpty}>
-      <ChartBase options={options} compact={compact} />
-    </ChartCard>
-  );
+  return <ChartCard title="Daily Transactions" size="sm" options={options} />;
 };

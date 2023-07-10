@@ -4,7 +4,6 @@ import { type EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { type TransformedDailyTransactionStats } from "~/types";
-import { ChartBase } from "../ChartBase";
 
 export type DailyUniqueAddressesChartProps = {
   days?: TransformedDailyTransactionStats["days"];
@@ -14,8 +13,6 @@ export type DailyUniqueAddressesChartProps = {
 
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
   function ({ days, uniqueReceivers, uniqueSenders }) {
-    const isEmpty =
-      !days?.length || !uniqueReceivers?.length || !uniqueSenders?.length;
     const options: EChartOption<EChartOption.SeriesBar> = {
       xAxis: {
         type: "category",
@@ -45,12 +42,6 @@ export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
     };
 
     return (
-      <ChartCard
-        title="Daily Unique Addresses"
-        size="sm"
-        isEmptyChart={isEmpty}
-      >
-        <ChartBase options={options} />
-      </ChartCard>
+      <ChartCard title="Daily Unique Addresses" size="sm" options={options} />
     );
   };

@@ -32,7 +32,11 @@ const Home: NextPage = () => {
     p: 1,
     ps: TOTAL_BLOCKS,
   });
-  const { data: latestTxs, error: latestTxsError } = api.tx.getAll.useQuery({
+  const {
+    data: latestTxs,
+    isLoading: latestTxsLoading,
+    error: latestTxsError,
+  } = api.tx.getAll.useQuery({
     p: 1,
     ps: TOTAL_TXS,
   });
@@ -102,9 +106,13 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blob Size"
               value={
-                allOverallStats?.blob?.totalBlobSize
-                  ? bytesToKilobytes(allOverallStats.blob.totalBlobSize)
-                  : 0
+                allOverallStats?.blob?.totalBlobSize !== undefined
+                  ? Number(
+                      bytesToKilobytes(
+                        allOverallStats.blob.totalBlobSize,
+                      ).toFixed(2),
+                    )
+                  : undefined
               }
               unit="KB"
               compact
@@ -112,20 +120,20 @@ const Home: NextPage = () => {
             <MetricCard
               name="Avg. Blob Size"
               value={
-                allOverallStats?.blob?.avgBlobSize
+                allOverallStats?.blob?.avgBlobSize !== undefined
                   ? Number(
                       bytesToKilobytes(
                         allOverallStats?.blob?.avgBlobSize,
                       ).toFixed(2),
                     )
-                  : 0
+                  : undefined
               }
               unit="KB"
               compact
             />
             <MetricCard
               name="Total Unique Blobs"
-              value={allOverallStats?.blob?.totalUniqueBlobs ?? 0}
+              value={allOverallStats?.blob?.totalUniqueBlobs}
               compact
             />
           </div>
@@ -151,7 +159,7 @@ const Home: NextPage = () => {
           }
           emptyState="No blocks"
         >
-          {!blocks || blocks.length ? (
+          {latestBlocksLoading || !blocks || blocks.length ? (
             <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
               {latestBlocksLoading
                 ? Array(TOTAL_BLOCKS)
@@ -182,9 +190,9 @@ const Home: NextPage = () => {
           }
           emptyState="No transactions"
         >
-          {!txs || !!txs.length ? (
+          {latestTxsLoading || !txs || txs.length ? (
             <div className=" flex flex-col gap-5">
-              {!txs
+              {latestTxsLoading
                 ? Array(TOTAL_TXS)
                     .fill(0)
                     .map((_, i) => <BlobTransactionCard key={i} />)

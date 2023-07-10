@@ -66,28 +66,24 @@ const BlobStats: NextPage = function () {
             ]
           : undefined
       }
-      charts={
-        dailyBlobStats
-          ? [
-              <DailyBlobsChart
-                key={0}
-                days={dailyBlobStats.days}
-                blobs={dailyBlobStats.blobs}
-                uniqueBlobs={dailyBlobStats.uniqueBlobs}
-              />,
-              <DailyBlobSizeChart
-                key={1}
-                days={dailyBlobStats.days}
-                blobSizes={dailyBlobStats.blobSizes}
-              />,
-              <DailyAvgBlobSizeChart
-                key={2}
-                days={dailyBlobStats.days}
-                avgBlobSizes={dailyBlobStats.avgBlobSizes}
-              />,
-            ]
-          : undefined
-      }
+      charts={[
+        <DailyBlobsChart
+          key={0}
+          days={dailyBlobStats?.days}
+          blobs={dailyBlobStats?.blobs}
+          uniqueBlobs={dailyBlobStats?.uniqueBlobs}
+        />,
+        <DailyBlobSizeChart
+          key={1}
+          days={dailyBlobStats?.days}
+          blobSizes={dailyBlobStats?.blobSizes}
+        />,
+        <DailyAvgBlobSizeChart
+          key={2}
+          days={dailyBlobStats?.days}
+          avgBlobSizes={dailyBlobStats?.avgBlobSizes}
+        />,
+      ]}
     />
   );
 };
