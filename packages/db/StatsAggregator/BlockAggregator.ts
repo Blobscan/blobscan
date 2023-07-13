@@ -1,16 +1,17 @@
-import { Prisma, type PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
+import type { BlobscanPrismaClient } from "../prisma";
 import {
   buildRawWhereClause,
   buildWhereClause,
   getDefaultDatePeriod,
-  type DatePeriod,
 } from "../utils/dates";
+import type { DatePeriod } from "../utils/dates";
 
 export class BlockAggregator {
-  #prisma: PrismaClient;
+  #prisma: BlobscanPrismaClient;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: BlobscanPrismaClient) {
     this.#prisma = prisma;
   }
 
@@ -34,7 +35,7 @@ export class BlockAggregator {
   }
 
   getDailyBlockAggregates(
-    datePeriod: DatePeriod = getDefaultDatePeriod(),
+    datePeriod: DatePeriod = getDefaultDatePeriod()
   ): Prisma.PrismaPromise<Prisma.BlockDailyStatsCreateManyInput[]> {
     const dateField = Prisma.sql`timestamp`;
     const whereClause = buildRawWhereClause(dateField, datePeriod);

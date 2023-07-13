@@ -1,4 +1,5 @@
-import { useMemo, type FC } from "react";
+import { useMemo } from "react";
+import type { FC } from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
@@ -21,7 +22,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
   const hasOneTx = transactions?.length === 1;
   const blobCount = useMemo(
     () => transactions?.reduce((acc, tx) => acc + tx.blobs.length, 0),
-    [transactions],
+    [transactions]
   );
   const hasOneBlob = blobCount === 1;
 

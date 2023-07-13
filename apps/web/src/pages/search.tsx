@@ -1,4 +1,4 @@
-import { type GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import superjson from "superjson";
@@ -6,7 +6,7 @@ import superjson from "superjson";
 import { appRouter, createTRPCInnerContext } from "@blobscan/api";
 
 import { Button } from "~/components/Button";
-import { type RouterOutputs } from "~/api-client";
+import type { RouterOutputs } from "~/api-client";
 import { getRouteBySearchCategory } from "~/utils";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];

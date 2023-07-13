@@ -25,7 +25,7 @@ export const blobRouter = createTRPCRouter({
       z.object({
         txHash: z.string(),
         index: z.number(),
-      }),
+      })
     )
     .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
       const { txHash, index } = input;
@@ -64,7 +64,7 @@ export const blobRouter = createTRPCRouter({
         txHash,
         index,
         blockNumber: transaction.blockNumber,
-        timestamp: transaction.timestamp,
+        timestamp: transaction.block.timestamp,
         commitment: blob.commitment,
         data: blobData.data.toString(),
         size: blob.size,

@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import NextError from "next/error";
 
 import {
@@ -19,12 +19,12 @@ const TransactionStats: NextPage = function () {
   });
   const dailyTxStats = useTransformResult(
     dailyTxStatsRes,
-    transformDailyTxStatsResult,
+    transformDailyTxStatsResult
   );
   const overallTxStatsRes = api.stats.transaction.getOverallStats.useQuery();
   const overallTxStats = useTransformResult(
     overallTxStatsRes,
-    transformOverallTxStatsResult,
+    transformOverallTxStatsResult
   );
 
   const error = dailyTxStatsRes.error || overallTxStatsRes.error;

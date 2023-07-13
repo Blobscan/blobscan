@@ -15,5 +15,14 @@
     "@ethersphere/bee-js": "^6.0.0",
     "@google-cloud/storage": "^6.10.1",
     "zod": "^3.21.4"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
   }
 }

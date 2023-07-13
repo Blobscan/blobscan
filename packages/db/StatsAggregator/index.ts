@@ -1,18 +1,18 @@
-import { type PrismaClient } from "@prisma/client";
-
-import { getDefaultDatePeriod, type DatePeriod } from "../utils/dates";
+import type { BlobscanPrismaClient } from "../prisma";
+import { getDefaultDatePeriod } from "../utils/dates";
+import type { DatePeriod } from "../utils/dates";
 import { BlobAggregator } from "./BlobAggregator";
 import { BlockAggregator } from "./BlockAggregator";
 import { TxAggregator } from "./TxAggregator";
 
 export class StatsAggregator {
-  #prisma: PrismaClient;
+  #prisma: BlobscanPrismaClient;
 
   blob: BlobAggregator;
   block: BlockAggregator;
   tx: TxAggregator;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: BlobscanPrismaClient) {
     this.#prisma = prisma;
 
     this.blob = new BlobAggregator(prisma);

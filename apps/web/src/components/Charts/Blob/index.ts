@@ -1,3 +1,3 @@
 export * from "./DailyAvgBlobSizeChart";
-export * from "./DailyBlobSizeChart";
 export * from "./DailyBlobsChart";
+export * from "./DailyBlobSizeChart";

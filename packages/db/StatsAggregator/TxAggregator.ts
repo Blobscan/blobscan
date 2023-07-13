@@ -1,16 +1,17 @@
-import { Prisma, type PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
+import type { BlobscanPrismaClient } from "../prisma";
 import {
   buildRawWhereClause,
   buildWhereClause,
   getDefaultDatePeriod,
-  type DatePeriod,
 } from "../utils/dates";
+import type { DatePeriod } from "../utils/dates";
 
 export class TxAggregator {
-  #prisma: PrismaClient;
+  #prisma: BlobscanPrismaClient;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: BlobscanPrismaClient) {
     this.#prisma = prisma;
   }
 
@@ -18,7 +19,7 @@ export class TxAggregator {
     // Delete all the rows if current date is set as target date
     if (!datePeriod) {
       await this.#prisma.$executeRawUnsafe(
-        `TRUNCATE TABLE "TransactionDailyStats"`,
+        `TRUNCATE TABLE "TransactionDailyStats"`
       );
     } else {
       await this.#prisma.transactionDailyStats.deleteMany({
@@ -34,7 +35,7 @@ export class TxAggregator {
   }
 
   getDailyTxAggregates(
-    datePeriod: DatePeriod = getDefaultDatePeriod(),
+    datePeriod: DatePeriod = getDefaultDatePeriod()
   ): Prisma.PrismaPromise<Prisma.TransactionDailyStatsCreateManyInput[]> {
     const dateField = Prisma.sql`timestamp`;
     const whereClause = buildRawWhereClause(dateField, datePeriod);
@@ -80,7 +81,7 @@ export class TxAggregator {
   upsertOverallTxStats(
     newTxs: number,
     newUniqueReceivers: number,
-    newUniqueSenders: number,
+    newUniqueSenders: number
   ) {
     return this.#prisma.$executeRaw`
       INSERT INTO "TransactionOverallStats" as stats (

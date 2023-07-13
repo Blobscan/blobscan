@@ -23,7 +23,7 @@ export const transactionStatsRouter = createTRPCRouter({
           totalUniqueSenders: z.number(),
           updatedAt: z.date(),
         })
-        .nullable(),
+        .nullable()
     )
     .query(async ({ ctx }) => {
       const overallStats = await ctx.prisma.transactionOverallStats.findUnique({
@@ -46,7 +46,7 @@ export const transactionStatsRouter = createTRPCRouter({
         totalTransactions: z.boolean().optional(),
         totalUniqueSenders: z.boolean().optional(),
         totalUniqueReceivers: z.boolean().optional(),
-      }),
+      })
     )
     .output(
       z.array(
@@ -55,8 +55,8 @@ export const transactionStatsRouter = createTRPCRouter({
           totalTransactions: z.number(),
           totalUniqueSenders: z.number(),
           totalUniqueReceivers: z.number(),
-        }),
-      ),
+        })
+      )
     )
     .query(({ ctx: { prisma, timeFrame } }) =>
       prisma.transactionDailyStats.findMany({
@@ -73,6 +73,6 @@ export const transactionStatsRouter = createTRPCRouter({
           },
         },
         orderBy: { day: "asc" },
-      }),
+      })
     ),
 });

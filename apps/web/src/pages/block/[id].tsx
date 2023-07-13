@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
-import { useRouter, type NextRouter } from "next/router";
+import { useRouter } from "next/router";
+import type { NextRouter } from "next/router";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
@@ -24,7 +25,7 @@ function performBlockQuery(router: NextRouter) {
 
   return api.block.getByHash.useQuery(
     { hash: blockNumberOrHash ?? "" },
-    { enabled: isReady },
+    { enabled: isReady }
   );
 }
 

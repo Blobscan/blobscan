@@ -1,16 +1,17 @@
-import { Prisma, type PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
+import type { BlobscanPrismaClient } from "../prisma";
 import {
   buildRawWhereClause,
   buildWhereClause,
   getDefaultDatePeriod,
-  type DatePeriod,
 } from "../utils/dates";
+import type { DatePeriod } from "../utils/dates";
 
 export class BlobAggregator {
-  #prisma: PrismaClient;
+  #prisma: BlobscanPrismaClient;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: BlobscanPrismaClient) {
     this.#prisma = prisma;
   }
 
@@ -34,7 +35,7 @@ export class BlobAggregator {
   }
 
   getDailyBlobAggregates(
-    datePeriod: DatePeriod = getDefaultDatePeriod(),
+    datePeriod: DatePeriod = getDefaultDatePeriod()
   ): Prisma.PrismaPromise<Prisma.BlobDailyStatsCreateManyInput[]> {
     const dateField = Prisma.sql`"Transaction"."timestamp"`;
     const whereClause = buildRawWhereClause(dateField, datePeriod);
@@ -85,7 +86,7 @@ export class BlobAggregator {
   upsertOverallBlobStats(
     newBlobs: number,
     newUniqueBlobs: number,
-    newBlobSize: number,
+    newBlobSize: number
   ) {
     return this.#prisma.$executeRaw`
       INSERT INTO "BlobOverallStats" as stats (

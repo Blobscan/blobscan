@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import type { FC } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import cn from "classnames";
 
@@ -35,7 +35,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
             "sm:gap-4": !compact,
             "sm:gap-1": compact,
           },
-          "flex flex-col gap-1",
+          "flex flex-col gap-1"
         )}
       >
         <div
@@ -55,7 +55,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
                     "text-lg sm:text-xl": compact,
                     "text-xl lg:text-4xl": !compact,
                   },
-                  "font-semibold",
+                  "font-semibold"
                 )}
               >
                 {value !== undefined ? (
@@ -64,7 +64,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
                       (isInteger
                         ? Math.trunc(x)
                         : x.toFixed(2)
-                      ).toLocaleString(),
+                      ).toLocaleString()
                     )}
                   </animated.div>
                 ) : (
@@ -85,7 +85,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
                     className={cn(
                       "relative bottom-1 text-xs font-semibold text-contentSecondary-light dark:text-contentSecondary-dark md:bottom-0.5 lg:bottom-1 lg:left-0.5",
                       { "sm:bottom-1 sm:text-xs": compact },
-                      { "sm:bottom-1 sm:text-sm": !compact },
+                      { "sm:bottom-1 sm:text-sm": !compact }
                     )}
                   >
                     {unit}

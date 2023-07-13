@@ -1,21 +1,18 @@
-import {
-  useCallback,
-  useRef,
-  useState,
-  type FormEventHandler,
-  type HTMLAttributes,
-} from "react";
+import { useCallback, useRef, useState } from "react";
+import type { FormEventHandler, HTMLAttributes } from "react";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-import { api, type RouterOutputs } from "~/api-client";
+import { api } from "~/api-client";
+import type { RouterOutputs } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
 import { Input } from "../Input";
-import { SearchResults, type SearchResultsProps } from "./SearchResults";
+import { SearchResults } from "./SearchResults";
+import type { SearchResultsProps } from "./SearchResults";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];
 type SearchCategory = keyof SearchOutput;
@@ -41,11 +38,11 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       queryKey: ["search.byTerm", { term: debouncedTerm }],
       enabled: !!debouncedTerm.length,
       staleTime: Infinity,
-    },
+    }
   );
 
   const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
-    e,
+    e
   ) => {
     e.preventDefault();
 
@@ -81,7 +78,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       setTerm("");
       void router.push(getRouteBySearchCategory(category, id));
     },
-    [router],
+    [router]
   );
 
   if (searchQuery.error) {

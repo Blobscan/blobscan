@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { type FC } from "react";
-import { type EChartOption } from "echarts";
+
+import type { FC } from "react";
+import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { type TransformedDailyTransactionStats } from "~/types";
+import type { TransformedDailyTransactionStats } from "~/types";
 
 export type DailyUniqueAddressesChartProps = {
   days?: TransformedDailyTransactionStats["days"];

@@ -14,7 +14,11 @@ export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
       transaction: {
         select: {
           blockNumber: true,
-          timestamp: true,
+          block: {
+            select: {
+              timestamp: true,
+            },
+          },
         },
       },
     },
@@ -37,7 +41,11 @@ export const blobsOnTransactionsSelect =
     transaction: {
       select: {
         blockNumber: true,
-        timestamp: true,
+        block: {
+          select: {
+            timestamp: true,
+          },
+        },
       },
     },
   });

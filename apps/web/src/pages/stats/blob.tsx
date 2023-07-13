@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import NextError from "next/error";
 
 import {
@@ -21,12 +21,12 @@ const BlobStats: NextPage = function () {
   });
   const dailyBlobStats = useTransformResult(
     dailyBlobStatsRes,
-    transformDailyBlobStatsResult,
+    transformDailyBlobStatsResult
   );
   const overallBlobStatsRes = api.stats.blob.getOverallStats.useQuery();
   const overallBlobStats = useTransformResult(
     overallBlobStatsRes,
-    transformOverallBlobStatsResult,
+    transformOverallBlobStatsResult
   );
 
   const error = dailyBlobStatsRes.error || overallBlobStatsRes.error;
@@ -59,7 +59,7 @@ const BlobStats: NextPage = function () {
               {
                 name: "Average Blob Size",
                 value: Number(
-                  bytesToKilobytes(overallBlobStats.avgBlobSize).toFixed(2),
+                  bytesToKilobytes(overallBlobStats.avgBlobSize).toFixed(2)
                 ),
                 unit: "KB",
               },

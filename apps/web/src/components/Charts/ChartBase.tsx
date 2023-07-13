@@ -1,5 +1,5 @@
-import { type FC } from "react";
-import { type EChartOption } from "echarts";
+import type { FC } from "react";
+import type { EChartOption } from "echarts";
 import EChartsReact from "echarts-for-react";
 
 import { abbreviateNumber, formatDate } from "~/utils";

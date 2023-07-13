@@ -1,10 +1,10 @@
-import {
-  type AllTransactions,
-  type DailyTransactionStats,
-  type OverallTxStats,
-  type TRPCResult,
-  type TransformedDailyTransactionStats,
-  type TransformedOverallTxStats,
+import type {
+  AllTransactions,
+  DailyTransactionStats,
+  OverallTxStats,
+  TRPCResult,
+  TransformedDailyTransactionStats,
+  TransformedOverallTxStats,
 } from "~/types";
 import { getDateFromDateTime } from "~/utils";
 
@@ -48,7 +48,7 @@ export function transformDailyTxStatsResult({
   return data.reduce<TransformedDailyTransactionStats>(
     (
       aggregatedStats,
-      { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders },
+      { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders }
     ) => {
       aggregatedStats.days.push(getDateFromDateTime(day));
       aggregatedStats.transactions.push(totalTransactions);
@@ -62,7 +62,7 @@ export function transformDailyTxStatsResult({
       transactions: [],
       uniqueReceivers: [],
       uniqueSenders: [],
-    },
+    }
   );
 }
 

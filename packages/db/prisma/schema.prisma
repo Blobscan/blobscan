@@ -19,6 +19,8 @@ model Address {
   address                String        @id
   isSender               Boolean
   isReceiver             Boolean
+  insertedAt             DateTime
+  updatedAt              DateTime
   transactionsAsSender   Transaction[] @relation("fromRelation")
   transactionsAsReceiver Transaction[] @relation("toRelation")
 }
@@ -30,6 +32,8 @@ model Blob {
   gsUri         String                @unique
   swarmHash     String?               @unique
   size          Int
+  insertedAt    DateTime
+  updatedAt     DateTime
   transactions  BlobsOnTransactions[]
 }
 
@@ -39,6 +43,8 @@ model Block {
   number       Int           @unique
   timestamp    DateTime      @unique
   slot         Int           @unique
+  insertedAt   DateTime
+  updatedAt    DateTime
   transactions Transaction[]
 }
 
@@ -48,7 +54,8 @@ model Transaction {
   fromId      String
   toId        String?
   blockNumber Int
-  timestamp   DateTime
+  insertedAt  DateTime
+  updatedAt   DateTime
   blobs       BlobsOnTransactions[]
   block       Block                 @relation(fields: [blockNumber], references: [number])
   from        Address               @relation("fromRelation", fields: [fromId], references: [address])

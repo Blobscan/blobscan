@@ -1,10 +1,13 @@
-import { Fragment, useCallback, type FC, type ReactNode } from "react";
+import { Fragment, useCallback } from "react";
+import type { FC, ReactNode } from "react";
 import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
-import { Dropdown, type DropdownProps } from "../Dropdown";
-import { Pagination, type PaginationProps } from "../Pagination";
+import { Dropdown } from "../Dropdown";
+import type { DropdownProps } from "../Dropdown";
+import { Pagination } from "../Pagination";
+import type { PaginationProps } from "../Pagination";
 
 export type PaginatedListLayoutProps = {
   header?: ReactNode;
@@ -45,7 +48,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
           ps: newPageSize,
         },
       }),
-    [page, totalItems, router],
+    [page, totalItems, router]
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
@@ -58,7 +61,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
           ps: pageSize,
         },
       }),
-    [pageSize, router],
+    [pageSize, router]
   );
 
   return (

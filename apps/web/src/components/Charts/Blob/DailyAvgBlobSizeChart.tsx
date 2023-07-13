@@ -1,8 +1,8 @@
-import { type FC } from "react";
-import { type EChartOption } from "echarts";
+import type { FC } from "react";
+import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { type TransformedDailyBlobStats } from "~/types";
+import type { TransformedDailyBlobStats } from "~/types";
 
 type DailyAvgBlobSizeProps = {
   days?: TransformedDailyBlobStats["days"];

@@ -1,4 +1,4 @@
-import { type FC, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 
 export const Centered: FC<{ children: ReactNode }> = function ({ children }) {
   return (

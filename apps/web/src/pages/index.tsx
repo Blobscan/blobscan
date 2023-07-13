@@ -46,11 +46,11 @@ const Home: NextPage = () => {
   });
   const dailyTxStats = useTransformResult(
     dailyTxStatsRes,
-    transformDailyTxStatsResult,
+    transformDailyTxStatsResult
   );
   const allOverallStats = useTransformResult(
     allOverallStatsRes,
-    transformAllOverallStatsResult,
+    transformAllOverallStatsResult
   );
 
   const error =
@@ -111,8 +111,8 @@ const Home: NextPage = () => {
                 allOverallStats?.blob?.totalBlobSize !== undefined
                   ? Number(
                       bytesToKilobytes(
-                        allOverallStats.blob.totalBlobSize,
-                      ).toFixed(2),
+                        allOverallStats.blob.totalBlobSize
+                      ).toFixed(2)
                     )
                   : undefined
               }
@@ -125,8 +125,8 @@ const Home: NextPage = () => {
                 allOverallStats?.blob?.avgBlobSize !== undefined
                   ? Number(
                       bytesToKilobytes(
-                        allOverallStats?.blob?.avgBlobSize,
-                      ).toFixed(2),
+                        allOverallStats?.blob?.avgBlobSize
+                      ).toFixed(2)
                     )
                   : undefined
               }

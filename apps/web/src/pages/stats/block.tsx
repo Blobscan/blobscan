@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import NextError from "next/error";
 
 import { DailyBlocksChart } from "~/components/Charts/Block";
@@ -17,11 +17,11 @@ const BlockStats: NextPage = function () {
   const overallBlockStatsRes = api.stats.block.getOverallStats.useQuery();
   const dailyBlockStats = useTransformResult(
     dailyBlockStatsRes,
-    transformDailyBlockStatsResult,
+    transformDailyBlockStatsResult
   );
   const blockOverallStats = useTransformResult(
     overallBlockStatsRes,
-    transformOverallBlockStatsResult,
+    transformOverallBlockStatsResult
   );
 
   const error = dailyBlockStatsRes.error || overallBlockStatsRes.error;

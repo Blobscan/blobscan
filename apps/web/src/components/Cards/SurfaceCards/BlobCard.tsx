@@ -1,9 +1,9 @@
-import { type FC } from "react";
+import type { FC } from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { type Transaction } from "~/types";
+import type { Transaction } from "~/types";
 import { buildBlobRoute } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";

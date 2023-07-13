@@ -1,12 +1,12 @@
-import { type FC, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import cn from "classnames";
+import type { EChartOption } from "echarts";
 
-import { Card, CardHeader } from "./Card";
 import "react-loading-skeleton/dist/skeleton.css";
-import { type EChartOption } from "echarts";
 import Skeleton from "react-loading-skeleton";
 
 import { ChartBase } from "../Charts/ChartBase";
+import { Card, CardHeader } from "./Card";
 
 type ChartCardProps = {
   title?: ReactNode;

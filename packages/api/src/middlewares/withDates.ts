@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import dayjs from "@blobscan/dayjs";
-import { normalizeDate, type DatePeriod } from "@blobscan/db";
+import { normalizeDate } from "@blobscan/db";
+import type { DatePeriod } from "@blobscan/db";
 
 import { t } from "../clients/trpc";
 

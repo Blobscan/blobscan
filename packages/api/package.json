@@ -23,8 +23,13 @@
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
     "@types/jsonwebtoken": "^9.0.2",
-    "eslint": "^8.37.0",
     "trpc-openapi": "^1.1.2",
     "typescript": "^5.0.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
   }
 }
