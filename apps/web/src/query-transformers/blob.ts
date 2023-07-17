@@ -16,9 +16,13 @@ export function transformOverallBlobStatsResult({
   }
 
   return {
-    avgBlobSize: data?.avgBlobSize ?? 0,
+    avgBlobSize: Number(
+      data?.avgBlobSize ? bytesToKilobytes(data.avgBlobSize).toFixed(2) : 0
+    ),
     totalBlobs: data?.totalBlobs ?? 0,
-    totalBlobSize: data?.avgBlobSize ? bytesToKilobytes(data.totalBlobSize) : 0,
+    totalBlobSize: Number(
+      data?.totalBlobSize ? bytesToKilobytes(data.totalBlobSize).toFixed(2) : 0
+    ),
     totalUniqueBlobs: data?.totalUniqueBlobs ?? 0,
     updatedAt: data?.updatedAt,
   };
