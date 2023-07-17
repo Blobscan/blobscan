@@ -1,10 +1,12 @@
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+import type { Blob, Transaction } from "@blobscan/db";
+import type { OmittableFields } from "@blobscan/db/prisma/extensions";
+
 import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
-import type { Blob, Transaction } from "@blobscan/db";
-import type { OmittableFields } from "@blobscan/db/prisma/extensions";
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 
 const INDEXER_PATH = "/indexer";
 const INDEX_REQUEST_DATA = z.object({
@@ -113,7 +115,6 @@ export const indexerRouter = createTRPCRouter({
           }
 
           return {
-            id: b.versionedHash,
             versionedHash: b.versionedHash,
             commitment: b.commitment,
             gsUri: blobReferences.google,
@@ -142,9 +143,8 @@ export const indexerRouter = createTRPCRouter({
 
       operations.push(
         prisma.block.upsert({
-          where: { id: input.block.number },
+          where: { hash: input.block.hash },
           create: {
-            id: input.block.number,
             ...blockData,
             insertedAt: now,
             updatedAt: now,
@@ -167,7 +167,6 @@ export const indexerRouter = createTRPCRouter({
             hash: tx.hash,
             fromId: tx.from,
             toId: tx.to ?? null,
-            id: tx.hash,
           }))
         )
       );

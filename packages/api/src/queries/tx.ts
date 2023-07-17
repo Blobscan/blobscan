@@ -1,7 +1,6 @@
 import { Prisma } from "@blobscan/db";
 
 const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
-  id: false,
   hash: true,
   fromId: true,
   toId: true,

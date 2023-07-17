@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import type { Prisma } from "@prisma/client";
+import type { Address, Blob, Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
@@ -15,20 +15,22 @@ const prisma = new PrismaClient()
   .$extends(statsExtension);
 
 const TOTAL_DAYS = 60;
-const MIN_BLOCKS_PER_DAY = 2000;
-const MAX_BLOCKS_PER_DAY = 2500;
+const MIN_BLOCKS_PER_DAY = 500;
+const MAX_BLOCKS_PER_DAY = 1000;
 
 const MAX_BLOBS_PER_BLOCK = 6;
 const MAX_BLOBS_PER_TX = 2;
 
 const UNIQUE_BLOBS_AMOUNT = 100;
-const UNIQUE_ADDRESSES_AMOUNT = 10_000;
+const UNIQUE_ADDRESSES_AMOUNT = 1000;
 
 // const BLOB_SIZE = 131_072;
 const MAX_BLOB_BYTES_SIZE = 1024; // in bytes
 
 const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
+
+type BlobWithData = Omit<Blob, OmittableFields> & { data: string };
 
 function buildGoogleStorageUri(hash: string): string {
   return `${process.env.CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(
@@ -76,14 +78,8 @@ function generateUniqueTimestamps(
   return uniqueTimestamps;
 }
 
-type Blob = Prisma.BlobCreateManyInput & {
-  data: string;
-};
-
-function generateUniqueBlobs(amount: number) {
-  return Array.from({ length: amount }).map<
-    Omit<Blob, "insertedAt" | "updatedAt">
-  >(() => {
+function generateUniqueBlobs(amount: number): BlobWithData[] {
+  return Array.from({ length: amount }).map<BlobWithData>(() => {
     const commitment = faker.string.hexadecimal({
       length: 96,
     });
@@ -97,7 +93,6 @@ function generateUniqueBlobs(amount: number) {
     });
 
     return {
-      id: versionedHash,
       versionedHash,
       commitment,
       gsUri: buildGoogleStorageUri(versionedHash),
@@ -131,9 +126,7 @@ function performPrismaOpInBatches<T>(
   return Promise.all(operations);
 }
 
-async function performBlobStorageOpInBatches(
-  blobs: Omit<Blob, OmittableFields>[]
-) {
+async function performBlobStorageOpInBatches(blobs: BlobWithData[]) {
   const batches = Math.ceil(blobs.length / STORAGE_BATCH_SIZE);
   const operations: Promise<Record<"google", string | undefined>[]>[] = [];
 
@@ -179,7 +172,6 @@ async function main() {
     prevSlot = slot;
 
     return {
-      id: number,
       hash: faker.string.hexadecimal({ length: 64 }),
       number,
       timestamp,
@@ -204,7 +196,6 @@ async function main() {
       if (!from || !to) throw new Error("Address not found");
 
       return {
-        id: txHash,
         hash: txHash,
         fromId: from,
         toId: to,
@@ -268,33 +259,33 @@ async function main() {
 
   const blobsUploadEnd = performance.now();
 
-  const addressToAddressEntity = txs.reduce<
-    Record<string, Prisma.AddressCreateManyInput>
-  >((addressToTxData, tx) => {
-    addressToTxData[tx.fromId] = {
-      address: tx.fromId,
-      isReceiver: false,
-      ...addressToTxData[tx.fromId],
-      isSender: true,
-      insertedAt: now,
-      updatedAt: now,
-    };
-
-    if (tx.toId) {
-      addressToTxData[tx.toId] = {
-        address: tx.toId,
-        isSender: false,
-        ...addressToTxData[tx.toId],
-        isReceiver: true,
+  const addressToAddressEntity = txs.reduce<Record<string, Address>>(
+    (addressToTxData, tx) => {
+      addressToTxData[tx.fromId] = {
+        address: tx.fromId,
+        isReceiver: false,
+        ...addressToTxData[tx.fromId],
+        isSender: true,
         insertedAt: now,
         updatedAt: now,
       };
-    }
 
-    return addressToTxData;
-  }, {} as Record<string, Prisma.AddressCreateInput>);
-  const blobInputs = blobs.map((b) => ({
-    id: b.versionedHash,
+      if (tx.toId) {
+        addressToTxData[tx.toId] = {
+          address: tx.toId,
+          isSender: false,
+          ...addressToTxData[tx.toId],
+          isReceiver: true,
+          insertedAt: now,
+          updatedAt: now,
+        };
+      }
+
+      return addressToTxData;
+    },
+    {} as Record<string, Address>
+  );
+  const blobInputs = blobs.map<Blob>((b) => ({
     versionedHash: b.versionedHash,
     commitment: b.commitment,
     gsUri: b.gsUri,
@@ -304,7 +295,7 @@ async function main() {
     updatedAt: now,
   }));
   const addressInputs = Object.keys(addressToAddressEntity).map(
-    (key) => addressToAddressEntity[key] as Prisma.AddressCreateInput
+    (key) => addressToAddressEntity[key] as Address
   );
 
   const dataInsertionStart = performance.now();
@@ -353,37 +344,37 @@ async function main() {
 
   console.log(`Data inserted for the last ${TOTAL_DAYS} days`);
 
-  // console.log(
-  //   "========================================================================"
-  // );
+  console.log(
+    "========================================================================"
+  );
 
-  // await Promise.all([
-  //   prisma.blobOverallStats.backfill(),
-  //   prisma.blockOverallStats.backfill(),
-  //   prisma.transactionOverallStats.backfill(),
-  // ]);
+  await Promise.all([
+    prisma.blobOverallStats.backfill(),
+    prisma.blockOverallStats.backfill(),
+    prisma.transactionOverallStats.backfill(),
+  ]);
 
-  // console.log("Overall stats created.");
+  console.log("Overall stats created.");
 
-  // console.log(
-  //   "========================================================================"
-  // );
+  console.log(
+    "========================================================================"
+  );
 
-  // const yesterdayPeriod = {
-  //   to: dayjs().subtract(1, "day").startOf("day").toISOString(),
-  // };
+  const yesterdayPeriod = {
+    to: dayjs().subtract(1, "day").startOf("day").toISOString(),
+  };
 
-  // await Promise.all([
-  //   prisma.blobDailyStats.fill(yesterdayPeriod),
-  //   prisma.blockDailyStats.fill(yesterdayPeriod),
-  //   prisma.transactionDailyStats.fill(yesterdayPeriod),
-  // ]);
+  await Promise.all([
+    prisma.blobDailyStats.fill(yesterdayPeriod),
+    prisma.blockDailyStats.fill(yesterdayPeriod),
+    prisma.transactionDailyStats.fill(yesterdayPeriod),
+  ]);
 
-  // console.log("Daily stats created");
+  console.log("Daily stats created");
 
-  // console.log(
-  //   "========================================================================"
-  // );
+  console.log(
+    "========================================================================"
+  );
 }
 
 main()

@@ -1,7 +1,6 @@
 import { Prisma } from "@blobscan/db";
 
 export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
-  id: false,
   versionedHash: true,
   commitment: true,
   gsUri: true,

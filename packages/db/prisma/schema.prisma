@@ -11,7 +11,7 @@ datasource db {
 }
 
 model IndexerMetadata {
-  id       Int @id
+  id       Int @id @default(autoincrement())
   lastSlot Int @unique
 }
 
@@ -28,8 +28,7 @@ model Address {
 }
 
 model Blob {
-  id            String                @id
-  versionedHash String                @unique
+  versionedHash String                @id
   commitment    String                @unique
   gsUri         String                @unique
   swarmHash     String?               @unique
@@ -42,8 +41,7 @@ model Blob {
 }
 
 model Block {
-  id           Int           @id
-  hash         String        @unique
+  hash         String        @id
   number       Int           @unique
   timestamp    DateTime      @unique
   slot         Int           @unique
@@ -55,8 +53,7 @@ model Block {
 }
 
 model Transaction {
-  id          String                @id
-  hash        String                @unique
+  hash        String                @id
   fromId      String
   toId        String?
   blockNumber Int

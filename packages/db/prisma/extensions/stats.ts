@@ -120,7 +120,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           INSERT INTO "BlockDailyStats"(day, "totalBlocks")
           SELECT
             DATE_TRUNC('day', ${dateField}) as "day",
-            COUNT(id)::Int as "totalBlocks"
+            COUNT(hash)::Int as "totalBlocks"
           FROM "Block"
           ${whereClause}
           GROUP BY "day"
@@ -139,7 +139,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           )
           SELECT
             1 as id,
-            COUNT("id")::INT as "totalBlocks",
+            COUNT("hash")::INT as "totalBlocks",
             NOW() as "updatedAt"
           FROM "Block"
           ON CONFLICT (id) DO UPDATE SET

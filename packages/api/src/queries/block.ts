@@ -1,7 +1,6 @@
 import { Prisma } from "@blobscan/db";
 
 const blockSelect = Prisma.validator<Prisma.BlockSelect>()({
-  id: false,
   hash: true,
   number: true,
   timestamp: true,

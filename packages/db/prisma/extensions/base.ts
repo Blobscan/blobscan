@@ -91,7 +91,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             await prisma.blob.findMany({
               select: { versionedHash: true },
               where: {
-                id: { in: blobs.map((blob) => blob.versionedHash) },
+                versionedHash: { in: blobs.map((blob) => blob.versionedHash) },
               },
             })
           ).map((b) => b.versionedHash);
@@ -102,16 +102,13 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(blobs: Omit<Blob, OmittableFields>[]) {
           const formattedValues = blobs
-            .map(
-              ({ versionedHash, commitment, gsUri, id, size, swarmHash }) => [
-                id,
-                versionedHash,
-                commitment,
-                size,
-                gsUri,
-                swarmHash,
-              ]
-            )
+            .map(({ versionedHash, commitment, gsUri, size, swarmHash }) => [
+              versionedHash,
+              commitment,
+              size,
+              gsUri,
+              swarmHash,
+            ])
             .map(
               (rowColumns) =>
                 Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
@@ -119,7 +116,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
 
           return prisma.$executeRaw`
             INSERT INTO "Blob" as blob (
-              "id",
               "versionedHash",
               "commitment",
               "size",
@@ -140,8 +136,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       transaction: {
         upsertMany(transactions: Omit<Transaction, OmittableFields>[]) {
           const formattedValues = transactions
-            .map(({ id, hash, blockNumber, fromId, toId }) => [
-              id,
+            .map(({ hash, blockNumber, fromId, toId }) => [
               hash,
               blockNumber,
               fromId,
@@ -154,7 +149,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
 
           return prisma.$executeRaw`
             INSERT INTO "Transaction" (
-              "id",
               "hash",
               "blockNumber",
               "fromId",
