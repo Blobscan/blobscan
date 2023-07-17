@@ -7,24 +7,28 @@ import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import type { GoogleStorage } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
-import { StatsAggregator } from "../StatsAggregator";
-import { baseExtension } from "./extensions";
+import type { OmittableFields } from "./extensions";
+import { baseExtension, statsExtension } from "./extensions";
 
-const prisma = new PrismaClient().$extends(baseExtension);
-const statsAggregator = new StatsAggregator(prisma);
+const prisma = new PrismaClient()
+  .$extends(baseExtension)
+  .$extends(statsExtension);
 
-const TOTAL_DAYS = 365;
-const MIN_BLOCKS_PER_DAY = 7199;
-const MAX_BLOCKS_PER_DAY = 7200;
+const TOTAL_DAYS = 60;
+const MIN_BLOCKS_PER_DAY = 2000;
+const MAX_BLOCKS_PER_DAY = 2500;
 
 const MAX_BLOBS_PER_BLOCK = 6;
 const MAX_BLOBS_PER_TX = 2;
 
-const UNIQUE_BLOBS_AMOUNT = 5000;
-const UNIQUE_ADDRESSES_AMOUNT = 100_000;
+const UNIQUE_BLOBS_AMOUNT = 100;
+const UNIQUE_ADDRESSES_AMOUNT = 10_000;
 
 // const BLOB_SIZE = 131_072;
 const MAX_BLOB_BYTES_SIZE = 1024; // in bytes
+
+const BATCH_SIZE = 1000;
+const STORAGE_BATCH_SIZE = 100;
 
 function buildGoogleStorageUri(hash: string): string {
   return `${process.env.CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(
@@ -43,19 +47,26 @@ function generateUniqueTimestamps(
   let startDay = dayjs().subtract(days, "day");
 
   Array.from({ length: days }).forEach(() => {
-    const endDay = startDay.endOf("day");
-
     const dayTimestamps = faker.number.int({
       min: minTimestamps,
       max: maxTimestamps,
     });
     const timestamps = new Set<Date>();
 
-    while (timestamps.size < dayTimestamps) {
-      timestamps.add(
-        faker.date.between({ from: startDay.toDate(), to: endDay.toDate() })
+    let previousTimestamp: dayjs.Dayjs = startDay;
+
+    Array.from({ length: dayTimestamps }).forEach(() => {
+      const blocksUntilNextTimestamp = faker.number.int({ min: 1, max: 3 });
+      const blockValidationTime = faker.number.int({ min: 10, max: 15 });
+      const timestamp = previousTimestamp.add(
+        blocksUntilNextTimestamp * blockValidationTime,
+        "second"
       );
-    }
+
+      timestamps.add(timestamp.toDate());
+
+      previousTimestamp = timestamp;
+    });
 
     uniqueTimestamps.push(...Array.from(timestamps).sort());
 
@@ -103,6 +114,45 @@ function generateUniqueAddresses(amount: number) {
   );
 }
 
+function performPrismaOpInBatches<T>(
+  elements: T[],
+  prismaOp: ({ data }: { data: T[] }) => Promise<{ count: number }>
+) {
+  const batches = Math.ceil(elements.length / BATCH_SIZE);
+  const operations: Promise<{ count: number }>[] = [];
+
+  Array.from({ length: batches }).forEach((_, index) => {
+    const start = index * BATCH_SIZE;
+    const end = start + BATCH_SIZE;
+
+    operations.push(prismaOp({ data: elements.slice(start, end) }));
+  });
+
+  return Promise.all(operations);
+}
+
+async function performBlobStorageOpInBatches(
+  blobs: Omit<Blob, OmittableFields>[]
+) {
+  const batches = Math.ceil(blobs.length / STORAGE_BATCH_SIZE);
+  const operations: Promise<Record<"google", string | undefined>[]>[] = [];
+
+  Array.from({ length: batches }).forEach((_, index) => {
+    const start = index * STORAGE_BATCH_SIZE;
+    const end = start + STORAGE_BATCH_SIZE;
+
+    operations.push(
+      Promise.all(
+        blobs.slice(start, end).map((b) => blobStorageManager.storeBlob(b))
+      )
+    );
+  });
+
+  for (const uploadBlobsPromise of operations) {
+    await uploadBlobsPromise;
+  }
+}
+
 async function main() {
   const google = blobStorageManager.getStorage("google") as GoogleStorage;
   await google.setUpBucket();
@@ -120,6 +170,7 @@ async function main() {
 
   const dataGenerationStart = performance.now();
   const now = new Date();
+
   const blocks = timestamps.map<Prisma.BlockCreateManyInput>((timestamp) => {
     const number = prevBlockNumber + faker.number.int({ min: 1, max: 220 });
     const slot = prevSlot + faker.number.int({ min: 1, max: 200 });
@@ -158,7 +209,6 @@ async function main() {
         fromId: from,
         toId: to,
         blockNumber: block.number,
-        timestamp: block.timestamp,
         insertedAt: now,
         updatedAt: now,
       };
@@ -213,10 +263,9 @@ async function main() {
   const dataGenerationEnd = performance.now();
 
   const blobsUploadStart = performance.now();
-  const uploadBlobsPromise = uniqueBlobs.map(async (b) =>
-    blobStorageManager.storeBlob(b)
-  );
-  await Promise.all(uploadBlobsPromise);
+
+  await performBlobStorageOpInBatches(blobs);
+
   const blobsUploadEnd = performance.now();
 
   const addressToAddressEntity = txs.reduce<
@@ -244,38 +293,44 @@ async function main() {
 
     return addressToTxData;
   }, {} as Record<string, Prisma.AddressCreateInput>);
+  const blobInputs = blobs.map((b) => ({
+    id: b.versionedHash,
+    versionedHash: b.versionedHash,
+    commitment: b.commitment,
+    gsUri: b.gsUri,
+    swarmHash: b.swarmHash,
+    size: b.size,
+    insertedAt: now,
+    updatedAt: now,
+  }));
+  const addressInputs = Object.keys(addressToAddressEntity).map(
+    (key) => addressToAddressEntity[key] as Prisma.AddressCreateInput
+  );
 
   const dataInsertionStart = performance.now();
-  const [addessesResult, blocksResult, txsResult, blobsResult] =
-    await prisma.$transaction([
-      prisma.address.createMany({
-        data: Object.keys(addressToAddressEntity).map(
-          (key) => addressToAddressEntity[key] as Prisma.AddressCreateInput
-        ),
-      }),
-      prisma.block.createMany({
-        data: blocks,
-        skipDuplicates: true,
-      }),
-      prisma.transaction.createMany({
-        data: txs,
-      }),
-      prisma.blob.createMany({
-        data: blobs.map((b) => ({
-          id: b.versionedHash,
-          versionedHash: b.versionedHash,
-          commitment: b.commitment,
-          gsUri: b.gsUri,
-          swarmHash: b.swarmHash,
-          size: b.size,
-          insertedAt: now,
-          updatedAt: now,
-        })),
-      }),
-      prisma.blobsOnTransactions.createMany({
-        data: blobsOnTxs,
-      }),
-    ]);
+
+  console.log(
+    "========================================================================"
+  );
+
+  await performPrismaOpInBatches(addressInputs, prisma.address.createMany);
+  console.log(`Addresses inserted: ${addressInputs.length}`);
+
+  await performPrismaOpInBatches(blocks, prisma.block.createMany);
+  console.log(`Blocks inserted: ${blocks.length}`);
+
+  await performPrismaOpInBatches(txs, prisma.transaction.createMany);
+  console.log(`Transactions inserted: ${txs.length}`);
+
+  await performPrismaOpInBatches(blobInputs, prisma.blob.createMany);
+  console.log(`Blobs inserted: ${blobInputs.length}`);
+
+  await performPrismaOpInBatches(
+    blobsOnTxs,
+    prisma.blobsOnTransactions.createMany
+  );
+  console.log(`Blobs on transactions inserted: ${blobsOnTxs.length}`);
+
   const dataInsertionEnd = performance.now();
 
   console.log(
@@ -296,44 +351,39 @@ async function main() {
     `Blob upload took ${(blobsUploadEnd - blobsUploadStart) / 1000} seconds`
   );
 
-  console.log(
-    "========================================================================"
-  );
   console.log(`Data inserted for the last ${TOTAL_DAYS} days`);
-  console.log(`Addresses inserted: ${addessesResult.count}`);
-  console.log(`Blocks inserted: ${blocksResult.count}`);
-  console.log(`Transactions inserted: ${txsResult.count}`);
-  console.log(`Blobs inserted: ${blobsResult.count}`);
 
-  console.log(
-    "========================================================================"
-  );
+  // console.log(
+  //   "========================================================================"
+  // );
 
-  await statsAggregator.executeAllOverallStatsQueries(),
-    console.log("Overall stats created.");
+  // await Promise.all([
+  //   prisma.blobOverallStats.backfill(),
+  //   prisma.blockOverallStats.backfill(),
+  //   prisma.transactionOverallStats.backfill(),
+  // ]);
 
-  console.log(
-    "========================================================================"
-  );
+  // console.log("Overall stats created.");
 
-  const [dailyBlobStats, dailyBlockStats, dailyTransactionStats] =
-    await statsAggregator.getAllDailyAggregates();
-  await Promise.all([
-    prisma.blobDailyStats.createMany({
-      data: dailyBlobStats,
-    }),
-    prisma.blockDailyStats.createMany({
-      data: dailyBlockStats,
-    }),
-    prisma.transactionDailyStats.createMany({
-      data: dailyTransactionStats,
-    }),
-  ]);
-  console.log("Daily stats created");
+  // console.log(
+  //   "========================================================================"
+  // );
 
-  console.log(
-    "========================================================================"
-  );
+  // const yesterdayPeriod = {
+  //   to: dayjs().subtract(1, "day").startOf("day").toISOString(),
+  // };
+
+  // await Promise.all([
+  //   prisma.blobDailyStats.fill(yesterdayPeriod),
+  //   prisma.blockDailyStats.fill(yesterdayPeriod),
+  //   prisma.transactionDailyStats.fill(yesterdayPeriod),
+  // ]);
+
+  // console.log("Daily stats created");
+
+  // console.log(
+  //   "========================================================================"
+  // );
 }
 
 main()

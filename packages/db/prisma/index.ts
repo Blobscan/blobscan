@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-import { baseExtension } from "./extensions";
+import { baseExtension, statsExtension } from "./extensions";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
@@ -13,7 +13,7 @@ const prisma_ =
         : ["error"],
   });
 
-export const prisma = prisma_.$extends(baseExtension);
+export const prisma = prisma_.$extends(baseExtension).$extends(statsExtension);
 
 export type BlobscanPrismaClient = typeof prisma;
 

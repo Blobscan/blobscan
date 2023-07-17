@@ -1,20 +1,25 @@
 import dayjs from "@blobscan/dayjs";
-import { prisma, statsAggregator } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 async function main() {
   const yesterday = dayjs().subtract(1, "day").endOf("date");
+  const untilYesterdayPeriod = {
+    to: yesterday.toISOString(),
+  };
 
   const [
-    { count: blobDailyStatsInserted },
-    { count: blockDailyStatsInserted },
-    { count: txDailyStatsInserted },
-  ] = await statsAggregator.backfillAllDailyAggregates({
-    to: yesterday.toISOString(),
-  });
+    blobDailyStatsInserted,
+    blockDailyStatsInserted,
+    transactionDailyStatsInserted,
+  ] = await Promise.all([
+    prisma.blobDailyStats.fill(untilYesterdayPeriod),
+    prisma.blockDailyStats.fill(untilYesterdayPeriod),
+    prisma.transactionDailyStats.fill(untilYesterdayPeriod),
+  ]);
 
   console.log(`Total blob daily stats inserts: ${blobDailyStatsInserted}`);
   console.log(`Total block daily stats inserts: ${blockDailyStatsInserted}`);
-  console.log(`Total tx daily stats inserts: ${txDailyStatsInserted}`);
+  console.log(`Total tx daily stats inserts: ${transactionDailyStatsInserted}`);
 }
 
 main()

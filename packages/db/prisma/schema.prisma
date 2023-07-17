@@ -23,6 +23,8 @@ model Address {
   updatedAt              DateTime
   transactionsAsSender   Transaction[] @relation("fromRelation")
   transactionsAsReceiver Transaction[] @relation("toRelation")
+
+  @@index([insertedAt])
 }
 
 model Blob {
@@ -35,6 +37,8 @@ model Blob {
   insertedAt    DateTime
   updatedAt     DateTime
   transactions  BlobsOnTransactions[]
+
+  @@index([insertedAt])
 }
 
 model Block {
@@ -46,6 +50,8 @@ model Block {
   insertedAt   DateTime
   updatedAt    DateTime
   transactions Transaction[]
+
+  @@index([insertedAt])
 }
 
 model Transaction {
@@ -60,6 +66,9 @@ model Transaction {
   block       Block                 @relation(fields: [blockNumber], references: [number])
   from        Address               @relation("fromRelation", fields: [fromId], references: [address])
   to          Address?              @relation("toRelation", fields: [toId], references: [address])
+
+  @@index([insertedAt])
+  @@index([blockNumber])
 }
 
 model BlobsOnTransactions {
@@ -70,6 +79,8 @@ model BlobsOnTransactions {
   index       Int
 
   @@id([txHash, index])
+  @@index([blobHash])
+  @@index([txHash])
 }
 
 // Block Metrics
@@ -80,8 +91,7 @@ model BlockOverallStats {
 }
 
 model BlockDailyStats {
-  id          Int      @id @default(autoincrement())
-  day         DateTime @db.Date
+  day         DateTime @id @db.Date
   totalBlocks Int
 
   @@unique([day])
@@ -99,14 +109,10 @@ model TransactionOverallStats {
 }
 
 model TransactionDailyStats {
-  id                   Int      @id @default(autoincrement())
-  day                  DateTime @db.Date
+  day                  DateTime @id @db.Date
   totalTransactions    Int
   totalUniqueSenders   Int
   totalUniqueReceivers Int
-
-  @@unique([day])
-  @@index([day])
 }
 
 // Blob metrics
@@ -120,15 +126,11 @@ model BlobOverallStats {
 }
 
 model BlobDailyStats {
-  id               Int      @id @default(autoincrement())
-  day              DateTime @db.Date
+  day              DateTime @id @db.Date
   totalBlobs       Int
   totalUniqueBlobs Int
   totalBlobSize    BigInt
   avgBlobSize      Float
-
-  @@unique([day])
-  @@index([day])
 }
 
 // NextAuth.js Models
