@@ -1,8 +1,8 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+// import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import type { DefaultSession, NextAuthOptions } from "next-auth";
 import Auth0Provider from "next-auth/providers/auth0";
 
-import { prisma } from "@blobscan/db";
+// import { prisma } from "@blobscan/db";
 
 /**
  * Module augmentation for `next-auth` types
@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
   providers: [
     Auth0Provider({
       clientId: process.env.AUTH0_CLIENT_ID as string,
