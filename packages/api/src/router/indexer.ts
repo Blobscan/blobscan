@@ -48,11 +48,11 @@ export const indexerRouter = createTRPCRouter({
     .input(z.void())
     .output(z.object({ slot: z.number() }))
     .query(async ({ ctx }) => {
-      const indexerMetadata = await ctx.prisma.indexerMetadata.findUnique({
+      const syncState = await ctx.prisma.blockchainSyncState.findUnique({
         where: { id: 1 },
       });
 
-      return { slot: indexerMetadata?.lastSlot ?? 0 };
+      return { slot: syncState?.lastSlot ?? 0 };
     }),
   updateSlot: jwtAuthedProcedure
     .meta({
@@ -69,7 +69,7 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const slot = input.slot;
 
-      await ctx.prisma.indexerMetadata.upsert({
+      await ctx.prisma.blockchainSyncState.upsert({
         where: { id: 1 },
         update: {
           lastSlot: slot,
@@ -77,6 +77,7 @@ export const indexerRouter = createTRPCRouter({
         create: {
           id: 1,
           lastSlot: slot,
+          lastFinalizedBlock: 0,
         },
       });
     }),
