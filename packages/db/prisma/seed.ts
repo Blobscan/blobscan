@@ -7,8 +7,8 @@ import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import type { GoogleStorage } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
-import type { BlockNumberRange, OmittableFields } from "./extensions";
 import { baseExtension, statsExtension } from "./extensions";
+import type { BlockNumberRange, OmittableFields } from "./types";
 
 const prisma = new PrismaClient()
   .$extends(baseExtension)

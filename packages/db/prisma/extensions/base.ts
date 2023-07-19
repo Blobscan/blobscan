@@ -1,7 +1,7 @@
 import type { Address, Blob, Transaction } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
-export type OmittableFields = "insertedAt" | "updatedAt";
+import type { OmittableFields } from "../types";
 
 const NOW_SQL = Prisma.sql`NOW()`;
 

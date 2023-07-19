@@ -1,12 +1,8 @@
 import { Prisma } from "@prisma/client";
 
+import type { BlockNumberRange } from "../types";
 import type { DatePeriod } from "../utils/dates";
 import { buildRawWhereClause } from "../utils/dates";
-
-export type BlockNumberRange = {
-  from: number;
-  to: number;
-};
 
 export const statsExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({

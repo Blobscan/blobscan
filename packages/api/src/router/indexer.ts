@@ -1,8 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import type { Blob, Transaction } from "@blobscan/db";
-import type { OmittableFields } from "@blobscan/db/prisma/extensions";
+import type { Blob, Transaction, OmittableFields } from "@blobscan/db";
 
 import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
 import { createTRPCRouter, publicProcedure } from "../trpc";
