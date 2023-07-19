@@ -121,6 +121,7 @@ export const indexerRouter = createTRPCRouter({
             gsUri: blobReferences.google,
             swarmHash: blobReferences?.swarm ?? null,
             size: calculateBlobSize(b.data),
+            firstBlockNumber: input.block.number,
           };
         });
 

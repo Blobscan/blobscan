@@ -1,12 +1,12 @@
-import type {
-  BlobOverallStats,
-  BlockOverallStats,
-  TransactionOverallStats,
-} from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
 import type { DatePeriod } from "../utils/dates";
 import { buildRawWhereClause } from "../utils/dates";
+
+export type BlockNumberRange = {
+  from: number;
+  to: number;
+};
 
 export const statsExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
@@ -30,13 +30,13 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             )
             SELECT 
               DATE_TRUNC('day', ${dateField}) AS "day",
-              COUNT("blobsTxs"."blobHash")::INT AS "totalBlobs",
-              COUNT(DISTINCT blob."versionedHash")::INT AS "totalUniqueBlobs",
-              SUM(blob.size) AS "totalBlobSize",
-              AVG(blob.size)::FLOAT AS "avgBlobSize"
-            FROM "Blob" blob
-              JOIN "BlobsOnTransactions" "blobsTxs" ON "blobsTxs"."blobHash" = blob."versionedHash"
-              JOIN "Transaction" tx ON tx."hash" = "blobsTxs"."txHash"
+              COUNT(btx."blobHash")::INT AS "totalBlobs",
+              COUNT(DISTINCT b."versionedHash")::INT AS "totalUniqueBlobs",
+              SUM(b.size) AS "totalBlobSize",
+              AVG(b.size)::FLOAT AS "avgBlobSize"
+            FROM "Blob" b
+              JOIN "BlobsOnTransactions" btx ON btx."blobHash" = b."versionedHash"
+              JOIN "Transaction" tx ON tx."hash" = btx."txHash"
               JOIN "Block" bl ON bl."number" = tx."blockNumber"
             ${whereClause}
             GROUP BY "day"
@@ -61,13 +61,13 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           )
           SELECT
             1 AS id,
-            COUNT("BlobsOnTransactions"."blobHash")::INT AS "totalBlobs",
-            COUNT(DISTINCT "Blob"."versionedHash")::INT AS "totalUniqueBlobs",
-            SUM("Blob".size) AS "totalBlobSize",
-            AVG("Blob".size)::FLOAT AS "avgBlobSize",
+            COUNT(btx."blobHash")::INT AS "totalBlobs",
+            COUNT(DISTINCT b."versionedHash")::INT AS "totalUniqueBlobs",
+            SUM(b.size) AS "totalBlobSize",
+            AVG(b.size)::FLOAT AS "avgBlobSize",
             NOW() AS "updatedAt"
-          FROM "Blob"
-          JOIN "BlobsOnTransactions" ON "BlobsOnTransactions"."blobHash" = "Blob"."versionedHash"
+          FROM "Blob" b
+          JOIN "BlobsOnTransactions" btx ON btx."blobHash" = b."versionedHash"
           ON CONFLICT (id) DO UPDATE SET
             "totalBlobs" = EXCLUDED."totalBlobs",
             "totalUniqueBlobs" = EXCLUDED."totalUniqueBlobs",
@@ -76,14 +76,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             "updatedAt" = EXCLUDED."updatedAt"
         `;
         },
-        increment({
-          totalBlobs,
-          totalUniqueBlobs,
-          totalBlobSize,
-          avgBlobSize,
-        }: Omit<BlobOverallStats, "updatedAt">) {
+        increment({ from, to }: BlockNumberRange) {
           return prisma.$executeRaw`
-            INSERT INTO "BlobOverallStats" AS stats (
+            INSERT INTO "BlobOverallStats" AS st (
               id,
               "totalBlobs",
               "totalUniqueBlobs",
@@ -91,19 +86,23 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               "avgBlobSize",
               "updatedAt"
             )
-            VALUES (
-              1,
-              ${totalBlobs},
-              ${totalUniqueBlobs},
-              ${totalBlobSize},
-              ${avgBlobSize},
-              NOW()
-            )
+            SELECT 
+              1 AS id,
+              COUNT(btx."blobHash")::INT AS "totalBlobs",
+              COUNT(DISTINCT CASE WHEN b."firstBlockNumber" BETWEEN ${from} AND ${to} THEN b."versionedHash" END)::INT AS "totalUniqueBlobs",
+              SUM(b.size) AS "totalBlobSize",
+              AVG(b.size)::FLOAT AS "avgBlobSize",
+              NOW() AS "updatedAt"
+            FROM "Blob" b
+              JOIN "BlobsOnTransactions" btx ON btx."blobHash" = b."versionedHash"
+              JOIN "Transaction" tx ON tx."hash" = btx."txHash"
+              JOIN "Block" bck ON bck."number" = tx."blockNumber"
+            WHERE bck."number" BETWEEN ${from} AND ${to}
             ON CONFLICT (id) DO UPDATE SET
-              "totalBlobs" = stats."totalBlobs" + EXCLUDED."totalBlobs",
-              "totalUniqueBlobs" = stats."totalUniqueBlobs" + EXCLUDED."totalUniqueBlobs",
-              "totalBlobSize" = stats."totalBlobSize" + EXCLUDED."totalBlobSize",
-              "avgBlobSize" = stats."avgBlobSize" + (EXCLUDED."totalBlobSize" - stats."avgBlobSize") / (stats."totalBlobs" + EXCLUDED."totalBlobs"),
+              "totalBlobs" = st."totalBlobs" + EXCLUDED."totalBlobs",
+              "totalUniqueBlobs" = st."totalUniqueBlobs" + EXCLUDED."totalUniqueBlobs",
+              "totalBlobSize" = st."totalBlobSize" + EXCLUDED."totalBlobSize",
+              "avgBlobSize" = st."avgBlobSize" + (EXCLUDED."totalBlobSize" - st."avgBlobSize") / (st."totalBlobs" + EXCLUDED."totalBlobs"),
               "updatedAt" = EXCLUDED."updatedAt"
           `;
         },
@@ -147,18 +146,19 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             "updatedAt" = EXCLUDED."updatedAt"
         `;
         },
-        increment({ totalBlocks }: Omit<BlockOverallStats, "updatedAt">) {
+        increment({ from, to }: BlockNumberRange) {
           return prisma.$executeRaw`
             INSERT INTO "BlockOverallStats" AS stats (
               id,
               "totalBlocks",
               "updatedAt"
             )
-            VALUES (
-              1,
-              ${totalBlocks},
-              NOW()
-            )
+            SELECT
+              1 as id,
+              COUNT("hash")::INT as "totalBlocks",
+              NOW() as "updatedAt"
+            FROM "Block"
+            WHERE "number" BETWEEN ${from} AND ${to}
             ON CONFLICT (id) DO UPDATE SET
               "totalBlocks" = stats."totalBlocks" + EXCLUDED."totalBlocks",
               "updatedAt" = EXCLUDED."updatedAt"
@@ -172,7 +172,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           );
         },
         fill(datePeriod: DatePeriod) {
-          const dateField = Prisma.sql`"Block"."timestamp"`;
+          const dateField = Prisma.sql`b."timestamp"`;
           const whereClause = buildRawWhereClause(dateField, datePeriod);
 
           return prisma.$executeRaw`
@@ -187,8 +187,8 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             COUNT(tx."hash")::INT AS "totalTransactions",
             COUNT(DISTINCT tx."toId")::INT AS "totalUniqueReceivers",
             COUNT(DISTINCT tx."fromId")::INT AS "totalUniqueSenders"
-          FROM "Transaction" AS tx
-            JOIN "Block" ON "Block"."number" = tx."blockNumber"
+          FROM "Transaction" tx
+            JOIN "Block" b ON b.number = tx."blockNumber"
           ${whereClause}
           GROUP BY "day"
           ON CONFLICT ("day") DO UPDATE SET
@@ -222,11 +222,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             "updatedAt" = EXCLUDED."updatedAt"
         `;
         },
-        increment({
-          totalTransactions,
-          totalUniqueReceivers,
-          totalUniqueSenders,
-        }: Omit<TransactionOverallStats, "updatedAt">) {
+        increment({ from, to }: BlockNumberRange) {
           return prisma.$executeRaw`
             INSERT INTO "TransactionOverallStats" AS stats (
               id,
@@ -235,13 +231,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               "totalUniqueSenders",
               "updatedAt"
             )
-            VALUES (
-              1,
-              ${totalTransactions},
-              ${totalUniqueReceivers},
-              ${totalUniqueSenders},
-              NOW()
-            )
+            SELECT
+              1 AS id,
+              COUNT("hash")::INT AS "totalTransactions",
+              COUNT(DISTINCT CASE WHEN taddr."firstBlockNumberAsReceiver" BETWEEN ${from} AND ${to} THEN taddr.address END)::INT AS "totalUniqueReceivers",
+              COUNT(DISTINCT CASE WHEN faddr."firstBlockNumberAsSender" BETWEEN ${from} AND ${to} THEN faddr.address END )::INT AS "totalUniqueSenders",
+              NOW() AS "updatedAt"
+            FROM "Transaction" tx JOIN "Address" faddr ON faddr.address = tx."fromId" JOIN "Address" taddr ON taddr.address = tx."toId"
+            WHERE tx."blockNumber" BETWEEN ${from} AND ${to}
             ON CONFLICT (id) DO UPDATE SET
               "totalTransactions" = stats."totalTransactions" + EXCLUDED."totalTransactions",
               "totalUniqueReceivers" = stats."totalUniqueReceivers" + EXCLUDED."totalUniqueReceivers",

@@ -16,21 +16,24 @@ type RawBlob = {
 function updateAddressData(
   addressesData: Record<string, Partial<Address>>,
   address: string,
+  blockNumber: number,
   isSender: boolean
 ) {
   const addressData = addressesData[address];
+  const firstBlockNumberAsSender = isSender ? blockNumber : null;
+  const firstBlockNumberAsReceiver = isSender ? null : blockNumber;
 
   if (!addressData) {
     addressesData[address] = {
       address,
-      isSender,
-      isReceiver: !isSender,
+      firstBlockNumberAsSender,
+      firstBlockNumberAsReceiver,
     };
   } else {
     if (isSender) {
-      addressData.isSender = true;
+      addressData.firstBlockNumberAsSender = firstBlockNumberAsSender;
     } else {
-      addressData.isReceiver = true;
+      addressData.firstBlockNumberAsReceiver = firstBlockNumberAsReceiver;
     }
   }
 }
@@ -40,14 +43,15 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
     name: "Base Extension",
     model: {
       address: {
-        upsertAddressesFromTransactions(txs: { from: string; to?: string }[]) {
-          // Get the unique from/to addresses from the transactions
+        upsertAddressesFromTransactions(
+          txs: { from: string; to?: string; blockNumber: number }[]
+        ) {
           const addressToEntity = txs.reduce<Record<string, Address>>(
-            (addressesData, { from, to }) => {
-              updateAddressData(addressesData, from, true);
+            (addressesData, { from, to, blockNumber }) => {
+              updateAddressData(addressesData, from, blockNumber, true);
 
               if (to) {
-                updateAddressData(addressesData, to, false);
+                updateAddressData(addressesData, to, blockNumber, false);
               }
 
               return addressesData;
@@ -61,26 +65,32 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(addresses: Omit<Address, OmittableFields>[]) {
           const formattedValues = addresses
-            .map(({ address, isSender, isReceiver }) => [
-              address,
-              isSender,
-              isReceiver,
-              NOW_SQL,
-              NOW_SQL,
-            ])
+            .map(
+              ({
+                address,
+                firstBlockNumberAsReceiver,
+                firstBlockNumberAsSender,
+              }) => [
+                address,
+                firstBlockNumberAsSender,
+                firstBlockNumberAsReceiver,
+                NOW_SQL,
+                NOW_SQL,
+              ]
+            )
             .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
           return prisma.$executeRaw`
             INSERT INTO "Address" as addr (
               "address",
-              "isSender",
-              "isReceiver",
+              "firstBlockNumberAsSender",
+              "firstBlockNumberAsReceiver",
               "insertedAt",
               "updatedAt"
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("address") DO UPDATE SET
-              "isSender" = addr."isSender" OR EXCLUDED."isSender",
-              "isReceiver" = addr."isReceiver" OR EXCLUDED."isReceiver",
+              "firstBlockNumberAsSender" = LEAST(addr."firstBlockNumberAsSender", EXCLUDED."firstBlockNumberAsSender"),
+              "firstBlockNumberAsReceiver" = LEAST(addr."firstBlockNumberAsReceiver", EXCLUDED."firstBlockNumberAsReceiver"),
               "updatedAt" = NOW()
           `;
         },
@@ -102,13 +112,23 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(blobs: Omit<Blob, OmittableFields>[]) {
           const formattedValues = blobs
-            .map(({ versionedHash, commitment, gsUri, size, swarmHash }) => [
-              versionedHash,
-              commitment,
-              size,
-              gsUri,
-              swarmHash,
-            ])
+            .map(
+              ({
+                versionedHash,
+                commitment,
+                gsUri,
+                size,
+                swarmHash,
+                firstBlockNumber,
+              }) => [
+                versionedHash,
+                commitment,
+                size,
+                gsUri,
+                swarmHash,
+                firstBlockNumber,
+              ]
+            )
             .map(
               (rowColumns) =>
                 Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
@@ -121,6 +141,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               "size",
               "gsUri",
               "swarmHash",
+              "firstBlockNumber",
               "insertedAt",
               "updatedAt"
             ) VALUES ${Prisma.join(formattedValues)}
@@ -129,8 +150,16 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               "size" = EXCLUDED."size",
               "gsUri" = EXCLUDED."gsUri",
               "swarmHash" = EXCLUDED."swarmHash",
+              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber")
               "updatedAt" = NOW()
           `;
+        },
+      },
+      block: {
+        findLatest() {
+          return prisma.block.findFirst({
+            orderBy: { number: "desc" },
+          });
         },
       },
       transaction: {

@@ -1,4 +1,8 @@
 export * from "@prisma/client";
+export {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError,
+} from "@prisma/client/runtime/library";
 
-export { prisma } from "./prisma";
-export * from "./prisma/utils/dates";
+export * from "./prisma";

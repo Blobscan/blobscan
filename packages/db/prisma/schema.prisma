@@ -17,64 +17,76 @@ model BlockchainSyncState {
 }
 
 model Address {
-  address                String        @id
-  isSender               Boolean
-  isReceiver             Boolean
-  insertedAt             DateTime
-  updatedAt              DateTime
-  transactionsAsSender   Transaction[] @relation("fromRelation")
-  transactionsAsReceiver Transaction[] @relation("toRelation")
+  address                    String   @id
+  firstBlockNumberAsSender   Int?
+  firstBlockNumberAsReceiver Int?
+  insertedAt                 DateTime
+  updatedAt                  DateTime
+
+  firstBlockAsSender     Block?        @relation("firstBlockAsSenderRelation", fields: [firstBlockNumberAsSender], references: [number])
+  firstBlockAsReceiver   Block?        @relation("firstBlockAsReceiverRelation", fields: [firstBlockNumberAsReceiver], references: [number])
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
   @@index([insertedAt])
 }
 
 model Blob {
-  versionedHash String                @id
-  commitment    String                @unique
-  gsUri         String                @unique
-  swarmHash     String?               @unique
-  size          Int
-  insertedAt    DateTime
-  updatedAt     DateTime
-  transactions  BlobsOnTransactions[]
+  versionedHash    String   @id
+  commitment       String   @unique
+  gsUri            String   @unique
+  swarmHash        String?  @unique
+  size             Int
+  firstBlockNumber Int
+  insertedAt       DateTime
+  updatedAt        DateTime
+
+  firstBlock   Block                 @relation(fields: [firstBlockNumber], references: [number])
+  transactions BlobsOnTransactions[]
 
   @@index([insertedAt])
 }
 
 model Block {
-  hash         String        @id
-  number       Int           @unique
-  timestamp    DateTime      @unique
-  slot         Int           @unique
-  insertedAt   DateTime
-  updatedAt    DateTime
-  transactions Transaction[]
+  hash       String   @id
+  number     Int      @unique
+  timestamp  DateTime @unique
+  slot       Int      @unique
+  insertedAt DateTime
+  updatedAt  DateTime
+
+  transactions         Transaction[]
+  newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
+  newReceiverAddresses Address[]     @relation("firstBlockAsReceiverRelation")
+  newBlobs             Blob[]
 
   @@index([insertedAt])
 }
 
 model Transaction {
-  hash        String                @id
+  hash        String   @id
   fromId      String
   toId        String?
   blockNumber Int
   insertedAt  DateTime
   updatedAt   DateTime
-  blobs       BlobsOnTransactions[]
-  block       Block                 @relation(fields: [blockNumber], references: [number])
-  from        Address               @relation("fromRelation", fields: [fromId], references: [address])
-  to          Address?              @relation("toRelation", fields: [toId], references: [address])
+
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockNumber], references: [number])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address?              @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   @@index([insertedAt])
   @@index([blockNumber])
 }
 
 model BlobsOnTransactions {
+  blobHash String
+  txHash   String
+  index    Int
+
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
-  blobHash    String
   transaction Transaction @relation(fields: [txHash], references: [hash])
-  txHash      String
-  index       Int
 
   @@id([txHash, index])
   @@index([blobHash])

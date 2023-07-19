@@ -7,14 +7,14 @@ import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import type { GoogleStorage } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
-import type { OmittableFields } from "./extensions";
+import type { BlockNumberRange, OmittableFields } from "./extensions";
 import { baseExtension, statsExtension } from "./extensions";
 
 const prisma = new PrismaClient()
   .$extends(baseExtension)
   .$extends(statsExtension);
 
-const TOTAL_DAYS = 60;
+const TOTAL_DAYS = 90;
 const MIN_BLOCKS_PER_DAY = 500;
 const MAX_BLOCKS_PER_DAY = 1000;
 
@@ -22,7 +22,7 @@ const MAX_BLOBS_PER_BLOCK = 6;
 const MAX_BLOBS_PER_TX = 2;
 
 const UNIQUE_BLOBS_AMOUNT = 100;
-const UNIQUE_ADDRESSES_AMOUNT = 1000;
+const UNIQUE_ADDRESSES_AMOUNT = 10_000;
 
 // const BLOB_SIZE = 131_072;
 const MAX_BLOB_BYTES_SIZE = 1024; // in bytes
@@ -30,7 +30,9 @@ const MAX_BLOB_BYTES_SIZE = 1024; // in bytes
 const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
 
-type BlobWithData = Omit<Blob, OmittableFields> & { data: string };
+type BlobWithData = Omit<Blob, OmittableFields | "firstBlockNumber"> & {
+  data: string;
+};
 
 function buildGoogleStorageUri(hash: string): string {
   return `${process.env.CHAIN_ID}/${hash.slice(2, 4)}/${hash.slice(
@@ -206,6 +208,7 @@ async function main() {
     });
   });
 
+  const blobToFirstBlock: Record<string, number> = {};
   const txsBlobs = blocksTxs.map((blockTxs) => {
     let blockBlobsRemaining = Math.min(
       MAX_BLOBS_PER_TX * blockTxs.length,
@@ -236,6 +239,11 @@ async function main() {
             );
           }
 
+          blobToFirstBlock[blob.versionedHash] = Math.min(
+            blobToFirstBlock[blob.versionedHash] ?? Infinity,
+            blockTx.blockNumber
+          );
+
           return {
             blobHash: blob.versionedHash,
             txHash: blockTx.hash,
@@ -263,9 +271,12 @@ async function main() {
     (addressToTxData, tx) => {
       addressToTxData[tx.fromId] = {
         address: tx.fromId,
-        isReceiver: false,
+        firstBlockNumberAsReceiver: null,
         ...addressToTxData[tx.fromId],
-        isSender: true,
+        firstBlockNumberAsSender: Math.min(
+          addressToTxData[tx.fromId]?.firstBlockNumberAsSender ?? Infinity,
+          tx.blockNumber
+        ),
         insertedAt: now,
         updatedAt: now,
       };
@@ -273,9 +284,12 @@ async function main() {
       if (tx.toId) {
         addressToTxData[tx.toId] = {
           address: tx.toId,
-          isSender: false,
+          firstBlockNumberAsSender: null,
           ...addressToTxData[tx.toId],
-          isReceiver: true,
+          firstBlockNumberAsReceiver: Math.min(
+            addressToTxData[tx.toId]?.firstBlockNumberAsReceiver ?? Infinity,
+            tx.blockNumber
+          ),
           insertedAt: now,
           updatedAt: now,
         };
@@ -292,6 +306,8 @@ async function main() {
     swarmHash: b.swarmHash,
     size: b.size,
     insertedAt: now,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    firstBlockNumber: blobToFirstBlock[b.versionedHash]!,
     updatedAt: now,
   }));
   const addressInputs = Object.keys(addressToAddressEntity).map(
@@ -304,11 +320,11 @@ async function main() {
     "========================================================================"
   );
 
-  await performPrismaOpInBatches(addressInputs, prisma.address.createMany);
-  console.log(`Addresses inserted: ${addressInputs.length}`);
-
   await performPrismaOpInBatches(blocks, prisma.block.createMany);
   console.log(`Blocks inserted: ${blocks.length}`);
+
+  await performPrismaOpInBatches(addressInputs, prisma.address.createMany);
+  console.log(`Addresses inserted: ${addressInputs.length}`);
 
   await performPrismaOpInBatches(txs, prisma.transaction.createMany);
   console.log(`Transactions inserted: ${txs.length}`);
@@ -339,7 +355,7 @@ async function main() {
     } seconds`
   );
   console.log(
-    `Blob upload took ${(blobsUploadEnd - blobsUploadStart) / 1000} seconds`
+    `Blobs upload took ${(blobsUploadEnd - blobsUploadStart) / 1000} seconds`
   );
 
   console.log(`Data inserted for the last ${TOTAL_DAYS} days`);
@@ -347,6 +363,35 @@ async function main() {
   console.log(
     "========================================================================"
   );
+
+  const to = blocks[blocks.length - 1]?.number;
+
+  if (!to) {
+    throw new Error("No blocks were generated");
+  }
+
+  const blockRange: BlockNumberRange = {
+    from: 0,
+    to,
+  };
+
+  await prisma.$transaction([
+    prisma.blockOverallStats.increment(blockRange),
+    prisma.transactionOverallStats.increment(blockRange),
+    prisma.blobOverallStats.increment(blockRange),
+    prisma.blockchainSyncState.upsert({
+      create: {
+        lastSlot: 0,
+        lastFinalizedBlock: to,
+      },
+      update: {
+        lastFinalizedBlock: to,
+      },
+      where: {
+        id: 1,
+      },
+    }),
+  ]);
 
   await Promise.all([
     prisma.blobOverallStats.backfill(),
