@@ -1,8 +1,12 @@
+import { NextResponse } from "next/server";
+
 import dayjs from "@blobscan/dayjs";
 import type { DatePeriod } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 
-export default async function handler() {
+import { defaultResponder } from "~/server/default-responder";
+
+async function handler() {
   const yesterday = dayjs().subtract(1, "day");
   const yesterdayPeriod: DatePeriod = {
     from: yesterday.startOf("day").toISOString(),
@@ -14,4 +18,10 @@ export default async function handler() {
     prisma.blockDailyStats.fill(yesterdayPeriod),
     prisma.transactionDailyStats.fill(yesterdayPeriod),
   ]);
+
+  return new NextResponse(JSON.stringify({ success: true }), {
+    status: 200,
+  });
 }
+
+export default defaultResponder(handler);
