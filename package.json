@@ -14,7 +14,7 @@
     "db:push": "turbo push generate --filter=db",
     "dev": "turbo dev --parallel",
     "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,md,json}\" --ignore-path .gitignore",
-    "lint": "turbo lint && manypkg check",
+    "lint": "turbo lint && turbo type-check && manypkg check",
     "lint:fix": "turbo lint:fix && manypkg fix",
     "type-check": "turbo type-check",
     "backfill:overall": "ts-node  scripts/backfill-all-overall-stats.ts",
