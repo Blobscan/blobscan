@@ -1,9 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "index.ts",
-    "prisma/**/*.ts",
-    "utils/**/*.ts",
-    "StatsAggregator/**/*.ts"
-  ]
+  "include": ["index.ts", "prisma/**/*.ts"]
 }

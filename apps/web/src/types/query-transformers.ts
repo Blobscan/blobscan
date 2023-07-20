@@ -1,10 +1,10 @@
-import {
-  type OverallBlobStats,
-  type OverallBlockStats,
-  type OverallTxStats,
-  type SingleDailyBlobStats,
-  type SingleDailyBlockStats,
-  type SingleDailyTransactionStats,
+import type {
+  OverallBlobStats,
+  OverallBlockStats,
+  OverallTxStats,
+  SingleDailyBlobStats,
+  SingleDailyBlockStats,
+  SingleDailyTransactionStats,
 } from "./routers";
 
 export type OptionalDate = {

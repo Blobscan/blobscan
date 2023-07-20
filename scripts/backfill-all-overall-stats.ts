@@ -1,15 +1,19 @@
-import { prisma, statsAggregator } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 async function main() {
   const [
     blobOverallStatsInserted,
     blockOverallStatsInserted,
     txOverallStatsInserted,
-  ] = await statsAggregator.executeAllOverallStatsQueries();
+  ] = await Promise.all([
+    prisma.blobOverallStats.backfill(),
+    prisma.blockOverallStats.backfill(),
+    prisma.transactionOverallStats.backfill(),
+  ]);
 
   console.log(`Total Blob overall stats inserted: ${blobOverallStatsInserted}`);
   console.log(
-    `Total Block overall stats inserted: ${blockOverallStatsInserted}`,
+    `Total Block overall stats inserted: ${blockOverallStatsInserted}`
   );
   console.log(`Total tx overall stats inserted: ${txOverallStatsInserted}`);
 }

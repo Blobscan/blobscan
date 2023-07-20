@@ -24,12 +24,12 @@ export const blobStatsRouter = createTRPCRouter({
           avgBlobSize: z.number(),
           updatedAt: z.date(),
         })
-        .nullable(),
+        .nullable()
     )
     .query(async ({ ctx: { prisma } }) =>
       prisma.blobOverallStats.findUnique({
         where: { id: 1 },
-      }),
+      })
     ),
   getDailyStats: timeFrameProcedure
     .meta({
@@ -48,8 +48,8 @@ export const blobStatsRouter = createTRPCRouter({
           totalUniqueBlobs: z.number(),
           totalBlobSize: z.bigint(),
           avgBlobSize: z.number(),
-        }),
-      ),
+        })
+      )
     )
     .query(({ ctx: { prisma, timeFrame } }) =>
       prisma.blobDailyStats.findMany({
@@ -67,6 +67,6 @@ export const blobStatsRouter = createTRPCRouter({
           },
         },
         orderBy: { day: "asc" },
-      }),
+      })
     ),
 });

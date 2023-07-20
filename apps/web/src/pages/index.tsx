@@ -17,7 +17,6 @@ import {
   transformAllOverallStatsResult,
   transformDailyTxStatsResult,
 } from "~/query-transformers";
-import { bytesToKilobytes } from "~/utils";
 
 const TOTAL_BLOCKS = 4;
 const TOTAL_TXS = 5;
@@ -46,11 +45,11 @@ const Home: NextPage = () => {
   });
   const dailyTxStats = useTransformResult(
     dailyTxStatsRes,
-    transformDailyTxStatsResult,
+    transformDailyTxStatsResult
   );
   const allOverallStats = useTransformResult(
     allOverallStatsRes,
-    transformAllOverallStatsResult,
+    transformAllOverallStatsResult
   );
 
   const error =
@@ -70,6 +69,7 @@ const Home: NextPage = () => {
 
   const blocks = latestBlocks?.blocks ?? [];
   const txs = latestTxs?.transactions ?? [];
+
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
@@ -105,29 +105,13 @@ const Home: NextPage = () => {
             />
             <MetricCard
               name="Total Blob Size"
-              value={
-                allOverallStats?.blob?.totalBlobSize !== undefined
-                  ? Number(
-                      bytesToKilobytes(
-                        allOverallStats.blob.totalBlobSize,
-                      ).toFixed(2),
-                    )
-                  : undefined
-              }
+              value={allOverallStats?.blob?.totalBlobSize ?? undefined}
               unit="KB"
               compact
             />
             <MetricCard
               name="Avg. Blob Size"
-              value={
-                allOverallStats?.blob?.avgBlobSize !== undefined
-                  ? Number(
-                      bytesToKilobytes(
-                        allOverallStats?.blob?.avgBlobSize,
-                      ).toFixed(2),
-                    )
-                  : undefined
-              }
+              value={allOverallStats?.blob?.avgBlobSize ?? undefined}
               unit="KB"
               compact
             />
@@ -197,14 +181,13 @@ const Home: NextPage = () => {
                     .fill(0)
                     .map((_, i) => <BlobTransactionCard key={i} />)
                 : txs.map((tx) => {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { block, blockNumber, ...filteredTx } = tx;
 
                     return (
                       <BlobTransactionCard
                         key={tx.hash}
                         transaction={filteredTx}
-                        block={{ ...tx.block, number: blockNumber }}
+                        block={{ ...block, number: blockNumber }}
                       />
                     );
                   })}

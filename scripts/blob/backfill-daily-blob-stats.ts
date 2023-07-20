@@ -1,10 +1,10 @@
 import dayjs from "@blobscan/dayjs";
-import { prisma, statsAggregator } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 async function main() {
   const yesterday = dayjs().subtract(1, "day").endOf("date");
 
-  const res = await statsAggregator.blob.backfillBlobDailyAggregates({
+  const res = await prisma.blobDailyStats.fill({
     to: yesterday.toISOString(),
   });
 

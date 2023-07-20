@@ -51,7 +51,7 @@ const Blob: NextPage = () => {
     },
     {
       enabled: router.isReady,
-    },
+    }
   );
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
@@ -64,6 +64,7 @@ const Blob: NextPage = () => {
     try {
       return [formatBlob(data, selectedBlobViewMode)];
     } catch (err) {
+      // eslint-disable-next-line no-sparse-arrays
       return [, "Couldn't format blob data"];
     }
   }, [blob?.data, selectedBlobViewMode]);

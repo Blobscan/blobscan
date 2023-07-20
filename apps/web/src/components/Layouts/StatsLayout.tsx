@@ -1,8 +1,10 @@
-import { Fragment, type FC, type ReactNode } from "react";
+import { Fragment } from "react";
+import type { FC, ReactNode } from "react";
 
 import { Header } from "~/components/Header";
-import { type CardProps } from "../Cards/Card";
-import { MetricCard, type MetricCardProps } from "../Cards/MetricCard";
+import type { CardProps } from "../Cards/Card";
+import { MetricCard } from "../Cards/MetricCard";
+import type { MetricCardProps } from "../Cards/MetricCard";
 
 export type StatsSectionsProps = {
   header: CardProps["header"];

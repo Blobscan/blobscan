@@ -46,7 +46,7 @@ export const statsRouter = createTRPCRouter({
             updatedAt: z.date(),
           })
           .nullable(),
-      }),
+      })
     )
     .query(({ ctx: { prisma } }) =>
       Promise.all([
@@ -57,6 +57,6 @@ export const statsRouter = createTRPCRouter({
         blob,
         block,
         transaction,
-      })),
+      }))
     ),
 });

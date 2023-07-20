@@ -1,7 +1,6 @@
 import { Prisma } from "@blobscan/db";
 
 export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
-  id: false,
   versionedHash: true,
   commitment: true,
   gsUri: true,
@@ -14,7 +13,11 @@ export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
       transaction: {
         select: {
           blockNumber: true,
-          timestamp: true,
+          block: {
+            select: {
+              timestamp: true,
+            },
+          },
         },
       },
     },
@@ -37,7 +40,11 @@ export const blobsOnTransactionsSelect =
     transaction: {
       select: {
         blockNumber: true,
-        timestamp: true,
+        block: {
+          select: {
+            timestamp: true,
+          },
+        },
       },
     },
   });

@@ -1,4 +1,5 @@
-import { Storage, type StorageOptions } from "@google-cloud/storage";
+import { Storage } from "@google-cloud/storage";
+import type { StorageOptions } from "@google-cloud/storage";
 
 import { BlobStorage } from "../BlobStorage";
 
@@ -30,7 +31,7 @@ export class GoogleStorage extends BlobStorage {
 
     if (serviceKey) {
       storageOptions.credentials = JSON.parse(
-        Buffer.from(serviceKey, "base64").toString(),
+        Buffer.from(serviceKey, "base64").toString()
       ) as GoogleCredentials;
     }
 
@@ -53,7 +54,7 @@ export class GoogleStorage extends BlobStorage {
   async storeBlob(
     chainId: number,
     versionedHash: string,
-    data: string,
+    data: string
   ): Promise<string> {
     const fileName = this.buildBlobFileName(chainId, versionedHash);
 

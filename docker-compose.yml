@@ -11,6 +11,7 @@ services:
       - 23000:3000
       - 25556:5556
     environment:
+      BEACON_NODE_ENDPOINT: http://localhost:5052
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
       SECRET_KEY: supersecret
       NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/

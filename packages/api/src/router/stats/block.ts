@@ -17,7 +17,7 @@ export const blockStatsRouter = createTRPCRouter({
     })
     .input(z.void())
     .output(
-      z.object({ totalBlocks: z.number(), updatedAt: z.date() }).nullable(),
+      z.object({ totalBlocks: z.number(), updatedAt: z.date() }).nullable()
     )
     .query(async ({ ctx: { prisma } }) => {
       const overallBlockStats = await prisma.blockOverallStats.findUnique({
@@ -40,8 +40,8 @@ export const blockStatsRouter = createTRPCRouter({
         z.object({
           day: z.date(),
           totalBlocks: z.number(),
-        }),
-      ),
+        })
+      )
     )
     .query(({ ctx: { prisma, timeFrame } }) =>
       prisma.blockDailyStats.findMany({
@@ -56,6 +56,6 @@ export const blockStatsRouter = createTRPCRouter({
           },
         },
         orderBy: { day: "asc" },
-      }),
+      })
     ),
 });

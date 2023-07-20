@@ -7,11 +7,12 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
-    "generate": "pnpm with-env prisma generate",
-    "push": "pnpm with-env prisma db push --skip-generate",
-    "migrate": "pnpm with-env prisma migrate dev",
-    "seed": "pnpm with-env prisma db seed",
-    "reset": "pnpm with-env prisma db push --force-reset",
+    "type-check": "tsc --noEmit",
+    "db:generate": "pnpm with-env prisma generate",
+    "db:push": "pnpm with-env prisma db push --skip-generate",
+    "db:migrate": "pnpm with-env prisma migrate dev",
+    "db:seed": "pnpm with-env prisma db seed",
+    "db:reset": "pnpm with-env prisma db push --force-reset",
     "dev": "pnpm with-env prisma studio --port 5556",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -21,12 +22,18 @@
   "dependencies": {
     "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/dayjs": "^0.0.1",
-    "@prisma/client": "^4.12.0"
+    "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1",
     "@faker-js/faker": "^8.0.2",
     "js-sha256": "^0.9.0",
-    "prisma": "^4.12.0",
-    "typescript": "^5.0.3"
+    "prisma": "^5.0.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
   }
 }

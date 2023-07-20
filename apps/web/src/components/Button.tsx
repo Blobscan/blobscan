@@ -1,8 +1,8 @@
-import {
-  type ButtonHTMLAttributes,
-  type DOMAttributes,
-  type HTMLAttributes,
-  type HtmlHTMLAttributes,
+import type {
+  ButtonHTMLAttributes,
+  DOMAttributes,
+  HTMLAttributes,
+  HtmlHTMLAttributes,
 } from "react";
 
 type Size = "sm" | "md" | "lg";

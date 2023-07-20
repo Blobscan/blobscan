@@ -1,4 +1,5 @@
-import { useEffect, useState, type FC } from "react";
+import { useEffect, useState } from "react";
+import type { FC } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 import "react-loading-skeleton/dist/skeleton.css";

@@ -10,59 +10,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model IndexerMetadata {
-  id       Int @id
-  lastSlot Int @unique
+model BlockchainSyncState {
+  id                 Int @id @default(autoincrement())
+  lastFinalizedBlock Int
+  lastSlot           Int
 }
 
 model Address {
-  address                String        @id
-  isSender               Boolean
-  isReceiver             Boolean
-  transactionsAsSender   Transaction[] @relation("fromRelation")
-  transactionsAsReceiver Transaction[] @relation("toRelation")
+  address                    String   @id
+  firstBlockNumberAsSender   Int?
+  firstBlockNumberAsReceiver Int?
+  insertedAt                 DateTime
+  updatedAt                  DateTime
+
+  firstBlockAsSender     Block?        @relation("firstBlockAsSenderRelation", fields: [firstBlockNumberAsSender], references: [number])
+  firstBlockAsReceiver   Block?        @relation("firstBlockAsReceiverRelation", fields: [firstBlockNumberAsReceiver], references: [number])
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
+
+  @@index([insertedAt])
 }
 
 model Blob {
-  id            String                @id
-  versionedHash String                @unique
-  commitment    String                @unique
-  gsUri         String                @unique
-  swarmHash     String?               @unique
-  size          Int
-  transactions  BlobsOnTransactions[]
+  versionedHash    String   @id
+  commitment       String   @unique
+  gsUri            String   @unique
+  swarmHash        String?  @unique
+  size             Int
+  firstBlockNumber Int
+  insertedAt       DateTime
+  updatedAt        DateTime
+
+  firstBlock   Block                 @relation(fields: [firstBlockNumber], references: [number])
+  transactions BlobsOnTransactions[]
+
+  @@index([insertedAt])
 }
 
 model Block {
-  id           Int           @id
-  hash         String        @unique
-  number       Int           @unique
-  timestamp    DateTime      @unique
-  slot         Int           @unique
-  transactions Transaction[]
+  hash       String   @id
+  number     Int      @unique
+  timestamp  DateTime @unique
+  slot       Int      @unique
+  insertedAt DateTime
+  updatedAt  DateTime
+
+  transactions         Transaction[]
+  newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
+  newReceiverAddresses Address[]     @relation("firstBlockAsReceiverRelation")
+  newBlobs             Blob[]
+
+  @@index([insertedAt])
 }
 
 model Transaction {
-  id          String                @id
-  hash        String                @unique
+  hash        String   @id
   fromId      String
   toId        String?
   blockNumber Int
-  timestamp   DateTime
-  blobs       BlobsOnTransactions[]
-  block       Block                 @relation(fields: [blockNumber], references: [number])
-  from        Address               @relation("fromRelation", fields: [fromId], references: [address])
-  to          Address?              @relation("toRelation", fields: [toId], references: [address])
+  insertedAt  DateTime
+  updatedAt   DateTime
+
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockNumber], references: [number])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address?              @relation("receiverAddressRelation", fields: [toId], references: [address])
+
+  @@index([insertedAt])
+  @@index([blockNumber])
 }
 
 model BlobsOnTransactions {
+  blobHash String
+  txHash   String
+  index    Int
+
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
-  blobHash    String
   transaction Transaction @relation(fields: [txHash], references: [hash])
-  txHash      String
-  index       Int
 
   @@id([txHash, index])
+  @@index([blobHash])
+  @@index([txHash])
 }
 
 // Block Metrics
@@ -73,8 +101,7 @@ model BlockOverallStats {
 }
 
 model BlockDailyStats {
-  id          Int      @id @default(autoincrement())
-  day         DateTime @db.Date
+  day         DateTime @id @db.Date
   totalBlocks Int
 
   @@unique([day])
@@ -92,14 +119,10 @@ model TransactionOverallStats {
 }
 
 model TransactionDailyStats {
-  id                   Int      @id @default(autoincrement())
-  day                  DateTime @db.Date
+  day                  DateTime @id @db.Date
   totalTransactions    Int
   totalUniqueSenders   Int
   totalUniqueReceivers Int
-
-  @@unique([day])
-  @@index([day])
 }
 
 // Blob metrics
@@ -113,15 +136,11 @@ model BlobOverallStats {
 }
 
 model BlobDailyStats {
-  id               Int      @id @default(autoincrement())
-  day              DateTime @db.Date
+  day              DateTime @id @db.Date
   totalBlobs       Int
   totalUniqueBlobs Int
   totalBlobSize    BigInt
   avgBlobSize      Float
-
-  @@unique([day])
-  @@index([day])
 }
 
 // NextAuth.js Models

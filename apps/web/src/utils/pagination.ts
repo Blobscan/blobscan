@@ -1,4 +1,4 @@
-import { type ParsedUrlQuery } from "querystring";
+import type { ParsedUrlQuery } from "querystring";
 
 const DEFAULT_PAGE_SIZE = 25;
 

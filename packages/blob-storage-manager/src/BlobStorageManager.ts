@@ -1,4 +1,4 @@
-import { type BlobStorage } from "./BlobStorage";
+import type { BlobStorage } from "./BlobStorage";
 
 export type BlobStorages<StorageNames extends string> = {
   [K in StorageNames]: BlobStorage | null;

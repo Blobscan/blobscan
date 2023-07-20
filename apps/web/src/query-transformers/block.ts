@@ -1,10 +1,10 @@
-import {
-  type AllBlocks,
-  type DailyBlockStats,
-  type OverallBlockStats,
-  type TRPCResult,
-  type TransformedDailyBlockStats,
-  type TransformedOverallBlockStats,
+import type {
+  AllBlocks,
+  DailyBlockStats,
+  OverallBlockStats,
+  TRPCResult,
+  TransformedDailyBlockStats,
+  TransformedOverallBlockStats,
 } from "~/types";
 import { getDateFromDateTime } from "~/utils";
 
@@ -51,7 +51,7 @@ export function transformDailyBlockStatsResult({
     {
       days: [],
       blocks: [],
-    },
+    }
   );
 }
 

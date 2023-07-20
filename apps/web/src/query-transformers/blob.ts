@@ -1,9 +1,9 @@
-import {
-  type DailyBlobStats,
-  type OverallBlobStats,
-  type TRPCResult,
-  type TransformedDailyBlobStats,
-  type TransformedOverallBlobStats,
+import type {
+  DailyBlobStats,
+  OverallBlobStats,
+  TRPCResult,
+  TransformedDailyBlobStats,
+  TransformedOverallBlobStats,
 } from "~/types";
 import { bytesToKilobytes, getDateFromDateTime } from "~/utils";
 
@@ -16,9 +16,13 @@ export function transformOverallBlobStatsResult({
   }
 
   return {
-    avgBlobSize: data?.avgBlobSize ?? 0,
+    avgBlobSize: Number(
+      data?.avgBlobSize ? bytesToKilobytes(data.avgBlobSize).toFixed(2) : 0
+    ),
     totalBlobs: data?.totalBlobs ?? 0,
-    totalBlobSize: data?.avgBlobSize ? bytesToKilobytes(data.totalBlobSize) : 0,
+    totalBlobSize: Number(
+      data?.totalBlobSize ? bytesToKilobytes(data.totalBlobSize).toFixed(2) : 0
+    ),
     totalUniqueBlobs: data?.totalUniqueBlobs ?? 0,
     updatedAt: data?.updatedAt,
   };
@@ -45,7 +49,7 @@ export function transformDailyBlobStatsResult({
   return data.reduce<TransformedDailyBlobStats>(
     (
       formattedStats,
-      { day, avgBlobSize, totalBlobSize, totalBlobs, totalUniqueBlobs },
+      { day, avgBlobSize, totalBlobSize, totalBlobs, totalUniqueBlobs }
     ) => {
       formattedStats.days.push(getDateFromDateTime(day));
       formattedStats.blobs.push(totalBlobs);
@@ -55,6 +59,6 @@ export function transformDailyBlobStatsResult({
 
       return formattedStats;
     },
-    { days: [], blobs: [], uniqueBlobs: [], blobSizes: [], avgBlobSizes: [] },
+    { days: [], blobs: [], uniqueBlobs: [], blobSizes: [], avgBlobSizes: [] }
   );
 }
