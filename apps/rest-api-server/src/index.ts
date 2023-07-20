@@ -21,7 +21,7 @@ app.use(
   createOpenApiExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext,
-  }),
+  })
 );
 
 // Serve Swagger UI with our OpenAPI schema
@@ -30,6 +30,6 @@ app.get("/", swaggerUi.setup(openApiDocument));
 
 app.listen(env.BLOBSCAN_API_PORT, () => {
   console.log(
-    `REST API server started on http://localhost:${env.BLOBSCAN_API_PORT}`,
+    `REST API server started on http://localhost:${env.BLOBSCAN_API_PORT}`
   );
 });

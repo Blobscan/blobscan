@@ -8,6 +8,7 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
+    BEACON_NODE_ENDPOINT: z.string().url().default("http://localhost:3500"),
     NODE_ENV: z.enum(["development", "test", "production"]),
   },
   /**
@@ -22,6 +23,7 @@ export const env = createEnv({
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
    */
   runtimeEnv: {
+    BEACON_NODE_ENDPOINT: process.env.BEACON_NODE_ENDPOINT,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,

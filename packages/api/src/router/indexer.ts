@@ -1,16 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { statsAggregator, type Prisma } from "@blobscan/db";
+import type { Blob, Transaction, OmittableFields } from "@blobscan/db";
 
 import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
-import {
-  getDataFromTxsAddresses,
-  getNewBlobs,
-  upsertAddresses,
-} from "../utils/indexer";
 
 const INDEXER_PATH = "/indexer";
 const INDEX_REQUEST_DATA = z.object({
@@ -26,7 +21,7 @@ const INDEX_REQUEST_DATA = z.object({
       from: z.string(),
       to: z.string().optional(),
       blockNumber: z.coerce.number(),
-    }),
+    })
   ),
   blobs: z.array(
     z.object({
@@ -35,7 +30,7 @@ const INDEX_REQUEST_DATA = z.object({
       data: z.string(),
       txHash: z.string(),
       index: z.coerce.number(),
-    }),
+    })
   ),
 });
 
@@ -52,11 +47,11 @@ export const indexerRouter = createTRPCRouter({
     .input(z.void())
     .output(z.object({ slot: z.number() }))
     .query(async ({ ctx }) => {
-      const indexerMetadata = await ctx.prisma.indexerMetadata.findUnique({
+      const syncState = await ctx.prisma.blockchainSyncState.findUnique({
         where: { id: 1 },
       });
 
-      return { slot: indexerMetadata?.lastSlot ?? 0 };
+      return { slot: syncState?.lastSlot ?? 0 };
     }),
   updateSlot: jwtAuthedProcedure
     .meta({
@@ -73,7 +68,7 @@ export const indexerRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const slot = input.slot;
 
-      await ctx.prisma.indexerMetadata.upsert({
+      await ctx.prisma.blockchainSyncState.upsert({
         where: { id: 1 },
         update: {
           lastSlot: slot,
@@ -81,6 +76,7 @@ export const indexerRouter = createTRPCRouter({
         create: {
           id: 1,
           lastSlot: slot,
+          lastFinalizedBlock: 0,
         },
       });
     }),
@@ -98,21 +94,16 @@ export const indexerRouter = createTRPCRouter({
     .output(z.void())
     .mutation(async ({ ctx: { prisma, blobStorageManager }, input }) => {
       const timestamp = new Date(input.block.timestamp * 1000);
+      const operations = [];
 
-      // 1. Fetch unique addresses from transactions & check for existing blobs
-      const [existingBlock, txsAddressesInfo, newBlobs] = await Promise.all([
-        prisma.block.findUnique({
-          where: { id: input.block.number },
-        }),
-        getDataFromTxsAddresses(prisma, input.transactions),
-        getNewBlobs(prisma, input.blobs),
-      ]);
+      // 1. Upload blobs' data to storages
 
-      // 2. Upload blobs' data to storages
-      let uploadedBlobs: Prisma.BlobCreateInput[] = [];
+      const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
+
+      let uploadedBlobs: Omit<Blob, OmittableFields>[] = [];
       try {
         const uploadBlobsPromises = newBlobs.map<
-          Promise<Prisma.BlobCreateInput>
+          Promise<Omit<Blob, OmittableFields>>
         >(async (b) => {
           const blobReferences = await blobStorageManager.storeBlob(b);
 
@@ -124,12 +115,12 @@ export const indexerRouter = createTRPCRouter({
           }
 
           return {
-            id: b.versionedHash,
             versionedHash: b.versionedHash,
             commitment: b.commitment,
             gsUri: blobReferences.google,
             swarmHash: blobReferences?.swarm ?? null,
             size: calculateBlobSize(b.data),
+            firstBlockNumber: input.block.number,
           };
         });
 
@@ -142,41 +133,50 @@ export const indexerRouter = createTRPCRouter({
         });
       }
 
-      // 3. Prepare block, transaction and blob insertions
-
-      const createBlobsDataPromise = prisma.blob.createMany({
-        data: uploadedBlobs,
-      });
-
+      // 2. Prepare address, block, transaction and blob insertions
       const blockData = {
         number: input.block.number,
         hash: input.block.hash,
         timestamp,
         slot: input.block.slot,
       };
+      const now = new Date();
 
-      const createBlockPromise = prisma.block.upsert({
-        where: { id: input.block.number },
-        create: {
-          id: input.block.number,
-          ...blockData,
-        },
-        update: blockData,
-      });
-      const upsertAddressesPromise = upsertAddresses(prisma, txsAddressesInfo);
-      const createTransactionsPromises = prisma.transaction.createMany({
-        data: input.transactions.map((transaction) => ({
-          id: transaction.hash,
-          hash: transaction.hash,
-          fromId: transaction.from,
-          toId: transaction.to,
-          blockNumber: transaction.blockNumber,
-          timestamp,
-        })),
-        // TODO: to make the endpoint truly idempotent we should not skip duplicates but update them when re-indexing
-        skipDuplicates: true,
-      });
-      const createBlobsOnTransactionPromise =
+      operations.push(
+        prisma.block.upsert({
+          where: { hash: input.block.hash },
+          create: {
+            ...blockData,
+            insertedAt: now,
+            updatedAt: now,
+          },
+          update: {
+            ...blockData,
+            updatedAt: now,
+          },
+        })
+      );
+
+      operations.push(
+        prisma.address.upsertAddressesFromTransactions(input.transactions)
+      );
+
+      operations.push(
+        prisma.transaction.upsertMany(
+          input.transactions.map<Omit<Transaction, OmittableFields>>((tx) => ({
+            blockNumber: tx.blockNumber,
+            hash: tx.hash,
+            fromId: tx.from,
+            toId: tx.to ?? null,
+          }))
+        )
+      );
+
+      if (uploadedBlobs.length > 0) {
+        operations.push(prisma.blob.upsertMany(uploadedBlobs));
+      }
+
+      operations.push(
         prisma.blobsOnTransactions.createMany({
           data: input.blobs.map((blob) => ({
             blobHash: blob.versionedHash,
@@ -184,53 +184,10 @@ export const indexerRouter = createTRPCRouter({
             index: blob.index,
           })),
           skipDuplicates: true,
-        });
+        })
+      );
 
-      const operations = [
-        upsertAddressesPromise,
-        createBlockPromise,
-        createTransactionsPromises,
-        createBlobsDataPromise,
-        createBlobsOnTransactionPromise,
-      ];
-
-      // 4. Prepare overall stats incremental updates if the block is new
-      // TODO: this is a temporary workaround until we implement proper triggers
-      if (!existingBlock) {
-        const uploadedBlobsSize = uploadedBlobs.reduce(
-          (totalBlobSize, b) => totalBlobSize + b.size,
-          0,
-        );
-        const totalReceivers = txsAddressesInfo.filter(
-          (addrInfo) => addrInfo.isUniqueReceiver,
-        ).length;
-        const totalSenders = txsAddressesInfo.filter(
-          (addrInfo) => addrInfo.isUniqueSender,
-        ).length;
-
-        const updateBlockOverallStatsPromise =
-          statsAggregator.block.upsertOverallBlockStats(1);
-        const updateTxOverallStatsPromise =
-          statsAggregator.tx.upsertOverallTxStats(
-            input.transactions.length,
-            totalReceivers,
-            totalSenders,
-          );
-        const updateBlobOverallStatsPromise =
-          statsAggregator.blob.upsertOverallBlobStats(
-            input.blobs.length,
-            uploadedBlobs.length,
-            uploadedBlobsSize,
-          );
-
-        operations.push(
-          updateBlockOverallStatsPromise,
-          updateTxOverallStatsPromise,
-          updateBlobOverallStatsPromise,
-        );
-      }
-
-      // 5. Execute all database operations in a single transaction
+      // 3. Execute all database operations in a single transaction
       await prisma.$transaction(operations);
     }),
 });

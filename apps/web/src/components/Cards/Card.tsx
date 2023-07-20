@@ -1,4 +1,4 @@
-import { type FC, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import cn from "classnames";
 
 import { Centered } from "../Centered";
@@ -34,7 +34,7 @@ export const Card: React.FC<CardProps> = function ({
         {
           "p-3": compact,
           "p-6": !compact,
-        },
+        }
       )}
     >
       {header && (
@@ -74,7 +74,7 @@ export const CardHeader: FC<CardHeaderProps> = function ({
           "-mx-4 -mt-4 rounded-t-md": !inverse,
           "p-3": !compact,
           "p-1": compact,
-        },
+        }
       )}
     >
       {children}

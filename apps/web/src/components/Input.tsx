@@ -1,8 +1,8 @@
-import {
-  type DetailedHTMLProps,
-  type FC,
-  type HTMLAttributes,
-  type InputHTMLAttributes,
+import type {
+  DetailedHTMLProps,
+  FC,
+  HTMLAttributes,
+  InputHTMLAttributes,
 } from "react";
 
 export const Input: FC<

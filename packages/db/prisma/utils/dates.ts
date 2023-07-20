@@ -9,7 +9,7 @@ export type DatePeriod = {
 
 export function normalizeDate(
   date: dayjs.Dayjs | string | Date,
-  startOfOrEndOfDay: "startOf" | "endOf" = "endOf",
+  startOfOrEndOfDay: "startOf" | "endOf" = "endOf"
 ) {
   const date_ = dayjs(date);
 
@@ -18,7 +18,7 @@ export function normalizeDate(
 
 export function buildRawWhereClause(
   dateField: Prisma.Sql,
-  { from, to }: DatePeriod,
+  { from, to }: DatePeriod
 ): Prisma.Sql {
   if (from && to) {
     return Prisma.sql`WHERE ${dateField} BETWEEN ${from}::TIMESTAMP AND ${to}::TIMESTAMP`;

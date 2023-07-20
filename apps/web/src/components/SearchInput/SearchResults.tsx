@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CpuChipIcon, CubeIcon } from "@heroicons/react/24/solid";
 
-import { type RouterOutputs } from "~/api-client";
+import type { RouterOutputs } from "~/api-client";
 import { capitalize } from "~/utils";
 import { Card } from "../Cards/Card";
 
@@ -36,6 +36,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
   onClick,
 }) {
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
     <div className="flex flex-col" onClick={() => onClick(category, id)}>
       <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md py-2 pl-1 pr-3 text-sm text-contentSecondary-light transition-colors hover:bg-primary-100 dark:text-contentSecondary-dark hover:dark:bg-primary-800/20">
         <div className="flex w-11/12 items-center gap-2">
@@ -69,7 +70,7 @@ export const SearchResults: React.FC<SearchResultsProps> = function ({
   onResultClick,
 }) {
   const categories = Object.keys(
-    searchResults,
+    searchResults
   ) as (keyof typeof searchResults)[];
 
   if (!categories.length) return null;

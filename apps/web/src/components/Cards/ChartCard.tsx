@@ -1,16 +1,27 @@
-import { type FC, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import cn from "classnames";
+import type { EChartOption } from "echarts";
 
-import { Card, CardHeader } from "./Card";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-type ChartCardProps = Partial<{
-  title: ReactNode;
-  children: React.ReactNode;
-  size: "sm" | "md" | "lg";
-  isEmptyChart?: boolean;
-}>;
+import { ChartBase } from "../Charts/ChartBase";
+import { Card, CardHeader } from "./Card";
+
+type ChartCardProps = {
+  title?: ReactNode;
+  size?: "sm" | "md" | "lg";
+  options: EChartOption;
+};
+
+function getSeriesDataState(series: EChartOption.Series[] | undefined) {
+  return {
+    isLoading: series
+      ? series.some(({ data }) => data === undefined || data === null)
+      : true,
+    isEmpty: series ? series.some(({ data }) => data?.length === 0) : false,
+  };
+}
 
 const ChartSkeleton: FC = function () {
   return (
@@ -27,11 +38,12 @@ const ChartSkeleton: FC = function () {
 };
 
 export const ChartCard: FC<ChartCardProps> = function ({
-  children,
   title,
   size = "md",
-  isEmptyChart,
+  options,
 }) {
+  const { isEmpty, isLoading } = getSeriesDataState(options.series);
+
   return (
     <Card compact>
       <div className="flex h-full flex-col gap-2">
@@ -42,18 +54,18 @@ export const ChartCard: FC<ChartCardProps> = function ({
             "h-48 md:h-64 lg:h-96": size === "lg",
           })}
         >
-          {isEmptyChart ? (
+          {isEmpty ? (
             <div className="flex h-full items-center justify-center">
               <div className="text-sm font-thin uppercase text-contentSecondary-light dark:text-contentSecondary-dark">
                 No data
               </div>
             </div>
+          ) : isLoading ? (
+            <div className="flex h-full w-full items-center justify-center">
+              <ChartSkeleton />
+            </div>
           ) : (
-            children ?? (
-              <div className="flex h-full w-full items-center justify-center">
-                <ChartSkeleton />
-              </div>
-            )
+            <ChartBase options={options} />
           )}
         </div>
 

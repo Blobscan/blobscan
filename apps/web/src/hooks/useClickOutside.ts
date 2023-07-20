@@ -1,4 +1,5 @@
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState } from "react";
+import type { RefObject } from "react";
 
 function assertIsNode(e: EventTarget | null): asserts e is Node {
   if (!e || !("nodeType" in e)) {
@@ -14,7 +15,7 @@ export function useClickOutside<T extends HTMLElement>(ref: RefObject<T>) {
       assertIsNode(event.target);
 
       setClickOutside(
-        Boolean(ref.current && !ref.current.contains(event.target)),
+        Boolean(ref.current && !ref.current.contains(event.target))
       );
     }
     // Bind the event listener

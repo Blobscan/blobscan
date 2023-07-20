@@ -1,16 +1,15 @@
-import { TRPCError, type inferAsyncReturnType } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import {
-  type NodeHTTPCreateContextFnOptions,
-  type NodeHTTPRequest,
-  type NodeHTTPResponse,
-} from "@trpc/server/adapters/node-http";
-import jwt from "jsonwebtoken";
-
+import { env } from "./env";
 import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
-
-import { env } from "./env";
+import { TRPCError } from "@trpc/server";
+import type { inferAsyncReturnType } from "@trpc/server";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type {
+  NodeHTTPCreateContextFnOptions,
+  NodeHTTPRequest,
+  NodeHTTPResponse,
+} from "@trpc/server/adapters/node-http";
+import jwt from "jsonwebtoken";
 
 type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
@@ -21,7 +20,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
 };
 
 function getJWTFromRequest(
-  req: NodeHTTPRequest | CreateNextContextOptions["req"],
+  req: NodeHTTPRequest | CreateNextContextOptions["req"]
 ) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {

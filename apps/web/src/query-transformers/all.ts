@@ -1,7 +1,7 @@
-import {
-  type AllOverallStats,
-  type TRPCResult,
-  type TransformAllOverallStats,
+import type {
+  AllOverallStats,
+  TRPCResult,
+  TransformAllOverallStats,
 } from "~/types";
 import { transformOverallBlobStatsResult } from "./blob";
 import { transformOverallBlockStatsResult } from "./block";

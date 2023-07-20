@@ -1,7 +1,7 @@
-import { prisma, statsAggregator } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 async function main() {
-  const res = await statsAggregator.block.executeOverallBlockStatsQuery();
+  const res = await prisma.blockOverallStats.backfill();
 
   console.log(res);
 }

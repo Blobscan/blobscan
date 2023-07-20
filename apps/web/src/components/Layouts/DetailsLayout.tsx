@@ -1,7 +1,8 @@
-import { type FC, type ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 
 import { Header } from "~/components/Header";
-import { InfoGrid, type InfoGridProps } from "~/components/InfoGrid";
+import { InfoGrid } from "~/components/InfoGrid";
+import type { InfoGridProps } from "~/components/InfoGrid";
 import { Card } from "../Cards/Card";
 import { Link } from "../Link";
 

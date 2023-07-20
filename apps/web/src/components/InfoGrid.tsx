@@ -1,4 +1,5 @@
-import React, { Fragment, type ReactNode } from "react";
+import React, { Fragment } from "react";
+import type { ReactNode } from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";

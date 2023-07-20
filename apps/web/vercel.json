@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/upsert-daily-stats",
       "schedule": "5 0 * * *"
+    },
+    {
+      "path": "/api/cron/update-overall-stats",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

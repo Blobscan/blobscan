@@ -1,11 +1,8 @@
-import {
-  Fragment,
-  useEffect,
-  useRef,
-  useState,
-  type FC,
-  type ReactNode,
-} from "react";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
+import { Fragment, useEffect, useRef, useState } from "react";
+import type { FC, ReactNode } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 type ExpandableElementProps = {

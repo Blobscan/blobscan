@@ -9,3 +9,5 @@
 //     return "you can see this secret message!";
 //   }),
 // });
+
+export const a = 1;

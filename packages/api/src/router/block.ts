@@ -21,30 +21,11 @@ export const blockRouter = createTRPCRouter({
       totalBlocks,
     };
   }),
-  getById: publicProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const { id } = input;
-
-      const block = await ctx.prisma.block.findUnique({
-        select: fullBlockSelect,
-        where: { id },
-      });
-
-      if (!block) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No block with id '${id}'`,
-        });
-      }
-
-      return block;
-    }),
   getByHash: publicProcedure
     .input(
       z.object({
         hash: z.string(),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const { hash } = input;
@@ -69,7 +50,7 @@ export const blockRouter = createTRPCRouter({
     .input(
       z.object({
         number: z.number(),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const { number } = input;

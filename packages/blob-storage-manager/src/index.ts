@@ -11,7 +11,7 @@ const blobStorageManager = BlobStorageManagerBuilder.create(env.CHAIN_ID)
       serviceKey: env.GOOGLE_SERVICE_KEY,
       apiEndpoint:
         env.NODE_ENV === "development" ? "http://0.0.0.0:4443" : undefined,
-    }),
+    })
   )
   .addStorage(
     "swarm",
@@ -20,7 +20,7 @@ const blobStorageManager = BlobStorageManagerBuilder.create(env.CHAIN_ID)
           beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
           beeEndpoint: env.BEE_ENDPOINT,
         })
-      : null,
+      : null
   )
   .build();
 

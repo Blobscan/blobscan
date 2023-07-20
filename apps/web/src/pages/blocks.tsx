@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 

@@ -1,10 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type FC,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { FC } from "react";
 import {
   ArrowRightIcon,
   ChevronDownIcon,
@@ -17,7 +12,7 @@ import Skeleton from "react-loading-skeleton";
 
 import dayjs from "@blobscan/dayjs";
 
-import { type Block } from "~/types";
+import type { Block } from "~/types";
 import {
   buildAddressRoute,
   buildBlobRoute,
@@ -37,6 +32,7 @@ const CollapseIcon: React.FC<{
   });
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className="flex cursor-pointer flex-col" onClick={onClick}>
       <animated.div style={props}>
         <ChevronUpIcon className="h-4 w-4" />
@@ -76,7 +72,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
       contentRef.current = element;
       updateHeight();
     },
-    [updateHeight],
+    [updateHeight]
   );
 
   useEffect(updateHeight, [opened, updateHeight]);
@@ -150,7 +146,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           <animated.div
             style={{
               height: props.openProgress.to(
-                (value) => `${value * contentHeight.current}px`,
+                (value) => `${value * contentHeight.current}px`
               ),
             }}
           >

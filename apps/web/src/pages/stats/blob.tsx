@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 import NextError from "next/error";
 
 import {
@@ -13,7 +13,6 @@ import {
   transformDailyBlobStatsResult,
   transformOverallBlobStatsResult,
 } from "~/query-transformers";
-import { bytesToKilobytes } from "~/utils";
 
 const BlobStats: NextPage = function () {
   const dailyBlobStatsRes = api.stats.blob.getDailyStats.useQuery({
@@ -21,12 +20,12 @@ const BlobStats: NextPage = function () {
   });
   const dailyBlobStats = useTransformResult(
     dailyBlobStatsRes,
-    transformDailyBlobStatsResult,
+    transformDailyBlobStatsResult
   );
   const overallBlobStatsRes = api.stats.blob.getOverallStats.useQuery();
   const overallBlobStats = useTransformResult(
     overallBlobStatsRes,
-    transformOverallBlobStatsResult,
+    transformOverallBlobStatsResult
   );
 
   const error = dailyBlobStatsRes.error || overallBlobStatsRes.error;
@@ -49,7 +48,7 @@ const BlobStats: NextPage = function () {
               { name: "Total Blobs", value: overallBlobStats.totalBlobs },
               {
                 name: "Total Blob Size",
-                value: bytesToKilobytes(overallBlobStats.totalBlobSize),
+                value: overallBlobStats.totalBlobSize,
                 unit: "KB",
               },
               {
@@ -58,36 +57,30 @@ const BlobStats: NextPage = function () {
               },
               {
                 name: "Average Blob Size",
-                value: Number(
-                  bytesToKilobytes(overallBlobStats.avgBlobSize).toFixed(2),
-                ),
+                value: overallBlobStats.avgBlobSize,
                 unit: "KB",
               },
             ]
           : undefined
       }
-      charts={
-        dailyBlobStats
-          ? [
-              <DailyBlobsChart
-                key={0}
-                days={dailyBlobStats.days}
-                blobs={dailyBlobStats.blobs}
-                uniqueBlobs={dailyBlobStats.uniqueBlobs}
-              />,
-              <DailyBlobSizeChart
-                key={1}
-                days={dailyBlobStats.days}
-                blobSizes={dailyBlobStats.blobSizes}
-              />,
-              <DailyAvgBlobSizeChart
-                key={2}
-                days={dailyBlobStats.days}
-                avgBlobSizes={dailyBlobStats.avgBlobSizes}
-              />,
-            ]
-          : undefined
-      }
+      charts={[
+        <DailyBlobsChart
+          key={0}
+          days={dailyBlobStats?.days}
+          blobs={dailyBlobStats?.blobs}
+          uniqueBlobs={dailyBlobStats?.uniqueBlobs}
+        />,
+        <DailyBlobSizeChart
+          key={1}
+          days={dailyBlobStats?.days}
+          blobSizes={dailyBlobStats?.blobSizes}
+        />,
+        <DailyAvgBlobSizeChart
+          key={2}
+          days={dailyBlobStats?.days}
+          avgBlobSizes={dailyBlobStats?.avgBlobSizes}
+        />,
+      ]}
     />
   );
 };

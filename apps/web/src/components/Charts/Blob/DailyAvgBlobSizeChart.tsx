@@ -1,9 +1,8 @@
-import { type FC } from "react";
-import { type EChartOption } from "echarts";
+import type { FC } from "react";
+import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { type TransformedDailyBlobStats } from "~/types";
-import { ChartBase } from "../ChartBase";
+import type { TransformedDailyBlobStats } from "~/types";
 
 type DailyAvgBlobSizeProps = {
   days?: TransformedDailyBlobStats["days"];
@@ -14,7 +13,6 @@ export const DailyAvgBlobSizeChart: FC<DailyAvgBlobSizeProps> = function ({
   days,
   avgBlobSizes,
 }) {
-  const isEmpty = !days?.length || !avgBlobSizes?.length;
   const options: EChartOption<EChartOption.SeriesBar> = {
     xAxis: {
       type: "category",
@@ -33,9 +31,5 @@ export const DailyAvgBlobSizeChart: FC<DailyAvgBlobSizeProps> = function ({
     ],
   };
 
-  return (
-    <ChartCard title="Daily Avg. Blob Size" size="sm" isEmptyChart={isEmpty}>
-      <ChartBase options={options} />
-    </ChartCard>
-  );
+  return <ChartCard title="Daily Avg. Blob Size" size="sm" options={options} />;
 };

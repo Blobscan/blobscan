@@ -1,13 +1,14 @@
-import { type BlobStorage } from "./BlobStorage";
-import { BlobStorageManager, type BlobStorages } from "./BlobStorageManager";
+import type { BlobStorage } from "./BlobStorage";
+import { BlobStorageManager } from "./BlobStorageManager";
+import type { BlobStorages } from "./BlobStorageManager";
 
 export class BlobStorageManagerBuilder<
   SName extends string = never,
-  T extends BlobStorages<SName> = { [k in SName]: never },
+  T extends BlobStorages<SName> = { [k in SName]: never }
 > {
   private constructor(
     private readonly blobStorages: T,
-    private readonly chainId: number,
+    private readonly chainId: number
   ) {}
 
   static create(chainId: number): BlobStorageManagerBuilder {
@@ -16,7 +17,7 @@ export class BlobStorageManagerBuilder<
 
   addStorage<K extends string, V extends BlobStorage | null>(
     name: K,
-    blobStorage: V,
+    blobStorage: V
   ): BlobStorageManagerBuilder<SName | K, T & { [k in K]: V }> {
     const nextStorage = { [name]: blobStorage } as { [k in K]: V };
 
@@ -25,7 +26,7 @@ export class BlobStorageManagerBuilder<
         ...this.blobStorages,
         ...nextStorage,
       },
-      this.chainId,
+      this.chainId
     );
   }
 

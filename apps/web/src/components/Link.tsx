@@ -1,4 +1,5 @@
-import React, { type ReactNode } from "react";
+import React from "react";
+import type { ReactNode } from "react";
 import NextLink from "next/link";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 

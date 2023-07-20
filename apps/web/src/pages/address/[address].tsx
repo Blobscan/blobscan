@@ -17,7 +17,7 @@ const Address: NextPage = () => {
 
   const { data: addressData, error } = api.tx.getByAddress.useQuery(
     { address, p, ps },
-    { enabled: router.isReady },
+    { enabled: router.isReady }
   );
 
   if (error) {
