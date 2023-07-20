@@ -70,7 +70,6 @@ const Home: NextPage = () => {
   const blocks = latestBlocks?.blocks ?? [];
   const txs = latestTxs?.transactions ?? [];
 
-  console.log(dailyTxStats);
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
