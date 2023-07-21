@@ -150,7 +150,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               "size" = EXCLUDED."size",
               "gsUri" = EXCLUDED."gsUri",
               "swarmHash" = EXCLUDED."swarmHash",
-              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber")
+              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber"),
               "updatedAt" = NOW()
           `;
         },
