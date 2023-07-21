@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum BlobStorage {
+  GOOGLE @map("google")
+  PRISMA @map("prisma")
+  SWARM  @map("swarm")
+}
+
 model BlockchainSyncState {
   id                 Int @id @default(autoincrement())
   lastFinalizedBlock Int
@@ -34,17 +40,35 @@ model Address {
 model Blob {
   versionedHash    String   @id
   commitment       String   @unique
-  gsUri            String   @unique
-  swarmHash        String?  @unique
   size             Int
   firstBlockNumber Int?
   insertedAt       DateTime @default(now())
   updatedAt        DateTime @default(now())
 
-  firstBlock   Block?                @relation(fields: [firstBlockNumber], references: [number])
-  transactions BlobsOnTransactions[]
+  dataStorageReferences BlobDataStorageReference[]
+  data                  BlobData?
+  firstBlock            Block?                     @relation(fields: [firstBlockNumber], references: [number])
+  transactions          BlobsOnTransactions[]
 
   @@index([insertedAt])
+}
+
+model BlobData {
+  id       Int    @id @default(autoincrement())
+  blobHash String @unique
+  data     Bytes
+
+  blob Blob @relation(fields: [blobHash], references: [versionedHash])
+}
+
+model BlobDataStorageReference {
+  blobHash    String
+  blobStorage BlobStorage
+  dataUri     String
+
+  blob Blob @relation(fields: [blobHash], references: [versionedHash])
+
+  @@id([blobHash, blobStorage])
 }
 
 model Block {

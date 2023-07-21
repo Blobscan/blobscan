@@ -1,4 +1,9 @@
-import type { Address, Blob, Transaction } from "@prisma/client";
+import type {
+  Address,
+  Blob,
+  BlobDataStorageReference,
+  Transaction,
+} from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
 import type { OmittableFields } from "../types";
@@ -112,23 +117,12 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(blobs: Omit<Blob, OmittableFields>[]) {
           const formattedValues = blobs
-            .map(
-              ({
-                versionedHash,
-                commitment,
-                gsUri,
-                size,
-                swarmHash,
-                firstBlockNumber,
-              }) => [
-                versionedHash,
-                commitment,
-                size,
-                gsUri,
-                swarmHash,
-                firstBlockNumber,
-              ]
-            )
+            .map(({ versionedHash, commitment, size, firstBlockNumber }) => [
+              versionedHash,
+              commitment,
+              size,
+              firstBlockNumber,
+            ])
             .map(
               (rowColumns) =>
                 Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
@@ -139,8 +133,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               "versionedHash",
               "commitment",
               "size",
-              "gsUri",
-              "swarmHash",
               "firstBlockNumber",
               "insertedAt",
               "updatedAt"
@@ -148,10 +140,27 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ON CONFLICT ("versionedHash") DO UPDATE SET
               "commitment" = EXCLUDED."commitment",
               "size" = EXCLUDED."size",
-              "gsUri" = EXCLUDED."gsUri",
-              "swarmHash" = EXCLUDED."swarmHash",
-              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber"),
+              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber")
               "updatedAt" = NOW()
+          `;
+        },
+      },
+      blobDataStorageReference: {
+        upsertMany(refs: BlobDataStorageReference[]) {
+          const formattedValues = refs.map(
+            ({ blobHash, blobStorage, dataUri }) =>
+              Prisma.sql`(${Prisma.join([blobHash, blobStorage, dataUri])})`
+          );
+
+          return prisma.$executeRaw`
+            INSERT INTO "BlobDataStorageReference" (
+              "blobHash",
+              "blobStorage",
+              "dataUri",
+            )
+            VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("blobHash", "blobStorage") DO UPDATE SET
+              "dataUri" = EXCLUDED."dataUri"
           `;
         },
       },

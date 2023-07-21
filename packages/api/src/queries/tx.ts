@@ -22,8 +22,6 @@ export const fullTransactionSelect =
         blob: {
           select: {
             commitment: true,
-            gsUri: true,
-            swarmHash: true,
             size: true,
           },
         },

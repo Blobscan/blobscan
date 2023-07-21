@@ -1,12 +1,16 @@
+import type { BlobStorage as BlobStorageName } from "@blobscan/db";
+
 import type { BlobStorage } from "./BlobStorage";
 
-export type BlobStorages<StorageNames extends string> = {
+export type BlobStorages<StorageNames extends BlobStorageName> = {
   [K in StorageNames]: BlobStorage | null;
 };
 
-export type BlobReference<StorageNames extends string> = {
+export type BlobReference<
+  StorageName extends BlobStorageName = BlobStorageName
+> = {
   reference: string;
-  storage: StorageNames;
+  storage: StorageName;
 };
 
 type Blob = {
@@ -15,8 +19,8 @@ type Blob = {
 };
 
 export class BlobStorageManager<
-  SName extends string,
-  T extends BlobStorages<SName>,
+  SName extends BlobStorageName,
+  T extends BlobStorages<SName>
 > {
   #blobStorages: T;
   chainId: number;
@@ -34,7 +38,7 @@ export class BlobStorageManager<
     ...blobReferences: BlobReference<SName>[]
   ): Promise<{ data: string; storage: SName } | null> {
     const availableReferences = blobReferences.filter(
-      ({ storage }) => this.#blobStorages[storage],
+      ({ storage }) => this.#blobStorages[storage]
     );
     return Promise.race(
       availableReferences.map(({ reference, storage: storageName }) =>
@@ -43,35 +47,29 @@ export class BlobStorageManager<
           .then((data) => ({
             data,
             storage: storageName,
-          })),
-      ),
+          }))
+      )
     );
   }
 
   async storeBlob({
     data,
     versionedHash,
-  }: Blob): Promise<Record<SName, string | undefined>> {
+  }: Blob): Promise<BlobReference<SName>[]> {
     const availableStorages = Object.entries(this.#blobStorages).filter(
-      ([, storage]) => storage,
+      ([, storage]) => storage
     ) as [SName, BlobStorage][];
-    const namedBlobReferences = await Promise.all(
+    const storageReferences = await Promise.all(
       availableStorages.map(([name, storage]) =>
         storage.storeBlob(this.chainId, versionedHash, data).then(
           (reference): BlobReference<SName> => ({
             reference,
             storage: name,
-          }),
-        ),
-      ),
+          })
+        )
+      )
     );
 
-    return namedBlobReferences.reduce<Record<SName, string>>(
-      (references, namedReference) => ({
-        ...references,
-        [namedReference.storage]: namedReference.reference,
-      }),
-      {} as Record<SName, string>,
-    );
+    return storageReferences;
   }
 }

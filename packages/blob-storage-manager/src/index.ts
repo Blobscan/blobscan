@@ -4,7 +4,7 @@ import { GoogleStorage, SwarmStorage } from "./storages";
 
 const blobStorageManager = BlobStorageManagerBuilder.create(env.CHAIN_ID)
   .addStorage(
-    "google",
+    "GOOGLE",
     new GoogleStorage({
       bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
       projectId: env.GOOGLE_STORAGE_PROJECT_ID,
@@ -14,7 +14,7 @@ const blobStorageManager = BlobStorageManagerBuilder.create(env.CHAIN_ID)
     })
   )
   .addStorage(
-    "swarm",
+    "SWARM",
     env.BEE_DEBUG_ENDPOINT && env.BEE_ENDPOINT
       ? new SwarmStorage({
           beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
@@ -22,6 +22,13 @@ const blobStorageManager = BlobStorageManagerBuilder.create(env.CHAIN_ID)
         })
       : null
   )
+  .addStorage("PRISMA", null)
   .build();
 
-export { blobStorageManager, GoogleStorage, SwarmStorage };
+export type { BlobReference } from "./BlobStorageManager";
+export {
+  blobStorageManager,
+  BlobStorageManagerBuilder,
+  GoogleStorage,
+  SwarmStorage,
+};

@@ -1,14 +1,32 @@
 import { faker } from "@faker-js/faker";
-import type { Address, Blob, Prisma } from "@prisma/client";
+import type {
+  Address,
+  Blob,
+  Prisma,
+  BlobDataStorageReference,
+} from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
-import { blobStorageManager } from "@blobscan/blob-storage-manager";
-import type { GoogleStorage } from "@blobscan/blob-storage-manager";
+import {
+  BlobStorageManagerBuilder,
+  GoogleStorage,
+} from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { baseExtension, statsExtension } from "./extensions";
 import type { BlockNumberRange, OmittableFields } from "./types";
+
+const blobStorageManager = BlobStorageManagerBuilder.create(7011893055)
+  .addStorage(
+    "GOOGLE",
+    new GoogleStorage({
+      bucketName: "blobscan-bucket",
+      projectId: "blobscan-project-test",
+      apiEndpoint: "http://0.0.0.0:4443",
+    })
+  )
+  .build();
 
 const prisma = new PrismaClient()
   .$extends(baseExtension)
@@ -80,8 +98,14 @@ function generateUniqueTimestamps(
   return uniqueTimestamps;
 }
 
-function generateUniqueBlobs(amount: number): BlobWithData[] {
-  return Array.from({ length: amount }).map<BlobWithData>(() => {
+function generateUniqueBlobs(amount: number): {
+  blobs: BlobWithData[];
+  blobStorageRefs: BlobDataStorageReference[];
+} {
+  const blobs: BlobWithData[] = [];
+  const storagedBlobData: BlobDataStorageReference[] = [];
+
+  for (let i = 0; i < amount; i++) {
     const commitment = faker.string.hexadecimal({
       length: 96,
     });
@@ -93,16 +117,34 @@ function generateUniqueBlobs(amount: number): BlobWithData[] {
     const data = faker.string.hexadecimal({
       length: dataLength % 2 === 0 ? dataLength : dataLength + 1,
     });
+    const size = data.slice(2).length / 2;
+    const googleUri = buildGoogleStorageUri(versionedHash);
+    const swarmUri = sha256(data);
 
-    return {
-      versionedHash,
+    blobs.push({
       commitment,
-      gsUri: buildGoogleStorageUri(versionedHash),
-      swarmHash: sha256(data),
-      size: data.slice(2).length / 2,
       data,
-    };
-  });
+      size,
+      versionedHash,
+    });
+    storagedBlobData.push(
+      {
+        blobHash: versionedHash,
+        blobStorage: "GOOGLE",
+        dataUri: googleUri,
+      },
+      {
+        blobHash: versionedHash,
+        blobStorage: "SWARM",
+        dataUri: swarmUri,
+      }
+    );
+  }
+
+  return {
+    blobs,
+    blobStorageRefs: storagedBlobData,
+  };
 }
 
 function generateUniqueAddresses(amount: number) {
@@ -130,26 +172,18 @@ function performPrismaOpInBatches<T>(
 
 async function performBlobStorageOpInBatches(blobs: BlobWithData[]) {
   const batches = Math.ceil(blobs.length / STORAGE_BATCH_SIZE);
-  const operations: Promise<Record<"google", string | undefined>[]>[] = [];
 
-  Array.from({ length: batches }).forEach((_, index) => {
-    const start = index * STORAGE_BATCH_SIZE;
+  for (let i = 0; i < batches; i++) {
+    const start = i * STORAGE_BATCH_SIZE;
     const end = start + STORAGE_BATCH_SIZE;
+    const batchBlobs = blobs.slice(start, end);
 
-    operations.push(
-      Promise.all(
-        blobs.slice(start, end).map((b) => blobStorageManager.storeBlob(b))
-      )
-    );
-  });
-
-  for (const uploadBlobsPromise of operations) {
-    await uploadBlobsPromise;
+    await Promise.all(batchBlobs.map((b) => blobStorageManager.storeBlob(b)));
   }
 }
 
 async function main() {
-  const google = blobStorageManager.getStorage("google") as GoogleStorage;
+  const google = blobStorageManager.getStorage("GOOGLE") as GoogleStorage;
   await google.setUpBucket();
 
   const timestamps = generateUniqueTimestamps(
@@ -157,7 +191,8 @@ async function main() {
     MIN_BLOCKS_PER_DAY,
     MAX_BLOCKS_PER_DAY
   );
-  const uniqueBlobs = generateUniqueBlobs(UNIQUE_BLOBS_AMOUNT);
+  const { blobs: uniqueBlobs, blobStorageRefs } =
+    generateUniqueBlobs(UNIQUE_BLOBS_AMOUNT);
   const uniqueAddresses = generateUniqueAddresses(UNIQUE_ADDRESSES_AMOUNT);
 
   let prevBlockNumber = 0;
@@ -302,8 +337,6 @@ async function main() {
   const blobInputs = blobs.map<Blob>((b) => ({
     versionedHash: b.versionedHash,
     commitment: b.commitment,
-    gsUri: b.gsUri,
-    swarmHash: b.swarmHash,
     size: b.size,
     insertedAt: now,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -331,6 +364,12 @@ async function main() {
 
   await performPrismaOpInBatches(blobInputs, prisma.blob.createMany);
   console.log(`Blobs inserted: ${blobInputs.length}`);
+
+  await performPrismaOpInBatches(
+    blobStorageRefs,
+    prisma.blobDataStorageReference.createMany
+  );
+  console.log(`Blob storage references inserted: ${blobStorageRefs.length}`);
 
   await performPrismaOpInBatches(
     blobsOnTxs,
