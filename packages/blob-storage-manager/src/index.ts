@@ -5,13 +5,12 @@ import { env } from "./env";
 import { GoogleStorage, PrismaStorage, SwarmStorage } from "./storages";
 
 const googleStorage =
-  env.GOOGLE_SERVICE_KEY && env.GOOGLE_STORAGE_BUCKET_NAME
+  env.GOOGLE_SERVICE_KEY || env.GOOGLE_STORAGE_API_ENDPOINT
     ? new GoogleStorage({
         bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
         projectId: env.GOOGLE_STORAGE_PROJECT_ID,
         serviceKey: env.GOOGLE_SERVICE_KEY,
-        apiEndpoint:
-          env.NODE_ENV === "development" ? "http://localhost:4443" : undefined,
+        apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
       })
     : null;
 const swarmStorage =
