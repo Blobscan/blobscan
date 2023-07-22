@@ -8,7 +8,6 @@
   "packageManager": "pnpm@8.1.1",
   "scripts": {
     "build": "turbo build",
-    "vercel-build": "prisma generate --schema packages/db/prisma/schema.prisma && prisma migrate deploy --schema packages/db/prisma/schema.prisma && turbo build",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
     "db:generate": "turbo db:generate",
