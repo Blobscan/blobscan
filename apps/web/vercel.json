@@ -1,7 +1,7 @@
 {
   "buildCommand": "cd ../../ && prisma generate --schema packages/db/prisma/schema.prisma && prisma migrate deploy --schema packages/db/prisma/schema.prisma && turbo run build --filter=web",
   "installCommand": "pnpm install --store=node_modules/.pnpm-store",
-  "framework": "Next.js",
+  "framework": "nextjs",
   "crons": [
     {
       "path": "/api/cron/upsert-daily-stats",
