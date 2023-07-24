@@ -40,7 +40,11 @@ export class PrismaStorage extends BlobStorage {
       .then(() => versionedHash);
   }
 
-  static tryFromEnv(env: Environment): PrismaStorage | null {
+  static tryFromEnv(env: Environment): PrismaStorage | undefined {
+    if (!env.PRISMA_STORAGE_ENABLED) {
+      return;
+    }
+
     return new PrismaStorage();
   }
 }

@@ -58,12 +58,18 @@ export class SwarmStorage extends BlobStorage {
     return firstBatch.batchID;
   }
 
-  static tryFromEnv(env: Environment): SwarmStorage | null {
-    return env.BEE_DEBUG_ENDPOINT && env.BEE_ENDPOINT
-      ? new SwarmStorage({
-          beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
-          beeEndpoint: env.BEE_ENDPOINT,
-        })
-      : null;
+  static tryFromEnv(env: Environment): SwarmStorage | undefined {
+    if (
+      !env.SWARM_STORAGE_ENABLED ||
+      !env.BEE_DEBUG_ENDPOINT ||
+      !env.BEE_ENDPOINT
+    ) {
+      return;
+    }
+
+    return new SwarmStorage({
+      beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
+      beeEndpoint: env.BEE_ENDPOINT,
+    });
   }
 }

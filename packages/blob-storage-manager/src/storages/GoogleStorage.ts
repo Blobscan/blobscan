@@ -75,14 +75,20 @@ export class GoogleStorage extends BlobStorage {
     return this.#storageClient.createBucket(this.#bucketName);
   }
 
-  static tryFromEnv(env: Environment): GoogleStorage | null {
-    return env.GOOGLE_SERVICE_KEY || env.GOOGLE_STORAGE_API_ENDPOINT
-      ? new GoogleStorage({
-          bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
-          projectId: env.GOOGLE_STORAGE_PROJECT_ID,
-          serviceKey: env.GOOGLE_SERVICE_KEY,
-          apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
-        })
-      : null;
+  static tryFromEnv(env: Environment): GoogleStorage | undefined {
+    if (
+      !env.GOOGLE_STORAGE_ENABLED ||
+      !env.GOOGLE_SERVICE_KEY ||
+      !env.GOOGLE_STORAGE_API_ENDPOINT
+    ) {
+      return;
+    }
+
+    return new GoogleStorage({
+      bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
+      projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+      serviceKey: env.GOOGLE_SERVICE_KEY,
+      apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+    });
   }
 }

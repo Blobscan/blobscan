@@ -36,6 +36,10 @@ export class BlobStorageManager<
   chainId: number;
 
   constructor(blobStorages: T, chainId: number) {
+    if (Object.values(blobStorages).length === 0) {
+      throw new Error("No blob storages enabled");
+    }
+
     this.#blobStorages = blobStorages;
     this.chainId = chainId;
   }

@@ -1,5 +1,20 @@
 import { z } from "zod";
 
+function booleanTransformer(varName: string) {
+  return (arg: string, ctx: z.RefinementCtx): boolean => {
+    if (arg !== "true" && arg !== "false") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `${varName} must be either true or false`,
+      });
+
+      return z.NEVER;
+    }
+
+    return arg === "true";
+  };
+}
+
 const envSchema = z.object({
   BEE_DEBUG_ENDPOINT: z.string().url().optional(),
   BEE_ENDPOINT: z.string().url().optional(),
@@ -25,6 +40,19 @@ const envSchema = z.object({
   GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
   GOOGLE_SERVICE_KEY: z.string().optional(),
   GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
+
+  GOOGLE_STORAGE_ENABLED: z
+    .string()
+    .default("false")
+    .transform(booleanTransformer("GOOGLE_STORAGE_ENABLED")),
+  PRISMA_STORAGE_ENABLED: z
+    .string()
+    .default("false")
+    .transform(booleanTransformer("PRISMA_STORAGE_ENABLED")),
+  SWARM_STORAGE_ENABLED: z
+    .string()
+    .default("false")
+    .transform(booleanTransformer("SWARM_STORAGE_ENABLED")),
 });
 
 export const env = envSchema.parse(process.env);
