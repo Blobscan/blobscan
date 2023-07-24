@@ -46,7 +46,6 @@ model Blob {
   updatedAt        DateTime @default(now())
 
   dataStorageReferences BlobDataStorageReference[]
-  data                  BlobData?
   firstBlock            Block?                     @relation(fields: [firstBlockNumber], references: [number])
   transactions          BlobsOnTransactions[]
 
@@ -54,11 +53,8 @@ model Blob {
 }
 
 model BlobData {
-  id       Int    @id @default(autoincrement())
-  blobHash String @unique
-  data     Bytes
-
-  blob Blob @relation(fields: [blobHash], references: [versionedHash])
+  id   String @id
+  data Bytes
 }
 
 model BlobDataStorageReference {
