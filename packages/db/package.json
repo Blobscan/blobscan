@@ -17,7 +17,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed/main.ts"
   },
   "dependencies": {
     "@blobscan/blob-storage-manager": "^0.0.1",
