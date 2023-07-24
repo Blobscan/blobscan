@@ -1,35 +1,17 @@
 import type { BlobDataStorageReference } from "@prisma/client";
 
+import { blobStorageManager } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
 import { DataGenerator } from "./DataGenerator";
-import { createLocalBlobStorageManager } from "./blob-storage-manager";
 import { seedParams } from "./params";
-import { createLocalPrisma } from "./prisma";
 import { performPrismaOpInBatches } from "./utils";
-
-const GOOGLE_STORAGE_API_ENDPOINT = process.env.GOOGLE_STORAGE_API_ENDPOINT;
-const CHAIN_ID = process.env.CHAIN_ID
-  ? Number(process.env.CHAIN_ID)
-  : 7011893055;
 
 const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
 
 async function main() {
-  const prisma = createLocalPrisma();
-  const blobStorageManager = createLocalBlobStorageManager({
-    chainId: CHAIN_ID,
-    googleConfig: GOOGLE_STORAGE_API_ENDPOINT
-      ? {
-          apiEndpoint: GOOGLE_STORAGE_API_ENDPOINT,
-        }
-      : undefined,
-    prismaConfig: {
-      client: prisma,
-    },
-  });
   const dataGenerator = new DataGenerator(seedParams);
 
   // 1. Generate mock data

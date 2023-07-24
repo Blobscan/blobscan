@@ -1,6 +1,7 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
 import { BlobStorage } from "../BlobStorage";
+import type { Environment } from "../env";
 
 type SwarmStorageOptions = {
   beeEndpoint: string;
@@ -31,7 +32,7 @@ export class SwarmStorage extends BlobStorage {
   async storeBlob(
     chainId: number,
     versionedHash: string,
-    data: string,
+    data: string
   ): Promise<string> {
     const batchId = await this.#getAvailableBatch();
     const response = await this.#swarmClient.bee.uploadFile(
@@ -41,7 +42,7 @@ export class SwarmStorage extends BlobStorage {
       {
         pin: true,
         contentType: "text/plain",
-      },
+      }
     );
 
     return response.reference.toString();
@@ -55,5 +56,14 @@ export class SwarmStorage extends BlobStorage {
     }
 
     return firstBatch.batchID;
+  }
+
+  static tryFromEnv(env: Environment): SwarmStorage | null {
+    return env.BEE_DEBUG_ENDPOINT && env.BEE_ENDPOINT
+      ? new SwarmStorage({
+          beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
+          beeEndpoint: env.BEE_ENDPOINT,
+        })
+      : null;
   }
 }

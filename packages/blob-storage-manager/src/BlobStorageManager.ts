@@ -1,13 +1,23 @@
-import type { BlobStorage as BlobStorageName } from "@blobscan/db";
+import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
 
 import type { BlobStorage } from "./BlobStorage";
+import type { Environment } from "./env";
+import { GoogleStorage, PrismaStorage, SwarmStorage } from "./storages";
 
-export type BlobStorages<StorageNames extends BlobStorageName> = {
-  [K in StorageNames]: BlobStorage | null;
+export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
+  ? GoogleStorage
+  : T extends "SWARM"
+  ? SwarmStorage
+  : T extends "PRISMA"
+  ? PrismaStorage
+  : never;
+
+export type BlobStorages<SNames extends BlobStorageNames> = {
+  [K in SNames]?: StorageOf<K> | null;
 };
 
 export type BlobReference<
-  StorageName extends BlobStorageName = BlobStorageName
+  StorageName extends BlobStorageNames = BlobStorageNames
 > = {
   reference: string;
   storage: StorageName;
@@ -19,8 +29,8 @@ type Blob = {
 };
 
 export class BlobStorageManager<
-  SName extends BlobStorageName,
-  T extends BlobStorages<SName>
+  SNames extends BlobStorageNames = BlobStorageNames,
+  T extends BlobStorages<SNames> = BlobStorages<SNames>
 > {
   #blobStorages: T;
   chainId: number;
@@ -30,17 +40,17 @@ export class BlobStorageManager<
     this.chainId = chainId;
   }
 
-  getStorage(name: SName): BlobStorage | null {
+  getStorage<SName extends keyof T>(name: SName): T[SName] {
     return this.#blobStorages[name];
   }
 
   async getBlob(
-    ...blobReferences: BlobReference<SName>[]
-  ): Promise<{ data: string; storage: SName } | null> {
+    ...blobReferences: BlobReference<SNames>[]
+  ): Promise<{ data: string; storage: SNames } | null> {
     const availableReferences = blobReferences.filter(
       ({ storage }) => this.#blobStorages[storage]
     );
-    return Promise.race(
+    return Promise.any(
       availableReferences.map(({ reference, storage: storageName }) =>
         (this.#blobStorages[storageName] as BlobStorage)
           .getBlob(reference)
@@ -55,14 +65,14 @@ export class BlobStorageManager<
   async storeBlob({
     data,
     versionedHash,
-  }: Blob): Promise<BlobReference<SName>[]> {
+  }: Blob): Promise<BlobReference<SNames>[]> {
     const availableStorages = Object.entries(this.#blobStorages).filter(
       ([, storage]) => storage
-    ) as [SName, BlobStorage][];
+    ) as [SNames, BlobStorage][];
     const storageReferences = await Promise.all(
       availableStorages.map(([name, storage]) =>
         storage.storeBlob(this.chainId, versionedHash, data).then(
-          (reference): BlobReference<SName> => ({
+          (reference): BlobReference<SNames> => ({
             reference,
             storage: name,
           })
@@ -71,5 +81,20 @@ export class BlobStorageManager<
     );
 
     return storageReferences;
+  }
+
+  static tryFromEnv(env: Environment) {
+    const googleStorage = GoogleStorage.tryFromEnv(env);
+    const swarmStorage = SwarmStorage.tryFromEnv(env);
+    const prismaStorage = PrismaStorage.tryFromEnv(env);
+
+    return new BlobStorageManager(
+      {
+        ...(googleStorage ? { GOOGLE: googleStorage } : {}),
+        ...(swarmStorage ? { SWARM: swarmStorage } : {}),
+        ...(prismaStorage ? { PRISMA: prismaStorage } : {}),
+      },
+      env.CHAIN_ID
+    );
   }
 }

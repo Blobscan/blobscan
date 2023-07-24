@@ -1,24 +1,25 @@
-import type { BlobscanPrismaClient } from "@blobscan/db";
+import { PrismaClient } from "@blobscan/db";
 
 import { BlobStorage } from "../BlobStorage";
+import type { Environment } from "../env";
 
 export class PrismaStorage extends BlobStorage {
-  #prismaClient: BlobscanPrismaClient;
+  client: PrismaClient;
 
-  constructor(prismaClient: BlobscanPrismaClient) {
+  constructor() {
     super();
 
-    this.#prismaClient = prismaClient;
+    this.client = new PrismaClient();
   }
 
   getBlob(versionedHash: string): Promise<string> {
-    return this.#prismaClient.blobData
+    return this.client.blobData
       .findFirstOrThrow({
         select: {
           data: true,
         },
         where: {
-          blobHash: versionedHash,
+          id: versionedHash,
         },
       })
       .then(({ data }) => data.toString("hex"));
@@ -29,13 +30,17 @@ export class PrismaStorage extends BlobStorage {
     versionedHash: string,
     blobData: string
   ): Promise<string> {
-    return this.#prismaClient.blobData
+    return this.client.blobData
       .create({
         data: {
           data: Buffer.from(blobData, "hex"),
-          blobHash: versionedHash,
+          id: versionedHash,
         },
       })
       .then(() => versionedHash);
+  }
+
+  static tryFromEnv(env: Environment): PrismaStorage | null {
+    return new PrismaStorage();
   }
 }

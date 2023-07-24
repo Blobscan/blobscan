@@ -2,6 +2,7 @@ import { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
 
 import { BlobStorage } from "../BlobStorage";
+import type { Environment } from "../env";
 
 type GoogleStorageOptions = {
   serviceKey?: string;
@@ -72,5 +73,16 @@ export class GoogleStorage extends BlobStorage {
     }
 
     return this.#storageClient.createBucket(this.#bucketName);
+  }
+
+  static tryFromEnv(env: Environment): GoogleStorage | null {
+    return env.GOOGLE_SERVICE_KEY || env.GOOGLE_STORAGE_API_ENDPOINT
+      ? new GoogleStorage({
+          bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
+          projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+          serviceKey: env.GOOGLE_SERVICE_KEY,
+          apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+        })
+      : null;
   }
 }
