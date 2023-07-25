@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/index.ts": {
+      "memory": 1024
+    }
+  }
+}
