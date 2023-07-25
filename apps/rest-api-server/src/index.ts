@@ -30,7 +30,7 @@ app.use(
 app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(openApiDocument));
 
-app.listen(env.BLOBSCAN_API_PORT, () => {
+app.listen(env.BLOBSCAN_API_PORT, 'localhost', () => {
   console.log(
     `REST API server started on http://localhost:${env.BLOBSCAN_API_PORT}`
   );
