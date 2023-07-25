@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "src/index.ts": {
+      "memory": 1024
+    }
+  }
+}
