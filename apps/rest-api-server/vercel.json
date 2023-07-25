@@ -3,5 +3,11 @@
     "api/index.ts": {
       "memory": 1024
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/index"
+    }
+  ]
 }
