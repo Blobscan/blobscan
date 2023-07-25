@@ -5,12 +5,12 @@ services:
   web:
     image: blossomlabs/blobscan:local
     build: .
-    command: web
     restart: always
     ports:
       - 23000:3000
       - 25556:5556
     environment:
+      BLOBSCAN_PROC: web
       BEACON_NODE_ENDPOINT: http://localhost:5052
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
       SECRET_KEY: supersecret
@@ -20,7 +20,6 @@ services:
   api:
     image: blossomlabs/blobscan:local
     build: .
-    command: api
     restart: always
     ports:
       - 23001:3001
@@ -31,6 +30,7 @@ services:
       retries: 5
       start_period: 5s
     environment:
+      BLOBSCAN_PROC: api
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
       SECRET_KEY: supersecret
       BLOBSCAN_API_PORT: 3001
