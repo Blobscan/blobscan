@@ -1,8 +1,8 @@
 import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
 
 import type { BlobStorage } from "./BlobStorage";
-import type { Environment } from "./env";
-import { GoogleStorage, PrismaStorage, SwarmStorage } from "./storages";
+import type { PrismaStorage, SwarmStorage } from "./storages";
+import type { GoogleStorage } from "./storages";
 
 export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? GoogleStorage
@@ -13,7 +13,7 @@ export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   : never;
 
 export type BlobStorages<SNames extends BlobStorageNames> = {
-  [K in SNames]?: StorageOf<K> | null;
+  [K in SNames]?: StorageOf<K>;
 };
 
 export type BlobReference<
@@ -36,8 +36,8 @@ export class BlobStorageManager<
   chainId: number;
 
   constructor(blobStorages: T, chainId: number) {
-    if (Object.values(blobStorages).length === 0) {
-      throw new Error("No blob storages enabled");
+    if (!Object.values(blobStorages).some((storage) => !!storage)) {
+      throw new Error("No blob storages provided");
     }
 
     this.#blobStorages = blobStorages;
@@ -85,20 +85,5 @@ export class BlobStorageManager<
     );
 
     return storageReferences;
-  }
-
-  static tryFromEnv(env: Environment) {
-    const googleStorage = GoogleStorage.tryFromEnv(env);
-    const swarmStorage = SwarmStorage.tryFromEnv(env);
-    const prismaStorage = PrismaStorage.tryFromEnv(env);
-
-    return new BlobStorageManager(
-      {
-        ...(googleStorage ? { GOOGLE: googleStorage } : {}),
-        ...(swarmStorage ? { SWARM: swarmStorage } : {}),
-        ...(prismaStorage ? { PRISMA: prismaStorage } : {}),
-      },
-      env.CHAIN_ID
-    );
   }
 }

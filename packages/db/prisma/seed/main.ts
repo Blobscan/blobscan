@@ -1,6 +1,6 @@
 import type { BlobDataStorageReference } from "@prisma/client";
 
-import { blobStorageManager } from "@blobscan/blob-storage-manager";
+import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
@@ -12,6 +12,7 @@ const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
 
 async function main() {
+  const blobStorageManager = await createOrLoadBlobStorageManager();
   const dataGenerator = new DataGenerator(seedParams);
 
   // 1. Generate mock data
@@ -41,29 +42,29 @@ async function main() {
       blobsBatch.map((b) => b.size)
     );
 
-    const blobDataStorageRefs = await Promise.all(
+    const blobDataStorageRefs: BlobDataStorageReference[][] = await Promise.all(
       blobsDataBatch.map((blobData, i) => {
         const blob = blobsBatch[i];
         if (!blob) {
           throw new Error("Blob not found");
         }
 
-        return blobStorageManager.storeBlob({
-          data: blobData,
-          versionedHash: blob.versionedHash,
-        });
+        return blobStorageManager
+          .storeBlob({
+            data: blobData,
+            versionedHash: blob.versionedHash,
+          })
+          .then((refs) =>
+            refs.map((r) => ({
+              blobHash: blob.versionedHash,
+              blobStorage: r.storage,
+              dataUri: r.reference,
+            }))
+          );
       })
     );
 
-    dbBlobDataStorageRefs.push(
-      ...blobDataStorageRefs.flatMap<BlobDataStorageReference>((ref) =>
-        ref.map<BlobDataStorageReference>((r) => ({
-          blobHash: r.reference,
-          blobStorage: r.storage,
-          dataUri: r.reference,
-        }))
-      )
-    );
+    dbBlobDataStorageRefs.push(...blobDataStorageRefs.flat());
   }
 
   const blobsUploadEnd = performance.now();

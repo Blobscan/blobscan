@@ -1,6 +1,3 @@
-import { env } from "./env";
-import { blobStorageManager } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
 import { TRPCError } from "@trpc/server";
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
@@ -10,6 +7,11 @@ import type {
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
+
+import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { prisma } from "@blobscan/db";
+
+import { env } from "./env";
 
 type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
@@ -45,7 +47,9 @@ function getJWTFromRequest(
   }
 }
 
-export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
+export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
+  const blobStorageManager = await createOrLoadBlobStorageManager();
+
   return {
     prisma,
     blobStorageManager,
@@ -53,10 +57,10 @@ export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   };
 }
 
-export function createTRPCContext(opts: CreateContextOptions) {
+export async function createTRPCContext(opts: CreateContextOptions) {
   const apiClient = getJWTFromRequest(opts.req);
 
-  const innerContext = createTRPCInnerContext({ apiClient });
+  const innerContext = await createTRPCInnerContext({ apiClient });
 
   return {
     ...innerContext,

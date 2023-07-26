@@ -1,12 +1,13 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
+import type { BlobStorageOptions } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-type SwarmStorageOptions = {
+interface SwarmStorageOptions extends BlobStorageOptions {
   beeEndpoint: string;
   beeDebugEndpoint: string;
-};
+}
 
 type SwarmClient = {
   bee: Bee;
@@ -23,6 +24,14 @@ export class SwarmStorage extends BlobStorage {
       bee: new Bee(beeEndpoint),
       beeDebug: new BeeDebug(beeDebugEndpoint),
     };
+  }
+
+  async healthCheck(): Promise<void> {
+    const health = await this.#swarmClient.beeDebug.getHealth();
+
+    if (health.status !== "ok") {
+      throw new Error(`Node is not healthy: ${health.status}`);
+    }
   }
 
   async getBlob(reference: string): Promise<string> {
@@ -58,7 +67,7 @@ export class SwarmStorage extends BlobStorage {
     return firstBatch.batchID;
   }
 
-  static tryFromEnv(env: Environment): SwarmStorage | undefined {
+  static tryGetOptsFromEnv(env: Environment): SwarmStorageOptions | undefined {
     if (
       !env.SWARM_STORAGE_ENABLED ||
       !env.BEE_DEBUG_ENDPOINT ||
@@ -67,9 +76,9 @@ export class SwarmStorage extends BlobStorage {
       return;
     }
 
-    return new SwarmStorage({
+    return {
       beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
       beeEndpoint: env.BEE_ENDPOINT,
-    });
+    };
   }
 }

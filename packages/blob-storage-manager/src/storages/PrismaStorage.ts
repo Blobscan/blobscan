@@ -1,5 +1,6 @@
 import { PrismaClient } from "@blobscan/db";
 
+import type { BlobStorageOptions } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
@@ -10,6 +11,10 @@ export class PrismaStorage extends BlobStorage {
     super();
 
     this.client = new PrismaClient();
+  }
+
+  healthCheck(): Promise<void> {
+    return Promise.resolve();
   }
 
   getBlob(versionedHash: string): Promise<string> {
@@ -40,11 +45,11 @@ export class PrismaStorage extends BlobStorage {
       .then(() => versionedHash);
   }
 
-  static tryFromEnv(env: Environment): PrismaStorage | undefined {
+  static tryGetOptsFromEnv(env: Environment): BlobStorageOptions | undefined {
     if (!env.PRISMA_STORAGE_ENABLED) {
       return;
     }
 
-    return new PrismaStorage();
+    return {};
   }
 }

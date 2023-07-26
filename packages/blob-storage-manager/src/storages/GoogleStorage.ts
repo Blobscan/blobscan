@@ -1,15 +1,16 @@
 import { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
 
+import type { BlobStorageOptions } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-type GoogleStorageOptions = {
+interface GoogleStorageOptions extends BlobStorageOptions {
   serviceKey?: string;
   projectId?: string;
   bucketName: string;
   apiEndpoint?: string;
-};
+}
 
 type GoogleCredentials = {
   client_email: string;
@@ -43,7 +44,16 @@ export class GoogleStorage extends BlobStorage {
     this.#bucketName = bucketName;
 
     storageOptions.projectId = projectId;
+
     this.#storageClient = new Storage(storageOptions);
+  }
+
+  async healthCheck(): Promise<void> {
+    const [buckets] = await this.#storageClient.getBuckets();
+
+    if (!buckets.find((b) => b.name === this.#bucketName)) {
+      throw new Error(`Bucket ${this.#bucketName} does not exist`);
+    }
   }
 
   async getBlob(uri: string): Promise<string> {
@@ -75,20 +85,20 @@ export class GoogleStorage extends BlobStorage {
     return this.#storageClient.createBucket(this.#bucketName);
   }
 
-  static tryFromEnv(env: Environment): GoogleStorage | undefined {
+  static tryGetOptsFromEnv(env: Environment): GoogleStorageOptions | undefined {
     if (
       !env.GOOGLE_STORAGE_ENABLED ||
-      !env.GOOGLE_SERVICE_KEY ||
-      !env.GOOGLE_STORAGE_API_ENDPOINT
+      !env.GOOGLE_STORAGE_BUCKET_NAME ||
+      (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
     ) {
       return;
     }
 
-    return new GoogleStorage({
+    return {
       bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
       projectId: env.GOOGLE_STORAGE_PROJECT_ID,
       serviceKey: env.GOOGLE_SERVICE_KEY,
       apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
-    });
+    };
   }
 }

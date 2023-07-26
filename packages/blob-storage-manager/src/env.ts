@@ -36,7 +36,7 @@ const envSchema = z.object({
 
       return chainId;
     }),
-  GOOGLE_STORAGE_BUCKET_NAME: z.string().default("blobscan-test-bucket"),
+  GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
   GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
   GOOGLE_SERVICE_KEY: z.string().optional(),
   GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
