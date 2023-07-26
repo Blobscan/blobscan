@@ -13,7 +13,7 @@ ADD COLUMN     "firstBlockNumberAsReceiver" INTEGER,
 ADD COLUMN     "firstBlockNumberAsSender" INTEGER;
 
 -- AlterTable
-ALTER TABLE "Blob" ADD COLUMN     "firstBlockNumber" INTEGER NOT NULL;
+ALTER TABLE "Blob" ADD COLUMN     "firstBlockNumber" INTEGER;
 
 -- AddForeignKey
 ALTER TABLE "Address" ADD CONSTRAINT "Address_firstBlockNumberAsSender_fkey" FOREIGN KEY ("firstBlockNumberAsSender") REFERENCES "Block"("number") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -22,4 +22,4 @@ ALTER TABLE "Address" ADD CONSTRAINT "Address_firstBlockNumberAsSender_fkey" FOR
 ALTER TABLE "Address" ADD CONSTRAINT "Address_firstBlockNumberAsReceiver_fkey" FOREIGN KEY ("firstBlockNumberAsReceiver") REFERENCES "Block"("number") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Blob" ADD CONSTRAINT "Blob_firstBlockNumber_fkey" FOREIGN KEY ("firstBlockNumber") REFERENCES "Block"("number") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Blob" ADD CONSTRAINT "Blob_firstBlockNumber_fkey" FOREIGN KEY ("firstBlockNumber") REFERENCES "Block"("number") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -37,11 +37,11 @@ model Blob {
   gsUri            String   @unique
   swarmHash        String?  @unique
   size             Int
-  firstBlockNumber Int
+  firstBlockNumber Int?
   insertedAt       DateTime @default(now())
   updatedAt        DateTime @default(now())
 
-  firstBlock   Block                 @relation(fields: [firstBlockNumber], references: [number])
+  firstBlock   Block?                @relation(fields: [firstBlockNumber], references: [number])
   transactions BlobsOnTransactions[]
 
   @@index([insertedAt])
