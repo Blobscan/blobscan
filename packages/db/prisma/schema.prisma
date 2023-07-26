@@ -20,8 +20,8 @@ model Address {
   address                    String   @id
   firstBlockNumberAsSender   Int?
   firstBlockNumberAsReceiver Int?
-  insertedAt                 DateTime
-  updatedAt                  DateTime
+  insertedAt                 DateTime @default(now())
+  updatedAt                  DateTime @default(now())
 
   firstBlockAsSender     Block?        @relation("firstBlockAsSenderRelation", fields: [firstBlockNumberAsSender], references: [number])
   firstBlockAsReceiver   Block?        @relation("firstBlockAsReceiverRelation", fields: [firstBlockNumberAsReceiver], references: [number])
@@ -38,8 +38,8 @@ model Blob {
   swarmHash        String?  @unique
   size             Int
   firstBlockNumber Int
-  insertedAt       DateTime
-  updatedAt        DateTime
+  insertedAt       DateTime @default(now())
+  updatedAt        DateTime @default(now())
 
   firstBlock   Block                 @relation(fields: [firstBlockNumber], references: [number])
   transactions BlobsOnTransactions[]
@@ -52,8 +52,8 @@ model Block {
   number     Int      @unique
   timestamp  DateTime @unique
   slot       Int      @unique
-  insertedAt DateTime
-  updatedAt  DateTime
+  insertedAt DateTime @default(now())
+  updatedAt  DateTime @default(now())
 
   transactions         Transaction[]
   newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
@@ -68,8 +68,8 @@ model Transaction {
   fromId      String
   toId        String?
   blockNumber Int
-  insertedAt  DateTime
-  updatedAt   DateTime
+  insertedAt  DateTime @default(now())
+  updatedAt   DateTime @default(now())
 
   blobs BlobsOnTransactions[]
   block Block                 @relation(fields: [blockNumber], references: [number])
