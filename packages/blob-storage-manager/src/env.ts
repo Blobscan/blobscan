@@ -2,7 +2,8 @@ import { z } from "zod";
 
 function booleanTransformer(varName: string) {
   return (arg: string, ctx: z.RefinementCtx): boolean => {
-    if (arg !== "true" && arg !== "false") {
+    const arg_ = arg.toLowerCase();
+    if (arg_ !== "true" && arg_ !== "false") {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `${varName} must be either true or false`,
@@ -11,7 +12,7 @@ function booleanTransformer(varName: string) {
       return z.NEVER;
     }
 
-    return arg === "true";
+    return arg_ === "true";
   };
 }
 
