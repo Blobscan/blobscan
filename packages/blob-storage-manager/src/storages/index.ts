@@ -1,3 +1,3 @@
 export * from "./GoogleStorage";
-export * from "./PrismaStorage";
+export * from "./PostgresStorage";
 export * from "./SwarmStorage";

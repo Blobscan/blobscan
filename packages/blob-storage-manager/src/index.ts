@@ -1,6 +1,6 @@
 import { BlobStorageManager } from "./BlobStorageManager";
 import { env } from "./env";
-import { GoogleStorage, PrismaStorage, SwarmStorage } from "./storages";
+import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
 
 let blobStorageManager: BlobStorageManager | undefined;
 
@@ -8,13 +8,13 @@ async function createOrLoadBlobStorageManager(): Promise<BlobStorageManager> {
   if (!blobStorageManager) {
     const googleStorage = await GoogleStorage.tryCreateFromEnv(env);
     const swarmStorage = await SwarmStorage.tryCreateFromEnv(env);
-    const prismaStorage = await PrismaStorage.tryCreateFromEnv(env);
+    const postgresStorage = await PostgresStorage.tryCreateFromEnv(env);
 
     blobStorageManager = new BlobStorageManager(
       {
         GOOGLE: googleStorage,
         SWARM: swarmStorage,
-        PRISMA: prismaStorage,
+        POSTGRES: postgresStorage,
       },
       env.CHAIN_ID
     );
@@ -28,5 +28,5 @@ export {
   createOrLoadBlobStorageManager,
   GoogleStorage,
   SwarmStorage,
-  PrismaStorage,
+  PostgresStorage,
 };

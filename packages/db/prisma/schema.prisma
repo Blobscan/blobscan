@@ -11,9 +11,9 @@ datasource db {
 }
 
 enum BlobStorage {
-  GOOGLE @map("google")
-  PRISMA @map("prisma")
-  SWARM  @map("swarm")
+  GOOGLE   @map("google")
+  POSTGRES @map("postgres")
+  SWARM    @map("swarm")
 }
 
 model BlockchainSyncState {

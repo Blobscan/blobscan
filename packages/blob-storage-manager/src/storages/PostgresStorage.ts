@@ -4,7 +4,7 @@ import type { BlobStorageOptions } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-export class PrismaStorage extends BlobStorage {
+export class PostgresStorage extends BlobStorage {
   client: PrismaClient;
 
   constructor() {
@@ -46,7 +46,7 @@ export class PrismaStorage extends BlobStorage {
   }
 
   static tryGetOptsFromEnv(env: Environment): BlobStorageOptions | undefined {
-    if (!env.PRISMA_STORAGE_ENABLED) {
+    if (!env.POSTGRES_STORAGE_ENABLED) {
       return;
     }
 

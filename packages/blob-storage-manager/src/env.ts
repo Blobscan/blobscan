@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-function booleanTransformer(varName: string) {
+function transformToBoolean(varName: string) {
   return (arg: string, ctx: z.RefinementCtx): boolean => {
     const arg_ = arg.toLowerCase();
     if (arg_ !== "true" && arg_ !== "false") {
@@ -45,15 +45,15 @@ const envSchema = z.object({
   GOOGLE_STORAGE_ENABLED: z
     .string()
     .default("false")
-    .transform(booleanTransformer("GOOGLE_STORAGE_ENABLED")),
-  PRISMA_STORAGE_ENABLED: z
+    .transform(transformToBoolean("GOOGLE_STORAGE_ENABLED")),
+  POSTGRES_STORAGE_ENABLED: z
     .string()
     .default("false")
-    .transform(booleanTransformer("PRISMA_STORAGE_ENABLED")),
+    .transform(transformToBoolean("POSTGRES_STORAGE_ENABLED")),
   SWARM_STORAGE_ENABLED: z
     .string()
     .default("false")
-    .transform(booleanTransformer("SWARM_STORAGE_ENABLED")),
+    .transform(transformToBoolean("SWARM_STORAGE_ENABLED")),
 });
 
 export const env = envSchema.parse(process.env);

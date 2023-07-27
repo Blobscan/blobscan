@@ -1,15 +1,15 @@
 import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
 
 import type { BlobStorage } from "./BlobStorage";
-import type { PrismaStorage, SwarmStorage } from "./storages";
+import type { PostgresStorage, SwarmStorage } from "./storages";
 import type { GoogleStorage } from "./storages";
 
 export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? GoogleStorage
   : T extends "SWARM"
   ? SwarmStorage
-  : T extends "PRISMA"
-  ? PrismaStorage
+  : T extends "POSTGRES"
+  ? PostgresStorage
   : never;
 
 export type BlobStorages<SNames extends BlobStorageNames> = {
