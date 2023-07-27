@@ -29,7 +29,7 @@ const envSchema = z.object({
       if (isNaN(chainId) || chainId <= 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "CHAIN_ID must be a number greater than 0",
+          message: `CHAIN_ID is invalid: ${chainId}`,
         });
 
         return z.NEVER;
