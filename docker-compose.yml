@@ -17,6 +17,8 @@ services:
       SECRET_KEY: supersecret
       NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/
       NEXT_PUBLIC_EXPLORER_BASE_URL: https://explorer.4844-devnet-5.etpandaops.io/
+      GOOGLE_STORAGE_ENABLED: true
+      POSTGRES_STORAGE_ENABLED: true
 
   api:
     image: blossomlabs/blobscan:local
