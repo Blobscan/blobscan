@@ -40,8 +40,6 @@ model Address {
 model Blob {
   versionedHash    String   @id
   commitment       String   @unique
-  gsUri            String   @unique
-  swarmHash        String?  @unique
   size             Int
   firstBlockNumber Int?
   insertedAt       DateTime @default(now())

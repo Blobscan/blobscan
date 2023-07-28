@@ -62,8 +62,6 @@ export class DataGenerator {
         firstBlockNumber: Infinity,
         insertedAt: now,
         updatedAt: now,
-        gsUri: versionedHash,
-        swarmHash: faker.string.hexadecimal({ length: 64 }),
       });
     }
 
