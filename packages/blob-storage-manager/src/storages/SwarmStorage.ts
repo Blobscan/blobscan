@@ -6,12 +6,12 @@ import type { Environment } from "../env";
 
 interface SwarmStorageOptions extends BlobStorageOptions {
   beeEndpoint: string;
-  beeDebugEndpoint: string;
+  beeDebugEndpoint?: string;
 }
 
 type SwarmClient = {
   bee: Bee;
-  beeDebug: BeeDebug;
+  beeDebug?: BeeDebug;
 };
 
 export class SwarmStorage extends BlobStorage {
@@ -22,16 +22,26 @@ export class SwarmStorage extends BlobStorage {
 
     this.#swarmClient = {
       bee: new Bee(beeEndpoint),
-      beeDebug: new BeeDebug(beeDebugEndpoint),
+      beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
     };
   }
 
   async healthCheck(): Promise<void> {
-    const health = await this.#swarmClient.beeDebug.getHealth();
+    const healthCheckOps = [];
 
-    if (health.status !== "ok") {
-      throw new Error(`Node is not healthy: ${health.status}`);
+    healthCheckOps.push(this.#swarmClient.bee.checkConnection());
+
+    if (this.#swarmClient.beeDebug) {
+      healthCheckOps.push(
+        this.#swarmClient.beeDebug.getHealth().then((health) => {
+          if (health.status !== "ok") {
+            throw new Error(`Bee debug is not healthy: ${health.status}`);
+          }
+        })
+      );
     }
+
+    await Promise.all(healthCheckOps);
   }
 
   async getBlob(reference: string): Promise<string> {
@@ -58,6 +68,10 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async #getAvailableBatch(): Promise<string> {
+    if (!this.#swarmClient.beeDebug) {
+      throw new Error("Bee debug endpoint required to get postage batches");
+    }
+
     const [firstBatch] = await this.#swarmClient.beeDebug.getAllPostageBatch();
 
     if (!firstBatch?.batchID) {
@@ -68,11 +82,12 @@ export class SwarmStorage extends BlobStorage {
   }
 
   static tryGetOptsFromEnv(env: Environment): SwarmStorageOptions | undefined {
-    if (
-      !env.SWARM_STORAGE_ENABLED ||
-      !env.BEE_DEBUG_ENDPOINT ||
-      !env.BEE_ENDPOINT
-    ) {
+    if (!env.SWARM_STORAGE_ENABLED) {
+      return;
+    }
+
+    if (!env.BEE_ENDPOINT) {
+      console.warn("Swarm storage enabled but no bee endpoint was provided");
       return;
     }
 

@@ -86,11 +86,17 @@ export class GoogleStorage extends BlobStorage {
   }
 
   static tryGetOptsFromEnv(env: Environment): GoogleStorageOptions | undefined {
+    if (!env.GOOGLE_STORAGE_ENABLED) {
+      return;
+    }
+
     if (
-      !env.GOOGLE_STORAGE_ENABLED ||
       !env.GOOGLE_STORAGE_BUCKET_NAME ||
       (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
     ) {
+      console.warn(
+        "Google storage enabled but no bucket name, api endpoint or service key provided."
+      );
       return;
     }
 
