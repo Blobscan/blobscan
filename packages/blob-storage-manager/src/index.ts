@@ -1,27 +1,32 @@
-import { BlobStorageManagerBuilder } from "./BlobStorageManagerBuilder";
+import { BlobStorageManager } from "./BlobStorageManager";
 import { env } from "./env";
-import { GoogleStorage, SwarmStorage } from "./storages";
+import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
 
-const blobStorageManager = BlobStorageManagerBuilder.create(env.CHAIN_ID)
-  .addStorage(
-    "google",
-    new GoogleStorage({
-      bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
-      projectId: env.GOOGLE_STORAGE_PROJECT_ID,
-      serviceKey: env.GOOGLE_SERVICE_KEY,
-      apiEndpoint:
-        env.NODE_ENV === "development" ? "http://0.0.0.0:4443" : undefined,
-    })
-  )
-  .addStorage(
-    "swarm",
-    env.BEE_DEBUG_ENDPOINT && env.BEE_ENDPOINT
-      ? new SwarmStorage({
-          beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
-          beeEndpoint: env.BEE_ENDPOINT,
-        })
-      : null
-  )
-  .build();
+let blobStorageManager: BlobStorageManager | undefined;
 
-export { blobStorageManager, GoogleStorage, SwarmStorage };
+async function createOrLoadBlobStorageManager(): Promise<BlobStorageManager> {
+  if (!blobStorageManager) {
+    const googleStorage = await GoogleStorage.tryCreateFromEnv(env);
+    const swarmStorage = await SwarmStorage.tryCreateFromEnv(env);
+    const postgresStorage = await PostgresStorage.tryCreateFromEnv(env);
+
+    blobStorageManager = new BlobStorageManager(
+      {
+        GOOGLE: googleStorage,
+        SWARM: swarmStorage,
+        POSTGRES: postgresStorage,
+      },
+      env.CHAIN_ID
+    );
+  }
+
+  return blobStorageManager;
+}
+
+export type { BlobReference } from "./BlobStorageManager";
+export {
+  createOrLoadBlobStorageManager,
+  GoogleStorage,
+  SwarmStorage,
+  PostgresStorage,
+};

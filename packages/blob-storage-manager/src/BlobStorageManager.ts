@@ -1,12 +1,26 @@
-import type { BlobStorage } from "./BlobStorage";
+import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
 
-export type BlobStorages<StorageNames extends string> = {
-  [K in StorageNames]: BlobStorage | null;
+import type { BlobStorage } from "./BlobStorage";
+import type { PostgresStorage, SwarmStorage } from "./storages";
+import type { GoogleStorage } from "./storages";
+
+export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
+  ? GoogleStorage
+  : T extends "SWARM"
+  ? SwarmStorage
+  : T extends "POSTGRES"
+  ? PostgresStorage
+  : never;
+
+export type BlobStorages<SNames extends BlobStorageNames> = {
+  [K in SNames]?: StorageOf<K>;
 };
 
-export type BlobReference<StorageNames extends string> = {
+export type BlobReference<
+  StorageName extends BlobStorageNames = BlobStorageNames
+> = {
   reference: string;
-  storage: StorageNames;
+  storage: StorageName;
 };
 
 type Blob = {
@@ -15,63 +29,90 @@ type Blob = {
 };
 
 export class BlobStorageManager<
-  SName extends string,
-  T extends BlobStorages<SName>,
+  SNames extends BlobStorageNames = BlobStorageNames,
+  T extends BlobStorages<SNames> = BlobStorages<SNames>
 > {
   #blobStorages: T;
   chainId: number;
 
   constructor(blobStorages: T, chainId: number) {
+    if (!Object.values(blobStorages).some((storage) => !!storage)) {
+      throw new Error("No blob storages provided");
+    }
+
     this.#blobStorages = blobStorages;
     this.chainId = chainId;
   }
 
-  getStorage(name: SName): BlobStorage | null {
+  getStorage<SName extends keyof T>(name: SName): T[SName] {
     return this.#blobStorages[name];
   }
 
   async getBlob(
-    ...blobReferences: BlobReference<SName>[]
-  ): Promise<{ data: string; storage: SName } | null> {
+    ...blobReferences: BlobReference<SNames>[]
+  ): Promise<{ data: string; storage: SNames } | null> {
     const availableReferences = blobReferences.filter(
-      ({ storage }) => this.#blobStorages[storage],
+      ({ storage }) => this.#blobStorages[storage]
     );
-    return Promise.race(
+    return Promise.any(
       availableReferences.map(({ reference, storage: storageName }) =>
         (this.#blobStorages[storageName] as BlobStorage)
           .getBlob(reference)
           .then((data) => ({
             data,
             storage: storageName,
-          })),
-      ),
+          }))
+      )
     );
   }
 
   async storeBlob({
     data,
     versionedHash,
-  }: Blob): Promise<Record<SName, string | undefined>> {
+  }: Blob): Promise<BlobReference<SNames>[]> {
     const availableStorages = Object.entries(this.#blobStorages).filter(
-      ([, storage]) => storage,
-    ) as [SName, BlobStorage][];
-    const namedBlobReferences = await Promise.all(
+      ([, storage]) => storage
+    ) as [SNames, BlobStorage][];
+    const results = await Promise.allSettled(
       availableStorages.map(([name, storage]) =>
         storage.storeBlob(this.chainId, versionedHash, data).then(
-          (reference): BlobReference<SName> => ({
+          (reference): BlobReference<SNames> => ({
             reference,
             storage: name,
-          }),
-        ),
-      ),
+          })
+        )
+      )
     );
 
-    return namedBlobReferences.reduce<Record<SName, string>>(
-      (references, namedReference) => ({
-        ...references,
-        [namedReference.storage]: namedReference.reference,
-      }),
-      {} as Record<SName, string>,
-    );
+    const successfulUploads = results.filter(
+      (res) => res.status === "fulfilled"
+    ) as PromiseFulfilledResult<BlobReference<SNames>>[];
+    const failedUploads = results.filter(
+      (res) => res.status === "rejected"
+    ) as PromiseRejectedResult[];
+    const storageErrors = failedUploads.map((res, i) => {
+      const storage = availableStorages[i] as [SNames, BlobStorage];
+      const storageName = storage[0];
+
+      return `-${storageName}: ${res.reason}`;
+    });
+
+    if (!successfulUploads.length) {
+      throw new Error(
+        `Failed to upload blob to any of the storages :\n${storageErrors.join(
+          "\n"
+        )}`
+      );
+    }
+
+    if (failedUploads.length) {
+      console.warn(
+        `Couldn't upload blob to some of the storages :\n ${storageErrors.join(
+          "\n"
+        )}`
+      );
+    }
+
+    return successfulUploads.map((res) => res.value);
   }
 }

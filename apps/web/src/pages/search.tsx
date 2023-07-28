@@ -18,9 +18,10 @@ type SearchProps = {
 
 export const getServerSideProps: GetServerSideProps<SearchProps> =
   async function ({ query }) {
+    const ctx = await createTRPCInnerContext();
     const helpers = createServerSideHelpers({
       router: appRouter,
-      ctx: createTRPCInnerContext(),
+      ctx,
       transformer: superjson,
     });
     const term = query.q as string | undefined;

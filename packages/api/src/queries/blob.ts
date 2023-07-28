@@ -3,9 +3,13 @@ import { Prisma } from "@blobscan/db";
 export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
   versionedHash: true,
   commitment: true,
-  gsUri: true,
-  swarmHash: true,
   size: true,
+  dataStorageReferences: {
+    select: {
+      dataReference: true,
+      blobStorage: true,
+    },
+  },
   transactions: {
     select: {
       index: true,
@@ -32,9 +36,13 @@ export const blobsOnTransactionsSelect =
     blob: {
       select: {
         commitment: true,
-        gsUri: true,
-        swarmHash: true,
         size: true,
+        dataStorageReferences: {
+          select: {
+            blobStorage: true,
+            dataReference: true,
+          },
+        },
       },
     },
     transaction: {
