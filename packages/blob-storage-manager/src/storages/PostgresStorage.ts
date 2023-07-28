@@ -1,6 +1,6 @@
 import { PrismaClient } from "@blobscan/db";
 
-import type { BlobStorageOptions } from "../BlobStorage";
+import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
@@ -45,7 +45,7 @@ export class PostgresStorage extends BlobStorage {
       .then(() => versionedHash);
   }
 
-  static tryGetOptsFromEnv(env: Environment): BlobStorageOptions | undefined {
+  static tryGetConfigFromEnv(env: Environment): BlobStorageConfig | undefined {
     if (!env.POSTGRES_STORAGE_ENABLED) {
       return;
     }

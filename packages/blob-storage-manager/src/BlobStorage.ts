@@ -1,7 +1,7 @@
 import type { Environment } from "./env";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface BlobStorageOptions {}
+export interface BlobStorageConfig {}
 
 export abstract class BlobStorage {
   abstract healthCheck(): Promise<void>;
@@ -19,11 +19,11 @@ export abstract class BlobStorage {
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
   }
 
-  static async create<T extends BlobStorage, O extends BlobStorageOptions>(
-    this: new (opts: O) => T,
-    opts: O
+  static async create<T extends BlobStorage, C extends BlobStorageConfig>(
+    this: new (config: C) => T,
+    config: C
   ): Promise<T> {
-    const blobStorage = new this(opts);
+    const blobStorage = new this(config);
 
     try {
       await blobStorage.healthCheck();
@@ -36,22 +36,22 @@ export abstract class BlobStorage {
   }
 
   static async tryCreateFromEnv<
-    O extends BlobStorageOptions,
+    C extends BlobStorageConfig,
     T extends BlobStorage
   >(
     this: {
-      new (opts: O): T;
-      tryGetOptsFromEnv(env: Environment): O | undefined;
+      new (config: C): T;
+      tryGetConfigFromEnv(env: Environment): C | undefined;
     },
     env: Environment
   ): Promise<T | undefined> {
-    const opts = this.tryGetOptsFromEnv(env);
+    const config = this.tryGetConfigFromEnv(env);
 
-    if (!opts) {
+    if (!config) {
       return;
     }
 
-    const blobStorage = new this(opts);
+    const blobStorage = new this(config);
 
     try {
       await blobStorage.healthCheck();
@@ -63,9 +63,9 @@ export abstract class BlobStorage {
     return blobStorage;
   }
 
-  protected static tryGetOptsFromEnv(
+  protected static tryGetConfigFromEnv(
     _: Environment
-  ): BlobStorageOptions | undefined {
-    throw new Error(`tryGetOptsFromEnv function not implemented`);
+  ): BlobStorageConfig | undefined {
+    throw new Error(`tryGetConfigFromEnv function not implemented`);
   }
 }

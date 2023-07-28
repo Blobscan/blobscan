@@ -1,11 +1,11 @@
 import { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
 
-import type { BlobStorageOptions } from "../BlobStorage";
+import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-interface GoogleStorageOptions extends BlobStorageOptions {
+interface GoogleStorageConfig extends BlobStorageConfig {
   serviceKey?: string;
   projectId?: string;
   bucketName: string;
@@ -26,7 +26,7 @@ export class GoogleStorage extends BlobStorage {
     projectId,
     serviceKey,
     apiEndpoint,
-  }: GoogleStorageOptions) {
+  }: GoogleStorageConfig) {
     super();
 
     const storageOptions: StorageOptions = {};
@@ -85,7 +85,9 @@ export class GoogleStorage extends BlobStorage {
     return this.#storageClient.createBucket(this.#bucketName);
   }
 
-  static tryGetOptsFromEnv(env: Environment): GoogleStorageOptions | undefined {
+  static tryGetConfigFromEnv(
+    env: Environment
+  ): GoogleStorageConfig | undefined {
     if (!env.GOOGLE_STORAGE_ENABLED) {
       return;
     }

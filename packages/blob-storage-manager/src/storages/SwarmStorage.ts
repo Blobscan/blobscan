@@ -1,10 +1,10 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
-import type { BlobStorageOptions } from "../BlobStorage";
+import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-interface SwarmStorageOptions extends BlobStorageOptions {
+interface SwarmStorageConfig extends BlobStorageConfig {
   beeEndpoint: string;
   beeDebugEndpoint?: string;
 }
@@ -17,7 +17,7 @@ type SwarmClient = {
 export class SwarmStorage extends BlobStorage {
   #swarmClient: SwarmClient;
 
-  constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageOptions) {
+  constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
     super();
 
     this.#swarmClient = {
@@ -81,7 +81,7 @@ export class SwarmStorage extends BlobStorage {
     return firstBatch.batchID;
   }
 
-  static tryGetOptsFromEnv(env: Environment): SwarmStorageOptions | undefined {
+  static tryGetConfigFromEnv(env: Environment): SwarmStorageConfig | undefined {
     if (!env.SWARM_STORAGE_ENABLED) {
       return;
     }
