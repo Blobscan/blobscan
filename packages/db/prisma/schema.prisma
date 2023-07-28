@@ -40,6 +40,8 @@ model Address {
 model Blob {
   versionedHash    String   @id
   commitment       String   @unique
+  gsUri            String   @unique
+  swarmHash        String?  @unique
   size             Int
   firstBlockNumber Int?
   insertedAt       DateTime @default(now())
@@ -58,9 +60,9 @@ model BlobData {
 }
 
 model BlobDataStorageReference {
-  blobHash    String
-  blobStorage BlobStorage
-  dataUri     String
+  blobHash      String
+  blobStorage   BlobStorage
+  dataReference String
 
   blob Blob @relation(fields: [blobHash], references: [versionedHash])
 

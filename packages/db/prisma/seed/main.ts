@@ -58,7 +58,7 @@ async function main() {
             refs.map((r) => ({
               blobHash: blob.versionedHash,
               blobStorage: r.storage,
-              dataUri: r.reference,
+              dataReference: r.reference,
             }))
           );
       })

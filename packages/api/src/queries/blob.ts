@@ -6,7 +6,7 @@ export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
   size: true,
   dataStorageReferences: {
     select: {
-      dataUri: true,
+      dataReference: true,
       blobStorage: true,
     },
   },
@@ -40,7 +40,7 @@ export const blobsOnTransactionsSelect =
         dataStorageReferences: {
           select: {
             blobStorage: true,
-            dataUri: true,
+            dataReference: true,
           },
         },
       },

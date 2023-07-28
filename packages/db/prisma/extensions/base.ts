@@ -148,19 +148,23 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       blobDataStorageReference: {
         upsertMany(refs: BlobDataStorageReference[]) {
           const formattedValues = refs.map(
-            ({ blobHash, blobStorage, dataUri }) =>
-              Prisma.sql`(${Prisma.join([blobHash, blobStorage, dataUri])})`
+            ({ blobHash, blobStorage, dataReference }) =>
+              Prisma.sql`(${Prisma.join([
+                blobHash,
+                blobStorage,
+                dataReference,
+              ])})`
           );
 
           return prisma.$executeRaw`
             INSERT INTO "BlobDataStorageReference" (
               "blobHash",
               "blobStorage",
-              "dataUri",
+              "dataReference",
             )
             VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("blobHash", "blobStorage") DO UPDATE SET
-              "dataUri" = EXCLUDED."dataUri"
+              "dataReference" = EXCLUDED."dataReference"
           `;
         },
       },

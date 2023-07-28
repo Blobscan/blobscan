@@ -45,9 +45,9 @@ export const blobRouter = createTRPCRouter({
 
       const { blob, blobHash, transaction } = blobOnTransaction;
       const blobReferences = blob.dataStorageReferences.map<BlobReference>(
-        ({ blobStorage, dataUri }) => ({
+        ({ blobStorage, dataReference }) => ({
           storage: blobStorage,
-          reference: dataUri,
+          reference: dataReference,
         })
       );
       const blobData = await blobStorageManager.getBlob(...blobReferences);

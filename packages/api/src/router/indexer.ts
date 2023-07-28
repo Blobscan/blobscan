@@ -116,7 +116,7 @@ export const indexerRouter = createTRPCRouter({
               return blobDataRefs.map<BlobDataStorageReference>((ref) => ({
                 blobHash: b.versionedHash,
                 blobStorage: ref.storage,
-                dataUri: ref.reference,
+                dataReference: ref.reference,
               }));
             })
           )
@@ -153,6 +153,8 @@ export const indexerRouter = createTRPCRouter({
         commitment: blob.commitment,
         size: calculateBlobSize(blob.data),
         firstBlockNumber: input.block.number,
+        gsUri: "",
+        swarmHash: null,
       }));
       const dbBlobStorageRefs = blobStorageRefs;
 

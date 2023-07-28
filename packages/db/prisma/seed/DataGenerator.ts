@@ -62,6 +62,8 @@ export class DataGenerator {
         firstBlockNumber: Infinity,
         insertedAt: now,
         updatedAt: now,
+        gsUri: versionedHash,
+        swarmHash: faker.string.hexadecimal({ length: 64 }),
       });
     }
 
@@ -107,7 +109,7 @@ export class DataGenerator {
           }
 
           blob.firstBlockNumber = Math.min(
-            blob.firstBlockNumber,
+            blob.firstBlockNumber ?? Infinity,
             tx.blockNumber
           );
 
