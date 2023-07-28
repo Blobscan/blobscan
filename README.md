@@ -117,7 +117,7 @@ Below you can find a list of optional variables:
 
 | Env variable                    | Description             | Default value                                                            |
 | ------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
-| `DATABASE_URL`                  | Postgresql database URI | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=pbulic` |
+| `DATABASE_URL`                  | Postgresql database URI | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public` |
 | `NEXTAUTH_URL`                  | -                       | `http://localhost:3000`                                                  |
 | `SECRET_KEY`                    | -                       | `supersecret`                                                            |
 | `NEXT_PUBLIC_BEACON_BASE_URL`   | -                       | `http://134.209.87.158:8080/`                                            |
