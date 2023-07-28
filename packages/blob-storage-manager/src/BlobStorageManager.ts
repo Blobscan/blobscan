@@ -73,7 +73,7 @@ export class BlobStorageManager<
     const availableStorages = Object.entries(this.#blobStorages).filter(
       ([, storage]) => storage
     ) as [SNames, BlobStorage][];
-    const storageReferences = await Promise.all(
+    const results = await Promise.allSettled(
       availableStorages.map(([name, storage]) =>
         storage.storeBlob(this.chainId, versionedHash, data).then(
           (reference): BlobReference<SNames> => ({
@@ -84,6 +84,35 @@ export class BlobStorageManager<
       )
     );
 
-    return storageReferences;
+    const successfulUploads = results.filter(
+      (res) => res.status === "fulfilled"
+    ) as PromiseFulfilledResult<BlobReference<SNames>>[];
+    const failedUploads = results.filter(
+      (res) => res.status === "rejected"
+    ) as PromiseRejectedResult[];
+    const storageErrors = failedUploads.map((res, i) => {
+      const storage = availableStorages[i] as [SNames, BlobStorage];
+      const storageName = storage[0];
+
+      return `-${storageName}: ${res.reason}`;
+    });
+
+    if (!successfulUploads.length) {
+      throw new Error(
+        `Failed to upload blob to any of the storages :\n${storageErrors.join(
+          "\n"
+        )}`
+      );
+    }
+
+    if (failedUploads.length) {
+      console.warn(
+        `Couldn't upload blob to some of the storages :\n ${storageErrors.join(
+          "\n"
+        )}`
+      );
+    }
+
+    return successfulUploads.map((res) => res.value);
   }
 }
