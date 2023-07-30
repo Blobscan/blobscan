@@ -17,11 +17,8 @@ app.use(bodyParser.json({ limit: "2mb" }));
 // Handle incoming OpenAPI requests
 app.use(
   "/api",
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   createOpenApiExpressMiddleware({
     router: appRouter,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     createContext: createTRPCContext,
   })
 );
