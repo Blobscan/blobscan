@@ -10,7 +10,7 @@ import type { OmittableFields } from "../types";
 
 const NOW_SQL = Prisma.sql`NOW()`;
 
-type RawBlob = {
+export type RawBlob = {
   versionedHash: string;
   commitment: string;
   txHash: string;
@@ -101,8 +101,10 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       blob: {
-        async filterNewBlobs(blobs: RawBlob[]) {
-          const existingBlobVersionedHashes = (
+        async filterNewBlobs(
+          blobs: RawBlob[]
+        ): Promise<Omit<RawBlob, "index">[]> {
+          const dbBlobVersionedHashes = (
             await prisma.blob.findMany({
               select: { versionedHash: true },
               where: {
@@ -110,10 +112,21 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               },
             })
           ).map((b) => b.versionedHash);
+          const newBlobVersionedHashes = Array.from(
+            new Set(blobs.map((b) => b.versionedHash))
+          ).filter((hash) => !dbBlobVersionedHashes.includes(hash));
 
-          return blobs.filter(
-            (b) => !existingBlobVersionedHashes.includes(b.versionedHash)
-          );
+          return newBlobVersionedHashes.map((versionedHash) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const b = blobs.find((b) => b.versionedHash === versionedHash)!;
+
+            return {
+              commitment: b.commitment,
+              data: b.data,
+              txHash: b.txHash,
+              versionedHash: b.versionedHash,
+            };
+          });
         },
         upsertMany(blobs: Omit<Blob, OmittableFields>[]) {
           const formattedValues = blobs
@@ -140,7 +153,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ON CONFLICT ("versionedHash") DO UPDATE SET
               "commitment" = EXCLUDED."commitment",
               "size" = EXCLUDED."size",
-              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber")
+              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber"),
               "updatedAt" = NOW()
           `;
         },
@@ -151,7 +164,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ({ blobHash, blobStorage, dataReference }) =>
               Prisma.sql`(${Prisma.join([
                 blobHash,
-                blobStorage,
+                Prisma.sql`${blobStorage.toLowerCase()}::"BlobStorage"`,
                 dataReference,
               ])})`
           );
@@ -160,7 +173,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             INSERT INTO "BlobDataStorageReference" (
               "blobHash",
               "blobStorage",
-              "dataReference",
+              "dataReference"
             )
             VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("blobHash", "blobStorage") DO UPDATE SET

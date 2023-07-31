@@ -1,13 +1,6 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import type {
-  Blob,
-  Transaction,
-  OmittableFields,
-  BlobDataStorageReference,
-  Block,
-} from "@blobscan/db";
+import type { Blob, Transaction, OmittableFields, Block } from "@blobscan/db";
 
 import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
 import { createTRPCRouter, publicProcedure } from "../trpc";
@@ -106,28 +99,44 @@ export const indexerRouter = createTRPCRouter({
 
       const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
 
-      let blobStorageRefs: BlobDataStorageReference[];
-      try {
-        blobStorageRefs = (
-          await Promise.all(
-            newBlobs.map(async (b) => {
-              const blobDataRefs = await blobStorageManager.storeBlob(b);
-
-              return blobDataRefs.map<BlobDataStorageReference>((ref) => ({
-                blobHash: b.versionedHash,
-                blobStorage: ref.storage,
-                dataReference: ref.reference,
-              }));
-            })
+      const blobUploadResults = (
+        await Promise.all(
+          newBlobs.map(async (b) =>
+            blobStorageManager.storeBlob(b).then<{
+              uploadRes: Awaited<
+                ReturnType<typeof blobStorageManager.storeBlob>
+              >;
+              blob: Awaited<
+                ReturnType<typeof prisma.blob.filterNewBlobs>
+              >[number];
+            }>((uploadRes) => ({
+              blob: b,
+              uploadRes,
+            }))
           )
-        ).flat();
-      } catch (err_) {
-        const err = err_ as Error;
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Failed to upload blobs to storages: ${err.message}`,
-        });
-      }
+        )
+      ).flat();
+
+      blobUploadResults.forEach(({ uploadRes: { errors }, blob }) => {
+        if (errors.length) {
+          const errorMsgs = errors
+            .map((e) => `-${e.storage}: ${e.error}`)
+            .join("\n");
+
+          console.warn(
+            `Couldn't upload blob ${blob.versionedHash} to some of the storages:\n${errorMsgs}`
+          );
+        }
+      });
+
+      const dbBlobStorageRefs = blobUploadResults.flatMap(
+        ({ uploadRes: { references }, blob }) =>
+          references.map((ref) => ({
+            blobHash: blob.versionedHash,
+            blobStorage: ref.storage,
+            dataReference: ref.reference,
+          }))
+      );
 
       // 2. Prepare address, block, transaction and blob insertions
 
@@ -154,7 +163,6 @@ export const indexerRouter = createTRPCRouter({
         size: calculateBlobSize(blob.data),
         firstBlockNumber: input.block.number,
       }));
-      const dbBlobStorageRefs = blobStorageRefs;
 
       operations.push(
         prisma.block.upsert({
@@ -175,9 +183,13 @@ export const indexerRouter = createTRPCRouter({
       );
       operations.push(prisma.transaction.upsertMany(dbTxs));
       operations.push(prisma.blob.upsertMany(dbBlobs));
-      operations.push(
-        prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
-      );
+
+      if (dbBlobStorageRefs.length) {
+        operations.push(
+          prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
+        );
+      }
+
       operations.push(
         prisma.blobsOnTransactions.createMany({
           data: input.blobs.map((blob) => ({

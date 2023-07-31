@@ -23,6 +23,11 @@ export type BlobReference<
   storage: StorageName;
 };
 
+export type StorageError<SName extends BlobStorageNames = BlobStorageNames> = {
+  storage: SName;
+  error: Error;
+};
+
 type Blob = {
   data: string;
   versionedHash: string;
@@ -66,10 +71,10 @@ export class BlobStorageManager<
     );
   }
 
-  async storeBlob({
-    data,
-    versionedHash,
-  }: Blob): Promise<BlobReference<SNames>[]> {
+  async storeBlob({ data, versionedHash }: Blob): Promise<{
+    references: BlobReference<SNames>[];
+    errors: StorageError<SNames>[];
+  }> {
     const availableStorages = Object.entries(this.#blobStorages).filter(
       ([, storage]) => storage
     ) as [SNames, BlobStorage][];
@@ -90,29 +95,27 @@ export class BlobStorageManager<
     const failedUploads = results.filter(
       (res) => res.status === "rejected"
     ) as PromiseRejectedResult[];
-    const storageErrors = failedUploads.map((res, i) => {
+    const storageErrors = failedUploads.map<StorageError<SNames>>((res, i) => {
       const storage = availableStorages[i] as [SNames, BlobStorage];
       const storageName = storage[0];
 
-      return `-${storageName}: ${res.reason}`;
+      return {
+        storage: storageName,
+        error: res.reason,
+      };
     });
 
     if (!successfulUploads.length) {
       throw new Error(
-        `Failed to upload blob to any of the storages :\n${storageErrors.join(
+        `Failed to upload blob ${versionedHash} to any of the storages :\n${storageErrors.join(
           "\n"
         )}`
       );
     }
 
-    if (failedUploads.length) {
-      console.warn(
-        `Couldn't upload blob to some of the storages :\n ${storageErrors.join(
-          "\n"
-        )}`
-      );
-    }
-
-    return successfulUploads.map((res) => res.value);
+    return {
+      references: successfulUploads.map((res) => res.value),
+      errors: storageErrors,
+    };
   }
 }
