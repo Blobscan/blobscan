@@ -1,11 +1,11 @@
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { Resource } from "@opentelemetry/resources";
-import {
-  PeriodicExportingMetricReader,
-  ConsoleMetricExporter,
-} from "@opentelemetry/sdk-metrics";
+// import {
+//   PeriodicExportingMetricReader,
+//   ConsoleMetricExporter,
+// } from "@opentelemetry/sdk-metrics";
 import { NodeSDK } from "@opentelemetry/sdk-node";
-import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
+// import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-node";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { ExpressInstrumentation } from "opentelemetry-instrumentation-express";
 
@@ -14,10 +14,10 @@ const sdk = new NodeSDK({
     [SemanticResourceAttributes.SERVICE_NAME]: "blobscan-rest-api",
     [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV,
   }),
-  traceExporter: new ConsoleSpanExporter(),
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new ConsoleMetricExporter(),
-  }),
+  // traceExporter: new ConsoleSpanExporter(),
+  // metricReader: new PeriodicExportingMetricReader({
+  //   exporter: new ConsoleMetricExporter(),
+  // }),
   instrumentations: [new HttpInstrumentation(), new ExpressInstrumentation()],
 });
 
