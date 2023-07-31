@@ -17,6 +17,7 @@
     "@blobscan/dayjs": "^0.0.1",
     "@blobscan/db": "^0.0.1",
     "@blobscan/tailwind-config": "^0.0.1",
+    "@blobscan/zod": "^0.0.1",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",
     "@headlessui/react": "^1.7.13",
@@ -39,8 +40,7 @@
     "react-blockies": "^1.4.1",
     "react-dom": "18.2.0",
     "react-loading-skeleton": "^3.3.1",
-    "superjson": "1.9.1",
-    "zod": "^3.21.4"
+    "superjson": "1.9.1"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",

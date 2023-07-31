@@ -1,24 +1,14 @@
 import z from "zod";
 
-export const env = z
-  .object({
-    BLOBSCAN_API_PORT: z
-      .string()
-      .min(1)
-      .default("3001")
-      .transform((value, ctx) => {
-        const port = parseInt(value, 10);
+import { createEnvSchema } from "@blobscan/zod";
 
-        if (isNaN(port) || port <= 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "BLOBSCAN_API_PORT must be a number greater than 0",
-          });
+const envSchema = createEnvSchema({
+  BLOBSCAN_API_PORT: {
+    schema: z.coerce.number().int().positive(),
+    default: 3001,
+  },
+});
 
-          return z.NEVER;
-        }
+export const env = envSchema.parse(process.env);
 
-        return port;
-      }),
-  })
-  .parse(process.env);
+export type Environment = z.infer<typeof envSchema>;

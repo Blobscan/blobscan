@@ -1,14 +1,22 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+import { optionalStringSchema } from "@blobscan/zod";
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app isn't
    * built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
-    BEACON_NODE_ENDPOINT: z.string().url().default("http://localhost:3500"),
+    DATABASE_URL: optionalStringSchema(
+      z.string().url(),
+      "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+    ),
+    BEACON_NODE_ENDPOINT: optionalStringSchema(
+      z.string().url(),
+      "http://localhost:3500"
+    ),
     NODE_ENV: z.enum(["development", "test", "production"]),
   },
   /**
@@ -16,8 +24,14 @@ export const env = createEnv({
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_EXPLORER_BASE_URL: z.string().url(),
-    NEXT_PUBLIC_BEACON_BASE_URL: z.string().url(),
+    NEXT_PUBLIC_EXPLORER_BASE_URL: optionalStringSchema(
+      z.string().url(),
+      "https://explorer.4844-devnet-7.ethpandaops.io/"
+    ),
+    NEXT_PUBLIC_BEACON_BASE_URL: optionalStringSchema(
+      z.string().url(),
+      "http://134.209.87.158:8080/"
+    ),
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.

@@ -15,10 +15,10 @@
     "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/dayjs": "^0.0.1",
     "@blobscan/db": "^0.0.1",
+    "@blobscan/zod": "^0.0.1",
     "@trpc/server": "^10.23.0",
     "jsonwebtoken": "^9.0.0",
-    "superjson": "1.9.1",
-    "zod": "^3.21.4"
+    "superjson": "1.9.1"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
