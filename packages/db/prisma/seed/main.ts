@@ -55,7 +55,7 @@ async function main() {
             versionedHash: blob.versionedHash,
           })
           .then((refs) =>
-            refs.map((r) => ({
+            refs.references.map((r) => ({
               blobHash: blob.versionedHash,
               blobStorage: r.storage,
               dataReference: r.reference,
