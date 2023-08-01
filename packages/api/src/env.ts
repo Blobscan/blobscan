@@ -1,9 +1,9 @@
-import type { z } from "zod";
+import { z } from "zod";
 
 import { createEnvSchema } from "@blobscan/zod";
 
 const envSchema = createEnvSchema({
-  SECRET_KEY: { default: "supersecret" },
+  SECRET_KEY: { schema: z.string() },
 });
 
 export const env = envSchema.parse(process.env);

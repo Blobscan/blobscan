@@ -17,7 +17,7 @@ const envSchema = createEnvSchema({
     optional: true,
   },
   GOOGLE_STORAGE_ENABLED: { schema: booleanSchema(), default: false },
-  POSTGRES_STORAGE_ENABLED: { schema: booleanSchema(), default: false },
+  POSTGRES_STORAGE_ENABLED: { schema: booleanSchema(), default: true },
   SWARM_STORAGE_ENABLED: { schema: booleanSchema(), default: false },
 });
 
