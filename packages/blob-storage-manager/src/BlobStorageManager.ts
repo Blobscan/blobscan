@@ -59,16 +59,34 @@ export class BlobStorageManager<
     const availableReferences = blobReferences.filter(
       ({ storage }) => this.#blobStorages[storage]
     );
-    return Promise.any(
-      availableReferences.map(({ reference, storage: storageName }) =>
-        (this.#blobStorages[storageName] as BlobStorage)
-          .getBlob(reference)
-          .then((data) => ({
-            data,
-            storage: storageName,
-          }))
-      )
-    );
+
+    try {
+      const blob = await Promise.any(
+        availableReferences.map(({ reference, storage: storageName }) =>
+          (this.#blobStorages[storageName] as BlobStorage)
+            .getBlob(reference)
+            .then((data) => ({
+              data,
+              storage: storageName,
+            }))
+        )
+      );
+
+      return blob;
+    } catch (e) {
+      const errorMessage = "Failed to get blob from any of the storages";
+
+      if (e instanceof AggregateError) {
+        const storageErrors = e.errors.map((err, i) => {
+          const storageName = availableReferences[i]?.storage ?? "Unknown";
+
+          return `-${storageName}: ${err}`;
+        });
+        throw new Error(`${errorMessage}:\n${storageErrors.join("\n")}`);
+      }
+
+      throw new Error(`${errorMessage}: ${e}}`);
+    }
   }
 
   async storeBlob({ data, versionedHash }: Blob): Promise<{

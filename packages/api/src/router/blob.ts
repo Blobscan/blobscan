@@ -50,7 +50,19 @@ export const blobRouter = createTRPCRouter({
           reference: dataReference,
         })
       );
-      const blobData = await blobStorageManager.getBlob(...blobReferences);
+
+      let blobData: Awaited<ReturnType<typeof blobStorageManager.getBlob>>;
+
+      try {
+        blobData = await blobStorageManager.getBlob(...blobReferences);
+      } catch (err) {
+        const err_ = err as Error;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: err_.message,
+          cause: err_,
+        });
+      }
 
       if (!blobData) {
         const uris = blobReferences
