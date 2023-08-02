@@ -37,7 +37,7 @@ export class SwarmStorage extends BlobStorage {
       healthCheckOps.push(
         this.#swarmClient.beeDebug.getHealth().then((health) => {
           if (health.status !== "ok") {
-            throw new Error(`Bee debug is not healthy: ${health.status}`);
+            throw new Error(`Bee debug endpoint is not healthy: ${health.status}`);
           }
         })
       );
