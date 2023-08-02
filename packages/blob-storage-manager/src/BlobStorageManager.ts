@@ -78,11 +78,16 @@ export class BlobStorageManager<
 
       if (e instanceof AggregateError) {
         const storageErrors = e.errors.map((err, i) => {
+          /**
+           * Aggregate errors are thrown when all the promises fail
+           * so we can access the reference by index without worrying about having the
+           * wrong storage name
+           */
           const storageName = availableReferences[i]?.storage ?? "Unknown";
 
-          return `-${storageName}: ${err}`;
+          return `${storageName} - ${err}`;
         });
-        throw new Error(`${errorMessage}:\n${storageErrors.join("\n")}`);
+        throw new Error(`${errorMessage}: ${storageErrors.join(",")}`);
       }
 
       throw new Error(`${errorMessage}: ${e}}`);
@@ -98,42 +103,52 @@ export class BlobStorageManager<
     ) as [SNames, BlobStorage][];
     const results = await Promise.allSettled(
       availableStorages.map(([name, storage]) =>
-        storage.storeBlob(this.chainId, versionedHash, data).then(
-          (reference): BlobReference<SNames> => ({
+        storage
+          .storeBlob(this.chainId, versionedHash, data)
+          .then<BlobReference<SNames>>((reference) => ({
             reference,
             storage: name,
-          })
-        )
+          }))
       )
     );
 
-    const successfulUploads = results.filter(
-      (res) => res.status === "fulfilled"
-    ) as PromiseFulfilledResult<BlobReference<SNames>>[];
-    const failedUploads = results.filter(
-      (res) => res.status === "rejected"
-    ) as PromiseRejectedResult[];
-    const storageErrors = failedUploads.map<StorageError<SNames>>((res, i) => {
-      const storage = availableStorages[i] as [SNames, BlobStorage];
-      const storageName = storage[0];
+    const references = results
+      .filter(
+        (res): res is PromiseFulfilledResult<BlobReference<SNames>> =>
+          res.status === "fulfilled"
+      )
+      .map((res) => res.value);
+    const errors = results.reduce<StorageError<SNames>[]>(
+      (prevFailedUploads, res, i) => {
+        const storage = availableStorages[i] as [SNames, BlobStorage];
 
-      return {
-        storage: storageName,
-        error: res.reason,
-      };
-    });
+        if (res.status === "rejected") {
+          const storageError = {
+            error: res.reason,
+            storage: storage[0],
+          };
+          return [...prevFailedUploads, storageError];
+        }
 
-    if (!successfulUploads.length) {
+        return prevFailedUploads;
+      },
+      []
+    );
+    const storageErrorMsgs = errors.map(
+      (storageError) => `${storageError.storage}: ${storageError.error}`
+    );
+
+    if (!references.length) {
       throw new Error(
-        `Failed to upload blob ${versionedHash} to any of the storages :\n${storageErrors.join(
-          "\n"
+        `Failed to upload blob ${versionedHash} to any of the storages: ${storageErrorMsgs.join(
+          ", "
         )}`
       );
     }
 
     return {
-      references: successfulUploads.map((res) => res.value),
-      errors: storageErrors,
+      references,
+      errors,
     };
   }
 }

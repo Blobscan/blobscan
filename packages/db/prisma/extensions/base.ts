@@ -112,6 +112,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               },
             })
           ).map((b) => b.versionedHash);
+          // Remove duplicates and blobs that already exist in the DB
           const newBlobVersionedHashes = Array.from(
             new Set(blobs.map((b) => b.versionedHash))
           ).filter((hash) => !dbBlobVersionedHashes.includes(hash));

@@ -119,12 +119,12 @@ export const indexerRouter = createTRPCRouter({
 
       blobUploadResults.forEach(({ uploadRes: { errors }, blob }) => {
         if (errors.length) {
-          const errorMsgs = errors
-            .map((e) => `-${e.storage}: ${e.error}`)
-            .join("\n");
+          const errorMsgs = errors.map((e) => `${e.storage}: ${e.error}`);
 
           console.warn(
-            `Couldn't upload blob ${blob.versionedHash} to some of the storages:\n${errorMsgs}`
+            `Couldn't upload blob ${
+              blob.versionedHash
+            } to some of the storages: ${errorMsgs.join(", ")}`
           );
         }
       });

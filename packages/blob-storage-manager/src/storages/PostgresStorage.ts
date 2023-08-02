@@ -30,7 +30,7 @@ export class PostgresStorage extends BlobStorage {
       .then(({ data }) => `0x${data.toString("hex")}`);
   }
 
-  storeBlob(
+  async storeBlob(
     _: number,
     versionedHash: string,
     blobData: string

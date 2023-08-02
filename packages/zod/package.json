@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/zod",
-  "description": "Blobscan's augmented zod library",
+  "description": "Blobscan's extended zod library",
   "private": true,
   "version": "0.0.1",
   "main": "./src/index.ts",
