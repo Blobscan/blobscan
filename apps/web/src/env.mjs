@@ -1,6 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+import { optionalStringSchema } from "@blobscan/zod";
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app isn't
@@ -8,7 +10,10 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    BEACON_NODE_ENDPOINT: z.string().url().default("http://localhost:3500"),
+    BEACON_NODE_ENDPOINT: optionalStringSchema(
+      z.string().url(),
+      "http://localhost:5052"
+    ),
     NODE_ENV: z.enum(["development", "test", "production"]),
   },
   /**

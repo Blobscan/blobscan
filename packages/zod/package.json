@@ -1,0 +1,19 @@
+{
+  "name": "@blobscan/zod",
+  "description": "Blobscan's extended zod library",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "zod": "^3.21.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  }
+}

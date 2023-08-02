@@ -27,19 +27,28 @@ export class PostgresStorage extends BlobStorage {
           id: versionedHash,
         },
       })
-      .then(({ data }) => data.toString("hex"));
+      .then(({ data }) => `0x${data.toString("hex")}`);
   }
 
-  storeBlob(
-    chainId: number,
+  async storeBlob(
+    _: number,
     versionedHash: string,
     blobData: string
   ): Promise<string> {
+    const data = Buffer.from(blobData.slice(2), "hex");
+    const id = versionedHash;
+
     return this.client.blobData
-      .create({
-        data: {
-          data: Buffer.from(blobData, "hex"),
-          id: versionedHash,
+      .upsert({
+        create: {
+          data,
+          id,
+        },
+        update: {
+          data,
+        },
+        where: {
+          id,
         },
       })
       .then(() => versionedHash);
