@@ -86,7 +86,7 @@ export class SwarmStorage extends BlobStorage {
       return;
     }
 
-    if (!env.BEE_ENDPOINT) {
+    if (!env.BEE_ENDPOINT && !env.BEE_DEBUG_ENDPOINT) {
       console.warn("Swarm storage enabled but no bee endpoint was provided");
       return;
     }
