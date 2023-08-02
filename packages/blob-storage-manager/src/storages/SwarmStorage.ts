@@ -5,12 +5,12 @@ import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
 interface SwarmStorageConfig extends BlobStorageConfig {
-  beeEndpoint: string;
-  beeDebugEndpoint?: string;
+  beeEndpoint: string | undefined;
+  beeDebugEndpoint?: string | undefined;
 }
 
 type SwarmClient = {
-  bee: Bee;
+  bee?: Bee;
   beeDebug?: BeeDebug;
 };
 
@@ -21,7 +21,7 @@ export class SwarmStorage extends BlobStorage {
     super();
 
     this.#swarmClient = {
-      bee: new Bee(beeEndpoint),
+      bee: beeEndpoint ? new Bee(beeEndpoint) : undefined,
       beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
     };
   }
@@ -29,7 +29,9 @@ export class SwarmStorage extends BlobStorage {
   async healthCheck(): Promise<void> {
     const healthCheckOps = [];
 
-    healthCheckOps.push(this.#swarmClient.bee.checkConnection());
+    if (this.#swarmClient.bee) {
+      healthCheckOps.push(this.#swarmClient.bee.checkConnection());
+    }
 
     if (this.#swarmClient.beeDebug) {
       healthCheckOps.push(
@@ -45,6 +47,9 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async getBlob(reference: string): Promise<string> {
+    if (!this.#swarmClient.bee) {
+      throw new Error("Bee endpoint required to get blobs");
+    }
     return (await this.#swarmClient.bee.downloadData(reference)).toString();
   }
 
@@ -54,6 +59,9 @@ export class SwarmStorage extends BlobStorage {
     data: string
   ): Promise<string> {
     const batchId = await this.#getAvailableBatch();
+    if (!this.#swarmClient.bee) {
+      throw new Error("Bee endpoint required to upload blobs");
+    }
     const response = await this.#swarmClient.bee.uploadFile(
       batchId,
       data,
