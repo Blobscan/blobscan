@@ -77,31 +77,40 @@ export function chainIdSchema() {
     });
 }
 
-export type EnvSpec = Record<
-  string,
-  { default?: unknown; optional?: boolean; schema?: z.ZodType }
->;
+type EnvVarSpec<S extends z.ZodTypeAny = z.ZodTypeAny> = {
+  default?: unknown;
+  optional?: boolean;
+  schema?: S;
+};
 
-export function createEnvSchema(envSpec: EnvSpec) {
-  const envObj = Object.keys(envSpec).reduce<Record<string, z.ZodType>>(
-    (obj, key) => {
-      const {
-        default: defaultValue,
-        optional = false,
-        schema = z.string().trim(),
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      } = envSpec[key]!;
+type EnvSpec<T extends Record<string, EnvVarSpec>> = {
+  [K in keyof T]?: T[K];
+};
 
-      return {
-        ...obj,
-        [key]:
-          optional || !isUndefined(defaultValue)
-            ? optionalStringSchema(schema, defaultValue)
-            : schema,
-      };
-    },
-    {}
+export function createEnvSchema<T extends Record<string, EnvVarSpec>>(
+  envSpec: EnvSpec<T>
+) {
+  const envObj = Object.keys(envSpec).reduce((obj, key) => {
+    const {
+      default: defaultValue,
+      optional = false,
+      schema = z.string().trim(),
+    } = envSpec[key] ?? {};
+
+    return {
+      ...obj,
+      [key]:
+        optional || !isUndefined(defaultValue)
+          ? optionalStringSchema(schema, defaultValue)
+          : schema,
+    };
+  }, {} as { [K in keyof T]: T[K]["schema"] extends z.ZodTypeAny ? T[K]["schema"] : z.ZodString });
+
+  return z.object(
+    envObj as {
+      [K in keyof T]: T[K]["schema"] extends z.ZodTypeAny
+        ? T[K]["schema"]
+        : z.ZodString;
+    }
   );
-
-  return z.object(envObj);
 }
