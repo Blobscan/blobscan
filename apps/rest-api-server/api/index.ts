@@ -7,22 +7,27 @@ import { createOpenApiExpressMiddleware } from "trpc-openapi";
 import { appRouter, createTRPCContext } from "@blobscan/api";
 
 import { env } from "./env";
+import { logger } from "./logger";
+import { morganMiddleware } from "./middlewares/morgan";
 import { openApiDocument } from "./openapi";
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
+app.use(morganMiddleware);
 
 // Handle incoming OpenAPI requests
 app.use(
   "/api",
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   createOpenApiExpressMiddleware({
     router: appRouter,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     createContext: createTRPCContext,
+    onError({ error, ctx }) {
+      if (error.code === "INTERNAL_SERVER_ERROR") {
+        logger.error(error);
+      }
+    },
   })
 );
 
