@@ -7,7 +7,8 @@ import { logger } from "../logger";
 // Override the stream method by telling
 // Morgan to use our custom logger instead of the console.log.
 const stream: StreamOptions = {
-  write: (message) => logger.http(message),
+  write: (message) =>
+    logger.http(message.substring(0, message.lastIndexOf("\n"))),
 };
 
 const skip = () => {
