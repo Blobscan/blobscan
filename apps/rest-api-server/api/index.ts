@@ -20,10 +20,11 @@ app.use(morganMiddleware);
 // Handle incoming OpenAPI requests
 app.use(
   "/api",
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   createOpenApiExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext,
-    onError({ error, ctx }) {
+    onError({ error }) {
       if (error.code === "INTERNAL_SERVER_ERROR") {
         logger.error(error);
       }
@@ -36,7 +37,7 @@ app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(openApiDocument));
 
 app.listen(env.BLOBSCAN_API_PORT, () => {
-  console.log(
+  logger.info(
     `REST API server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`
   );
 });
