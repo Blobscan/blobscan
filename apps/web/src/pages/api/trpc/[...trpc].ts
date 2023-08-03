@@ -6,4 +6,9 @@ import { appRouter, createTRPCContext } from "@blobscan/api";
 export default createNextApiHandler({
   router: appRouter,
   createContext: createTRPCContext,
+  onError({ error }) {
+    if (error.code === "INTERNAL_SERVER_ERROR") {
+      console.error(error);
+    }
+  },
 });
