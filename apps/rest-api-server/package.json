@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "git clean -xdf node_modules",
     "dev": "pnpm run init:bucket && pnpm with-env ts-node-dev --require ./api/telemetry.ts --respawn --transpile-only --exit-child ./api/index.ts",
-    "start": "pnpm with-env ts-node api/index.ts",
+    "start": "pnpm with-env ts-node --require ./api/telemetry.ts api/index.ts",
     "with-env": "dotenv -e ../../.env --",
     "init:bucket": "pnpm with-env ts-node ../../scripts/init-bucket.ts",
     "type-check": "tsc --noEmit"
@@ -16,9 +16,9 @@
     "@blobscan/api": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
     "@opentelemetry/api": "^1.4.1",
-    "@opentelemetry/instrumentation-http": "^0.41.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.38.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.41.1",
     "@opentelemetry/resources": "^1.15.1",
-    "@opentelemetry/sdk-metrics": "^1.15.1",
     "@opentelemetry/sdk-node": "^0.41.1",
     "@opentelemetry/sdk-trace-node": "^1.15.1",
     "@opentelemetry/semantic-conventions": "^1.15.1",
@@ -26,7 +26,6 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
-    "opentelemetry-instrumentation-express": "^0.39.1",
     "prom-client": "^14.2.0",
     "swagger-ui-express": "^4.6.2",
     "trpc-openapi": "^1.1.2",
