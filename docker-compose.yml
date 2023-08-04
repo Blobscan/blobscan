@@ -15,6 +15,7 @@ services:
       GOOGLE_STORAGE_API_ENDPOINT: http://localhost:4443
       DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
       SECRET_KEY: supersecret
+      NEXT_PUBLIC_CHAIN_NAME: 4844-devnet-7
       NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/
       NEXT_PUBLIC_EXPLORER_BASE_URL: https://explorer.4844-devnet-7.ethpandaops.io/
       METRICS_ENABLED: true
@@ -46,7 +47,7 @@ services:
     restart: always
     environment:
       SECRET_KEY: supersecret
-      BLOBSCAN_API_ENDPOINT: http://localhost:23001
+      BLOBSCAN_API_ENDPOINT: http://localhost:3001
       BEACON_NODE_ENDPOINT: http://localhost:5052
       EXECUTION_NODE_ENDPOINT: http://localhost:8545
       RUST_LOG: "${RUST_LOG}"
@@ -72,6 +73,12 @@ services:
       - POSTGRES_USER=blobscan
       - POSTGRES_DB=blobscan_dev
       - POSTGRES_PASSWORD=s3cr3t
+
+  collector:
+    image: otel/opentelemetry-collector:0.23.0
+    command: "--config /etc/otel-config.yaml"
+    volumes:
+      - ./otel-config.yaml:/etc/otel-config.yaml
 
 volumes:
   postgres-data:

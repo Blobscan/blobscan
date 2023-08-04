@@ -1,3 +1,4 @@
+import { env } from "~/env.mjs";
 import { Logo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
@@ -6,21 +7,35 @@ import { TopBarSurface } from "./TopBarSurface";
 
 export const DesktopNav: React.FC = () => {
   return (
-    <TopBarSurface>
-      <div className="flex h-full justify-between">
-        <div className="flex grow  items-end gap-12">
-          <Logo className="h-8 w-32 sm:h-9 sm:w-36" />
+    <div>
+      <TopBarSurface>
+        <div className="mx-1 flex h-4 gap-4 align-middle text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
+          {env.NEXT_PUBLIC_CHAIN_NAME && (
+            <div>
+              <span>Network: </span>
+              <span className="font-semibold">
+                {env.NEXT_PUBLIC_CHAIN_NAME}
+              </span>
+            </div>
+          )}
         </div>
-        <div className="flex grow-[3] justify-end gap-5">
-          <div className="self-end">
-            <NavMenusSection />
+      </TopBarSurface>
+      <TopBarSurface>
+        <div className="flex h-full justify-between">
+          <div className="flex grow  items-end gap-12">
+            <Logo className="h-8 w-32 sm:h-9 sm:w-36" />
           </div>
-          <div className="w-full sm:max-w-xl">
-            <SearchInput />
+          <div className="flex grow-[3] justify-end gap-5">
+            <div className="self-end">
+              <NavMenusSection />
+            </div>
+            <div className="w-full sm:max-w-xl">
+              <SearchInput />
+            </div>
+            <ThemeModeButton />
           </div>
-          <ThemeModeButton />
         </div>
-      </div>
-    </TopBarSurface>
+      </TopBarSurface>
+    </div>
   );
 };
