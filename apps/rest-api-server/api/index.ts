@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
+import { collectDefaultMetrics, register } from "prom-client";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
@@ -11,11 +12,23 @@ import { logger } from "./logger";
 import { morganMiddleware } from "./middlewares/morgan";
 import { openApiDocument } from "./openapi";
 
+collectDefaultMetrics();
+
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
 app.use(morganMiddleware);
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.get("/metrics", async (_req, res) => {
+  try {
+    res.set("Content-Type", register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
 
 // Handle incoming OpenAPI requests
 app.use(
