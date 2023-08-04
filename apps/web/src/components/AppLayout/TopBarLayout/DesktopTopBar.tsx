@@ -1,3 +1,4 @@
+import { api } from "~/api-client";
 import { env } from "~/env.mjs";
 import { Logo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
@@ -6,10 +7,12 @@ import { NavMenusSection } from "./NavMenusSection";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const DesktopNav: React.FC = () => {
+  const { data: syncStateData, error } = api.syncState.getSyncState.useQuery();
+
   return (
     <div>
       <TopBarSurface>
-        <div className="mx-1 flex h-4 gap-4 align-middle text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
+        <div className="mx-1 flex h-4 gap-4 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
           {env.NEXT_PUBLIC_CHAIN_NAME && (
             <div>
               <span>Network: </span>
@@ -18,6 +21,13 @@ export const DesktopNav: React.FC = () => {
               </span>
             </div>
           )}
+          ･
+          <div>
+            <span>Last Synced Slot: </span>
+            {syncStateData && (
+              <span className="font-semibold">{syncStateData.lastSlot}</span>
+            )}
+          </div>
         </div>
       </TopBarSurface>
       <TopBarSurface>
