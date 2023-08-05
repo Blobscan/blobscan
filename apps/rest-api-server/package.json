@@ -6,6 +6,7 @@
     "clean": "git clean -xdf node_modules",
     "dev": "pnpm run init:bucket && pnpm with-env ts-node-dev --require ./api/telemetry.ts --respawn --transpile-only --exit-child ./api/index.ts",
     "start": "pnpm with-env ts-node --require ./api/telemetry.ts api/index.ts",
+    "profile": "pnpm with-env node -r ts-node/register --prof --require ./api/telemetry.ts api/index.ts",
     "with-env": "dotenv -e ../../.env --",
     "init:bucket": "pnpm with-env ts-node ../../scripts/init-bucket.ts",
     "type-check": "tsc --noEmit"
