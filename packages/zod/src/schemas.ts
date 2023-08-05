@@ -83,14 +83,18 @@ type EnvVarSpec<S extends z.ZodTypeAny = z.ZodTypeAny> = {
   schema?: S;
 };
 
-type EnvSpec<T extends Record<string, EnvVarSpec>> = {
-  [K in keyof T]?: T[K];
+type EnvSpec = Record<string, EnvVarSpec>;
+
+type EnvSchema<T extends EnvSpec> = {
+  [K in keyof T]: T[K]["schema"] extends z.ZodTypeAny
+    ? T[K]["optional"] extends true
+      ? z.ZodOptional<T[K]["schema"]>
+      : T[K]["schema"]
+    : z.ZodString;
 };
 
-export function createEnvSchema<T extends Record<string, EnvVarSpec>>(
-  envSpec: EnvSpec<T>
-) {
-  const envObj = Object.keys(envSpec).reduce((obj, key) => {
+export function createEnvSchema<T extends EnvSpec>(envSpec: T) {
+  const envObj = Object.keys(envSpec).reduce<EnvSchema<T>>((obj, key) => {
     const {
       default: defaultValue,
       optional = false,
@@ -104,13 +108,7 @@ export function createEnvSchema<T extends Record<string, EnvVarSpec>>(
           ? optionalStringSchema(schema, defaultValue)
           : schema,
     };
-  }, {} as { [K in keyof T]: T[K]["schema"] extends z.ZodTypeAny ? T[K]["schema"] : z.ZodString });
+  }, {} as EnvSchema<T>);
 
-  return z.object(
-    envObj as {
-      [K in keyof T]: T[K]["schema"] extends z.ZodTypeAny
-        ? T[K]["schema"]
-        : z.ZodString;
-    }
-  );
+  return z.object(envObj);
 }
