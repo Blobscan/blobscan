@@ -23,6 +23,10 @@ const envSchema = createEnvSchema({
     schema: z.string(),
     optional: true,
   },
+  NODE_ENV: {
+    schema: z.enum(["development", "test", "production"]),
+    optional: true,
+  },
 });
 
 export const env = envSchema.parse(process.env);

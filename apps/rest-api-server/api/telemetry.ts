@@ -1,13 +1,14 @@
-import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
-import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
-import { Resource } from "@opentelemetry/resources";
-import { NodeSDK } from "@opentelemetry/sdk-node";
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
+import { NodeSDK, resources, api, metrics } from "@opentelemetry/sdk-node";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
 import { env } from "./env";
 
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);
 
 const exporterOptions: { headers?: Record<string, string> } = {};
 
@@ -25,12 +26,20 @@ if (env.GRAFANA_INSTANCE_ID && env.GRAFANA_TOKEN) {
 }
 
 const sdk = new NodeSDK({
-  resource: new Resource({
+  resource: new resources.Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: "blobscan_rest_api",
-    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV,
+    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: env.NODE_ENV,
   }),
+  metricReader: new metrics.PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter(exporterOptions),
+  }),
+
   traceExporter: new OTLPTraceExporter(exporterOptions),
-  instrumentations: [getNodeAutoInstrumentations()],
+  instrumentations: [
+    new HttpInstrumentation(),
+    new ExpressInstrumentation(),
+    new WinstonInstrumentation(),
+  ],
 });
 
 sdk.start();
