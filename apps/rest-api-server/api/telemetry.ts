@@ -1,8 +1,10 @@
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
-import { setUpOpenTelemetry } from "@blobscan/open-telemetry";
+import {
+  SemanticResourceAttributes,
+  setUpOpenTelemetry,
+} from "@blobscan/open-telemetry";
 
 setUpOpenTelemetry(
   {
