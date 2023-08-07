@@ -1,8 +1,10 @@
 import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
+import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
 import type { PostgresStorage, SwarmStorage } from "./storages";
 import type { GoogleStorage } from "./storages";
+import { tracer } from "./telemetry";
 
 export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? GoogleStorage
@@ -32,7 +34,6 @@ type Blob = {
   data: string;
   versionedHash: string;
 };
-
 export class BlobStorageManager<
   SNames extends BlobStorageNames = BlobStorageNames,
   T extends BlobStorages<SNames> = BlobStorages<SNames>
@@ -56,99 +57,167 @@ export class BlobStorageManager<
   async getBlob(
     ...blobReferences: BlobReference<SNames>[]
   ): Promise<{ data: string; storage: SNames } | null> {
-    const availableReferences = blobReferences.filter(
-      ({ storage }) => this.#blobStorages[storage]
-    );
+    return tracer.startActiveSpan(
+      "blob_storage_manager",
+      {
+        attributes: {
+          [SemanticAttributes.CODE_FUNCTION]: "getBlob",
+        },
+      },
+      async (span) => {
+        const availableReferences = blobReferences.filter(
+          ({ storage }) => this.#blobStorages[storage]
+        );
 
-    try {
-      const blob = await Promise.any(
-        availableReferences.map(({ reference, storage: storageName }) =>
-          (this.#blobStorages[storageName] as BlobStorage)
-            .getBlob(reference)
-            .then((data) => ({
-              data,
-              storage: storageName,
-            }))
-        )
-      );
+        try {
+          const blob = await Promise.any(
+            availableReferences.map(({ reference, storage: storageName }) =>
+              tracer.startActiveSpan(
+                "blob_storage_manager:storage",
+                {
+                  attributes: {
+                    storage: storageName,
+                    [SemanticAttributes.CODE_FUNCTION]: "getBlob",
+                  },
+                },
+                async (storageSpan) => {
+                  const result = await (
+                    this.#blobStorages[storageName] as BlobStorage
+                  )
+                    .getBlob(reference)
+                    .then((data) => ({
+                      data,
+                      storage: storageName,
+                    }));
 
-      return blob;
-    } catch (e) {
-      const errorMessage = "Failed to get blob from any of the storages";
+                  storageSpan.end();
 
-      if (e instanceof AggregateError) {
-        const storageErrors = e.errors.map((err, i) => {
-          /**
-           * Aggregate errors are thrown when all the promises fail
-           * so we can access the reference by index without worrying about having the
-           * wrong storage name
-           */
-          const storageName = availableReferences[i]?.storage ?? "Unknown";
+                  return result;
+                }
+              )
+            )
+          );
 
-          return `${storageName} - ${err}`;
-        });
-        throw new Error(`${errorMessage}: ${storageErrors.join(",")}`);
+          span.end();
+
+          return blob;
+        } catch (e) {
+          const errorMessage = "Failed to get blob from any of the storages";
+
+          if (e instanceof AggregateError) {
+            const storageErrors = e.errors.map((err, i) => {
+              /**
+               * Aggregate errors are thrown when all the promises fail
+               * so we can access the reference by index without worrying about having the
+               * wrong storage name
+               */
+              const storageName = availableReferences[i]?.storage ?? "Unknown";
+
+              return `${storageName} - ${err}`;
+            });
+
+            throw new Error(`${errorMessage}: ${storageErrors.join(",")}`);
+          }
+
+          const err = new Error(`${errorMessage}: ${e}`);
+
+          span.setStatus({ code: api.SpanStatusCode.ERROR });
+          span.recordException(err);
+
+          throw err;
+        } finally {
+          span.end();
+        }
       }
-
-      throw new Error(`${errorMessage}: ${e}}`);
-    }
+    );
   }
 
   async storeBlob({ data, versionedHash }: Blob): Promise<{
     references: BlobReference<SNames>[];
     errors: StorageError<SNames>[];
   }> {
-    const availableStorages = Object.entries(this.#blobStorages).filter(
-      ([, storage]) => storage
-    ) as [SNames, BlobStorage][];
-    const results = await Promise.allSettled(
-      availableStorages.map(([name, storage]) =>
-        storage
-          .storeBlob(this.chainId, versionedHash, data)
-          .then<BlobReference<SNames>>((reference) => ({
-            reference,
-            storage: name,
-          }))
-      )
-    );
+    return tracer.startActiveSpan(
+      "blob_storage_manager",
+      {
+        attributes: {
+          [SemanticAttributes.CODE_FUNCTION]: "storeBlob",
+        },
+      },
+      async (span) => {
+        const availableStorages = Object.entries(this.#blobStorages).filter(
+          ([, storage]) => storage
+        ) as [SNames, BlobStorage][];
+        const results = await Promise.allSettled(
+          availableStorages.map(([name, storage]) => {
+            return tracer.startActiveSpan(
+              "blob_storage_manager:storage",
+              {
+                attributes: {
+                  storage: name,
+                  [SemanticAttributes.CODE_FUNCTION]: "storeBlob",
+                },
+              },
+              async (storageSpan) => {
+                const result = await storage
+                  .storeBlob(this.chainId, versionedHash, data)
+                  .then<BlobReference<SNames>>((reference) => ({
+                    reference,
+                    storage: name,
+                  }));
 
-    const references = results
-      .filter(
-        (res): res is PromiseFulfilledResult<BlobReference<SNames>> =>
-          res.status === "fulfilled"
-      )
-      .map((res) => res.value);
-    const errors = results.reduce<StorageError<SNames>[]>(
-      (prevFailedUploads, res, i) => {
-        const storage = availableStorages[i] as [SNames, BlobStorage];
+                storageSpan.end();
 
-        if (res.status === "rejected") {
-          const storageError = {
-            error: res.reason,
-            storage: storage[0],
-          };
-          return [...prevFailedUploads, storageError];
+                return result;
+              }
+            );
+          })
+        );
+
+        const references = results
+          .filter(
+            (res): res is PromiseFulfilledResult<BlobReference<SNames>> =>
+              res.status === "fulfilled"
+          )
+          .map((res) => res.value);
+        const errors = results.reduce<StorageError<SNames>[]>(
+          (prevFailedUploads, res, i) => {
+            const storage = availableStorages[i] as [SNames, BlobStorage];
+
+            if (res.status === "rejected") {
+              const storageError = {
+                error: res.reason,
+                storage: storage[0],
+              };
+              return [...prevFailedUploads, storageError];
+            }
+
+            return prevFailedUploads;
+          },
+          []
+        );
+        const storageErrorMsgs = errors.map(
+          (storageError) => `${storageError.storage}: ${storageError.error}`
+        );
+
+        if (!references.length) {
+          const err = new Error(
+            `Failed to upload blob ${versionedHash} to any of the storages: ${storageErrorMsgs.join(
+              ", "
+            )}`
+          );
+
+          span.setStatus({ code: api.SpanStatusCode.ERROR });
+          span.recordException(err);
+          throw err;
         }
 
-        return prevFailedUploads;
-      },
-      []
-    );
-    const storageErrorMsgs = errors.map(
-      (storageError) => `${storageError.storage}: ${storageError.error}`
-    );
+        span.end();
 
-    if (!references.length) {
-      throw new Error(
-        `Failed to upload blob ${versionedHash} to any of the storages: ${storageErrorMsgs.join(
-          ", "
-        )}`
-      );
-    }
-
-    return {
-      references,
-      errors,
-    };
+        return {
+          references,
+          errors,
+        };
+      }
+    );
   }
 }
