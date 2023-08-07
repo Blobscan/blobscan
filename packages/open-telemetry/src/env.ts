@@ -1,9 +1,21 @@
 import { z, createEnvSchema } from "@blobscan/zod";
 
 const envSchema = createEnvSchema({
-  BLOBSCAN_API_PORT: {
+  OTEL_EXPORTER_OTLP_PROTOCOL: {
+    schema: z.enum(["grpc", "http/protobuf", "http/json"]),
+    optional: true,
+  },
+  OTEL_EXPORTER_OTLP_ENDPOINT: {
+    schema: z.string().url(),
+    optional: true,
+  },
+  GRAFANA_INSTANCE_ID: {
     schema: z.coerce.number().int().positive(),
-    default: 3001,
+    optional: true,
+  },
+  GRAFANA_TOKEN: {
+    schema: z.string(),
+    optional: true,
   },
   NODE_ENV: {
     schema: z.enum(["development", "test", "production"]),
