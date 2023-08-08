@@ -1,19 +1,15 @@
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
 
-import {
-  SemanticResourceAttributes,
-  setUpOpenTelemetry,
-} from "@blobscan/open-telemetry";
+import { setUpOpenTelemetry } from "@blobscan/open-telemetry";
 
-setUpOpenTelemetry(
-  {
+import { env } from "./env";
+
+if (env.OTEL_BLOBSCAN_REST_API_ENABLED) {
+  setUpOpenTelemetry("blobscan_rest_api", {
     instrumentations: [
       new ExpressInstrumentation(),
       new WinstonInstrumentation(),
     ],
-  },
-  {
-    [SemanticResourceAttributes.SERVICE_NAME]: "blobscan_rest_api",
-  }
-);
+  });
+}

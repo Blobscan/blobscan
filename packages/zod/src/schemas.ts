@@ -21,6 +21,10 @@ export function booleanSchema() {
     const varName = ctx.path[0];
     const arg_ = arg.toLowerCase();
 
+    if (!arg_.length) {
+      return false;
+    }
+
     if (arg_ !== "true" && arg_ !== "false") {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

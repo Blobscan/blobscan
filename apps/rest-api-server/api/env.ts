@@ -1,4 +1,4 @@
-import { z, createEnvSchema } from "@blobscan/zod";
+import { z, createEnvSchema, booleanSchema } from "@blobscan/zod";
 
 const envSchema = createEnvSchema({
   BLOBSCAN_API_PORT: {
@@ -8,6 +8,11 @@ const envSchema = createEnvSchema({
   NODE_ENV: {
     schema: z.enum(["development", "test", "production"]),
     optional: true,
+  },
+  OTEL_BLOBSCAN_REST_API_ENABLED: {
+    schema: booleanSchema(),
+    optional: true,
+    default: false,
   },
 });
 

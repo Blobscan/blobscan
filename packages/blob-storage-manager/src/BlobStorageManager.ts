@@ -2,9 +2,9 @@ import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
+import { tracer } from "./instrumentation";
 import type { PostgresStorage, SwarmStorage } from "./storages";
 import type { GoogleStorage } from "./storages";
-import { tracer } from "./telemetry";
 
 export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? GoogleStorage

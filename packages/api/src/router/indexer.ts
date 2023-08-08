@@ -2,8 +2,8 @@ import { z } from "zod";
 
 import type { Blob, Transaction, OmittableFields, Block } from "@blobscan/db";
 
+import { tracer } from "../instrumentation";
 import { jwtAuthedProcedure, publicProcedure } from "../procedures";
-import { tracer } from "../telemetry";
 import { createTRPCRouter } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
 
