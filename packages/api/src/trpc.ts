@@ -64,5 +64,3 @@ import { t } from "./clients/trpc";
 // });
 
 export const createTRPCRouter = t.router;
-
-export const publicProcedure = t.procedure;

@@ -2,7 +2,8 @@ import { z } from "zod";
 
 import "../../middlewares/withDates";
 import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
-import { createTRPCRouter, publicProcedure } from "../../trpc";
+import { publicProcedure } from "../../procedures";
+import { createTRPCRouter } from "../../trpc";
 import { STATS_PATH } from "../../utils/stats";
 
 export const blockStatsRouter = createTRPCRouter({

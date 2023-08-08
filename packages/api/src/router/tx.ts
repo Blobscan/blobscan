@@ -1,31 +1,40 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { paginatedProcedure } from "../middlewares/withPagination";
+import {
+  PAGINATION_SCHEMA,
+  withPagination,
+} from "../middlewares/withPagination";
+import { publicProcedure } from "../procedures";
 import { fullTransactionSelect } from "../queries/tx";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter } from "../trpc";
 
 export const transactionRouter = createTRPCRouter({
-  getAll: paginatedProcedure.query(async ({ ctx }) => {
-    const [transactions, totalTransactions] = await Promise.all([
-      ctx.prisma.transaction.findMany({
-        select: fullTransactionSelect,
-        orderBy: { blockNumber: "desc" },
-        ...ctx.pagination,
-      }),
-      ctx.prisma.transaction.count(),
-    ]);
+  getAll: publicProcedure
+    .input(PAGINATION_SCHEMA)
+    .use(withPagination)
+    .query(async ({ ctx }) => {
+      const [transactions, totalTransactions] = await Promise.all([
+        ctx.prisma.transaction.findMany({
+          select: fullTransactionSelect,
+          orderBy: { blockNumber: "desc" },
+          ...ctx.pagination,
+        }),
+        ctx.prisma.transaction.count(),
+      ]);
 
-    return {
-      transactions,
-      totalTransactions,
-    };
-  }),
-  getByAddress: paginatedProcedure
+      return {
+        transactions,
+        totalTransactions,
+      };
+    }),
+  getByAddress: publicProcedure
+    .input(PAGINATION_SCHEMA)
+    .use(withPagination)
     .input(
       z.object({
         address: z.string(),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const { address } = input;
@@ -55,7 +64,7 @@ export const transactionRouter = createTRPCRouter({
     .input(
       z.object({
         hash: z.string(),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const { hash } = input;

@@ -3,25 +3,32 @@ import { z } from "zod";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 
-import { paginatedProcedure } from "../middlewares/withPagination";
+import {
+  PAGINATION_SCHEMA,
+  withPagination,
+} from "../middlewares/withPagination";
+import { publicProcedure } from "../procedures";
 import { blobSelect, blobsOnTransactionsSelect } from "../queries/blob";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter } from "../trpc";
 
 export const blobRouter = createTRPCRouter({
-  getAll: paginatedProcedure.query(async ({ ctx }) => {
-    const [blobs, totalBlobs] = await Promise.all([
-      ctx.prisma.blob.findMany({
-        select: { ...blobSelect },
-        ...ctx.pagination,
-      }),
-      ctx.prisma.blob.count(),
-    ]);
+  getAll: publicProcedure
+    .input(PAGINATION_SCHEMA)
+    .use(withPagination)
+    .query(async ({ ctx }) => {
+      const [blobs, totalBlobs] = await Promise.all([
+        ctx.prisma.blob.findMany({
+          select: { ...blobSelect },
+          ...ctx.pagination,
+        }),
+        ctx.prisma.blob.count(),
+      ]);
 
-    return {
-      blobs,
-      totalBlobs,
-    };
-  }),
+      return {
+        blobs,
+        totalBlobs,
+      };
+    }),
   getByIndex: publicProcedure
     .input(
       z.object({
