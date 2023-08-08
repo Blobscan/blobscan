@@ -26,27 +26,29 @@ if (env.GRAFANA_INSTANCE_ID && env.GRAFANA_TOKEN) {
 }
 
 export function setUpOpenTelemetry(
-  config: Partial<NodeSDKConfiguration>,
-  attributes?: api.Attributes
+  serviceName: string,
+  config?: Partial<NodeSDKConfiguration>
 ) {
+  console.log("Setting up Blobscan OpenTelemetry SDK");
   const sdk = new NodeSDK({
     ...config,
     resource: new resources.Resource({
-      ...attributes,
+      [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: env.NODE_ENV,
+      ...(config?.resource?.attributes ?? {}),
     }),
     metricReader:
-      config.metricReader ??
+      config?.metricReader ??
       new metrics.PeriodicExportingMetricReader({
         exporter: new OTLPMetricExporter(exporterOptions),
       }),
     traceExporter:
-      config.traceExporter ?? new OTLPTraceExporter(exporterOptions),
+      config?.traceExporter ?? new OTLPTraceExporter(exporterOptions),
 
     instrumentations: [
       new HttpInstrumentation(),
       new PrismaInstrumentation(),
-      ...(config.instrumentations ?? []),
+      ...(config?.instrumentations ?? []),
     ],
   });
 
