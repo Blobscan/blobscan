@@ -361,6 +361,10 @@ importers:
       dayjs:
         specifier: ^1.11.7
         version: 1.11.7
+    devDependencies:
+      '@blobscan/eslint-config':
+        specifier: ^0.0.1
+        version: link:../config/eslint
 
   packages/db:
     dependencies:
