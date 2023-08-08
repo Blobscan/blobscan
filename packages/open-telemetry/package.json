@@ -5,6 +5,12 @@
   "private": true,
   "main": "src/index.ts",
   "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
   "dependencies": {
     "@blobscan/zod": "^0.0.1",
     "@opentelemetry/exporter-metrics-otlp-proto": "^0.41.1",

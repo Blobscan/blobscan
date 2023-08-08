@@ -4,6 +4,12 @@
   "private": true,
   "version": "0.0.1",
   "main": "./src/index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
   "dependencies": {
     "zod": "^3.21.4"
   },
