@@ -116,6 +116,9 @@ importers:
       '@blobscan/db':
         specifier: ^0.0.1
         version: link:../../packages/db
+      '@blobscan/open-telemetry':
+        specifier: ^0.0.1
+        version: link:../../packages/open-telemetry
       '@blobscan/tailwind-config':
         specifier: ^0.0.1
         version: link:../../packages/config/tailwind
