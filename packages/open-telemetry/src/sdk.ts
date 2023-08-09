@@ -1,4 +1,3 @@
-// import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import type { NodeSDKConfiguration } from "@opentelemetry/sdk-node";
@@ -36,11 +35,6 @@ export function setUpOpenTelemetry(
       [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: env.NODE_ENV,
       ...(config?.resource?.attributes ?? {}),
     }),
-    // metricReader:
-    //   config?.metricReader ??
-    //   new metrics.PeriodicExportingMetricReader({
-    //     exporter: new OTLPMetricExporter(exporterOptions),
-    //   }),
     traceExporter:
       config?.traceExporter ?? new OTLPTraceExporter(exporterOptions),
 

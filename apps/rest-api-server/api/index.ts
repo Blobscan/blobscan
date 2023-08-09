@@ -22,7 +22,7 @@ app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
 app.use(morganMiddleware);
 
-if (!env.OTEL_SDK_DISABLED) {
+if (env.METRICS_ENABLED) {
   collectDefaultMetrics();
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   app.get("/metrics", async (_req, res) => {

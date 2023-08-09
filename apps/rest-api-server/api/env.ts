@@ -9,7 +9,12 @@ const envSchema = createEnvSchema({
     schema: z.enum(["development", "test", "production"]),
     optional: true,
   },
-  OTEL_SDK_DISABLED: {
+  METRICS_ENABLED: {
+    schema: booleanSchema(),
+    optional: true,
+    default: false,
+  },
+  TRACES_ENABLED: {
     schema: booleanSchema(),
     optional: true,
     default: false,
