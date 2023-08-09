@@ -1,27 +1,23 @@
-import z from "zod";
-
-import { createEnvSchema } from "@blobscan/zod";
+import { z, createEnvSchema, booleanSchema } from "@blobscan/zod";
 
 const envSchema = createEnvSchema({
   BLOBSCAN_API_PORT: {
     schema: z.coerce.number().int().positive(),
     default: 3001,
   },
-  OTEL_EXPORTER_OTLP_PROTOCOL: {
-    schema: z.enum(["grpc", "http/protobuf", "http/json"]),
+  NODE_ENV: {
+    schema: z.enum(["development", "test", "production"]),
     optional: true,
   },
-  OTEL_EXPORTER_OTLP_ENDPOINT: {
-    schema: z.string().url(),
+  METRICS_ENABLED: {
+    schema: booleanSchema(),
     optional: true,
+    default: false,
   },
-  GRAFANA_INSTANCE_ID: {
-    schema: z.coerce.number().int().positive(),
+  TRACES_ENABLED: {
+    schema: booleanSchema(),
     optional: true,
-  },
-  GRAFANA_TOKEN: {
-    schema: z.string(),
-    optional: true,
+    default: false,
   },
 });
 

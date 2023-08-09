@@ -1,7 +1,7 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-import { optionalStringSchema } from "@blobscan/zod";
+import { booleanSchema, optionalStringSchema } from "@blobscan/zod";
 
 export const env = createEnv({
   /**
@@ -15,6 +15,7 @@ export const env = createEnv({
       "http://localhost:5052"
     ),
     NODE_ENV: z.enum(["development", "test", "production"]),
+    TRACES_ENABLED: booleanSchema(),
   },
   /**
    * Specify your client-side environment variables schema here.
@@ -33,5 +34,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
+    TRACES_ENABLED: process.env.TRACES_ENABLED,
   },
 });

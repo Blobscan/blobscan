@@ -2,8 +2,9 @@ import { z } from "zod";
 
 import type { Blob, Transaction, OmittableFields, Block } from "@blobscan/db";
 
-import { jwtAuthedProcedure } from "../middlewares/isJWTAuthed";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { tracer } from "../instrumentation";
+import { jwtAuthedProcedure, publicProcedure } from "../procedures";
+import { createTRPCRouter } from "../trpc";
 import { calculateBlobSize } from "../utils/blob";
 
 const INDEXER_PATH = "/indexer";
@@ -99,23 +100,32 @@ export const indexerRouter = createTRPCRouter({
 
       const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
 
-      const blobUploadResults = (
-        await Promise.all(
-          newBlobs.map(async (b) =>
-            blobStorageManager.storeBlob(b).then<{
-              uploadRes: Awaited<
-                ReturnType<typeof blobStorageManager.storeBlob>
-              >;
-              blob: Awaited<
-                ReturnType<typeof prisma.blob.filterNewBlobs>
-              >[number];
-            }>((uploadRes) => ({
-              blob: b,
-              uploadRes,
-            }))
-          )
-        )
-      ).flat();
+      const blobUploadResults = await tracer.startActiveSpan(
+        "blobs-upload",
+        async (blobsUploadSpan) => {
+          const result = (
+            await Promise.all(
+              newBlobs.map(async (b) =>
+                blobStorageManager.storeBlob(b).then<{
+                  uploadRes: Awaited<
+                    ReturnType<typeof blobStorageManager.storeBlob>
+                  >;
+                  blob: Awaited<
+                    ReturnType<typeof prisma.blob.filterNewBlobs>
+                  >[number];
+                }>((uploadRes) => ({
+                  blob: b,
+                  uploadRes,
+                }))
+              )
+            )
+          ).flat();
+
+          blobsUploadSpan.end();
+
+          return result;
+        }
+      );
 
       blobUploadResults.forEach(({ uploadRes: { errors }, blob }) => {
         if (errors.length) {

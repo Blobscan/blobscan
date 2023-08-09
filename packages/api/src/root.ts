@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { publicProcedure } from "./procedures";
 // import { authRouter } from "./router/auth";
 import { blobRouter } from "./router/blob";
 import { blockRouter } from "./router/block";
@@ -7,13 +8,8 @@ import { indexerRouter } from "./router/indexer";
 import { searchRouter } from "./router/search";
 import { statsRouter } from "./router/stats";
 import { transactionRouter } from "./router/tx";
-import { createTRPCRouter, publicProcedure } from "./trpc";
+import { createTRPCRouter } from "./trpc";
 
-/**
- * This is the primary router for your server.
- *
- * All routers added in /api/routers should be manually added here.
- */
 export const appRouter = createTRPCRouter({
   healthcheck: publicProcedure
     .meta({

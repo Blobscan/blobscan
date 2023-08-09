@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { publicProcedure } from "../procedures";
+import { createTRPCRouter } from "../trpc";
 import {
   isAddress,
   isBlockNumber,
@@ -42,7 +43,7 @@ export const searchRouter = createTRPCRouter({
     .input(
       z.object({
         term: z.string(),
-      }),
+      })
     )
     .query<SearchOutput>(async ({ ctx, input }) => {
       const { term } = input;

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import superjson from "superjson";
 
+import type { TRPCContext } from "@blobscan/api";
 import { appRouter, createTRPCInnerContext } from "@blobscan/api";
 
 import { Button } from "~/components/Button";
@@ -18,7 +19,7 @@ type SearchProps = {
 
 export const getServerSideProps: GetServerSideProps<SearchProps> =
   async function ({ query }) {
-    const ctx = await createTRPCInnerContext();
+    const ctx = (await createTRPCInnerContext()) as TRPCContext;
     const helpers = createServerSideHelpers({
       router: appRouter,
       ctx,

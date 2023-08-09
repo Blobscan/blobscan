@@ -4,7 +4,22 @@
   "private": true,
   "version": "0.0.1",
   "main": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
   "dependencies": {
     "dayjs": "^1.11.7"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
   }
 }

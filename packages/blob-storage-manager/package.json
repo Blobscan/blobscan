@@ -17,12 +17,16 @@
     "@google-cloud/storage": "^6.10.1"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1"
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/open-telemetry": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,
     "extends": [
       "@blobscan/eslint-config/base"
     ]
+  },
+  "peerDependencies": {
+    "@blobscan/open-telemetry": "^0.0.1"
   }
 }

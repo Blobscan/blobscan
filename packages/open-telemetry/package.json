@@ -1,0 +1,33 @@
+{
+  "name": "@blobscan/open-telemetry",
+  "description": "Blobscan's Open Telemetry shared library",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@blobscan/zod": "^0.0.1",
+    "@opentelemetry/exporter-metrics-otlp-proto": "^0.41.1",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.41.1",
+    "@opentelemetry/instrumentation-http": "^0.41.1",
+    "@opentelemetry/sdk-node": "^0.41.1",
+    "@opentelemetry/semantic-conventions": "^1.15.1",
+    "@prisma/instrumentation": "^5.1.1",
+    "prom-client": "^14.2.0"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

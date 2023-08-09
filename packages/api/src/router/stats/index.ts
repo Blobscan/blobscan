@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../../trpc";
+import { publicProcedure } from "../../procedures";
+import { createTRPCRouter } from "../../trpc";
 import { STATS_PATH } from "../../utils/stats";
 import { blobStatsRouter } from "./blob";
 import { blockStatsRouter } from "./block";

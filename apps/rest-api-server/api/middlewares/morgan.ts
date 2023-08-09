@@ -1,5 +1,7 @@
-import morgan, { StreamOptions } from "morgan";
+import type { StreamOptions } from "morgan";
+import morgan from "morgan";
 
+import { env } from "../env";
 import { logger } from "../logger";
 
 // Override the stream method by telling
@@ -9,8 +11,8 @@ const stream: StreamOptions = {
 };
 
 const skip = () => {
-  const env = process.env.NODE_ENV || "development";
-  return env !== "development";
+  const node_env = env.NODE_ENV || "development";
+  return node_env !== "development";
 };
 
 const morganMiddleware = morgan(
