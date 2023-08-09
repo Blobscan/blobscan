@@ -64,7 +64,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         ) {
           return startAddressModelFnSpan(
             "upsertAddressesFromTransactions",
-            async () => {
+            () => {
               const addressToEntity = txs.reduce<Record<string, Address>>(
                 (addressesData, { from, to, blockNumber }) => {
                   updateAddressData(addressesData, from, blockNumber, true);
