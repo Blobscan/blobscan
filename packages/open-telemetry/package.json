@@ -18,7 +18,8 @@
     "@opentelemetry/instrumentation-http": "^0.41.1",
     "@opentelemetry/sdk-node": "^0.41.1",
     "@opentelemetry/semantic-conventions": "^1.15.1",
-    "@prisma/instrumentation": "^5.1.1"
+    "@prisma/instrumentation": "^5.1.1",
+    "prom-client": "^14.2.0"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1"

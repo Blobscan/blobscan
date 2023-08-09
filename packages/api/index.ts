@@ -8,6 +8,15 @@ export type { TRCInnerContext, TRPCContext } from "./src/context";
 
 export * from "@trpc/server/adapters/express";
 
+export { getPrismaMetricsClient } from "./src/instrumentation";
+export type {
+  Metric,
+  MetricHistogram,
+  MetricHistogramBucket,
+  Metrics,
+  MetricsClient,
+} from "@blobscan/db";
+
 /**
  * Inference helpers for input types
  * @example type HelloInput = RouterInputs['example']['hello']

@@ -1,8 +1,8 @@
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
+// import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import type { NodeSDKConfiguration } from "@opentelemetry/sdk-node";
-import { NodeSDK, resources, api, metrics } from "@opentelemetry/sdk-node";
+import { NodeSDK, resources, api } from "@opentelemetry/sdk-node";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { PrismaInstrumentation } from "@prisma/instrumentation";
 
@@ -29,7 +29,6 @@ export function setUpOpenTelemetry(
   serviceName: string,
   config?: Partial<NodeSDKConfiguration>
 ) {
-  console.log("Setting up Blobscan OpenTelemetry SDK");
   const sdk = new NodeSDK({
     ...config,
     resource: new resources.Resource({
@@ -37,11 +36,11 @@ export function setUpOpenTelemetry(
       [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: env.NODE_ENV,
       ...(config?.resource?.attributes ?? {}),
     }),
-    metricReader:
-      config?.metricReader ??
-      new metrics.PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter(exporterOptions),
-      }),
+    // metricReader:
+    //   config?.metricReader ??
+    //   new metrics.PeriodicExportingMetricReader({
+    //     exporter: new OTLPMetricExporter(exporterOptions),
+    //   }),
     traceExporter:
       config?.traceExporter ?? new OTLPTraceExporter(exporterOptions),
 
@@ -54,10 +53,11 @@ export function setUpOpenTelemetry(
 
   sdk.start();
 
+  console.log("OpenTelemetry SDK started successfully");
+
   // gracefully shut down the SDK on process exit
   const gracefulShutdown = function () {
     sdk
-
       .shutdown()
       .then(
         () => console.log("SDK shut down successfully"),

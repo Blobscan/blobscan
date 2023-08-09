@@ -9,7 +9,7 @@ const envSchema = createEnvSchema({
     schema: z.enum(["development", "test", "production"]),
     optional: true,
   },
-  OTEL_BLOBSCAN_REST_API_ENABLED: {
+  OTEL_SDK_DISABLED: {
     schema: booleanSchema(),
     optional: true,
     default: false,

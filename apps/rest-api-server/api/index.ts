@@ -1,18 +1,20 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
-import { collectDefaultMetrics, register } from "prom-client";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
-import { appRouter, createTRPCContext } from "@blobscan/api";
+import {
+  appRouter,
+  createTRPCContext,
+  getPrismaMetricsClient,
+} from "@blobscan/api";
+import { collectDefaultMetrics, promRegister } from "@blobscan/open-telemetry";
 
 import { env } from "./env";
 import { logger } from "./logger";
 import { morganMiddleware } from "./middlewares/morgan";
 import { openApiDocument } from "./openapi";
-
-collectDefaultMetrics();
 
 const app = express();
 
@@ -20,15 +22,25 @@ app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
 app.use(morganMiddleware);
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-app.get("/metrics", async (_req, res) => {
-  try {
-    res.set("Content-Type", register.contentType);
-    res.end(await register.metrics());
-  } catch (err) {
-    res.status(500).end(err);
-  }
-});
+if (!env.OTEL_SDK_DISABLED) {
+  collectDefaultMetrics();
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  app.get("/metrics", async (_req, res) => {
+    const prismaMetricsClient = getPrismaMetricsClient();
+    try {
+      const [appMetrics, prismaMetrics] = await Promise.all([
+        promRegister.metrics(),
+        prismaMetricsClient?.prometheus() ?? Promise.resolve(""),
+      ]);
+
+      res.set("Content-Type", promRegister.contentType);
+
+      res.end(appMetrics + prismaMetrics);
+    } catch (err) {
+      res.status(500).end(err);
+    }
+  });
+}
 
 // Handle incoming OpenAPI requests
 app.use(

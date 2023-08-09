@@ -19,7 +19,7 @@ const config = {
   eslint: { ignoreDuringBuilds: !!process.env.CI },
   typescript: { ignoreBuildErrors: !!process.env.CI },
   experimental: {
-    instrumentationHook: Boolean(process.env.OTEL_BLOBSCAN_WEB_ENABLED),
+    instrumentationHook: !process.env.OTEL_SDK_DISABLED,
   },
 };
 

@@ -15,7 +15,7 @@ export const env = createEnv({
       "http://localhost:5052"
     ),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    OTEL_BLOBSCAN_WEB_ENABLED: booleanSchema(),
+    OTEL_SDK_DISABLED: booleanSchema(),
   },
   /**
    * Specify your client-side environment variables schema here.
@@ -34,6 +34,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
-    OTEL_BLOBSCAN_WEB_ENABLED: process.env.OTEL_BLOBSCAN_WEB_ENABLED,
+    OTEL_SDK_DISABLED: process.env.OTEL_SDK_DISABLED,
   },
 });
