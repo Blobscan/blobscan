@@ -29,11 +29,11 @@ export function ExplorerDetails() {
 
   return (
     <div className="flex h-4 gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
-      {env.NEXT_PUBLIC_CHAIN_NAME?.length && (
+      {env.NEXT_PUBLIC_NETWORK_NAME?.length && (
         <>
           <ExplorerDetailsItem
             name="Network"
-            value={env.NEXT_PUBLIC_CHAIN_NAME}
+            value={env.NEXT_PUBLIC_NETWORK_NAME}
           />
           ･
         </>
