@@ -90,11 +90,16 @@ DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=pub
 SECRET_KEY=42424242424242424242424242424242
 
 NEXT_PUBLIC_BEACON_BASE_URL=http://134.209.87.158:8080/
-NEXT_PUBLIC_EXPLORER_BASE_URL=https://explorer.4844-devnet-6.ethpandaops.io/
+NEXT_PUBLIC_EXPLORER_BASE_URL=https://explorer.4844-devnet-7.ethpandaops.io/
 
 ### rest api server
 
 BLOBSCAN_API_PORT=3001
+EXTERNAL_API_PORT=3001
+
+POSTGRES_STORAGE_ENABLED=true
+SWARM_STORAGE_ENABLED=false
+GOOGLE_STORAGE_ENABLED=false
 
 #### blobscan indexer
 
@@ -111,7 +116,7 @@ Then just run `docker compose up -d`.
 
 Create a `.env` file with environment variables. You can use the `.env.example` file as a reference.
 
-Below you can find a list of optional variables:
+Below you can find a list of supported variables:
 
 ### Blobscan Website
 
@@ -119,15 +124,62 @@ Below you can find a list of optional variables:
 | ------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
 | `DATABASE_URL`                  | Postgresql database URI | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public` |
 | `NEXTAUTH_URL`                  | -                       | `http://localhost:3000`                                                  |
-| `SECRET_KEY`                    | -                       | `supersecret`                                                            |
+| `SECRET_KEY`                    | Shared key used for JWT | `supersecret`                                                            |
 | `NEXT_PUBLIC_BEACON_BASE_URL`   | -                       | `http://134.209.87.158:8080/`                                            |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | -                       | `https://explorer.4844-devnet-5.etpandaops.io/`                          |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer          | `https://explorer.4844-devnet-7.ethpandaops.io/`                         |
+| `NODE_ENV`                      | -                       | ``                                                                       |
 
 ### Blobscan API
 
-| Env variable        | Description | Default value |
-| ------------------- | ----------- | ------------- |
-| `BLOBSCAN_API_PORT` | -           | `3001`        |
+| Env variable                  | Description                            | Default value           |
+| ----------------------------- | -------------------------------------- | ----------------------- |
+| `BLOBSCAN_API_PORT`           | Blobscan API will listen on this port  | `3001`                  |
+| `BEACON_NODE_ENDPOINT`        | Beacon node endpoint                   | `http://localhost:3500` |
+| `CHAIN_ID`                    | EVM chain id                           | `7011893055`            |
+
+### Telemetry (metrics and traces)
+
+| Env variable                  | Description                                                                     | Default value           |
+| ----------------------------- | ------------------------------------------------------------------------------- | ----------------------- |
+| `METRICS_ENABLED`             | Expose the /metrics endpoint                                                    | `true`                  |
+| `TRACES_ENABLED`              | Enable instrumentation of functions and sending traces to a collector           | `false`                 |
+| `OTLP_AUTH_USERNAME`          | Username for basic authentication. E.g. Grafana Cloud ID                        |                         |
+| `OTLP_AUTH_PASSWORD`          | Password for basic authentication. E.g. Grafana Cloud Token                     |                         |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP transport protocol to be used for all telemetry data.                      | `http/protobuf`         |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | Base endpoint URL for any signal type, with an optionally-specified port number | `http://localhost:4317` |
+
+### Blob storages
+
+Blobscan can be configured to use any of the following blob storages:
+
+* Postgres
+* Google Cloud Storage
+* Ethereum Swarm
+
+**Postgres**
+
+| Env variable                  | Description                                        | Default value |
+| ----------------------------- | -------------------------------------------------- | --------------|
+| `POSTGRES_STORAGE_ENABLED`    | Store blobs in postgres database (default storage) | `true`        |
+
+**Google Cloud Storage**
+
+| Env variable                  | Description                                 | Default value |
+| ----------------------------- | --------------------------------------------| ------------- |
+| `GOOGLE_STORAGE_ENABLED`      | Store blobs in GCS                          | `false`       |
+| `GOOGLE_STORAGE_BUCKET_NAME`  | GCS bucket name                             |               |
+| `GOOGLE_STORAGE_PROJECT_ID`   | GCS project ID                              |               |
+| `GOOGLE_SERVICE_KEY`          | Google Cloud service key                    |               |
+| `GOOGLE_STORAGE_API_ENDPOINT` | Google Cloud API endpoint (for development) |               |
+
+**Ethereum Swarm**
+
+| Env variable            | Description          | Default value           |
+| ----------------------- | -------------------- | ----------------------- |
+| `SWARM_STORAGE_ENABLED` | Store blobs in Swarm | `false`                 |
+| `BEE_ENDPOINT`          | Bee endpoint         | `http://localhost:1633` |
+| `BEE_DEBUG_ENDPOINT`    | Bee debug endpoint   | `http://localhost:1635` |
+
 
 # About Blossom Labs
 
