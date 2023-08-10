@@ -12,7 +12,7 @@ const envSchema = createEnvSchema({
   METRICS_ENABLED: {
     schema: booleanSchema(),
     optional: true,
-    default: false,
+    default: true,
   },
   TRACES_ENABLED: {
     schema: booleanSchema(),
