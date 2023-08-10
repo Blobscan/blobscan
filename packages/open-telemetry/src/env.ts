@@ -9,11 +9,11 @@ const envSchema = createEnvSchema({
     schema: z.string().url(),
     optional: true,
   },
-  GRAFANA_INSTANCE_ID: {
-    schema: z.coerce.number().int().positive(),
+  OTLP_AUTH_USERNAME: {
+    schema: z.coerce.string(),
     optional: true,
   },
-  GRAFANA_TOKEN: {
+  OTLP_AUTH_PASSWORD: {
     schema: z.string(),
     optional: true,
   },

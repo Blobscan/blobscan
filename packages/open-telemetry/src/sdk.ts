@@ -16,10 +16,10 @@ const exporterOptions: { headers?: Record<string, string> } = {};
  * correctly parse authentication keys containing characters such as `=` which it interprets as parse separators.
  * Therefore, to avoid parsing errors, we build the auth header ourselves.
  */
-if (env.GRAFANA_INSTANCE_ID && env.GRAFANA_TOKEN) {
+if (env.OTLP_AUTH_USERNAME && env.OTLP_AUTH_PASSWORD) {
   exporterOptions.headers = {
     Authorization: `Basic ${btoa(
-      `${env.GRAFANA_INSTANCE_ID}:${env.GRAFANA_TOKEN}`
+      `${env.OTLP_AUTH_USERNAME}:${env.OTLP_AUTH_PASSWORD}`
     )}`,
   };
 }
