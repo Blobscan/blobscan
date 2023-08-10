@@ -46,13 +46,7 @@ function updateAddressData(
 
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("base");
 
-const startAddressModelFnSpan = startExtensionFnSpan("address");
-const startBlobModelFnSpan = startExtensionFnSpan("blob");
-const startBlobDataStorageRefsModelFnSpan = startExtensionFnSpan(
-  "blobDataStorageReference"
-);
 const startBlockModelFnSpan = startExtensionFnSpan("block");
-const startTransactionModelFnSpan = startExtensionFnSpan("transaction");
 
 export const baseExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
@@ -62,152 +56,135 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         upsertAddressesFromTransactions(
           txs: { from: string; to?: string; blockNumber: number }[]
         ) {
-          return startAddressModelFnSpan(
-            "upsertAddressesFromTransactions",
-            () => {
-              const addressToEntity = txs.reduce<Record<string, Address>>(
-                (addressesData, { from, to, blockNumber }) => {
-                  updateAddressData(addressesData, from, blockNumber, true);
+          const addressToEntity = txs.reduce<Record<string, Address>>(
+            (addressesData, { from, to, blockNumber }) => {
+              updateAddressData(addressesData, from, blockNumber, true);
 
-                  if (to) {
-                    updateAddressData(addressesData, to, blockNumber, false);
-                  }
+              if (to) {
+                updateAddressData(addressesData, to, blockNumber, false);
+              }
 
-                  return addressesData;
-                },
-                {}
-              );
-
-              const addressEntities = Object.values(addressToEntity);
-
-              return Prisma.getExtensionContext(this).upsertMany(
-                addressEntities
-              );
-            }
+              return addressesData;
+            },
+            {}
           );
+
+          const addressEntities = Object.values(addressToEntity);
+
+          return Prisma.getExtensionContext(this).upsertMany(addressEntities);
         },
         upsertMany(addresses: Omit<Address, OmittableFields>[]) {
-          return startAddressModelFnSpan("upsertMany", () => {
-            const formattedValues = addresses
-              .map(
-                ({
-                  address,
-                  firstBlockNumberAsReceiver,
-                  firstBlockNumberAsSender,
-                }) => [
-                  address,
-                  firstBlockNumberAsSender,
-                  firstBlockNumberAsReceiver,
-                  NOW_SQL,
-                  NOW_SQL,
-                ]
-              )
-              .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
+          const formattedValues = addresses
+            .map(
+              ({
+                address,
+                firstBlockNumberAsReceiver,
+                firstBlockNumberAsSender,
+              }) => [
+                address,
+                firstBlockNumberAsSender,
+                firstBlockNumberAsReceiver,
+                NOW_SQL,
+                NOW_SQL,
+              ]
+            )
+            .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
-            return prisma.$executeRaw`
-          INSERT INTO "Address" as addr (
-            "address",
-            "firstBlockNumberAsSender",
-            "firstBlockNumberAsReceiver",
-            "insertedAt",
-            "updatedAt"
-          ) VALUES ${Prisma.join(formattedValues)}
-          ON CONFLICT ("address") DO UPDATE SET
-            "firstBlockNumberAsSender" = LEAST(addr."firstBlockNumberAsSender", EXCLUDED."firstBlockNumberAsSender"),
-            "firstBlockNumberAsReceiver" = LEAST(addr."firstBlockNumberAsReceiver", EXCLUDED."firstBlockNumberAsReceiver"),
-            "updatedAt" = NOW()
-        `;
-          });
+          return prisma.$executeRaw`
+            INSERT INTO "Address" as addr (
+              "address",
+              "firstBlockNumberAsSender",
+              "firstBlockNumberAsReceiver",
+              "insertedAt",
+              "updatedAt"
+            ) VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("address") DO UPDATE SET
+              "firstBlockNumberAsSender" = LEAST(addr."firstBlockNumberAsSender", EXCLUDED."firstBlockNumberAsSender"),
+              "firstBlockNumberAsReceiver" = LEAST(addr."firstBlockNumberAsReceiver", EXCLUDED."firstBlockNumberAsReceiver"),
+              "updatedAt" = NOW()
+          `;
         },
       },
       blob: {
         async filterNewBlobs(blobs: RawBlob[]) {
-          return startBlobModelFnSpan("filterNewBlobs", async () => {
-            const dbBlobVersionedHashes = (
-              await prisma.blob.findMany({
-                select: { versionedHash: true },
-                where: {
-                  versionedHash: {
-                    in: blobs.map((blob) => blob.versionedHash),
-                  },
+          const dbBlobVersionedHashes = (
+            await prisma.blob.findMany({
+              select: { versionedHash: true },
+              where: {
+                versionedHash: {
+                  in: blobs.map((blob) => blob.versionedHash),
                 },
-              })
-            ).map((b) => b.versionedHash);
-            // Remove duplicates and blobs that already exist in the DB
-            const newBlobVersionedHashes = Array.from(
-              new Set(blobs.map((b) => b.versionedHash))
-            ).filter((hash) => !dbBlobVersionedHashes.includes(hash));
+              },
+            })
+          ).map((b) => b.versionedHash);
+          // Remove duplicates and blobs that already exist in the DB
+          const newBlobVersionedHashes = Array.from(
+            new Set(blobs.map((b) => b.versionedHash))
+          ).filter((hash) => !dbBlobVersionedHashes.includes(hash));
 
-            return newBlobVersionedHashes.map((versionedHash) => {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const b = blobs.find((b) => b.versionedHash === versionedHash)!;
+          return newBlobVersionedHashes.map((versionedHash) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const b = blobs.find((b) => b.versionedHash === versionedHash)!;
 
-              return {
-                commitment: b.commitment,
-                data: b.data,
-                txHash: b.txHash,
-                versionedHash: b.versionedHash,
-              };
-            });
+            return {
+              commitment: b.commitment,
+              data: b.data,
+              txHash: b.txHash,
+              versionedHash: b.versionedHash,
+            };
           });
         },
         upsertMany(blobs: Omit<Blob, OmittableFields>[]) {
-          return startBlobModelFnSpan("upsertMany", () => {
-            const formattedValues = blobs
-              .map(({ versionedHash, commitment, size, firstBlockNumber }) => [
-                versionedHash,
-                commitment,
-                size,
-                firstBlockNumber,
-              ])
-              .map(
-                (rowColumns) =>
-                  Prisma.sql`(${Prisma.join(
-                    rowColumns
-                  )}, ${NOW_SQL}, ${NOW_SQL})`
-              );
+          const formattedValues = blobs
+            .map(({ versionedHash, commitment, size, firstBlockNumber }) => [
+              versionedHash,
+              commitment,
+              size,
+              firstBlockNumber,
+            ])
+            .map(
+              (rowColumns) =>
+                Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
+            );
 
-            return prisma.$executeRaw`
-          INSERT INTO "Blob" as blob (
-            "versionedHash",
-            "commitment",
-            "size",
-            "firstBlockNumber",
-            "insertedAt",
-            "updatedAt"
-          ) VALUES ${Prisma.join(formattedValues)}
-          ON CONFLICT ("versionedHash") DO UPDATE SET
-            "commitment" = EXCLUDED."commitment",
-            "size" = EXCLUDED."size",
-            "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber"),
-            "updatedAt" = NOW()
-        `;
-          });
+          return prisma.$executeRaw`
+            INSERT INTO "Blob" as blob (
+              "versionedHash",
+              "commitment",
+              "size",
+              "firstBlockNumber",
+              "insertedAt",
+              "updatedAt"
+            ) VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("versionedHash") DO UPDATE SET
+              "commitment" = EXCLUDED."commitment",
+              "size" = EXCLUDED."size",
+              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber"),
+              "updatedAt" = NOW()
+          `;
         },
       },
       blobDataStorageReference: {
         upsertMany(refs: BlobDataStorageReference[]) {
-          return startBlobDataStorageRefsModelFnSpan("upsertMany", () => {
-            const formattedValues = refs.map(
-              ({ blobHash, blobStorage, dataReference }) =>
-                Prisma.sql`(${Prisma.join([
-                  blobHash,
-                  Prisma.sql`${blobStorage.toLowerCase()}::"BlobStorage"`,
-                  dataReference,
-                ])})`
-            );
+          const formattedValues = refs.map(
+            ({ blobHash, blobStorage, dataReference }) =>
+              Prisma.sql`(${Prisma.join([
+                blobHash,
+                Prisma.sql`${blobStorage.toLowerCase()}::"BlobStorage"`,
+                dataReference,
+              ])})`
+          );
 
-            return prisma.$executeRaw`
-              INSERT INTO "BlobDataStorageReference" (
-                "blobHash",
-                "blobStorage",
-                "dataReference"
-              )
-              VALUES ${Prisma.join(formattedValues)}
-              ON CONFLICT ("blobHash", "blobStorage") DO UPDATE SET
-                "dataReference" = EXCLUDED."dataReference"
-            `;
-          });
+          return prisma.$executeRaw`
+            INSERT INTO "BlobDataStorageReference" (
+              "blobHash",
+              "blobStorage",
+              "dataReference"
+            )
+            VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("blobHash", "blobStorage") DO UPDATE SET
+              "dataReference" = EXCLUDED."dataReference"
+          `;
         },
       },
       block: {
@@ -221,22 +198,19 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       },
       transaction: {
         upsertMany(transactions: Omit<Transaction, OmittableFields>[]) {
-          return startTransactionModelFnSpan("upsertMany", () => {
-            const formattedValues = transactions
-              .map(({ hash, blockNumber, fromId, toId }) => [
-                hash,
-                blockNumber,
-                fromId,
-                toId,
-              ])
-              .map(
-                (rowColumns) =>
-                  Prisma.sql`(${Prisma.join(
-                    rowColumns
-                  )}, ${NOW_SQL}, ${NOW_SQL})`
-              );
+          const formattedValues = transactions
+            .map(({ hash, blockNumber, fromId, toId }) => [
+              hash,
+              blockNumber,
+              fromId,
+              toId,
+            ])
+            .map(
+              (rowColumns) =>
+                Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
+            );
 
-            return prisma.$executeRaw`
+          return prisma.$executeRaw`
           INSERT INTO "Transaction" (
             "hash",
             "blockNumber",
@@ -251,7 +225,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             "toId" = EXCLUDED."toId",
             "updatedAt" = NOW()
         `;
-          });
         },
       },
     },

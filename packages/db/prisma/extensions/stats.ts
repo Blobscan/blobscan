@@ -8,16 +8,9 @@ import { buildRawWhereClause } from "../utils/dates";
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("stats");
 
 const startBlobDailyStatsModelFnSpan = startExtensionFnSpan("blobDailyStats");
-const startBlobOverallStatsModelFnSpan =
-  startExtensionFnSpan("blobOverallStats");
 const startBlockDailyStatsModelFnSpan = startExtensionFnSpan("blockDailyStats");
-const startBlockOverallStatsModelFnSpan =
-  startExtensionFnSpan("blockOverallStats");
 const startTransactionDailyStatsModelFnSpan = startExtensionFnSpan(
   "transactionDailyStats"
-);
-const startTransactionOverallStatsModelFnSpan = startExtensionFnSpan(
-  "transactionOverallStats"
 );
 
 export const statsExtension = Prisma.defineExtension((prisma) =>
@@ -31,43 +24,40 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           });
         },
         fill(datePeriod: DatePeriod) {
-          return startBlobDailyStatsModelFnSpan("fill", () => {
-            const dateField = Prisma.sql`bl."timestamp"`;
-            const whereClause = buildRawWhereClause(dateField, datePeriod);
+          const dateField = Prisma.sql`bl."timestamp"`;
+          const whereClause = buildRawWhereClause(dateField, datePeriod);
 
-            return prisma.$executeRaw`
-            INSERT INTO "BlobDailyStats"(
-              "day",
-              "totalBlobs",
-              "totalUniqueBlobs",
-              "totalBlobSize",
-              "avgBlobSize"
-            )
-            SELECT 
-              DATE_TRUNC('day', ${dateField}) AS "day",
-              COUNT(btx."blobHash")::INT AS "totalBlobs",
-              COUNT(DISTINCT b."versionedHash")::INT AS "totalUniqueBlobs",
-              SUM(b.size) AS "totalBlobSize",
-              AVG(b.size)::FLOAT AS "avgBlobSize"
-            FROM "Blob" b
-              JOIN "BlobsOnTransactions" btx ON btx."blobHash" = b."versionedHash"
-              JOIN "Transaction" tx ON tx."hash" = btx."txHash"
-              JOIN "Block" bl ON bl."number" = tx."blockNumber"
-            ${whereClause}
-            GROUP BY "day"
-            ON CONFLICT ("day") DO UPDATE SET
-              "totalBlobs" = EXCLUDED."totalBlobs",
-              "totalUniqueBlobs" = EXCLUDED."totalUniqueBlobs",
-              "totalBlobSize" = EXCLUDED."totalBlobSize",
-              "avgBlobSize" = EXCLUDED."avgBlobSize"
-          `;
-          });
+          return prisma.$executeRaw`
+          INSERT INTO "BlobDailyStats"(
+            "day",
+            "totalBlobs",
+            "totalUniqueBlobs",
+            "totalBlobSize",
+            "avgBlobSize"
+          )
+          SELECT 
+            DATE_TRUNC('day', ${dateField}) AS "day",
+            COUNT(btx."blobHash")::INT AS "totalBlobs",
+            COUNT(DISTINCT b."versionedHash")::INT AS "totalUniqueBlobs",
+            SUM(b.size) AS "totalBlobSize",
+            AVG(b.size)::FLOAT AS "avgBlobSize"
+          FROM "Blob" b
+            JOIN "BlobsOnTransactions" btx ON btx."blobHash" = b."versionedHash"
+            JOIN "Transaction" tx ON tx."hash" = btx."txHash"
+            JOIN "Block" bl ON bl."number" = tx."blockNumber"
+          ${whereClause}
+          GROUP BY "day"
+          ON CONFLICT ("day") DO UPDATE SET
+            "totalBlobs" = EXCLUDED."totalBlobs",
+            "totalUniqueBlobs" = EXCLUDED."totalUniqueBlobs",
+            "totalBlobSize" = EXCLUDED."totalBlobSize",
+            "avgBlobSize" = EXCLUDED."avgBlobSize"
+        `;
         },
       },
       blobOverallStats: {
         backfill() {
-          return startBlobOverallStatsModelFnSpan("backfill", () => {
-            return prisma.$executeRaw`
+          return prisma.$executeRaw`
               INSERT INTO "BlobOverallStats" (
                 id,
                 "totalBlobs",
@@ -92,11 +82,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 "avgBlobSize" = EXCLUDED."avgBlobSize",
                 "updatedAt" = EXCLUDED."updatedAt"
             `;
-          });
         },
         increment({ from, to }: BlockNumberRange) {
-          return startBlobOverallStatsModelFnSpan("increment", () => {
-            return prisma.$executeRaw`
+          return prisma.$executeRaw`
               INSERT INTO "BlobOverallStats" AS st (
                 id,
                 "totalBlobs",
@@ -124,7 +112,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 "avgBlobSize" = st."avgBlobSize" + (EXCLUDED."totalBlobSize" - st."avgBlobSize") / (st."totalBlobs" + EXCLUDED."totalBlobs"),
                 "updatedAt" = EXCLUDED."updatedAt"
             `;
-          });
         },
       },
       blockDailyStats: {
@@ -134,28 +121,25 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           });
         },
         fill(datePeriod: DatePeriod) {
-          return startBlockDailyStatsModelFnSpan("fill", () => {
-            const dateField = Prisma.sql`timestamp`;
-            const whereClause = buildRawWhereClause(dateField, datePeriod);
+          const dateField = Prisma.sql`timestamp`;
+          const whereClause = buildRawWhereClause(dateField, datePeriod);
 
-            return prisma.$executeRaw`
-              INSERT INTO "BlockDailyStats"(day, "totalBlocks")
-              SELECT
-                DATE_TRUNC('day', ${dateField}) as "day",
-                COUNT(hash)::Int as "totalBlocks"
-              FROM "Block"
-              ${whereClause}
-              GROUP BY "day"
-              ON CONFLICT (day) DO UPDATE SET
-                "totalBlocks" = EXCLUDED."totalBlocks" 
-            `;
-          });
+          return prisma.$executeRaw`
+            INSERT INTO "BlockDailyStats"(day, "totalBlocks")
+            SELECT
+              DATE_TRUNC('day', ${dateField}) as "day",
+              COUNT(hash)::Int as "totalBlocks"
+            FROM "Block"
+            ${whereClause}
+            GROUP BY "day"
+            ON CONFLICT (day) DO UPDATE SET
+              "totalBlocks" = EXCLUDED."totalBlocks" 
+          `;
         },
       },
       blockOverallStats: {
         backfill() {
-          return startBlockOverallStatsModelFnSpan("backfill", () => {
-            return prisma.$executeRaw`
+          return prisma.$executeRaw`
               INSERT INTO "BlockOverallStats" as stats (
                 id,
                 "totalBlocks",
@@ -170,11 +154,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 "totalBlocks" = EXCLUDED."totalBlocks",
                 "updatedAt" = EXCLUDED."updatedAt"
             `;
-          });
         },
         increment({ from, to }: BlockNumberRange) {
-          return startBlockOverallStatsModelFnSpan("increment", () => {
-            return prisma.$executeRaw`
+          return prisma.$executeRaw`
               INSERT INTO "BlockOverallStats" AS stats (
                 id,
                 "totalBlocks",
@@ -190,7 +172,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 "totalBlocks" = stats."totalBlocks" + EXCLUDED."totalBlocks",
                 "updatedAt" = EXCLUDED."updatedAt"
             `;
-          });
         },
       },
       transactionDailyStats: {
@@ -202,63 +183,58 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           });
         },
         fill(datePeriod: DatePeriod) {
-          return startTransactionDailyStatsModelFnSpan("fill", () => {
-            const dateField = Prisma.sql`b."timestamp"`;
-            const whereClause = buildRawWhereClause(dateField, datePeriod);
+          const dateField = Prisma.sql`b."timestamp"`;
+          const whereClause = buildRawWhereClause(dateField, datePeriod);
 
-            return prisma.$executeRaw`
-              INSERT INTO "TransactionDailyStats"(
-                "day",
-                "totalTransactions",
-                "totalUniqueReceivers",
-                "totalUniqueSenders"
-              )
-              SELECT 
-                DATE_TRUNC('day', ${dateField}) AS "day",
-                COUNT(tx."hash")::INT AS "totalTransactions",
-                COUNT(DISTINCT tx."toId")::INT AS "totalUniqueReceivers",
-                COUNT(DISTINCT tx."fromId")::INT AS "totalUniqueSenders"
-              FROM "Transaction" tx
-                JOIN "Block" b ON b.number = tx."blockNumber"
-              ${whereClause}
-              GROUP BY "day"
-              ON CONFLICT ("day") DO UPDATE SET
-                "totalTransactions" = EXCLUDED."totalTransactions",
-                "totalUniqueReceivers" = EXCLUDED."totalUniqueReceivers",
-                "totalUniqueSenders" = EXCLUDED."totalUniqueSenders"
-              `;
-          });
+          return prisma.$executeRaw`
+            INSERT INTO "TransactionDailyStats"(
+              "day",
+              "totalTransactions",
+              "totalUniqueReceivers",
+              "totalUniqueSenders"
+            )
+            SELECT 
+              DATE_TRUNC('day', ${dateField}) AS "day",
+              COUNT(tx."hash")::INT AS "totalTransactions",
+              COUNT(DISTINCT tx."toId")::INT AS "totalUniqueReceivers",
+              COUNT(DISTINCT tx."fromId")::INT AS "totalUniqueSenders"
+            FROM "Transaction" tx
+              JOIN "Block" b ON b.number = tx."blockNumber"
+            ${whereClause}
+            GROUP BY "day"
+            ON CONFLICT ("day") DO UPDATE SET
+              "totalTransactions" = EXCLUDED."totalTransactions",
+              "totalUniqueReceivers" = EXCLUDED."totalUniqueReceivers",
+              "totalUniqueSenders" = EXCLUDED."totalUniqueSenders"
+            `;
         },
       },
       transactionOverallStats: {
         backfill() {
-          return startTransactionOverallStatsModelFnSpan("backfill", () => {
-            return prisma.$executeRaw`
-              INSERT INTO "TransactionOverallStats" (
-                id,
-                "totalTransactions",
-                "totalUniqueReceivers",
-                "totalUniqueSenders",
-                "updatedAt"
-              )
-              SELECT
-                1 AS id,
-                COUNT("hash")::INT AS "totalTransactions",
-                COUNT(DISTINCT "toId")::INT AS "totalUniqueReceivers",
-                COUNT(DISTINCT "fromId")::INT AS "totalUniqueSenders",
-                NOW() AS "updatedAt"
-              FROM "Transaction"
-              ON CONFLICT (id) DO UPDATE SET
-                "totalTransactions" = EXCLUDED."totalTransactions",
-                "totalUniqueReceivers" = EXCLUDED."totalUniqueReceivers",
-                "totalUniqueSenders" = EXCLUDED."totalUniqueSenders",
-                "updatedAt" = EXCLUDED."updatedAt"
-            `;
-          });
+          return prisma.$executeRaw`
+            INSERT INTO "TransactionOverallStats" (
+              id,
+              "totalTransactions",
+              "totalUniqueReceivers",
+              "totalUniqueSenders",
+              "updatedAt"
+            )
+            SELECT
+              1 AS id,
+              COUNT("hash")::INT AS "totalTransactions",
+              COUNT(DISTINCT "toId")::INT AS "totalUniqueReceivers",
+              COUNT(DISTINCT "fromId")::INT AS "totalUniqueSenders",
+              NOW() AS "updatedAt"
+            FROM "Transaction"
+            ON CONFLICT (id) DO UPDATE SET
+              "totalTransactions" = EXCLUDED."totalTransactions",
+              "totalUniqueReceivers" = EXCLUDED."totalUniqueReceivers",
+              "totalUniqueSenders" = EXCLUDED."totalUniqueSenders",
+              "updatedAt" = EXCLUDED."updatedAt"
+          `;
         },
         increment({ from, to }: BlockNumberRange) {
-          return startTransactionOverallStatsModelFnSpan("increment", () => {
-            return prisma.$executeRaw`
+          return prisma.$executeRaw`
               INSERT INTO "TransactionOverallStats" AS stats (
                 id,
                 "totalTransactions",
@@ -280,7 +256,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 "totalUniqueSenders" = stats."totalUniqueSenders" + EXCLUDED."totalUniqueSenders",
                 "updatedAt" = EXCLUDED."updatedAt"
             `;
-          });
         },
       },
     },

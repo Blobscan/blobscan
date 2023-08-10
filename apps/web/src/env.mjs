@@ -15,7 +15,7 @@ export const env = createEnv({
       "http://localhost:5052"
     ),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    TRACES_ENABLED: booleanSchema(),
+    TRACES_ENABLED: optionalStringSchema(booleanSchema(), false),
   },
   /**
    * Specify your client-side environment variables schema here.
