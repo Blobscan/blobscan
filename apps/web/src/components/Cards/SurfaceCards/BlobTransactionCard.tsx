@@ -157,9 +157,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <div></div>
               <div className="font-semibold">Versioned Hash</div>
               {blobs.map((b) => (
-                <React.Fragment key={`${hash}-${b.index}`}>
-                  <div key={`${hash}-${b.index}`}>
-                    <Link href={buildBlobRoute(hash, b.index)}>
+                <React.Fragment key={`${b.blobHash}-${b.index}`}>
+                  <div>
+                    <Link href={buildBlobRoute(b.blobHash)}>
                       Blob {b.index}
                     </Link>
                   </div>

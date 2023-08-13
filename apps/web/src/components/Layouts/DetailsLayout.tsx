@@ -6,7 +6,7 @@ import type { InfoGridProps } from "~/components/InfoGrid";
 import { Card } from "../Cards/Card";
 import { Link } from "../Link";
 
-type DetailsLayoutProps = {
+export type DetailsLayoutProps = {
   children?: ReactNode;
   header: ReactNode;
   fields: InfoGridProps["fields"];

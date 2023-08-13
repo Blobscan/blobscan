@@ -10,49 +10,22 @@ export const blobSelect = Prisma.validator<Prisma.BlobSelect>()({
       blobStorage: true,
     },
   },
-  transactions: {
+});
+
+export const fullBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
+  versionedHash: true,
+  commitment: true,
+  size: true,
+  dataStorageReferences: {
     select: {
-      index: true,
-      txHash: true,
-      transaction: {
-        select: {
-          blockNumber: true,
-          block: {
-            select: {
-              timestamp: true,
-            },
-          },
-        },
-      },
+      blobStorage: true,
+      dataReference: true,
+    },
+  },
+  firstBlock: {
+    select: {
+      number: true,
+      timestamp: true,
     },
   },
 });
-
-export const blobsOnTransactionsSelect =
-  Prisma.validator<Prisma.BlobsOnTransactionsSelect>()({
-    blobHash: true,
-    txHash: true,
-    index: true,
-    blob: {
-      select: {
-        commitment: true,
-        size: true,
-        dataStorageReferences: {
-          select: {
-            blobStorage: true,
-            dataReference: true,
-          },
-        },
-      },
-    },
-    transaction: {
-      select: {
-        blockNumber: true,
-        block: {
-          select: {
-            timestamp: true,
-          },
-        },
-      },
-    },
-  });

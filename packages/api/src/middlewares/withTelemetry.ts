@@ -17,7 +17,7 @@ function getProcedureFromUrl(url: string) {
   return procedure;
 }
 export const withTelemetry = t.middleware(({ ctx: { req }, next }) => {
-  const procedureName = getProcedureFromUrl(req.url ?? "");
+  const procedureName = req?.url ? getProcedureFromUrl(req.url) : "unknown";
   const spanOptions: api.SpanOptions = {};
   let spanName: string;
 

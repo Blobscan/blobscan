@@ -11,15 +11,10 @@ import { Card } from "~/components/Cards/Card";
 import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
+import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
-import { Link } from "~/components/Link";
 import { api } from "~/api-client";
-import {
-  buildBlockRoute,
-  buildTransactionRoute,
-  bytesToKilobytes,
-  formatTimestamp,
-} from "~/utils";
+import { bytesToKilobytes, formatTimestamp } from "~/utils";
 
 type BlobViewMode = "Original" | "UTF-8";
 
@@ -36,18 +31,16 @@ function formatBlob(blob: string, viewMode: BlobViewMode): string {
   }
 }
 
-const Blob: NextPage = () => {
+const Blob: NextPage = function () {
   const router = useRouter();
-  const index = (router.query.index as string | undefined) ?? "0";
-  const txHash = (router.query.hash as string | undefined) ?? "";
+  const versionedHash = (router.query.hash as string | undefined) ?? "0";
   const {
     data: blob,
     error,
     isLoading,
-  } = api.blob.getByIndex.useQuery(
+  } = api.blob.getByVersionedHash.useQuery(
     {
-      index: parseInt(index),
-      txHash,
+      versionedHash,
     },
     {
       enabled: router.isReady,
@@ -82,44 +75,43 @@ const Blob: NextPage = () => {
     return <>Blob not found</>;
   }
 
+  const swarmHash = blob?.dataStorageReferences.find(
+    (ref) => ref.blobStorage === "SWARM"
+  )?.dataReference;
+
+  const detailsFields: DetailsLayoutProps["fields"] = [];
+
+  if (blob) {
+    detailsFields.push(
+      { name: "Versioned Hash", value: blob.versionedHash },
+      { name: "Commitment", value: blob.commitment },
+      { name: "Size", value: `${bytesToKilobytes(blob.size)} KB` }
+    );
+
+    if (blob.firstBlock) {
+      detailsFields.push({
+        name: "Timestamp",
+        value: (
+          <div className="whitespace-break-spaces">
+            {formatTimestamp(blob.firstBlock.timestamp)}
+          </div>
+        ),
+      });
+    }
+
+    if (swarmHash) {
+      detailsFields.push({
+        name: "Swarm Hash",
+        value: swarmHash,
+      });
+    }
+  }
+
   return (
     <>
       <DetailsLayout
         header="Blob Details"
-        fields={
-          blob
-            ? [
-                { name: "Versioned Hash", value: blob.versionedHash },
-                { name: "Commitment", value: blob.commitment },
-                { name: "Size", value: `${bytesToKilobytes(blob.size)} KB` },
-                {
-                  name: "Timestamp",
-                  value: (
-                    <div className="whitespace-break-spaces">
-                      {formatTimestamp(blob.timestamp)}
-                    </div>
-                  ),
-                },
-                {
-                  name: "Block",
-                  value: (
-                    <Link href={buildBlockRoute(blob.blockNumber)}>
-                      {blob.blockNumber}
-                    </Link>
-                  ),
-                },
-                {
-                  name: "Transaction",
-                  value: (
-                    <Link href={buildTransactionRoute(blob.txHash)}>
-                      {blob.txHash}
-                    </Link>
-                  ),
-                },
-                { name: "Index", value: blob.index },
-              ]
-            : undefined
-        }
+        fields={blob ? detailsFields : undefined}
       />
 
       <Card
