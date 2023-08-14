@@ -14,7 +14,7 @@ import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { api } from "~/api-client";
-import { bytesToKilobytes, formatTimestamp } from "~/utils";
+import { bytesToKilobytes } from "~/utils";
 
 type BlobViewMode = "Original" | "UTF-8";
 
@@ -87,17 +87,6 @@ const Blob: NextPage = function () {
       { name: "Commitment", value: blob.commitment },
       { name: "Size", value: `${bytesToKilobytes(blob.size)} KB` }
     );
-
-    if (blob.firstBlock) {
-      detailsFields.push({
-        name: "Timestamp",
-        value: (
-          <div className="whitespace-break-spaces">
-            {formatTimestamp(blob.firstBlock.timestamp)}
-          </div>
-        ),
-      });
-    }
 
     if (swarmHash) {
       detailsFields.push({
