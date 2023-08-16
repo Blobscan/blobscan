@@ -15,7 +15,7 @@ function ExplorerDetailsItem({ name, value }: InfoBarItemProps) {
   return (
     <div className="space-x-1">
       <span>{name}:</span>
-      {typeof value !== undefined ? (
+      {value !== undefined ? (
         <span className="font-semibold">{value}</span>
       ) : (
         <Skeleton width={50} />

@@ -3,9 +3,9 @@ import React from "react";
 import { ThemeModeButton } from "~/components/ThemeModeButton";
 import { useIsHomepage } from "~/hooks/useIsHomePage";
 import { ExplorerDetails } from "../../ExplorerDetails";
+import { NavMenusSection } from "../../NavMenusSection";
 import { DesktopNav } from "./DesktopTopBar";
 import { MobileNav } from "./MobileTopBar";
-import { NavMenusSection } from "./NavMenusSection";
 
 export const TopBarLayout: React.FC = () => {
   const isHomepage = useIsHomepage();

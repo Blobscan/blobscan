@@ -1,8 +1,8 @@
 import { Logo } from "../../BlobscanLogo";
 import { ExplorerDetails } from "../../ExplorerDetails";
+import { NavMenusSection } from "../../NavMenusSection";
 import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
-import { NavMenusSection } from "./NavMenusSection";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const DesktopNav: React.FC = () => {
