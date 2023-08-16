@@ -17,13 +17,7 @@ export function getRouteBySearchCategory(
     case "address":
       return buildAddressRoute(id);
     case "blob": {
-      const [txHash, txIndex] = id.split("-");
-
-      if (!txHash || !txIndex) {
-        return "";
-      }
-
-      return buildBlobRoute(txHash, txIndex);
+      return buildBlobRoute(id);
     }
     case "block":
     case "slot":

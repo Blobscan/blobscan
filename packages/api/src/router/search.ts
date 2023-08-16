@@ -9,34 +9,11 @@ import {
   isHash,
 } from "../utils/search";
 
-type HashResponse = {
-  entity: string;
-  hash: string;
-  index?: number;
-  txHash?: string;
-};
-
 type SearchCategory = "address" | "blob" | "block" | "slot" | "transaction";
 
 type SearchOutput = {
   [K in SearchCategory]?: { id: string }[];
 };
-
-function entityToCategory(entity: string): SearchCategory {
-  switch (entity) {
-    case "Blob":
-    case "BlobsOnTransactions":
-      return "blob";
-    case "Block":
-      return "block";
-    case "Slot":
-      return "slot";
-    case "Transaction":
-      return "transaction";
-    default:
-      throw new Error(`Unknown entity ${entity}`);
-  }
-}
 
 export const searchRouter = createTRPCRouter({
   byTerm: publicProcedure
@@ -55,59 +32,47 @@ export const searchRouter = createTRPCRouter({
       }
 
       if (isCommitment(term)) {
-        const blobs = await ctx.prisma.blobsOnTransactions.findMany({
-          select: { index: true, txHash: true },
+        const blobResult = await ctx.prisma.blob.findUnique({
+          select: { versionedHash: true },
           where: {
-            blob: {
-              commitment: term,
-            },
+            commitment: term,
           },
         });
 
-        return {
-          blob: blobs.map((blob) => ({
-            id: `${blob.txHash}-${blob.index}`,
-          })),
-        };
+        if (blobResult) {
+          return {
+            blob: [{ id: blobResult.versionedHash }],
+          };
+        }
       }
 
       if (isHash(term)) {
-        const response = await ctx.prisma.$queryRaw<HashResponse[]>`
-          SELECT
-            'BlobsOnTransactions' AS entity,
-            "blobHash" AS hash,
-            "index",
-            "txHash"
-          FROM
-            "BlobsOnTransactions"
-          WHERE
-            "blobHash" = ${term}
-            
-          UNION
+        const [blobResult, txResult] = await Promise.all([
+          ctx.prisma.blob.findUnique({
+            select: { versionedHash: true },
+            where: {
+              versionedHash: term,
+            },
+          }),
+          ctx.prisma.transaction.findUnique({
+            select: { hash: true },
+            where: {
+              hash: term,
+            },
+          }),
+        ]);
 
-          SELECT
-            'Transaction' AS entity,
-            "hash" AS hash,
-            NULL AS index,
-            NULL AS txHash
-          FROM
-            "Transaction" "t"
-          WHERE
-            "hash" = ${term}
-        `;
+        if (blobResult) {
+          return {
+            blob: [{ id: blobResult.versionedHash }],
+          };
+        }
 
-        return response.reduce<SearchOutput>((output, el) => {
-          const category = entityToCategory(el.entity);
-          const id =
-            el.txHash && el.index !== undefined
-              ? `${el.txHash}-${el.index}`
-              : el.hash;
-          const searchElement = { id };
-
-          output[category] = [...(output[category] || []), searchElement];
-
-          return output;
-        }, {});
+        if (txResult) {
+          return {
+            transaction: [{ id: txResult.hash }],
+          };
+        }
       }
 
       if (isBlockNumber(term)) {

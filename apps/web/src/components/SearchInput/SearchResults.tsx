@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { CpuChipIcon, CubeIcon } from "@heroicons/react/24/solid";
+import { CpuChipIcon, CubeIcon, DocumentIcon } from "@heroicons/react/24/solid";
 
 import type { RouterOutputs } from "~/api-client";
 import { capitalize } from "~/utils";
@@ -17,16 +17,31 @@ type SearchResultItemProps = {
   onClick(category: SearchCategory, id: string): void;
 };
 
-function typeToIcon(type: SearchCategory) {
-  const className = "h-4 w-4  text-icon-light dark:text-icon-dark";
+type CategoryInfo = {
+  icon?: React.ReactNode;
+  label?: string;
+};
+
+function getCategoryInfo(type: SearchCategory): CategoryInfo | undefined {
+  const categoryIconClassName = "h-4 w-4  text-icon-light dark:text-icon-dark";
+
   switch (type) {
+    case "transaction":
+      return {
+        icon: <DocumentIcon className={categoryIconClassName} />,
+      };
     case "blob":
-      return <CpuChipIcon className={className} />;
+      return {
+        icon: <CpuChipIcon className={categoryIconClassName} />,
+      };
     case "block":
     case "slot":
-      return <CubeIcon className={className} />;
+      return {
+        icon: <CubeIcon className={categoryIconClassName} />,
+        label: "Block",
+      };
     default:
-      return null;
+      return;
   }
 }
 
@@ -35,24 +50,21 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
   category,
   onClick,
 }) {
+  const { icon, label } = getCategoryInfo(category) || {};
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
     <div className="flex flex-col" onClick={() => onClick(category, id)}>
       <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md py-2 pl-1 pr-3 text-sm text-contentSecondary-light transition-colors hover:bg-primary-100 dark:text-contentSecondary-dark hover:dark:bg-primary-800/20">
         <div className="flex w-11/12 items-center gap-2">
-          {typeToIcon(category)}
-          {category === "blob" ? (
-            <div className="flex truncate">
-              <div className="whitespace-nowrap">Blob {id.split("-")[1]}</div>
-              <span className="mx-1 inline-block">･</span>
-              <span className="truncate">Tx: {id.split("-")[0]}</span>
-            </div>
-          ) : (
-            <span className="flex truncate">
-              {category === "slot" && <div className="mr-1">Block</div>}
-              {id}
-            </span>
-          )}
+          {icon}
+          <span className="flex truncate">
+            {label && (
+              <div className="mr-1 text-content-light dark:text-content-dark">
+                {label}
+              </div>
+            )}
+            {id}
+          </span>
         </div>
         <ChevronRightIcon className="inline-block h-4 w-4 text-icon-light dark:text-icon-dark" />
       </div>

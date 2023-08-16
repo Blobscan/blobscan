@@ -9,13 +9,11 @@ import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlobCardProps = Partial<{
-  blob: Transaction["blobs"][0];
-  txHash: string;
+  blobOnTx: Transaction["blobs"][0];
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blob: { index, blobHash: versionedHash, blob } = {},
-  txHash,
+  blobOnTx: { blobHash: versionedHash, blob, index } = {},
 }) => {
   const isIndexDefined = index !== undefined;
 
@@ -23,24 +21,18 @@ const BlobCard: FC<BlobCardProps> = ({
     <SurfaceCardBase>
       <div className="space-y-2 text-sm">
         <div className="font-semibold">
-          {isIndexDefined && txHash ? (
-            <Link
-              href={
-                isIndexDefined && txHash ? buildBlobRoute(txHash, index) : ""
-              }
-            >
-              Blob #{index}
-            </Link>
-          ) : (
-            <Skeleton width={70} />
-          )}
+          {isIndexDefined ? `Blob #${index}` : <Skeleton width={70} />}
         </div>
         <div className="flex flex-col gap-1">
           <div className="font-semibold">
             {versionedHash ? "Versioned Hash" : <Skeleton width={120} />}
           </div>
           <div className="truncate">
-            {versionedHash ?? <Skeleton width={400} />}
+            {versionedHash ? (
+              <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
+            ) : (
+              <Skeleton width={400} />
+            )}
           </div>
         </div>
         <div>

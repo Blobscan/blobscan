@@ -8,7 +8,7 @@ import {
   withPagination,
 } from "../middlewares/withPagination";
 import { publicProcedure } from "../procedures";
-import { blobSelect, blobsOnTransactionsSelect } from "../queries/blob";
+import { blobSelect, fullBlobSelect } from "../queries/blob";
 import { createTRPCRouter } from "../trpc";
 
 export const blobRouter = createTRPCRouter({
@@ -29,28 +29,28 @@ export const blobRouter = createTRPCRouter({
         totalBlobs,
       };
     }),
-  getByIndex: publicProcedure
+  getByVersionedHash: publicProcedure
     .input(
       z.object({
-        txHash: z.string(),
-        index: z.number(),
+        versionedHash: z.string(),
       })
     )
     .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
-      const { txHash, index } = input;
-      const blobOnTransaction = await prisma.blobsOnTransactions.findUnique({
-        select: blobsOnTransactionsSelect,
-        where: { txHash_index: { txHash, index } },
+      const { versionedHash } = input;
+      const blob = await prisma.blob.findUnique({
+        select: fullBlobSelect,
+        where: {
+          versionedHash,
+        },
       });
 
-      if (!blobOnTransaction) {
+      if (!blob) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `No blob with tx hash ${txHash} and index ${index}`,
+          message: `No blob with hash ${versionedHash} found`,
         });
       }
 
-      const { blob, blobHash, transaction } = blobOnTransaction;
       const blobReferences = blob.dataStorageReferences.map<BlobReference>(
         ({ blobStorage, dataReference }) => ({
           storage: blobStorage,
@@ -72,24 +72,18 @@ export const blobRouter = createTRPCRouter({
       }
 
       if (!blobData) {
-        const uris = blobReferences
+        const storageReferences = blobReferences
           .map(({ reference, storage }) => `${storage}:${reference}`)
           .join(", ");
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `No blob data found on the following storage URIs: ${uris}`,
+          message: `No blob data found on the following storage references: ${storageReferences}`,
         });
       }
 
       return {
-        versionedHash: blobHash,
-        txHash,
-        index,
-        blockNumber: transaction.blockNumber,
-        timestamp: transaction.block.timestamp,
-        commitment: blob.commitment,
-        data: blobData.data.toString(),
-        size: blob.size,
+        ...blob,
+        data: blobData.data,
       };
     }),
 });

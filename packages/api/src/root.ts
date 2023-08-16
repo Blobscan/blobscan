@@ -7,6 +7,7 @@ import { blockRouter } from "./router/block";
 import { indexerRouter } from "./router/indexer";
 import { searchRouter } from "./router/search";
 import { statsRouter } from "./router/stats";
+import { syncStateRouter } from "./router/sync-state";
 import { transactionRouter } from "./router/tx";
 import { createTRPCRouter } from "./trpc";
 
@@ -30,6 +31,7 @@ export const appRouter = createTRPCRouter({
   search: searchRouter,
   indexer: indexerRouter,
   stats: statsRouter,
+  syncState: syncStateRouter,
 });
 
 // export type definition of API

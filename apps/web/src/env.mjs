@@ -22,6 +22,7 @@ export const env = createEnv({
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
+    NEXT_PUBLIC_NETWORK_NAME: z.string(),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z.string().url(),
     NEXT_PUBLIC_BEACON_BASE_URL: z.string().url(),
   },
@@ -32,6 +33,7 @@ export const env = createEnv({
     BEACON_NODE_ENDPOINT: process.env.BEACON_NODE_ENDPOINT,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     TRACES_ENABLED: process.env.TRACES_ENABLED,

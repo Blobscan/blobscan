@@ -2,8 +2,8 @@ export function buildAddressRoute(address: string) {
   return `/address/${address}`;
 }
 
-export function buildBlobRoute(txHash: string, blobIndex: number | string) {
-  return `/tx/${txHash}/blob/${blobIndex}`;
+export function buildBlobRoute(versionedHash: string) {
+  return `/blob/${versionedHash}`;
 }
 
 export function buildBlockRoute(blockNumberOrHash: string | number) {
