@@ -11,7 +11,6 @@ export const syncStateRouter = createTRPCRouter({
       where: { id: 1 },
     });
 
-    console.log(syncState);
     return (
       syncState ?? {
         lastFinalizedBlock: 0,

@@ -25,7 +25,6 @@ export const searchRouter = createTRPCRouter({
     .query<SearchOutput>(async ({ ctx, input }) => {
       const { term } = input;
 
-      console.log('here')
       if (isAddress(term)) {
         return {
           address: [{ id: term }],
@@ -47,9 +46,7 @@ export const searchRouter = createTRPCRouter({
         }
       }
 
-      console.log("before hash check");
       if (isHash(term)) {
-        console.log("after hash check");
         const [blobResult, txResult] = await Promise.all([
           ctx.prisma.blob.findUnique({
             select: { versionedHash: true },
