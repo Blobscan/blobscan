@@ -120,22 +120,23 @@ Below you can find a list of supported variables:
 
 ### Blobscan Website
 
-| Env variable                    | Description             | Default value                                                            |
-| ------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
-| `DATABASE_URL`                  | Postgresql database URI | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public` |
-| `NEXTAUTH_URL`                  | -                       | `http://localhost:3000`                                                  |
-| `SECRET_KEY`                    | Shared key used for JWT | `supersecret`                                                            |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                       | `http://134.209.87.158:8080/`                                            |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer          | `https://explorer.4844-devnet-7.ethpandaops.io/`                         |
-| `NODE_ENV`                      | -                       | ``                                                                       |
+| Env variable                    | Description               | Default value                                                            |
+| ------------------------------- | ------------------------- | ------------------------------------------------------------------------ |
+| `DATABASE_URL`                  | Postgresql database URI   | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public` |
+| `NEXTAUTH_URL`                  | -                         | `http://localhost:3000`                                                  |
+| `SECRET_KEY`                    | Shared key used for JWT   | `supersecret`                                                            |
+| `NEXT_PUBLIC_NETWORK_NAME`      | The explorer chain's name |                                                                          |
+| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                         | `http://134.209.87.158:8080/`                                            |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer            | `https://explorer.4844-devnet-7.ethpandaops.io/`                         |
+| `NODE_ENV`                      | -                         | ``                                                                       |
 
 ### Blobscan API
 
-| Env variable                  | Description                            | Default value           |
-| ----------------------------- | -------------------------------------- | ----------------------- |
-| `BLOBSCAN_API_PORT`           | Blobscan API will listen on this port  | `3001`                  |
-| `BEACON_NODE_ENDPOINT`        | Beacon node endpoint                   | `http://localhost:3500` |
-| `CHAIN_ID`                    | EVM chain id                           | `7011893055`            |
+| Env variable           | Description                           | Default value           |
+| ---------------------- | ------------------------------------- | ----------------------- |
+| `BLOBSCAN_API_PORT`    | Blobscan API will listen on this port | `3001`                  |
+| `BEACON_NODE_ENDPOINT` | Beacon node endpoint                  | `http://localhost:3500` |
+| `CHAIN_ID`             | EVM chain id                          | `7011893055`            |
 
 ### Telemetry (metrics and traces)
 
@@ -152,20 +153,20 @@ Below you can find a list of supported variables:
 
 Blobscan can be configured to use any of the following blob storages:
 
-* Postgres
-* Google Cloud Storage
-* Ethereum Swarm
+- Postgres
+- Google Cloud Storage
+- Ethereum Swarm
 
 **Postgres**
 
-| Env variable                  | Description                                        | Default value |
-| ----------------------------- | -------------------------------------------------- | --------------|
-| `POSTGRES_STORAGE_ENABLED`    | Store blobs in postgres database (default storage) | `true`        |
+| Env variable               | Description                                        | Default value |
+| -------------------------- | -------------------------------------------------- | ------------- |
+| `POSTGRES_STORAGE_ENABLED` | Store blobs in postgres database (default storage) | `true`        |
 
 **Google Cloud Storage**
 
 | Env variable                  | Description                                 | Default value |
-| ----------------------------- | --------------------------------------------| ------------- |
+| ----------------------------- | ------------------------------------------- | ------------- |
 | `GOOGLE_STORAGE_ENABLED`      | Store blobs in GCS                          | `false`       |
 | `GOOGLE_STORAGE_BUCKET_NAME`  | GCS bucket name                             |               |
 | `GOOGLE_STORAGE_PROJECT_ID`   | GCS project ID                              |               |
@@ -179,7 +180,6 @@ Blobscan can be configured to use any of the following blob storages:
 | `SWARM_STORAGE_ENABLED` | Store blobs in Swarm | `false`                 |
 | `BEE_ENDPOINT`          | Bee endpoint         | `http://localhost:1633` |
 | `BEE_DEBUG_ENDPOINT`    | Bee debug endpoint   | `http://localhost:1635` |
-
 
 # About Blossom Labs
 
