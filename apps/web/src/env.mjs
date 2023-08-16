@@ -22,7 +22,7 @@ export const env = createEnv({
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_NETWORK_NAME: z.string().optional(),
+    NEXT_PUBLIC_NETWORK_NAME: z.string(),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z.string().url(),
     NEXT_PUBLIC_BEACON_BASE_URL: z.string().url(),
   },
