@@ -137,6 +137,17 @@ export class DataGenerator {
     return timestamps.map<Prisma.BlockCreateManyInput>((timestamp) => {
       const number = prevBlockNumber + faker.number.int({ min: 1, max: 20 });
       const slot = prevSlot + faker.number.int({ min: 1, max: 10 });
+      const txsCount = faker.number.int({
+        min: 1,
+        max: this.#seedParams.maxBlobsPerBlock,
+      });
+      const blobGasUsed = faker.number.int({
+        min: this.#seedParams.gasPerBlob * txsCount,
+      });
+      const excessBlobGas = faker.number.int({
+        min: 15_000_000,
+        max: 20_000_000,
+      });
 
       prevBlockNumber = number;
       prevSlot = slot;
@@ -146,6 +157,9 @@ export class DataGenerator {
         number,
         timestamp,
         slot,
+        blobAsCalldataGasUsed: 0,
+        blobGasUsed,
+        excessBlobGas,
         insertedAt: now,
         updatedAt: now,
       };
@@ -211,6 +225,18 @@ export class DataGenerator {
           uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
         const to =
           uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
+        const blobGasPrice = faker.number.bigInt({
+          min: this.#seedParams.minBlobGasPrice,
+          max: this.#seedParams.maxBlobGasPrice,
+        });
+        const gasPrice = faker.number.bigInt({
+          min: this.#seedParams.minGasPrice,
+          max: this.#seedParams.maxGasPrice,
+        });
+        const maxFeePerBlobGas = faker.number.bigInt({
+          min: 0,
+          max: this.#seedParams.maxFeePerBlobGas,
+        });
 
         // Unreachable code, done only for type checking
         if (!from || !to) throw new Error("Address not found");
@@ -220,10 +246,29 @@ export class DataGenerator {
           fromId: from,
           toId: to,
           blockNumber: block.number,
+          blobAsCalldataGasUsed: 0,
+          blobGasPrice,
+          gasPrice,
+          maxFeePerBlobGas,
           insertedAt: now,
           updatedAt: now,
         };
       });
     });
+  }
+
+  calculateEIP2028GasCost(hexData: string): number {
+    const bytes = Buffer.from(hexData.slice(2), "hex");
+    let gasCost = 0;
+
+    for (const byte of bytes.entries()) {
+      if (byte[1] === 0) {
+        gasCost += 4;
+      } else {
+        gasCost += 16;
+      }
+    }
+
+    return gasCost;
   }
 }
