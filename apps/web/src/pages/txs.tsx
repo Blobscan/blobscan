@@ -39,6 +39,7 @@ const Txs: NextPage = function () {
       page={p}
       pageSize={ps}
       itemSkeleton={<BlobTransactionCard />}
+      emptyState="No blob transactions"
     />
   );
 };

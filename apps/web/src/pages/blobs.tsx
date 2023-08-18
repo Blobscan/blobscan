@@ -37,6 +37,7 @@ const Blobs: NextPage = function () {
       page={p}
       pageSize={ps}
       itemSkeleton={<BlobCard />}
+      emptyState="No blobs"
     />
   );
 };

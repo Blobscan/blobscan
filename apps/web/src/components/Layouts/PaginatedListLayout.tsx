@@ -17,6 +17,7 @@ export type PaginatedListLayoutProps = {
   page: number;
   pageSize: number;
   itemSkeleton: ReactNode;
+  emptyState?: ReactNode;
 };
 
 const PAGE_SIZES = [10, 25, 50, 100];
@@ -29,6 +30,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   page,
   pageSize,
   itemSkeleton,
+  emptyState = "No items",
 }) {
   const router = useRouter();
   const pages = totalItems ? Math.ceil(totalItems / pageSize) : undefined;
@@ -86,7 +88,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
             </div>
           ) : undefined
         }
-        emptyState="No blocks"
+        emptyState={emptyState}
       >
         {hasItems ? (
           <div className="flex flex-col gap-6">

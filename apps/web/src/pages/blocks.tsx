@@ -37,6 +37,7 @@ const Blocks: NextPage = function () {
       page={p}
       pageSize={ps}
       itemSkeleton={<BlockCard />}
+      emptyState="No blocks"
     />
   );
 };
