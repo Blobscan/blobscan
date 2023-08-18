@@ -8,7 +8,7 @@ import {
 const envSchema = createEnvSchema({
   BEE_DEBUG_ENDPOINT: { schema: z.string().url(), optional: true },
   BEE_ENDPOINT: { schema: z.string().url(), optional: true },
-  CHAIN_ID: { schema: chainIdSchema(), default: 7011893055 },
+  CHAIN_ID: { schema: chainIdSchema(), default: 7011893058 },
   GOOGLE_STORAGE_BUCKET_NAME: { optional: true },
   GOOGLE_STORAGE_PROJECT_ID: { optional: true },
   GOOGLE_SERVICE_KEY: { optional: true },
