@@ -1,5 +1,5 @@
-#FROM node:18-alpine as builder
-FROM node:18-alpine
+#FROM node:20-alpine as builder
+FROM node:20-alpine
 
 RUN apk add bash curl
 
