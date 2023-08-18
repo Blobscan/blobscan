@@ -17,7 +17,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed/main.ts"
+    "seed": "ts-node-esm prisma/seed/main.ts"
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",

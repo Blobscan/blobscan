@@ -5,10 +5,10 @@
   "scripts": {
     "clean": "git clean -xdf node_modules",
     "dev": "pnpm run init:bucket && pnpm with-env ts-node-dev --require ./api/instrumentation.ts --respawn --transpile-only --exit-child ./api/index.ts",
-    "start": "pnpm with-env ts-node --require ./api/instrumentation.ts api/index.ts",
+    "start": "pnpm with-env ts-node-esm --require ./api/instrumentation.ts api/index.ts",
     "profile": "pnpm with-env node -r ts-node/register --prof --require ./api/instrumentation.ts api/index.ts",
     "with-env": "dotenv -e ../../.env --",
-    "init:bucket": "pnpm with-env ts-node ../../scripts/init-bucket.ts",
+    "init:bucket": "pnpm with-env ts-node-esm ../../scripts/init-bucket.ts",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
