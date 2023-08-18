@@ -14,8 +14,6 @@ on:
 env:
   CHAIN_ID: "7011893055"
   GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
-  SKIP_ENV_VALIDATION: true
-  CI: "true"
 
 jobs:
   docker:
