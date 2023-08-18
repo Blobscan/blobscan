@@ -1,5 +1,5 @@
-const MIN_DATA_GASPRICE = 1;
-const DATA_GASPRICE_UPDATE_FRACTION = 3_338_477;
+const MIN_BLOB_GASPRICE = 1;
+const BLOB_GASPRICE_UPDATE_FRACTION = 3_338_477;
 
 export const GAS_PER_BLOB = 2 ** 17; // 131072
 
@@ -45,9 +45,9 @@ export function calculateBlobSize(blob: string): number {
 export function calculateBlobGasPrice(excessDataGas: bigint): bigint {
   return BigInt(
     fakeExponential(
-      BigInt(MIN_DATA_GASPRICE),
+      BigInt(MIN_BLOB_GASPRICE),
       excessDataGas,
-      BigInt(DATA_GASPRICE_UPDATE_FRACTION)
+      BigInt(BLOB_GASPRICE_UPDATE_FRACTION)
     )
   );
 }

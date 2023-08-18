@@ -3,7 +3,6 @@ import { env } from "./env";
 import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
 
 let blobStorageManager: BlobStorageManager | undefined;
-console.log(env);
 
 async function createOrLoadBlobStorageManager(): Promise<BlobStorageManager> {
   if (!blobStorageManager) {
