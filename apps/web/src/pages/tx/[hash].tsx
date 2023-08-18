@@ -12,6 +12,9 @@ import {
   buildBlockRoute,
   buildTransactionExternalUrl,
   formatTimestamp,
+  GAS_PER_BLOB,
+  formatWei,
+  calculateBlobGasPrice,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -38,6 +41,12 @@ const Tx: NextPage = () => {
   }
 
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
+  const blobGasPrice = txData
+    ? calculateBlobGasPrice(txData.block.excessBlobGas)
+    : BigInt(0);
+  const blobGasUsed = txData
+    ? BigInt(txData.blobs.length) * GAS_PER_BLOB
+    : BigInt(0);
 
   return (
     <>
@@ -62,7 +71,7 @@ const Tx: NextPage = () => {
                   name: "Timestamp",
                   value: (
                     <div className="whitespace-break-spaces">
-                      {formatTimestamp(txData.timestamp)}
+                      {formatTimestamp(txData.block.timestamp)}
                     </div>
                   ),
                 },
@@ -74,18 +83,41 @@ const Tx: NextPage = () => {
                     </Link>
                   ),
                 },
-                ...(txData.toId
-                  ? [
-                      {
-                        name: "To",
-                        value: (
-                          <Link href={buildAddressRoute(txData.toId)}>
-                            {txData.toId}
-                          </Link>
-                        ),
-                      },
-                    ]
-                  : []),
+                {
+                  name: "To",
+                  value: (
+                    <Link href={buildAddressRoute(txData.toId)}>
+                      {txData.toId}
+                    </Link>
+                  ),
+                },
+                {
+                  name: "Blob Fee",
+                  value: (
+                    <div className="flex gap-4">
+                      <div>
+                        <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                          Base:
+                        </span>
+                        {formatWei(blobGasPrice * blobGasUsed)}
+                      </div>
+                      <div>
+                        <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                          Max:
+                        </span>
+                        {formatWei(txData.maxFeePerBlobGas * blobGasUsed)}
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  name: "Blob Gas Price",
+                  value: formatWei(blobGasPrice),
+                },
+                {
+                  name: "Blob Gas Used",
+                  value: blobGasUsed.toString(),
+                },
               ]
             : undefined
         }

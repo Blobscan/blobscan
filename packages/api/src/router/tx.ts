@@ -79,10 +79,6 @@ export const transactionRouter = createTRPCRouter({
         });
       }
 
-      const { block, ...txBase } = tx;
-      return {
-        ...txBase,
-        timestamp: block.timestamp,
-      };
+      return tx;
     }),
 });
