@@ -8,7 +8,7 @@ ENV CHAIN_ID 7011893055
 ENV GOOGLE_STORAGE_BUCKET_NAME blobscan-staging
 ENV NODE_OPTIONS "--loader ts-node/esm"
 
-RUN npm install -g pnpm@7
+RUN npm install -g pnpm
 WORKDIR /app
 
 # pnpm fetch does require only lockfile
