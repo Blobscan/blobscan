@@ -38,4 +38,8 @@ export const env = createEnv({
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
   },
+  skipValidation:
+    !!process.env.CI ||
+    !!process.env.SKIP_ENV_VALIDATION ||
+    process.env.npm_lifecycle_event === "lint",
 });
