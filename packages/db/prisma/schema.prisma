@@ -102,7 +102,7 @@ model Transaction {
   blobs BlobsOnTransactions[]
   block Block                 @relation(fields: [blockNumber], references: [number])
   from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to    Address?              @relation("receiverAddressRelation", fields: [toId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   @@index([insertedAt])
   @@index([blockNumber])
