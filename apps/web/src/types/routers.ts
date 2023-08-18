@@ -8,6 +8,8 @@ export type Transaction = RouterOutputs["tx"]["getByHash"];
 
 export type AllTransactions = RouterOutputs["tx"]["getAll"];
 
+export type AllBlobs = RouterOutputs["blob"]["getAll"];
+
 export type Blob = RouterOutputs["blob"]["getByVersionedHash"];
 
 export type DailyBlobStats = RouterOutputs["stats"]["blob"]["getDailyStats"];

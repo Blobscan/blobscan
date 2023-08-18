@@ -128,7 +128,14 @@ const Tx: NextPage = () => {
           {isLoading || !txData || !sortedBlobs
             ? Array.from({ length: 2 }).map((_, i) => <BlobCard key={i} />)
             : sortedBlobs.map((b) => (
-                <BlobCard key={b.blobHash} blobOnTx={b} />
+                <BlobCard
+                  key={b.blobHash}
+                  blob={{
+                    commitment: b.blob.commitment,
+                    size: b.blob.size,
+                    versionedHash: b.blobHash,
+                  }}
+                />
               ))}
         </div>
       </Card>

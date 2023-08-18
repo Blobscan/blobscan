@@ -3,45 +3,48 @@ import type { FC } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import type { Transaction } from "~/types";
-import { buildBlobRoute } from "~/utils";
+import type { AllBlobs } from "~/types";
+import { buildBlobRoute, bytesToKilobytes } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlobCardProps = Partial<{
-  blobOnTx: Transaction["blobs"][0];
+  blob: AllBlobs["blobs"][number];
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blobOnTx: { blobHash: versionedHash, blob, index } = {},
+  blob: { versionedHash, commitment, size } = {},
 }) => {
-  const isIndexDefined = index !== undefined;
-
   return (
     <SurfaceCardBase>
-      <div className="space-y-2 text-sm">
-        <div className="font-semibold">
-          {isIndexDefined ? `Blob #${index}` : <Skeleton width={70} />}
-        </div>
-        <div className="flex flex-col gap-1">
-          <div className="font-semibold">
-            {versionedHash ? "Versioned Hash" : <Skeleton width={120} />}
-          </div>
-          <div className="truncate">
-            {versionedHash ? (
+      <div className="flex flex-col gap-2 text-sm">
+        <div>
+          {versionedHash ? (
+            <div className="flex gap-2">
+              <span className="font-bold text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
+                Blob
+              </span>
               <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
-            ) : (
-              <Skeleton width={400} />
-            )}
-          </div>
+            </div>
+          ) : (
+            <Skeleton width={400} />
+          )}
         </div>
         <div>
-          <div className="gap-1 font-semibold">
-            {blob?.commitment ? "Commitment" : <Skeleton width={90} />}
-          </div>
-          <div className="truncate">
-            {blob?.commitment ?? <Skeleton width={700} />}
-          </div>
+          {commitment ? (
+            <div className="truncate text-xs">{commitment}</div>
+          ) : (
+            <Skeleton width={700} />
+          )}
+        </div>
+        <div>
+          {size ? (
+            <div className="flex gap-2">
+              <span>{`${bytesToKilobytes(size)} KB`}</span>
+            </div>
+          ) : (
+            <Skeleton width={120} />
+          )}
         </div>
       </div>
     </SurfaceCardBase>

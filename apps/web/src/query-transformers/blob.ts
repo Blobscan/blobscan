@@ -4,8 +4,27 @@ import type {
   TRPCResult,
   TransformedDailyBlobStats,
   TransformedOverallBlobStats,
+  AllBlobs,
 } from "~/types";
 import { bytesToKilobytes, getDateFromDateTime } from "~/utils";
+
+export function transformBlobsResult({
+  data,
+  isLoading,
+}: TRPCResult<AllBlobs>): AllBlobs | undefined {
+  if (isLoading) {
+    return;
+  }
+
+  if (!data) {
+    return {
+      blobs: [],
+      totalBlobs: 0,
+    };
+  }
+
+  return data;
+}
 
 export function transformOverallBlobStatsResult({
   data,

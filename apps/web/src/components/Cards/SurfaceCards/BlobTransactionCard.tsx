@@ -92,7 +92,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <div className="flex flex-col gap-2 md:flex-row">
                 {hash ? (
                   <>
-                    <div className="font-semibold dark:text-hint-light">
+                    <div className="font-semibold text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
                       Transaction
                     </div>
                     <Link href={buildTransactionRoute(hash)}>{hash}</Link>

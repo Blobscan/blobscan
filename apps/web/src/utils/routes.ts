@@ -14,6 +14,10 @@ export function buildTransactionRoute(hash: string) {
   return `/tx/${hash}`;
 }
 
+export function buildBlobsRoute() {
+  return "/blobs";
+}
+
 export function buildBlocksRoute() {
   return "/blocks";
 }

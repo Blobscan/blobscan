@@ -6,6 +6,7 @@ import {
   buildBlocksRoute,
   buildTransactionStatsRoute,
   buildTransactionsRoute,
+  buildBlobsRoute,
 } from "~/utils";
 import { NavMenuItem } from "./NavMenuItem";
 
@@ -16,6 +17,7 @@ export const NavMenusSection: React.FC = () => {
         label="Blockchain"
         icon={<Squares2X2Icon />}
         items={[
+          { label: "Blobs", href: buildBlobsRoute() },
           { label: "Blocks", href: buildBlocksRoute() },
           { label: "Transactions", href: buildTransactionsRoute() },
         ]}
