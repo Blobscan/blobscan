@@ -55,6 +55,7 @@
     "NEXT_PUBLIC_EXPLORER_BASE_URL",
     "NEXT_RUNTIME",
     "NODE_ENV",
+    "npm_lifecycle_event",
     "METRICS_ENABLED",
     "TRACES_ENABLED",
     "OTEL_EXPORTER_OTLP_PROTOCOL",
