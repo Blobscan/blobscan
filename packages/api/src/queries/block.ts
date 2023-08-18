@@ -5,6 +5,9 @@ const blockSelect = Prisma.validator<Prisma.BlockSelect>()({
   number: true,
   timestamp: true,
   slot: true,
+  blobGasUsed: true,
+  blobAsCalldataGasUsed: true,
+  excessBlobGas: true,
 });
 
 export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({

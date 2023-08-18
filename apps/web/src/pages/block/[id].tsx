@@ -77,6 +77,10 @@ const Block: NextPage = function () {
                     </Link>
                   ),
                 },
+                {
+                  name: "Blob Gas Used",
+                  value: blockData.blobGasUsed.toString(),
+                },
               ]
             : undefined
         }
