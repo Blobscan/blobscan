@@ -12,7 +12,6 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     TRACES_ENABLED: z
       .string()
-      .default("false")
       .refine((s) => s === "true" || s === "false" || s == "")
       .transform((s) => s === "true"),
   },
