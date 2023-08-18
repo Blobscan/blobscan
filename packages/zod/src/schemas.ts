@@ -17,7 +17,6 @@ function defaultTransformer(defaultValue: unknown) {
 export function booleanSchema() {
   return z
     .string()
-    .default("false")
     .refine(
       (s) =>
         s === "true" ||
