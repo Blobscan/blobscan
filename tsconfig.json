@@ -23,6 +23,8 @@
     // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
     "compilerOptions": {
       "module": "commonjs"
-    }
+    },
+    // Tell ts-node CLI to install the --loader automatically
+    "esm": true
   }
 }
