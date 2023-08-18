@@ -1,8 +1,6 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-import { booleanSchema, optionalStringSchema } from "@blobscan/zod";
-
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app isn't
@@ -10,12 +8,13 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    BEACON_NODE_ENDPOINT: optionalStringSchema(
-      z.string().url(),
-      "http://localhost:5052"
-    ),
+    BEACON_NODE_ENDPOINT: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    TRACES_ENABLED: optionalStringSchema(booleanSchema(), false),
+    TRACES_ENABLED: z
+      .string()
+      .default("false")
+      .refine((s) => s === "true" || s === "false" || s == "")
+      .transform((s) => s === "true"),
   },
   /**
    * Specify your client-side environment variables schema here.
@@ -38,4 +37,5 @@ export const env = createEnv({
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
   },
+  skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,
 });

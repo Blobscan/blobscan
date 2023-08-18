@@ -198,9 +198,6 @@ importers:
       '@blobscan/tailwind-config':
         specifier: ^0.0.1
         version: link:../../packages/config/tailwind
-      '@blobscan/zod':
-        specifier: ^0.0.1
-        version: link:../../packages/zod
       '@fontsource/inter':
         specifier: ^4.5.15
         version: 4.5.15

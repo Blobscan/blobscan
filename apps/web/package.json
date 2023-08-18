@@ -18,7 +18,6 @@
     "@blobscan/db": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/tailwind-config": "^0.0.1",
-    "@blobscan/zod": "^0.0.1",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",
     "@headlessui/react": "^1.7.13",
