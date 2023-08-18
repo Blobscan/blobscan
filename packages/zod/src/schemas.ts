@@ -81,6 +81,12 @@ export function chainIdSchema() {
     });
 }
 
+export function stringToBigIntSchema() {
+  return z.string().transform((value) => {
+    return BigInt(value);
+  });
+}
+
 type EnvVarSpec<S extends z.ZodTypeAny = z.ZodTypeAny> = {
   default?: unknown;
   optional?: boolean;

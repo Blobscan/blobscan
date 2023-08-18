@@ -69,12 +69,15 @@ model BlobDataStorageReference {
 }
 
 model Block {
-  hash       String   @id
-  number     Int      @unique
-  timestamp  DateTime @unique
-  slot       Int      @unique
-  insertedAt DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  hash                  String   @id
+  number                Int      @unique
+  timestamp             DateTime @unique
+  slot                  Int      @unique
+  blobGasUsed           BigInt
+  excessBlobGas         BigInt
+  blobAsCalldataGasUsed BigInt
+  insertedAt            DateTime @default(now())
+  updatedAt             DateTime @default(now())
 
   transactions         Transaction[]
   newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
@@ -85,17 +88,21 @@ model Block {
 }
 
 model Transaction {
-  hash        String   @id
-  fromId      String
-  toId        String?
-  blockNumber Int
-  insertedAt  DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  hash                  String   @id
+  fromId                String
+  toId                  String
+  blockNumber           Int
+  maxFeePerBlobGas      BigInt
+  blobGasPrice          BigInt
+  gasPrice              BigInt
+  blobAsCalldataGasUsed BigInt
+  insertedAt            DateTime @default(now())
+  updatedAt             DateTime @default(now())
 
   blobs BlobsOnTransactions[]
   block Block                 @relation(fields: [blockNumber], references: [number])
   from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to    Address?              @relation("receiverAddressRelation", fields: [toId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   @@index([insertedAt])
   @@index([blockNumber])

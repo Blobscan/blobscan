@@ -199,12 +199,27 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       transaction: {
         upsertMany(transactions: Omit<Transaction, OmittableFields>[]) {
           const formattedValues = transactions
-            .map(({ hash, blockNumber, fromId, toId }) => [
-              hash,
-              blockNumber,
-              fromId,
-              toId,
-            ])
+            .map(
+              ({
+                hash,
+                blockNumber,
+                fromId,
+                toId,
+                maxFeePerBlobGas,
+                blobGasPrice,
+                gasPrice,
+                blobAsCalldataGasUsed,
+              }) => [
+                hash,
+                blockNumber,
+                fromId,
+                toId,
+                maxFeePerBlobGas,
+                blobGasPrice,
+                gasPrice,
+                blobAsCalldataGasUsed,
+              ]
+            )
             .map(
               (rowColumns) =>
                 Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
@@ -216,6 +231,10 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             "blockNumber",
             "fromId",
             "toId",
+            "maxFeePerBlobGas",
+            "blobGasPrice",
+            "gasPrice",
+            "blobAsCalldataGasUsed",
             "insertedAt",
             "updatedAt"
           ) VALUES ${Prisma.join(formattedValues)}
@@ -223,6 +242,10 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             "blockNumber" = EXCLUDED."blockNumber",
             "fromId" = EXCLUDED."fromId",
             "toId" = EXCLUDED."toId",
+            "maxFeePerBlobGas" = EXCLUDED."maxFeePerBlobGas",
+            "blobGasPrice" = EXCLUDED."blobGasPrice",
+            "gasPrice" = EXCLUDED."gasPrice",
+            "blobAsCalldataGasUsed" = EXCLUDED."blobAsCalldataGasUsed",
             "updatedAt" = NOW()
         `;
         },
