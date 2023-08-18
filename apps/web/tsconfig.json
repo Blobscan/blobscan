@@ -1,16 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "ESNext",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
     },
     "plugins": [{ "name": "next" }]
-  },
-  "ts-node": {
-      // Tell ts-node CLI to install the --loader automatically
-      "esm": true
   },
   "exclude": [],
   "include": [
