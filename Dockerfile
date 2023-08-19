@@ -4,7 +4,7 @@ FROM node:20-alpine
 RUN apk add bash curl
 
 ENV SECRET_KEY supersecret
-ENV CHAIN_ID 7011893055
+ENV CHAIN_ID 7011893058
 ENV GOOGLE_STORAGE_BUCKET_NAME blobscan-staging
 
 RUN npm install -g pnpm

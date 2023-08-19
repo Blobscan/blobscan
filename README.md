@@ -89,8 +89,9 @@ COMPOSE_FILE=docker-compose.staging.yml
 DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public
 SECRET_KEY=42424242424242424242424242424242
 
+NEXT_PUBLIC_NETWORK_NAME=dencun-devnet-8
 NEXT_PUBLIC_BEACON_BASE_URL=http://134.209.87.158:8080/
-NEXT_PUBLIC_EXPLORER_BASE_URL=https://explorer.4844-devnet-7.ethpandaops.io/
+NEXT_PUBLIC_EXPLORER_BASE_URL=https://explorer.dencun-devnet-8.ethpandaops.io/
 
 ### rest api server
 
@@ -125,9 +126,9 @@ Below you can find a list of supported variables:
 | `DATABASE_URL`                  | Postgresql database URI   | `postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public` |
 | `NEXTAUTH_URL`                  | -                         | `http://localhost:3000`                                                  |
 | `SECRET_KEY`                    | Shared key used for JWT   | `supersecret`                                                            |
-| `NEXT_PUBLIC_NETWORK_NAME`      | The explorer chain's name |                                                                          |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                         | `http://134.209.87.158:8080/`                                            |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer            | `https://explorer.4844-devnet-7.ethpandaops.io/`                         |
+| `NEXT_PUBLIC_NETWORK_NAME`      | Network name              | ``                                                                       |
+| `NEXT_PUBLIC_BEACON_BASE_URL`   | -                         | ``                                                                       |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer URL        | ``                                                                       |
 | `NODE_ENV`                      | -                         | ``                                                                       |
 
 ### Blobscan API
@@ -136,7 +137,7 @@ Below you can find a list of supported variables:
 | ---------------------- | ------------------------------------- | ----------------------- |
 | `BLOBSCAN_API_PORT`    | Blobscan API will listen on this port | `3001`                  |
 | `BEACON_NODE_ENDPOINT` | Beacon node endpoint                  | `http://localhost:3500` |
-| `CHAIN_ID`             | EVM chain id                          | `7011893055`            |
+| `CHAIN_ID`             | EVM chain id                          | `7011893058`            |
 
 ### Telemetry (metrics and traces)
 
