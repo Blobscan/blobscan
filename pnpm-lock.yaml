@@ -198,9 +198,6 @@ importers:
       '@blobscan/tailwind-config':
         specifier: ^0.0.1
         version: link:../../packages/config/tailwind
-      '@blobscan/zod':
-        specifier: ^0.0.1
-        version: link:../../packages/zod
       '@fontsource/inter':
         specifier: ^4.5.15
         version: 4.5.15
@@ -220,8 +217,8 @@ importers:
         specifier: ^9.7.2
         version: 9.7.2(react-dom@18.2.0)(react@18.2.0)
       '@t3-oss/env-nextjs':
-        specifier: ^0.2.1
-        version: 0.2.1(zod@3.21.4)
+        specifier: ^0.6.1
+        version: 0.6.1(typescript@4.9.5)(zod@3.21.4)
       '@tanstack/react-query':
         specifier: ^4.28.0
         version: 4.28.0(react-dom@18.2.0)(react@18.2.0)
@@ -270,6 +267,9 @@ importers:
       superjson:
         specifier: 1.9.1
         version: 1.9.1
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
@@ -2179,20 +2179,24 @@ packages:
       defer-to-connect: 1.1.3
     dev: false
 
-  /@t3-oss/env-core@0.2.1(zod@3.21.4):
-    resolution: {integrity: sha512-aTf/E+t0i7WsHJelg8LaynUVgIXeQdDViIr3LCL8XiE+qzE8vWoTgfc+VML/lBBgE2cbcG2VCBnk45EUCjIRdQ==}
+  /@t3-oss/env-core@0.6.1(typescript@4.9.5)(zod@3.21.4):
+    resolution: {integrity: sha512-KQD7qEDJtkWIWWmTVjNvk0wnHpkvAQ6CRbUxbWMFNG/fiosBQDQvtRpBNu6USxBscJCoC4z6y7P9MN52/mLOzw==}
     peerDependencies:
+      typescript: '>=4.7.2'
       zod: ^3.0.0
     dependencies:
+      typescript: 4.9.5
       zod: 3.21.4
     dev: false
 
-  /@t3-oss/env-nextjs@0.2.1(zod@3.21.4):
-    resolution: {integrity: sha512-fWyoUHrwMz+CuO6lJ7jaWNj76LHminYzA0quYp1wv+8EKjHOuP/zf2k0FDtjnHBs//6K+kpWxttVW2Uby3SuQA==}
+  /@t3-oss/env-nextjs@0.6.1(typescript@4.9.5)(zod@3.21.4):
+    resolution: {integrity: sha512-z1dIC++Vxj9kmzX5nSPfcrCSkszy3dTEPC4Ssx7Ap5AqR3c2Qa7S0xf8axn6coy7D/vCXDAAnHYnCMDhtcY3SQ==}
     peerDependencies:
+      typescript: '>=4.7.2'
       zod: ^3.0.0
     dependencies:
-      '@t3-oss/env-core': 0.2.1(zod@3.21.4)
+      '@t3-oss/env-core': 0.6.1(typescript@4.9.5)(zod@3.21.4)
+      typescript: 4.9.5
       zod: 3.21.4
     dev: false
 

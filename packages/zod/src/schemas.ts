@@ -15,27 +15,16 @@ function defaultTransformer(defaultValue: unknown) {
 }
 
 export function booleanSchema() {
-  const schema: z.ZodType = z.string();
-
-  return schema.transform((arg, ctx): boolean => {
-    const varName = ctx.path[0];
-    const arg_ = arg.toLowerCase();
-
-    if (!arg_.length) {
-      return false;
-    }
-
-    if (arg_ !== "true" && arg_ !== "false") {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `${varName} must be either true or false`,
-      });
-
-      return z.NEVER;
-    }
-
-    return arg_ === "true";
-  });
+  return z
+    .string()
+    .refine(
+      (s) =>
+        s === "true" ||
+        s === "false" ||
+        // Allow declared but unset env vars to be treated as false
+        s == ""
+    )
+    .transform((s) => s === "true");
 }
 
 export function optionalStringSchema(
