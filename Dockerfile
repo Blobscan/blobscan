@@ -1,6 +1,9 @@
 #FROM node:20-alpine as builder
 FROM node:20-alpine
 
+# TODO: Get rid of this variable
+ENV SECRET_KEY supersecret
+
 RUN apk add bash curl
 RUN npm install -g pnpm
 WORKDIR /app
