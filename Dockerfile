@@ -1,6 +1,8 @@
 #FROM node:20-alpine as builder
 FROM node:20-alpine
 
+ARG BUILD_TIMESTAMP
+ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
 
@@ -18,7 +20,9 @@ RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm fetch -r
 ADD . ./
 RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
 
+# Do not perform environment variable validation during build time
 RUN SKIP_ENV_VALIDATION=true npm run build
+
 RUN chown node:node . -R
 
 ADD docker-entrypoint.sh /

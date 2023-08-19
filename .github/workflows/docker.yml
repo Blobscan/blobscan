@@ -42,4 +42,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args:
-            COMMIT_ID=$(git rev-parse HEAD)
+            BUILD_TIMESTAMP=$(date '+%F_%H:%M:%S')
+            GIT_COMMIT=$(git rev-parse HEAD)
