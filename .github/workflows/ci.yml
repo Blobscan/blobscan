@@ -12,12 +12,7 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  DATABASE_URL: file:./db.sqlite
-  BEE_DEBUG_ENDPOINT: "http://localhost:1635"
-  BEE_ENDPOINT: "http://localhost:1633"
-  CHAIN_ID: "7011893058"
-  GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
+
 
 jobs:
   build-lint:
