@@ -34,6 +34,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set Github ENV variables
+        shell: bash
+        run: |
+          echo "BUILD_TIMESTAMP=$(date '+%F_%H:%M:%S')" >> $GITHUB_ENV
+          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
@@ -41,6 +47,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            BUILD_TIMESTAMP=$(date '+%F_%H:%M:%S')
-            GIT_COMMIT=$(git rev-parse HEAD)
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
