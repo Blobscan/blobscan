@@ -1,7 +1,8 @@
 #FROM node:20-alpine as builder
 FROM node:20-alpine
 
-ARG COMMIT_ID
+ARG GIT_COMMIT
+ENV GIT_COMMIT=$GIT_COMMIT
 
 # TODO: Get rid of this variable
 ENV SECRET_KEY supersecret
