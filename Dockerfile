@@ -1,6 +1,8 @@
 #FROM node:20-alpine as builder
 FROM node:20-alpine
 
+ARG COMMIT_ID
+
 # TODO: Get rid of this variable
 ENV SECRET_KEY supersecret
 
