@@ -10,11 +10,6 @@ on:
     tags:
       - "v*"
 
-# TODO: These should not be required and defaults should be used instead
-env:
-  CHAIN_ID: "7011893055"
-  GOOGLE_STORAGE_BUCKET_NAME: "blobscan-staging"
-
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -42,8 +37,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          build-args: |
-            "SKIP_ENV_VALIDATION=true"
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
