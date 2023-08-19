@@ -37,7 +37,7 @@ jobs:
       - name: Set Github ENV variables
         shell: bash
         run: |
-          echo "BUILD_TIMESTAMP=$(date '+%F_%H:%M:%S')" >> $GITHUB_ENV
+          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
       - name: Build and push
