@@ -1,12 +1,10 @@
 #FROM node:20-alpine as builder
 FROM node:20-alpine
 
-RUN apk add bash curl
-
+# TODO: Get rid of this variable
 ENV SECRET_KEY supersecret
-ENV CHAIN_ID 7011893058
-ENV GOOGLE_STORAGE_BUCKET_NAME blobscan-staging
 
+RUN apk add bash curl
 RUN npm install -g pnpm
 WORKDIR /app
 
