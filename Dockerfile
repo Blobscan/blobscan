@@ -3,9 +3,6 @@ FROM node:20-alpine
 
 RUN apk add bash curl
 
-ARG SKIP_ENV_VALIDATION
-
-ENV SKIP_ENV_VALIDATION $SKIP_ENV_VALIDATION
 ENV SECRET_KEY supersecret
 ENV CHAIN_ID 7011893055
 ENV GOOGLE_STORAGE_BUCKET_NAME blobscan-staging
@@ -20,7 +17,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm fetch -r
 ADD . ./
 RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
 
-RUN npm run build
+RUN SKIP_ENV_VALIDATION=true npm run build
 RUN chown node:node . -R
 
 ADD docker-entrypoint.sh /
