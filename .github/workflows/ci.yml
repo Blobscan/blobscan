@@ -12,6 +12,7 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  SECRET_KEY: supersecret  # TODO: get rid of this variable here
 
 
 jobs:
