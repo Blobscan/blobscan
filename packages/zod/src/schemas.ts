@@ -14,23 +14,7 @@ function defaultTransformer(defaultValue: unknown) {
   };
 }
 
-export function booleanSchema() {
-  return z
-    .string()
-    .refine(
-      (s) =>
-        s === "true" ||
-        s === "false" ||
-        // Allow declared but unset env vars to be treated as false
-        s == ""
-    )
-    .transform((s) => s === "true");
-}
-
-export function optionalStringSchema(
-  zParser: z.ZodType,
-  defaultValue?: unknown
-) {
+export function makeOptional(zParser: z.ZodType, defaultValue?: unknown) {
   let schema: z.ZodType = zParser.optional();
 
   if (!isUndefined(defaultValue)) {
@@ -50,64 +34,34 @@ export function optionalStringSchema(
   return schema.or(orSchema);
 }
 
-export function chainIdSchema() {
-  return z
-    .string()
-    .min(1)
-    .transform((value, ctx) => {
-      const chainId = parseInt(value, 10);
+export const booleanSchema = z
+  .string()
+  .refine((s) => s === "true" || s === "false")
+  .transform((s) => s === "true");
 
-      if (isNaN(chainId) || chainId <= 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `CHAIN_ID is invalid: ${chainId}`,
-        });
+export const chainIdSchema = z
+  .string()
+  .min(1)
+  .transform((value, ctx) => {
+    const chainId = parseInt(value, 10);
 
-        return z.NEVER;
-      }
+    if (isNaN(chainId) || chainId <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `CHAIN_ID is invalid: ${chainId}`,
+      });
 
-      return chainId;
-    });
-}
+      return z.NEVER;
+    }
 
-export function stringToBigIntSchema() {
-  return z.string().transform((value) => {
-    return BigInt(value);
+    return chainId;
   });
-}
 
-type EnvVarSpec<S extends z.ZodTypeAny = z.ZodTypeAny> = {
-  default?: unknown;
-  optional?: boolean;
-  schema?: S;
-};
+export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
-type EnvSpec = Record<string, EnvVarSpec>;
+export const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
-type EnvSchema<T extends EnvSpec> = {
-  [K in keyof T]: T[K]["schema"] extends z.ZodTypeAny
-    ? T[K]["optional"] extends true
-      ? z.ZodOptional<T[K]["schema"]>
-      : T[K]["schema"]
-    : z.ZodString;
-};
-
-export function createEnvSchema<T extends EnvSpec>(envSpec: T) {
-  const envObj = Object.keys(envSpec).reduce<EnvSchema<T>>((obj, key) => {
-    const {
-      default: defaultValue,
-      optional = false,
-      schema = z.string().trim(),
-    } = envSpec[key] ?? {};
-
-    return {
-      ...obj,
-      [key]:
-        optional || !isUndefined(defaultValue)
-          ? optionalStringSchema(schema, defaultValue)
-          : schema,
-    };
-  }, {} as EnvSchema<T>);
-
-  return z.object(envObj);
-}
+export const portSchema = z
+  .string()
+  .transform((s) => parseInt(s, 10))
+  .pipe(z.number().positive());

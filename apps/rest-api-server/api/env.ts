@@ -1,26 +1,19 @@
-import { z, createEnvSchema, booleanSchema } from "@blobscan/zod";
+import {
+  booleanSchema,
+  createEnv,
+  nodeEnvSchema,
+  makeOptional,
+  portSchema,
+  presetEnvOptions,
+} from "@blobscan/zod";
 
-const envSchema = createEnvSchema({
-  BLOBSCAN_API_PORT: {
-    schema: z.coerce.number().int().positive(),
-    default: 3001,
+export const env = createEnv({
+  server: {
+    BLOBSCAN_API_PORT: makeOptional(portSchema, 3001),
+    NODE_ENV: makeOptional(nodeEnvSchema),
+    METRICS_ENABLED: makeOptional(booleanSchema, true),
+    TRACES_ENABLED: makeOptional(booleanSchema, false),
   },
-  NODE_ENV: {
-    schema: z.enum(["development", "test", "production"]),
-    optional: true,
-  },
-  METRICS_ENABLED: {
-    schema: booleanSchema(),
-    optional: true,
-    default: true,
-  },
-  TRACES_ENABLED: {
-    schema: booleanSchema(),
-    optional: true,
-    default: false,
-  },
+
+  ...presetEnvOptions,
 });
-
-export const env = envSchema.parse(process.env);
-
-export type Environment = z.infer<typeof envSchema>;

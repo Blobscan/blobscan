@@ -503,6 +503,9 @@ importers:
 
   packages/zod:
     dependencies:
+      '@t3-oss/env-core':
+        specifier: ^0.6.1
+        version: 0.6.1(typescript@4.9.5)(zod@3.21.4)
       zod:
         specifier: ^3.21.4
         version: 3.21.4

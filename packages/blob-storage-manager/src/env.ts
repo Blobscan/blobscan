@@ -2,25 +2,26 @@ import {
   z,
   chainIdSchema,
   booleanSchema,
-  createEnvSchema,
+  createEnv,
+  makeOptional,
+  presetEnvOptions,
 } from "@blobscan/zod";
 
-const envSchema = createEnvSchema({
-  BEE_DEBUG_ENDPOINT: { schema: z.string().url(), optional: true },
-  BEE_ENDPOINT: { schema: z.string().url(), optional: true },
-  CHAIN_ID: { schema: chainIdSchema(), default: 7011893058 },
-  GOOGLE_STORAGE_BUCKET_NAME: { optional: true },
-  GOOGLE_STORAGE_PROJECT_ID: { optional: true },
-  GOOGLE_SERVICE_KEY: { optional: true },
-  GOOGLE_STORAGE_API_ENDPOINT: {
-    schema: z.string().url(),
-    optional: true,
+export const env = createEnv({
+  server: {
+    BEE_DEBUG_ENDPOINT: makeOptional(z.string().url()),
+    BEE_ENDPOINT: makeOptional(z.string().url()),
+    CHAIN_ID: makeOptional(chainIdSchema, 7011893058),
+    GOOGLE_STORAGE_BUCKET_NAME: makeOptional(z.string()),
+    GOOGLE_STORAGE_PROJECT_ID: makeOptional(z.string()),
+    GOOGLE_SERVICE_KEY: makeOptional(z.string()),
+    GOOGLE_STORAGE_API_ENDPOINT: makeOptional(z.string().url()),
+    GOOGLE_STORAGE_ENABLED: makeOptional(booleanSchema, false),
+    POSTGRES_STORAGE_ENABLED: makeOptional(booleanSchema, true),
+    SWARM_STORAGE_ENABLED: makeOptional(booleanSchema, false),
   },
-  GOOGLE_STORAGE_ENABLED: { schema: booleanSchema(), default: false },
-  POSTGRES_STORAGE_ENABLED: { schema: booleanSchema(), default: true },
-  SWARM_STORAGE_ENABLED: { schema: booleanSchema(), default: false },
+
+  ...presetEnvOptions,
 });
 
-export const env = envSchema.parse(process.env);
-
-export type Environment = z.infer<typeof envSchema>;
+export type Environment = typeof env;

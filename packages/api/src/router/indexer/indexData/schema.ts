@@ -1,4 +1,4 @@
-import { stringToBigIntSchema, z } from "@blobscan/zod";
+import { toBigIntSchema, z } from "@blobscan/zod";
 
 export const indexDataInputSchema = z.object({
   block: z.object({
@@ -6,8 +6,8 @@ export const indexDataInputSchema = z.object({
     hash: z.string(),
     timestamp: z.coerce.number(),
     slot: z.coerce.number(),
-    blobGasUsed: stringToBigIntSchema(),
-    excessBlobGas: stringToBigIntSchema(),
+    blobGasUsed: toBigIntSchema,
+    excessBlobGas: toBigIntSchema,
   }),
   transactions: z.array(
     z.object({
@@ -15,8 +15,8 @@ export const indexDataInputSchema = z.object({
       from: z.string(),
       to: z.string(),
       blockNumber: z.coerce.number(),
-      gasPrice: stringToBigIntSchema(),
-      maxFeePerBlobGas: stringToBigIntSchema(),
+      gasPrice: toBigIntSchema,
+      maxFeePerBlobGas: toBigIntSchema,
     })
   ),
   blobs: z.array(
