@@ -1,28 +1,21 @@
-import { z, createEnvSchema } from "@blobscan/zod";
+import {
+  createEnv,
+  makeOptional,
+  nodeEnvSchema,
+  presetEnvOptions,
+  z,
+} from "@blobscan/zod";
 
-const envSchema = createEnvSchema({
-  OTEL_EXPORTER_OTLP_PROTOCOL: {
-    schema: z.enum(["grpc", "http/protobuf", "http/json"]),
-    optional: true,
+export const env = createEnv({
+  server: {
+    OTEL_EXPORTER_OTLP_PROTOCOL: makeOptional(
+      z.enum(["grpc", "http/protobuf", "http/json"])
+    ),
+    OTEL_EXPORTER_OTLP_ENDPOINT: makeOptional(z.string().url()),
+    OTLP_AUTH_USERNAME: makeOptional(z.coerce.string()),
+    OTLP_AUTH_PASSWORD: makeOptional(z.string()),
+    NODE_ENV: makeOptional(nodeEnvSchema),
   },
-  OTEL_EXPORTER_OTLP_ENDPOINT: {
-    schema: z.string().url(),
-    optional: true,
-  },
-  OTLP_AUTH_USERNAME: {
-    schema: z.coerce.string(),
-    optional: true,
-  },
-  OTLP_AUTH_PASSWORD: {
-    schema: z.string(),
-    optional: true,
-  },
-  NODE_ENV: {
-    schema: z.enum(["development", "test", "production"]),
-    optional: true,
-  },
+
+  ...presetEnvOptions,
 });
-
-export const env = envSchema.parse(process.env);
-
-export type Environment = z.infer<typeof envSchema>;

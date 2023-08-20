@@ -1,9 +1,16 @@
-import { z, createEnvSchema } from "@blobscan/zod";
+import {
+  z,
+  createEnv,
+  makeOptional,
+  nodeEnvSchema,
+  presetEnvOptions,
+} from "@blobscan/zod";
 
-const envSchema = createEnvSchema({
-  SECRET_KEY: { schema: z.string() },
+export const env = createEnv({
+  server: {
+    SECRET_KEY: z.string(),
+    NODE_ENV: makeOptional(nodeEnvSchema),
+  },
+
+  ...presetEnvOptions,
 });
-
-export const env = envSchema.parse(process.env);
-
-export type Environment = z.infer<typeof envSchema>;

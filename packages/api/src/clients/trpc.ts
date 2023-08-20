@@ -4,6 +4,7 @@ import type { OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
 import type { TRPCContext } from "../context";
+import { env } from "../env";
 
 export const t = initTRPC
   .context<TRPCContext>()
@@ -13,7 +14,7 @@ export const t = initTRPC
     errorFormatter({ shape, error }) {
       if (
         error.code === "INTERNAL_SERVER_ERROR" &&
-        process.env.NODE_ENV === "production"
+        env.NODE_ENV === "production"
       ) {
         return { ...shape, message: "Internal server error" };
       }
