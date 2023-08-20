@@ -6,9 +6,6 @@ ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
 
-# TODO: Get rid of this variable
-ENV SECRET_KEY supersecret
-
 RUN apk add bash curl
 RUN npm install -g pnpm
 WORKDIR /app
