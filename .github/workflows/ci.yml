@@ -65,7 +65,7 @@ jobs:
       - name: Test migrations
         run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
         env:
-          DATABASE_URL: postgresql://postres:postgres@127.0.0.1:5432/blobscan_ci?schema=public
+          DATABASE_URL: postgresql://postres:postgres@postgres:5432/blobscan_ci?schema=public
 
       - name: Build, lint and type-check
         run: pnpm turbo build lint type-check
