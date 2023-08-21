@@ -52,9 +52,7 @@ app.use(
     // @ts-ignore
     createContext: createTRPCContext,
     onError({ error }) {
-      if (error.code === "INTERNAL_SERVER_ERROR") {
-        logger.error(error);
-      }
+      logger.error(error);
     },
   })
 );
