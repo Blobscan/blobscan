@@ -23,6 +23,8 @@ jobs:
         image: postgres:14
         env:
           POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432/tcp
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -69,4 +71,6 @@ jobs:
         run: pnpm manypkg check
 
       - name: Test migrations
-        run: prisma migrate deploy --schema packages/db/prisma/schema.prisma
+        run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
+        env:
+          DATABASE_URL: postgresql://postres:postgres@localhost:5432/blobscan_ci?schema=public
