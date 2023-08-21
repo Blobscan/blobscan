@@ -24,7 +24,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
         ports:
-          - 5432/tcp
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -62,6 +62,11 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm turbo db:generate
 
+      - name: Test migrations
+        run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
+        env:
+          DATABASE_URL: postgresql://postres:postgres@127.0.0.1:5432/blobscan_ci?schema=public
+
       - name: Build, lint and type-check
         run: pnpm turbo build lint type-check
         env:
@@ -69,8 +74,3 @@ jobs:
 
       - name: Check workspaces
         run: pnpm manypkg check
-
-      - name: Test migrations
-        run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
-        env:
-          DATABASE_URL: postgresql://postres:postgres@localhost:5432/blobscan_ci?schema=public
