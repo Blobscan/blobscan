@@ -18,6 +18,17 @@ jobs:
   build-lint:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -56,3 +67,6 @@ jobs:
 
       - name: Check workspaces
         run: pnpm manypkg check
+
+      - name: Test migrations
+        run: prisma migrate deploy --schema packages/db/prisma/schema.prisma
