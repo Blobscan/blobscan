@@ -80,6 +80,12 @@ If the container is rebooting all the time because it is failing, you can still 
 docker compose run --entrypoint bash api
 ```
 
+### Kubernetes
+
+We provide a Helm package to install blobscan in a Kubernetes cluster.
+
+Check out the [blobscan-helm-charts](https://github.com/Blobscan/blobscan-helm-charts) repository for more information.
+
 ### Staging environment
 
 Example `.env` file
