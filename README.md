@@ -48,7 +48,7 @@ pnpm db:push
 
 Docker images are automatically published and a docker-compose file is provided for convenience.
 
-Note that you also need to run your own [devnet-v6 node](https://github.com/Blobscan/4844-devnet) or connect to any of the existing ones.
+Note that you also need to run your own [devnet node](https://github.com/Blobscan/4844-devnet) or connect to any of the existing ones.
 You can use SSH tunnels like this:
 
 ```
