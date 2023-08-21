@@ -82,7 +82,7 @@ docker compose run --entrypoint bash api
 
 ### Kubernetes
 
-We provide multiple Helm packages to deploy Blobscan into a Kubernetes cluster.
+We provide multiple Helm charts to ease Blobscan deployment into a Kubernetes cluster.
 
 ```
 helm repo add blobscan-helm-charts https://blobscan.github.io/blobscan-helm-charts
