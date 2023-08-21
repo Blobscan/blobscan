@@ -46,6 +46,11 @@ const Block: NextPage = function () {
     return <div>Block not found</div>;
   }
 
+  const totalBlobSize = blockData?.transactions.reduce(
+    (acc, tx) => acc + tx.blobs.reduce((acc, { blob }) => acc + blob.size, 0),
+    0
+  );
+
   return (
     <>
       <DetailsLayout
@@ -80,6 +85,10 @@ const Block: NextPage = function () {
                 {
                   name: "Blob Gas Used",
                   value: blockData.blobGasUsed.toString(),
+                },
+                {
+                  name: "Total Blob Size",
+                  value: totalBlobSize,
                 },
               ]
             : undefined

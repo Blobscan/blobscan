@@ -47,6 +47,10 @@ const Tx: NextPage = () => {
   const blobGasUsed = txData
     ? BigInt(txData.blobs.length) * GAS_PER_BLOB
     : BigInt(0);
+  const totalBlobSize = txData?.blobs.reduce(
+    (acc, { blob }) => acc + blob.size,
+    0
+  );
 
   return (
     <>
@@ -117,6 +121,10 @@ const Tx: NextPage = () => {
                 {
                   name: "Blob Gas Used",
                   value: blobGasUsed.toString(),
+                },
+                {
+                  name: "Total Blob Size",
+                  value: totalBlobSize,
                 },
               ]
             : undefined

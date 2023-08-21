@@ -39,7 +39,7 @@ const BlobCard: FC<BlobCardProps> = ({
         </div>
         <div>
           {size ? (
-            <div className="flex gap-2">
+            <div className="rwz flex gap-2">
               <span>{`${bytesToKilobytes(size)} KB`}</span>
             </div>
           ) : (

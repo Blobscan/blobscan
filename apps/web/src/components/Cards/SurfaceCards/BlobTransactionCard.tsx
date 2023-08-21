@@ -49,9 +49,21 @@ type BlobTransactionCardProps = Partial<{
   transaction: Block["transactions"][0];
 }>;
 
+const TableCol: FC<{ children: React.ReactNode }> = function ({ children }) {
+  return (
+    <div className="truncate text-surfaceContentSecondary-light dark:text-contentSecondary-dark">
+      {children}
+    </div>
+  );
+};
+
+const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
+  return <div className="truncate text-xs font-semibold">{children}</div>;
+};
+
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   block: { number, timestamp } = {},
-  transaction: { hash, fromId, toId, blobs } = {},
+  transaction: { hash, fromId, toId, blobs: blobsOnTx } = {},
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -76,6 +88,11 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   );
 
   useEffect(updateHeight, [opened, updateHeight]);
+
+  const totalBlobSize = blobsOnTx?.reduce(
+    (acc, { blob }) => acc + blob.size,
+    0
+  );
 
   return (
     <div>
@@ -122,11 +139,17 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <Skeleton width={320} />
                 )}
               </div>
-              {blobs ? (
-                <div className="mb-2 text-sm">{blobs.length} Blobs</div>
-              ) : (
-                <Skeleton width={120} />
-              )}
+              <div className="flex gap-2">
+                {blobsOnTx ? (
+                  <div className="mb-2 text-sm">
+                    {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
+                  </div>
+                ) : (
+                  <Skeleton width={120} />
+                )}
+                ·
+                <div>{blobsOnTx ? totalBlobSize : <Skeleton width={80} />}</div>
+              </div>
             </div>
           </div>
           {number && timestamp && (
@@ -141,7 +164,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           )}
         </div>
       </SurfaceCardBase>
-      {blobs && hash && (
+      {blobsOnTx && hash && (
         <div className="overflow-hidden bg-primary-200 pr-4 dark:bg-primary-900">
           <animated.div
             style={{
@@ -152,18 +175,18 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           >
             <div
               ref={handleContentRef}
-              className="ml-10 grid grid-cols-[1fr_6fr]	 gap-2 p-2 text-sm"
+              className="ml-10 grid grid-cols-[1fr_6fr_2fr] gap-2 p-2 text-sm"
             >
-              <div></div>
-              <div className="font-semibold">Versioned Hash</div>
-              {blobs.map((b) => (
-                <React.Fragment key={`${b.blobHash}-${b.index}`}>
-                  <div>
-                    <Link href={buildBlobRoute(b.blobHash)}>
-                      Blob {b.index}
-                    </Link>
-                  </div>
-                  <div className=" truncate text-xs">{b.blobHash}</div>
+              <TableHeader>Index</TableHeader>
+              <TableHeader>Versioned Hash</TableHeader>
+              <TableHeader>Size</TableHeader>
+              {blobsOnTx.map(({ blobHash, blob, index }) => (
+                <React.Fragment key={`${blobHash}-${index}`}>
+                  <TableCol>{index}</TableCol>
+                  <TableCol>
+                    <Link href={buildBlobRoute(blobHash)}>{blobHash}</Link>
+                  </TableCol>
+                  <TableCol>{blob.size}</TableCol>
                 </React.Fragment>
               ))}
             </div>
