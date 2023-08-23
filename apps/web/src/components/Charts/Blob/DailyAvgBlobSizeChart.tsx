@@ -3,6 +3,7 @@ import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { TransformedDailyBlobStats } from "~/types";
+import { formatBytes, buildTimeSeriesOptions } from "~/utils";
 
 type DailyAvgBlobSizeProps = {
   days?: TransformedDailyBlobStats["days"];
@@ -14,17 +15,14 @@ export const DailyAvgBlobSizeChart: FC<DailyAvgBlobSizeProps> = function ({
   avgBlobSizes,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    xAxis: {
-      type: "category",
-      data: days,
-    },
-    yAxis: {
-      type: "value",
-      splitLine: { show: false },
-    },
+    ...buildTimeSeriesOptions(days, {
+      yAxisLabel: (value: number) =>
+        formatBytes(value, { maximumFractionDigits: 0 }),
+      yAxisTooltip: (value: number) => formatBytes(value),
+    }),
     series: [
       {
-        name: "Blobs Size",
+        name: "Avg. Size",
         data: avgBlobSizes,
         type: "bar",
       },

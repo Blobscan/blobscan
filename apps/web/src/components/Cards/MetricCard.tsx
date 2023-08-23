@@ -10,7 +10,7 @@ import { Card } from "./Card";
 export type MetricCardProps = Partial<{
   name: string;
   compact: boolean;
-  value?: number;
+  value?: bigint | number;
   unit: string;
 }>;
 

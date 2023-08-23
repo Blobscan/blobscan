@@ -5,6 +5,7 @@ import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { TransformedDailyTransactionStats } from "~/types";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyUniqueAddressesChartProps = {
   days?: TransformedDailyTransactionStats["days"];
@@ -15,14 +16,7 @@ export type DailyUniqueAddressesChartProps = {
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
   function ({ days, uniqueReceivers, uniqueSenders }) {
     const options: EChartOption<EChartOption.SeriesBar> = {
-      xAxis: {
-        type: "category",
-        data: days,
-      },
-      yAxis: {
-        type: "value",
-        splitLine: { show: false },
-      },
+      ...buildTimeSeriesOptions(days),
       series: [
         {
           name: "Unique Receivers",

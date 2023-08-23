@@ -32,7 +32,7 @@ export type TransformedDailyBlockStats = {
 export type TransformedOverallBlobStats = Omit<
   NonNullable<OverallBlobStats>,
   "totalBlobSize" | "updatedAt"
-> & { totalBlobSize: number } & OptionalDate;
+> & { totalBlobSize: bigint } & OptionalDate;
 
 export type TransformedOverallBlockStats = Omit<
   NonNullable<OverallBlockStats>,

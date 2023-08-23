@@ -11,6 +11,7 @@ import { api } from "~/api-client";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
+  formatBytes,
   formatTimestamp,
 } from "~/utils";
 
@@ -46,10 +47,11 @@ const Block: NextPage = function () {
     return <div>Block not found</div>;
   }
 
-  const totalBlobSize = blockData?.transactions.reduce(
-    (acc, tx) => acc + tx.blobs.reduce((acc, { blob }) => acc + blob.size, 0),
-    0
-  );
+  const totalBlobSize =
+    blockData?.transactions.reduce(
+      (acc, tx) => acc + tx.blobs.reduce((acc, { blob }) => acc + blob.size, 0),
+      0
+    ) ?? 0;
 
   return (
     <>
@@ -88,7 +90,7 @@ const Block: NextPage = function () {
                 },
                 {
                   name: "Total Blob Size",
-                  value: totalBlobSize,
+                  value: formatBytes(totalBlobSize),
                 },
               ]
             : undefined

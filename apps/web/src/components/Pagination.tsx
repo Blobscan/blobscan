@@ -5,7 +5,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { NOOP } from "~/utils";
 import { Button } from "./Button";
 import { Input } from "./Input";
 
@@ -20,6 +19,9 @@ export type PaginationProps = {
   inverseCompact?: boolean;
   onChange(page: number): void;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const NOOP = () => {};
 
 const FirstButton: FC<NavigationButton> = function ({ disabled, onChange }) {
   return (

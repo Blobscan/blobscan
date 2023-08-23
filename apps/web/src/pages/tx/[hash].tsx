@@ -15,6 +15,7 @@ import {
   GAS_PER_BLOB,
   formatWei,
   calculateBlobGasPrice,
+  formatBytes,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -47,10 +48,8 @@ const Tx: NextPage = () => {
   const blobGasUsed = txData
     ? BigInt(txData.blobs.length) * GAS_PER_BLOB
     : BigInt(0);
-  const totalBlobSize = txData?.blobs.reduce(
-    (acc, { blob }) => acc + blob.size,
-    0
-  );
+  const totalBlobSize =
+    txData?.blobs.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
 
   return (
     <>
@@ -124,7 +123,7 @@ const Tx: NextPage = () => {
                 },
                 {
                   name: "Total Blob Size",
-                  value: totalBlobSize,
+                  value: formatBytes(totalBlobSize),
                 },
               ]
             : undefined

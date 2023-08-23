@@ -9,10 +9,6 @@ export function formatTimestamp(timestamp: number | Date) {
   )})`;
 }
 
-export function getDateFromDateTime(dateTime: Date): string {
-  return dateTime.toISOString().split("T")[0] as string;
-}
-
 export function formatDate(
   date: string,
   options: Partial<{ hideYear: boolean }>
@@ -22,4 +18,8 @@ export function formatDate(
   }
 
   return date;
+}
+
+export function getHumanDate(date: string | Date) {
+  return dayjs(date).format("dddd, MMMM, DD YYYY");
 }

@@ -3,6 +3,7 @@ import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { TransformedDailyBlockStats } from "~/types";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyBlocksChartProps = {
   days?: TransformedDailyBlockStats["days"];
@@ -14,14 +15,7 @@ export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
   blocks,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    xAxis: {
-      type: "category",
-      data: days,
-    },
-    yAxis: {
-      type: "value",
-      splitLine: { show: false },
-    },
+    ...buildTimeSeriesOptions(days),
     series: [
       {
         name: "Transactions",

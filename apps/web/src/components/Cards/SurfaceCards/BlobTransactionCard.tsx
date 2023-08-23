@@ -18,6 +18,7 @@ import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
+  formatBytes,
 } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -89,10 +90,8 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 
   useEffect(updateHeight, [opened, updateHeight]);
 
-  const totalBlobSize = blobsOnTx?.reduce(
-    (acc, { blob }) => acc + blob.size,
-    0
-  );
+  const totalBlobSize =
+    blobsOnTx?.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
 
   return (
     <div>
@@ -148,7 +147,13 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <Skeleton width={120} />
                 )}
                 ·
-                <div>{blobsOnTx ? totalBlobSize : <Skeleton width={80} />}</div>
+                <div>
+                  {blobsOnTx ? (
+                    formatBytes(totalBlobSize)
+                  ) : (
+                    <Skeleton width={80} />
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -186,7 +191,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <TableCol>
                     <Link href={buildBlobRoute(blobHash)}>{blobHash}</Link>
                   </TableCol>
-                  <TableCol>{blob.size}</TableCol>
+                  <TableCol>{formatBytes(blob.size)}</TableCol>
                 </React.Fragment>
               ))}
             </div>

@@ -1,4 +1,4 @@
-export * from "./default";
+export * from "./charts";
 export * from "./ethereum";
 export * from "./date";
 export * from "./explorers";

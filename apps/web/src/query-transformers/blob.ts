@@ -6,7 +6,6 @@ import type {
   TransformedOverallBlobStats,
   AllBlobs,
 } from "~/types";
-import { bytesToKilobytes, getDateFromDateTime } from "~/utils";
 
 export function transformBlobsResult({
   data,
@@ -35,13 +34,9 @@ export function transformOverallBlobStatsResult({
   }
 
   return {
-    avgBlobSize: Number(
-      data?.avgBlobSize ? bytesToKilobytes(data.avgBlobSize).toFixed(2) : 0
-    ),
+    avgBlobSize: Number(data?.avgBlobSize ?? 0),
     totalBlobs: data?.totalBlobs ?? 0,
-    totalBlobSize: Number(
-      data?.totalBlobSize ? bytesToKilobytes(data.totalBlobSize).toFixed(2) : 0
-    ),
+    totalBlobSize: data?.totalBlobSize ?? BigInt(0),
     totalUniqueBlobs: data?.totalUniqueBlobs ?? 0,
     updatedAt: data?.updatedAt,
   };
@@ -70,10 +65,10 @@ export function transformDailyBlobStatsResult({
       formattedStats,
       { day, avgBlobSize, totalBlobSize, totalBlobs, totalUniqueBlobs }
     ) => {
-      formattedStats.days.push(getDateFromDateTime(day));
+      formattedStats.days.push(day.toISOString());
       formattedStats.blobs.push(totalBlobs);
       formattedStats.uniqueBlobs.push(totalUniqueBlobs);
-      formattedStats.blobSizes.push(bytesToKilobytes(totalBlobSize));
+      formattedStats.blobSizes.push(Number(totalBlobSize));
       formattedStats.avgBlobSizes.push(avgBlobSize);
 
       return formattedStats;

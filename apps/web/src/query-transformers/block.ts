@@ -6,7 +6,6 @@ import type {
   TransformedDailyBlockStats,
   TransformedOverallBlockStats,
 } from "~/types";
-import { getDateFromDateTime } from "~/utils";
 
 export function transformBlocksResult({
   data,
@@ -43,7 +42,7 @@ export function transformDailyBlockStatsResult({
 
   return data.reduce<TransformedDailyBlockStats>(
     (aggregatedStats, { day, totalBlocks }) => {
-      aggregatedStats.days.push(getDateFromDateTime(day));
+      aggregatedStats.days.push(day.toISOString());
       aggregatedStats.blocks.push(totalBlocks);
 
       return aggregatedStats;

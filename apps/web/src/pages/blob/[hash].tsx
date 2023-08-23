@@ -14,7 +14,7 @@ import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { api } from "~/api-client";
-import { bytesToKilobytes } from "~/utils";
+import { formatBytes } from "~/utils";
 
 type BlobViewMode = "Original" | "UTF-8";
 
@@ -85,7 +85,7 @@ const Blob: NextPage = function () {
     detailsFields.push(
       { name: "Versioned Hash", value: blob.versionedHash },
       { name: "Commitment", value: blob.commitment },
-      { name: "Size", value: `${bytesToKilobytes(blob.size)} KB` }
+      { name: "Size", value: formatBytes(blob.size) }
     );
 
     if (swarmHash) {

@@ -4,7 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import type { AllBlobs } from "~/types";
-import { buildBlobRoute, bytesToKilobytes } from "~/utils";
+import { buildBlobRoute, formatBytes } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
@@ -40,7 +40,7 @@ const BlobCard: FC<BlobCardProps> = ({
         <div>
           {size ? (
             <div className="rwz flex gap-2">
-              <span>{`${bytesToKilobytes(size)} KB`}</span>
+              <span>{formatBytes(size)}</span>
             </div>
           ) : (
             <Skeleton width={120} />

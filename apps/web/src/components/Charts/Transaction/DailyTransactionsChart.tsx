@@ -3,6 +3,7 @@ import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { TransformedDailyTransactionStats } from "~/types";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyTransactionsProps = {
   days?: TransformedDailyTransactionStats["days"];
@@ -18,14 +19,7 @@ export const DailyTransactionsChart: FC<DailyTransactionsProps> = function ({
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
   > = {
-    xAxis: {
-      type: "category",
-      data: days,
-    },
-    yAxis: {
-      type: "value",
-      splitLine: { show: false },
-    },
+    ...buildTimeSeriesOptions(days),
     series: [
       {
         name: "Transactions",

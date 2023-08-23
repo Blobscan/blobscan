@@ -1,9 +1,12 @@
-export function bytesToKilobytes(bytes: bigint | number): number {
-  if (typeof bytes === "bigint") {
-    return Number(bytes / BigInt(1000));
-  } else {
-    return Number(bytes / 1000);
-  }
+import type { Options } from "pretty-bytes";
+import prettyBytes from "pretty-bytes";
+
+export function formatBytes(bytes: number, opts: Options = {}) {
+  return prettyBytes(bytes, {
+    maximumFractionDigits: 3,
+    binary: true,
+    ...opts,
+  });
 }
 
 export function abbreviateNumber(value: number | string): string {

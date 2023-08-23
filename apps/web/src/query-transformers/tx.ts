@@ -6,7 +6,6 @@ import type {
   TransformedDailyTransactionStats,
   TransformedOverallTxStats,
 } from "~/types";
-import { getDateFromDateTime } from "~/utils";
 
 export function transformTxsResult({
   data,
@@ -50,7 +49,7 @@ export function transformDailyTxStatsResult({
       aggregatedStats,
       { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders }
     ) => {
-      aggregatedStats.days.push(getDateFromDateTime(day));
+      aggregatedStats.days.push(day.toISOString());
       aggregatedStats.transactions.push(totalTransactions);
       aggregatedStats.uniqueReceivers.push(totalUniqueReceivers);
       aggregatedStats.uniqueSenders.push(totalUniqueSenders);
