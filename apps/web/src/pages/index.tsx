@@ -6,6 +6,7 @@ import { Logo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
+import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
@@ -17,10 +18,17 @@ import {
   transformAllOverallStatsResult,
   transformDailyTxStatsResult,
 } from "~/query-transformers";
-import { formatBytes, parseBytes } from "~/utils";
+import {
+  buildBlobsRoute,
+  buildBlocksRoute,
+  buildTransactionsRoute,
+  formatBytes,
+  parseBytes,
+} from "~/utils";
 
 const TOTAL_BLOCKS = 4;
 const TOTAL_TXS = 5;
+const TOTAL_BLOBS = 5;
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -40,6 +48,15 @@ const Home: NextPage = () => {
     p: 1,
     ps: TOTAL_TXS,
   });
+  const {
+    data: latestBlobs,
+    isLoading: latestBlobsLoading,
+    error: latestBlobsError,
+  } = api.blob.getAll.useQuery({
+    p: 1,
+    ps: TOTAL_BLOBS,
+  });
+
   const allOverallStatsRes = api.stats.getAllOverallStats.useQuery();
   const dailyTxStatsRes = api.stats.transaction.getDailyStats.useQuery({
     timeFrame: "15d",
@@ -56,6 +73,7 @@ const Home: NextPage = () => {
   const error =
     latestBlocksError ||
     latestTxsError ||
+    latestBlobsError ||
     allOverallStatsRes.error ||
     dailyTxStatsRes.error;
 
@@ -70,6 +88,7 @@ const Home: NextPage = () => {
 
   const blocks = latestBlocks?.blocks ?? [];
   const txs = latestTxs?.transactions ?? [];
+  const blobs = latestBlobs?.blobs ?? [];
 
   const totalBlobSize =
     allOverallStats && allOverallStats.blob
@@ -142,11 +161,11 @@ const Home: NextPage = () => {
         <Card
           header={
             <div className="flex items-center justify-between">
-              <div>Latest Blocks</div>{" "}
+              <div>Latest Blocks</div>
               <Button
                 variant="outline"
                 label="View All Blocks"
-                onClick={() => void router.push("/blocks")}
+                onClick={() => void router.push(buildBlocksRoute())}
               />
             </div>
           }
@@ -170,39 +189,66 @@ const Home: NextPage = () => {
             </div>
           ) : undefined}
         </Card>
-        <Card
-          header={
-            <div className="flex items-center justify-between">
-              <div>Latest Blob Transactions</div>{" "}
-              <Button
-                variant="outline"
-                label="View All Txs"
-                onClick={() => void router.push("/txs")}
-              />
-            </div>
-          }
-          emptyState="No transactions"
-        >
-          {latestTxsLoading || !txs || txs.length ? (
-            <div className=" flex flex-col gap-5">
-              {latestTxsLoading
-                ? Array(TOTAL_TXS)
-                    .fill(0)
-                    .map((_, i) => <BlobTransactionCard key={i} />)
-                : txs.map((tx) => {
-                    const { block, blockNumber, ...filteredTx } = tx;
+        <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-2">
+          <Card
+            header={
+              <div className="flex items-center justify-between">
+                <div>Latest Blob Transactions</div>
+                <Button
+                  variant="outline"
+                  label="View All Txs"
+                  onClick={() => void router.push(buildTransactionsRoute())}
+                />
+              </div>
+            }
+            emptyState="No transactions"
+          >
+            {latestTxsLoading || !txs || txs.length ? (
+              <div className="flex flex-col gap-5">
+                {latestTxsLoading
+                  ? Array(TOTAL_TXS)
+                      .fill(0)
+                      .map((_, i) => <BlobTransactionCard key={i} />)
+                  : txs.map((tx) => {
+                      const { block, blockNumber, ...filteredTx } = tx;
 
-                    return (
-                      <BlobTransactionCard
-                        key={tx.hash}
-                        transaction={filteredTx}
-                        block={{ ...block, number: blockNumber }}
-                      />
-                    );
-                  })}
-            </div>
-          ) : undefined}
-        </Card>
+                      return (
+                        <BlobTransactionCard
+                          key={tx.hash}
+                          transaction={filteredTx}
+                          block={{ ...block, number: blockNumber }}
+                        />
+                      );
+                    })}
+              </div>
+            ) : undefined}
+          </Card>
+          <Card
+            header={
+              <div className="flex items-center justify-between">
+                <div>Latest Blobs</div>
+                <Button
+                  variant="outline"
+                  label="View All Blobs"
+                  onClick={() => void router.push(buildBlobsRoute())}
+                />
+              </div>
+            }
+            emptyState="No blobs"
+          >
+            {latestBlobsLoading || !blobs || blobs.length ? (
+              <div className="flex flex-col gap-5">
+                {latestBlobsLoading
+                  ? Array(TOTAL_BLOBS)
+                      .fill(0)
+                      .map((_, i) => <BlobCard key={i} />)
+                  : blobs.map((b) => (
+                      <BlobCard key={b.versionedHash} blob={b} />
+                    ))}
+              </div>
+            ) : undefined}
+          </Card>
+        </div>
       </div>
     </div>
   );

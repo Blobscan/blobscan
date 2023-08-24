@@ -96,8 +96,8 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   return (
     <div>
       <SurfaceCardBase className="rounded-none rounded-t-md">
-        <div className="flex flex-col justify-between text-sm md:flex-row">
-          <div className="flex w-full items-center gap-3">
+        <div className="grid grid-cols-1 grid-rows-2 text-sm md:grid-cols-5 md:grid-rows-1">
+          <div className="col-span-1 row-span-2 flex items-center gap-3 md:col-span-4 md:row-span-1">
             <CollapseIcon
               opened={opened}
               onClick={() => {
@@ -158,10 +158,11 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
             </div>
           </div>
           {number && timestamp && (
-            <div className="hidden space-y-2 self-center md:flex md:flex-col">
-              <Link href={buildBlockRoute(number)}>
-                <span>Block #{number}</span>
-              </Link>
+            <div className="flex items-center gap-2 place-self-end  md:flex-col md:justify-center md:gap-0 md:place-self-center">
+              <div className="flex gap-1">
+                Block
+                <Link href={buildBlockRoute(number)}>{number}</Link>
+              </div>
               <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
                 {dayjs(timestamp).fromNow()}
               </div>
