@@ -17,6 +17,7 @@ import {
   transformAllOverallStatsResult,
   transformDailyTxStatsResult,
 } from "~/query-transformers";
+import { formatBytes, parseBytes } from "~/utils";
 
 const TOTAL_BLOCKS = 4;
 const TOTAL_TXS = 5;
@@ -70,6 +71,15 @@ const Home: NextPage = () => {
   const blocks = latestBlocks?.blocks ?? [];
   const txs = latestTxs?.transactions ?? [];
 
+  const totalBlobSize =
+    allOverallStats && allOverallStats.blob
+      ? parseBytes(formatBytes(allOverallStats.blob.totalBlobSize))
+      : undefined;
+  const avgBlobSize =
+    allOverallStats && allOverallStats.blob
+      ? parseBytes(formatBytes(allOverallStats.blob.avgBlobSize))
+      : undefined;
+
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
@@ -104,14 +114,14 @@ const Home: NextPage = () => {
             />
             <MetricCard
               name="Total Blob Size"
-              value={allOverallStats?.blob?.totalBlobSize ?? undefined}
-              unit="KB"
+              value={totalBlobSize?.value}
+              unit={totalBlobSize?.unit}
               compact
             />
             <MetricCard
               name="Avg. Blob Size"
-              value={allOverallStats?.blob?.avgBlobSize ?? undefined}
-              unit="KB"
+              value={avgBlobSize?.value}
+              unit={avgBlobSize?.unit}
               compact
             />
             <MetricCard
