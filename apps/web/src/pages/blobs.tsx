@@ -8,6 +8,7 @@ import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import { useTransformResult } from "~/hooks/useTransformResult";
 import { transformBlobsResult } from "~/query-transformers";
+import { formatNumber } from "~/utils";
 
 const Blobs: NextPage = function () {
   const router = useRouter();
@@ -29,7 +30,7 @@ const Blobs: NextPage = function () {
 
   return (
     <PaginatedListLayout
-      header={`Blobs ${totalBlobs ? `(${totalBlobs})` : ""}`}
+      header={`Blobs ${totalBlobs ? `(${formatNumber(totalBlobs)})` : ""}`}
       items={blobs?.map((b) => (
         <BlobCard key={b.versionedHash} blob={b} />
       ))}

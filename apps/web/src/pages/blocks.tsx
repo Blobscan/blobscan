@@ -8,6 +8,7 @@ import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import { useTransformResult } from "~/hooks/useTransformResult";
 import { transformBlocksResult } from "~/query-transformers";
+import { formatNumber } from "~/utils";
 
 const Blocks: NextPage = function () {
   const router = useRouter();
@@ -29,7 +30,7 @@ const Blocks: NextPage = function () {
 
   return (
     <PaginatedListLayout
-      header={`Blocks ${totalBlocks ? `(${totalBlocks})` : ""}`}
+      header={`Blocks ${totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}`}
       items={blocks?.map((b) => (
         <BlockCard key={b.hash} block={b} />
       ))}

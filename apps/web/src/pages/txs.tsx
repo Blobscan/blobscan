@@ -8,6 +8,7 @@ import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import { useTransformResult } from "~/hooks/useTransformResult";
 import { transformTxsResult } from "~/query-transformers";
+import { formatNumber } from "~/utils";
 
 const Txs: NextPage = function () {
   const router = useRouter();
@@ -30,7 +31,7 @@ const Txs: NextPage = function () {
   return (
     <PaginatedListLayout
       header={`Blob Transactions ${
-        totalTransactions ? `(${totalTransactions})` : ""
+        totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
       }`}
       items={transactions?.map((t) => (
         <BlobTransactionCard key={t.hash} transaction={t} />
