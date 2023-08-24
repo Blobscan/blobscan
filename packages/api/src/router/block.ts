@@ -14,18 +14,22 @@ export const blockRouter = createTRPCRouter({
     .input(PAGINATION_SCHEMA)
     .use(withPagination)
     .query(async ({ ctx }) => {
-      const [blocks, totalBlocks] = await Promise.all([
+      const [blocks, overallStats] = await Promise.all([
         ctx.prisma.block.findMany({
           select: fullBlockSelect,
           orderBy: { number: "desc" },
           ...ctx.pagination,
         }),
-        ctx.prisma.block.count(),
+        ctx.prisma.blockOverallStats.findFirst({
+          select: {
+            totalBlocks: true,
+          },
+        }),
       ]);
 
       return {
         blocks,
-        totalBlocks,
+        totalBlocks: overallStats?.totalBlocks ?? 0,
       };
     }),
   getByHash: publicProcedure

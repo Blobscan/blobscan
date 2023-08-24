@@ -16,17 +16,21 @@ export const blobRouter = createTRPCRouter({
     .input(PAGINATION_SCHEMA)
     .use(withPagination)
     .query(async ({ ctx }) => {
-      const [blobs, totalBlobs] = await Promise.all([
+      const [blobs, overallStats] = await Promise.all([
         ctx.prisma.blob.findMany({
           select: { ...blobSelect },
           ...ctx.pagination,
         }),
-        ctx.prisma.blob.count(),
+        ctx.prisma.blobOverallStats.findFirst({
+          select: {
+            totalBlobs: true,
+          },
+        }),
       ]);
 
       return {
         blobs,
-        totalBlobs,
+        totalBlobs: overallStats?.totalBlobs ?? 0,
       };
     }),
   getByVersionedHash: publicProcedure
