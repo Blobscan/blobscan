@@ -30,9 +30,9 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
     <SurfaceCardBase>
       <CardHeader>
         {number ? (
-          <>
-            Block <Link href={buildBlockRoute(number)}>#{number}</Link>
-          </>
+          <div className="flex gap-1">
+            Block <Link href={buildBlockRoute(number)}>{number}</Link>
+          </div>
         ) : (
           <Skeleton width={130} />
         )}
