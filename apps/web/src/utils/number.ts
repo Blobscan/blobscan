@@ -19,9 +19,16 @@ export function abbreviateNumber(value: number | string): string {
     suffixNum++;
   }
 
-  let formattedValue = value_.toPrecision(3);
+  let formattedValue = formatNumber(value_.toPrecision(3));
 
   formattedValue += suffixes[suffixNum];
 
   return formattedValue;
+}
+
+export function formatNumber(
+  x: number | string | bigint,
+  opts?: Intl.NumberFormatOptions
+): string {
+  return Number(x).toLocaleString(undefined, opts);
 }

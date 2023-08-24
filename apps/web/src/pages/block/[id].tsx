@@ -12,6 +12,7 @@ import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
   formatBytes,
+  formatNumber,
   formatTimestamp,
 } from "~/utils";
 
@@ -63,7 +64,7 @@ const Block: NextPage = function () {
         fields={
           blockData
             ? [
-                { name: "Block Height", value: blockData.number },
+                { name: "Block Height", value: formatNumber(blockData.number) },
                 { name: "Hash", value: blockData.hash },
                 {
                   name: "Timestamp",
@@ -80,13 +81,13 @@ const Block: NextPage = function () {
                       href={buildSlotExternalUrl(blockData.slot)}
                       isExternal
                     >
-                      {blockData.slot}
+                      {formatNumber(blockData.slot)}
                     </Link>
                   ),
                 },
                 {
                   name: "Blob Gas Used",
-                  value: blockData.blobGasUsed.toString(),
+                  value: formatNumber(blockData.blobGasUsed),
                 },
                 {
                   name: "Total Blob Size",

@@ -4,5 +4,5 @@ export * from "./date";
 export * from "./explorers";
 export * from "./routes";
 export * from "./search";
-export * from "./size";
+export * from "./number";
 export * from "./text";

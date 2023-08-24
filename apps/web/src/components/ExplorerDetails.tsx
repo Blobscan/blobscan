@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
+import { formatNumber } from "~/utils";
 
 type InfoBarItemProps = {
   name: React.ReactNode;
@@ -36,7 +37,7 @@ export function ExplorerDetails() {
       ･
       <ExplorerDetailsItem
         name="Last synced slot"
-        value={syncStateData?.lastSlot}
+        value={syncStateData ? formatNumber(syncStateData.lastSlot) : undefined}
       />
     </div>
   );

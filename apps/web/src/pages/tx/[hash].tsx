@@ -16,6 +16,7 @@ import {
   formatWei,
   calculateBlobGasPrice,
   formatBytes,
+  formatNumber,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -66,7 +67,7 @@ const Tx: NextPage = () => {
                   name: "Block",
                   value: (
                     <Link href={buildBlockRoute(txData.blockNumber)}>
-                      {txData.blockNumber}
+                      {formatNumber(txData.blockNumber)}
                     </Link>
                   ),
                 },
@@ -119,7 +120,7 @@ const Tx: NextPage = () => {
                 },
                 {
                   name: "Blob Gas Used",
-                  value: blobGasUsed.toString(),
+                  value: formatNumber(blobGasUsed),
                 },
                 {
                   name: "Total Blob Size",

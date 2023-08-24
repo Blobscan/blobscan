@@ -3,7 +3,7 @@ import type { EChartOption } from "echarts";
 import dayjs from "@blobscan/dayjs";
 
 import { getHumanDate as humanDateFormatter } from "./date";
-import { abbreviateNumber as abbreviateNumberFormatter } from "./size";
+import { abbreviateNumber as abbreviateNumberFormatter } from "./number";
 
 type ExtendedFormat = EChartOption.Tooltip.Format & { name?: string };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

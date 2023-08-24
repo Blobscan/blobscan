@@ -3,7 +3,7 @@ import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { TransformedDailyBlobStats } from "~/types";
-import { buildTimeSeriesOptions } from "~/utils";
+import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyBlobsChartProps = Partial<{
   days: TransformedDailyBlobStats["days"];
@@ -17,7 +17,9 @@ export const DailyBlobsChart: FC<DailyBlobsChartProps> = function ({
   uniqueBlobs,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions(days),
+    ...buildTimeSeriesOptions(days, {
+      yAxisTooltip: formatNumber,
+    }),
 
     series: [
       {

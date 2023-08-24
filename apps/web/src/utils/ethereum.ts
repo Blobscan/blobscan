@@ -1,3 +1,5 @@
+import { formatNumber } from "./number";
+
 const MIN_BLOB_GASPRICE = BigInt(1);
 const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
 export const GAS_PER_BLOB = BigInt(2 ** 17); // 131072
@@ -52,7 +54,9 @@ export function formatWei(
       throw new Error("Unsupported unit");
   }
 
-  return `${formattedAmount}${displayUnit ? ` ${unit}` : ""}`;
+  return `${formatNumber(formattedAmount, { maximumFractionDigits: 18 })}${
+    displayUnit ? ` ${unit}` : ""
+  }`;
 }
 
 function fakeExponential(

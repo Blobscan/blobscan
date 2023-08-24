@@ -5,6 +5,7 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
+import { formatNumber } from "~/utils";
 import { Card } from "./Card";
 
 export type MetricCardProps = Partial<{
@@ -61,10 +62,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
                 {value !== undefined ? (
                   <animated.div>
                     {props.value.to((x) =>
-                      (isInteger
-                        ? Math.trunc(x)
-                        : x.toFixed(2)
-                      ).toLocaleString()
+                      formatNumber(isInteger ? Math.trunc(x) : x.toFixed(2))
                     )}
                   </animated.div>
                 ) : (
@@ -79,7 +77,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
                       "text-xl lg:text-4xl": !compact,
                     })}
                   >
-                    {value.toLocaleString()}
+                    {formatNumber(value)}
                   </div>
                   <div
                     className={cn(
