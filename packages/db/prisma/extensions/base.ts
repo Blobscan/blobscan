@@ -91,17 +91,17 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
           return prisma.$executeRaw`
-            INSERT INTO "Address" as addr (
+            INSERT INTO "address" as addr (
               "address",
-              "firstBlockNumberAsSender",
-              "firstBlockNumberAsReceiver",
-              "insertedAt",
-              "updatedAt"
+              first_block_number_as_sender,
+              first_block_number_as_receiver,
+              inserted_at,
+              updated_at
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("address") DO UPDATE SET
-              "firstBlockNumberAsSender" = LEAST(addr."firstBlockNumberAsSender", EXCLUDED."firstBlockNumberAsSender"),
-              "firstBlockNumberAsReceiver" = LEAST(addr."firstBlockNumberAsReceiver", EXCLUDED."firstBlockNumberAsReceiver"),
-              "updatedAt" = NOW()
+              first_block_number_as_sender = LEAST(addr.first_block_number_as_sender, EXCLUDED.first_block_number_as_sender),
+              first_block_number_as_receiver = LEAST(addr.first_block_number_as_receiver, EXCLUDED.first_block_number_as_receiver),
+              updated_at = NOW()
           `;
         },
       },
@@ -148,19 +148,19 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             );
 
           return prisma.$executeRaw`
-            INSERT INTO "Blob" as blob (
-              "versionedHash",
-              "commitment",
-              "size",
-              "firstBlockNumber",
-              "insertedAt",
-              "updatedAt"
+            INSERT INTO blob as b (
+              versioned_hash,
+              commitment,
+              size,
+              first_block_number,
+              inserted_at,
+              updated_at
             ) VALUES ${Prisma.join(formattedValues)}
-            ON CONFLICT ("versionedHash") DO UPDATE SET
-              "commitment" = EXCLUDED."commitment",
-              "size" = EXCLUDED."size",
-              "firstBlockNumber" = LEAST(blob."firstBlockNumber", EXCLUDED."firstBlockNumber"),
-              "updatedAt" = NOW()
+            ON CONFLICT (versioned_hash) DO UPDATE SET
+              commitment = EXCLUDED.commitment,
+              size = EXCLUDED.size,
+              first_block_number = LEAST(b.first_block_number, EXCLUDED.first_block_number),
+              updated_at = NOW()
           `;
         },
       },
@@ -170,20 +170,20 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ({ blobHash, blobStorage, dataReference }) =>
               Prisma.sql`(${Prisma.join([
                 blobHash,
-                Prisma.sql`${blobStorage.toLowerCase()}::"BlobStorage"`,
+                Prisma.sql`${blobStorage.toLowerCase()}::blob_storage`,
                 dataReference,
               ])})`
           );
 
           return prisma.$executeRaw`
-            INSERT INTO "BlobDataStorageReference" (
-              "blobHash",
-              "blobStorage",
-              "dataReference"
+            INSERT INTO blob_data_storage_reference (
+              blob_hash,
+              storage,
+              data_reference
             )
             VALUES ${Prisma.join(formattedValues)}
-            ON CONFLICT ("blobHash", "blobStorage") DO UPDATE SET
-              "dataReference" = EXCLUDED."dataReference"
+            ON CONFLICT (blob_hash, storage) DO UPDATE SET
+              data_reference = EXCLUDED.data_reference
           `;
         },
       },
@@ -226,27 +226,27 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             );
 
           return prisma.$executeRaw`
-          INSERT INTO "Transaction" (
+          INSERT INTO "transaction" (
             "hash",
-            "blockNumber",
-            "fromId",
-            "toId",
-            "maxFeePerBlobGas",
-            "blobGasPrice",
-            "gasPrice",
-            "blobAsCalldataGasUsed",
-            "insertedAt",
-            "updatedAt"
+            block_number,
+            from_id,
+            to_id,
+            max_fee_per_blob_gas,
+            blob_gas_price,
+            gas_price,
+            blob_as_calldata_gas_used,
+            inserted_at,
+            updated_at
           ) VALUES ${Prisma.join(formattedValues)}
           ON CONFLICT ("hash") DO UPDATE SET
-            "blockNumber" = EXCLUDED."blockNumber",
-            "fromId" = EXCLUDED."fromId",
-            "toId" = EXCLUDED."toId",
-            "maxFeePerBlobGas" = EXCLUDED."maxFeePerBlobGas",
-            "blobGasPrice" = EXCLUDED."blobGasPrice",
-            "gasPrice" = EXCLUDED."gasPrice",
-            "blobAsCalldataGasUsed" = EXCLUDED."blobAsCalldataGasUsed",
-            "updatedAt" = NOW()
+            block_number = EXCLUDED.block_number,
+            from_id = EXCLUDED.from_id,
+            to_id = EXCLUDED.to_id,
+            max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
+            blob_gas_price = EXCLUDED.blob_gas_price,
+            gas_price = EXCLUDED.gas_price,
+            blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
+            updated_at = NOW()
         `;
         },
       },
