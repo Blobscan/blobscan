@@ -8,11 +8,16 @@ async function main() {
     to: yesterday.endOf("day").toISOString(),
   };
 
-  await Promise.all([
+  const [blobStatsRes, blockStatsRes, txStatsRes] = await Promise.all([
     prisma.blobDailyStats.fill(yesterdayPeriod),
     prisma.blockDailyStats.fill(yesterdayPeriod),
     prisma.transactionDailyStats.fill(yesterdayPeriod),
   ]);
+
+  console.log("=====================================");
+  console.log(`Blob stats inserted: ${blobStatsRes}`);
+  console.log(`Block stats inserted: ${blockStatsRes}`);
+  console.log(`Tx stats inserted: ${txStatsRes}`);
 }
 
 main()

@@ -93,23 +93,31 @@ async function main() {
     );
     const blockRange: BlockNumberRange = { from, to };
 
-    await prisma.$transaction([
-      prisma.blockOverallStats.increment(blockRange),
-      prisma.transactionOverallStats.increment(blockRange),
-      prisma.blobOverallStats.increment(blockRange),
-      prisma.blockchainSyncState.upsert({
-        create: {
-          lastSlot: 0,
-          lastFinalizedBlock: to,
-        },
-        update: {
-          lastFinalizedBlock: to,
-        },
-        where: {
-          id: 1,
-        },
-      }),
-    ]);
+    const [blockStatsRes, txStatsRes, blobStatsRes, syncStateRes] =
+      await prisma.$transaction([
+        prisma.blockOverallStats.increment(blockRange),
+        prisma.transactionOverallStats.increment(blockRange),
+        prisma.blobOverallStats.increment(blockRange),
+        prisma.blockchainSyncState.upsert({
+          create: {
+            lastSlot: 0,
+            lastFinalizedBlock: to,
+          },
+          update: {
+            lastFinalizedBlock: to,
+          },
+          where: {
+            id: 1,
+          },
+        }),
+      ]);
+
+    console.log("=====================================");
+    console.log(`Data aggregated from block ${from} to ${to}`);
+    console.log(`Total Blob overall stats inserted: ${blobStatsRes}`);
+    console.log(`Total Block overall stats inserted: ${blockStatsRes}`);
+    console.log(`Total tx overall stats inserted: ${txStatsRes}`);
+    console.log(`Sync state updated: ${syncStateRes}`);
   }
 }
 
