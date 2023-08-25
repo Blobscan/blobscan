@@ -67,6 +67,7 @@ async function main() {
 
   // If we haven't indexed any blocks yet, don't do anything
   if (!latestIndexedBlock) {
+    console.log("No blocks indexed yet");
     return;
   }
 
@@ -79,6 +80,7 @@ async function main() {
   );
 
   if (lastFinalizedBlock >= availableFinalizedBlock) {
+    console.log("No new finalized blocks to process");
     return;
   }
 
