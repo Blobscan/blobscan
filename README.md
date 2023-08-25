@@ -42,6 +42,17 @@ vi .env
 pnpm db:push
 ```
 
+### Cronjobs
+
+Blobscan requires two periodic tasks in order to recalculate the metrics.
+
+You can simply use `crontab` for that. Here is an example that you can adjust to your case:
+
+```
+5	    0	*	*	*	cd /opt/blobscan-prod && docker compose exec api pnpm update:daily >> cron.log
+*/15 	* 	* 	* 	*	cd /opt/blobscan-prod && docker compose exec api pnpm update:overall >> cron.log
+```
+
 ### Docker
 
 **NOTE: Recent version of docker with BuildKit support is required.**
