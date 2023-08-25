@@ -28,6 +28,7 @@
     "@blobscan/db": "^0.0.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.20.0",
+    "@sentry/node": "^7.64.0",
     "@types/node": "^18.16.19",
     "@types/prettier": "^2.7.3",
     "dotenv-cli": "^7.2.1",

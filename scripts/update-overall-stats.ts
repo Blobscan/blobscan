@@ -1,6 +1,8 @@
 import { BlockNumberRange, prisma } from "@blobscan/db";
+import * as Sentry from "@sentry/node";
 
 const BEACON_NODE_ENDPOINT = process.env.BEACON_NODE_ENDPOINT;
+const SENTRY_DSN = process.env.SENTRY_DSN;
 
 if (!BEACON_NODE_ENDPOINT) {
   throw new Error("BEACON_NODE_ENDPOINT is not set");
@@ -25,6 +27,25 @@ type Block = {
 };
 
 const UNPROCESSED_BLOCKS_BATCH_SIZE = 1_000_000;
+
+function sentry_init() {
+  if (SENTRY_DSN) {
+    Sentry.init({
+      dsn: SENTRY_DSN,
+      tracesSampleRate: 1.0,
+    });
+  }
+}
+
+
+function sentry_ok(checkInId: string) {
+  // 🟢 Notify Sentry your job has completed successfully:
+  Sentry.captureCheckIn({
+    checkInId,
+    monitorSlug: "update-overall-stats",
+    status: "ok",
+  });
+}
 
 async function getBlockFromBeacon(id: number | "finalized"): Promise<Block> {
   let response: Response;
@@ -55,6 +76,15 @@ async function getBlockFromBeacon(id: number | "finalized"): Promise<Block> {
 }
 
 async function main() {
+
+  sentry_init();
+
+  // 🟡 Notify Sentry your job is running:
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "update-overall-stats",
+    status: "in_progress",
+  });
+
   const [syncState, latestIndexedBlock] = await Promise.all([
     prisma.blockchainSyncState.findFirst({
       select: {
@@ -67,6 +97,7 @@ async function main() {
 
   // If we haven't indexed any blocks yet, don't do anything
   if (!latestIndexedBlock) {
+    sentry_ok(checkInId);
     return;
   }
 
@@ -79,6 +110,7 @@ async function main() {
   );
 
   if (lastFinalizedBlock >= availableFinalizedBlock) {
+    sentry_ok(checkInId);
     return;
   }
 
@@ -118,6 +150,8 @@ async function main() {
     console.log(`Total Block overall stats inserted: ${blockStatsRes}`);
     console.log(`Total tx overall stats inserted: ${txStatsRes}`);
     console.log(`Sync state updated: ${syncStateRes}`);
+
+    sentry_ok(checkInId);
   }
 }
 
@@ -127,6 +161,12 @@ main()
   })
   .catch(async (e) => {
     console.error(e);
+    // 🔴 Notify Sentry your job has failed:
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "update-overall-stats",
+      status: "error",
+    });
     await prisma.$disconnect();
     process.exit(1);
   });
