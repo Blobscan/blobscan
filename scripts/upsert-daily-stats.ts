@@ -18,9 +18,12 @@ async function main() {
     ]);
 
     console.log("=====================================");
-    console.log(`Blob stats inserted: ${blobStatsRes}`);
-    console.log(`Block stats inserted: ${blockStatsRes}`);
-    console.log(`Tx stats inserted: ${txStatsRes}`);
+    console.log(
+      `Daily stats aggregated for day ${yesterday.format("YYYY-MM-DD")}`
+    );
+    console.log(`Blob daily stats upserted (rows upserted: ${blobStatsRes})`);
+    console.log(`Block daily stats upserted (rows upserted: ${blockStatsRes})`);
+    console.log(`Tx daily stats upserted (rows upserted: ${txStatsRes})`);
   });
 }
 

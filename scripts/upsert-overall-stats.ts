@@ -70,6 +70,7 @@ async function main() {
 
     // If we haven't indexed any blocks yet, don't do anything
     if (!latestIndexedBlock) {
+      console.log("Skipping as there are no blocks indexed yet");
       return;
     }
 
@@ -84,6 +85,8 @@ async function main() {
     );
 
     if (lastFinalizedBlock >= availableFinalizedBlock) {
+      console.log("Skipping as there are no new finalized blocks");
+
       return;
     }
 
@@ -120,11 +123,17 @@ async function main() {
         ]);
 
       console.log("=====================================");
-      console.log(`Data aggregated from block ${from} to ${to}`);
-      console.log(`Total Blob overall stats inserted: ${blobStatsRes}`);
-      console.log(`Total Block overall stats inserted: ${blockStatsRes}`);
-      console.log(`Total tx overall stats inserted: ${txStatsRes}`);
-      console.log(`Sync state updated: ${syncStateRes}`);
+      console.log(`Overall stats aggregated from block ${from} to ${to}`);
+      console.log(
+        `Blob overall stats upserted (rows upserted: ${blobStatsRes})`
+      );
+      console.log(
+        `Block overall stats upserted (rows upserted: ${blockStatsRes})`
+      );
+      console.log(`Tx overall stats upserted (rows upserted: ${txStatsRes})`);
+      console.log(
+        `Sync state upserted. New finalized block: ${syncStateRes.lastFinalizedBlock}`
+      );
     }
   });
 }
