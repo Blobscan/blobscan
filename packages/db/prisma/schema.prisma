@@ -15,20 +15,24 @@ enum BlobStorage {
   GOOGLE   @map("google")
   POSTGRES @map("postgres")
   SWARM    @map("swarm")
+
+  @@map("blob_storage")
 }
 
 model BlockchainSyncState {
   id                 Int @id @default(autoincrement())
-  lastFinalizedBlock Int
-  lastSlot           Int
+  lastFinalizedBlock Int @map("last_finalized_block")
+  lastSlot           Int @map("last_slot")
+
+  @@map("blockchain_sync_state")
 }
 
 model Address {
   address                    String   @id
-  firstBlockNumberAsSender   Int?
-  firstBlockNumberAsReceiver Int?
-  insertedAt                 DateTime @default(now())
-  updatedAt                  DateTime @default(now())
+  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  insertedAt                 DateTime @default(now()) @map("inserted_at")
+  updatedAt                  DateTime @default(now()) @map("updated_at")
 
   firstBlockAsSender     Block?        @relation("firstBlockAsSenderRelation", fields: [firstBlockNumberAsSender], references: [number])
   firstBlockAsReceiver   Block?        @relation("firstBlockAsReceiverRelation", fields: [firstBlockNumberAsReceiver], references: [number])
@@ -36,36 +40,41 @@ model Address {
   transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
   @@index([insertedAt])
+  @@map("address")
 }
 
 model Blob {
-  versionedHash    String   @id
+  versionedHash    String   @id @map("versioned_hash")
   commitment       String   @unique
   size             Int
-  firstBlockNumber Int?
-  insertedAt       DateTime @default(now())
-  updatedAt        DateTime @default(now())
+  firstBlockNumber Int?     @map("first_block_number")
+  insertedAt       DateTime @default(now()) @map("inserted_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
 
   dataStorageReferences BlobDataStorageReference[]
   firstBlock            Block?                     @relation(fields: [firstBlockNumber], references: [number])
   transactions          BlobsOnTransactions[]
 
   @@index([insertedAt])
+  @@map("blob")
 }
 
 model BlobData {
   id   String @id
   data Bytes
+
+  @@map("blob_data")
 }
 
 model BlobDataStorageReference {
-  blobHash      String
-  blobStorage   BlobStorage
-  dataReference String
+  blobHash      String      @map("blob_hash")
+  blobStorage   BlobStorage @map("storage")
+  dataReference String      @map("data_reference")
 
   blob Blob @relation(fields: [blobHash], references: [versionedHash])
 
   @@id([blobHash, blobStorage])
+  @@map("blob_data_storage_reference")
 }
 
 model Block {
@@ -73,11 +82,11 @@ model Block {
   number                Int      @unique
   timestamp             DateTime @unique
   slot                  Int      @unique
-  blobGasUsed           BigInt
-  excessBlobGas         BigInt
-  blobAsCalldataGasUsed BigInt
-  insertedAt            DateTime @default(now())
-  updatedAt             DateTime @default(now())
+  blobGasUsed           BigInt   @map("blob_gas_used")
+  excessBlobGas         BigInt   @map("excess_blob_gas")
+  blobAsCalldataGasUsed BigInt   @map("blob_as_calldata_gas_used")
+  insertedAt            DateTime @default(now()) @map("inserted_at")
+  updatedAt             DateTime @default(now()) @map("updated_at")
 
   transactions         Transaction[]
   newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
@@ -85,19 +94,20 @@ model Block {
   newBlobs             Blob[]
 
   @@index([insertedAt])
+  @@map("block")
 }
 
 model Transaction {
   hash                  String   @id
-  fromId                String
-  toId                  String
-  blockNumber           Int
-  maxFeePerBlobGas      BigInt
-  blobGasPrice          BigInt
-  gasPrice              BigInt
-  blobAsCalldataGasUsed BigInt
-  insertedAt            DateTime @default(now())
-  updatedAt             DateTime @default(now())
+  fromId                String   @map("from_id")
+  toId                  String   @map("to_id")
+  blockNumber           Int      @map("block_number")
+  maxFeePerBlobGas      BigInt   @map("max_fee_per_blob_gas")
+  blobGasPrice          BigInt   @map("blob_gas_price")
+  gasPrice              BigInt   @map("gas_price")
+  blobAsCalldataGasUsed BigInt   @map("blob_as_calldata_gas_used")
+  insertedAt            DateTime @default(now()) @map("inserted_at")
+  updatedAt             DateTime @default(now()) @map("updated_at")
 
   blobs BlobsOnTransactions[]
   block Block                 @relation(fields: [blockNumber], references: [number])
@@ -106,11 +116,12 @@ model Transaction {
 
   @@index([insertedAt])
   @@index([blockNumber])
+  @@map("transaction")
 }
 
 model BlobsOnTransactions {
-  blobHash String
-  txHash   String
+  blobHash String @map("blob_hash")
+  txHash   String @map("tx_hash")
   index    Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
@@ -119,56 +130,68 @@ model BlobsOnTransactions {
   @@id([txHash, index])
   @@index([blobHash])
   @@index([txHash])
+  @@map("blobs_on_transactions")
 }
 
 // Block Metrics
 model BlockOverallStats {
   id          Int      @id @default(autoincrement())
-  totalBlocks Int
-  updatedAt   DateTime
+  totalBlocks Int      @map("total_blocks")
+  updatedAt   DateTime @map("updated_at")
+
+  @@map("block_overall_stats")
 }
 
 model BlockDailyStats {
   day         DateTime @id @db.Date
-  totalBlocks Int
+  totalBlocks Int      @map("total_blocks")
 
   @@unique([day])
   @@index([day])
+  @@map("block_daily_stats")
 }
 
 // Transaction metrics
 
 model TransactionOverallStats {
   id                   Int      @id @default(autoincrement())
-  totalTransactions    Int
-  totalUniqueReceivers Int
-  totalUniqueSenders   Int
-  updatedAt            DateTime
+  totalTransactions    Int      @map("total_transactions")
+  totalUniqueReceivers Int      @map("total_unique_receivers")
+  totalUniqueSenders   Int      @map("total_unique_senders")
+  updatedAt            DateTime @map("updated_at")
+
+  @@map("transaction_overall_stats")
 }
 
 model TransactionDailyStats {
   day                  DateTime @id @db.Date
-  totalTransactions    Int
-  totalUniqueSenders   Int
-  totalUniqueReceivers Int
+  totalTransactions    Int      @map("total_transactions")
+  totalUniqueSenders   Int      @map("total_unique_senders")
+  totalUniqueReceivers Int      @map("total_unique_receivers")
+
+  @@map("transaction_daily_stats")
 }
 
 // Blob metrics
 model BlobOverallStats {
   id               Int      @id @default(autoincrement())
-  totalBlobs       Int
-  totalUniqueBlobs Int
-  totalBlobSize    BigInt
-  avgBlobSize      Float
-  updatedAt        DateTime
+  totalBlobs       Int      @map("total_blobs")
+  totalUniqueBlobs Int      @map("total_unique_blobs")
+  totalBlobSize    BigInt   @map("total_blob_size")
+  avgBlobSize      Float    @map("avg_blob_size")
+  updatedAt        DateTime @map("updated_at")
+
+  @@map("blob_overall_stats")
 }
 
 model BlobDailyStats {
   day              DateTime @id @db.Date
-  totalBlobs       Int
-  totalUniqueBlobs Int
-  totalBlobSize    BigInt
-  avgBlobSize      Float
+  totalBlobs       Int      @map("total_blobs")
+  totalUniqueBlobs Int      @map("total_unique_blobs")
+  totalBlobSize    BigInt   @map("total_blob_size")
+  avgBlobSize      Float    @map("avg_blob_size")
+
+  @@map("blob_daily_stats")
 }
 
 // NextAuth.js Models
