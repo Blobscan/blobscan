@@ -14,7 +14,6 @@ import {
   formatTimestamp,
   GAS_PER_BLOB,
   formatWei,
-  calculateBlobGasPrice,
   formatBytes,
   formatNumber,
 } from "~/utils";
@@ -43,9 +42,7 @@ const Tx: NextPage = () => {
   }
 
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
-  const blobGasPrice = txData
-    ? calculateBlobGasPrice(txData.block.excessBlobGas)
-    : BigInt(0);
+  const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
   const blobGasUsed = txData
     ? BigInt(txData.blobs.length) * GAS_PER_BLOB
     : BigInt(0);

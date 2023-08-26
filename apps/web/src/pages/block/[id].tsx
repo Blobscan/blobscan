@@ -14,6 +14,7 @@ import {
   formatBytes,
   formatNumber,
   formatTimestamp,
+  formatWei,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -88,6 +89,10 @@ const Block: NextPage = function () {
                 {
                   name: "Blob Gas Used",
                   value: formatNumber(blockData.blobGasUsed),
+                },
+                {
+                  name: "Blob Gas Price",
+                  value: formatWei(blockData.blobGasPrice),
                 },
                 {
                   name: "Total Blob Size",

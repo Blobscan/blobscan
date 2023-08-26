@@ -206,7 +206,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 fromId,
                 toId,
                 maxFeePerBlobGas,
-                blobGasPrice,
                 gasPrice,
                 blobAsCalldataGasUsed,
               }) => [
@@ -215,7 +214,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 fromId,
                 toId,
                 maxFeePerBlobGas,
-                blobGasPrice,
                 gasPrice,
                 blobAsCalldataGasUsed,
               ]

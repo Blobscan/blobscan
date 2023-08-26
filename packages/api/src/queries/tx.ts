@@ -5,7 +5,6 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   fromId: true,
   toId: true,
   blockNumber: true,
-  blobGasPrice: true,
   blobAsCalldataGasUsed: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
@@ -18,6 +17,7 @@ export const fullTransactionSelect =
       select: {
         excessBlobGas: true,
         timestamp: true,
+        blobGasPrice: true,
       },
     },
     blobs: {

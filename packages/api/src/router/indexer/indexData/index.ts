@@ -58,6 +58,7 @@ function createDBBlock(
     timestamp: new Date(timestamp * 1000),
     slot,
     blobGasUsed,
+    blobGasPrice: calculateBlobGasPrice(excessBlobGas),
     excessBlobGas,
     blobAsCalldataGasUsed,
   };
