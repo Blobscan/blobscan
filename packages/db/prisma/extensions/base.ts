@@ -230,7 +230,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             from_id,
             to_id,
             max_fee_per_blob_gas,
-            blob_gas_price,
             gas_price,
             blob_as_calldata_gas_used,
             inserted_at,
@@ -241,7 +240,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             from_id = EXCLUDED.from_id,
             to_id = EXCLUDED.to_id,
             max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
-            blob_gas_price = EXCLUDED.blob_gas_price,
             gas_price = EXCLUDED.gas_price,
             blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
             updated_at = NOW()
