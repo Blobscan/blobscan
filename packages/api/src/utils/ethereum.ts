@@ -20,7 +20,7 @@ function fakeExponential(
     i++;
   }
 
-  return output;
+  return output / denominator;
 }
 
 export function getEIP2028CalldataGas(hexData: string): bigint {

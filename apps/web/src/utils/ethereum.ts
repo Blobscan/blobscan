@@ -8,7 +8,7 @@ type EtherUnit = "wei" | "gwei" | "ether";
 
 function formatWithDecimal(str: string, positionFromEnd: number): string {
   if (str.length <= positionFromEnd) {
-    const zeroes = "0".repeat(positionFromEnd - str.length + 1);
+    const zeroes = "0".repeat(positionFromEnd - str.length);
     const result = "0." + zeroes + str;
     return stripTrailingZeroes(result);
   }
@@ -76,7 +76,7 @@ function fakeExponential(
     i++;
   }
 
-  return output;
+  return output / denominator;
 }
 
 export function getEIP2028CalldataGas(hexData: string): bigint {
