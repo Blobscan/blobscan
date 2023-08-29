@@ -5,21 +5,21 @@ import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-interface GoogleStorageConfig extends BlobStorageConfig {
+export interface GoogleStorageConfig extends BlobStorageConfig {
   serviceKey?: string;
   projectId?: string;
   bucketName: string;
   apiEndpoint?: string;
 }
 
-type GoogleCredentials = {
+export type GoogleCredentials = {
   client_email: string;
   private_key: string;
 };
 
 export class GoogleStorage extends BlobStorage {
-  #storageClient: Storage;
-  #bucketName: string;
+  _storageClient: Storage;
+  _bucketName: string;
 
   constructor({
     bucketName,
@@ -41,24 +41,24 @@ export class GoogleStorage extends BlobStorage {
       storageOptions.apiEndpoint = apiEndpoint;
     }
 
-    this.#bucketName = bucketName;
+    this._bucketName = bucketName;
 
     storageOptions.projectId = projectId;
 
-    this.#storageClient = new Storage(storageOptions);
+    this._storageClient = new Storage(storageOptions);
   }
 
   async healthCheck(): Promise<void> {
-    const [buckets] = await this.#storageClient.getBuckets();
+    const [buckets] = await this._storageClient.getBuckets();
 
-    if (!buckets.find((b) => b.name === this.#bucketName)) {
-      throw new Error(`Bucket ${this.#bucketName} does not exist`);
+    if (!buckets.find((b) => b.name === this._bucketName)) {
+      throw new Error(`Bucket ${this._bucketName} does not exist`);
     }
   }
 
   async getBlob(uri: string): Promise<string> {
     return (
-      await this.#storageClient.bucket(this.#bucketName).file(uri).download()
+      await this._storageClient.bucket(this._bucketName).file(uri).download()
     ).toString();
   }
 
@@ -69,8 +69,8 @@ export class GoogleStorage extends BlobStorage {
   ): Promise<string> {
     const fileName = this.buildBlobFileName(chainId, versionedHash);
 
-    await this.#storageClient
-      .bucket(this.#bucketName)
+    await this._storageClient
+      .bucket(this._bucketName)
       .file(fileName)
       .save(data);
 
@@ -78,11 +78,11 @@ export class GoogleStorage extends BlobStorage {
   }
 
   async setUpBucket() {
-    if (this.#storageClient.bucket(this.#bucketName)) {
+    if (this._storageClient.bucket(this._bucketName)) {
       return;
     }
 
-    return this.#storageClient.createBucket(this.#bucketName);
+    return this._storageClient.createBucket(this._bucketName);
   }
 
   static tryGetConfigFromEnv(

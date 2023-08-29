@@ -23,6 +23,11 @@ async function createOrLoadBlobStorageManager(): Promise<BlobStorageManager> {
   return blobStorageManager;
 }
 
+// Test utility to reset blobStorageManager
+export function resetBlobStorageManager() {
+  blobStorageManager = undefined;
+}
+
 export type { BlobReference } from "./BlobStorageManager";
 export {
   createOrLoadBlobStorageManager,

@@ -116,7 +116,7 @@ export class BlobStorageManager<
               return `${storageName} - ${err}`;
             });
 
-            throw new Error(`${errorMessage}: ${storageErrors.join(",")}`);
+            throw new Error(`${errorMessage}: ${storageErrors.join(", ")}`);
           }
 
           const err = new Error(`${errorMessage}: ${e}`);

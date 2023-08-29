@@ -4,23 +4,23 @@ import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
-interface SwarmStorageConfig extends BlobStorageConfig {
+export interface SwarmStorageConfig extends BlobStorageConfig {
   beeEndpoint: string;
   beeDebugEndpoint?: string;
 }
 
-type SwarmClient = {
+export type SwarmClient = {
   bee: Bee;
   beeDebug?: BeeDebug;
 };
 
 export class SwarmStorage extends BlobStorage {
-  #swarmClient: SwarmClient;
+  _swarmClient: SwarmClient;
 
   constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
     super();
 
-    this.#swarmClient = {
+    this._swarmClient = {
       bee: new Bee(beeEndpoint),
       beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
     };
@@ -29,11 +29,11 @@ export class SwarmStorage extends BlobStorage {
   async healthCheck(): Promise<void> {
     const healthCheckOps = [];
 
-    healthCheckOps.push(this.#swarmClient.bee.checkConnection());
+    healthCheckOps.push(this._swarmClient.bee.checkConnection());
 
-    if (this.#swarmClient.beeDebug) {
+    if (this._swarmClient.beeDebug) {
       healthCheckOps.push(
-        this.#swarmClient.beeDebug.getHealth().then((health) => {
+        this._swarmClient.beeDebug.getHealth().then((health) => {
           if (health.status !== "ok") {
             throw new Error(`Bee debug is not healthy: ${health.status}`);
           }
@@ -45,7 +45,7 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async getBlob(reference: string): Promise<string> {
-    return (await this.#swarmClient.bee.downloadData(reference)).toString();
+    return (await this._swarmClient.bee.downloadData(reference)).toString();
   }
 
   async storeBlob(
@@ -53,8 +53,8 @@ export class SwarmStorage extends BlobStorage {
     versionedHash: string,
     data: string
   ): Promise<string> {
-    const batchId = await this.#getAvailableBatch();
-    const response = await this.#swarmClient.bee.uploadFile(
+    const batchId = await this._getAvailableBatch();
+    const response = await this._swarmClient.bee.uploadFile(
       batchId,
       data,
       this.buildBlobFileName(chainId, versionedHash),
@@ -67,12 +67,12 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toString();
   }
 
-  async #getAvailableBatch(): Promise<string> {
-    if (!this.#swarmClient.beeDebug) {
+  async _getAvailableBatch(): Promise<string> {
+    if (!this._swarmClient.beeDebug) {
       throw new Error("Bee debug endpoint required to get postage batches");
     }
 
-    const [firstBatch] = await this.#swarmClient.beeDebug.getAllPostageBatch();
+    const [firstBatch] = await this._swarmClient.beeDebug.getAllPostageBatch();
 
     if (!firstBatch?.batchID) {
       throw new Error("No postage batches available");
