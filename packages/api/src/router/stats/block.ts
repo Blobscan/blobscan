@@ -18,14 +18,36 @@ export const blockStatsRouter = createTRPCRouter({
     })
     .input(z.void())
     .output(
-      z.object({ totalBlocks: z.number(), updatedAt: z.date() }).nullable()
+      z.object({
+        totalBlocks: z.number(),
+        totalBlobGasUsed: z.bigint(),
+        totalBlobAsCalldataGasUsed: z.bigint(),
+        totalBlobFee: z.bigint(),
+        totalBlobAsCalldataFee: z.bigint(),
+        avgBlobFee: z.number(),
+        avgBlobAsCalldataFee: z.number(),
+        avgBlobGasPrice: z.number(),
+        updatedAt: z.date(),
+      })
     )
     .query(async ({ ctx: { prisma } }) => {
-      const overallBlockStats = await prisma.blockOverallStats.findUnique({
+      const overallStats = await prisma.blockOverallStats.findUnique({
         where: { id: 1 },
       });
 
-      return overallBlockStats;
+      return (
+        overallStats ?? {
+          totalBlocks: 0,
+          totalBlobGasUsed: BigInt(0),
+          totalBlobAsCalldataGasUsed: BigInt(0),
+          totalBlobFee: BigInt(0),
+          totalBlobAsCalldataFee: BigInt(0),
+          avgBlobFee: 0,
+          avgBlobAsCalldataFee: 0,
+          avgBlobGasPrice: 0,
+          updatedAt: new Date(),
+        }
+      );
     }),
   getDailyStats: timeFrameProcedure
     .meta({
@@ -39,24 +61,34 @@ export const blockStatsRouter = createTRPCRouter({
     .output(
       z.array(
         z.object({
-          day: z.date(),
+          day: z.string(),
           totalBlocks: z.number(),
+          totalBlobGasUsed: z.number(),
+          totalBlobAsCalldataGasUsed: z.number(),
+          totalBlobFee: z.number(),
+          totalBlobAsCalldataFee: z.number(),
+          avgBlobFee: z.number(),
+          avgBlobAsCalldataFee: z.number(),
+          avgBlobGasPrice: z.number(),
         })
       )
     )
     .query(({ ctx: { prisma, timeFrame } }) =>
-      prisma.blockDailyStats.findMany({
-        select: {
-          day: true,
-          totalBlocks: true,
-        },
-        where: {
-          day: {
-            gte: timeFrame.initial.toDate(),
-            lte: timeFrame.final.toDate(),
+      prisma.blockDailyStats
+        .findMany({
+          where: {
+            day: {
+              gte: timeFrame.initial.toDate(),
+              lte: timeFrame.final.toDate(),
+            },
           },
-        },
-        orderBy: { day: "asc" },
-      })
+          orderBy: { day: "asc" },
+        })
+        .then((stats) =>
+          stats.map((stat) => ({
+            ...stat,
+            day: stat.day.toISOString(),
+          }))
+        )
     ),
 });

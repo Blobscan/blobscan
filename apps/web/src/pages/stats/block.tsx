@@ -1,14 +1,19 @@
 import type { NextPage } from "next";
 import NextError from "next/error";
 
-import { DailyBlocksChart } from "~/components/Charts/Block";
+import {
+  DailyAvgBlobGasPriceChart,
+  DailyBlobFeeChart,
+  DailyBlobGasUsedChart,
+  DailylBlobVsBlobAsCalldataGasUsedChart,
+  DailyBlocksChart,
+  DailyAvgBlobFeeChart,
+} from "~/components/Charts/Block";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
 import { useTransformResult } from "~/hooks/useTransformResult";
-import {
-  transformDailyBlockStatsResult,
-  transformOverallBlockStatsResult,
-} from "~/query-transformers";
+import { transformDailyBlockStatsResult } from "~/query-transformers";
+import { calculatePercentage, formatWei, parseAmountWithUnit } from "~/utils";
 
 const BlockStats: NextPage = function () {
   const dailyBlockStatsRes = api.stats.block.getDailyStats.useQuery({
@@ -19,10 +24,8 @@ const BlockStats: NextPage = function () {
     dailyBlockStatsRes,
     transformDailyBlockStatsResult
   );
-  const blockOverallStats = useTransformResult(
-    overallBlockStatsRes,
-    transformOverallBlockStatsResult
-  );
+
+  const blockOverallStats = useTransformResult(overallBlockStatsRes);
 
   const error = dailyBlockStatsRes.error || overallBlockStatsRes.error;
 
@@ -44,7 +47,60 @@ const BlockStats: NextPage = function () {
             ? [
                 {
                   name: "Total Blocks",
-                  value: blockOverallStats.totalBlocks,
+                  metric: {
+                    value: blockOverallStats.totalBlocks,
+                  },
+                },
+                {
+                  name: "Total Blob Gas Used",
+                  metric: {
+                    value: blockOverallStats.totalBlobGasUsed,
+                  },
+                },
+                {
+                  name: "Total Blob Fees",
+                  metric: {
+                    value: blockOverallStats.totalBlobFee,
+                  },
+                },
+                {
+                  name: "Avg. Blob Gas Price",
+                  metric: {
+                    ...parseAmountWithUnit(
+                      formatWei(blockOverallStats.avgBlobGasPrice)
+                    ),
+                    numberFormatOpts: {
+                      maximumFractionDigits: 10,
+                    },
+                  },
+                },
+                {
+                  name: "Total Fees Saved",
+                  metric: {
+                    ...parseAmountWithUnit(
+                      formatWei(
+                        blockOverallStats.totalBlobAsCalldataFee -
+                          blockOverallStats.totalBlobFee
+                      )
+                    ),
+                  },
+                },
+                {
+                  name: "Total Calldata Gas Saved",
+                  metric: {
+                    value:
+                      blockOverallStats.totalBlobAsCalldataGasUsed -
+                      blockOverallStats.totalBlobGasUsed,
+                  },
+                  secondaryMetric: {
+                    value:
+                      100 -
+                      calculatePercentage(
+                        blockOverallStats.totalBlobGasUsed,
+                        blockOverallStats.totalBlobAsCalldataGasUsed
+                      ),
+                    unit: "%",
+                  },
                 },
               ]
             : undefined
@@ -52,8 +108,34 @@ const BlockStats: NextPage = function () {
         charts={[
           <DailyBlocksChart
             key={0}
-            days={dailyBlockStats?.days}
-            blocks={dailyBlockStats?.blocks}
+            days={dailyBlockStats?.day}
+            blocks={dailyBlockStats?.totalBlocks}
+          />,
+          <DailyBlobGasUsedChart
+            key={1}
+            days={dailyBlockStats?.day}
+            blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+          />,
+          <DailylBlobVsBlobAsCalldataGasUsedChart
+            key={2}
+            days={dailyBlockStats?.day}
+            blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+            blobAsCalldataGasUsed={dailyBlockStats?.totalBlobAsCalldataGasUsed}
+          />,
+          <DailyBlobFeeChart
+            key={3}
+            days={dailyBlockStats?.day}
+            blobFees={dailyBlockStats?.totalBlobFee}
+          />,
+          <DailyAvgBlobFeeChart
+            key={4}
+            days={dailyBlockStats?.day}
+            avgBlobFees={dailyBlockStats?.avgBlobFee}
+          />,
+          <DailyAvgBlobGasPriceChart
+            key={5}
+            days={dailyBlockStats?.day}
+            avgBlobGasPrice={dailyBlockStats?.avgBlobGasPrice}
           />,
         ]}
       />

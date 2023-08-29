@@ -26,6 +26,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       option={{
         ...COMMON_OPTIONS,
         ...options,
+        tooltip: {
+          ...COMMON_OPTIONS["tooltip"],
+          ...(options.tooltip || {}),
+        },
         xAxis: {
           ...(COMMON_OPTIONS.xAxis || {}),
           ...(options.xAxis || {}),

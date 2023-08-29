@@ -5,14 +5,15 @@ import { ChartCard } from "~/components/Cards/ChartCard";
 import type { SingleDailyBlockStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
-export type DailyBlocksChartProps = {
-  days?: SingleDailyBlockStats["day"][];
-  blocks?: SingleDailyBlockStats["totalBlocks"][];
-};
+export type DailyBlobGasUsedChartProps = Partial<{
+  days: SingleDailyBlockStats["day"][];
+  blobGasUsed: SingleDailyBlockStats["totalBlobGasUsed"][];
+  blobAsCalldataGasUsed: SingleDailyBlockStats["totalBlobAsCalldataGasUsed"][];
+}>;
 
-export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
+export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function ({
   days,
-  blocks,
+  blobGasUsed,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
     ...buildTimeSeriesOptions(days, {
@@ -20,13 +21,14 @@ export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
     }),
     series: [
       {
-        name: "Transactions",
-        data: blocks,
+        name: "Blob Gas Used",
+        data: blobGasUsed,
+        stack: "gas",
         type: "bar",
       },
     ],
     animationEasing: "cubicOut",
   };
 
-  return <ChartCard title="Daily Blocks" size="sm" options={options} />;
+  return <ChartCard title="Daily Blob Gas Used" size="sm" options={options} />;
 };

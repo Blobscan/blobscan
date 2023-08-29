@@ -14,10 +14,10 @@ function applyFormatter(value?: unknown, formatter?: ValueFormatter) {
 }
 
 function buildYAxisHtml(param: ExtendedFormat, formatter?: ValueFormatter) {
-  return `<div>${param.marker} ${param.seriesName}: <strong>${applyFormatter(
+  return `<span>${param.marker} ${param.seriesName}: <strong>${applyFormatter(
     param.value,
     formatter
-  )}</strong<div/>`;
+  )}</strong><span/>`;
 }
 
 function buildXAxisHtml(param?: ExtendedFormat, formatter?: ValueFormatter) {

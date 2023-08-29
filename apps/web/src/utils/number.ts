@@ -11,8 +11,11 @@ export function formatBytes(bytes: number | bigint, opts: Options = {}) {
   });
 }
 
-export function parseBytes(bytes: string): { value: number; unit: string } {
-  const [value = 0, unit = "B"] = bytes.split(" ");
+export function parseAmountWithUnit(amountWithUnit: string): {
+  value: number;
+  unit: string;
+} {
+  const [value = 0, unit = ""] = amountWithUnit.split(" ");
 
   return {
     value: Number(value),
@@ -21,20 +24,10 @@ export function parseBytes(bytes: string): { value: number; unit: string } {
 }
 
 export function abbreviateNumber(value: number | string): string {
-  const suffixes = ["", "K", "M", "B", "T"];
-  let suffixNum = 0;
-  let value_ = Number(value);
-
-  while (value_ >= 1000) {
-    value_ /= 1000;
-    suffixNum++;
-  }
-
-  let formattedValue = formatNumber(value_.toPrecision(3));
-
-  formattedValue += suffixes[suffixNum];
-
-  return formattedValue;
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(Number(value));
 }
 
 export function formatNumber(
@@ -42,4 +35,11 @@ export function formatNumber(
   opts?: Intl.NumberFormatOptions
 ): string {
   return Number(x).toLocaleString(undefined, opts);
+}
+
+export function calculatePercentage(
+  numerator: bigint,
+  denominator: bigint
+): number {
+  return (Number((numerator * BigInt(100)) / denominator) / 100) * 100;
 }

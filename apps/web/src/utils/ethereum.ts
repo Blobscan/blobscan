@@ -7,15 +7,17 @@ export const GAS_PER_BLOB = BigInt(2 ** 17); // 131072
 type EtherUnit = "wei" | "gwei" | "ether";
 
 function formatWithDecimal(str: string, positionFromEnd: number): string {
-  if (str.length <= positionFromEnd) {
-    const zeroes = "0".repeat(positionFromEnd - str.length);
-    const result = "0." + zeroes + str;
+  const [integerPart = "", decimalPart = ""] = str.split(".");
+
+  if (integerPart.length <= positionFromEnd) {
+    const zeroes = "0".repeat(positionFromEnd - integerPart.length);
+    const result = "0." + zeroes + integerPart + decimalPart;
     return stripTrailingZeroes(result);
   }
 
-  const integerPart = str.slice(0, -positionFromEnd);
-  const decimalPart = str.slice(-positionFromEnd);
-  const result = `${integerPart}.${decimalPart}`;
+  const newIntegerPart = integerPart.slice(0, -positionFromEnd);
+  const newDecimalPart = integerPart.slice(-positionFromEnd);
+  const result = `${newIntegerPart}.${newDecimalPart}${decimalPart}`;
 
   return stripTrailingZeroes(result);
 }
@@ -32,12 +34,25 @@ function stripTrailingZeroes(str: string): string {
   return str;
 }
 
+export type FormatWeiOptions = {
+  unit: EtherUnit;
+  displayUnit: boolean;
+  displayFullAmount: boolean;
+};
+
 export function formatWei(
   weiAmount: bigint | number,
-  unit: EtherUnit = "gwei",
-  displayUnit = true
+  {
+    unit = "gwei",
+    displayUnit = true,
+    displayFullAmount = true,
+  }: Partial<FormatWeiOptions> = {}
 ): string {
-  const weiStr = weiAmount.toString();
+  const weiStr =
+    // Wei amounts should be integers
+    typeof weiAmount === "number"
+      ? Math.floor(weiAmount).toString()
+      : weiAmount.toString();
   let formattedAmount: string;
 
   switch (unit) {
@@ -54,9 +69,18 @@ export function formatWei(
       throw new Error("Unsupported unit");
   }
 
-  return `${formatNumber(formattedAmount, { maximumFractionDigits: 18 })}${
-    displayUnit ? ` ${unit}` : ""
-  }`;
+  formattedAmount = formatNumber(formattedAmount, {
+    maximumFractionDigits: 18,
+  });
+
+  const fractionDigits = formattedAmount.split(".")[1];
+
+  // Use exponential notation for large fractional digits
+  if (!displayFullAmount && fractionDigits && fractionDigits.length > 3) {
+    formattedAmount = Number(formattedAmount).toExponential();
+  }
+
+  return `${formattedAmount}${displayUnit ? ` ${unit}` : ""}`;
 }
 
 function fakeExponential(

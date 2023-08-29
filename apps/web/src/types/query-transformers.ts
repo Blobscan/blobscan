@@ -1,9 +1,7 @@
 import type {
   OverallBlobStats,
-  OverallBlockStats,
   OverallTxStats,
   SingleDailyBlobStats,
-  SingleDailyBlockStats,
   SingleDailyTransactionStats,
 } from "./routers";
 
@@ -24,9 +22,8 @@ export type TransformedDailyBlobStats = {
   avgBlobSizes: SingleDailyBlobStats["avgBlobSize"][];
 };
 
-export type TransformedDailyBlockStats = {
-  days: string[];
-  blocks: SingleDailyBlockStats["totalBlocks"][];
+export type TransformToArray<T> = {
+  [K in keyof T]: T[K][];
 };
 
 export type TransformedOverallBlobStats = Omit<
@@ -34,23 +31,11 @@ export type TransformedOverallBlobStats = Omit<
   "totalBlobSize" | "updatedAt"
 > & { totalBlobSize: bigint } & OptionalDate;
 
-export type TransformedOverallBlockStats = Omit<
-  NonNullable<OverallBlockStats>,
-  "updatedAt"
-> &
-  OptionalDate;
-
 export type TransformedOverallTxStats = Omit<
   NonNullable<OverallTxStats>,
   "updatedAt"
 > &
   OptionalDate;
-
-export type TransformAllOverallStats = {
-  blob: TransformedOverallBlobStats;
-  block: TransformedOverallBlockStats;
-  transaction: TransformedOverallTxStats;
-};
 
 export type TransformedDailyTransactionStats = {
   days: string[];
