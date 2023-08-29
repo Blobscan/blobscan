@@ -64,7 +64,7 @@ services:
       - storage_data:/storage
 
   postgres:
-    image: postgres:14
+    image: postgres:14.1-alpine
     ports:
       - 5432:5432
     volumes:
