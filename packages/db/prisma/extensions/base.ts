@@ -19,7 +19,7 @@ export type RawBlob = {
   data: string;
 };
 
-function updateAddressData(
+export function updateAddressData(
   addressesData: Record<string, Partial<Address>>,
   address: string,
   blockNumber: number,
