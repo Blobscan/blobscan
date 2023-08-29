@@ -1,0 +1,19 @@
+{
+  "name": "@blobscan/test",
+  "description": "Blobscan's test library",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^5.0.0"
+  }
+}

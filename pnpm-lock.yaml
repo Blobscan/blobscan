@@ -482,6 +482,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../open-telemetry
+      '@blobscan/test':
+        specifier: ^0.0.1
+        version: link:../test
       '@faker-js/faker':
         specifier: ^8.0.2
         version: 8.0.2
