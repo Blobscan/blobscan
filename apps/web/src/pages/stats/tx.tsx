@@ -47,15 +47,21 @@ const TransactionStats: NextPage = function () {
             ? [
                 {
                   name: "Total Transactions",
-                  value: overallTxStats.totalTransactions,
+                  metric: {
+                    value: overallTxStats.totalTransactions,
+                  },
                 },
                 {
                   name: "Total Unique Receivers",
-                  value: overallTxStats.totalUniqueReceivers,
+                  metric: {
+                    value: overallTxStats.totalUniqueReceivers,
+                  },
                 },
                 {
                   name: "Total Unique Senders",
-                  value: overallTxStats.totalUniqueSenders,
+                  metric: {
+                    value: overallTxStats.totalUniqueSenders,
+                  },
                 },
               ]
             : undefined

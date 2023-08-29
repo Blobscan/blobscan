@@ -23,7 +23,7 @@ import {
   buildBlocksRoute,
   buildTransactionsRoute,
   formatBytes,
-  parseBytes,
+  parseAmountWithUnit,
 } from "~/utils";
 
 const TOTAL_BLOCKS = 4;
@@ -92,11 +92,11 @@ const Home: NextPage = () => {
 
   const totalBlobSize =
     allOverallStats && allOverallStats.blob
-      ? parseBytes(formatBytes(allOverallStats.blob.totalBlobSize))
+      ? parseAmountWithUnit(formatBytes(allOverallStats.blob.totalBlobSize))
       : undefined;
   const avgBlobSize =
     allOverallStats && allOverallStats.blob
-      ? parseBytes(formatBytes(allOverallStats.blob.avgBlobSize))
+      ? parseAmountWithUnit(formatBytes(allOverallStats.blob.avgBlobSize))
       : undefined;
 
   return (
@@ -118,34 +118,46 @@ const Home: NextPage = () => {
           <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
             <MetricCard
               name="Total Blocks"
-              value={allOverallStats?.block?.totalBlocks}
+              metric={{
+                value: allOverallStats?.block?.totalBlocks,
+              }}
               compact
             />
             <MetricCard
               name="Total Transactions"
-              value={allOverallStats?.transaction?.totalTransactions}
+              metric={{
+                value: allOverallStats?.transaction?.totalTransactions,
+              }}
               compact
             />
             <MetricCard
               name="Total Blobs"
-              value={allOverallStats?.blob?.totalBlobs}
+              metric={{
+                value: allOverallStats?.blob?.totalBlobs,
+              }}
               compact
             />
             <MetricCard
               name="Total Blob Size"
-              value={totalBlobSize?.value}
-              unit={totalBlobSize?.unit}
+              metric={{
+                value: totalBlobSize?.value,
+                unit: totalBlobSize?.unit,
+              }}
               compact
             />
             <MetricCard
               name="Avg. Blob Size"
-              value={avgBlobSize?.value}
-              unit={avgBlobSize?.unit}
+              metric={{
+                value: avgBlobSize?.value,
+                unit: avgBlobSize?.unit,
+              }}
               compact
             />
             <MetricCard
               name="Total Unique Blobs"
-              value={allOverallStats?.blob?.totalUniqueBlobs}
+              metric={{
+                value: allOverallStats?.blob?.totalUniqueBlobs,
+              }}
               compact
             />
           </div>

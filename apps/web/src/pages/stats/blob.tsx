@@ -13,7 +13,7 @@ import {
   transformDailyBlobStatsResult,
   transformOverallBlobStatsResult,
 } from "~/query-transformers";
-import { formatBytes, parseBytes } from "~/utils";
+import { formatBytes, parseAmountWithUnit } from "~/utils";
 
 const BlobStats: NextPage = function () {
   const dailyBlobStatsRes = api.stats.blob.getDailyStats.useQuery({
@@ -46,18 +46,31 @@ const BlobStats: NextPage = function () {
       metrics={
         overallBlobStats
           ? [
-              { name: "Total Blobs", value: overallBlobStats.totalBlobs },
+              {
+                name: "Total Blobs",
+                metric: { value: overallBlobStats.totalBlobs },
+              },
               {
                 name: "Total Blob Size",
-                ...parseBytes(formatBytes(overallBlobStats.totalBlobSize)),
+                metric: {
+                  ...parseAmountWithUnit(
+                    formatBytes(overallBlobStats.totalBlobSize)
+                  ),
+                },
               },
               {
                 name: "Total Unique Blobs",
-                value: overallBlobStats.totalUniqueBlobs,
+                metric: {
+                  value: overallBlobStats.totalUniqueBlobs,
+                },
               },
               {
                 name: "Average Blob Size",
-                ...parseBytes(formatBytes(overallBlobStats.avgBlobSize)),
+                metric: {
+                  ...parseAmountWithUnit(
+                    formatBytes(overallBlobStats.avgBlobSize)
+                  ),
+                },
               },
             ]
           : undefined
