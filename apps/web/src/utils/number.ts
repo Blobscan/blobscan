@@ -41,5 +41,9 @@ export function calculatePercentage(
   numerator: bigint,
   denominator: bigint
 ): number {
+  if (denominator === BigInt(0)) {
+    return Number(0);
+  }
+
   return (Number((numerator * BigInt(100)) / denominator) / 100) * 100;
 }

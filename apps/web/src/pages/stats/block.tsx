@@ -92,15 +92,18 @@ const BlockStats: NextPage = function () {
                       blockOverallStats.totalBlobAsCalldataGasUsed -
                       blockOverallStats.totalBlobGasUsed,
                   },
-                  secondaryMetric: {
-                    value:
-                      100 -
-                      calculatePercentage(
-                        blockOverallStats.totalBlobGasUsed,
-                        blockOverallStats.totalBlobAsCalldataGasUsed
-                      ),
-                    unit: "%",
-                  },
+                  secondaryMetric:
+                    blockOverallStats.totalBlobAsCalldataFee > BigInt(0)
+                      ? {
+                          value:
+                            100 -
+                            calculatePercentage(
+                              blockOverallStats.totalBlobGasUsed,
+                              blockOverallStats.totalBlobAsCalldataGasUsed
+                            ),
+                          unit: "%",
+                        }
+                      : undefined,
                 },
               ]
             : undefined
