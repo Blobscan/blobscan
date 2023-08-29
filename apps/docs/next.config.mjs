@@ -1,7 +1,6 @@
+import withSearch from './src/markdoc/search.mjs'
 import withMarkdoc from '@markdoc/next.js'
 import { createLoader } from 'simple-functional-loader'
-
-import withSearch from './src/markdoc/search.mjs'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,9 +20,6 @@ const nextConfig = {
     })
 
     return config
-  },
-  experimental: {
-    appDir: true,
   },
 }
 

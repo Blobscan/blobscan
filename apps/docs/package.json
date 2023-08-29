@@ -1,9 +1,9 @@
 {
-  "name": "tailwindui-syntax",
+  "name": "@blobscan/docs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -22,7 +22,7 @@
     "fast-glob": "^3.2.12",
     "flexsearch": "^0.7.31",
     "js-yaml": "^4.1.0",
-    "next": "^13.2.4",
+    "next": "^13.4.16",
     "next-themes": "^0.2.1",
     "prism-react-renderer": "^2.0.6",
     "react": "18.2.0",
