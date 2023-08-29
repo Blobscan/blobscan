@@ -1,0 +1,172 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Stats Extension > Daily Stats > Blob model > should fill stats from date 1`] = `
+[
+  {
+    "avgBlobSize": 1400,
+    "day": 2023-08-26T00:00:00.000Z,
+    "totalBlobSize": 4200n,
+    "totalBlobs": 3,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Blob model > should fill stats in a date period 1`] = `
+[
+  {
+    "avgBlobSize": 1100,
+    "day": 2023-08-24T00:00:00.000Z,
+    "totalBlobSize": 3300n,
+    "totalBlobs": 3,
+    "totalUniqueBlobs": 3,
+  },
+  {
+    "avgBlobSize": 1400,
+    "day": 2023-08-26T00:00:00.000Z,
+    "totalBlobSize": 4200n,
+    "totalBlobs": 3,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Blob model > should fill stats to date 1`] = `
+[
+  {
+    "avgBlobSize": 1100,
+    "day": 2023-08-24T00:00:00.000Z,
+    "totalBlobSize": 3300n,
+    "totalBlobs": 3,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Block model > should fill stats from date 1`] = `
+[
+  {
+    "day": 2023-08-26T00:00:00.000Z,
+    "totalBlocks": 1,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Block model > should fill stats in a date period 1`] = `
+[
+  {
+    "day": 2023-08-24T00:00:00.000Z,
+    "totalBlocks": 1,
+  },
+  {
+    "day": 2023-08-26T00:00:00.000Z,
+    "totalBlocks": 1,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Block model > should fill stats to date 1`] = `
+[
+  {
+    "day": 2023-08-24T00:00:00.000Z,
+    "totalBlocks": 1,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Transaction model > should fill stats from date 1`] = `
+[
+  {
+    "day": 2023-08-26T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Transaction model > should fill stats in a date period 1`] = `
+[
+  {
+    "day": 2023-08-24T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+  {
+    "day": 2023-08-26T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Daily Stats > Transaction model > should fill stats to date 1`] = `
+[
+  {
+    "day": 2023-08-24T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Overall Stats > Blob model > should backfill stats 1`] = `
+[
+  {
+    "avgBlobSize": 1250,
+    "totalBlobSize": 7500n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 6,
+  },
+]
+`;
+
+exports[`Stats Extension > Overall Stats > Blob model > should increment stats in block range 1`] = `
+[
+  {
+    "avgBlobSize": 1100,
+    "totalBlobSize": 3300n,
+    "totalBlobs": 3,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Overall Stats > Block model > should backfill stats 1`] = `
+[
+  {
+    "totalBlocks": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Overall Stats > Block model > should increment stats in block range 1`] = `
+[
+  {
+    "totalBlocks": 1,
+  },
+]
+`;
+
+exports[`Stats Extension > Overall Stats > Transaction model > should backfill stats 1`] = `
+[
+  {
+    "totalTransactions": 6,
+    "totalUniqueReceivers": 4,
+    "totalUniqueSenders": 4,
+  },
+]
+`;
+
+exports[`Stats Extension > Overall Stats > Transaction model > should increment stats in block range 1`] = `
+[
+  {
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+]
+`;
