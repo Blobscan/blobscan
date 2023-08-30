@@ -3,72 +3,76 @@ title: Installation
 nextjs:
   metadata:
     title: Installation
-    description: Quidem magni aut exercitationem maxime rerum eos.
+    description: How to run your own instance of Blobscan
 ---
 
-Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum corrupti incidunt. Et aut eligendi ea perferendis.
+Blobscan is open source and you can run your own instance either locally or publically exposed on the Internet.
 
 ---
 
-## Quis vel iste dicta
+## Requirements
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+In order to run Blobscan you need a virtual machine with these minimum specs:
 
-### Et pariatur ab quas
+- 2 vCPU
+- 4 GB RAM
+- 100 GB Hard disk
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+Additionally you need to connect to an Ethereum node.
 
-```js
-/** @type {import('@tailwindlabs/lorem').ipsum} */
-export default {
-  lorem: 'ipsum',
-  dolor: ['sit', 'amet', 'consectetur'],
-  adipiscing: {
-    elit: true,
-  },
-}
+Check out [eip4844-devnet](https://github.com/jimmygchen/eip4844-devnet) if you want to run your own devnet node.
+
+## Configuration
+
+Blobscan is configured using environment variables. You can define them using `export` or with an `.env` file.
+
+We provide a `.env.example` file as reference which you can use as starting point.
+
+```shell
+cp .env.example .env
 ```
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+Then go through the file and edit the [environment variables](/docs/environment).
 
-### Natus aspernatur iste
+In order to run Blobscan you are required to define the following ones:
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+- SECRET_KEY
+- BEACON_NODE_ENDPOINT
+- EXECUTION_NODE_ENDPOINT
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+## Running Blobscan
 
----
+### Docker (recommended)
 
-## Quos porro ut molestiae
+{% callout type="warning" title="Docker version" %}
+A recent version of docker with BuildKit support is required.
+{% /callout %}
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+Docker makes very straightforward to run Blobscan. Docker images are automatically [published](https://hub.docker.com/u/blossomlabs) and a docker-compose file is provided for convenience.
 
-### Voluptatem quas possimus
+Spinning up the containers:
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+```shell
+docker compose up -d
+```
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+Docker will download the images and run them in containers. After initialization, your Blobscan frontend will be available at `http://localhost:3001`.
 
-### Id vitae minima
+### Kubernetes (advanced)
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+We also provide Helm charts to ease deploying Blobscan into a Kubernetes cluster.
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+```shell
+helm repo add blobscan-helm-charts https://blobscan.github.io/blobscan-helm-charts
+helm install blobscan blobscan-helm-charts/blobscan
+```
 
----
+Check out the [blobscan-helm-charts](https://github.com/Blobscan/blobscan-helm-charts) repository for more information.
 
-## Vitae laborum maiores
+### Local environment
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+Check out [Running locally](/running-locally).
 
-### Corporis exercitationem
+## Cron jobs
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
-
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
-
-### Reprehenderit magni
-
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
-
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+Check out [Cronjobs](/cronjobs).
