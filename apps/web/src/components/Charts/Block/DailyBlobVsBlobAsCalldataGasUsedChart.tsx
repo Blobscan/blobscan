@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import * as echarts from "echarts";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
@@ -23,34 +24,60 @@ export const DailylBlobVsBlobAsCalldataGasUsedChart: FC<
         name: "Blob as Calldata Gas Used",
         data: blobGasUsed,
         stack: "gas",
-        type: "bar",
+        type: "line",
         emphasis: {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           focus: "series",
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: "rgba(58,77,233,0.8)",
+            },
+            {
+              offset: 1,
+              color: "rgba(58,77,233,0.3)",
+            },
+          ]),
         },
       },
       {
         name: "Blob as Calldata Gas Used",
         data: blobAsCalldataGasUsed,
         stack: "gas",
-        type: "bar",
+        type: "line",
         itemStyle: {
           color: "#743737",
         },
+
         emphasis: {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           focus: "series",
         },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: "rgba(213,72,120,0.8)",
+            },
+            {
+              offset: 1,
+              color: "rgba(213,72,120,0.3)",
+            },
+          ]),
+        },
       },
     ],
-    animationEasing: "cubicOut",
+
+    animationEasing: "backIn",
   };
 
   return (
     <ChartCard
-      title="Blob vs. Blob as Calldata Gas Used"
+      title="Daily Blob vs. Blob as Calldata Gas Used"
       size="sm"
       options={options}
     />

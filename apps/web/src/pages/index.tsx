@@ -9,6 +9,7 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
+import { DailylBlobVsBlobAsCalldataGasUsedChart } from "~/components/Charts/Block";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
@@ -58,13 +59,18 @@ const Home: NextPage = () => {
     api.stats.getTransactionDailyStats.useQuery({
       timeFrame: "15d",
     });
+  const { data: dailyBlockStats, error: dailyBlockStatsErr } =
+    api.stats.getBlockDailyStats.useQuery({
+      timeFrame: "15d",
+    });
 
   const error =
     latestBlocksError ||
     latestTxsError ||
     latestBlobsError ||
     overallStatsErr ||
-    dailyTxStatsErr;
+    dailyTxStatsErr ||
+    dailyBlockStatsErr;
 
   if (error) {
     return (
@@ -83,10 +89,6 @@ const Home: NextPage = () => {
     overallStats && overallStats.blob
       ? parseAmountWithUnit(formatBytes(overallStats.blob.totalBlobSize))
       : undefined;
-  const avgBlobSize =
-    overallStats && overallStats.blob
-      ? parseAmountWithUnit(formatBytes(overallStats.blob.avgBlobSize))
-      : undefined;
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
@@ -102,9 +104,27 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
-      <div className="flex w-11/12 flex-col gap-8 sm:gap-16">
+      <div className="flex w-full flex-col gap-8 sm:gap-16">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
-          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
+          <div className="col-span-2 sm:col-span-4">
+            <DailylBlobVsBlobAsCalldataGasUsedChart
+              days={dailyBlockStats?.days}
+              blobAsCalldataGasUsed={
+                dailyBlockStats?.totalBlobAsCalldataGasUsed
+              }
+              blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+            />
+          </div>
+          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
+            <div className="col-span-2">
+              <MetricCard
+                name="Total Gas Saved"
+                metric={{
+                  value: overallStats?.block?.totalBlobGasUsed,
+                }}
+                compact
+              />
+            </div>
             <MetricCard
               name="Total Blocks"
               metric={{
@@ -113,7 +133,7 @@ const Home: NextPage = () => {
               compact
             />
             <MetricCard
-              name="Total Transactions"
+              name="Total Txs"
               metric={{
                 value: overallStats?.transaction?.totalTransactions,
               }}
@@ -134,24 +154,9 @@ const Home: NextPage = () => {
               }}
               compact
             />
-            <MetricCard
-              name="Avg. Blob Size"
-              metric={{
-                value: avgBlobSize?.value,
-                unit: avgBlobSize?.unit,
-              }}
-              compact
-            />
-            <MetricCard
-              name="Total Unique Blobs"
-              metric={{
-                value: overallStats?.blob?.totalUniqueBlobs,
-              }}
-              compact
-            />
           </div>
 
-          <div className="col-span-2 sm:col-span-6">
+          <div className="col-span-2 sm:col-span-4">
             <DailyTransactionsChart
               days={dailyTxStats?.days}
               transactions={dailyTxStats?.totalTransactions}
