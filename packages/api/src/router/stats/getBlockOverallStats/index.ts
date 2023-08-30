@@ -1,6 +1,6 @@
 import type { TRPCContext } from "../../../context";
 import { publicProcedure } from "../../../procedures";
-import { BASE_PATH } from "../common";
+import { BLOCK_BASE_PATH } from "../common";
 import {
   getBlockOverallStatsInputSchema,
   getBlockOverallStatsOutputSchema,
@@ -32,7 +32,7 @@ export const getBlockOverallStats = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/${BASE_PATH}/block/overall`,
+      path: `/${BLOCK_BASE_PATH}/block/overall`,
       tags: ["stats", "block"],
       summary: "Get block overall stats",
     },

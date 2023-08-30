@@ -1,5 +1,5 @@
 import { timeFrameProcedure } from "../../../middlewares/withTimeFrame";
-import { BASE_PATH } from "../common";
+import { BLOCK_BASE_PATH } from "../common";
 import type { GetBlockDailyStatsOutputSchema } from "./schema";
 import { getBlockDailyStatsOutputSchema } from "./schema";
 
@@ -7,7 +7,7 @@ export const getBlockDailyStats = timeFrameProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/${BASE_PATH}/overall`,
+      path: `/${BLOCK_BASE_PATH}/overall`,
       tags: ["stats", "block"],
       summary: "Get block time series stats",
     },
