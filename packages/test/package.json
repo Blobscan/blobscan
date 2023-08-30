@@ -11,7 +11,8 @@
     ]
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1"
+    "@blobscan/eslint-config": "^0.0.1",
+    "@prisma/client": "^5.0.0"
   },
   "peerDependencies": {
     "@prisma/client": "^5.0.0"

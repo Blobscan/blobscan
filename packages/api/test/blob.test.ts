@@ -2,13 +2,12 @@ import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { describe, expect, it, vi } from "vitest";
 
-import type { TRPCContext } from "../src/context";
-import { createTRPCInnerContext } from "../src/context";
-import { appRouter } from "../src/root";
 import type { AppRouter } from "../src/root";
+import { getCaller } from "./helpers";
 
 vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
   env: {
+    CHAIN_ID: 1,
     POSTGRES_STORAGE_ENABLED: true,
     GOOGLE_STORAGE_ENABLED: true,
     GOOGLE_STORAGE_PROJECT_ID: "blobscan",
@@ -17,9 +16,8 @@ vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
   },
 }));
 
-describe("Blob router", async () => {
-  const ctx = (await createTRPCInnerContext()) as TRPCContext;
-  const caller = appRouter.createCaller(ctx);
+describe("Blob route", async () => {
+  const caller = await getCaller();
 
   describe("getAll", () => {
     it("should get all", async () => {
@@ -86,7 +84,7 @@ describe("Blob router", async () => {
     it("should error if no blob data found", async () => {
       await expect(
         caller.blob.getByVersionedHash({
-          versionedHash: "blobHash006",
+          versionedHash: "blobHash003",
         })
       ).rejects.toThrow(
         new Error("Failed to get blob from any of the storages: ")

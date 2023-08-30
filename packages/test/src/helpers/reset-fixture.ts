@@ -1,14 +1,9 @@
-import { Storage } from "@google-cloud/storage";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-const storage = new Storage({
-  apiEndpoint: "http://localhost:8080",
-  projectId: "blobscan",
-});
+import { getPrisma, getStorage } from "./services";
 
 export default async () => {
+  const prisma = getPrisma();
+  const storage = getStorage();
+
   await prisma.$transaction([
     prisma.blockchainSyncState.deleteMany(),
     prisma.blobDailyStats.deleteMany(),

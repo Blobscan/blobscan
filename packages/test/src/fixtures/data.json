@@ -1,4 +1,11 @@
 {
+  "blockchainSyncState": [
+    {
+      "id": 1,
+      "lastFinalizedBlock": 1001,
+      "lastSlot": 101
+    }
+  ],
   "blocks": [
     {
       "hash": "blockHash001",
@@ -55,7 +62,7 @@
       "updatedAt": "2023-08-25T10:10:00Z"
     },
     {
-      "address": "address5",
+      "address": "0xad01b55d7c3448b8899862eb335fbb17075d8de2",
       "firstBlockNumberAsSender": 1001,
       "firstBlockNumberAsReceiver": 1002,
       "insertedAt": "2023-08-25T10:10:00Z",
@@ -94,7 +101,7 @@
     },
     {
       "hash": "txHash003",
-      "fromId": "address5",
+      "fromId": "0xad01b55d7c3448b8899862eb335fbb17075d8de2",
       "toId": "address6",
       "blockNumber": 1001,
       "maxFeePerBlobGas": 120,
@@ -126,8 +133,8 @@
       "updatedAt": "2023-08-26T12:10:00Z"
     },
     {
-      "hash": "txHash006",
-      "fromId": "address5",
+      "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      "fromId": "0xad01b55d7c3448b8899862eb335fbb17075d8de2",
       "toId": "address6",
       "blockNumber": 1002,
       "maxFeePerBlobGas": 100,
@@ -179,8 +186,8 @@
       "updatedAt": "2023-08-26T12:10:00Z"
     },
     {
-      "versionedHash": "blobHash006",
-      "commitment": "commitment006",
+      "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
       "size": 1500,
       "firstBlockNumber": 1002,
       "insertedAt": "2023-08-26T12:10:00Z",
@@ -205,8 +212,8 @@
     },
     {
       "blobHash": "blobHash003",
-      "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash003.txt"
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://some-hash-for-blobHash003"
     },
     {
       "blobHash": "blobHash004",
@@ -224,7 +231,7 @@
       "dataReference": "blobHash005"
     },
     {
-      "blobHash": "blobHash006",
+      "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       "blobStorage": "SWARM",
       "dataReference": "bzz://some-hash-for-blobHash006"
     }
@@ -266,8 +273,8 @@
       "index": 0
     },
     {
-      "blobHash": "blobHash006",
-      "txHash": "txHash006",
+      "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
       "index": 0
     }
   ]

@@ -1,17 +1,14 @@
-import { Storage } from "@google-cloud/storage";
-import { PrismaClient } from "@prisma/client";
-
 import { fixtures } from "../fixtures/index";
-
-const prisma = new PrismaClient();
-
-const storage = new Storage({
-  apiEndpoint: "http://localhost:8080",
-  projectId: "blobscan",
-});
+import { getPrisma, getStorage } from "./services";
 
 export default async () => {
+  const prisma = getPrisma();
+  const storage = getStorage();
+
   await prisma.$transaction([
+    prisma.blockchainSyncState.createMany({
+      data: fixtures.blockchainSyncState,
+    }),
     prisma.block.createMany({ data: fixtures.blocks }),
     prisma.address.createMany({ data: fixtures.addresses }),
     prisma.transaction.createMany({ data: fixtures.txs }),

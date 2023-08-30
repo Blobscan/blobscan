@@ -14,6 +14,7 @@ type BlobDataFixture = {
 };
 
 export const fixtures = {
+  blockchainSyncState: data.blockchainSyncState,
   blocks: data.blocks,
   addresses: data.addresses,
   txs: data.txs,
