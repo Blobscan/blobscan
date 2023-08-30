@@ -1,0 +1,315 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Indexer route > indexData > should index new data if auth 1`] = `
+{
+  "blobAsCalldataGasUsed": 1104n,
+  "blobGasPrice": 1n,
+  "blobGasUsed": 10000n,
+  "excessBlobGas": 5000n,
+  "hash": "blockHash003",
+  "number": 1003,
+  "slot": 103,
+  "timestamp": 2021-08-29T17:12:54.000Z,
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "blob": {
+            "size": 31,
+          },
+          "blobHash": "blobHash008",
+          "index": 0,
+        },
+      ],
+      "fromId": "address9",
+      "hash": "txHash008",
+      "toId": "address3",
+    },
+    {
+      "blobs": [
+        {
+          "blob": {
+            "size": 15,
+          },
+          "blobHash": "blobHash009",
+          "index": 0,
+        },
+      ],
+      "fromId": "address4",
+      "hash": "txHash009",
+      "toId": "address8",
+    },
+    {
+      "blobs": [
+        {
+          "blob": {
+            "size": 23,
+          },
+          "blobHash": "blobHash010",
+          "index": 0,
+        },
+      ],
+      "fromId": "address7",
+      "hash": "txHash010",
+      "toId": "address2",
+    },
+  ],
+}
+`;
+
+exports[`Indexer route > indexData > should index new data if auth 2`] = `
+[
+  {
+    "address": "address1",
+  },
+  {
+    "address": "address2",
+  },
+  {
+    "address": "address3",
+  },
+  {
+    "address": "address4",
+  },
+  {
+    "address": "address5",
+  },
+  {
+    "address": "address6",
+  },
+  {
+    "address": "address7",
+  },
+  {
+    "address": "address8",
+  },
+  {
+    "address": "address9",
+  },
+]
+`;
+
+exports[`Indexer route > indexData > should index new data if auth 3`] = `
+[
+  {
+    "blockNumber": 1002,
+    "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+  },
+  {
+    "blockNumber": 1001,
+    "hash": "txHash001",
+  },
+  {
+    "blockNumber": 1001,
+    "hash": "txHash002",
+  },
+  {
+    "blockNumber": 1001,
+    "hash": "txHash003",
+  },
+  {
+    "blockNumber": 1002,
+    "hash": "txHash004",
+  },
+  {
+    "blockNumber": 1002,
+    "hash": "txHash005",
+  },
+  {
+    "blockNumber": 1003,
+    "hash": "txHash008",
+  },
+  {
+    "blockNumber": 1003,
+    "hash": "txHash009",
+  },
+  {
+    "blockNumber": 1003,
+    "hash": "txHash010",
+  },
+]
+`;
+
+exports[`Indexer route > indexData > should index new data if auth 4`] = `
+[
+  {
+    "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
+    "firstBlockNumber": 1002,
+    "size": 1500,
+    "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+  },
+  {
+    "commitment": "commitment001",
+    "firstBlockNumber": 1001,
+    "size": 1000,
+    "versionedHash": "blobHash001",
+  },
+  {
+    "commitment": "commitment002",
+    "firstBlockNumber": 1001,
+    "size": 1100,
+    "versionedHash": "blobHash002",
+  },
+  {
+    "commitment": "commitment003",
+    "firstBlockNumber": 1001,
+    "size": 1200,
+    "versionedHash": "blobHash003",
+  },
+  {
+    "commitment": "commitment004",
+    "firstBlockNumber": 1002,
+    "size": 1300,
+    "versionedHash": "blobHash004",
+  },
+  {
+    "commitment": "commitment005",
+    "firstBlockNumber": 1002,
+    "size": 1400,
+    "versionedHash": "blobHash005",
+  },
+  {
+    "commitment": "commitment008",
+    "firstBlockNumber": 1003,
+    "size": 31,
+    "versionedHash": "blobHash008",
+  },
+  {
+    "commitment": "commitment009",
+    "firstBlockNumber": 1003,
+    "size": 15,
+    "versionedHash": "blobHash009",
+  },
+  {
+    "commitment": "commitment010",
+    "firstBlockNumber": 1003,
+    "size": 23,
+    "versionedHash": "blobHash010",
+  },
+]
+`;
+
+exports[`Indexer route > indexData > should index new data if auth 5`] = `
+[
+  {
+    "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+    "blobStorage": "SWARM",
+    "dataReference": "bzz://some-hash-for-blobHash006",
+  },
+  {
+    "blobHash": "blobHash001",
+    "blobStorage": "SWARM",
+    "dataReference": "bzz://some-hash-for-blobHash001",
+  },
+  {
+    "blobHash": "blobHash001",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash001.txt",
+  },
+  {
+    "blobHash": "blobHash002",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash002.txt",
+  },
+  {
+    "blobHash": "blobHash003",
+    "blobStorage": "SWARM",
+    "dataReference": "bzz://some-hash-for-blobHash003",
+  },
+  {
+    "blobHash": "blobHash004",
+    "blobStorage": "POSTGRES",
+    "dataReference": "blobHash004",
+  },
+  {
+    "blobHash": "blobHash004",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash004.txt",
+  },
+  {
+    "blobHash": "blobHash005",
+    "blobStorage": "POSTGRES",
+    "dataReference": "blobHash005",
+  },
+  {
+    "blobHash": "blobHash008",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash008.txt",
+  },
+  {
+    "blobHash": "blobHash008",
+    "blobStorage": "POSTGRES",
+    "dataReference": "blobHash008",
+  },
+  {
+    "blobHash": "blobHash009",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash009.txt",
+  },
+  {
+    "blobHash": "blobHash009",
+    "blobStorage": "POSTGRES",
+    "dataReference": "blobHash009",
+  },
+  {
+    "blobHash": "blobHash010",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash010.txt",
+  },
+  {
+    "blobHash": "blobHash010",
+    "blobStorage": "POSTGRES",
+    "dataReference": "blobHash010",
+  },
+]
+`;
+
+exports[`Indexer route > indexData > should index new data if auth 6`] = `
+[
+  {
+    "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+    "index": 0,
+    "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+  },
+  {
+    "blobHash": "blobHash001",
+    "index": 0,
+    "txHash": "txHash001",
+  },
+  {
+    "blobHash": "blobHash002",
+    "index": 0,
+    "txHash": "txHash002",
+  },
+  {
+    "blobHash": "blobHash003",
+    "index": 0,
+    "txHash": "txHash003",
+  },
+  {
+    "blobHash": "blobHash004",
+    "index": 0,
+    "txHash": "txHash004",
+  },
+  {
+    "blobHash": "blobHash005",
+    "index": 0,
+    "txHash": "txHash005",
+  },
+  {
+    "blobHash": "blobHash008",
+    "index": 0,
+    "txHash": "txHash008",
+  },
+  {
+    "blobHash": "blobHash009",
+    "index": 0,
+    "txHash": "txHash009",
+  },
+  {
+    "blobHash": "blobHash010",
+    "index": 0,
+    "txHash": "txHash010",
+  },
+]
+`;

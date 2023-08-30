@@ -59,17 +59,7 @@ services:
     image: fsouza/fake-gcs-server
     ports:
       - "8080:8080"
-    command:
-      [
-        "-scheme",
-        "http",
-        "-port",
-        "8080",
-        "-external-url",
-        "http://localhost:8080",
-        "-backend",
-        "memory",
-      ]
+    command: ["-scheme", "http", "-port", "8080"]
     volumes:
       - storage_data:/storage
 
