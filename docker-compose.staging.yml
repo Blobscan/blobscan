@@ -7,8 +7,7 @@ services:
     command: web
     restart: always
     ports:
-      - 3000:3000
-      - 5556:5556
+      - ${EXTERNAL_WEB_PORT}:3000
     env_file:
       - ".env"
 

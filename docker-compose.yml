@@ -8,8 +8,8 @@ services:
     command: web
     restart: always
     ports:
-      - 23000:3000
-      - 25556:5556
+      - ${EXTERNAL_WEB_PORT}:3000
+      - 5556:5556  # Prisma studio
     env_file:
       - ".env"
 
@@ -19,7 +19,7 @@ services:
     command: api
     restart: always
     ports:
-      - 23001:3001
+      - ${EXTERNAL_API_PORT}:3001
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/healthcheck"]
       interval: 30s
