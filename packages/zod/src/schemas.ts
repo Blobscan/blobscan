@@ -38,7 +38,4 @@ export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
 export const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
-export const portSchema = z
-  .string()
-  .transform((s) => parseInt(s, 10))
-  .pipe(z.number().positive());
+export const portSchema = z.coerce().number().positive();
