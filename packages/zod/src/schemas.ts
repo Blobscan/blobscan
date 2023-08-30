@@ -34,11 +34,6 @@ export function makeOptional(zParser: z.ZodType, defaultValue?: unknown) {
   return schema.or(orSchema);
 }
 
-export const booleanSchema = z
-  .string()
-  .refine((s) => s === "true" || s === "false")
-  .transform((s) => s === "true");
-
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
 export const nodeEnvSchema = z.enum(["development", "test", "production"]);
