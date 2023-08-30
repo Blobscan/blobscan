@@ -114,7 +114,7 @@ describe("Base Extension", () => {
           versionedHash: "asc",
         },
       });
-      expect(result).toHaveLength(7);
+      expect(result).toHaveLength(8);
       expect(result).toMatchSnapshot();
     });
   });
