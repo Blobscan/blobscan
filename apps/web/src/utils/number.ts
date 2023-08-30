@@ -39,11 +39,18 @@ export function formatNumber(
 
 export function calculatePercentage(
   numerator: bigint,
-  denominator: bigint
+  denominator: bigint,
+  opts?: { returnComplement: boolean }
 ): number {
   if (denominator === BigInt(0)) {
     return Number(0);
   }
 
-  return (Number((numerator * BigInt(100)) / denominator) / 100) * 100;
+  const pct = (Number((numerator * BigInt(100)) / denominator) / 100) * 100;
+
+  if (opts?.returnComplement) {
+    return 100 - pct;
+  }
+
+  return pct;
 }

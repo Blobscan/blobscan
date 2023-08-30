@@ -93,12 +93,11 @@ const BlockStats: NextPage = function () {
               overallBlockStats &&
               overallBlockStats.totalBlobAsCalldataFee > BigInt(0)
                 ? {
-                    value:
-                      100 -
-                      calculatePercentage(
-                        overallBlockStats.totalBlobGasUsed,
-                        overallBlockStats.totalBlobAsCalldataGasUsed
-                      ),
+                    value: calculatePercentage(
+                      overallBlockStats.totalBlobGasUsed,
+                      overallBlockStats.totalBlobAsCalldataGasUsed,
+                      { returnComplement: true }
+                    ),
                     unit: "%",
                   }
                 : undefined,

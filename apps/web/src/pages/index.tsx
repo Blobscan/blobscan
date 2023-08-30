@@ -18,6 +18,7 @@ import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
+  calculatePercentage,
   formatBytes,
   parseAmountWithUnit,
 } from "~/utils";
@@ -122,6 +123,18 @@ const Home: NextPage = () => {
                 metric={{
                   value: overallStats?.block?.totalBlobGasUsed,
                 }}
+                secondaryMetric={
+                  overallStats
+                    ? {
+                        value: calculatePercentage(
+                          overallStats.block.totalBlobGasUsed,
+                          overallStats.block.totalBlobAsCalldataGasUsed,
+                          { returnComplement: true }
+                        ),
+                        unit: "%",
+                      }
+                    : undefined
+                }
                 compact
               />
             </div>
