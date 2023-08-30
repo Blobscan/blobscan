@@ -1,19 +1,18 @@
 import {
   z,
   createEnv,
-  makeOptional,
   presetEnvOptions,
 } from "@blobscan/zod";
 
 export const env = createEnv({
   server: {
-    BEE_DEBUG_ENDPOINT: z.string().url(),
-    BEE_ENDPOINT: makeOptional(z.string().url()),
+    BEE_DEBUG_ENDPOINT: z.string().url().default("http://localhost:1635"),
+    BEE_ENDPOINT: z.string().url().default("http://localhost:1633"),
     CHAIN_ID: z.coerce().number().default(1),
-    GOOGLE_STORAGE_BUCKET_NAME: makeOptional(z.string()),
-    GOOGLE_STORAGE_PROJECT_ID: makeOptional(z.string()),
-    GOOGLE_SERVICE_KEY: makeOptional(z.string()),
-    GOOGLE_STORAGE_API_ENDPOINT: makeOptional(z.string().url()),
+    GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
+    GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
+    GOOGLE_SERVICE_KEY: z.string().optional(),
+    GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
     GOOGLE_STORAGE_ENABLED: z.coerce().boolean().default(false),
     POSTGRES_STORAGE_ENABLED: z.coerce().boolean().default(true),
     SWARM_STORAGE_ENABLED: z.coerce().boolean().default(false),
