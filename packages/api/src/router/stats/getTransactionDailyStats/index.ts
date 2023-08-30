@@ -28,16 +28,24 @@ export const getTransactionDailyStats = timeFrameProcedure
         stats.reduce<GetTransactionDailyStatsOutputSchema>(
           (
             outputStats,
-            { day, totalTransactions, totalUniqueReceivers, totalUniqueSenders }
+            {
+              avgMaxBlobGasFee,
+              day,
+              totalTransactions,
+              totalUniqueReceivers,
+              totalUniqueSenders,
+            }
           ) => {
             outputStats.days.push(day.toISOString());
             outputStats.totalTransactions.push(totalTransactions);
             outputStats.totalUniqueSenders.push(totalUniqueSenders);
             outputStats.totalUniqueReceivers.push(totalUniqueReceivers);
+            outputStats.avgMaxBlobGasFees.push(avgMaxBlobGasFee);
 
             return outputStats;
           },
           {
+            avgMaxBlobGasFees: [],
             days: [],
             totalTransactions: [],
             totalUniqueSenders: [],

@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 
 import {
+  DailyAvgMaxBlobGasFeeChart,
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
 } from "~/components/Charts/Transaction";
@@ -72,6 +73,11 @@ const TransactionStats: NextPage = function () {
             days={dailyTxStats?.days}
             uniqueReceivers={dailyTxStats?.totalUniqueReceivers}
             uniqueSenders={dailyTxStats?.totalUniqueSenders}
+          />,
+          <DailyAvgMaxBlobGasFeeChart
+            key={2}
+            days={dailyTxStats?.days}
+            avgMaxBlobGasFees={dailyTxStats?.avgMaxBlobGasFees}
           />,
         ]}
       />

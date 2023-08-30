@@ -5,6 +5,7 @@ export const getTransactionDailyStatsOutputSchema = z.object({
   totalTransactions: z.array(z.number()),
   totalUniqueSenders: z.array(z.number()),
   totalUniqueReceivers: z.array(z.number()),
+  avgMaxBlobGasFees: z.array(z.number()),
 });
 
 export type GetTransactionDailyStatsOutputSchema = z.infer<
