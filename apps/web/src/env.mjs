@@ -9,26 +9,16 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    TRACES_ENABLED: z
-      .coerce
-      .boolean(),
+    TRACES_ENABLED: z.coerce.boolean(),
   },
   /**
    * Specify your client-side environment variables schema here.
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_NETWORK_NAME: z
-      .string()
-      .default("mainnet"),
-    NEXT_PUBLIC_EXPLORER_BASE_URL: z
-      .string()
-      .default("https://etherscan.io/")
-      .url(),
-    NEXT_PUBLIC_BEACON_BASE_URL: z
-      .string()
-      .default("https://beaconcha.in/")
-      .url(),
+    NEXT_PUBLIC_NETWORK_NAME: z.string().default("mainnet"),
+    NEXT_PUBLIC_EXPLORER_BASE_URL: z.string().url().default("https://etherscan.io/"),
+    NEXT_PUBLIC_BEACON_BASE_URL: z.string().url().default("https://beaconcha.in/"),
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
