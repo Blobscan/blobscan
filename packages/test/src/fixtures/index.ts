@@ -8,6 +8,11 @@ type BlobDataStorageReferenceFixture = {
   dataReference: string;
 };
 
+type BlobDataFixture = {
+  id: string;
+  data: Buffer;
+};
+
 export const fixtures = {
   blocks: data.blocks,
   addresses: data.addresses,
@@ -15,5 +20,6 @@ export const fixtures = {
   blobs: data.blobs,
   blobDataStorageRefs:
     data.blobDataStorageReferences as BlobDataStorageReferenceFixture[],
+  blobDatas: data.blobDatas as unknown as BlobDataFixture[],
   blobsOnTransactions: data.blobsOnTransactions,
 };

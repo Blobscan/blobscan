@@ -1,6 +1,12 @@
+import { Storage } from "@google-cloud/storage";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
+const storage = new Storage({
+  apiEndpoint: "http://localhost:8080",
+  projectId: "blobscan",
+});
 
 export default async () => {
   await prisma.$transaction([
@@ -19,4 +25,11 @@ export default async () => {
     prisma.address.deleteMany(),
     prisma.block.deleteMany(),
   ]);
+
+  const [buckets] = await storage.getBuckets();
+
+  if (buckets.length > 0) {
+    await storage.bucket("blobscan-test").deleteFiles();
+    await storage.bucket("blobscan-test").delete();
+  }
 };

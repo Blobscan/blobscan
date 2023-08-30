@@ -191,7 +191,7 @@
     {
       "blobHash": "blobHash001",
       "blobStorage": "GOOGLE",
-      "dataReference": "gs://my-bucket/blobHash001"
+      "dataReference": "1/ob/Ha/sh/obHash001.txt"
     },
     {
       "blobHash": "blobHash001",
@@ -201,27 +201,42 @@
     {
       "blobHash": "blobHash002",
       "blobStorage": "GOOGLE",
-      "dataReference": "gs://my-bucket/blobHash002"
+      "dataReference": "1/ob/Ha/sh/obHash002.txt"
     },
     {
       "blobHash": "blobHash003",
       "blobStorage": "GOOGLE",
-      "dataReference": "gs://my-bucket/blobHash003"
+      "dataReference": "1/ob/Ha/sh/obHash003.txt"
     },
     {
       "blobHash": "blobHash004",
       "blobStorage": "POSTGRES",
-      "dataReference": "pg://database-name/table-name/blobHash004"
+      "dataReference": "blobHash004"
+    },
+    {
+      "blobHash": "blobHash004",
+      "blobStorage": "GOOGLE",
+      "dataReference": "1/ob/Ha/sh/obHash004.txt"
     },
     {
       "blobHash": "blobHash005",
       "blobStorage": "POSTGRES",
-      "dataReference": "pg://database-name/table-name/blobHash005"
+      "dataReference": "blobHash005"
     },
     {
       "blobHash": "blobHash006",
       "blobStorage": "SWARM",
       "dataReference": "bzz://some-hash-for-blobHash006"
+    }
+  ],
+  "blobDatas": [
+    {
+      "id": "blobHash004",
+      "data": "1234abcdefg123456789abcdfg"
+    },
+    {
+      "id": "blobHash005",
+      "data": "1234abcdefg1234abcdefg"
     }
   ],
   "blobsOnTransactions": [

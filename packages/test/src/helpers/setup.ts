@@ -1,14 +1,10 @@
-import { afterEach, beforeEach } from "vitest";
+import { beforeEach } from "vitest";
 
 import loadFixture from "./load-fixture";
-import resetDb from "./reset-db";
+import resetFixture from "./reset-fixture";
 
 beforeEach(async () => {
-  await resetDb();
+  await resetFixture();
 
   await loadFixture();
-});
-
-afterEach(async () => {
-  await resetDb();
 });
