@@ -16,7 +16,7 @@ export const env = createEnv({
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_NETWORK_NAME: z.string().default("mainnet"),
+    NEXT_PUBLIC_NETWORK_NAME: z.string().default("Ethereum"),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z.string().url().default("https://etherscan.io/"),
     NEXT_PUBLIC_BEACON_BASE_URL: z.string().url().default("https://beaconcha.in/"),
   },
