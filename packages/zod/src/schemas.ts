@@ -39,24 +39,6 @@ export const booleanSchema = z
   .refine((s) => s === "true" || s === "false")
   .transform((s) => s === "true");
 
-export const chainIdSchema = z
-  .string()
-  .min(1)
-  .transform((value, ctx) => {
-    const chainId = parseInt(value, 10);
-
-    if (isNaN(chainId) || chainId <= 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `CHAIN_ID is invalid: ${chainId}`,
-      });
-
-      return z.NEVER;
-    }
-
-    return chainId;
-  });
-
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
 export const nodeEnvSchema = z.enum(["development", "test", "production"]);
