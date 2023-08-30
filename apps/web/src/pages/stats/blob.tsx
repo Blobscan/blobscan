@@ -8,28 +8,17 @@ import {
 } from "~/components/Charts/Blob/";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
-import { useTransformResult } from "~/hooks/useTransformResult";
-import {
-  transformDailyBlobStatsResult,
-  transformOverallBlobStatsResult,
-} from "~/query-transformers";
 import { formatBytes, parseAmountWithUnit } from "~/utils";
 
 const BlobStats: NextPage = function () {
-  const dailyBlobStatsRes = api.stats.blob.getDailyStats.useQuery({
-    timeFrame: "30d",
-  });
-  const dailyBlobStats = useTransformResult(
-    dailyBlobStatsRes,
-    transformDailyBlobStatsResult
-  );
-  const overallBlobStatsRes = api.stats.blob.getOverallStats.useQuery();
-  const overallBlobStats = useTransformResult(
-    overallBlobStatsRes,
-    transformOverallBlobStatsResult
-  );
+  const { data: dailyBlobStats, error: dailyBlobStatsErr } =
+    api.stats.getBlobDailyStats.useQuery({
+      timeFrame: "30d",
+    });
+  const { data: overallBlobStats, error: overallBlobStatsErr } =
+    api.stats.getBlobOverallStats.useQuery();
 
-  const error = dailyBlobStatsRes.error || overallBlobStatsRes.error;
+  const error = dailyBlobStatsErr || overallBlobStatsErr;
 
   if (error) {
     return (
@@ -79,13 +68,13 @@ const BlobStats: NextPage = function () {
         <DailyBlobsChart
           key={0}
           days={dailyBlobStats?.days}
-          blobs={dailyBlobStats?.blobs}
-          uniqueBlobs={dailyBlobStats?.uniqueBlobs}
+          blobs={dailyBlobStats?.totalBlobs}
+          uniqueBlobs={dailyBlobStats?.totalUniqueBlobs}
         />,
         <DailyBlobSizeChart
           key={1}
           days={dailyBlobStats?.days}
-          blobSizes={dailyBlobStats?.blobSizes}
+          blobSizes={dailyBlobStats?.totalBlobSizes}
         />,
         <DailyAvgBlobSizeChart
           key={2}

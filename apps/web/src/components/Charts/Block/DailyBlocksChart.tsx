@@ -2,15 +2,15 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { SingleDailyBlockStats } from "~/types";
+import type { DailyBlockStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyBlocksChartProps = {
-  days?: SingleDailyBlockStats["day"][];
-  blocks?: SingleDailyBlockStats["totalBlocks"][];
+  days: DailyBlockStats["days"];
+  blocks: DailyBlockStats["totalBlocks"];
 };
 
-export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
+export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
   days,
   blocks,
 }) {

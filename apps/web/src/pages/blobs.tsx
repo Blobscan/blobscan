@@ -6,18 +6,14 @@ import { getPaginationParams } from "~/utils/pagination";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
-import { useTransformResult } from "~/hooks/useTransformResult";
-import { transformBlobsResult } from "~/query-transformers";
 import { formatNumber } from "~/utils";
 
 const Blobs: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
-  const blobsRes = api.blob.getAll.useQuery({ p, ps });
-  const { blobs, totalBlobs } =
-    useTransformResult(blobsRes, transformBlobsResult) ?? {};
-  const error = blobsRes.error;
+  const { data, error } = api.blob.getAll.useQuery({ p, ps });
+  const { blobs, totalBlobs } = data || {};
 
   if (error) {
     return (

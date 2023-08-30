@@ -7,27 +7,16 @@ import {
 } from "~/components/Charts/Transaction";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
-import { useTransformResult } from "~/hooks/useTransformResult";
-import {
-  transformDailyTxStatsResult,
-  transformOverallTxStatsResult,
-} from "~/query-transformers";
 
 const TransactionStats: NextPage = function () {
-  const dailyTxStatsRes = api.stats.transaction.getDailyStats.useQuery({
-    timeFrame: "30d",
-  });
-  const dailyTxStats = useTransformResult(
-    dailyTxStatsRes,
-    transformDailyTxStatsResult
-  );
-  const overallTxStatsRes = api.stats.transaction.getOverallStats.useQuery();
-  const overallTxStats = useTransformResult(
-    overallTxStatsRes,
-    transformOverallTxStatsResult
-  );
+  const { data: dailyTxStats, error: dailyTxStatsErr } =
+    api.stats.getTransactionDailyStats.useQuery({
+      timeFrame: "30d",
+    });
+  const { data: overallTxStats, error: overallTxStatsErr } =
+    api.stats.getTransactionOverallStats.useQuery();
 
-  const error = dailyTxStatsRes.error || overallTxStatsRes.error;
+  const error = dailyTxStatsErr || overallTxStatsErr;
 
   if (error) {
     return (
@@ -63,6 +52,12 @@ const TransactionStats: NextPage = function () {
                     value: overallTxStats.totalUniqueSenders,
                   },
                 },
+                {
+                  name: "Avg. Max Blob Gas Fee",
+                  metric: {
+                    value: overallTxStats.avgMaxBlobGasFee,
+                  },
+                },
               ]
             : undefined
         }
@@ -70,13 +65,13 @@ const TransactionStats: NextPage = function () {
           <DailyTransactionsChart
             key={0}
             days={dailyTxStats?.days}
-            transactions={dailyTxStats?.transactions}
+            transactions={dailyTxStats?.totalTransactions}
           />,
           <DailyUniqueAddressesChart
             key={1}
             days={dailyTxStats?.days}
-            uniqueReceivers={dailyTxStats?.uniqueReceivers}
-            uniqueSenders={dailyTxStats?.uniqueSenders}
+            uniqueReceivers={dailyTxStats?.totalUniqueReceivers}
+            uniqueSenders={dailyTxStats?.totalUniqueSenders}
           />,
         ]}
       />

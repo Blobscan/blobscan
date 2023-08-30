@@ -13,11 +13,6 @@ import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { api } from "~/api-client";
-import { useTransformResult } from "~/hooks/useTransformResult";
-import {
-  transformAllOverallStatsResult,
-  transformDailyTxStatsResult,
-} from "~/query-transformers";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
@@ -57,25 +52,19 @@ const Home: NextPage = () => {
     ps: TOTAL_BLOBS,
   });
 
-  const allOverallStatsRes = api.stats.getAllOverallStats.useQuery();
-  const dailyTxStatsRes = api.stats.transaction.getDailyStats.useQuery({
-    timeFrame: "15d",
-  });
-  const dailyTxStats = useTransformResult(
-    dailyTxStatsRes,
-    transformDailyTxStatsResult
-  );
-  const allOverallStats = useTransformResult(
-    allOverallStatsRes,
-    transformAllOverallStatsResult
-  );
+  const { data: overallStats, error: overallStatsErr } =
+    api.stats.getAllOverallStats.useQuery();
+  const { data: dailyTxStats, error: dailyTxStatsErr } =
+    api.stats.getTransactionDailyStats.useQuery({
+      timeFrame: "15d",
+    });
 
   const error =
     latestBlocksError ||
     latestTxsError ||
     latestBlobsError ||
-    allOverallStatsRes.error ||
-    dailyTxStatsRes.error;
+    overallStatsErr ||
+    dailyTxStatsErr;
 
   if (error) {
     return (
@@ -91,12 +80,12 @@ const Home: NextPage = () => {
   const blobs = latestBlobs?.blobs ?? [];
 
   const totalBlobSize =
-    allOverallStats && allOverallStats.blob
-      ? parseAmountWithUnit(formatBytes(allOverallStats.blob.totalBlobSize))
+    overallStats && overallStats.blob
+      ? parseAmountWithUnit(formatBytes(overallStats.blob.totalBlobSize))
       : undefined;
   const avgBlobSize =
-    allOverallStats && allOverallStats.blob
-      ? parseAmountWithUnit(formatBytes(allOverallStats.blob.avgBlobSize))
+    overallStats && overallStats.blob
+      ? parseAmountWithUnit(formatBytes(overallStats.blob.avgBlobSize))
       : undefined;
 
   return (
@@ -119,21 +108,21 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blocks"
               metric={{
-                value: allOverallStats?.block?.totalBlocks,
+                value: overallStats?.block?.totalBlocks,
               }}
               compact
             />
             <MetricCard
               name="Total Transactions"
               metric={{
-                value: allOverallStats?.transaction?.totalTransactions,
+                value: overallStats?.transaction?.totalTransactions,
               }}
               compact
             />
             <MetricCard
               name="Total Blobs"
               metric={{
-                value: allOverallStats?.blob?.totalBlobs,
+                value: overallStats?.blob?.totalBlobs,
               }}
               compact
             />
@@ -156,7 +145,7 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Unique Blobs"
               metric={{
-                value: allOverallStats?.blob?.totalUniqueBlobs,
+                value: overallStats?.blob?.totalUniqueBlobs,
               }}
               compact
             />
@@ -165,7 +154,7 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-6">
             <DailyTransactionsChart
               days={dailyTxStats?.days}
-              transactions={dailyTxStats?.transactions}
+              transactions={dailyTxStats?.totalTransactions}
               compact
             />
           </div>
