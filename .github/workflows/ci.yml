@@ -67,7 +67,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
 
       - name: Build, lint and type-check
-        run: pnpm turbo build lint type-check
+        run: pnpm turbo build lint type-check --filter=[${{github.sha}}]
         env:
           SKIP_ENV_VALIDATION: true
 
