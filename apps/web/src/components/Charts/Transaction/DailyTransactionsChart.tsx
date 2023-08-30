@@ -21,7 +21,7 @@ export const DailyTransactionsChart: FC<Partial<DailyTransactionsProps>> =
       }),
       series: [
         {
-          name: "Transactions",
+          name: "Total Transactions",
           data: transactions,
           type: compact ? "line" : "bar",
           smooth: true,

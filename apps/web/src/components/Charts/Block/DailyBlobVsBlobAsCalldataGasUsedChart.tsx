@@ -20,7 +20,7 @@ export const DailylBlobVsBlobAsCalldataGasUsedChart: FC<
     }),
     series: [
       {
-        name: "Blob Gas Used",
+        name: "Blob as Calldata Gas Used",
         data: blobGasUsed,
         stack: "gas",
         type: "bar",

@@ -25,7 +25,7 @@ export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({
     }),
     series: [
       {
-        name: "Size",
+        name: "Blob Size",
         data: blobSizes,
         type: compact ? "line" : "bar",
         smooth: true,

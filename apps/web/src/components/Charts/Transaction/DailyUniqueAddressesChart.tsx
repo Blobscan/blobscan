@@ -22,14 +22,14 @@ export const DailyUniqueAddressesChart: FC<
     }),
     series: [
       {
-        name: "Unique Receivers",
+        name: "Total Unique Receivers",
         data: uniqueReceivers,
         type: "bar",
         // @ts-ignore
         emphasis: { focus: "series" },
       },
       {
-        name: "Unique Senders",
+        name: "Total Unique Senders",
         data: uniqueSenders,
         type: "bar",
         // @ts-ignore

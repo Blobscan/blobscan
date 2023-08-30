@@ -23,7 +23,7 @@ export const DailyBlobsChart: FC<Partial<DailyBlobsChartProps>> = function ({
 
     series: [
       {
-        name: "Blobs",
+        name: "Total Blobs",
         data: blobs,
         type: "bar",
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -31,7 +31,7 @@ export const DailyBlobsChart: FC<Partial<DailyBlobsChartProps>> = function ({
         emphasis: { focus: "series" },
       },
       {
-        name: "Unique Blobs",
+        name: "Total Unique Blobs",
         data: uniqueBlobs,
         type: "bar",
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

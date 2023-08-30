@@ -22,7 +22,7 @@ export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
       }),
       series: [
         {
-          name: "Avg. Fee",
+          name: "Avg. Blob Fees",
           data: avgBlobFees,
           type: "bar",
         },

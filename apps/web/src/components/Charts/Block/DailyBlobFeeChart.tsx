@@ -19,7 +19,7 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
       }),
       series: [
         {
-          name: "Fees",
+          name: "Blob Fees",
           data: blobFees,
           type: "bar",
         },

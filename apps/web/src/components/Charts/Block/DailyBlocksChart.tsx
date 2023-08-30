@@ -20,7 +20,7 @@ export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
     }),
     series: [
       {
-        name: "Transactions",
+        name: "Total Blocks",
         data: blocks,
         type: "bar",
       },

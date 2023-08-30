@@ -20,7 +20,7 @@ export const DailyAvgBlobGasPriceChart: FC<
     }),
     series: [
       {
-        name: "Avg. Gas Price",
+        name: "Avg. Blob Gas Prices",
         data: avgBlobGasPrices,
         type: "bar",
       },

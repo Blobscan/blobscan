@@ -20,7 +20,7 @@ export const DailyAvgBlobSizeChart: FC<Partial<DailyAvgBlobSizeProps>> =
       }),
       series: [
         {
-          name: "Avg. Size",
+          name: "Avg. Blob Size",
           data: avgBlobSizes,
           type: "bar",
         },
