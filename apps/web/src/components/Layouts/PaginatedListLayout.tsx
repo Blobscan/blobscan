@@ -33,7 +33,12 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   emptyState = "No items",
 }) {
   const router = useRouter();
-  const pages = totalItems ? Math.ceil(totalItems / pageSize) : undefined;
+  const pages =
+    totalItems !== undefined
+      ? totalItems === 0
+        ? 1
+        : Math.ceil(totalItems / pageSize)
+      : undefined;
   const hasItems = !items || items.length;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
