@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14
+        image: postgres:14.1-alpine
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -33,6 +33,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Setup fake storage
+        uses: fsouza/fake-gcs-action@v0.4.1
+        with:
+          version: "1.37.2"
+          backend: memory
+          scheme: http
+          port: 8080
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
