@@ -1,0 +1,122 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Blob router > getAll > should get all 1`] = `
+{
+  "blobs": [
+    {
+      "commitment": "commitment001",
+      "size": 1000,
+      "versionedHash": "blobHash001",
+    },
+    {
+      "commitment": "commitment002",
+      "size": 1100,
+      "versionedHash": "blobHash002",
+    },
+    {
+      "commitment": "commitment003",
+      "size": 1200,
+      "versionedHash": "blobHash003",
+    },
+    {
+      "commitment": "commitment004",
+      "size": 1300,
+      "versionedHash": "blobHash004",
+    },
+    {
+      "commitment": "commitment005",
+      "size": 1400,
+      "versionedHash": "blobHash005",
+    },
+    {
+      "commitment": "commitment006",
+      "size": 1500,
+      "versionedHash": "blobHash006",
+    },
+  ],
+  "totalBlobs": 0,
+}
+`;
+
+exports[`Blob router > getAll > should get all with pagination 1`] = `
+{
+  "blobs": [
+    {
+      "commitment": "commitment003",
+      "size": 1200,
+      "versionedHash": "blobHash003",
+    },
+    {
+      "commitment": "commitment004",
+      "size": 1300,
+      "versionedHash": "blobHash004",
+    },
+  ],
+  "totalBlobs": 0,
+}
+`;
+
+exports[`Blob router > getByVersionedHash > should get by versioned hash 1`] = `
+{
+  "commitment": "commitment004",
+  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
+  "dataStorageReferences": [
+    {
+      "blobStorage": "POSTGRES",
+      "dataReference": "blobHash004",
+    },
+    {
+      "blobStorage": "GOOGLE",
+      "dataReference": "1/ob/Ha/sh/obHash004.txt",
+    },
+  ],
+  "firstBlock": {
+    "number": 1002,
+    "timestamp": 2023-08-26T12:00:00.000Z,
+  },
+  "size": 1300,
+  "versionedHash": "blobHash004",
+}
+`;
+
+exports[`Blob router > getByVersionedHash > should get by versioned hash from GOOGLE 1`] = `
+{
+  "commitment": "commitment001",
+  "data": "1234abcdefg123",
+  "dataStorageReferences": [
+    {
+      "blobStorage": "GOOGLE",
+      "dataReference": "1/ob/Ha/sh/obHash001.txt",
+    },
+    {
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://some-hash-for-blobHash001",
+    },
+  ],
+  "firstBlock": {
+    "number": 1001,
+    "timestamp": 2023-08-24T10:00:00.000Z,
+  },
+  "size": 1000,
+  "versionedHash": "blobHash001",
+}
+`;
+
+exports[`Blob router > getByVersionedHash > should get by versioned hash from POSTGRES 1`] = `
+{
+  "commitment": "commitment005",
+  "data": "0xd76df869b71d79f835db7e1a6dc75e7e",
+  "dataStorageReferences": [
+    {
+      "blobStorage": "POSTGRES",
+      "dataReference": "blobHash005",
+    },
+  ],
+  "firstBlock": {
+    "number": 1002,
+    "timestamp": 2023-08-26T12:00:00.000Z,
+  },
+  "size": 1400,
+  "versionedHash": "blobHash005",
+}
+`;

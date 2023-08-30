@@ -354,6 +354,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../open-telemetry
+      '@blobscan/test':
+        specifier: ^0.0.1
+        version: link:../test
       '@types/jsonwebtoken':
         specifier: ^9.0.2
         version: 9.0.2
