@@ -1,7 +1,7 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 import { vi } from "vitest";
 
-import { SWARM_REFERENCE } from "../../test/constants";
+import { SWARM_REFERENCE } from "../../test/fixtures";
 import type { SwarmClient, SwarmStorageConfig } from "../storages";
 import { SwarmStorage } from "../storages";
 
@@ -10,7 +10,15 @@ vi.mock("@ethersphere/bee-js", async () => {
     Bee: vi.fn().mockImplementation((endpoint) => {
       return {
         url: endpoint,
-        checkConnection: vi.fn(),
+        checkConnection: vi
+          .fn()
+          .mockResolvedValueOnce({
+            status: "ok",
+          })
+          .mockRejectedValueOnce(new Error("Bee is not healthy: not ok"))
+          .mockResolvedValueOnce({
+            status: "ok",
+          }),
         downloadData: vi.fn().mockImplementation((reference) => {
           if (reference === SWARM_REFERENCE) {
             return Buffer.from("mock-data");
@@ -31,6 +39,9 @@ vi.mock("@ethersphere/bee-js", async () => {
             status: "ok",
           })
           .mockResolvedValueOnce({
+            status: "ok",
+          })
+          .mockResolvedValueOnce({
             status: "not ok",
           }),
         getAllPostageBatch: vi
@@ -40,11 +51,7 @@ vi.mock("@ethersphere/bee-js", async () => {
               batchID: "mock-batch-id",
             },
           ])
-          .mockResolvedValueOnce([
-            {
-              batchID: "mock-batch-id",
-            },
-          ])
+          .mockResolvedValueOnce([])
           .mockResolvedValueOnce([]),
       };
     }),
@@ -63,9 +70,5 @@ export class SwarmStorageMock extends SwarmStorage {
 
   get swarmClient(): SwarmClient {
     return this._swarmClient;
-  }
-
-  async getAvailableBatch(): Promise<string> {
-    return super._getAvailableBatch();
   }
 }

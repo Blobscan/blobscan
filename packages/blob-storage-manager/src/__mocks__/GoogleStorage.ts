@@ -2,7 +2,7 @@ import type { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
 import { vi } from "vitest";
 
-import { FILE_URI } from "../../test/constants";
+import { FILE_URI } from "../../test/fixtures";
 import { GoogleStorage } from "../storages";
 import type {
   GoogleCredentials,
@@ -45,10 +45,6 @@ vi.mock("@google-cloud/storage", async () => {
 export class GoogleStorageMock extends GoogleStorage {
   constructor(config: GoogleStorageConfig) {
     super(config);
-  }
-
-  buildBlobFileName(chainId: number, hash: string): string {
-    return super.buildBlobFileName(chainId, hash);
   }
 
   get bucketName(): string {

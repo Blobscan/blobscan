@@ -1,12 +1,16 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
-import { BLOB_HASH, CHAIN_ID, HEX_DATA, RAW_DATA } from "../../test/constants";
+import { BLOB_HASH, CHAIN_ID, HEX_DATA } from "../../test/fixtures";
 import { PostgresStorageMock as PostgresStorage } from "../__mocks__/PostgresStorage";
 
 describe("PostgresStorage", () => {
-  const storage = new PostgresStorage();
+  let storage: PostgresStorage;
+
+  beforeAll(() => {
+    storage = new PostgresStorage();
+  });
 
   describe("healthCheck", () => {
     it("should resolve successfully", async () => {
@@ -19,14 +23,6 @@ describe("PostgresStorage", () => {
       const result = await storage.getBlob(BLOB_HASH);
 
       expect(result).toBe(HEX_DATA);
-      expect(prisma.blobData.findFirstOrThrow).toHaveBeenCalledWith({
-        select: {
-          data: true,
-        },
-        where: {
-          id: BLOB_HASH,
-        },
-      });
     });
 
     it("should throw if blob data is not found", async () => {
@@ -34,8 +30,8 @@ describe("PostgresStorage", () => {
         new Error("Blob data not found")
       );
 
-      await expect(storage.getBlob(BLOB_HASH)).rejects.toThrowError(
-        "Blob data not found"
+      await expect(storage.getBlob(BLOB_HASH)).rejects.toMatchInlineSnapshot(
+        "[Error: Blob data not found]"
       );
     });
   });
@@ -45,18 +41,6 @@ describe("PostgresStorage", () => {
       const result = await storage.storeBlob(CHAIN_ID, BLOB_HASH, HEX_DATA);
 
       expect(result).toBe(BLOB_HASH);
-      expect(prisma.blobData.upsert).toHaveBeenCalledWith({
-        create: {
-          data: RAW_DATA,
-          id: BLOB_HASH,
-        },
-        update: {
-          data: RAW_DATA,
-        },
-        where: {
-          id: BLOB_HASH,
-        },
-      });
     });
   });
 

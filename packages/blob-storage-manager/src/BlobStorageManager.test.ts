@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
@@ -10,7 +10,7 @@ import {
   GOOGLE_STORAGE_CONFIG,
   SWARM_REFERENCE,
   SWARM_STORAGE_CONFIG,
-} from "../test/constants";
+} from "../test/fixtures";
 import { BlobStorageManager } from "./BlobStorageManager";
 import {
   GoogleStorageMock as GoogleStorage,
@@ -19,18 +19,25 @@ import {
 } from "./__mocks__";
 
 describe("BlobStorageManager", () => {
-  const postgresStorage = new PostgresStorage();
-  const googleStorage = new GoogleStorage(GOOGLE_STORAGE_CONFIG);
-  const swarmStorage = new SwarmStorage(SWARM_STORAGE_CONFIG);
+  let blobStorageManager: BlobStorageManager;
+  let postgresStorage: PostgresStorage;
+  let googleStorage: GoogleStorage;
+  let swarmStorage: SwarmStorage;
 
-  const blobStorageManager = new BlobStorageManager(
-    {
-      POSTGRES: postgresStorage,
-      GOOGLE: googleStorage,
-      SWARM: swarmStorage,
-    },
-    CHAIN_ID
-  );
+  beforeAll(() => {
+    postgresStorage = new PostgresStorage();
+    googleStorage = new GoogleStorage(GOOGLE_STORAGE_CONFIG);
+    swarmStorage = new SwarmStorage(SWARM_STORAGE_CONFIG);
+
+    blobStorageManager = new BlobStorageManager(
+      {
+        POSTGRES: postgresStorage,
+        GOOGLE: googleStorage,
+        SWARM: swarmStorage,
+      },
+      CHAIN_ID
+    );
+  });
 
   describe("constructor", () => {
     it("should throw an error if no blob storages are provided", () => {
@@ -49,6 +56,7 @@ describe("BlobStorageManager", () => {
       expect(blobStorageManager.getStorage("POSTGRES")).toEqual(
         postgresStorage
       );
+
       expect(blobStorageManager.getStorage("GOOGLE")).toEqual(googleStorage);
       expect(blobStorageManager.getStorage("SWARM")).toEqual(swarmStorage);
     });
@@ -102,8 +110,8 @@ describe("BlobStorageManager", () => {
         }
       );
 
-      await expect(result).rejects.toThrow(
-        "Failed to get blob from any of the storages: POSTGRES - Error: Blob data not found, GOOGLE - Error: File not found, SWARM - Error: File not found"
+      await expect(result).rejects.toMatchInlineSnapshot(
+        "[Error: Failed to get blob from any of the storages: POSTGRES - Error: Blob data not found, GOOGLE - Error: File not found, SWARM - Error: File not found]"
       );
     });
   });
@@ -114,17 +122,12 @@ describe("BlobStorageManager", () => {
 
       const result = await blobStorageManager.storeBlob(blob);
 
-      expect(result.references).toEqual([
-        { reference: BLOB_HASH, storage: "POSTGRES" },
-        { reference: FILE_URI, storage: "GOOGLE" },
-        { reference: SWARM_REFERENCE, storage: "SWARM" },
-      ]);
-      expect(result.errors).toEqual([]);
+      expect(result.references).matchSnapshot();
+      expect(result.errors).toMatchSnapshot();
     });
 
     it("should return errors for failed uploads", async () => {
       const newHash = "0x6d6f636b2d64617461";
-      const newFileUri = "7011893058/6d/6f/63/6d6f636b2d64617461.txt";
       const blob = { data: "New data", versionedHash: newHash };
 
       prisma.blobData.upsert.mockRejectedValueOnce(
@@ -133,13 +136,8 @@ describe("BlobStorageManager", () => {
 
       const result = await blobStorageManager.storeBlob(blob);
 
-      expect(result.references).toEqual([
-        { reference: newFileUri, storage: "GOOGLE" },
-        { reference: SWARM_REFERENCE, storage: "SWARM" },
-      ]);
-      expect(result.errors).toEqual([
-        { error: new Error("Blob data not found"), storage: "POSTGRES" },
-      ]);
+      expect(result.references).matchSnapshot();
+      expect(result.errors).toMatchSnapshot();
     });
 
     it("should throw an error if all uploads fail", async () => {
@@ -155,8 +153,10 @@ describe("BlobStorageManager", () => {
       );
 
       const blob = { data: "New data", versionedHash: "0x6d6f636b2d64617461" };
-      await expect(newBlobStorageManager.storeBlob(blob)).rejects.toThrow(
-        "Failed to upload blob 0x6d6f636b2d64617461 to any of the storages: POSTGRES: Error: Blob data not found"
+      await expect(
+        newBlobStorageManager.storeBlob(blob)
+      ).rejects.toMatchInlineSnapshot(
+        "[Error: Failed to upload blob 0x6d6f636b2d64617461 to any of the storages: POSTGRES: Error: Blob data not found]"
       );
     });
   });

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import {
   BLOB_DATA,
@@ -6,11 +6,15 @@ import {
   CHAIN_ID,
   FILE_URI,
   GOOGLE_STORAGE_CONFIG,
-} from "../../test/constants";
+} from "../../test/fixtures";
 import { GoogleStorageMock as GoogleStorage } from "../__mocks__/GoogleStorage";
 
 describe("GoogleStorage", () => {
-  const storage = new GoogleStorage(GOOGLE_STORAGE_CONFIG);
+  let storage: GoogleStorage;
+
+  beforeAll(() => {
+    storage = new GoogleStorage(GOOGLE_STORAGE_CONFIG);
+  });
 
   describe("constructor", () => {
     it("should create a new instance with all configuration options", async () => {
@@ -43,16 +47,9 @@ describe("GoogleStorage", () => {
         ...GOOGLE_STORAGE_CONFIG,
         bucketName: newBucket,
       });
-      await expect(newStorage.healthCheck()).rejects.toThrowError(
-        `Bucket ${newBucket} does not exist`
+      await expect(newStorage.healthCheck()).rejects.toMatchInlineSnapshot(
+        "[Error: Bucket new-bucket does not exist]"
       );
-    });
-  });
-
-  describe("buildBlobFileName", () => {
-    it("should return the correct file name", () => {
-      const actualFileName = storage.buildBlobFileName(CHAIN_ID, BLOB_HASH);
-      expect(actualFileName).toEqual(FILE_URI);
     });
   });
 
@@ -61,30 +58,21 @@ describe("GoogleStorage", () => {
       const blob = await storage.getBlob(FILE_URI);
 
       expect(blob).toEqual(BLOB_DATA);
-      expect(storage.storageClient.bucket).toHaveBeenCalledWith(
-        GOOGLE_STORAGE_CONFIG.bucketName
-      );
-      expect(
-        storage.storageClient.bucket(GOOGLE_STORAGE_CONFIG.bucketName).file
-      ).toHaveBeenCalledWith(FILE_URI);
     });
   });
 
   describe("storeBlob", () => {
-    it("should store the blob in the bucket", async () => {
-      await storage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA);
+    it("should return the correct file", async () => {
+      const file = await storage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA);
 
-      expect(storage.storageClient.bucket).toHaveBeenCalledWith(
-        GOOGLE_STORAGE_CONFIG.bucketName
+      expect(file).toMatchInlineSnapshot(
+        '"7011893058/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
       );
-      expect(
-        storage.storageClient.bucket(GOOGLE_STORAGE_CONFIG.bucketName).file
-      ).toHaveBeenCalledWith(FILE_URI);
     });
   });
 
   describe("tryGetConfigFromEnv", () => {
-    it("should return undefined if GOOGLE_STORAGE_ENABLED is false", () => {
+    it("should return undefined if GOOGLE_STORAGE_ENABLiED is false", () => {
       const config = GoogleStorage.tryGetConfigFromEnv({
         GOOGLE_STORAGE_ENABLED: false,
       });

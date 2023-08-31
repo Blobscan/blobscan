@@ -1,7 +1,7 @@
 import type { PrismaClient } from "@blobscan/db";
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
-import { BLOB_HASH, RAW_DATA } from "../../test/constants";
+import { BLOB_HASH, RAW_DATA } from "../../test/fixtures";
 import { PostgresStorage } from "../storages";
 
 export class PostgresStorageMock extends PostgresStorage {

@@ -53,7 +53,7 @@ export class SwarmStorage extends BlobStorage {
     versionedHash: string,
     data: string
   ): Promise<string> {
-    const batchId = await this._getAvailableBatch();
+    const batchId = await this.#getAvailableBatch();
     const response = await this._swarmClient.bee.uploadFile(
       batchId,
       data,
@@ -67,7 +67,7 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toString();
   }
 
-  async _getAvailableBatch(): Promise<string> {
+  async #getAvailableBatch(): Promise<string> {
     if (!this._swarmClient.beeDebug) {
       throw new Error("Bee debug endpoint required to get postage batches");
     }

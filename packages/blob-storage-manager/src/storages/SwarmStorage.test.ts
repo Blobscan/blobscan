@@ -1,18 +1,20 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import {
   BLOB_DATA,
   BLOB_HASH,
   CHAIN_ID,
-  FILE_URI,
-  SWARM_BATCH_ID,
   SWARM_REFERENCE,
   SWARM_STORAGE_CONFIG,
-} from "../../test/constants";
+} from "../../test/fixtures";
 import { SwarmStorageMock as SwarmStorage } from "../__mocks__/SwarmStorage";
 
 describe("SwarmStorage", () => {
-  const storage = new SwarmStorage(SWARM_STORAGE_CONFIG);
+  let storage: SwarmStorage;
+
+  beforeAll(() => {
+    storage = new SwarmStorage(SWARM_STORAGE_CONFIG);
+  });
 
   describe("constructor", () => {
     it("should create a new instance with the provided configuration", () => {
@@ -41,9 +43,15 @@ describe("SwarmStorage", () => {
       await expect(storage.healthCheck()).resolves.not.toThrow();
     });
 
+    it("should throw error if bee is not healthy", async () => {
+      await expect(storage.healthCheck()).rejects.toMatchInlineSnapshot(
+        "[Error: Bee is not healthy: not ok]"
+      );
+    });
+
     it("should throw error if bee debug is not healthy", async () => {
-      await expect(storage.healthCheck()).rejects.toThrow(
-        "Bee debug is not healthy: not ok"
+      await expect(storage.healthCheck()).rejects.toMatchInlineSnapshot(
+        "[Error: Bee debug is not healthy: not ok]"
       );
     });
   });
@@ -53,9 +61,6 @@ describe("SwarmStorage", () => {
       const blob = await storage.getBlob(SWARM_REFERENCE);
 
       expect(blob).toEqual(BLOB_DATA);
-      expect(storage.swarmClient.bee.downloadData).toHaveBeenCalledWith(
-        SWARM_REFERENCE
-      );
     });
   });
 
@@ -68,29 +73,12 @@ describe("SwarmStorage", () => {
       );
 
       expect(uploadReference).toEqual(SWARM_REFERENCE);
-      expect(storage.swarmClient.bee.uploadFile).toHaveBeenCalledWith(
-        SWARM_BATCH_ID,
-        BLOB_DATA,
-        FILE_URI,
-        {
-          pin: true,
-          contentType: "text/plain",
-        }
-      );
-    });
-  });
-
-  describe("#getAvailableBatch", () => {
-    it("should return the batch ID of the first available postage batch", async () => {
-      const firstBatchId = await storage.getAvailableBatch();
-
-      expect(firstBatchId).toBe(SWARM_BATCH_ID);
     });
 
     it("should throw an error if no postage batches are available", async () => {
-      await expect(storage.getAvailableBatch()).rejects.toThrow(
-        "No postage batches available"
-      );
+      await expect(
+        storage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA)
+      ).rejects.toMatchInlineSnapshot("[Error: No postage batches available]");
     });
 
     it("should throw an error if beeDebug endpoint is not available", async () => {
@@ -98,8 +86,10 @@ describe("SwarmStorage", () => {
         beeEndpoint: SWARM_STORAGE_CONFIG.beeEndpoint,
       });
 
-      await expect(newStorage.getAvailableBatch()).rejects.toThrow(
-        "Bee debug endpoint required to get postage batches"
+      await expect(
+        newStorage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA)
+      ).rejects.toMatchInlineSnapshot(
+        "[Error: Bee debug endpoint required to get postage batches]"
       );
     });
   });

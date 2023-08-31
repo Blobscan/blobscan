@@ -21,7 +21,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient: string | null;
 };
 
-export function getJWTFromRequest(
+function getJWTFromRequest(
   req: NodeHTTPRequest | CreateNextContextOptions["req"]
 ) {
   const authHeader = req.headers.authorization;
