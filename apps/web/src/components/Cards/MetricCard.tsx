@@ -52,6 +52,19 @@ function MetricLayout({
   );
 }
 
+/**
+ *  Creates a placeholder string that takes up the maximum amount of space the input could take with
+ *  that amount of characters
+ */
+function createPlaceholder(input: string): string {
+  /**
+   * We replace all numeric characters with '8' because '8' takes up the most pixels compared to
+   * other numbers
+   */
+  const replacedString = input.replace(/[0-9]/g, "8");
+  return replacedString;
+}
+
 function Metric({
   value,
   numberFormatOpts,
@@ -66,6 +79,12 @@ function Metric({
     cancel: !value,
   });
 
+  /* The number 8 takes up the most pixels compare to other numbers */
+  const formattedNumber =
+    value !== undefined
+      ? formatNumber(value, compact ? "compact" : undefined, numberFormatOpts)
+      : "";
+
   return (
     <div>
       {value !== undefined ? (
@@ -73,30 +92,37 @@ function Metric({
           <MetricLayout compact={compact} isSecondary={isSecondary}>
             {value !== undefined ? (
               <animated.div>
-                {valueProps.value.to((x) =>
-                  formatNumber(
-                    isValueInteger ? Math.trunc(x) : x,
+                {valueProps.value.to((x) => {
+                  const formattedX = isValueInteger ? Math.trunc(x) : x;
+
+                  return formatNumber(
+                    formattedX,
+                    compact ? "compact" : undefined,
                     numberFormatOpts
-                  )
-                )}
+                  );
+                })}
               </animated.div>
             ) : (
               0
             )}
           </MetricLayout>
-          <div className="absolute flex items-end gap-3">
+          <div className="absolute flex items-end gap-1">
+            {/* Render an invisible component that fills the maximum space the metric value is going
+            to take up to prevent the metric unit from jumping around when the metric value animation
+            is running
+            */}
             <div className="invisible">
               <MetricLayout compact={compact} isSecondary={isSecondary}>
-                {formatNumber(value, numberFormatOpts)}
+                {createPlaceholder(formattedNumber)}
               </MetricLayout>
             </div>
             <div
               className={cn(
-                "relative text-xs font-semibold text-contentSecondary-light dark:text-contentSecondary-dark",
+                "relative left-0.5 text-xs font-semibold text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
                 { " sm:text-xs": compact },
                 { " sm:text-sm": !compact },
-                { "md:bottom-0.5 lg:bottom-1 lg:left-0.5": !isSecondary },
-                { "text-xs lg:bottom-0.5": isSecondary }
+                { "bottom-1": !isSecondary },
+                { "bottom-0.5 text-xs": isSecondary }
               )}
             >
               {unit}
