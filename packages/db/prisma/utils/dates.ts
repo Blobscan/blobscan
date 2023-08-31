@@ -11,7 +11,7 @@ export function normalizeDate(
   date: dayjs.Dayjs | string | Date,
   startOfOrEndOfDay: "startOf" | "endOf" = "endOf"
 ) {
-  const date_ = dayjs(date);
+  const date_ = dayjs(date).utc();
 
   return date_[startOfOrEndOfDay]("day").toISOString();
 }

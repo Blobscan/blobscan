@@ -14,7 +14,7 @@ env:
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 jobs:
-  build-lintt-test:
+  build-lint-test:
     runs-on: ubuntu-latest
 
     services:
@@ -81,6 +81,6 @@ jobs:
           SKIP_ENV_VALIDATION: true
 
       - name: Tests
-        run: pnpm turbo test
+        run: pnpm test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
