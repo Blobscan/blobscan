@@ -5,4 +5,4 @@ source $DIR/setenv.sh
 docker-compose -f $DIR/../docker-compose.yml up -d postgres storage
 echo '🟡 - Waiting for database to be ready...'
 $DIR/wait-for-it.sh "${DATABASE_URL}" -- echo '🟢 - Database is ready!'
-npx prisma migrate dev --skip-seed --name init
+npx prisma migrate dev --skip-seed --name init --schema $DIR/../packages/db/prisma/schema.prisma

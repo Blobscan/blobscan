@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14.1-alpine
+        image: postgres:14
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -30,18 +30,14 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      storage:
+        image: fsouza/fake-gcs-server
+        ports:
+          - "8080:8080"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-
-      - name: Setup fake storage
-        uses: fsouza/fake-gcs-action@v0.4.1
-        with:
-          version: "1.37.2"
-          backend: memory
-          public-host: localhost:8080
-          scheme: http
-          port: 8080
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
