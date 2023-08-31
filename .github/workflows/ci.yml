@@ -83,4 +83,4 @@ jobs:
       - name: Tests
         run: pnpm test
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432
