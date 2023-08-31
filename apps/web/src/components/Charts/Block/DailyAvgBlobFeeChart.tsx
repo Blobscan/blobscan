@@ -13,12 +13,16 @@ export type DailyAvgBlobFeeChartProps = {
 export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
   function ({ days, avgBlobFees }) {
     const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions(days, {
-        yAxisTooltip: (value) =>
-          formatWei(value, {
-            displayFullAmount: true,
-          }),
-        yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+      ...buildTimeSeriesOptions({
+        dates: days,
+        axisFormatters: {
+          yAxisTooltip: (value) =>
+            formatWei(value, {
+              displayFullAmount: true,
+            }),
+          yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+        },
+        yUnit: "ethereum",
       }),
       series: [
         {

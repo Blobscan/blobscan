@@ -13,11 +13,16 @@ type DailyAvgBlobSizeProps = {
 export const DailyAvgBlobSizeChart: FC<Partial<DailyAvgBlobSizeProps>> =
   function ({ days, avgBlobSizes }) {
     const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions(days, {
-        yAxisLabel: (value: number) =>
-          formatBytes(value, { maximumFractionDigits: 0 }),
-        yAxisTooltip: (value: number) => formatBytes(value),
+      ...buildTimeSeriesOptions({
+        dates: days,
+        axisFormatters: {
+          yAxisLabel: (value: number) =>
+            formatBytes(value, { maximumFractionDigits: 0 }),
+          yAxisTooltip: (value: number) => formatBytes(value),
+        },
+        yUnit: "bytes",
       }),
+      grid: { left: 55 },
       series: [
         {
           name: "Avg. Blob Size",

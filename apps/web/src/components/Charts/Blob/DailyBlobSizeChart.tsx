@@ -18,10 +18,14 @@ export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
   > = {
-    ...buildTimeSeriesOptions(days, {
-      yAxisLabel: (value: number) =>
-        formatBytes(value, { maximumFractionDigits: 0 }),
-      yAxisTooltip: (value: number) => formatBytes(value),
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
+        yAxisLabel: (value: number) =>
+          formatBytes(value, { maximumFractionDigits: 0 }),
+        yAxisTooltip: (value: number) => formatBytes(value),
+      },
+      yUnit: "bytes",
     }),
     series: [
       {

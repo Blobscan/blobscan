@@ -14,9 +14,13 @@ export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions(days, {
-      yAxisTooltip: (value) => formatWei(value),
-      yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
+        yAxisTooltip: (value) => formatWei(value),
+        yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+      },
+      yUnit: "ethereum",
     }),
     series: [
       {

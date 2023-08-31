@@ -9,15 +9,19 @@ export type DailyTransactionsProps = {
   days: DailyTransactionStats["days"];
   transactions: DailyTransactionStats["totalTransactions"];
   compact: boolean;
+  opts?: EChartOption<EChartOption.SeriesBar | EChartOption.SeriesLine>;
 };
 
 export const DailyTransactionsChart: FC<Partial<DailyTransactionsProps>> =
-  function ({ days, transactions, compact = false }) {
+  function ({ days, transactions, compact = false, opts = {} }) {
     const options: EChartOption<
       EChartOption.SeriesBar | EChartOption.SeriesLine
     > = {
-      ...buildTimeSeriesOptions(days, {
-        yAxisTooltip: (value) => formatNumber(value),
+      ...buildTimeSeriesOptions({
+        dates: days,
+        axisFormatters: {
+          yAxisTooltip: (value) => formatNumber(value),
+        },
       }),
       series: [
         {
@@ -27,6 +31,7 @@ export const DailyTransactionsChart: FC<Partial<DailyTransactionsProps>> =
           smooth: true,
         },
       ],
+      ...opts,
     };
 
     return <ChartCard title="Daily Transactions" size="sm" options={options} />;

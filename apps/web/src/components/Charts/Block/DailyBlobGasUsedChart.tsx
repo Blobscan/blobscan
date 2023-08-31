@@ -1,21 +1,24 @@
 import type { FC } from "react";
+import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
-import { buildTimeSeriesOptions, formatNumber } from "~/utils";
+import { buildTimeSeriesOptions, cumulativeSum, formatNumber } from "~/utils";
 
-export type DailyBlobGasUsedChartProps = {
+export type DailyBlobGasUsedChartProps = Partial<{
   days: DailyBlockStats["days"];
   blobGasUsed: DailyBlockStats["totalBlobGasUsed"];
-  blobAsCalldataGasUsed: DailyBlockStats["totalBlobAsCalldataGasUsed"];
-};
+}>;
 
-export const DailyBlobGasUsedChart: FC<Partial<DailyBlobGasUsedChartProps>> =
-  function ({ days, blobGasUsed }) {
+const BaseChart: FC<DailyBlobGasUsedChartProps & { title: string }> =
+  function ({ days, blobGasUsed, title }) {
     const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions(days, {
-        yAxisTooltip: (value) => formatNumber(value),
+      ...buildTimeSeriesOptions({
+        dates: days,
+        axisFormatters: {
+          yAxisTooltip: (value) => formatNumber(value),
+        },
       }),
       series: [
         {
@@ -28,7 +31,27 @@ export const DailyBlobGasUsedChart: FC<Partial<DailyBlobGasUsedChartProps>> =
       animationEasing: "cubicOut",
     };
 
+    return <ChartCard title={title} size="sm" options={options} />;
+  };
+
+export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function (
+  props
+) {
+  return <BaseChart title="Daily Blob Gas Used" {...props} />;
+};
+
+export const DailyCumulativeBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> =
+  function ({ blobGasUsed, days }) {
+    const cumulativeBlobGasUsed = useMemo(
+      () => (blobGasUsed ? cumulativeSum(blobGasUsed) : undefined),
+      [blobGasUsed]
+    );
+
     return (
-      <ChartCard title="Daily Blob Gas Used" size="sm" options={options} />
+      <BaseChart
+        title="Cumulative Blob Gas Used"
+        blobGasUsed={cumulativeBlobGasUsed}
+        days={days}
+      />
     );
   };

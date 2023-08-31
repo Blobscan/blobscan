@@ -24,9 +24,10 @@ import {
   parseAmountWithUnit,
 } from "~/utils";
 
-const TOTAL_BLOCKS = 4;
-const TOTAL_TXS = 5;
-const TOTAL_BLOBS = 5;
+const LATEST_BLOCKS_LENGTH = 4;
+const LATEST_TXS_LENGTH = 5;
+const LATEST_BLOBS_LENGTH = 5;
+const DAILY_STATS_TIMEFRAME = "15d";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -36,7 +37,7 @@ const Home: NextPage = () => {
     isLoading: latestBlocksLoading,
   } = api.block.getAll.useQuery({
     p: 1,
-    ps: TOTAL_BLOCKS,
+    ps: LATEST_BLOCKS_LENGTH,
   });
   const {
     data: latestTxs,
@@ -44,7 +45,7 @@ const Home: NextPage = () => {
     error: latestTxsError,
   } = api.tx.getAll.useQuery({
     p: 1,
-    ps: TOTAL_TXS,
+    ps: LATEST_TXS_LENGTH,
   });
   const {
     data: latestBlobs,
@@ -52,18 +53,18 @@ const Home: NextPage = () => {
     error: latestBlobsError,
   } = api.blob.getAll.useQuery({
     p: 1,
-    ps: TOTAL_BLOBS,
+    ps: LATEST_BLOBS_LENGTH,
   });
 
   const { data: overallStats, error: overallStatsErr } =
     api.stats.getAllOverallStats.useQuery();
   const { data: dailyTxStats, error: dailyTxStatsErr } =
     api.stats.getTransactionDailyStats.useQuery({
-      timeFrame: "15d",
+      timeFrame: DAILY_STATS_TIMEFRAME,
     });
   const { data: dailyBlockStats, error: dailyBlockStatsErr } =
     api.stats.getBlockDailyStats.useQuery({
-      timeFrame: "15d",
+      timeFrame: DAILY_STATS_TIMEFRAME,
     });
 
   const error =
@@ -115,6 +116,7 @@ const Home: NextPage = () => {
                 dailyBlockStats?.totalBlobAsCalldataGasUsed
               }
               blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+              opts={{ toolbox: { show: false } }}
             />
           </div>
           <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
@@ -131,6 +133,7 @@ const Home: NextPage = () => {
                             { displayFullAmount: true }
                           )
                         ),
+                        numberFormatOpts: { maximumFractionDigits: 3 },
                       }
                     : undefined
                 }
@@ -184,6 +187,7 @@ const Home: NextPage = () => {
             <DailyTransactionsChart
               days={dailyTxStats?.days}
               transactions={dailyTxStats?.totalTransactions}
+              opts={{ toolbox: { show: false } }}
               compact
             />
           </div>
@@ -204,7 +208,7 @@ const Home: NextPage = () => {
           {latestBlocksLoading || !blocks || blocks.length ? (
             <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
               {latestBlocksLoading
-                ? Array(TOTAL_BLOCKS)
+                ? Array(LATEST_BLOCKS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
                       <div className="flex-grow" key={i}>
@@ -236,7 +240,7 @@ const Home: NextPage = () => {
             {latestTxsLoading || !txs || txs.length ? (
               <div className="flex flex-col gap-5">
                 {latestTxsLoading
-                  ? Array(TOTAL_TXS)
+                  ? Array(LATEST_TXS_LENGTH)
                       .fill(0)
                       .map((_, i) => <BlobTransactionCard key={i} />)
                   : txs.map((tx) => {
@@ -269,7 +273,7 @@ const Home: NextPage = () => {
             {latestBlobsLoading || !blobs || blobs.length ? (
               <div className="flex flex-col gap-5">
                 {latestBlobsLoading
-                  ? Array(TOTAL_BLOBS)
+                  ? Array(LATEST_BLOBS_LENGTH)
                       .fill(0)
                       .map((_, i) => <BlobCard key={i} />)
                   : blobs.map((b) => (

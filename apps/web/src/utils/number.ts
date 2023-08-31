@@ -30,11 +30,28 @@ export function abbreviateNumber(value: number | string): string {
   }).format(Number(value));
 }
 
+type FormatMode = "compact" | "standard";
+
+const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
+  compact: {
+    notation: "compact",
+    maximumFractionDigits: 2,
+  },
+  standard: {
+    notation: "standard",
+    maximumFractionDigits: 3,
+  },
+};
 export function formatNumber(
   x: number | string | bigint,
-  opts?: Intl.NumberFormatOptions
+  mode: "compact" | "standard" = "standard",
+  opts: Intl.NumberFormatOptions = {}
 ): string {
-  return Number(x).toLocaleString(undefined, opts);
+  // return Number(x).toLocaleString(undefined, opts);
+
+  return Intl.NumberFormat("en-US", { ...NUMBER_FORMAT[mode], ...opts }).format(
+    Number(x)
+  );
 }
 
 export function calculatePercentage(
@@ -53,4 +70,11 @@ export function calculatePercentage(
   }
 
   return pct;
+}
+
+export function cumulativeSum(arr: number[]): number[] {
+  return arr.reduce<number[]>(
+    (acc, curr, i) => [...acc, curr + (acc[i - 1] ?? 0)],
+    []
+  );
 }

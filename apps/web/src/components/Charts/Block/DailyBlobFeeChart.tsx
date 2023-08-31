@@ -13,9 +13,13 @@ export type DailyBlobFeeChartProps = {
 export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
   function ({ days, blobFees }) {
     const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions(days, {
-        yAxisTooltip: (value) => formatWei(value),
-        yAxisLabel: (value) => formatWei(value),
+      ...buildTimeSeriesOptions({
+        dates: days,
+        axisFormatters: {
+          yAxisTooltip: (value) => formatWei(value),
+          yAxisLabel: (value) => formatWei(value),
+        },
+        yUnit: "ethereum",
       }),
       series: [
         {

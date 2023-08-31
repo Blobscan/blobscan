@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from "react";
+import React from "react";
 import cn from "classnames";
 
 import { Centered } from "../Centered";
@@ -11,15 +12,13 @@ export type CardProps = {
   emptyState?: ReactNode;
 };
 
-export const Card: React.FC<CardProps> = function ({
-  children,
-  header,
-  compact = false,
-  className,
-  emptyState,
-}) {
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(function (
+  { children, header, compact = false, className, emptyState },
+  ref
+) {
   return (
     <div
+      ref={ref}
       className={cn(
         `
         w-full 
@@ -52,7 +51,9 @@ export const Card: React.FC<CardProps> = function ({
       </div>
     </div>
   );
-};
+});
+
+Card.displayName = "Card";
 
 export type CardHeaderProps = {
   children: ReactNode;

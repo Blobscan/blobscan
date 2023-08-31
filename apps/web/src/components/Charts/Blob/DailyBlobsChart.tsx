@@ -17,8 +17,11 @@ export const DailyBlobsChart: FC<Partial<DailyBlobsChartProps>> = function ({
   uniqueBlobs,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions(days, {
-      yAxisTooltip: formatNumber,
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
+        yAxisTooltip: formatNumber,
+      },
     }),
 
     series: [

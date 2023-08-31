@@ -17,8 +17,11 @@ export const DailyUniqueAddressesChart: FC<
   Partial<DailyUniqueAddressesChartProps>
 > = function ({ days, uniqueReceivers, uniqueSenders }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions(days, {
-      yAxisTooltip: (value) => formatNumber(value),
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
+        yAxisTooltip: (value) => formatNumber(value),
+      },
     }),
     series: [
       {

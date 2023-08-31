@@ -15,8 +15,11 @@ export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
   blocks,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions(days, {
-      yAxisTooltip: (value) => formatNumber(value),
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
+        yAxisTooltip: (value) => formatNumber(value),
+      },
     }),
     series: [
       {
