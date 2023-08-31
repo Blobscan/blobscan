@@ -109,6 +109,7 @@ describe("Indexer route", async () => {
           versionedHash: "asc",
         },
       });
+
       expect(blobs).toMatchSnapshot();
       expect(blobs).toHaveLength(9);
 
@@ -121,6 +122,17 @@ describe("Indexer route", async () => {
         orderBy: {
           blobHash: "asc",
         },
+      });
+      storageRefs.sort((a, b) => {
+        // First, compare by blobHash
+        if (a.blobHash < b.blobHash) return -1;
+        if (a.blobHash > b.blobHash) return 1;
+
+        // If blobHash is the same, compare by blobStorage
+        if (a.blobStorage < b.blobStorage) return -1;
+        if (a.blobStorage > b.blobStorage) return 1;
+
+        return 0; // If everything is the same
       });
       expect(storageRefs).toMatchSnapshot();
       expect(storageRefs).toHaveLength(14);

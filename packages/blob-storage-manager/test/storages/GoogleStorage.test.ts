@@ -1,13 +1,13 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { GoogleStorageMock as GoogleStorage } from "../../src/__mocks__/GoogleStorage";
 import {
   BLOB_DATA,
   BLOB_HASH,
   CHAIN_ID,
   FILE_URI,
   GOOGLE_STORAGE_CONFIG,
-} from "../../test/fixtures";
-import { GoogleStorageMock as GoogleStorage } from "../__mocks__/GoogleStorage";
+} from "../fixtures";
 
 describe("GoogleStorage", () => {
   let storage: GoogleStorage;

@@ -198,13 +198,13 @@ exports[`Indexer route > indexData > should index new data if auth 5`] = `
   },
   {
     "blobHash": "blobHash001",
-    "blobStorage": "SWARM",
-    "dataReference": "bzz://some-hash-for-blobHash001",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash001.txt",
   },
   {
     "blobHash": "blobHash001",
-    "blobStorage": "GOOGLE",
-    "dataReference": "1/ob/Ha/sh/obHash001.txt",
+    "blobStorage": "SWARM",
+    "dataReference": "bzz://some-hash-for-blobHash001",
   },
   {
     "blobHash": "blobHash002",
@@ -218,13 +218,13 @@ exports[`Indexer route > indexData > should index new data if auth 5`] = `
   },
   {
     "blobHash": "blobHash004",
-    "blobStorage": "POSTGRES",
-    "dataReference": "blobHash004",
+    "blobStorage": "GOOGLE",
+    "dataReference": "1/ob/Ha/sh/obHash004.txt",
   },
   {
     "blobHash": "blobHash004",
-    "blobStorage": "GOOGLE",
-    "dataReference": "1/ob/Ha/sh/obHash004.txt",
+    "blobStorage": "POSTGRES",
+    "dataReference": "blobHash004",
   },
   {
     "blobHash": "blobHash005",

@@ -2,6 +2,12 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
+import { BlobStorageManager } from "../src/BlobStorageManager";
+import {
+  GoogleStorageMock as GoogleStorage,
+  PostgresStorageMock as PostgresStorage,
+  SwarmStorageMock as SwarmStorage,
+} from "../src/__mocks__";
 import {
   BLOB_DATA,
   BLOB_HASH,
@@ -10,13 +16,7 @@ import {
   GOOGLE_STORAGE_CONFIG,
   SWARM_REFERENCE,
   SWARM_STORAGE_CONFIG,
-} from "../test/fixtures";
-import { BlobStorageManager } from "./BlobStorageManager";
-import {
-  GoogleStorageMock as GoogleStorage,
-  PostgresStorageMock as PostgresStorage,
-  SwarmStorageMock as SwarmStorage,
-} from "./__mocks__";
+} from "./fixtures";
 
 describe("BlobStorageManager", () => {
   let blobStorageManager: BlobStorageManager;
