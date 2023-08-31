@@ -72,4 +72,4 @@ jobs:
           SKIP_ENV_VALIDATION: true
 
       - name: Tests
-        run: pnpm turbo test
+        run: pnpm test
