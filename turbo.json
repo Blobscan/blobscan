@@ -20,9 +20,11 @@
     },
     "lint": {},
     "lint:fix": {},
-    "test:unit": {},
-    "test:watch": {
-      "cache": false
+    "test": {
+      "inputs": ["src/**/*.test.ts", "prisma/**/*.test.ts"]
+    },
+    "test:ui": {
+      "inputs": ["src/**/*.test.ts", "prisma/**/*.test.ts"]
     },
     "clean": {
       "cache": false
