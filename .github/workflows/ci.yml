@@ -79,10 +79,7 @@ jobs:
         env:
           SKIP_ENV_VALIDATION: true
 
-      - name: Integration tests
-        run: pnpm turbo test:int
+      - name: Tests
+        run: pnpm turbo test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
-
-      - name: Check workspaces
-        run: pnpm manypkg check

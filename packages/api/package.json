@@ -10,9 +10,8 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "test:int": "vitest -c ./vitest.config.integration.ts",
-    "test:int:dev": "../../scripts/run-integration.sh",
-    "test:int:dev:ui": "../../scripts/run-integration.sh --ui"
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@blobscan/blob-storage-manager": "^0.0.1",
@@ -38,8 +37,5 @@
   },
   "peerDependencies": {
     "@blobscan/open-telemetry": "^0.0.1"
-  },
-  "prisma": {
-    "schema": "../db/prisma/schema.prisma"
   }
 }

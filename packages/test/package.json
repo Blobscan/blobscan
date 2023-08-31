@@ -4,6 +4,9 @@
   "private": true,
   "version": "0.0.1",
   "main": "./src/index.ts",
+  "scripts": {
+    "test:setup": "../../scripts/run-integration.sh"
+  },
   "eslintConfig": {
     "root": true,
     "extends": [
@@ -16,5 +19,8 @@
   },
   "peerDependencies": {
     "@prisma/client": "^5.0.0"
+  },
+  "prisma": {
+    "schema": "../db/prisma/schema.prisma"
   }
 }
