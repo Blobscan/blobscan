@@ -10,5 +10,9 @@
   ],
   "tailwindCSS.experimental.configFile": "./packages/config/tailwind/index.ts",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.*.ts"
+  }
 }

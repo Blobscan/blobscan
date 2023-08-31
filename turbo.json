@@ -20,6 +20,12 @@
     },
     "lint": {},
     "lint:fix": {},
+    "test": {
+      "inputs": ["src/**/*.test.ts", "prisma/**/*.test.ts"]
+    },
+    "test:ui": {
+      "inputs": ["src/**/*.test.ts", "prisma/**/*.test.ts"]
+    },
     "clean": {
       "cache": false
     },

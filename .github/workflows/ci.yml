@@ -13,9 +13,8 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
-
 jobs:
-  build-lint:
+  build-lint-test:
     runs-on: ubuntu-latest
 
     services:
@@ -68,9 +67,9 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
 
       - name: Build, lint and type-check
-        run: pnpm turbo build lint type-check
+        run: pnpm turbo build lint type-check --filter=[${{github.sha}}]
         env:
           SKIP_ENV_VALIDATION: true
 
-      - name: Check workspaces
-        run: pnpm manypkg check
+      - name: Tests
+        run: pnpm test

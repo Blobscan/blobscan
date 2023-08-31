@@ -7,6 +7,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
     "db:generate": "pnpm with-env prisma generate",
     "db:push": "pnpm with-env prisma db push --skip-generate",
@@ -14,7 +16,9 @@
     "db:seed": "pnpm with-env prisma db seed",
     "db:reset": "pnpm with-env prisma db push --force-reset",
     "dev": "pnpm with-env prisma studio --port 5556",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "prisma": {
     "seed": "ts-node prisma/seed/main.ts"
