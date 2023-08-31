@@ -5,7 +5,7 @@ import {
   DailyAvgBlobGasPriceChart,
   DailyBlobFeeChart,
   DailyBlobGasUsedChart,
-  DailylBlobVsBlobAsCalldataGasUsedChart,
+  DailyBlobGasComparisonChart,
   DailyBlocksChart,
   DailyAvgBlobFeeChart,
 } from "~/components/Charts/Block";
@@ -69,7 +69,7 @@ const BlockStats: NextPage = function () {
               : undefined,
           },
           {
-            name: "Total Fees Saved",
+            name: "Total Tx Fees Saved",
             metric: overallBlockStats
               ? {
                   ...parseAmountWithUnit(
@@ -114,7 +114,7 @@ const BlockStats: NextPage = function () {
             days={dailyBlockStats?.days}
             blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
           />,
-          <DailylBlobVsBlobAsCalldataGasUsedChart
+          <DailyBlobGasComparisonChart
             key={2}
             days={dailyBlockStats?.days}
             blobGasUsed={dailyBlockStats?.totalBlobGasUsed}

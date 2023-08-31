@@ -3,4 +3,4 @@ export * from "./DailyBlobGasUsedChart";
 export * from "./DailyBlobFeeChart";
 export * from "./DailyAvgBlobFeeChart";
 export * from "./DailyAvgBlobGasPriceChart";
-export * from "./DailyBlobVsBlobAsCalldataGasUsedChart";
+export * from "./DailyBlobGasComparisonChart";

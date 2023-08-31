@@ -6,14 +6,14 @@ import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
-export type DailyBlobVsBlobAsCalldataGasUsedChartProps = {
+export type DailyBlobGasComparisonChartProps = {
   days: DailyBlockStats["days"];
   blobGasUsed: DailyBlockStats["totalBlobGasUsed"];
   blobAsCalldataGasUsed: DailyBlockStats["totalBlobAsCalldataGasUsed"];
 };
 
-export const DailylBlobVsBlobAsCalldataGasUsedChart: FC<
-  Partial<DailyBlobVsBlobAsCalldataGasUsedChartProps>
+export const DailyBlobGasComparisonChart: FC<
+  Partial<DailyBlobGasComparisonChartProps>
 > = function ({ days, blobGasUsed, blobAsCalldataGasUsed }) {
   const options: EChartOption<EChartOption.Series> = {
     ...buildTimeSeriesOptions(days, {
@@ -21,7 +21,7 @@ export const DailylBlobVsBlobAsCalldataGasUsedChart: FC<
     }),
     series: [
       {
-        name: "Blob as Calldata Gas Used",
+        name: "Blob Gas Used",
         data: blobGasUsed,
         stack: "gas",
         type: "line",
@@ -44,7 +44,7 @@ export const DailylBlobVsBlobAsCalldataGasUsedChart: FC<
         },
       },
       {
-        name: "Blob as Calldata Gas Used",
+        name: "Equivalent Calldata Gas Used",
         data: blobAsCalldataGasUsed,
         stack: "gas",
         type: "line",
@@ -76,10 +76,6 @@ export const DailylBlobVsBlobAsCalldataGasUsedChart: FC<
   };
 
   return (
-    <ChartCard
-      title="Daily Blob vs. Blob as Calldata Gas Used"
-      size="sm"
-      options={options}
-    />
+    <ChartCard title="Daily Blob Gas Comparison" size="sm" options={options} />
   );
 };

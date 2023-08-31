@@ -35,7 +35,7 @@ function stripTrailingZeroes(str: string): string {
 }
 
 export type FormatWeiOptions = {
-  unit: EtherUnit;
+  toUnit: EtherUnit;
   displayUnit: boolean;
   displayFullAmount: boolean;
 };
@@ -43,7 +43,7 @@ export type FormatWeiOptions = {
 export function formatWei(
   weiAmount: bigint | number,
   {
-    unit = "gwei",
+    toUnit = "gwei",
     displayUnit = true,
     displayFullAmount = true,
   }: Partial<FormatWeiOptions> = {}
@@ -55,7 +55,7 @@ export function formatWei(
       : weiAmount.toString();
   let formattedAmount: string;
 
-  switch (unit) {
+  switch (toUnit) {
     case "wei":
       formattedAmount = weiStr;
       break;
@@ -80,7 +80,7 @@ export function formatWei(
     formattedAmount = Number(formattedAmount).toExponential();
   }
 
-  return `${formattedAmount}${displayUnit ? ` ${unit}` : ""}`;
+  return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
 }
 
 function fakeExponential(

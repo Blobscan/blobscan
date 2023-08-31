@@ -9,7 +9,7 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { DailylBlobVsBlobAsCalldataGasUsedChart } from "~/components/Charts/Block";
+import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
@@ -20,6 +20,7 @@ import {
   buildTransactionsRoute,
   calculatePercentage,
   formatBytes,
+  formatWei,
   parseAmountWithUnit,
 } from "~/utils";
 
@@ -108,7 +109,7 @@ const Home: NextPage = () => {
       <div className="flex w-full flex-col gap-8 sm:gap-16">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
           <div className="col-span-2 sm:col-span-4">
-            <DailylBlobVsBlobAsCalldataGasUsedChart
+            <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
               blobAsCalldataGasUsed={
                 dailyBlockStats?.totalBlobAsCalldataGasUsed
@@ -119,16 +120,26 @@ const Home: NextPage = () => {
           <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
             <div className="col-span-2">
               <MetricCard
-                name="Total Gas Saved"
-                metric={{
-                  value: overallStats?.block?.totalBlobGasUsed,
-                }}
+                name="Total Tx Fees Saved"
+                metric={
+                  overallStats
+                    ? {
+                        ...parseAmountWithUnit(
+                          formatWei(
+                            overallStats.block.totalBlobAsCalldataFee -
+                              overallStats.block.totalBlobFee,
+                            { displayFullAmount: true }
+                          )
+                        ),
+                      }
+                    : undefined
+                }
                 secondaryMetric={
                   overallStats
                     ? {
                         value: calculatePercentage(
-                          overallStats.block.totalBlobGasUsed,
-                          overallStats.block.totalBlobAsCalldataGasUsed,
+                          overallStats.block.totalBlobFee,
+                          overallStats.block.totalBlobAsCalldataFee,
                           { returnComplement: true }
                         ),
                         unit: "%",
