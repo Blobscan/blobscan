@@ -133,7 +133,7 @@ export const semanticColors = {
   },
   controlBackground: {
     light: shades["00"],
-    dark: coolGray[200],
+    dark: warmGray[500],
   },
   controlActive: {
     light: primary[100],
