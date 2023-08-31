@@ -39,6 +39,7 @@ jobs:
         with:
           version: "1.37.2"
           backend: memory
+          public-host: localhost:8080
           scheme: http
           port: 8080
 
