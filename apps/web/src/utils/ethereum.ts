@@ -48,7 +48,7 @@ export function formatWei(
     displayFullAmount = true,
   }: Partial<FormatWeiOptions> = {}
 ): string {
-  const weiStr =
+  const weiAmountStr =
     // Wei amounts should be integers
     typeof weiAmount === "number"
       ? Math.floor(weiAmount).toString()
@@ -57,20 +57,21 @@ export function formatWei(
 
   switch (toUnit) {
     case "wei":
-      formattedAmount = weiStr;
+      formattedAmount = weiAmountStr;
       break;
     case "gwei":
-      formattedAmount = formatWithDecimal(weiStr, 9);
+      formattedAmount = formatWithDecimal(weiAmountStr, 9);
       break;
     case "ether":
-      formattedAmount = formatWithDecimal(weiStr, 18);
+      formattedAmount = formatWithDecimal(weiAmountStr, 18);
       break;
     default:
       throw new Error("Unsupported unit");
   }
 
-  formattedAmount = formatNumber(formattedAmount, "standard", {
-    maximumFractionDigits: 18,
+  formattedAmount = formatNumber(formattedAmount, "compact", {
+    // Display up to 9 decimal digits for small wei amounts
+    maximumFractionDigits: weiAmountStr.length < 9 ? 9 : 3,
   });
 
   const fractionDigits = formattedAmount.split(".")[1];

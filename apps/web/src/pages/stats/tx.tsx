@@ -8,6 +8,7 @@ import {
 } from "~/components/Charts/Transaction";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
+import { formatWei } from "~/utils";
 
 const TransactionStats: NextPage = function () {
   const { data: dailyTxStats, error: dailyTxStatsErr } =
@@ -57,6 +58,7 @@ const TransactionStats: NextPage = function () {
                   name: "Avg. Max Blob Gas Fee",
                   metric: {
                     value: overallTxStats.avgMaxBlobGasFee,
+                    type: "ethereum",
                   },
                 },
               ]

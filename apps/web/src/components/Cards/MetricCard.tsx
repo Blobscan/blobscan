@@ -5,13 +5,15 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { formatNumber } from "~/utils";
+import { formatBytes, formatNumber, formatWei } from "~/utils";
 import { Card } from "./Card";
+
+export type MetricType = "standard" | "bytes" | "ethereum" | "percentage";
 
 export type MetricProp = {
   value?: bigint | number;
   numberFormatOpts?: Intl.NumberFormatOptions;
-  unit?: string;
+  type?: MetricType;
 };
 export type MetricCardProps = Partial<{
   name: string;
@@ -22,6 +24,68 @@ export type MetricCardProps = Partial<{
 
 function isInteger(value: bigint | number) {
   return Number.isInteger(value) || typeof value === "bigint";
+}
+
+/**
+ *  Creates a placeholder string that takes up the maximum amount of space the input could take with
+ *  that amount of characters
+ */
+function createPlaceholder(input: string): string {
+  /**
+   * We replace all numeric characters with '8' because '8' takes up the most pixels compared to
+   * other numbers
+   */
+  const replacedString = input.replace(/[0-9]/g, "8");
+  return replacedString;
+}
+
+function formatMetric(
+  value: number | bigint,
+  {
+    type,
+    compact,
+    numberFormatOpts,
+  }: {
+    type: MetricType;
+    compact?: boolean;
+    numberFormatOpts?: Intl.NumberFormatOptions;
+  } = {
+    type: "standard",
+    compact: false,
+  }
+) {
+  const isHugeNumber = value > 1e9;
+  const inputMode = compact ? "compact" : "standard";
+  const mode = isHugeNumber ? "compact" : inputMode;
+  let formattedValue: string;
+
+  switch (type) {
+    case "bytes":
+      formattedValue = formatBytes(value);
+      break;
+    case "ethereum":
+      formattedValue = formatWei(value, { displayFullAmount: !compact });
+      break;
+    case "percentage":
+      formattedValue = `${formatNumber(value, mode, {
+        maximumFractionDigits: 2,
+        ...numberFormatOpts,
+      })} %`;
+      break;
+    default:
+      formattedValue = formatNumber(value, mode, {
+        maximumSignificantDigits: 9,
+        ...numberFormatOpts,
+      });
+      break;
+  }
+
+  const [value_ = "0", unit = ""] = formattedValue.split(" ");
+
+  return {
+    value: value_,
+    unit,
+  };
 }
 
 function MetricLayout({
@@ -52,23 +116,10 @@ function MetricLayout({
   );
 }
 
-/**
- *  Creates a placeholder string that takes up the maximum amount of space the input could take with
- *  that amount of characters
- */
-function createPlaceholder(input: string): string {
-  /**
-   * We replace all numeric characters with '8' because '8' takes up the most pixels compared to
-   * other numbers
-   */
-  const replacedString = input.replace(/[0-9]/g, "8");
-  return replacedString;
-}
-
 function Metric({
   value,
   numberFormatOpts,
-  unit,
+  type = "standard",
   compact,
   isSecondary = false,
 }: MetricProp & { compact?: boolean; isSecondary?: boolean }) {
@@ -78,12 +129,10 @@ function Metric({
     from: { value: 0 },
     cancel: !value,
   });
-
-  /* The number 8 takes up the most pixels compare to other numbers */
-  const formattedNumber =
+  const formattedMetric =
     value !== undefined
-      ? formatNumber(value, compact ? "compact" : undefined, numberFormatOpts)
-      : "";
+      ? formatMetric(value, { type, compact, numberFormatOpts })
+      : undefined;
 
   return (
     <div>
@@ -93,13 +142,14 @@ function Metric({
             {value !== undefined ? (
               <animated.div>
                 {valueProps.value.to((x) => {
-                  const formattedX = isValueInteger ? Math.trunc(x) : x;
+                  const x_ = isValueInteger ? Math.trunc(x) : x;
+                  const { value: formattedX } = formatMetric(x_, {
+                    type,
+                    compact,
+                    numberFormatOpts,
+                  });
 
-                  return formatNumber(
-                    formattedX,
-                    compact ? "compact" : undefined,
-                    numberFormatOpts
-                  );
+                  return formattedX;
                 })}
               </animated.div>
             ) : (
@@ -113,7 +163,7 @@ function Metric({
             */}
             <div className="invisible">
               <MetricLayout compact={compact} isSecondary={isSecondary}>
-                {createPlaceholder(formattedNumber)}
+                {createPlaceholder(formattedMetric?.value ?? "")}
               </MetricLayout>
             </div>
             <div
@@ -125,7 +175,7 @@ function Metric({
                 { "bottom-0.5 text-xs": isSecondary }
               )}
             >
-              {unit}
+              {formattedMetric?.unit}
             </div>
           </div>
         </div>

@@ -18,9 +18,6 @@ import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
-  formatBytes,
-  formatWei,
-  parseAmountWithUnit,
 } from "~/utils";
 
 const LATEST_BLOCKS_LENGTH = 4;
@@ -87,11 +84,6 @@ const Home: NextPage = () => {
   const txs = latestTxs?.transactions ?? [];
   const blobs = latestBlobs?.blobs ?? [];
 
-  const totalBlobSize =
-    overallStats && overallStats.blob
-      ? parseAmountWithUnit(formatBytes(overallStats.blob.totalBlobSize))
-      : undefined;
-
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
@@ -125,14 +117,10 @@ const Home: NextPage = () => {
                 metric={
                   overallStats
                     ? {
-                        ...parseAmountWithUnit(
-                          formatWei(
-                            overallStats.block.totalBlobAsCalldataFee -
-                              overallStats.block.totalBlobFee,
-                            { displayFullAmount: true }
-                          )
-                        ),
-                        numberFormatOpts: { maximumFractionDigits: 3 },
+                        value:
+                          overallStats.block.totalBlobAsCalldataFee -
+                          overallStats.block.totalBlobFee,
+                        type: "ethereum",
                       }
                     : undefined
                 }
@@ -163,13 +151,12 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blob Size"
               metric={{
-                value: totalBlobSize?.value,
-                unit: totalBlobSize?.unit,
+                value: overallStats?.blob.totalBlobSize,
+                type: "bytes",
               }}
               compact
             />
           </div>
-
           <div className="col-span-2 sm:col-span-4">
             <DailyTransactionsChart
               days={dailyTxStats?.days}

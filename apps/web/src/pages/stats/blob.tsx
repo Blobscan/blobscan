@@ -8,7 +8,6 @@ import {
 } from "~/components/Charts/Blob/";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
-import { formatBytes, parseAmountWithUnit } from "~/utils";
 
 const BlobStats: NextPage = function () {
   const { data: dailyBlobStats, error: dailyBlobStatsErr } =
@@ -42,9 +41,8 @@ const BlobStats: NextPage = function () {
               {
                 name: "Total Blob Size",
                 metric: {
-                  ...parseAmountWithUnit(
-                    formatBytes(overallBlobStats.totalBlobSize)
-                  ),
+                  value: overallBlobStats.totalBlobSize,
+                  type: "bytes",
                 },
               },
               {
@@ -56,9 +54,8 @@ const BlobStats: NextPage = function () {
               {
                 name: "Average Blob Size",
                 metric: {
-                  ...parseAmountWithUnit(
-                    formatBytes(overallBlobStats.avgBlobSize)
-                  ),
+                  value: overallBlobStats.avgBlobSize,
+                  type: "bytes",
                 },
               },
             ]

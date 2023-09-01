@@ -11,7 +11,7 @@ import {
 } from "~/components/Charts/Block";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
-import { calculatePercentage, formatWei, parseAmountWithUnit } from "~/utils";
+import { calculatePercentage } from "~/utils";
 
 const BlockStats: NextPage = function () {
   const { data: dailyBlockStats, error: dailyBlockErr } =
@@ -31,10 +31,6 @@ const BlockStats: NextPage = function () {
       />
     );
   }
-
-  console.log(
-    overallBlockStats ? formatWei(overallBlockStats.avgBlobGasPrice) : undefined
-  );
 
   return (
     <>
@@ -57,15 +53,15 @@ const BlockStats: NextPage = function () {
             name: "Total Blob Fees",
             metric: {
               value: overallBlockStats?.totalBlobFee,
+              type: "ethereum",
             },
           },
           {
             name: "Avg. Blob Gas Price",
             metric: overallBlockStats
               ? {
-                  ...parseAmountWithUnit(
-                    formatWei(overallBlockStats.avgBlobGasPrice)
-                  ),
+                  value: overallBlockStats.avgBlobGasPrice,
+                  type: "ethereum",
                   numberFormatOpts: {
                     maximumFractionDigits: 9,
                   },
@@ -76,12 +72,10 @@ const BlockStats: NextPage = function () {
             name: "Total Tx Fees Saved",
             metric: overallBlockStats
               ? {
-                  ...parseAmountWithUnit(
-                    formatWei(
-                      overallBlockStats.totalBlobAsCalldataFee -
-                        overallBlockStats.totalBlobFee
-                    )
-                  ),
+                  value:
+                    overallBlockStats.totalBlobAsCalldataFee -
+                    overallBlockStats.totalBlobFee,
+                  type: "ethereum",
                 }
               : undefined,
             secondaryMetric: overallBlockStats
@@ -91,7 +85,7 @@ const BlockStats: NextPage = function () {
                     overallBlockStats.totalBlobAsCalldataFee,
                     { returnComplement: true }
                   ),
-                  unit: "%",
+                  type: "percentage",
                 }
               : undefined,
           },
@@ -112,7 +106,7 @@ const BlockStats: NextPage = function () {
                       overallBlockStats.totalBlobAsCalldataGasUsed,
                       { returnComplement: true }
                     ),
-                    unit: "%",
+                    type: "percentage",
                   }
                 : undefined,
           },

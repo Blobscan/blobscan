@@ -11,18 +11,6 @@ export function formatBytes(bytes: number | bigint, opts: Options = {}) {
   });
 }
 
-export function parseAmountWithUnit(amountWithUnit: string): {
-  value: number;
-  unit: string;
-} {
-  const [value = 0, unit = ""] = amountWithUnit.split(" ");
-
-  return {
-    value: Number(value),
-    unit,
-  };
-}
-
 export function abbreviateNumber(value: number | string): string {
   return Intl.NumberFormat("en-US", {
     notation: "compact",
