@@ -10,9 +10,6 @@ The architecture of Blobscan has the following components:
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
 
-Blobscan was one of the [finalists](https://twitter.com/ETHGlobal/status/1579249265557192704) of the [ETHBogota hackathon](https://bogota.ethglobal.com/) in 2022,
-and later [in 2023](https://blog.ethereum.org/2023/02/14/layer-2-grants-roundup#-data-visualization) it received funding by the Ethereum Foundation.
-
 {% quick-links %}
 
 {% quick-link title="Installation" icon="installation" href="/docs/installation" description="Step-by-step guides to configuring and running Blobscan." /%}

@@ -23,6 +23,15 @@ export const navigation = [
     ],
   },
   {
+    title: 'Gratitude Corner',
+    links: [
+      {
+        title: 'Funding',
+        href: '/docs/funding',
+      },
+    ],
+  },
+  {
     title: 'Development',
     links: [
       { title: 'Running locally', href: '/docs/running-locally' },
