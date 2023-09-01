@@ -47,7 +47,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           },
         },
         {
-          name: "Equivalent Calldata Gas Used",
+          name: "Hypothetical Calldata Equivalent Gas",
           data: blobAsCalldataGasUsed,
           stack: "gas",
           type: "line",
@@ -80,7 +80,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
 
     return (
       <ChartCard
-        title="Daily Blob Gas Comparison"
+        title="Daily Blob Gas Expenditure Comparison"
         size="sm"
         options={options}
       />

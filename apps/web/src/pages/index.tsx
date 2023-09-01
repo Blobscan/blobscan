@@ -18,7 +18,6 @@ import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
-  calculatePercentage,
   formatBytes,
   formatWei,
   parseAmountWithUnit,
@@ -134,18 +133,6 @@ const Home: NextPage = () => {
                           )
                         ),
                         numberFormatOpts: { maximumFractionDigits: 3 },
-                      }
-                    : undefined
-                }
-                secondaryMetric={
-                  overallStats
-                    ? {
-                        value: calculatePercentage(
-                          overallStats.block.totalBlobFee,
-                          overallStats.block.totalBlobAsCalldataFee,
-                          { returnComplement: true }
-                        ),
-                        unit: "%",
                       }
                     : undefined
                 }

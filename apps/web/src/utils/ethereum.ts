@@ -69,7 +69,7 @@ export function formatWei(
       throw new Error("Unsupported unit");
   }
 
-  formattedAmount = formatNumber(formattedAmount, {
+  formattedAmount = formatNumber(formattedAmount, "standard", {
     maximumFractionDigits: 18,
   });
 

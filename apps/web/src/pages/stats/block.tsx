@@ -32,6 +32,10 @@ const BlockStats: NextPage = function () {
     );
   }
 
+  console.log(
+    overallBlockStats ? formatWei(overallBlockStats.avgBlobGasPrice) : undefined
+  );
+
   return (
     <>
       <StatsLayout
@@ -63,7 +67,7 @@ const BlockStats: NextPage = function () {
                     formatWei(overallBlockStats.avgBlobGasPrice)
                   ),
                   numberFormatOpts: {
-                    maximumFractionDigits: 10,
+                    maximumFractionDigits: 9,
                   },
                 }
               : undefined,
@@ -80,9 +84,19 @@ const BlockStats: NextPage = function () {
                   ),
                 }
               : undefined,
+            secondaryMetric: overallBlockStats
+              ? {
+                  value: calculatePercentage(
+                    overallBlockStats.totalBlobFee,
+                    overallBlockStats.totalBlobAsCalldataFee,
+                    { returnComplement: true }
+                  ),
+                  unit: "%",
+                }
+              : undefined,
           },
           {
-            name: "Total Calldata Gas Saved",
+            name: "Total Gas Saved",
             metric: {
               value: overallBlockStats
                 ? overallBlockStats.totalBlobAsCalldataGasUsed -
