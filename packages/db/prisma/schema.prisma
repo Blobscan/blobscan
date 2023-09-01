@@ -153,10 +153,10 @@ model BlockOverallStats {
 model BlockDailyStats {
   day                        DateTime @id @db.Date
   totalBlocks                Int      @map("total_blocks")
-  totalBlobGasUsed           Int      @map("total_blob_gas_used")
-  totalBlobAsCalldataGasUsed Int      @map("total_blob_as_calldata_gas_used")
-  totalBlobFee               Int      @map("total_blob_fee")
-  totalBlobAsCalldataFee     Int      @map("total_blob_as_calldata_fee")
+  totalBlobGasUsed           BigInt   @map("total_blob_gas_used")
+  totalBlobAsCalldataGasUsed BigInt   @map("total_blob_as_calldata_gas_used")
+  totalBlobFee               BigInt   @map("total_blob_fee")
+  totalBlobAsCalldataFee     BigInt   @map("total_blob_as_calldata_fee")
   avgBlobFee                 Float    @map("avg_blob_fee")
   avgBlobAsCalldataFee       Float    @map("avg_blob_as_calldata_fee")
   avgBlobGasPrice            Float    @map("avg_blob_gas_price")

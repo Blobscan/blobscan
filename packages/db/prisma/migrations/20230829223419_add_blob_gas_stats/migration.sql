@@ -23,10 +23,10 @@
 ALTER TABLE "block_daily_stats" ADD COLUMN     "avg_blob_as_calldata_fee" DOUBLE PRECISION NOT NULL,
 ADD COLUMN     "avg_blob_fee" DOUBLE PRECISION NOT NULL,
 ADD COLUMN     "avg_blob_gas_price" DOUBLE PRECISION NOT NULL,
-ADD COLUMN     "total_blob_as_calldata_fee" INTEGER NOT NULL,
-ADD COLUMN     "total_blob_as_calldata_gas_used" INTEGER NOT NULL,
-ADD COLUMN     "total_blob_fee" INTEGER NOT NULL,
-ADD COLUMN     "total_blob_gas_used" INTEGER NOT NULL;
+ADD COLUMN     "total_blob_as_calldata_fee" BIGINT NOT NULL,
+ADD COLUMN     "total_blob_as_calldata_gas_used" BIGINT NOT NULL,
+ADD COLUMN     "total_blob_fee" BIGINT NOT NULL,
+ADD COLUMN     "total_blob_gas_used" BIGINT NOT NULL;
 
 -- AlterTable
 ALTER TABLE "block_overall_stats" ADD COLUMN     "avg_blob_as_calldata_fee" DOUBLE PRECISION NOT NULL,
