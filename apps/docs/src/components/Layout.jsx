@@ -1,62 +1,39 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import clsx from 'clsx'
-
 import { Hero } from '@/components/Hero'
 import { Logo, Logomark } from '@/components/Logo'
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { Navigation } from '@/components/Navigation'
 import { Search } from '@/components/Search'
 import { ThemeSelector } from '@/components/ThemeSelector'
+import clsx from 'clsx'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export const navigation = [
   {
     title: 'Introduction',
     links: [
-      { title: 'Getting started', href: '/' },
+      { title: 'Welcome to Blobscan', href: '/' },
       { title: 'Installation', href: '/docs/installation' },
+      { title: 'Environment variables', href: '/docs/environment' },
+      { title: 'Cron jobs', href: '/docs/cron-jobs' },
     ],
   },
   {
-    title: 'Core concepts',
+    title: 'Development',
     links: [
-      { title: 'Understanding caching', href: '/docs/understanding-caching' },
-      {
-        title: 'Predicting user behavior',
-        href: '/docs/predicting-user-behavior',
-      },
-      { title: 'Basics of time-travel', href: '/docs/basics-of-time-travel' },
-      {
-        title: 'Introduction to string theory',
-        href: '/docs/introduction-to-string-theory',
-      },
-      { title: 'The butterfly effect', href: '/docs/the-butterfly-effect' },
-    ],
-  },
-  {
-    title: 'Advanced guides',
-    links: [
-      { title: 'Writing plugins', href: '/docs/writing-plugins' },
-      { title: 'Neuralink integration', href: '/docs/neuralink-integration' },
-      { title: 'Temporal paradoxes', href: '/docs/temporal-paradoxes' },
+      { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Testing', href: '/docs/testing' },
-      { title: 'Compile-time caching', href: '/docs/compile-time-caching' },
-      {
-        title: 'Predictive data generation',
-        href: '/docs/predictive-data-generation',
-      },
+      { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],
   },
   {
-    title: 'API reference',
+    title: 'Reference',
     links: [
-      { title: 'CacheAdvance.predict()', href: '/docs/cacheadvance-predict' },
-      { title: 'CacheAdvance.flush()', href: '/docs/cacheadvance-flush' },
-      { title: 'CacheAdvance.revert()', href: '/docs/cacheadvance-revert' },
-      { title: 'CacheAdvance.regret()', href: '/docs/cacheadvance-regret' },
+      { title: 'API', href: '/docs/api' },
+      { title: 'Metrics', href: '/docs/metrics' },
     ],
   },
   {
@@ -106,7 +83,7 @@ function Header({ navigation }) {
       <div className="relative flex flex-grow basis-0 items-center">
         <Link href="/" aria-label="Home page">
           <Logomark className="h-9 w-9 lg:hidden" />
-          <Logo className="hidden h-9 w-auto fill-slate-700 dark:fill-sky-100 lg:block" />
+          <Logo className="hidden h-12 w-auto fill-slate-700 dark:fill-primary-100 lg:block" />
         </Link>
       </div>
       <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
@@ -114,7 +91,11 @@ function Header({ navigation }) {
       </div>
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">
         <ThemeSelector className="relative z-10" />
-        <Link href="https://github.com" className="group" aria-label="GitHub">
+        <Link
+          href="https://github.com/Blobscan"
+          className="group"
+          aria-label="GitHub"
+        >
           <GitHubIcon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
         </Link>
       </div>
