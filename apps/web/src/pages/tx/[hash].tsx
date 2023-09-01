@@ -16,6 +16,7 @@ import {
   formatWei,
   formatBytes,
   formatNumber,
+  calculatePercentage,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -93,6 +94,10 @@ const Tx: NextPage = () => {
                   ),
                 },
                 {
+                  name: "Total Blob Size",
+                  value: formatBytes(totalBlobSize),
+                },
+                {
                   name: "Blob Fee",
                   value: (
                     <div className="flex gap-4">
@@ -120,8 +125,20 @@ const Tx: NextPage = () => {
                   value: formatNumber(blobGasUsed),
                 },
                 {
-                  name: "Total Blob Size",
-                  value: formatBytes(totalBlobSize),
+                  name: "Blob As Calldata Gas",
+                  value: (
+                    <div>
+                      {formatNumber(txData.blobAsCalldataGasUsed)} (
+                      <strong>
+                        {calculatePercentage(
+                          txData.blobAsCalldataGasUsed,
+                          blobGasUsed
+                        )}
+                        %{" "}
+                      </strong>{" "}
+                      times more expensive)
+                    </div>
+                  ),
                 },
               ]
             : undefined

@@ -11,6 +11,7 @@ import { api } from "~/api-client";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
+  calculatePercentage,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -87,16 +88,35 @@ const Block: NextPage = function () {
                   ),
                 },
                 {
-                  name: "Blob Gas Used",
-                  value: formatNumber(blockData.blobGasUsed),
+                  name: "Total Blob Size",
+                  value: formatBytes(totalBlobSize),
                 },
                 {
                   name: "Blob Gas Price",
                   value: formatWei(blockData.blobGasPrice),
                 },
                 {
-                  name: "Total Blob Size",
-                  value: formatBytes(totalBlobSize),
+                  name: "Total Blob Gas Used",
+                  value: formatNumber(blockData.blobGasUsed),
+                },
+                {
+                  name: "Total Blob As Calldata Gas",
+                  value: (
+                    <div>
+                      {formatNumber(blockData.blobAsCalldataGasUsed)}
+                      <span className="ml-1">
+                        (
+                        <strong>
+                          {calculatePercentage(
+                            blockData.blobAsCalldataGasUsed,
+                            blockData.blobGasUsed
+                          )}
+                          %
+                        </strong>{" "}
+                        times more expensive)
+                      </span>
+                    </div>
+                  ),
                 },
               ]
             : undefined
