@@ -16,6 +16,7 @@ export const navigation = [
     title: 'Introduction',
     links: [
       { title: 'Welcome to Blobscan', href: '/' },
+      { title: 'Features', href: '/docs/features' },
       { title: 'Installation', href: '/docs/installation' },
       { title: 'Environment variables', href: '/docs/environment' },
       { title: 'Cron jobs', href: '/docs/cron-jobs' },
