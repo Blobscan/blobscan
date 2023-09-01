@@ -234,7 +234,7 @@ exports[`Indexer route > indexData > should index new data if auth 5`] = `
   {
     "blobHash": "blobHash008",
     "blobStorage": "GOOGLE",
-    "dataReference": "1/ob/Ha/sh/obHash008.txt",
+    "dataReference": "7011893058/ob/Ha/sh/obHash008.txt",
   },
   {
     "blobHash": "blobHash008",
@@ -244,7 +244,7 @@ exports[`Indexer route > indexData > should index new data if auth 5`] = `
   {
     "blobHash": "blobHash009",
     "blobStorage": "GOOGLE",
-    "dataReference": "1/ob/Ha/sh/obHash009.txt",
+    "dataReference": "7011893058/ob/Ha/sh/obHash009.txt",
   },
   {
     "blobHash": "blobHash009",
@@ -254,7 +254,7 @@ exports[`Indexer route > indexData > should index new data if auth 5`] = `
   {
     "blobHash": "blobHash010",
     "blobStorage": "GOOGLE",
-    "dataReference": "1/ob/Ha/sh/obHash010.txt",
+    "dataReference": "7011893058/ob/Ha/sh/obHash010.txt",
   },
   {
     "blobHash": "blobHash010",

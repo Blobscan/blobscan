@@ -58,8 +58,8 @@ services:
   storage:
     image: fsouza/fake-gcs-server
     ports:
-      - "8080:8080"
-    command: ["-scheme", "http", "-port", "8080"]
+      - "4443:4443"
+    command: ["-scheme", "http", "-port", "4443"]
     volumes:
       - storage_data:/storage
 

@@ -10,23 +10,6 @@ import { getCaller, INDEXER_DATA } from "./helper";
 type UpdateSlotInput = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
 type IndexDataInput = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
 
-vi.mock("../src/env", () => ({
-  env: {
-    SECRET_KEY: "supersecret",
-  },
-}));
-
-vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
-  env: {
-    CHAIN_ID: 1,
-    POSTGRES_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_PROJECT_ID: "blobscan",
-    GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test",
-    GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:4443",
-  },
-}));
-
 describe("Indexer route", async () => {
   let caller;
   let callerWithClient;
