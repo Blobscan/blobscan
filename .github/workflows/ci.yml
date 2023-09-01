@@ -30,11 +30,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      storage:
-        image: fsouza/fake-gcs-server
-        ports:
-          - "8080:8080"
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -46,6 +41,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+
+      - name: Setup GCS emulator
+        uses: fsouza/fake-gcs-action@v0.4.1
+        with:
+          version: "1.37.2"
+          backend: memory
+          scheme: http
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -79,4 +81,4 @@ jobs:
       - name: Tests
         run: pnpm test
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci

@@ -15,7 +15,7 @@ export const getPrisma = () => {
 export const getStorage = () => {
   if (!storage) {
     storage = new Storage({
-      apiEndpoint: "http://localhost:8080",
+      apiEndpoint: "http://localhost:4443",
       projectId: "blobscan",
     });
   }
