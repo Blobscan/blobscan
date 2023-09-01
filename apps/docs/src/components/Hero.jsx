@@ -1,24 +1,22 @@
-import { Fragment } from 'react'
-import Image from 'next/image'
-import clsx from 'clsx'
-import { Highlight } from 'prism-react-renderer'
-
 import { Button } from '@/components/Button'
 import { HeroBackground } from '@/components/HeroBackground'
+import blurFuchsiaImage from '@/images/blur-fuchsia.png'
 import blurIndigoImage from '@/images/blur-indigo.png'
+import clsx from 'clsx'
+import Image from 'next/image'
+import { Highlight } from 'prism-react-renderer'
+import { Fragment } from 'react'
 
 const codeLanguage = 'javascript'
-const code = `export default {
-  strategy: 'predictive',
-  engine: {
-    cpus: 12,
-    backups: ['./storage/cache.wtf'],
-  },
-}`
+const code = `
+  const blob = await api.getByVersionedHash(blobHash)
+  await verifyData(blob.commitment, blobHash)
+  fs.writeFileSync("blob.json", blob.data)
+`
 
 const tabs = [
-  { name: 'blob-fetcher.js', isActive: true },
-  { name: 'package.json', isActive: false },
+  { name: 'fetcher.js', isActive: true },
+  { name: 'blob.json', isActive: false },
 ]
 
 function TrafficLightsIcon(props) {
@@ -78,7 +76,7 @@ export function Hero() {
               />
               <Image
                 className="absolute -bottom-40 -right-44"
-                src={blurIndigoImage}
+                src={blurFuchsiaImage}
                 alt=""
                 width={567}
                 height={567}
