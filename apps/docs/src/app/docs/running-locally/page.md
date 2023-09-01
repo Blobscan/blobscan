@@ -6,11 +6,10 @@ nextjs:
     description: How to run your own instance of Blobscan
 ---
 
-
 ## Requirements
 
-* Node.js 18+
-* [pnpm](https://pnpm.io/)
+- [Node.js 18+](https://nodejs.org/)
+- [pnpm](https://pnpm.io/)
 
 ## Installing dependencies
 

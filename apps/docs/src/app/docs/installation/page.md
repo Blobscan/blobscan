@@ -60,6 +60,10 @@ Docker will download the images and run them in containers. After initialization
 
 ### Kubernetes (advanced)
 
+{% callout title="You should know!" %}
+This is an advanced setup and requires knowledge of [Kubernetes](https://kubernetes.io/docs/tutorials/kubernetes-basics/) and [Helm](https://helm.sh/docs/).
+{% /callout %}
+
 We also provide Helm charts to ease deploying Blobscan into a Kubernetes cluster.
 
 ```shell
@@ -71,8 +75,8 @@ Check out the [blobscan-helm-charts](https://github.com/Blobscan/blobscan-helm-c
 
 ### Local environment
 
-Check out [Running locally](/running-locally).
+Check out [Running locally](/docs/running-locally).
 
 ## Cron jobs
 
-Check out [Cronjobs](/cronjobs).
+Check out [Cronjobs](/docs/cron-jobs).

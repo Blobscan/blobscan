@@ -5,7 +5,6 @@ import { Highlight } from 'prism-react-renderer'
 
 import { Button } from '@/components/Button'
 import { HeroBackground } from '@/components/HeroBackground'
-import blurCyanImage from '@/images/blur-cyan.png'
 import blurIndigoImage from '@/images/blur-indigo.png'
 
 const codeLanguage = 'javascript'
@@ -18,7 +17,7 @@ const code = `export default {
 }`
 
 const tabs = [
-  { name: 'cache-advance.config.js', isActive: true },
+  { name: 'blob-fetcher.js', isActive: true },
   { name: 'package.json', isActive: false },
 ]
 
@@ -40,7 +39,7 @@ export function Hero() {
           <div className="relative z-10 md:text-center lg:text-left">
             <Image
               className="absolute bottom-full right-full -mb-56 -mr-72 opacity-50"
-              src={blurCyanImage}
+              src={blurIndigoImage}
               alt=""
               width={530}
               height={530}
@@ -48,11 +47,12 @@ export function Hero() {
               priority
             />
             <div className="relative">
-              <p className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
-                Blobscan
+              <p className="inline bg-gradient-to-r from-fuchsia-200 via-primary-400 to-fuchsia-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
+                Explore all the blobs
               </p>
               <p className="mt-3 text-2xl tracking-tight text-slate-400">
-                First blockchain explorer to navigate and visualize EIP-4844 blobs.
+                The pioneer blockchain explorer dedicated to navigate and
+                visualize shard blob transactions.
               </p>
               <div className="mt-8 flex gap-4 md:justify-center lg:justify-start">
                 <Button href="https://blobscan.com/">Visit explorer</Button>
@@ -69,7 +69,7 @@ export function Hero() {
             <div className="relative">
               <Image
                 className="absolute -right-64 -top-64"
-                src={blurCyanImage}
+                src={blurIndigoImage}
                 alt=""
                 width={530}
                 height={530}
@@ -85,11 +85,11 @@ export function Hero() {
                 unoptimized
                 priority
               />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-sky-300 via-sky-300/70 to-blue-300 opacity-10 blur-lg" />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-sky-300 via-sky-300/70 to-blue-300 opacity-10" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-primary-300 via-primary-300/70 to-fuchsia-300 opacity-10 blur-lg" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-primary-300 via-primary-300/70 to-fuchsia-300 opacity-10" />
               <div className="relative rounded-2xl bg-[#0A101F]/80 ring-1 ring-white/10 backdrop-blur">
-                <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-sky-300/0" />
-                <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-blue-400/0 via-blue-400 to-blue-400/0" />
+                <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-primary-300/0 via-primary-300/70 to-primary-300/0" />
+                <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-fuchsia-400/0 via-fuchsia-400 to-fuchsia-400/0" />
                 <div className="pl-4 pt-4">
                   <TrafficLightsIcon className="h-2.5 w-auto stroke-slate-500/30" />
                   <div className="mt-4 flex space-x-2 text-xs">
@@ -99,7 +99,7 @@ export function Hero() {
                         className={clsx(
                           'flex h-6 rounded-full',
                           tab.isActive
-                            ? 'bg-gradient-to-r from-sky-400/30 via-sky-400 to-sky-400/30 p-px font-medium text-sky-300'
+                            ? 'bg-gradient-to-r from-primary-400/30 via-primary-400 to-primary-400/30 p-px font-medium text-primary-300'
                             : 'text-slate-500'
                         )}
                       >
