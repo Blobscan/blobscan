@@ -13,6 +13,6 @@ are password protected by a shared key (this is the `SECRET_KEY` environment var
 
 ---
 
-TODO: Fix link to image
-
-![Swagger ui screenshot](/docs/api/swagger-ui.png)
+{% callout title="Swagger UI" %}
+[Explorer the API documentation.](https://api.blobscan.com/)
+{% /callout %}
