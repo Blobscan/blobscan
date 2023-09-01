@@ -19,7 +19,7 @@
     "lint:fix": "turbo lint:fix && manypkg fix",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:dev": "turbo test:setup && vitest",
+    "test:dev": "pnpm test:setup && vitest",
     "test:setup": "turbo test:setup",
     "type-check": "turbo type-check",
     "backfill:overall": "ts-node  scripts/backfill-all-overall-stats.ts",

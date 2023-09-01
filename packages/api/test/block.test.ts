@@ -1,12 +1,16 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
-import { getCaller } from "./helpers";
+import { getCaller } from "./helper";
 
 describe("Block route", async () => {
-  const caller = await getCaller();
+  let caller;
+
+  beforeAll(async () => {
+    caller = await getCaller();
+  });
 
   describe("getAll", () => {
     it("should get all", async () => {

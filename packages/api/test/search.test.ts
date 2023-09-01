@@ -1,12 +1,17 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
-import { getCaller } from "./helpers";
+import { getCaller } from "./helper";
+
+type Input = inferProcedureInput<AppRouter["search"]["byTerm"]>;
 
 describe("Search route", async () => {
-  const caller = await getCaller();
-  type Input = inferProcedureInput<AppRouter["search"]["byTerm"]>;
+  let caller;
+
+  beforeAll(async () => {
+    caller = await getCaller();
+  });
 
   describe("byTerm", () => {
     it("should search by address", async () => {

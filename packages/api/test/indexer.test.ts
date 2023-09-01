@@ -1,12 +1,14 @@
 import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
-import exp from "constants";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { prisma } from "@blobscan/db";
 
 import type { AppRouter } from "../src/root";
-import { getCaller, INDEXER_DATA } from "./helpers";
+import { getCaller, INDEXER_DATA, getMockEnv } from "./helper";
+
+type UpdateSlotInput = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
+type IndexDataInput = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
 
 vi.mock("../src/env", () => ({
   env: {
@@ -14,20 +16,16 @@ vi.mock("../src/env", () => ({
   },
 }));
 
-vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
-  env: {
-    CHAIN_ID: 1,
-    POSTGRES_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_PROJECT_ID: "blobscan",
-    GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test",
-    GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:8080",
-  },
-}));
+vi.mock("@blobscan/blob-storage-manager/src/env", () => getMockEnv());
 
 describe("Indexer route", async () => {
-  const caller = await getCaller();
-  const callerWithClient = await getCaller({ withClient: true });
+  let caller;
+  let callerWithClient;
+
+  beforeAll(async () => {
+    caller = await getCaller();
+    callerWithClient = await getCaller({ withClient: true });
+  });
 
   describe("getSlot", () => {
     it("should return the current slot", async () => {
@@ -39,8 +37,7 @@ describe("Indexer route", async () => {
 
   describe("updateSlot", () => {
     it("should not update the slot if not auth", async () => {
-      type Input = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
-      const input: Input = {
+      const input: UpdateSlotInput = {
         slot: 110,
       };
 
@@ -50,8 +47,7 @@ describe("Indexer route", async () => {
     });
 
     it("should update the slot if auth", async () => {
-      type Input = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
-      const input: Input = {
+      const input: UpdateSlotInput = {
         slot: 110,
       };
 
@@ -65,8 +61,7 @@ describe("Indexer route", async () => {
 
   describe("indexData", () => {
     it("should index new data if auth", async () => {
-      type Input = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
-      const input: Input = INDEXER_DATA;
+      const input: IndexDataInput = INDEXER_DATA;
 
       await callerWithClient.indexer.indexData(input);
 

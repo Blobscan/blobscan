@@ -1,12 +1,19 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { TRPCError } from "@trpc/server";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
-import { getCaller } from "./helpers";
+import { getCaller } from "./helper";
+
+type GetAllInput = inferProcedureInput<AppRouter["tx"]["getAll"]>;
+type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHash"]>;
+type GetByAddressInput = inferProcedureInput<AppRouter["tx"]["getByAddress"]>;
 
 describe("Transaction route", async () => {
-  const caller = await getCaller();
+  let caller;
+
+  beforeAll(async () => {
+    caller = await getCaller();
+  });
 
   describe("getAll", () => {
     it("should get all", async () => {
@@ -15,8 +22,7 @@ describe("Transaction route", async () => {
     });
 
     it("should get all with pagination", async () => {
-      type Input = inferProcedureInput<AppRouter["tx"]["getAll"]>;
-      const input: Input = {
+      const input: GetAllInput = {
         p: 2,
         ps: 2,
       };
@@ -28,8 +34,7 @@ describe("Transaction route", async () => {
 
   describe("getByHash", () => {
     it("should get by hash", async () => {
-      type Input = inferProcedureInput<AppRouter["tx"]["getByHash"]>;
-      const input: Input = {
+      const input: GetByHashInput = {
         hash: "txHash001",
       };
 
@@ -42,19 +47,15 @@ describe("Transaction route", async () => {
         caller.tx.getByHash({
           hash: "nonExistingHash",
         })
-      ).rejects.toThrow(
-        new TRPCError({
-          code: "NOT_FOUND",
-          message: `No tx with hash 'nonExistingHash'`,
-        })
+      ).rejects.toMatchInlineSnapshot(
+        "[TRPCError: No tx with hash 'nonExistingHash']"
       );
     });
   });
 
   describe("getByAddress", () => {
     it("should get by address", async () => {
-      type Input = inferProcedureInput<AppRouter["tx"]["getByAddress"]>;
-      const input: Input = {
+      const input: GetByAddressInput = {
         address: "address2",
       };
 
@@ -63,8 +64,7 @@ describe("Transaction route", async () => {
     });
 
     it("should get by address with pagination", async () => {
-      type Input = inferProcedureInput<AppRouter["tx"]["getByAddress"]>;
-      const input: Input = {
+      const input: GetByAddressInput = {
         p: 1,
         ps: 1,
         address: "address4",

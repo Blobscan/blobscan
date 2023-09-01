@@ -4,10 +4,19 @@ import type {
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
-import type { TRPCContext } from "../../src/context";
-import { createTRPCContext } from "../../src/context";
-import { createTRPCInnerContext } from "../../src/context";
-import { appRouter } from "../../src/root";
+import type { TRPCContext } from "../src/context";
+import { createTRPCContext } from "../src/context";
+import { createTRPCInnerContext } from "../src/context";
+import { appRouter } from "../src/root";
+
+export const getMockEnv = () => ({
+  CHAIN_ID: 1,
+  POSTGRES_STORAGE_ENABLED: true,
+  GOOGLE_STORAGE_ENABLED: true,
+  GOOGLE_STORAGE_PROJECT_ID: "blobscan",
+  GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test",
+  GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:8000",
+});
 
 export async function getCaller({
   withClient = false,

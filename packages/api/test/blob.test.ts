@@ -1,23 +1,22 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { TRPCError } from "@trpc/server";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import type { AppRouter } from "../src/root";
-import { getCaller } from "./helpers";
+import { getCaller, getMockEnv } from "./helper";
 
-vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
-  env: {
-    CHAIN_ID: 1,
-    POSTGRES_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_PROJECT_ID: "blobscan",
-    GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test",
-    GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:8080",
-  },
-}));
+type GetAllInput = inferProcedureInput<AppRouter["blob"]["getAll"]>;
+type GetByHashInput = inferProcedureInput<
+  AppRouter["blob"]["getByVersionedHash"]
+>;
+
+vi.mock("@blobscan/blob-storage-manager/src/env", () => getMockEnv());
 
 describe("Blob route", async () => {
-  const caller = await getCaller();
+  let caller;
+
+  beforeAll(async () => {
+    caller = await getCaller();
+  });
 
   describe("getAll", () => {
     it("should get all", async () => {
@@ -26,8 +25,7 @@ describe("Blob route", async () => {
     });
 
     it("should get all with pagination", async () => {
-      type Input = inferProcedureInput<AppRouter["blob"]["getAll"]>;
-      const input: Input = {
+      const input: GetAllInput = {
         p: 2,
         ps: 2,
       };
@@ -39,8 +37,7 @@ describe("Blob route", async () => {
 
   describe("getByVersionedHash", () => {
     it("should get by versioned hash", async () => {
-      type Input = inferProcedureInput<AppRouter["blob"]["getByVersionedHash"]>;
-      const input: Input = {
+      const input: GetByHashInput = {
         versionedHash: "blobHash004",
       };
 
@@ -49,8 +46,7 @@ describe("Blob route", async () => {
     });
 
     it("should get by versioned hash from POSTGRES", async () => {
-      type Input = inferProcedureInput<AppRouter["blob"]["getByVersionedHash"]>;
-      const input: Input = {
+      const input: GetByHashInput = {
         versionedHash: "blobHash005",
       };
 
@@ -59,8 +55,7 @@ describe("Blob route", async () => {
     });
 
     it("should get by versioned hash from GOOGLE", async () => {
-      type Input = inferProcedureInput<AppRouter["blob"]["getByVersionedHash"]>;
-      const input: Input = {
+      const input: GetByHashInput = {
         versionedHash: "blobHash001",
       };
 
@@ -73,11 +68,8 @@ describe("Blob route", async () => {
         caller.blob.getByVersionedHash({
           versionedHash: "nonExistingHash",
         })
-      ).rejects.toThrow(
-        new TRPCError({
-          code: "NOT_FOUND",
-          message: `No blob with hash nonExistingHash found`,
-        })
+      ).rejects.toMatchInlineSnapshot(
+        "[TRPCError: No blob with hash nonExistingHash found]"
       );
     });
 
@@ -86,8 +78,8 @@ describe("Blob route", async () => {
         caller.blob.getByVersionedHash({
           versionedHash: "blobHash003",
         })
-      ).rejects.toThrow(
-        new Error("Failed to get blob from any of the storages: ")
+      ).rejects.toMatchInlineSnapshot(
+        "[TRPCError: Failed to get blob from any of the storages: ]"
       );
     });
   });
