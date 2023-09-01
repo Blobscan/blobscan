@@ -38,7 +38,6 @@ export const Logomark = ({ className = '' }) => {
     return <div className={className} />
   }
 
-  console.log('here')
   return (
     <Link href="/">
       <NextImage
