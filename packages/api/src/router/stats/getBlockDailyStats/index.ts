@@ -44,11 +44,11 @@ export const getBlockDailyStats = timeFrameProcedure
             transformedStats.totalBlocks.push(totalBlocks);
             transformedStats.totalBlobGasUsed.push(Number(totalBlobGasUsed));
             transformedStats.totalBlobAsCalldataGasUsed.push(
-              totalBlobAsCalldataGasUsed
+              Number(totalBlobAsCalldataGasUsed)
             );
-            transformedStats.totalBlobFees.push(totalBlobFee);
+            transformedStats.totalBlobFees.push(Number(totalBlobFee));
             transformedStats.totalBlobAsCalldataFees.push(
-              totalBlobAsCalldataFee
+              Number(totalBlobAsCalldataFee)
             );
             transformedStats.avgBlobFees.push(avgBlobFee);
             transformedStats.avgBlobAsCalldataFees.push(avgBlobAsCalldataFee);

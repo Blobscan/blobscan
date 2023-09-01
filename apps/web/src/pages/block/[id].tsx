@@ -11,7 +11,6 @@ import { api } from "~/api-client";
 import {
   buildBlockExternalUrl,
   buildSlotExternalUrl,
-  calculatePercentage,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -107,9 +106,11 @@ const Block: NextPage = function () {
                       <span className="ml-1">
                         (
                         <strong>
-                          {calculatePercentage(
-                            blockData.blobAsCalldataGasUsed,
-                            blockData.blobGasUsed
+                          {formatNumber(
+                            blockData.blobAsCalldataGasUsed /
+                              blockData.blobGasUsed,
+                            "standard",
+                            { maximumFractionDigits: 2 }
                           )}
                           %
                         </strong>{" "}

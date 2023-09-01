@@ -17,12 +17,15 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
   > = {
-    ...buildTimeSeriesOptions(days, {
-      yAxisTooltip: (value) =>
-        formatWei(value, {
-          displayFullAmount: true,
-        }),
-      yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
+        yAxisTooltip: (value) =>
+          formatWei(value, {
+            displayFullAmount: true,
+          }),
+        yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+      },
     }),
     series: [
       {

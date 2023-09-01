@@ -1,8 +1,8 @@
 import { formatNumber } from "./number";
 
-const MIN_BLOB_GASPRICE = BigInt(1);
-const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
-export const GAS_PER_BLOB = BigInt(2 ** 17); // 131072
+const MIN_BLOB_GASPRICE = 1;
+const BLOB_GASPRICE_UPDATE_FRACTION = 3_338_477;
+export const GAS_PER_BLOB = 2 ** 17; // 131072
 
 type EtherUnit = "wei" | "gwei" | "ether";
 

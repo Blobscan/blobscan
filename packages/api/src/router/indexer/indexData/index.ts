@@ -45,11 +45,11 @@ function createDBBlock(
   {
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataInput,
-  dbTxs: { blobAsCalldataGasUsed: bigint }[]
+  dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
 ): Omit<Block, OmittableFields> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
     (acc, tx) => acc + tx.blobAsCalldataGasUsed,
-    BigInt(0)
+    0
   );
 
   return {

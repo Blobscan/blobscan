@@ -47,7 +47,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           },
         },
         {
-          name: "Hypothetical Calldata Equivalent Gas",
+          name: "Equivalent Blob As Calldata Gas",
           data: blobAsCalldataGasUsed,
           stack: "gas",
           type: "line",

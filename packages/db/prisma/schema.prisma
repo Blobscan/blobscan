@@ -82,10 +82,10 @@ model Block {
   number                Int      @unique
   timestamp             DateTime @unique
   slot                  Int      @unique
-  blobGasUsed           BigInt   @map("blob_gas_used")
-  excessBlobGas         BigInt   @map("excess_blob_gas")
+  blobGasUsed           Int      @map("blob_gas_used")
+  excessBlobGas         Int      @map("excess_blob_gas")
   blobGasPrice          BigInt   @map("blob_gas_price")
-  blobAsCalldataGasUsed BigInt   @map("blob_as_calldata_gas_used")
+  blobAsCalldataGasUsed Int      @map("blob_as_calldata_gas_used")
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
@@ -105,7 +105,7 @@ model Transaction {
   blockNumber           Int      @map("block_number")
   maxFeePerBlobGas      BigInt   @map("max_fee_per_blob_gas")
   gasPrice              BigInt   @map("gas_price")
-  blobAsCalldataGasUsed BigInt   @map("blob_as_calldata_gas_used")
+  blobAsCalldataGasUsed Int      @map("blob_as_calldata_gas_used")
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
