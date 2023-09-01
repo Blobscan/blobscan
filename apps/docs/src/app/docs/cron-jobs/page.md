@@ -8,7 +8,7 @@ nextjs:
 
 Blobscan requires two periodic tasks in order to recalculate the metrics and block statistics.
 
-There are multiple ways out there to run periodic jobs. You can simply use `crontab` for that:
+There are multiple ways out there to run periodic jobs. You can simply use [crontab](https://linux.die.net/man/5/crontab) for that:
 
 ```shell
 crontab -e

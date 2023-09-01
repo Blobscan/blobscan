@@ -2,7 +2,7 @@
 title: Welcome to Blobscan
 ---
 
-Blobscan is the first blockchain explorer that helps to navigate and visualize those [EIP-4844](https://www.eip4844.com) blobs, providing the necessary infrastructure to scale Ethereum.
+Blobscan is a blockchain explorer for those [EIP-4844](https://www.eip4844.com) blobs, providing the necessary infrastructure to scale Ethereum.
 
 The architecture of Blobscan has the following components:
 
@@ -17,11 +17,11 @@ and later [in 2023](https://blog.ethereum.org/2023/02/14/layer-2-grants-roundup#
 
 {% quick-link title="Installation" icon="installation" href="/docs/installation" description="Step-by-step guides to configuring and running Blobscan." /%}
 
-{% quick-link title="Running locally" icon="installation" href="/docs/running-locally" description="Set up your local environment and run Blobscan." /%}
+{% quick-link title="Running locally" icon="plugins" href="/docs/running-locally" description="Set up your local environment and run Blobscan." /%}
 
 {% quick-link title="Architecture guide" icon="presets" href="/docs/architecture-guide" description="Learn how the internals work and contribute." /%}
 
-{% quick-link title="Troubleshooting" icon="presets" href="/docs/troubleshooting" description="Find how to solve common issues." /%}
+{% quick-link title="Troubleshooting" icon="theming" href="/docs/troubleshooting" description="Find how to solve common issues." /%}
 
 {% /quick-links %}
 
@@ -29,9 +29,9 @@ and later [in 2023](https://blog.ethereum.org/2023/02/14/layer-2-grants-roundup#
 
 ## Submit an issue
 
-Found a bug? Feel free to open an issue in our issue tracker at GitHub.
-
-[https://github.com/Blobscan/blobscan/issues](https://github.com/Blobscan/blobscan/issues)
+{% callout title="Found a bug?" %}
+[Feel free to open an issue in our issue tracker at GitHub.](https://github.com/Blobscan/blobscan/issues)
+{% /callout %}
 
 ## Join the community
 
