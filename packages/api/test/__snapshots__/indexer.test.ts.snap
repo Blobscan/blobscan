@@ -2,7 +2,7 @@
 
 exports[`Indexer route > indexData > should index new data if auth 1`] = `
 {
-  "blobAsCalldataGasUsed": 1104n,
+  "blobAsCalldataGasUsed": 608n,
   "blobGasPrice": 1n,
   "blobGasUsed": 10000n,
   "excessBlobGas": 5000n,
@@ -11,20 +11,6 @@ exports[`Indexer route > indexData > should index new data if auth 1`] = `
   "slot": 103,
   "timestamp": 2021-08-29T17:12:54.000Z,
   "transactions": [
-    {
-      "blobs": [
-        {
-          "blob": {
-            "size": 31,
-          },
-          "blobHash": "blobHash008",
-          "index": 0,
-        },
-      ],
-      "fromId": "address9",
-      "hash": "txHash008",
-      "toId": "address3",
-    },
     {
       "blobs": [
         {
@@ -83,9 +69,6 @@ exports[`Indexer route > indexData > should index new data if auth 2`] = `
   {
     "address": "address8",
   },
-  {
-    "address": "address9",
-  },
 ]
 `;
 
@@ -114,10 +97,6 @@ exports[`Indexer route > indexData > should index new data if auth 3`] = `
   {
     "blockNumber": 1002,
     "hash": "txHash005",
-  },
-  {
-    "blockNumber": 1003,
-    "hash": "txHash008",
   },
   {
     "blockNumber": 1003,
@@ -153,7 +132,7 @@ exports[`Indexer route > indexData > should index new data if auth 4`] = `
   {
     "commitment": "commitment003",
     "firstBlockNumber": 1001,
-    "size": 1200,
+    "size": 10,
     "versionedHash": "blobHash003",
   },
   {
@@ -167,12 +146,6 @@ exports[`Indexer route > indexData > should index new data if auth 4`] = `
     "firstBlockNumber": 1002,
     "size": 1400,
     "versionedHash": "blobHash005",
-  },
-  {
-    "commitment": "commitment008",
-    "firstBlockNumber": 1003,
-    "size": 31,
-    "versionedHash": "blobHash008",
   },
   {
     "commitment": "commitment009",
@@ -232,16 +205,6 @@ exports[`Indexer route > indexData > should index new data if auth 5`] = `
     "dataReference": "blobHash005",
   },
   {
-    "blobHash": "blobHash008",
-    "blobStorage": "GOOGLE",
-    "dataReference": "7011893058/ob/Ha/sh/obHash008.txt",
-  },
-  {
-    "blobHash": "blobHash008",
-    "blobStorage": "POSTGRES",
-    "dataReference": "blobHash008",
-  },
-  {
     "blobHash": "blobHash009",
     "blobStorage": "GOOGLE",
     "dataReference": "7011893058/ob/Ha/sh/obHash009.txt",
@@ -295,11 +258,6 @@ exports[`Indexer route > indexData > should index new data if auth 6`] = `
     "blobHash": "blobHash005",
     "index": 0,
     "txHash": "txHash005",
-  },
-  {
-    "blobHash": "blobHash008",
-    "index": 0,
-    "txHash": "txHash008",
   },
   {
     "blobHash": "blobHash009",

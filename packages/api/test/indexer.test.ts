@@ -2,10 +2,12 @@ import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import blobStorageManager from "@blobscan/blob-storage-manager/src/__mocks__/BlobStorageManager";
 import { prisma } from "@blobscan/db";
 
 import type { AppRouter } from "../src/root";
-import { getCaller, INDEXER_DATA } from "./helper";
+import { INDEXER_DATA } from "./fixtures";
+import { getCaller, getIndexedData } from "./helper";
 
 type UpdateSlotInput = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
 type IndexDataInput = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
@@ -13,10 +15,15 @@ type IndexDataInput = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
 describe("Indexer route", async () => {
   let caller;
   let callerWithClient;
+  let callerWithMockBlobStorageManager;
 
   beforeAll(async () => {
     caller = await getCaller();
     callerWithClient = await getCaller({ withClient: true });
+    callerWithMockBlobStorageManager = await getCaller({
+      withClient: true,
+      mockBlobStorageManager: true,
+    });
   });
 
   describe("getSlot", () => {
@@ -75,72 +82,8 @@ describe("Indexer route", async () => {
 
       await callerWithClient.indexer.indexData(input);
 
-      const [block, addresses, txs, blobs, storageRefs, blobsOnTransactions] =
-        await Promise.all([
-          caller.block.getByBlockNumber({
-            number: 1003,
-          }),
-          prisma.address.findMany({
-            select: {
-              address: true,
-            },
-            orderBy: {
-              address: "asc",
-            },
-          }),
-          prisma.transaction.findMany({
-            select: {
-              hash: true,
-              blockNumber: true,
-            },
-            orderBy: {
-              hash: "asc",
-            },
-          }),
-          prisma.blob.findMany({
-            select: {
-              versionedHash: true,
-              commitment: true,
-              size: true,
-              firstBlockNumber: true,
-            },
-            orderBy: {
-              versionedHash: "asc",
-            },
-          }),
-          prisma.blobDataStorageReference.findMany({
-            select: {
-              blobHash: true,
-              blobStorage: true,
-              dataReference: true,
-            },
-            orderBy: {
-              blobHash: "asc",
-            },
-          }),
-          prisma.blobsOnTransactions.findMany({
-            select: {
-              blobHash: true,
-              txHash: true,
-              index: true,
-            },
-            orderBy: {
-              blobHash: "asc",
-            },
-          }),
-        ]);
-
-      storageRefs.sort((a, b) => {
-        // First, compare by blobHash
-        if (a.blobHash < b.blobHash) return -1;
-        if (a.blobHash > b.blobHash) return 1;
-
-        // If blobHash is the same, compare by blobStorage
-        if (a.blobStorage < b.blobStorage) return -1;
-        if (a.blobStorage > b.blobStorage) return 1;
-
-        return 0; // If everything is the same
-      });
+      const { block, addresses, txs, blobs, storageRefs, blobsOnTransactions } =
+        await getIndexedData(caller);
 
       expect(block).toMatchSnapshot();
       expect(addresses).toMatchSnapshot();
@@ -149,11 +92,38 @@ describe("Indexer route", async () => {
       expect(storageRefs).toMatchSnapshot();
       expect(blobsOnTransactions).toMatchSnapshot();
 
-      expect(addresses).toHaveLength(9);
-      expect(txs).toHaveLength(9);
-      expect(blobs).toHaveLength(9);
-      expect(storageRefs).toHaveLength(14);
-      expect(blobsOnTransactions).toHaveLength(9);
+      expect(addresses).toHaveLength(8);
+      expect(txs).toHaveLength(8);
+      expect(blobs).toHaveLength(8);
+      expect(storageRefs).toHaveLength(12);
+      expect(blobsOnTransactions).toHaveLength(8);
+    });
+
+    it("should store new unique blobs correctly", async () => {
+      blobStorageManager.storeBlob.mockResolvedValue({
+        references: [
+          {
+            reference: "blobHash",
+            storage: "POSTGRES",
+          },
+        ],
+        errors: [],
+      });
+
+      await callerWithMockBlobStorageManager.indexer.indexData(INDEXER_DATA);
+
+      // only 2 are new unique blobs, 1 is repeated
+      expect(blobStorageManager.storeBlob).toHaveBeenCalledTimes(2);
+    });
+
+    it("should be idempotent", async () => {
+      const outputBefore = await callerWithClient.indexer.indexData(
+        INDEXER_DATA
+      );
+      const outputAfter = await callerWithClient.indexer.indexData(
+        INDEXER_DATA
+      );
+      expect(outputBefore).toEqual(outputAfter);
     });
   });
 });
