@@ -6,10 +6,6 @@ nextjs:
     description: Blobscan features
 ---
 
-Blobscan provides a comprehensive suite of tools for exploring and analyzing blobs, blocks, and transactions.
-
-## Features
-
 - **Search Capabilities** - Look up blobs by their versioned hash, kzg commitment, transaction hash, slot or block number, along with associated transactions and blocks.
 - **Blob explorer** - Delve into blobs and examine their content. Decode them in various formats.
 - **Blob persistence** - For consistent availability even after pruning from the chain, blobs are stored in both decentralized (Ethereum Swarm) and centralized systems (Google Cloud Storage).
