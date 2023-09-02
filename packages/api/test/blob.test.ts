@@ -1,5 +1,5 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
 import { getCaller } from "./helper";

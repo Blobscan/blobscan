@@ -67,7 +67,7 @@ exports[`Blob route > getByVersionedHash > should get by versioned hash 1`] = `
     },
     {
       "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash004.txt",
+      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
     },
   ],
   "firstBlock": {
@@ -86,7 +86,7 @@ exports[`Blob route > getByVersionedHash > should get by versioned hash from GOO
   "dataStorageReferences": [
     {
       "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash001.txt",
+      "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
     },
     {
       "blobStorage": "SWARM",

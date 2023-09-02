@@ -48,6 +48,7 @@ jobs:
           version: "1.37.2"
           backend: memory
           scheme: http
+          data: ./packages/test/src/fixtures/storage
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -85,7 +86,7 @@ jobs:
           SECRET_KEY: supersecret
           POSTGRES_STORAGE_ENABLED: true
           GOOGLE_STORAGE_ENABLED: true
-          GOOGLE_STORAGE_PROJECT_ID: blobscan
-          GOOGLE_STORAGE_BUCKET: blobscan-test
+          GOOGLE_STORAGE_PROJECT_ID: blobscan-test-project
+          GOOGLE_STORAGE_BUCKET: blobscan-test-bucket
           GOOGLE_STORAGE_API_ENDPOINT: http://localhost:4443
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci

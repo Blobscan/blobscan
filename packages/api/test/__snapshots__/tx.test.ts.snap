@@ -9,54 +9,6 @@ exports[`Transaction route > getAll > should get all 1`] = `
       "blobs": [
         {
           "blob": {
-            "commitment": "commitment004",
-            "size": 1300,
-          },
-          "blobHash": "blobHash004",
-          "index": 0,
-        },
-      ],
-      "block": {
-        "blobGasPrice": 22n,
-        "excessBlobGas": 15000n,
-        "timestamp": 2023-08-26T12:00:00.000Z,
-      },
-      "blockNumber": 1002,
-      "fromId": "address1",
-      "gasPrice": 10n,
-      "hash": "txHash004",
-      "maxFeePerBlobGas": 100n,
-      "toId": "address3",
-    },
-    {
-      "blobAsCalldataGasUsed": 1000n,
-      "blobs": [
-        {
-          "blob": {
-            "commitment": "commitment005",
-            "size": 1400,
-          },
-          "blobHash": "blobHash005",
-          "index": 0,
-        },
-      ],
-      "block": {
-        "blobGasPrice": 22n,
-        "excessBlobGas": 15000n,
-        "timestamp": 2023-08-26T12:00:00.000Z,
-      },
-      "blockNumber": 1002,
-      "fromId": "address2",
-      "gasPrice": 10n,
-      "hash": "txHash005",
-      "maxFeePerBlobGas": 100n,
-      "toId": "address4",
-    },
-    {
-      "blobAsCalldataGasUsed": 1000n,
-      "blobs": [
-        {
-          "blob": {
             "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
             "size": 1500,
           },
@@ -147,6 +99,54 @@ exports[`Transaction route > getAll > should get all 1`] = `
       "hash": "txHash003",
       "maxFeePerBlobGas": 120n,
       "toId": "address6",
+    },
+    {
+      "blobAsCalldataGasUsed": 1000n,
+      "blobs": [
+        {
+          "blob": {
+            "commitment": "commitment004",
+            "size": 1300,
+          },
+          "blobHash": "blobHash004",
+          "index": 0,
+        },
+      ],
+      "block": {
+        "blobGasPrice": 22n,
+        "excessBlobGas": 15000n,
+        "timestamp": 2023-08-26T12:00:00.000Z,
+      },
+      "blockNumber": 1002,
+      "fromId": "address1",
+      "gasPrice": 10n,
+      "hash": "txHash004",
+      "maxFeePerBlobGas": 100n,
+      "toId": "address3",
+    },
+    {
+      "blobAsCalldataGasUsed": 1000n,
+      "blobs": [
+        {
+          "blob": {
+            "commitment": "commitment005",
+            "size": 1400,
+          },
+          "blobHash": "blobHash005",
+          "index": 0,
+        },
+      ],
+      "block": {
+        "blobGasPrice": 22n,
+        "excessBlobGas": 15000n,
+        "timestamp": 2023-08-26T12:00:00.000Z,
+      },
+      "blockNumber": 1002,
+      "fromId": "address2",
+      "gasPrice": 10n,
+      "hash": "txHash005",
+      "maxFeePerBlobGas": 100n,
+      "toId": "address4",
     },
   ],
 }

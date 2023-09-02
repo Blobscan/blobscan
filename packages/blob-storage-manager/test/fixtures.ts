@@ -15,7 +15,7 @@ export const GOOGLE_STORAGE_CONFIG = {
   projectId: "mock-project",
   serviceKey:
     "ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiYmxvYnNjYW4tMzc5MjE4IiwKICAiY2xpZW50X2VtYWlsIjogImJsb2JzY2FuLXMzLXN0YWdpbmdAYmxvYnNjYW4tMzc5MjE4LmlhbS5nc2VydmljZWFjY291bnQuY29tIgp9Cg==",
-  apiEndpoint: "http://localhost:5050",
+  apiEndpoint: "http://localhost:4443",
 };
 export const SWARM_STORAGE_CONFIG = {
   beeDebugEndpoint: "http://localhost:1635",

@@ -1,8 +1,7 @@
-import { getPrisma, getStorage } from "./services";
+import { getPrisma } from "./services";
 
 export default async () => {
   const prisma = getPrisma();
-  const storage = getStorage();
 
   await prisma.$transaction([
     prisma.blockchainSyncState.deleteMany(),
@@ -20,11 +19,4 @@ export default async () => {
     prisma.address.deleteMany(),
     prisma.block.deleteMany(),
   ]);
-
-  const [buckets] = await storage.getBuckets();
-
-  if (buckets.length > 0) {
-    await storage.bucket("blobscan-test").deleteFiles();
-    await storage.bucket("blobscan-test").delete();
-  }
 };

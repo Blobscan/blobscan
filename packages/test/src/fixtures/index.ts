@@ -1,6 +1,6 @@
 import type { BlobStorage } from "@prisma/client";
 
-import data from "./data.json";
+import data from "./postgres/data.json";
 
 type BlobDataStorageReferenceFixture = {
   blobHash: string;

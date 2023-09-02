@@ -59,12 +59,15 @@ services:
     image: fsouza/fake-gcs-server
     ports:
       - "4443:4443"
-    command: ["-scheme", "http", "-port", "4443"]
+    command: ["-scheme", "http", "-port", "4443", "-data", "/data"]
     volumes:
       - storage_data:/storage
+      - type: bind
+        source: ./packages/test/src/fixtures/storage
+        target: /data
 
   postgres:
-    image: postgres:14.1-alpine
+    image: postgres:14
     ports:
       - 5432:5432
     volumes:

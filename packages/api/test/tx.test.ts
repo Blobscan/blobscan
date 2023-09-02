@@ -18,6 +18,7 @@ describe("Transaction route", async () => {
   describe("getAll", () => {
     it("should get all", async () => {
       const result = await caller.tx.getAll({});
+      result.transactions.sort((a, b) => a.hash.localeCompare(b.hash));
       expect(result).toMatchSnapshot();
     });
 
