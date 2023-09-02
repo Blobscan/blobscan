@@ -6,7 +6,7 @@ Blobscan is a blockchain explorer for those [EIP-4844](https://www.eip4844.com) 
 
 The architecture of Blobscan has the following components:
 
-- An [indexer](https://github.com/Blobscan/blobscan-indexer.rs) that communicates with consensus and execution layer clients, fetches blob information and stores it in a PostgreSQL database
+- An [indexer](/docs/indexer) that communicates with consensus and execution layer clients, fetches blob information and stores it in a PostgreSQL database
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
 

@@ -35,6 +35,7 @@ export const navigation = [
     title: 'Development',
     links: [
       { title: 'Running locally', href: '/docs/running-locally' },
+      { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Testing', href: '/docs/testing' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],
