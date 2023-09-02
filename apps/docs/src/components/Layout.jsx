@@ -37,6 +37,7 @@ export const navigation = [
       { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Testing', href: '/docs/testing' },
+      { title: 'Architecture', href: '/docs/architecture' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],
   },
@@ -51,7 +52,6 @@ export const navigation = [
     title: 'Contributing',
     links: [
       { title: 'How to contribute', href: '/docs/how-to-contribute' },
-      { title: 'Architecture guide', href: '/docs/architecture-guide' },
       { title: 'Design principles', href: '/docs/design-principles' },
     ],
   },
