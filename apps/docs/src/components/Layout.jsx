@@ -34,10 +34,10 @@ export const navigation = [
   {
     title: 'Development',
     links: [
+      { title: 'Codebase Overview', href: '/docs/codebase-overview' },
       { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Testing', href: '/docs/testing' },
-      { title: 'Architecture', href: '/docs/architecture' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],
   },
