@@ -36,7 +36,7 @@ Blobscan is composed of the following apps:
 
 ### Packages
 
-Here you canfind all the shared packages used by the apps is a list of all the packages used by the Blobscan apps:
+Here you can find all the shared packages used by the apps:
 
 | Package                                                                                                            | Description                                                                                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
