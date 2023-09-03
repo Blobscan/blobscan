@@ -9,31 +9,30 @@ nextjs:
 Below you can find a list of supported variables.
 These are listed by category:
 
-* [General](#general)
-* [Network](#network)
-* [Blob storages](#blob-storages)
-* [Indexer](#indexer)
-* [Telemetry](#telemetry)
-
+- [General](#general)
+- [Network](#network)
+- [Blob storages](#blob-storages)
+- [Indexer](#indexer)
+- [Telemetry](#telemetry)
 
 ## General
 
-| Variable                        | Description                           | Required  | Default value           |
-| ------------------------------- | ------------------------------------- | --------- | ----------------------- |
-| `DATABASE_URL`                  | Postgresql database URI               | Yes       | (empty)                 |
-| `SECRET_KEY`                    | Shared key used for JWT               | Yes       | (empty)                 |
-| `BLOBSCAN_API_PORT`             | Blobscan API will listen on this port | No        | `3001`                  |
+| Variable            | Description                           | Required | Default value |
+| ------------------- | ------------------------------------- | -------- | ------------- |
+| `DATABASE_URL`      | Postgresql database URI               | Yes      | (empty)       |
+| `SECRET_KEY`        | Shared key used for JWT               | Yes      | (empty)       |
+| `BLOBSCAN_API_PORT` | Blobscan API will listen on this port | No       | `3001`        |
 
 ## Network
 
-| Variable                        | Description                           | Required | Default value           |
-| ------------------------------- | ------------------------------------- | -------- | ----------------------- |
-| `BEACON_NODE_ENDPOINT`          | Beacon node endpoint                  | Yes      | `http://localhost:3500` |
-| `EXECUTION_NODE_ENDPOINT`       | Execution node endpoint               | Yes      | (empty)                 |
-| `CHAIN_ID`                      | EVM chain id                          | Yes      | `1`                     |
-| `NEXT_PUBLIC_NETWORK_NAME`      | Network name                          | Yes      | `Ethereum`              |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | Beacon explorer URL                   | Yes      | `https://beaconcha.in/` |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer URL                    | Yes      | `https://etherscan.io`  |
+| Variable                        | Description             | Required | Default value           |
+| ------------------------------- | ----------------------- | -------- | ----------------------- |
+| `BEACON_NODE_ENDPOINT`          | Beacon node endpoint    | Yes      | `http://localhost:3500` |
+| `EXECUTION_NODE_ENDPOINT`       | Execution node endpoint | Yes      | (empty)                 |
+| `CHAIN_ID`                      | EVM chain id            | Yes      | `1`                     |
+| `NEXT_PUBLIC_NETWORK_NAME`      | Network name            | Yes      | `Ethereum`              |
+| `NEXT_PUBLIC_BEACON_BASE_URL`   | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer URL      | Yes      | `https://etherscan.io`  |
 
 ## Blob storages
 
@@ -71,20 +70,19 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 ## Indexer
 
-| Variable                  | Description             | Required | Default value           |
-| ------------------------- | ----------------------- | -------- | ----------------------- |
-| `BLOBSCAN_API_ENDPOINT`   | Blobscan API endpoint   | Yes      | (empty)                 |
-| `RUST_LOG`                | Configure logger        | No       | `blob-indexer=INFO`     |
-| `SENTRY_DSN_INDEXER`      | Sentry SDN              | No       | (empty)                 |
+| Variable                | Description           | Required | Default value       |
+| ----------------------- | --------------------- | -------- | ------------------- |
+| `BLOBSCAN_API_ENDPOINT` | Blobscan API endpoint | Yes      | (empty)             |
+| `RUST_LOG`              | Configure logger      | No       | `blob-indexer=INFO` |
+| `SENTRY_DSN_INDEXER`    | Sentry SDN            | No       | (empty)             |
 
 ## Telemetry
 
-| Variable                      | Description                                                                     | Required | Default value           |
-| ----------------------------- | ------------------------------------------------------------------------------- | -------- | ----------------------- |
-| `METRICS_ENABLED`             | Expose the /metrics endpoint                                                    | No       | `true`                  |
-| `TRACES_ENABLED`              | Enable instrumentation of functions and sending traces to a collector           | No       | `false`                 |
-| `OTLP_AUTH_USERNAME`          | Username for basic authentication. E.g. Grafana Cloud ID                        | No       | (empty)                 |
-| `OTLP_AUTH_PASSWORD`          | Password for basic authentication. E.g. Grafana Cloud Token                     | No       | (empty)                 |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP transport protocol to be used for all telemetry data.                      | No       | (empty)                 |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | Base endpoint URL for any signal type, with an optionally-specified port number | No       | (empty)                 |
-
+| Variable                      | Description                                                                     | Required | Default value |
+| ----------------------------- | ------------------------------------------------------------------------------- | -------- | ------------- |
+| `METRICS_ENABLED`             | Expose the /metrics endpoint                                                    | No       | `true`        |
+| `TRACES_ENABLED`              | Enable instrumentation of functions and sending traces to a collector           | No       | `false`       |
+| `OTLP_AUTH_USERNAME`          | Username for basic authentication. E.g. Grafana Cloud ID                        | No       | (empty)       |
+| `OTLP_AUTH_PASSWORD`          | Password for basic authentication. E.g. Grafana Cloud Token                     | No       | (empty)       |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP transport protocol to be used for all telemetry data.                      | No       | (empty)       |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | Base endpoint URL for any signal type, with an optionally-specified port number | No       | (empty)       |

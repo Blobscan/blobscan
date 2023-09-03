@@ -1,8 +1,8 @@
 ---
-title: Codebase Overview
+title: Codebase overview
 nextjs:
   metadata:
-    title: Codebase Overview
+    title: Codebase overview
     description: A breakdown of the Blobscan's codebase
 ---
 
@@ -13,7 +13,7 @@ Below you can find a breakdown of the Blobscan's codebase.
 Blobscan.com is comprised of the following major components:
 
 - **Web App**: A [Next.js](https://nextjs.org/) application hosted on [Vercel](https://vercel.com/) that spins up a [tRPC API](https://trpc.io) that communicates with the database via [Prisma](https://www.prisma.io/). It also uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-- **REST API**: An express app that runs the tRPC API with OpenAPI support. It exposes some of the tRPC API endpoints as REST endpoints for the public and external services such as the indexer.
+- **REST API**: An express app that runs the tRPC API with [OpenAPI](https://www.openapis.org/) support. It exposes some of the tRPC API endpoints as REST endpoints for the public and external services such as the indexer.
 - **Indexer**: A Rust service that listens to the Ethereum blockchain looking for blocks and transactions containing blobs and forwards them to the REST API to be indexed.
 
 {% figure  src="/architecture.svg" appendCurrentTheme=true /%}
@@ -40,7 +40,7 @@ Here you can find all the shared packages used by the apps:
 
 | Package                                                                                                            | Description                                                                                                                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@blobscan/api`](https://github.com/Blobscan/blobscan/tree/master/packages/api)                                   | tRPC rouders and procedures used by the web app and the REST API                                                                                                                                                             |
+| [`@blobscan/api`](https://github.com/Blobscan/blobscan/tree/master/packages/api)                                   | tRPC routers and procedures used by the web app and the REST API                                                                                                                                                             |
 | [`@blobscan/blob-storage-manager`](https://github.com/Blobscan/blobscan/tree/master/packages/blob-storage-manager) | Orchestrates the storage/retrieval of blobs in/from different storage providers. Currently it supports [Google Cloud Storage](https://cloud.google.com/storage), [Swarm](https://www.ethswarm.org), and PostgreSQL database. |
 | [`@blobscan/dayjs`](https://github.com/Blobscan/blobscan/tree/master/packages/dayjs)                               |  Extended [Day.js](https://day.js.org/) with plugins.                                                                                                                                                                        |
 | [`@blobscan/eslint`](https://github.com/Blobscan/blobscan/tree/next/packages/config/eslint)                        | ESLint configuration shared across all packages.                                                                                                                                                                             |

@@ -31,7 +31,7 @@ cd blobscan-indexer.rs
 
 3. Set the [environment variables](https://github.com/Blobscan/blobscan-indexer.rs/blob/master/.env.example).
 
-The indexer interacts with other services (such as the execution and consensus clients). In a system where the defaults are not correct, they can be configured
+The indexer interacts with other services (such as the execution and consensus clients). They can be configured
 by using environment variables or by creating a `.env` file. You can use the `.env.example` file as a reference.
 
 ```bash

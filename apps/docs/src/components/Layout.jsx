@@ -34,7 +34,7 @@ export const navigation = [
   {
     title: 'Development',
     links: [
-      { title: 'Codebase Overview', href: '/docs/codebase-overview' },
+      { title: 'Codebase overview', href: '/docs/codebase-overview' },
       { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Testing', href: '/docs/testing' },

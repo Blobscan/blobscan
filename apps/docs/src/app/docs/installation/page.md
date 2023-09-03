@@ -39,6 +39,7 @@ In order to run Blobscan you are required to define the following ones:
 - SECRET_KEY
 - BEACON_NODE_ENDPOINT
 - EXECUTION_NODE_ENDPOINT
+- DATABASE_URL
 
 ## Running Blobscan
 
