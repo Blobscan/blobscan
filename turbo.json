@@ -20,7 +20,17 @@
     },
     "lint": {},
     "lint:fix": {},
-    "clean": {
+    "test": {
+      "inputs": ["test/**/*.test.ts"]
+    },
+    "test:ui": {
+      "inputs": ["test/**/*.test.ts"]
+    },
+    "test:dev": {
+      "inputs": ["test/**/*.test.ts"],
+      "cache": false
+    },
+    "test:setup": {
       "cache": false
     },
     "//#clean": {

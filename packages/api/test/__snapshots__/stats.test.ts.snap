@@ -1,0 +1,143 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Stats route > Blob > getDailyStats > should get for every timeframe 1`] = `
+[
+  [],
+  [
+    {
+      "avgBlobSize": 1400,
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlobSize": 4200n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+  ],
+  [
+    {
+      "avgBlobSize": 1100,
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlobSize": 3300n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+    {
+      "avgBlobSize": 1400,
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlobSize": 4200n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+  ],
+  [
+    {
+      "avgBlobSize": 1100,
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlobSize": 3300n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+    {
+      "avgBlobSize": 1400,
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlobSize": 4200n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+  ],
+  [
+    {
+      "avgBlobSize": 1100,
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlobSize": 3300n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+    {
+      "avgBlobSize": 1400,
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlobSize": 4200n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+  ],
+  [
+    {
+      "avgBlobSize": 1100,
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlobSize": 3300n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+    {
+      "avgBlobSize": 1400,
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlobSize": 4200n,
+      "totalBlobs": 3,
+      "totalUniqueBlobs": 3,
+    },
+  ],
+]
+`;
+
+exports[`Stats route > Block > getDailyStats > should get for every timeframe 1`] = `
+[
+  [],
+  [
+    {
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+  ],
+  [
+    {
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+    {
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+  ],
+  [
+    {
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+    {
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+  ],
+  [
+    {
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+    {
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+  ],
+  [
+    {
+      "day": 2023-08-24T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+    {
+      "day": 2023-08-26T00:00:00.000Z,
+      "totalBlocks": 1,
+    },
+  ],
+]
+`;
+
+exports[`Stats route > Transaction > getDailyStats > should get for every timeframe 1`] = `
+[
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+]
+`;

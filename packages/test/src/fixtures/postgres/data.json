@@ -1,0 +1,281 @@
+{
+  "blockchainSyncState": [
+    {
+      "id": 1,
+      "lastFinalizedBlock": 1001,
+      "lastSlot": 101
+    }
+  ],
+  "blocks": [
+    {
+      "hash": "blockHash001",
+      "number": 1001,
+      "timestamp": "2023-08-24T10:00:00Z",
+      "slot": 101,
+      "blobGasUsed": 5000000,
+      "excessBlobGas": 10000,
+      "blobGasPrice": 20,
+      "blobAsCalldataGasUsed": 250000,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "hash": "blockHash002",
+      "number": 1002,
+      "timestamp": "2023-08-26T12:00:00Z",
+      "slot": 102,
+      "blobGasUsed": 5500000,
+      "excessBlobGas": 15000,
+      "blobGasPrice": 22,
+      "blobAsCalldataGasUsed": 255000,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    }
+  ],
+  "addresses": [
+    {
+      "address": "address1",
+      "firstBlockNumberAsSender": 1001,
+      "firstBlockNumberAsReceiver": null,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "address": "address2",
+      "firstBlockNumberAsSender": null,
+      "firstBlockNumberAsReceiver": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "address": "address3",
+      "firstBlockNumberAsSender": 1001,
+      "firstBlockNumberAsReceiver": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "address": "address4",
+      "firstBlockNumberAsSender": null,
+      "firstBlockNumberAsReceiver": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "address": "address5",
+      "firstBlockNumberAsSender": 1001,
+      "firstBlockNumberAsReceiver": 1002,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "address": "address6",
+      "firstBlockNumberAsSender": null,
+      "firstBlockNumberAsReceiver": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    }
+  ],
+  "txs": [
+    {
+      "hash": "txHash001",
+      "fromId": "address1",
+      "toId": "address2",
+      "blockNumber": 1001,
+      "maxFeePerBlobGas": 100,
+      "gasPrice": 10,
+      "blobAsCalldataGasUsed": 1000,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "hash": "txHash002",
+      "fromId": "address3",
+      "toId": "address4",
+      "blockNumber": 1001,
+      "maxFeePerBlobGas": 110,
+      "gasPrice": 11,
+      "blobAsCalldataGasUsed": 1100,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "hash": "txHash003",
+      "fromId": "address5",
+      "toId": "address6",
+      "blockNumber": 1001,
+      "maxFeePerBlobGas": 120,
+      "gasPrice": 12,
+      "blobAsCalldataGasUsed": 1200,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "hash": "txHash004",
+      "fromId": "address1",
+      "toId": "address3",
+      "blockNumber": 1002,
+      "maxFeePerBlobGas": 100,
+      "gasPrice": 10,
+      "blobAsCalldataGasUsed": 1000,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "hash": "txHash005",
+      "fromId": "address2",
+      "toId": "address4",
+      "blockNumber": 1002,
+      "maxFeePerBlobGas": 100,
+      "gasPrice": 10,
+      "blobAsCalldataGasUsed": 1000,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      "fromId": "address5",
+      "toId": "address6",
+      "blockNumber": 1002,
+      "maxFeePerBlobGas": 100,
+      "gasPrice": 10,
+      "blobAsCalldataGasUsed": 1000,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    }
+  ],
+  "blobs": [
+    {
+      "versionedHash": "blobHash001",
+      "commitment": "commitment001",
+      "size": 1000,
+      "firstBlockNumber": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "versionedHash": "blobHash002",
+      "commitment": "commitment002",
+      "size": 1100,
+      "firstBlockNumber": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "versionedHash": "blobHash003",
+      "commitment": "commitment003",
+      "size": 1200,
+      "firstBlockNumber": 1001,
+      "insertedAt": "2023-08-25T10:10:00Z",
+      "updatedAt": "2023-08-25T10:10:00Z"
+    },
+    {
+      "versionedHash": "blobHash004",
+      "commitment": "commitment004",
+      "size": 1300,
+      "firstBlockNumber": 1002,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "versionedHash": "blobHash005",
+      "commitment": "commitment005",
+      "size": 1400,
+      "firstBlockNumber": 1002,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
+      "size": 1500,
+      "firstBlockNumber": 1002,
+      "insertedAt": "2023-08-26T12:10:00Z",
+      "updatedAt": "2023-08-26T12:10:00Z"
+    }
+  ],
+  "blobDataStorageReferences": [
+    {
+      "blobHash": "blobHash001",
+      "blobStorage": "GOOGLE",
+      "dataReference": "7011893058/ob/Ha/sh/obHash001.txt"
+    },
+    {
+      "blobHash": "blobHash001",
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://some-hash-for-blobHash001"
+    },
+    {
+      "blobHash": "blobHash002",
+      "blobStorage": "GOOGLE",
+      "dataReference": "7011893058/ob/Ha/sh/obHash002.txt"
+    },
+    {
+      "blobHash": "blobHash003",
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://some-hash-for-blobHash003"
+    },
+    {
+      "blobHash": "blobHash004",
+      "blobStorage": "POSTGRES",
+      "dataReference": "blobHash004"
+    },
+    {
+      "blobHash": "blobHash004",
+      "blobStorage": "GOOGLE",
+      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt"
+    },
+    {
+      "blobHash": "blobHash005",
+      "blobStorage": "POSTGRES",
+      "dataReference": "blobHash005"
+    },
+    {
+      "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://some-hash-for-blobHash006"
+    }
+  ],
+  "blobDatas": [
+    {
+      "id": "blobHash004",
+      "data": "1234abcdefg123456789abcdfg"
+    },
+    {
+      "id": "blobHash005",
+      "data": "1234abcdefg1234abcdefg"
+    }
+  ],
+  "blobsOnTransactions": [
+    {
+      "blobHash": "blobHash001",
+      "txHash": "txHash001",
+      "index": 0
+    },
+    {
+      "blobHash": "blobHash002",
+      "txHash": "txHash002",
+      "index": 0
+    },
+    {
+      "blobHash": "blobHash003",
+      "txHash": "txHash003",
+      "index": 0
+    },
+    {
+      "blobHash": "blobHash004",
+      "txHash": "txHash004",
+      "index": 0
+    },
+    {
+      "blobHash": "blobHash005",
+      "txHash": "txHash005",
+      "index": 0
+    },
+    {
+      "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      "index": 0
+    }
+  ]
+}

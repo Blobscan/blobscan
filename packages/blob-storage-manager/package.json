@@ -9,7 +9,9 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@blobscan/zod": "^0.0.1",
@@ -18,7 +20,8 @@
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1"
+    "@blobscan/open-telemetry": "^0.0.1",
+    "@blobscan/test": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,
