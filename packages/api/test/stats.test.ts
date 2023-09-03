@@ -2,13 +2,15 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { prisma } from "@blobscan/db";
 
-import { filterData, getCaller } from "./helper";
+import { appRouter } from "../src/root";
+import { filterData, getContext } from "./helper";
 
 describe("Stats route", async () => {
-  let caller;
+  let caller: ReturnType<typeof appRouter.createCaller>;
 
   beforeAll(async () => {
-    caller = await getCaller();
+    const ctx = await getContext();
+    caller = appRouter.createCaller(ctx);
   });
 
   describe("Blob", () => {

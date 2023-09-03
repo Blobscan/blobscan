@@ -2,35 +2,47 @@ import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
-import { getCaller } from "./helper";
+import { appRouter } from "../src/root";
+import { getContext } from "./helper";
 
 type GetAllInput = inferProcedureInput<AppRouter["tx"]["getAll"]>;
 type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHash"]>;
 type GetByAddressInput = inferProcedureInput<AppRouter["tx"]["getByAddress"]>;
 
 describe("Transaction route", async () => {
-  let caller;
+  let caller: ReturnType<typeof appRouter.createCaller>;
 
   beforeAll(async () => {
-    caller = await getCaller();
+    const ctx = await getContext();
+    caller = appRouter.createCaller(ctx);
   });
 
   describe("getAll", () => {
     it("should get all", async () => {
       const result = await caller.tx.getAll({});
-      result.transactions.sort((a, b) => a.hash.localeCompare(b.hash));
-      expect(result).toMatchSnapshot();
+      const sortedResults = result.transactions.sort((a, b) => {
+        if (a.hash < b.hash) return -1;
+        if (a.hash > b.hash) return 1;
+
+        return 0;
+      });
+      expect(sortedResults).toMatchSnapshot();
     });
 
     it("should get all with pagination", async () => {
       const input: GetAllInput = {
-        p: 2,
+        p: 3,
         ps: 2,
       };
 
       const result = await caller.tx.getAll(input);
-      result.transactions.sort((a, b) => a.hash.localeCompare(b.hash));
-      expect(result).toMatchSnapshot();
+      const sortedResults = result.transactions.sort((a, b) => {
+        if (a.hash < b.hash) return -1;
+        if (a.hash > b.hash) return 1;
+
+        return 0;
+      });
+      expect(sortedResults).toMatchSnapshot();
     });
   });
 

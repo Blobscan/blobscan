@@ -5,9 +5,10 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import blobStorageManager from "@blobscan/blob-storage-manager/src/__mocks__/BlobStorageManager";
 import { prisma } from "@blobscan/db";
 
+import { appRouter } from "../src/root";
 import type { AppRouter } from "../src/root";
 import { INDEXER_DATA } from "./fixtures";
-import { getCaller, getIndexedData } from "./helper";
+import { getContext, getIndexedData } from "./helper";
 
 type UpdateSlotInput = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
 type IndexDataInput = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
@@ -30,17 +31,24 @@ vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
 }));
 
 describe("Indexer route", async () => {
-  let caller;
-  let callerWithClient;
-  let callerWithMockBlobStorageManager;
+  let caller: ReturnType<typeof appRouter.createCaller>;
+  let callerWithClient: ReturnType<typeof appRouter.createCaller>;
+  let callerWithMockBlobStorageManager: ReturnType<
+    typeof appRouter.createCaller
+  >;
 
   beforeAll(async () => {
-    caller = await getCaller();
-    callerWithClient = await getCaller({ withClient: true });
-    callerWithMockBlobStorageManager = await getCaller({
+    const ctx = await getContext();
+    const ctxWithClient = await getContext({ withClient: true });
+    const ctxWithMockBlobStorageManager = await getContext({
       withClient: true,
       mockBlobStorageManager: true,
     });
+    caller = appRouter.createCaller(ctx);
+    callerWithClient = appRouter.createCaller(ctxWithClient);
+    callerWithMockBlobStorageManager = appRouter.createCaller(
+      ctxWithMockBlobStorageManager
+    );
   });
 
   describe("getSlot", () => {

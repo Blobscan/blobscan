@@ -10,9 +10,9 @@ import { prisma } from "@blobscan/db";
 import type { TRPCContext } from "../src/context";
 import { createTRPCContext } from "../src/context";
 import { createTRPCInnerContext } from "../src/context";
-import { appRouter } from "../src/root";
+import type { appRouter } from "../src/root";
 
-export async function getCaller({
+export async function getContext({
   withClient = false,
   mockBlobStorageManager = false,
 }: { withClient?: boolean; mockBlobStorageManager?: boolean } = {}) {
@@ -31,14 +31,14 @@ export async function getCaller({
     ctx = (await createTRPCInnerContext()) as TRPCContext;
   }
 
-  ctx = mockBlobStorageManager
+  return mockBlobStorageManager
     ? { ...ctx, blobStorageManager: blobStorageManager }
     : ctx;
-
-  return appRouter.createCaller(ctx);
 }
 
-export async function getIndexedData(caller) {
+export async function getIndexedData(
+  caller: ReturnType<typeof appRouter.createCaller>
+) {
   const [block, addresses, txs, blobs, storageRefs, blobsOnTransactions] =
     await Promise.all([
       caller.block.getByBlockNumber({
@@ -114,7 +114,8 @@ export async function getIndexedData(caller) {
   };
 }
 
-export function filterData(data) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function filterData(data: any) {
   if (Array.isArray(data)) {
     return data.map((d) => {
       delete d.updatedAt;

@@ -2,7 +2,8 @@ import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import type { AppRouter } from "../src/root";
-import { getCaller } from "./helper";
+import { appRouter } from "../src/root";
+import { getContext } from "./helper";
 
 type GetAllInput = inferProcedureInput<AppRouter["blob"]["getAll"]>;
 type GetByHashInput = inferProcedureInput<
@@ -21,10 +22,11 @@ vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
 }));
 
 describe("Blob route", async () => {
-  let caller;
+  let caller: ReturnType<typeof appRouter.createCaller>;
 
   beforeAll(async () => {
-    caller = await getCaller();
+    const ctx = await getContext();
+    caller = appRouter.createCaller(ctx);
   });
 
   describe("getAll", () => {
