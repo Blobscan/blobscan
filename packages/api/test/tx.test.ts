@@ -31,8 +31,8 @@ describe("Transaction route", async () => {
 
     it("should get all with pagination", async () => {
       const input: GetAllInput = {
-        p: 3,
-        ps: 2,
+        p: 1,
+        ps: 1,
       };
 
       const result = await caller.tx.getAll(input);
