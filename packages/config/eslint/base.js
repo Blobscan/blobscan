@@ -35,6 +35,7 @@ const config = {
     "**/*.config.js",
     "**/*.config.cjs",
     "packages/config/**",
+    "coverage",
     ".next",
     "dist",
     "pnpm-lock.yaml",

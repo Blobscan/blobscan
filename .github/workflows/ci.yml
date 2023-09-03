@@ -82,4 +82,5 @@ jobs:
       - name: Tests
         run: pnpm test
         env:
+          POSTGRES_STORAGE_ENABLED: true
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
