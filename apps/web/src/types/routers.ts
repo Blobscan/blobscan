@@ -12,26 +12,18 @@ export type AllBlobs = RouterOutputs["blob"]["getAll"];
 
 export type Blob = RouterOutputs["blob"]["getByVersionedHash"];
 
-export type DailyBlobStats = RouterOutputs["stats"]["blob"]["getDailyStats"];
+export type DailyBlobStats = RouterOutputs["stats"]["getBlobDailyStats"];
 
-export type SingleDailyBlobStats = DailyBlobStats[number];
-
-export type DailyBlockStats = RouterOutputs["stats"]["block"]["getDailyStats"];
-
-export type SingleDailyBlockStats = DailyBlockStats[number];
+export type DailyBlockStats = RouterOutputs["stats"]["getBlockDailyStats"];
 
 export type DailyTransactionStats =
-  RouterOutputs["stats"]["transaction"]["getDailyStats"];
-
-export type SingleDailyTransactionStats = DailyTransactionStats[number];
+  RouterOutputs["stats"]["getTransactionDailyStats"];
 
 export type AllOverallStats = RouterOutputs["stats"]["getAllOverallStats"];
 
-export type OverallBlobStats =
-  RouterOutputs["stats"]["blob"]["getOverallStats"];
+export type OverallBlobStats = RouterOutputs["stats"]["getBlobOverallStats"];
 
-export type OverallBlockStats =
-  RouterOutputs["stats"]["block"]["getOverallStats"];
+export type OverallBlockStats = RouterOutputs["stats"]["getBlockOverallStats"];
 
 export type OverallTxStats =
-  RouterOutputs["stats"]["transaction"]["getOverallStats"];
+  RouterOutputs["stats"]["getTransactionOverallStats"];

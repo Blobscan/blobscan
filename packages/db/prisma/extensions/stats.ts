@@ -109,7 +109,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 total_blobs = st.total_blobs + EXCLUDED.total_blobs,
                 total_unique_blobs = st.total_unique_blobs + EXCLUDED.total_unique_blobs,
                 total_blob_size = st.total_blob_size + EXCLUDED.total_blob_size,
-                avg_blob_size = st.avg_blob_size + (EXCLUDED.total_blob_size - st.avg_blob_size) / (st.total_blobs + EXCLUDED.total_blobs),
+                avg_blob_size = st.avg_blob_size + ((EXCLUDED.avg_blob_size - st.avg_blob_size) / (st.total_blobs + EXCLUDED.total_blobs)),
                 updated_at = EXCLUDED.updated_at
             `;
         },
@@ -125,51 +125,117 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           const whereClause = buildRawWhereClause(dateField, datePeriod);
 
           return prisma.$executeRaw`
-            INSERT INTO block_daily_stats (day, total_blocks)
+            INSERT INTO block_daily_stats (
+              day,
+              total_blocks,
+              total_blob_gas_used,
+              total_blob_as_calldata_gas_used,
+              total_blob_fee,
+              total_blob_as_calldata_fee,
+              avg_blob_fee,
+              avg_blob_as_calldata_fee,
+              avg_blob_gas_price
+            )
             SELECT
               DATE_TRUNC('day', ${dateField}) as "day",
-              COUNT(hash)::INT as total_blocks
+              COUNT(hash)::INT as total_blocks,
+              SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
+              SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
+              SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
+              SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+              AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
+              AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
+              AVG(blob_gas_price)::FLOAT as avg_blob_gas_price
             FROM "block"
             ${whereClause}
             GROUP BY "day"
             ON CONFLICT (day) DO UPDATE SET
-              total_blocks = EXCLUDED.total_blocks 
+              total_blocks = EXCLUDED.total_blocks,
+              total_blob_gas_used = EXCLUDED.total_blob_gas_used,
+              total_blob_as_calldata_gas_used = EXCLUDED.total_blob_as_calldata_gas_used,
+              total_blob_fee = EXCLUDED.total_blob_fee,
+              total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
+              avg_blob_fee = EXCLUDED.avg_blob_fee,
+              avg_blob_as_calldata_fee = EXCLUDED.avg_blob_as_calldata_fee,
+              avg_blob_gas_price = EXCLUDED.avg_blob_gas_price
           `;
         },
       },
       blockOverallStats: {
         backfill() {
           return prisma.$executeRaw`
-              INSERT INTO block_overall_stats as stats (
+              INSERT INTO block_overall_stats as st (
                 id,
                 total_blocks,
+                total_blob_gas_used,
+                total_blob_as_calldata_gas_used,
+                total_blob_fee,
+                total_blob_as_calldata_fee,
+                avg_blob_fee,
+                avg_blob_as_calldata_fee,
+                avg_blob_gas_price,
                 updated_at
               )
               SELECT
                 1 as id,
                 COUNT("hash")::INT as total_blocks,
+                SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
+                SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
+                SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
+                SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+                AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
+                AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
+                AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
                 NOW() as updated_at
               FROM "block"
               ON CONFLICT (id) DO UPDATE SET
                 total_blocks = EXCLUDED.total_blocks,
+                total_blob_gas_used = EXCLUDED.total_blob_gas_used,
+                total_blob_as_calldata_gas_used = EXCLUDED.total_blob_as_calldata_gas_used,
+                total_blob_fee = EXCLUDED.total_blob_fee,
+                total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
+                avg_blob_fee = EXCLUDED.avg_blob_fee,
+                avg_blob_as_calldata_fee = EXCLUDED.avg_blob_as_calldata_fee,
+                avg_blob_gas_price = EXCLUDED.avg_blob_gas_price,
                 updated_at = EXCLUDED.updated_at
             `;
         },
         increment({ from, to }: BlockNumberRange) {
           return prisma.$executeRaw`
-              INSERT INTO block_overall_stats AS stats (
+              INSERT INTO block_overall_stats AS st (
                 id,
                 total_blocks,
+                total_blob_gas_used,
+                total_blob_as_calldata_gas_used,
+                total_blob_fee,
+                total_blob_as_calldata_fee,
+                avg_blob_fee,
+                avg_blob_as_calldata_fee,
+                avg_blob_gas_price,
                 updated_at
               )
               SELECT
                 1 as id,
                 COUNT("hash")::INT as total_blocks,
+                SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
+                SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
+                SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
+                SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+                AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
+                AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
+                AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
                 NOW() as updated_at
               FROM "block"
               WHERE "number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
-                total_blocks = stats.total_blocks + EXCLUDED.total_blocks,
+                total_blocks = st.total_blocks + EXCLUDED.total_blocks,
+                total_blob_gas_used = st.total_blob_gas_used + EXCLUDED.total_blob_gas_used,
+                total_blob_as_calldata_gas_used = st.total_blob_as_calldata_gas_used + EXCLUDED.total_blob_as_calldata_gas_used,
+                total_blob_fee = st.total_blob_fee + EXCLUDED.total_blob_fee,
+                total_blob_as_calldata_fee = st.total_blob_as_calldata_fee + EXCLUDED.total_blob_as_calldata_fee,
+                avg_blob_fee = st.avg_blob_fee + ((EXCLUDED.avg_blob_fee - st.avg_blob_fee) / (st.total_blocks + EXCLUDED.total_blocks)),
+                avg_blob_as_calldata_fee = st.avg_blob_as_calldata_fee + ((EXCLUDED.avg_blob_as_calldata_fee - st.avg_blob_as_calldata_fee) / (st.total_blocks + EXCLUDED.total_blocks)),
+                avg_blob_gas_price = st.avg_blob_gas_price + ((EXCLUDED.avg_blob_gas_price - st.avg_blob_gas_price) / (st.total_blocks + EXCLUDED.total_blocks)),
                 updated_at = EXCLUDED.updated_at
             `;
         },
@@ -191,13 +257,15 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               "day",
               total_transactions,
               total_unique_receivers,
-              total_unique_senders
+              total_unique_senders,
+              avg_max_blob_gas_fee
             )
             SELECT 
               DATE_TRUNC('day', ${dateField}) AS "day",
               COUNT(tx."hash")::INT AS total_transactions,
               COUNT(DISTINCT tx.to_id)::INT AS total_unique_receivers,
-              COUNT(DISTINCT tx.from_id)::INT AS total_unique_senders
+              COUNT(DISTINCT tx.from_id)::INT AS total_unique_senders,
+              AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee
             FROM "transaction" tx
               JOIN "block" b ON b.number = tx.block_number
             ${whereClause}
@@ -217,6 +285,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               total_transactions,
               total_unique_receivers,
               total_unique_senders,
+              avg_max_blob_gas_fee,
               updated_at
             )
             SELECT
@@ -224,22 +293,25 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT("hash")::INT AS total_transactions,
               COUNT(DISTINCT to_id)::INT AS total_unique_receivers,
               COUNT(DISTINCT from_id)::INT AS total_unique_senders,
+              AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
               NOW() AS updated_at
             FROM "transaction"
             ON CONFLICT (id) DO UPDATE SET
               total_transactions = EXCLUDED.total_transactions,
               total_unique_receivers = EXCLUDED.total_unique_receivers,
               total_unique_senders = EXCLUDED.total_unique_senders,
+              avg_max_blob_gas_fee = EXCLUDED.avg_max_blob_gas_fee,
               updated_at = EXCLUDED.updated_at
           `;
         },
         increment({ from, to }: BlockNumberRange) {
           return prisma.$executeRaw`
-              INSERT INTO transaction_overall_stats AS stats (
+              INSERT INTO transaction_overall_stats AS st (
                 id,
                 total_transactions,
                 total_unique_receivers,
                 total_unique_senders,
+                avg_max_blob_gas_fee,
                 updated_at
               )
               SELECT
@@ -247,13 +319,15 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 COUNT("hash")::INT AS total_transactions,
                 COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT AS total_unique_receivers,
                 COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT AS total_unique_senders,
+                AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
                 NOW() AS updated_at
               FROM "transaction" tx JOIN "address" faddr ON faddr.address = tx.from_id JOIN "address" taddr ON taddr.address = tx.to_id
               WHERE tx.block_number BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
-                total_transactions = stats.total_transactions + EXCLUDED.total_transactions,
-                total_unique_receivers = stats.total_unique_receivers + EXCLUDED.total_unique_receivers,
-                total_unique_senders = stats.total_unique_senders + EXCLUDED.total_unique_senders,
+                total_transactions = st.total_transactions + EXCLUDED.total_transactions,
+                total_unique_receivers = st.total_unique_receivers + EXCLUDED.total_unique_receivers,
+                total_unique_senders = st.total_unique_senders + EXCLUDED.total_unique_senders,
+                avg_max_blob_gas_fee = st.avg_max_blob_gas_fee + ((EXCLUDED.avg_max_blob_gas_fee - st.avg_max_blob_gas_fee) / (st.total_transactions + EXCLUDED.total_transactions)),
                 updated_at = EXCLUDED.updated_at
             `;
         },

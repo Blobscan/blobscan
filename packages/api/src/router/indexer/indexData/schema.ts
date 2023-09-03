@@ -6,8 +6,8 @@ export const indexDataInputSchema = z.object({
     hash: z.string(),
     timestamp: z.coerce.number(),
     slot: z.coerce.number(),
-    blobGasUsed: toBigIntSchema,
-    excessBlobGas: toBigIntSchema,
+    blobGasUsed: z.coerce.number(),
+    excessBlobGas: z.coerce.number(),
   }),
   transactions: z.array(
     z.object({

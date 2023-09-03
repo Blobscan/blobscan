@@ -1,21 +1,23 @@
 import { formatNumber } from "./number";
 
-const MIN_BLOB_GASPRICE = BigInt(1);
-const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
-export const GAS_PER_BLOB = BigInt(2 ** 17); // 131072
+const MIN_BLOB_GASPRICE = 1;
+const BLOB_GASPRICE_UPDATE_FRACTION = 3_338_477;
+export const GAS_PER_BLOB = 2 ** 17; // 131072
 
 type EtherUnit = "wei" | "gwei" | "ether";
 
 function formatWithDecimal(str: string, positionFromEnd: number): string {
-  if (str.length <= positionFromEnd) {
-    const zeroes = "0".repeat(positionFromEnd - str.length);
-    const result = "0." + zeroes + str;
+  const [integerPart = "", decimalPart = ""] = str.split(".");
+
+  if (integerPart.length <= positionFromEnd) {
+    const zeroes = "0".repeat(positionFromEnd - integerPart.length);
+    const result = "0." + zeroes + integerPart + decimalPart;
     return stripTrailingZeroes(result);
   }
 
-  const integerPart = str.slice(0, -positionFromEnd);
-  const decimalPart = str.slice(-positionFromEnd);
-  const result = `${integerPart}.${decimalPart}`;
+  const newIntegerPart = integerPart.slice(0, -positionFromEnd);
+  const newDecimalPart = integerPart.slice(-positionFromEnd);
+  const result = `${newIntegerPart}.${newDecimalPart}${decimalPart}`;
 
   return stripTrailingZeroes(result);
 }
@@ -32,31 +34,54 @@ function stripTrailingZeroes(str: string): string {
   return str;
 }
 
+export type FormatWeiOptions = {
+  toUnit: EtherUnit;
+  displayUnit: boolean;
+  displayFullAmount: boolean;
+};
+
 export function formatWei(
   weiAmount: bigint | number,
-  unit: EtherUnit = "gwei",
-  displayUnit = true
+  {
+    toUnit = "gwei",
+    displayUnit = true,
+    displayFullAmount = true,
+  }: Partial<FormatWeiOptions> = {}
 ): string {
-  const weiStr = weiAmount.toString();
+  const weiAmountStr =
+    // Wei amounts should be integers
+    typeof weiAmount === "number"
+      ? Math.floor(weiAmount).toString()
+      : weiAmount.toString();
   let formattedAmount: string;
 
-  switch (unit) {
+  switch (toUnit) {
     case "wei":
-      formattedAmount = weiStr;
+      formattedAmount = weiAmountStr;
       break;
     case "gwei":
-      formattedAmount = formatWithDecimal(weiStr, 9);
+      formattedAmount = formatWithDecimal(weiAmountStr, 9);
       break;
     case "ether":
-      formattedAmount = formatWithDecimal(weiStr, 18);
+      formattedAmount = formatWithDecimal(weiAmountStr, 18);
       break;
     default:
       throw new Error("Unsupported unit");
   }
 
-  return `${formatNumber(formattedAmount, { maximumFractionDigits: 18 })}${
-    displayUnit ? ` ${unit}` : ""
-  }`;
+  formattedAmount = formatNumber(formattedAmount, "compact", {
+    // Display up to 9 decimal digits for small wei amounts
+    maximumFractionDigits: weiAmountStr.length < 9 ? 9 : 3,
+  });
+
+  const fractionDigits = formattedAmount.split(".")[1];
+
+  // Use exponential notation for large fractional digits
+  if (!displayFullAmount && fractionDigits && fractionDigits.length > 3) {
+    formattedAmount = Number(formattedAmount).toExponential();
+  }
+
+  return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
 }
 
 function fakeExponential(

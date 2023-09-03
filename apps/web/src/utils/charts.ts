@@ -14,10 +14,10 @@ function applyFormatter(value?: unknown, formatter?: ValueFormatter) {
 }
 
 function buildYAxisHtml(param: ExtendedFormat, formatter?: ValueFormatter) {
-  return `<div>${param.marker} ${param.seriesName}: <strong>${applyFormatter(
+  return `<span>${param.marker} ${param.seriesName}: <strong>${applyFormatter(
     param.value,
     formatter
-  )}</strong<div/>`;
+  )}</strong><span/>`;
 }
 
 function buildXAxisHtml(param?: ExtendedFormat, formatter?: ValueFormatter) {
@@ -53,15 +53,33 @@ export function createTooltip(
   };
 }
 
-export function buildTimeSeriesOptions(
-  dates?: string[],
-  axisFormatters?: Partial<{
+type YUnit = "ethereum" | "bytes";
+
+export type TimeSeriesInput = Partial<{
+  dates: string[];
+  axisFormatters: Partial<{
     xAxisLabel: ValueFormatter;
     xAxisTooltip: ValueFormatter;
     yAxisLabel: ValueFormatter;
     yAxisTooltip: ValueFormatter;
-  }>
-): EChartOption {
+  }>;
+  yUnit: YUnit;
+}>;
+
+const YUINT_TO_GRID: Record<YUnit, EChartOption.Grid> = {
+  bytes: {
+    left: 55,
+  },
+  ethereum: {
+    left: 70,
+  },
+};
+
+export function buildTimeSeriesOptions({
+  dates,
+  axisFormatters,
+  yUnit,
+}: TimeSeriesInput): EChartOption {
   const {
     xAxisLabel = dateAxisFormatter,
     xAxisTooltip = humanDateFormatter,
@@ -84,5 +102,6 @@ export function buildTimeSeriesOptions(
       },
     },
     tooltip: createTooltip(xAxisTooltip, yAxisTooltip),
+    grid: yUnit ? YUINT_TO_GRID[yUnit] : undefined,
   };
 }

@@ -11,35 +11,58 @@ export function formatBytes(bytes: number | bigint, opts: Options = {}) {
   });
 }
 
-export function parseBytes(bytes: string): { value: number; unit: string } {
-  const [value = 0, unit = "B"] = bytes.split(" ");
-
-  return {
-    value: Number(value),
-    unit,
-  };
-}
-
 export function abbreviateNumber(value: number | string): string {
-  const suffixes = ["", "K", "M", "B", "T"];
-  let suffixNum = 0;
-  let value_ = Number(value);
-
-  while (value_ >= 1000) {
-    value_ /= 1000;
-    suffixNum++;
-  }
-
-  let formattedValue = formatNumber(value_.toPrecision(3));
-
-  formattedValue += suffixes[suffixNum];
-
-  return formattedValue;
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(Number(value));
 }
 
+type FormatMode = "compact" | "standard";
+
+const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
+  compact: {
+    notation: "compact",
+    maximumFractionDigits: 2,
+  },
+  standard: {
+    notation: "standard",
+    maximumFractionDigits: 3,
+  },
+};
 export function formatNumber(
   x: number | string | bigint,
-  opts?: Intl.NumberFormatOptions
+  mode: "compact" | "standard" = "standard",
+  opts: Intl.NumberFormatOptions = {}
 ): string {
-  return Number(x).toLocaleString(undefined, opts);
+  // return Number(x).toLocaleString(undefined, opts);
+
+  return Intl.NumberFormat("en-US", { ...NUMBER_FORMAT[mode], ...opts }).format(
+    Number(x)
+  );
+}
+
+export function calculatePercentage(
+  numerator: bigint,
+  denominator: bigint,
+  opts?: { returnComplement: boolean }
+): number {
+  if (denominator === BigInt(0)) {
+    return Number(0);
+  }
+
+  const pct = (Number((numerator * BigInt(100)) / denominator) / 100) * 100;
+
+  if (opts?.returnComplement) {
+    return 100 - pct;
+  }
+
+  return pct;
+}
+
+export function cumulativeSum(arr: number[]): number[] {
+  return arr.reduce<number[]>(
+    (acc, curr, i) => [...acc, curr + (acc[i - 1] ?? 0)],
+    []
+  );
 }

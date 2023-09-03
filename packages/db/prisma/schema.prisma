@@ -82,10 +82,10 @@ model Block {
   number                Int      @unique
   timestamp             DateTime @unique
   slot                  Int      @unique
-  blobGasUsed           BigInt   @map("blob_gas_used")
-  excessBlobGas         BigInt   @map("excess_blob_gas")
+  blobGasUsed           Int      @map("blob_gas_used")
+  excessBlobGas         Int      @map("excess_blob_gas")
   blobGasPrice          BigInt   @map("blob_gas_price")
-  blobAsCalldataGasUsed BigInt   @map("blob_as_calldata_gas_used")
+  blobAsCalldataGasUsed Int      @map("blob_as_calldata_gas_used")
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
@@ -105,7 +105,7 @@ model Transaction {
   blockNumber           Int      @map("block_number")
   maxFeePerBlobGas      BigInt   @map("max_fee_per_blob_gas")
   gasPrice              BigInt   @map("gas_price")
-  blobAsCalldataGasUsed BigInt   @map("blob_as_calldata_gas_used")
+  blobAsCalldataGasUsed Int      @map("blob_as_calldata_gas_used")
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
@@ -135,16 +135,31 @@ model BlobsOnTransactions {
 
 // Block Metrics
 model BlockOverallStats {
-  id          Int      @id @default(autoincrement())
-  totalBlocks Int      @map("total_blocks")
-  updatedAt   DateTime @map("updated_at")
+  id                         Int    @id @default(autoincrement())
+  totalBlocks                Int    @map("total_blocks")
+  totalBlobGasUsed           BigInt @map("total_blob_gas_used")
+  totalBlobAsCalldataGasUsed BigInt @map("total_blob_as_calldata_gas_used")
+  totalBlobFee               BigInt @map("total_blob_fee")
+  totalBlobAsCalldataFee     BigInt @map("total_blob_as_calldata_fee")
+  avgBlobFee                 Float  @map("avg_blob_fee")
+  avgBlobAsCalldataFee       Float  @map("avg_blob_as_calldata_fee")
+  avgBlobGasPrice            Float  @map("avg_blob_gas_price")
+
+  updatedAt DateTime @map("updated_at")
 
   @@map("block_overall_stats")
 }
 
 model BlockDailyStats {
-  day         DateTime @id @db.Date
-  totalBlocks Int      @map("total_blocks")
+  day                        DateTime @id @db.Date
+  totalBlocks                Int      @map("total_blocks")
+  totalBlobGasUsed           BigInt   @map("total_blob_gas_used")
+  totalBlobAsCalldataGasUsed BigInt   @map("total_blob_as_calldata_gas_used")
+  totalBlobFee               BigInt   @map("total_blob_fee")
+  totalBlobAsCalldataFee     BigInt   @map("total_blob_as_calldata_fee")
+  avgBlobFee                 Float    @map("avg_blob_fee")
+  avgBlobAsCalldataFee       Float    @map("avg_blob_as_calldata_fee")
+  avgBlobGasPrice            Float    @map("avg_blob_gas_price")
 
   @@unique([day])
   @@index([day])
@@ -154,11 +169,13 @@ model BlockDailyStats {
 // Transaction metrics
 
 model TransactionOverallStats {
-  id                   Int      @id @default(autoincrement())
-  totalTransactions    Int      @map("total_transactions")
-  totalUniqueReceivers Int      @map("total_unique_receivers")
-  totalUniqueSenders   Int      @map("total_unique_senders")
-  updatedAt            DateTime @map("updated_at")
+  id                   Int   @id @default(autoincrement())
+  totalTransactions    Int   @map("total_transactions")
+  totalUniqueReceivers Int   @map("total_unique_receivers")
+  totalUniqueSenders   Int   @map("total_unique_senders")
+  avgMaxBlobGasFee     Float @map("avg_max_blob_gas_fee")
+
+  updatedAt DateTime @map("updated_at")
 
   @@map("transaction_overall_stats")
 }
@@ -168,18 +185,20 @@ model TransactionDailyStats {
   totalTransactions    Int      @map("total_transactions")
   totalUniqueSenders   Int      @map("total_unique_senders")
   totalUniqueReceivers Int      @map("total_unique_receivers")
+  avgMaxBlobGasFee     Float    @map("avg_max_blob_gas_fee")
 
   @@map("transaction_daily_stats")
 }
 
 // Blob metrics
 model BlobOverallStats {
-  id               Int      @id @default(autoincrement())
-  totalBlobs       Int      @map("total_blobs")
-  totalUniqueBlobs Int      @map("total_unique_blobs")
-  totalBlobSize    BigInt   @map("total_blob_size")
-  avgBlobSize      Float    @map("avg_blob_size")
-  updatedAt        DateTime @map("updated_at")
+  id               Int    @id @default(autoincrement())
+  totalBlobs       Int    @map("total_blobs")
+  totalUniqueBlobs Int    @map("total_unique_blobs")
+  totalBlobSize    BigInt @map("total_blob_size")
+  avgBlobSize      Float  @map("avg_blob_size")
+
+  updatedAt DateTime @map("updated_at")
 
   @@map("blob_overall_stats")
 }
