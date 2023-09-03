@@ -16,15 +16,27 @@ export const navigation = [
     title: 'Introduction',
     links: [
       { title: 'Welcome to Blobscan', href: '/' },
+      { title: 'Features', href: '/docs/features' },
       { title: 'Installation', href: '/docs/installation' },
       { title: 'Environment variables', href: '/docs/environment' },
       { title: 'Cron jobs', href: '/docs/cron-jobs' },
     ],
   },
   {
+    title: 'Gratitude Corner',
+    links: [
+      {
+        title: 'Funding',
+        href: '/docs/funding',
+      },
+    ],
+  },
+  {
     title: 'Development',
     links: [
+      { title: 'Codebase Overview', href: '/docs/codebase-overview' },
       { title: 'Running locally', href: '/docs/running-locally' },
+      { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Testing', href: '/docs/testing' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],
@@ -38,11 +50,7 @@ export const navigation = [
   },
   {
     title: 'Contributing',
-    links: [
-      { title: 'How to contribute', href: '/docs/how-to-contribute' },
-      { title: 'Architecture guide', href: '/docs/architecture-guide' },
-      { title: 'Design principles', href: '/docs/design-principles' },
-    ],
+    links: [{ title: 'How to contribute', href: '/docs/how-to-contribute' }],
   },
 ]
 
