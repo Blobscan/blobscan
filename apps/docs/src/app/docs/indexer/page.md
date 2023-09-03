@@ -8,7 +8,7 @@ nextjs:
 
 Here you can find information related to the indexer used by the Blobscan explorer.
 
-See the repository [here](https://github.com/Blobscan/blobscan-indexer.rs/tree/master).
+Check out the repository [here](https://github.com/Blobscan/blobscan).
 
 ## How it works?
 
@@ -29,7 +29,7 @@ git clone https://github.com/Blobscan/blobscan-indexer.rs.git
 cd blobscan-indexer.rs
 ```
 
-3. Set the [environment variables](/docs/environment#indexer).
+3. Set the [environment variables](https://github.com/Blobscan/blobscan-indexer.rs/blob/master/.env.example).
 
 The indexer interacts with other services (such as the execution and consensus clients). In a system where the defaults are not correct, they can be configured
 by using environment variables or by creating a `.env` file. You can use the `.env.example` file as a reference.

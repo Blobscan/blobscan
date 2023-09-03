@@ -10,13 +10,13 @@ Below you can find a breakdown of the Blobscan's codebase.
 
 ## Architecture
 
-{% figure  src="/architecture.svg" appendCurrentTheme=true /%}
-
-Blobscan is comprised of the following major components:
+Blobscan.com is comprised of the following major components:
 
 - **Web App**: A [Next.js](https://nextjs.org/) application hosted on [Vercel](https://vercel.com/) that spins up a [tRPC API](https://trpc.io) that communicates with the database via [Prisma](https://www.prisma.io/). It also uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 - **REST API**: An express app that runs the tRPC API with OpenAPI support. It exposes some of the tRPC API endpoints as REST endpoints for the public and external services such as the indexer.
 - **Indexer**: A Rust service that listens to the Ethereum blockchain looking for blocks and transactions containing blobs and forwards them to the REST API to be indexed.
+
+{% figure  src="/architecture.svg" appendCurrentTheme=true /%}
 
 ## Repository structure
 
@@ -34,7 +34,7 @@ Blobscan is composed of the following apps:
 |  [`@blobscan/web`](https://github.com/Blobscan/blobscan/tree/master/apps/web)                         | Nextjs app that contains the web app.       |
 |  [`@blobscan/rest-api-server`](https://github.com/Blobscan/blobscan/tree/master/apps/rest-api-server) | Express app that contains the REST API.     |
 
-### Package
+### Packages
 
 Here you canfind all the shared packages used by the apps is a list of all the packages used by the Blobscan apps:
 

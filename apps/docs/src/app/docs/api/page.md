@@ -14,5 +14,3 @@ are password protected by a shared key (this is the `SECRET_KEY` environment var
 ---
 
 {% figure  src="/swagger-ui.png" /%}
-
-![Swagger ui screenshot](/docs/api/swagger-ui.png)
