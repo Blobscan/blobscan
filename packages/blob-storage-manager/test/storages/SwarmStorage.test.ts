@@ -1,13 +1,13 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
 import {
   BLOB_DATA,
   BLOB_HASH,
   CHAIN_ID,
   SWARM_REFERENCE,
   SWARM_STORAGE_CONFIG,
-} from "../../test/fixtures";
-import { SwarmStorageMock as SwarmStorage } from "../__mocks__/SwarmStorage";
+} from "../fixtures";
 
 describe("SwarmStorage", () => {
   let storage: SwarmStorage;

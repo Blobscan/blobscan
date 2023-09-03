@@ -42,6 +42,14 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup GCS emulator
+        uses: fsouza/fake-gcs-action@v0.4.1
+        with:
+          version: "1.37.2"
+          backend: memory
+          scheme: http
+          data: packages/test/src/fixtures/storage
+
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
@@ -73,3 +81,6 @@ jobs:
 
       - name: Tests
         run: pnpm test
+        env:
+          POSTGRES_STORAGE_ENABLED: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci

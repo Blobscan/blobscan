@@ -20,7 +20,8 @@
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1"
+    "@blobscan/open-telemetry": "^0.0.1",
+    "@blobscan/test": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,

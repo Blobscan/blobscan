@@ -21,12 +21,16 @@
     "lint": {},
     "lint:fix": {},
     "test": {
-      "inputs": ["src/**/*.test.ts", "prisma/**/*.test.ts"]
+      "inputs": ["test/**/*.test.ts"]
     },
     "test:ui": {
-      "inputs": ["src/**/*.test.ts", "prisma/**/*.test.ts"]
+      "inputs": ["test/**/*.test.ts"]
     },
-    "clean": {
+    "test:dev": {
+      "inputs": ["test/**/*.test.ts"],
+      "cache": false
+    },
+    "test:setup": {
       "cache": false
     },
     "//#clean": {

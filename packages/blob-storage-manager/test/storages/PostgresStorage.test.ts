@@ -2,8 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
-import { BLOB_HASH, CHAIN_ID, HEX_DATA } from "../../test/fixtures";
-import { PostgresStorageMock as PostgresStorage } from "../__mocks__/PostgresStorage";
+import { PostgresStorageMock as PostgresStorage } from "../../src/__mocks__/PostgresStorage";
+import { BLOB_HASH, CHAIN_ID, HEX_DATA } from "../fixtures";
 
 describe("PostgresStorage", () => {
   let storage: PostgresStorage;

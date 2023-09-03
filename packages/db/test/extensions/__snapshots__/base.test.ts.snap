@@ -1,0 +1,214 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Base Extension > Address model > should upsert addresses from transactions 1`] = `
+[
+  {
+    "address": "address1",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address2",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": null,
+  },
+  {
+    "address": "address3",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address4",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1002,
+  },
+  {
+    "address": "address5",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address6",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1002,
+  },
+  {
+    "address": "address8",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1002,
+  },
+]
+`;
+
+exports[`Base Extension > Blob model > should filter new blobs 1`] = `
+[
+  {
+    "commitment": "commitment007",
+    "data": "data007",
+    "txHash": "txHash007",
+    "versionedHash": "blobHash007",
+  },
+  {
+    "commitment": "commitment008",
+    "data": "data008",
+    "txHash": "txHash008",
+    "versionedHash": "blobHash008",
+  },
+]
+`;
+
+exports[`Base Extension > Blob model > should upsert many blobs 1`] = `
+[
+  {
+    "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
+    "firstBlockNumber": 1002,
+    "size": 1500,
+    "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+  },
+  {
+    "commitment": "commitment001",
+    "firstBlockNumber": 1001,
+    "size": 1000,
+    "versionedHash": "blobHash001",
+  },
+  {
+    "commitment": "commitment002",
+    "firstBlockNumber": 1001,
+    "size": 1100,
+    "versionedHash": "blobHash002",
+  },
+  {
+    "commitment": "commitment003",
+    "firstBlockNumber": 1001,
+    "size": 1200,
+    "versionedHash": "blobHash003",
+  },
+  {
+    "commitment": "commitment004",
+    "firstBlockNumber": 1002,
+    "size": 1300,
+    "versionedHash": "blobHash004",
+  },
+  {
+    "commitment": "newCommitment005",
+    "firstBlockNumber": 1001,
+    "size": 1400,
+    "versionedHash": "blobHash005",
+  },
+  {
+    "commitment": "commitment006",
+    "firstBlockNumber": 1001,
+    "size": 1200,
+    "versionedHash": "blobHash006",
+  },
+  {
+    "commitment": "commitment007",
+    "firstBlockNumber": 1002,
+    "size": 1300,
+    "versionedHash": "blobHash007",
+  },
+]
+`;
+
+exports[`Base Extension > BlobDataStorageReference model > should upsert many references 1`] = `
+[
+  {
+    "blobHash": "blobHash001",
+    "blobStorage": "GOOGLE",
+    "dataReference": "gs://new-bucket/blobHash001",
+  },
+  {
+    "blobHash": "blobHash001",
+    "blobStorage": "SWARM",
+    "dataReference": "bzz://some-newhash-for-blobHash001",
+  },
+  {
+    "blobHash": "blobHash002",
+    "blobStorage": "GOOGLE",
+    "dataReference": "gs://new-bucket/blobHash002",
+  },
+]
+`;
+
+exports[`Base Extension > Block model > should find the latest block 1`] = `
+{
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000n,
+  "excessBlobGas": 15000n,
+  "hash": "blockHash002",
+  "insertedAt": 2023-08-26T12:10:00.000Z,
+  "number": 1002,
+  "slot": 102,
+  "timestamp": 2023-08-26T12:00:00.000Z,
+  "updatedAt": 2023-08-26T12:10:00.000Z,
+}
+`;
+
+exports[`Base Extension > Transaction model > should upsert many transactions 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": 1000n,
+    "blockNumber": 1002,
+    "fromId": "address5",
+    "gasPrice": 10n,
+    "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+    "maxFeePerBlobGas": 100n,
+    "toId": "address6",
+  },
+  {
+    "blobAsCalldataGasUsed": 1000n,
+    "blockNumber": 1002,
+    "fromId": "address1",
+    "gasPrice": 10n,
+    "hash": "txHash001",
+    "maxFeePerBlobGas": 100n,
+    "toId": "address3",
+  },
+  {
+    "blobAsCalldataGasUsed": 1100n,
+    "blockNumber": 1001,
+    "fromId": "address3",
+    "gasPrice": 11n,
+    "hash": "txHash002",
+    "maxFeePerBlobGas": 110n,
+    "toId": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": 500n,
+    "blockNumber": 1001,
+    "fromId": "address5",
+    "gasPrice": 5n,
+    "hash": "txHash003",
+    "maxFeePerBlobGas": 120n,
+    "toId": "address3",
+  },
+  {
+    "blobAsCalldataGasUsed": 1000n,
+    "blockNumber": 1002,
+    "fromId": "address1",
+    "gasPrice": 10n,
+    "hash": "txHash004",
+    "maxFeePerBlobGas": 100n,
+    "toId": "address3",
+  },
+  {
+    "blobAsCalldataGasUsed": 1000n,
+    "blockNumber": 1002,
+    "fromId": "address2",
+    "gasPrice": 10n,
+    "hash": "txHash005",
+    "maxFeePerBlobGas": 100n,
+    "toId": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": 1000n,
+    "blockNumber": 1002,
+    "fromId": "address5",
+    "gasPrice": 10n,
+    "hash": "txHash008",
+    "maxFeePerBlobGas": 100n,
+    "toId": "address6",
+  },
+]
+`;
