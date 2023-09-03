@@ -10,11 +10,11 @@ exports[`Base Extension > Address model > should upsert addresses from transacti
   {
     "address": "address2",
     "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1002,
+    "firstBlockNumberAsSender": null,
   },
   {
     "address": "address3",
-    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsReceiver": 1001,
     "firstBlockNumberAsSender": 1001,
   },
   {
@@ -24,18 +24,18 @@ exports[`Base Extension > Address model > should upsert addresses from transacti
   },
   {
     "address": "address5",
-    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsReceiver": 1002,
     "firstBlockNumberAsSender": 1001,
   },
   {
     "address": "address6",
     "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": null,
+    "firstBlockNumberAsSender": 1002,
   },
   {
-    "address": "address7",
+    "address": "address8",
     "firstBlockNumberAsReceiver": 1002,
-    "firstBlockNumberAsSender": null,
+    "firstBlockNumberAsSender": 1002,
   },
 ]
 `;

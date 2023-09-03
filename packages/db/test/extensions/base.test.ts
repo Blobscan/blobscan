@@ -8,35 +8,84 @@ describe("Base Extension", () => {
     it("should upsert addresses from transactions", async () => {
       const txs = [
         {
-          from: "address1",
-          to: "address5",
-          blockNumber: 1001,
-        },
-        {
-          from: "address2",
+          from: "address8",
           to: "address1",
           blockNumber: 1002,
         },
         {
           from: "address4",
-          to: "address7",
+          to: "address8",
+          blockNumber: 1002,
+        },
+        {
+          from: "address3",
+          to: "address4",
+          blockNumber: 1002,
+        },
+        {
+          from: "address6",
+          to: "address3",
           blockNumber: 1002,
         },
       ];
       await prisma.address.upsertAddressesFromTransactions(txs);
 
-      const result = await prisma.address.findMany({
-        select: {
-          address: true,
-          firstBlockNumberAsSender: true,
-          firstBlockNumberAsReceiver: true,
-        },
-        orderBy: {
-          address: "asc",
-        },
-      });
-      expect(result).toHaveLength(7);
-      expect(result).toMatchSnapshot();
+      const [all, address1, address3, address8] = await Promise.all([
+        prisma.address.findMany({
+          select: {
+            address: true,
+            firstBlockNumberAsSender: true,
+            firstBlockNumberAsReceiver: true,
+          },
+          orderBy: {
+            address: "asc",
+          },
+        }),
+        prisma.address.findUnique({
+          select: {
+            address: true,
+            firstBlockNumberAsSender: true,
+            firstBlockNumberAsReceiver: true,
+          },
+          where: {
+            address: "address1",
+          },
+        }),
+        prisma.address.findUnique({
+          select: {
+            address: true,
+            firstBlockNumberAsSender: true,
+            firstBlockNumberAsReceiver: true,
+          },
+          where: {
+            address: "address3",
+          },
+        }),
+        prisma.address.findUnique({
+          select: {
+            address: true,
+            firstBlockNumberAsSender: true,
+            firstBlockNumberAsReceiver: true,
+          },
+          where: {
+            address: "address8",
+          },
+        }),
+      ]);
+
+      expect(all).toHaveLength(7);
+      expect(all).toMatchSnapshot();
+
+      // Existing address should create new field
+      expect(address1?.firstBlockNumberAsReceiver).toBe(1002);
+
+      // Existing address should not update fields
+      expect(address3?.firstBlockNumberAsReceiver).toBe(1001);
+      expect(address3?.firstBlockNumberAsSender).toBe(1001);
+
+      // New address should create both fields
+      expect(address8?.firstBlockNumberAsReceiver).toBe(1002);
+      expect(address8?.firstBlockNumberAsSender).toBe(1002);
     });
   });
 

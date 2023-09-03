@@ -113,3 +113,16 @@ export async function getIndexedData(caller) {
     blobsOnTransactions,
   };
 }
+
+export function filterData(data) {
+  if (Array.isArray(data)) {
+    return data.map((d) => {
+      delete d.updatedAt;
+      delete d.insertedAt;
+    });
+  }
+
+  delete data.updatedAt;
+  delete data.insertedAt;
+  return data;
+}

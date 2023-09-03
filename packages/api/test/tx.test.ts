@@ -29,6 +29,7 @@ describe("Transaction route", async () => {
       };
 
       const result = await caller.tx.getAll(input);
+      result.transactions.sort((a, b) => a.hash.localeCompare(b.hash));
       expect(result).toMatchSnapshot();
     });
   });

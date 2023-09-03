@@ -50,7 +50,7 @@
     {
       "address": "address3",
       "firstBlockNumberAsSender": 1001,
-      "firstBlockNumberAsReceiver": 1002,
+      "firstBlockNumberAsReceiver": 1001,
       "insertedAt": "2023-08-25T10:10:00Z",
       "updatedAt": "2023-08-26T12:10:00Z"
     },
