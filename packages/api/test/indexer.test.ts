@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import blobStorageManager from "@blobscan/blob-storage-manager/src/__mocks__/BlobStorageManager";
 import { prisma } from "@blobscan/db";
@@ -11,6 +11,23 @@ import { getCaller, getIndexedData } from "./helper";
 
 type UpdateSlotInput = inferProcedureInput<AppRouter["indexer"]["updateSlot"]>;
 type IndexDataInput = inferProcedureInput<AppRouter["indexer"]["indexData"]>;
+
+vi.mock("../src/env", () => ({
+  env: {
+    SECRET_KEY: "supersecret",
+  },
+}));
+
+vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
+  env: {
+    CHAIN_ID: 7011893058,
+    POSTGRES_STORAGE_ENABLED: true,
+    GOOGLE_STORAGE_ENABLED: true,
+    GOOGLE_STORAGE_PROJECT_ID: "blobscan-test-project",
+    GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test-bucket",
+    GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:4443",
+  },
+}));
 
 describe("Indexer route", async () => {
   let caller;

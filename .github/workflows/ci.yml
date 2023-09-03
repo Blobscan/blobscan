@@ -82,11 +82,4 @@ jobs:
       - name: Tests
         run: pnpm test
         env:
-          CHAIN_ID: 7011893058
-          SECRET_KEY: supersecret
-          POSTGRES_STORAGE_ENABLED: true
-          GOOGLE_STORAGE_ENABLED: true
-          GOOGLE_STORAGE_PROJECT_ID: blobscan-test-project
-          GOOGLE_STORAGE_BUCKET: blobscan-test-bucket
-          GOOGLE_STORAGE_API_ENDPOINT: http://localhost:4443
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
