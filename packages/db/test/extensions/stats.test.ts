@@ -148,11 +148,25 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
+              "avgBlobAsCalldataFee": 5000000,
+              "avgBlobFee": 100000000,
+              "avgBlobGasPrice": 20,
               "day": 2023-08-24T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 5000000n,
+              "totalBlobAsCalldataGasUsed": 250000n,
+              "totalBlobFee": 100000000n,
+              "totalBlobGasUsed": 5000000n,
               "totalBlocks": 1,
             },
             {
+              "avgBlobAsCalldataFee": 5610000,
+              "avgBlobFee": 121000000,
+              "avgBlobGasPrice": 22,
               "day": 2023-08-26T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 5610000n,
+              "totalBlobAsCalldataGasUsed": 255000n,
+              "totalBlobFee": 121000000n,
+              "totalBlobGasUsed": 5500000n,
               "totalBlocks": 1,
             },
           ]
@@ -168,7 +182,14 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
+              "avgBlobAsCalldataFee": 5000000,
+              "avgBlobFee": 100000000,
+              "avgBlobGasPrice": 20,
               "day": 2023-08-24T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 5000000n,
+              "totalBlobAsCalldataGasUsed": 250000n,
+              "totalBlobFee": 100000000n,
+              "totalBlobGasUsed": 5000000n,
               "totalBlocks": 1,
             },
           ]
@@ -184,7 +205,14 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
+              "avgBlobAsCalldataFee": 5610000,
+              "avgBlobFee": 121000000,
+              "avgBlobGasPrice": 22,
               "day": 2023-08-26T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 5610000n,
+              "totalBlobAsCalldataGasUsed": 255000n,
+              "totalBlobFee": 121000000n,
+              "totalBlobGasUsed": 5500000n,
               "totalBlocks": 1,
             },
           ]
@@ -219,15 +247,36 @@ describe("Stats Extension", () => {
         expect(resultAfter).toMatchInlineSnapshot(`
           [
             {
+              "avgBlobAsCalldataFee": 5000000,
+              "avgBlobFee": 100000000,
+              "avgBlobGasPrice": 20,
               "day": 2023-08-24T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 5000000n,
+              "totalBlobAsCalldataGasUsed": 250000n,
+              "totalBlobFee": 100000000n,
+              "totalBlobGasUsed": 5000000n,
               "totalBlocks": 1,
             },
             {
+              "avgBlobAsCalldataFee": 5610000,
+              "avgBlobFee": 121000000,
+              "avgBlobGasPrice": 22,
               "day": 2023-08-25T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 5610000n,
+              "totalBlobAsCalldataGasUsed": 255000n,
+              "totalBlobFee": 121000000n,
+              "totalBlobGasUsed": 5500000n,
               "totalBlocks": 1,
             },
             {
+              "avgBlobAsCalldataFee": 5305000,
+              "avgBlobFee": 110500000,
+              "avgBlobGasPrice": 21,
               "day": 2023-08-26T00:00:00.000Z,
+              "totalBlobAsCalldataFee": 10610000n,
+              "totalBlobAsCalldataGasUsed": 505000n,
+              "totalBlobFee": 221000000n,
+              "totalBlobGasUsed": 10500000n,
               "totalBlocks": 2,
             },
           ]
@@ -265,12 +314,14 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
+              "avgMaxBlobGasFee": 110,
               "day": 2023-08-24T00:00:00.000Z,
               "totalTransactions": 3,
               "totalUniqueReceivers": 3,
               "totalUniqueSenders": 3,
             },
             {
+              "avgMaxBlobGasFee": 100,
               "day": 2023-08-26T00:00:00.000Z,
               "totalTransactions": 3,
               "totalUniqueReceivers": 3,
@@ -289,6 +340,7 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
+              "avgMaxBlobGasFee": 110,
               "day": 2023-08-24T00:00:00.000Z,
               "totalTransactions": 3,
               "totalUniqueReceivers": 3,
@@ -307,6 +359,7 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
+              "avgMaxBlobGasFee": 100,
               "day": 2023-08-26T00:00:00.000Z,
               "totalTransactions": 3,
               "totalUniqueReceivers": 3,
@@ -344,12 +397,14 @@ describe("Stats Extension", () => {
         expect(resultAfter).toMatchInlineSnapshot(`
           [
             {
+              "avgMaxBlobGasFee": 110,
               "day": 2023-08-24T00:00:00.000Z,
               "totalTransactions": 5,
               "totalUniqueReceivers": 5,
               "totalUniqueSenders": 5,
             },
             {
+              "avgMaxBlobGasFee": 100,
               "day": 2023-08-26T00:00:00.000Z,
               "totalTransactions": 3,
               "totalUniqueReceivers": 3,
@@ -465,7 +520,7 @@ describe("Stats Extension", () => {
         expect(result).toMatchInlineSnapshot(`
           [
             {
-              "avgBlobSize": 1500,
+              "avgBlobSize": 1070,
               "totalBlobSize": 7600n,
               "totalBlobs": 8,
               "totalUniqueBlobs": 8,

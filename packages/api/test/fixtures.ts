@@ -4,8 +4,8 @@ export const INDEXER_DATA = {
     hash: "blockHash003",
     timestamp: 1630257174,
     slot: 103,
-    blobGasUsed: "10000",
-    excessBlobGas: "5000",
+    blobGasUsed: 10000,
+    excessBlobGas: 5000,
   },
   transactions: [
     {

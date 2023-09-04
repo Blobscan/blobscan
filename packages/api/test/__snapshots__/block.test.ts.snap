@@ -4,10 +4,10 @@ exports[`Block route > getAll > should get all 1`] = `
 {
   "blocks": [
     {
-      "blobAsCalldataGasUsed": 255000n,
+      "blobAsCalldataGasUsed": 255000,
       "blobGasPrice": 22n,
-      "blobGasUsed": 5500000n,
-      "excessBlobGas": 15000n,
+      "blobGasUsed": 5500000,
+      "excessBlobGas": 15000,
       "hash": "blockHash002",
       "number": 1002,
       "slot": 102,
@@ -58,10 +58,10 @@ exports[`Block route > getAll > should get all 1`] = `
       ],
     },
     {
-      "blobAsCalldataGasUsed": 250000n,
+      "blobAsCalldataGasUsed": 250000,
       "blobGasPrice": 20n,
-      "blobGasUsed": 5000000n,
-      "excessBlobGas": 10000n,
+      "blobGasUsed": 5000000,
+      "excessBlobGas": 10000,
       "hash": "blockHash001",
       "number": 1001,
       "slot": 101,
@@ -125,10 +125,10 @@ exports[`Block route > getAll > should get all with pagination 1`] = `
 
 exports[`Block route > getByBlockNumber > should get by hash 1`] = `
 {
-  "blobAsCalldataGasUsed": 255000n,
+  "blobAsCalldataGasUsed": 255000,
   "blobGasPrice": 22n,
-  "blobGasUsed": 5500000n,
-  "excessBlobGas": 15000n,
+  "blobGasUsed": 5500000,
+  "excessBlobGas": 15000,
   "hash": "blockHash002",
   "number": 1002,
   "slot": 102,
@@ -182,10 +182,10 @@ exports[`Block route > getByBlockNumber > should get by hash 1`] = `
 
 exports[`Block route > getByHash > should get by hash 1`] = `
 {
-  "blobAsCalldataGasUsed": 250000n,
+  "blobAsCalldataGasUsed": 250000,
   "blobGasPrice": 20n,
-  "blobGasUsed": 5000000n,
-  "excessBlobGas": 10000n,
+  "blobGasUsed": 5000000,
+  "excessBlobGas": 10000,
   "hash": "blockHash001",
   "number": 1001,
   "slot": 101,

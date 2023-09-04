@@ -2,10 +2,10 @@
 
 exports[`Indexer route > indexData > should index new data if auth 1`] = `
 {
-  "blobAsCalldataGasUsed": 608n,
+  "blobAsCalldataGasUsed": 608,
   "blobGasPrice": 1n,
-  "blobGasUsed": 10000n,
-  "excessBlobGas": 5000n,
+  "blobGasUsed": 10000,
+  "excessBlobGas": 5000,
   "hash": "blockHash003",
   "number": 1003,
   "slot": 103,
