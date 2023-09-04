@@ -1,354 +1,471 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Stats route > Blob > getDailyStats > should get for every timeframe 1`] = `
-[
-  {
-    "avgBlobSizes": [],
-    "days": [],
-    "totalBlobSizes": [],
-    "totalBlobs": [],
-    "totalUniqueBlobs": [],
-  },
-  {
-    "avgBlobSizes": [],
-    "days": [],
-    "totalBlobSizes": [],
-    "totalBlobs": [],
-    "totalUniqueBlobs": [],
-  },
-  {
-    "avgBlobSizes": [
-      1100,
-      1400,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobSizes": [
-      3300,
-      4200,
-    ],
-    "totalBlobs": [
-      3,
-      3,
-    ],
-    "totalUniqueBlobs": [
-      3,
-      3,
-    ],
-  },
-  {
-    "avgBlobSizes": [
-      1100,
-      1400,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobSizes": [
-      3300,
-      4200,
-    ],
-    "totalBlobs": [
-      3,
-      3,
-    ],
-    "totalUniqueBlobs": [
-      3,
-      3,
-    ],
-  },
-  {
-    "avgBlobSizes": [
-      1100,
-      1400,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobSizes": [
-      3300,
-      4200,
-    ],
-    "totalBlobs": [
-      3,
-      3,
-    ],
-    "totalUniqueBlobs": [
-      3,
-      3,
-    ],
-  },
-  {
-    "avgBlobSizes": [
-      1100,
-      1400,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobSizes": [
-      3300,
-      4200,
-    ],
-    "totalBlobs": [
-      3,
-      3,
-    ],
-    "totalUniqueBlobs": [
-      3,
-      3,
-    ],
-  },
-]
+exports[`Stats route > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 1d 1`] = `
+{
+  "avgBlobSizes": [],
+  "days": [],
+  "totalBlobSizes": [],
+  "totalBlobs": [],
+  "totalUniqueBlobs": [],
+}
 `;
 
-exports[`Stats route > Block > getDailyStats > should get for every timeframe 1`] = `
-[
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "avgBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "avgBlobGasPrices": [
-      20,
-      22,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "totalBlobAsCalldataGasUsed": [
-      250000,
-      255000,
-    ],
-    "totalBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "totalBlobGasUsed": [
-      5000000,
-      5500000,
-    ],
-    "totalBlocks": [
-      1,
-      1,
-    ],
-  },
-  {
-    "avgBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "avgBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "avgBlobGasPrices": [
-      20,
-      22,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "totalBlobAsCalldataGasUsed": [
-      250000,
-      255000,
-    ],
-    "totalBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "totalBlobGasUsed": [
-      5000000,
-      5500000,
-    ],
-    "totalBlocks": [
-      1,
-      1,
-    ],
-  },
-  {
-    "avgBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "avgBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "avgBlobGasPrices": [
-      20,
-      22,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "totalBlobAsCalldataGasUsed": [
-      250000,
-      255000,
-    ],
-    "totalBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "totalBlobGasUsed": [
-      5000000,
-      5500000,
-    ],
-    "totalBlocks": [
-      1,
-      1,
-    ],
-  },
-  {
-    "avgBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "avgBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "avgBlobGasPrices": [
-      20,
-      22,
-    ],
-    "days": [
-      "2023-08-24T00:00:00.000Z",
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobAsCalldataFees": [
-      5000000,
-      5610000,
-    ],
-    "totalBlobAsCalldataGasUsed": [
-      250000,
-      255000,
-    ],
-    "totalBlobFees": [
-      100000000,
-      121000000,
-    ],
-    "totalBlobGasUsed": [
-      5000000,
-      5500000,
-    ],
-    "totalBlocks": [
-      1,
-      1,
-    ],
-  },
-]
+exports[`Stats route > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 7d 1`] = `
+{
+  "avgBlobSizes": [
+    1400,
+  ],
+  "days": [
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobSizes": [
+    4200,
+  ],
+  "totalBlobs": [
+    3,
+  ],
+  "totalUniqueBlobs": [
+    3,
+  ],
+}
 `;
 
-exports[`Stats route > Transaction > getDailyStats > should get for every timeframe 1`] = `
-[
-  {
-    "avgMaxBlobGasFees": [],
-    "days": [],
-    "totalTransactions": [],
-    "totalUniqueReceivers": [],
-    "totalUniqueSenders": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-  {
-    "avgBlobAsCalldataFees": [],
-    "avgBlobFees": [],
-    "avgBlobGasPrices": [],
-    "days": [],
-    "totalBlobAsCalldataFees": [],
-    "totalBlobAsCalldataGasUsed": [],
-    "totalBlobFees": [],
-    "totalBlobGasUsed": [],
-    "totalBlocks": [],
-  },
-]
+exports[`Stats route > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 15d 1`] = `
+{
+  "avgBlobSizes": [
+    1100,
+    1400,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobSizes": [
+    3300,
+    4200,
+  ],
+  "totalBlobs": [
+    3,
+    3,
+  ],
+  "totalUniqueBlobs": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 30d 1`] = `
+{
+  "avgBlobSizes": [
+    1100,
+    1400,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobSizes": [
+    3300,
+    4200,
+  ],
+  "totalBlobs": [
+    3,
+    3,
+  ],
+  "totalUniqueBlobs": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
+{
+  "avgBlobSizes": [
+    1100,
+    1400,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobSizes": [
+    3300,
+    4200,
+  ],
+  "totalBlobs": [
+    3,
+    3,
+  ],
+  "totalUniqueBlobs": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 360d 1`] = `
+{
+  "avgBlobSizes": [
+    1100,
+    1400,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobSizes": [
+    3300,
+    4200,
+  ],
+  "totalBlobs": [
+    3,
+    3,
+  ],
+  "totalUniqueBlobs": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 1d 1`] = `
+{
+  "avgBlobAsCalldataFees": [],
+  "avgBlobFees": [],
+  "avgBlobGasPrices": [],
+  "days": [],
+  "totalBlobAsCalldataFees": [],
+  "totalBlobAsCalldataGasUsed": [],
+  "totalBlobFees": [],
+  "totalBlobGasUsed": [],
+  "totalBlocks": [],
+}
+`;
+
+exports[`Stats route > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 7d 1`] = `
+{
+  "avgBlobAsCalldataFees": [
+    5610000,
+  ],
+  "avgBlobFees": [
+    121000000,
+  ],
+  "avgBlobGasPrices": [
+    22,
+  ],
+  "days": [
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobAsCalldataFees": [
+    5610000,
+  ],
+  "totalBlobAsCalldataGasUsed": [
+    255000,
+  ],
+  "totalBlobFees": [
+    121000000,
+  ],
+  "totalBlobGasUsed": [
+    5500000,
+  ],
+  "totalBlocks": [
+    1,
+  ],
+}
+`;
+
+exports[`Stats route > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 15d 1`] = `
+{
+  "avgBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "avgBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "avgBlobGasPrices": [
+    20,
+    22,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "totalBlobAsCalldataGasUsed": [
+    250000,
+    255000,
+  ],
+  "totalBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "totalBlobGasUsed": [
+    5000000,
+    5500000,
+  ],
+  "totalBlocks": [
+    1,
+    1,
+  ],
+}
+`;
+
+exports[`Stats route > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 30d 1`] = `
+{
+  "avgBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "avgBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "avgBlobGasPrices": [
+    20,
+    22,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "totalBlobAsCalldataGasUsed": [
+    250000,
+    255000,
+  ],
+  "totalBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "totalBlobGasUsed": [
+    5000000,
+    5500000,
+  ],
+  "totalBlocks": [
+    1,
+    1,
+  ],
+}
+`;
+
+exports[`Stats route > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
+{
+  "avgBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "avgBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "avgBlobGasPrices": [
+    20,
+    22,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "totalBlobAsCalldataGasUsed": [
+    250000,
+    255000,
+  ],
+  "totalBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "totalBlobGasUsed": [
+    5000000,
+    5500000,
+  ],
+  "totalBlocks": [
+    1,
+    1,
+  ],
+}
+`;
+
+exports[`Stats route > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 360d 1`] = `
+{
+  "avgBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "avgBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "avgBlobGasPrices": [
+    20,
+    22,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalBlobAsCalldataFees": [
+    5000000,
+    5610000,
+  ],
+  "totalBlobAsCalldataGasUsed": [
+    250000,
+    255000,
+  ],
+  "totalBlobFees": [
+    100000000,
+    121000000,
+  ],
+  "totalBlobGasUsed": [
+    5000000,
+    5500000,
+  ],
+  "totalBlocks": [
+    1,
+    1,
+  ],
+}
+`;
+
+exports[`Stats route > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 1d 1`] = `
+{
+  "avgMaxBlobGasFees": [],
+  "days": [],
+  "totalTransactions": [],
+  "totalUniqueReceivers": [],
+  "totalUniqueSenders": [],
+}
+`;
+
+exports[`Stats route > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 7d 1`] = `
+{
+  "avgMaxBlobGasFees": [
+    100,
+  ],
+  "days": [
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalTransactions": [
+    3,
+  ],
+  "totalUniqueReceivers": [
+    3,
+  ],
+  "totalUniqueSenders": [
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 15d 1`] = `
+{
+  "avgMaxBlobGasFees": [
+    110,
+    100,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalTransactions": [
+    3,
+    3,
+  ],
+  "totalUniqueReceivers": [
+    3,
+    3,
+  ],
+  "totalUniqueSenders": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 30d 1`] = `
+{
+  "avgMaxBlobGasFees": [
+    110,
+    100,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalTransactions": [
+    3,
+    3,
+  ],
+  "totalUniqueReceivers": [
+    3,
+    3,
+  ],
+  "totalUniqueSenders": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
+{
+  "avgMaxBlobGasFees": [
+    110,
+    100,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalTransactions": [
+    3,
+    3,
+  ],
+  "totalUniqueReceivers": [
+    3,
+    3,
+  ],
+  "totalUniqueSenders": [
+    3,
+    3,
+  ],
+}
+`;
+
+exports[`Stats route > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 360d 1`] = `
+{
+  "avgMaxBlobGasFees": [
+    110,
+    100,
+  ],
+  "days": [
+    "2023-08-24T00:00:00.000Z",
+    "2023-08-26T00:00:00.000Z",
+  ],
+  "totalTransactions": [
+    3,
+    3,
+  ],
+  "totalUniqueReceivers": [
+    3,
+    3,
+  ],
+  "totalUniqueSenders": [
+    3,
+    3,
+  ],
+}
 `;

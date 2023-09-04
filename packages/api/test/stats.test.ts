@@ -2,8 +2,31 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { prisma } from "@blobscan/db";
 
+import type { TimeFrame } from "../src/middlewares/withTimeFrame";
 import { appRouter } from "../src/root";
 import { filterData, getContext } from "./helper";
+
+const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
+
+function setUpGetDailyStatsTests(
+  name: string,
+  filler: () => Promise<unknown>,
+  fetcher: (timeFrame: TimeFrame) => Promise<unknown>
+) {
+  return describe(name, () => {
+    describe("when getting stats for a specific timeframe", () => {
+      TIME_FRAMES.forEach((timeFrame) => {
+        it(`should get daily stats for ${timeFrame}`, async () => {
+          await filler();
+
+          const result = await fetcher(timeFrame);
+
+          expect(result).toMatchSnapshot();
+        });
+      });
+    });
+  });
+}
 
 describe("Stats route", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -13,12 +36,11 @@ describe("Stats route", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe("Blob", () => {
-    describe("getOverallStats", () => {
-      it("should get all", async () => {
-        await prisma.blobOverallStats.backfill();
-        const result = await caller.stats.getBlobOverallStats();
-        expect(filterData(result)).toMatchInlineSnapshot(`
+  describe("getBlobOverallStats", () => {
+    it("should get all", async () => {
+      await prisma.blobOverallStats.backfill();
+      const result = await caller.stats.getBlobOverallStats();
+      expect(filterData(result)).toMatchInlineSnapshot(`
           {
             "avgBlobSize": 1250,
             "totalBlobSize": 7500n,
@@ -26,43 +48,20 @@ describe("Stats route", async () => {
             "totalUniqueBlobs": 6,
           }
         `);
-      });
-    });
-
-    describe("getDailyStats", () => {
-      it("should get for every timeframe", async () => {
-        await prisma.blobDailyStats.fill({});
-        const result = await Promise.all([
-          caller.stats.getBlobDailyStats({
-            timeFrame: "1d",
-          }),
-          caller.stats.getBlobDailyStats({
-            timeFrame: "7d",
-          }),
-          caller.stats.getBlobDailyStats({
-            timeFrame: "15d",
-          }),
-          caller.stats.getBlobDailyStats({
-            timeFrame: "30d",
-          }),
-          caller.stats.getBlobDailyStats({
-            timeFrame: "180d",
-          }),
-          caller.stats.getBlobDailyStats({
-            timeFrame: "360d",
-          }),
-        ]);
-        expect(result).toMatchSnapshot();
-      });
     });
   });
 
-  describe("Block", () => {
-    describe("getOverallStats", () => {
-      it("should get all", async () => {
-        await prisma.blockOverallStats.backfill();
-        const result = await caller.stats.getBlockOverallStats();
-        expect(filterData(result)).toMatchInlineSnapshot(`
+  setUpGetDailyStatsTests(
+    "getBlobDailyStats",
+    () => prisma.blobDailyStats.fill({}),
+    (timeFrame) => caller.stats.getBlobDailyStats({ timeFrame })
+  );
+
+  describe("getOverallStats", () => {
+    it("should get all", async () => {
+      await prisma.blockOverallStats.backfill();
+      const result = await caller.stats.getBlockOverallStats();
+      expect(filterData(result)).toMatchInlineSnapshot(`
           {
             "avgBlobAsCalldataFee": 5305000,
             "avgBlobFee": 110500000,
@@ -74,43 +73,20 @@ describe("Stats route", async () => {
             "totalBlocks": 2,
           }
         `);
-      });
-    });
-
-    describe("getDailyStats", () => {
-      it("should get for every timeframe", async () => {
-        await prisma.blockDailyStats.fill({});
-        const result = await Promise.all([
-          caller.stats.getBlockDailyStats({
-            timeFrame: "1d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "7d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "15d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "30d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "180d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "360d",
-          }),
-        ]);
-        expect(result).toMatchSnapshot();
-      });
     });
   });
 
-  describe("Transaction", () => {
-    describe("getOverallStats", () => {
-      it("should get all", async () => {
-        await prisma.transactionOverallStats.backfill();
-        const result = await caller.stats.getTransactionOverallStats();
-        expect(filterData(result)).toMatchInlineSnapshot(`
+  setUpGetDailyStatsTests(
+    "getBlockDailyStats",
+    () => prisma.blockDailyStats.fill({}),
+    (timeFrame) => caller.stats.getBlockDailyStats({ timeFrame })
+  );
+
+  describe("getOverallStats", () => {
+    it("should get all", async () => {
+      await prisma.transactionOverallStats.backfill();
+      const result = await caller.stats.getTransactionOverallStats();
+      expect(filterData(result)).toMatchInlineSnapshot(`
           {
             "avgMaxBlobGasFee": 105,
             "totalTransactions": 6,
@@ -118,34 +94,12 @@ describe("Stats route", async () => {
             "totalUniqueSenders": 4,
           }
         `);
-      });
-    });
-
-    describe("getDailyStats", () => {
-      it("should get for every timeframe", async () => {
-        await prisma.transactionDailyStats.fill({});
-        const result = await Promise.all([
-          caller.stats.getTransactionDailyStats({
-            timeFrame: "1d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "7d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "15d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "30d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "180d",
-          }),
-          caller.stats.getBlockDailyStats({
-            timeFrame: "360d",
-          }),
-        ]);
-        expect(result).toMatchSnapshot();
-      });
     });
   });
+
+  setUpGetDailyStatsTests(
+    "getTransactionDailyStats",
+    () => prisma.transactionDailyStats.fill({}),
+    (timeFrame) => caller.stats.getTransactionDailyStats({ timeFrame })
+  );
 });
