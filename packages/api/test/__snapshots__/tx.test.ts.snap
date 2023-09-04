@@ -175,6 +175,30 @@ exports[`Transaction route > getAll > should get all with pagination 1`] = `
     "maxFeePerBlobGas": 100n,
     "toId": "address6",
   },
+  {
+    "blobAsCalldataGasUsed": 1000,
+    "blobs": [
+      {
+        "blob": {
+          "commitment": "commitment001",
+          "size": 1000,
+        },
+        "blobHash": "blobHash001",
+        "index": 0,
+      },
+    ],
+    "block": {
+      "blobGasPrice": 20n,
+      "excessBlobGas": 10000,
+      "timestamp": 2023-08-24T10:00:00.000Z,
+    },
+    "blockNumber": 1001,
+    "fromId": "address1",
+    "gasPrice": 10n,
+    "hash": "txHash001",
+    "maxFeePerBlobGas": 100n,
+    "toId": "address2",
+  },
 ]
 `;
 

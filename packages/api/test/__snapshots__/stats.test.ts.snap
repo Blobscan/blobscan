@@ -10,21 +10,11 @@ exports[`Stats route > Blob > getDailyStats > should get for every timeframe 1`]
     "totalUniqueBlobs": [],
   },
   {
-    "avgBlobSizes": [
-      1400,
-    ],
-    "days": [
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobSizes": [
-      4200,
-    ],
-    "totalBlobs": [
-      3,
-    ],
-    "totalUniqueBlobs": [
-      3,
-    ],
+    "avgBlobSizes": [],
+    "days": [],
+    "totalBlobSizes": [],
+    "totalBlobs": [],
+    "totalUniqueBlobs": [],
   },
   {
     "avgBlobSizes": [
@@ -131,33 +121,15 @@ exports[`Stats route > Block > getDailyStats > should get for every timeframe 1`
     "totalBlocks": [],
   },
   {
-    "avgBlobAsCalldataFees": [
-      5610000,
-    ],
-    "avgBlobFees": [
-      121000000,
-    ],
-    "avgBlobGasPrices": [
-      22,
-    ],
-    "days": [
-      "2023-08-26T00:00:00.000Z",
-    ],
-    "totalBlobAsCalldataFees": [
-      5610000,
-    ],
-    "totalBlobAsCalldataGasUsed": [
-      255000,
-    ],
-    "totalBlobFees": [
-      121000000,
-    ],
-    "totalBlobGasUsed": [
-      5500000,
-    ],
-    "totalBlocks": [
-      1,
-    ],
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
   },
   {
     "avgBlobAsCalldataFees": [
