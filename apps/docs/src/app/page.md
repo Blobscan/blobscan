@@ -9,6 +9,7 @@ The architecture of Blobscan has the following components:
 - An [indexer](/docs/indexer) that communicates with consensus and execution layer clients, fetches blob information and stores it in a PostgreSQL database
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
+- A blob storage manager with support for different storage providers to keep blob data available.
 
 {% quick-links %}
 
@@ -16,7 +17,7 @@ The architecture of Blobscan has the following components:
 
 {% quick-link title="Running locally" icon="plugins" href="/docs/running-locally" description="Set up your local environment and run Blobscan." /%}
 
-{% quick-link title="Architecture guide" icon="presets" href="/docs/architecture-guide" description="Learn how the internals work and contribute." /%}
+{% quick-link title="Codebase" icon="presets" href="/docs/codebase-overview" description="Learn how the internals work and contribute." /%}
 
 {% quick-link title="Troubleshooting" icon="theming" href="/docs/troubleshooting" description="Find how to solve common issues." /%}
 

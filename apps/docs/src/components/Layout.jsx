@@ -34,7 +34,7 @@ export const navigation = [
   {
     title: 'Development',
     links: [
-      { title: 'Codebase Overview', href: '/docs/codebase-overview' },
+      { title: 'Codebase overview', href: '/docs/codebase-overview' },
       { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Testing', href: '/docs/testing' },
@@ -50,7 +50,10 @@ export const navigation = [
   },
   {
     title: 'Contributing',
-    links: [{ title: 'How to contribute', href: '/docs/how-to-contribute' }],
+    links: [
+      { title: 'How to contribute', href: '/docs/how-to-contribute' },
+      { title: 'Code of conduct', href: '/docs/code-of-conduct' },
+    ],
   },
 ]
 
