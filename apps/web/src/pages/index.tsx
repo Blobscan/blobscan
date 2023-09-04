@@ -9,26 +9,21 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
+import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { api } from "~/api-client";
-import { useTransformResult } from "~/hooks/useTransformResult";
-import {
-  transformAllOverallStatsResult,
-  transformDailyTxStatsResult,
-} from "~/query-transformers";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
-  formatBytes,
-  parseBytes,
 } from "~/utils";
 
-const TOTAL_BLOCKS = 4;
-const TOTAL_TXS = 5;
-const TOTAL_BLOBS = 5;
+const LATEST_BLOCKS_LENGTH = 4;
+const LATEST_TXS_LENGTH = 5;
+const LATEST_BLOBS_LENGTH = 5;
+const DAILY_STATS_TIMEFRAME = "15d";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -38,7 +33,7 @@ const Home: NextPage = () => {
     isLoading: latestBlocksLoading,
   } = api.block.getAll.useQuery({
     p: 1,
-    ps: TOTAL_BLOCKS,
+    ps: LATEST_BLOCKS_LENGTH,
   });
   const {
     data: latestTxs,
@@ -46,7 +41,7 @@ const Home: NextPage = () => {
     error: latestTxsError,
   } = api.tx.getAll.useQuery({
     p: 1,
-    ps: TOTAL_TXS,
+    ps: LATEST_TXS_LENGTH,
   });
   const {
     data: latestBlobs,
@@ -54,28 +49,27 @@ const Home: NextPage = () => {
     error: latestBlobsError,
   } = api.blob.getAll.useQuery({
     p: 1,
-    ps: TOTAL_BLOBS,
+    ps: LATEST_BLOBS_LENGTH,
   });
 
-  const allOverallStatsRes = api.stats.getAllOverallStats.useQuery();
-  const dailyTxStatsRes = api.stats.transaction.getDailyStats.useQuery({
-    timeFrame: "15d",
-  });
-  const dailyTxStats = useTransformResult(
-    dailyTxStatsRes,
-    transformDailyTxStatsResult
-  );
-  const allOverallStats = useTransformResult(
-    allOverallStatsRes,
-    transformAllOverallStatsResult
-  );
+  const { data: overallStats, error: overallStatsErr } =
+    api.stats.getAllOverallStats.useQuery();
+  const { data: dailyTxStats, error: dailyTxStatsErr } =
+    api.stats.getTransactionDailyStats.useQuery({
+      timeFrame: DAILY_STATS_TIMEFRAME,
+    });
+  const { data: dailyBlockStats, error: dailyBlockStatsErr } =
+    api.stats.getBlockDailyStats.useQuery({
+      timeFrame: DAILY_STATS_TIMEFRAME,
+    });
 
   const error =
     latestBlocksError ||
     latestTxsError ||
     latestBlobsError ||
-    allOverallStatsRes.error ||
-    dailyTxStatsRes.error;
+    overallStatsErr ||
+    dailyTxStatsErr ||
+    dailyBlockStatsErr;
 
   if (error) {
     return (
@@ -89,15 +83,6 @@ const Home: NextPage = () => {
   const blocks = latestBlocks?.blocks ?? [];
   const txs = latestTxs?.transactions ?? [];
   const blobs = latestBlobs?.blobs ?? [];
-
-  const totalBlobSize =
-    allOverallStats && allOverallStats.blob
-      ? parseBytes(formatBytes(allOverallStats.blob.totalBlobSize))
-      : undefined;
-  const avgBlobSize =
-    allOverallStats && allOverallStats.blob
-      ? parseBytes(formatBytes(allOverallStats.blob.avgBlobSize))
-      : undefined;
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
@@ -113,47 +98,70 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
-      <div className="flex w-11/12 flex-col gap-8 sm:gap-16">
+      <div className="flex w-full flex-col gap-8 sm:gap-16">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
-          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2">
+          <div className="col-span-2 sm:col-span-4">
+            <DailyBlobGasComparisonChart
+              days={dailyBlockStats?.days}
+              blobAsCalldataGasUsed={
+                dailyBlockStats?.totalBlobAsCalldataGasUsed
+              }
+              blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+              opts={{ toolbox: { show: false } }}
+            />
+          </div>
+          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
+            <div className="col-span-2">
+              <MetricCard
+                name="Total Tx Fees Saved"
+                metric={
+                  overallStats
+                    ? {
+                        value:
+                          overallStats.block.totalBlobAsCalldataFee -
+                          overallStats.block.totalBlobFee,
+                        type: "ethereum",
+                      }
+                    : undefined
+                }
+                compact
+              />
+            </div>
             <MetricCard
               name="Total Blocks"
-              value={allOverallStats?.block?.totalBlocks}
+              metric={{
+                value: overallStats?.block?.totalBlocks,
+              }}
               compact
             />
             <MetricCard
-              name="Total Transactions"
-              value={allOverallStats?.transaction?.totalTransactions}
+              name="Total Txs"
+              metric={{
+                value: overallStats?.transaction?.totalTransactions,
+              }}
               compact
             />
             <MetricCard
               name="Total Blobs"
-              value={allOverallStats?.blob?.totalBlobs}
+              metric={{
+                value: overallStats?.blob?.totalBlobs,
+              }}
               compact
             />
             <MetricCard
               name="Total Blob Size"
-              value={totalBlobSize?.value}
-              unit={totalBlobSize?.unit}
-              compact
-            />
-            <MetricCard
-              name="Avg. Blob Size"
-              value={avgBlobSize?.value}
-              unit={avgBlobSize?.unit}
-              compact
-            />
-            <MetricCard
-              name="Total Unique Blobs"
-              value={allOverallStats?.blob?.totalUniqueBlobs}
+              metric={{
+                value: overallStats?.blob.totalBlobSize,
+                type: "bytes",
+              }}
               compact
             />
           </div>
-
-          <div className="col-span-2 sm:col-span-6">
+          <div className="col-span-2 sm:col-span-4">
             <DailyTransactionsChart
               days={dailyTxStats?.days}
-              transactions={dailyTxStats?.transactions}
+              transactions={dailyTxStats?.totalTransactions}
+              opts={{ toolbox: { show: false } }}
               compact
             />
           </div>
@@ -174,7 +182,7 @@ const Home: NextPage = () => {
           {latestBlocksLoading || !blocks || blocks.length ? (
             <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
               {latestBlocksLoading
-                ? Array(TOTAL_BLOCKS)
+                ? Array(LATEST_BLOCKS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
                       <div className="flex-grow" key={i}>
@@ -206,7 +214,7 @@ const Home: NextPage = () => {
             {latestTxsLoading || !txs || txs.length ? (
               <div className="flex flex-col gap-5">
                 {latestTxsLoading
-                  ? Array(TOTAL_TXS)
+                  ? Array(LATEST_TXS_LENGTH)
                       .fill(0)
                       .map((_, i) => <BlobTransactionCard key={i} />)
                   : txs.map((tx) => {
@@ -239,7 +247,7 @@ const Home: NextPage = () => {
             {latestBlobsLoading || !blobs || blobs.length ? (
               <div className="flex flex-col gap-5">
                 {latestBlobsLoading
-                  ? Array(TOTAL_BLOBS)
+                  ? Array(LATEST_BLOBS_LENGTH)
                       .fill(0)
                       .map((_, i) => <BlobCard key={i} />)
                   : blobs.map((b) => (

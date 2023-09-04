@@ -20,7 +20,17 @@
     },
     "lint": {},
     "lint:fix": {},
-    "clean": {
+    "test": {
+      "inputs": ["test/**/*.test.ts"]
+    },
+    "test:ui": {
+      "inputs": ["test/**/*.test.ts"]
+    },
+    "test:dev": {
+      "inputs": ["test/**/*.test.ts"],
+      "cache": false
+    },
+    "test:setup": {
       "cache": false
     },
     "//#clean": {
@@ -60,6 +70,7 @@
     "OTEL_EXPORTER_OTLP_ENDPOINT",
     "POSTGRES_STORAGE_ENABLED",
     "SECRET_KEY",
+    "SENTRY_DSN_API",
     "SKIP_ENV_VALIDATION",
     "SWARM_STORAGE_ENABLED",
     "VERCEL_URL",

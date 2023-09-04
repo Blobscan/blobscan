@@ -14,7 +14,6 @@ import {
   formatTimestamp,
   GAS_PER_BLOB,
   formatWei,
-  calculateBlobGasPrice,
   formatBytes,
   formatNumber,
 } from "~/utils";
@@ -43,12 +42,8 @@ const Tx: NextPage = () => {
   }
 
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
-  const blobGasPrice = txData
-    ? calculateBlobGasPrice(txData.block.excessBlobGas)
-    : BigInt(0);
-  const blobGasUsed = txData
-    ? BigInt(txData.blobs.length) * GAS_PER_BLOB
-    : BigInt(0);
+  const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
+  const blobGasUsed = txData ? txData.blobs.length * GAS_PER_BLOB : 0;
   const totalBlobSize =
     txData?.blobs.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
 
@@ -96,6 +91,10 @@ const Tx: NextPage = () => {
                   ),
                 },
                 {
+                  name: "Total Blob Size",
+                  value: formatBytes(totalBlobSize),
+                },
+                {
                   name: "Blob Fee",
                   value: (
                     <div className="flex gap-4">
@@ -103,13 +102,15 @@ const Tx: NextPage = () => {
                         <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Base:
                         </span>
-                        {formatWei(blobGasPrice * blobGasUsed)}
+                        {formatWei(blobGasPrice * BigInt(blobGasUsed))}
                       </div>
                       <div>
                         <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Max:
                         </span>
-                        {formatWei(txData.maxFeePerBlobGas * blobGasUsed)}
+                        {formatWei(
+                          txData.maxFeePerBlobGas * BigInt(blobGasUsed)
+                        )}
                       </div>
                     </div>
                   ),
@@ -123,8 +124,23 @@ const Tx: NextPage = () => {
                   value: formatNumber(blobGasUsed),
                 },
                 {
-                  name: "Total Blob Size",
-                  value: formatBytes(totalBlobSize),
+                  name: "Blob As Calldata Gas",
+                  value: (
+                    <div>
+                      {formatNumber(txData.blobAsCalldataGasUsed)} (
+                      <strong>
+                        {formatNumber(
+                          txData.blobAsCalldataGasUsed / blobGasUsed,
+                          "standard",
+                          {
+                            maximumFractionDigits: 2,
+                          }
+                        )}
+                        %{" "}
+                      </strong>{" "}
+                      times more expensive)
+                    </div>
+                  ),
                 },
               ]
             : undefined

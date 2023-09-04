@@ -70,6 +70,6 @@ export async function createTRPCContext(opts: CreateContextOptions) {
 }
 
 export type TRPCContext = inferAsyncReturnType<typeof createTRPCContext>;
-export type TRCInnerContext = inferAsyncReturnType<
+export type TRPCInnerContext = inferAsyncReturnType<
   typeof createTRPCInnerContext
 >;

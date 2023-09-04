@@ -2,14 +2,11 @@ import type {
   ButtonHTMLAttributes,
   DOMAttributes,
   HTMLAttributes,
-  HtmlHTMLAttributes,
 } from "react";
+import classNames from "classnames";
 
-type Size = "sm" | "md" | "lg";
-type SizeStyles = Record<
-  Size,
-  HtmlHTMLAttributes<HTMLButtonElement>["className"]
->;
+import type { Size } from "~/types";
+
 type Variant = "outline" | "primary" | "icon";
 type VariantStyles = Record<
   Variant,
@@ -79,21 +76,6 @@ const VARIANT_STYLES: VariantStyles = {
   `,
 };
 
-const SIZES: SizeStyles = {
-  sm: `
-    px-2
-    py-1
-  `,
-  md: `
-    px-4
-    py-2
-  `,
-  lg: `
-    px-4
-    py-3
-  `,
-};
-
 export function Button({
   disabled = false,
   type = "button",
@@ -110,7 +92,14 @@ export function Button({
       type={type}
       className={`
       ${VARIANT_STYLES[variant ?? "primary"]}
-      ${variant !== "icon" && SIZES[size]}
+      ${
+        variant !== "icon" &&
+        classNames({
+          "px-2 py-1": size === "sm",
+          "px-4 py-2": size === "md",
+          "px-4 py-3": size === "lg",
+        })
+      }
       cursor-pointer
       rounded
       text-sm

@@ -3,72 +3,81 @@ title: Testing
 nextjs:
   metadata:
     title: Testing
-    description: Quidem magni aut exercitationem maxime rerum eos.
+    description: Testing setup for Blobscan.
 ---
 
-Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum corrupti incidunt. Et aut eligendi ea perferendis.
+At Blobscan, we believe in ensuring that our code not only functions correctly but is also maintainable and robust.
 
----
+We rely on testing to ensure our solutions meet user expectations.
 
-## Quis vel iste dicta
+## Philosophy
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+**Focus on Behavior and Requirements:** Our tests are designed to validate what the system should do, not necessarily how it does it. By doing so, we ensure that:
 
-### Et pariatur ab quas
+- We maintain clarity about the requirements and expected outcomes.
+- The code remains flexible, allowing developers to refactor and optimize without constant test breakages.
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+**Avoid Testing Internals:** We generally steer clear from testing private or internal functions directly. This aligns with our behavior-driven approach. However, complex internal logic may sometimes warrant its own set of tests.
 
-```js
-/** @type {import('@tailwindlabs/lorem').ipsum} */
-export default {
-  lorem: 'ipsum',
-  dolor: ['sit', 'amet', 'consectetur'],
-  adipiscing: {
-    elit: true,
-  },
-}
+## Testing Tools
+
+**Framework:** We utilize [Vitest](https://vitest.dev), which is set up with a [workspace configuration](https://vitest.dev/guide/workspace.html) tailored for our monorepo.
+
+**Integration Testing:** Our integration tests run with a local PostgreSQL database and a [fake GCS server](https://github.com/fsouza/fake-gcs-server), orchestrated via [Docker](https://www.docker.com). This ensures our tests mimic real-world scenarios. We employ a [specific script](https://github.com/Blobscan/blobscan/blob/next/scripts/run-integration.sh) to set up these services before initiating tests.
+
+## Setting Up Your Environment
+
+To get started with testing, follow these steps:
+
+1. Clone the Repository:
+
+```bash
+git clone https://github.com/Blobscan/blobscan.git
+cd blobscan
 ```
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+2. Install Dependencies:
 
-### Natus aspernatur iste
+```bash
+pnpm install
+```
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+3. Configure Environment Variables:
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+Make a copy of the `.env.example` and rename it to `.env`:
 
----
+```bash
+cp .env.example .env
+```
 
-## Quos porro ut molestiae
+Then, adjust the `.env` file as [outlined here](/docs/environment).
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+4. Initialize Docker Containers:
 
-### Voluptatem quas possimus
+```bash
+pnpm test:setup
+```
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+5. Execute Tests:
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+```bash
+pnpm test
+```
 
-### Id vitae minima
+{% callout title="Tip" %}
+You can streamline steps 4 and 5 using `pnpm test:dev`.
+{% /callout %}
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+## Test Fixtures Configuration
 
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+Our test fixtures provide mock data for both PostgreSQL and Google Cloud Storage. All fixtures are housed in the `@blobscan/test` package.
 
----
+### Structure of the Package
 
-## Vitae laborum maiores
+- **fixtures**: This directory contains separate subfolders with the mock data for each service.
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+- **helpers**: Within this folder, you'll find utility functions that helps to load and reset the fixtures using [prisma](https://www.prisma.io), ensuring a clean slate.
 
-### Corporis exercitationem
+### Integration with fake GCS server
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
-
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
-
-### Reprehenderit magni
-
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
-
-Voluptas beatae omnis omnis voluptas. Cum architecto ab sit ad eaque quas quia distinctio. Molestiae aperiam qui quis deleniti soluta quia qui. Dolores nostrum blanditiis libero optio id. Mollitia ad et asperiores quas saepe alias.
+The mock data present in the `storage` subfolder of `fixtures`, is pre-configured on the [fake-gcs-server](https://github.com/fsouza/fake-gcs-server). This ensures that every time we initiate tests involving storage, the emulator starts with our designated mock data.

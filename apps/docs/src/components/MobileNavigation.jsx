@@ -1,12 +1,11 @@
 'use client'
 
-import { Suspense, useCallback, useEffect, useState } from 'react'
-import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { Dialog } from '@headlessui/react'
-
 import { Logomark } from '@/components/Logo'
 import { Navigation } from '@/components/Navigation'
+import { Dialog } from '@headlessui/react'
+import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 
 function MenuIcon(props) {
   return (

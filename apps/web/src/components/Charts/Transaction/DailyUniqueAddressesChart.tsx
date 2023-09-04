@@ -4,41 +4,45 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { TransformedDailyTransactionStats } from "~/types";
+import type { DailyTransactionStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyUniqueAddressesChartProps = {
-  days?: TransformedDailyTransactionStats["days"];
-  uniqueReceivers?: TransformedDailyTransactionStats["uniqueReceivers"];
-  uniqueSenders?: TransformedDailyTransactionStats["uniqueSenders"];
+  days: DailyTransactionStats["days"];
+  uniqueReceivers: DailyTransactionStats["totalUniqueReceivers"];
+  uniqueSenders: DailyTransactionStats["totalUniqueSenders"];
 };
 
-export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
-  function ({ days, uniqueReceivers, uniqueSenders }) {
-    const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions(days, {
+export const DailyUniqueAddressesChart: FC<
+  Partial<DailyUniqueAddressesChartProps>
+> = function ({ days, uniqueReceivers, uniqueSenders }) {
+  const options: EChartOption<EChartOption.SeriesBar> = {
+    ...buildTimeSeriesOptions({
+      dates: days,
+      axisFormatters: {
         yAxisTooltip: (value) => formatNumber(value),
-      }),
-      series: [
-        {
-          name: "Unique Receivers",
-          data: uniqueReceivers,
-          type: "bar",
-          // @ts-ignore
-          emphasis: { focus: "series" },
-        },
-        {
-          name: "Unique Senders",
-          data: uniqueSenders,
-          type: "bar",
-          // @ts-ignore
-          emphasis: { focus: "series" },
-        },
-      ],
-      animationEasing: "cubicOut",
-    };
-
-    return (
-      <ChartCard title="Daily Unique Addresses" size="sm" options={options} />
-    );
+      },
+    }),
+    series: [
+      {
+        name: "Total Unique Receivers",
+        data: uniqueReceivers,
+        type: "bar",
+        // @ts-ignore
+        emphasis: { focus: "series" },
+      },
+      {
+        name: "Total Unique Senders",
+        data: uniqueSenders,
+        type: "bar",
+        // @ts-ignore
+        emphasis: { focus: "series" },
+      },
+    ],
+    animationEasing: "cubicOut",
   };
+
+  return (
+    <ChartCard title="Daily Unique Addresses" size="sm" options={options} />
+  );
+};

@@ -20,10 +20,10 @@ function fakeExponential(
     i++;
   }
 
-  return output;
+  return output / denominator;
 }
 
-export function getEIP2028CalldataGas(hexData: string): bigint {
+export function getEIP2028CalldataGas(hexData: string): number {
   const bytes = Buffer.from(hexData.slice(2), "hex");
   let gasCost = 0;
 
@@ -35,18 +35,18 @@ export function getEIP2028CalldataGas(hexData: string): bigint {
     }
   }
 
-  return BigInt(gasCost);
+  return gasCost;
 }
 
 export function calculateBlobSize(blob: string): number {
   return blob.slice(2).length / 2;
 }
 
-export function calculateBlobGasPrice(excessDataGas: bigint): bigint {
+export function calculateBlobGasPrice(excessDataGas: number): bigint {
   return BigInt(
     fakeExponential(
       BigInt(MIN_BLOB_GASPRICE),
-      excessDataGas,
+      BigInt(excessDataGas),
       BigInt(BLOB_GASPRICE_UPDATE_FRACTION)
     )
   );

@@ -49,7 +49,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
       <div className="flex h-full flex-col gap-2">
         <div
           className={cn({
-            "h-48 md:h-60 lg:h-48": size === "sm",
+            "h-48 md:h-60 lg:h-56": size === "sm",
             "h-48 md:h-64 lg:h-80": size === "md",
             "h-48 md:h-64 lg:h-96": size === "lg",
           })}

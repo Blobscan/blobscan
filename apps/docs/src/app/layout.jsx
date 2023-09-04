@@ -23,10 +23,10 @@ const lexend = localFont({
 export const metadata = {
   title: {
     template: '%s - Docs',
-    default: 'CacheAdvance - Never miss the cache again.',
+    default: 'Blobscan - EIP-4844 blob explorer.',
   },
   description:
-    'Cache every single thing your app could ever do ahead of time, so your code never even has to run at all.',
+    'First blockchain explorer to navigate and visualize EIP-4844 blobs.',
 }
 
 export default function RootLayout({ children }) {
