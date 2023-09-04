@@ -27,7 +27,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           name: "Blob Gas Used",
           data: blobGasUsed,
           stack: "gas",
-          type: "line",
+          type: "bar",
           emphasis: {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -50,7 +50,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           name: "Equivalent Blob As Calldata Gas",
           data: blobAsCalldataGasUsed,
           stack: "gas",
-          type: "line",
+          type: "bar",
           itemStyle: {
             color: "#743737",
           },
@@ -74,7 +74,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           },
         },
       ],
-      animationEasing: "backIn",
+      animationEasing: "exponentialInOut",
       ...opts,
     };
 

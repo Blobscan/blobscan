@@ -3,7 +3,7 @@
 exports[`Transaction route > getAll > should get all 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 1000n,
+    "blobAsCalldataGasUsed": 1000,
     "blobs": [
       {
         "blob": {
@@ -16,7 +16,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     ],
     "block": {
       "blobGasPrice": 22n,
-      "excessBlobGas": 15000n,
+      "excessBlobGas": 15000,
       "timestamp": 2023-08-26T12:00:00.000Z,
     },
     "blockNumber": 1002,
@@ -27,7 +27,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     "toId": "address6",
   },
   {
-    "blobAsCalldataGasUsed": 1000n,
+    "blobAsCalldataGasUsed": 1000,
     "blobs": [
       {
         "blob": {
@@ -40,7 +40,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     ],
     "block": {
       "blobGasPrice": 20n,
-      "excessBlobGas": 10000n,
+      "excessBlobGas": 10000,
       "timestamp": 2023-08-24T10:00:00.000Z,
     },
     "blockNumber": 1001,
@@ -51,7 +51,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     "toId": "address2",
   },
   {
-    "blobAsCalldataGasUsed": 1100n,
+    "blobAsCalldataGasUsed": 1100,
     "blobs": [
       {
         "blob": {
@@ -64,7 +64,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     ],
     "block": {
       "blobGasPrice": 20n,
-      "excessBlobGas": 10000n,
+      "excessBlobGas": 10000,
       "timestamp": 2023-08-24T10:00:00.000Z,
     },
     "blockNumber": 1001,
@@ -75,7 +75,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     "toId": "address4",
   },
   {
-    "blobAsCalldataGasUsed": 1200n,
+    "blobAsCalldataGasUsed": 1200,
     "blobs": [
       {
         "blob": {
@@ -88,7 +88,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     ],
     "block": {
       "blobGasPrice": 20n,
-      "excessBlobGas": 10000n,
+      "excessBlobGas": 10000,
       "timestamp": 2023-08-24T10:00:00.000Z,
     },
     "blockNumber": 1001,
@@ -99,7 +99,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     "toId": "address6",
   },
   {
-    "blobAsCalldataGasUsed": 1000n,
+    "blobAsCalldataGasUsed": 1000,
     "blobs": [
       {
         "blob": {
@@ -112,7 +112,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     ],
     "block": {
       "blobGasPrice": 22n,
-      "excessBlobGas": 15000n,
+      "excessBlobGas": 15000,
       "timestamp": 2023-08-26T12:00:00.000Z,
     },
     "blockNumber": 1002,
@@ -123,7 +123,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     "toId": "address3",
   },
   {
-    "blobAsCalldataGasUsed": 1000n,
+    "blobAsCalldataGasUsed": 1000,
     "blobs": [
       {
         "blob": {
@@ -136,7 +136,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
     ],
     "block": {
       "blobGasPrice": 22n,
-      "excessBlobGas": 15000n,
+      "excessBlobGas": 15000,
       "timestamp": 2023-08-26T12:00:00.000Z,
     },
     "blockNumber": 1002,
@@ -152,7 +152,7 @@ exports[`Transaction route > getAll > should get all 1`] = `
 exports[`Transaction route > getAll > should get all with pagination 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 1000n,
+    "blobAsCalldataGasUsed": 1000,
     "blobs": [
       {
         "blob": {
@@ -165,7 +165,7 @@ exports[`Transaction route > getAll > should get all with pagination 1`] = `
     ],
     "block": {
       "blobGasPrice": 22n,
-      "excessBlobGas": 15000n,
+      "excessBlobGas": 15000,
       "timestamp": 2023-08-26T12:00:00.000Z,
     },
     "blockNumber": 1002,
@@ -183,7 +183,7 @@ exports[`Transaction route > getByAddress > should get by address 1`] = `
   "totalTransactions": 2,
   "transactions": [
     {
-      "blobAsCalldataGasUsed": 1000n,
+      "blobAsCalldataGasUsed": 1000,
       "blobs": [
         {
           "blob": {
@@ -196,7 +196,7 @@ exports[`Transaction route > getByAddress > should get by address 1`] = `
       ],
       "block": {
         "blobGasPrice": 22n,
-        "excessBlobGas": 15000n,
+        "excessBlobGas": 15000,
         "timestamp": 2023-08-26T12:00:00.000Z,
       },
       "blockNumber": 1002,
@@ -207,7 +207,7 @@ exports[`Transaction route > getByAddress > should get by address 1`] = `
       "toId": "address4",
     },
     {
-      "blobAsCalldataGasUsed": 1000n,
+      "blobAsCalldataGasUsed": 1000,
       "blobs": [
         {
           "blob": {
@@ -220,7 +220,7 @@ exports[`Transaction route > getByAddress > should get by address 1`] = `
       ],
       "block": {
         "blobGasPrice": 20n,
-        "excessBlobGas": 10000n,
+        "excessBlobGas": 10000,
         "timestamp": 2023-08-24T10:00:00.000Z,
       },
       "blockNumber": 1001,
@@ -239,7 +239,7 @@ exports[`Transaction route > getByAddress > should get by address with paginatio
   "totalTransactions": 2,
   "transactions": [
     {
-      "blobAsCalldataGasUsed": 1000n,
+      "blobAsCalldataGasUsed": 1000,
       "blobs": [
         {
           "blob": {
@@ -252,7 +252,7 @@ exports[`Transaction route > getByAddress > should get by address with paginatio
       ],
       "block": {
         "blobGasPrice": 22n,
-        "excessBlobGas": 15000n,
+        "excessBlobGas": 15000,
         "timestamp": 2023-08-26T12:00:00.000Z,
       },
       "blockNumber": 1002,
@@ -268,7 +268,7 @@ exports[`Transaction route > getByAddress > should get by address with paginatio
 
 exports[`Transaction route > getByHash > should get by hash 1`] = `
 {
-  "blobAsCalldataGasUsed": 1000n,
+  "blobAsCalldataGasUsed": 1000,
   "blobs": [
     {
       "blob": {
@@ -281,7 +281,7 @@ exports[`Transaction route > getByHash > should get by hash 1`] = `
   ],
   "block": {
     "blobGasPrice": 20n,
-    "excessBlobGas": 10000n,
+    "excessBlobGas": 10000,
     "timestamp": 2023-08-24T10:00:00.000Z,
   },
   "blockNumber": 1001,

@@ -1,6 +1,8 @@
+import type { Transaction } from "@prisma/client";
 import { BlobStorage } from "@prisma/client";
 import { describe, it, expect } from "vitest";
 
+import type { OmittableFields } from "../../prisma";
 import { prisma } from "../../prisma";
 
 describe("Base Extension", () => {
@@ -218,7 +220,7 @@ describe("Base Extension", () => {
 
   describe("Transaction model", () => {
     it("should upsert many transactions", async () => {
-      const transactions = [
+      const transactions: Omit<Transaction, OmittableFields>[] = [
         {
           hash: "txHash001",
           fromId: "address1",
@@ -226,7 +228,7 @@ describe("Base Extension", () => {
           blockNumber: 1002,
           maxFeePerBlobGas: BigInt(100),
           gasPrice: BigInt(10),
-          blobAsCalldataGasUsed: BigInt(1000),
+          blobAsCalldataGasUsed: 1000,
         },
         {
           hash: "txHash003",
@@ -235,7 +237,7 @@ describe("Base Extension", () => {
           blockNumber: 1001,
           maxFeePerBlobGas: BigInt(120),
           gasPrice: BigInt(5),
-          blobAsCalldataGasUsed: BigInt(500),
+          blobAsCalldataGasUsed: 500,
         },
         {
           hash: "txHash004",
@@ -244,7 +246,7 @@ describe("Base Extension", () => {
           blockNumber: 1002,
           maxFeePerBlobGas: BigInt(100),
           gasPrice: BigInt(10),
-          blobAsCalldataGasUsed: BigInt(1000),
+          blobAsCalldataGasUsed: 1000,
         },
         {
           hash: "txHash008",
@@ -253,7 +255,7 @@ describe("Base Extension", () => {
           blockNumber: 1002,
           maxFeePerBlobGas: BigInt(100),
           gasPrice: BigInt(10),
-          blobAsCalldataGasUsed: BigInt(1000),
+          blobAsCalldataGasUsed: 1000,
         },
       ];
 

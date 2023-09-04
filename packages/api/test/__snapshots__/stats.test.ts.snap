@@ -2,142 +2,381 @@
 
 exports[`Stats route > Blob > getDailyStats > should get for every timeframe 1`] = `
 [
-  [],
-  [
-    {
-      "avgBlobSize": 1400,
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlobSize": 4200n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-  ],
-  [
-    {
-      "avgBlobSize": 1100,
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlobSize": 3300n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-    {
-      "avgBlobSize": 1400,
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlobSize": 4200n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-  ],
-  [
-    {
-      "avgBlobSize": 1100,
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlobSize": 3300n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-    {
-      "avgBlobSize": 1400,
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlobSize": 4200n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-  ],
-  [
-    {
-      "avgBlobSize": 1100,
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlobSize": 3300n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-    {
-      "avgBlobSize": 1400,
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlobSize": 4200n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-  ],
-  [
-    {
-      "avgBlobSize": 1100,
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlobSize": 3300n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-    {
-      "avgBlobSize": 1400,
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlobSize": 4200n,
-      "totalBlobs": 3,
-      "totalUniqueBlobs": 3,
-    },
-  ],
+  {
+    "avgBlobSizes": [],
+    "days": [],
+    "totalBlobSizes": [],
+    "totalBlobs": [],
+    "totalUniqueBlobs": [],
+  },
+  {
+    "avgBlobSizes": [
+      1400,
+    ],
+    "days": [
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobSizes": [
+      4200,
+    ],
+    "totalBlobs": [
+      3,
+    ],
+    "totalUniqueBlobs": [
+      3,
+    ],
+  },
+  {
+    "avgBlobSizes": [
+      1100,
+      1400,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobSizes": [
+      3300,
+      4200,
+    ],
+    "totalBlobs": [
+      3,
+      3,
+    ],
+    "totalUniqueBlobs": [
+      3,
+      3,
+    ],
+  },
+  {
+    "avgBlobSizes": [
+      1100,
+      1400,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobSizes": [
+      3300,
+      4200,
+    ],
+    "totalBlobs": [
+      3,
+      3,
+    ],
+    "totalUniqueBlobs": [
+      3,
+      3,
+    ],
+  },
+  {
+    "avgBlobSizes": [
+      1100,
+      1400,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobSizes": [
+      3300,
+      4200,
+    ],
+    "totalBlobs": [
+      3,
+      3,
+    ],
+    "totalUniqueBlobs": [
+      3,
+      3,
+    ],
+  },
+  {
+    "avgBlobSizes": [
+      1100,
+      1400,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobSizes": [
+      3300,
+      4200,
+    ],
+    "totalBlobs": [
+      3,
+      3,
+    ],
+    "totalUniqueBlobs": [
+      3,
+      3,
+    ],
+  },
 ]
 `;
 
 exports[`Stats route > Block > getDailyStats > should get for every timeframe 1`] = `
 [
-  [],
-  [
-    {
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-  ],
-  [
-    {
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-    {
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-  ],
-  [
-    {
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-    {
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-  ],
-  [
-    {
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-    {
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-  ],
-  [
-    {
-      "day": 2023-08-24T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-    {
-      "day": 2023-08-26T00:00:00.000Z,
-      "totalBlocks": 1,
-    },
-  ],
+  {
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
+  },
+  {
+    "avgBlobAsCalldataFees": [
+      5610000,
+    ],
+    "avgBlobFees": [
+      121000000,
+    ],
+    "avgBlobGasPrices": [
+      22,
+    ],
+    "days": [
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobAsCalldataFees": [
+      5610000,
+    ],
+    "totalBlobAsCalldataGasUsed": [
+      255000,
+    ],
+    "totalBlobFees": [
+      121000000,
+    ],
+    "totalBlobGasUsed": [
+      5500000,
+    ],
+    "totalBlocks": [
+      1,
+    ],
+  },
+  {
+    "avgBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "avgBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "avgBlobGasPrices": [
+      20,
+      22,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "totalBlobAsCalldataGasUsed": [
+      250000,
+      255000,
+    ],
+    "totalBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "totalBlobGasUsed": [
+      5000000,
+      5500000,
+    ],
+    "totalBlocks": [
+      1,
+      1,
+    ],
+  },
+  {
+    "avgBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "avgBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "avgBlobGasPrices": [
+      20,
+      22,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "totalBlobAsCalldataGasUsed": [
+      250000,
+      255000,
+    ],
+    "totalBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "totalBlobGasUsed": [
+      5000000,
+      5500000,
+    ],
+    "totalBlocks": [
+      1,
+      1,
+    ],
+  },
+  {
+    "avgBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "avgBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "avgBlobGasPrices": [
+      20,
+      22,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "totalBlobAsCalldataGasUsed": [
+      250000,
+      255000,
+    ],
+    "totalBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "totalBlobGasUsed": [
+      5000000,
+      5500000,
+    ],
+    "totalBlocks": [
+      1,
+      1,
+    ],
+  },
+  {
+    "avgBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "avgBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "avgBlobGasPrices": [
+      20,
+      22,
+    ],
+    "days": [
+      "2023-08-24T00:00:00.000Z",
+      "2023-08-26T00:00:00.000Z",
+    ],
+    "totalBlobAsCalldataFees": [
+      5000000,
+      5610000,
+    ],
+    "totalBlobAsCalldataGasUsed": [
+      250000,
+      255000,
+    ],
+    "totalBlobFees": [
+      100000000,
+      121000000,
+    ],
+    "totalBlobGasUsed": [
+      5000000,
+      5500000,
+    ],
+    "totalBlocks": [
+      1,
+      1,
+    ],
+  },
 ]
 `;
 
 exports[`Stats route > Transaction > getDailyStats > should get for every timeframe 1`] = `
 [
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
+  {
+    "avgMaxBlobGasFees": [],
+    "days": [],
+    "totalTransactions": [],
+    "totalUniqueReceivers": [],
+    "totalUniqueSenders": [],
+  },
+  {
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
+  },
+  {
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
+  },
+  {
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
+  },
+  {
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
+  },
+  {
+    "avgBlobAsCalldataFees": [],
+    "avgBlobFees": [],
+    "avgBlobGasPrices": [],
+    "days": [],
+    "totalBlobAsCalldataFees": [],
+    "totalBlobAsCalldataGasUsed": [],
+    "totalBlobFees": [],
+    "totalBlobGasUsed": [],
+    "totalBlocks": [],
+  },
 ]
 `;
