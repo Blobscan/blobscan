@@ -50,7 +50,10 @@ export const navigation = [
   },
   {
     title: 'Contributing',
-    links: [{ title: 'How to contribute', href: '/docs/how-to-contribute' }],
+    links: [
+      { title: 'How to contribute', href: '/docs/how-to-contribute' },
+      { title: 'Code of conduct', href: '/docs/code-of-conduct' },
+    ],
   },
 ]
 
