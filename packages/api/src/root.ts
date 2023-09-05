@@ -18,6 +18,7 @@ export const appRouter = createTRPCRouter({
         method: "GET",
         path: "/healthcheck",
         summary: "Connection healthcheck",
+        tags: ["system"],
       },
     })
     .input(z.void())
