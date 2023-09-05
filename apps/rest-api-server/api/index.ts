@@ -57,6 +57,28 @@ app.use(
   })
 );
 
+function printBanner() {
+  console.log(" ____  _       _");
+  console.log("| __ )| | ___ | |__  ___  ___ __ _ _ __");
+  console.log("|  _ \\| |/ _ \\| '_ \\/ __|/ __/ _` | '_ \\");
+  console.log("| |_) | | (_) | |_) \\__ \\ (_| (_| | | | |");
+  console.log("|____/|_|\\___/|_.__/|___/\\___\\__,_|_| |_|");
+  console.log("Blobscan API (EIP-4844 blob explorer) - blobscan.com");
+  console.log("====================================================\n");
+
+  logger.info(`Telemetry: metrics=${env.METRICS_ENABLED}, traces=${env.TRACES_ENABLED}`);
+
+  if (env.TRACES_ENABLED) {
+    logger.info(`OpenTelemetry configuration: protocol=${env.OTEL_EXPORTER_OTLP_PROTOCOL}, endpoint=${env.OTEL_EXPORTER_OTLP_ENDPOINT}`);
+  }
+
+  if (env.SENTRY_DSN_API) {
+    console.log("Sentry DSN:", env.SENTRY_DSN_API);
+  }
+}
+
+printBanner();
+
 // Serve Swagger UI with our OpenAPI schema
 app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(openApiDocument));
