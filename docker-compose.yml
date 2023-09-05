@@ -8,17 +8,10 @@ services:
     command: web
     restart: always
     ports:
-      - 23000:3000
-      - 25556:5556
-    environment:
-      BEACON_NODE_ENDPOINT: http://localhost:5052
-      GOOGLE_STORAGE_API_ENDPOINT: http://localhost:4443
-      DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
-      SECRET_KEY: supersecret
-      NEXT_PUBLIC_NETWORK_NAME: dencun-devnet-8
-      NEXT_PUBLIC_BEACON_BASE_URL: http://134.209.87.158:8080/
-      NEXT_PUBLIC_EXPLORER_BASE_URL: https://explorer.dencun-devnet-8.ethpandaops.io/
-      METRICS_ENABLED: true
+      - ${EXTERNAL_WEB_PORT}:3000
+      - 5556:5556  # Prisma studio
+    env_file:
+      - ".env"
 
   api:
     image: blossomlabs/blobscan:local
@@ -26,18 +19,15 @@ services:
     command: api
     restart: always
     ports:
-      - 23001:3001
+      - ${EXTERNAL_API_PORT}:3001
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 5s
-    environment:
-      DATABASE_URL: postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public
-      SECRET_KEY: supersecret
-      BLOBSCAN_API_PORT: 3001
-      METRICS_ENABLED: true
+    env_file:
+      - ".env"
     depends_on:
       - postgres
 
@@ -45,12 +35,8 @@ services:
     image: blossomlabs/blobscan-indexer:master
     network_mode: host
     restart: always
-    environment:
-      SECRET_KEY: supersecret
-      BLOBSCAN_API_ENDPOINT: http://localhost:3001
-      BEACON_NODE_ENDPOINT: http://localhost:5052
-      EXECUTION_NODE_ENDPOINT: http://localhost:8545
-      RUST_LOG: "${RUST_LOG}"
+    env_file:
+      - ".env"
     depends_on:
       api:
         condition: service_healthy
