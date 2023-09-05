@@ -27,23 +27,21 @@ _is_sourced() {
 }
 
 _main() {
-	if [ "$1" = 'web' ]; then
+	if [ "$BLOBSCAN_PROC" = 'web' ]; then
 		cd /app
 		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 		cd /app/apps/web
 		pnpm start
-	elif [ "$1" = 'api' ]; then
+	elif [ "$BLOBSCAN_PROC" = 'api' ]; then
 		cd /app
 		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 		cd /app/apps/rest-api-server
 		pnpm start
-	elif [ "$1" = '--help' ]; then
+	else
 		echo "## Blobscan ##"
 		echo ""
-		echo "Usage:"
-		echo "$0 [web|api]"
-	else
-		blobscan_error "Invalid command: $1"
+		echo "You have not defined BLOBSCAN_PROC ('web' or 'api'):"
+		bash
 	fi
 }
 
