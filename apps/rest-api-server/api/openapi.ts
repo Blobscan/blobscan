@@ -9,5 +9,5 @@ export const openApiDocument = generateOpenApiDocument(appRouter, {
   version: "1.0.0",
   baseUrl: `https://api.blobscan.com/api`,
   docsUrl: "https://docs.blobscan.com/",
-  tags: ["blob", "block", "transaction", "overall", "system"],
+  tags: ["blobs", "blocks", "transactions", "overall", "system"],
 });

@@ -32,9 +32,9 @@ export const getBlockOverallStats = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/${BLOCK_BASE_PATH}/block/overall`,
-      tags: ["block"],
-      summary: "Get block overall stats",
+      path: `/${BLOCK_BASE_PATH}/overall`,
+      tags: ["blocks"],
+      summary: "Get blocks overall stats",
     },
   })
   .input(getBlockOverallStatsInputSchema)

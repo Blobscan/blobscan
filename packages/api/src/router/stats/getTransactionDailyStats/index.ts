@@ -7,9 +7,9 @@ export const getTransactionDailyStats = timeFrameProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/${TRANSACTION_BASE_PATH}/transaction`,
-      tags: ["transaction"],
-      summary: "Get transaction time series stats",
+      path: `/${TRANSACTION_BASE_PATH}`,
+      tags: ["transactions"],
+      summary: "Get transactions time series stats",
     },
   })
   .output(getTransactionDailyStatsOutputSchema)
