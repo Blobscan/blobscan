@@ -13,7 +13,7 @@ export const getAllOverallStats = publicProcedure
     openapi: {
       method: "GET",
       path: `/${BASE_PATH}/overall`,
-      tags: ["stats", "overall"],
+      tags: ["overall"],
       summary: "Get all overall stats",
     },
   })

@@ -27,7 +27,7 @@ export const getTransactionOverallStats = publicProcedure
     openapi: {
       method: "GET",
       path: `/${TRANSACTION_BASE_PATH}/transaction/overall`,
-      tags: ["stats", "transaction"],
+      tags: ["transaction"],
       summary: "Get transaction overall stats",
     },
   })

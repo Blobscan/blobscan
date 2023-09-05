@@ -33,7 +33,7 @@ export const getBlockOverallStats = publicProcedure
     openapi: {
       method: "GET",
       path: `/${BLOCK_BASE_PATH}/block/overall`,
-      tags: ["stats", "block"],
+      tags: ["block"],
       summary: "Get block overall stats",
     },
   })

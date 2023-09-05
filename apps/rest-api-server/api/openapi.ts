@@ -6,8 +6,8 @@ import { appRouter } from "@blobscan/api";
 export const openApiDocument = generateOpenApiDocument(appRouter, {
   title: "Blobscan API",
   description: "OpenAPI compliant REST API built using tRPC with Express",
-  version: "0.0.1",
+  version: "1.0.0",
   baseUrl: `https://api.blobscan.com/api`,
   docsUrl: "https://docs.blobscan.com/",
-  tags: ["auth", "blocks", "blobs", "transactions"],
+  tags: ["blob", "block", "transaction", "overall", "system"],
 });

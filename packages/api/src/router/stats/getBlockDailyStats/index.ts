@@ -8,7 +8,7 @@ export const getBlockDailyStats = timeFrameProcedure
     openapi: {
       method: "GET",
       path: `/${BLOCK_BASE_PATH}/overall`,
-      tags: ["stats", "block"],
+      tags: ["block"],
       summary: "Get block time series stats",
     },
   })

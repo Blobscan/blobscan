@@ -8,7 +8,7 @@ export const getTransactionDailyStats = timeFrameProcedure
     openapi: {
       method: "GET",
       path: `/${TRANSACTION_BASE_PATH}/transaction`,
-      tags: ["stats", "transaction"],
+      tags: ["transaction"],
       summary: "Get transaction time series stats",
     },
   })
