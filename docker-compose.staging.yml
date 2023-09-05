@@ -27,8 +27,6 @@ services:
       start_period: 5s
     env_file:
       - ".env"
-    depends_on:
-      - postgres
 
   indexer:
     image: blossomlabs/blobscan-indexer:{INDEXER_TAG}
