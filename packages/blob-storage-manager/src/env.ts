@@ -1,8 +1,4 @@
-import {
-  z,
-  createEnv,
-  presetEnvOptions,
-} from "@blobscan/zod";
+import { z, booleanSchema, createEnv, presetEnvOptions } from "@blobscan/zod";
 
 export const env = createEnv({
   server: {
@@ -13,9 +9,9 @@ export const env = createEnv({
     GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
     GOOGLE_SERVICE_KEY: z.string().optional(),
     GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
-    GOOGLE_STORAGE_ENABLED: z.coerce.boolean().default(false),
-    POSTGRES_STORAGE_ENABLED: z.coerce.boolean().default(true),
-    SWARM_STORAGE_ENABLED: z.coerce.boolean().default(false),
+    GOOGLE_STORAGE_ENABLED: booleanSchema,
+    POSTGRES_STORAGE_ENABLED: booleanSchema,
+    SWARM_STORAGE_ENABLED: booleanSchema,
   },
 
   ...presetEnvOptions,
