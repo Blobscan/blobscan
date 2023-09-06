@@ -9,9 +9,9 @@ export const env = createEnv({
     GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
     GOOGLE_SERVICE_KEY: z.string().optional(),
     GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
-    GOOGLE_STORAGE_ENABLED: booleanSchema,
-    POSTGRES_STORAGE_ENABLED: booleanSchema,
-    SWARM_STORAGE_ENABLED: booleanSchema,
+    GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
+    POSTGRES_STORAGE_ENABLED: booleanSchema.default("true"),
+    SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
   },
 
   ...presetEnvOptions,

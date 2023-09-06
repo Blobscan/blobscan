@@ -1,8 +1,6 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-import { booleanSchema } from "@blobscan/zod";
-
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app isn't
@@ -11,7 +9,12 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    TRACES_ENABLED: booleanSchema,
+    // See booleanSchema from packages/zod/src/schemas.ts
+    TRACES_ENABLED: z
+      .string()
+      .refine((s) => s === "true" || s === "false")
+      .transform((s) => s === "true")
+      .default("false"),
   },
   /**
    * Specify your client-side environment variables schema here.
