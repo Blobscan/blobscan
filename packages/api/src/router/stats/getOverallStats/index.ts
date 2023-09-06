@@ -26,9 +26,9 @@ export const getTransactionOverallStats = publicProcedure
   .meta({
     openapi: {
       method: "GET",
-      path: `/${TRANSACTION_BASE_PATH}/transaction/overall`,
-      tags: ["stats", "transaction"],
-      summary: "Get transaction overall stats",
+      path: `/${TRANSACTION_BASE_PATH}/overall`,
+      tags: ["transactions"],
+      summary: "Get transactions overall stats",
     },
   })
   .input(getTransactionOverallStatsInputSchema)

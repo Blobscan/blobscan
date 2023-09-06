@@ -8,16 +8,18 @@ import { Highlight } from 'prism-react-renderer'
 import { Fragment } from 'react'
 
 const codeLanguage = 'javascript'
-const code = `
-  const blob = await api.getByVersionedHash(blobHash)
-  await verifyData(blob.commitment, blobHash)
-  fs.writeFileSync("blob.json", blob.data)
-`
+const code = `{
+  "blob": {
+    "versionedHash": "0x0100...1368",
+    "commitment": "0xb4f67eb0...3803b983"
+  },
+  "blobDataStorage": [{
+    "storage": "GOOGLE",
+    "reference": "1/01/00/0100...1368.txt"
+  }]
+}`
 
-const tabs = [
-  { name: 'fetcher.js', isActive: true },
-  { name: 'blob.json', isActive: false },
-]
+const tabs = [{ name: 'blob.json', isActive: true }]
 
 function TrafficLightsIcon(props) {
   return (

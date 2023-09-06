@@ -3,7 +3,7 @@ title: FAQ / Troubleshooting
 nextjs:
   metadata:
     title: FAQ / Troubleshooting
-    description: Quidem magni aut exercitationem maxime rerum eos.
+    description: Blobscan troubleshooting
 ---
 
 Here is a collection of common issue and questions.

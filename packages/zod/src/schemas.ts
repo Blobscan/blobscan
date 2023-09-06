@@ -14,54 +14,12 @@ function defaultTransformer(defaultValue: unknown) {
   };
 }
 
-export function makeOptional(zParser: z.ZodType, defaultValue?: unknown) {
-  let schema: z.ZodType = zParser.optional();
-
-  if (!isUndefined(defaultValue)) {
-    /**
-     * We use `transform` here instead of `default` to avoid type errors caused by our current
-     * schema that expects a string when the default value might be a number or boolean.
-     */
-    schema = schema.transform(defaultTransformer(defaultValue));
-  }
-
-  let orSchema: z.ZodType = z.literal("");
-
-  if (!isUndefined(defaultValue)) {
-    orSchema = orSchema.transform(defaultTransformer(defaultValue));
-  }
-
-  return schema.or(orSchema);
-}
-
+// We use this workaround instead of z.coerce.boolean.default(false)
+// because it considers as "true" any value different than "false"
+// (including the empty string).
 export const booleanSchema = z
   .string()
   .refine((s) => s === "true" || s === "false")
   .transform((s) => s === "true");
 
-export const chainIdSchema = z
-  .string()
-  .min(1)
-  .transform((value, ctx) => {
-    const chainId = parseInt(value, 10);
-
-    if (isNaN(chainId) || chainId <= 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `CHAIN_ID is invalid: ${chainId}`,
-      });
-
-      return z.NEVER;
-    }
-
-    return chainId;
-  });
-
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
-
-export const nodeEnvSchema = z.enum(["development", "test", "production"]);
-
-export const portSchema = z
-  .string()
-  .transform((s) => parseInt(s, 10))
-  .pipe(z.number().positive());
