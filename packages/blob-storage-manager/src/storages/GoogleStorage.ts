@@ -52,6 +52,10 @@ export class GoogleStorage extends BlobStorage {
   async healthCheck(): Promise<void> {
     const [metadata] = await this._bucket.getMetadata();
     console.log(JSON.stringify(metadata, null, 2));
+
+    if (!metadata) {
+      throw new Error(`Bucket ${this._bucketName} does not exist`);
+    }
   }
 
   async getBlob(uri: string): Promise<string> {
