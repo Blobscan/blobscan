@@ -150,6 +150,9 @@ importers:
       '@blobscan/api':
         specifier: ^0.0.1
         version: link:../../packages/api
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../../packages/logger
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../../packages/open-telemetry
@@ -180,9 +183,6 @@ importers:
       trpc-openapi:
         specifier: ^1.1.2
         version: 1.2.0(@trpc/server@10.38.0)(zod@3.22.2)
-      winston:
-        specifier: ^3.10.0
-        version: 3.10.0
     devDependencies:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
@@ -404,6 +404,9 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../open-telemetry
@@ -501,6 +504,16 @@ importers:
         specifier: ^5.0.0
         version: 5.2.0
 
+  packages/logger:
+    dependencies:
+      winston:
+        specifier: ^3.10.0
+        version: 3.10.0
+    devDependencies:
+      '@blobscan/zod':
+        specifier: ^0.0.1
+        version: link:../zod
+
   packages/open-telemetry:
     dependencies:
       '@blobscan/zod':
@@ -531,6 +544,9 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
 
   packages/test:
     devDependencies:

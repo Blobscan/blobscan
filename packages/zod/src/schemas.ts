@@ -15,3 +15,5 @@ function defaultTransformer(defaultValue: unknown) {
 }
 
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
+
+export const nodeEnvSchema = z.enum(["development", "test", "production"]);
