@@ -3,7 +3,7 @@ title: Cron jobs
 nextjs:
   metadata:
     title: Cron jobs
-    description: Quidem magni aut exercitationem maxime rerum eos.
+    description: Blobscan cron jobs
 ---
 
 Blobscan requires two periodic tasks in order to recalculate the metrics and block statistics.
