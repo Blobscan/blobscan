@@ -1,5 +1,6 @@
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
 import type { NodeSDKConfiguration } from "@opentelemetry/sdk-node";
 import { NodeSDK, resources, api } from "@opentelemetry/sdk-node";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
@@ -41,6 +42,7 @@ export function setUpOpenTelemetry(
     instrumentations: [
       new HttpInstrumentation(),
       new PrismaInstrumentation(),
+      new WinstonInstrumentation(),
       ...(config?.instrumentations ?? []),
     ],
   });

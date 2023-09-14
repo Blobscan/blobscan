@@ -162,9 +162,6 @@ importers:
       '@opentelemetry/instrumentation-express':
         specifier: ^0.33.0
         version: 0.33.1(@opentelemetry/api@1.4.1)
-      '@opentelemetry/instrumentation-winston':
-        specifier: ^0.32.0
-        version: 0.32.1(@opentelemetry/api@1.4.1)
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2
@@ -528,6 +525,9 @@ importers:
       '@opentelemetry/instrumentation-http':
         specifier: ^0.41.1
         version: 0.41.2(@opentelemetry/api@1.4.1)
+      '@opentelemetry/instrumentation-winston':
+        specifier: ^0.32.0
+        version: 0.32.1(@opentelemetry/api@1.4.1)
       '@opentelemetry/sdk-node':
         specifier: ^0.41.1
         version: 0.41.2(@opentelemetry/api@1.4.1)
