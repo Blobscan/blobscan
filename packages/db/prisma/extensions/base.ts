@@ -107,20 +107,23 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       },
       blob: {
         async filterNewBlobs(blobs: RawBlob[]) {
+          const uniqueBlobVersionedHashes = Array.from(
+            new Set(blobs.map((b) => b.versionedHash))
+          );
           const dbBlobVersionedHashes = (
             await prisma.blob.findMany({
               select: { versionedHash: true },
               where: {
                 versionedHash: {
-                  in: blobs.map((blob) => blob.versionedHash),
+                  in: uniqueBlobVersionedHashes,
                 },
               },
             })
           ).map((b) => b.versionedHash);
           // Remove duplicates and blobs that already exist in the DB
-          const newBlobVersionedHashes = Array.from(
-            new Set(blobs.map((b) => b.versionedHash))
-          ).filter((hash) => !dbBlobVersionedHashes.includes(hash));
+          const newBlobVersionedHashes = uniqueBlobVersionedHashes.filter(
+            (hash) => !dbBlobVersionedHashes.includes(hash)
+          );
 
           return newBlobVersionedHashes.map((versionedHash) => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

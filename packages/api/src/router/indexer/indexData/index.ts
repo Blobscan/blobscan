@@ -68,12 +68,27 @@ function createDBBlobs({
   blobs,
   block,
 }: IndexDataInput): Omit<Blob, OmittableFields>[] {
-  return blobs.map<Omit<Blob, OmittableFields>>((blob) => ({
-    versionedHash: blob.versionedHash,
-    commitment: blob.commitment,
-    size: calculateBlobSize(blob.data),
-    firstBlockNumber: block.number,
-  }));
+  const uniqueBlobVersionedHashes = Array.from(
+    new Set(blobs.map((b) => b.versionedHash))
+  );
+
+  return uniqueBlobVersionedHashes.map<Omit<Blob, OmittableFields>>(
+    (versionedHash) => {
+      const blob = blobs.find((b) => b.versionedHash === versionedHash);
+
+      // Type safety check to make TS happy
+      if (!blob) {
+        throw new Error(`Blob ${versionedHash} not found`);
+      }
+
+      return {
+        versionedHash: blob.versionedHash,
+        commitment: blob.commitment,
+        size: calculateBlobSize(blob.data),
+        firstBlockNumber: block.number,
+      };
+    }
+  );
 }
 
 export const indexData = jwtAuthedProcedure
@@ -92,12 +107,11 @@ export const indexData = jwtAuthedProcedure
     const operations = [];
 
     // 1. Upload blobs' data to storages
-
-    const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
-
     const blobUploadResults = await tracer.startActiveSpan(
       "blobs-upload",
       async (blobsUploadSpan) => {
+        const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
+
         const result = (
           await Promise.all(
             newBlobs.map(async (b) =>
