@@ -80,4 +80,5 @@ Our test fixtures provide mock data for both PostgreSQL and Google Cloud Storage
 
 ### Integration with fake GCS server
 
-The mock data present in the `storage` subfolder of `fixtures`, is pre-configured on the [fake-gcs-server](https://github.com/fsouza/fake-gcs-server). This ensures that every time we initiate tests involving storage, the emulator starts with our designated mock data.
+The mock data present in the `storage` subfolder of `fixtures`, is pre-configured on the [fake-gcs-server](https://github.com/fsouza/fake-gcs-server).
+This ensures that every time we initiate tests involving storage, the emulator starts with our designated mock data.

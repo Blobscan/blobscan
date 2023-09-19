@@ -61,3 +61,27 @@ Lastly, create the database schema:
 ```shell
 pnpm db:push
 ```
+
+## Other commands
+
+Metrics are recalculated every 15 minutes if you are running the cron job.
+
+During development you may want to force backfilling all the data which can
+be achieved using the following commands:
+
+```shell
+# Aggregates all blob data since the beginning
+pnpm backfill:overall
+```
+
+```shell
+# Aggregates all blob data for yesterday
+pnpm backfill:daily
+```
+
+In case you need to delete delete aggregated metrics:
+
+```shell
+pnpm delete:overall
+pnpm delete:daily
+```

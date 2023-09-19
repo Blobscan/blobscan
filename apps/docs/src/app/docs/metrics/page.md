@@ -8,6 +8,8 @@ nextjs:
 
 Would you like to see any metric that is not available? Contact us!
 
+Are you an L2? [Add link to feedback form]
+
 ---
 
 The following metrics are provided by Blobscan:
