@@ -41,9 +41,9 @@ export abstract class BlobStorage {
   >(
     this: {
       new (config: C): T;
-      tryGetConfigFromEnv(env: Environment): C | undefined;
+      tryGetConfigFromEnv(env: Partial<Environment>): C | undefined;
     },
-    env: Environment
+    env: Partial<Environment>
   ): Promise<T | undefined> {
     const config = this.tryGetConfigFromEnv(env);
 
@@ -64,7 +64,7 @@ export abstract class BlobStorage {
   }
 
   protected static tryGetConfigFromEnv(
-    _: Environment
+    _: Partial<Environment>
   ): BlobStorageConfig | undefined {
     throw new Error(`tryGetConfigFromEnv function not implemented`);
   }

@@ -104,14 +104,14 @@ describe("SwarmStorage", () => {
 
     it("should return undefined if BEE_ENDPOINT is not set", () => {
       const config = SwarmStorage.tryGetConfigFromEnv({
-        SWARM_STORAGE_ENABLED: "true",
+        SWARM_STORAGE_ENABLED: true,
       });
       expect(config).toBeUndefined();
     });
 
     it("should return a config object if both SWARM_STORAGE_ENABLED and BEE_ENDPOINT are set", () => {
       const config = SwarmStorage.tryGetConfigFromEnv({
-        SWARM_STORAGE_ENABLED: "true",
+        SWARM_STORAGE_ENABLED: true,
         BEE_ENDPOINT: SWARM_STORAGE_CONFIG.beeEndpoint,
         BEE_DEBUG_ENDPOINT: SWARM_STORAGE_CONFIG.beeDebugEndpoint,
       });
