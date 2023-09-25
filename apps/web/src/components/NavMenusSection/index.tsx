@@ -1,4 +1,8 @@
-import { ChartBarIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
+import {
+  BookOpenIcon,
+  ChartBarIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/24/solid";
 
 import {
   buildBlobStatsRoute,
@@ -8,24 +12,24 @@ import {
   buildTransactionsRoute,
   buildBlobsRoute,
 } from "~/utils";
-import { NavMenuItem } from "./NavMenuItem";
+import { NavItem } from "./NavItem";
 
 export const NavMenusSection: React.FC = () => {
   return (
     <div className="flex gap-4">
-      <NavMenuItem
+      <NavItem
         label="Blockchain"
         icon={<Squares2X2Icon />}
-        items={[
+        menuItems={[
           { label: "Blobs", href: buildBlobsRoute() },
           { label: "Blocks", href: buildBlocksRoute() },
           { label: "Transactions", href: buildTransactionsRoute() },
         ]}
       />
-      <NavMenuItem
+      <NavItem
         label="Stats"
         icon={<ChartBarIcon />}
-        items={[
+        menuItems={[
           {
             label: "Blob Metrics",
             href: buildBlobStatsRoute(),
@@ -33,6 +37,11 @@ export const NavMenusSection: React.FC = () => {
           { label: "Block Metrics", href: buildBlockStatsRoute() },
           { label: "Transaction Metrics", href: buildTransactionStatsRoute() },
         ]}
+      />
+      <NavItem
+        label="Docs"
+        icon={<BookOpenIcon />}
+        href="https://docs.blobscan.com"
       />
     </div>
   );
