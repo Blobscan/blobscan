@@ -81,7 +81,9 @@ export class SwarmStorage extends BlobStorage {
     return firstBatch.batchID;
   }
 
-  static tryGetConfigFromEnv(env: Environment): SwarmStorageConfig | undefined {
+  static tryGetConfigFromEnv(
+    env: Partial<Environment>
+  ): SwarmStorageConfig | undefined {
     if (!env.SWARM_STORAGE_ENABLED) {
       return;
     }

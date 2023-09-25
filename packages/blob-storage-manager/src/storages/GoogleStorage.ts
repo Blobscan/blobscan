@@ -86,7 +86,7 @@ export class GoogleStorage extends BlobStorage {
   }
 
   static tryGetConfigFromEnv(
-    env: Environment
+    env: Partial<Environment>
   ): GoogleStorageConfig | undefined {
     if (!env.GOOGLE_STORAGE_ENABLED) {
       return;
