@@ -13,9 +13,9 @@ export const TopBarLayout: React.FC = () => {
   if (isHomepage) {
     return (
       <nav className="z-10 flex h-16 w-full items-center justify-between px-4">
-        <NavMenusSection />
+        <ExplorerDetails />
         <div className="flex items-center gap-3">
-          <ExplorerDetails />
+          <NavMenusSection />
           <ThemeModeButton />
         </div>
       </nav>

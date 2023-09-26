@@ -54,7 +54,9 @@ export class PostgresStorage extends BlobStorage {
       .then(() => versionedHash);
   }
 
-  static tryGetConfigFromEnv(env: Environment): BlobStorageConfig | undefined {
+  static tryGetConfigFromEnv(
+    env: Partial<Environment>
+  ): BlobStorageConfig | undefined {
     if (!env.POSTGRES_STORAGE_ENABLED) {
       return;
     }

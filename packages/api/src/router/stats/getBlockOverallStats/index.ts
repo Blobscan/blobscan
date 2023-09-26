@@ -13,21 +13,33 @@ export const getBlockOverallStatsQuery = function (
     .findUnique({
       where: { id: 1 },
     })
-    .then(
-      (stats) =>
-        stats ?? {
-          totalBlocks: 0,
-          totalBlobGasUsed: BigInt(0),
-          totalBlobAsCalldataGasUsed: BigInt(0),
-          totalBlobFee: BigInt(0),
-          totalBlobAsCalldataFee: BigInt(0),
-          avgBlobFee: 0,
-          avgBlobAsCalldataFee: 0,
-          avgBlobGasPrice: 0,
-          updatedAt: new Date(),
-        }
+    .then((stats) =>
+      stats
+        ? {
+            ...stats,
+            totalBlobGasUsed: BigInt(stats.totalBlobGasUsed.toString()),
+            totalBlobAsCalldataGasUsed: BigInt(
+              stats.totalBlobAsCalldataGasUsed.toString()
+            ),
+            totalBlobFee: BigInt(stats.totalBlobFee.toString()),
+            totalBlobAsCalldataFee: BigInt(
+              stats.totalBlobAsCalldataFee.toString()
+            ),
+          }
+        : {
+            totalBlocks: 0,
+            totalBlobGasUsed: BigInt(0),
+            totalBlobAsCalldataGasUsed: BigInt(0),
+            totalBlobFee: BigInt(0),
+            totalBlobAsCalldataFee: BigInt(0),
+            avgBlobFee: 0,
+            avgBlobAsCalldataFee: 0,
+            avgBlobGasPrice: 0,
+            updatedAt: new Date(),
+          }
     );
 };
+
 export const getBlockOverallStats = publicProcedure
   .meta({
     openapi: {

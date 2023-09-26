@@ -81,14 +81,14 @@ describe("GoogleStorage", () => {
 
     it("should return undefined if GOOGLE_STORAGE_BUCKET_NAME is not set", () => {
       const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: "true",
+        GOOGLE_STORAGE_ENABLED: true,
       });
       expect(config).toBeUndefined();
     });
 
     it("should return undefined if GOOGLE_SERVICE_KEY and GOOGLE_STORAGE_API_ENDPOINT are not set", () => {
       const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: "true",
+        GOOGLE_STORAGE_ENABLED: true,
         GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
       });
       expect(config).toBeUndefined();
@@ -96,7 +96,7 @@ describe("GoogleStorage", () => {
 
     it("should return a config object if all required environment variables are set", () => {
       const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: "true",
+        GOOGLE_STORAGE_ENABLED: true,
         GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
         GOOGLE_SERVICE_KEY: "my-service-key",
         GOOGLE_STORAGE_API_ENDPOINT: "my-api-endpoint",
