@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps as NextAppProps } from "next/app";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider, useTheme } from "next-themes";
 
 import "@fontsource/inter/400.css";
@@ -37,6 +38,7 @@ function App({ Component, pageProps }: NextAppProps) {
       <AppLayout>
         <Component {...pageProps} />
       </AppLayout>
+      <Analytics />
     </SkeletonTheme>
   );
 }

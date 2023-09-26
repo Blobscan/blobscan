@@ -1,5 +1,4 @@
 import NextDocument, { Head, Html, Main, NextScript } from "next/document";
-import { Analytics } from "@vercel/analytics/react";
 
 export default class Document extends NextDocument {
   render() {
@@ -19,7 +18,6 @@ export default class Document extends NextDocument {
         >
           <Main />
           <NextScript />
-          <Analytics />
         </body>
       </Html>
     );
