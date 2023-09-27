@@ -15,6 +15,7 @@ export const env = createEnv({
       .refine((s) => s === "true" || s === "false")
       .transform((s) => s === "true")
       .default("false"),
+    FEEDBACK_WEBHOOK_URL: z.string().url(),
   },
   /**
    * Specify your client-side environment variables schema here.
@@ -41,6 +42,7 @@ export const env = createEnv({
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
+    FEEDBACK_WEBHOOK_URL: process.env.FEEDBACK_WEBHOOK_URL,
   },
   skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,
 });
