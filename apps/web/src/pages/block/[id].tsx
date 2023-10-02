@@ -112,7 +112,6 @@ const Block: NextPage = function () {
                             "standard",
                             { maximumFractionDigits: 2 }
                           )}
-                          %
                         </strong>{" "}
                         times more expensive)
                       </span>

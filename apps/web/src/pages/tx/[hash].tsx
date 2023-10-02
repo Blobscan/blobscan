@@ -136,7 +136,6 @@ const Tx: NextPage = () => {
                             maximumFractionDigits: 2,
                           }
                         )}
-                        %{" "}
                       </strong>{" "}
                       times more expensive)
                     </div>

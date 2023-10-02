@@ -19,10 +19,12 @@ export const getBlockOverallStatsQuery = function (
             ...stats,
             totalBlobGasUsed: BigInt(stats.totalBlobGasUsed.toString()),
             totalBlobAsCalldataGasUsed: BigInt(
-              stats.totalBlobGasUsed.toString()
+              stats.totalBlobAsCalldataGasUsed.toString()
             ),
-            totalBlobFee: BigInt(stats.totalBlobGasUsed.toString()),
-            totalBlobAsCalldataFee: BigInt(stats.totalBlobGasUsed.toString()),
+            totalBlobFee: BigInt(stats.totalBlobFee.toString()),
+            totalBlobAsCalldataFee: BigInt(
+              stats.totalBlobAsCalldataFee.toString()
+            ),
           }
         : {
             totalBlocks: 0,

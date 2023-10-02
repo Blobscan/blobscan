@@ -58,15 +58,24 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
 }
 
 export async function createTRPCContext(opts: CreateContextOptions) {
-  const apiClient = getJWTFromRequest(opts.req);
+  try {
+    const apiClient = getJWTFromRequest(opts.req);
 
-  const innerContext = await createTRPCInnerContext({ apiClient });
+    const innerContext = await createTRPCInnerContext({ apiClient });
 
-  return {
-    ...innerContext,
-    req: opts.req,
-    res: opts.res,
-  };
+    return {
+      ...innerContext,
+      req: opts.req,
+      res: opts.res,
+    };
+  } catch (err) {
+    const err_ = err as Error;
+
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: `Failed to create TRPC context: ${err_.message}`,
+    });
+  }
 }
 
 export type TRPCContext = inferAsyncReturnType<typeof createTRPCContext>;
