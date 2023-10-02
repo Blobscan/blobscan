@@ -150,6 +150,9 @@ importers:
       '@blobscan/api':
         specifier: ^0.0.1
         version: link:../../packages/api
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../../packages/logger
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../../packages/open-telemetry
@@ -159,9 +162,6 @@ importers:
       '@opentelemetry/instrumentation-express':
         specifier: ^0.33.0
         version: 0.33.1(@opentelemetry/api@1.4.1)
-      '@opentelemetry/instrumentation-winston':
-        specifier: ^0.32.0
-        version: 0.32.1(@opentelemetry/api@1.4.1)
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2
@@ -180,9 +180,6 @@ importers:
       trpc-openapi:
         specifier: ^1.1.2
         version: 1.2.0(@trpc/server@10.38.0)(zod@3.22.2)
-      winston:
-        specifier: ^3.10.0
-        version: 3.10.0
     devDependencies:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
@@ -416,6 +413,9 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../open-telemetry
@@ -513,6 +513,16 @@ importers:
         specifier: ^5.0.0
         version: 5.2.0
 
+  packages/logger:
+    dependencies:
+      winston:
+        specifier: ^3.10.0
+        version: 3.10.0
+    devDependencies:
+      '@blobscan/zod':
+        specifier: ^0.0.1
+        version: link:../zod
+
   packages/open-telemetry:
     dependencies:
       '@blobscan/zod':
@@ -527,6 +537,9 @@ importers:
       '@opentelemetry/instrumentation-http':
         specifier: ^0.41.1
         version: 0.41.2(@opentelemetry/api@1.4.1)
+      '@opentelemetry/instrumentation-winston':
+        specifier: ^0.32.0
+        version: 0.32.1(@opentelemetry/api@1.4.1)
       '@opentelemetry/sdk-node':
         specifier: ^0.41.1
         version: 0.41.2(@opentelemetry/api@1.4.1)
@@ -543,6 +556,9 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
 
   packages/test:
     devDependencies:

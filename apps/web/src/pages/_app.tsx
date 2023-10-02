@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import "@upstash/feedback/index.css";
 import type { AppProps as NextAppProps } from "next/app";
 import FeedbackWidget from "@upstash/feedback";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider, useTheme } from "next-themes";
 
 import "@fontsource/inter/400.css";
@@ -62,6 +63,7 @@ function App({ Component, pageProps }: NextAppProps) {
         )}
         <Component {...pageProps} />
       </AppLayout>
+      <Analytics />
     </SkeletonTheme>
   );
 }
