@@ -1,8 +1,9 @@
 import type { StreamOptions } from "morgan";
 import morgan from "morgan";
 
+import { logger } from "@blobscan/logger";
+
 import { env } from "../env";
-import { logger } from "../logger";
 
 // Override the stream method by telling
 // Morgan to use our custom logger instead of the console.log.

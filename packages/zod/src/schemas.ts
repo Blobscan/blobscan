@@ -23,3 +23,5 @@ export const booleanSchema = z
   .transform((s) => s === "true");
 
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
+
+export const nodeEnvSchema = z.enum(["development", "test", "production"]);

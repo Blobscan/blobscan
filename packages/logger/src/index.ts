@@ -13,7 +13,7 @@ const colors = {
 const level = () => {
   const node_env = env.NODE_ENV || "development";
   const isDevelopment = node_env === "development";
-  return isDevelopment ? "debug" : "warn";
+  return isDevelopment ? "debug" : "info";
 };
 
 const format = winston.format.combine(
