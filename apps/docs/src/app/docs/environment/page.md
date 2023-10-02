@@ -17,11 +17,12 @@ These are listed by category:
 
 ## General
 
-| Variable            | Description                           | Required | Default value |
-| ------------------- | ------------------------------------- | -------- | ------------- |
-| `DATABASE_URL`      | Postgresql database URI               | Yes      | (empty)       |
-| `SECRET_KEY`        | Shared key used for JWT               | Yes      | (empty)       |
-| `BLOBSCAN_API_PORT` | Blobscan API will listen on this port | No       | `3001`        |
+| Variable               | Description                           | Required | Default value |
+| ---------------------- | ------------------------------------- | -------- | ------------- |
+| `DATABASE_URL`         | Postgresql database URI               | Yes      | (empty)       |
+| `SECRET_KEY`           | Shared key used for JWT               | Yes      | (empty)       |
+| `BLOBSCAN_API_PORT`    | Blobscan API will listen on this port | No       | `3001`        |
+| `FEEDBACK_WEBHOOK_URL` | Feedback webhook URL                  | No       | (empty)       |
 
 ## Network
 

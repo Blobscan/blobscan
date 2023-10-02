@@ -20,6 +20,8 @@ function App({ Component, pageProps }: NextAppProps) {
   const { resolvedTheme } = useTheme();
   const isMounted = useIsMounted();
   const { pathname, query } = useRouter();
+  const { data: webhookDefined, isLoading } = api.webhookCheck.useQuery();
+  const renderFeedbackWidget = webhookDefined && !isLoading;
 
   if (!isMounted) {
     return null;
@@ -39,23 +41,25 @@ function App({ Component, pageProps }: NextAppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AppLayout>
-        <div className="text-content-light">
-          <FeedbackWidget
-            type="full"
-            // We need to specify the api path to be absolute to
-            // solve: https://github.com/upstash/feedback/issues/5
-            apiPath="/api/feedback"
-            themeColor={resolvedTheme === "dark" ? "#9A71F2" : "#5D25D4"}
-            textColor="#FFF"
-            title="Hi 👋"
-            description="Have feedback? We'd love to hear it"
-            user="anon"
-            metadata={{
-              pathname: pathname,
-              query: query,
-            }}
-          />
-        </div>
+        {renderFeedbackWidget && (
+          <div className="text-content-light">
+            <FeedbackWidget
+              type="full"
+              // We need to specify the api path to be absolute to
+              // solve: https://github.com/upstash/feedback/issues/5
+              apiPath="/api/feedback"
+              themeColor={resolvedTheme === "dark" ? "#9A71F2" : "#5D25D4"}
+              textColor="#FFF"
+              title="Hi 👋"
+              description="Have feedback? We'd love to hear it"
+              user="anon"
+              metadata={{
+                pathname: pathname,
+                query: query,
+              }}
+            />
+          </div>
+        )}
         <Component {...pageProps} />
       </AppLayout>
     </SkeletonTheme>
