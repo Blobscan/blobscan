@@ -15,7 +15,7 @@ export const env = createEnv({
       .refine((s) => s === "true" || s === "false")
       .transform((s) => s === "true")
       .default("false"),
-    FEEDBACK_WEBHOOK_URL: z.string().url().optional(),
+    FEEDBACK_WEBHOOK_URL: z.string().optional(),
   },
   /**
    * Specify your client-side environment variables schema here.
