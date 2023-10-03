@@ -10,7 +10,7 @@ const ratelimit = new Ratelimit({
 
 // Routes to rate limit
 export const config = {
-  matcher: "/feedback",
+  matcher: "/api/feedback",
 };
 
 export default async function middleware(request: NextRequest) {
