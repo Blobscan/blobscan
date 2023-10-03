@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { env } from "./env";
 import { publicProcedure } from "./procedures";
 // import { authRouter } from "./router/auth";
 import { blobRouter } from "./router/blob";
@@ -24,6 +25,20 @@ export const appRouter = createTRPCRouter({
     .input(z.void())
     .output(z.string())
     .query(() => "yay!"),
+  webhookCheck: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/webhookcheck",
+        summary: "Check feedback webhook url",
+        tags: ["system"],
+      },
+    })
+    .input(z.void())
+    .output(z.boolean())
+    .query(() => {
+      return env.FEEDBACK_WEBHOOK_URL ? true : false;
+    }),
 
   // auth: authRouter,
   block: blockRouter,

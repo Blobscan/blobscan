@@ -9,12 +9,15 @@ import {
   createTRPCContext,
   getPrismaMetricsClient,
 } from "@blobscan/api";
+import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics, promRegister } from "@blobscan/open-telemetry";
 
+import { printBanner } from "./banner";
 import { env } from "./env";
-import { logger } from "./logger";
 import { morganMiddleware } from "./middlewares/morgan";
 import { openApiDocument } from "./openapi";
+
+printBanner();
 
 const app = express();
 
