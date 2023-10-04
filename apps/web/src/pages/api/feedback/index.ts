@@ -1,9 +1,9 @@
 /* eslint-disable no-case-declarations */
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const webhook = process.env.FEEDBACK_WEBHOOK_URL;
+import { env } from "~/env.mjs";
 
-const rateEmoji = new Map([
+const RATE_EMOJIS = new Map([
   ["bad", "🙁"],
   ["meh", "😐"],
   ["nice", "🙂"],
@@ -13,8 +13,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const { message, rate, metadata } = req.body;
   const method = req.method;
 
-  if (!webhook) {
-    return res.status(200).json({ message: "success" });
+  if (!env.FEEDBACK_WEBHOOK_URL) {
+    return res.status(500).json({ message: "Feedback is not enabled" });
   }
 
   try {
@@ -23,10 +23,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         const text = `New Feedback ✨
 
   Message: ${message ? message : "-"}
-  Rate: ${rate ? rateEmoji.get(rate) : "-"}
+  Rate: ${rate ? RATE_EMOJIS.get(rate) : "-"}
   Metadata: \`\`\`${JSON.stringify(metadata)}\`\`\``;
 
-        await fetch(webhook, {
+        await fetch(env.FEEDBACK_WEBHOOK_URL, {
           method: "POST",
           body: JSON.stringify({ content: text }),
           headers: { "Content-Type": "application/json" },
