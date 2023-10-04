@@ -1,11 +1,16 @@
 import { logger } from "@blobscan/logger";
-import { z, booleanSchema, createEnv, presetEnvOptions } from "@blobscan/zod";
-
+import {
+  z,
+  booleanSchema,
+  createEnv,
+  presetEnvOptions,
+  nodeEnvSchema,
+} from "@blobscan/zod";
 
 export const env = createEnv({
   server: {
     BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
-    NODE_ENV: z.enum(["development", "test", "production"]).optional(),
+    NODE_ENV: nodeEnvSchema.optional(),
     METRICS_ENABLED: booleanSchema.default("true"),
     TRACES_ENABLED: booleanSchema.default("false"),
   },
