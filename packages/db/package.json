@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
+    "@blobscan/logger": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@prisma/client": "^5.0.0"
   },

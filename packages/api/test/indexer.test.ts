@@ -7,7 +7,7 @@ import { prisma } from "@blobscan/db";
 
 import { appRouter } from "../src/root";
 import type { AppRouter } from "../src/root";
-import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot/updateSlot.schema";
+import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
 import { INDEXER_DATA } from "./fixtures";
 import { getContext, getIndexedData } from "./helper";
 
