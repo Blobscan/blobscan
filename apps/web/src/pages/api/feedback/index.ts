@@ -22,9 +22,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       case "POST":
         const text = `New Feedback ✨
 
-Message: ${message ? message : "-"}
-Rate: ${rate ? rateEmoji.get(rate) : "-"}
-Metadata: \`\`\`${JSON.stringify(metadata)}\`\`\``;
+  Message: ${message ? message : "-"}
+  Rate: ${rate ? rateEmoji.get(rate) : "-"}
+  Metadata: \`\`\`${JSON.stringify(metadata)}\`\`\``;
 
         await fetch(webhook, {
           method: "POST",
