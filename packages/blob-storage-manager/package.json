@@ -14,14 +14,14 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@blobscan/logger": "^0.0.1",
+    "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
     "@ethersphere/bee-js": "^6.0.0",
     "@google-cloud/storage": "^6.10.1"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/logger": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/test": "^0.0.1"
   },
   "eslintConfig": {
@@ -29,9 +29,5 @@
     "extends": [
       "@blobscan/eslint-config/base"
     ]
-  },
-  "peerDependencies": {
-    "@blobscan/logger": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1"
   }
 }

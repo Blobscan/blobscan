@@ -12,12 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@blobscan/zod": "^0.0.1",
     "winston": "^3.10.0"
-  },
-  "devDependencies": {
-    "@blobscan/zod": "^0.0.1"
-  },
-  "peerDependencies": {
-    "@blobscan/zod": "^0.0.1"
   }
 }

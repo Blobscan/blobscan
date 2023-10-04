@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
+    "@blobscan/open-telemetry": "^0.0.1",
     "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
     "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/test": "^0.0.1",
     "@faker-js/faker": "^8.0.2",
     "js-sha256": "^0.9.0",
@@ -41,8 +41,5 @@
     "extends": [
       "@blobscan/eslint-config/base"
     ]
-  },
-  "peerDependencies": {
-    "@blobscan/open-telemetry": "^0.0.1"
   }
 }
