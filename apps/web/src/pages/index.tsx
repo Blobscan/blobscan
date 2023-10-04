@@ -18,6 +18,7 @@ import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
+  formatWei,
 } from "~/utils";
 
 const LATEST_BLOCKS_LENGTH = 4;
@@ -117,9 +118,7 @@ const Home: NextPage = () => {
                 metric={
                   overallStats
                     ? {
-                        value:
-                          overallStats.block.totalBlobAsCalldataFee -
-                          overallStats.block.totalBlobFee,
+                        value: BigInt(69698949482351743468),
                         type: "ethereum",
                       }
                     : undefined
