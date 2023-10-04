@@ -53,10 +53,19 @@ function printBanner() {
   console.log("|  _ \\| |/ _ \\| '_ \\/ __|/ __/ _` | '_ \\");
   console.log("| |_) | | (_) | |_) \\__ \\ (_| (_| | | | |");
   console.log("|____/|_|\\___/|_.__/|___/\\___\\__,_|_| |_|");
-  console.log("Blobscan Web UI (EIP-4844 blob explorer) - blobscan.com");
+  console.log("Blobscan Web App (EIP-4844 blob explorer) - blobscan.com");
   console.log("=======================================================\n");
-
-  console.log(`Network: name=${env.NEXT_PUBLIC_NETWORK_NAME}, explorer=${env.NEXT_PUBLIC_EXPLORER_BASE_URL}, beaconExplorer=${env.NEXT_PUBLIC_BEACON_BASE_URL}`);
 }
 
-printBanner();
+if (process.env.NEXT_RUNTIME === "nodejs") {
+  printBanner();
+  console.log(
+    `Configuration: network=${env.NEXT_PUBLIC_NETWORK_NAME}, explorer=${
+      env.NEXT_PUBLIC_EXPLORER_BASE_URL
+    }, beaconExplorer=${
+      env.NEXT_PUBLIC_BEACON_BASE_URL
+    }, feedbackEnabled=${!!env.FEEDBACK_WEBHOOK_URL}, tracesEnabled=${
+      env.TRACES_ENABLED
+    }`
+  );
+}

@@ -1,4 +1,3 @@
-import { logger } from "@blobscan/logger";
 import { createEnv, nodeEnvSchema, presetEnvOptions, z } from "@blobscan/zod";
 
 export const env = createEnv({
@@ -18,6 +17,6 @@ export const env = createEnv({
   ...presetEnvOptions,
 });
 
-logger.info(
+console.log(
   `Otel configuration: protocol=${env.OTEL_EXPORTER_OTLP_PROTOCOL} exporterEndpoint=${env.OTEL_EXPORTER_OTLP_ENDPOINT} username=${env.OTLP_AUTH_USERNAME} password=${env.OTLP_AUTH_PASSWORD}`
 );

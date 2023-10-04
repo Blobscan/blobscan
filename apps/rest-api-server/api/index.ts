@@ -12,12 +12,9 @@ import {
 import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics, promRegister } from "@blobscan/open-telemetry";
 
-import { printBanner } from "./banner";
 import { env } from "./env";
 import { morganMiddleware } from "./middlewares/morgan";
 import { openApiDocument } from "./openapi";
-
-printBanner();
 
 const app = express();
 

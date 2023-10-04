@@ -1,4 +1,3 @@
-import { logger } from "@blobscan/logger";
 import { z, booleanSchema, createEnv, presetEnvOptions } from "@blobscan/zod";
 
 export const env = createEnv({
@@ -18,18 +17,18 @@ export const env = createEnv({
   ...presetEnvOptions,
 });
 
-logger.info(
+console.log(
   `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
 );
 
 if (env.GOOGLE_STORAGE_ENABLED) {
-  logger.info(
+  console.log(
     `GCS configuration: bucketName=${env.GOOGLE_STORAGE_BUCKET_NAME}, projectId=${env.GOOGLE_STORAGE_PROJECT_ID}, apiEndpoint=${env.GOOGLE_STORAGE_API_ENDPOINT}`
   );
 }
 
 if (env.SWARM_STORAGE_ENABLED) {
-  logger.info(
+  console.log(
     `Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}, debugEndpoint=${env.BEE_DEBUG_ENDPOINT}`
   );
 }

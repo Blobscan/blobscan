@@ -1,4 +1,3 @@
-import { logger } from "@blobscan/logger";
 import {
   z,
   booleanSchema,
@@ -17,7 +16,3 @@ export const env = createEnv({
 
   ...presetEnvOptions,
 });
-
-logger.info(
-  `Blobscan API server configuration: metrics=${env.METRICS_ENABLED}, traces=${env.TRACES_ENABLED}, port=${env.BLOBSCAN_API_PORT}`
-);
