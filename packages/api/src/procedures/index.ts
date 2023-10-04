@@ -1,2 +1,2 @@
-export * from "./authedProcedure";
-export * from "./publicProcedure";
+export * from "./jwt-authed";
+export * from "./public";

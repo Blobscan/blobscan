@@ -1,7 +1,7 @@
 import type { api } from "@blobscan/open-telemetry";
 
-import { t } from "../clients/trpc";
 import { tracer } from "../instrumentation";
+import { t } from "../trpc-client";
 
 function getProcedureFromUrl(url: string) {
   const procedure = url
