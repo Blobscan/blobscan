@@ -159,8 +159,8 @@ describe("Stats Extension", () => {
     runDailyStatsFunctionsTests("blobDailyStats", {
       runStatsCalculationTests(dayPeriod: DatePeriod) {
         let expectedDailyBlobs: typeof fixtureBlobs;
-        let blobDailyStats: NonNullable<
-          Awaited<ReturnType<typeof prisma.blobDailyStats.findFirst>>
+        let blobDailyStats: Awaited<
+          ReturnType<typeof prisma.blobDailyStats.findFirst>
         >;
 
         beforeAll(async () => {
@@ -168,21 +168,13 @@ describe("Stats Extension", () => {
 
           await prisma.blobDailyStats.fill(dayPeriod);
 
-          blobDailyStats = await prisma.blobDailyStats
-            .findFirst()
-            .then((res) => {
-              if (!res) {
-                throw new Error("Blob daily stats not found");
-              }
-
-              return res;
-            });
+          blobDailyStats = await prisma.blobDailyStats.findFirst();
         });
 
         it("should calculate the total amount of blobs correctly", () => {
           const expectedTotalBlobs = expectedDailyBlobs.length;
 
-          expect(blobDailyStats.totalBlobs).toBe(expectedTotalBlobs);
+          expect(blobDailyStats?.totalBlobs).toBe(expectedTotalBlobs);
         });
 
         it("should calculate the total amount of unique blobs correctly", () => {
@@ -190,7 +182,7 @@ describe("Stats Extension", () => {
             expectedDailyBlobs.map((b) => b.versionedHash)
           ).size;
 
-          expect(blobDailyStats.totalUniqueBlobs).toBe(
+          expect(blobDailyStats?.totalUniqueBlobs).toBe(
             expectedTotalUniqueBlobs
           );
         });
@@ -201,7 +193,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blobDailyStats.totalBlobSize).toBe(
+          expect(blobDailyStats?.totalBlobSize).toBe(
             BigInt(expectedTotalBlobSize)
           );
         });
@@ -211,38 +203,33 @@ describe("Stats Extension", () => {
             expectedDailyBlobs.reduce((acc, b) => acc + b.size, 0) /
             expectedDailyBlobs.length;
 
-          expect(blobDailyStats.avgBlobSize).toBe(expectedAvgBlobSize);
+          expect(blobDailyStats?.avgBlobSize).toBe(expectedAvgBlobSize);
         });
       },
     });
 
     runOverallStatsFunctionsTests("blobOverallStats", {
       runStatsCalculationTests() {
-        let blobOverallStats: NonNullable<
-          Awaited<ReturnType<typeof prisma.blobOverallStats.findFirst>>
+        let blobOverallStats: Awaited<
+          ReturnType<typeof prisma.blobOverallStats.findFirst>
         >;
 
         beforeAll(async () => {
           await prisma.blobOverallStats.backfill();
-          const res = await prisma.blobOverallStats.findFirst();
 
-          if (!res) {
-            throw new Error("Blob daily stats not found");
-          }
-
-          blobOverallStats = res;
+          blobOverallStats = await prisma.blobOverallStats.findFirst();
         });
 
         it("should calculate the total amount of blobs correctly", async () => {
           const expectedTotalBlobs = fixtures.blobsOnTransactions.length;
 
-          expect(blobOverallStats.totalBlobs).toBe(expectedTotalBlobs);
+          expect(blobOverallStats?.totalBlobs).toBe(expectedTotalBlobs);
         });
 
         it("should calculate the total amount of unique blobs correctly", async () => {
           const expectedTotalUniqueBlobs = fixtures.blobs.length;
 
-          expect(blobOverallStats.totalUniqueBlobs).toBe(
+          expect(blobOverallStats?.totalUniqueBlobs).toBe(
             expectedTotalUniqueBlobs
           );
         });
@@ -253,7 +240,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blobOverallStats.totalBlobSize).toBe(
+          expect(blobOverallStats?.totalBlobSize).toBe(
             BigInt(expectedTotalBlobSize)
           );
         });
@@ -266,7 +253,7 @@ describe("Stats Extension", () => {
           const expectedAvgBlobSize =
             expectedTotalBlobSize / fixtures.blobsOnTransactions.length;
 
-          expect(blobOverallStats.avgBlobSize).toBe(expectedAvgBlobSize);
+          expect(blobOverallStats?.avgBlobSize).toBe(expectedAvgBlobSize);
         });
       },
     });
@@ -278,8 +265,8 @@ describe("Stats Extension", () => {
         let expectedDailyBlocks: typeof fixtures.blocks;
         let expectedDailyTxs: typeof fixtures.txs;
 
-        let blockDailyStats: NonNullable<
-          Awaited<ReturnType<typeof prisma.blockDailyStats.findFirst>>
+        let blockDailyStats: Awaited<
+          ReturnType<typeof prisma.blockDailyStats.findFirst>
         >;
 
         beforeAll(async () => {
@@ -288,15 +275,7 @@ describe("Stats Extension", () => {
 
           await prisma.blockDailyStats.fill(dayPeriod);
 
-          blockDailyStats = await prisma.blockDailyStats
-            .findFirst()
-            .then((res) => {
-              if (!res) {
-                throw new Error("Blob daily stats not found");
-              }
-
-              return res;
-            });
+          blockDailyStats = await prisma.blockDailyStats.findFirst();
         });
 
         it("should calculate the average blob as calldata fee correctly", () => {
@@ -306,7 +285,7 @@ describe("Stats Extension", () => {
               0
             ) / expectedDailyBlocks.length;
 
-          expect(blockDailyStats.avgBlobAsCalldataFee).toBe(
+          expect(blockDailyStats?.avgBlobAsCalldataFee).toBe(
             expectedAvgBlobAsCalldataFee
           );
         });
@@ -318,7 +297,7 @@ describe("Stats Extension", () => {
               0
             ) / expectedDailyBlocks.length;
 
-          expect(blockDailyStats.avgBlobFee).toBe(expectedAvgBlobFee);
+          expect(blockDailyStats?.avgBlobFee).toBe(expectedAvgBlobFee);
         });
 
         it("should calculate the average blob gas price correctly", () => {
@@ -326,7 +305,9 @@ describe("Stats Extension", () => {
             expectedDailyBlocks.reduce((acc, b) => acc + b.blobGasPrice, 0) /
             expectedDailyBlocks.length;
 
-          expect(blockDailyStats.avgBlobGasPrice).toBe(expectedAvgBlobGasPrice);
+          expect(blockDailyStats?.avgBlobGasPrice).toBe(
+            expectedAvgBlobGasPrice
+          );
         });
 
         // TODO: Fix this calculation
@@ -336,7 +317,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats.totalBlobAsCalldataFee).toBe(BigInt(res));
+          expect(blockDailyStats?.totalBlobAsCalldataFee).toBe(BigInt(res));
         });
 
         it("should calculate the total blob as calldata gas used correctly", () => {
@@ -345,7 +326,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats.totalBlobAsCalldataGasUsed).toBe(
+          expect(blockDailyStats?.totalBlobAsCalldataGasUsed).toBe(
             BigInt(expectedTotalBlobAsCalldataGasUsed)
           );
         });
@@ -356,7 +337,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats.totalBlobFee).toBe(
+          expect(blockDailyStats?.totalBlobFee).toBe(
             BigInt(expectedTotalBlobFee)
           );
         });
@@ -367,7 +348,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats.totalBlobGasUsed).toBe(
+          expect(blockDailyStats?.totalBlobGasUsed).toBe(
             BigInt(expectedTotalBlobGasUsed)
           );
         });
@@ -375,7 +356,7 @@ describe("Stats Extension", () => {
         it("should calculate the total blocks correctly", () => {
           const expectedTotalBlocks = expectedDailyBlocks.length;
 
-          expect(blockDailyStats.totalBlocks).toBe(expectedTotalBlocks);
+          expect(blockDailyStats?.totalBlocks).toBe(expectedTotalBlocks);
         });
       },
     });
@@ -383,22 +364,14 @@ describe("Stats Extension", () => {
     runOverallStatsFunctionsTests("blockOverallStats", {
       runStatsCalculationTests() {
         const blocks = fixtures.blocks;
-        let overallStats: NonNullable<
-          Awaited<ReturnType<typeof prisma.blockOverallStats.findFirst>>
+        let overallStats: Awaited<
+          ReturnType<typeof prisma.blockOverallStats.findFirst>
         >;
 
         beforeAll(async () => {
           await prisma.blockOverallStats.backfill();
 
-          overallStats = await prisma.blockOverallStats
-            .findFirst()
-            .then((res) => {
-              if (!res) {
-                throw new Error("Blob daily stats not found");
-              }
-
-              return res;
-            });
+          overallStats = await prisma.blockOverallStats.findFirst();
         });
 
         // TODO: Fix this calculation
@@ -409,14 +382,14 @@ describe("Stats Extension", () => {
             blocks.reduce((acc, b) => acc + b.blobGasUsed * b.blobGasPrice, 0) /
             blocks.length;
 
-          expect(overallStats.avgBlobFee).toBe(expectedAvgBlobFee);
+          expect(overallStats?.avgBlobFee).toBe(expectedAvgBlobFee);
         });
 
         it("should calculate the average blob gas price correctly", () => {
           const expectedAvgBlobGasPrice =
             blocks.reduce((acc, b) => acc + b.blobGasPrice, 0) / blocks.length;
 
-          expect(overallStats.avgBlobGasPrice).toBe(expectedAvgBlobGasPrice);
+          expect(overallStats?.avgBlobGasPrice).toBe(expectedAvgBlobGasPrice);
         });
 
         // TODO: Fix this calculation
@@ -428,7 +401,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(overallStats.totalBlobAsCalldataGasUsed.toNumber()).toBe(
+          expect(overallStats?.totalBlobAsCalldataGasUsed.toNumber()).toBe(
             expectedTotalBlobAsCalldataGasUsed
           );
         });
@@ -439,7 +412,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(overallStats.totalBlobFee.toNumber()).toBe(
+          expect(overallStats?.totalBlobFee.toNumber()).toBe(
             expectedTotalBlobFee
           );
         });
@@ -450,7 +423,7 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(overallStats.totalBlobGasUsed.toNumber()).toBe(
+          expect(overallStats?.totalBlobGasUsed.toNumber()).toBe(
             expectedTotalBlobGasUsed
           );
         });
@@ -458,7 +431,7 @@ describe("Stats Extension", () => {
         it("should calculate the total blocks correctly", () => {
           const expectedTotalBlocks = blocks.length;
 
-          expect(overallStats.totalBlocks).toBe(expectedTotalBlocks);
+          expect(overallStats?.totalBlocks).toBe(expectedTotalBlocks);
         });
       },
     });
@@ -468,8 +441,8 @@ describe("Stats Extension", () => {
     runDailyStatsFunctionsTests("transactionDailyStats", {
       runStatsCalculationTests(dayPeriod) {
         let expectedDailyTransactions: typeof fixtures.txs;
-        let transactionDailyStats: NonNullable<
-          Awaited<ReturnType<typeof prisma.transactionDailyStats.findFirst>>
+        let transactionDailyStats: Awaited<
+          ReturnType<typeof prisma.transactionDailyStats.findFirst>
         >;
 
         beforeAll(async () => {
@@ -495,7 +468,7 @@ describe("Stats Extension", () => {
               0
             ) / expectedDailyTransactions.length;
 
-          expect(transactionDailyStats.avgMaxBlobGasFee).toBe(
+          expect(transactionDailyStats?.avgMaxBlobGasFee).toBe(
             expectedAvgMaxBlobGasFee
           );
         });
@@ -503,7 +476,7 @@ describe("Stats Extension", () => {
         it("should calculate the total transactions correctly", () => {
           const expectedTotalTransactions = expectedDailyTransactions.length;
 
-          expect(transactionDailyStats.totalTransactions).toBe(
+          expect(transactionDailyStats?.totalTransactions).toBe(
             expectedTotalTransactions
           );
         });
@@ -513,7 +486,7 @@ describe("Stats Extension", () => {
             expectedDailyTransactions.map((tx) => tx.toId)
           ).size;
 
-          expect(transactionDailyStats.totalUniqueReceivers).toBe(
+          expect(transactionDailyStats?.totalUniqueReceivers).toBe(
             expectedTotalUniqueReceivers
           );
         });
@@ -523,7 +496,7 @@ describe("Stats Extension", () => {
             expectedDailyTransactions.map((tx) => tx.fromId)
           ).size;
 
-          expect(transactionDailyStats.totalUniqueSenders).toBe(
+          expect(transactionDailyStats?.totalUniqueSenders).toBe(
             expectedTotalUniqueSenders
           );
         });
@@ -552,31 +525,7 @@ describe("Stats Extension", () => {
             ]
           `);
         });
-
-        // it("should backfill stats after adding new items correctly", async () => {
-        //   await prisma.transactionOverallStats.backfill();
-        //   await createTransactions();
-        //   await prisma.transactionOverallStats.backfill();
-
-        //   const result = await prisma.transactionOverallStats.findMany({
-        //     select: {
-        //       totalTransactions: true,
-        //       totalUniqueReceivers: true,
-        //       totalUniqueSenders: true,
-        //     },
-        //   });
-        //   expect(result).toMatchInlineSnapshot(`
-        //     [
-        //       {
-        //         "totalTransactions": 8,
-        //         "totalUniqueReceivers": 5,
-        //         "totalUniqueSenders": 6,
-        //       },
-        //     ]
-        //   `);
-        // });
       });
     });
   });
-  // TODO: check for different kind of date input formats
 });

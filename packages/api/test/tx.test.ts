@@ -29,7 +29,7 @@ describe("Transaction route", async () => {
       expect(sortedResults).toMatchSnapshot();
     });
 
-    it.skip("should get all with pagination", async () => {
+    it("should get all with pagination", async () => {
       const input: GetAllInput = {
         p: 2,
         ps: 2,
