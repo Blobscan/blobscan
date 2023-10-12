@@ -140,6 +140,9 @@ describe("Indexer router", async () => {
             where: {
               blockNumber: INPUT.block.number,
             },
+            orderBy: {
+              hash: "asc",
+            },
           })
           .then((r) => r.map(omitDBTimestampFields));
         // const expectedBlobAsCalldataGasUsed = INPUT.transactions.map((tx) =>
@@ -163,19 +166,19 @@ describe("Indexer router", async () => {
           [
             {
               "blockNumber": 2010,
-              "fromId": "address9",
-              "gasPrice": 10000n,
-              "hash": "txHash999",
-              "maxFeePerBlobGas": 1800n,
-              "toId": "address10",
-            },
-            {
-              "blockNumber": 2010,
               "fromId": "address7",
               "gasPrice": 3000000n,
               "hash": "txHash1000",
               "maxFeePerBlobGas": 20000n,
               "toId": "address2",
+            },
+            {
+              "blockNumber": 2010,
+              "fromId": "address9",
+              "gasPrice": 10000n,
+              "hash": "txHash999",
+              "maxFeePerBlobGas": 1800n,
+              "toId": "address10",
             },
           ]
         `);
@@ -262,6 +265,8 @@ describe("Indexer router", async () => {
               blobRefs.map((ref) =>
                 authorizedContext.blobStorageManager.getBlob(ref)
               )
+            ).then((res) =>
+              res.sort((a, b) => (a && b ? a.data.localeCompare(b.data) : 0))
             );
 
             expect(gcsBlobData).toMatchInlineSnapshot(`

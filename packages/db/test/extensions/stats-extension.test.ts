@@ -31,7 +31,11 @@ function runDailyStatsFunctionsTests(
       async function checkStats(datePeriod: DatePeriod) {
         await prismaModel.fill(normalizeDatePeriod(datePeriod));
 
-        const stats = await prismaModel.findMany();
+        const stats = await prismaModel.findMany({
+          orderBy: {
+            day: "asc",
+          },
+        });
 
         expect(stats).toMatchSnapshot();
       }
@@ -75,9 +79,11 @@ function runDailyStatsFunctionsTests(
 
         await prismaModel.deleteAll();
 
-        const blobDailyStats = await prismaModel.findMany();
+        const dailyStats = await prismaModel.findMany({
+          orderBy: { day: "asc" },
+        });
 
-        expect(blobDailyStats).toHaveLength(0);
+        expect(dailyStats).toHaveLength(0);
       });
     });
   });
@@ -324,14 +330,14 @@ describe("Stats Extension", () => {
         });
 
         // TODO: Fix this calculation
-        // it("should calculate the total blob as calldata fee correctly", () => {
-        //   const res = expectedDailyTxs.reduce(
-        //     (acc, tx) => acc + tx.gasPrice * tx.blobAsCalldataGasUsed,
-        //     0
-        //   );
+        it.skip("should calculate the total blob as calldata fee correctly", () => {
+          const res = expectedDailyTxs.reduce(
+            (acc, tx) => acc + tx.gasPrice * tx.blobAsCalldataGasUsed,
+            0
+          );
 
-        //   expect(blockDailyStats.totalBlobAsCalldataFee).toBe(BigInt(res));
-        // });
+          expect(blockDailyStats.totalBlobAsCalldataFee).toBe(BigInt(res));
+        });
 
         it("should calculate the total blob as calldata gas used correctly", () => {
           const expectedTotalBlobAsCalldataGasUsed = expectedDailyBlocks.reduce(
@@ -395,7 +401,8 @@ describe("Stats Extension", () => {
             });
         });
 
-        it("should calculate the average blob as calldata fee correctly", () => {});
+        // TODO: Fix this calculation
+        it("should calculate the average blob as calldata fee correctly");
 
         it("should calculate the average blob fee correctly", () => {
           const expectedAvgBlobFee =
@@ -412,7 +419,8 @@ describe("Stats Extension", () => {
           expect(overallStats.avgBlobGasPrice).toBe(expectedAvgBlobGasPrice);
         });
 
-        it("should calculate the total blob as calldata fee correctly", () => {});
+        // TODO: Fix this calculation
+        it("should calculate the total blob as calldata fee correctly");
 
         it("should calculate the total blob as calldata gas used correctly", () => {
           const expectedTotalBlobAsCalldataGasUsed = blocks.reduce(
