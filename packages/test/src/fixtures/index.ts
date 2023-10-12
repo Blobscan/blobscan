@@ -1,8 +1,9 @@
 import type { BlobStorage } from "@prisma/client";
 
-import { prisma } from "@blobscan/db";
-
+import { getPrisma } from "../services/prisma";
 import data from "./postgres/data.json";
+
+const prisma = getPrisma();
 
 type BlobDataStorageReferenceFixture = {
   blobHash: string;

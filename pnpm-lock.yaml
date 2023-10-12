@@ -564,12 +564,12 @@ importers:
 
   packages/test:
     devDependencies:
-      '@blobscan/db':
-        specifier: ^0.0.1
-        version: link:../db
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
+      '@prisma/client':
+        specifier: ^5.0.0
+        version: 5.2.0(prisma@5.2.0)
 
   packages/zod:
     dependencies:
@@ -2374,11 +2374,9 @@ packages:
     dependencies:
       '@prisma/engines-version': 5.2.0-25.2804dc98259d2ea960602aca6b8e7fdc03c1758f
       prisma: 5.2.0
-    dev: false
 
   /@prisma/engines-version@5.2.0-25.2804dc98259d2ea960602aca6b8e7fdc03c1758f:
     resolution: {integrity: sha512-jsnKT5JIDIE01lAeCj2ghY9IwxkedhKNvxQeoyLs6dr4ZXynetD0vTy7u6wMJt8vVPv8I5DPy/I4CFaoXAgbtg==}
-    dev: false
 
   /@prisma/engines@5.2.0:
     resolution: {integrity: sha512-dT7FOLUCdZmq+AunLqB1Iz+ZH/IIS1Fz2THmKZQ6aFONrQD/BQ5ecJ7g2wGS2OgyUFf4OaLam6/bxmgdOBDqig==}
