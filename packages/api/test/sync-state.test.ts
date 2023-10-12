@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { appRouter } from "../src/root";
-import { getContext } from "./helper";
+import { getContext } from "./helpers";
 
 describe("Sync state route", async () => {
   describe("getState", () => {

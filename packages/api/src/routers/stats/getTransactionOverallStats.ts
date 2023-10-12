@@ -4,7 +4,7 @@ import { TRANSACTION_BASE_PATH } from "./common";
 import {
   getTransactionOverallStatsInputSchema,
   getTransactionOverallStatsOutputSchema,
-} from "./getOverallStats.schema";
+} from "./getTransactionOverallStats.schema";
 
 export function getTransactionOverallStatsQuery(prisma: TRPCContext["prisma"]) {
   return prisma.transactionOverallStats

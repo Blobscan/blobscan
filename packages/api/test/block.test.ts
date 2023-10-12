@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
 import { appRouter } from "../src/root";
-import { getContext } from "./helper";
+import { getContext } from "./helpers";
 
 describe("Block route", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -71,12 +71,12 @@ describe("Block route", async () => {
     it("should error if no block with hash", async () => {
       await expect(
         caller.block.getByBlockNumber({
-          number: 1004,
+          number: 9999,
         })
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with number '1004'`,
+          message: `No block with number '9999'`,
         })
       );
     });

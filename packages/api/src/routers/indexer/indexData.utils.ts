@@ -1,7 +1,11 @@
+import type { Blob, Block, OmittableFields, Transaction } from "@blobscan/db";
+
+import type { IndexDataInput } from "./indexData.schema";
+
 const MIN_BLOB_GASPRICE = 1;
 const BLOB_GASPRICE_UPDATE_FRACTION = 3_338_477;
 
-export const GAS_PER_BLOB = 2 ** 17; // 131072
+export const GAS_PER_BLOB = 2 ** 17; // 131_072
 
 function fakeExponential(
   factor: bigint,
@@ -49,5 +53,84 @@ export function calculateBlobGasPrice(excessDataGas: number): bigint {
       BigInt(excessDataGas),
       BigInt(BLOB_GASPRICE_UPDATE_FRACTION)
     )
+  );
+}
+
+export function createDBTransactions({
+  blobs,
+  block,
+  transactions,
+}: IndexDataInput): Omit<Transaction, OmittableFields>[] {
+  return transactions.map<Omit<Transaction, OmittableFields>>(
+    ({ blockNumber, from, gasPrice, hash, maxFeePerBlobGas, to }) => {
+      const txBlob: IndexDataInput["blobs"][0] | undefined = blobs.find(
+        (b) => b.txHash === hash
+      );
+
+      if (!txBlob) {
+        throw new Error(`Blob for transaction ${hash} not found`);
+      }
+
+      return {
+        blockNumber,
+        hash,
+        fromId: from,
+        toId: to,
+        gasPrice,
+        blobGasPrice: calculateBlobGasPrice(block.excessBlobGas),
+        maxFeePerBlobGas,
+        blobAsCalldataGasUsed: getEIP2028CalldataGas(txBlob.data),
+      };
+    }
+  );
+}
+
+export function createDBBlock(
+  {
+    block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
+  }: IndexDataInput,
+  dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
+): Omit<Block, OmittableFields> {
+  const blobAsCalldataGasUsed = dbTxs.reduce(
+    (acc, tx) => acc + tx.blobAsCalldataGasUsed,
+    0
+  );
+
+  return {
+    number,
+    hash,
+    timestamp: new Date(timestamp * 1000),
+    slot,
+    blobGasUsed,
+    blobGasPrice: calculateBlobGasPrice(excessBlobGas),
+    excessBlobGas,
+    blobAsCalldataGasUsed,
+  };
+}
+
+export function createDBBlobs({
+  blobs,
+  block,
+}: IndexDataInput): Omit<Blob, OmittableFields>[] {
+  const uniqueBlobVersionedHashes = Array.from(
+    new Set(blobs.map((b) => b.versionedHash))
+  );
+
+  return uniqueBlobVersionedHashes.map<Omit<Blob, OmittableFields>>(
+    (versionedHash) => {
+      const blob = blobs.find((b) => b.versionedHash === versionedHash);
+
+      // Type safety check to make TS happy
+      if (!blob) {
+        throw new Error(`Blob ${versionedHash} not found`);
+      }
+
+      return {
+        versionedHash: blob.versionedHash,
+        commitment: blob.commitment,
+        size: calculateBlobSize(blob.data),
+        firstBlockNumber: block.number,
+      };
+    }
   );
 }

@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/root";
 import { appRouter } from "../src/root";
-import { getContext } from "./helper";
+import { getContext } from "./helpers";
 
 type GetAllInput = inferProcedureInput<AppRouter["tx"]["getAll"]>;
 type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHash"]>;

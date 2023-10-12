@@ -1,95 +1,13 @@
-import type { Blob, Transaction, OmittableFields, Block } from "@blobscan/db";
-
 import { tracer } from "../../instrumentation";
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
-import type { IndexDataInput } from "./indexData.schema";
 import { indexDataOutputSchema } from "./indexData.schema";
 import { indexDataInputSchema } from "./indexData.schema";
 import {
-  calculateBlobGasPrice,
-  calculateBlobSize,
-  getEIP2028CalldataGas,
+  createDBBlobs,
+  createDBBlock,
+  createDBTransactions,
 } from "./indexData.utils";
-
-function createDBTransactions({
-  blobs,
-  block,
-  transactions,
-}: IndexDataInput): Omit<Transaction, OmittableFields>[] {
-  return transactions.map<Omit<Transaction, OmittableFields>>(
-    ({ blockNumber, from, gasPrice, hash, maxFeePerBlobGas, to }) => {
-      const txBlob: IndexDataInput["blobs"][0] | undefined = blobs.find(
-        (b) => b.txHash === hash
-      );
-
-      if (!txBlob) {
-        throw new Error(`Blob for transaction ${hash} not found`);
-      }
-
-      return {
-        blockNumber,
-        hash,
-        fromId: from,
-        toId: to,
-        gasPrice,
-        blobGasPrice: calculateBlobGasPrice(block.excessBlobGas),
-        maxFeePerBlobGas,
-        blobAsCalldataGasUsed: getEIP2028CalldataGas(txBlob.data),
-      };
-    }
-  );
-}
-
-function createDBBlock(
-  {
-    block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
-  }: IndexDataInput,
-  dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
-): Omit<Block, OmittableFields> {
-  const blobAsCalldataGasUsed = dbTxs.reduce(
-    (acc, tx) => acc + tx.blobAsCalldataGasUsed,
-    0
-  );
-
-  return {
-    number,
-    hash,
-    timestamp: new Date(timestamp * 1000),
-    slot,
-    blobGasUsed,
-    blobGasPrice: calculateBlobGasPrice(excessBlobGas),
-    excessBlobGas,
-    blobAsCalldataGasUsed,
-  };
-}
-
-function createDBBlobs({
-  blobs,
-  block,
-}: IndexDataInput): Omit<Blob, OmittableFields>[] {
-  const uniqueBlobVersionedHashes = Array.from(
-    new Set(blobs.map((b) => b.versionedHash))
-  );
-
-  return uniqueBlobVersionedHashes.map<Omit<Blob, OmittableFields>>(
-    (versionedHash) => {
-      const blob = blobs.find((b) => b.versionedHash === versionedHash);
-
-      // Type safety check to make TS happy
-      if (!blob) {
-        throw new Error(`Blob ${versionedHash} not found`);
-      }
-
-      return {
-        versionedHash: blob.versionedHash,
-        commitment: blob.commitment,
-        size: calculateBlobSize(blob.data),
-        firstBlockNumber: block.number,
-      };
-    }
-  );
-}
 
 export const indexData = jwtAuthedProcedure
   .meta({

@@ -6,7 +6,7 @@ import {
 } from "./getAllOverallStats.schema";
 import { getBlobOverallStatsQuery } from "./getBlobOverallStats";
 import { getBlockOverallStatsQuery } from "./getBlockOverallStats";
-import { getTransactionOverallStatsQuery } from "./getOverallStats";
+import { getTransactionOverallStatsQuery } from "./getTransactionOverallStats";
 
 export const getAllOverallStats = publicProcedure
   .meta({
