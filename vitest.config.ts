@@ -2,9 +2,6 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    include: ["test/**/*.test.ts"],
-    setupFiles: ["@blobscan/test/src/helpers/setup.ts"],
-    threads: false,
     coverage: {
       enabled: true,
       reporter: ["html"],
