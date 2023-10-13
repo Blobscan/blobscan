@@ -322,3 +322,33 @@ exports[`Stats Extension > Transaction model > Daily stats functions > fill > sh
 `;
 
 exports[`Stats Extension > Transaction model > Daily stats functions > fill > should fill in stats for a period with no data 1`] = `[]`;
+
+exports[`Stats Extension > Transaction model > Overall stats functions > backfill > should backfill stats after adding new items correctly 1`] = `
+{
+  "avgMaxBlobGasFee": 102.2222222222222,
+  "id": 1,
+  "totalTransactions": 18,
+  "totalUniqueReceivers": 5,
+  "totalUniqueSenders": 6,
+}
+`;
+
+exports[`Stats Extension > Transaction model > Overall stats functions > increment > should increment stats given a block range correctly 1`] = `
+{
+  "avgMaxBlobGasFee": 102.2222222222222,
+  "id": 1,
+  "totalTransactions": 18,
+  "totalUniqueReceivers": 5,
+  "totalUniqueSenders": 6,
+}
+`;
+
+exports[`Stats Extension > Transaction model > Overall stats functions > increment > should update already existing stats correctly 1`] = `
+{
+  "avgMaxBlobGasFee": 110,
+  "id": 1,
+  "totalTransactions": 6,
+  "totalUniqueReceivers": 6,
+  "totalUniqueSenders": 6,
+}
+`;

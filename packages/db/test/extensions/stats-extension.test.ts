@@ -1,4 +1,14 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import type {
+  BlobDailyStats,
+  BlobOverallStats,
+  BlockDailyStats,
+  BlockOverallStats,
+  TransactionDailyStats,
+  TransactionOverallStats,
+} from "@prisma/client";
+import type { SuiteFactory } from "vitest";
+import { beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
@@ -18,13 +28,12 @@ import {
 function runDailyStatsFunctionsTests(
   modelName: keyof typeof prisma,
   {
-    runStatsCalculationTests,
+    statsCalculationTestsSuite,
   }: {
-    runStatsCalculationTests?: (dayPeriod: DatePeriod) => void;
+    statsCalculationTestsSuite?: SuiteFactory;
   }
 ) {
   return describe("Daily stats functions", () => {
-    const singleDayDatePeriod: DatePeriod = dayToDatePeriod("2023-08-31");
     const prismaModel = getDailyStatsPrismaModel(modelName);
 
     describe("fill", () => {
@@ -40,10 +49,8 @@ function runDailyStatsFunctionsTests(
         expect(stats).toMatchSnapshot();
       }
 
-      if (runStatsCalculationTests) {
-        describe("when filling in the stats for a single day", () => {
-          runStatsCalculationTests(singleDayDatePeriod);
-        });
+      if (statsCalculationTestsSuite) {
+        describe("when filling in daily stats", statsCalculationTestsSuite);
       }
 
       it("should fill in stats for a multiple days period", async () => {
@@ -75,7 +82,7 @@ function runDailyStatsFunctionsTests(
 
     describe("deleteAll", async () => {
       it("should delete all stats correctly", async () => {
-        await prismaModel.fill(singleDayDatePeriod);
+        await prismaModel.fill({ from: "2022-01-01" });
 
         await prismaModel.deleteAll();
 
@@ -91,16 +98,14 @@ function runDailyStatsFunctionsTests(
 
 function runOverallStatsFunctionsTests(
   modelName: keyof typeof prisma,
-  { runStatsCalculationTests }: { runStatsCalculationTests?: () => void }
+  { statsCalculationTestsSuite }: { statsCalculationTestsSuite?: SuiteFactory }
 ) {
   return describe("Overall stats functions", () => {
     const prismaModel = getOverallStatsPrismaModel(modelName);
 
-    if (runStatsCalculationTests) {
+    if (statsCalculationTestsSuite) {
       describe("backfill", () => {
-        describe("when aggregating overall stats", () => {
-          runStatsCalculationTests();
-        });
+        describe("when aggregating overall stats", statsCalculationTestsSuite);
 
         it("should backfill stats after adding new items correctly", async () => {
           await prismaModel.backfill();
@@ -143,8 +148,8 @@ function runOverallStatsFunctionsTests(
     }
   });
 }
-
 describe("Stats Extension", () => {
+  const dayPeriod: DatePeriod = dayToDatePeriod("2023-08-31");
   const fixtureBlobs = fixtures.blobsOnTransactions.map((btx) => {
     const blob = fixtures.blobs.find(
       (blob) => blob.versionedHash === btx.blobHash
@@ -157,18 +162,18 @@ describe("Stats Extension", () => {
 
   describe("Blob model", () => {
     runDailyStatsFunctionsTests("blobDailyStats", {
-      runStatsCalculationTests(dayPeriod: DatePeriod) {
-        let expectedDailyBlobs: typeof fixtureBlobs;
-        let blobDailyStats: Awaited<
-          ReturnType<typeof prisma.blobDailyStats.findFirst>
-        >;
+      statsCalculationTestsSuite() {
+        const expectedDailyBlobs = getDailyBlobs(dayPeriod);
+        let blobDailyStats: BlobDailyStats | null;
 
-        beforeAll(async () => {
-          expectedDailyBlobs = getDailyBlobs(dayPeriod);
-
+        beforeEach(async () => {
           await prisma.blobDailyStats.fill(dayPeriod);
 
           blobDailyStats = await prisma.blobDailyStats.findFirst();
+
+          return async () => {
+            await prisma.blobDailyStats.deleteMany();
+          };
         });
 
         it("should calculate the total amount of blobs correctly", () => {
@@ -209,15 +214,17 @@ describe("Stats Extension", () => {
     });
 
     runOverallStatsFunctionsTests("blobOverallStats", {
-      runStatsCalculationTests() {
-        let blobOverallStats: Awaited<
-          ReturnType<typeof prisma.blobOverallStats.findFirst>
-        >;
+      statsCalculationTestsSuite() {
+        let blobOverallStats: BlobOverallStats | null;
 
-        beforeAll(async () => {
+        beforeEach(async () => {
           await prisma.blobOverallStats.backfill();
 
           blobOverallStats = await prisma.blobOverallStats.findFirst();
+
+          return async () => {
+            await prisma.blobOverallStats.deleteMany();
+          };
         });
 
         it("should calculate the total amount of blobs correctly", async () => {
@@ -261,21 +268,19 @@ describe("Stats Extension", () => {
 
   describe("Block model", () => {
     runDailyStatsFunctionsTests("blockDailyStats", {
-      runStatsCalculationTests(dayPeriod) {
-        let expectedDailyBlocks: typeof fixtures.blocks;
-        let expectedDailyTxs: typeof fixtures.txs;
+      statsCalculationTestsSuite() {
+        const expectedDailyBlocks = getDailyBlocks(dayPeriod);
+        // const expectedDailyTxs = getDailyTransactions(dayPeriod);
+        let blockDailyStats: BlockDailyStats | null;
 
-        let blockDailyStats: Awaited<
-          ReturnType<typeof prisma.blockDailyStats.findFirst>
-        >;
-
-        beforeAll(async () => {
-          expectedDailyBlocks = getDailyBlocks(dayPeriod);
-          expectedDailyTxs = getDailyTransactions(dayPeriod);
-
+        beforeEach(async () => {
           await prisma.blockDailyStats.fill(dayPeriod);
 
           blockDailyStats = await prisma.blockDailyStats.findFirst();
+
+          return async () => {
+            await prisma.blockDailyStats.deleteMany();
+          };
         });
 
         it("should calculate the average blob as calldata fee correctly", () => {
@@ -311,14 +316,14 @@ describe("Stats Extension", () => {
         });
 
         // TODO: Fix this calculation
-        it.skip("should calculate the total blob as calldata fee correctly", () => {
-          const res = expectedDailyTxs.reduce(
-            (acc, tx) => acc + tx.gasPrice * tx.blobAsCalldataGasUsed,
-            0
-          );
+        // it("should calculate the total blob as calldata fee correctly", () => {
+        //   const res = expectedDailyTxs.reduce(
+        //     (acc, tx) => acc + tx.gasPrice * tx.blobAsCalldataGasUsed,
+        //     0
+        //   );
 
-          expect(blockDailyStats?.totalBlobAsCalldataFee).toBe(BigInt(res));
-        });
+        //   expect(blockDailyStats?.totalBlobAsCalldataFee).toBe(BigInt(res));
+        // });
 
         it("should calculate the total blob as calldata gas used correctly", () => {
           const expectedTotalBlobAsCalldataGasUsed = expectedDailyBlocks.reduce(
@@ -362,13 +367,11 @@ describe("Stats Extension", () => {
     });
 
     runOverallStatsFunctionsTests("blockOverallStats", {
-      runStatsCalculationTests() {
+      statsCalculationTestsSuite() {
         const blocks = fixtures.blocks;
-        let overallStats: Awaited<
-          ReturnType<typeof prisma.blockOverallStats.findFirst>
-        >;
+        let overallStats: BlockOverallStats | null;
 
-        beforeAll(async () => {
+        beforeEach(async () => {
           await prisma.blockOverallStats.backfill();
 
           overallStats = await prisma.blockOverallStats.findFirst();
@@ -439,26 +442,15 @@ describe("Stats Extension", () => {
 
   describe("Transaction model", () => {
     runDailyStatsFunctionsTests("transactionDailyStats", {
-      runStatsCalculationTests(dayPeriod) {
-        let expectedDailyTransactions: typeof fixtures.txs;
-        let transactionDailyStats: Awaited<
-          ReturnType<typeof prisma.transactionDailyStats.findFirst>
-        >;
+      statsCalculationTestsSuite() {
+        const expectedDailyTransactions = getDailyTransactions(dayPeriod);
+        let transactionDailyStats: TransactionDailyStats | null;
 
-        beforeAll(async () => {
-          expectedDailyTransactions = getDailyTransactions(dayPeriod);
-
+        beforeEach(async () => {
           await prisma.transactionDailyStats.fill(dayPeriod);
 
-          transactionDailyStats = await prisma.transactionDailyStats
-            .findFirst()
-            .then((res) => {
-              if (!res) {
-                throw new Error("Blob daily stats not found");
-              }
-
-              return res;
-            });
+          transactionDailyStats =
+            await prisma.transactionDailyStats.findFirst();
         });
 
         it("should calculate the average max fee per blob gas correctly", () => {
@@ -503,29 +495,53 @@ describe("Stats Extension", () => {
       },
     });
 
-    describe("Overall stats functions", () => {
-      describe("backfill", () => {
-        it("should backfill stats correctly", async () => {
+    runOverallStatsFunctionsTests("transactionOverallStats", {
+      statsCalculationTestsSuite() {
+        const transactions = fixtures.txs;
+        let overallStats: TransactionOverallStats | null;
+
+        beforeEach(async () => {
           await prisma.transactionOverallStats.backfill();
 
-          const result = await prisma.transactionOverallStats.findMany({
-            select: {
-              totalTransactions: true,
-              totalUniqueReceivers: true,
-              totalUniqueSenders: true,
-            },
-          });
-          expect(result).toMatchInlineSnapshot(`
-            [
-              {
-                "totalTransactions": 16,
-                "totalUniqueReceivers": 4,
-                "totalUniqueSenders": 4,
-              },
-            ]
-          `);
+          overallStats = await prisma.transactionOverallStats.findFirst();
         });
-      });
+
+        it("should calculate the average max fee per blob gas correctly", () => {
+          const expectedAvgMaxBlobGasFee =
+            transactions.reduce((acc, tx) => acc + tx.maxFeePerBlobGas, 0) /
+            transactions.length;
+
+          expect(overallStats?.avgMaxBlobGasFee).toBe(expectedAvgMaxBlobGasFee);
+        });
+
+        it("should calculate the total transactions correctly", () => {
+          const expectedTotalTransactions = transactions.length;
+
+          expect(overallStats?.totalTransactions).toBe(
+            expectedTotalTransactions
+          );
+        });
+
+        it("should calculate the total unique receivers correctly", () => {
+          const expectedTotalUniqueReceivers = new Set(
+            transactions.map((tx) => tx.toId)
+          ).size;
+
+          expect(overallStats?.totalUniqueReceivers).toBe(
+            expectedTotalUniqueReceivers
+          );
+        });
+
+        it("should calculate the total unique senders correctly", () => {
+          const expectedTotalUniqueSenders = new Set(
+            transactions.map((tx) => tx.fromId)
+          ).size;
+
+          expect(overallStats?.totalUniqueSenders).toBe(
+            expectedTotalUniqueSenders
+          );
+        });
+      },
     });
   });
 });

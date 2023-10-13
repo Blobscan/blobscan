@@ -74,7 +74,9 @@ export function getDailyStatsPrismaModel(modelName: keyof typeof prisma) {
   const model = prisma[modelName];
 
   if (!hasDailyStatsExtensionFns(model)) {
-    throw new Error(`Model ${modelName} has no daily stats functions`);
+    throw new Error(
+      `Model ${modelName.toString()} has no daily stats functions`
+    );
   }
 
   return model;
