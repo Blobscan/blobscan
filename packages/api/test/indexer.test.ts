@@ -4,7 +4,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { omitDBTimestampFields } from "@blobscan/test";
 
-import { appRouter } from "../src/root";
+import { appRouter } from "../src/app-router";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
 import { getContext } from "./helpers";

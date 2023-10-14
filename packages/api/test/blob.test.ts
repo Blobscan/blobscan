@@ -3,9 +3,9 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
+import type { AppRouter } from "../src/app-router";
+import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
-import type { AppRouter } from "../src/root";
-import { appRouter } from "../src/root";
 import { getContext, runPaginationTestsSuite } from "./helpers";
 
 type GetByHashInput = inferProcedureInput<

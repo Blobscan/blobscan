@@ -3,8 +3,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import dayjs from "@blobscan/dayjs";
 import { omitDBTimestampFields } from "@blobscan/test";
 
+import { appRouter } from "../src/app-router";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
-import { appRouter } from "../src/root";
 import { getContext } from "./helpers";
 
 const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
