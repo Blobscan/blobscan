@@ -14,5 +14,14 @@
   "dependencies": {
     "@blobscan/zod": "^0.0.1",
     "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
   }
 }
