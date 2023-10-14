@@ -1,53 +1,42 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { fixtures } from "@blobscan/test";
+
+import type { TRPCContext } from "../src";
 import type { AppRouter } from "../src/root";
 import { appRouter } from "../src/root";
-import { getContext } from "./helpers";
+import { getContext, runPaginationTestsSuite } from "./helpers";
 
-type GetAllInput = inferProcedureInput<AppRouter["tx"]["getAll"]>;
 type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHash"]>;
-type GetByAddressInput = inferProcedureInput<AppRouter["tx"]["getByAddress"]>;
 
-describe("Transaction route", async () => {
+describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
+  let ctx: TRPCContext;
 
   beforeAll(async () => {
-    const ctx = await getContext();
+    ctx = await getContext();
     caller = appRouter.createCaller(ctx);
   });
 
   describe("getAll", () => {
-    it("should get all", async () => {
-      const result = await caller.tx.getAll({});
-      const sortedResults = result.transactions.sort((a, b) => {
-        if (a.hash < b.hash) return -1;
-        if (a.hash > b.hash) return 1;
+    it("should get the total number of transactions", async () => {
+      const expectedTotalTransactions = fixtures.txs.length;
 
-        return 0;
-      });
-      expect(sortedResults).toMatchSnapshot();
+      await ctx.prisma.transactionOverallStats.backfill();
+
+      const { totalTransactions } = await caller.tx.getAll();
+
+      expect(totalTransactions).toBe(expectedTotalTransactions);
     });
 
-    it("should get all with pagination", async () => {
-      const input: GetAllInput = {
-        p: 2,
-        ps: 2,
-      };
-
-      const result = await caller.tx.getAll(input);
-      const sortedResults = result.transactions.sort((a, b) => {
-        if (a.hash < b.hash) return -1;
-        if (a.hash > b.hash) return 1;
-
-        return 0;
-      });
-      expect(sortedResults).toMatchSnapshot();
-    });
+    runPaginationTestsSuite("transaction", (paginationInput) =>
+      caller.tx.getAll(paginationInput).then(({ transactions }) => transactions)
+    );
   });
 
   describe("getByHash", () => {
-    it("should get by hash", async () => {
+    it("should get a transaction by hash correctly", async () => {
       const input: GetByHashInput = {
         hash: "txHash001",
       };
@@ -56,7 +45,7 @@ describe("Transaction route", async () => {
       expect(result).toMatchSnapshot();
     });
 
-    it("should error if no tx with hash", async () => {
+    it("should fail when providing a non-existent hash", async () => {
       await expect(
         caller.tx.getByHash({
           hash: "nonExistingHash",
@@ -68,24 +57,21 @@ describe("Transaction route", async () => {
   });
 
   describe("getByAddress", () => {
-    it("should get by address", async () => {
-      const input: GetByAddressInput = {
-        address: "address2",
-      };
+    const address = "address2";
 
-      const result = await caller.tx.getByAddress(input);
-      expect(result).toMatchSnapshot();
-    });
+    runPaginationTestsSuite("address's transactions", (paginationInput) =>
+      caller.tx
+        .getByAddress({ ...paginationInput, address })
+        .then(({ transactions }) => transactions)
+    );
 
-    it("should get by address with pagination", async () => {
-      const input: GetByAddressInput = {
-        p: 1,
-        ps: 1,
-        address: "address4",
-      };
+    it("should return the total number of transactions for an address", async () => {
+      const expectedTotalAddressTransactions = fixtures.txs.filter(
+        (tx) => tx.fromId === address || tx.toId === address
+      ).length;
+      const { totalTransactions } = await caller.tx.getByAddress({ address });
 
-      const result = await caller.tx.getByAddress(input);
-      expect(result).toMatchSnapshot();
+      expect(totalTransactions).toBe(expectedTotalAddressTransactions);
     });
   });
 });

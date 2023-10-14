@@ -22,6 +22,7 @@ export const getByAddress = publicProcedure
         orderBy: { blockNumber: "desc" },
         ...ctx.pagination,
       }),
+      // FIXME: this is not efficient
       ctx.prisma.transaction.count({
         where: {
           OR: [{ fromId: address }, { toId: address }],

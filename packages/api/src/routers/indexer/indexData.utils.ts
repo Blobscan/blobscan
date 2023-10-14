@@ -1,4 +1,9 @@
-import type { Blob, Block, OmittableFields, Transaction } from "@blobscan/db";
+import type {
+  Blob,
+  Block,
+  Transaction,
+  WithoutTimestampFields,
+} from "@blobscan/db";
 
 import type { IndexDataInput } from "./indexData.schema";
 
@@ -60,8 +65,8 @@ export function createDBTransactions({
   blobs,
   block,
   transactions,
-}: IndexDataInput): Omit<Transaction, OmittableFields>[] {
-  return transactions.map<Omit<Transaction, OmittableFields>>(
+}: IndexDataInput): WithoutTimestampFields<Transaction>[] {
+  return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ blockNumber, from, gasPrice, hash, maxFeePerBlobGas, to }) => {
       const txBlob: IndexDataInput["blobs"][0] | undefined = blobs.find(
         (b) => b.txHash === hash
@@ -90,7 +95,7 @@ export function createDBBlock(
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
-): Omit<Block, OmittableFields> {
+): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
     (acc, tx) => acc + tx.blobAsCalldataGasUsed,
     0
@@ -111,12 +116,12 @@ export function createDBBlock(
 export function createDBBlobs({
   blobs,
   block,
-}: IndexDataInput): Omit<Blob, OmittableFields>[] {
+}: IndexDataInput): WithoutTimestampFields<Blob>[] {
   const uniqueBlobVersionedHashes = Array.from(
     new Set(blobs.map((b) => b.versionedHash))
   );
 
-  return uniqueBlobVersionedHashes.map<Omit<Blob, OmittableFields>>(
+  return uniqueBlobVersionedHashes.map<WithoutTimestampFields<Blob>>(
     (versionedHash) => {
       const blob = blobs.find((b) => b.versionedHash === versionedHash);
 
