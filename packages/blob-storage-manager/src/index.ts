@@ -23,6 +23,7 @@ async function createOrLoadBlobStorageManager(): Promise<BlobStorageManager> {
   return blobStorageManager;
 }
 
+export { env } from "./env";
 export type { BlobReference } from "./BlobStorageManager";
 export {
   createOrLoadBlobStorageManager,

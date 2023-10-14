@@ -10,7 +10,9 @@ export type {
 } from "./context";
 
 export * from "@trpc/server/adapters/express";
+export { env as blobStorageManagerEnv } from "@blobscan/blob-storage-manager";
 
+export { env as apiEnv } from "./env";
 export { getPrismaMetricsClient } from "./instrumentation";
 export type {
   Metric,

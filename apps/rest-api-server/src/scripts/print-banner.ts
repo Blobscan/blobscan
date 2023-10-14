@@ -1,6 +1,9 @@
-import { env } from "./env";
+import { apiEnv, blobStorageManagerEnv } from "@blobscan/api";
+import { env as otelEnv } from "@blobscan/open-telemetry";
 
-function printBanner() {
+import { env } from "../env";
+
+function run() {
   console.log(" ____  _       _");
   console.log("| __ )| | ___ | |__  ___  ___ __ _ _ __");
   console.log("|  _ \\| |/ _ \\| '_ \\/ __|/ __/ _` | '_ \\");
@@ -11,6 +14,10 @@ function printBanner() {
   console.log(
     `Configuration: metrics=${env.METRICS_ENABLED}, traces=${env.TRACES_ENABLED}, port=${env.BLOBSCAN_API_PORT}`
   );
+
+  apiEnv.display();
+  blobStorageManagerEnv.display();
+  otelEnv.display();
 }
 
-printBanner();
+run();
