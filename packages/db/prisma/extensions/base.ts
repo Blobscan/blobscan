@@ -52,6 +52,11 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
     name: "Base Extension",
     model: {
+      $allModels: {
+        zero() {
+          return prisma.$queryRaw`SELECT 0 as count`;
+        },
+      },
       address: {
         upsertAddressesFromTransactions(
           txs: { from: string; to: string; blockNumber: number }[]
@@ -72,7 +77,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(addresses: WithoutTimestampFields<Address>[]) {
           if (!addresses.length) {
-            return 0;
+            return (Prisma.getExtensionContext(this) as any).zero();
           }
 
           const formattedValues = addresses
@@ -140,7 +145,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(blobs: WithoutTimestampFields<Blob>[]) {
           if (!blobs.length) {
-            return 0;
+            return (Prisma.getExtensionContext(this) as any).zero();
           }
 
           const formattedValues = blobs
@@ -175,7 +180,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       blobDataStorageReference: {
         upsertMany(refs: BlobDataStorageReference[]) {
           if (!refs.length) {
-            return 0;
+            return (Prisma.getExtensionContext(this) as any).zero();
           }
 
           const formattedValues = refs.map(
@@ -211,7 +216,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       transaction: {
         upsertMany(transactions: WithoutTimestampFields<Transaction>[]) {
           if (!transactions.length) {
-            return 0;
+            return (Prisma.getExtensionContext(this) as any).zero();
           }
 
           const formattedValues = transactions

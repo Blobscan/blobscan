@@ -16,6 +16,12 @@ import { upsertAndRetrieveManyAddresses } from "./base-extension.test.utils";
 import { upsertAndretrieveAddressesFromTxs } from "./base-extension.test.utils";
 
 describe("Base Extension", () => {
+  const expectedEmptyInputRes = [
+    {
+      count: 0,
+    },
+  ];
+
   describe("Address model", () => {
     describe("upsertAddressesFromTransactions()", () => {
       let input: UpsertAddrFromTxsInput;
@@ -254,7 +260,7 @@ describe("Base Extension", () => {
           input
         );
 
-        expect(result).toBe(0);
+        expect(result).toStrictEqual(expectedEmptyInputRes);
       });
 
       it("should fail when trying to upsert an address from a transaction which is part of a non-existent block", async () => {
@@ -332,7 +338,7 @@ describe("Base Extension", () => {
 
         const result = await prisma.address.upsertMany(input);
 
-        expect(result).toBe(0);
+        expect(result).toStrictEqual(expectedEmptyInputRes);
       });
 
       it("should fail when trying to upsert a sender address with a non-existent first block", async () => {
@@ -568,7 +574,7 @@ describe("Base Extension", () => {
       it("should upsert an empty array correctly", async () => {
         const result = await prisma.blob.upsertMany([]);
 
-        expect(result).toBe(0);
+        expect(result).toStrictEqual(expectedEmptyInputRes);
       });
     });
   });
@@ -654,7 +660,7 @@ describe("Base Extension", () => {
       it("should upsert an empty array correctly", async () => {
         const result = await prisma.blobDataStorageReference.upsertMany([]);
 
-        expect(result).toBe(0);
+        expect(result).toStrictEqual(expectedEmptyInputRes);
       });
 
       it("should fail when upserting a reference for a non-existent blob", async () => {
@@ -781,7 +787,7 @@ describe("Base Extension", () => {
       it("should upsert an empty array correctly", async () => {
         const result = await prisma.transaction.upsertMany([]);
 
-        expect(result).toBe(0);
+        expect(result).toStrictEqual(expectedEmptyInputRes);
       });
 
       it("should fail when upserting a transaction with a non-existent block", async () => {
