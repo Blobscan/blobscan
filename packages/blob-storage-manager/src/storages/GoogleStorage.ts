@@ -51,7 +51,6 @@ export class GoogleStorage extends BlobStorage {
 
   async healthCheck(): Promise<void> {
     const [files] = await this._bucket.getFiles();
-    console.log(JSON.stringify(files, null, 2));
 
     if (!files) {
       throw new Error(`Bucket ${this._bucketName} does not exist`);

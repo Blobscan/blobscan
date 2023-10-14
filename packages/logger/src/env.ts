@@ -1,4 +1,4 @@
-import { createEnv, nodeEnvSchema, presetEnvOptions, z } from "@blobscan/zod";
+import { createEnv, nodeEnvSchema, presetEnvOptions } from "@blobscan/zod";
 
 export const env = createEnv({
   envOptions: {
