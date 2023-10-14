@@ -349,6 +349,6 @@ exports[`Stats Extension > Transaction model > Overall stats functions > increme
   "id": 1,
   "totalTransactions": 6,
   "totalUniqueReceivers": 6,
-  "totalUniqueSenders": 6,
+  "totalUniqueSenders": 4,
 }
 `;

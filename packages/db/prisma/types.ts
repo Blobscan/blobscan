@@ -3,4 +3,6 @@ export type BlockNumberRange = {
   to: number;
 };
 
-export type OmittableFields = "insertedAt" | "updatedAt";
+export type TimestampFields = "insertedAt" | "updatedAt";
+
+export type WithoutTimestampFields<T> = Omit<T, TimestampFields>;
