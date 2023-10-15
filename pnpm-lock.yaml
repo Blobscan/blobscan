@@ -344,6 +344,9 @@ importers:
       '@blobscan/db':
         specifier: ^0.0.1
         version: link:../db
+      '@blobscan/open-telemetry':
+        specifier: ^0.0.1
+        version: link:../open-telemetry
       '@blobscan/zod':
         specifier: ^0.0.1
         version: link:../zod
@@ -360,9 +363,6 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
-      '@blobscan/open-telemetry':
-        specifier: ^0.0.1
-        version: link:../open-telemetry
       '@blobscan/test':
         specifier: ^0.0.1
         version: link:../test
@@ -400,6 +400,12 @@ importers:
 
   packages/blob-storage-manager:
     dependencies:
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
+      '@blobscan/open-telemetry':
+        specifier: ^0.0.1
+        version: link:../open-telemetry
       '@blobscan/zod':
         specifier: ^0.0.1
         version: link:../zod
@@ -413,12 +419,6 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
-      '@blobscan/logger':
-        specifier: ^0.0.1
-        version: link:../logger
-      '@blobscan/open-telemetry':
-        specifier: ^0.0.1
-        version: link:../open-telemetry
       '@blobscan/test':
         specifier: ^0.0.1
         version: link:../test
@@ -487,6 +487,12 @@ importers:
       '@blobscan/dayjs':
         specifier: ^0.0.1
         version: link:../dayjs
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
+      '@blobscan/open-telemetry':
+        specifier: ^0.0.1
+        version: link:../open-telemetry
       '@prisma/client':
         specifier: ^5.0.0
         version: 5.2.0(prisma@5.2.0)
@@ -497,9 +503,6 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
-      '@blobscan/open-telemetry':
-        specifier: ^0.0.1
-        version: link:../open-telemetry
       '@blobscan/test':
         specifier: ^0.0.1
         version: link:../test
@@ -515,16 +518,22 @@ importers:
 
   packages/logger:
     dependencies:
+      '@blobscan/zod':
+        specifier: ^0.0.1
+        version: link:../zod
       winston:
         specifier: ^3.10.0
         version: 3.10.0
     devDependencies:
-      '@blobscan/zod':
+      '@blobscan/eslint-config':
         specifier: ^0.0.1
-        version: link:../zod
+        version: link:../config/eslint
 
   packages/open-telemetry:
     dependencies:
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
       '@blobscan/zod':
         specifier: ^0.0.1
         version: link:../zod
@@ -556,9 +565,6 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
-      '@blobscan/logger':
-        specifier: ^0.0.1
-        version: link:../logger
 
   packages/test:
     devDependencies:

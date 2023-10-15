@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Sync state route > getSyncState > should get sync state 1`] = `
+exports[`Sync state route > getState > should get sync state 1`] = `
 {
-  "lastFinalizedBlock": 1001,
-  "lastSlot": 101,
+  "lastFinalizedBlock": 1004,
+  "lastSlot": 106,
 }
 `;

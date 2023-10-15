@@ -1,5 +1,5 @@
 import { Storage } from "@google-cloud/storage";
-import type { StorageOptions } from "@google-cloud/storage";
+import type { StorageOptions, Bucket } from "@google-cloud/storage";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -19,6 +19,7 @@ export type GoogleCredentials = {
 
 export class GoogleStorage extends BlobStorage {
   _storageClient: Storage;
+  _bucket: Bucket;
   _bucketName: string;
 
   constructor({
@@ -40,26 +41,24 @@ export class GoogleStorage extends BlobStorage {
     if (apiEndpoint) {
       storageOptions.apiEndpoint = apiEndpoint;
     }
-
     this._bucketName = bucketName;
 
     storageOptions.projectId = projectId;
 
     this._storageClient = new Storage(storageOptions);
+    this._bucket = this._storageClient.bucket(bucketName);
   }
 
   async healthCheck(): Promise<void> {
-    const [buckets] = await this._storageClient.getBuckets();
+    const [files] = await this._bucket.getFiles();
 
-    if (!buckets.find((b) => b.name === this._bucketName)) {
+    if (!files) {
       throw new Error(`Bucket ${this._bucketName} does not exist`);
     }
   }
 
   async getBlob(uri: string): Promise<string> {
-    return (
-      await this._storageClient.bucket(this._bucketName).file(uri).download()
-    ).toString();
+    return (await this._bucket.file(uri).download()).toString();
   }
 
   async storeBlob(
@@ -69,16 +68,13 @@ export class GoogleStorage extends BlobStorage {
   ): Promise<string> {
     const fileName = this.buildBlobFileName(chainId, versionedHash);
 
-    await this._storageClient
-      .bucket(this._bucketName)
-      .file(fileName)
-      .save(data);
+    await this._bucket.file(fileName).save(data);
 
     return fileName;
   }
 
   async setUpBucket() {
-    if (this._storageClient.bucket(this._bucketName)) {
+    if (this._bucket) {
       return;
     }
 

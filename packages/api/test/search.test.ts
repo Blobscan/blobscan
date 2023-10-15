@@ -1,9 +1,9 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import type { AppRouter } from "../src/root";
-import { appRouter } from "../src/root";
-import { getContext } from "./helper";
+import type { AppRouter } from "../src/app-router";
+import { appRouter } from "../src/app-router";
+import { getContext } from "./helpers";
 
 type Input = inferProcedureInput<AppRouter["search"]["byTerm"]>;
 

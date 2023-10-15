@@ -26,7 +26,7 @@ function ExplorerDetailsItem({ name, value }: InfoBarItemProps) {
 }
 
 export function ExplorerDetails() {
-  const { data: syncStateData } = api.syncState.getSyncState.useQuery();
+  const { data: syncStateData } = api.syncState.getState.useQuery();
 
   return (
     <div className="flex h-4 gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
