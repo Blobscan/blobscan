@@ -2,9 +2,9 @@ import { z } from "zod";
 
 import dayjs from "@blobscan/dayjs";
 
-import { t } from "../clients/trpc";
+import { t } from "../trpc-client";
 
-export const TIME_FRAME_ENUM = z.enum([
+export const TIME_FRAMES = z.enum([
   "1d",
   "7d",
   "15d",
@@ -14,11 +14,11 @@ export const TIME_FRAME_ENUM = z.enum([
   "All",
 ]);
 
-export const TIME_FRAME_SCHEMA = z.object({
-  timeFrame: TIME_FRAME_ENUM,
-});
+export type TimeFrame = z.infer<typeof TIME_FRAMES>;
 
-export type TimeFrame = z.infer<typeof TIME_FRAME_ENUM>;
+export const withTimeFrameSchema = z.object({
+  timeFrame: TIME_FRAMES,
+});
 
 function getTimeFrameIntervals(timeFrame: TimeFrame): {
   initial: dayjs.Dayjs;
@@ -50,7 +50,7 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
 }
 
 export const withTimeFrame = t.middleware(({ next, input }) => {
-  const { timeFrame } = TIME_FRAME_SCHEMA.parse(input);
+  const { timeFrame } = withTimeFrameSchema.parse(input);
 
   return next({
     ctx: {
@@ -60,5 +60,5 @@ export const withTimeFrame = t.middleware(({ next, input }) => {
 });
 
 export const timeFrameProcedure = t.procedure
-  .input(TIME_FRAME_SCHEMA)
+  .input(withTimeFrameSchema)
   .use(withTimeFrame);

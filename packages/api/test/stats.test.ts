@@ -1,25 +1,26 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { prisma } from "@blobscan/db";
+import dayjs from "@blobscan/dayjs";
+import { omitDBTimestampFields } from "@blobscan/test";
 
+import { appRouter } from "../src/app-router";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
-import { appRouter } from "../src/root";
-import { filterData, getContext } from "./helper";
+import { getContext } from "./helpers";
 
 const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
 
-function setUpGetDailyStatsTests(
+function runTimeFrameTests(
   name: string,
-  filler: () => Promise<unknown>,
-  fetcher: (timeFrame: TimeFrame) => Promise<unknown>
+  statsFiller: () => Promise<unknown>,
+  statsFetcher: (timeFrame: TimeFrame) => Promise<unknown>
 ) {
   return describe(name, () => {
     describe("when getting stats for a specific timeframe", () => {
       TIME_FRAMES.forEach((timeFrame) => {
         it(`should get daily stats for ${timeFrame}`, async () => {
-          await filler();
+          await statsFiller();
 
-          const result = await fetcher(timeFrame);
+          const result = await statsFetcher(timeFrame);
 
           expect(result).toMatchSnapshot();
         });
@@ -28,78 +29,96 @@ function setUpGetDailyStatsTests(
   });
 }
 
-describe("Stats route", async () => {
+describe("Stats router", async () => {
+  const systemDate = new Date("2023-09-01");
+  const to = dayjs(systemDate).endOf("day").toISOString();
   let caller: ReturnType<typeof appRouter.createCaller>;
+  let prisma: Awaited<ReturnType<typeof getContext>>["prisma"];
 
   beforeAll(async () => {
     const ctx = await getContext();
+
+    prisma = ctx.prisma;
     caller = appRouter.createCaller(ctx);
   });
 
   describe("getBlobOverallStats", () => {
-    it("should get all", async () => {
+    it("should return the correct overall stats", async () => {
       await prisma.blobOverallStats.backfill();
-      const result = await caller.stats.getBlobOverallStats();
-      expect(filterData(result)).toMatchInlineSnapshot(`
-          {
-            "avgBlobSize": 1250,
-            "totalBlobSize": 7500n,
-            "totalBlobs": 6,
-            "totalUniqueBlobs": 6,
-          }
-        `);
+
+      const blobOverallStats = await caller.stats.getBlobOverallStats();
+
+      expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
+        {
+          "avgBlobSize": 1137.5,
+          "totalBlobSize": 36400n,
+          "totalBlobs": 32,
+          "totalUniqueBlobs": 7,
+        }
+      `);
     });
   });
 
-  setUpGetDailyStatsTests(
+  runTimeFrameTests(
     "getBlobDailyStats",
-    () => prisma.blobDailyStats.fill({}),
+    async () => {
+      await prisma.blobDailyStats.fill({
+        to,
+      });
+    },
+
     (timeFrame) => caller.stats.getBlobDailyStats({ timeFrame })
   );
 
-  describe("getOverallStats", () => {
-    it("should get all", async () => {
+  describe("getBlockOverallStats", () => {
+    it("should return the correct overall stats", async () => {
       await prisma.blockOverallStats.backfill();
-      const result = await caller.stats.getBlockOverallStats();
-      expect(filterData(result)).toMatchInlineSnapshot(`
-          {
-            "avgBlobAsCalldataFee": 5305000,
-            "avgBlobFee": 110500000,
-            "avgBlobGasPrice": 21,
-            "totalBlobAsCalldataFee": 10610000n,
-            "totalBlobAsCalldataGasUsed": 505000n,
-            "totalBlobFee": 221000000n,
-            "totalBlobGasUsed": 10500000n,
-            "totalBlocks": 2,
-          }
-        `);
+
+      const blockOverallStats = await caller.stats.getBlockOverallStats();
+
+      expect(omitDBTimestampFields(blockOverallStats)).toMatchInlineSnapshot(`
+        {
+          "avgBlobAsCalldataFee": 10450145,
+          "avgBlobFee": 105412688,
+          "avgBlobGasPrice": 21.75,
+          "totalBlobAsCalldataFee": 83601160n,
+          "totalBlobAsCalldataGasUsed": 3822780n,
+          "totalBlobFee": 843301504n,
+          "totalBlobGasUsed": 38786432n,
+          "totalBlocks": 8,
+        }
+      `);
     });
   });
 
-  setUpGetDailyStatsTests(
+  runTimeFrameTests(
     "getBlockDailyStats",
-    () => prisma.blockDailyStats.fill({}),
+    () =>
+      prisma.blockDailyStats.fill({
+        to,
+      }),
     (timeFrame) => caller.stats.getBlockDailyStats({ timeFrame })
   );
 
-  describe("getOverallStats", () => {
-    it("should get all", async () => {
+  describe("getTransactionOverallStats", () => {
+    it("should return the correct overall stats", async () => {
       await prisma.transactionOverallStats.backfill();
       const result = await caller.stats.getTransactionOverallStats();
-      expect(filterData(result)).toMatchInlineSnapshot(`
-          {
-            "avgMaxBlobGasFee": 105,
-            "totalTransactions": 6,
-            "totalUniqueReceivers": 4,
-            "totalUniqueSenders": 4,
-          }
-        `);
+
+      expect(omitDBTimestampFields(result)).toMatchInlineSnapshot(`
+        {
+          "avgMaxBlobGasFee": 101.875,
+          "totalTransactions": 16,
+          "totalUniqueReceivers": 4,
+          "totalUniqueSenders": 4,
+        }
+      `);
     });
   });
 
-  setUpGetDailyStatsTests(
+  runTimeFrameTests(
     "getTransactionDailyStats",
-    () => prisma.transactionDailyStats.fill({}),
+    () => prisma.transactionDailyStats.fill({ to }),
     (timeFrame) => caller.stats.getTransactionDailyStats({ timeFrame })
   );
 });

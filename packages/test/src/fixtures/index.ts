@@ -1,6 +1,6 @@
-import type { BlobStorage } from "@prisma/client";
+import type { BlobStorage, PrismaClient } from "@prisma/client";
 
-import data from "./postgres/data.json";
+import POSTGRES_DATA from "./postgres/data.json";
 
 type BlobDataStorageReferenceFixture = {
   blobHash: string;
@@ -14,13 +14,50 @@ type BlobDataFixture = {
 };
 
 export const fixtures = {
-  blockchainSyncState: data.blockchainSyncState,
-  blocks: data.blocks,
-  addresses: data.addresses,
-  txs: data.txs,
-  blobs: data.blobs,
+  blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
+  blocks: POSTGRES_DATA.blocks,
+  addresses: POSTGRES_DATA.addresses,
+  txs: POSTGRES_DATA.txs,
+  blobs: POSTGRES_DATA.blobs,
   blobDataStorageRefs:
-    data.blobDataStorageReferences as BlobDataStorageReferenceFixture[],
-  blobDatas: data.blobDatas as unknown as BlobDataFixture[],
-  blobsOnTransactions: data.blobsOnTransactions,
+    POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReferenceFixture[],
+  blobDatas: POSTGRES_DATA.blobDatas as unknown as BlobDataFixture[],
+  blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions,
+  systemDate: POSTGRES_DATA.systemDate,
+  load(prisma: PrismaClient) {
+    return prisma.$transaction([
+      prisma.blockchainSyncState.createMany({
+        data: fixtures.blockchainSyncState,
+      }),
+      prisma.block.createMany({ data: fixtures.blocks }),
+      prisma.address.createMany({ data: fixtures.addresses }),
+      prisma.transaction.createMany({ data: fixtures.txs }),
+      prisma.blob.createMany({ data: fixtures.blobs }),
+      prisma.blobDataStorageReference.createMany({
+        data: fixtures.blobDataStorageRefs,
+      }),
+      prisma.blobData.createMany({ data: fixtures.blobDatas }),
+      prisma.blobsOnTransactions.createMany({
+        data: fixtures.blobsOnTransactions,
+      }),
+    ]);
+  },
+  reset(prisma: PrismaClient) {
+    return prisma.$transaction([
+      prisma.blockchainSyncState.deleteMany(),
+      prisma.blobData.deleteMany(),
+      prisma.blobsOnTransactions.deleteMany(),
+      prisma.blobDataStorageReference.deleteMany(),
+      prisma.blob.deleteMany(),
+      prisma.transaction.deleteMany(),
+      prisma.address.deleteMany(),
+      prisma.block.deleteMany(),
+      prisma.blockDailyStats.deleteMany(),
+      prisma.transactionDailyStats.deleteMany(),
+      prisma.blobDailyStats.deleteMany(),
+      prisma.blockOverallStats.deleteMany(),
+      prisma.transactionOverallStats.deleteMany(),
+      prisma.blobOverallStats.deleteMany(),
+    ]);
+  },
 };

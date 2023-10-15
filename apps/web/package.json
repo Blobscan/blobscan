@@ -5,10 +5,11 @@
   "scripts": {
     "build": "pnpm with-env next build",
     "clean": "git clean -xdf .next .turbo node_modules",
-    "dev": "pnpm with-env next dev -p 3000",
+    "print-banner": "pnpm with-env ts-node ./src/scripts/print-banner.ts",
+    "dev": "pnpm print-banner && pnpm with-env next dev -p 3000",
     "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
     "lint:fix": "pnpm lint --fix",
-    "start": "pnpm with-env next start",
+    "start": "pnpm print-banner && pnpm with-env next start",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },

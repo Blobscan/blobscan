@@ -1,19 +1,21 @@
 import { z } from "zod";
 
-import { t } from "../clients/trpc";
+import { t } from "../trpc-client";
 
-const DEFAULT_LIMIT = 25;
+export const DEFAULT_PAGE_LIMIT = 25;
 
-export const PAGINATION_SCHEMA = z.object({
-  p: z.number().optional(),
-  ps: z.number().optional(),
-});
+export const paginationSchema = z
+  .object({
+    p: z.number().optional(),
+    ps: z.number().optional(),
+  })
+  .optional();
+
+export type PaginationInput = z.infer<typeof paginationSchema>;
 
 export const withPagination = t.middleware(({ next, input }) => {
-  const { p, ps } = PAGINATION_SCHEMA.parse(input);
-
-  const limit = ps ?? DEFAULT_LIMIT;
-  const offset = p ?? 1;
+  const { p: offset = 1, ps: limit = DEFAULT_PAGE_LIMIT } =
+    paginationSchema.parse(input) ?? {};
 
   return next({
     ctx: {

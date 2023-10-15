@@ -1,0 +1,142 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Base Extension > Address model > upsertAddressesFromTransactions() > should fail when trying to upsert an address from a transaction which is part of a non-existent block 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"address\\" violates foreign key constraint \\"address_first_block_number_as_sender_fkey\\"\`"
+`;
+
+exports[`Base Extension > Address model > upsertAddressesFromTransactions() > when updating addresses from transactions > should upsert addresses from multiple transactions correctly 1`] = `
+[
+  {
+    "address": "address1",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address3",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address4",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1002,
+  },
+  {
+    "address": "address6",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address8",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1002,
+  },
+]
+`;
+
+exports[`Base Extension > Address model > upsertMany() > should fail when trying to upsert a receiver address with a non-existent first block 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"address\\" violates foreign key constraint \\"address_first_block_number_as_receiver_fkey\\"\`"
+`;
+
+exports[`Base Extension > Address model > upsertMany() > should fail when trying to upsert a sender address with a non-existent first block 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"address\\" violates foreign key constraint \\"address_first_block_number_as_sender_fkey\\"\`"
+`;
+
+exports[`Base Extension > Address model > upsertMany() > should insert multiple addresses correctly 1`] = `
+[
+  {
+    "address": "address10",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address11",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address9",
+    "firstBlockNumberAsReceiver": 1002,
+    "firstBlockNumberAsSender": 1001,
+  },
+]
+`;
+
+exports[`Base Extension > Address model > upsertMany() > update multiple addresses correctly 1`] = `
+[
+  {
+    "address": "address2",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1002,
+  },
+  {
+    "address": "address5",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address6",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1001,
+  },
+]
+`;
+
+exports[`Base Extension > BlobDataStorageReference model > upsertMany() > should fail when upserting a reference for a non-existent blob 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"blob_data_storage_reference\\" violates foreign key constraint \\"blob_data_storage_reference_blob_hash_fkey\\"\`"
+`;
+
+exports[`Base Extension > Block model > findLatest() > should find the latest block correctly 1`] = `
+{
+  "blobAsCalldataGasUsed": 255000,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000,
+  "excessBlobGas": 15000,
+  "hash": "blockHash008",
+  "insertedAt": 2023-08-31T16:10:00.000Z,
+  "number": 1008,
+  "slot": 108,
+  "timestamp": 2023-08-31T16:00:00.000Z,
+  "updatedAt": 2023-08-31T16:10:00.000Z,
+}
+`;
+
+exports[`Base Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent block 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_block_number_fkey\\"\`"
+`;
+
+exports[`Base Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent receiver address 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_to_id_fkey\\"\`"
+`;
+
+exports[`Base Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent sender address 1`] = `
+"
+Invalid \`prisma.$executeRaw()\` invocation:
+
+
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_from_id_fkey\\"\`"
+`;

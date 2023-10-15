@@ -69,17 +69,17 @@ export function formatWei(
       throw new Error("Unsupported unit");
   }
 
-  formattedAmount = formatNumber(formattedAmount, "compact", {
-    // Display up to 9 decimal digits for small wei amounts
-    maximumFractionDigits: weiAmountStr.length < 9 ? 9 : 3,
-  });
-
   const fractionDigits = formattedAmount.split(".")[1];
 
   // Use exponential notation for large fractional digits
   if (!displayFullAmount && fractionDigits && fractionDigits.length > 3) {
     formattedAmount = Number(formattedAmount).toExponential();
   }
+
+  formattedAmount = formatNumber(formattedAmount, "compact", {
+    // Display up to 9 decimal digits for small wei amounts
+    maximumFractionDigits: weiAmountStr.length < 9 ? 9 : 3,
+  });
 
   return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
 }

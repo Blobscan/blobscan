@@ -32,7 +32,7 @@ function isInteger(value: bigint | number) {
  */
 function createPlaceholder(input: string): string {
   /**
-   * We replace all numeric characters with '8' because '8' takes up the most pixels compared to
+   * We replace all numeric characters with '8' because it takes up the most pixels compared to
    * other numbers
    */
   const replacedString = input.replace(/[0-9]/g, "8");
