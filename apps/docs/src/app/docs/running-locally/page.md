@@ -31,7 +31,9 @@ cd blobscan
 Install all the Node.js dependencies:
 
 ```shell
-pnpm install
+pnpm fetch -r
+pnpm install -r
+SKIP_ENV_VALIDATION=true npm run build
 ```
 
 ## Setup environment variables
