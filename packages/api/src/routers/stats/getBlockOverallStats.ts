@@ -1,5 +1,6 @@
 import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
+import { decimalToBigInt } from "../../utils";
 import { BLOCK_BASE_PATH } from "./common";
 import {
   getBlockOverallStatsInputSchema,
@@ -17,13 +18,13 @@ export const getBlockOverallStatsQuery = function (
       stats
         ? {
             ...stats,
-            totalBlobGasUsed: BigInt(stats.totalBlobGasUsed.toString()),
-            totalBlobAsCalldataGasUsed: BigInt(
-              stats.totalBlobAsCalldataGasUsed.toString()
+            totalBlobGasUsed: decimalToBigInt(stats.totalBlobGasUsed),
+            totalBlobAsCalldataGasUsed: decimalToBigInt(
+              stats.totalBlobAsCalldataGasUsed
             ),
-            totalBlobFee: BigInt(stats.totalBlobFee.toString()),
-            totalBlobAsCalldataFee: BigInt(
-              stats.totalBlobAsCalldataFee.toString()
+            totalBlobFee: decimalToBigInt(stats.totalBlobFee),
+            totalBlobAsCalldataFee: decimalToBigInt(
+              stats.totalBlobAsCalldataFee
             ),
           }
         : {
