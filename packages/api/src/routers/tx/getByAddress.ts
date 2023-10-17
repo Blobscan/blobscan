@@ -1,6 +1,3 @@
-import { ValueType } from "@opentelemetry/api";
-import { MeterProvider } from "@opentelemetry/sdk-metrics";
-
 import {
   paginationSchema,
   withPagination,
@@ -32,18 +29,6 @@ export const getByAddress = publicProcedure
         },
       }),
     ]);
-
-    const meter = new MeterProvider().getMeter("blobscan-api");
-    const counter = meter.createCounter("blobscan_api_requests_total", {
-      valueType: ValueType.INT,
-      description:
-        "Number of requests made to Blobscan API by endpoint, status_code and method",
-    });
-    counter.add(1, {
-      method: "GET",
-      endpoint: "/api/tx/by-addr",
-      status_code: "200",
-    });
 
     return {
       transactions,

@@ -1,11 +1,11 @@
 import { prisma } from "@blobscan/db";
 import type { MetricsClient } from "@blobscan/db";
-import { api, MeterProvider } from "@blobscan/open-telemetry";
+import { api } from "@blobscan/open-telemetry";
 
 const scopeName = "blobscan_api";
 
 export const tracer = api.trace.getTracer(scopeName);
-export const meter = new MeterProvider().getMeter(scopeName);
+export const meter = api.metrics.getMeter(scopeName);
 
 export function getPrismaMetricsClient() {
   /**

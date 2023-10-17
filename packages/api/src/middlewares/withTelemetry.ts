@@ -49,7 +49,7 @@ function getProcedureFromUrl(url: string) {
 
 export const withTelemetry = t.middleware(
   async ({ ctx: { req, res, scope }, next }) => {
-    const endpoint = req.url ? getEndpoint(req.url) : "unknown-endpoint";
+    const endpoint = req?.url ? getEndpoint(req.url) : "unknown-endpoint";
     const procedureName = req?.url ? getProcedureFromUrl(req.url) : "unknown";
     const spanOptions: api.SpanOptions = {};
     let spanName: string;
