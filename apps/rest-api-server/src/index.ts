@@ -50,7 +50,7 @@ app.use(
     router: appRouter,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    createContext: createTRPCContext,
+    createContext: createTRPCContext("rest-api"),
     onError({ error }) {
       logger.error(error);
     },

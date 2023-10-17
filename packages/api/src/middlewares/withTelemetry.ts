@@ -1,43 +1,83 @@
-import type { api } from "@blobscan/open-telemetry";
+import { api } from "@blobscan/open-telemetry";
 
-import { tracer } from "../instrumentation";
+import { meter, tracer } from "../instrumentation";
 import { t } from "../trpc-client";
 
+type APICounter = {
+  scope?: string;
+};
+
+type RequestsTotalCounter = APICounter & {
+  endpoint: string;
+  status_code: string;
+  method: string;
+};
+
+const apiRequestsTotalCounter = meter.createCounter<RequestsTotalCounter>(
+  "blobscan_api_requests_total",
+  {
+    valueType: api.ValueType.INT,
+    description:
+      "Number of requests made to Blobscan API by endpoint, status_code and method",
+  }
+);
+
+function getEndpoint(url: string) {
+  return url.split("?")[0] ?? "";
+}
+
 function getProcedureFromUrl(url: string) {
-  const procedure = url
+  const procedure = getEndpoint(url)
     .split("/")
     .find((_, i, urlSplitted) => {
       const prevPath = urlSplitted[i - 1];
 
       return prevPath === "trpc";
-    })
-    // remove query params
-    ?.split("?")[0];
+    });
 
   return procedure;
 }
-export const withTelemetry = t.middleware(({ ctx: { req }, next }) => {
-  const procedureName = req?.url ? getProcedureFromUrl(req.url) : "unknown";
-  const spanOptions: api.SpanOptions = {};
-  let spanName: string;
 
-  if (procedureName) {
-    spanName = "trpc";
-    spanOptions.attributes = {
-      procedure: procedureName,
-    };
-  } else {
-    spanName = "trpc_open_api";
-    spanOptions.attributes = {
-      path: req.url ?? "unknown-path",
-    };
+export const withTelemetry = t.middleware(
+  async ({ ctx: { req, res, scope }, next }) => {
+    const endpoint = req.url ? getEndpoint(req.url) : "unknown-endpoint";
+    const procedureName = req?.url ? getProcedureFromUrl(req.url) : "unknown";
+    const spanOptions: api.SpanOptions = {};
+    let spanName: string;
+
+    if (procedureName) {
+      spanName = "trpc";
+      spanOptions.attributes = {
+        procedure: procedureName,
+      };
+    } else {
+      spanName = "trpc_open_api";
+      spanOptions.attributes = {
+        path: endpoint,
+      };
+    }
+
+    try {
+      const result = await tracer.startActiveSpan(
+        spanName,
+        spanOptions,
+        async (span) => {
+          const result = await next();
+
+          span.end();
+
+          return result;
+        }
+      );
+
+      return result;
+    } finally {
+      apiRequestsTotalCounter.add(1, {
+        scope,
+        status_code: res.statusCode.toString(),
+        endpoint,
+        method: req?.method ?? "unknown-method",
+      });
+    }
   }
-
-  return tracer.startActiveSpan(spanName, spanOptions, async (span) => {
-    const result = await next();
-
-    span.end();
-
-    return result;
-  });
-});
+);

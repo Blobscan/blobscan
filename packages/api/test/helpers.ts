@@ -24,7 +24,7 @@ export async function getContext({
       headers: { authorization: `Bearer ${token}` },
     } as NodeHTTPRequest;
 
-    ctx = (await createTRPCContext({
+    ctx = (await createTRPCContext("rest-api")({
       req,
       res: {} as NodeHTTPResponse,
     })) as TRPCContext;

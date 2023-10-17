@@ -18,6 +18,7 @@ type CreateContextOptions =
   | CreateNextContextOptions;
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
+  scope: string;
   apiClient: string | null;
 };
 
@@ -54,31 +55,39 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
     prisma,
     blobStorageManager,
     apiClient: opts?.apiClient,
+    scope: opts?.scope,
   };
 }
 
-export async function createTRPCContext(opts: CreateContextOptions) {
-  try {
-    const apiClient = getJWTFromRequest(opts.req);
+export function createTRPCContext(scope: string) {
+  return async (opts: CreateContextOptions) => {
+    try {
+      const apiClient = getJWTFromRequest(opts.req);
 
-    const innerContext = await createTRPCInnerContext({ apiClient });
+      const innerContext = await createTRPCInnerContext({
+        apiClient,
+        scope,
+      });
 
-    return {
-      ...innerContext,
-      req: opts.req,
-      res: opts.res,
-    };
-  } catch (err) {
-    const err_ = err as Error;
+      return {
+        ...innerContext,
+        req: opts.req,
+        res: opts.res,
+      };
+    } catch (err) {
+      const err_ = err as Error;
 
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: `Failed to create TRPC context: ${err_.message}`,
-    });
-  }
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Failed to create TRPC context: ${err_.message}`,
+      });
+    }
+  };
 }
 
-export type TRPCContext = inferAsyncReturnType<typeof createTRPCContext>;
+export type TRPCContext = inferAsyncReturnType<
+  ReturnType<typeof createTRPCContext>
+>;
 export type TRPCInnerContext = inferAsyncReturnType<
   typeof createTRPCInnerContext
 >;
