@@ -22,6 +22,15 @@ const apiRequestsTotalCounter = meter.createCounter<RequestsTotalCounter>(
   }
 );
 
+const apiRequestsDurationMsHistogram = meter.createHistogram<APICounter>(
+  "blobscan_api_requests_duration_ms",
+  {
+    description: "Duration of all the requests made to Blobscan API",
+    valueType: api.ValueType.INT,
+    unit: "ms",
+  }
+);
+
 function getEndpoint(url: string) {
   return url.split("?")[0] ?? "";
 }
@@ -57,6 +66,7 @@ export const withTelemetry = t.middleware(
       };
     }
 
+    const requestStart = performance.now();
     try {
       const result = await tracer.startActiveSpan(
         spanName,
@@ -72,6 +82,11 @@ export const withTelemetry = t.middleware(
 
       return result;
     } finally {
+      const requestEnd = performance.now();
+
+      apiRequestsDurationMsHistogram.record(requestEnd - requestStart, {
+        scope,
+      });
       apiRequestsTotalCounter.add(1, {
         scope,
         status_code: res.statusCode.toString(),
