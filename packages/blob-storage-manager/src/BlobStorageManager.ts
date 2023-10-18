@@ -2,9 +2,15 @@ import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
+import { updateBlobStorageMetrics } from "./instrumentation";
 import { tracer } from "./instrumentation";
 import type { PostgresStorage, SwarmStorage } from "./storages";
 import type { GoogleStorage } from "./storages";
+
+type Blob = {
+  data: string;
+  versionedHash: string;
+};
 
 export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? GoogleStorage
@@ -30,10 +36,6 @@ export type StorageError<SName extends BlobStorageNames = BlobStorageNames> = {
   error: Error;
 };
 
-type Blob = {
-  data: string;
-  versionedHash: string;
-};
 export class BlobStorageManager<
   SNames extends BlobStorageNames = BlobStorageNames,
   T extends BlobStorages<SNames> = BlobStorages<SNames>
@@ -81,7 +83,8 @@ export class BlobStorageManager<
                   },
                 },
                 async (storageSpan) => {
-                  const result = await (
+                  const start = performance.now();
+                  const blob = await (
                     this.#blobStorages[storageName] as BlobStorage
                   )
                     .getBlob(reference)
@@ -89,10 +92,18 @@ export class BlobStorageManager<
                       data,
                       storage: storageName,
                     }));
+                  const end = performance.now();
 
                   storageSpan.end();
 
-                  return result;
+                  updateBlobStorageMetrics({
+                    storage: storageName,
+                    blobData: blob.data,
+                    direction: "received",
+                    duration: end - start,
+                  });
+
+                  return blob;
                 }
               )
             )
@@ -158,16 +169,25 @@ export class BlobStorageManager<
                 },
               },
               async (storageSpan) => {
-                const result = await storage
+                const start = performance.now();
+                const blobReference = await storage
                   .storeBlob(this.chainId, versionedHash, data)
                   .then<BlobReference<SNames>>((reference) => ({
                     reference,
                     storage: name,
                   }));
+                const end = performance.now();
 
                 storageSpan.end();
 
-                return result;
+                updateBlobStorageMetrics({
+                  blobData: data,
+                  direction: "received",
+                  duration: end - start,
+                  storage: name,
+                });
+
+                return blobReference;
               }
             );
           })
