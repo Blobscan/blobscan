@@ -11,6 +11,13 @@ import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
 export const appRouter = t.router({
+  block: blockRouter,
+  tx: transactionRouter,
+  blob: blobRouter,
+  search: searchRouter,
+  indexer: indexerRouter,
+  stats: statsRouter,
+  syncState: syncStateRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {
@@ -23,13 +30,6 @@ export const appRouter = t.router({
     .input(z.void())
     .output(z.string())
     .query(() => "yay!"),
-  block: blockRouter,
-  tx: transactionRouter,
-  blob: blobRouter,
-  search: searchRouter,
-  indexer: indexerRouter,
-  stats: statsRouter,
-  syncState: syncStateRouter,
 });
 
 // export type definition of API

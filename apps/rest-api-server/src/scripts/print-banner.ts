@@ -12,7 +12,7 @@ function run() {
   console.log("Blobscan REST API (EIP-4844 blob explorer) - blobscan.com");
   console.log("====================================================\n");
   console.log(
-    `Configuration: metrics=${env.METRICS_ENABLED}, traces=${env.TRACES_ENABLED}, port=${env.BLOBSCAN_API_PORT}`
+    `Configuration: metrics=${apiEnv.METRICS_ENABLED}, traces=${env.TRACES_ENABLED}, port=${env.BLOBSCAN_API_PORT}`
   );
 
   apiEnv.display();

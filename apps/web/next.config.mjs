@@ -4,6 +4,14 @@ import "./src/env.mjs";
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/metrics",
+        destination: "/api/metrics",
+      },
+    ];
+  },
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: [
     "@blobscan/api",
