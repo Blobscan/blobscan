@@ -24,7 +24,8 @@ const config = {
   eslint: { ignoreDuringBuilds: !!process.env.CI },
   typescript: { ignoreBuildErrors: !!process.env.CI },
   experimental: {
-    instrumentationHook: !!process.env.TRACES_ENABLED,
+    instrumentationHook:
+      !!process.env.TRACES_ENABLED || !!process.env.METRICS_ENABLED,
   },
 };
 

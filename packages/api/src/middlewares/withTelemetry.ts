@@ -89,7 +89,7 @@ export const withTelemetry = t.middleware(
       });
       apiRequestsTotalCounter.add(1, {
         scope,
-        status_code: res.statusCode.toString(),
+        status_code: res?.statusCode?.toString() ?? "unknown-status-code",
         endpoint,
         method: req?.method ?? "unknown-method",
       });
