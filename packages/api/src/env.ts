@@ -11,7 +11,7 @@ export const env = createEnv({
     server: {
       SECRET_KEY: z.string(),
       NODE_ENV: nodeEnvSchema.optional(),
-      METRICS_ENABLED: booleanSchema.default("true"),
+      METRICS_ENABLED: booleanSchema.default("false"),
     },
 
     ...presetEnvOptions,
