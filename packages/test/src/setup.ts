@@ -15,6 +15,8 @@ beforeEach(async () => {
   await fixtures.load(prisma);
 });
 
-afterAll(() => {
+afterAll(async () => {
   vi.useRealTimers();
+
+  await prisma.$disconnect();
 });
