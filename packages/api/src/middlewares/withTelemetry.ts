@@ -1,19 +1,17 @@
 import { api } from "@blobscan/open-telemetry";
 
+import type { CreateContextOptions } from "../context";
 import { meter, tracer } from "../instrumentation";
 import { t } from "../trpc-client";
 
-type APICounter = {
-  scope?: string;
-};
-
-type RequestsTotalCounter = APICounter & {
+type RequestData = {
+  scope: string;
   endpoint: string;
   status_code: string;
   method: string;
 };
 
-const apiRequestsTotalCounter = meter.createCounter<RequestsTotalCounter>(
+const apiRequestsTotalCounter = meter.createCounter<RequestData>(
   "blobscan_api_requests_total",
   {
     valueType: api.ValueType.INT,
@@ -22,7 +20,7 @@ const apiRequestsTotalCounter = meter.createCounter<RequestsTotalCounter>(
   }
 );
 
-const apiRequestsDurationMsHistogram = meter.createHistogram<APICounter>(
+const apiRequestsDurationMsHistogram = meter.createHistogram<RequestData>(
   "blobscan_api_requests_duration_ms",
   {
     description: "Duration of all the requests made to Blobscan API",
@@ -31,26 +29,24 @@ const apiRequestsDurationMsHistogram = meter.createHistogram<APICounter>(
   }
 );
 
-function getEndpoint(url: string) {
-  return url.split("?")[0] ?? "";
+function buildURL(req: CreateContextOptions["req"]) {
+  return new URL(req.url ?? "", `http://${req.headers.host}`);
 }
 
-function getProcedureFromUrl(url: string) {
-  const procedure = getEndpoint(url)
+function getTRPCProcedure(url: URL) {
+  const procedure = url.pathname
     .split("/")
-    .find((_, i, urlSplitted) => {
-      const prevPath = urlSplitted[i - 1];
-
-      return prevPath === "trpc";
-    });
+    .find((_, i, urlSplitted) => urlSplitted[i - 1] === "trpc");
 
   return procedure;
 }
 
 export const withTelemetry = t.middleware(
   async ({ ctx: { req, res, scope }, next }) => {
-    const endpoint = req?.url ? getEndpoint(req.url) : "unknown-endpoint";
-    const procedureName = req?.url ? getProcedureFromUrl(req.url) : "unknown";
+    const url = buildURL(req);
+    const endpoint = url.pathname;
+    const procedureName = getTRPCProcedure(url);
+
     const spanOptions: api.SpanOptions = {};
     let spanName: string;
 
@@ -84,15 +80,18 @@ export const withTelemetry = t.middleware(
     } finally {
       const requestEnd = performance.now();
 
-      apiRequestsDurationMsHistogram.record(requestEnd - requestStart, {
+      const requestData: RequestData = {
         scope,
-      });
-      apiRequestsTotalCounter.add(1, {
-        scope,
-        status_code: res?.statusCode?.toString() ?? "unknown-status-code",
+        status_code: res.statusCode.toString(),
         endpoint,
-        method: req?.method ?? "unknown-method",
-      });
+        method: req.method ?? "",
+      };
+
+      apiRequestsDurationMsHistogram.record(
+        requestEnd - requestStart,
+        requestData
+      );
+      apiRequestsTotalCounter.add(1, requestData);
     }
   }
 );

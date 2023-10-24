@@ -36,6 +36,10 @@ export type StorageError<SName extends BlobStorageNames = BlobStorageNames> = {
   error: Error;
 };
 
+function calculateBlobBytes(blob: string): number {
+  return blob.slice(2).length / 2;
+}
+
 export class BlobStorageManager<
   SNames extends BlobStorageNames = BlobStorageNames,
   T extends BlobStorages<SNames> = BlobStorages<SNames>
@@ -98,7 +102,7 @@ export class BlobStorageManager<
 
                   updateBlobStorageMetrics({
                     storage: storageName,
-                    blobData: blob.data,
+                    blobSize: calculateBlobBytes(blob.data),
                     direction: "received",
                     duration: end - start,
                   });
@@ -122,7 +126,8 @@ export class BlobStorageManager<
                * so we can access the reference by index without worrying about having the
                * wrong storage name
                */
-              const storageName = availableReferences[i]?.storage ?? "Unknown";
+              const storageName =
+                availableReferences[i]?.storage.toString() ?? "Unknown Storage";
 
               return `${storageName} - ${err}`;
             });
@@ -181,8 +186,8 @@ export class BlobStorageManager<
                 storageSpan.end();
 
                 updateBlobStorageMetrics({
-                  blobData: data,
-                  direction: "received",
+                  blobSize: calculateBlobBytes(data),
+                  direction: "sent",
                   duration: end - start,
                   storage: name,
                 });

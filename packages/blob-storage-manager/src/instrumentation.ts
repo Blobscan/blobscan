@@ -43,18 +43,14 @@ const transferDurationHistogram =
     }
   );
 
-function calculateBlobSize(blob: string): number {
-  return blob.slice(2).length / 2;
-}
-
 export function updateBlobStorageMetrics({
   storage,
-  blobData,
+  blobSize,
   direction,
   duration,
 }: {
   storage: BlobStorage;
-  blobData: string;
+  blobSize: number;
   direction: Direction;
   duration: number;
 }) {
@@ -63,10 +59,7 @@ export function updateBlobStorageMetrics({
     direction,
   };
 
-  bytesTransferredTotalCounter.add(
-    calculateBlobSize(blobData),
-    counterAttributtes
-  );
+  bytesTransferredTotalCounter.add(blobSize, counterAttributtes);
   filesTransferredTotalCounter.add(1, {
     direction,
     storage,

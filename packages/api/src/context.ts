@@ -13,12 +13,11 @@ import { prisma } from "@blobscan/db";
 
 import { env } from "./env";
 
-type CreateContextOptions =
+export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
   | CreateNextContextOptions;
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
-  scope: string;
   apiClient: string | null;
 };
 
@@ -55,7 +54,6 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
     prisma,
     blobStorageManager,
     apiClient: opts?.apiClient,
-    scope: opts?.scope,
   };
 }
 
@@ -66,11 +64,11 @@ export function createTRPCContext(scope: string) {
 
       const innerContext = await createTRPCInnerContext({
         apiClient,
-        scope,
       });
 
       return {
         ...innerContext,
+        scope,
         req: opts.req,
         res: opts.res,
       };

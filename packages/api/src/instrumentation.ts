@@ -26,7 +26,7 @@ export async function metricsHandler(
 ) {
   {
     if (!env.METRICS_ENABLED) {
-      res.statusCode = 403;
+      res.statusCode = 404;
       res.end("Metrics are disabled");
 
       return;

@@ -29,8 +29,6 @@ app.use(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   createOpenApiExpressMiddleware({
     router: appRouter,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     createContext: createTRPCContext("rest-api"),
     onError({ error }) {
       logger.error(error);

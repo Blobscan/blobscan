@@ -5,6 +5,10 @@ import "./src/env.mjs";
 const config = {
   reactStrictMode: true,
   async rewrites() {
+    /**
+     * Redirect Grafana's metrics scrape requests from /metrics to the Next.js
+     * standard endpoint at /api/metrics.
+     */
     return [
       {
         source: "/metrics",

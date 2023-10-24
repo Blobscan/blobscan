@@ -6,8 +6,7 @@ import { z } from "zod";
 const booleanSchema = z
   .string()
   .refine((s) => s === "true" || s === "false")
-  .transform((s) => s === "true")
-  .default("false");
+  .transform((s) => s === "true");
 
 export const env = createEnv({
   /**
@@ -17,8 +16,8 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    TRACES_ENABLED: booleanSchema,
-    METRICS_ENABLED: booleanSchema,
+    TRACES_ENABLED: booleanSchema.default("false"),
+    METRICS_ENABLED: booleanSchema.default("false"),
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
   },
   /**

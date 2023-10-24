@@ -5,36 +5,32 @@ import type {
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
-import blobStorageManager from "@blobscan/blob-storage-manager/src/__mocks__/BlobStorageManager";
-
 import type { TRPCContext } from "../src/context";
 import { createTRPCContext } from "../src/context";
-import { createTRPCInnerContext } from "../src/context";
 import type { PaginationInput } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 
-export async function getContext({
-  withClient = false,
-  mockBlobStorageManager = false,
-}: { withClient?: boolean; mockBlobStorageManager?: boolean } = {}) {
-  let ctx;
-  if (withClient) {
-    const token = jwt.sign("foobar", "supersecret");
-    const req = {
-      headers: { authorization: `Bearer ${token}` },
-    } as NodeHTTPRequest;
+export async function createTestContext({
+  withAuth,
+}: Partial<{ withAuth: boolean }> = {}) {
+  const token = jwt.sign("foobar", "supersecret");
+  const req = {
+    headers: {
+      ...(withAuth ? { authorization: `Bearer ${token}` } : {}),
+      host: "localhost:3000",
+    },
+    url: "/api/trpc/test.testProcedure",
+  } as NodeHTTPRequest;
+  const res = {
+    statusCode: 200,
+  } as NodeHTTPResponse;
 
-    ctx = (await createTRPCContext("rest-api")({
-      req,
-      res: {} as NodeHTTPResponse,
-    })) as TRPCContext;
-  } else {
-    ctx = (await createTRPCInnerContext()) as TRPCContext;
-  }
+  const ctx = (await createTRPCContext("rest-api")({
+    req,
+    res,
+  })) as TRPCContext;
 
-  return mockBlobStorageManager
-    ? { ...ctx, blobStorageManager: blobStorageManager }
-    : ctx;
+  return ctx;
 }
 
 export function runPaginationTestsSuite(
