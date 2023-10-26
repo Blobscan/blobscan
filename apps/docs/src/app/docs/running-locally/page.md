@@ -61,5 +61,6 @@ pnpm dev
 Lastly, create the database schema:
 
 ```shell
+cd packages/db
 pnpm db:push
 ```

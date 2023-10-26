@@ -29,6 +29,12 @@ pnpm prisma migrate reset --schema packages/db/prisma/schema.prisma
 
 ## Docker
 
+### How can I get a SQL shell
+
+```shell
+docker compose exec postgres psql -h localhost blobscan_dev blobscan
+```
+
 ### Something is failing and my container is rebooting all the time so I can't debug it
 
 You can still get a shell on the container like:
