@@ -7,7 +7,7 @@ import { omitDBTimestampFields } from "@blobscan/test";
 import { appRouter } from "../src/app-router";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
-import { getContext } from "./helpers";
+import { createTestContext } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
 
 vi.mock("../src/env", () => ({
@@ -29,12 +29,12 @@ vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
 describe("Indexer router", async () => {
   let nonAuthorizedCaller: ReturnType<typeof appRouter.createCaller>;
   let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
-  let authorizedContext: Awaited<ReturnType<typeof getContext>>;
+  let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
-    const ctx = await getContext();
+    const ctx = await createTestContext();
 
-    authorizedContext = await getContext({ withClient: true });
+    authorizedContext = await createTestContext({ withAuth: true });
 
     nonAuthorizedCaller = appRouter.createCaller(ctx);
     authorizedCaller = appRouter.createCaller(authorizedContext);
