@@ -19,7 +19,7 @@ export const env = createEnv({
   },
   display(env) {
     console.log(
-      `Otel configuration: protocol=${env.OTEL_EXPORTER_OTLP_PROTOCOL} exporterEndpoint=${env.OTEL_EXPORTER_OTLP_ENDPOINT} username=${env.OTLP_AUTH_USERNAME} password=${env.OTLP_AUTH_PASSWORD}`
+      `Otel configuration: protocol=${env.OTEL_EXPORTER_OTLP_PROTOCOL} exporterEndpoint=${env.OTEL_EXPORTER_OTLP_ENDPOINT} username=${env.OTLP_AUTH_USERNAME} password=*****`
     );
   },
 });
