@@ -3,7 +3,7 @@
 exports[`Transaction router > getAll > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -15,19 +15,19 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       },
     ],
     "block": {
-      "blobGasPrice": 22n,
-      "excessBlobGas": 15000,
+      "blobGasPrice": "22",
+      "excessBlobGas": "15000",
       "timestamp": 2023-08-31T16:00:00.000Z,
     },
     "blockNumber": 1008,
     "fromId": "address2",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash016",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -55,15 +55,15 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       },
     ],
     "block": {
-      "blobGasPrice": 22n,
-      "excessBlobGas": 15000,
+      "blobGasPrice": "22",
+      "excessBlobGas": "15000",
       "timestamp": 2023-08-31T14:00:00.000Z,
     },
     "blockNumber": 1007,
     "fromId": "address5",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash015",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
 ]
@@ -72,7 +72,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 exports[`Transaction router > getAll > when getting paginated transaction results > should return the correct number of results 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -84,19 +84,19 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       },
     ],
     "block": {
-      "blobGasPrice": 22n,
-      "excessBlobGas": 15000,
+      "blobGasPrice": "22",
+      "excessBlobGas": "15000",
       "timestamp": 2023-08-31T16:00:00.000Z,
     },
     "blockNumber": 1008,
     "fromId": "address2",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash016",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -124,15 +124,15 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       },
     ],
     "block": {
-      "blobGasPrice": 22n,
-      "excessBlobGas": 15000,
+      "blobGasPrice": "22",
+      "excessBlobGas": "15000",
       "timestamp": 2023-08-31T14:00:00.000Z,
     },
     "blockNumber": 1007,
     "fromId": "address5",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash015",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
 ]
@@ -141,7 +141,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 exports[`Transaction router > getByAddress > when getting paginated address's transactions results > should default to the first page when no page was specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -153,19 +153,19 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
       },
     ],
     "block": {
-      "blobGasPrice": 22n,
-      "excessBlobGas": 15000,
+      "blobGasPrice": "22",
+      "excessBlobGas": "15000",
       "timestamp": 2023-08-31T16:00:00.000Z,
     },
     "blockNumber": 1008,
     "fromId": "address2",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash016",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -193,15 +193,15 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
       },
     ],
     "block": {
-      "blobGasPrice": 20n,
-      "excessBlobGas": 10000,
+      "blobGasPrice": "20",
+      "excessBlobGas": "10000",
       "timestamp": 2023-08-28T10:00:00.000Z,
     },
     "blockNumber": 1005,
     "fromId": "address2",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash012",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
 ]
@@ -210,7 +210,7 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
 exports[`Transaction router > getByAddress > when getting paginated address's transactions results > should return the correct number of results 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -222,19 +222,19 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
       },
     ],
     "block": {
-      "blobGasPrice": 22n,
-      "excessBlobGas": 15000,
+      "blobGasPrice": "22",
+      "excessBlobGas": "15000",
       "timestamp": 2023-08-31T16:00:00.000Z,
     },
     "blockNumber": 1008,
     "fromId": "address2",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash016",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
   {
-    "blobAsCalldataGasUsed": 1000,
+    "blobAsCalldataGasUsed": "1000",
     "blobs": [
       {
         "blob": {
@@ -262,15 +262,15 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
       },
     ],
     "block": {
-      "blobGasPrice": 20n,
-      "excessBlobGas": 10000,
+      "blobGasPrice": "20",
+      "excessBlobGas": "10000",
       "timestamp": 2023-08-28T10:00:00.000Z,
     },
     "blockNumber": 1005,
     "fromId": "address2",
-    "gasPrice": 10n,
+    "gasPrice": "10",
     "hash": "txHash012",
-    "maxFeePerBlobGas": 100n,
+    "maxFeePerBlobGas": "100",
     "toId": "address4",
   },
 ]
@@ -278,7 +278,7 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
 
 exports[`Transaction router > getByHash > should get a transaction by hash correctly 1`] = `
 {
-  "blobAsCalldataGasUsed": 1000,
+  "blobAsCalldataGasUsed": "1000",
   "blobs": [
     {
       "blob": {
@@ -306,15 +306,15 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
     },
   ],
   "block": {
-    "blobGasPrice": 22n,
-    "excessBlobGas": 15000,
+    "blobGasPrice": "22",
+    "excessBlobGas": "15000",
     "timestamp": 2022-10-16T12:00:00.000Z,
   },
   "blockNumber": 1001,
   "fromId": "address1",
-  "gasPrice": 10n,
+  "gasPrice": "10",
   "hash": "txHash001",
-  "maxFeePerBlobGas": 100n,
+  "maxFeePerBlobGas": "100",
   "toId": "address2",
 }
 `;

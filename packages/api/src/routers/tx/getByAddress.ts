@@ -3,7 +3,7 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { fullTransactionSelect } from "./common";
+import { formatFullTransaction, fullTransactionSelect } from "./common";
 import { getByAddressInputSchema } from "./getByAddress.schema";
 
 export const getByAddress = publicProcedure
@@ -14,14 +14,16 @@ export const getByAddress = publicProcedure
     const { address } = input;
 
     const [transactions, totalTransactions] = await Promise.all([
-      ctx.prisma.transaction.findMany({
-        select: fullTransactionSelect,
-        where: {
-          OR: [{ fromId: address }, { toId: address }],
-        },
-        orderBy: { blockNumber: "desc" },
-        ...ctx.pagination,
-      }),
+      ctx.prisma.transaction
+        .findMany({
+          select: fullTransactionSelect,
+          where: {
+            OR: [{ fromId: address }, { toId: address }],
+          },
+          orderBy: { blockNumber: "desc" },
+          ...ctx.pagination,
+        })
+        .then((txs) => txs.map(formatFullTransaction)),
       // FIXME: this is not efficient
       ctx.prisma.transaction.count({
         where: {

@@ -1,6 +1,5 @@
 import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
-import { decimalToBigInt } from "../../utils";
 import { BLOCK_BASE_PATH } from "./common";
 import {
   getBlockOverallStatsInputSchema,
@@ -18,21 +17,18 @@ export const getBlockOverallStatsQuery = function (
       stats
         ? {
             ...stats,
-            totalBlobGasUsed: decimalToBigInt(stats.totalBlobGasUsed),
-            totalBlobAsCalldataGasUsed: decimalToBigInt(
-              stats.totalBlobAsCalldataGasUsed
-            ),
-            totalBlobFee: decimalToBigInt(stats.totalBlobFee),
-            totalBlobAsCalldataFee: decimalToBigInt(
-              stats.totalBlobAsCalldataFee
-            ),
+            totalBlobGasUsed: stats.totalBlobGasUsed.toFixed(),
+            totalBlobAsCalldataGasUsed:
+              stats.totalBlobAsCalldataGasUsed.toFixed(),
+            totalBlobFee: stats.totalBlobFee.toFixed(),
+            totalBlobAsCalldataFee: stats.totalBlobAsCalldataFee.toFixed(),
           }
         : {
             totalBlocks: 0,
-            totalBlobGasUsed: BigInt(0),
-            totalBlobAsCalldataGasUsed: BigInt(0),
-            totalBlobFee: BigInt(0),
-            totalBlobAsCalldataFee: BigInt(0),
+            totalBlobGasUsed: "0",
+            totalBlobAsCalldataGasUsed: "0",
+            totalBlobFee: "0",
+            totalBlobAsCalldataFee: "0",
             avgBlobFee: 0,
             avgBlobAsCalldataFee: 0,
             avgBlobGasPrice: 0,
