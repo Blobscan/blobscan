@@ -4,6 +4,7 @@ import type {
   BlobDataStorageReference,
   Transaction,
 } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { BlobStorage } from "@prisma/client";
 import { describe, it, expect, beforeEach } from "vitest";
 
@@ -700,8 +701,11 @@ describe("Base Extension", () => {
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,
-        maxFeePerBlobGas: BigInt(existingRawTx.maxFeePerBlobGas),
-        gasPrice: BigInt(existingRawTx.gasPrice),
+        blobAsCalldataGasUsed: new Prisma.Decimal(
+          existingRawTx.blobAsCalldataGasUsed
+        ),
+        maxFeePerBlobGas: new Prisma.Decimal(existingRawTx.maxFeePerBlobGas),
+        gasPrice: new Prisma.Decimal(existingRawTx.gasPrice),
       };
 
       it("should insert multiple transactions correctly", async () => {
@@ -711,18 +715,18 @@ describe("Base Extension", () => {
             fromId: "address1",
             toId: "address3",
             blockNumber: 1002,
-            maxFeePerBlobGas: BigInt(100),
-            gasPrice: BigInt(10),
-            blobAsCalldataGasUsed: 1000,
+            maxFeePerBlobGas: new Prisma.Decimal(100),
+            gasPrice: new Prisma.Decimal(10),
+            blobAsCalldataGasUsed: new Prisma.Decimal(1000),
           },
           {
             hash: "newTxHash2",
             fromId: "address5",
             toId: "address3",
             blockNumber: 1001,
-            maxFeePerBlobGas: BigInt(120),
-            gasPrice: BigInt(5),
-            blobAsCalldataGasUsed: 500,
+            maxFeePerBlobGas: new Prisma.Decimal(120),
+            gasPrice: new Prisma.Decimal(5),
+            blobAsCalldataGasUsed: new Prisma.Decimal(500),
           },
         ];
 
@@ -751,18 +755,18 @@ describe("Base Extension", () => {
             fromId: "address5",
             toId: "address6",
             blockNumber: 1006,
-            maxFeePerBlobGas: BigInt(1),
-            gasPrice: BigInt(1),
-            blobAsCalldataGasUsed: 1,
+            maxFeePerBlobGas: new Prisma.Decimal(1),
+            gasPrice: new Prisma.Decimal(1),
+            blobAsCalldataGasUsed: new Prisma.Decimal(1),
           },
           {
             hash: "txHash002",
             fromId: "address6",
             toId: "address5",
             blockNumber: 1006,
-            maxFeePerBlobGas: BigInt(999),
-            gasPrice: BigInt(999),
-            blobAsCalldataGasUsed: 999,
+            maxFeePerBlobGas: new Prisma.Decimal(999),
+            gasPrice: new Prisma.Decimal(999),
+            blobAsCalldataGasUsed: new Prisma.Decimal(999),
           },
         ];
 

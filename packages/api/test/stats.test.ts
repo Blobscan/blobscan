@@ -81,10 +81,10 @@ describe("Stats router", async () => {
           "avgBlobAsCalldataFee": 10450145,
           "avgBlobFee": 105412688,
           "avgBlobGasPrice": 21.75,
-          "totalBlobAsCalldataFee": 83601160n,
-          "totalBlobAsCalldataGasUsed": 3822780n,
-          "totalBlobFee": 843301504n,
-          "totalBlobGasUsed": 38786432n,
+          "totalBlobAsCalldataFee": "83601160",
+          "totalBlobAsCalldataGasUsed": "3822780",
+          "totalBlobFee": "843301504",
+          "totalBlobGasUsed": "38786432",
           "totalBlocks": 8,
         }
       `);

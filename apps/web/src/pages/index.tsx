@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -52,7 +53,7 @@ const Home: NextPage = () => {
     ps: LATEST_BLOBS_LENGTH,
   });
 
-  const { data: overallStats, error: overallStatsErr } =
+  const { data: overallStats_, error: overallStatsErr } =
     api.stats.getAllOverallStats.useQuery();
   const { data: dailyTxStats, error: dailyTxStatsErr } =
     api.stats.getTransactionDailyStats.useQuery({
@@ -62,6 +63,23 @@ const Home: NextPage = () => {
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
+  const overallStats = useMemo(
+    () => ({
+      ...overallStats_,
+      block: {
+        ...overallStats_?.block,
+        totalBlobAsCalldataFee: BigInt(
+          overallStats_?.block?.totalBlobAsCalldataFee ?? 0
+        ),
+        totalBlobFee: BigInt(overallStats_?.block?.totalBlobFee ?? 0),
+        totalBlobGasUsed: BigInt(overallStats_?.block?.totalBlobGasUsed ?? 0),
+        totalBlobAsCalldataGasUsed: BigInt(
+          overallStats_?.block?.totalBlobAsCalldataGasUsed ?? 0
+        ),
+      },
+    }),
+    [overallStats_]
+  );
 
   const error =
     latestBlocksError ||
@@ -151,7 +169,7 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blob Size"
               metric={{
-                value: overallStats?.blob.totalBlobSize,
+                value: overallStats?.blob?.totalBlobSize,
                 type: "bytes",
               }}
               compact

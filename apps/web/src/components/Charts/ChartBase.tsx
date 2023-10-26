@@ -42,8 +42,52 @@ function isDataObject(
   );
 }
 
-function isNumberArray(element: unknown[]): element is number[] {
-  return element.every((element) => typeof element === "number");
+function isNumberArray(elements: unknown[]): elements is number[] {
+  return elements.every((el) => typeof el === "number");
+}
+
+function isStringArray(elements: unknown[]): elements is string[] {
+  return elements.every((el) => typeof el === "string");
+}
+
+function tryConvert(element: string[], to: "number"): number[] | undefined;
+function tryConvert(element: string[], to: "bigint"): bigint[] | undefined;
+function tryConvert(element: string[], to: "number" | "bigint") {
+  try {
+    return element.map((el) => (to === "number" ? Number(el) : BigInt(el)));
+  } catch (_) {
+    return;
+  }
+}
+
+function performCumulativeSum(data: unknown[]): string[] {
+  let cumulativeSums;
+
+  if (isNumberArray(data)) {
+    cumulativeSums = cumulativeSum(data);
+  } else if (isDataObject(data)) {
+    const values = data.map(({ value }) => value);
+
+    return performCumulativeSum(values);
+  } else if (isStringArray(data)) {
+    const bigNumbers = tryConvert(data, "bigint");
+
+    if (bigNumbers) {
+      cumulativeSums = cumulativeSum(bigNumbers);
+    } else {
+      const numbers = tryConvert(data, "number");
+
+      if (numbers) {
+        cumulativeSums = cumulativeSum(numbers);
+      }
+    }
+  }
+
+  if (cumulativeSums) {
+    return cumulativeSums.map((sum) => sum.toString());
+  }
+
+  throw new Error("Unable to perform cumulative sum on data");
 }
 
 export const ChartBase: FC<ChartBaseProps> = function ({
@@ -61,15 +105,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         let newData = data;
 
         if (showCumulative && data) {
-          if (isNumberArray(data)) {
-            newData = cumulativeSum(data as number[]);
-          } else if (isDataObject(data)) {
-            const values = data.map(({ value }) => value);
-
-            if (isNumberArray(values)) {
-              newData = cumulativeSum(values);
-            }
-          }
+          newData = performCumulativeSum(data);
         }
 
         return {

@@ -104,10 +104,10 @@ Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"blob_
 
 exports[`Base Extension > Block model > findLatest() > should find the latest block correctly 1`] = `
 {
-  "blobAsCalldataGasUsed": 255000,
-  "blobGasPrice": 22n,
-  "blobGasUsed": 5500000,
-  "excessBlobGas": 15000,
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "5500000",
+  "excessBlobGas": "15000",
   "hash": "blockHash008",
   "insertedAt": 2023-08-31T16:10:00.000Z,
   "number": 1008,

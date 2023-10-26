@@ -27,6 +27,7 @@ const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
   },
   standard: {
     notation: "standard",
+    compactDisplay: "long",
     maximumFractionDigits: 3,
   },
 };
@@ -60,9 +61,22 @@ export function calculatePercentage(
   return pct;
 }
 
-export function cumulativeSum(arr: number[]): number[] {
-  return arr.reduce<number[]>(
-    (acc, curr, i) => [...acc, curr + (acc[i - 1] ?? 0)],
-    []
-  );
+function isNumberArray(arr: unknown[]): arr is number[] {
+  return arr.every((x) => typeof x === "number");
+}
+
+export function cumulativeSum(arr: number[]): number[];
+export function cumulativeSum(arr: bigint[]): bigint[];
+export function cumulativeSum(arr: number[] | bigint[]): number[] | bigint[] {
+  if (isNumberArray(arr)) {
+    return arr.reduce<number[]>(
+      (acc, curr, i) => [...acc, curr + (acc[i - 1] ?? 0)],
+      []
+    );
+  } else {
+    return arr.reduce<bigint[]>(
+      (acc, curr, i) => [...acc, curr + (acc[i - 1] ?? BigInt(0))],
+      []
+    );
+  }
 }

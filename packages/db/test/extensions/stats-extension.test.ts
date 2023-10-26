@@ -331,8 +331,8 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats?.totalBlobAsCalldataGasUsed).toBe(
-            BigInt(expectedTotalBlobAsCalldataGasUsed)
+          expect(blockDailyStats?.totalBlobAsCalldataGasUsed.toNumber()).toBe(
+            expectedTotalBlobAsCalldataGasUsed
           );
         });
 
@@ -342,8 +342,8 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats?.totalBlobFee).toBe(
-            BigInt(expectedTotalBlobFee)
+          expect(blockDailyStats?.totalBlobFee.toNumber()).toBe(
+            expectedTotalBlobFee
           );
         });
 
@@ -353,8 +353,8 @@ describe("Stats Extension", () => {
             0
           );
 
-          expect(blockDailyStats?.totalBlobGasUsed).toBe(
-            BigInt(expectedTotalBlobGasUsed)
+          expect(blockDailyStats?.totalBlobGasUsed.toNumber()).toBe(
+            expectedTotalBlobGasUsed
           );
         });
 

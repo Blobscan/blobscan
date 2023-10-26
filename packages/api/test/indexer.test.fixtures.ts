@@ -4,8 +4,8 @@ export const INPUT = {
     hash: "blockHash999",
     timestamp: 1693576221,
     slot: 130,
-    blobGasUsed: 10000,
-    excessBlobGas: 5000,
+    blobGasUsed: "10000",
+    excessBlobGas: "5000",
   },
   transactions: [
     {
@@ -56,8 +56,8 @@ export const INPUT_WITH_DUPLICATED_BLOBS = {
     hash: "blockHash9999",
     timestamp: 1694586221,
     slot: 170,
-    blobGasUsed: 10000,
-    excessBlobGas: 5000,
+    blobGasUsed: "10000",
+    excessBlobGas: "5000",
   },
   transactions: [
     {

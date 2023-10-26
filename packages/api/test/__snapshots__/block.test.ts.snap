@@ -3,10 +3,10 @@
 exports[`Block router > getAll > when getting paginated block results > should default to the first page when no page was specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 255000,
-    "blobGasPrice": 22n,
-    "blobGasUsed": 5500000,
-    "excessBlobGas": 15000,
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
     "hash": "blockHash008",
     "number": 1008,
     "slot": 108,
@@ -29,10 +29,10 @@ exports[`Block router > getAll > when getting paginated block results > should d
     ],
   },
   {
-    "blobAsCalldataGasUsed": 255000,
-    "blobGasPrice": 22n,
-    "blobGasUsed": 5500000,
-    "excessBlobGas": 15000,
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
     "hash": "blockHash007",
     "number": 1007,
     "slot": 107,
@@ -74,10 +74,10 @@ exports[`Block router > getAll > when getting paginated block results > should d
 exports[`Block router > getAll > when getting paginated block results > should return the correct number of results 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": 255000,
-    "blobGasPrice": 22n,
-    "blobGasUsed": 5500000,
-    "excessBlobGas": 15000,
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
     "hash": "blockHash008",
     "number": 1008,
     "slot": 108,
@@ -100,10 +100,10 @@ exports[`Block router > getAll > when getting paginated block results > should r
     ],
   },
   {
-    "blobAsCalldataGasUsed": 255000,
-    "blobGasPrice": 22n,
-    "blobGasUsed": 5500000,
-    "excessBlobGas": 15000,
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
     "hash": "blockHash007",
     "number": 1007,
     "slot": 107,
@@ -144,10 +144,10 @@ exports[`Block router > getAll > when getting paginated block results > should r
 
 exports[`Block router > getByBlockNumber > should get a block by block number 1`] = `
 {
-  "blobAsCalldataGasUsed": 255000,
-  "blobGasPrice": 22n,
-  "blobGasUsed": 5500000,
-  "excessBlobGas": 15000,
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "5500000",
+  "excessBlobGas": "15000",
   "hash": "blockHash002",
   "number": 1002,
   "slot": 102,
@@ -208,10 +208,10 @@ exports[`Block router > getByBlockNumber > should get a block by block number 1`
 
 exports[`Block router > getByHash > should get a block by hash 1`] = `
 {
-  "blobAsCalldataGasUsed": 2042780,
-  "blobGasPrice": 22n,
-  "blobGasUsed": 786432,
-  "excessBlobGas": 15000,
+  "blobAsCalldataGasUsed": "2042780",
+  "blobGasPrice": "22",
+  "blobGasUsed": "786432",
+  "excessBlobGas": "15000",
   "hash": "blockHash001",
   "number": 1001,
   "slot": 101,

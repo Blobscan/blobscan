@@ -20,11 +20,8 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) =>
-          formatWei(value, {
-            displayFullAmount: true,
-          }),
-        yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+        yAxisTooltip: (value) => formatWei(value),
+        yAxisLabel: (value) => formatWei(value),
       },
     }),
     series: [

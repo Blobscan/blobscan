@@ -4,13 +4,18 @@ import type {
   Transaction,
   WithoutTimestampFields,
 } from "@blobscan/db";
+import { Prisma } from "@blobscan/db";
 
 import type { IndexDataInput } from "./indexData.schema";
 
-const MIN_BLOB_GASPRICE = 1;
-const BLOB_GASPRICE_UPDATE_FRACTION = 3_338_477;
+const MIN_BLOB_GASPRICE = BigInt(1);
+const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
 
 export const GAS_PER_BLOB = 2 ** 17; // 131_072
+
+function bigIntToDecimal(bigint: bigint) {
+  return new Prisma.Decimal(bigint.toString());
+}
 
 function fakeExponential(
   factor: bigint,
@@ -32,15 +37,15 @@ function fakeExponential(
   return output / denominator;
 }
 
-export function getEIP2028CalldataGas(hexData: string): number {
+export function getEIP2028CalldataGas(hexData: string) {
   const bytes = Buffer.from(hexData.slice(2), "hex");
-  let gasCost = 0;
+  let gasCost = BigInt(0);
 
   for (const byte of bytes.entries()) {
     if (byte[1] === 0) {
-      gasCost += 4;
+      gasCost += BigInt(4);
     } else {
-      gasCost += 16;
+      gasCost += BigInt(16);
     }
   }
 
@@ -51,12 +56,12 @@ export function calculateBlobSize(blob: string): number {
   return blob.slice(2).length / 2;
 }
 
-export function calculateBlobGasPrice(excessDataGas: number): bigint {
+export function calculateBlobGasPrice(excessDataGas: bigint): bigint {
   return BigInt(
     fakeExponential(
-      BigInt(MIN_BLOB_GASPRICE),
-      BigInt(excessDataGas),
-      BigInt(BLOB_GASPRICE_UPDATE_FRACTION)
+      MIN_BLOB_GASPRICE,
+      excessDataGas,
+      BLOB_GASPRICE_UPDATE_FRACTION
     )
   );
 }
@@ -76,15 +81,18 @@ export function createDBTransactions({
         throw new Error(`Blob for transaction ${hash} not found`);
       }
 
+      const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
+      const blobAsCalldataGasUsed = getEIP2028CalldataGas(txBlob.data);
+
       return {
         blockNumber,
         hash,
         fromId: from,
         toId: to,
-        gasPrice,
-        blobGasPrice: calculateBlobGasPrice(block.excessBlobGas),
-        maxFeePerBlobGas,
-        blobAsCalldataGasUsed: getEIP2028CalldataGas(txBlob.data),
+        gasPrice: bigIntToDecimal(gasPrice),
+        blobGasPrice: bigIntToDecimal(blobGasPrice),
+        maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
+        blobAsCalldataGasUsed: bigIntToDecimal(blobAsCalldataGasUsed),
       };
     }
   );
@@ -97,18 +105,19 @@ export function createDBBlock(
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
-    (acc, tx) => acc + tx.blobAsCalldataGasUsed,
-    0
+    (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
+    new Prisma.Decimal(0)
   );
 
+  const blobGasPrice = calculateBlobGasPrice(excessBlobGas);
   return {
     number,
     hash,
     timestamp: new Date(timestamp * 1000),
     slot,
-    blobGasUsed,
-    blobGasPrice: calculateBlobGasPrice(excessBlobGas),
-    excessBlobGas,
+    blobGasUsed: bigIntToDecimal(blobGasUsed),
+    blobGasPrice: bigIntToDecimal(blobGasPrice),
+    excessBlobGas: bigIntToDecimal(excessBlobGas),
     blobAsCalldataGasUsed,
   };
 }

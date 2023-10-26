@@ -64,7 +64,7 @@ function formatMetric(
       formattedValue = formatBytes(value);
       break;
     case "ethereum":
-      formattedValue = formatWei(value, { displayFullAmount: !compact });
+      formattedValue = formatWei(value, { compact: true });
       break;
     case "percentage":
       formattedValue = `${formatNumber(value, mode, {

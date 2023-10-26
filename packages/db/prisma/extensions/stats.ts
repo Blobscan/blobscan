@@ -139,10 +139,10 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             SELECT
               DATE_TRUNC('day', ${dateField}) as "day",
               COUNT(hash)::INT as total_blocks,
-              SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
-              SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
-              SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
-              SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+              SUM(blob_gas_used)::DECIMAL as total_blob_gas_used,
+              SUM(blob_as_calldata_gas_used)::DECIMAL as total_blob_as_calldata_gas_used,
+              SUM(blob_gas_used * blob_gas_price)::DECIMAL as total_blob_fee,
+              SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL as total_blob_as_calldata_fee,
               AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
               AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
               AVG(blob_gas_price)::FLOAT as avg_blob_gas_price

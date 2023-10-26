@@ -82,10 +82,10 @@ model Block {
   number                Int      @unique
   timestamp             DateTime @unique
   slot                  Int      @unique
-  blobGasUsed           Int      @map("blob_gas_used")
-  excessBlobGas         Int      @map("excess_blob_gas")
-  blobGasPrice          BigInt   @map("blob_gas_price")
-  blobAsCalldataGasUsed Int      @map("blob_as_calldata_gas_used")
+  blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  excessBlobGas         Decimal  @map("excess_blob_gas") @db.Decimal(100, 0)
+  blobGasPrice          Decimal  @map("blob_gas_price") @db.Decimal(100, 0)
+  blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
@@ -103,9 +103,9 @@ model Transaction {
   fromId                String   @map("from_id")
   toId                  String   @map("to_id")
   blockNumber           Int      @map("block_number")
-  maxFeePerBlobGas      BigInt   @map("max_fee_per_blob_gas")
-  gasPrice              BigInt   @map("gas_price")
-  blobAsCalldataGasUsed Int      @map("blob_as_calldata_gas_used")
+  maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
+  gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
+  blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
@@ -137,10 +137,10 @@ model BlobsOnTransactions {
 model BlockOverallStats {
   id                         Int     @id @default(autoincrement())
   totalBlocks                Int     @map("total_blocks")
-  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(50, 0)
-  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(50, 0)
-  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(50, 0)
-  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(50, 0)
+  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
   avgBlobFee                 Float   @map("avg_blob_fee")
   avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
   avgBlobGasPrice            Float   @map("avg_blob_gas_price")
@@ -153,10 +153,10 @@ model BlockOverallStats {
 model BlockDailyStats {
   day                        DateTime @id @db.Date
   totalBlocks                Int      @map("total_blocks")
-  totalBlobGasUsed           BigInt   @map("total_blob_gas_used")
-  totalBlobAsCalldataGasUsed BigInt   @map("total_blob_as_calldata_gas_used")
-  totalBlobFee               BigInt   @map("total_blob_fee")
-  totalBlobAsCalldataFee     BigInt   @map("total_blob_as_calldata_fee")
+  totalBlobGasUsed           Decimal  @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal  @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal  @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal  @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
   avgBlobFee                 Float    @map("avg_blob_fee")
   avgBlobAsCalldataFee       Float    @map("avg_blob_as_calldata_fee")
   avgBlobGasPrice            Float    @map("avg_blob_gas_price")

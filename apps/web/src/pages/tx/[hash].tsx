@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -23,10 +24,27 @@ const Tx: NextPage = () => {
   const hash = (router.query.hash as string | undefined) ?? "";
 
   const {
-    data: txData,
+    data: txData_,
     error,
     isLoading,
   } = api.tx.getByHash.useQuery({ hash }, { enabled: router.isReady });
+  const txData = useMemo(
+    () =>
+      txData_
+        ? {
+            ...txData_,
+            blobAsCalldataGasUsed: BigInt(txData_.blobAsCalldataGasUsed),
+            gasPrice: BigInt(txData_.gasPrice),
+            maxFeePerBlobGas: BigInt(txData_.maxFeePerBlobGas),
+            block: {
+              ...txData_.block,
+              blobGasPrice: BigInt(txData_.block.blobGasPrice),
+              excessBlobGas: BigInt(txData_.block.excessBlobGas),
+            },
+          }
+        : undefined,
+    [txData_]
+  );
 
   if (error) {
     return (
@@ -43,7 +61,9 @@ const Tx: NextPage = () => {
 
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
   const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
-  const blobGasUsed = txData ? txData.blobs.length * GAS_PER_BLOB : 0;
+  const blobGasUsed = txData
+    ? BigInt(txData.blobs.length) * GAS_PER_BLOB
+    : BigInt(0);
   const totalBlobSize =
     txData?.blobs.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
 
