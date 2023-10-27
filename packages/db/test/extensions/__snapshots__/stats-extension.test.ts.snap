@@ -1,6 +1,25 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Stats Extension > Blob model > Daily stats functions > fill > should fill in stats for a multiple days period 1`] = `
+exports[`Stats Extension > Blob model > Daily stats functions > fill > should fill in stats correctly when \`Date\` objects are passed 1`] = `
+[
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > fill > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
 [
   {
     "avgBlobSize": 1000,
@@ -73,6 +92,230 @@ exports[`Stats Extension > Blob model > Daily stats functions > fill > should fi
 
 exports[`Stats Extension > Blob model > Daily stats functions > fill > should fill in stats for a period with no data 1`] = `[]`;
 
+exports[`Stats Extension > Blob model > Daily stats functions > fill > should fill in stats up to current date if no period is specified 1`] = `
+[
+  {
+    "avgBlobSize": 1066.666666666667,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 3,
+  },
+  {
+    "avgBlobSize": 1250,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalBlobSize": 7500n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 6,
+  },
+  {
+    "avgBlobSize": 1033.333333333333,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalBlobSize": 6200n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 2,
+  },
+  {
+    "avgBlobSize": 1180,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalBlobSize": 5900n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 4,
+  },
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > fill > when filling in stats for a multiple days period > should do it correctly when \`DD-MM-YYYY\` dates are passed 1`] = `
+[
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats correctly when \`Date\` objects are passed 1`] = `
+[
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
+[
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats for a period that doesn't have a starting date 1`] = `
+[
+  {
+    "avgBlobSize": 1066.666666666667,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 3,
+  },
+  {
+    "avgBlobSize": 1250,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalBlobSize": 7500n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 6,
+  },
+  {
+    "avgBlobSize": 1033.333333333333,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalBlobSize": 6200n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 2,
+  },
+  {
+    "avgBlobSize": 1180,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalBlobSize": 5900n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 4,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats for a period that doesn't have an ending date 1`] = `
+[
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats for a period with no data 1`] = `[]`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats up to current date if no period is specified 1`] = `
+[
+  {
+    "avgBlobSize": 1066.666666666667,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 3,
+  },
+  {
+    "avgBlobSize": 1250,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalBlobSize": 7500n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 6,
+  },
+  {
+    "avgBlobSize": 1033.333333333333,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalBlobSize": 6200n,
+    "totalBlobs": 6,
+    "totalUniqueBlobs": 2,
+  },
+  {
+    "avgBlobSize": 1180,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalBlobSize": 5900n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 4,
+  },
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Blob model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`DD-MM-YYYY\` dates are passed 1`] = `
+[
+  {
+    "avgBlobSize": 1000,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobSize": 1280,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobSize": 6400n,
+    "totalBlobs": 5,
+    "totalUniqueBlobs": 3,
+  },
+]
+`;
+
 exports[`Stats Extension > Blob model > Overall stats functions > backfill > should backfill stats after adding new items correctly 1`] = `
 {
   "avgBlobSize": 1100,
@@ -103,7 +346,54 @@ exports[`Stats Extension > Blob model > Overall stats functions > increment > sh
 }
 `;
 
-exports[`Stats Extension > Block model > Daily stats functions > fill > should fill in stats for a multiple days period 1`] = `
+exports[`Stats Extension > Blob model > Overall stats functions > po > should backfill stats after adding new items correctly 1`] = `
+{
+  "avgBlobSize": 1100,
+  "id": 1,
+  "totalBlobSize": 37400n,
+  "totalBlobs": 34,
+  "totalUniqueBlobs": 9,
+}
+`;
+
+exports[`Stats Extension > Blob model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
+{
+  "avgBlobSize": 1100,
+  "id": 1,
+  "totalBlobSize": 37400n,
+  "totalBlobs": 34,
+  "totalUniqueBlobs": 9,
+}
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > fill > should fill in stats correctly when \`Date\` objects are passed 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > fill > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
 [
   {
     "avgBlobAsCalldataFee": 5000000,
@@ -208,6 +498,334 @@ exports[`Stats Extension > Block model > Daily stats functions > fill > should f
 
 exports[`Stats Extension > Block model > Daily stats functions > fill > should fill in stats for a period with no data 1`] = `[]`;
 
+exports[`Stats Extension > Block model > Daily stats functions > fill > should fill in stats up to current date if no period is specified 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 44941160,
+    "avgBlobFee": 17301504,
+    "avgBlobGasPrice": 22,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "44941160",
+    "totalBlobAsCalldataGasUsed": "2042780",
+    "totalBlobFee": "17301504",
+    "totalBlobGasUsed": "786432",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > fill > when filling in stats for a multiple days period > should do it correctly when \`DD-MM-YYYY\` dates are passed 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > should fill in stats correctly when \`Date\` objects are passed 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > should fill in stats for a period that doesn't have a starting date 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 44941160,
+    "avgBlobFee": 17301504,
+    "avgBlobGasPrice": 22,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "44941160",
+    "totalBlobAsCalldataGasUsed": "2042780",
+    "totalBlobFee": "17301504",
+    "totalBlobGasUsed": "786432",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > should fill in stats for a period that doesn't have an ending date 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > should fill in stats for a period with no data 1`] = `[]`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > should fill in stats up to current date if no period is specified 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 44941160,
+    "avgBlobFee": 17301504,
+    "avgBlobGasPrice": 22,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "44941160",
+    "totalBlobAsCalldataGasUsed": "2042780",
+    "totalBlobFee": "17301504",
+    "totalBlobGasUsed": "786432",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5610000",
+    "totalBlobAsCalldataGasUsed": "255000",
+    "totalBlobFee": "121000000",
+    "totalBlobGasUsed": "5500000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
+exports[`Stats Extension > Block model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`DD-MM-YYYY\` dates are passed 1`] = `
+[
+  {
+    "avgBlobAsCalldataFee": 5000000,
+    "avgBlobFee": 100000000,
+    "avgBlobGasPrice": 20,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "5000000",
+    "totalBlobAsCalldataGasUsed": "250000",
+    "totalBlobFee": "100000000",
+    "totalBlobGasUsed": "5000000",
+    "totalBlocks": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5610000,
+    "avgBlobFee": 121000000,
+    "avgBlobGasPrice": 22,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalBlobAsCalldataFee": "16830000",
+    "totalBlobAsCalldataGasUsed": "765000",
+    "totalBlobFee": "363000000",
+    "totalBlobGasUsed": "16500000",
+    "totalBlocks": 3,
+  },
+]
+`;
+
 exports[`Stats Extension > Block model > Overall stats functions > backfill > should backfill stats after adding new items correctly 1`] = `
 {
   "avgBlobAsCalldataFee": 9421116,
@@ -250,7 +868,54 @@ exports[`Stats Extension > Block model > Overall stats functions > increment > s
 }
 `;
 
-exports[`Stats Extension > Transaction model > Daily stats functions > fill > should fill in stats for a multiple days period 1`] = `
+exports[`Stats Extension > Block model > Overall stats functions > po > should backfill stats after adding new items correctly 1`] = `
+{
+  "avgBlobAsCalldataFee": 9421116,
+  "avgBlobFee": 106430150.4,
+  "avgBlobGasPrice": 21.6,
+  "id": 1,
+  "totalBlobAsCalldataFee": "94211160",
+  "totalBlobAsCalldataGasUsed": "4327780",
+  "totalBlobFee": "1064301504",
+  "totalBlobGasUsed": "49286432",
+  "totalBlocks": 10,
+}
+`;
+
+exports[`Stats Extension > Block model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
+{
+  "avgBlobAsCalldataFee": 9421116,
+  "avgBlobFee": 106430150.4,
+  "avgBlobGasPrice": 21.6,
+  "id": 1,
+  "totalBlobAsCalldataFee": "94211160",
+  "totalBlobAsCalldataGasUsed": "4327780",
+  "totalBlobFee": "1064301504",
+  "totalBlobGasUsed": "49286432",
+  "totalBlocks": 10,
+}
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > fill > should fill in stats correctly when \`Date\` objects are passed 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > fill > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
 [
   {
     "avgMaxBlobGasFee": 100,
@@ -323,6 +988,230 @@ exports[`Stats Extension > Transaction model > Daily stats functions > fill > sh
 
 exports[`Stats Extension > Transaction model > Daily stats functions > fill > should fill in stats for a period with no data 1`] = `[]`;
 
+exports[`Stats Extension > Transaction model > Daily stats functions > fill > should fill in stats up to current date if no period is specified 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 110,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalTransactions": 1,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 1,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 1,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalTransactions": 5,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 4,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > fill > when filling in stats for a multiple days period > should do it correctly when \`DD-MM-YYYY\` dates are passed 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should fill in stats correctly when \`Date\` objects are passed 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should fill in stats for a period that doesn't have a starting date 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 110,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalTransactions": 1,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 1,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 1,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalTransactions": 5,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 4,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should fill in stats for a period that doesn't have an ending date 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should fill in stats for a period with no data 1`] = `[]`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should fill in stats up to current date if no period is specified 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 110,
+    "day": 2022-10-16T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 3,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-05-10T00:00:00.000Z,
+    "totalTransactions": 1,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 1,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-03T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 1,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-20T00:00:00.000Z,
+    "totalTransactions": 5,
+    "totalUniqueReceivers": 3,
+    "totalUniqueSenders": 4,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`DD-MM-YYYY\` dates are passed 1`] = `
+[
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-28T00:00:00.000Z,
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 1,
+    "totalUniqueSenders": 2,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "day": 2023-08-31T00:00:00.000Z,
+    "totalTransactions": 3,
+    "totalUniqueReceivers": 2,
+    "totalUniqueSenders": 2,
+  },
+]
+`;
+
 exports[`Stats Extension > Transaction model > Overall stats functions > backfill > should backfill stats after adding new items correctly 1`] = `
 {
   "avgMaxBlobGasFee": 102.2222222222222,
@@ -350,5 +1239,25 @@ exports[`Stats Extension > Transaction model > Overall stats functions > increme
   "totalTransactions": 6,
   "totalUniqueReceivers": 6,
   "totalUniqueSenders": 4,
+}
+`;
+
+exports[`Stats Extension > Transaction model > Overall stats functions > po > should backfill stats after adding new items correctly 1`] = `
+{
+  "avgMaxBlobGasFee": 102.2222222222222,
+  "id": 1,
+  "totalTransactions": 18,
+  "totalUniqueReceivers": 5,
+  "totalUniqueSenders": 6,
+}
+`;
+
+exports[`Stats Extension > Transaction model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
+{
+  "avgMaxBlobGasFee": 102.2222222222222,
+  "id": 1,
+  "totalTransactions": 18,
+  "totalUniqueReceivers": 5,
+  "totalUniqueSenders": 6,
 }
 `;

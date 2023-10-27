@@ -12,9 +12,9 @@ async function main() {
     };
 
     const [blobStatsRes, blockStatsRes, txStatsRes] = await Promise.all([
-      prisma.blobDailyStats.fill(yesterdayPeriod),
-      prisma.blockDailyStats.fill(yesterdayPeriod),
-      prisma.transactionDailyStats.fill(yesterdayPeriod),
+      prisma.blobDailyStats.populate(yesterdayPeriod),
+      prisma.blockDailyStats.populate(yesterdayPeriod),
+      prisma.transactionDailyStats.populate(yesterdayPeriod),
     ]);
 
     console.log("=====================================");

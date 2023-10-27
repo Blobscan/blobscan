@@ -10,10 +10,10 @@ import type { SuiteFactory } from "vitest";
 import { beforeEach } from "vitest";
 import { describe, it, expect } from "vitest";
 
+import dayjs from "@blobscan/dayjs";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
-import type { DatePeriod } from "../../prisma";
-import { normalizeDatePeriod } from "../../prisma";
+import type { DatePeriod, RawDatePeriod } from "../../prisma";
 import { prisma } from "../../prisma";
 import {
   createNewData,
@@ -36,9 +36,9 @@ function runDailyStatsFunctionsTests(
   return describe("Daily stats functions", () => {
     const prismaModel = getDailyStatsPrismaModel(modelName);
 
-    describe("fill", () => {
-      async function checkStats(datePeriod: DatePeriod) {
-        await prismaModel.fill(normalizeDatePeriod(datePeriod));
+    describe("populate", () => {
+      async function checkStats(datePeriod?: RawDatePeriod) {
+        await prismaModel.populate(datePeriod);
 
         const stats = await prismaModel.findMany({
           orderBy: {
@@ -53,10 +53,26 @@ function runDailyStatsFunctionsTests(
         describe("when filling in daily stats", statsCalculationTestsSuite);
       }
 
-      it("should fill in stats for a multiple days period", async () => {
+      describe("when filling in stats for a multiple days period", () => {
+        it("should do it correctly when `DD-MM-YYYY` dates are passed", async () => {
+          await checkStats({
+            from: "2023-08-24",
+            to: "2023-09-01",
+          });
+        });
+      });
+
+      it("should fill in stats correctly when `Date` objects are passed", async () => {
         await checkStats({
-          from: "2023-08-24",
-          to: "2023-09-01",
+          from: new Date("2023-08-24"),
+          to: new Date("2023-09-01"),
+        });
+      });
+
+      it("should fill in stats correctly when `dayjs` objects are passed", async () => {
+        await checkStats({
+          from: dayjs("2023-08-24"),
+          to: dayjs("2023-09-01"),
         });
       });
 
@@ -72,6 +88,10 @@ function runDailyStatsFunctionsTests(
         });
       });
 
+      it("should fill in stats up to current date if no period is specified", async () => {
+        await checkStats();
+      });
+
       it("should fill in stats for a period with no data", async () => {
         await checkStats({
           from: "2099-01-01",
@@ -82,7 +102,7 @@ function runDailyStatsFunctionsTests(
 
     describe("deleteAll", async () => {
       it("should delete all stats correctly", async () => {
-        await prismaModel.fill({ from: "2022-01-01" });
+        await prismaModel.populate({ from: "2022-01-01" });
 
         await prismaModel.deleteAll();
 
@@ -104,13 +124,13 @@ function runOverallStatsFunctionsTests(
     const prismaModel = getOverallStatsPrismaModel(modelName);
 
     if (statsCalculationTestsSuite) {
-      describe("backfill", () => {
+      describe("populate", () => {
         describe("when aggregating overall stats", statsCalculationTestsSuite);
 
-        it("should backfill stats after adding new items correctly", async () => {
-          await prismaModel.backfill();
+        it("should populate stats after adding new items correctly", async () => {
+          await prismaModel.populate();
           await createNewData();
-          await prismaModel.backfill();
+          await prismaModel.populate();
 
           const result = await prismaModel
             .findFirst()
@@ -122,9 +142,9 @@ function runOverallStatsFunctionsTests(
 
       describe("increment", () => {
         it("should increment stats given a block range correctly", async () => {
-          await prismaModel.backfill();
+          await prismaModel.populate();
           await createNewData();
-          await prismaModel.backfill();
+          await prismaModel.populate();
 
           const result = await prismaModel
             .findFirst()
@@ -167,7 +187,7 @@ describe("Stats Extension", () => {
         let blobDailyStats: BlobDailyStats | null;
 
         beforeEach(async () => {
-          await prisma.blobDailyStats.fill(dayPeriod);
+          await prisma.blobDailyStats.populate(dayPeriod);
 
           blobDailyStats = await prisma.blobDailyStats.findFirst();
 
@@ -218,7 +238,7 @@ describe("Stats Extension", () => {
         let blobOverallStats: BlobOverallStats | null;
 
         beforeEach(async () => {
-          await prisma.blobOverallStats.backfill();
+          await prisma.blobOverallStats.populate();
 
           blobOverallStats = await prisma.blobOverallStats.findFirst();
 
@@ -274,7 +294,7 @@ describe("Stats Extension", () => {
         let blockDailyStats: BlockDailyStats | null;
 
         beforeEach(async () => {
-          await prisma.blockDailyStats.fill(dayPeriod);
+          await prisma.blockDailyStats.populate(dayPeriod);
 
           blockDailyStats = await prisma.blockDailyStats.findFirst();
 
@@ -372,7 +392,7 @@ describe("Stats Extension", () => {
         let overallStats: BlockOverallStats | null;
 
         beforeEach(async () => {
-          await prisma.blockOverallStats.backfill();
+          await prisma.blockOverallStats.populate();
 
           overallStats = await prisma.blockOverallStats.findFirst();
         });
@@ -447,7 +467,7 @@ describe("Stats Extension", () => {
         let transactionDailyStats: TransactionDailyStats | null;
 
         beforeEach(async () => {
-          await prisma.transactionDailyStats.fill(dayPeriod);
+          await prisma.transactionDailyStats.populate(dayPeriod);
 
           transactionDailyStats =
             await prisma.transactionDailyStats.findFirst();
@@ -501,7 +521,7 @@ describe("Stats Extension", () => {
         let overallStats: TransactionOverallStats | null;
 
         beforeEach(async () => {
-          await prisma.transactionOverallStats.backfill();
+          await prisma.transactionOverallStats.populate();
 
           overallStats = await prisma.transactionOverallStats.findFirst();
         });

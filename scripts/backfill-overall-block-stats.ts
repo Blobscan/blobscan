@@ -1,7 +1,7 @@
 import { prisma } from "@blobscan/db";
 
 async function main() {
-  const res = await prisma.blockOverallStats.backfill();
+  const res = await prisma.blockOverallStats.populate();
 
   console.log(res);
 }

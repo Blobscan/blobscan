@@ -6,25 +6,25 @@ import type { BlockNumberRange, DatePeriod } from "../../prisma";
 import { NEW_DATA } from "./stats-extension.test.fixtures";
 
 function hasDailyStatsExtensionFns(model: unknown): model is {
-  fill: (datePeriod: DatePeriod) => void;
+  populate: (datePeriod: DatePeriod) => void;
   findMany: () => unknown;
 } {
   return (
     typeof model === "object" &&
     model !== null &&
-    "fill" in model &&
+    "populate" in model &&
     "findMany" in model
   );
 }
 
 function hasOverallStatsExtensionFns(model: unknown): model is {
-  backfill: () => unknown;
+  populate: () => unknown;
   increment: (range: BlockNumberRange) => void;
 } {
   return (
     typeof model === "object" &&
     model !== null &&
-    "backfill" in model &&
+    "populate" in model &&
     "increment" in model
   );
 }

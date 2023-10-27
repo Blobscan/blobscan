@@ -6,9 +6,9 @@ async function main() {
     blockOverallStatsInserted,
     txOverallStatsInserted,
   ] = await Promise.all([
-    prisma.blobOverallStats.backfill(),
-    prisma.blockOverallStats.backfill(),
-    prisma.transactionOverallStats.backfill(),
+    prisma.blobOverallStats.populate(),
+    prisma.blockOverallStats.populate(),
+    prisma.transactionOverallStats.populate(),
   ]);
 
   console.log(`Total Blob overall stats inserted: ${blobOverallStatsInserted}`);
