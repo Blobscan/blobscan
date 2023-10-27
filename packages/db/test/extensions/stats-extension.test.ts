@@ -98,6 +98,7 @@ function runDailyStatsFunctionsTests(
           to: "2099-12-31",
         });
       });
+
     });
 
     describe("deleteAll", async () => {
