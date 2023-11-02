@@ -26,7 +26,8 @@ export function normalizeDailyDate(
 export function normalizeDailyDatePeriod(
   datePeriod?: RawDatePeriod
 ): DatePeriod {
-  if (!datePeriod) return { to: normalizeDailyDate(dayjs()) };
+  if (!datePeriod || (datePeriod.from && datePeriod.to))
+    return { to: normalizeDailyDate(dayjs()) };
 
   const normalizedDatePeriod = {
     from: datePeriod.from && normalizeDailyDate(datePeriod.from, "startOf"),
