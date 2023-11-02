@@ -22,11 +22,8 @@
     "test:dev": "pnpm test:setup && vitest",
     "test:setup": "turbo test:setup",
     "type-check": "turbo type-check",
-    "backfill:overall": "ts-node  scripts/backfill-all-overall-stats.ts",
-    "populate:daily": "ts-node scripts/populate-daily-stats.ts",
-    "update:overall": "ts-node scripts/upsert-overall-stats.ts",
-    "delete:daily": "ts-node scripts/delete-all-daily-stats.ts",
-    "delete:overall": "ts-node scripts/delete-all-overall-stats.ts"
+    "stats": "ts-node scripts/stats-aggregator/index.ts",
+    "update:overall": "ts-node scripts/upsert-overall-stats.ts"
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
