@@ -1,9 +1,10 @@
 import type { FC } from "react";
+import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
-import { buildTimeSeriesOptions, formatWei } from "~/utils";
+import { buildTimeSeriesOptions, convertWei, formatNumber } from "~/utils";
 
 export type DailyAvgBlobGasPriceChartProps = {
   days: DailyBlockStats["days"];
@@ -13,19 +14,23 @@ export type DailyAvgBlobGasPriceChartProps = {
 export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
+  const formattedAvgBlobGasPrices = useMemo(
+    () => avgBlobGasPrices?.map((price) => convertWei(price)),
+    [avgBlobGasPrices]
+  );
+
   const options: EChartOption<EChartOption.SeriesBar> = {
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => formatWei(value),
-        yAxisLabel: (value) => formatWei(value, { displayFullAmount: false }),
+        yAxisTooltip: (value) => `${formatNumber(value)} gwei`,
       },
       yUnit: "ethereum",
     }),
     series: [
       {
         name: "Avg. Blob Gas Prices",
-        data: avgBlobGasPrices,
+        data: formattedAvgBlobGasPrices,
         type: "bar",
       },
     ],

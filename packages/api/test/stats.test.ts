@@ -5,7 +5,7 @@ import { omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
-import { getContext } from "./helpers";
+import { createTestContext } from "./helpers";
 
 const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
 
@@ -33,10 +33,10 @@ describe("Stats router", async () => {
   const systemDate = new Date("2023-09-01");
   const to = dayjs(systemDate).endOf("day").toISOString();
   let caller: ReturnType<typeof appRouter.createCaller>;
-  let prisma: Awaited<ReturnType<typeof getContext>>["prisma"];
+  let prisma: Awaited<ReturnType<typeof createTestContext>>["prisma"];
 
   beforeAll(async () => {
-    const ctx = await getContext();
+    const ctx = await createTestContext();
 
     prisma = ctx.prisma;
     caller = appRouter.createCaller(ctx);
@@ -81,10 +81,10 @@ describe("Stats router", async () => {
           "avgBlobAsCalldataFee": 10450145,
           "avgBlobFee": 105412688,
           "avgBlobGasPrice": 21.75,
-          "totalBlobAsCalldataFee": 83601160n,
-          "totalBlobAsCalldataGasUsed": 3822780n,
-          "totalBlobFee": 843301504n,
-          "totalBlobGasUsed": 38786432n,
+          "totalBlobAsCalldataFee": "83601160",
+          "totalBlobAsCalldataGasUsed": "3822780",
+          "totalBlobFee": "843301504",
+          "totalBlobGasUsed": "38786432",
           "totalBlocks": 8,
         }
       `);

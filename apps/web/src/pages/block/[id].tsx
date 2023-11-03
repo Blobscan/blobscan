@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -34,7 +35,20 @@ function performBlockQuery(router: NextRouter) {
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const { data: blockData, error, isLoading } = performBlockQuery(router);
+  const { data: blockData_, error, isLoading } = performBlockQuery(router);
+  const blockData = useMemo(
+    () =>
+      blockData_
+        ? {
+            ...blockData_,
+            blobAsCalldataGasUsed: BigInt(blockData_?.blobAsCalldataGasUsed),
+            blobGasUsed: BigInt(blockData_.blobGasUsed),
+            blobGasPrice: BigInt(blockData_.blobGasPrice),
+            excessBlobGas: BigInt(blockData_.excessBlobGas),
+          }
+        : undefined,
+    [blockData_]
+  );
 
   if (error) {
     return (

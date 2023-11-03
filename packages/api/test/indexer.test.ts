@@ -7,7 +7,7 @@ import { omitDBTimestampFields } from "@blobscan/test";
 import { appRouter } from "../src/app-router";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
-import { getContext } from "./helpers";
+import { createTestContext } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
 
 vi.mock("../src/env", () => ({
@@ -29,12 +29,12 @@ vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
 describe("Indexer router", async () => {
   let nonAuthorizedCaller: ReturnType<typeof appRouter.createCaller>;
   let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
-  let authorizedContext: Awaited<ReturnType<typeof getContext>>;
+  let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
-    const ctx = await getContext();
+    const ctx = await createTestContext();
 
-    authorizedContext = await getContext({ withClient: true });
+    authorizedContext = await createTestContext({ withAuth: true });
 
     nonAuthorizedCaller = appRouter.createCaller(ctx);
     authorizedCaller = appRouter.createCaller(authorizedContext);
@@ -114,18 +114,18 @@ describe("Indexer router", async () => {
         //   0
         // );
         const expectedBlobGasPrice = calculateBlobGasPrice(
-          INPUT.block.excessBlobGas
+          BigInt(INPUT.block.excessBlobGas)
         );
 
         // TODO: Fix this test
         // expect(blobAsCalldataGasUsed).toBe(expectedBlobAsCalldataGasUsed);
-        expect(blobGasPrice, "Blob gas price mismatch").toBe(
-          expectedBlobGasPrice
+        expect(blobGasPrice?.toString(), "Blob gas price mismatch").toBe(
+          expectedBlobGasPrice.toString()
         );
         expect(remainingParams).toMatchInlineSnapshot(`
           {
-            "blobGasUsed": 10000,
-            "excessBlobGas": 5000,
+            "blobGasUsed": "10000",
+            "excessBlobGas": "5000",
             "hash": "blockHash999",
             "number": 2010,
             "slot": 130,
@@ -167,17 +167,17 @@ describe("Indexer router", async () => {
             {
               "blockNumber": 2010,
               "fromId": "address7",
-              "gasPrice": 3000000n,
+              "gasPrice": "3000000",
               "hash": "txHash1000",
-              "maxFeePerBlobGas": 20000n,
+              "maxFeePerBlobGas": "20000",
               "toId": "address2",
             },
             {
               "blockNumber": 2010,
               "fromId": "address9",
-              "gasPrice": 10000n,
+              "gasPrice": "10000",
               "hash": "txHash999",
-              "maxFeePerBlobGas": 1800n,
+              "maxFeePerBlobGas": "1800",
               "toId": "address10",
             },
           ]

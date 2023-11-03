@@ -6,7 +6,7 @@ import { fixtures } from "@blobscan/test";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
-import { getContext, runPaginationTestsSuite } from "./helpers";
+import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
 type GetByHashInput = inferProcedureInput<
   AppRouter["blob"]["getByVersionedHash"]
@@ -28,7 +28,7 @@ describe("Blob router", async () => {
   let ctx: TRPCContext;
 
   beforeAll(async () => {
-    ctx = await getContext();
+    ctx = await createTestContext();
     caller = appRouter.createCaller(ctx);
   });
 

@@ -35,6 +35,24 @@ describe("GoogleStorage", () => {
     });
   });
 
+  describe("healthCheck", () => {
+    it("should resolve successfully", async () => {
+      await expect(storage.healthCheck()).resolves.not.toThrow();
+    });
+
+    it("should throw an error if the bucket does not exist", async () => {
+      const newBucket = "new-bucket";
+
+      const newStorage = new GoogleStorage({
+        ...GOOGLE_STORAGE_CONFIG,
+        bucketName: newBucket,
+      });
+      await expect(newStorage.healthCheck()).rejects.toMatchInlineSnapshot(
+        "[Error: Bucket new-bucket does not exist]"
+      );
+    });
+  });
+
   describe("getBlob", () => {
     it("should return the contents of the blob", async () => {
       const blob = await storage.getBlob(FILE_URI);

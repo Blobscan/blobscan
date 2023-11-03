@@ -1,15 +1,15 @@
 import { faker } from "@faker-js/faker";
-import type {
-  Address,
-  Blob,
-  BlobsOnTransactions,
-  Prisma,
-} from "@prisma/client";
+import type { Address, Blob, BlobsOnTransactions } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
 
 import type { SeedParams } from "./params";
+
+function bigintToDecimal(bigint: bigint): Prisma.Decimal {
+  return new Prisma.Decimal(bigint.toString());
+}
 
 export class DataGenerator {
   #seedParams: SeedParams;
@@ -162,9 +162,9 @@ export class DataGenerator {
         timestamp,
         slot,
         blobAsCalldataGasUsed: 0,
-        blobGasUsed,
-        blobGasPrice,
-        excessBlobGas,
+        blobGasUsed: new Prisma.Decimal(blobGasUsed),
+        blobGasPrice: bigintToDecimal(blobGasPrice),
+        excessBlobGas: new Prisma.Decimal(excessBlobGas),
         insertedAt: now,
         updatedAt: now,
       };
@@ -247,9 +247,9 @@ export class DataGenerator {
           fromId: from,
           toId: to,
           blockNumber: block.number,
-          blobAsCalldataGasUsed: 0,
-          gasPrice,
-          maxFeePerBlobGas,
+          blobAsCalldataGasUsed: new Prisma.Decimal(0),
+          gasPrice: bigintToDecimal(gasPrice),
+          maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),
           insertedAt: now,
           updatedAt: now,
         };

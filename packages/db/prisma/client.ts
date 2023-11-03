@@ -22,17 +22,20 @@ if (!prisma_) {
         : [{ emit: "event", level: "error" }],
   });
 
-  p.$on("query", (e) => {
-    logger.debug(`${e.query}\nParams=${e.params}\nDuration=${e.duration}ms`);
-  });
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
+  if (process.env.MODE !== "test") {
+    p.$on("query", (e) => {
+      logger.debug(`${e.query}\nDuration=${e.duration}ms`);
+    });
 
-  p.$on("error", (e) => {
-    logger.error(e.message);
-  });
+    p.$on("error", (e) => {
+      logger.error(e.message);
+    });
 
-  p.$on("warn", (e) => {
-    logger.warn(e.message);
-  });
+    p.$on("warn", (e) => {
+      logger.warn(e.message);
+    });
+  }
 
   prisma_ = p;
 }

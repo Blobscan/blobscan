@@ -6,15 +6,25 @@ import { getByBlockNumberInputSchema } from "./getByBlockNumber.schema";
 
 export const getByBlockNumber = publicProcedure
   .input(getByBlockNumberInputSchema)
-  .query(async ({ ctx, input }) => {
-    const { number } = input;
-
-    const block = await ctx.prisma.block.findUnique({
-      select: fullBlockSelect,
-      where: {
-        number,
-      },
-    });
+  .query(async ({ ctx, input: { number } }) => {
+    const block = await ctx.prisma.block
+      .findUnique({
+        select: fullBlockSelect,
+        where: {
+          number,
+        },
+      })
+      .then((block) =>
+        block
+          ? {
+              ...block,
+              blobAsCalldataGasUsed: block.blobAsCalldataGasUsed.toFixed(),
+              blobGasUsed: block.blobGasUsed.toFixed(),
+              excessBlobGas: block.excessBlobGas.toFixed(),
+              blobGasPrice: block.blobGasPrice.toFixed(),
+            }
+          : null
+      );
 
     if (!block) {
       throw new TRPCError({

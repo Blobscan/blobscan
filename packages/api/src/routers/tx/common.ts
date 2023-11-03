@@ -10,6 +10,30 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   maxFeePerBlobGas: true,
 });
 
+// TODO: Find a way to infer this
+type FullTransaction = {
+  block: {
+    timestamp: Date;
+    excessBlobGas: Prisma.Decimal;
+    blobGasPrice: Prisma.Decimal;
+  };
+  hash: string;
+  fromId: string;
+  toId: string;
+  blockNumber: number;
+  maxFeePerBlobGas: Prisma.Decimal;
+  gasPrice: Prisma.Decimal;
+  blobAsCalldataGasUsed: Prisma.Decimal;
+  blobs: {
+    blobHash: string;
+    index: number;
+    blob: {
+      commitment: string;
+      size: number;
+    };
+  }[];
+};
+
 export const fullTransactionSelect =
   Prisma.validator<Prisma.TransactionSelect>()({
     ...transactionSelect,
@@ -33,3 +57,17 @@ export const fullTransactionSelect =
       },
     },
   });
+
+export function formatFullTransaction(tx: FullTransaction) {
+  return {
+    ...tx,
+    blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed.toFixed(),
+    gasPrice: tx.gasPrice.toFixed(),
+    maxFeePerBlobGas: tx.maxFeePerBlobGas.toFixed(),
+    block: {
+      ...tx.block,
+      blobGasPrice: tx.block.blobGasPrice.toFixed(),
+      excessBlobGas: tx.block.excessBlobGas.toFixed(),
+    },
+  };
+}

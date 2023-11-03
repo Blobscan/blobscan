@@ -1,7 +1,16 @@
 /* eslint-disable no-case-declarations */
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { api } from "@blobscan/open-telemetry";
+
 import { env } from "~/env.mjs";
+
+const feedbackMessagesTotalCounter = api.metrics
+  .getMeter("blobscan_web")
+  .createCounter("blobscan_web_feedback_messages_total", {
+    description: "Number of feedback messages",
+    valueType: api.ValueType.INT,
+  });
 
 const RATE_EMOJIS = new Map([
   ["bad", "🙁"],
@@ -31,6 +40,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
           body: JSON.stringify({ content: text }),
           headers: { "Content-Type": "application/json" },
         });
+
+        feedbackMessagesTotalCounter.add(1);
 
         return res.status(200).json({ message: "success" });
 

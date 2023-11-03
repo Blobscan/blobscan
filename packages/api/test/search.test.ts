@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
-import { getContext } from "./helpers";
+import { createTestContext } from "./helpers";
 
 type Input = inferProcedureInput<AppRouter["search"]["byTerm"]>;
 
@@ -11,7 +11,7 @@ describe("Search route", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
 
   beforeAll(async () => {
-    const ctx = await getContext();
+    const ctx = await createTestContext();
     caller = appRouter.createCaller(ctx);
   });
 

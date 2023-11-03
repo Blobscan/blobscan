@@ -7,7 +7,7 @@ import { fixtures } from "@blobscan/test";
 import type { TRPCContext } from "../src";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
-import { getContext, runPaginationTestsSuite } from "./helpers";
+import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
 type Input = inferProcedureInput<AppRouter["block"]["getByHash"]>;
 
@@ -16,7 +16,7 @@ describe("Block router", async () => {
   let ctx: TRPCContext;
 
   beforeAll(async () => {
-    ctx = await getContext();
+    ctx = await createTestContext();
     caller = appRouter.createCaller(ctx);
   });
 
