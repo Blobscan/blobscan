@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {
   BlobDailyStats,
   BlobOverallStats,
@@ -26,7 +27,7 @@ import {
 } from "./stats-extension.test.utils";
 
 function runDailyStatsFunctionsTests(
-  modelName: keyof typeof prisma,
+  modelName: "blobDailyStats" | "blockDailyStats" | "transactionDailyStats",
   {
     statsCalculationTestsSuite,
   }: {
@@ -40,6 +41,7 @@ function runDailyStatsFunctionsTests(
       async function checkStats(datePeriod?: RawDatePeriod) {
         await prismaModel.populate(datePeriod);
 
+        // @ts-ignore
         const stats = await prismaModel.findMany({
           orderBy: {
             day: "asc",
@@ -98,7 +100,6 @@ function runDailyStatsFunctionsTests(
           to: "2099-12-31",
         });
       });
-
     });
 
     describe("deleteAll", async () => {
@@ -107,6 +108,7 @@ function runDailyStatsFunctionsTests(
 
         await prismaModel.deleteAll();
 
+        // @ts-ignore
         const dailyStats = await prismaModel.findMany({
           orderBy: { day: "asc" },
         });
@@ -118,7 +120,10 @@ function runDailyStatsFunctionsTests(
 }
 
 function runOverallStatsFunctionsTests(
-  modelName: keyof typeof prisma,
+  modelName:
+    | "blobOverallStats"
+    | "blockOverallStats"
+    | "transactionOverallStats",
   { statsCalculationTestsSuite }: { statsCalculationTestsSuite?: SuiteFactory }
 ) {
   return describe("Overall stats functions", () => {
@@ -131,10 +136,13 @@ function runOverallStatsFunctionsTests(
         it("should populate stats after adding new items correctly", async () => {
           await prismaModel.populate();
           await createNewData();
+
           await prismaModel.populate();
 
           const result = await prismaModel
+            // @ts-ignore
             .findFirst()
+            // @ts-ignore
             .then((res) => (res ? omitDBTimestampFields(res) : res));
 
           expect(result).toMatchSnapshot();
@@ -145,10 +153,13 @@ function runOverallStatsFunctionsTests(
         it("should increment stats given a block range correctly", async () => {
           await prismaModel.populate();
           await createNewData();
+
           await prismaModel.populate();
 
           const result = await prismaModel
+            // @ts-ignore
             .findFirst()
+            // @ts-ignore
             .then((res) => (res ? omitDBTimestampFields(res) : res));
 
           expect(result).toMatchSnapshot();
@@ -160,7 +171,9 @@ function runOverallStatsFunctionsTests(
           await prismaModel.increment({ from: 1000, to: 1001 });
 
           const result = await prismaModel
+            // @ts-ignore
             .findFirst()
+            // @ts-ignore
             .then((res) => (res ? omitDBTimestampFields(res) : res));
 
           expect(result).toMatchSnapshot();
