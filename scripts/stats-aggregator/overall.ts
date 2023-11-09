@@ -35,7 +35,7 @@ const overallCommandOptDefs: commandLineUsage.OptionDefinition[] = [
     name: "to",
     alias: "t",
     typeLabel: "{underline block-id}",
-    description: `Block identifier up to which to aggregate data. It can be a block number, "latest" or "finalized". It defaults to "finalized"`,
+    description: `Block identifier up to which to aggregate data. It can be a block number, "latest" for the last indexed block or "finalized"  for the chain's most recent finalized block. It defaults to "finalized"`,
     defaultValue: "finalized",
     type: String,
   },
