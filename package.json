@@ -23,7 +23,8 @@
     "test:setup": "turbo test:setup",
     "type-check": "turbo type-check",
     "stats": "ts-node scripts/stats-aggregator/index.ts",
-    "update:overall": "ts-node scripts/upsert-overall-stats.ts"
+    "job:daily": "ts-node scripts/jobs/aggregate-yesterdays-daily-stats.ts",
+    "job:overall": "ts-node scripts/jobs/aggregate-overall-stats.ts"
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
