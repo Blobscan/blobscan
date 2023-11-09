@@ -1,24 +1,35 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
+import dayjs from "@blobscan/dayjs";
 import { normalizeDailyDatePeriod, prisma, RawDatePeriod } from "@blobscan/db";
 
-import { ALL_ENTITIES, commonOptionDefs, Entity } from "./common";
+import { ALL_ENTITIES, deleteOptionDef, Entity, helpOptionDef } from "./common";
 
 const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
-  ...commonOptionDefs,
+  deleteOptionDef,
+  helpOptionDef,
+  {
+    name: "entity",
+    alias: "e",
+    typeLabel: "{underline type}",
+    description:
+      "Entity type to aggregate. Valid values are {italic blob}, {italic block} or {italic tx}.",
+    type: String,
+    multiple: true,
+  },
   {
     name: "from",
     alias: "f",
     typeLabel: "{underline date}",
-    description: "Start date in {italic DD-MM-YYYY} format.",
+    description: "Start date in ISO 8601 format.",
     type: String,
   },
   {
     name: "to",
     alias: "t",
     typeLabel: "{underline date}",
-    description: "End date in {italic DD-MM-YYYY} format.",
+    description: "End date in ISO 8601 format.",
     type: String,
   },
 ];
@@ -34,20 +45,20 @@ const dailyCommandUsage = commandLineUsage([
   },
 ]);
 
-async function performDailyStatsOperation(
+export async function performDailyStatsOperation(
   entity: Entity,
   operation: "populate" | "deleteMany",
   rawDatePeriod?: RawDatePeriod
 ) {
   let dailyStatsFn;
+  const datePeriodProvided = rawDatePeriod?.from || rawDatePeriod?.to;
   const { from, to } = normalizeDailyDatePeriod(rawDatePeriod);
-  const hasDatePeriod = from || to;
   const operation_ =
-    operation === "deleteMany" && !hasDatePeriod ? "deleteAll" : operation;
+    operation === "deleteMany" && !datePeriodProvided ? "deleteAll" : operation;
   const operationParam =
     operation_ === "populate"
       ? rawDatePeriod
-      : hasDatePeriod
+      : datePeriodProvided
       ? {
           where: {
             day: {
@@ -70,14 +81,25 @@ async function performDailyStatsOperation(
       break;
   }
 
-  const result = await dailyStatsFn(operationParam).then((res) =>
-    typeof res === "number" ? res : res.count
-  );
+  const result = await dailyStatsFn(operationParam).then((res) => {
+    if (operation_ === "deleteAll") {
+      return "All";
+    }
+
+    return typeof res === "number" ? res : res.count;
+  });
+
+  const formattedFrom = from
+    ? dayjs(from).format("DD-MM-YYYY")
+    : "No specified";
+  const formattedTo = to ? dayjs(to).format("DD-MM-YYYY") : "No specified";
+  const period =
+    operation_ !== "deleteAll"
+      ? `Period: ${formattedFrom} - ${formattedTo}.`
+      : "";
 
   console.log(
-    `Daily ${entity} stats operation \`${operation_}\` executed: ${
-      hasDatePeriod ? ` Period: ${from ?? ""} ${to ? `- ${to}` : ""}.` : ""
-    } Total stats affected: ${result}`
+    `Daily ${entity} stats operation \`${operation_}\` executed: ${period} Total stats affected: ${result}`
   );
 }
 

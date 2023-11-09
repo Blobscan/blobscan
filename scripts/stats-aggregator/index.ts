@@ -3,13 +3,13 @@ import commandLineUsage from "command-line-usage";
 
 import { prisma } from "@blobscan/db";
 
-import { helpOptionDefs } from "./common";
+import { helpOptionDef } from "./common";
 import { daily } from "./daily";
 import { overall } from "./overall";
 
 const mainDefs: commandLineUsage.OptionDefinition[] = [
   { name: "command", defaultOption: true },
-  helpOptionDefs,
+  helpOptionDef,
 ];
 
 const mainUsage = commandLineUsage([
@@ -27,7 +27,7 @@ const mainUsage = commandLineUsage([
   },
   {
     header: "Options",
-    optionList: [helpOptionDefs],
+    optionList: [helpOptionDef],
   },
 ]);
 
@@ -69,7 +69,7 @@ async function main() {
 main()
   .then(() => process.exit(0))
   .catch((err) => {
-    console.error(`An error occurred: ${err}`);
+    console.error(`Failed to run stats aggregator: ${err}`);
     return process.exit(1);
   })
   .finally(() => prisma.$disconnect());

@@ -3,7 +3,10 @@ import commandLineUsage from "command-line-usage";
 
 import { BlockNumberRange, prisma } from "@blobscan/db";
 
-import { ALL_ENTITIES, commonOptionDefs, Entity } from "./common";
+import { deleteOptionDef, helpOptionDef } from "./common";
+
+const BEACON_NODE_ENDPOINT = process.env.BEACON_NODE_ENDPOINT;
+const DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE = 1_000_000;
 
 type BeaconFinalizedBlockResponse = {
   data: {
@@ -23,32 +26,25 @@ type Block = {
   slot: number;
 };
 
-type OverallOperation = "deleteMany" | "increment" | "populate";
-
-const UNPROCESSED_BLOCKS_BATCH_SIZE = 1_000_000;
-const BEACON_NODE_ENDPOINT = process.env.BEACON_NODE_ENDPOINT;
+type BlockId = number | "latest" | "finalized";
 
 const overallCommandOptDefs: commandLineUsage.OptionDefinition[] = [
-  ...commonOptionDefs,
-  {
-    name: "full",
-    alias: "f",
-    description:
-      "Performs a full aggregation of all entities, ignoring incremental updates",
-    type: Boolean,
-  },
-  {
-    name: "from",
-    alias: "fr",
-    description:
-      "Block number from which to start aggregating data. If not provided it defaults to the last one processed",
-  },
+  deleteOptionDef,
+  helpOptionDef,
   {
     name: "to",
     alias: "t",
-    typeLabel: "{underline} block number",
-    description:
-      "Block number up to which start aggregating data. If not provided it defaults to latest finalized block in the network",
+    typeLabel: "{underline block-id}",
+    description: `Block identifier up to which to aggregate data. It can be a block number, "latest" or "finalized". It defaults to "finalized"`,
+    defaultValue: "finalized",
+    type: String,
+  },
+  {
+    name: "batchSize",
+    alias: "s",
+    typeLabel: "{underline size}",
+    description: `Number of blocks to process in a single batch. It defaults to ${DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE}`,
+    defaultValue: DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE,
     type: Number,
   },
 ];
@@ -64,35 +60,7 @@ const overallCommandUsage = commandLineUsage([
   },
 ]);
 
-async function performOverallStatsOperation(
-  entity: Entity,
-  operation: OverallOperation,
-  params: unknown[] = []
-) {
-  let overallStatsFn;
-
-  switch (entity) {
-    case "blob":
-      overallStatsFn = prisma.blobOverallStats[operation];
-      break;
-    case "block":
-      overallStatsFn = prisma.blockOverallStats[operation];
-      break;
-    case "tx":
-      overallStatsFn = prisma.transactionOverallStats[operation];
-      break;
-  }
-
-  const result = await overallStatsFn(...params).then((res) =>
-    typeof res === "number" ? res : res.count
-  );
-
-  console.log(
-    `Overall ${entity} stats operation \`${operation}\` executed: Total stats affected: ${result}`
-  );
-}
-
-async function getBlockFromBeacon(id: number | "finalized"): Promise<Block> {
+async function getBlockFromBeacon(id: BlockId): Promise<Block> {
   let response: Response;
 
   try {
@@ -120,101 +88,135 @@ async function getBlockFromBeacon(id: number | "finalized"): Promise<Block> {
   };
 }
 
-async function incrementOverallStats() {
-  if (!BEACON_NODE_ENDPOINT) {
+export async function deleteOverallStats() {
+  await prisma.$transaction([
+    prisma.blobOverallStats.deleteMany(),
+    prisma.blockOverallStats.deleteMany(),
+    prisma.transactionOverallStats.deleteMany(),
+    prisma.blockchainSyncState.upsert({
+      create: {
+        lastFinalizedBlock: 0,
+        lastSlot: 0,
+      },
+      update: {
+        lastFinalizedBlock: 0,
+      },
+      where: {
+        id: 1,
+      },
+    }),
+  ]);
+
+  console.log("Overall stats delete operation executed: All stats deleted.");
+}
+
+export async function incrementOverallStats({
+  targetBlockId,
+  batchSize = DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE,
+}: {
+  targetBlockId: BlockId;
+  batchSize?: number;
+}) {
+  if (!!BEACON_NODE_ENDPOINT && targetBlockId === "finalized") {
     throw new Error(
       "Couldn't increment overall stats: BEACON_NODE_ENDPOINT not defined"
     );
   }
 
-  const [lastFinalizedBlock, latestIndexedBlock] = await Promise.all([
-    prisma.blockchainSyncState
-      .findFirst()
-      .then((state) => state?.lastFinalizedBlock ?? 0),
-    prisma.block.findLatest(),
-  ]);
+  const [latestProcessedFinalizedBlock, latestIndexedBlock] = await Promise.all(
+    [
+      prisma.blockchainSyncState
+        .findFirst()
+        .then((state) => state?.lastFinalizedBlock ?? 0),
+      prisma.block.findLatest().then((b) => b?.number),
+    ]
+  );
 
   // If we haven't indexed any blocks yet, don't do anything
   if (!latestIndexedBlock) {
-    console.log("Skipping as there are no blocks indexed yet");
+    console.log(
+      "Skipping stats aggregation as there are no blocks indexed yet"
+    );
     return;
   }
 
-  const { number: currFinalizedBlock } = await getBlockFromBeacon("finalized");
+  let toBlockNumber: number;
+
+  if (typeof targetBlockId === "number" || !isNaN(Number(targetBlockId))) {
+    toBlockNumber = Number(targetBlockId);
+  } else if (targetBlockId === "finalized") {
+    toBlockNumber = (await getBlockFromBeacon("finalized")).number;
+  } else {
+    toBlockNumber = latestIndexedBlock;
+  }
+
+  const fromBlockNumber = latestProcessedFinalizedBlock + 1;
 
   // Process only finalized blocks that were indexed
-  const availableFinalizedBlock = Math.min(
-    latestIndexedBlock.number,
-    currFinalizedBlock
-  );
+  if (toBlockNumber > latestIndexedBlock) {
+    toBlockNumber = latestIndexedBlock;
+  }
 
-  if (lastFinalizedBlock >= availableFinalizedBlock) {
-    console.log("Skipping as there are no new finalized blocks");
+  if (fromBlockNumber > toBlockNumber) {
+    console.log(
+      `Skipping stats aggregation as there are no new finalized blocks (Latest processed finalized block: ${latestProcessedFinalizedBlock})`
+    );
 
     return;
   }
 
-  const unprocessedBlocks = availableFinalizedBlock - lastFinalizedBlock + 1;
-  const batches = Math.ceil(unprocessedBlocks / UNPROCESSED_BLOCKS_BATCH_SIZE);
+  const unprocessedBlocks = toBlockNumber - fromBlockNumber + 1;
+  const batches = Math.ceil(unprocessedBlocks / batchSize);
 
   for (let i = 0; i < batches; i++) {
-    const from = lastFinalizedBlock + i * UNPROCESSED_BLOCKS_BATCH_SIZE;
-    const to = Math.min(
-      from + UNPROCESSED_BLOCKS_BATCH_SIZE - 1,
-      availableFinalizedBlock
-    );
-    const blockRange: BlockNumberRange = { from, to };
+    const batchFrom = fromBlockNumber + i * batchSize;
+    const batchTo = Math.min(batchFrom + batchSize - 1, toBlockNumber);
+    const blockRange: BlockNumberRange = { from: batchFrom, to: batchTo };
 
-    const [blockStatsRes, txStatsRes, blobStatsRes, syncStateRes] =
-      await prisma.$transaction([
-        prisma.blockOverallStats.increment(blockRange),
-        prisma.transactionOverallStats.increment(blockRange),
-        prisma.blobOverallStats.increment(blockRange),
-        prisma.blockchainSyncState.upsert({
-          create: {
-            lastSlot: 0,
-            lastFinalizedBlock: to,
-          },
-          update: {
-            lastFinalizedBlock: to,
-          },
-          where: {
-            id: 1,
-          },
-        }),
-      ]);
+    await prisma.$transaction([
+      prisma.blockOverallStats.increment(blockRange),
+      prisma.transactionOverallStats.increment(blockRange),
+      prisma.blobOverallStats.increment(blockRange),
+      prisma.blockchainSyncState.upsert({
+        create: {
+          lastSlot: 0,
+          lastFinalizedBlock: batchTo,
+        },
+        update: {
+          lastFinalizedBlock: batchTo,
+        },
+        where: {
+          id: 1,
+        },
+      }),
+    ]);
 
-    console.log("=====================================");
-    console.log(`Overall stats aggregated from block ${from} to ${to}`);
-    console.log(
-      `Overall blob stats operation executed: upserted (rows upserted: ${blobStatsRes})`
-    );
-    console.log(
-      `Block overall stats upserted (rows upserted: ${blockStatsRes})`
-    );
-    console.log(`Tx overall stats upserted (rows upserted: ${txStatsRes})`);
-    console.log(
-      `Sync state upserted. New finalized block: ${syncStateRes.lastFinalizedBlock}`
-    );
+    if (batches > 1) {
+      console.log(
+        `Batch ${
+          i + 1
+        }/${batches} processed. Data aggregated from block ${batchFrom} to ${batchTo}`
+      );
+    }
   }
+
+  console.log(
+    `Overall stats increment operation executed: Data aggregated from block ${fromBlockNumber} to ${toBlockNumber}.`
+  );
 }
 
 export async function overall(argv?: string[]) {
   const {
-    full,
-    from,
+    batchSize,
     to,
-    entity: entities,
     delete: delete_,
     help,
   } = commandLineArgs(overallCommandOptDefs, {
     argv,
   }) as {
-    full: boolean;
-    from: Number;
-    to: Number;
+    batchSize: number;
+    to?: string;
     delete?: boolean;
-    entity?: Entity[];
     help: boolean;
   };
 
@@ -224,16 +226,21 @@ export async function overall(argv?: string[]) {
     return;
   }
 
-  const selectedEntities = entities?.length ? entities : ALL_ENTITIES;
-  let operation: OverallOperation = "increment";
-
-  if (full) {
-    operation = "populate";
-  } else if (delete_) {
-    operation = "deleteMany";
+  if (delete_) {
+    return deleteOverallStats();
   }
 
-  return Promise.all(
-    selectedEntities.map((e) => performOverallStatsOperation(e, operation))
-  );
+  let targetBlockId: BlockId;
+
+  if (!isNaN(Number(to))) {
+    targetBlockId = Number(to);
+  } else if (to === "latest" || to === "finalized") {
+    targetBlockId = to;
+  } else {
+    throw new Error(
+      `Invalid \`to\` flag value: Expected a block number, "latest" or "finalized" but got: ${to}`
+    );
+  }
+
+  return incrementOverallStats({ targetBlockId, batchSize });
 }
