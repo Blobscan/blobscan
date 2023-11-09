@@ -19,15 +19,15 @@
     "@blobscan/db": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
-    "@trpc/server": "^10.23.0",
+    "@trpc/server": "^10.43.2",
     "jsonwebtoken": "^9.0.0",
-    "superjson": "1.9.1"
+    "superjson": "1.9.1",
+    "trpc-openapi": "^1.2.0"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
     "@blobscan/test": "^0.0.1",
-    "@types/jsonwebtoken": "^9.0.2",
-    "trpc-openapi": "^1.1.2"
+    "@types/jsonwebtoken": "^9.0.2"
   },
   "eslintConfig": {
     "root": true,
