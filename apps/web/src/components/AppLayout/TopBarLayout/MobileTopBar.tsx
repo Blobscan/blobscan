@@ -9,7 +9,7 @@ export const MobileNav = function () {
       <div className="z-10 sm:hidden">
         <TopBarSurface>
           <div className="flex w-full justify-between">
-            <Logo className="h-8 w-32 md:h-9 md:w-36" />
+            <Logo className="h-6 w-40 md:h-9 md:w-36" />
             <ThemeModeButton />
           </div>
         </TopBarSurface>

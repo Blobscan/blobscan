@@ -10,8 +10,8 @@ export const DesktopNav: React.FC = () => {
     <div>
       <TopBarSurface>
         <div className="flex h-full justify-between">
-          <div className="flex grow  items-end gap-12">
-            <Logo className="h-8 w-32 sm:h-9 sm:w-36" />
+          <div className="flex grow items-end gap-12">
+            <Logo className="h-6 w-32 sm:h-6 sm:w-36" />
           </div>
           <div className="flex grow-[3] justify-end gap-5">
             <div className="self-end">
