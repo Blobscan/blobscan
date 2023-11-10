@@ -117,7 +117,7 @@ const Home: NextPage = () => {
         </div>
       </div>
       <div className="flex w-full flex-col gap-8 sm:gap-16">
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
+        <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
@@ -128,7 +128,7 @@ const Home: NextPage = () => {
               opts={{ toolbox: { show: false } }}
             />
           </div>
-          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
+          <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
             <div className="col-span-2">
               <MetricCard
                 name="Total Tx Fees Saved"
