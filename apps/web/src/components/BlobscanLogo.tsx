@@ -8,7 +8,7 @@ export const Logo: React.FC<{ className?: string }> = ({ className = "" }) => {
   const { resolvedTheme } = useTheme();
   const isMounted = useIsMounted();
   const logoSrc =
-    resolvedTheme === "dark" ? "/logo-dark.png" : "/logo-light.png";
+    resolvedTheme === "dark" ? "/logo-dark.svg" : "/logo-light.svg";
 
   if (!isMounted) {
     return <div className={className} />;
