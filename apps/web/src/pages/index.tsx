@@ -105,7 +105,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
-        <Logo className="h-16 w-64 md:h-20 md:w-80 lg:h-20 lg:w-80" />
+        <Logo className="w-64 md:w-80" />
         <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
           <SearchInput />
           <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
