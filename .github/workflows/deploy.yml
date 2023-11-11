@@ -1,14 +1,19 @@
 name: Deployment
 
 on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
   push:
-    branches: ["master", "next"]
+    branches:
+      - next
+      - master
 
 jobs:
   deploy:
     name: Run remote deploy script
     runs-on: ubuntu-latest
-    needs: CI
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
