@@ -134,7 +134,7 @@ jobs:
     environment:
       name: staging
       url: https://staging.blobscan.com
-    needs: build-lint-test
+    needs: docker
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
@@ -151,7 +151,7 @@ jobs:
     environment:
       name: production
       url: https://blobscan.com
-    needs: build-lint-test
+    needs: docker
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
