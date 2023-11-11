@@ -89,7 +89,9 @@ jobs:
     if: github.ref_name == 'next'
     name: Deploy blobscan api (staging)
     runs-on: ubuntu-latest
-    environment: staging
+    environment:
+      name: staging
+      url: https://staging.blobscan.com
     needs: build-lint-test
     steps:
       - uses: appleboy/ssh-action@v0.0.7
@@ -104,7 +106,9 @@ jobs:
     if: github.ref_name == 'master'
     name: Deploy blobscan api (prod)
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: production
+      url: https://blobscan.com
     needs: build-lint-test
     steps:
       - uses: appleboy/ssh-action@v0.0.7
