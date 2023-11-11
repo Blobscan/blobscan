@@ -6,10 +6,9 @@ on:
 
 jobs:
   deploy:
-    if: github.ref_name == 'next'
-    name: Run remote deploy script (staging)
+    name: Run remote deploy script
     runs-on: ubuntu-latest
-    needs: build
+    needs: CI
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
