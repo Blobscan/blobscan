@@ -3,7 +3,7 @@ version: "3.7"
 
 services:
   api:
-    image: blossomlabs/blobscan:${BLOBSCAN_STAG}
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
     command: api
     restart: always
     ports:
