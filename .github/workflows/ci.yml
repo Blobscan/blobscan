@@ -1,4 +1,4 @@
-name: CI
+name: Continuous Integration (build, docker, deploy)
 
 on:
   pull_request:
@@ -85,6 +85,48 @@ jobs:
           POSTGRES_STORAGE_ENABLED: true
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
 
+  docker:
+    runs-on: ubuntu-latest
+    needs: build-lint-test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: blossomlabs/blobscan
+          tags: |
+            type=ref,event=branch
+            type=raw,value=latest,enable=${{ github.ref_name == 'next' }}
+            type=raw,value=stable,enable=${{ github.ref_name == 'master' }}
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set Github ENV variables
+        shell: bash
+        run: |
+          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
+          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+
   deploy_staging:
     if: github.ref_name == 'next'
     name: Deploy blobscan api (staging)
@@ -118,3 +160,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: ./deploy-blobscan.sh
+
