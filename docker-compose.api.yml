@@ -1,0 +1,18 @@
+---
+version: "3.7"
+
+services:
+  api:
+    image: blossomlabs/blobscan:${BLOBSCAN_STAG}
+    command: api
+    restart: always
+    ports:
+      - ${EXTERNAL_API_PORT}:3001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    env_file:
+      - ".env"
