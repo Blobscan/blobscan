@@ -1,3 +1,4 @@
+import type { BlobStorage } from "@blobscan/db";
 import { z, booleanSchema, createEnv, presetEnvOptions } from "@blobscan/zod";
 
 export const env = createEnv({
@@ -13,6 +14,7 @@ export const env = createEnv({
       GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("true"),
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
+      MAIN_STORAGE: z.enum(["POSTGRES", "SWARM", "GOOGLE"]).optional(),
     },
 
     ...presetEnvOptions,
@@ -35,5 +37,24 @@ export const env = createEnv({
     }
   },
 });
+
+const enabledStorages: BlobStorage[] = [];
+
+if (env.GOOGLE_STORAGE_ENABLED) {
+  enabledStorages.push("GOOGLE");
+}
+
+if (env.POSTGRES_STORAGE_ENABLED) {
+  enabledStorages.push("POSTGRES");
+}
+
+if (env.SWARM_STORAGE_ENABLED) {
+  enabledStorages.push("SWARM");
+}
+
+export const MAIN_STORAGE =
+  env.MAIN_STORAGE ??
+  // Fallback to one of the enabled storages if none was defined as the main one
+  enabledStorages[0];
 
 export type Environment = typeof env;
