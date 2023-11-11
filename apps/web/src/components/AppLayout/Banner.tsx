@@ -44,7 +44,7 @@ export default function Banner() {
           >
             <circle cx={1} cy={1} r={1} />
           </svg>
-          Support our public good – help keep blob data accessible!
+          If you like what we are doing spread the word and support us.
         </p>
         <a
           href="https://vote.optimism.io/retropgf/3/application/0xaa5c01558feace0ee3dde7cca66d30b81b6f097f26405aa0a4e6fdc1885adf5b"
