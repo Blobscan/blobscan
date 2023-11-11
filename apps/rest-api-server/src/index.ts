@@ -4,7 +4,13 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
-import { appRouter, createTRPCContext, metricsHandler } from "@blobscan/api";
+import {
+  appRouter,
+  createTRPCContext,
+  metricsHandler,
+  setUpBlobReplicationWorkers,
+  tearDownBlobReplicationWorkers,
+} from "@blobscan/api";
 import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
@@ -15,6 +21,8 @@ import { openApiDocument } from "./openapi";
 collectDefaultMetrics();
 
 const app = express();
+
+setUpBlobReplicationWorkers();
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
@@ -44,4 +52,19 @@ app.listen(env.BLOBSCAN_API_PORT, () => {
   logger.info(
     `REST API server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`
   );
+});
+
+// Listen for TERM signal .e.g. kill
+process.on("SIGTERM", () => {
+  tearDownBlobReplicationWorkers();
+});
+
+// Listen for INT signal e.g. Ctrl-C
+process.on("SIGINT", () => {
+  tearDownBlobReplicationWorkers();
+});
+
+// Listen for `exit` event
+process.on("exit", () => {
+  tearDownBlobReplicationWorkers();
 });

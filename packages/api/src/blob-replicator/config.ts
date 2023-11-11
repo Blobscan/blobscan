@@ -1,4 +1,4 @@
-import type { QueueOptions } from "bullmq";
+import type { QueueOptions, WorkerOptions } from "bullmq";
 
 import type { BlobStorage } from "@blobscan/db";
 
@@ -18,4 +18,8 @@ export const DEFAULT_OPTIONS: QueueOptions = {
     attempts: 3,
     removeOnComplete: true,
   },
+};
+
+export const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
+  useWorkerThreads: true,
 };
