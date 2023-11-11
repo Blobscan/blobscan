@@ -87,7 +87,7 @@ jobs:
 
   deploy_staging:
     if: github.ref_name == 'next'
-    name: Run remote deploy script (staging)
+    name: Deploy blobscan api (staging)
     runs-on: ubuntu-latest
     environment: staging
     needs: build-lint-test
@@ -102,7 +102,7 @@ jobs:
 
   deploy_prod:
     if: github.ref_name == 'master'
-    name: Run remote deploy script (prod)
+    name: Deploy blobscan api (prod)
     runs-on: ubuntu-latest
     environment: production
     needs: build-lint-test
