@@ -3,19 +3,16 @@ version: "3.7"
 
 services:
   web:
-    image: blossomlabs/blobscan:local
-    build: .
+    image: blossomlabs/blobscan:stable
     command: web
     restart: always
     ports:
       - ${EXTERNAL_WEB_PORT}:3000
-      - 5556:5556  # Prisma studio
     env_file:
       - ".env"
 
   api:
-    image: blossomlabs/blobscan:local
-    build: .
+    image: blossomlabs/blobscan:stable
     command: api
     restart: always
     ports:
@@ -28,8 +25,6 @@ services:
       start_period: 5s
     env_file:
       - ".env"
-    depends_on:
-      - postgres
 
   indexer:
     image: blossomlabs/blobscan-indexer:master
@@ -40,35 +35,3 @@ services:
     depends_on:
       api:
         condition: service_healthy
-
-  storage:
-    image: fsouza/fake-gcs-server
-    ports:
-      - "4443:4443"
-    command: ["-scheme", "http", "-port", "4443", "-data", "/data"]
-    volumes:
-      - storage_data:/storage
-      - type: bind
-        source: ./packages/test/src/fixtures/storage
-        target: /data
-
-  postgres:
-    image: postgres:14
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=blobscan
-      - POSTGRES_DB=blobscan_dev
-      - POSTGRES_PASSWORD=s3cr3t
-
-  collector:
-    image: otel/opentelemetry-collector:0.23.0
-    command: "--config /etc/otel-config.yaml"
-    volumes:
-      - ./otel-config.yaml:/etc/otel-config.yaml
-
-volumes:
-  postgres-data:
-  storage_data:
