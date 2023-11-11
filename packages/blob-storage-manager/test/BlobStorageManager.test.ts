@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import type { BlobStorage } from "@blobscan/db";
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
 import { BlobStorageManager } from "../src/BlobStorageManager";
@@ -124,6 +125,28 @@ describe("BlobStorageManager", () => {
 
       expect(result.references).matchSnapshot();
       expect(result.errors).toMatchSnapshot();
+    });
+
+    it("should store a blob in a specific storage if provided", async () => {
+      const blob = { data: BLOB_DATA, versionedHash: BLOB_HASH };
+      const selectedStorage: BlobStorage = "POSTGRES";
+
+      const result = await blobStorageManager.storeBlob(blob, {
+        storages: [selectedStorage],
+      });
+
+      const blobReference = result.references[0];
+
+      expect(
+        result.references.length,
+        "Returned blob storage refs length mismatch"
+      ).toBe(1);
+      expect(blobReference?.reference, "Blob storage ref mismatch").toBe(
+        BLOB_HASH
+      );
+      expect(blobReference?.storage, "Blob storage mismatch").toBe(
+        selectedStorage
+      );
     });
 
     it("should return errors for failed uploads", async () => {

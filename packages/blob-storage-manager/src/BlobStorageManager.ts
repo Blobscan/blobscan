@@ -36,6 +36,10 @@ export type StorageError<SName extends BlobStorageNames = BlobStorageNames> = {
   error: Error;
 };
 
+export type StoreOptions = {
+  storages: BlobStorageNames[];
+};
+
 function calculateBlobBytes(blob: string): number {
   return blob.slice(2).length / 2;
 }
@@ -58,6 +62,10 @@ export class BlobStorageManager<
 
   getStorage<SName extends keyof T>(name: SName): T[SName] {
     return this.#blobStorages[name];
+  }
+
+  hasStorage<SName extends keyof T>(name: SName): boolean {
+    return !!this.#blobStorages[name];
   }
 
   async getBlob(
@@ -148,7 +156,10 @@ export class BlobStorageManager<
     );
   }
 
-  async storeBlob({ data, versionedHash }: Blob): Promise<{
+  async storeBlob(
+    { data, versionedHash }: Blob,
+    opts?: StoreOptions
+  ): Promise<{
     references: BlobReference<SNames>[];
     errors: StorageError<SNames>[];
   }> {
@@ -160,11 +171,18 @@ export class BlobStorageManager<
         },
       },
       async (span) => {
-        const availableStorages = Object.entries(this.#blobStorages).filter(
-          ([, storage]) => storage
+        // If no storages are provided, use all the storages
+        const selectedStorageNames = opts?.storages.length
+          ? opts.storages
+          : (Object.keys(this.#blobStorages) as SNames[]);
+
+        const selectedStorages = Object.entries(this.#blobStorages).filter(
+          ([name, storage]) =>
+            storage && selectedStorageNames.includes(name as SNames)
         ) as [SNames, BlobStorage][];
+
         const results = await Promise.allSettled(
-          availableStorages.map(([name, storage]) => {
+          selectedStorages.map(([name, storage]) => {
             return tracer.startActiveSpan(
               "blob_storage_manager:storage",
               {
@@ -206,7 +224,7 @@ export class BlobStorageManager<
           .map((res) => res.value);
         const errors = results.reduce<StorageError<SNames>[]>(
           (prevFailedUploads, res, i) => {
-            const storage = availableStorages[i] as [SNames, BlobStorage];
+            const storage = selectedStorages[i] as [SNames, BlobStorage];
 
             if (res.status === "rejected") {
               const storageError = {
