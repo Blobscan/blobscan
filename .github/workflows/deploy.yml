@@ -5,15 +5,27 @@ on:
     workflows: ["CI"]
     types:
       - completed
-  push:
-    branches:
-      - next
-      - master
 
 jobs:
-  deploy:
-    name: Run remote deploy script
+  deploy_staging:
+    if: github.ref_name == 'next'
+    name: Run remote deploy script (staging)
     runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh
+
+  deploy_prod:
+    if: github.ref_name == 'master'
+    name: Run remote deploy script (prod)
+    runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
