@@ -424,6 +424,9 @@ importers:
       '@blobscan/db':
         specifier: ^0.0.1
         version: link:../db
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../open-telemetry

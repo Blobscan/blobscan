@@ -3,12 +3,14 @@ import path from "path";
 
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/db";
+import { logger } from "@blobscan/logger";
 
 import {
   DEFAULT_WORKER_OPTIONS,
   STORAGE_REFS_COLLECTOR_QUEUE,
   STORAGE_QUEUES,
 } from "./config";
+import type { BlobReplicationJobData } from "./types";
 import { BLOB_STORAGES } from "./utils";
 
 const WORKERS_DIR = "worker-processors";
@@ -27,7 +29,21 @@ const STORAGE_REFS_COLLECTOR_WORKER_FILE = path.join(
 
 let blobReplicationFlowProducer: FlowProducer | undefined;
 let storageRefsCollectorWorker: Worker | undefined;
-let storageWorkers: Record<BlobStorage, Worker>;
+let storageWorkers:
+  | Record<BlobStorage, Worker<BlobReplicationJobData>>
+  | undefined;
+
+function createBlobReplicationFlowProducer() {
+  const blobReplicationFlowProducer = new FlowProducer({
+    connection: DEFAULT_WORKER_OPTIONS.connection,
+  });
+
+  blobReplicationFlowProducer.on("error", (err) => {
+    logger.error(`Blob replication flow producer error: ${err}`);
+  });
+
+  return blobReplicationFlowProducer;
+}
 
 function createStorageRefsCollectorWorker() {
   storageRefsCollectorWorker = new Worker(
@@ -37,32 +53,36 @@ function createStorageRefsCollectorWorker() {
   );
 
   storageRefsCollectorWorker.on("completed", (job) => {
-    console.log(
-      `Completed replication job ${job.id} in ${STORAGE_REFS_COLLECTOR_QUEUE}`
+    logger.debug(
+      `Storage refs collector job ${job.id} completed. Blob replicated successfully`
     );
+  });
+
+  storageRefsCollectorWorker.on("failed", (job, err) => {
+    logger.error(`Storage refs collector job ${job?.id} failed: ${err}`);
   });
 
   return storageRefsCollectorWorker;
 }
 
 function createBlobStorageWorkers(storages: BlobStorage[]) {
-  return storages.reduce<Record<BlobStorage, Worker>>(
+  return storages.reduce<Record<BlobStorage, Worker<BlobReplicationJobData>>>(
     (workers, storageName) => {
-      const storageWorker = new Worker(
+      const storageWorker = new Worker<BlobReplicationJobData>(
         STORAGE_QUEUES[storageName],
         STORAGE_WORKER_FILES[storageName],
         DEFAULT_WORKER_OPTIONS
       );
 
       storageWorker.on("completed", (job) => {
-        console.log(
-          `Completed job ${job.id} in ${STORAGE_QUEUES[storageName]}`
+        logger.debug(
+          `${STORAGE_QUEUES[storageName]} storage blob replication job ${job.id} completed`
         );
       });
 
       storageWorker.on("failed", (job, err) => {
-        console.error(
-          `Failed job ${job?.id} in ${STORAGE_QUEUES[storageName]}: ${err}`
+        logger.error(
+          `${STORAGE_QUEUES[storageName]} storage blob replication job ${job?.id} failed: ${err}`
         );
       });
 
@@ -70,7 +90,7 @@ function createBlobStorageWorkers(storages: BlobStorage[]) {
 
       return workers;
     },
-    {} as Record<BlobStorage, Worker>
+    {} as Record<BlobStorage, Worker<BlobReplicationJobData>>
   );
 }
 
@@ -80,10 +100,21 @@ async function setUpBlobReplicationWorkers() {
   const availableStorages = BLOB_STORAGES.filter(blobStorageManager.hasStorage);
 
   if (availableStorages.length > 1) {
-    blobReplicationFlowProducer = new FlowProducer();
-
+    blobReplicationFlowProducer = createBlobReplicationFlowProducer();
     storageWorkers = createBlobStorageWorkers(availableStorages);
     storageRefsCollectorWorker = createStorageRefsCollectorWorker();
+
+    logger.debug(
+      `Blob replication workers set up successfully for the following storages: ${availableStorages.join(
+        ", "
+      )}`
+    );
+  } else {
+    const reason = availableStorages.length
+      ? `only one storage available: ${availableStorages[0]}`
+      : "no storage available";
+
+    logger.debug(`Blob replication workers not set up: ${reason}`);
   }
 }
 
@@ -98,11 +129,19 @@ function tearDownBlobReplicationWorkers() {
     teardownOps.push(storageRefsCollectorWorker.close());
   }
 
-  Object.values(storageWorkers).forEach((worker) =>
-    teardownOps.push(worker.close())
-  );
+  if (storageWorkers) {
+    Object.values(storageWorkers).forEach((worker) =>
+      teardownOps.push(worker.close())
+    );
+  }
 
-  return Promise.all(teardownOps);
+  return Promise.all(teardownOps)
+    .then(() => {
+      logger.debug(`Blob replication workers shut down successfully`);
+    })
+    .catch((err) => {
+      logger.error(`Blob replication workers shut down failed: ${err}`);
+    });
 }
 
 export {

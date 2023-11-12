@@ -47,7 +47,7 @@ async function createBlobReplicationJob(
 
 export function isBlobReplicationAvailable() {
   return (
-    !!Object.keys(storageWorkers).length ||
+    !!Object.keys(storageWorkers ?? {}).length ||
     !!storageRefsCollectorWorker ||
     !!blobReplicationFlowProducer
   );

@@ -46,23 +46,26 @@ app.use(
 app.use("/", swaggerUi.serve);
 app.get("/", swaggerUi.setup(openApiDocument));
 
-app.listen(env.BLOBSCAN_API_PORT, () => {
+const server = app.listen(env.BLOBSCAN_API_PORT, () => {
   logger.info(
     `REST API server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`
   );
 });
 
-// Listen for TERM signal .e.g. kill
-process.on("SIGTERM", () => {
+function gracefulShutdown(signal: string) {
+  logger.debug(`Received ${signal}. Shutting down...`);
+
   tearDownBlobReplicationWorkers();
-});
+
+  server.close(() => {
+    logger.debug("REST API server shut down successfully");
+  });
+}
+
+// Listen for TERM signal .e.g. kill
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 // Listen for INT signal e.g. Ctrl-C
 process.on("SIGINT", () => {
-  tearDownBlobReplicationWorkers();
-});
-
-// Listen for `exit` event
-process.on("exit", () => {
-  tearDownBlobReplicationWorkers();
+  gracefulShutdown("SIGINT");
 });
