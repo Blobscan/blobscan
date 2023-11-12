@@ -6,7 +6,7 @@ import type { BlobStorage } from "@blobscan/db";
 
 import {
   DEFAULT_WORKER_OPTIONS,
-  FLOW_PRODUCER_QUEUE,
+  STORAGE_REFS_COLLECTOR_QUEUE,
   STORAGE_QUEUES,
 } from "./config";
 import { BLOB_STORAGES } from "./utils";
@@ -19,30 +19,30 @@ const STORAGE_WORKER_FILES: Record<BlobStorage, string> = {
   SWARM: path.join(__dirname, WORKERS_DIR, "swarm.js"),
   POSTGRES: path.join(__dirname, WORKERS_DIR, "postgres.js"),
 };
-const PROPAGATOR_WORKER_FILE = path.join(
+const STORAGE_REFS_COLLECTOR_WORKER_FILE = path.join(
   __dirname,
   WORKERS_DIR,
-  "replicator.js"
+  "storage-refs-collector.js"
 );
 
 let blobReplicationFlowProducer: FlowProducer | undefined;
-let replicatorWorker: Worker | undefined;
+let storageRefsCollectorWorker: Worker | undefined;
 let storageWorkers: Record<BlobStorage, Worker>;
 
-function createReplicatorWorker() {
-  replicatorWorker = new Worker(
-    FLOW_PRODUCER_QUEUE,
-    PROPAGATOR_WORKER_FILE,
+function createStorageRefsCollectorWorker() {
+  storageRefsCollectorWorker = new Worker(
+    STORAGE_REFS_COLLECTOR_QUEUE,
+    STORAGE_REFS_COLLECTOR_WORKER_FILE,
     DEFAULT_WORKER_OPTIONS
   );
 
-  replicatorWorker.on("completed", (job) => {
+  storageRefsCollectorWorker.on("completed", (job) => {
     console.log(
-      `Completed replication job ${job.id} in ${FLOW_PRODUCER_QUEUE}`
+      `Completed replication job ${job.id} in ${STORAGE_REFS_COLLECTOR_QUEUE}`
     );
   });
 
-  return replicatorWorker;
+  return storageRefsCollectorWorker;
 }
 
 function createBlobStorageWorkers(storages: BlobStorage[]) {
@@ -83,7 +83,7 @@ async function setUpBlobReplicationWorkers() {
     blobReplicationFlowProducer = new FlowProducer();
 
     storageWorkers = createBlobStorageWorkers(availableStorages);
-    replicatorWorker = createReplicatorWorker();
+    storageRefsCollectorWorker = createStorageRefsCollectorWorker();
   }
 }
 
@@ -94,8 +94,8 @@ function tearDownBlobReplicationWorkers() {
     teardownOps.push(blobReplicationFlowProducer.close());
   }
 
-  if (replicatorWorker) {
-    teardownOps.push(replicatorWorker.close());
+  if (storageRefsCollectorWorker) {
+    teardownOps.push(storageRefsCollectorWorker.close());
   }
 
   Object.values(storageWorkers).forEach((worker) =>
@@ -108,7 +108,7 @@ function tearDownBlobReplicationWorkers() {
 export {
   blobReplicationFlowProducer,
   storageWorkers,
-  replicatorWorker,
+  storageRefsCollectorWorker,
   setUpBlobReplicationWorkers,
   tearDownBlobReplicationWorkers,
 };

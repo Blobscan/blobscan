@@ -2,12 +2,12 @@ import type { FlowJob, FlowChildJob } from "bullmq";
 
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 
-import { FLOW_PRODUCER_QUEUE, STORAGE_QUEUES } from "./config";
+import { STORAGE_REFS_COLLECTOR_QUEUE, STORAGE_QUEUES } from "./config";
 import type { BlobReplicationJobData } from "./types";
 import { BLOB_STORAGES } from "./utils";
 import {
   blobReplicationFlowProducer,
-  replicatorWorker,
+  storageRefsCollectorWorker,
   storageWorkers,
 } from "./workers";
 
@@ -32,11 +32,11 @@ async function createBlobReplicationJob(
     };
   });
 
-  const jobId = `${FLOW_PRODUCER_QUEUE}-${versionedHash}`;
+  const jobId = `${STORAGE_REFS_COLLECTOR_QUEUE}-${versionedHash}`;
 
   return {
     name: jobId,
-    queueName: FLOW_PRODUCER_QUEUE,
+    queueName: STORAGE_REFS_COLLECTOR_QUEUE,
     data,
     opts: {
       jobId,
@@ -48,7 +48,7 @@ async function createBlobReplicationJob(
 export function isBlobReplicationAvailable() {
   return (
     !!Object.keys(storageWorkers).length ||
-    !!replicatorWorker ||
+    !!storageRefsCollectorWorker ||
     !!blobReplicationFlowProducer
   );
 }

@@ -8,7 +8,7 @@ export const STORAGE_QUEUES: Record<BlobStorage, string> = {
   POSTGRES: "postgres",
 };
 
-export const FLOW_PRODUCER_QUEUE = "propagator-flow-producer";
+export const STORAGE_REFS_COLLECTOR_QUEUE = "blob-storage-refs-collector";
 
 export const DEFAULT_OPTIONS: QueueOptions = {
   defaultJobOptions: {

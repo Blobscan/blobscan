@@ -12,10 +12,6 @@ export type {
 export * from "@trpc/server/adapters/express";
 export { env as blobStorageManagerEnv } from "@blobscan/blob-storage-manager";
 
-export {
-  setUpBlobReplicationWorkers,
-  tearDownBlobReplicationWorkers,
-} from "./blob-replicator";
 export { env as apiEnv } from "./env";
 export { metricsHandler } from "./instrumentation";
 export type {
