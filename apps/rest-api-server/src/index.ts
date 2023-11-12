@@ -4,13 +4,11 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
+import { appRouter, createTRPCContext, metricsHandler } from "@blobscan/api";
 import {
-  appRouter,
-  createTRPCContext,
-  metricsHandler,
   setUpBlobReplicationWorkers,
   tearDownBlobReplicationWorkers,
-} from "@blobscan/api";
+} from "@blobscan/blob-replicator";
 import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 

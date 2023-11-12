@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/api",
+  "name": "@blobscan/blob-replicator",
   "version": "0.0.1",
   "private": true,
   "main": "./src/index.ts",
@@ -14,21 +14,15 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-replicator": "^0.0.1",
     "@blobscan/blob-storage-manager": "^0.0.1",
-    "@blobscan/dayjs": "^0.0.1",
     "@blobscan/db": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
-    "@trpc/server": "^10.43.2",
-    "jsonwebtoken": "^9.0.0",
-    "superjson": "1.9.1",
-    "trpc-openapi": "^1.2.0"
+    "bullmq": "^4.13.2"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/test": "^0.0.1",
-    "@types/jsonwebtoken": "^9.0.2"
+    "@blobscan/test": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,

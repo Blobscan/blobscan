@@ -11,6 +11,6 @@ export type BlobReplicationSandboxedJob = SandboxedJob<BlobReplicationJobData>;
 
 export type BlobReplicationJob = Job<BlobReplicationJobData>;
 
-export type BlobReplicatorWorker = (
+export type BlobReplicationWorker = (
   job: BlobReplicationSandboxedJob
 ) => Promise<BlobReference>;

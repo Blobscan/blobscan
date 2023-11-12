@@ -1,18 +1,17 @@
 import { Worker, FlowProducer } from "bullmq";
-import type { FlowChildJob, FlowJob } from "bullmq";
 import path from "path";
 
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
-import { BlobStorage } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db";
 
 import {
   DEFAULT_WORKER_OPTIONS,
   FLOW_PRODUCER_QUEUE,
   STORAGE_QUEUES,
 } from "./config";
-import type { BlobReplicationJobData } from "./types";
+import { BLOB_STORAGES } from "./utils";
 
-const WORKERS_DIR = "workers";
+const WORKERS_DIR = "worker-processors";
 
 // Specify the js files instead that will be built along the rest of the source code.
 const STORAGE_WORKER_FILES: Record<BlobStorage, string> = {
@@ -26,9 +25,7 @@ const PROPAGATOR_WORKER_FILE = path.join(
   "replicator.js"
 );
 
-const blobStorages = Object.values(BlobStorage);
-
-let replicatorFlowProducer: FlowProducer | undefined;
+let blobReplicationFlowProducer: FlowProducer | undefined;
 let replicatorWorker: Worker | undefined;
 let storageWorkers: Record<BlobStorage, Worker>;
 
@@ -77,24 +74,24 @@ function createBlobStorageWorkers(storages: BlobStorage[]) {
   );
 }
 
-export async function setUpBlobReplicationWorkers() {
+async function setUpBlobReplicationWorkers() {
   const blobStorageManager = await createOrLoadBlobStorageManager();
 
-  const availableStorages = blobStorages.filter(blobStorageManager.hasStorage);
+  const availableStorages = BLOB_STORAGES.filter(blobStorageManager.hasStorage);
 
   if (availableStorages.length > 1) {
-    replicatorFlowProducer = new FlowProducer();
+    blobReplicationFlowProducer = new FlowProducer();
 
     storageWorkers = createBlobStorageWorkers(availableStorages);
     replicatorWorker = createReplicatorWorker();
   }
 }
 
-export function tearDownBlobReplicationWorkers() {
+function tearDownBlobReplicationWorkers() {
   const teardownOps = [];
 
-  if (replicatorFlowProducer) {
-    teardownOps.push(replicatorFlowProducer.close());
+  if (blobReplicationFlowProducer) {
+    teardownOps.push(blobReplicationFlowProducer.close());
   }
 
   if (replicatorWorker) {
@@ -108,68 +105,10 @@ export function tearDownBlobReplicationWorkers() {
   return Promise.all(teardownOps);
 }
 
-async function createBlobReplicationJob(
-  data: BlobReplicationJobData
-): Promise<FlowJob> {
-  const blobStorageManager = await createOrLoadBlobStorageManager();
-  const versionedHash = data.versionedHash;
-
-  const storageJobs: FlowChildJob[] = blobStorages
-    .filter(blobStorageManager.hasStorage)
-    .map<FlowChildJob>((storage) => {
-      const jobId = `${storage}-${versionedHash}`;
-
-      return {
-        name: jobId,
-        queueName: STORAGE_QUEUES[storage],
-        data,
-        opts: {
-          jobId,
-        },
-      };
-    });
-
-  const jobId = `${FLOW_PRODUCER_QUEUE}-${versionedHash}`;
-
-  return {
-    name: jobId,
-    queueName: FLOW_PRODUCER_QUEUE,
-    data,
-    opts: {
-      jobId,
-    },
-    children: storageJobs,
-  };
-}
-
-export function isReplicationAvailable() {
-  return (
-    !!Object.keys(storageWorkers).length ||
-    !!replicatorWorker ||
-    !!replicatorFlowProducer
-  );
-}
-
-export async function queueBlobForReplication(data: BlobReplicationJobData) {
-  if (!isReplicationAvailable()) {
-    throw new Error("Cannot queue blob for replication: no workers available");
-  }
-
-  const blobFlowJob = await createBlobReplicationJob(data);
-
-  replicatorFlowProducer?.add(blobFlowJob);
-}
-
-export async function queueBlobsForReplication(
-  blobReplicationData: BlobReplicationJobData[]
-) {
-  if (!isReplicationAvailable()) {
-    throw new Error("Cannot queue blobs for replication: no workers available");
-  }
-
-  const blobReplicationFlowJobs = await Promise.all(
-    blobReplicationData.map((data) => createBlobReplicationJob(data))
-  );
-
-  return replicatorFlowProducer?.addBulk(blobReplicationFlowJobs);
-}
+export {
+  blobReplicationFlowProducer,
+  storageWorkers,
+  replicatorWorker,
+  setUpBlobReplicationWorkers,
+  tearDownBlobReplicationWorkers,
+};
