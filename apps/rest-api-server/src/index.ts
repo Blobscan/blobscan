@@ -52,10 +52,10 @@ const server = app.listen(env.BLOBSCAN_API_PORT, () => {
   );
 });
 
-function gracefulShutdown(signal: string) {
+async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
-  tearDownBlobReplicationWorkers();
+  await tearDownBlobReplicationWorkers();
 
   server.close(() => {
     logger.debug("REST API server shut down successfully");
@@ -63,9 +63,7 @@ function gracefulShutdown(signal: string) {
 }
 
 // Listen for TERM signal .e.g. kill
-process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGTERM", () => void gracefulShutdown("SIGTERM"));
 
 // Listen for INT signal e.g. Ctrl-C
-process.on("SIGINT", () => {
-  gracefulShutdown("SIGINT");
-});
+process.on("SIGINT", () => void gracefulShutdown("SIGINT"));
