@@ -11,7 +11,7 @@ import {
   STORAGE_QUEUES,
 } from "./config";
 import type { BlobReplicationJobData } from "./types";
-import { BLOB_STORAGES } from "./utils";
+import { BLOB_STORAGE_NAMES } from "./utils";
 
 const WORKERS_DIR = "worker-processors";
 
@@ -96,8 +96,9 @@ function createBlobStorageWorkers(storages: BlobStorage[]) {
 
 async function setUpBlobReplicationWorkers() {
   const blobStorageManager = await createOrLoadBlobStorageManager();
-
-  const availableStorages = BLOB_STORAGES.filter(blobStorageManager.hasStorage);
+  const availableStorages = BLOB_STORAGE_NAMES.filter((storage) =>
+    blobStorageManager.hasStorage(storage)
+  );
 
   if (availableStorages.length > 1) {
     blobReplicationFlowProducer = createBlobReplicationFlowProducer();

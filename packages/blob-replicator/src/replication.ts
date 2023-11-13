@@ -4,7 +4,7 @@ import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 
 import { STORAGE_REFS_COLLECTOR_QUEUE, STORAGE_QUEUES } from "./config";
 import type { BlobReplicationJobData } from "./types";
-import { BLOB_STORAGES } from "./utils";
+import { BLOB_STORAGE_NAMES } from "./utils";
 import {
   blobReplicationFlowProducer,
   storageRefsCollectorWorker,
@@ -17,8 +17,8 @@ async function createBlobReplicationJob(
   const blobStorageManager = await createOrLoadBlobStorageManager();
   const versionedHash = data.versionedHash;
 
-  const storageJobs: FlowChildJob[] = BLOB_STORAGES.filter(
-    blobStorageManager.hasStorage
+  const storageJobs: FlowChildJob[] = BLOB_STORAGE_NAMES.filter((storage) =>
+    blobStorageManager.hasStorage(storage)
   ).map<FlowChildJob>((storage) => {
     const jobId = `${storage}-${versionedHash}`;
 

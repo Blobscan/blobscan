@@ -2,7 +2,7 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { BlobStorage } from "@blobscan/db";
 
-export const BLOB_STORAGES = Object.values(BlobStorage);
+export const BLOB_STORAGE_NAMES = Object.values(BlobStorage);
 
 export async function replicateBlob(
   originStorageRef: BlobReference,
