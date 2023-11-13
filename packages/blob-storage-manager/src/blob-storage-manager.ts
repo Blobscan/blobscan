@@ -10,13 +10,18 @@ export async function createOrLoadBlobStorageManager(): Promise<BlobStorageManag
     const swarmStorage = await SwarmStorage.tryCreateFromEnv(env);
     const postgresStorage = await PostgresStorage.tryCreateFromEnv(env);
 
+    const bsmOptions = env.MAIN_STORAGE
+      ? { mainStorage: env.MAIN_STORAGE }
+      : undefined;
+
     blobStorageManager = new BlobStorageManager(
       {
         GOOGLE: googleStorage,
         SWARM: swarmStorage,
         POSTGRES: postgresStorage,
       },
-      env.CHAIN_ID
+      env.CHAIN_ID,
+      bsmOptions
     );
   }
 

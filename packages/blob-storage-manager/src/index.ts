@@ -1,4 +1,4 @@
-export { env, MAIN_STORAGE } from "./env";
+export { env } from "./env";
 export type {
   BlobReference,
   BlobStorageManager,

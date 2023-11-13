@@ -17,14 +17,14 @@ const WORKERS_DIR = "worker-processors";
 
 // Specify the js files instead that will be built along the rest of the source code.
 const STORAGE_WORKER_FILES: Record<BlobStorage, string> = {
-  GOOGLE: path.join(__dirname, WORKERS_DIR, "gcs.js"),
-  SWARM: path.join(__dirname, WORKERS_DIR, "swarm.js"),
-  POSTGRES: path.join(__dirname, WORKERS_DIR, "postgres.js"),
+  GOOGLE: path.join(__dirname, WORKERS_DIR, "gcs.ts"),
+  SWARM: path.join(__dirname, WORKERS_DIR, "swarm.ts"),
+  POSTGRES: path.join(__dirname, WORKERS_DIR, "postgres.ts"),
 };
 const STORAGE_REFS_COLLECTOR_WORKER_FILE = path.join(
   __dirname,
   WORKERS_DIR,
-  "storage-refs-collector.js"
+  "storage-refs-collector.ts"
 );
 
 let blobReplicationFlowProducer: FlowProducer | undefined;
@@ -96,8 +96,12 @@ function createBlobStorageWorkers(storages: BlobStorage[]) {
 
 async function setUpBlobReplicationWorkers() {
   const blobStorageManager = await createOrLoadBlobStorageManager();
-  const availableStorages = BLOB_STORAGE_NAMES.filter((storage) =>
-    blobStorageManager.hasStorage(storage)
+
+  const availableStorages = BLOB_STORAGE_NAMES.filter(
+    (storageName) =>
+      // Don't replicate to the main storage
+      blobStorageManager.mainStorageName !== storageName &&
+      blobStorageManager.hasStorage(storageName)
   );
 
   if (availableStorages.length > 1) {
@@ -119,24 +123,25 @@ async function setUpBlobReplicationWorkers() {
   }
 }
 
-function tearDownBlobReplicationWorkers() {
-  const teardownOps = [];
-
-  if (blobReplicationFlowProducer) {
-    teardownOps.push(blobReplicationFlowProducer.close());
-  }
-
-  if (storageRefsCollectorWorker) {
-    teardownOps.push(storageRefsCollectorWorker.close());
-  }
+async function tearDownBlobReplicationWorkers() {
+  const teardownOperations = [];
 
   if (storageWorkers) {
     Object.values(storageWorkers).forEach((worker) =>
-      teardownOps.push(worker.close())
+      teardownOperations.push(worker.close())
     );
   }
 
-  return Promise.all(teardownOps)
+  if (storageRefsCollectorWorker) {
+    teardownOperations.push(storageRefsCollectorWorker.close());
+  }
+
+  // Order is important. We need to close child job workers before closing the flow producer
+  if (blobReplicationFlowProducer) {
+    teardownOperations.push(blobReplicationFlowProducer.close());
+  }
+
+  return Promise.all(teardownOperations)
     .then(() => {
       logger.debug(`Blob replication workers shut down successfully`);
     })

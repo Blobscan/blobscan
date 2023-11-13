@@ -1,4 +1,4 @@
-import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
+import type { BlobStorage as BlobStorageName } from "@blobscan/db";
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
@@ -12,7 +12,7 @@ type Blob = {
   versionedHash: string;
 };
 
-export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
+export type StorageOf<T extends BlobStorageName> = T extends "GOOGLE"
   ? GoogleStorage
   : T extends "SWARM"
   ? SwarmStorage
@@ -20,44 +20,67 @@ export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? PostgresStorage
   : never;
 
-export type BlobStorages<SNames extends BlobStorageNames> = {
+export type BlobStorages<SNames extends BlobStorageName> = {
   [K in SNames]?: StorageOf<K>;
 };
 
 export type BlobReference<
-  StorageName extends BlobStorageNames = BlobStorageNames
+  StorageName extends BlobStorageName = BlobStorageName
 > = {
   reference: string;
   storage: StorageName;
 };
 
-export type StorageError<SName extends BlobStorageNames = BlobStorageNames> = {
+export type StorageError<SName extends BlobStorageName = BlobStorageName> = {
   storage: SName;
   error: Error;
 };
 
-export type StoreOptions = {
-  storages: BlobStorageNames[];
-};
+export type StoreOptions = Partial<{
+  storages: BlobStorageName[];
+  useMainStorageOnly: boolean;
+}>;
 
 function calculateBlobBytes(blob: string): number {
   return blob.slice(2).length / 2;
 }
 
 export class BlobStorageManager<
-  SNames extends BlobStorageNames = BlobStorageNames,
-  T extends BlobStorages<SNames> = BlobStorages<SNames>
+  BSName extends BlobStorageName = BlobStorageName,
+  T extends BlobStorages<BSName> = BlobStorages<BSName>
 > {
   #blobStorages: T;
   chainId: number;
+  mainStorageName: BSName;
 
-  constructor(blobStorages: T, chainId: number) {
+  constructor(
+    blobStorages: T,
+    chainId: number,
+    opts?: { mainStorage: BSName }
+  ) {
     if (!Object.values(blobStorages).some((storage) => !!storage)) {
       throw new Error("No blob storages provided");
     }
 
     this.#blobStorages = blobStorages;
     this.chainId = chainId;
+
+    if (!opts?.mainStorage) {
+      // If no main storage is provided, use the first one in the list
+      this.mainStorageName = Object.keys(blobStorages)[0] as BSName;
+    } else {
+      if (!blobStorages[opts.mainStorage]) {
+        throw new Error(
+          `Main storage ${opts.mainStorage} not found in the provided storages`
+        );
+      }
+
+      this.mainStorageName = opts.mainStorage;
+    }
+  }
+
+  getMainStorage(): T[typeof this.mainStorageName] {
+    return this.#blobStorages[this.mainStorageName];
   }
 
   getStorage<SName extends keyof T>(name: SName): T[SName] {
@@ -69,8 +92,8 @@ export class BlobStorageManager<
   }
 
   async getBlob(
-    ...blobReferences: BlobReference<SNames>[]
-  ): Promise<{ data: string; storage: SNames } | null> {
+    ...blobReferences: BlobReference<BSName>[]
+  ): Promise<{ data: string; storage: BSName } | null> {
     return tracer.startActiveSpan(
       "blob_storage_manager",
       {
@@ -160,8 +183,8 @@ export class BlobStorageManager<
     { data, versionedHash }: Blob,
     opts?: StoreOptions
   ): Promise<{
-    references: BlobReference<SNames>[];
-    errors: StorageError<SNames>[];
+    references: BlobReference<BSName>[];
+    errors: StorageError<BSName>[];
   }> {
     return tracer.startActiveSpan(
       "blob_storage_manager",
@@ -172,14 +195,8 @@ export class BlobStorageManager<
       },
       async (span) => {
         // If no storages are provided, use all the storages
-        const selectedStorageNames = opts?.storages.length
-          ? opts.storages
-          : (Object.keys(this.#blobStorages) as SNames[]);
 
-        const selectedStorages = Object.entries(this.#blobStorages).filter(
-          ([name, storage]) =>
-            storage && selectedStorageNames.includes(name as SNames)
-        ) as [SNames, BlobStorage][];
+        const selectedStorages = this.#getSelectedStorages(opts);
 
         const results = await Promise.allSettled(
           selectedStorages.map(([name, storage]) => {
@@ -195,7 +212,7 @@ export class BlobStorageManager<
                 const start = performance.now();
                 const blobReference = await storage
                   .storeBlob(this.chainId, versionedHash, data)
-                  .then<BlobReference<SNames>>((reference) => ({
+                  .then<BlobReference<BSName>>((reference) => ({
                     reference,
                     storage: name,
                   }));
@@ -218,13 +235,13 @@ export class BlobStorageManager<
 
         const references = results
           .filter(
-            (res): res is PromiseFulfilledResult<BlobReference<SNames>> =>
+            (res): res is PromiseFulfilledResult<BlobReference<BSName>> =>
               res.status === "fulfilled"
           )
           .map((res) => res.value);
-        const errors = results.reduce<StorageError<SNames>[]>(
+        const errors = results.reduce<StorageError<BSName>[]>(
           (prevFailedUploads, res, i) => {
-            const storage = selectedStorages[i] as [SNames, BlobStorage];
+            const storage = selectedStorages[i] as [BSName, BlobStorage];
 
             if (res.status === "rejected") {
               const storageError = {
@@ -262,5 +279,30 @@ export class BlobStorageManager<
         };
       }
     );
+  }
+
+  #getSelectedStorages({
+    storages,
+    useMainStorageOnly: useMainStorage,
+  }: StoreOptions = {}): [BSName, BlobStorage][] {
+    const selectedBlobStorages: [BSName, BlobStorage][] = [];
+    if (useMainStorage) {
+      selectedBlobStorages.push([
+        this.mainStorageName,
+        this.#blobStorages[this.mainStorageName] as BlobStorage,
+      ]);
+    } else {
+      const selectedStorageNames = storages?.length
+        ? storages
+        : // If no storages are provided, use all the storages
+          (Object.keys(this.#blobStorages) as BSName[]);
+
+      return Object.entries(this.#blobStorages).filter(
+        ([name, storage]) =>
+          selectedStorageNames.includes(name as BSName) && !!storage
+      ) as [BSName, BlobStorage][];
+    }
+
+    return selectedBlobStorages;
   }
 }
