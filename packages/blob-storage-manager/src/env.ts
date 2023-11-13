@@ -1,5 +1,23 @@
 import { z, booleanSchema, createEnv, presetEnvOptions } from "@blobscan/zod";
 
+function getMainStorage(env: Partial<Environment>) {
+  if (env.MAIN_STORAGE) {
+    return env.MAIN_STORAGE;
+  }
+
+  if (env.GOOGLE_STORAGE_ENABLED) {
+    return "GOOGLE";
+  }
+
+  if (env.POSTGRES_STORAGE_ENABLED) {
+    return "POSTGRES";
+  }
+
+  if (env.SWARM_STORAGE_ENABLED) {
+    return "SWARM";
+  }
+}
+
 export const env = createEnv({
   envOptions: {
     server: {
@@ -20,7 +38,11 @@ export const env = createEnv({
   },
   display(env) {
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, mainStorage=${env.MAIN_STORAGE} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${
+        env.CHAIN_ID
+      }, mainStorage=${getMainStorage(env)} postgres=${
+        env.POSTGRES_STORAGE_ENABLED
+      }, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
