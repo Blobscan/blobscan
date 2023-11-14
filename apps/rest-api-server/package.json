@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@blobscan/api": "^0.0.1",
-    "@blobscan/blob-replicator": "^0.0.1",
+    "@blobscan/blob-propagator": "^0.0.1",
     "@blobscan/logger": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/zod": "^0.0.1",

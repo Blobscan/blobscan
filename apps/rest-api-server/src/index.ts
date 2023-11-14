@@ -6,9 +6,9 @@ import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import { appRouter, createTRPCContext, metricsHandler } from "@blobscan/api";
 import {
-  setUpBlobReplicationWorkers,
-  tearDownBlobReplicationWorkers,
-} from "@blobscan/blob-replicator";
+  setUpPropagationWorkers,
+  tearDownBlobPropagationWorkers,
+} from "@blobscan/blob-propagator";
 import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
@@ -20,7 +20,7 @@ collectDefaultMetrics();
 
 const app = express();
 
-setUpBlobReplicationWorkers();
+setUpPropagationWorkers();
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
@@ -55,7 +55,7 @@ const server = app.listen(env.BLOBSCAN_API_PORT, () => {
 async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
-  await tearDownBlobReplicationWorkers();
+  await tearDownBlobPropagationWorkers();
 
   server.close(() => {
     logger.debug("REST API server shut down successfully");

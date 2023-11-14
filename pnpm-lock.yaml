@@ -162,9 +162,9 @@ importers:
       '@blobscan/api':
         specifier: ^0.0.1
         version: link:../../packages/api
-      '@blobscan/blob-replicator':
+      '@blobscan/blob-propagator':
         specifier: ^0.0.1
-        version: link:../../packages/blob-replicator
+        version: link:../../packages/blob-propagator
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../../packages/logger
@@ -350,9 +350,9 @@ importers:
 
   packages/api:
     dependencies:
-      '@blobscan/blob-replicator':
+      '@blobscan/blob-propagator':
         specifier: ^0.0.1
-        version: link:../blob-replicator
+        version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
         specifier: ^0.0.1
         version: link:../blob-storage-manager
@@ -416,7 +416,7 @@ importers:
         specifier: ^0.0.1
         version: link:../config/eslint
 
-  packages/blob-replicator:
+  packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
         specifier: ^0.0.1

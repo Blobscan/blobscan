@@ -3,6 +3,7 @@ import type {
   Address,
   Blob,
   BlobDataStorageReference,
+  PrismaPromise,
   Transaction,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
@@ -12,6 +13,7 @@ import type { WithoutTimestampFields } from "../types";
 
 const NOW_SQL = Prisma.sql`NOW()`;
 
+type ZeroOpResult = { count: number }[];
 export type RawBlob = {
   versionedHash: string;
   commitment: string;
@@ -55,7 +57,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
     model: {
       $allModels: {
         zero() {
-          return prisma.$queryRaw`SELECT 0 as count`;
+          return prisma.$queryRaw<ZeroOpResult>`SELECT 0 as count`;
         },
       },
       address: {
@@ -78,7 +80,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(addresses: WithoutTimestampFields<Address>[]) {
           if (!addresses.length) {
-            return (Prisma.getExtensionContext(this) as any).zero();
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = addresses
@@ -146,7 +150,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
         upsertMany(blobs: WithoutTimestampFields<Blob>[]) {
           if (!blobs.length) {
-            return (Prisma.getExtensionContext(this) as any).zero();
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = blobs
@@ -181,7 +187,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       blobDataStorageReference: {
         upsertMany(refs: BlobDataStorageReference[]) {
           if (!refs.length) {
-            return (Prisma.getExtensionContext(this) as any).zero();
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = refs.map(
@@ -217,7 +225,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       transaction: {
         upsertMany(transactions: WithoutTimestampFields<Transaction>[]) {
           if (!transactions.length) {
-            return (Prisma.getExtensionContext(this) as any).zero();
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
           }
 
           const formattedValues = transactions

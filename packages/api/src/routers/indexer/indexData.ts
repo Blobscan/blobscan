@@ -1,19 +1,26 @@
 import {
-  isBlobReplicationAvailable,
-  queueBlobsForReplication,
-} from "@blobscan/blob-replicator";
-import type { BlobReplicationJobData } from "@blobscan/blob-replicator/src/types";
+  areBlobPropagationWorkersEnabled,
+  addBlobsToPropagationFlowQueue,
+} from "@blobscan/blob-propagator";
+import type { $Enums } from "@blobscan/db";
 
-import { tracer } from "../../instrumentation";
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
-import { indexDataOutputSchema } from "./indexData.schema";
-import { indexDataInputSchema } from "./indexData.schema";
+import {
+  indexDataInputSchema,
+  indexDataOutputSchema,
+} from "./indexData.schema";
 import {
   createDBBlobs,
   createDBBlock,
   createDBTransactions,
 } from "./indexData.utils";
+
+type DBBlobStorageRef = {
+  blobHash: string;
+  blobStorage: $Enums.BlobStorage;
+  dataReference: string;
+};
 
 export const indexData = jwtAuthedProcedure
   .meta({
@@ -32,49 +39,28 @@ export const indexData = jwtAuthedProcedure
 
     const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
 
-    // 1. Upload blobs' data to storages
-    const blobUploadResults = await tracer.startActiveSpan(
-      "blobs-upload",
-      async (blobsUploadSpan) => {
-        const result = (
-          await Promise.all(
-            newBlobs.map(async (b) =>
-              blobStorageManager
-                .storeBlob(b, { useMainStorageOnly: true })
-                .then((uploadRes) => ({
-                  blob: b,
-                  uploadRes,
-                }))
-            )
-          )
-        ).flat();
+    let dbBlobStorageRefs: DBBlobStorageRef[] | undefined;
 
-        blobsUploadSpan.end();
+    // 2. Store blobs' data
+    if (areBlobPropagationWorkersEnabled()) {
+      await addBlobsToPropagationFlowQueue(newBlobs);
+    } else {
+      const blobStorageOps = newBlobs.map(async (b) =>
+        blobStorageManager.storeBlob(b).then((uploadRes) => ({
+          blob: b,
+          uploadRes,
+        }))
+      );
+      const storageResults = (await Promise.all(blobStorageOps)).flat();
 
-        return result;
-      }
-    );
-
-    // 2. Queue block's blobs for replication to other storages
-    const blobReplicationData = blobUploadResults.map<BlobReplicationJobData>(
-      ({ blob, uploadRes }) => {
-        const blobStorageRef = uploadRes.references[0];
-
-        if (!blobStorageRef) {
-          throw new Error(
-            `Blob storage reference for blob ${blob.versionedHash} is missing`
-          );
-        }
-
-        return {
-          versionedHash: blob.versionedHash,
-          blobStorageRef,
-        };
-      }
-    );
-
-    if (isBlobReplicationAvailable()) {
-      queueBlobsForReplication(blobReplicationData);
+      dbBlobStorageRefs = storageResults.flatMap(
+        ({ uploadRes: { references }, blob }) =>
+          references.map((ref) => ({
+            blobHash: blob.versionedHash,
+            blobStorage: ref.storage,
+            dataReference: ref.reference,
+          }))
+      );
     }
 
     // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
@@ -84,14 +70,6 @@ export const indexData = jwtAuthedProcedure
     const dbTxs = createDBTransactions(input);
     const dbBlock = createDBBlock(input, dbTxs);
     const dbBlobs = createDBBlobs(input);
-    const dbBlobStorageRefs = blobUploadResults.flatMap(
-      ({ uploadRes: { references }, blob }) =>
-        references.map((ref) => ({
-          blobHash: blob.versionedHash,
-          blobStorage: ref.storage,
-          dataReference: ref.reference,
-        }))
-    );
 
     operations.push(
       prisma.block.upsert({
@@ -113,7 +91,7 @@ export const indexData = jwtAuthedProcedure
     operations.push(prisma.transaction.upsertMany(dbTxs));
     operations.push(prisma.blob.upsertMany(dbBlobs));
 
-    if (dbBlobStorageRefs.length) {
+    if (dbBlobStorageRefs?.length) {
       operations.push(
         prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
       );

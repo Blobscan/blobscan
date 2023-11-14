@@ -3,7 +3,7 @@ import type { BlobStorage } from "@blobscan/db";
 
 import { readBlobDataFile } from "../blob-data-file";
 
-export async function replicateBlob(
+export async function propagateBlob(
   versionedHash: string,
   targetStorage: BlobStorage
 ) {

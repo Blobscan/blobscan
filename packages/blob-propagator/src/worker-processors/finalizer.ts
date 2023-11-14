@@ -4,19 +4,19 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
 import { removeBlobDataFile } from "../blob-data-file";
-import type { BlobReplicationJobData } from "../types";
+import type { BlobPropagationJobData } from "../types";
 
 type DBBlobDataStorageReference = Parameters<
   typeof prisma.blobDataStorageReference.upsertMany
 >[0][number];
 
-export default async (job: Job<BlobReplicationJobData>) => {
+export default async (job: Job<BlobPropagationJobData>) => {
   const finalizerOps = [];
   const blobWorkerResults = await job.getChildrenValues<BlobReference>();
   const versionedHash = job.data.versionedHash;
 
   /**
-   * We can delete the blob data file as it was correctly replicated
+   * We can delete the blob data file as it was correctly propagated
    * across all enabled storages
    */
   finalizerOps.push(removeBlobDataFile(versionedHash));

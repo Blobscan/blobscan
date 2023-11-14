@@ -5,12 +5,12 @@ import type { BlobStorage } from "@blobscan/db";
 import { env } from "./env";
 
 export const STORAGE_QUEUES: Record<BlobStorage, string> = {
-  GOOGLE: "gcs",
-  SWARM: "swarm",
-  POSTGRES: "postgres",
+  GOOGLE: "gcs-queue",
+  SWARM: "swarm-queue",
+  POSTGRES: "postgres-queue",
 };
 
-export const FINALIZER_QUEUE = "finalizer";
+export const FINALIZER_QUEUE = "finalizer-queue";
 
 export const DEFAULT_OPTIONS: QueueOptions = {
   defaultJobOptions: {
