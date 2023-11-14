@@ -1,10 +1,10 @@
 export {
-  isBlobReplicationAvailable,
-  queueBlobForReplication,
-  queueBlobsForReplication,
-} from "./replication";
+  addBlobToReplicationFlowQueue,
+  addBlobsToReplicationFlowQueue,
+} from "./replication-flow";
 export * from "./types";
 export {
   setUpBlobReplicationWorkers,
   tearDownBlobReplicationWorkers,
+  areBlobReplicationWorkersEnabled,
 } from "./workers";

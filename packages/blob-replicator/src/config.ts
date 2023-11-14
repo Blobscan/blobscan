@@ -10,7 +10,7 @@ export const STORAGE_QUEUES: Record<BlobStorage, string> = {
   POSTGRES: "postgres",
 };
 
-export const STORAGE_REFS_COLLECTOR_QUEUE = "blob-storage-refs-collector";
+export const FINALIZER_QUEUE = "finalizer";
 
 export const DEFAULT_OPTIONS: QueueOptions = {
   defaultJobOptions: {

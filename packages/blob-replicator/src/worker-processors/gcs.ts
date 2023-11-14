@@ -1,10 +1,8 @@
 import type { BlobReplicationWorkerProcessor } from "../types";
-import { replicateBlob } from "../utils";
+import { replicateBlob } from "./common";
 
 const gcsWorker: BlobReplicationWorkerProcessor = (job) => {
-  const { blobStorageRef, versionedHash } = job.data;
-
-  return replicateBlob(blobStorageRef, "GOOGLE", versionedHash);
+  return replicateBlob(job.data.versionedHash, "GOOGLE");
 };
 
 export default gcsWorker;

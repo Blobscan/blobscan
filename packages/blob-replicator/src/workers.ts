@@ -2,20 +2,24 @@ import { Worker, FlowProducer } from "bullmq";
 import path from "path";
 
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
-import type { BlobStorage } from "@blobscan/db";
+import { BlobStorage } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
 
 import {
   DEFAULT_WORKER_OPTIONS,
-  STORAGE_REFS_COLLECTOR_QUEUE,
+  FINALIZER_QUEUE,
   STORAGE_QUEUES,
 } from "./config";
+import { env } from "./env";
 import type { BlobReplicationJobData } from "./types";
-import { BLOB_STORAGE_NAMES } from "./utils";
 
+const BLOB_STORAGE_NAMES = Object.values(BlobStorage);
 const WORKERS_DIR = "worker-processors";
 
-// Specify the js files instead that will be built along the rest of the source code.
+/**
+ * Define workers on separated files to run them on different
+ * processes
+ */
 const STORAGE_WORKER_FILES: Record<BlobStorage, string> = {
   GOOGLE: path.join(__dirname, WORKERS_DIR, "gcs.ts"),
   SWARM: path.join(__dirname, WORKERS_DIR, "swarm.ts"),
@@ -47,7 +51,7 @@ function createBlobReplicationFlowProducer() {
 
 function createStorageRefsCollectorWorker() {
   storageRefsCollectorWorker = new Worker(
-    STORAGE_REFS_COLLECTOR_QUEUE,
+    FINALIZER_QUEUE,
     STORAGE_REFS_COLLECTOR_WORKER_FILE,
     DEFAULT_WORKER_OPTIONS
   );
@@ -97,11 +101,8 @@ function createBlobStorageWorkers(storages: BlobStorage[]) {
 async function setUpBlobReplicationWorkers() {
   const blobStorageManager = await createOrLoadBlobStorageManager();
 
-  const availableStorages = BLOB_STORAGE_NAMES.filter(
-    (storageName) =>
-      // Don't replicate to the main storage
-      blobStorageManager.mainStorageName !== storageName &&
-      blobStorageManager.hasStorage(storageName)
+  const availableStorages = BLOB_STORAGE_NAMES.filter((storageName) =>
+    blobStorageManager.hasStorage(storageName)
   );
 
   if (availableStorages.length > 1) {
@@ -150,10 +151,30 @@ async function tearDownBlobReplicationWorkers() {
     });
 }
 
+function areBlobReplicationWorkersEnabled() {
+  return env.BLOB_REPLICATION_WORKERS_ENABLED;
+}
+
+function checkBlobReplicationAvailability() {
+  if (
+    !Object.keys(storageWorkers ?? {}).length ||
+    !storageRefsCollectorWorker ||
+    !blobReplicationFlowProducer
+  ) {
+    throw new Error("Blob replication is not available: no workers found");
+  }
+
+  if (!areBlobReplicationWorkersEnabled()) {
+    throw new Error("Blob replication is not available: workers are disabled");
+  }
+}
+
 export {
   blobReplicationFlowProducer,
   storageWorkers,
   storageRefsCollectorWorker,
   setUpBlobReplicationWorkers,
   tearDownBlobReplicationWorkers,
+  areBlobReplicationWorkersEnabled,
+  checkBlobReplicationAvailability,
 };

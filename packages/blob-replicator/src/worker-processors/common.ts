@@ -1,28 +1,19 @@
-import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
-import { BlobStorage } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db";
 
-export const BLOB_STORAGE_NAMES = Object.values(BlobStorage);
+import { readBlobDataFile } from "../blob-data-file";
 
 export async function replicateBlob(
-  originStorageRef: BlobReference,
-  targetStorage: BlobStorage,
-  versionedHash: string
+  versionedHash: string,
+  targetStorage: BlobStorage
 ) {
   const blobStorageManager = await createOrLoadBlobStorageManager();
-
-  const blobData = await blobStorageManager
-    .getBlob(originStorageRef)
-    .then((r) => r?.data);
-
-  if (!blobData) {
-    throw new Error(`Couldn't find blob ${versionedHash} in storage GOOGLE`);
-  }
+  const blobData = await readBlobDataFile(versionedHash);
 
   const result = await blobStorageManager.storeBlob(
     {
       data: blobData,
-      versionedHash: versionedHash,
+      versionedHash,
     },
     {
       storages: [targetStorage],

@@ -36,10 +36,9 @@ export type StorageError<SName extends BlobStorageName = BlobStorageName> = {
   error: Error;
 };
 
-export type StoreOptions = Partial<{
+export type StoreOptions = {
   storages: BlobStorageName[];
-  useMainStorageOnly: boolean;
-}>;
+};
 
 function calculateBlobBytes(blob: string): number {
   return blob.slice(2).length / 2;
@@ -51,36 +50,14 @@ export class BlobStorageManager<
 > {
   #blobStorages: T;
   chainId: number;
-  mainStorageName: BSName;
 
-  constructor(
-    blobStorages: T,
-    chainId: number,
-    opts?: { mainStorage: BSName }
-  ) {
+  constructor(blobStorages: T, chainId: number) {
     if (!Object.values(blobStorages).some((storage) => !!storage)) {
       throw new Error("No blob storages provided");
     }
 
     this.#blobStorages = blobStorages;
     this.chainId = chainId;
-
-    if (!opts?.mainStorage) {
-      // If no main storage is provided, use the first one in the list
-      this.mainStorageName = Object.keys(blobStorages)[0] as BSName;
-    } else {
-      if (!blobStorages[opts.mainStorage]) {
-        throw new Error(
-          `Main storage ${opts.mainStorage} not found in the provided storages`
-        );
-      }
-
-      this.mainStorageName = opts.mainStorage;
-    }
-  }
-
-  getMainStorage(): T[typeof this.mainStorageName] {
-    return this.#blobStorages[this.mainStorageName];
   }
 
   getStorage<SName extends keyof T>(name: SName): T[SName] {
@@ -281,28 +258,17 @@ export class BlobStorageManager<
     );
   }
 
-  #getSelectedStorages({
-    storages,
-    useMainStorageOnly: useMainStorage,
-  }: StoreOptions = {}): [BSName, BlobStorage][] {
-    const selectedBlobStorages: [BSName, BlobStorage][] = [];
-    if (useMainStorage) {
-      selectedBlobStorages.push([
-        this.mainStorageName,
-        this.#blobStorages[this.mainStorageName] as BlobStorage,
-      ]);
-    } else {
-      const selectedStorageNames = storages?.length
-        ? storages
-        : // If no storages are provided, use all the storages
-          (Object.keys(this.#blobStorages) as BSName[]);
+  #getSelectedStorages(
+    { storages }: StoreOptions = { storages: [] }
+  ): [BSName, BlobStorage][] {
+    const selectedStorageNames = storages?.length
+      ? storages
+      : // If no storages are provided, use all the storages
+        (Object.keys(this.#blobStorages) as BSName[]);
 
-      return Object.entries(this.#blobStorages).filter(
-        ([name, storage]) =>
-          selectedStorageNames.includes(name as BSName) && !!storage
-      ) as [BSName, BlobStorage][];
-    }
-
-    return selectedBlobStorages;
+    return Object.entries(this.#blobStorages).filter(
+      ([name, storage]) =>
+        selectedStorageNames.includes(name as BSName) && !!storage
+    ) as [BSName, BlobStorage][];
   }
 }

@@ -1,10 +1,8 @@
 import type { BlobReplicationWorkerProcessor } from "../types";
-import { replicateBlob } from "../utils";
+import { replicateBlob } from "./common";
 
 const swarmWorker: BlobReplicationWorkerProcessor = (job) => {
-  const { blobStorageRef, versionedHash } = job.data;
-
-  return replicateBlob(blobStorageRef, "SWARM", versionedHash);
+  return replicateBlob(job.data.versionedHash, "SWARM");
 };
 
 export default swarmWorker;

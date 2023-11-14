@@ -3,6 +3,7 @@ import type { Job } from "bullmq";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
+import { removeBlobDataFile } from "../blob-data-file";
 import type { BlobReplicationJobData } from "../types";
 
 type DBBlobDataStorageReference = Parameters<
@@ -10,8 +11,15 @@ type DBBlobDataStorageReference = Parameters<
 >[0][number];
 
 export default async (job: Job<BlobReplicationJobData>) => {
+  const finalizerOps = [];
   const blobWorkerResults = await job.getChildrenValues<BlobReference>();
   const versionedHash = job.data.versionedHash;
+
+  /**
+   * We can delete the blob data file as it was correctly replicated
+   * across all enabled storages
+   */
+  finalizerOps.push(removeBlobDataFile(versionedHash));
 
   const dbBlobStorageRefs = Object.values(
     blobWorkerResults
@@ -21,5 +29,9 @@ export default async (job: Job<BlobReplicationJobData>) => {
     dataReference: result.reference,
   }));
 
-  await prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs);
+  finalizerOps.push(
+    prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
+  );
+
+  return Promise.all(finalizerOps);
 };
