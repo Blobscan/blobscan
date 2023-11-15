@@ -261,14 +261,36 @@ export class BlobStorageManager<
   #getSelectedStorages(
     { storages }: StoreOptions = { storages: [] }
   ): [BSName, BlobStorage][] {
-    const selectedStorageNames = storages?.length
-      ? storages
+    const uniqueInputStorageNames = Array.from(new Set(storages));
+    const selectedStorageNames = uniqueInputStorageNames?.length
+      ? uniqueInputStorageNames
       : // If no storages are provided, use all the storages
         (Object.keys(this.#blobStorages) as BSName[]);
 
-    return Object.entries(this.#blobStorages).filter(
+    const selectedAvailableStorages = Object.entries(this.#blobStorages).filter(
       ([name, storage]) =>
         selectedStorageNames.includes(name as BSName) && !!storage
     ) as [BSName, BlobStorage][];
+
+    if (
+      uniqueInputStorageNames.length &&
+      selectedAvailableStorages.length !== uniqueInputStorageNames.length
+    ) {
+      const selectdAvailableStorageNames = selectedAvailableStorages.map(
+        ([name]) => name
+      );
+      const missingStorageNames = uniqueInputStorageNames.filter(
+        (storageName) =>
+          !selectdAvailableStorageNames.includes(storageName as BSName)
+      );
+
+      throw new Error(
+        `Some of the selected storages are not available: ${missingStorageNames.join(
+          ", "
+        )}`
+      );
+    }
+
+    return selectedAvailableStorages;
   }
 }

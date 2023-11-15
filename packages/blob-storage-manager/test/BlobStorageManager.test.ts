@@ -118,9 +118,8 @@ describe("BlobStorageManager", () => {
   });
 
   describe("storeBlob", () => {
+    const blob = { data: BLOB_DATA, versionedHash: BLOB_HASH };
     it("should store the blob in all available storages", async () => {
-      const blob = { data: BLOB_DATA, versionedHash: BLOB_HASH };
-
       const result = await blobStorageManager.storeBlob(blob);
 
       expect(result.references).matchSnapshot();
@@ -128,7 +127,6 @@ describe("BlobStorageManager", () => {
     });
 
     it("should store a blob in a specific storage if provided", async () => {
-      const blob = { data: BLOB_DATA, versionedHash: BLOB_HASH };
       const selectedStorage: BlobStorage = "POSTGRES";
 
       const result = await blobStorageManager.storeBlob(blob, {
@@ -146,6 +144,24 @@ describe("BlobStorageManager", () => {
       );
       expect(blobReference?.storage, "Blob storage mismatch").toBe(
         selectedStorage
+      );
+    });
+
+    it("should throw an error when one of the selected blob storages wasn't found", async () => {
+      const selectedStorages: BlobStorage[] = ["POSTGRES", "GOOGLE"];
+      const singleStorageBSM = new BlobStorageManager(
+        {
+          SWARM: swarmStorage,
+        },
+        CHAIN_ID
+      );
+
+      await expect(
+        singleStorageBSM.storeBlob(blob, {
+          storages: selectedStorages,
+        })
+      ).rejects.toMatchInlineSnapshot(
+        "[Error: Some of the selected storages are not available: POSTGRES, GOOGLE]"
       );
     });
 
