@@ -2,14 +2,14 @@ import fs from "fs";
 
 import type { Blob } from "./types";
 
-function fileExists(path: string) {
+export function fileExists(path: string) {
   return fs.promises
     .access(path, fs.constants.F_OK)
     .then(() => true)
     .catch(() => false);
 }
 
-function buildBlobDataFilePath(versionedHash: string) {
+export function buildBlobDataFilePath(versionedHash: string) {
   return `${versionedHash}.txt`;
 }
 
@@ -17,7 +17,7 @@ export async function createBlobDataFile({ data, versionedHash }: Blob) {
   const blobfilePath = buildBlobDataFilePath(versionedHash);
 
   try {
-    if (!(await fileExists(blobfilePath))) {
+    if (await fileExists(blobfilePath)) {
       return Promise.resolve();
     }
 
@@ -32,20 +32,20 @@ export async function createBlobDataFile({ data, versionedHash }: Blob) {
 export async function readBlobDataFile(versionedHash: string) {
   const blobFilePath = buildBlobDataFilePath(versionedHash);
 
-  const blobData = await fs.promises.readFile(blobFilePath, "utf-8");
+  try {
+    const blobData = await fs.promises.readFile(blobFilePath, "utf-8");
 
-  if (!blobData) {
+    return blobData;
+  } catch (error) {
     throw new Error(
       `Couldn't read blob ${versionedHash} data file: file is missing`
     );
   }
-
-  return blobData;
 }
 
 export async function removeBlobDataFile(versionedHash: string) {
   try {
-    return fs.promises.unlink(buildBlobDataFilePath(versionedHash));
+    await fs.promises.unlink(buildBlobDataFilePath(versionedHash));
   } catch (err) {
     throw new Error(`Couldn't remove blob ${versionedHash} data file: ${err}`);
   }

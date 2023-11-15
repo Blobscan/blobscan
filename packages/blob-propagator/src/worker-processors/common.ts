@@ -20,14 +20,6 @@ export async function propagateBlob(
     }
   );
 
-  if (result.errors.length) {
-    throw new Error(
-      `Couldn't store blob ${versionedHash} in storage ${targetStorage}: ${result.errors.join(
-        ", "
-      )}`
-    );
-  }
-
   const storageRef = result.references[0];
 
   if (!storageRef) {
