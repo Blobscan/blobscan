@@ -10,7 +10,9 @@ import { logger } from "@blobscan/logger";
 
 import { env } from "./env";
 
-api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);
+if (env.OTEL_DIAG_ENABLED) {
+  api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);
+}
 
 const exporterOptions: { headers?: Record<string, string> } = {};
 
