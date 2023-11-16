@@ -1,5 +1,13 @@
 import { TRPCError } from "@trpc/server";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { omitDBTimestampFields } from "@blobscan/test";
@@ -9,22 +17,6 @@ import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
 import { createTestContext } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
-
-vi.mock("../src/env", () => ({
-  env: {
-    SECRET_KEY: "supersecret",
-  },
-}));
-vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
-  env: {
-    CHAIN_ID: 7011893058,
-    POSTGRES_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_PROJECT_ID: "blobscan-test-project",
-    GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test-bucket",
-    GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:4443",
-  },
-}));
 
 describe("Indexer router", async () => {
   let nonAuthorizedCaller: ReturnType<typeof appRouter.createCaller>;
@@ -38,6 +30,21 @@ describe("Indexer router", async () => {
 
     nonAuthorizedCaller = appRouter.createCaller(ctx);
     authorizedCaller = appRouter.createCaller(authorizedContext);
+  });
+
+  beforeAll(() => {
+    vi.stubEnv("SECRET_KEY", "supersecret");
+    vi.stubEnv("CHAIN_ID", "70118930558");
+    vi.stubEnv("POSTGRES_STORAGE_ENABLED", "true");
+    vi.stubEnv("GOOGLE_STORAGE_ENABLED", "true");
+    vi.stubEnv("GOOGLE_STORAGE_PROJECT_ID", "blobscan-test-project");
+    vi.stubEnv("GOOGLE_STORAGE_BUCKET_NAME", "blobscan-test-bucket");
+    vi.stubEnv("GOOGLE_STORAGE_API_ENDPOINT", "http://localhost:4443");
+    vi.stubEnv("BLOB_PROPAGATOR_ENABLED", "false");
+  });
+
+  afterAll(() => {
+    vi.unstubAllEnvs();
   });
 
   describe("getSlot", () => {
@@ -302,39 +309,39 @@ describe("Indexer router", async () => {
             });
 
           expect(blobStorageRefs).toMatchInlineSnapshot(`
-              [
-                {
-                  "blobHash": "blobHash999",
-                  "blobStorage": "GOOGLE",
-                  "dataReference": "7011893058/ob/Ha/sh/obHash999.txt",
-                },
-                {
-                  "blobHash": "blobHash999",
-                  "blobStorage": "POSTGRES",
-                  "dataReference": "blobHash999",
-                },
-                {
-                  "blobHash": "blobHash1000",
-                  "blobStorage": "GOOGLE",
-                  "dataReference": "7011893058/ob/Ha/sh/obHash1000.txt",
-                },
-                {
-                  "blobHash": "blobHash1000",
-                  "blobStorage": "POSTGRES",
-                  "dataReference": "blobHash1000",
-                },
-                {
-                  "blobHash": "blobHash1001",
-                  "blobStorage": "GOOGLE",
-                  "dataReference": "7011893058/ob/Ha/sh/obHash1001.txt",
-                },
-                {
-                  "blobHash": "blobHash1001",
-                  "blobStorage": "POSTGRES",
-                  "dataReference": "blobHash1001",
-                },
-              ]
-            `);
+            [
+              {
+                "blobHash": "blobHash999",
+                "blobStorage": "GOOGLE",
+                "dataReference": "70118930558/ob/Ha/sh/obHash999.txt",
+              },
+              {
+                "blobHash": "blobHash999",
+                "blobStorage": "POSTGRES",
+                "dataReference": "blobHash999",
+              },
+              {
+                "blobHash": "blobHash1000",
+                "blobStorage": "GOOGLE",
+                "dataReference": "70118930558/ob/Ha/sh/obHash1000.txt",
+              },
+              {
+                "blobHash": "blobHash1000",
+                "blobStorage": "POSTGRES",
+                "dataReference": "blobHash1000",
+              },
+              {
+                "blobHash": "blobHash1001",
+                "blobStorage": "GOOGLE",
+                "dataReference": "70118930558/ob/Ha/sh/obHash1001.txt",
+              },
+              {
+                "blobHash": "blobHash1001",
+                "blobStorage": "POSTGRES",
+                "dataReference": "blobHash1001",
+              },
+            ]
+          `);
         });
 
         it("should not index duplicated blobs", async () => {

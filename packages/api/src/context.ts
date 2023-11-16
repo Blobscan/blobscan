@@ -8,6 +8,8 @@ import type {
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
+import type { BlobPropagator } from "@blobscan/blob-propagator";
+import { createOrLoadBlobPropagator } from "@blobscan/blob-propagator";
 import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
@@ -49,10 +51,16 @@ function getJWTFromRequest(
 
 export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   const blobStorageManager = await createOrLoadBlobStorageManager();
+  let blobPropagator: BlobPropagator | undefined;
+
+  if (env.BLOB_PROPAGATOR_ENABLED) {
+    blobPropagator = await createOrLoadBlobPropagator();
+  }
 
   return {
     prisma,
     blobStorageManager,
+    blobPropagator,
     apiClient: opts?.apiClient,
   };
 }

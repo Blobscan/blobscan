@@ -13,6 +13,7 @@ export * from "@trpc/server/adapters/express";
 export { env as blobStorageManagerEnv } from "@blobscan/blob-storage-manager";
 
 export { env as apiEnv } from "./env";
+export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
 export type {
   Metric,

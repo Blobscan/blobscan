@@ -5,8 +5,8 @@ import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import type { BlobStorage, BlobStorage as BlobStorageName } from "@blobscan/db";
 
-import { createBlobDataFile, removeBlobDataFile } from "../src/blob-data-file";
 import type { BlobPropagationSandboxedJob } from "../src/types";
+import { createBlobDataFile, removeBlobDataFile } from "../src/utils";
 import gcsStorage from "../src/worker-processors/gcs";
 import postgresWorker from "../src/worker-processors/postgres";
 import swarmWorker from "../src/worker-processors/swarm";

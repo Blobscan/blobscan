@@ -1,5 +1,5 @@
 import type { BlobPropagationWorkerProcessor } from "../types";
-import { propagateBlob } from "./common";
+import { propagateBlob } from "../utils";
 
 const swarmWorker: BlobPropagationWorkerProcessor = (job) => {
   return propagateBlob(job.data.versionedHash, "SWARM");

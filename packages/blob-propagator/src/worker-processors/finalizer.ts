@@ -3,8 +3,8 @@ import type { Job } from "bullmq";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
-import { removeBlobDataFile } from "../blob-data-file";
 import type { BlobPropagationJobData } from "../types";
+import { removeBlobDataFile } from "../utils";
 
 type DBBlobDataStorageReference = Parameters<
   typeof prisma.blobDataStorageReference.upsertMany

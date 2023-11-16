@@ -162,9 +162,6 @@ importers:
       '@blobscan/api':
         specifier: ^0.0.1
         version: link:../../packages/api
-      '@blobscan/blob-propagator':
-        specifier: ^0.0.1
-        version: link:../../packages/blob-propagator
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../../packages/logger

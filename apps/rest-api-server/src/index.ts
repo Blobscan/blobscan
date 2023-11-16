@@ -4,11 +4,12 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
-import { appRouter, createTRPCContext, metricsHandler } from "@blobscan/api";
 import {
-  setUpPropagationWorkers,
-  tearDownBlobPropagationWorkers,
-} from "@blobscan/blob-propagator";
+  appRouter,
+  createTRPCContext,
+  metricsHandler,
+  gracefulShutdown as apiGracefulShutdown,
+} from "@blobscan/api";
 import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
@@ -19,8 +20,6 @@ import { openApiDocument } from "./openapi";
 collectDefaultMetrics();
 
 const app = express();
-
-setUpPropagationWorkers();
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
@@ -55,11 +54,11 @@ const server = app.listen(env.BLOBSCAN_API_PORT, () => {
 async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
-  await tearDownBlobPropagationWorkers();
-
   server.close(() => {
     logger.debug("REST API server shut down successfully");
   });
+
+  await apiGracefulShutdown();
 }
 
 // Listen for TERM signal .e.g. kill
