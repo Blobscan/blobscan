@@ -36,6 +36,7 @@ function getJWTFromRequest(
     if (type !== "Bearer" || !token) {
       return null;
     }
+    console.log(env);
 
     const decoded = jwt.verify(token, env.SECRET_KEY) as string;
 

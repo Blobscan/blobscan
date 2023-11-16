@@ -12,8 +12,9 @@ import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 
 export async function createTestContext({
   withAuth,
-}: Partial<{ withAuth: boolean }> = {}) {
-  const token = jwt.sign("foobar", "supersecret");
+  secret = "supersecret",
+}: Partial<{ secret: string; withAuth: boolean }> = {}) {
+  const token = jwt.sign("foobar", secret);
   const req = {
     headers: {
       ...(withAuth ? { authorization: `Bearer ${token}` } : {}),

@@ -24,15 +24,6 @@ describe("Indexer router", async () => {
   let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
-    const ctx = await createTestContext();
-
-    authorizedContext = await createTestContext({ withAuth: true });
-
-    nonAuthorizedCaller = appRouter.createCaller(ctx);
-    authorizedCaller = appRouter.createCaller(authorizedContext);
-  });
-
-  beforeAll(() => {
     vi.stubEnv("SECRET_KEY", "supersecret");
     vi.stubEnv("CHAIN_ID", "70118930558");
     vi.stubEnv("POSTGRES_STORAGE_ENABLED", "true");
@@ -41,6 +32,13 @@ describe("Indexer router", async () => {
     vi.stubEnv("GOOGLE_STORAGE_BUCKET_NAME", "blobscan-test-bucket");
     vi.stubEnv("GOOGLE_STORAGE_API_ENDPOINT", "http://localhost:4443");
     vi.stubEnv("BLOB_PROPAGATOR_ENABLED", "false");
+
+    const ctx = await createTestContext();
+
+    authorizedContext = await createTestContext({ withAuth: true });
+
+    nonAuthorizedCaller = appRouter.createCaller(ctx);
+    authorizedCaller = appRouter.createCaller(authorizedContext);
   });
 
   afterAll(() => {
