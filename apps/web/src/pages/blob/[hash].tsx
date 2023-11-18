@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
-import { utils } from "ethers";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
@@ -14,7 +13,7 @@ import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { api } from "~/api-client";
-import { formatBytes } from "~/utils";
+import { formatBytes, hexStringToUtf8 } from "~/utils";
 
 type BlobViewMode = "Original" | "UTF-8";
 
@@ -25,7 +24,7 @@ function formatBlob(blob: string, viewMode: BlobViewMode): string {
     case "Original":
       return blob;
     case "UTF-8":
-      return utils.toUtf8String(blob).replace(/\0/g, "");
+      return hexStringToUtf8(blob);
     default:
       return blob;
   }
