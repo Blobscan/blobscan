@@ -2,10 +2,22 @@ import { TRPCError } from "@trpc/server";
 
 import { publicProcedure } from "../../procedures";
 import { fullBlockSelect } from "./common";
-import { getByBlockNumberInputSchema } from "./getByBlockNumber.schema";
+import {
+  getByBlockNumberInputSchema,
+  getByBlockNumberOutputSchema,
+} from "./getByBlockNumber.schema";
 
 export const getByBlockNumber = publicProcedure
+  .meta({
+    openapi: {
+      method: "GET",
+      path: `/blocks/{number}`,
+      tags: ["blocks"],
+      summary: "Get blocks time series stats",
+    },
+  })
   .input(getByBlockNumberInputSchema)
+  .output(getByBlockNumberOutputSchema)
   .query(async ({ ctx, input: { number } }) => {
     const block = await ctx.prisma.block
       .findUnique({
