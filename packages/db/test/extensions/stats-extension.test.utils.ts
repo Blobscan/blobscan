@@ -86,7 +86,9 @@ export function getOverallStatsPrismaModel(modelName: keyof typeof prisma) {
   const model = prisma[modelName];
 
   if (!hasOverallStatsExtensionFns(model)) {
-    throw new Error(`Model ${modelName} has no overall stats functions`);
+    throw new Error(
+      `Model ${modelName.toString()} has no overall stats functions`
+    );
   }
 
   return model;
