@@ -12,13 +12,14 @@ export const getByAddress = publicProcedure
   .input(getByAddressInputSchema)
   .query(async ({ ctx, input }) => {
     const { address } = input;
+    const addressLowerCase = address.toLocaleLowerCase();
 
     const [transactions, totalTransactions] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
           where: {
-            OR: [{ fromId: address }, { toId: address }],
+            OR: [{ fromId: addressLowerCase }, { toId: addressLowerCase }],
           },
           orderBy: { blockNumber: "desc" },
           ...ctx.pagination,
@@ -27,7 +28,7 @@ export const getByAddress = publicProcedure
       // FIXME: this is not efficient
       ctx.prisma.transaction.count({
         where: {
-          OR: [{ fromId: address }, { toId: address }],
+          OR: [{ fromId: addressLowerCase }, { toId: addressLowerCase }],
         },
       }),
     ]);
