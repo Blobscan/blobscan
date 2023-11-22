@@ -18,14 +18,14 @@ export const dateSchema = z.object({
 
 export const withDatePeriod = t.middleware(({ next, input }) => {
   const { from, to } = datePeriodSchema.parse(input) || {};
-  const hasAtLeastOneDate = from || to;
+  const hasAtLeastOneDate = Boolean(from || to);
 
-  const datePeriod =
-    hasAtLeastOneDate &&
-    normalizeDailyDatePeriod({
-      from,
-      to,
-    });
+  const datePeriod = hasAtLeastOneDate
+    ? normalizeDailyDatePeriod({
+        from,
+        to,
+      })
+    : undefined;
 
   return next({
     ctx: {

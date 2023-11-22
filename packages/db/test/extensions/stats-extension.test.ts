@@ -56,7 +56,7 @@ function runDailyStatsFunctionsTests(
       }
 
       describe("when filling in stats for a multiple days period", () => {
-        it("should do it correctly when `DD-MM-YYYY` dates are passed", async () => {
+        it("should do it correctly when `YYYY-MM-DD` dates are passed", async () => {
           await checkStats({
             from: "2023-08-24",
             to: "2023-09-01",

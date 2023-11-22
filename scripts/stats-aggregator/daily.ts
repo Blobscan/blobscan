@@ -90,9 +90,9 @@ export async function performDailyStatsOperation(
   });
 
   const formattedFrom = from
-    ? dayjs(from).format("DD-MM-YYYY")
+    ? dayjs(from).format("YYYY-MM-DD")
     : "No specified";
-  const formattedTo = to ? dayjs(to).format("DD-MM-YYYY") : "No specified";
+  const formattedTo = to ? dayjs(to).format("YYYY-MM-DD") : "No specified";
   const period =
     operation_ !== "deleteAll"
       ? `Period: ${formattedFrom} - ${formattedTo}.`
