@@ -29,10 +29,7 @@ export const Logo = ({ className = '' }) => {
 }
 
 export const Logomark = ({ className = '' }) => {
-  const { resolvedTheme } = useTheme()
   const isMounted = useIsMounted()
-  const logomarkSrc =
-    resolvedTheme === 'dark' ? '/logomark-dark.svg' : '/logomark-light.svg'
 
   if (!isMounted) {
     return <div className={className} />
@@ -42,7 +39,7 @@ export const Logomark = ({ className = '' }) => {
     <Link href="/">
       <NextImage
         className={className}
-        src={logomarkSrc}
+        src={'/logomark.svg'}
         width="0"
         height="0"
         sizes="100vw"

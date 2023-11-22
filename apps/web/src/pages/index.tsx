@@ -105,7 +105,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
-        <Logo className="h-16 w-64 md:h-20 md:w-80 lg:h-20 lg:w-80" />
+        <Logo className="w-64 md:w-80" />
         <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
           <SearchInput />
           <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -117,7 +117,7 @@ const Home: NextPage = () => {
         </div>
       </div>
       <div className="flex w-full flex-col gap-8 sm:gap-16">
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
+        <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
@@ -128,7 +128,7 @@ const Home: NextPage = () => {
               opts={{ toolbox: { show: false } }}
             />
           </div>
-          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
+          <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
             <div className="col-span-2">
               <MetricCard
                 name="Total Tx Fees Saved"

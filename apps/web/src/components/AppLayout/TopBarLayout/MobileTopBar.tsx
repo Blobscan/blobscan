@@ -8,8 +8,8 @@ export const MobileNav = function () {
     <>
       <div className="z-10 sm:hidden">
         <TopBarSurface>
-          <div className="flex w-full justify-between">
-            <Logo className="h-8 w-32 md:h-9 md:w-36" />
+          <div className="flex w-full items-center justify-between">
+            <Logo className="w-40" />
             <ThemeModeButton />
           </div>
         </TopBarSurface>

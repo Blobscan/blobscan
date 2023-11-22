@@ -93,8 +93,8 @@ function Header({ navigation }) {
       </div>
       <div className="relative flex flex-grow basis-0 items-center">
         <Link href="/" aria-label="Home page">
-          <Logomark className="h-9 w-9 lg:hidden" />
-          <Logo className="hidden h-12 w-auto fill-slate-700 dark:fill-primary-100 lg:block" />
+          <Logomark className="h-7 w-7 lg:hidden" />
+          <Logo className="hidden h-6 w-auto fill-slate-700 dark:fill-primary-100 lg:block" />
         </Link>
       </div>
       <div className="-my-5 mr-6 sm:mr-8 md:mr-0">

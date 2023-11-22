@@ -1,0 +1,25 @@
+---
+version: "3.7"
+
+services:
+  web:
+    extends:
+      file: docker-compose.yml
+      service: web
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
+    ports:
+      - ${EXTERNAL_WEB_PORT}:3000
+
+  api:
+    extends:
+      file: docker-compose.yml
+      service: api
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
+    ports:
+      - ${EXTERNAL_API_PORT}:3001
+
+  indexer:
+    extends:
+      file: docker-compose.yml
+      service: indexer
+    image: blossomlabs/blobscan-indexer:${INDEXER_TAG}

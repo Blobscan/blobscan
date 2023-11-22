@@ -6,10 +6,11 @@ nextjs:
     description: Blobscan API
 ---
 
-Blobscan provides an API that you can use to retrieve metrics about blobs, blocks and transactions.
+Blobscan provides `api.blobscan.com`, a REST API that you can use to retrieve blobs, blocks and transactions metrics and use them in your own dashboards.
 
-This API is used by the indexer as well, in order to store new data. However these endpoints
-are password protected by a shared key (this is the `SECRET_KEY` environment variable).
+This API provides also some endpoints that are used internally by the [Indexer](indexer). For security, these endpoints
+are protected with a shared secret that is used for digitally signing JSON Web Tokens (JWT).
+This is what the `SECRET_KEY` environment variable is for.
 
 {% callout title="Swagger UI" %}
 [Explorer the API documentation.](https://api.blobscan.com/)
