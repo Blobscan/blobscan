@@ -12,7 +12,7 @@ export const env = createEnv({
       SECRET_KEY: z.string(),
       NODE_ENV: nodeEnvSchema.optional(),
       METRICS_ENABLED: booleanSchema.default("false"),
-      BLOB_PROPAGATOR_ENABLED: z.boolean().default(false),
+      BLOB_PROPAGATOR_ENABLED: booleanSchema.default("false"),
     },
 
     ...presetEnvOptions,
