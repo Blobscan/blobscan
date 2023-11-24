@@ -126,9 +126,9 @@ async function main() {
   console.log(`Data inserted for the last ${seedParams.totalDays} days`);
 
   await Promise.all([
-    prisma.blobOverallStats.backfill(),
-    prisma.blockOverallStats.backfill(),
-    prisma.transactionOverallStats.backfill(),
+    prisma.blobOverallStats.populate(),
+    prisma.blockOverallStats.populate(),
+    prisma.transactionOverallStats.populate(),
   ]);
 
   console.log("Overall stats created.");
@@ -142,9 +142,9 @@ async function main() {
   };
 
   await Promise.all([
-    prisma.blobDailyStats.fill(yesterdayPeriod),
-    prisma.blockDailyStats.fill(yesterdayPeriod),
-    prisma.transactionDailyStats.fill(yesterdayPeriod),
+    prisma.blobDailyStats.populate(yesterdayPeriod),
+    prisma.blockDailyStats.populate(yesterdayPeriod),
+    prisma.transactionDailyStats.populate(yesterdayPeriod),
   ]);
 
   console.log("Daily stats created");
