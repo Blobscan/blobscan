@@ -130,7 +130,7 @@ describe("BlobStorageManager", () => {
       const selectedStorage: BlobStorage = "POSTGRES";
 
       const result = await blobStorageManager.storeBlob(blob, {
-        storages: [selectedStorage],
+        selectedStorages: [selectedStorage],
       });
 
       const blobReference = result.references[0];
@@ -158,7 +158,7 @@ describe("BlobStorageManager", () => {
 
       await expect(
         singleStorageBSM.storeBlob(blob, {
-          storages: selectedStorages,
+          selectedStorages: selectedStorages,
         })
       ).rejects.toMatchInlineSnapshot(
         "[Error: Some of the selected storages are not available: POSTGRES, GOOGLE]"

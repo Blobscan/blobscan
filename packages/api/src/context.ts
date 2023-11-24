@@ -9,8 +9,8 @@ import type {
 import jwt from "jsonwebtoken";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
-import { createOrLoadBlobPropagator } from "@blobscan/blob-propagator";
-import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { getBlobPropagator } from "@blobscan/blob-propagator";
+import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
 import { env } from "./env";
@@ -36,7 +36,6 @@ function getJWTFromRequest(
     if (type !== "Bearer" || !token) {
       return null;
     }
-    console.log(env);
 
     const decoded = jwt.verify(token, env.SECRET_KEY) as string;
 
@@ -51,11 +50,11 @@ function getJWTFromRequest(
 }
 
 export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
-  const blobStorageManager = await createOrLoadBlobStorageManager();
+  const blobStorageManager = await getBlobStorageManager();
   let blobPropagator: BlobPropagator | undefined;
 
   if (env.BLOB_PROPAGATOR_ENABLED) {
-    blobPropagator = await createOrLoadBlobPropagator();
+    blobPropagator = await getBlobPropagator();
   }
 
   return {

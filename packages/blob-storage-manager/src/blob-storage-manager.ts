@@ -4,7 +4,7 @@ import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
 
 let blobStorageManager: BlobStorageManager | undefined;
 
-export async function createOrLoadBlobStorageManager(): Promise<BlobStorageManager> {
+export async function getBlobStorageManager(): Promise<BlobStorageManager> {
   if (!blobStorageManager) {
     const googleStorage = await GoogleStorage.tryCreateFromEnv(env);
     const postgresStorage = await PostgresStorage.tryCreateFromEnv(env);

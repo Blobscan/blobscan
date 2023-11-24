@@ -37,7 +37,7 @@ export type StorageError<SName extends BlobStorageName = BlobStorageName> = {
 };
 
 export type StoreOptions = {
-  storages: BlobStorageName[];
+  selectedStorages: BlobStorageName[];
 };
 
 function calculateBlobBytes(blob: string): number {
@@ -171,8 +171,6 @@ export class BlobStorageManager<
         },
       },
       async (span) => {
-        // If no storages are provided, use all the storages
-
         const selectedStorages = this.#getSelectedStorages(opts);
 
         const results = await Promise.allSettled(
@@ -259,12 +257,12 @@ export class BlobStorageManager<
   }
 
   #getSelectedStorages(
-    { storages }: StoreOptions = { storages: [] }
+    { selectedStorages }: StoreOptions = { selectedStorages: [] }
   ): [BSName, BlobStorage][] {
-    const uniqueInputStorageNames = Array.from(new Set(storages));
+    const uniqueInputStorageNames = Array.from(new Set(selectedStorages));
     const selectedStorageNames = uniqueInputStorageNames?.length
       ? uniqueInputStorageNames
-      : // If no storages are provided, use all the storages
+      : // If no storages are provided, default to normal behaviour and use all the storages
         (Object.keys(this.#blobStorages) as BSName[]);
 
     const selectedAvailableStorages = Object.entries(this.#blobStorages).filter(

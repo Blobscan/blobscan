@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, it } from "vitest";
 import type { SuiteFactory } from "vitest";
 
-import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import type { BlobStorage, BlobStorage as BlobStorageName } from "@blobscan/db";
 
@@ -78,7 +78,7 @@ export function runStorageWorkerTestSuite(
 
       const expectedResult = { storage, data: blobData };
       const result = await (
-        await createOrLoadBlobStorageManager()
+        await getBlobStorageManager()
       ).getBlob(expectedBlobStorageRef);
 
       expect(result).toEqual(expectedResult);

@@ -27,7 +27,7 @@ describe(
  */
 vi.mock("@blobscan/blob-storage-manager", () => {
   return {
-    async createOrLoadBlobStorageManager() {
+    async getBlobStorageManager() {
       return Promise.resolve<Partial<BlobStorageManager>>({
         storeBlob({ versionedHash }) {
           if (versionedHash === fixtures.blobVersionedHash) {

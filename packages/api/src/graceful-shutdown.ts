@@ -1,8 +1,8 @@
-import { createOrLoadBlobPropagator } from "@blobscan/blob-propagator";
+import { getBlobPropagator } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
 
 export async function gracefulShutdown() {
-  const blobPropagator = await createOrLoadBlobPropagator();
+  const blobPropagator = await getBlobPropagator();
 
   const shutdownOps = [];
 

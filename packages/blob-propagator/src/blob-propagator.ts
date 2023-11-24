@@ -1,6 +1,6 @@
 import type { ConnectionOptions } from "bullmq";
 
-import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { BlobStorage } from "@blobscan/db";
 
 import { BlobPropagator } from "./BlobPropagator";
@@ -8,12 +8,12 @@ import { env } from "./env";
 
 let blobPropagator: BlobPropagator | undefined;
 
-export async function createOrLoadBlobPropagator() {
+export async function getBlobPropagator() {
   if (!blobPropagator) {
-    const bsm = await createOrLoadBlobStorageManager();
+    const blobStorageManager = await getBlobStorageManager();
 
     const availableStorages = Object.values(BlobStorage).filter((storageName) =>
-      bsm.hasStorage(storageName)
+      blobStorageManager.hasStorage(storageName)
     );
     const connection: ConnectionOptions = {
       host: env.REDIS_QUEUE_HOST,
