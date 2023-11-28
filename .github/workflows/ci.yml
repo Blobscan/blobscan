@@ -114,6 +114,7 @@ jobs:
           images: blossomlabs/blobscan
           tags: |
             type=ref,event=branch
+            type=semver,pattern={{version}}
             type=raw,value=latest,enable=${{ github.ref_name == 'next' }}
             type=raw,value=stable,enable=${{ github.ref_name == 'master' }}
 
