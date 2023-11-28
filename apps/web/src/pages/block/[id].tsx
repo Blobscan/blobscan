@@ -17,6 +17,7 @@ import {
   formatTimestamp,
   formatWei,
   gasTarget,
+  GAS_PER_BLOB,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -102,8 +103,16 @@ const Block: NextPage = function () {
                   ),
                 },
                 {
-                  name: "Total Blob Size",
-                  value: formatBytes(totalBlobSize),
+                  name: "Blob Size",
+                  value: (
+                    <div>
+                      {formatBytes(totalBlobSize)}
+                      <span className="ml-1 text-gray-500">
+                        ({formatNumber(BigInt(totalBlobSize) / GAS_PER_BLOB)}{" "}
+                        blobs)
+                      </span>
+                    </div>
+                  ),
                 },
                 {
                   name: "Blob Gas Price",

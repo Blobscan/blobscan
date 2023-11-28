@@ -58,7 +58,7 @@ export function convertWei(
 }
 
 export function gasTarget(blobGasUsed: bigint): string {
-  const blobsInBlock = blobGasUsed / BigInt(128 * 1024);
+  const blobsInBlock = blobGasUsed / GAS_PER_BLOB;
   const targetBlobsPerBlock = BigInt(3);
   const targetPercent =
     blobsInBlock < targetBlobsPerBlock
