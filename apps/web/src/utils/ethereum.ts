@@ -3,6 +3,9 @@ import { formatNumber } from "./number";
 const MIN_BLOB_GASPRICE = BigInt(1);
 const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
 export const GAS_PER_BLOB = BigInt(2 ** 17); // 131_072
+const TARGET_BLOBS_PER_BLOCK = BigInt(3);
+export const MAX_BLOBS_PER_BLOCK = BigInt(6);
+export const GAS_LIMIT_PER_BLOCK = GAS_PER_BLOB * MAX_BLOBS_PER_BLOCK;
 
 export type EtherUnit = "wei" | "gwei" | "ether";
 
@@ -59,15 +62,14 @@ export function convertWei(
 
 export function gasTarget(blobGasUsed: bigint): string {
   const blobsInBlock = blobGasUsed / GAS_PER_BLOB;
-  const targetBlobsPerBlock = BigInt(3);
   const targetPercent =
-    blobsInBlock < targetBlobsPerBlock
-      ? `${(blobsInBlock * BigInt(100)) / targetBlobsPerBlock}`
+    blobsInBlock < TARGET_BLOBS_PER_BLOCK
+      ? `${(blobsInBlock * BigInt(100)) / TARGET_BLOBS_PER_BLOCK}`
       : `${
-          ((blobsInBlock - targetBlobsPerBlock) * BigInt(100)) /
-          targetBlobsPerBlock
+          ((blobsInBlock - TARGET_BLOBS_PER_BLOCK) * BigInt(100)) /
+          TARGET_BLOBS_PER_BLOCK
         }`;
-  const sign = blobsInBlock < targetBlobsPerBlock ? "-" : "+";
+  const sign = blobsInBlock < TARGET_BLOBS_PER_BLOCK ? "-" : "+";
   const percentStr = `${sign}${targetPercent}`;
   return `${percentStr}% Blob Gas Target`;
 }

@@ -18,6 +18,7 @@ import {
   formatWei,
   gasTarget,
   GAS_PER_BLOB,
+  GAS_LIMIT_PER_BLOCK,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -134,7 +135,7 @@ const Block: NextPage = function () {
                         (
                         {formatNumber(
                           (blockData.blobGasUsed * BigInt(100)) /
-                            BigInt(786432),
+                            GAS_LIMIT_PER_BLOCK,
                           "standard",
                           { maximumFractionDigits: 2 }
                         )}
