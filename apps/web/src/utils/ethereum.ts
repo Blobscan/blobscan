@@ -57,6 +57,21 @@ export function convertWei(
   }
 }
 
+export function gasTarget(blobGasUsed: bigint): string {
+  const blobsInBlock = blobGasUsed / BigInt(128 * 1024);
+  const targetBlobsPerBlock = BigInt(3);
+  const targetPercent =
+    blobsInBlock < targetBlobsPerBlock
+      ? `${(blobsInBlock * BigInt(100)) / targetBlobsPerBlock}`
+      : `${
+          ((blobsInBlock - targetBlobsPerBlock) * BigInt(100)) /
+          targetBlobsPerBlock
+        }`;
+  const sign = blobsInBlock < targetBlobsPerBlock ? "-" : "+";
+  const percentStr = `${sign}${targetPercent}`;
+  return `${percentStr}% Blob Gas Target`;
+}
+
 export function formatWei(
   weiAmount: bigint | number,
   {

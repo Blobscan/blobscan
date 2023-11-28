@@ -16,6 +16,7 @@ import {
   formatNumber,
   formatTimestamp,
   formatWei,
+  gasTarget,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -116,7 +117,7 @@ const Block: NextPage = function () {
                   ),
                 },
                 {
-                  name: "Total Blob Gas Used",
+                  name: "Blob Gas Used",
                   value: (
                     <div>
                       {formatNumber(blockData.blobGasUsed)}
@@ -129,12 +130,24 @@ const Block: NextPage = function () {
                           { maximumFractionDigits: 2 }
                         )}
                         %)
+                      </span>{" "}
+                      {gasTarget(blockData.blobGasUsed)}
+                    </div>
+                  ),
+                },
+                {
+                  name: "Blob Gas Limit",
+                  value: (
+                    <div>
+                      {formatNumber(786432)}
+                      <span className="ml-1 text-gray-500">
+                        (6 blobs per block)
                       </span>
                     </div>
                   ),
                 },
                 {
-                  name: "Total Blob As Calldata Gas",
+                  name: "Blob As Calldata Gas",
                   value: (
                     <div>
                       {formatNumber(blockData.blobAsCalldataGasUsed)}
