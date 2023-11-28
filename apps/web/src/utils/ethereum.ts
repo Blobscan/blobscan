@@ -84,7 +84,7 @@ export function formatWei(
     compact ? "compact" : "standard",
     {
       // Display up to 9 decimal digits for small wei amounts
-      maximumFractionDigits: weiAmountStr.length < 9 ? 9 : 3,
+      maximumFractionDigits: weiAmountStr.length < 12 ? 18 : 3,
     }
   );
 

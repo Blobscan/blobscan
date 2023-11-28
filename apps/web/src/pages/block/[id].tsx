@@ -79,7 +79,7 @@ const Block: NextPage = function () {
         fields={
           blockData
             ? [
-                { name: "Block Height", value: formatNumber(blockData.number) },
+                { name: "Block Height", value: blockData.number },
                 { name: "Hash", value: blockData.hash },
                 {
                   name: "Timestamp",
@@ -96,7 +96,7 @@ const Block: NextPage = function () {
                       href={buildSlotExternalUrl(blockData.slot)}
                       isExternal
                     >
-                      {formatNumber(blockData.slot)}
+                      {blockData.slot}
                     </Link>
                   ),
                 },
@@ -106,11 +106,32 @@ const Block: NextPage = function () {
                 },
                 {
                   name: "Blob Gas Price",
-                  value: formatWei(blockData.blobGasPrice),
+                  value: (
+                    <div>
+                      {formatWei(blockData.blobGasPrice, { toUnit: "ether" })}
+                      <span className="ml-1 text-gray-500">
+                        ({formatWei(blockData.blobGasPrice)})
+                      </span>
+                    </div>
+                  ),
                 },
                 {
                   name: "Total Blob Gas Used",
-                  value: formatNumber(blockData.blobGasUsed),
+                  value: (
+                    <div>
+                      {formatNumber(blockData.blobGasUsed)}
+                      <span className="ml-1 text-gray-500">
+                        (
+                        {formatNumber(
+                          (blockData.blobGasUsed * BigInt(100)) /
+                            BigInt(786432),
+                          "standard",
+                          { maximumFractionDigits: 2 }
+                        )}
+                        %)
+                      </span>
+                    </div>
+                  ),
                 },
                 {
                   name: "Total Blob As Calldata Gas",
