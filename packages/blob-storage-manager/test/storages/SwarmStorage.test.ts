@@ -1,10 +1,11 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { fixtures } from "@blobscan/test";
+
 import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
 import {
   BLOB_DATA,
   BLOB_HASH,
-  CHAIN_ID,
   SWARM_REFERENCE,
   SWARM_STORAGE_CONFIG,
 } from "../fixtures";
@@ -67,7 +68,7 @@ describe("SwarmStorage", () => {
   describe("storeBlob", () => {
     it("should store the blob in the bucket", async () => {
       const uploadReference = await storage.storeBlob(
-        CHAIN_ID,
+        fixtures.chainId,
         BLOB_HASH,
         BLOB_DATA
       );
@@ -77,7 +78,7 @@ describe("SwarmStorage", () => {
 
     it("should throw an error if no postage batches are available", async () => {
       await expect(
-        storage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA)
+        storage.storeBlob(fixtures.chainId, BLOB_HASH, BLOB_DATA)
       ).rejects.toMatchInlineSnapshot("[Error: No postage batches available]");
     });
 
@@ -87,7 +88,7 @@ describe("SwarmStorage", () => {
       });
 
       await expect(
-        newStorage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA)
+        newStorage.storeBlob(fixtures.chainId, BLOB_HASH, BLOB_DATA)
       ).rejects.toMatchInlineSnapshot(
         "[Error: Bee debug endpoint required to get postage batches]"
       );

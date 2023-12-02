@@ -12,3 +12,5 @@ export const env = createEnv({
     ...presetEnvOptions,
   },
 });
+
+export type EnvVars = typeof env;

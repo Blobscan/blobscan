@@ -18,6 +18,9 @@ describe(
   "Swarm Worker",
   runStorageWorkerTestSuite("SWARM", {
     fixtures,
+    runAfterAllFns() {
+      vi.clearAllMocks();
+    },
   })
 );
 

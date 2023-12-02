@@ -1,3 +1,4 @@
+export type { EnvVars as Environment } from "./env";
 export * from "./types";
 export { BlobPropagator } from "./BlobPropagator";
-export { getBlobPropagator } from "./blob-propagator";
+export * from "./blob-propagator";

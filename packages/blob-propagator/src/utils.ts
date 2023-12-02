@@ -19,12 +19,12 @@ export function buildBlobDataFilePath(versionedHash: string) {
 }
 
 export async function createBlobDataFile({ data, versionedHash }: Blob) {
-  const blobfilePath = buildBlobDataFilePath(versionedHash);
-
   try {
-    if (await checkBlobDataFileExists(blobfilePath)) {
+    if (await checkBlobDataFileExists(versionedHash)) {
       return Promise.resolve();
     }
+
+    const blobfilePath = buildBlobDataFilePath(versionedHash);
 
     return fs.promises.writeFile(blobfilePath, data, { encoding: "utf-8" });
   } catch (err) {

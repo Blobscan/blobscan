@@ -55,15 +55,22 @@ describe("BlobPropagator", () => {
   });
 
   it("should close correctly", async () => {
+    const testBlobPropagator = new MockedBlobPropagator(blobStorages, {
+      workerOptions: {
+        connection,
+      },
+    });
     // Flow producer doesn't have a running state, so we need to spy on its close method
-    const flowProducer = blobPropagator.getBlobPropagationFlowProducer();
+    const flowProducer = testBlobPropagator.getBlobPropagationFlowProducer();
     const flowProducerCloseSpy = vi.spyOn(flowProducer, "close");
 
-    await blobPropagator.close();
+    await testBlobPropagator.close();
 
-    const finalizerClosed = !blobPropagator.getFinalizerWorker().isRunning();
+    const finalizerClosed = !testBlobPropagator
+      .getFinalizerWorker()
+      .isRunning();
     const storageWorkersClosed = Object.values(
-      blobPropagator.getStorageWorkers()
+      testBlobPropagator.getStorageWorkers()
     ).every((worker) => !worker.isRunning());
 
     expect(finalizerClosed, "Finalizer worker still running").toBe(true);

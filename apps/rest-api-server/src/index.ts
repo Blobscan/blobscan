@@ -54,11 +54,11 @@ const server = app.listen(env.BLOBSCAN_API_PORT, () => {
 async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
+  await apiGracefulShutdown();
+
   server.close(() => {
     logger.debug("REST API server shut down successfully");
   });
-
-  await apiGracefulShutdown();
 }
 
 // Listen for TERM signal .e.g. kill

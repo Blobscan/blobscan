@@ -1,13 +1,16 @@
-import { afterEach, beforeEach, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from "vitest";
 import type { SuiteFactory } from "vitest";
 
 import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
-import type { BlobReference } from "@blobscan/blob-storage-manager";
+import type {
+  BlobReference,
+  BlobStorageManager,
+} from "@blobscan/blob-storage-manager";
 import type { BlobStorage, BlobStorage as BlobStorageName } from "@blobscan/db";
 
 import type { BlobPropagationSandboxedJob } from "../src/types";
 import { createBlobDataFile, removeBlobDataFile } from "../src/utils";
-import gcsStorage from "../src/worker-processors/gcs";
+import gcsWorker from "../src/worker-processors/gcs";
 import postgresWorker from "../src/worker-processors/postgres";
 import swarmWorker from "../src/worker-processors/swarm";
 
@@ -26,7 +29,7 @@ type TestSuiteOptions = {
 function getStorageWorker(storage: BlobStorage) {
   switch (storage) {
     case "GOOGLE":
-      return gcsStorage;
+      return gcsWorker;
     case "POSTGRES":
       return postgresWorker;
     case "SWARM":
@@ -43,6 +46,7 @@ export function runStorageWorkerTestSuite(
   }: TestSuiteOptions
 ): SuiteFactory {
   return () => {
+    let blobStorageManager: BlobStorageManager;
     const expectedBlobStorageRef: BlobReference = {
       storage,
       reference: blobStorageReference,
@@ -54,13 +58,19 @@ export function runStorageWorkerTestSuite(
       },
     } as BlobPropagationSandboxedJob;
 
-    if (runBeforeAllFns) {
-      runBeforeAllFns();
-    }
+    beforeAll(async () => {
+      if (runBeforeAllFns) {
+        runBeforeAllFns();
+      }
 
-    if (runAfterAllFns) {
-      runAfterAllFns();
-    }
+      blobStorageManager = await getBlobStorageManager();
+    });
+
+    afterAll(() => {
+      if (runAfterAllFns) {
+        runAfterAllFns();
+      }
+    });
 
     beforeEach(async () => {
       await createBlobDataFile({
@@ -77,9 +87,7 @@ export function runStorageWorkerTestSuite(
       await storageWorker(job);
 
       const expectedResult = { storage, data: blobData };
-      const result = await (
-        await getBlobStorageManager()
-      ).getBlob(expectedBlobStorageRef);
+      const result = await blobStorageManager.getBlob(expectedBlobStorageRef);
 
       expect(result).toEqual(expectedResult);
     });

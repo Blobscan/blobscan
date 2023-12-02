@@ -4,7 +4,9 @@ import type {
   FlowChildJob,
   FlowJob,
   WorkerOptions,
+  RedisOptions,
 } from "bullmq";
+import IORedis from "ioredis";
 import path from "path";
 
 import type { $Enums } from "@blobscan/db";
@@ -34,6 +36,17 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   useWorkerThreads: true,
 };
 
+function isRedisOptions(
+  connection: ConnectionOptions
+): connection is RedisOptions {
+  return (
+    "host" in connection &&
+    "port" in connection &&
+    "password" in connection &&
+    "username" in connection
+  );
+}
+
 export class BlobPropagator {
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
@@ -55,7 +68,6 @@ export class BlobPropagator {
     this.blobPropagationFlowProducer = this.#createBlobPropagationFlowProducer(
       workerOptions?.connection
     );
-
     this.finalizerWorker = this.#createFinalizerWorker(workerOptions);
     this.storageWorkers = this.#createBlobStorageWorkers(
       storages,
@@ -63,18 +75,33 @@ export class BlobPropagator {
     );
   }
 
-  async close() {
-    const teardownOperations = [];
+  close() {
+    let teardownPromise: Promise<void> = Promise.resolve();
 
-    Object.values(this.storageWorkers).forEach((worker) =>
-      teardownOperations.push(worker.close())
+    Object.values(this.storageWorkers).forEach((w) => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      teardownPromise = teardownPromise.finally(async () => {
+        await w.close();
+      });
+    });
+
+    return (
+      teardownPromise
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        .finally(async () => {
+          await this.finalizerWorker.close();
+        })
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        .finally(async () => {
+          const redisClient = await this.blobPropagationFlowProducer.client;
+
+          await redisClient.quit();
+        })
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        .finally(async () => {
+          await this.blobPropagationFlowProducer.close();
+        })
     );
-    teardownOperations.push(this.finalizerWorker.close());
-
-    // Order is important. We need to close child job workers before closing the flow producer
-    teardownOperations.push(this.blobPropagationFlowProducer.close());
-
-    await Promise.all(teardownOperations);
   }
 
   async propagateBlob(blob: Blob) {
@@ -98,8 +125,28 @@ export class BlobPropagator {
   }
 
   #createBlobPropagationFlowProducer(connection?: ConnectionOptions) {
-    const opts = connection ? { connection } : undefined;
-    const blobPropagationFlowProducer = new FlowProducer(opts);
+    /*
+     * Instantiating a new `FlowProducer` appears to create two separate `RedisConnection` instances.
+     * This leads to an issue where one instance remains active, or "dangling", after the `FlowProducer` has been closed.
+     * To prevent this, we now initialize a single `IORedis` instance in advance and use it when creating the `FlowProducer`.
+     * This way, both created connections reference the same `IORedis` instance and can be closed properly.
+     *
+     * See: https://github.com/taskforcesh/bullmq/blob/d7cf6ea60830b69b636648238a51e5f981616d02/src/classes/flow-producer.ts#L111
+     */
+    const redisConnection =
+      connection && isRedisOptions(connection)
+        ? new IORedis({
+            host: connection.host,
+            port: connection.port,
+
+            password: connection.password,
+            maxRetriesPerRequest: null,
+          })
+        : connection;
+
+    const blobPropagationFlowProducer = new FlowProducer({
+      connection: redisConnection,
+    });
 
     blobPropagationFlowProducer.on("error", (err) => {
       logger.error(`Blob propagation flow producer error: ${err}`);

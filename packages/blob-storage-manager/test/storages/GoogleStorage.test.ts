@@ -1,10 +1,11 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { fixtures } from "@blobscan/test";
+
 import { GoogleStorageMock as GoogleStorage } from "../../src/__mocks__/GoogleStorage";
 import {
   BLOB_DATA,
   BLOB_HASH,
-  CHAIN_ID,
   FILE_URI,
   GOOGLE_STORAGE_CONFIG,
 } from "../fixtures";
@@ -63,10 +64,14 @@ describe("GoogleStorage", () => {
 
   describe("storeBlob", () => {
     it("should return the correct file", async () => {
-      const file = await storage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA);
+      const file = await storage.storeBlob(
+        fixtures.chainId,
+        BLOB_HASH,
+        BLOB_DATA
+      );
 
       expect(file).toMatchInlineSnapshot(
-        '"7011893058/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
+        '"70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
       );
     });
   });

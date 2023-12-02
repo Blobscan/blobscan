@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import type { SpyInstance } from "vitest";
 import {
   afterAll,
   beforeAll,
@@ -9,8 +10,16 @@ import {
   vi,
 } from "vitest";
 
+import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
+import { BlobPropagator } from "@blobscan/blob-propagator";
+import { removeBlobDataFile } from "@blobscan/blob-propagator/src/utils";
+import {
+  BlobStorageManager,
+  PostgresStorage,
+  GoogleStorage,
+} from "@blobscan/blob-storage-manager";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { omitDBTimestampFields } from "@blobscan/test";
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
@@ -24,15 +33,6 @@ describe("Indexer router", async () => {
   let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
-    vi.stubEnv("SECRET_KEY", "supersecret");
-    vi.stubEnv("CHAIN_ID", "70118930558");
-    vi.stubEnv("POSTGRES_STORAGE_ENABLED", "true");
-    vi.stubEnv("GOOGLE_STORAGE_ENABLED", "true");
-    vi.stubEnv("GOOGLE_STORAGE_PROJECT_ID", "blobscan-test-project");
-    vi.stubEnv("GOOGLE_STORAGE_BUCKET_NAME", "blobscan-test-bucket");
-    vi.stubEnv("GOOGLE_STORAGE_API_ENDPOINT", "http://localhost:4443");
-    vi.stubEnv("BLOB_PROPAGATOR_ENABLED", "false");
-
     const ctx = await createTestContext();
 
     authorizedContext = await createTestContext({ withAuth: true });
@@ -41,8 +41,11 @@ describe("Indexer router", async () => {
     authorizedCaller = appRouter.createCaller(authorizedContext);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    vi.clearAllMocks();
     vi.unstubAllEnvs();
+
+    await blobPropagator.close();
   });
 
   describe("getSlot", () => {
@@ -226,147 +229,227 @@ describe("Indexer router", async () => {
         describe("when indexing blob data", () => {
           const blobVersionedHashes = INPUT.blobs.map((b) => b.versionedHash);
 
-          it("should store it on the db correctly", async () => {
-            const dbBlobData = await authorizedContext.prisma.blobData
-              .findMany({
-                where: {
-                  id: {
-                    in: blobVersionedHashes,
-                  },
-                },
-              })
-              .then((res) =>
-                res
-                  .sort((a, b) => a.id.localeCompare(b.id))
-                  .map((b) => `0x${b.data.toString("hex")}`)
-              );
-
-            expect(dbBlobData).toMatchInlineSnapshot(`
-            [
-              "0x34567890abcdef1234567890abcdef",
-              "0x34567890abcdef1234567890abcdef1234567890abcdef",
-              "0x1234abcdeff123456789ab",
-            ]
-          `);
-          });
-
-          it("should store it on google storage correctly", async () => {
-            const blobDataStorageRefs =
-              await authorizedContext.prisma.blobDataStorageReference.findMany({
-                where: {
-                  AND: {
-                    blobHash: {
+          describe("when blob propagator is disabled", () => {
+            it("should store it on the db correctly", async () => {
+              const dbBlobData = await authorizedContext.prisma.blobData
+                .findMany({
+                  where: {
+                    id: {
                       in: blobVersionedHashes,
                     },
-                    blobStorage: "GOOGLE",
                   },
-                },
-              });
-            const blobRefs = blobDataStorageRefs.map<BlobReference>((ref) => ({
-              reference: ref.dataReference,
-              storage: "GOOGLE",
-            }));
-            const gcsBlobData = await Promise.all(
-              blobRefs.map((ref) =>
-                authorizedContext.blobStorageManager.getBlob(ref)
-              )
-            ).then((res) =>
-              res.sort((a, b) => (a && b ? a.data.localeCompare(b.data) : 0))
-            );
+                })
+                .then((res) =>
+                  res
+                    .sort((a, b) => a.id.localeCompare(b.id))
+                    .map((b) => `0x${b.data.toString("hex")}`)
+                );
 
-            expect(gcsBlobData).toMatchInlineSnapshot(`
+              expect(dbBlobData).toMatchInlineSnapshot(`
               [
-                {
-                  "data": "0x1234abcdeff123456789ab",
-                  "storage": "GOOGLE",
-                },
-                {
-                  "data": "0x34567890abcdef1234567890abcdef",
-                  "storage": "GOOGLE",
-                },
-                {
-                  "data": "0x34567890abcdef1234567890abcdef1234567890abcdef",
-                  "storage": "GOOGLE",
-                },
+                "0x34567890abcdef1234567890abcdef",
+                "0x34567890abcdef1234567890abcdef1234567890abcdef",
+                "0x1234abcdeff123456789ab",
               ]
             `);
-          });
-        });
+            });
 
-        it("should create blob storage references correctly", async () => {
-          const indexedBlobHashes = INPUT.blobs.map(
-            (blob) => blob.versionedHash
-          );
-          const blobStorageRefs =
-            await authorizedContext.prisma.blobDataStorageReference.findMany({
+            it("should store it on google storage correctly", async () => {
+              const blobDataStorageRefs =
+                await authorizedContext.prisma.blobDataStorageReference.findMany(
+                  {
+                    where: {
+                      AND: {
+                        blobHash: {
+                          in: blobVersionedHashes,
+                        },
+                        blobStorage: "GOOGLE",
+                      },
+                    },
+                  }
+                );
+              const blobRefs = blobDataStorageRefs.map<BlobReference>(
+                (ref) => ({
+                  reference: ref.dataReference,
+                  storage: "GOOGLE",
+                })
+              );
+              const gcsBlobData = await Promise.all(
+                blobRefs.map((ref) =>
+                  authorizedContext.blobStorageManager.getBlob(ref)
+                )
+              ).then((res) =>
+                res.sort((a, b) => (a && b ? a.data.localeCompare(b.data) : 0))
+              );
+
+              expect(gcsBlobData).toMatchInlineSnapshot(`
+                [
+                  {
+                    "data": "0x1234abcdeff123456789ab",
+                    "storage": "GOOGLE",
+                  },
+                  {
+                    "data": "0x34567890abcdef1234567890abcdef",
+                    "storage": "GOOGLE",
+                  },
+                  {
+                    "data": "0x34567890abcdef1234567890abcdef1234567890abcdef",
+                    "storage": "GOOGLE",
+                  },
+                ]
+              `);
+            });
+
+            it("should create blob storage references correctly", async () => {
+              const indexedBlobHashes = INPUT.blobs.map(
+                (blob) => blob.versionedHash
+              );
+              const blobStorageRefs =
+                await authorizedContext.prisma.blobDataStorageReference.findMany(
+                  {
+                    orderBy: {
+                      blobHash: "asc",
+                    },
+                    where: {
+                      blobHash: {
+                        in: indexedBlobHashes,
+                      },
+                    },
+                  }
+                );
+
+              expect(blobStorageRefs).toMatchInlineSnapshot(`
+                [
+                  {
+                    "blobHash": "blobHash1000",
+                    "blobStorage": "POSTGRES",
+                    "dataReference": "blobHash1000",
+                  },
+                  {
+                    "blobHash": "blobHash1000",
+                    "blobStorage": "GOOGLE",
+                    "dataReference": "70118930558/ob/Ha/sh/obHash1000.txt",
+                  },
+                  {
+                    "blobHash": "blobHash1001",
+                    "blobStorage": "POSTGRES",
+                    "dataReference": "blobHash1001",
+                  },
+                  {
+                    "blobHash": "blobHash1001",
+                    "blobStorage": "GOOGLE",
+                    "dataReference": "70118930558/ob/Ha/sh/obHash1001.txt",
+                  },
+                  {
+                    "blobHash": "blobHash999",
+                    "blobStorage": "POSTGRES",
+                    "dataReference": "blobHash999",
+                  },
+                  {
+                    "blobHash": "blobHash999",
+                    "blobStorage": "GOOGLE",
+                    "dataReference": "70118930558/ob/Ha/sh/obHash999.txt",
+                  },
+                ]
+              `);
+            });
+          });
+
+          it("should not index duplicated blobs", async () => {
+            const duplicatedBlobVersionedHash =
+              INPUT_WITH_DUPLICATED_BLOBS.blobs[0]?.versionedHash;
+            const blobStorageManagerSpy = vi.spyOn(
+              authorizedContext.blobStorageManager,
+              "storeBlob"
+            );
+            await authorizedCaller.indexer.indexData(
+              INPUT_WITH_DUPLICATED_BLOBS
+            );
+
+            const blobs = await authorizedContext.prisma.blob.findMany({
               where: {
-                blobHash: {
-                  in: indexedBlobHashes,
+                versionedHash: duplicatedBlobVersionedHash,
+              },
+            });
+            const blobStorageRefs =
+              await authorizedContext.prisma.blobDataStorageReference.findMany({
+                where: {
+                  blobHash: duplicatedBlobVersionedHash,
                 },
-              },
-            });
+              });
 
-          expect(blobStorageRefs).toMatchInlineSnapshot(`
-            [
-              {
-                "blobHash": "blobHash999",
-                "blobStorage": "GOOGLE",
-                "dataReference": "70118930558/ob/Ha/sh/obHash999.txt",
-              },
-              {
-                "blobHash": "blobHash999",
-                "blobStorage": "POSTGRES",
-                "dataReference": "blobHash999",
-              },
-              {
-                "blobHash": "blobHash1000",
-                "blobStorage": "GOOGLE",
-                "dataReference": "70118930558/ob/Ha/sh/obHash1000.txt",
-              },
-              {
-                "blobHash": "blobHash1000",
-                "blobStorage": "POSTGRES",
-                "dataReference": "blobHash1000",
-              },
-              {
-                "blobHash": "blobHash1001",
-                "blobStorage": "GOOGLE",
-                "dataReference": "70118930558/ob/Ha/sh/obHash1001.txt",
-              },
-              {
-                "blobHash": "blobHash1001",
-                "blobStorage": "POSTGRES",
-                "dataReference": "blobHash1001",
-              },
-            ]
-          `);
+            expect(blobs).toHaveLength(1);
+            expect(blobStorageRefs).toHaveLength(2);
+            // Only one blob should be stored
+            expect(blobStorageManagerSpy).toBeCalledTimes(1);
+          });
         });
 
-        it("should not index duplicated blobs", async () => {
-          const duplicatedBlobVersionedHash =
-            INPUT_WITH_DUPLICATED_BLOBS.blobs[0]?.versionedHash;
-          const blobStorageManagerSpy = vi.spyOn(
-            authorizedContext.blobStorageManager,
-            "storeBlob"
+        describe("when blob propagator is enabled", () => {
+          let callerWithBlobPropagator: ReturnType<
+            typeof appRouter.createCaller
+          >;
+          let blobPropagatorSpy: SpyInstance<
+            [blobs: PropagatorBlob[]],
+            Promise<void>
+          >;
+          const uniqueBlobVersionedHashes = Array.from(
+            new Set(
+              INPUT_WITH_DUPLICATED_BLOBS.blobs.map((b) => b.versionedHash)
+            )
           );
-          await authorizedCaller.indexer.indexData(INPUT_WITH_DUPLICATED_BLOBS);
+          const expectedBlobsToPropagate = uniqueBlobVersionedHashes.map(
+            (versionedHash) => ({
+              data: INPUT_WITH_DUPLICATED_BLOBS.blobs.find(
+                (b) => b.versionedHash === versionedHash
+              )?.data,
+              versionedHash,
+            })
+          );
 
-          const blobs = await authorizedContext.prisma.blob.findMany({
-            where: {
-              versionedHash: duplicatedBlobVersionedHash,
-            },
-          });
-          const blobStorageRefs =
-            await authorizedContext.prisma.blobDataStorageReference.findMany({
-              where: {
-                blobHash: duplicatedBlobVersionedHash,
-              },
+          beforeAll(async () => {
+            const ctxWithBlobPropagator = await createTestContext({
+              withAuth: true,
             });
+            ctxWithBlobPropagator.blobPropagator = blobPropagator;
 
-          expect(blobs).toHaveLength(1);
-          expect(blobStorageRefs).toHaveLength(2);
-          // Only one blob should be stored
-          expect(blobStorageManagerSpy).toBeCalledTimes(1);
+            callerWithBlobPropagator = appRouter.createCaller(
+              ctxWithBlobPropagator
+            );
+
+            blobPropagatorSpy = vi.spyOn(blobPropagator, "propagateBlobs");
+          });
+
+          afterAll(async () => {
+            await Promise.all(
+              expectedBlobsToPropagate.map((b) =>
+                removeBlobDataFile(b.versionedHash)
+              )
+            );
+          });
+
+          it("should call blob propagator", async () => {
+            await callerWithBlobPropagator.indexer.indexData(
+              INPUT_WITH_DUPLICATED_BLOBS
+            );
+
+            expect(blobPropagatorSpy).toHaveBeenCalledOnce();
+          });
+
+          it("should propagate the correct blobs", async () => {
+            await callerWithBlobPropagator.indexer.indexData(
+              INPUT_WITH_DUPLICATED_BLOBS
+            );
+
+            const propagatedBlobs = blobPropagatorSpy.mock.calls[0]
+              ? blobPropagatorSpy.mock.calls[0][0].map<PropagatorBlob>((b) => ({
+                  data: b.data,
+                  versionedHash: b.versionedHash,
+                }))
+              : [];
+
+            expect(propagatedBlobs).toEqual(expectedBlobsToPropagate);
+          });
         });
       });
 
@@ -462,4 +545,46 @@ describe("Indexer router", async () => {
       ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
     });
   });
+});
+
+vi.mock("@blobscan/blob-storage-manager", async () => {
+  const actual = (await vi.importActual(
+    "@blobscan/blob-storage-manager"
+  )) as Record<string, unknown>;
+
+  return {
+    ...actual,
+    getBlobStorageManager() {
+      return Promise.resolve(
+        new BlobStorageManager(
+          {
+            POSTGRES: new PostgresStorage(),
+            GOOGLE: new GoogleStorage(
+              fixtures.blobStorageManagerConfig.googleStorageConfig
+            ),
+          },
+          fixtures.chainId
+        )
+      );
+    },
+  };
+});
+
+const blobPropagator = new BlobPropagator(
+  ["GOOGLE", "POSTGRES"],
+  fixtures.blobPropagatorConfig
+);
+
+vi.mock("@blobscan/blob-propagator", async () => {
+  const actual = (await vi.importActual("@blobscan/blob-propagator")) as Record<
+    string,
+    unknown
+  >;
+
+  return {
+    ...actual,
+    getBlobPropagator() {
+      return Promise.resolve(blobPropagator);
+    },
+  };
 });

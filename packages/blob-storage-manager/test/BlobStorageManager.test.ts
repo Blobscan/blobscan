@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { BlobStorage } from "@blobscan/db";
 import prisma from "@blobscan/db/prisma/__mocks__/client";
+import { fixtures } from "@blobscan/test";
 
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import {
@@ -12,7 +13,6 @@ import {
 import {
   BLOB_DATA,
   BLOB_HASH,
-  CHAIN_ID,
   FILE_URI,
   GOOGLE_STORAGE_CONFIG,
   SWARM_REFERENCE,
@@ -36,19 +36,19 @@ describe("BlobStorageManager", () => {
         GOOGLE: googleStorage,
         SWARM: swarmStorage,
       },
-      CHAIN_ID
+      fixtures.chainId
     );
   });
 
   describe("constructor", () => {
     it("should throw an error if no blob storages are provided", () => {
-      expect(() => new BlobStorageManager({}, CHAIN_ID)).toThrow(
+      expect(() => new BlobStorageManager({}, fixtures.chainId)).toThrow(
         "No blob storages provided"
       );
     });
 
     it("should return the correct chain id", async () => {
-      expect(blobStorageManager.chainId).toBe(CHAIN_ID);
+      expect(blobStorageManager.chainId).toBe(fixtures.chainId);
     });
   });
 
@@ -153,7 +153,7 @@ describe("BlobStorageManager", () => {
         {
           SWARM: swarmStorage,
         },
-        CHAIN_ID
+        fixtures.chainId
       );
 
       await expect(
@@ -184,7 +184,7 @@ describe("BlobStorageManager", () => {
         {
           POSTGRES: postgresStorage,
         },
-        CHAIN_ID
+        fixtures.chainId
       );
 
       prisma.blobData.upsert.mockRejectedValueOnce(
