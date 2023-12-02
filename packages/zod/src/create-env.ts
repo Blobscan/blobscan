@@ -33,3 +33,7 @@ export const presetEnvOptions = {
   runtimeEnv: process.env,
   skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,
 };
+
+export function maskSensitiveData(sensitiveData: string | undefined) {
+  return sensitiveData?.replace(/./g, "*");
+}

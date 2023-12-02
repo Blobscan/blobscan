@@ -1,4 +1,10 @@
-import { createEnv, nodeEnvSchema, presetEnvOptions, z } from "@blobscan/zod";
+import {
+  createEnv,
+  maskSensitiveData,
+  nodeEnvSchema,
+  presetEnvOptions,
+  z,
+} from "@blobscan/zod";
 
 export const env = createEnv({
   envOptions: {
@@ -20,7 +26,13 @@ export const env = createEnv({
   },
   display(env) {
     console.log(
-      `Otel configuration: protocol=${env.OTEL_EXPORTER_OTLP_PROTOCOL} exporterEndpoint=${env.OTEL_EXPORTER_OTLP_ENDPOINT} username=${env.OTLP_AUTH_USERNAME} password=***** diagEnabled=${env.OTEL_DIAG_ENABLED}`
+      `Otel configuration: protocol=${
+        env.OTEL_EXPORTER_OTLP_PROTOCOL
+      } exporterEndpoint=${maskSensitiveData(
+        env.OTEL_EXPORTER_OTLP_ENDPOINT
+      )} username=${env.OTLP_AUTH_USERNAME} password=${maskSensitiveData(
+        env.OTLP_AUTH_PASSWORD
+      )} diagEnabled=${env.OTEL_DIAG_ENABLED}`
     );
   },
 });

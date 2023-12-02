@@ -4,6 +4,7 @@ import {
   presetEnvOptions,
   nodeEnvSchema,
   booleanSchema,
+  maskSensitiveData,
 } from "@blobscan/zod";
 
 export const env = createEnv({
@@ -16,5 +17,12 @@ export const env = createEnv({
     },
 
     ...presetEnvOptions,
+  },
+  display(env) {
+    console.log(
+      `API configuration: secretKey: ${maskSensitiveData(
+        env.SECRET_KEY
+      )}, blobPropagatorEnabled=${env.BLOB_PROPAGATOR_ENABLED}`
+    );
   },
 });

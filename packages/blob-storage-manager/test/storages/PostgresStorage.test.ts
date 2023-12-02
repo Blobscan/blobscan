@@ -1,9 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import prisma from "@blobscan/db/prisma/__mocks__/client";
+import { fixtures } from "@blobscan/test";
 
 import { PostgresStorageMock as PostgresStorage } from "../../src/__mocks__/PostgresStorage";
-import { BLOB_HASH, CHAIN_ID, HEX_DATA } from "../fixtures";
+import { BLOB_HASH, HEX_DATA } from "../fixtures";
 
 describe("PostgresStorage", () => {
   let storage: PostgresStorage;
@@ -38,7 +39,11 @@ describe("PostgresStorage", () => {
 
   describe("storeBlob", () => {
     it("should store the blob data and return versionedHash", async () => {
-      const result = await storage.storeBlob(CHAIN_ID, BLOB_HASH, HEX_DATA);
+      const result = await storage.storeBlob(
+        fixtures.chainId,
+        BLOB_HASH,
+        HEX_DATA
+      );
 
       expect(result).toBe(BLOB_HASH);
     });

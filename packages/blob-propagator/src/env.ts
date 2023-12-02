@@ -1,4 +1,9 @@
-import { createEnv, presetEnvOptions, z } from "@blobscan/zod";
+import {
+  createEnv,
+  maskSensitiveData,
+  presetEnvOptions,
+  z,
+} from "@blobscan/zod";
 
 export const env = createEnv({
   envOptions: {
@@ -10,6 +15,17 @@ export const env = createEnv({
     },
 
     ...presetEnvOptions,
+  },
+  display(env) {
+    console.log(
+      `Blob propagator configuration: redisQueueHost=${
+        env.REDIS_QUEUE_HOST
+      }, redisQueuePort=${
+        env.REDIS_QUEUE_PORT
+      } redisQueuePassword=${maskSensitiveData(
+        env.REDIS_QUEUE_PASSWORD
+      )}, redisQueueUsername=${env.REDIS_QUEUE_USERNAME}`
+    );
   },
 });
 
