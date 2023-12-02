@@ -100,6 +100,7 @@ jobs:
           images: blossomlabs/blobscan
           tags: |
             type=ref,event=branch
+            type=semver,pattern={{version}}
             type=raw,value=latest,enable=${{ github.ref_name == 'next' }}
             type=raw,value=stable,enable=${{ github.ref_name == 'master' }}
 
@@ -117,7 +118,7 @@ jobs:
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}

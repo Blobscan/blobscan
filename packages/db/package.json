@@ -27,7 +27,7 @@
     "@blobscan/dayjs": "^0.0.1",
     "@blobscan/logger": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
-    "@prisma/client": "^5.0.0"
+    "@prisma/client": "^5.5.2"
   },
   "devDependencies": {
     "@blobscan/blob-storage-manager": "^0.0.1",
@@ -35,7 +35,7 @@
     "@blobscan/test": "^0.0.1",
     "@faker-js/faker": "^8.0.2",
     "js-sha256": "^0.9.0",
-    "prisma": "^5.0.0"
+    "prisma": "^5.5.2"
   },
   "eslintConfig": {
     "root": true,

@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
-    "@prisma/client": "^5.0.0"
+    "@prisma/client": "^5.5.2"
   },
   "prisma": {
     "schema": "../db/prisma/schema.prisma"

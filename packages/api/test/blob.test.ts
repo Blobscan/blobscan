@@ -40,7 +40,7 @@ describe("Blob router", async () => {
     it("should get the total number of blobs correctly", async () => {
       const expectedTotalBlobs = fixtures.blobsOnTransactions.length;
 
-      await ctx.prisma.blobOverallStats.backfill();
+      await ctx.prisma.blobOverallStats.populate();
       await caller.blob.getAll();
 
       // FIXME: this should return the total amount of unique blobs

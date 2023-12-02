@@ -2,29 +2,29 @@ import dayjs from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
 import { prisma } from "../../prisma";
-import type { BlockNumberRange, DatePeriod } from "../../prisma";
+import type { BlockNumberRange, DatePeriod, RawDatePeriod } from "../../prisma";
 import { NEW_DATA } from "./stats-extension.test.fixtures";
 
 function hasDailyStatsExtensionFns(model: unknown): model is {
-  fill: (datePeriod: DatePeriod) => void;
+  populate: (datePeriod: RawDatePeriod) => void;
   findMany: () => unknown;
 } {
   return (
     typeof model === "object" &&
     model !== null &&
-    "fill" in model &&
-    "findMany" in model
+    "populate" in model &&
+    "deleteAll" in model
   );
 }
 
 function hasOverallStatsExtensionFns(model: unknown): model is {
-  backfill: () => unknown;
+  populate: () => unknown;
   increment: (range: BlockNumberRange) => void;
 } {
   return (
     typeof model === "object" &&
     model !== null &&
-    "backfill" in model &&
+    "populate" in model &&
     "increment" in model
   );
 }
@@ -70,28 +70,33 @@ export function getDailyBlobs(datePeriod: DatePeriod) {
     });
 }
 
-export function getDailyStatsPrismaModel(modelName: keyof typeof prisma) {
+export function getDailyStatsPrismaModel(
+  modelName: "blobDailyStats" | "blockDailyStats" | "transactionDailyStats"
+) {
   const model = prisma[modelName];
 
-  if (!hasDailyStatsExtensionFns(model)) {
-    throw new Error(
-      `Model ${modelName.toString()} has no daily stats functions`
-    );
+  if (hasDailyStatsExtensionFns(model)) {
+    return model;
   }
 
-  return model;
+  throw new Error(`Model ${modelName.toString()} has no daily stats functions`);
 }
 
-export function getOverallStatsPrismaModel(modelName: keyof typeof prisma) {
+export function getOverallStatsPrismaModel(
+  modelName:
+    | "blobOverallStats"
+    | "blockOverallStats"
+    | "transactionOverallStats"
+) {
   const model = prisma[modelName];
 
-  if (!hasOverallStatsExtensionFns(model)) {
-    throw new Error(
-      `Model ${modelName.toString()} has no overall stats functions`
-    );
+  if (hasOverallStatsExtensionFns(model)) {
+    return model;
   }
 
-  return model;
+  throw new Error(
+    `Model ${modelName.toString()} has no overall stats functions`
+  );
 }
 
 export function createNewData() {

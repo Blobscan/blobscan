@@ -28,7 +28,7 @@ describe("Block router", async () => {
     it("should the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.blocks.length;
 
-      await ctx.prisma.blockOverallStats.backfill();
+      await ctx.prisma.blockOverallStats.populate();
       await caller.block.getAll();
 
       const { totalBlocks } = await caller.block.getAll();

@@ -44,7 +44,7 @@ describe("Stats router", async () => {
 
   describe("getBlobOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blobOverallStats.backfill();
+      await prisma.blobOverallStats.populate();
 
       const blobOverallStats = await caller.stats.getBlobOverallStats();
 
@@ -62,7 +62,7 @@ describe("Stats router", async () => {
   runTimeFrameTests(
     "getBlobDailyStats",
     async () => {
-      await prisma.blobDailyStats.fill({
+      await prisma.blobDailyStats.populate({
         to,
       });
     },
@@ -72,7 +72,7 @@ describe("Stats router", async () => {
 
   describe("getBlockOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blockOverallStats.backfill();
+      await prisma.blockOverallStats.populate();
 
       const blockOverallStats = await caller.stats.getBlockOverallStats();
 
@@ -94,7 +94,7 @@ describe("Stats router", async () => {
   runTimeFrameTests(
     "getBlockDailyStats",
     () =>
-      prisma.blockDailyStats.fill({
+      prisma.blockDailyStats.populate({
         to,
       }),
     (timeFrame) => caller.stats.getBlockDailyStats({ timeFrame })
@@ -102,7 +102,7 @@ describe("Stats router", async () => {
 
   describe("getTransactionOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.transactionOverallStats.backfill();
+      await prisma.transactionOverallStats.populate();
       const result = await caller.stats.getTransactionOverallStats();
 
       expect(omitDBTimestampFields(result)).toMatchInlineSnapshot(`
@@ -118,7 +118,7 @@ describe("Stats router", async () => {
 
   runTimeFrameTests(
     "getTransactionDailyStats",
-    () => prisma.transactionDailyStats.fill({ to }),
+    () => prisma.transactionDailyStats.populate({ to }),
     (timeFrame) => caller.stats.getTransactionDailyStats({ timeFrame })
   );
 });
