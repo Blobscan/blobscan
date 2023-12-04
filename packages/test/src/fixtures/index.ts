@@ -14,22 +14,6 @@ type BlobDataFixture = {
 };
 
 export const fixtures = {
-  chainId: 70118930558,
-  blobStorageManagerConfig: {
-    googleStorageConfig: {
-      bucketName: "blobscan-test-bucket",
-      projectId: "blobscan-test-project",
-      apiEndpoint: "http://localhost:4443",
-    },
-  },
-  blobPropagatorConfig: {
-    workerOptions: {
-      connection: {
-        host: "localhost",
-        port: 6379,
-      },
-    },
-  },
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
   blocks: POSTGRES_DATA.blocks,
   addresses: POSTGRES_DATA.addresses,

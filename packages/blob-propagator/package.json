@@ -10,8 +10,9 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "test": "vitest",
-    "test:ui": "vitest --ui"
+    "with-env:dev": "dotenv -e ../../.env.development --",
+    "test": "pnpm with-env:dev && vitest",
+    "test:ui": "pnpm with-env:dev && vitest --ui"
   },
   "dependencies": {
     "@blobscan/blob-storage-manager": "^0.0.1",

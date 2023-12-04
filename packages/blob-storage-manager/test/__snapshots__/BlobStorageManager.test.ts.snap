@@ -1,25 +1,24 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`BlobStorageManager > storeBlob > should return errors for failed uploads 1`] = `
-[
-  {
-    "reference": "70118930558/6d/6f/63/6d6f636b2d64617461.txt",
-    "storage": "GOOGLE",
-  },
-]
-`;
-
-exports[`BlobStorageManager > storeBlob > should return errors for failed uploads 2`] = `
-[
-  {
-    "error": [Error: Blob data not found],
-    "storage": "POSTGRES",
-  },
-  {
-    "error": [Error: No postage batches available],
-    "storage": "SWARM",
-  },
-]
+{
+  "errors": [
+    {
+      "error": [Error: Failed to upload blob to postgres],
+      "storage": "POSTGRES",
+    },
+    {
+      "error": [Error: Failed to upload blob to swarm],
+      "storage": "SWARM",
+    },
+  ],
+  "references": [
+    {
+      "reference": "70118930558/6d/6f/63/6d6f636b2d64617461.txt",
+      "storage": "GOOGLE",
+    },
+  ],
+}
 `;
 
 exports[`BlobStorageManager > storeBlob > should store the blob in all available storages 1`] = `

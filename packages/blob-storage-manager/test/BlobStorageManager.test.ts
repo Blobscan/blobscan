@@ -1,20 +1,16 @@
 import { beforeAll, describe, expect, it } from "vitest";
+import type { DeepMockProxy } from "vitest-mock-extended";
+import { mockDeep } from "vitest-mock-extended";
 
 import type { BlobStorage } from "@blobscan/db";
-import prisma from "@blobscan/db/prisma/__mocks__/client";
-import { fixtures } from "@blobscan/test";
 
+import { GoogleStorage, PostgresStorage, env } from "../src";
 import { BlobStorageManager } from "../src/BlobStorageManager";
-import {
-  GoogleStorageMock as GoogleStorage,
-  PostgresStorageMock as PostgresStorage,
-  SwarmStorageMock as SwarmStorage,
-} from "../src/__mocks__";
+import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
 import {
   BLOB_DATA,
   BLOB_HASH,
   FILE_URI,
-  GOOGLE_STORAGE_CONFIG,
   SWARM_REFERENCE,
   SWARM_STORAGE_CONFIG,
 } from "./fixtures";
@@ -25,9 +21,21 @@ describe("BlobStorageManager", () => {
   let googleStorage: GoogleStorage;
   let swarmStorage: SwarmStorage;
 
+  let failingPostgresStorage: DeepMockProxy<PostgresStorage>;
+  let failingGoogleStorage: DeepMockProxy<GoogleStorage>;
+  let failingSwarmStorage: DeepMockProxy<SwarmStorage>;
+
   beforeAll(() => {
+    if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
+      throw new Error("GOOGLE_STORAGE_BUCKET_NAME is not set");
+    }
+
     postgresStorage = new PostgresStorage();
-    googleStorage = new GoogleStorage(GOOGLE_STORAGE_CONFIG);
+    googleStorage = new GoogleStorage({
+      bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
+      apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+      projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+    });
     swarmStorage = new SwarmStorage(SWARM_STORAGE_CONFIG);
 
     blobStorageManager = new BlobStorageManager(
@@ -36,19 +44,33 @@ describe("BlobStorageManager", () => {
         GOOGLE: googleStorage,
         SWARM: swarmStorage,
       },
-      fixtures.chainId
+      env.CHAIN_ID
+    );
+
+    failingPostgresStorage = mockDeep<PostgresStorage>();
+    failingGoogleStorage = mockDeep<GoogleStorage>();
+    failingSwarmStorage = mockDeep<SwarmStorage>();
+
+    failingPostgresStorage.storeBlob.mockRejectedValue(
+      new Error("Failed to upload blob to postgres")
+    );
+    failingGoogleStorage.storeBlob.mockRejectedValue(
+      new Error("Failed to upload blob to google")
+    );
+    failingSwarmStorage.storeBlob.mockRejectedValue(
+      new Error("Failed to upload blob to swarm")
     );
   });
 
   describe("constructor", () => {
     it("should throw an error if no blob storages are provided", () => {
-      expect(() => new BlobStorageManager({}, fixtures.chainId)).toThrow(
+      expect(() => new BlobStorageManager({}, env.CHAIN_ID)).toThrow(
         "No blob storages provided"
       );
     });
 
     it("should return the correct chain id", async () => {
-      expect(blobStorageManager.chainId).toBe(fixtures.chainId);
+      expect(blobStorageManager.chainId).toBe(env.CHAIN_ID);
     });
   });
 
@@ -92,10 +114,6 @@ describe("BlobStorageManager", () => {
       const UNKNOWN_FILE_URI = "1/6d/6f/636b2d64617461.txt";
       const UNKNOWN_SWARM_REFERENCE = "123456789abcdef";
 
-      prisma.blobData.findFirstOrThrow.mockRejectedValueOnce(
-        new Error("Blob data not found")
-      );
-
       const result = blobStorageManager.getBlob(
         {
           reference: UNKNOWN_BLOB_HASH,
@@ -112,7 +130,10 @@ describe("BlobStorageManager", () => {
       );
 
       await expect(result).rejects.toMatchInlineSnapshot(
-        "[Error: Failed to get blob from any of the storages: POSTGRES - Error: Blob data not found, GOOGLE - Error: File not found, SWARM - Error: File not found]"
+        `
+        [Error: Failed to get blob from any of the storages: POSTGRES - NotFoundError: No BlobData found, GOOGLE - Error: Not Found
+        , SWARM - Error: File not found]
+      `
       );
     });
   });
@@ -153,7 +174,7 @@ describe("BlobStorageManager", () => {
         {
           SWARM: swarmStorage,
         },
-        fixtures.chainId
+        env.CHAIN_ID
       );
 
       await expect(
@@ -169,33 +190,36 @@ describe("BlobStorageManager", () => {
       const newHash = "0x6d6f636b2d64617461";
       const blob = { data: "New data", versionedHash: newHash };
 
-      prisma.blobData.upsert.mockRejectedValueOnce(
-        new Error("Blob data not found")
+      const blobStorageManager = new BlobStorageManager(
+        {
+          POSTGRES: failingPostgresStorage,
+          GOOGLE: googleStorage,
+          SWARM: failingSwarmStorage,
+        },
+        env.CHAIN_ID
       );
 
       const result = await blobStorageManager.storeBlob(blob);
 
-      expect(result.references).matchSnapshot();
-      expect(result.errors).toMatchSnapshot();
+      expect(result).toMatchSnapshot();
     });
 
     it("should throw an error if all uploads fail", async () => {
       const newBlobStorageManager = new BlobStorageManager(
         {
-          POSTGRES: postgresStorage,
+          POSTGRES: failingPostgresStorage,
+          GOOGLE: failingGoogleStorage,
+          SWARM: failingSwarmStorage,
         },
-        fixtures.chainId
-      );
-
-      prisma.blobData.upsert.mockRejectedValueOnce(
-        new Error("Blob data not found")
+        env.CHAIN_ID
       );
 
       const blob = { data: "New data", versionedHash: "0x6d6f636b2d64617461" };
+
       await expect(
         newBlobStorageManager.storeBlob(blob)
       ).rejects.toMatchInlineSnapshot(
-        "[Error: Failed to upload blob 0x6d6f636b2d64617461 to any of the storages: POSTGRES: Error: Blob data not found]"
+        "[Error: Failed to upload blob 0x6d6f636b2d64617461 to any of the storages: POSTGRES: Error: Failed to upload blob to postgres, GOOGLE: Error: Failed to upload blob to google, SWARM: Error: Failed to upload blob to swarm]"
       );
     });
   });

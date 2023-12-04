@@ -1,11 +1,5 @@
 import { describe, vi } from "vitest";
 
-import {
-  BlobStorageManager,
-  GoogleStorage,
-} from "@blobscan/blob-storage-manager";
-import { fixtures } from "@blobscan/test";
-
 import { runStorageWorkerTestSuite } from "./helpers";
 
 describe(
@@ -21,23 +15,3 @@ describe(
     },
   })
 );
-
-vi.mock("@blobscan/blob-storage-manager", async () => {
-  const actual = (await vi.importActual(
-    "@blobscan/blob-storage-manager"
-  )) as Record<string, unknown>;
-
-  return {
-    ...actual,
-    getBlobStorageManager() {
-      return new BlobStorageManager(
-        {
-          GOOGLE: new GoogleStorage(
-            fixtures.blobStorageManagerConfig.googleStorageConfig
-          ),
-        },
-        fixtures.chainId
-      );
-    },
-  };
-});

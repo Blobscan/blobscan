@@ -10,16 +10,11 @@ import {
   vi,
 } from "vitest";
 
-import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import { BlobPropagator } from "@blobscan/blob-propagator";
+import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import { removeBlobDataFile } from "@blobscan/blob-propagator/src/utils";
-import {
-  BlobStorageManager,
-  PostgresStorage,
-  GoogleStorage,
-} from "@blobscan/blob-storage-manager";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { fixtures, omitDBTimestampFields } from "@blobscan/test";
+import { omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
@@ -44,8 +39,6 @@ describe("Indexer router", async () => {
   afterAll(async () => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
-
-    await blobPropagator.close();
   });
 
   describe("getSlot", () => {
@@ -322,18 +315,13 @@ describe("Indexer router", async () => {
                 [
                   {
                     "blobHash": "blobHash1000",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash1000",
-                  },
-                  {
-                    "blobHash": "blobHash1000",
                     "blobStorage": "GOOGLE",
                     "dataReference": "70118930558/ob/Ha/sh/obHash1000.txt",
                   },
                   {
-                    "blobHash": "blobHash1001",
+                    "blobHash": "blobHash1000",
                     "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash1001",
+                    "dataReference": "blobHash1000",
                   },
                   {
                     "blobHash": "blobHash1001",
@@ -341,14 +329,19 @@ describe("Indexer router", async () => {
                     "dataReference": "70118930558/ob/Ha/sh/obHash1001.txt",
                   },
                   {
-                    "blobHash": "blobHash999",
+                    "blobHash": "blobHash1001",
                     "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash999",
+                    "dataReference": "blobHash1001",
                   },
                   {
                     "blobHash": "blobHash999",
                     "blobStorage": "GOOGLE",
                     "dataReference": "70118930558/ob/Ha/sh/obHash999.txt",
+                  },
+                  {
+                    "blobHash": "blobHash999",
+                    "blobStorage": "POSTGRES",
+                    "dataReference": "blobHash999",
                   },
                 ]
               `);
@@ -411,13 +404,27 @@ describe("Indexer router", async () => {
             const ctxWithBlobPropagator = await createTestContext({
               withAuth: true,
             });
-            ctxWithBlobPropagator.blobPropagator = blobPropagator;
+
+            ctxWithBlobPropagator.blobPropagator = new BlobPropagator(
+              ["GOOGLE", "POSTGRES"],
+              {
+                workerOptions: {
+                  connection: {
+                    host: process.env.REDIS_QUEUE_HOST,
+                    port: Number(process.env.REDIS_QUEUE_PORT),
+                  },
+                },
+              }
+            );
 
             callerWithBlobPropagator = appRouter.createCaller(
               ctxWithBlobPropagator
             );
 
-            blobPropagatorSpy = vi.spyOn(blobPropagator, "propagateBlobs");
+            blobPropagatorSpy = vi.spyOn(
+              ctxWithBlobPropagator.blobPropagator,
+              "propagateBlobs"
+            );
           });
 
           afterAll(async () => {
@@ -545,46 +552,4 @@ describe("Indexer router", async () => {
       ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
     });
   });
-});
-
-vi.mock("@blobscan/blob-storage-manager", async () => {
-  const actual = (await vi.importActual(
-    "@blobscan/blob-storage-manager"
-  )) as Record<string, unknown>;
-
-  return {
-    ...actual,
-    getBlobStorageManager() {
-      return Promise.resolve(
-        new BlobStorageManager(
-          {
-            POSTGRES: new PostgresStorage(),
-            GOOGLE: new GoogleStorage(
-              fixtures.blobStorageManagerConfig.googleStorageConfig
-            ),
-          },
-          fixtures.chainId
-        )
-      );
-    },
-  };
-});
-
-const blobPropagator = new BlobPropagator(
-  ["GOOGLE", "POSTGRES"],
-  fixtures.blobPropagatorConfig
-);
-
-vi.mock("@blobscan/blob-propagator", async () => {
-  const actual = (await vi.importActual("@blobscan/blob-propagator")) as Record<
-    string,
-    unknown
-  >;
-
-  return {
-    ...actual,
-    getBlobPropagator() {
-      return Promise.resolve(blobPropagator);
-    },
-  };
 });
