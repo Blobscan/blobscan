@@ -19,6 +19,7 @@ import {
   gasTarget,
   GAS_PER_BLOB,
   GAS_LIMIT_PER_BLOCK,
+  MAX_BLOBS_PER_BLOCK,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -149,9 +150,9 @@ const Block: NextPage = function () {
                   name: "Blob Gas Limit",
                   value: (
                     <div>
-                      {formatNumber(786432)}
+                      {formatNumber(GAS_LIMIT_PER_BLOCK)}
                       <span className="ml-1 text-gray-500">
-                        (6 blobs per block)
+                        ({formatNumber(MAX_BLOBS_PER_BLOCK)} blobs per block)
                       </span>
                     </div>
                   ),

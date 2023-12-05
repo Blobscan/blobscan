@@ -82,7 +82,7 @@ const Tx: NextPage = () => {
                   name: "Block",
                   value: (
                     <Link href={buildBlockRoute(txData.blockNumber)}>
-                      {formatNumber(txData.blockNumber)}
+                      {txData.blockNumber}
                     </Link>
                   ),
                 },
