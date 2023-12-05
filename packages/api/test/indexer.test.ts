@@ -10,7 +10,6 @@ import {
   vi,
 } from "vitest";
 
-import { BlobPropagator } from "@blobscan/blob-propagator";
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import { removeBlobDataFile } from "@blobscan/blob-propagator/src/utils";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
@@ -403,26 +402,16 @@ describe("Indexer router", async () => {
           beforeAll(async () => {
             const ctxWithBlobPropagator = await createTestContext({
               withAuth: true,
+              withBlobPropagator: true,
             });
-
-            ctxWithBlobPropagator.blobPropagator = new BlobPropagator(
-              ["GOOGLE", "POSTGRES"],
-              {
-                workerOptions: {
-                  connection: {
-                    host: process.env.REDIS_QUEUE_HOST,
-                    port: Number(process.env.REDIS_QUEUE_PORT),
-                  },
-                },
-              }
-            );
 
             callerWithBlobPropagator = appRouter.createCaller(
               ctxWithBlobPropagator
             );
 
             blobPropagatorSpy = vi.spyOn(
-              ctxWithBlobPropagator.blobPropagator,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              ctxWithBlobPropagator.blobPropagator!,
               "propagateBlobs"
             );
           });

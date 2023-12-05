@@ -15,6 +15,7 @@ const SECRET = "supersecret";
 
 export async function createTestContext({
   withAuth,
+  withBlobPropagator = false,
 }: Partial<{
   withAuth: boolean;
   withBlobPropagator: boolean;
@@ -35,7 +36,10 @@ export async function createTestContext({
     statusCode: 200,
   } as NodeHTTPResponse;
 
-  const ctx = await createTRPCContext("rest-api")({
+  const ctx = await createTRPCContext({
+    scope: "rest-api",
+    enableBlobPropagator: withBlobPropagator,
+  })({
     req,
     res,
   });

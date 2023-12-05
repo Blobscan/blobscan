@@ -1,12 +1,14 @@
 import { getBlobPropagator } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
 
-import { env } from "./env";
-
-export async function gracefulShutdown() {
+export async function gracefulShutdown({
+  blobPropagatorIsEnabled,
+}: {
+  blobPropagatorIsEnabled: boolean;
+}) {
   const shutdownOps = [];
 
-  if (env.BLOB_PROPAGATOR_ENABLED) {
+  if (blobPropagatorIsEnabled) {
     const blobPropagator = await getBlobPropagator();
 
     shutdownOps.push(blobPropagator.close());

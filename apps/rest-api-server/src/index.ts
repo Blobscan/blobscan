@@ -34,7 +34,10 @@ app.use(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   createOpenApiExpressMiddleware({
     router: appRouter,
-    createContext: createTRPCContext("rest-api"),
+    createContext: createTRPCContext({
+      scope: "rest-api",
+      enableBlobPropagator: env.BLOB_PROPAGATOR_ENABLED,
+    }),
     onError({ error }) {
       logger.error(error);
     },
@@ -54,7 +57,9 @@ const server = app.listen(env.BLOBSCAN_API_PORT, () => {
 async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
-  await apiGracefulShutdown();
+  await apiGracefulShutdown({
+    blobPropagatorIsEnabled: env.BLOB_PROPAGATOR_ENABLED,
+  });
 
   server.close(() => {
     logger.debug("REST API server shut down successfully");

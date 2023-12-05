@@ -13,16 +13,13 @@ export const env = createEnv({
       SECRET_KEY: z.string(),
       NODE_ENV: nodeEnvSchema.optional(),
       METRICS_ENABLED: booleanSchema.default("false"),
-      BLOB_PROPAGATOR_ENABLED: booleanSchema.default("false"),
     },
 
     ...presetEnvOptions,
   },
   display(env) {
     console.log(
-      `API configuration: secretKey: ${maskSensitiveData(
-        env.SECRET_KEY
-      )}, blobPropagatorEnabled=${env.BLOB_PROPAGATOR_ENABLED}`
+      `API configuration: secretKey: ${maskSensitiveData(env.SECRET_KEY)}`
     );
   },
 });

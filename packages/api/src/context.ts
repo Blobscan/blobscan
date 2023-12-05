@@ -21,6 +21,7 @@ export type CreateContextOptions =
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient: string | null;
+  enableBlobPropagator?: boolean;
 };
 
 function getJWTFromRequest(
@@ -53,7 +54,7 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   const blobStorageManager = await getBlobStorageManager();
   let blobPropagator: BlobPropagator | undefined;
 
-  if (env.BLOB_PROPAGATOR_ENABLED) {
+  if (opts?.enableBlobPropagator) {
     blobPropagator = await getBlobPropagator();
   }
 
@@ -65,13 +66,22 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   };
 }
 
-export function createTRPCContext(scope: string) {
+export function createTRPCContext(
+  {
+    scope,
+    enableBlobPropagator,
+  }: {
+    scope: string;
+    enableBlobPropagator?: boolean;
+  } = { scope: "", enableBlobPropagator: false }
+) {
   return async (opts: CreateContextOptions) => {
     try {
       const apiClient = getJWTFromRequest(opts.req);
 
       const innerContext = await createTRPCInnerContext({
         apiClient,
+        enableBlobPropagator,
       });
 
       return {
