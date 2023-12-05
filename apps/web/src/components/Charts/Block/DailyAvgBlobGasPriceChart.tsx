@@ -23,7 +23,7 @@ export const DailyAvgBlobGasPriceChart: FC<
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => `${formatNumber(value)} gwei`,
+        yAxisTooltip: (value) => `${formatNumber(value)} Gwei`,
       },
       yUnit: "ethereum",
     }),

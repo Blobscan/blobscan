@@ -7,7 +7,7 @@ const TARGET_BLOBS_PER_BLOCK = BigInt(3);
 export const MAX_BLOBS_PER_BLOCK = BigInt(6);
 export const GAS_LIMIT_PER_BLOCK = GAS_PER_BLOB * MAX_BLOBS_PER_BLOCK;
 
-export type EtherUnit = "wei" | "gwei" | "ether";
+export type EtherUnit = "wei" | "Gwei" | "ether";
 
 function formatWithDecimal(str: string, positionFromEnd: number): string {
   const [integerPart = "", decimalPart = ""] = str.split(".");
@@ -45,7 +45,7 @@ export type FormatWeiOptions = {
 
 export function convertWei(
   weiAmount: string | number,
-  toUnit: EtherUnit = "gwei"
+  toUnit: EtherUnit = "Gwei"
 ) {
   const weiAmount_ =
     typeof weiAmount === "number" ? weiAmount.toString() : weiAmount;
@@ -53,7 +53,7 @@ export function convertWei(
   switch (toUnit) {
     case "wei":
       return weiAmount_;
-    case "gwei":
+    case "Gwei":
       return formatWithDecimal(weiAmount_, 9);
     case "ether":
       return formatWithDecimal(weiAmount_, 18);
@@ -77,7 +77,7 @@ export function gasTarget(blobGasUsed: bigint): string {
 export function formatWei(
   weiAmount: bigint | number,
   {
-    toUnit = "gwei",
+    toUnit = "Gwei",
     displayUnit = true,
     compact = false,
   }: Partial<FormatWeiOptions> = {}
