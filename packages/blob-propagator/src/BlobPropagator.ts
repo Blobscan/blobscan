@@ -13,8 +13,8 @@ import type { $Enums } from "@blobscan/db";
 import type { BlobStorage } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
 
+import { blobFileManager } from "./blob-file-manager";
 import type { Blob, BlobPropagationJobData } from "./types";
-import { createBlobDataFile } from "./utils";
 
 const WORKERS_DIR = "worker-processors";
 /**
@@ -105,7 +105,7 @@ export class BlobPropagator {
   }
 
   async propagateBlob(blob: Blob) {
-    await createBlobDataFile(blob);
+    await blobFileManager.createBlobDataFile(blob);
 
     const blobFlowJob = await this.#createBlobPropagationFlowJob({
       versionedHash: blob.versionedHash,
@@ -115,7 +115,9 @@ export class BlobPropagator {
   }
 
   async propagateBlobs(blobs: Blob[]) {
-    await Promise.all(blobs.map((blob) => createBlobDataFile(blob)));
+    await Promise.all(
+      blobs.map((blob) => blobFileManager.createBlobDataFile(blob))
+    );
 
     const blobPropagationFlowJobs = blobs.map(({ versionedHash }) =>
       this.#createBlobPropagationFlowJob({ versionedHash })

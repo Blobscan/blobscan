@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BlobStorage } from "@blobscan/db";
 
 import { BlobPropagator } from "../src/BlobPropagator";
+import { blobFileManager } from "../src/blob-file-manager";
 import type { Blob } from "../src/types";
-import { checkBlobDataFileExists, removeBlobDataFile } from "../src/utils";
 
 export class MockedBlobPropagator extends BlobPropagator {
   getFinalizerWorker() {
@@ -83,13 +83,15 @@ describe("BlobPropagator", () => {
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
-      removeBlobDataFile(blob.versionedHash);
+      blobFileManager.removeBlobDataFile(blob.versionedHash);
     });
 
     it("should store blob data on disk", async () => {
       await blobPropagator.propagateBlob(blob);
 
-      const fileExists = await checkBlobDataFileExists(blob.versionedHash);
+      const fileExists = await blobFileManager.checkBlobDataFileExists(
+        blob.versionedHash
+      );
 
       expect(fileExists).toBe(true);
     });
@@ -164,7 +166,9 @@ describe("BlobPropagator", () => {
     ];
 
     afterEach(async () => {
-      await Promise.all(blobs.map((b) => removeBlobDataFile(b.versionedHash)));
+      await Promise.all(
+        blobs.map((b) => blobFileManager.removeBlobDataFile(b.versionedHash))
+      );
     });
 
     it("should store blob data on disk", async () => {
@@ -172,7 +176,9 @@ describe("BlobPropagator", () => {
 
       const filesExists = (
         await Promise.all(
-          blobs.map((b) => checkBlobDataFileExists(b.versionedHash))
+          blobs.map((b) =>
+            blobFileManager.checkBlobDataFileExists(b.versionedHash)
+          )
         )
       ).every((exists) => exists);
 

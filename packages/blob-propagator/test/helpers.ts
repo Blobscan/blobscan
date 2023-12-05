@@ -8,8 +8,8 @@ import type {
 } from "@blobscan/blob-storage-manager";
 import type { BlobStorage, BlobStorage as BlobStorageName } from "@blobscan/db";
 
+import { blobFileManager } from "../src/blob-file-manager";
 import type { BlobPropagationSandboxedJob } from "../src/types";
-import { createBlobDataFile, removeBlobDataFile } from "../src/utils";
 import gcsWorker from "../src/worker-processors/gcs";
 import postgresWorker from "../src/worker-processors/postgres";
 import swarmWorker from "../src/worker-processors/swarm";
@@ -73,14 +73,14 @@ export function runStorageWorkerTestSuite(
     });
 
     beforeEach(async () => {
-      await createBlobDataFile({
+      await blobFileManager.createBlobDataFile({
         versionedHash: blobVersionedHash,
         data: blobData,
       });
     });
 
     afterEach(async () => {
-      await removeBlobDataFile(blobVersionedHash);
+      await blobFileManager.removeBlobDataFile(blobVersionedHash);
     });
 
     it(`should store blob data in the ${storage} storage correctly`, async () => {

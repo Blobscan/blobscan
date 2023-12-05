@@ -3,8 +3,8 @@ import type { Job } from "bullmq";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
+import { blobFileManager } from "../blob-file-manager";
 import type { BlobPropagationJobData } from "../types";
-import { removeBlobDataFile } from "../utils";
 
 type DBBlobDataStorageReference = Parameters<
   typeof prisma.blobDataStorageReference.upsertMany
@@ -19,7 +19,7 @@ export default async (job: Job<BlobPropagationJobData>) => {
    * We can delete the blob data file as it was correctly propagated
    * across all enabled storages
    */
-  finalizerOps.push(removeBlobDataFile(versionedHash));
+  finalizerOps.push(blobFileManager.removeBlobDataFile(versionedHash));
 
   const dbBlobStorageRefs = Object.values(
     blobWorkerResults

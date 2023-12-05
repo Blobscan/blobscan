@@ -11,7 +11,7 @@ import {
 } from "vitest";
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
-import { removeBlobDataFile } from "@blobscan/blob-propagator/src/utils";
+import { blobFileManager } from "@blobscan/blob-propagator/src/blob-file-manager";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { omitDBTimestampFields } from "@blobscan/test";
 
@@ -419,7 +419,7 @@ describe("Indexer router", async () => {
           afterAll(async () => {
             await Promise.all(
               expectedBlobsToPropagate.map((b) =>
-                removeBlobDataFile(b.versionedHash)
+                blobFileManager.removeBlobDataFile(b.versionedHash)
               )
             );
           });
