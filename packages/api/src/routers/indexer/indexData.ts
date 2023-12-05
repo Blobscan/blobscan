@@ -39,9 +39,7 @@ export const indexData = jwtAuthedProcedure
       let dbBlobStorageRefs: DBBlobStorageRef[] | undefined;
 
       // 2. Store blobs' data
-      if (blobPropagator) {
-        await blobPropagator.propagateBlobs(newBlobs);
-      } else {
+      if (!blobPropagator) {
         const blobStorageOps = newBlobs.map(async (b) =>
           blobStorageManager.storeBlob(b).then((uploadRes) => ({
             blob: b,
@@ -107,5 +105,10 @@ export const indexData = jwtAuthedProcedure
 
       // 4. Execute all database operations in a single transaction
       await prisma.$transaction(operations);
+
+      // 5. Propagate blobs to storages
+      if (blobPropagator) {
+        await blobPropagator.propagateBlobs(newBlobs);
+      }
     }
   );

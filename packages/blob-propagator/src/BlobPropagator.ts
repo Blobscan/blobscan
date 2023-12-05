@@ -15,6 +15,7 @@ import { logger } from "@blobscan/logger";
 
 import { blobFileManager } from "./blob-file-manager";
 import type { Blob, BlobPropagationJobData } from "./types";
+import { emptyWorkerJobQueue } from "./utils";
 
 const WORKERS_DIR = "worker-processors";
 /**
@@ -75,12 +76,17 @@ export class BlobPropagator {
     );
   }
 
-  close() {
+  close(opts?: { emptyJobs: boolean }) {
     let teardownPromise: Promise<void> = Promise.resolve();
+    const emptyJobs = opts?.emptyJobs;
 
     Object.values(this.storageWorkers).forEach((w) => {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       teardownPromise = teardownPromise.finally(async () => {
+        if (emptyJobs) {
+          await emptyWorkerJobQueue(w);
+        }
+
         await w.close();
       });
     });
@@ -89,6 +95,10 @@ export class BlobPropagator {
       teardownPromise
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         .finally(async () => {
+          if (emptyJobs) {
+            await emptyWorkerJobQueue(this.finalizerWorker);
+          }
+
           await this.finalizerWorker.close();
         })
         // eslint-disable-next-line @typescript-eslint/no-misused-promises

@@ -378,6 +378,9 @@ describe("Indexer router", async () => {
         });
 
         describe("when blob propagator is enabled", () => {
+          let ctxWithBlobPropagator: Awaited<
+            ReturnType<typeof createTestContext>
+          >;
           let callerWithBlobPropagator: ReturnType<
             typeof appRouter.createCaller
           >;
@@ -400,7 +403,7 @@ describe("Indexer router", async () => {
           );
 
           beforeAll(async () => {
-            const ctxWithBlobPropagator = await createTestContext({
+            ctxWithBlobPropagator = await createTestContext({
               withAuth: true,
               withBlobPropagator: true,
             });
@@ -422,6 +425,10 @@ describe("Indexer router", async () => {
                 blobFileManager.removeBlobDataFile(b.versionedHash)
               )
             );
+
+            await ctxWithBlobPropagator.blobPropagator?.close({
+              emptyJobs: true,
+            });
           });
 
           it("should call blob propagator", async () => {

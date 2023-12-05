@@ -11,8 +11,8 @@
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
     "with-env:dev": "dotenv -e ../../.env.development --",
-    "test": "pnpm with-env:dev && vitest",
-    "test:ui": "pnpm with-env:dev && vitest --ui"
+    "test": "pnpm with-env:dev vitest",
+    "test:ui": "pnpm with-env:dev vitest --ui"
   },
   "dependencies": {
     "@blobscan/blob-propagator": "^0.0.1",

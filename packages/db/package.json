@@ -18,8 +18,8 @@
     "dev": "pnpm with-env prisma studio --port 5556",
     "with-env": "dotenv -e ../../.env --",
     "with-env:dev": "dotenv -e ../../.env.development --",
-    "test": "pnpm with-env:dev && vitest",
-    "test:ui": "pnpm with-env:dev && vitest --ui"
+    "test": "pnpm with-env:dev vitest",
+    "test:ui": "pnpm with-env:dev vitest --ui"
   },
   "prisma": {
     "seed": "ts-node prisma/seed/main.ts"
