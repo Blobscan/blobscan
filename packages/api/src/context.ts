@@ -8,8 +8,7 @@ import type {
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
-import type { BlobPropagator } from "@blobscan/blob-propagator";
-import { getBlobPropagator } from "@blobscan/blob-propagator";
+import { blobPropagator } from "@blobscan/blob-propagator";
 import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
@@ -21,7 +20,6 @@ export type CreateContextOptions =
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient: string | null;
-  enableBlobPropagator?: boolean;
 };
 
 function getJWTFromRequest(
@@ -52,11 +50,6 @@ function getJWTFromRequest(
 
 export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   const blobStorageManager = await getBlobStorageManager();
-  let blobPropagator: BlobPropagator | undefined;
-
-  if (opts?.enableBlobPropagator) {
-    blobPropagator = await getBlobPropagator();
-  }
 
   return {
     prisma,
@@ -69,11 +62,9 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
 export function createTRPCContext(
   {
     scope,
-    enableBlobPropagator,
   }: {
     scope: string;
-    enableBlobPropagator?: boolean;
-  } = { scope: "", enableBlobPropagator: false }
+  } = { scope: "" }
 ) {
   return async (opts: CreateContextOptions) => {
     try {
@@ -81,7 +72,6 @@ export function createTRPCContext(
 
       const innerContext = await createTRPCInnerContext({
         apiClient,
-        enableBlobPropagator,
       });
 
       return {

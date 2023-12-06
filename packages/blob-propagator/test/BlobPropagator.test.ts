@@ -83,13 +83,13 @@ describe("BlobPropagator", () => {
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
-      blobFileManager.removeBlobDataFile(blob.versionedHash);
+      blobFileManager.removeFile(blob.versionedHash);
     });
 
     it("should store blob data on disk", async () => {
       await blobPropagator.propagateBlob(blob);
 
-      const fileExists = await blobFileManager.checkBlobDataFileExists(
+      const fileExists = await blobFileManager.checkFileExists(
         blob.versionedHash
       );
 
@@ -115,6 +115,11 @@ describe("BlobPropagator", () => {
               },
               "name": "storeBlob:google-worker-blobVersionedHash",
               "opts": {
+                "attempts": 3,
+                "backoff": {
+                  "delay": 1000,
+                  "type": "exponential",
+                },
                 "jobId": "google-worker-blobVersionedHash",
               },
               "queueName": "google-worker",
@@ -125,6 +130,11 @@ describe("BlobPropagator", () => {
               },
               "name": "storeBlob:postgres-worker-blobVersionedHash",
               "opts": {
+                "attempts": 3,
+                "backoff": {
+                  "delay": 1000,
+                  "type": "exponential",
+                },
                 "jobId": "postgres-worker-blobVersionedHash",
               },
               "queueName": "postgres-worker",
@@ -135,6 +145,11 @@ describe("BlobPropagator", () => {
               },
               "name": "storeBlob:swarm-worker-blobVersionedHash",
               "opts": {
+                "attempts": 3,
+                "backoff": {
+                  "delay": 1000,
+                  "type": "exponential",
+                },
                 "jobId": "swarm-worker-blobVersionedHash",
               },
               "queueName": "swarm-worker",
@@ -145,6 +160,11 @@ describe("BlobPropagator", () => {
           },
           "name": "propagateBlob:finalizer-worker-blobVersionedHash",
           "opts": {
+            "attempts": 3,
+            "backoff": {
+              "delay": 1000,
+              "type": "exponential",
+            },
             "jobId": "finalizer-worker-blobVersionedHash",
           },
           "queueName": "finalizer-worker",
@@ -167,7 +187,11 @@ describe("BlobPropagator", () => {
 
     afterEach(async () => {
       await Promise.all(
-        blobs.map((b) => blobFileManager.removeBlobDataFile(b.versionedHash))
+        blobs.map(async (b) => {
+          if (await blobFileManager.checkFileExists(b.versionedHash)) {
+            blobFileManager.removeFile(b.versionedHash);
+          }
+        })
       );
     });
 
@@ -176,9 +200,7 @@ describe("BlobPropagator", () => {
 
       const filesExists = (
         await Promise.all(
-          blobs.map((b) =>
-            blobFileManager.checkBlobDataFileExists(b.versionedHash)
-          )
+          blobs.map((b) => blobFileManager.checkFileExists(b.versionedHash))
         )
       ).every((exists) => exists);
 

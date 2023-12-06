@@ -20,7 +20,7 @@ export async function propagateBlob(
   targetStorage: $Enums.BlobStorage
 ) {
   const blobStorageManager = await getBlobStorageManager();
-  const blobData = await blobFileManager.readBlobDataFile(versionedHash);
+  const blobData = await blobFileManager.readFile(versionedHash);
 
   const result = await blobStorageManager.storeBlob(
     {

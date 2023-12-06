@@ -36,7 +36,6 @@ app.use(
     router: appRouter,
     createContext: createTRPCContext({
       scope: "rest-api",
-      enableBlobPropagator: env.BLOB_PROPAGATOR_ENABLED,
     }),
     onError({ error }) {
       logger.error(error);
@@ -57,9 +56,7 @@ const server = app.listen(env.BLOBSCAN_API_PORT, () => {
 async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
-  await apiGracefulShutdown({
-    blobPropagatorIsEnabled: env.BLOB_PROPAGATOR_ENABLED,
-  });
+  await apiGracefulShutdown();
 
   server.close(() => {
     logger.debug("REST API server shut down successfully");

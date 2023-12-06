@@ -1,33 +1,41 @@
 import type { RedisOptions } from "bullmq";
 
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { BlobStorage } from "@blobscan/db";
 
 import { BlobPropagator } from "./BlobPropagator";
 import { env } from "./env";
 
-let blobPropagator: BlobPropagator | undefined;
+function createBlobPropagator() {
+  const availableStorages: BlobStorage[] = [];
 
-export async function getBlobPropagator() {
-  if (!blobPropagator) {
-    const blobStorageManager = await getBlobStorageManager();
-    const availableStorages = Object.values(BlobStorage).filter((storageName) =>
-      blobStorageManager.hasStorage(storageName)
-    );
-    const connection: RedisOptions = {
-      host: env.REDIS_QUEUE_HOST,
-      port: env.REDIS_QUEUE_PORT,
-      password: env.REDIS_QUEUE_PASSWORD,
-      username: env.REDIS_QUEUE_USERNAME,
-    };
-
-    blobPropagator = new BlobPropagator(availableStorages, {
-      workerOptions: {
-        useWorkerThreads: true,
-        connection,
-      },
-    });
+  if (env.GOOGLE_STORAGE_ENABLED) {
+    availableStorages.push(BlobStorage.GOOGLE);
   }
 
-  return blobPropagator;
+  if (env.POSTGRES_STORAGE_ENABLED) {
+    availableStorages.push(BlobStorage.POSTGRES);
+  }
+
+  if (env.SWARM_STORAGE_ENABLED) {
+    availableStorages.push(BlobStorage.SWARM);
+  }
+
+  const connection: RedisOptions = {
+    host: env.REDIS_QUEUE_HOST,
+    port: env.REDIS_QUEUE_PORT,
+    password: env.REDIS_QUEUE_PASSWORD,
+    username: env.REDIS_QUEUE_USERNAME,
+  };
+
+  return new BlobPropagator(availableStorages, {
+    workerOptions: {
+      connection,
+    },
+  });
 }
+
+const blobPropagator = env.BLOB_PROPAGATOR_ENABLED
+  ? createBlobPropagator()
+  : undefined;
+
+export { blobPropagator, createBlobPropagator };

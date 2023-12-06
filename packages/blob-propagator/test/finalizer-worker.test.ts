@@ -7,7 +7,7 @@ import { fixtures } from "@blobscan/test";
 
 import { blobFileManager } from "../src/blob-file-manager";
 import type { Blob, BlobPropagationJobData } from "../src/types";
-import finalizer from "../src/worker-processors/finalizer";
+import { finalizerProcessor } from "../src/worker-processors";
 
 describe("Finalizer Worker", () => {
   const blob: Blob = {
@@ -21,14 +21,14 @@ describe("Finalizer Worker", () => {
   } as Job<BlobPropagationJobData>;
 
   beforeEach(async () => {
-    await blobFileManager.createBlobDataFile(blob);
+    await blobFileManager.createFile(blob);
   });
 
   it("should remove blob data files from disk correctly", async () => {
-    await finalizer(job);
+    await finalizerProcessor(job);
 
     await expect(
-      blobFileManager.checkBlobDataFileExists(blob.versionedHash)
+      blobFileManager.checkFileExists(blob.versionedHash)
     ).resolves.toBe(false);
   });
 });

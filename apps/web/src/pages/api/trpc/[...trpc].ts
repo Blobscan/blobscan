@@ -7,7 +7,6 @@ export default createNextApiHandler({
   router: appRouter,
   createContext: createTRPCContext({
     scope: "web",
-    enableBlobPropagator: false,
   }),
   onError({ error }) {
     if (error.code === "INTERNAL_SERVER_ERROR") {

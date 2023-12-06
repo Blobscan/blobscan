@@ -420,11 +420,7 @@ describe("Indexer router", async () => {
           });
 
           afterAll(async () => {
-            await Promise.all(
-              expectedBlobsToPropagate.map((b) =>
-                blobFileManager.removeBlobDataFile(b.versionedHash)
-              )
-            );
+            await blobFileManager.removeFolder();
 
             await ctxWithBlobPropagator.blobPropagator?.close({
               emptyJobs: true,

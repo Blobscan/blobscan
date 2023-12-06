@@ -3,19 +3,27 @@ import path from "path";
 
 import type { Blob } from "./types";
 
+export type BlobFileManagerConfig = {
+  basePath: string;
+  folderName: string;
+};
+
 export class BlobFileManager {
-  #blobDirPath: string;
+  #blobFolderPath: string;
 
-  constructor(basePath: string) {
-    this.#blobDirPath = path.join(basePath, "blobs");
+  constructor({
+    basePath = __dirname,
+    folderName = "eip4844-blobs",
+  }: Partial<BlobFileManagerConfig> = {}) {
+    this.#blobFolderPath = path.join(basePath, folderName);
 
-    if (!fs.existsSync(this.#blobDirPath)) {
-      fs.mkdirSync(this.#blobDirPath);
+    if (!fs.existsSync(this.#blobFolderPath)) {
+      fs.mkdirSync(this.#blobFolderPath);
     }
   }
 
-  checkBlobDataFileExists(versionedHash: string) {
-    const path = this.#buildBlobDataFilePath(versionedHash);
+  checkFileExists(versionedHash: string) {
+    const path = this.#buildFilePath(versionedHash);
 
     return fs.promises
       .access(path, fs.constants.F_OK)
@@ -23,13 +31,13 @@ export class BlobFileManager {
       .catch(() => false);
   }
 
-  async createBlobDataFile({ data, versionedHash }: Blob) {
+  async createFile({ data, versionedHash }: Blob) {
     try {
-      if (await this.checkBlobDataFileExists(versionedHash)) {
+      if (await this.checkFileExists(versionedHash)) {
         return Promise.resolve();
       }
 
-      const blobfilePath = this.#buildBlobDataFilePath(versionedHash);
+      const blobfilePath = this.#buildFilePath(versionedHash);
 
       return fs.promises.writeFile(blobfilePath, data, { encoding: "utf-8" });
     } catch (err) {
@@ -39,8 +47,8 @@ export class BlobFileManager {
     }
   }
 
-  async readBlobDataFile(versionedHash: string) {
-    const blobFilePath = this.#buildBlobDataFilePath(versionedHash);
+  async readFile(versionedHash: string) {
+    const blobFilePath = this.#buildFilePath(versionedHash);
 
     try {
       const blobData = await fs.promises.readFile(blobFilePath, "utf-8");
@@ -53,9 +61,9 @@ export class BlobFileManager {
     }
   }
 
-  async removeBlobDataFile(versionedHash: string) {
+  async removeFile(versionedHash: string) {
     try {
-      await fs.promises.unlink(this.#buildBlobDataFilePath(versionedHash));
+      await fs.promises.unlink(this.#buildFilePath(versionedHash));
     } catch (err) {
       throw new Error(
         `Couldn't remove blob ${versionedHash} data file: ${err}`
@@ -63,7 +71,13 @@ export class BlobFileManager {
     }
   }
 
-  #buildBlobDataFilePath(versionedHash: string) {
-    return path.join(this.#blobDirPath, `${versionedHash}.txt`);
+  async removeFolder() {
+    return fs.promises.rm(this.#blobFolderPath, {
+      recursive: true,
+    });
+  }
+
+  #buildFilePath(versionedHash: string) {
+    return path.join(this.#blobFolderPath, `${versionedHash}.txt`);
   }
 }

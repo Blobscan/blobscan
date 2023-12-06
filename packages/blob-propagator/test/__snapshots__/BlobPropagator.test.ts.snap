@@ -10,6 +10,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "name": "storeBlob:google-worker-blobVersionedHash1",
         "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
           "jobId": "google-worker-blobVersionedHash1",
         },
         "queueName": "google-worker",
@@ -20,6 +25,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "name": "storeBlob:postgres-worker-blobVersionedHash1",
         "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
           "jobId": "postgres-worker-blobVersionedHash1",
         },
         "queueName": "postgres-worker",
@@ -30,6 +40,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "name": "storeBlob:swarm-worker-blobVersionedHash1",
         "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
           "jobId": "swarm-worker-blobVersionedHash1",
         },
         "queueName": "swarm-worker",
@@ -40,6 +55,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
     },
     "name": "propagateBlob:finalizer-worker-blobVersionedHash1",
     "opts": {
+      "attempts": 3,
+      "backoff": {
+        "delay": 1000,
+        "type": "exponential",
+      },
       "jobId": "finalizer-worker-blobVersionedHash1",
     },
     "queueName": "finalizer-worker",
@@ -52,6 +72,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "name": "storeBlob:google-worker-blobVersionedHash2",
         "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
           "jobId": "google-worker-blobVersionedHash2",
         },
         "queueName": "google-worker",
@@ -62,6 +87,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "name": "storeBlob:postgres-worker-blobVersionedHash2",
         "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
           "jobId": "postgres-worker-blobVersionedHash2",
         },
         "queueName": "postgres-worker",
@@ -72,6 +102,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "name": "storeBlob:swarm-worker-blobVersionedHash2",
         "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
           "jobId": "swarm-worker-blobVersionedHash2",
         },
         "queueName": "swarm-worker",
@@ -82,6 +117,11 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
     },
     "name": "propagateBlob:finalizer-worker-blobVersionedHash2",
     "opts": {
+      "attempts": 3,
+      "backoff": {
+        "delay": 1000,
+        "type": "exponential",
+      },
       "jobId": "finalizer-worker-blobVersionedHash2",
     },
     "queueName": "finalizer-worker",

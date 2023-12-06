@@ -5,13 +5,14 @@ import type {
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
+import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
+
+import { env } from "../src";
 import { createTRPCContext } from "../src/context";
 import type { PaginationInput } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
-
-const SECRET = "supersecret";
 
 export async function createTestContext({
   withAuth,
@@ -28,7 +29,7 @@ export async function createTestContext({
   } as NodeHTTPRequest;
 
   if (withAuth) {
-    const token = jwt.sign("foobar", SECRET);
+    const token = jwt.sign("foobar", env.SECRET_KEY);
     req.headers.authorization = `Bearer ${token}`;
   }
 
@@ -38,11 +39,14 @@ export async function createTestContext({
 
   const ctx = await createTRPCContext({
     scope: "rest-api",
-    enableBlobPropagator: withBlobPropagator,
   })({
     req,
     res,
   });
+
+  if (withBlobPropagator) {
+    ctx.blobPropagator = createBlobPropagator();
+  }
 
   return ctx;
 }

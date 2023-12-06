@@ -5,9 +5,9 @@ import type {
   FlowJob,
   WorkerOptions,
   RedisOptions,
+  JobsOptions,
 } from "bullmq";
 import IORedis from "ioredis";
-import path from "path";
 
 import type { $Enums } from "@blobscan/db";
 import type { BlobStorage } from "@blobscan/db";
@@ -16,25 +16,35 @@ import { logger } from "@blobscan/logger";
 import { blobFileManager } from "./blob-file-manager";
 import type { Blob, BlobPropagationJobData } from "./types";
 import { emptyWorkerJobQueue } from "./utils";
+import {
+  finalizerProcessor,
+  gcsWorker,
+  postgresWorker,
+  swarmWorker,
+} from "./worker-processors";
 
-const WORKERS_DIR = "worker-processors";
-/**
- * Define workers on separated files to run them on different
- * processes
- */
-const STORAGE_WORKER_FILES: Record<BlobStorage, string> = {
-  GOOGLE: path.join(__dirname, WORKERS_DIR, "gcs.ts"),
-  SWARM: path.join(__dirname, WORKERS_DIR, "swarm.ts"),
-  POSTGRES: path.join(__dirname, WORKERS_DIR, "postgres.ts"),
+const STORAGE_WORKER_PROCESSORS = {
+  GOOGLE: gcsWorker,
+  SWARM: swarmWorker,
+  POSTGRES: postgresWorker,
 };
-const FINALIZER_WORKER_FILE = path.join(__dirname, WORKERS_DIR, "finalizer.ts");
 
 export type BlobPropagatorOptions = Partial<{
   workerOptions: WorkerOptions;
 }>;
 
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
-  useWorkerThreads: true,
+  autorun: true,
+  useWorkerThreads: false,
+  removeOnComplete: { count: 1000 },
+};
+
+const DEFAULT_JOB_OPTIONS: Omit<JobsOptions, "repeat"> = {
+  attempts: 3,
+  backoff: {
+    type: "exponential",
+    delay: 1000,
+  },
 };
 
 function isRedisOptions(
@@ -66,13 +76,13 @@ export class BlobPropagator {
       );
     }
 
-    this.blobPropagationFlowProducer = this.#createBlobPropagationFlowProducer(
-      workerOptions?.connection
-    );
-    this.finalizerWorker = this.#createFinalizerWorker(workerOptions);
     this.storageWorkers = this.#createBlobStorageWorkers(
       storages,
       workerOptions
+    );
+    this.finalizerWorker = this.#createFinalizerWorker(workerOptions);
+    this.blobPropagationFlowProducer = this.#createBlobPropagationFlowProducer(
+      workerOptions?.connection
     );
   }
 
@@ -115,7 +125,7 @@ export class BlobPropagator {
   }
 
   async propagateBlob(blob: Blob) {
-    await blobFileManager.createBlobDataFile(blob);
+    await blobFileManager.createFile(blob);
 
     const blobFlowJob = await this.#createBlobPropagationFlowJob({
       versionedHash: blob.versionedHash,
@@ -125,9 +135,7 @@ export class BlobPropagator {
   }
 
   async propagateBlobs(blobs: Blob[]) {
-    await Promise.all(
-      blobs.map((blob) => blobFileManager.createBlobDataFile(blob))
-    );
+    await Promise.all(blobs.map((blob) => blobFileManager.createFile(blob)));
 
     const blobPropagationFlowJobs = blobs.map(({ versionedHash }) =>
       this.#createBlobPropagationFlowJob({ versionedHash })
@@ -168,14 +176,10 @@ export class BlobPropagator {
   }
 
   #createFinalizerWorker(opts: WorkerOptions = {}) {
-    const finalizerWorker = new Worker(
-      "finalizer-worker",
-      FINALIZER_WORKER_FILE,
-      {
-        ...DEFAULT_WORKER_OPTIONS,
-        ...opts,
-      }
-    );
+    const finalizerWorker = new Worker("finalizer-worker", finalizerProcessor, {
+      ...DEFAULT_WORKER_OPTIONS,
+      ...opts,
+    });
 
     finalizerWorker.on("completed", (job) => {
       logger.debug(
@@ -199,7 +203,7 @@ export class BlobPropagator {
         const workerName = `${storageName.toLowerCase()}-worker`;
         const storageWorker = new Worker<BlobPropagationJobData>(
           workerName,
-          STORAGE_WORKER_FILES[storageName],
+          STORAGE_WORKER_PROCESSORS[storageName],
           {
             ...DEFAULT_WORKER_OPTIONS,
             ...opts,
@@ -239,6 +243,7 @@ export class BlobPropagator {
         queueName: storageWorker.name,
         data,
         opts: {
+          ...DEFAULT_JOB_OPTIONS,
           jobId,
         },
       };
@@ -251,6 +256,7 @@ export class BlobPropagator {
       queueName: this.finalizerWorker.name,
       data,
       opts: {
+        ...DEFAULT_JOB_OPTIONS,
         jobId,
       },
       children: storageJobs,

@@ -1,3 +1,4 @@
+import type { Job } from "bullmq";
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from "vitest";
 import type { SuiteFactory } from "vitest";
 
@@ -13,11 +14,13 @@ import type {
   BlobStorage as BlobStorageName,
 } from "@blobscan/db";
 
+import type { BlobPropagationJobData } from "../src";
 import { blobFileManager } from "../src/blob-file-manager";
-import type { BlobPropagationSandboxedJob } from "../src/types";
-import gcsWorker from "../src/worker-processors/gcs";
-import postgresWorker from "../src/worker-processors/postgres";
-import swarmWorker from "../src/worker-processors/swarm";
+import {
+  gcsWorker,
+  postgresWorker,
+  swarmWorker,
+} from "../src/worker-processors";
 
 type TestSuiteFixtures = {
   blobVersionedHash: string;
@@ -61,7 +64,7 @@ export function runStorageWorkerTestSuite(
       data: {
         versionedHash: blobVersionedHash,
       },
-    } as BlobPropagationSandboxedJob;
+    } as Job<BlobPropagationJobData>;
     const blob: Blob = {
       versionedHash: blobVersionedHash,
       commitment: "test-commitment",
@@ -86,7 +89,7 @@ export function runStorageWorkerTestSuite(
     });
 
     beforeEach(async () => {
-      await blobFileManager.createBlobDataFile({
+      await blobFileManager.createFile({
         versionedHash: blobVersionedHash,
         data: blobData,
       });
@@ -97,7 +100,7 @@ export function runStorageWorkerTestSuite(
     });
 
     afterEach(async () => {
-      await blobFileManager.removeBlobDataFile(blobVersionedHash);
+      await blobFileManager.removeFile(blobVersionedHash);
 
       await prisma.blobDataStorageReference.deleteMany({
         where: {
@@ -154,7 +157,7 @@ export function runStorageWorkerTestSuite(
         data: {
           versionedHash,
         },
-      } as BlobPropagationSandboxedJob;
+      } as Job<BlobPropagationJobData>;
 
       await expect(
         storageWorker(jobWithMissingBlobData)
