@@ -11,7 +11,7 @@
     "lint:fix": "pnpm lint --fix",
     "start": "pnpm print-banner && pnpm with-env next start",
     "type-check": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env  -v BLOB_PROPAGATOR_ENABLED=false --"
   },
   "dependencies": {
     "@blobscan/api": "^0.0.1",
