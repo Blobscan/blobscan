@@ -1,5 +1,4 @@
-import { apiEnv, blobStorageManagerEnv } from "@blobscan/api";
-import { env as otelEnv } from "@blobscan/open-telemetry";
+import { env as apiEnv } from "@blobscan/api";
 
 import { env as restEnv } from "../env";
 
@@ -14,8 +13,6 @@ function run() {
 
   restEnv.display();
   apiEnv.display();
-  blobStorageManagerEnv.display();
-  otelEnv.display();
 }
 
 run();

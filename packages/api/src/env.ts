@@ -1,3 +1,6 @@
+import { env as blobPropagatorEnv } from "@blobscan/blob-propagator";
+import { env as blobStorageManagerEnv } from "@blobscan/blob-storage-manager";
+import { env as openTelemetryEnv } from "@blobscan/open-telemetry";
 import {
   z,
   createEnv,
@@ -21,5 +24,8 @@ export const env = createEnv({
     console.log(
       `API configuration: secretKey: ${maskSensitiveData(env.SECRET_KEY)}`
     );
+    blobPropagatorEnv.display();
+    blobStorageManagerEnv.display();
+    openTelemetryEnv.display();
   },
 });

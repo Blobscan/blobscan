@@ -1,5 +1,4 @@
-import { apiEnv, blobStorageManagerEnv } from "@blobscan/api";
-import { env as otelEnv } from "@blobscan/open-telemetry";
+import { env as apiEnv } from "@blobscan/api";
 
 //TODO: Find a way to run this script and use the web envs from `env.mjs`. Right now, it fails with a ERR_REQUIRE_ESM error
 
@@ -20,8 +19,6 @@ export function run() {
       .FEEDBACK_WEBHOOK_URL}, tracesEnabled=${!!process.env.TRACES_ENABLED}`
   );
   apiEnv.display();
-  blobStorageManagerEnv.display();
-  otelEnv.display();
 }
 
 run();
