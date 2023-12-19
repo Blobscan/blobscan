@@ -17,9 +17,9 @@ import type {
 import type { BlobPropagationJobData } from "../src";
 import { blobFileManager } from "../src/blob-file-manager";
 import {
-  gcsWorker,
-  postgresWorker,
-  swarmWorker,
+  gcsProcessor,
+  postgresProcessor,
+  swarmProcessor,
 } from "../src/worker-processors";
 
 type TestSuiteFixtures = {
@@ -37,11 +37,11 @@ type TestSuiteOptions = {
 function getStorageWorker(storage: BlobStorage) {
   switch (storage) {
     case "GOOGLE":
-      return gcsWorker;
+      return gcsProcessor;
     case "POSTGRES":
-      return postgresWorker;
+      return postgresProcessor;
     case "SWARM":
-      return swarmWorker;
+      return swarmProcessor;
   }
 }
 

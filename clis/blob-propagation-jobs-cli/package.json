@@ -1,0 +1,33 @@
+{
+  "name": "@blobscan/blob-propagation-jobs-cli",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A CLI that facilitates the managing of blob propagation jobs",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit",
+    "start": "ts-node src/index.ts",
+    "test": "pnpm with-env:dev vitest",
+    "test:ui": "pnpm with-env:dev vitest --ui",
+    "with-env:dev": "dotenv -e ../../.env.development --"
+  },
+  "dependencies": {
+    "@blobscan/blob-propagator": "^0.0.1",
+    "@blobscan/db": "^0.0.1",
+    "bullmq": "^4.13.2"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

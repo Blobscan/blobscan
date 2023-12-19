@@ -15,18 +15,23 @@ import { logger } from "@blobscan/logger";
 
 import { blobFileManager } from "./blob-file-manager";
 import type { Blob, BlobPropagationJobData } from "./types";
-import { emptyWorkerJobQueue } from "./utils";
+import {
+  FINALIZER_WORKER_NAME,
+  STORAGE_WORKER_NAMES,
+  buildJobId,
+  emptyWorkerJobQueue,
+} from "./utils";
 import {
   finalizerProcessor,
-  gcsWorker,
-  postgresWorker,
-  swarmWorker,
+  gcsProcessor,
+  postgresProcessor,
+  swarmProcessor,
 } from "./worker-processors";
 
 const STORAGE_WORKER_PROCESSORS = {
-  GOOGLE: gcsWorker,
-  SWARM: swarmWorker,
-  POSTGRES: postgresWorker,
+  GOOGLE: gcsProcessor,
+  SWARM: swarmProcessor,
+  POSTGRES: postgresProcessor,
 };
 
 export type BlobPropagatorOptions = Partial<{
@@ -176,10 +181,14 @@ export class BlobPropagator {
   }
 
   #createFinalizerWorker(opts: WorkerOptions = {}) {
-    const finalizerWorker = new Worker("finalizer-worker", finalizerProcessor, {
-      ...DEFAULT_WORKER_OPTIONS,
-      ...opts,
-    });
+    const finalizerWorker = new Worker(
+      FINALIZER_WORKER_NAME,
+      finalizerProcessor,
+      {
+        ...DEFAULT_WORKER_OPTIONS,
+        ...opts,
+      }
+    );
 
     finalizerWorker.on("completed", (job) => {
       logger.debug(
@@ -200,7 +209,7 @@ export class BlobPropagator {
   ) {
     return storages.reduce<Record<BlobStorage, Worker<BlobPropagationJobData>>>(
       (workers, storageName) => {
-        const workerName = `${storageName.toLowerCase()}-worker`;
+        const workerName = STORAGE_WORKER_NAMES[storageName];
         const storageWorker = new Worker<BlobPropagationJobData>(
           workerName,
           STORAGE_WORKER_PROCESSORS[storageName],
@@ -236,7 +245,7 @@ export class BlobPropagator {
     const storageJobs: FlowChildJob[] = Object.values(
       this.storageWorkers
     ).map<FlowChildJob>((storageWorker) => {
-      const jobId = `${storageWorker.name}-${versionedHash}`;
+      const jobId = buildJobId(storageWorker, versionedHash);
 
       return {
         name: `storeBlob:${jobId}`,
@@ -249,7 +258,7 @@ export class BlobPropagator {
       };
     });
 
-    const jobId = `${this.finalizerWorker.name}-${versionedHash}`;
+    const jobId = buildJobId(this.finalizerWorker, versionedHash);
 
     return {
       name: `propagateBlob:${jobId}`,

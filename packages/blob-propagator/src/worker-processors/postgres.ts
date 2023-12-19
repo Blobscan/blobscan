@@ -1,6 +1,6 @@
 import type { BlobPropagationWorkerProcessor } from "../types";
 import { propagateBlob } from "../utils";
 
-export const postgresWorker: BlobPropagationWorkerProcessor = (job) => {
+export const postgresProcessor: BlobPropagationWorkerProcessor = (job) => {
   return propagateBlob(job.data.versionedHash, "POSTGRES");
 };
