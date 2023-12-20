@@ -1,4 +1,4 @@
-import type { BlobStorage as BlobStorageNames } from "@blobscan/db";
+import type { BlobStorage as BlobStorageName } from "@blobscan/db";
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
@@ -12,7 +12,7 @@ type Blob = {
   versionedHash: string;
 };
 
-export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
+export type StorageOf<T extends BlobStorageName> = T extends "GOOGLE"
   ? GoogleStorage
   : T extends "SWARM"
   ? SwarmStorage
@@ -20,20 +20,24 @@ export type StorageOf<T extends BlobStorageNames> = T extends "GOOGLE"
   ? PostgresStorage
   : never;
 
-export type BlobStorages<SNames extends BlobStorageNames> = {
+export type BlobStorages<SNames extends BlobStorageName> = {
   [K in SNames]?: StorageOf<K>;
 };
 
 export type BlobReference<
-  StorageName extends BlobStorageNames = BlobStorageNames
+  StorageName extends BlobStorageName = BlobStorageName
 > = {
   reference: string;
   storage: StorageName;
 };
 
-export type StorageError<SName extends BlobStorageNames = BlobStorageNames> = {
+export type StorageError<SName extends BlobStorageName = BlobStorageName> = {
   storage: SName;
   error: Error;
+};
+
+export type StoreOptions = {
+  selectedStorages: BlobStorageName[];
 };
 
 function calculateBlobBytes(blob: string): number {
@@ -41,8 +45,8 @@ function calculateBlobBytes(blob: string): number {
 }
 
 export class BlobStorageManager<
-  SNames extends BlobStorageNames = BlobStorageNames,
-  T extends BlobStorages<SNames> = BlobStorages<SNames>
+  BSName extends BlobStorageName = BlobStorageName,
+  T extends BlobStorages<BSName> = BlobStorages<BSName>
 > {
   #blobStorages: T;
   chainId: number;
@@ -60,9 +64,13 @@ export class BlobStorageManager<
     return this.#blobStorages[name];
   }
 
+  hasStorage<SName extends keyof T>(name: SName): boolean {
+    return !!this.#blobStorages[name];
+  }
+
   async getBlob(
-    ...blobReferences: BlobReference<SNames>[]
-  ): Promise<{ data: string; storage: SNames } | null> {
+    ...blobReferences: BlobReference<BSName>[]
+  ): Promise<{ data: string; storage: BSName } | null> {
     return tracer.startActiveSpan(
       "blob_storage_manager",
       {
@@ -148,9 +156,12 @@ export class BlobStorageManager<
     );
   }
 
-  async storeBlob({ data, versionedHash }: Blob): Promise<{
-    references: BlobReference<SNames>[];
-    errors: StorageError<SNames>[];
+  async storeBlob(
+    { data, versionedHash }: Blob,
+    opts?: StoreOptions
+  ): Promise<{
+    references: BlobReference<BSName>[];
+    errors: StorageError<BSName>[];
   }> {
     return tracer.startActiveSpan(
       "blob_storage_manager",
@@ -160,11 +171,10 @@ export class BlobStorageManager<
         },
       },
       async (span) => {
-        const availableStorages = Object.entries(this.#blobStorages).filter(
-          ([, storage]) => storage
-        ) as [SNames, BlobStorage][];
+        const selectedStorages = this.#getSelectedStorages(opts);
+
         const results = await Promise.allSettled(
-          availableStorages.map(([name, storage]) => {
+          selectedStorages.map(([name, storage]) => {
             return tracer.startActiveSpan(
               "blob_storage_manager:storage",
               {
@@ -177,7 +187,7 @@ export class BlobStorageManager<
                 const start = performance.now();
                 const blobReference = await storage
                   .storeBlob(this.chainId, versionedHash, data)
-                  .then<BlobReference<SNames>>((reference) => ({
+                  .then<BlobReference<BSName>>((reference) => ({
                     reference,
                     storage: name,
                   }));
@@ -200,13 +210,13 @@ export class BlobStorageManager<
 
         const references = results
           .filter(
-            (res): res is PromiseFulfilledResult<BlobReference<SNames>> =>
+            (res): res is PromiseFulfilledResult<BlobReference<BSName>> =>
               res.status === "fulfilled"
           )
           .map((res) => res.value);
-        const errors = results.reduce<StorageError<SNames>[]>(
+        const errors = results.reduce<StorageError<BSName>[]>(
           (prevFailedUploads, res, i) => {
-            const storage = availableStorages[i] as [SNames, BlobStorage];
+            const storage = selectedStorages[i] as [BSName, BlobStorage];
 
             if (res.status === "rejected") {
               const storageError = {
@@ -244,5 +254,41 @@ export class BlobStorageManager<
         };
       }
     );
+  }
+
+  #getSelectedStorages(
+    { selectedStorages }: StoreOptions = { selectedStorages: [] }
+  ): [BSName, BlobStorage][] {
+    const uniqueInputStorageNames = Array.from(new Set(selectedStorages));
+    const selectedStorageNames = uniqueInputStorageNames?.length
+      ? uniqueInputStorageNames
+      : // If no storages are provided, default to normal behaviour and use all the storages
+        (Object.keys(this.#blobStorages) as BSName[]);
+
+    const selectedAvailableStorages = Object.entries(this.#blobStorages).filter(
+      ([name, storage]) =>
+        selectedStorageNames.includes(name as BSName) && !!storage
+    ) as [BSName, BlobStorage][];
+
+    if (
+      uniqueInputStorageNames.length &&
+      selectedAvailableStorages.length !== uniqueInputStorageNames.length
+    ) {
+      const selectdAvailableStorageNames = selectedAvailableStorages.map(
+        ([name]) => name
+      );
+      const missingStorageNames = uniqueInputStorageNames.filter(
+        (storageName) =>
+          !selectdAvailableStorageNames.includes(storageName as BSName)
+      );
+
+      throw new Error(
+        `Some of the selected storages are not available: ${missingStorageNames.join(
+          ", "
+        )}`
+      );
+    }
+
+    return selectedAvailableStorages;
   }
 }

@@ -5,30 +5,48 @@ import type {
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
-import type { TRPCContext } from "../src/context";
+import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
+
+import { env } from "../src";
 import { createTRPCContext } from "../src/context";
 import type { PaginationInput } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 
+type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
+
 export async function createTestContext({
   withAuth,
-}: Partial<{ withAuth: boolean }> = {}) {
-  const token = jwt.sign("foobar", "supersecret");
+  withBlobPropagator = false,
+}: Partial<{
+  withAuth: boolean;
+  withBlobPropagator: boolean;
+}> = {}): TRPCContext {
   const req = {
     headers: {
-      ...(withAuth ? { authorization: `Bearer ${token}` } : {}),
       host: "localhost:3000",
     },
     url: "/api/trpc/test.testProcedure",
   } as NodeHTTPRequest;
+
+  if (withAuth) {
+    const token = jwt.sign("foobar", env.SECRET_KEY);
+    req.headers.authorization = `Bearer ${token}`;
+  }
+
   const res = {
     statusCode: 200,
   } as NodeHTTPResponse;
 
-  const ctx = (await createTRPCContext("rest-api")({
+  const ctx = await createTRPCContext({
+    scope: "rest-api",
+  })({
     req,
     res,
-  })) as TRPCContext;
+  });
+
+  if (withBlobPropagator) {
+    ctx.blobPropagator = createBlobPropagator();
+  }
 
   return ctx;
 }

@@ -8,4 +8,5 @@ beforeEach(() => {
 });
 
 const prisma = mockDeep<BlobscanPrismaClient>();
+
 export default prisma;

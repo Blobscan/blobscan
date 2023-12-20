@@ -1,37 +1,49 @@
+import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { GoogleStorageMock as GoogleStorage } from "../../src/__mocks__/GoogleStorage";
-import {
-  BLOB_DATA,
-  BLOB_HASH,
-  CHAIN_ID,
-  FILE_URI,
-  GOOGLE_STORAGE_CONFIG,
-} from "../fixtures";
+import { GoogleStorage, env } from "../../src";
+import type { GoogleStorageConfig } from "../../src/storages";
+import { BLOB_DATA, BLOB_HASH, FILE_URI } from "../fixtures";
+
+class GoogleStorageMock extends GoogleStorage {
+  constructor(config: GoogleStorageConfig) {
+    super(config);
+  }
+
+  get bucketName(): string {
+    return this._bucketName;
+  }
+
+  get storageClient(): Storage {
+    return this._storageClient;
+  }
+}
 
 describe("GoogleStorage", () => {
-  let storage: GoogleStorage;
+  let storage: GoogleStorageMock;
 
   beforeAll(() => {
-    storage = new GoogleStorage(GOOGLE_STORAGE_CONFIG);
+    if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
+      throw new Error("GOOGLE_STORAGE_BUCKET_NAME is not set");
+    }
+
+    storage = new GoogleStorageMock({
+      bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
+      projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+      apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+    });
   });
 
   describe("constructor", () => {
     it("should create a new instance with all configuration options", async () => {
       expect(storage).toBeDefined();
-      expect(storage.bucketName).toEqual(GOOGLE_STORAGE_CONFIG.bucketName);
+      expect(storage.bucketName).toEqual(env.GOOGLE_STORAGE_BUCKET_NAME);
       expect(storage.storageClient.projectId).toEqual(
-        GOOGLE_STORAGE_CONFIG.projectId
+        env.GOOGLE_STORAGE_PROJECT_ID
       );
       expect(storage.storageClient.apiEndpoint).toEqual(
-        GOOGLE_STORAGE_CONFIG.apiEndpoint
+        env.GOOGLE_STORAGE_API_ENDPOINT
       );
-
-      const [serviceAccont] = await storage.storageClient.getServiceAccount();
-      const credentials = JSON.parse(
-        Buffer.from(GOOGLE_STORAGE_CONFIG.serviceKey, "base64").toString()
-      );
-      expect(serviceAccont.emailAddress).toEqual(credentials.client_email);
     });
   });
 
@@ -44,9 +56,11 @@ describe("GoogleStorage", () => {
       const newBucket = "new-bucket";
 
       const newStorage = new GoogleStorage({
-        ...GOOGLE_STORAGE_CONFIG,
+        projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+        apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
         bucketName: newBucket,
       });
+
       await expect(newStorage.healthCheck()).rejects.toMatchInlineSnapshot(
         "[Error: Bucket new-bucket does not exist]"
       );
@@ -63,10 +77,10 @@ describe("GoogleStorage", () => {
 
   describe("storeBlob", () => {
     it("should return the correct file", async () => {
-      const file = await storage.storeBlob(CHAIN_ID, BLOB_HASH, BLOB_DATA);
+      const file = await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
 
       expect(file).toMatchInlineSnapshot(
-        '"7011893058/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
+        '"70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
       );
     });
   });

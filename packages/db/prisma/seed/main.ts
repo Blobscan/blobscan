@@ -1,6 +1,6 @@
 import type { BlobDataStorageReference } from "@prisma/client";
 
-import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
@@ -12,7 +12,7 @@ const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
 
 async function main() {
-  const blobStorageManager = await createOrLoadBlobStorageManager();
+  const blobStorageManager = await getBlobStorageManager();
   const dataGenerator = new DataGenerator(seedParams);
 
   // 1. Generate mock data

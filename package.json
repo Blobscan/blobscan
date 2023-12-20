@@ -17,14 +17,15 @@
     "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,md,json}\" --ignore-path .gitignore",
     "lint": "turbo lint && manypkg check",
     "lint:fix": "turbo lint:fix && manypkg fix",
-    "test": "vitest",
+    "test": "dotenv -e .env.development vitest",
     "test:ui": "vitest --ui",
-    "test:dev": "pnpm test:setup && vitest",
     "test:setup": "turbo test:setup",
+    "test:dev": "pnpm test:setup && pnpm test",
     "type-check": "turbo type-check",
     "stats": "ts-node scripts/stats-aggregator/index.ts",
     "job:daily": "ts-node scripts/jobs/aggregate-yesterdays-daily-stats.ts",
-    "job:overall": "ts-node scripts/jobs/aggregate-overall-stats.ts"
+    "job:overall": "ts-node scripts/jobs/aggregate-overall-stats.ts",
+    "validate": "turbo lint type-check && manypkg check && pnpm test"
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",

@@ -16,7 +16,7 @@ const mainUsage = commandLineUsage([
   {
     header: "Blobscan's Stats Aggregator",
     content:
-      "A script that facilitates the aggregation of metrics related to different types of entities.",
+      "A CLI that facilitates the aggregation of metrics related to different types of entities.",
   },
   {
     header: "Command List",

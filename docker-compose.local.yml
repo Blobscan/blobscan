@@ -9,7 +9,7 @@ services:
     image: blossomlabs/blobscan:local
     build: .
     ports:
-      - 5556:5556  # Prisma studio
+      - 5556:5556 # Prisma studio
 
   api:
     extends:
@@ -43,6 +43,19 @@ services:
       - type: bind
         source: ./packages/test/src/fixtures/storage
         target: /data
+
+  redis:
+    image: "redis:alpine"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./misc/data:/var/lib/redis
+      - ./misc/conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=s3cr3t
+      - REDIS_USERNAME=blobscan
 
   collector:
     image: otel/opentelemetry-collector:0.23.0
