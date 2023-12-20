@@ -382,6 +382,9 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../../packages/config/eslint
+      '@blobscan/test':
+        specifier: ^0.0.1
+        version: link:../../packages/test
 
   packages/api:
     dependencies:

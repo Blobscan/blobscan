@@ -22,7 +22,8 @@
     "bullmq": "^4.13.2"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1"
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/test": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,
