@@ -1,14 +1,5 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { SpyInstance } from "vitest";
-import {
-  afterAll,
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { remove, removeCommandUsage } from "../../src/commands";
 import { queueManager } from "../../src/queue-manager";
@@ -158,9 +149,5 @@ describe("Remove command", () => {
     ).rejects.toThrowErrorMatchingInlineSnapshot(
       '"Invalid queue name: invalid-queue-name"'
     );
-  });
-
-  afterAll(async () => {
-    await queueManager.obliterateQueues().finally(() => queueManager.close());
   });
 });

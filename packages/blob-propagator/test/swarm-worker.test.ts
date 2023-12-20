@@ -1,4 +1,4 @@
-import { afterAll, describe, vi } from "vitest";
+import { describe, vi } from "vitest";
 
 import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 
@@ -9,10 +9,6 @@ const fixtures = {
   blobStorageReference: "swarm-reference",
   blobVersionedHash: "swarmWorkerVersionedHash",
 };
-
-afterAll(() => {
-  vi.resetModules();
-});
 
 describe(
   "Swarm Worker",

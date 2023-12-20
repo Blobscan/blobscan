@@ -33,9 +33,7 @@ function createBlobPropagator() {
     },
   });
 }
-
-const blobPropagator = env.BLOB_PROPAGATOR_ENABLED
-  ? createBlobPropagator()
-  : undefined;
+const blobPropagator =
+  env.BLOB_PROPAGATOR_ENABLED === true ? createBlobPropagator() : undefined;
 
 export { blobPropagator, createBlobPropagator };

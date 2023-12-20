@@ -11,7 +11,6 @@ import {
 } from "vitest";
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
-import { blobFileManager } from "@blobscan/blob-propagator/src/blob-file-manager";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { omitDBTimestampFields } from "@blobscan/test";
 
@@ -420,11 +419,12 @@ describe("Indexer router", async () => {
           });
 
           afterAll(async () => {
-            await blobFileManager.removeFolder();
+            const blobPropagator = ctxWithBlobPropagator.blobPropagator;
 
-            await ctxWithBlobPropagator.blobPropagator?.close({
-              emptyJobs: true,
-            });
+            if (blobPropagator) {
+              await blobPropagator.empty({ force: true });
+              await blobPropagator.close();
+            }
           });
 
           it("should call blob propagator", async () => {

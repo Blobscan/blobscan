@@ -105,9 +105,7 @@ describe("Retry command", () => {
   });
 
   afterAll(async () => {
-    let teardownPromise = queueManager
-      .obliterateQueues()
-      .finally(() => queueManager.close());
+    let teardownPromise = Promise.resolve();
 
     storageWorkers.forEach((worker) => {
       teardownPromise = teardownPromise.finally(() => worker.close());

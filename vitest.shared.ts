@@ -1,6 +1,6 @@
-import { UserProjectConfigExport } from "vitest/config";
+import { UserWorkspaceConfig } from "vitest/config";
 
-export const sharedProjectConfig: UserProjectConfigExport = {
+export const sharedProjectConfig: UserWorkspaceConfig = {
   test: {
     include: ["test/**/*.test.ts"],
     setupFiles: ["@blobscan/test/src/setup.ts"],

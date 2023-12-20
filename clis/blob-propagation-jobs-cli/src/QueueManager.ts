@@ -65,9 +65,11 @@ export class QueueManager {
     ]);
   }
 
-  obliterateQueues() {
+  obliterateQueues({ force = false } = {}) {
     return Promise.all([
-      ...Object.values(this.#storageQueues).map((queue) => queue.obliterate()),
+      ...Object.values(this.#storageQueues).map((queue) =>
+        queue.obliterate({ force })
+      ),
       this.#finalizerQueue.obliterate(),
     ]);
   }

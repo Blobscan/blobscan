@@ -1,4 +1,5 @@
-import { FlowProducer, Worker } from "bullmq";
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { FlowProducer, Queue, Worker } from "bullmq";
 import type {
   ConnectionOptions,
   FlowChildJob,
@@ -19,7 +20,6 @@ import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
   buildJobId,
-  emptyWorkerJobQueue,
 } from "./utils";
 import {
   finalizerProcessor,
@@ -91,42 +91,49 @@ export class BlobPropagator {
     );
   }
 
-  close(opts?: { emptyJobs: boolean }) {
+  async empty({ force }: { force: boolean } = { force: false }) {
+    const workers = this.#getWorkers();
+    const queues = await Promise.all(
+      workers.map(
+        async (w) => new Queue(w.name, { connection: await w.client })
+      )
+    );
+
+    let emptyPromise = Promise.all([
+      ...queues.map((q) => q.obliterate({ force })),
+      blobFileManager.removeFolder(),
+    ]);
+
+    queues.forEach((q) => {
+      emptyPromise = emptyPromise.finally(async () => {
+        await q.close();
+      });
+    });
+
+    await emptyPromise;
+  }
+
+  close() {
     let teardownPromise: Promise<void> = Promise.resolve();
-    const emptyJobs = opts?.emptyJobs;
 
     Object.values(this.storageWorkers).forEach((w) => {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       teardownPromise = teardownPromise.finally(async () => {
-        if (emptyJobs) {
-          await emptyWorkerJobQueue(w);
-        }
-
         await w.close();
       });
     });
 
-    return (
-      teardownPromise
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        .finally(async () => {
-          if (emptyJobs) {
-            await emptyWorkerJobQueue(this.finalizerWorker);
-          }
+    return teardownPromise
+      .finally(async () => {
+        await this.finalizerWorker.close();
+      })
+      .finally(async () => {
+        const redisClient = await this.blobPropagationFlowProducer.client;
 
-          await this.finalizerWorker.close();
-        })
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        .finally(async () => {
-          const redisClient = await this.blobPropagationFlowProducer.client;
-
-          await redisClient.quit();
-        })
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        .finally(async () => {
-          await this.blobPropagationFlowProducer.close();
-        })
-    );
+        await redisClient.quit();
+      })
+      .finally(async () => {
+        await this.blobPropagationFlowProducer.close();
+      });
   }
 
   async propagateBlob(blob: Blob) {
@@ -147,6 +154,10 @@ export class BlobPropagator {
     );
 
     await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
+  }
+
+  #getWorkers() {
+    return [...Object.values(this.storageWorkers), this.finalizerWorker];
   }
 
   #createBlobPropagationFlowProducer(connection?: ConnectionOptions) {

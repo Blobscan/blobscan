@@ -1,7 +1,7 @@
 import type { Worker } from "bullmq";
-import { Queue } from "bullmq";
+import type { Queue } from "bullmq";
 
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
+import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma, $Enums } from "@blobscan/db";
 
 import { blobFileManager } from "./blob-file-manager";
@@ -28,19 +28,11 @@ export function getStorageFromjobId(jobId: string) {
   )?.[0] as $Enums.BlobStorage;
 }
 
-export async function emptyWorkerJobQueue(worker: Worker) {
-  const q = new Queue(worker.name, {
-    connection: await worker.client,
-  });
-
-  return q.drain();
-}
-
 export async function propagateBlob(
   versionedHash: string,
-  targetStorage: $Enums.BlobStorage
+  targetStorage: $Enums.BlobStorage,
+  { blobStorageManager }: { blobStorageManager: BlobStorageManager }
 ) {
-  const blobStorageManager = await getBlobStorageManager();
   const blobData = await blobFileManager.readFile(versionedHash);
 
   const result = await blobStorageManager.storeBlob(
