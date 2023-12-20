@@ -364,6 +364,25 @@ importers:
         specifier: ^0.0.1
         version: link:../../packages/test
 
+  clis/blob-propagation-jobs-cli:
+    dependencies:
+      '@blobscan/blob-propagator':
+        specifier: ^0.0.1
+        version: link:../../packages/blob-propagator
+      '@blobscan/db':
+        specifier: ^0.0.1
+        version: link:../../packages/db
+      '@blobscan/zod':
+        specifier: ^0.0.1
+        version: link:../../packages/zod
+      bullmq:
+        specifier: ^4.13.2
+        version: 4.13.2
+    devDependencies:
+      '@blobscan/eslint-config':
+        specifier: ^0.0.1
+        version: link:../../packages/config/eslint
+
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':

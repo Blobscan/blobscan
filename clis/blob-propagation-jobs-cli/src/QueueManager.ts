@@ -41,11 +41,15 @@ export class QueueManager {
     return this.#storageQueues[queueName];
   }
 
+  getQueues(queueNames: ("FINALIZER" | $Enums.BlobStorage)[]) {
+    return queueNames.map((queueName) => this.getQueue(queueName));
+  }
+
   getStorageQueues() {
     return this.#storageQueues;
   }
 
-  getJobs(types: JobType[]) {
+  getJobs(types?: JobType[]) {
     return Promise.all([
       ...Object.values(this.#storageQueues).map((queue) =>
         queue.getJobs(types)

@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import type { Job } from "bullmq";
 import { Worker } from "bullmq";
-import { randomUUID } from "crypto";
 import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import type { BlobPropagationJobData } from "@blobscan/blob-propagator";
-import { buildJobId } from "@blobscan/blob-propagator";
+import type { BlobPropagationWorker } from "@blobscan/blob-propagator";
 
-import { retry } from "../src/commands";
-import { connection } from "../src/common";
-import { queueManager } from "../src/queue-manager";
+import { retry, retryCommandUsage } from "../../src/commands";
+import { queueManager } from "../../src/queue-manager";
+import { connection } from "../../src/utils";
+import { processJobsManually, runHelpArgTests, setUpJobs } from "../helpers";
 
 describe("Retry command", () => {
-  let storageWorkers: Worker<BlobPropagationJobData>[];
+  let storageWorkers: BlobPropagationWorker[];
   const jobVersionedHashes = [
     "versionesHash1",
     "versionesHash2",
@@ -22,43 +20,17 @@ describe("Retry command", () => {
   beforeEach(async () => {
     const storageQueues = Object.values(queueManager.getStorageQueues());
 
-    await Promise.all(
-      storageQueues.map(async (queue) => {
-        const jobs = jobVersionedHashes.map<Job<BlobPropagationJobData>>(
-          (versionedHash) =>
-            ({
-              name: `testJob-${buildJobId(queue, versionedHash)}`,
-              data: {
-                versionedHash,
-              },
-              opts: {
-                jobId: buildJobId(queue, versionedHash),
-              },
-            } as Job<BlobPropagationJobData>)
-        );
-
-        return queue.addBulk(jobs);
-      })
-    );
-
     storageWorkers = storageQueues.map(
       (queue) => new Worker(queue.name, undefined, { connection })
     );
 
+    await setUpJobs(storageQueues, jobVersionedHashes);
     await Promise.all(
-      storageWorkers.map(async (worker) => {
-        const token = randomUUID();
-        let job = await worker.getNextJob(token);
-
-        while (job) {
-          await job.moveToFailed(
-            new Error(`Job with id ${job.id} failed`),
-            token
-          );
-
-          job = await worker.getNextJob(token);
-        }
-      })
+      storageWorkers.map((worker) =>
+        processJobsManually(worker, (job, token) =>
+          job.moveToFailed(new Error(`Job with id ${job.id} failed`), token)
+        )
+      )
     );
   });
 
@@ -113,6 +85,8 @@ describe("Retry command", () => {
       "Specific blob versioned hash jobs mismatch"
     ).toEqual([]);
   });
+
+  runHelpArgTests(retry, retryCommandUsage);
 
   it("should fail when providing non-existing blob hashes", () => {
     expect(

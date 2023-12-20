@@ -11,46 +11,53 @@ import {
   queueOptionDef,
 } from "../utils";
 
-const retryCommandOptDefs: commandLineArgs.OptionDefinition[] = [
+const removeCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
   queueOptionDef,
   blobHashOptionDef,
+  {
+    name: "force",
+    alias: "f",
+    description: "Force removal of jobs by obliterating the selected queues.",
+    type: Boolean,
+  },
 ];
 
-export const retryCommandUsage = commandLineUsage([
+export const removeCommandUsage = commandLineUsage([
   {
-    header: "Retry Command",
-    content: "Retries failed jobs.",
+    header: "Remove Command",
+    content: "Removes failed jobs.",
   },
   {
     header: "Options",
-    optionList: retryCommandOptDefs,
+    optionList: removeCommandOptDefs,
   },
 ]);
 
-export const retry: Command = async function (argv?: string[]) {
+export const remove: Command = async function (argv) {
   const {
+    blobHash: blobHashes,
+    force = false,
     help,
     queue: rawQueueNames,
-    blobHash: blobHashes,
-  } = commandLineArgs(retryCommandOptDefs, {
+  } = commandLineArgs(removeCommandOptDefs, {
     argv,
   }) as {
+    blobHash?: string[];
+    force?: boolean;
     help?: boolean;
     queue?: string[];
-    blobHash?: string[];
   };
 
   if (help) {
-    console.log(retryCommandUsage);
+    console.log(removeCommandUsage);
 
     return;
   }
 
   const queueNames = normalizeQueueNames(rawQueueNames);
 
-  // If blob hashes are provided, retry only the jobs with those hashes
-  if (blobHashes?.length) {
+  if (blobHashes?.length && !force) {
     const selectedQueueJobs = await Promise.all(
       queueManager
         .getQueues(queueNames)
@@ -58,15 +65,15 @@ export const retry: Command = async function (argv?: string[]) {
     );
 
     await Promise.all(
-      selectedQueueJobs.map((jobs) => jobs.map((j) => j.retry()))
+      selectedQueueJobs.map((jobs) => jobs.map((j) => j.remove()))
     );
 
     return;
   }
 
   await Promise.all(
-    queueNames
-      .map((name) => queueManager.getQueue(name))
-      .map((queue) => queue.retryJobs())
+    queueManager
+      .getQueues(queueNames)
+      .map((queue) => (force ? queue.obliterate() : queue.drain()))
   );
 };
