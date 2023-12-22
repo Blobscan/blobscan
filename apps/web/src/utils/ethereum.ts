@@ -1,5 +1,3 @@
-import type { Decimal } from "@blobscan/api";
-
 import { calculatePercentage, formatNumber, performDiv } from "./number";
 
 export const GAS_PER_BLOB = 131_072; // 2 ** 17
@@ -75,7 +73,7 @@ export function calculateBlobGasTarget(blobGasUsed: bigint) {
 }
 
 export function formatWei(
-  weiAmount: bigint | number | Decimal,
+  weiAmount: bigint | number,
   {
     toUnit = "Gwei",
     displayUnit = true,
