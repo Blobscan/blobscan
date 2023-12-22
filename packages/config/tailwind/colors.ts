@@ -85,10 +85,7 @@ export const baseColors = {
   },
 };
 
-const primary = baseColors.primary;
-const coolGray = baseColors.coolGray;
-const warmGray = baseColors.warmGray;
-const shades = baseColors.shades;
+const { coolGray, primary, shades, success, error, warmGray } = baseColors;
 
 export const semanticColors = {
   accent: {
@@ -122,6 +119,10 @@ export const semanticColors = {
   contentSecondary: {
     light: warmGray[600],
     dark: coolGray[700],
+  },
+  contentTertiary: {
+    light: warmGray[400],
+    dark: coolGray[400],
   },
   contentDisabled: {
     light: warmGray[400],
@@ -166,6 +167,14 @@ export const semanticColors = {
   link: {
     light: primary[700],
     dark: primary[400],
+  },
+  negative: {
+    light: error[500],
+    dark: error[400],
+  },
+  positive: {
+    light: success[500],
+    dark: success[400],
   },
   surface: {
     light: shades["00"],

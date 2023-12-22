@@ -4,6 +4,7 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
+import { BlobGasUsage } from "~/components/BlobGasUsage";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -16,12 +17,8 @@ import {
   formatNumber,
   formatTimestamp,
   formatWei,
-  calculateBlobGasTarget,
   GAS_PER_BLOB,
   MAX_BLOBS_PER_BLOCK,
-  TARGET_BLOB_GAS_PER_BLOCK,
-  calculatePercentage,
-  BLOB_GAS_LIMIT_PER_BLOCK,
   performDiv,
   pluralize,
 } from "~/utils";
@@ -113,7 +110,7 @@ const Block: NextPage = function () {
                   value: (
                     <div>
                       {formatBytes(totalBlobSize)}
-                      <span className="ml-1 text-gray-500">
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         ({formatNumber(totalBlobSize / GAS_PER_BLOB)}{" "}
                         {pluralize("blob", totalBlobSize / GAS_PER_BLOB)})
                       </span>
@@ -125,7 +122,7 @@ const Block: NextPage = function () {
                   value: (
                     <div>
                       {formatWei(blockData.blobGasPrice, { toUnit: "ether" })}
-                      <span className="ml-1 text-gray-500">
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         ({formatWei(blockData.blobGasPrice)})
                       </span>
                     </div>
@@ -133,35 +130,14 @@ const Block: NextPage = function () {
                 },
                 {
                   name: "Blob Gas Used",
-                  value: (
-                    <div>
-                      {formatNumber(blockData.blobGasUsed)}
-                      <span className="ml-1 text-gray-500">
-                        (
-                        {formatNumber(
-                          calculatePercentage(
-                            blockData.blobGasUsed,
-                            BigInt(BLOB_GAS_LIMIT_PER_BLOCK)
-                          ).toFixed(2),
-                          "standard",
-                          { maximumFractionDigits: 2 }
-                        )}
-                        %)
-                      </span>{" "}
-                      {blockData.blobGasUsed < TARGET_BLOB_GAS_PER_BLOCK
-                        ? "-"
-                        : "+"}
-                      {calculateBlobGasTarget(blockData.blobGasUsed).toFixed(2)}
-                      % Blob Gas Target
-                    </div>
-                  ),
+                  value: <BlobGasUsage blobGasUsed={blockData.blobGasUsed} />,
                 },
                 {
                   name: "Blob Gas Limit",
                   value: (
                     <div>
                       {formatNumber(MAX_BLOBS_PER_BLOCK)}
-                      <span className="ml-1 text-gray-500">
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
                         {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
                       </span>
@@ -173,7 +149,7 @@ const Block: NextPage = function () {
                   value: (
                     <div>
                       {formatNumber(blockData.blobAsCalldataGasUsed)}
-                      <span className="ml-1">
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         (
                         <strong>
                           {formatNumber(
