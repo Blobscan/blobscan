@@ -18,10 +18,11 @@ import {
   formatWei,
   calculateBlobGasTarget,
   GAS_PER_BLOB,
-  GAS_LIMIT_PER_BLOCK,
   MAX_BLOBS_PER_BLOCK,
-  getBlobGasTargetSign,
   TARGET_BLOB_GAS_PER_BLOCK,
+  calculatePercentage,
+  BLOB_GAS_LIMIT_PER_BLOCK,
+  performDiv,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -112,8 +113,7 @@ const Block: NextPage = function () {
                     <div>
                       {formatBytes(totalBlobSize)}
                       <span className="ml-1 text-gray-500">
-                        ({formatNumber(BigInt(totalBlobSize) / GAS_PER_BLOB)}{" "}
-                        blobs)
+                        ({formatNumber(totalBlobSize / GAS_PER_BLOB)} blobs)
                       </span>
                     </div>
                   ),
@@ -137,8 +137,10 @@ const Block: NextPage = function () {
                       <span className="ml-1 text-gray-500">
                         (
                         {formatNumber(
-                          (blockData.blobGasUsed * BigInt(100)) /
-                            GAS_LIMIT_PER_BLOCK,
+                          calculatePercentage(
+                            blockData.blobGasUsed,
+                            BigInt(BLOB_GAS_LIMIT_PER_BLOCK)
+                          ).toFixed(2),
                           "standard",
                           { maximumFractionDigits: 2 }
                         )}
@@ -147,7 +149,7 @@ const Block: NextPage = function () {
                       {blockData.blobGasUsed < TARGET_BLOB_GAS_PER_BLOCK
                         ? "-"
                         : "+"}
-                      {calculateBlobGasTarget(blockData.blobGasUsed).toString()}
+                      {calculateBlobGasTarget(blockData.blobGasUsed).toFixed(2)}
                       % Blob Gas Target
                     </div>
                   ),
@@ -156,7 +158,7 @@ const Block: NextPage = function () {
                   name: "Blob Gas Limit",
                   value: (
                     <div>
-                      {formatNumber(GAS_LIMIT_PER_BLOCK)}
+                      {formatNumber(MAX_BLOBS_PER_BLOCK)}
                       <span className="ml-1 text-gray-500">
                         ({formatNumber(MAX_BLOBS_PER_BLOCK)} blobs per block)
                       </span>
@@ -172,8 +174,10 @@ const Block: NextPage = function () {
                         (
                         <strong>
                           {formatNumber(
-                            blockData.blobAsCalldataGasUsed /
-                              blockData.blobGasUsed,
+                            performDiv(
+                              blockData.blobAsCalldataGasUsed,
+                              blockData.blobGasUsed
+                            ),
                             "standard",
                             { maximumFractionDigits: 2 }
                           )}
