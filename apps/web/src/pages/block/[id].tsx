@@ -16,10 +16,12 @@ import {
   formatNumber,
   formatTimestamp,
   formatWei,
-  gasTarget,
+  calculateBlobGasTarget,
   GAS_PER_BLOB,
   GAS_LIMIT_PER_BLOCK,
   MAX_BLOBS_PER_BLOCK,
+  getBlobGasTargetSign,
+  TARGET_BLOB_GAS_PER_BLOCK,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -142,7 +144,11 @@ const Block: NextPage = function () {
                         )}
                         %)
                       </span>{" "}
-                      {gasTarget(blockData.blobGasUsed)}
+                      {blockData.blobGasUsed < TARGET_BLOB_GAS_PER_BLOCK
+                        ? "-"
+                        : "+"}
+                      {calculateBlobGasTarget(blockData.blobGasUsed).toString()}
+                      % Blob Gas Target
                     </div>
                   ),
                 },
