@@ -16,7 +16,6 @@
   "dependencies": {
     "@blobscan/api": "^0.0.1",
     "@blobscan/dayjs": "^0.0.1",
-    "@blobscan/db": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/tailwind-config": "^0.0.1",
     "@fontsource/inter": "^4.5.15",
