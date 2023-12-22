@@ -23,6 +23,7 @@ import {
   calculatePercentage,
   BLOB_GAS_LIMIT_PER_BLOCK,
   performDiv,
+  pluralize,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -113,7 +114,8 @@ const Block: NextPage = function () {
                     <div>
                       {formatBytes(totalBlobSize)}
                       <span className="ml-1 text-gray-500">
-                        ({formatNumber(totalBlobSize / GAS_PER_BLOB)} blobs)
+                        ({formatNumber(totalBlobSize / GAS_PER_BLOB)}{" "}
+                        {pluralize("blob", totalBlobSize / GAS_PER_BLOB)})
                       </span>
                     </div>
                   ),
@@ -160,7 +162,8 @@ const Block: NextPage = function () {
                     <div>
                       {formatNumber(MAX_BLOBS_PER_BLOCK)}
                       <span className="ml-1 text-gray-500">
-                        ({formatNumber(MAX_BLOBS_PER_BLOCK)} blobs per block)
+                        ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
+                        {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
                       </span>
                     </div>
                   ),
