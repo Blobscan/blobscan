@@ -17,6 +17,7 @@ import {
   formatWei,
   formatBytes,
   formatNumber,
+  performDiv,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -39,12 +40,16 @@ const Tx: NextPage = () => {
             block: {
               ...txData_.block,
               blobGasPrice: BigInt(txData_.block.blobGasPrice),
-              excessBlobGas: BigInt(txData_.block.excessBlobGas),
+
+              Gas: BigInt(txData_.block.excessBlobGas),
             },
           }
         : undefined,
     [txData_]
   );
+
+  console.log("here");
+  console.log(txData?.blobAsCalldataGasUsed);
 
   if (error) {
     return (
@@ -62,7 +67,7 @@ const Tx: NextPage = () => {
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
   const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
   const blobGasUsed = txData
-    ? BigInt(txData.blobs.length) * GAS_PER_BLOB
+    ? BigInt(txData.blobs.length) * BigInt(GAS_PER_BLOB)
     : BigInt(0);
   const totalBlobSize =
     txData?.blobs.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
@@ -82,7 +87,7 @@ const Tx: NextPage = () => {
                   name: "Block",
                   value: (
                     <Link href={buildBlockRoute(txData.blockNumber)}>
-                      {formatNumber(txData.blockNumber)}
+                      {txData.blockNumber}
                     </Link>
                   ),
                 },
@@ -150,7 +155,7 @@ const Tx: NextPage = () => {
                       {formatNumber(txData.blobAsCalldataGasUsed)} (
                       <strong>
                         {formatNumber(
-                          txData.blobAsCalldataGasUsed / blobGasUsed,
+                          performDiv(txData.blobAsCalldataGasUsed, blobGasUsed),
                           "standard",
                           {
                             maximumFractionDigits: 2,

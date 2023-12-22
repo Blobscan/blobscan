@@ -217,9 +217,6 @@ importers:
       '@blobscan/dayjs':
         specifier: ^0.0.1
         version: link:../../packages/dayjs
-      '@blobscan/db':
-        specifier: ^0.0.1
-        version: link:../../packages/db
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../../packages/open-telemetry
