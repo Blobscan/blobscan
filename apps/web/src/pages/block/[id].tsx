@@ -4,7 +4,7 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
-import { BlobGasUsage } from "~/components/BlobGasUsage";
+import { BlobGasUsageDisplay } from "~/components/BlobGasUsageDisplay";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -130,7 +130,9 @@ const Block: NextPage = function () {
                 },
                 {
                   name: "Blob Gas Used",
-                  value: <BlobGasUsage blobGasUsed={blockData.blobGasUsed} />,
+                  value: (
+                    <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />
+                  ),
                 },
                 {
                   name: "Blob Gas Limit",
