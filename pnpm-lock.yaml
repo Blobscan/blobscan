@@ -342,25 +342,6 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1(postcss@8.4.21)(ts-node@10.9.1)
 
-  clis/blob-propagation-job-manager:
-    dependencies:
-      '@blobscan/blob-propagator':
-        specifier: ^0.0.1
-        version: link:../../packages/blob-propagator
-      '@blobscan/db':
-        specifier: ^0.0.1
-        version: link:../../packages/db
-      bullmq:
-        specifier: ^4.13.2
-        version: 4.13.2
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../packages/config/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../../packages/test
-
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
