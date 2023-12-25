@@ -14,9 +14,9 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "default";
   const headerWidth = isCompact ? "100%" : "55%";
-  const valueWidth = isCompact ? "100%" : "70%";
+  const valueWidth = isCompact ? "100%" : "50%";
   const skeletonsLength = isCompact ? 4 : 7;
-  const skeletonHeight = isCompact ? 17 : 20;
+  const skeletonHeight = isCompact ? 15 : 15;
 
   return (
     <div className="grid w-full gap-3 md:grid-cols-4">
