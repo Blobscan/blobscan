@@ -22,10 +22,11 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(function (
       className={cn(
         `
         w-full 
-        rounded-lg
-        border 
-        border-surface-light
-        bg-surface-light  
+        overflow-hidden
+        break-words
+        rounded-lg 
+        border-surface-light  
+        bg-surface-light
         dark:border-surface-dark
         dark:bg-surface-dark
         ${className}

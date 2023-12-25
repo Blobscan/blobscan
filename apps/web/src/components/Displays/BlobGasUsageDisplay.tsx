@@ -7,7 +7,7 @@ import {
   calculatePercentage,
   formatNumber,
 } from "~/utils";
-import { PercentageBar } from "./PercentageBar";
+import { PercentageBar } from "../PercentageBar";
 
 type BlobGasUsageDisplayProps = {
   blobGasUsed: bigint;

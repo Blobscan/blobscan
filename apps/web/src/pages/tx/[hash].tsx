@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
+import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
@@ -14,7 +15,6 @@ import {
   buildTransactionExternalUrl,
   formatTimestamp,
   GAS_PER_BLOB,
-  formatWei,
   formatBytes,
   formatNumber,
   performDiv,
@@ -47,9 +47,6 @@ const Tx: NextPage = () => {
         : undefined,
     [txData_]
   );
-
-  console.log("here");
-  console.log(txData?.blobAsCalldataGasUsed);
 
   if (error) {
     return (
@@ -122,27 +119,27 @@ const Tx: NextPage = () => {
                 {
                   name: "Blob Fee",
                   value: (
-                    <div className="flex gap-4">
-                      <div>
-                        <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex gap-1">
+                        <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Base:
-                        </span>
-                        {formatWei(blobGasPrice * BigInt(blobGasUsed))}
+                        </div>
+                        <EtherUnitDisplay amount={blobGasPrice * blobGasUsed} />
                       </div>
-                      <div>
-                        <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                      <div className=" flex gap-1">
+                        <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Max:
-                        </span>
-                        {formatWei(
-                          txData.maxFeePerBlobGas * BigInt(blobGasUsed)
-                        )}
+                        </div>
+                        <EtherUnitDisplay
+                          amount={txData.maxFeePerBlobGas * blobGasUsed}
+                        />
                       </div>
                     </div>
                   ),
                 },
                 {
                   name: "Blob Gas Price",
-                  value: formatWei(blobGasPrice),
+                  value: <EtherUnitDisplay amount={blobGasPrice} />,
                 },
                 {
                   name: "Blob Gas Used",
@@ -152,17 +149,23 @@ const Tx: NextPage = () => {
                   name: "Blob As Calldata Gas",
                   value: (
                     <div>
-                      {formatNumber(txData.blobAsCalldataGasUsed)} (
-                      <strong>
-                        {formatNumber(
-                          performDiv(txData.blobAsCalldataGasUsed, blobGasUsed),
-                          "standard",
-                          {
-                            maximumFractionDigits: 2,
-                          }
-                        )}
-                      </strong>{" "}
-                      times more expensive)
+                      {formatNumber(txData.blobAsCalldataGasUsed)}{" "}
+                      <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                        (
+                        <strong>
+                          {formatNumber(
+                            performDiv(
+                              txData.blobAsCalldataGasUsed,
+                              blobGasUsed
+                            ),
+                            "standard",
+                            {
+                              maximumFractionDigits: 2,
+                            }
+                          )}
+                        </strong>{" "}
+                        times more expensive)
+                      </span>
                     </div>
                   ),
                 },

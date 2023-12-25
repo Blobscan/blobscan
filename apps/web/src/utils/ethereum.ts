@@ -86,7 +86,6 @@ export function formatWei(
       ? Math.floor(weiAmount).toString()
       : weiAmount.toString();
   let formattedAmount = convertWei(weiAmountStr, toUnit);
-
   const fractionDigits = formattedAmount.split(".")[1];
 
   // Use exponential notation for large fractional digits
@@ -98,8 +97,7 @@ export function formatWei(
     formattedAmount,
     compact ? "compact" : "standard",
     {
-      // Display up to 9 decimal digits for small wei amounts
-      maximumFractionDigits: weiAmountStr.length < 12 ? 18 : 3,
+      maximumFractionDigits: compact ? 5 : 18,
     }
   );
 

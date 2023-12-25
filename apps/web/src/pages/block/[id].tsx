@@ -4,9 +4,10 @@ import NextError from "next/error";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
-import { BlobGasUsageDisplay } from "~/components/BlobGasUsageDisplay";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
+import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
@@ -16,7 +17,6 @@ import {
   formatBytes,
   formatNumber,
   formatTimestamp,
-  formatWei,
   GAS_PER_BLOB,
   MAX_BLOBS_PER_BLOCK,
   performDiv,
@@ -119,14 +119,7 @@ const Block: NextPage = function () {
                 },
                 {
                   name: "Blob Gas Price",
-                  value: (
-                    <div>
-                      {formatWei(blockData.blobGasPrice, { toUnit: "ether" })}
-                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-                        ({formatWei(blockData.blobGasPrice)})
-                      </span>
-                    </div>
-                  ),
+                  value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
                 },
                 {
                   name: "Blob Gas Used",
