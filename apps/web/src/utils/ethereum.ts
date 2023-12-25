@@ -100,7 +100,6 @@ export function formatWei(
       maximumFractionDigits: compact ? 5 : 18,
     }
   );
-  console.log(formattedAmount);
 
   return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
 }

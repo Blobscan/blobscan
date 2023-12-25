@@ -35,7 +35,6 @@ export function useBreakpoint() {
     window.addEventListener("resize", trackResize);
 
     return () => {
-      console.log("going out ");
       window.removeEventListener("resize", trackResize);
     };
   });
