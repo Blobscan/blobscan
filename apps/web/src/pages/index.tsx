@@ -63,23 +63,30 @@ const Home: NextPage = () => {
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
-  const overallStats = useMemo(
-    () => ({
+  const overallStats = useMemo(() => {
+    const totalBlobAsCalldataFee = overallStats_?.block?.totalBlobAsCalldataFee;
+    const totalBlobFee = overallStats_?.block?.totalBlobFee;
+    const totalBlobGasUsed = overallStats_?.block?.totalBlobGasUsed;
+    const totalBlobAsCalldataGasUsed =
+      overallStats_?.block?.totalBlobAsCalldataGasUsed;
+
+    return {
       ...overallStats_,
       block: {
         ...overallStats_?.block,
-        totalBlobAsCalldataFee: BigInt(
-          overallStats_?.block?.totalBlobAsCalldataFee ?? 0
-        ),
-        totalBlobFee: BigInt(overallStats_?.block?.totalBlobFee ?? 0),
-        totalBlobGasUsed: BigInt(overallStats_?.block?.totalBlobGasUsed ?? 0),
-        totalBlobAsCalldataGasUsed: BigInt(
-          overallStats_?.block?.totalBlobAsCalldataGasUsed ?? 0
-        ),
+        totalBlobAsCalldataFee: totalBlobAsCalldataFee
+          ? BigInt(totalBlobAsCalldataFee)
+          : undefined,
+        totalBlobFee: totalBlobFee ? BigInt(totalBlobFee) : undefined,
+        totalBlobGasUsed: totalBlobGasUsed
+          ? BigInt(totalBlobGasUsed)
+          : undefined,
+        totalBlobAsCalldataGasUsed: totalBlobAsCalldataGasUsed
+          ? BigInt(totalBlobAsCalldataGasUsed)
+          : undefined,
       },
-    }),
-    [overallStats_]
-  );
+    };
+  }, [overallStats_]);
 
   const error =
     latestBlocksError ||
@@ -132,16 +139,16 @@ const Home: NextPage = () => {
             <div className="col-span-2">
               <MetricCard
                 name="Total Tx Fees Saved"
-                metric={
-                  overallStats
-                    ? {
-                        value:
-                          overallStats.block.totalBlobAsCalldataFee -
-                          overallStats.block.totalBlobFee,
-                        type: "ethereum",
-                      }
-                    : undefined
-                }
+                metric={{
+                  value:
+                    typeof overallStats?.block?.totalBlobAsCalldataFee !==
+                      "undefined" &&
+                    typeof overallStats?.block?.totalBlobFee !== "undefined"
+                      ? overallStats.block.totalBlobAsCalldataFee -
+                        overallStats.block.totalBlobFee
+                      : undefined,
+                  type: "ethereum",
+                }}
                 compact
               />
             </div>
@@ -186,7 +193,7 @@ const Home: NextPage = () => {
         </div>
         <Card
           header={
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-5">
               <div>Latest Blocks</div>
               <Button
                 variant="outline"
@@ -218,7 +225,7 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-2">
           <Card
             header={
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-5">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
@@ -251,7 +258,7 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-5">
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"

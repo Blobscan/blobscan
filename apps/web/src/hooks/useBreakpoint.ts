@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-export type Breakpoint = "2xl" | "xl" | "lg" | "md" | "sm" | "default";
+import type { Size } from "~/types";
 
-function getActiveBreakpoint(): Breakpoint {
+function getActiveBreakpoint(): Size {
   if (window.matchMedia("(min-width: 1536px)").matches) {
     return "2xl";
   } else if (window.matchMedia("(min-width: 1280px)").matches) {
@@ -19,10 +19,10 @@ function getActiveBreakpoint(): Breakpoint {
 }
 
 export function useBreakpoint() {
-  const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>(
+  const [currentBreakpoint, setCurrentBreakpoint] = useState<Size>(
     getActiveBreakpoint()
   );
-  const breakpointRef = useRef<Breakpoint>();
+  const breakpointRef = useRef<Size>();
 
   useEffect(() => {
     function trackResize() {

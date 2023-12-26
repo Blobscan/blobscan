@@ -129,17 +129,17 @@ function Metric({
     from: { value: 0 },
     cancel: !value,
   });
-  const formattedMetric =
-    value !== undefined
-      ? formatMetric(value, { type, compact, numberFormatOpts })
-      : undefined;
+  const isValueSet = value !== undefined;
+  const formattedMetric = isValueSet
+    ? formatMetric(value, { type, compact, numberFormatOpts })
+    : undefined;
 
   return (
     <div>
-      {value !== undefined ? (
+      {isValueSet ? (
         <div className="flex gap-2">
           <MetricLayout compact={compact} isSecondary={isSecondary}>
-            {value !== undefined ? (
+            {isValueSet ? (
               <animated.div>
                 {valueProps.value.to((x) => {
                   const x_ = isValueInteger ? Math.trunc(x) : x;
@@ -180,14 +180,7 @@ function Metric({
           </div>
         </div>
       ) : (
-        <>
-          <div className="block sm:hidden">
-            <Skeleton height={compact ? 20 : 30} width={80} />
-          </div>
-          <div className="hidden sm:block">
-            <Skeleton height={compact ? 20 : 40} width={compact ? 100 : 120} />
-          </div>
-        </>
+        <Skeleton height={20} width="60%" />
       )}
     </div>
   );
