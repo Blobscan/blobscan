@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ExplorerDetails } from "../../ExplorerDetails";
+import { BottomBar } from "./BottomBar";
 
 export const BottomBarLayout = () => {
   return (
@@ -8,11 +9,7 @@ export const BottomBarLayout = () => {
       <div className="md:hidden">
         <ExplorerDetails />
       </div>
-      <div>
-        <span className="text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
-          Blobscan @ 2023 | v1.0.0
-        </span>
-      </div>
+      <BottomBar />
     </div>
   );
 };

@@ -2,7 +2,9 @@ import type {
   ButtonHTMLAttributes,
   DOMAttributes,
   HTMLAttributes,
+  ReactElement,
 } from "react";
+import React, { cloneElement } from "react";
 import classNames from "classnames";
 
 import type { Size } from "~/types";
@@ -19,7 +21,7 @@ type ButtonProps = {
   variant?: keyof VariantStyles;
   className?: HTMLAttributes<HTMLButtonElement>["className"];
   size?: Size;
-  icon?: React.ReactNode;
+  icon?: ReactElement<{ className?: string }>;
   label?: React.ReactNode;
   onClick?: DOMAttributes<HTMLButtonElement>["onClick"];
 };
@@ -66,15 +68,28 @@ const VARIANT_STYLES: VariantStyles = {
     rounded-full p-2
     text-icon-light
     shadow-sm transition-colors
-    hover:bg-primary-200
     focus-visible:outline
     focus-visible:outline-2
     focus-visible:outline-offset-2
     focus-visible:outline-iconHighlight-dark
     dark:text-icon-dark
-    hover:dark:bg-primary-800
   `,
 };
+
+function getIconSizeStyle(size: Size) {
+  switch (size) {
+    case "sm":
+      return "h-5 w-5";
+    case "md":
+      return "h-7 w-7";
+    case "lg":
+      return "h-9 w-9";
+    case "xl":
+      return "h-11 w-11";
+    case "2xl":
+      return "h-13 w-13";
+  }
+}
 
 export function Button({
   disabled = false,
@@ -86,6 +101,12 @@ export function Button({
   size = "md",
   variant,
 }: ButtonProps) {
+  const sizedIcon = React.isValidElement(icon)
+    ? cloneElement(icon, {
+        className: `${getIconSizeStyle(size)} ${icon.props?.className ?? ""}`,
+      })
+    : icon;
+
   return (
     <button
       disabled={disabled}
@@ -93,12 +114,22 @@ export function Button({
       className={`
       ${VARIANT_STYLES[variant ?? "primary"]}
       ${
-        variant !== "icon" &&
-        classNames({
-          "px-2 py-1": size === "sm",
-          "px-4 py-2": size === "md",
-          "px-4 py-3": size === "lg",
-        })
+        variant !== "icon"
+          ? classNames({
+              "px-2 py-1": size === "sm",
+              "px-4 py-2": size === "md",
+              "px-4 py-3": size === "lg",
+            })
+          : `
+            fill-icon-light
+            text-icon-light
+            hover:fill-iconHighlight-light
+            hover:text-iconHighlight-light
+            dark:fill-icon-dark
+            dark:text-icon-dark
+            hover:dark:fill-iconHighlight-dark
+            hover:dark:text-iconHighlight-dark
+          `
       }
       cursor-pointer
       rounded
@@ -113,7 +144,7 @@ export function Button({
       `}
       onClick={onClick}
     >
-      {icon}
+      {sizedIcon}
       {label}
     </button>
   );
