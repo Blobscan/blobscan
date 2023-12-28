@@ -114,6 +114,12 @@ export function Button({
             dark:text-icon-dark
             hover:dark:fill-iconHighlight-dark
             hover:dark:text-iconHighlight-dark
+            ${classNames({
+              "w-7": size === "sm",
+              "w-9": size === "md",
+              "w-11": size === "lg",
+              "w-13": size === "xl",
+            })}
           `
       }
       ${classNames({

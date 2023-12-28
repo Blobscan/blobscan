@@ -231,6 +231,7 @@ const Home: NextPage = () => {
                   variant="outline"
                   label="View All Txs"
                   onClick={() => void router.push(buildTransactionsRoute())}
+                  className="h-full"
                 />
               </div>
             }
