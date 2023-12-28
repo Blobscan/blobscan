@@ -76,21 +76,6 @@ const VARIANT_STYLES: VariantStyles = {
   `,
 };
 
-function getIconSizeStyle(size: Size) {
-  switch (size) {
-    case "sm":
-      return "h-5 w-5";
-    case "md":
-      return "h-7 w-7";
-    case "lg":
-      return "h-9 w-9";
-    case "xl":
-      return "h-11 w-11";
-    case "2xl":
-      return "h-13 w-13";
-  }
-}
-
 export function Button({
   disabled = false,
   type = "button",
@@ -101,9 +86,9 @@ export function Button({
   size = "md",
   variant,
 }: ButtonProps) {
-  const sizedIcon = React.isValidElement(icon)
+  const normalizedIcon = React.isValidElement(icon)
     ? cloneElement(icon, {
-        className: `${getIconSizeStyle(size)} ${icon.props?.className ?? ""}`,
+        className: `h-full w-full`,
       })
     : icon;
 
@@ -131,6 +116,12 @@ export function Button({
             hover:dark:text-iconHighlight-dark
           `
       }
+      ${classNames({
+        "h-7": size === "sm",
+        "h-9": size === "md",
+        "h-11": size === "lg",
+        "h-13": size === "xl",
+      })}
       cursor-pointer
       rounded
       text-sm
@@ -144,7 +135,7 @@ export function Button({
       `}
       onClick={onClick}
     >
-      {sizedIcon}
+      {normalizedIcon}
       {label}
     </button>
   );
