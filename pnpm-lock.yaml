@@ -141,6 +141,9 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1(postcss@8.4.31)(ts-node@10.9.1)
     devDependencies:
+      '@blobscan/svgo-config':
+        specifier: ^0.0.1
+        version: link:../../packages/config/svgo
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
@@ -314,6 +317,9 @@ importers:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../../packages/config/eslint
+      '@blobscan/svgo-config':
+        specifier: ^0.0.1
+        version: link:../../packages/config/svgo
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.2.2)
@@ -527,6 +533,12 @@ importers:
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
+
+  packages/config/svgo:
+    devDependencies:
+      svgo:
+        specifier: ^3.1.0
+        version: 3.1.0
 
   packages/config/tailwind:
     devDependencies:

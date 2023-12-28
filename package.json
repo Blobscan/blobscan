@@ -25,6 +25,7 @@
     "stats": "ts-node scripts/stats-aggregator/index.ts",
     "job:daily": "ts-node scripts/jobs/aggregate-yesterdays-daily-stats.ts",
     "job:overall": "ts-node scripts/jobs/aggregate-overall-stats.ts",
+    "svg:format": "turbo svg:format",
     "validate": "turbo lint type-check && manypkg check && pnpm test"
   },
   "dependencies": {

@@ -6,7 +6,8 @@
     "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "svg:format": "svgo -r ./public"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -32,6 +33,7 @@
     "tailwindcss": "^3.3.1"
   },
   "devDependencies": {
+    "@blobscan/svgo-config": "^0.0.1",
     "eslint": "^8.45.0",
     "eslint-config-next": "13.4.13",
     "prettier": "^2.8.8",
