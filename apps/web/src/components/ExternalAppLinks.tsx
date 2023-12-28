@@ -3,10 +3,11 @@ import type { FC, ReactElement } from "react";
 import DiscordIcon from "~/icons/discord.svg";
 import GithubIcon from "~/icons/github.svg";
 import XIcon from "~/icons/x.svg";
+import type { Size } from "~/types";
 import { Button } from "./Button";
 import { Link } from "./Link";
 
-const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
+const EXTERNAL_APPS: { href: string; icon: ReactElement; size?: Size }[] = [
   {
     icon: <GithubIcon />,
     href: "https://github.com/Blobscan/blobscan",
@@ -26,7 +27,7 @@ export const ExternalAppLinks: FC = function () {
     <div className="flex items-center gap-2">
       {EXTERNAL_APPS.map(({ icon, href }) => (
         <Link key={href} href={href} isExternal hideExternalIcon>
-          <Button variant="icon" icon={icon} />
+          <Button variant="icon" icon={icon} size="sm" />
         </Link>
       ))}
     </div>
