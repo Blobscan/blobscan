@@ -1,0 +1,10 @@
+{
+  "name": "@blobscan/svgo-config",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./base.js",
+  "license": "MIT",
+  "devDependencies": {
+    "svgo": "^3.1.0"
+  }
+}
