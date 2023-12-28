@@ -6,6 +6,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 type LinkProps = {
   children: string | ReactNode;
   href: string;
+  hideExternalIcon?: boolean;
   isExternal?: boolean;
 };
 
@@ -13,9 +14,10 @@ export const Link: React.FC<LinkProps> = function ({
   children,
   href,
   isExternal = false,
+  hideExternalIcon = false,
 }) {
   return (
-    <div className="truncate">
+    <span className="truncate">
       <NextLink
         href={href}
         target={isExternal ? "_blank" : "_self"}
@@ -23,14 +25,14 @@ export const Link: React.FC<LinkProps> = function ({
       >
         <div className="flex w-full items-center">
           <span className="truncate">{children}</span>
-          {isExternal && (
+          {Boolean(isExternal && !hideExternalIcon) && (
             <ArrowTopRightOnSquareIcon
-              className="relative bottom-[2px] ml-1 h-5 w-5"
+              className="relative bottom-[2px] ml-1 h-4 w-4"
               aria-hidden="true"
             />
           )}
         </div>
       </NextLink>
-    </div>
+    </span>
   );
 };

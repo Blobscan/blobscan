@@ -3,7 +3,7 @@ import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
 
-export const MobileNav = function () {
+export const CompactTopBar = function () {
   return (
     <>
       <div className="z-10 sm:hidden">

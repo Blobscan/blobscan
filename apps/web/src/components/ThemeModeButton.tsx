@@ -15,13 +15,12 @@ export function ThemeModeButton() {
 
   return (
     <Button
-      className="text-icon-light hover:text-iconHighlight-light dark:text-icon-dark hover:dark:text-iconHighlight-dark"
       variant="icon"
       icon={
         resolvedTheme === "dark" ? (
-          <SunIcon className="h-5 w-5" aria-hidden="true" />
+          <SunIcon aria-hidden="true" />
         ) : (
-          <MoonIcon className="h-5 w-5" aria-hidden="true" />
+          <MoonIcon aria-hidden="true" />
         )
       }
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}

@@ -5,7 +5,7 @@ import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
 
-export const DesktopNav: React.FC = () => {
+export const TopBar: React.FC = () => {
   return (
     <div>
       <TopBarSurface>
