@@ -11,9 +11,9 @@ importers:
       '@blobscan/dayjs':
         specifier: ^0.0.1
         version: link:packages/dayjs
-      '@blobscan/db':
+      '@blobscan/stats-aggregation-cli':
         specifier: ^0.0.1
-        version: link:packages/db
+        version: link:clis/stats-aggregation-cli
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^3.7.2
         version: 3.7.2(prettier@2.8.8)
@@ -56,9 +56,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.2.8
         version: 0.2.8(@ianvs/prettier-plugin-sort-imports@3.7.2)(prettier@2.8.8)
-      prisma:
-        specifier: ^5.5.2
-        version: 5.5.2
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@18.16.19)(typescript@5.2.2)
@@ -375,6 +372,9 @@ importers:
 
   clis/stats-aggregation-cli:
     dependencies:
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../../packages/dayjs
       '@blobscan/db':
         specifier: ^0.0.1
         version: link:../../packages/db

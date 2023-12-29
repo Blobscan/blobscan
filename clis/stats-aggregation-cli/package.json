@@ -10,9 +10,10 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "stats": "ts-node src/runner.ts"
+    "start": "ts-node src/runner.ts"
   },
   "dependencies": {
+    "@blobscan/dayjs": "^0.0.1",
     "@blobscan/db": "^0.0.1",
     "@blobscan/zod": "^0.0.1"
   },
