@@ -47,7 +47,7 @@ const dailyCommandUsage = commandLineUsage([
   },
 ]);
 
-export async function performDailyStatsOperation(
+async function performDailyStatsOperation(
   entity: Entity,
   operation: "populate" | "deleteMany",
   rawDatePeriod?: RawDatePeriod

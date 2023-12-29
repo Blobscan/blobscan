@@ -109,7 +109,7 @@ export async function deleteOverallStats() {
   console.log("Overall stats delete operation executed: All stats deleted.");
 }
 
-export async function incrementOverallStats({
+async function incrementOverallStats({
   targetBlockId,
   batchSize = DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE,
 }: {
