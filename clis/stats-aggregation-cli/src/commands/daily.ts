@@ -36,7 +36,7 @@ const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   },
 ];
 
-const dailyCommandUsage = commandLineUsage([
+export const dailyCommandUsage = commandLineUsage([
   {
     header: "Daily Command",
     content: "Aggregate daily stats.",

@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "start": "ts-node src/runner.ts"
+    "start": "ts-node src/runner.ts",
+    "test": "pnpm with-env:dev vitest",
+    "test:ui": "pnpm with-env:dev vitest --ui",
+    "with-env:dev": "dotenv -e ../../.env.development --"
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
