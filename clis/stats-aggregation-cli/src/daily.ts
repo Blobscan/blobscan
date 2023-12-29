@@ -2,9 +2,11 @@ import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
 import dayjs from "@blobscan/dayjs";
-import { normalizeDailyDatePeriod, prisma, RawDatePeriod } from "@blobscan/db";
+import type { RawDatePeriod } from "@blobscan/db";
+import { normalizeDailyDatePeriod, prisma } from "@blobscan/db";
 
-import { ALL_ENTITIES, deleteOptionDef, Entity, helpOptionDef } from "./common";
+import type { Entity } from "./common";
+import { ALL_ENTITIES, deleteOptionDef, helpOptionDef } from "./common";
 
 const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   deleteOptionDef,

@@ -1,11 +1,13 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { BlockNumberRange, prisma } from "@blobscan/db";
+import type { BlockNumberRange } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 import { deleteOptionDef, helpOptionDef } from "./common";
+import { env } from "./env";
 
-const BEACON_NODE_ENDPOINT = process.env.BEACON_NODE_ENDPOINT;
+const BEACON_NODE_ENDPOINT = env.BEACON_NODE_ENDPOINT;
 const DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE = 100_000;
 
 type BeaconFinalizedBlockResponse = {

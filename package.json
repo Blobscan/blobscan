@@ -22,7 +22,7 @@
     "test:setup": "turbo test:setup",
     "test:dev": "pnpm test:setup && pnpm test",
     "type-check": "turbo type-check",
-    "stats": "ts-node scripts/stats-aggregator/index.ts",
+    "stats": "ts-node clis/stats-aggregation-cli/src/index.ts",
     "job:daily": "ts-node scripts/jobs/aggregate-yesterdays-daily-stats.ts",
     "job:overall": "ts-node scripts/jobs/aggregate-overall-stats.ts",
     "svg:format": "turbo svg:format",

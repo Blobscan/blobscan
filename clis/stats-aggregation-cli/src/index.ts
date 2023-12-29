@@ -46,7 +46,7 @@ async function main() {
     return;
   }
 
-  let argv = mainOptions._unknown || [];
+  const argv = mainOptions._unknown || [];
 
   if (help) {
     /**
@@ -72,4 +72,5 @@ main()
     console.error(`Failed to run stats aggregator: ${err}`);
     return process.exit(1);
   })
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   .finally(() => prisma.$disconnect());

@@ -1,0 +1,28 @@
+{
+  "name": "@blobscan/stats-aggregation-cli",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A CLI that facilitates the aggregation of metrics related to different types of entities.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@blobscan/db": "^0.0.1",
+    "@blobscan/zod": "^0.0.1"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/test": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}
