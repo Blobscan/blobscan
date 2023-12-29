@@ -41,12 +41,6 @@ importers:
       '@vitest/ui':
         specifier: ^0.34.1
         version: 0.34.1(vitest@0.34.1)
-      command-line-args:
-        specifier: ^5.2.1
-        version: 5.2.1
-      command-line-usage:
-        specifier: ^7.0.1
-        version: 7.0.1
       dotenv-cli:
         specifier: ^7.2.1
         version: 7.2.1
@@ -362,6 +356,12 @@ importers:
       bullmq:
         specifier: ^4.13.2
         version: 4.13.2
+      command-line-args:
+        specifier: ^5.2.1
+        version: 5.2.1
+      command-line-usage:
+        specifier: ^7.0.1
+        version: 7.0.1
     devDependencies:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
@@ -381,6 +381,12 @@ importers:
       '@blobscan/zod':
         specifier: ^0.0.1
         version: link:../../packages/zod
+      command-line-args:
+        specifier: ^5.2.1
+        version: 5.2.1
+      command-line-usage:
+        specifier: ^7.0.1
+        version: 7.0.1
     devDependencies:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
