@@ -5,8 +5,8 @@ import dayjs from "@blobscan/dayjs";
 import type { RawDatePeriod } from "@blobscan/db";
 import { normalizeDailyDatePeriod, prisma } from "@blobscan/db";
 
-import type { Entity } from "./common";
-import { ALL_ENTITIES, deleteOptionDef, helpOptionDef } from "./common";
+import type { Entity } from "../utils";
+import { ALL_ENTITIES, deleteOptionDef, helpOptionDef } from "../utils";
 
 const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   deleteOptionDef,

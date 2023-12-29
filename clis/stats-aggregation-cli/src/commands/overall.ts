@@ -4,8 +4,8 @@ import commandLineUsage from "command-line-usage";
 import type { BlockNumberRange } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 
-import { deleteOptionDef, helpOptionDef } from "./common";
-import { env } from "./env";
+import { env } from "../env";
+import { deleteOptionDef, helpOptionDef } from "../utils";
 
 const BEACON_NODE_ENDPOINT = env.BEACON_NODE_ENDPOINT;
 const DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE = 100_000;
@@ -70,13 +70,10 @@ async function getBlockFromBeacon(id: BlockId): Promise<Block> {
       `${BEACON_NODE_ENDPOINT}/eth/v2/beacon/blocks/${id}`
     );
   } catch (err) {
-    const err_ = err as Error;
+    const err_ = err as Error & { cause?: Error };
 
     throw new Error(
-      `Failed to fetch block from beacon node: ${err_.cause ?? err_.message}`,
-      {
-        cause: err_.cause,
-      }
+      `Failed to fetch block from beacon node: ${err_.cause ?? err_.message}`
     );
   }
 
