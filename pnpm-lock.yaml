@@ -496,6 +496,9 @@ importers:
 
   packages/blob-storage-manager:
     dependencies:
+      '@blobscan/db':
+        specifier: ^0.0.1
+        version: link:../db
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../logger
