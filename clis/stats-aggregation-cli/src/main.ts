@@ -9,7 +9,7 @@ const mainDefs: commandLineUsage.OptionDefinition[] = [
   helpOptionDef,
 ];
 
-const mainUsage = commandLineUsage([
+export const mainUsage = commandLineUsage([
   {
     header: "Blobscan's Stats Aggregator",
     content:
@@ -37,10 +37,14 @@ export async function main() {
   };
   const { command, help } = mainOptions;
 
-  if (!command && help) {
-    console.log(mainUsage);
+  if (!command) {
+    if (help) {
+      console.log(mainUsage);
 
-    return;
+      return;
+    }
+
+    throw new Error("No command specified");
   }
 
   const argv = mainOptions._unknown || [];
