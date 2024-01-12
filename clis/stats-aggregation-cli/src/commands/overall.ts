@@ -7,7 +7,6 @@ import { prisma } from "@blobscan/db";
 import { env } from "../env";
 import { deleteOptionDef, helpOptionDef } from "../utils";
 
-const BEACON_NODE_ENDPOINT = env.BEACON_NODE_ENDPOINT;
 const DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE = 100_000;
 
 type BeaconFinalizedBlockResponse = {
@@ -51,7 +50,7 @@ const overallCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   },
 ];
 
-const overallCommandUsage = commandLineUsage([
+export const overallCommandUsage = commandLineUsage([
   {
     header: "Overall Command",
     content: "Aggregate overall stats.",
@@ -67,7 +66,7 @@ async function getBlockFromBeacon(id: BlockId): Promise<Block> {
 
   try {
     response = await fetch(
-      `${BEACON_NODE_ENDPOINT}/eth/v2/beacon/blocks/${id}`
+      `${env.BEACON_NODE_ENDPOINT}/eth/v2/beacon/blocks/${id}`
     );
   } catch (err) {
     const err_ = err as Error & { cause?: Error };
@@ -87,7 +86,7 @@ async function getBlockFromBeacon(id: BlockId): Promise<Block> {
   };
 }
 
-export async function deleteOverallStats() {
+async function deleteOverallStats() {
   await prisma.$transaction([
     prisma.blobOverallStats.deleteMany(),
     prisma.blockOverallStats.deleteMany(),
@@ -116,7 +115,7 @@ async function incrementOverallStats({
   targetBlockId: BlockId;
   batchSize?: number;
 }) {
-  if (!!BEACON_NODE_ENDPOINT && targetBlockId === "finalized") {
+  if (!env.BEACON_NODE_ENDPOINT && targetBlockId === "finalized") {
     throw new Error(
       "Couldn't increment overall stats: BEACON_NODE_ENDPOINT not defined"
     );
