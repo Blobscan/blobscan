@@ -30,7 +30,7 @@ function hasOverallStatsExtensionFns(model: unknown): model is {
 }
 
 export function dayToDatePeriod(day: string): DatePeriod {
-  const day_ = dayjs(new Date(day));
+  const day_ = dayjs(day);
 
   return {
     from: day_.startOf("day").toISOString(),
