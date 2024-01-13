@@ -602,9 +602,6 @@ importers:
         specifier: ^5.5.2
         version: 5.5.2(prisma@5.5.2)
     devDependencies:
-      '@blobscan/blob-storage-manager':
-        specifier: ^0.0.1
-        version: link:../blob-storage-manager
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
