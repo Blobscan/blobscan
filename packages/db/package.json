@@ -31,7 +31,6 @@
     "@prisma/client": "^5.5.2"
   },
   "devDependencies": {
-    "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/eslint-config": "^0.0.1",
     "@blobscan/test": "^0.0.1",
     "@faker-js/faker": "^8.0.2",

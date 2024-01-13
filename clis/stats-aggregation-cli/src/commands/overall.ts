@@ -1,11 +1,12 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { BlockNumberRange, prisma } from "@blobscan/db";
+import type { BlockNumberRange } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
-import { deleteOptionDef, helpOptionDef } from "./common";
+import { env } from "../env";
+import { deleteOptionDef, helpOptionDef } from "../utils";
 
-const BEACON_NODE_ENDPOINT = process.env.BEACON_NODE_ENDPOINT;
 const DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE = 100_000;
 
 type BeaconFinalizedBlockResponse = {
@@ -49,7 +50,7 @@ const overallCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   },
 ];
 
-const overallCommandUsage = commandLineUsage([
+export const overallCommandUsage = commandLineUsage([
   {
     header: "Overall Command",
     content: "Aggregate overall stats.",
@@ -65,16 +66,13 @@ async function getBlockFromBeacon(id: BlockId): Promise<Block> {
 
   try {
     response = await fetch(
-      `${BEACON_NODE_ENDPOINT}/eth/v2/beacon/blocks/${id}`
+      `${env.BEACON_NODE_ENDPOINT}/eth/v2/beacon/blocks/${id}`
     );
   } catch (err) {
-    const err_ = err as Error;
+    const err_ = err as Error & { cause?: Error };
 
     throw new Error(
-      `Failed to fetch block from beacon node: ${err_.cause ?? err_.message}`,
-      {
-        cause: err_.cause,
-      }
+      `Failed to fetch block from beacon node: ${err_.cause ?? err_.message}`
     );
   }
 
@@ -88,7 +86,7 @@ async function getBlockFromBeacon(id: BlockId): Promise<Block> {
   };
 }
 
-export async function deleteOverallStats() {
+async function deleteOverallStats() {
   await prisma.$transaction([
     prisma.blobOverallStats.deleteMany(),
     prisma.blockOverallStats.deleteMany(),
@@ -110,14 +108,14 @@ export async function deleteOverallStats() {
   console.log("Overall stats delete operation executed: All stats deleted.");
 }
 
-export async function incrementOverallStats({
+async function incrementOverallStats({
   targetBlockId,
   batchSize = DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE,
 }: {
   targetBlockId: BlockId;
   batchSize?: number;
 }) {
-  if (!!BEACON_NODE_ENDPOINT && targetBlockId === "finalized") {
+  if (!env.BEACON_NODE_ENDPOINT && targetBlockId === "finalized") {
     throw new Error(
       "Couldn't increment overall stats: BEACON_NODE_ENDPOINT not defined"
     );

@@ -2,9 +2,11 @@ import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
 import dayjs from "@blobscan/dayjs";
-import { normalizeDailyDatePeriod, prisma, RawDatePeriod } from "@blobscan/db";
+import type { RawDatePeriod } from "@blobscan/db";
+import { normalizeDailyDatePeriod, prisma } from "@blobscan/db";
 
-import { ALL_ENTITIES, deleteOptionDef, Entity, helpOptionDef } from "./common";
+import type { Entity } from "../utils";
+import { ALL_ENTITIES, deleteOptionDef, helpOptionDef } from "../utils";
 
 const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   deleteOptionDef,
@@ -34,7 +36,7 @@ const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   },
 ];
 
-const dailyCommandUsage = commandLineUsage([
+export const dailyCommandUsage = commandLineUsage([
   {
     header: "Daily Command",
     content: "Aggregate daily stats.",
@@ -45,7 +47,7 @@ const dailyCommandUsage = commandLineUsage([
   },
 ]);
 
-export async function performDailyStatsOperation(
+async function performDailyStatsOperation(
   entity: Entity,
   operation: "populate" | "deleteMany",
   rawDatePeriod?: RawDatePeriod

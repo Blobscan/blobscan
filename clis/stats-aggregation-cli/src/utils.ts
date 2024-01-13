@@ -1,4 +1,4 @@
-import commandLineUsage from "command-line-usage";
+import type commandLineUsage from "command-line-usage";
 
 export type Entity = "blob" | "block" | "tx";
 

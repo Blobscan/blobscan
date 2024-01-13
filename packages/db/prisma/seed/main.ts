@@ -1,6 +1,5 @@
 import type { BlobDataStorageReference } from "@prisma/client";
 
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
@@ -12,7 +11,6 @@ const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
 
 async function main() {
-  const blobStorageManager = await getBlobStorageManager();
   const dataGenerator = new DataGenerator(seedParams);
 
   // 1. Generate mock data
@@ -43,24 +41,26 @@ async function main() {
     );
 
     const blobDataStorageRefs: BlobDataStorageReference[][] = await Promise.all(
-      blobsDataBatch.map((blobData, i) => {
+      blobsDataBatch.map(async (blobData, i) => {
         const blob = blobsBatch[i];
         if (!blob) {
           throw new Error("Blob not found");
         }
 
-        return blobStorageManager
-          .storeBlob({
-            data: blobData,
-            versionedHash: blob.versionedHash,
-          })
-          .then((refs) =>
-            refs.references.map((r) => ({
-              blobHash: blob.versionedHash,
-              blobStorage: r.storage,
-              dataReference: r.reference,
-            }))
-          );
+        await prisma.blobData.create({
+          data: {
+            id: blob.versionedHash,
+            data: Buffer.from(blobData.slice(2), "hex"),
+          },
+        });
+
+        return [
+          {
+            blobHash: blob.versionedHash,
+            blobStorage: "POSTGRES",
+            dataReference: blob.versionedHash,
+          },
+        ];
       })
     );
 

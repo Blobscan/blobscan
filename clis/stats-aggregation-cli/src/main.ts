@@ -1,18 +1,15 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { prisma } from "@blobscan/db";
-
-import { helpOptionDef } from "./common";
-import { daily } from "./daily";
-import { overall } from "./overall";
+import { daily, overall } from "./commands";
+import { helpOptionDef } from "./utils";
 
 const mainDefs: commandLineUsage.OptionDefinition[] = [
   { name: "command", defaultOption: true },
   helpOptionDef,
 ];
 
-const mainUsage = commandLineUsage([
+export const mainUsage = commandLineUsage([
   {
     header: "Blobscan's Stats Aggregator",
     content:
@@ -31,7 +28,7 @@ const mainUsage = commandLineUsage([
   },
 ]);
 
-async function main() {
+export async function main() {
   const mainOptions = commandLineArgs(mainDefs, {
     stopAtFirstUnknown: true,
   }) as commandLineArgs.CommandLineOptions & {
@@ -40,13 +37,17 @@ async function main() {
   };
   const { command, help } = mainOptions;
 
-  if (!command && help) {
-    console.log(mainUsage);
+  if (!command) {
+    if (help) {
+      console.log(mainUsage);
 
-    return;
+      return;
+    }
+
+    throw new Error("No command specified");
   }
 
-  let argv = mainOptions._unknown || [];
+  const argv = mainOptions._unknown || [];
 
   if (help) {
     /**
@@ -65,11 +66,3 @@ async function main() {
       throw new Error(`Invalid command: ${command}`);
   }
 }
-
-main()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error(`Failed to run stats aggregator: ${err}`);
-    return process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());

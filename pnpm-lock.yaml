@@ -11,9 +11,9 @@ importers:
       '@blobscan/dayjs':
         specifier: ^0.0.1
         version: link:packages/dayjs
-      '@blobscan/db':
+      '@blobscan/stats-aggregation-cli':
         specifier: ^0.0.1
-        version: link:packages/db
+        version: link:clis/stats-aggregation-cli
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^3.7.2
         version: 3.7.2(prettier@2.8.8)
@@ -41,12 +41,6 @@ importers:
       '@vitest/ui':
         specifier: ^0.34.1
         version: 0.34.1(vitest@0.34.1)
-      command-line-args:
-        specifier: ^5.2.1
-        version: 5.2.1
-      command-line-usage:
-        specifier: ^7.0.1
-        version: 7.0.1
       dotenv-cli:
         specifier: ^7.2.1
         version: 7.2.1
@@ -56,9 +50,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.2.8
         version: 0.2.8(@ianvs/prettier-plugin-sort-imports@3.7.2)(prettier@2.8.8)
-      prisma:
-        specifier: ^5.5.2
-        version: 5.5.2
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@18.16.19)(typescript@5.2.2)
@@ -365,6 +356,37 @@ importers:
       bullmq:
         specifier: ^4.13.2
         version: 4.13.2
+      command-line-args:
+        specifier: ^5.2.1
+        version: 5.2.1
+      command-line-usage:
+        specifier: ^7.0.1
+        version: 7.0.1
+    devDependencies:
+      '@blobscan/eslint-config':
+        specifier: ^0.0.1
+        version: link:../../packages/config/eslint
+      '@blobscan/test':
+        specifier: ^0.0.1
+        version: link:../../packages/test
+
+  clis/stats-aggregation-cli:
+    dependencies:
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../../packages/dayjs
+      '@blobscan/db':
+        specifier: ^0.0.1
+        version: link:../../packages/db
+      '@blobscan/zod':
+        specifier: ^0.0.1
+        version: link:../../packages/zod
+      command-line-args:
+        specifier: ^5.2.1
+        version: 5.2.1
+      command-line-usage:
+        specifier: ^7.0.1
+        version: 7.0.1
     devDependencies:
       '@blobscan/eslint-config':
         specifier: ^0.0.1
@@ -474,6 +496,9 @@ importers:
 
   packages/blob-storage-manager:
     dependencies:
+      '@blobscan/db':
+        specifier: ^0.0.1
+        version: link:../db
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../logger
@@ -577,9 +602,6 @@ importers:
         specifier: ^5.5.2
         version: 5.5.2(prisma@5.5.2)
     devDependencies:
-      '@blobscan/blob-storage-manager':
-        specifier: ^0.0.1
-        version: link:../blob-storage-manager
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:../config/eslint
