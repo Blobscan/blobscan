@@ -23,7 +23,7 @@ export const DetailsLayout: FC<DetailsLayoutProps> = function ({
       <Header>{header}</Header>
       <Card
         header={
-          <div className="flex flex-col justify-between gap-1 md:flex-row">
+          <div className="flex flex-row justify-between gap-1">
             <div className="truncate">Overview</div>
             {externalLink && (
               <div className="text-sm font-normal">

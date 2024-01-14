@@ -1,7 +1,6 @@
-import { apiEnv, blobStorageManagerEnv } from "@blobscan/api";
-import { env as otelEnv } from "@blobscan/open-telemetry";
+import { env as apiEnv } from "@blobscan/api";
 
-import { env } from "../env";
+import { env as restEnv } from "../env";
 
 function run() {
   console.log(" ____  _       _");
@@ -11,13 +10,9 @@ function run() {
   console.log("|____/|_|\\___/|_.__/|___/\\___\\__,_|_| |_|");
   console.log("Blobscan REST API (EIP-4844 blob explorer) - blobscan.com");
   console.log("====================================================\n");
-  console.log(
-    `Configuration: metrics=${apiEnv.METRICS_ENABLED}, traces=${env.TRACES_ENABLED}, port=${env.BLOBSCAN_API_PORT}`
-  );
 
+  restEnv.display();
   apiEnv.display();
-  blobStorageManagerEnv.display();
-  otelEnv.display();
 }
 
 run();

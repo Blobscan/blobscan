@@ -24,26 +24,9 @@ export const fixtures = {
   blobDatas: POSTGRES_DATA.blobDatas as unknown as BlobDataFixture[],
   blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions,
   systemDate: POSTGRES_DATA.systemDate,
-  load(prisma: PrismaClient) {
-    return prisma.$transaction([
-      prisma.blockchainSyncState.createMany({
-        data: fixtures.blockchainSyncState,
-      }),
-      prisma.block.createMany({ data: fixtures.blocks }),
-      prisma.address.createMany({ data: fixtures.addresses }),
-      prisma.transaction.createMany({ data: fixtures.txs }),
-      prisma.blob.createMany({ data: fixtures.blobs }),
-      prisma.blobDataStorageReference.createMany({
-        data: fixtures.blobDataStorageRefs,
-      }),
-      prisma.blobData.createMany({ data: fixtures.blobDatas }),
-      prisma.blobsOnTransactions.createMany({
-        data: fixtures.blobsOnTransactions,
-      }),
-    ]);
-  },
-  reset(prisma: PrismaClient) {
-    return prisma.$transaction([
+
+  async create(prisma: PrismaClient) {
+    await prisma.$transaction([
       prisma.blockchainSyncState.deleteMany(),
       prisma.blobData.deleteMany(),
       prisma.blobsOnTransactions.deleteMany(),
@@ -58,6 +41,23 @@ export const fixtures = {
       prisma.blockOverallStats.deleteMany(),
       prisma.transactionOverallStats.deleteMany(),
       prisma.blobOverallStats.deleteMany(),
+    ]);
+
+    await prisma.$transaction([
+      prisma.blockchainSyncState.createMany({
+        data: fixtures.blockchainSyncState,
+      }),
+      prisma.block.createMany({ data: fixtures.blocks }),
+      prisma.address.createMany({ data: fixtures.addresses }),
+      prisma.transaction.createMany({ data: fixtures.txs }),
+      prisma.blob.createMany({ data: fixtures.blobs }),
+      prisma.blobDataStorageReference.createMany({
+        data: fixtures.blobDataStorageRefs,
+      }),
+      prisma.blobData.createMany({ data: fixtures.blobDatas }),
+      prisma.blobsOnTransactions.createMany({
+        data: fixtures.blobsOnTransactions,
+      }),
     ]);
   },
 };

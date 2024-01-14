@@ -10,13 +10,13 @@
     "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
     "lint:fix": "pnpm lint --fix",
     "start": "pnpm print-banner && pnpm with-env next start",
+    "svg:format": "svgo -r ./src/icons ./public",
     "type-check": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env  -v BLOB_PROPAGATOR_ENABLED=false --"
   },
   "dependencies": {
     "@blobscan/api": "^0.0.1",
     "@blobscan/dayjs": "^0.0.1",
-    "@blobscan/db": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/tailwind-config": "^0.0.1",
     "@fontsource/inter": "^4.5.15",
@@ -51,6 +51,8 @@
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/svgo-config": "^0.0.1",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/echarts": "^4.9.18",
     "@types/node": "^18.16.19",

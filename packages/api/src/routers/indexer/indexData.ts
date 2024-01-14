@@ -1,13 +1,22 @@
-import { tracer } from "../../instrumentation";
+import type { $Enums } from "@blobscan/db";
+
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
-import { indexDataOutputSchema } from "./indexData.schema";
-import { indexDataInputSchema } from "./indexData.schema";
+import {
+  indexDataInputSchema,
+  indexDataOutputSchema,
+} from "./indexData.schema";
 import {
   createDBBlobs,
   createDBBlock,
   createDBTransactions,
 } from "./indexData.utils";
+
+type DBBlobStorageRef = {
+  blobHash: string;
+  blobStorage: $Enums.BlobStorage;
+  dataReference: string;
+};
 
 export const indexData = jwtAuthedProcedure
   .meta({
@@ -21,106 +30,85 @@ export const indexData = jwtAuthedProcedure
   })
   .input(indexDataInputSchema)
   .output(indexDataOutputSchema)
-  .mutation(async ({ ctx: { prisma, blobStorageManager }, input }) => {
-    const operations = [];
+  .mutation(
+    async ({ ctx: { prisma, blobStorageManager, blobPropagator }, input }) => {
+      const operations = [];
 
-    // 1. Upload blobs' data to storages
-    const blobUploadResults = await tracer.startActiveSpan(
-      "blobs-upload",
-      async (blobsUploadSpan) => {
-        const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
+      const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
 
-        const result = (
-          await Promise.all(
-            newBlobs.map(async (b) =>
-              blobStorageManager.storeBlob(b).then<{
-                uploadRes: Awaited<
-                  ReturnType<typeof blobStorageManager.storeBlob>
-                >;
-                blob: Awaited<
-                  ReturnType<typeof prisma.blob.filterNewBlobs>
-                >[number];
-              }>((uploadRes) => ({
-                blob: b,
-                uploadRes,
-              }))
-            )
-          )
-        ).flat();
+      let dbBlobStorageRefs: DBBlobStorageRef[] | undefined;
 
-        blobsUploadSpan.end();
+      // 2. Store blobs' data
+      if (!blobPropagator) {
+        const blobStorageOps = newBlobs.map(async (b) =>
+          blobStorageManager.storeBlob(b).then((uploadRes) => ({
+            blob: b,
+            uploadRes,
+          }))
+        );
+        const storageResults = (await Promise.all(blobStorageOps)).flat();
 
-        return result;
-      }
-    );
-
-    blobUploadResults.forEach(({ uploadRes: { errors }, blob }) => {
-      if (errors.length) {
-        const errorMsgs = errors.map((e) => `${e.storage}: ${e.error}`);
-
-        console.warn(
-          `Couldn't upload blob ${
-            blob.versionedHash
-          } to some of the storages: ${errorMsgs.join(", ")}`
+        dbBlobStorageRefs = storageResults.flatMap(
+          ({ uploadRes: { references }, blob }) =>
+            references.map((ref) => ({
+              blobHash: blob.versionedHash,
+              blobStorage: ref.storage,
+              dataReference: ref.reference,
+            }))
         );
       }
-    });
 
-    const dbBlobStorageRefs = blobUploadResults.flatMap(
-      ({ uploadRes: { references }, blob }) =>
-        references.map((ref) => ({
-          blobHash: blob.versionedHash,
-          blobStorage: ref.storage,
-          dataReference: ref.reference,
-        }))
-    );
+      // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
+      const now = new Date();
 
-    // 2. Prepare address, block, transaction and blob insertions
+      // 3. Prepare address, block, transaction and blob insertions
+      const dbTxs = createDBTransactions(input);
+      const dbBlock = createDBBlock(input, dbTxs);
+      const dbBlobs = createDBBlobs(input);
 
-    // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
-    const now = new Date();
-
-    const dbTxs = createDBTransactions(input);
-    const dbBlock = createDBBlock(input, dbTxs);
-    const dbBlobs = createDBBlobs(input);
-
-    operations.push(
-      prisma.block.upsert({
-        where: { hash: input.block.hash },
-        create: {
-          ...dbBlock,
-          insertedAt: now,
-          updatedAt: now,
-        },
-        update: {
-          ...dbBlock,
-          updatedAt: now,
-        },
-      })
-    );
-    operations.push(
-      prisma.address.upsertAddressesFromTransactions(input.transactions)
-    );
-    operations.push(prisma.transaction.upsertMany(dbTxs));
-    operations.push(prisma.blob.upsertMany(dbBlobs));
-
-    if (dbBlobStorageRefs.length) {
       operations.push(
-        prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
+        prisma.block.upsert({
+          where: { hash: input.block.hash },
+          create: {
+            ...dbBlock,
+            insertedAt: now,
+            updatedAt: now,
+          },
+          update: {
+            ...dbBlock,
+            updatedAt: now,
+          },
+        })
       );
+      operations.push(
+        prisma.address.upsertAddressesFromTransactions(input.transactions)
+      );
+      operations.push(prisma.transaction.upsertMany(dbTxs));
+      operations.push(prisma.blob.upsertMany(dbBlobs));
+
+      if (dbBlobStorageRefs?.length) {
+        operations.push(
+          prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
+        );
+      }
+
+      operations.push(
+        prisma.blobsOnTransactions.createMany({
+          data: input.blobs.map((blob) => ({
+            blobHash: blob.versionedHash,
+            txHash: blob.txHash,
+            index: blob.index,
+          })),
+          skipDuplicates: true,
+        })
+      );
+
+      // 4. Execute all database operations in a single transaction
+      await prisma.$transaction(operations);
+
+      // 5. Propagate blobs to storages
+      if (blobPropagator) {
+        await blobPropagator.propagateBlobs(newBlobs);
+      }
     }
-
-    operations.push(
-      prisma.blobsOnTransactions.createMany({
-        data: input.blobs.map((blob) => ({
-          blobHash: blob.versionedHash,
-          txHash: blob.txHash,
-          index: blob.index,
-        })),
-        skipDuplicates: true,
-      })
-    );
-
-    // 3. Execute all database operations in a single transaction
-    await prisma.$transaction(operations);
-  });
+  );

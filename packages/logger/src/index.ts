@@ -30,4 +30,5 @@ export const logger = winston.createLogger({
   level: level(),
   format,
   transports: [new winston.transports.Console()],
+  silent: env.TEST,
 });

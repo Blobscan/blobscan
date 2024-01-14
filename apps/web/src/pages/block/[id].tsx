@@ -6,16 +6,22 @@ import type { NextRouter } from "next/router";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
+import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
+import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import {
+  BLOB_GAS_LIMIT_PER_BLOCK,
   buildBlockExternalUrl,
   buildSlotExternalUrl,
   formatBytes,
   formatNumber,
   formatTimestamp,
-  formatWei,
+  GAS_PER_BLOB,
+  MAX_BLOBS_PER_BLOCK,
+  performDiv,
+  pluralize,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -79,7 +85,7 @@ const Block: NextPage = function () {
         fields={
           blockData
             ? [
-                { name: "Block Height", value: formatNumber(blockData.number) },
+                { name: "Block Height", value: blockData.number },
                 { name: "Hash", value: blockData.hash },
                 {
                   name: "Timestamp",
@@ -96,33 +102,57 @@ const Block: NextPage = function () {
                       href={buildSlotExternalUrl(blockData.slot)}
                       isExternal
                     >
-                      {formatNumber(blockData.slot)}
+                      {blockData.slot}
                     </Link>
                   ),
                 },
                 {
-                  name: "Total Blob Size",
-                  value: formatBytes(totalBlobSize),
+                  name: "Blob Size",
+                  value: (
+                    <div>
+                      {formatBytes(totalBlobSize)}
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+                        ({formatNumber(totalBlobSize / GAS_PER_BLOB)}{" "}
+                        {pluralize("blob", totalBlobSize / GAS_PER_BLOB)})
+                      </span>
+                    </div>
+                  ),
                 },
                 {
                   name: "Blob Gas Price",
-                  value: formatWei(blockData.blobGasPrice),
+                  value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
                 },
                 {
-                  name: "Total Blob Gas Used",
-                  value: formatNumber(blockData.blobGasUsed),
+                  name: "Blob Gas Used",
+                  value: (
+                    <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />
+                  ),
                 },
                 {
-                  name: "Total Blob As Calldata Gas",
+                  name: "Blob Gas Limit",
+                  value: (
+                    <div>
+                      {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+                        ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
+                        {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
+                      </span>
+                    </div>
+                  ),
+                },
+                {
+                  name: "Blob As Calldata Gas",
                   value: (
                     <div>
                       {formatNumber(blockData.blobAsCalldataGasUsed)}
-                      <span className="ml-1">
+                      <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         (
                         <strong>
                           {formatNumber(
-                            blockData.blobAsCalldataGasUsed /
-                              blockData.blobGasUsed,
+                            performDiv(
+                              blockData.blobAsCalldataGasUsed,
+                              blockData.blobGasUsed
+                            ),
                             "standard",
                             { maximumFractionDigits: 2 }
                           )}

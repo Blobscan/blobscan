@@ -11,8 +11,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await fixtures.reset(prisma);
-  await fixtures.load(prisma);
+  await fixtures.create(prisma);
 });
 
 afterAll(async () => {

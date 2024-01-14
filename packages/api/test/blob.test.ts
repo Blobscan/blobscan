@@ -1,5 +1,5 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
@@ -11,17 +11,6 @@ import { createTestContext, runPaginationTestsSuite } from "./helpers";
 type GetByHashInput = inferProcedureInput<
   AppRouter["blob"]["getByVersionedHash"]
 >;
-
-vi.mock("@blobscan/blob-storage-manager/src/env", () => ({
-  env: {
-    CHAIN_ID: 7011893058,
-    POSTGRES_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_ENABLED: true,
-    GOOGLE_STORAGE_PROJECT_ID: "blobscan-test-project",
-    GOOGLE_STORAGE_BUCKET_NAME: "blobscan-test-bucket",
-    GOOGLE_STORAGE_API_ENDPOINT: "http://localhost:4443",
-  },
-}));
 
 describe("Blob router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;

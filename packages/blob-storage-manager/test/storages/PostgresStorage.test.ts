@@ -2,8 +2,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import prisma from "@blobscan/db/prisma/__mocks__/client";
 
-import { PostgresStorageMock as PostgresStorage } from "../../src/__mocks__/PostgresStorage";
-import { BLOB_HASH, CHAIN_ID, HEX_DATA } from "../fixtures";
+import { PostgresStorage, env } from "../../src";
+import { BLOB_HASH, HEX_DATA } from "../fixtures";
 
 describe("PostgresStorage", () => {
   let storage: PostgresStorage;
@@ -18,8 +18,18 @@ describe("PostgresStorage", () => {
     });
   });
 
+  describe("storeBlob", () => {
+    it("should store the blob data and return versionedHash", async () => {
+      const result = await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA);
+
+      expect(result).toBe(BLOB_HASH);
+    });
+  });
+
   describe("getBlob", () => {
-    it("should fetch the blob data and convert to hex", async () => {
+    it("should fetch the blob data by a given versioned hash correctly", async () => {
+      await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA);
+
       const result = await storage.getBlob(BLOB_HASH);
 
       expect(result).toBe(HEX_DATA);
@@ -31,16 +41,8 @@ describe("PostgresStorage", () => {
       );
 
       await expect(storage.getBlob(BLOB_HASH)).rejects.toMatchInlineSnapshot(
-        "[Error: Blob data not found]"
+        '[NotFoundError: No BlobData found]'
       );
-    });
-  });
-
-  describe("storeBlob", () => {
-    it("should store the blob data and return versionedHash", async () => {
-      const result = await storage.storeBlob(CHAIN_ID, BLOB_HASH, HEX_DATA);
-
-      expect(result).toBe(BLOB_HASH);
     });
   });
 

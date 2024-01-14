@@ -1,10 +1,18 @@
-import { formatNumber } from "./number";
+import { calculatePercentage, formatNumber, performDiv } from "./number";
 
-const MIN_BLOB_GASPRICE = BigInt(1);
-const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
-export const GAS_PER_BLOB = BigInt(2 ** 17); // 131_072
+export const GAS_PER_BLOB = 131_072; // 2 ** 17
+export const TARGET_BLOB_GAS_PER_BLOCK = 393_216;
+export const TARGET_BLOBS_PER_BLOCK = TARGET_BLOB_GAS_PER_BLOCK / GAS_PER_BLOB;
+export const BLOB_GAS_LIMIT_PER_BLOCK = 786_432;
+export const MAX_BLOBS_PER_BLOCK = BLOB_GAS_LIMIT_PER_BLOCK / GAS_PER_BLOB;
 
-export type EtherUnit = "wei" | "gwei" | "ether";
+export type EtherUnit = "wei" | "Gwei" | "ether";
+
+export type FormatWeiOptions = {
+  toUnit: EtherUnit;
+  displayUnit: boolean;
+  compact: boolean;
+};
 
 function formatWithDecimal(str: string, positionFromEnd: number): string {
   const [integerPart = "", decimalPart = ""] = str.split(".");
@@ -34,15 +42,9 @@ function stripTrailingZeroes(str: string): string {
   return str;
 }
 
-export type FormatWeiOptions = {
-  toUnit: EtherUnit;
-  displayUnit: boolean;
-  compact: boolean;
-};
-
 export function convertWei(
   weiAmount: string | number,
-  toUnit: EtherUnit = "gwei"
+  toUnit: EtherUnit = "Gwei"
 ) {
   const weiAmount_ =
     typeof weiAmount === "number" ? weiAmount.toString() : weiAmount;
@@ -50,17 +52,30 @@ export function convertWei(
   switch (toUnit) {
     case "wei":
       return weiAmount_;
-    case "gwei":
+    case "Gwei":
       return formatWithDecimal(weiAmount_, 9);
     case "ether":
       return formatWithDecimal(weiAmount_, 18);
   }
 }
 
+export function calculateBlobGasTarget(blobGasUsed: bigint) {
+  const blobsInBlock = performDiv(blobGasUsed, BigInt(GAS_PER_BLOB));
+  const targetPercentage =
+    blobsInBlock < TARGET_BLOBS_PER_BLOCK
+      ? calculatePercentage(blobsInBlock, TARGET_BLOBS_PER_BLOCK)
+      : calculatePercentage(
+          blobsInBlock - TARGET_BLOBS_PER_BLOCK,
+          TARGET_BLOBS_PER_BLOCK
+        );
+
+  return targetPercentage;
+}
+
 export function formatWei(
   weiAmount: bigint | number,
   {
-    toUnit = "gwei",
+    toUnit = "Gwei",
     displayUnit = true,
     compact = false,
   }: Partial<FormatWeiOptions> = {}
@@ -71,7 +86,6 @@ export function formatWei(
       ? Math.floor(weiAmount).toString()
       : weiAmount.toString();
   let formattedAmount = convertWei(weiAmountStr, toUnit);
-
   const fractionDigits = formattedAmount.split(".")[1];
 
   // Use exponential notation for large fractional digits
@@ -83,57 +97,9 @@ export function formatWei(
     formattedAmount,
     compact ? "compact" : "standard",
     {
-      // Display up to 9 decimal digits for small wei amounts
-      maximumFractionDigits: weiAmountStr.length < 9 ? 9 : 3,
+      maximumFractionDigits: compact ? 5 : 18,
     }
   );
 
   return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
-}
-
-function fakeExponential(
-  factor: bigint,
-  numerator: bigint,
-  denominator: bigint
-): bigint {
-  let i = BigInt(1);
-  let output = BigInt(0);
-  let numerator_accumulator = factor * denominator;
-
-  while (numerator_accumulator > 0) {
-    output += numerator_accumulator;
-    numerator_accumulator =
-      (numerator_accumulator * numerator) / (denominator * i);
-
-    i++;
-  }
-
-  return output / denominator;
-}
-
-export function getEIP2028CalldataGas(hexData: string): bigint {
-  const bytes = Buffer.from(hexData.slice(2), "hex");
-  let gasCost = BigInt(0);
-
-  for (const byte of bytes.entries()) {
-    if (byte[1] === 0) {
-      gasCost += BigInt(4);
-    } else {
-      gasCost += BigInt(16);
-    }
-  }
-
-  return gasCost;
-}
-
-export function calculateBlobSize(blob: string): number {
-  return blob.slice(2).length / 2;
-}
-
-export function calculateBlobGasPrice(excessDataGas: bigint) {
-  return fakeExponential(
-    MIN_BLOB_GASPRICE,
-    excessDataGas,
-    BLOB_GASPRICE_UPDATE_FRACTION
-  );
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
+import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
@@ -14,9 +15,9 @@ import {
   buildTransactionExternalUrl,
   formatTimestamp,
   GAS_PER_BLOB,
-  formatWei,
   formatBytes,
   formatNumber,
+  performDiv,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -39,7 +40,8 @@ const Tx: NextPage = () => {
             block: {
               ...txData_.block,
               blobGasPrice: BigInt(txData_.block.blobGasPrice),
-              excessBlobGas: BigInt(txData_.block.excessBlobGas),
+
+              Gas: BigInt(txData_.block.excessBlobGas),
             },
           }
         : undefined,
@@ -62,7 +64,7 @@ const Tx: NextPage = () => {
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
   const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
   const blobGasUsed = txData
-    ? BigInt(txData.blobs.length) * GAS_PER_BLOB
+    ? BigInt(txData.blobs.length) * BigInt(GAS_PER_BLOB)
     : BigInt(0);
   const totalBlobSize =
     txData?.blobs.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
@@ -82,7 +84,7 @@ const Tx: NextPage = () => {
                   name: "Block",
                   value: (
                     <Link href={buildBlockRoute(txData.blockNumber)}>
-                      {formatNumber(txData.blockNumber)}
+                      {txData.blockNumber}
                     </Link>
                   ),
                 },
@@ -117,27 +119,27 @@ const Tx: NextPage = () => {
                 {
                   name: "Blob Fee",
                   value: (
-                    <div className="flex gap-4">
-                      <div>
-                        <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex gap-1">
+                        <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Base:
-                        </span>
-                        {formatWei(blobGasPrice * BigInt(blobGasUsed))}
+                        </div>
+                        <EtherUnitDisplay amount={blobGasPrice * blobGasUsed} />
                       </div>
-                      <div>
-                        <span className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                      <div className=" flex gap-1">
+                        <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Max:
-                        </span>
-                        {formatWei(
-                          txData.maxFeePerBlobGas * BigInt(blobGasUsed)
-                        )}
+                        </div>
+                        <EtherUnitDisplay
+                          amount={txData.maxFeePerBlobGas * blobGasUsed}
+                        />
                       </div>
                     </div>
                   ),
                 },
                 {
                   name: "Blob Gas Price",
-                  value: formatWei(blobGasPrice),
+                  value: <EtherUnitDisplay amount={blobGasPrice} />,
                 },
                 {
                   name: "Blob Gas Used",
@@ -147,17 +149,23 @@ const Tx: NextPage = () => {
                   name: "Blob As Calldata Gas",
                   value: (
                     <div>
-                      {formatNumber(txData.blobAsCalldataGasUsed)} (
-                      <strong>
-                        {formatNumber(
-                          txData.blobAsCalldataGasUsed / blobGasUsed,
-                          "standard",
-                          {
-                            maximumFractionDigits: 2,
-                          }
-                        )}
-                      </strong>{" "}
-                      times more expensive)
+                      {formatNumber(txData.blobAsCalldataGasUsed)}{" "}
+                      <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                        (
+                        <strong>
+                          {formatNumber(
+                            performDiv(
+                              txData.blobAsCalldataGasUsed,
+                              blobGasUsed
+                            ),
+                            "standard",
+                            {
+                              maximumFractionDigits: 2,
+                            }
+                          )}
+                        </strong>{" "}
+                        times more expensive)
+                      </span>
                     </div>
                   ),
                 },

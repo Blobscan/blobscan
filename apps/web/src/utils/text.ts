@@ -5,9 +5,14 @@ export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export function pluralize(word: string, count: number) {
+  return count === 1 ? word : `${word}s`;
+}
 
 export function hexStringToUtf8(hexString: string): string {
-  const byteArray = hexString.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16));
+  const byteArray = hexString
+    .match(/.{1,2}/g)
+    ?.map((byte) => parseInt(byte, 16));
 
   if (!byteArray) {
     throw new Error("Invalid hexadecimal string");

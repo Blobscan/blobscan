@@ -22,7 +22,7 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => `${formatNumber(value)} gwei`,
+          yAxisTooltip: (value) => `${formatNumber(value)} Gwei`,
         },
         yUnit: "ethereum",
       }),
