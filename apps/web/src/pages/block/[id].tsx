@@ -12,6 +12,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import {
+  BLOB_GAS_LIMIT_PER_BLOCK,
   buildBlockExternalUrl,
   buildSlotExternalUrl,
   formatBytes,
@@ -131,7 +132,7 @@ const Block: NextPage = function () {
                   name: "Blob Gas Limit",
                   value: (
                     <div>
-                      {formatNumber(MAX_BLOBS_PER_BLOCK)}
+                      {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
                       <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
                         {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
