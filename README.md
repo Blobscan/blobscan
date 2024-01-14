@@ -21,27 +21,28 @@ Check out [Installation guide](https://docs.blobscan.com/docs/installation).
 
 We extend our gratitude to each one of them. Thank you 🙏
 
-<div style="display: flex; align-items: center; justify-content: space-around;">
-  <div href="https://ethereum.foundation" style="margin-right: 50px;">
+<p>
+  <a href="https://ethereum.foundation">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg">
-      <img alt="paradigm logo" src="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg" width="auto" height="70">
+      <source media="(prefers-color-scheme: dark)" srcset="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg"/>
+      <img alt="paradigm logo" src="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg" width="auto" height="60"/>
     </picture>
-  </div>
-  <div href="https://www.optimism.io" style="margin-right: 50px;">
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.optimism.io">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg">
-      <img alt="optimism" src="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg" width="auto" height="70">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg"/>
+      <img alt="optimism" src="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg" width="auto" height="60"/>
     </picture>
-  </div>
-  <div href="https://scroll.io">
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://scroll.io">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg">
-      <img alt="context logo" src="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg" width="auto" height="70">
+      <source media="(prefers-color-scheme: dark)" srcset="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg"/>
+      <img alt="context logo" src="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg" width="auto" height="60"/>
 </picture>
-</div>
-
-</div>
+</a>
+</p>
 
 
 
