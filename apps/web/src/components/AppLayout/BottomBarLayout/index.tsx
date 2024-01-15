@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "~/components/Button";
 import { ExplorerDetails } from "~/components/ExplorerDetails";
 import { Link } from "~/components/Link";
+import { env } from "~/env.mjs";
 import DiscordIcon from "~/icons/discord.svg";
 import GithubIcon from "~/icons/github.svg";
 import XIcon from "~/icons/x.svg";
@@ -25,7 +26,7 @@ const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
 
 export const BottomBarLayout = () => {
   return (
-    <div className="mx-auto flex flex-col items-center justify-center space-y-4 p-2">
+    <div className=" flex flex-col items-center justify-center p-2">
       <div className="sm:hidden">
         <ExplorerDetails />
       </div>
@@ -43,12 +44,36 @@ export const BottomBarLayout = () => {
           transactions, providing the necessary infrastructure to scale
           Ethereum.
         </div>
-        <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-          Made with ❤️ by{" "}
-          <Link href="https://blossom.software/">Blossom Labs</Link>.
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+            Made with ❤️ by{" "}
+            <Link href="https://blossom.software/">Blossom Labs</Link>
+          </div>
+          {env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA && (
+            <>
+              ·
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                  Latest commit:
+                </div>
+                <div className="relative">
+                  <Link
+                    href={`https://github.com/Blobscan/blobscan/commit/${env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
+                  >
+                    <div className="relative -top-0.5 text-xs">
+                      {env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </>
+          )}
         </div>
-        <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-          Blobscan © 2023
+
+        <div className="flex gap-2">
+          <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
+            Blobscan © 2023
+          </div>
         </div>
       </div>
     </div>
