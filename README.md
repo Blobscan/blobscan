@@ -25,23 +25,30 @@ We extend our gratitude to each one of them. Thank you 🙏
   <a href="https://ethereum.foundation">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg"/>
-      <img alt="paradigm logo" src="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg" width="auto" height="60"/>
+      <img alt="paradigm logo" src="https://esp.ethereum.foundation/_next/static/media/esp-logo.96fc01cc.svg" width="auto" height="50"/>
     </picture>
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://www.optimism.io">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg"/>
-      <img alt="optimism" src="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg" width="auto" height="60"/>
+      <img alt="optimism" src="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/Profile-Logo.svg" width="auto" height="50"/>
     </picture>
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://scroll.io">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg"/>
-      <img alt="context logo" src="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg" width="auto" height="60"/>
-</picture>
-</a>
+      <source media="(prefers-color-scheme: dark)" srcset="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/60f8e4c7-ca68-47a4-8979-7cdb457876f2/Scroll_Inverted_logo_300100px_RGB.svg?id=3269db1a-60b1-41f7-b66e-481904a946ab&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705428000000&signature=BcgsPzBI7sh1CHfDlZjeJylXGTjBqihS0XKDuB4SYTk&downloadName=Scroll_Inverted+logo_300*100px_RGB.svg"/>
+      <img alt="context logo" src="https://file.notion.so/f/f/cc12e519-e01d-4277-9573-3fe8e5bdf9ce/3d733a9c-fecf-452e-bdd3-c322b5c80a95/Scroll_full_logo_30086px_RGB.svg?id=fd4f5c30-b768-4bdb-bc71-bae26aee5fee&table=block&spaceId=cc12e519-e01d-4277-9573-3fe8e5bdf9ce&expirationTimestamp=1705334400000&signature=3ORrSoAyalOOSnF4j4rFJrFl56RY6hxMWZNkVpUaXoc&downloadName=Scroll_full+logo_300*86px_RGB.svg" width="auto" height="50"/>
+    </picture>
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.ethswarm.org">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://docs.ethswarm.org/img/logo.svg"/>
+      <img alt="context logo" src="https://docs.ethswarm.org/img/logo.svg" width="auto" height="50"/>
+    </picture>
+  </a>
 </p>
 
 
