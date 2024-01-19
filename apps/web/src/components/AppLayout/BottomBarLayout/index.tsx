@@ -54,7 +54,7 @@ export const BottomBarLayout = () => {
               ·
               <div className="flex items-center gap-2">
                 <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                  Latest commit:
+                  Version:
                 </div>
                 <div className="relative">
                   <Link
@@ -72,7 +72,7 @@ export const BottomBarLayout = () => {
 
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-            Blobscan © 2023
+            Blobscan © 2024
           </div>
         </div>
       </div>
