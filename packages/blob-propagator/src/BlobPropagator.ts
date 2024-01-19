@@ -174,7 +174,7 @@ export class BlobPropagator {
         ? new IORedis({
             host: connection.host,
             port: connection.port,
-
+            username: connection.username,
             password: connection.password,
             maxRetriesPerRequest: null,
           })
