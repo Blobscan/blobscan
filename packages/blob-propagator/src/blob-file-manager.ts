@@ -7,5 +7,5 @@ const basePath = !env.TEST ? os.tmpdir() : undefined;
 
 export const blobFileManager = new BlobFileManager({
   basePath,
-  folderName: "blobscan",
+  folderName: "blobscan-blobs",
 });

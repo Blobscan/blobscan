@@ -22,10 +22,10 @@ RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
 RUN SKIP_ENV_VALIDATION=true npm run build
 
 RUN chown node:node . -R
-RUN mkdir /tmp/blobscan && chown node:node /tmp/blobscan
 
 ADD docker-entrypoint.sh /
 USER node
+RUN mkdir -p /tmp/blobscan-blobs
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["--help"]
