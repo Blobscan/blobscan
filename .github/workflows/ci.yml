@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup
-        uses: ./setup
+        uses: ./tooling/github/setup
 
       - name: Lint
         run: pnpm lint
@@ -46,10 +46,35 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup
-        uses: ./setup
+        uses: ./tooling/github/setup
 
       - name: Typecheck
         run: pnpm typecheck
+
+  migration:
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Test migrations
+        run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
 
   build:
     services:
@@ -69,7 +94,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup
-        uses: ./setup
+        uses: ./tooling/github/setup
 
       - name: Build
         run: pnpm build
@@ -104,7 +129,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup
-        uses: ./setup
+        uses: ./tooling/github/setup
 
       - name: Setup GCS emulator
         uses: fsouza/fake-gcs-action@v0.4.1
