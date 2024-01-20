@@ -22,7 +22,6 @@
     "lint:fix": {},
     "svg:format": {},
     "test": {
-      "dependsOn": ["@blobscan/db#db:generate"],
       "inputs": ["test/**/*.test.ts"]
     },
     "test:ui": {
