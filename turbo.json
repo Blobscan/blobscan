@@ -15,13 +15,14 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["^build", "db:generate"],
+      "dependsOn": ["^build", "^db:generate"],
       "outputs": [".next/**"]
     },
     "lint": {},
     "lint:fix": {},
     "svg:format": {},
     "test": {
+      "dependsOn": ["db:generate"],
       "inputs": ["test/**/*.test.ts"]
     },
     "test:ui": {
