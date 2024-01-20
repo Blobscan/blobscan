@@ -4,7 +4,7 @@ import { monitorJob } from "../../sentry";
 
 async function main() {
   return monitorJob("upsert-overall-stats", async () => {
-    await overall(["-to", "finalized"]);
+    await overall(["--to", "finalized"]);
   });
 }
 
