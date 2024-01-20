@@ -22,7 +22,7 @@
     "lint:fix": {},
     "svg:format": {},
     "test": {
-      "dependsOn": ["db:generate"],
+      "dependsOn": ["@blobscan/db#db:generate"],
       "inputs": ["test/**/*.test.ts"]
     },
     "test:ui": {
@@ -39,7 +39,7 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["db:generate"],
+      "dependsOn": ["@blobscan/db#db:generate"],
       "cache": false
     }
   },
