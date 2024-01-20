@@ -48,6 +48,9 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
+      - name: Generate Prisma Client
+        run: pnpm db:generate
+
       - name: Typecheck
         run: pnpm type-check
 
