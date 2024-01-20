@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "dev": "pnpm run init:bucket",
-    "init:bucket": "pnpm with-env ts-node ../../scripts/init-bucket.ts",
+    "init:bucket": "pnpm with-env ts-node ./scripts/init-bucket.ts",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
