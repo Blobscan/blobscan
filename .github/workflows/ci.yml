@@ -1,4 +1,4 @@
-name: Continuous Integration (build, docker, deploy)
+name: CI
 
 on:
   pull_request:
@@ -7,16 +7,74 @@ on:
     branches: ["master", "next"]
   merge_group:
 
-# You can leverage Vercel Remote Caching with Turbo to speed up your builds
-# @link https://turborepo.org/docs/core-concepts/remote-caching#remote-caching-on-vercel-builds
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 env:
+  FORCE_COLOR: 3
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 jobs:
-  build-lint-test:
+  lint:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Setup
+        uses: ./setup
+
+      - name: Lint
+        run: pnpm lint
+
+  typecheck:
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./setup
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+  build:
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./setup
+
+      - name: Build
+        run: pnpm build
+
+  test:
     services:
       postgres:
         image: postgres:14
@@ -41,18 +99,12 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
-
-      - name: Setup Node 20
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+      - name: Setup
+        uses: ./setup
 
       - name: Setup GCS emulator
         uses: fsouza/fake-gcs-action@v0.4.1
@@ -62,48 +114,24 @@ jobs:
           scheme: http
           data: packages/test/src/fixtures/storage
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install deps (with cache)
-        run: pnpm install
-
-      - name: Generate Prisma Client
-        run: pnpm turbo db:generate
-
-      - name: Test migrations
-        run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
-
-      - name: Build, lint and type-check
-        run: pnpm turbo build lint type-check
-        env:
-          SKIP_ENV_VALIDATION: true
-
-      - name: Tests
+      - name: Test
         run: pnpm test
         env:
           POSTGRES_STORAGE_ENABLED: true
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
 
   docker:
+    if: github.ref_name == 'next' || github.ref_name == 'master'
     runs-on: ubuntu-latest
-    needs: build-lint-test
+    needs:
+      - lint
+      - typecheck
+      - build
+      - test
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
