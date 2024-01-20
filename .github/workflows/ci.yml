@@ -49,7 +49,7 @@ jobs:
         uses: ./tooling/github/setup
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: pnpm type-check
 
   migration:
     services:
@@ -138,6 +138,9 @@ jobs:
           backend: memory
           scheme: http
           data: packages/test/src/fixtures/storage
+
+      - name: Generate Prisma Client
+        run: pnpm db:generate
 
       - name: Test
         run: pnpm test
