@@ -52,7 +52,6 @@ We extend our gratitude to each one of them. Thank you 🙏
 </p>
 
 
-
 # About Blossom Labs
 
 ![blossom labs](https://blossom.software/img/logo.svg)
