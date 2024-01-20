@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "@blobscan/tsconfig/base.json",
   "include": [
     "src/**/*.ts",
     "scripts/**/*.ts",
