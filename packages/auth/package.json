@@ -20,7 +20,8 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1"
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,

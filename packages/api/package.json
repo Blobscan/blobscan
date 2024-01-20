@@ -32,6 +32,7 @@
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
     "@blobscan/test": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1",
     "@types/jsonwebtoken": "^9.0.2"
   },
   "eslintConfig": {
