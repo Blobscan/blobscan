@@ -10,9 +10,9 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "with-env:dev": "dotenv -e ../../.env.development --",
-    "test": "pnpm with-env:dev vitest",
-    "test:ui": "pnpm with-env:dev vitest --ui"
+    "with-env:test": "dotenv -e ../../.env.test --",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
     "@blobscan/db": "^0.0.1",
@@ -24,7 +24,8 @@
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/test": "^0.0.1"
+    "@blobscan/test": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,

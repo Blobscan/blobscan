@@ -10,8 +10,8 @@ export function parseEnv() {
   return createEnv({
     envOptions: {
       server: {
-        BEE_DEBUG_ENDPOINT: z.string().url().default("http://localhost:1635"),
-        BEE_ENDPOINT: z.string().url().default("http://localhost:1633"),
+        BEE_DEBUG_ENDPOINT: z.string().url().optional(),
+        BEE_ENDPOINT: z.string().url().optional(),
         CHAIN_ID: z.coerce.number().positive().default(1),
         GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
         GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),

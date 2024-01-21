@@ -17,7 +17,7 @@
     "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,md,json}\" --ignore-path .gitignore",
     "lint": "turbo lint && manypkg check",
     "lint:fix": "turbo lint:fix && manypkg fix",
-    "test": "dotenv -e .env.development vitest",
+    "test": "dotenv -e .env.test vitest",
     "test:ui": "vitest --ui",
     "test:setup": "turbo test:setup",
     "test:dev": "pnpm test:setup && pnpm test",

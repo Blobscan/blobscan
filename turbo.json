@@ -38,7 +38,7 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": ["@blobscan/db#db:generate"],
       "cache": false
     }
   },

@@ -1,8 +1,13 @@
 import { Storage } from "@google-cloud/storage";
 
 const GOOGLE_STORAGE_API_ENDPOINT = process.env.GOOGLE_STORAGE_API_ENDPOINT;
+const GOOGLE_STORAGE_ENABLED = process.env.GOOGLE_STORAGE_ENABLED === "true";
 async function main() {
-  if (GOOGLE_STORAGE_API_ENDPOINT && GOOGLE_STORAGE_API_ENDPOINT.length) {
+  if (
+    GOOGLE_STORAGE_ENABLED &&
+    GOOGLE_STORAGE_API_ENDPOINT &&
+    GOOGLE_STORAGE_API_ENDPOINT.length
+  ) {
     const bucketName = process.env.GOOGLE_STORAGE_BUCKET_NAME || "blobscan-dev";
     const storage = new Storage({ apiEndpoint: GOOGLE_STORAGE_API_ENDPOINT });
 
