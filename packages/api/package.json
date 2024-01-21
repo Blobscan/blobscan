@@ -7,12 +7,9 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
-    "dev": "pnpm run init:bucket",
-    "init:bucket": "pnpm with-env ts-node ./scripts/init-bucket.ts",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --",
     "with-env:test": "dotenv -e ../../.env.test --",
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui"
