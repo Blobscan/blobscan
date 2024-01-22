@@ -11,3 +11,8 @@ export const booleanSchema = z
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
 export const nodeEnvSchema = z.enum(["development", "test", "production"]);
+
+export const prismaBatchOperationsMaxSizeSchema = z.coerce
+  .number()
+  .positive()
+  .default(100_000);

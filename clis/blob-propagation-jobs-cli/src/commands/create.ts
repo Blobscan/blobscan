@@ -8,6 +8,7 @@ import {
 import { prisma } from "@blobscan/db";
 
 import { context } from "../context-instance";
+import { env } from "../env";
 import type { Command } from "../utils";
 import {
   blobHashOptionDef,
@@ -17,8 +18,6 @@ import {
   normalizeDate,
   normalizeStorageQueueName,
 } from "../utils";
-
-const BATCH_SIZE = 100_000;
 
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
@@ -155,7 +154,7 @@ export const create: Command = async function (argv) {
       storageQueueNames,
       async (cursorId) => {
         const dbBlocks = await prisma.block.findMany({
-          take: BATCH_SIZE,
+          take: env.PRISMA_BATCH_OPERATIONS_MAX_SIZE,
           skip: cursorId ? 1 : undefined,
           cursor: cursorId
             ? {
@@ -203,7 +202,7 @@ export const create: Command = async function (argv) {
       storageQueueNames,
       async (cursorId) => {
         const dbBlobs = await prisma.blob.findMany({
-          take: BATCH_SIZE,
+          take: env.PRISMA_BATCH_OPERATIONS_MAX_SIZE,
           cursor: cursorId
             ? {
                 commitment: cursorId,
