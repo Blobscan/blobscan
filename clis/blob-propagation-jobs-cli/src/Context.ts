@@ -106,8 +106,7 @@ export class Context {
   }
 
   async clearQueues() {
-    await this.drainQueues();
-    await this.obliterateQueues({ force: true });
+    await Promise.all((await this.getJobs()).map(j => j.remove()))
   }
 
   close() {

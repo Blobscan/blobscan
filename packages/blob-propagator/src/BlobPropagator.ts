@@ -2,11 +2,9 @@
 import { FlowProducer, Queue, Worker } from "bullmq";
 import type {
   ConnectionOptions,
-  FlowChildJob,
   FlowJob,
   WorkerOptions,
   RedisOptions,
-  JobsOptions,
 } from "bullmq";
 import IORedis from "ioredis";
 
@@ -19,7 +17,7 @@ import type { Blob, BlobPropagationJobData } from "./types";
 import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
-  buildJobId,
+  createBlobPropagationFlowJob,
 } from "./utils";
 import {
   finalizerProcessor,
@@ -42,14 +40,6 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   autorun: true,
   useWorkerThreads: false,
   removeOnComplete: { count: 1000 },
-};
-
-const DEFAULT_JOB_OPTIONS: Omit<JobsOptions, "repeat"> = {
-  attempts: 3,
-  backoff: {
-    type: "exponential",
-    delay: 1000,
-  },
 };
 
 function isRedisOptions(
@@ -253,33 +243,14 @@ export class BlobPropagator {
   #createBlobPropagationFlowJob(data: BlobPropagationJobData): FlowJob {
     const versionedHash = data.versionedHash;
 
-    const storageJobs: FlowChildJob[] = Object.values(
-      this.storageWorkers
-    ).map<FlowChildJob>((storageWorker) => {
-      const jobId = buildJobId(storageWorker, versionedHash);
+    const storageWorkerNames = Object.values(this.storageWorkers).map(
+      (storageWorker) => storageWorker.name
+    );
 
-      return {
-        name: `storeBlob:${jobId}`,
-        queueName: storageWorker.name,
-        data,
-        opts: {
-          ...DEFAULT_JOB_OPTIONS,
-          jobId,
-        },
-      };
-    });
-
-    const jobId = buildJobId(this.finalizerWorker, versionedHash);
-
-    return {
-      name: `propagateBlob:${jobId}`,
-      queueName: this.finalizerWorker.name,
-      data,
-      opts: {
-        ...DEFAULT_JOB_OPTIONS,
-        jobId,
-      },
-      children: storageJobs,
-    };
+    return createBlobPropagationFlowJob(
+      this.finalizerWorker.name,
+      storageWorkerNames,
+      versionedHash
+    );
   }
 }

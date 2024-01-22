@@ -2,13 +2,14 @@ import type { Queue } from "bullmq";
 import type commandLineUsage from "command-line-usage";
 
 import { STORAGE_WORKER_NAMES, buildJobId } from "@blobscan/blob-propagator";
-import { $Enums } from "@blobscan/db";
+import dayjs from "@blobscan/dayjs";
+import type { $Enums } from "@blobscan/db";
 
 import { env } from "./env";
 
-export type Command = (argv?: string[]) => Promise<void>;
+export type Command<R = unknown> = (argv?: string[]) => Promise<R>;
 
-export const connection = {
+export const redisConnection = {
   host: env.REDIS_QUEUE_HOST,
   port: Number(env.REDIS_QUEUE_PORT),
   password: env.REDIS_QUEUE_PASSWORD,
@@ -22,12 +23,22 @@ export const helpOptionDef: commandLineUsage.OptionDefinition = {
   type: Boolean,
 };
 
-export const queueOptionDef: commandLineUsage.OptionDefinition = {
+export const allQueuesOptionDef: commandLineUsage.OptionDefinition = {
   name: "queue",
   alias: "q",
   typeLabel: "{underline queue}",
   description:
     "Queue to retry failed jobs from. Valid valures are {italic finalizer}, {italic google}, {italic postgres} or {italic swarm}.",
+  type: String,
+  multiple: true,
+};
+
+export const storageQueuesOptionDef: commandLineUsage.OptionDefinition = {
+  name: "queue",
+  alias: "q",
+  typeLabel: "{underline queue}",
+  description:
+    "Queue to retry failed jobs from. Valid valures are {italic google}, {italic postgres} or {italic swarm}.",
   type: String,
   multiple: true,
 };
@@ -41,12 +52,34 @@ export const blobHashOptionDef: commandLineUsage.OptionDefinition = {
   multiple: true,
 };
 
-export function normalizeQueueName(input: string) {
-  const input_ = input.toUpperCase();
+export const datePeriodOptionDefs: commandLineUsage.OptionDefinition[] = [
+  {
+    name: "from",
+    alias: "f",
+    typeLabel: "{underline from}",
+    description: "Date from which execute jobs.",
+    type: String,
+  },
+  {
+    name: "to",
+    alias: "t",
+    typeLabel: "{underline to}",
+    description: "Date to which execute jobs.",
+    type: String,
+  },
+];
 
-  if (input_ === "FINALIZER") {
+export function normalizeQueueName(input: string) {
+  if (input.toUpperCase() === "FINALIZER") {
     return "FINALIZER";
   }
+
+  return normalizeStorageQueueName(input);
+}
+
+export function normalizeStorageQueueName(input: string) {
+  const input_ = input.toUpperCase();
+
   const selectedBlobStorage = Object.keys(STORAGE_WORKER_NAMES).find(
     (blobStorageName) => blobStorageName === input_
   );
@@ -58,17 +91,18 @@ export function normalizeQueueName(input: string) {
   return selectedBlobStorage as $Enums.BlobStorage;
 }
 
-export function normalizeQueueNames(input?: string[]) {
-  return input
-    ? input.map(normalizeQueueName)
-    : // If no storage names are provided, retry failed jobs from all storage queues
-      Object.values($Enums.BlobStorage);
+export function normalizeDate(input: string) {
+  return dayjs(input).toISOString();
+}
+
+export function normalizeBlobHashes(input: string[]) {
+  return [...new Set(input.map((blobHash) => blobHash))];
 }
 
 export async function getJobsByBlobHashes(queue: Queue, blobHashes: string[]) {
   return Promise.all(
     blobHashes.map(async (blobHash) => {
-      const jobId = buildJobId(queue, blobHash);
+      const jobId = buildJobId(queue.name, blobHash);
       const job = await queue.getJob(jobId);
 
       if (!job) {

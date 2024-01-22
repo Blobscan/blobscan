@@ -1,7 +1,7 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { remove, retry } from "./commands";
+import { create, remove, retry } from "./commands";
 import { helpOptionDef } from "./utils";
 
 const mainDefs: commandLineUsage.OptionDefinition[] = [
@@ -54,6 +54,8 @@ export async function main() {
   }
 
   switch (command) {
+    case "create":
+      return create(argv);
     case "remove":
       return remove(argv);
     case "retry":
