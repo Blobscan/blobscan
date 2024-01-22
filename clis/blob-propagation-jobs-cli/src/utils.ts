@@ -52,22 +52,22 @@ export const blobHashOptionDef: commandLineUsage.OptionDefinition = {
   multiple: true,
 };
 
-export const datePeriodOptionDefs: commandLineUsage.OptionDefinition[] = [
-  {
+export const datePeriodOptionDefs: Record<"to" | "from", commandLineUsage.OptionDefinition>  = {
+  from: {
     name: "from",
     alias: "f",
     typeLabel: "{underline from}",
     description: "Date from which execute jobs.",
     type: String,
   },
-  {
+  to:  {
     name: "to",
     alias: "t",
     typeLabel: "{underline to}",
     description: "Date to which execute jobs.",
     type: String,
-  },
-];
+  }
+}
 
 export function normalizeQueueName(input: string) {
   if (input.toUpperCase() === "FINALIZER") {

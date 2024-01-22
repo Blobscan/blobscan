@@ -15,21 +15,37 @@ import {
   helpOptionDef,
   normalizeBlobHashes,
   normalizeDate,
-  allQueuesOptionDef,
   normalizeStorageQueueName,
 } from "../utils";
 
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
-  blobHashOptionDef,
-  allQueuesOptionDef,
-  ...datePeriodOptionDefs,
+  {
+    ...blobHashOptionDef,
+    description: "Blob hash of the blobs to create jobs for.",
+  },
+  {
+    name: "storage",
+    alias: "s",
+    typeLabel: "{underline storage}",
+    description: "Storage used to propagate the selected blobs. Valid values are {italic google}, {italic postgres} or {italic swarm}.",
+    multiple: true,
+    type: String
+  },
+  {
+    ...datePeriodOptionDefs.from,
+    description: "Date from which to retrieve blobs to create jobs for."
+  },
+  {
+    ...datePeriodOptionDefs.to,
+    description: "Date to which to retrieve blobs to create jobs for."
+  }
 ];
 
 export const createCommandUsage = commandLineUsage([
   {
     header: "Create Command",
-    content: "Create blob propagations jobs.",
+    content: "Create propagation jobs for blobs.",
   },
   {
     header: "Options",
@@ -41,7 +57,7 @@ export const create: Command = async function (argv) {
   const {
     blobHash: rawBlobHashes,
     help,
-    queue: rawQueueNames,
+    storage: rawStorageNames,
     from: rawFrom,
     to: rawTo,
   } = commandLineArgs(createCommandOptDefs, {
@@ -49,7 +65,7 @@ export const create: Command = async function (argv) {
   }) as {
     blobHash?: string[];
     help?: boolean;
-    queue?: string[];
+    storage?: string[];
     from?: string;
     to?: string;
   };
@@ -62,11 +78,11 @@ export const create: Command = async function (argv) {
 
   const from = rawFrom ? normalizeDate(rawFrom) : undefined;
   const to = rawTo ? normalizeDate(rawTo) : undefined;
-  const argQueueNames = rawQueueNames?.map((rawName) =>
+  const argStorageNames = rawStorageNames?.map((rawName) =>
     normalizeStorageQueueName(rawName)
   );
-  const storageQueues = argQueueNames
-    ? context.getQueuesOrThrow(argQueueNames)
+  const storageQueues = argStorageNames
+    ? context.getQueuesOrThrow(argStorageNames)
     : context.getAllStorageQueues();
   const storageQueueNames = storageQueues.map((q) => q.name);
   let blobHashes: string[];

@@ -8,7 +8,6 @@ import { create, createCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
 import {
   argHelpTest,
-  argInvalidQueueTests,
   assertCreatedJobs,
 } from "../helpers";
 
@@ -108,7 +107,14 @@ describe("Create command", () => {
 
   argHelpTest(create, createCommandUsage);
 
-  argInvalidQueueTests(create);
+
+  it("should fail when providing a non-existing storage", () => {
+    expect(
+      create(["-s", "invalid-storage-name"])
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      '"Invalid queue name: invalid-storage-name"'
+    );
+  });
 
   it("should fail when providing non-existing blob hashes", () => {
     expect(
