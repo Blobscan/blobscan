@@ -1,4 +1,4 @@
-import { createEnv, z, presetEnvOptions } from "@blobscan/zod";
+import { createEnv, z, presetEnvOptions, booleanSchema } from "@blobscan/zod";
 
 export const env = createEnv({
   envOptions: {
@@ -7,6 +7,10 @@ export const env = createEnv({
       REDIS_QUEUE_PORT: z.coerce.number().default(6379),
       REDIS_QUEUE_PASSWORD: z.string().optional(),
       REDIS_QUEUE_USERNAME: z.string().optional(),
+
+      POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
+      GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
+      SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
     },
 
     ...presetEnvOptions,

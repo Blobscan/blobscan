@@ -1,5 +1,5 @@
-import { queueManager } from "./queue-manager";
+import { context } from "./context-instance";
 
 export function gracefulShutdown() {
-  return queueManager.close();
+  return context.close();
 }
