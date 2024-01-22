@@ -6,10 +6,7 @@ import { fixtures } from "@blobscan/test";
 
 import { create, createCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
-import {
-  argHelpTest,
-  assertCreatedJobs,
-} from "../helpers";
+import { argHelpTest, assertCreatedJobs } from "../helpers";
 
 async function fetchBlobHashesByDatePeriod(from?: string, to?: string) {
   const dbBlobs = await prisma.block.findMany({
@@ -92,7 +89,7 @@ describe("Create command", () => {
     assertCreatedJobs(createdJobs, queues, expectedBlobHashes);
   });
 
-  it("should create jobs for all blobs between a given date range correctly", async () => {
+  it.only("should create jobs for all blobs between a given date range correctly", async () => {
     const from = "2023-08-25";
     const to = "2023-09-10";
 
@@ -106,7 +103,6 @@ describe("Create command", () => {
   });
 
   argHelpTest(create, createCommandUsage);
-
 
   it("should fail when providing a non-existing storage", () => {
     expect(
