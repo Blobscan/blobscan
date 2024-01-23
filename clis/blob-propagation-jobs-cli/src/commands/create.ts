@@ -19,6 +19,11 @@ import {
   normalizeStorageQueueName,
 } from "../utils";
 
+// TODO: Need to convert it to number explicity due to ci tests failing
+// with the following error:
+const PRISMA_BATCH_OPERATIONS_MAX_SIZE = parseInt(
+  env.PRISMA_BATCH_OPERATIONS_MAX_SIZE.toString()
+);
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
   {
@@ -154,7 +159,7 @@ export const create: Command = async function (argv) {
       storageQueueNames,
       async (cursorId) => {
         const dbBlocks = await prisma.block.findMany({
-          take: env.PRISMA_BATCH_OPERATIONS_MAX_SIZE,
+          take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
           skip: cursorId ? 1 : undefined,
           cursor: cursorId
             ? {
@@ -202,7 +207,7 @@ export const create: Command = async function (argv) {
       storageQueueNames,
       async (cursorId) => {
         const dbBlobs = await prisma.blob.findMany({
-          take: env.PRISMA_BATCH_OPERATIONS_MAX_SIZE,
+          take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
           cursor: cursorId
             ? {
                 commitment: cursorId,
