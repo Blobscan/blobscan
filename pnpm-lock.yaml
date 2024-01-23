@@ -5014,8 +5014,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.22.2
-      caniuse-lite: 1.0.30001571
+      browserslist: 4.22.1
+      caniuse-lite: 1.0.30001561
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.0

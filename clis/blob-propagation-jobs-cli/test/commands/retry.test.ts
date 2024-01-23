@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Worker } from "bullmq";
-import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { BlobPropagationWorker } from "@blobscan/blob-propagator";
 
 import { retry, retryCommandUsage } from "../../src/commands";
-import { queueManager } from "../../src/queue-manager";
-import { connection } from "../../src/utils";
-import { processJobsManually, runHelpArgTests, setUpJobs } from "../helpers";
+import { context } from "../../src/context-instance";
+import { redisConnection } from "../../src/utils";
+import {
+  processJobsManually,
+  argHelpTest,
+  setUpJobs,
+  argInvalidBlobHashesTests,
+} from "../helpers";
 
 describe("Retry command", () => {
   let storageWorkers: BlobPropagationWorker[];
@@ -18,13 +23,14 @@ describe("Retry command", () => {
   ];
 
   beforeEach(async () => {
-    const storageQueues = Object.values(queueManager.getStorageQueues());
+    const queues = context.getAllQueues();
 
-    storageWorkers = storageQueues.map(
-      (queue) => new Worker(queue.name, undefined, { connection })
+    storageWorkers = queues.map(
+      (queue) =>
+        new Worker(queue.name, undefined, { connection: redisConnection })
     );
 
-    await setUpJobs(storageQueues, jobVersionedHashes);
+    await setUpJobs(queues, jobVersionedHashes);
     await Promise.all(
       storageWorkers.map((worker) =>
         processJobsManually(worker, (job, token) =>
@@ -34,14 +40,10 @@ describe("Retry command", () => {
     );
   });
 
-  afterEach(async () => {
-    await queueManager.drainQueues();
-  });
-
   it("should retry all failed jobs correctly", async () => {
     await retry();
 
-    const failedJobsAfterRetry = await queueManager.getJobs(["failed"]);
+    const failedJobsAfterRetry = await context.getJobs(["failed"]);
 
     expect(failedJobsAfterRetry.length).toBe(0);
   });
@@ -49,13 +51,11 @@ describe("Retry command", () => {
   it("should retry failed jobs from a specific queue correctly", async () => {
     await retry(["-q", "POSTGRES"]);
 
-    const failedJobsAfterRetry = await queueManager.getJobs(["failed"]);
+    const failedJobsAfterRetry = await context.getJobs(["failed"]);
     const postgresFailedJobs = failedJobsAfterRetry.filter((j) =>
       j.id?.includes("postgres")
     );
-    const storageQueuesCount = Object.values(
-      queueManager.getStorageQueues()
-    ).length;
+    const storageQueuesCount = context.getAllQueues().length;
 
     expect(failedJobsAfterRetry.length, "Total jobs mismatch").toBe(
       jobVersionedHashes.length * (storageQueuesCount - 1)
@@ -64,18 +64,18 @@ describe("Retry command", () => {
   });
 
   it("should retry failed jobs with a specific blob hash correctly", async () => {
-    const failedJobsBeforeRetry = await queueManager.getJobs(["failed"]);
+    const failedJobsBeforeRetry = await context.getJobs(["failed"]);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const versionedHash = jobVersionedHashes[0]!;
+
     await retry(["-b", versionedHash]);
 
-    const failedJobsAfterRetry = await queueManager.getJobs(["failed"]);
+    const failedJobsAfterRetry = await context.getJobs(["failed"]);
     const versionedHashFailedJobs = failedJobsAfterRetry.filter((j) =>
       j.id?.includes(versionedHash)
     );
 
-    const jobVersionedHashCount =
-      1 * Object.values(queueManager.getStorageQueues()).length;
+    const jobVersionedHashCount = 1 * context.getAllQueues().length;
 
     expect(failedJobsAfterRetry.length, "Total jobs mismatch").toBe(
       failedJobsBeforeRetry.length - jobVersionedHashCount
@@ -86,23 +86,11 @@ describe("Retry command", () => {
     ).toEqual([]);
   });
 
-  runHelpArgTests(retry, retryCommandUsage);
+  argHelpTest(retry, retryCommandUsage);
 
-  it("should fail when providing non-existing blob hashes", () => {
-    expect(
-      retry(["-q", "postgres", "-b", "invalid-blob-hash"])
-    ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Couldn\'t find job with id postgres-worker-invalid-blob-hash"'
-    );
-  });
+  argInvalidBlobHashesTests(retry);
 
-  it("should fail when providing a non-existing queue", () => {
-    expect(
-      retry(["-q", "invalid-queue-name"])
-    ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Invalid queue name: invalid-queue-name"'
-    );
-  });
+  argInvalidBlobHashesTests(retry);
 
   afterAll(async () => {
     let teardownPromise = Promise.resolve();

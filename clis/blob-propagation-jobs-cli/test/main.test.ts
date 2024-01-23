@@ -10,7 +10,7 @@ import {
 
 import * as commands from "../src/commands";
 import { main, mainUsage } from "../src/main";
-import { runHelpArgTests } from "./helpers";
+import { argHelpTest } from "./helpers";
 
 const commandNames = Object.keys(commands).filter(
   (key): key is string =>
@@ -23,7 +23,7 @@ describe("Main", () => {
   });
 
   runMainTests(["-h"], () => {
-    runHelpArgTests(main, mainUsage);
+    argHelpTest(main, mainUsage);
   });
 
   commandNames.forEach((commandName) => {
