@@ -4,9 +4,10 @@ import {
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { fullBlockSelect } from "./common";
+import { getAllInputSchema } from "./getAll.schema";
 
 export const getAll = publicProcedure
-  .input(paginationSchema)
+  .input(paginationSchema.optional())
   .use(withPagination)
   .query(async ({ ctx }) => {
     const [blocks, overallStats] = await Promise.all([

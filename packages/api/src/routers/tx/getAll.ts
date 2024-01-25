@@ -6,7 +6,7 @@ import { publicProcedure } from "../../procedures";
 import { formatFullTransaction, fullTransactionSelect } from "./common";
 
 export const getAll = publicProcedure
-  .input(paginationSchema)
+  .input(paginationSchema.optional())
   .use(withPagination)
   .query(async ({ ctx }) => {
     const [transactions, overallStats] = await Promise.all([
