@@ -23,9 +23,17 @@ async function main() {
     addresses
   );
   const dbTxs = dbBlockTxs.flat();
-  const dbAddresses = dataGenerator.generateDBAddresses(addresses, dbTxs);
+  const dbAddresses = dataGenerator.generateDBAddresses(
+    addresses,
+    dbTxs,
+    dbBlocks
+  );
   const dbBlobs = dataGenerator.generateDBBlobs();
-  const dbBlobsOnTxs = dataGenerator.generateDBBlobOnTxs(dbBlockTxs, dbBlobs);
+  const dbBlobsOnTxs = dataGenerator.generateDBBlobOnTxs(
+    dbBlocks,
+    dbBlockTxs,
+    dbBlobs
+  );
 
   const dataGenerationEnd = performance.now();
 

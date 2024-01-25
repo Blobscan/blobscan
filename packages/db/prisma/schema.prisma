@@ -34,8 +34,6 @@ model Address {
   insertedAt                 DateTime @default(now()) @map("inserted_at")
   updatedAt                  DateTime @default(now()) @map("updated_at")
 
-  firstBlockAsSender     Block?        @relation("firstBlockAsSenderRelation", fields: [firstBlockNumberAsSender], references: [number])
-  firstBlockAsReceiver   Block?        @relation("firstBlockAsReceiverRelation", fields: [firstBlockNumberAsReceiver], references: [number])
   transactionsAsSender   Transaction[] @relation("senderAddressRelation")
   transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
@@ -52,7 +50,6 @@ model Blob {
   updatedAt        DateTime @default(now()) @map("updated_at")
 
   dataStorageReferences BlobDataStorageReference[]
-  firstBlock            Block?                     @relation(fields: [firstBlockNumber], references: [number])
   transactions          BlobsOnTransactions[]
 
   @@index([insertedAt])
@@ -79,7 +76,7 @@ model BlobDataStorageReference {
 
 model Block {
   hash                  String   @id
-  number                Int      @unique
+  number                Int
   timestamp             DateTime @unique
   slot                  Int      @unique
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
@@ -89,10 +86,7 @@ model Block {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  transactions         Transaction[]
-  newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
-  newReceiverAddresses Address[]     @relation("firstBlockAsReceiverRelation")
-  newBlobs             Blob[]
+  transactions Transaction[]
 
   @@index([insertedAt])
   @@map("block")
@@ -102,7 +96,7 @@ model Transaction {
   hash                  String   @id
   fromId                String   @map("from_id")
   toId                  String   @map("to_id")
-  blockNumber           Int      @map("block_number")
+  blockHash             String   @map("block_hash")
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
@@ -110,12 +104,12 @@ model Transaction {
   updatedAt             DateTime @default(now()) @map("updated_at")
 
   blobs BlobsOnTransactions[]
-  block Block                 @relation(fields: [blockNumber], references: [number])
+  block Block                 @relation(fields: [blockHash], references: [hash])
   from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
   to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   @@index([insertedAt])
-  @@index([blockNumber])
+  @@index([blockHash])
   @@map("transaction")
 }
 

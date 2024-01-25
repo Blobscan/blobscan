@@ -21,7 +21,11 @@ export const getByAddress = publicProcedure
           where: {
             OR: [{ fromId: addressLowerCase }, { toId: addressLowerCase }],
           },
-          orderBy: { blockNumber: "desc" },
+          orderBy: {
+            block: {
+              number: "desc",
+            },
+          },
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),

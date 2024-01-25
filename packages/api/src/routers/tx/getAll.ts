@@ -13,7 +13,11 @@ export const getAll = publicProcedure
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
-          orderBy: { blockNumber: "desc" },
+          orderBy: {
+            block: {
+              number: "desc",
+            },
+          },
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),

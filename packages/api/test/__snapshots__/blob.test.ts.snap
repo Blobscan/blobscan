@@ -44,10 +44,6 @@ exports[`Blob router > getByVersionedHash > should get a blob by versioned hash 
       "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
     },
   ],
-  "firstBlock": {
-    "number": 1002,
-    "timestamp": 2023-05-10T12:00:00.000Z,
-  },
   "size": 1300,
   "versionedHash": "blobHash004",
 }

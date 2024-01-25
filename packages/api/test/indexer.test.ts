@@ -98,7 +98,7 @@ describe("Indexer router", async () => {
         const indexedBlock = await authorizedContext.prisma.block
           .findUnique({
             where: {
-              number: INPUT.block.number,
+              hash: INPUT.block.hash,
             },
           })
           .then((res) => (res ? omitDBTimestampFields(res) : res));
@@ -125,7 +125,7 @@ describe("Indexer router", async () => {
           {
             "blobGasUsed": "10000",
             "excessBlobGas": "5000",
-            "hash": "blockHash999",
+            "hash": "blockHash2010",
             "number": 2010,
             "slot": 130,
             "timestamp": 2023-09-01T13:50:21.000Z,
@@ -137,7 +137,7 @@ describe("Indexer router", async () => {
         const indexedTxs = await authorizedContext.prisma.transaction
           .findMany({
             where: {
-              blockNumber: INPUT.block.number,
+              blockHash: INPUT.block.hash,
             },
             orderBy: {
               hash: "asc",
@@ -164,7 +164,7 @@ describe("Indexer router", async () => {
         expect(remainingParams).toMatchInlineSnapshot(`
           [
             {
-              "blockNumber": 2010,
+              "blockHash": "blockHash2010",
               "fromId": "address7",
               "gasPrice": "3000000",
               "hash": "txHash1000",
@@ -172,7 +172,7 @@ describe("Indexer router", async () => {
               "toId": "address2",
             },
             {
-              "blockNumber": 2010,
+              "blockHash": "blockHash2010",
               "fromId": "address9",
               "gasPrice": "10000",
               "hash": "txHash999",

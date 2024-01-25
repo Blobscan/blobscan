@@ -4,7 +4,7 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   hash: true,
   fromId: true,
   toId: true,
-  blockNumber: true,
+  blockHash: true,
   blobAsCalldataGasUsed: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
@@ -13,6 +13,7 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
 // TODO: Find a way to infer this
 type FullTransaction = {
   block: {
+    number: number;
     timestamp: Date;
     excessBlobGas: Prisma.Decimal;
     blobGasPrice: Prisma.Decimal;
@@ -20,7 +21,7 @@ type FullTransaction = {
   hash: string;
   fromId: string;
   toId: string;
-  blockNumber: number;
+  blockHash: string;
   maxFeePerBlobGas: Prisma.Decimal;
   gasPrice: Prisma.Decimal;
   blobAsCalldataGasUsed: Prisma.Decimal;
@@ -39,6 +40,7 @@ export const fullTransactionSelect =
     ...transactionSelect,
     block: {
       select: {
+        number: true,
         excessBlobGas: true,
         timestamp: true,
         blobGasPrice: true,
