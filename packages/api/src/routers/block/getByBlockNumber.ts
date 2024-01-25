@@ -18,14 +18,14 @@ export const getByBlockNumber = publicProcedure
   })
   .input(getByBlockNumberInputSchema)
   .output(getByBlockNumberOutputSchema)
-  .query(async ({ ctx, input: { number } }) => {
+  .query(async ({ ctx, input: { number, reorg } }) => {
     const block = await ctx.prisma.block
       .findFirst({
         select: fullBlockSelect,
         where: {
           number,
           transactionForks: {
-            none: {},
+            ...(reorg ? { some: {} } : { none: {} }),
           },
         },
       })
