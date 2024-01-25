@@ -86,7 +86,8 @@ model Block {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  transactions Transaction[]
+  transactions     Transaction[]
+  transactionForks TransactionFork[]
 
   @@index([insertedAt])
   @@map("block")
@@ -103,10 +104,11 @@ model Transaction {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  blobs BlobsOnTransactions[]
-  block Block                 @relation(fields: [blockHash], references: [hash])
-  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  blobs            BlobsOnTransactions[]
+  block            Block                 @relation(fields: [blockHash], references: [hash])
+  from             Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to               Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  transactionForks TransactionFork[]
 
   @@index([insertedAt])
   @@index([blockHash])
@@ -125,6 +127,19 @@ model BlobsOnTransactions {
   @@index([blobHash])
   @@index([txHash])
   @@map("blobs_on_transactions")
+}
+
+model TransactionFork {
+  hash       String
+  index      Int
+  blockHash  String   @map("block_hash")
+  insertedAt DateTime @default(now()) @map("inserted_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  block       Block       @relation(fields: [blockHash], references: [hash])
+  transaction Transaction @relation(fields: [hash], references: [hash])
+
+  @@id([hash, blockHash])
 }
 
 // Block Metrics
