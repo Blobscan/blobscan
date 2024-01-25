@@ -24,6 +24,9 @@ export const getByBlockNumber = publicProcedure
         select: fullBlockSelect,
         where: {
           number,
+          transactionForks: {
+            none: {},
+          },
         },
       })
       .then((block) =>

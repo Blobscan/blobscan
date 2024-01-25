@@ -4,12 +4,10 @@ import { t } from "../trpc-client";
 
 export const DEFAULT_PAGE_LIMIT = 25;
 
-export const paginationSchema = z
-  .object({
-    p: z.number().optional(),
-    ps: z.number().optional(),
-  })
-  .optional();
+export const paginationSchema = z.object({
+  p: z.number().optional(),
+  ps: z.number().optional(),
+});
 
 export type PaginationInput = z.infer<typeof paginationSchema>;
 

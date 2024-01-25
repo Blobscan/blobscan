@@ -5,7 +5,7 @@ import {
 import { publicProcedure } from "../../procedures";
 
 export const getAll = publicProcedure
-  .input(paginationSchema)
+  .input(paginationSchema.optional())
   .use(withPagination)
   .query(async ({ ctx }) => {
     const [blobs, overallStats] = await Promise.all([
