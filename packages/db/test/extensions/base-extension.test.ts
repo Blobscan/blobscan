@@ -263,20 +263,6 @@ describe("Base Extension", () => {
 
         expect(result).toStrictEqual(expectedEmptyInputRes);
       });
-
-      it("should fail when trying to upsert an address from a transaction which is part of a non-existent block", async () => {
-        input = [
-          {
-            from: "address9",
-            to: "address10",
-            blockNumber: 999999,
-          },
-        ];
-
-        await expect(
-          prisma.address.upsertAddressesFromTransactions(input)
-        ).rejects.toThrowErrorMatchingSnapshot();
-      });
     });
 
     describe("upsertMany()", () => {
@@ -340,34 +326,6 @@ describe("Base Extension", () => {
         const result = await prisma.address.upsertMany(input);
 
         expect(result).toStrictEqual(expectedEmptyInputRes);
-      });
-
-      it("should fail when trying to upsert a sender address with a non-existent first block", async () => {
-        input = [
-          {
-            address: "address9",
-            firstBlockNumberAsSender: 999999,
-            firstBlockNumberAsReceiver: 1002,
-          },
-        ];
-
-        await expect(
-          prisma.address.upsertMany(input)
-        ).rejects.toThrowErrorMatchingSnapshot();
-      });
-
-      it("should fail when trying to upsert a receiver address with a non-existent first block", async () => {
-        input = [
-          {
-            address: "address9",
-            firstBlockNumberAsSender: 1002,
-            firstBlockNumberAsReceiver: 999999,
-          },
-        ];
-
-        await expect(
-          prisma.address.upsertMany(input)
-        ).rejects.toThrowErrorMatchingSnapshot();
       });
     });
   });
@@ -714,7 +672,7 @@ describe("Base Extension", () => {
             hash: "newTxHash1",
             fromId: "address1",
             toId: "address3",
-            blockNumber: 1002,
+            blockHash: "blockHash002",
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
@@ -723,7 +681,7 @@ describe("Base Extension", () => {
             hash: "newTxHash2",
             fromId: "address5",
             toId: "address3",
-            blockNumber: 1001,
+            blockHash: "blockHash001",
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
@@ -754,7 +712,7 @@ describe("Base Extension", () => {
             hash: "txHash001",
             fromId: "address5",
             toId: "address6",
-            blockNumber: 1006,
+            blockHash: "blockHash006",
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
@@ -763,7 +721,7 @@ describe("Base Extension", () => {
             hash: "txHash002",
             fromId: "address6",
             toId: "address5",
-            blockNumber: 1006,
+            blockHash: "blockHash006",
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
@@ -798,7 +756,7 @@ describe("Base Extension", () => {
         input = [
           {
             ...existingTx,
-            blockNumber: 999999,
+            blockHash: "blockHash9999999",
           },
         ];
 

@@ -50,7 +50,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           FROM blob b
             JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
             JOIN "transaction" tx ON tx."hash" = btx.tx_hash
-            JOIN "block" bl ON bl."number" = tx.block_number
+            JOIN "block" bl ON bl."hash" = tx.block_hash
           ${whereClause}
           GROUP BY "day"
           ON CONFLICT ("day") DO UPDATE SET
@@ -109,7 +109,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               FROM blob b
                 JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
                 JOIN "transaction" tx ON tx."hash" = btx.tx_hash
-                JOIN "block" bck ON bck."number" = tx.block_number
+                JOIN "block" bck ON bck."hash" = tx.block_hash
               WHERE bck."number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
                 total_blobs = st.total_blobs + EXCLUDED.total_blobs,
@@ -283,7 +283,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT(DISTINCT tx.from_id)::INT AS total_unique_senders,
               AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee
             FROM "transaction" tx
-              JOIN "block" b ON b.number = tx.block_number
+              JOIN "block" b ON b.hash = tx.block_hash
             ${whereClause}
             GROUP BY "day"
             ON CONFLICT ("day") DO UPDATE SET
@@ -332,13 +332,16 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               )
               SELECT
                 1 AS id,
-                COUNT("hash")::INT AS total_transactions,
+                COUNT(tx."hash")::INT AS total_transactions,
                 COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT AS total_unique_receivers,
                 COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT AS total_unique_senders,
                 AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
                 NOW() AS updated_at
-              FROM "transaction" tx JOIN "address" faddr ON faddr.address = tx.from_id JOIN "address" taddr ON taddr.address = tx.to_id
-              WHERE tx.block_number BETWEEN ${from} AND ${to}
+              FROM "transaction" tx
+                JOIN "block" b ON b.hash = tx.block_hash
+                JOIN "address" faddr ON faddr.address = tx.from_id
+                JOIN "address" taddr ON taddr.address = tx.to_id
+              WHERE b."number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
                 total_transactions = st.total_transactions + EXCLUDED.total_transactions,
                 total_unique_receivers = st.total_unique_receivers + EXCLUDED.total_unique_receivers,

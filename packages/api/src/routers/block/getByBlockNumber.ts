@@ -20,7 +20,7 @@ export const getByBlockNumber = publicProcedure
   .output(getByBlockNumberOutputSchema)
   .query(async ({ ctx, input: { number } }) => {
     const block = await ctx.prisma.block
-      .findUnique({
+      .findFirst({
         select: fullBlockSelect,
         where: {
           number,

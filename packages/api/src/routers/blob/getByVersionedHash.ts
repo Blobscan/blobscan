@@ -20,12 +20,6 @@ export const getByVersionedHash = publicProcedure
             dataReference: true,
           },
         },
-        firstBlock: {
-          select: {
-            number: true,
-            timestamp: true,
-          },
-        },
       },
       where: {
         versionedHash,

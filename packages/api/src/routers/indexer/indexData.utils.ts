@@ -72,7 +72,7 @@ export function createDBTransactions({
   transactions,
 }: IndexDataInput): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
-    ({ blockNumber, from, gasPrice, hash, maxFeePerBlobGas, to }) => {
+    ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
       const txBlob: IndexDataInput["blobs"][0] | undefined = blobs.find(
         (b) => b.txHash === hash
       );
@@ -85,7 +85,7 @@ export function createDBTransactions({
       const blobAsCalldataGasUsed = getEIP2028CalldataGas(txBlob.data);
 
       return {
-        blockNumber,
+        blockHash: block.hash,
         hash,
         fromId: from,
         toId: to,
