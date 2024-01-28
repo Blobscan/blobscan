@@ -12,12 +12,13 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { omitDBTimestampFields } from "@blobscan/test";
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
+import { handleReorgedSlotInput } from "../src/routers/indexer/handleReorgedSlot.schema";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
-import { createTestContext } from "./helpers";
+import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
 
 describe("Indexer router", async () => {
@@ -81,11 +82,9 @@ describe("Indexer router", async () => {
       });
     });
 
-    it("should fail when calling procedure without auth", async () => {
-      await expect(
-        nonAuthorizedCaller.indexer.updateSlot({ slot: 10 })
-      ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
-    });
+    unauthorizedRPCCallTest(() =>
+      nonAuthorizedCaller.indexer.updateSlot({ slot: 10 })
+    );
   });
 
   describe("indexData", () => {
@@ -543,5 +542,51 @@ describe("Indexer router", async () => {
         nonAuthorizedCaller.indexer.indexData(INPUT)
       ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
     });
+  });
+
+  describe("handleReorgedSlot", () => {
+    describe("when authorized", () => {
+      const input: handleReorgedSlotInput = {
+        newHeadSlot: 106,
+      };
+
+      it("should mark the transactions contained in the blocks with a slot greater than the new head slot as reorged", async () => {
+        const expectedTransactionForks = fixtures.txs
+          .filter(({ blockHash }) => {
+            const block = fixtures.blocks.find(
+              ({ hash }) => hash === blockHash
+            );
+
+            return block?.slot && block.slot > input.newHeadSlot;
+          })
+          .map(({ hash, blockHash }) => ({
+            hash,
+            blockHash,
+          }));
+
+        await authorizedCaller.indexer.handleReorgedSlot(input);
+
+        const transactionForks = await authorizedContext.prisma.transactionFork
+          .findMany()
+          .then((txForks) =>
+            txForks.map((txFork) => omitDBTimestampFields(txFork))
+          );
+
+        expect(transactionForks).toEqual(expectedTransactionForks);
+      });
+
+      it("should not mark any block when current head slot is given", async () => {
+        await authorizedCaller.indexer.handleReorgedSlot({ newHeadSlot: 108 });
+
+        const transactionForks =
+          await authorizedContext.prisma.transactionFork.findMany();
+
+        expect(transactionForks).toEqual([]);
+      });
+    });
+
+    unauthorizedRPCCallTest(() =>
+      nonAuthorizedCaller.indexer.handleReorgedSlot({ newHeadSlot: 1000 })
+    );
   });
 });
