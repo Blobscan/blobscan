@@ -1,7 +1,6 @@
 -- CreateTable
 CREATE TABLE "TransactionFork" (
     "hash" TEXT NOT NULL,
-    "index" INTEGER NOT NULL,
     "block_hash" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
