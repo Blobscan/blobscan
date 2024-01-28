@@ -32,6 +32,7 @@ export const fixtures = {
       prisma.blobsOnTransactions.deleteMany(),
       prisma.blobDataStorageReference.deleteMany(),
       prisma.blob.deleteMany(),
+      prisma.transactionFork.deleteMany(),
       prisma.transaction.deleteMany(),
       prisma.address.deleteMany(),
       prisma.block.deleteMany(),
