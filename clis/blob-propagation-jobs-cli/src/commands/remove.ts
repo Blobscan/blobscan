@@ -1,19 +1,19 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { queueManager } from "../queue-manager";
+import { context } from "../context-instance";
 import type { Command } from "../utils";
 import {
   blobHashOptionDef,
   getJobsByBlobHashes,
   helpOptionDef,
-  normalizeQueueNames,
-  queueOptionDef,
+  allQueuesOptionDef,
+  normalizeQueueName,
 } from "../utils";
 
 const removeCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
-  queueOptionDef,
+  allQueuesOptionDef,
   blobHashOptionDef,
   {
     name: "force",
@@ -55,13 +55,17 @@ export const remove: Command = async function (argv) {
     return;
   }
 
-  const queueNames = normalizeQueueNames(rawQueueNames);
+  const queueNames = rawQueueNames?.map((rawName) =>
+    normalizeQueueName(rawName)
+  );
+
+  const queues = queueNames
+    ? context.getQueues(queueNames)
+    : context.getAllQueues();
 
   if (blobHashes?.length && !force) {
     const selectedQueueJobs = await Promise.all(
-      queueManager
-        .getQueues(queueNames)
-        .map((queue) => getJobsByBlobHashes(queue, blobHashes))
+      queues.map((queue) => getJobsByBlobHashes(queue, blobHashes))
     );
 
     await Promise.all(
@@ -72,8 +76,6 @@ export const remove: Command = async function (argv) {
   }
 
   await Promise.all(
-    queueManager
-      .getQueues(queueNames)
-      .map((queue) => (force ? queue.obliterate() : queue.drain()))
+    queues.map((queue) => (force ? queue.obliterate() : queue.drain()))
   );
 };

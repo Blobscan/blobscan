@@ -1,19 +1,19 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { queueManager } from "../queue-manager";
+import { context } from "../context-instance";
 import type { Command } from "../utils";
 import {
   blobHashOptionDef,
   getJobsByBlobHashes,
   helpOptionDef,
-  normalizeQueueNames,
-  queueOptionDef,
+  allQueuesOptionDef,
+  normalizeQueueName,
 } from "../utils";
 
 const retryCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
-  queueOptionDef,
+  allQueuesOptionDef,
   blobHashOptionDef,
 ];
 
@@ -47,14 +47,17 @@ export const retry: Command = async function (argv?: string[]) {
     return;
   }
 
-  const queueNames = normalizeQueueNames(rawQueueNames);
+  const queueNames = rawQueueNames?.map((rawName) =>
+    normalizeQueueName(rawName)
+  );
+  const queues = queueNames
+    ? context.getQueues(queueNames)
+    : context.getAllQueues();
 
   // If blob hashes are provided, retry only the jobs with those hashes
   if (blobHashes?.length) {
     const selectedQueueJobs = await Promise.all(
-      queueManager
-        .getQueues(queueNames)
-        .map((queue) => getJobsByBlobHashes(queue, blobHashes))
+      queues.map((queue) => getJobsByBlobHashes(queue, blobHashes))
     );
 
     await Promise.all(
@@ -64,9 +67,5 @@ export const retry: Command = async function (argv?: string[]) {
     return;
   }
 
-  await Promise.all(
-    queueNames
-      .map((name) => queueManager.getQueue(name))
-      .map((queue) => queue.retryJobs())
-  );
+  await Promise.all(queues.map((queue) => queue.retryJobs()));
 };

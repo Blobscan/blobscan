@@ -1,13 +1,14 @@
 import { afterAll, beforeEach } from "vitest";
 
-import { queueManager } from "./src/queue-manager";
+import { context } from "./src/context-instance";
 
 beforeEach(async () => {
-  await queueManager.obliterateQueues({ force: true });
+  await context.clearQueues();
 });
+
 afterAll(async () => {
-  await queueManager
-    .obliterateQueues({ force: true })
+  await context
+    .clearQueues()
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    .finally(() => queueManager.close());
+    .finally(() => context.close());
 });

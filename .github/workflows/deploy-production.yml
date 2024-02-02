@@ -1,0 +1,59 @@
+name: Deploy production
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["master"]
+    types:
+      - completed
+
+
+jobs:
+
+  deploy_prod_goerli:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (goerli)
+    runs-on: ubuntu-latest
+    environment:
+      name: goerli
+      url: https://goerli.blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh
+
+  deploy_prod_sepolia:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (sepolia)
+    runs-on: ubuntu-latest
+    environment:
+      name: sepolia
+      url: https://sepolia.blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh
+
+  deploy_prod_holesky:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (holesky)
+    runs-on: ubuntu-latest
+    environment:
+      name: goerli
+      url: https://holesky.blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh

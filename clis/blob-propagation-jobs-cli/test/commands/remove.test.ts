@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { SpyInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { QueueHumanName } from "../../src/Context";
 import { remove, removeCommandUsage } from "../../src/commands";
-import { queueManager } from "../../src/queue-manager";
-import { runHelpArgTests, setUpJobs } from "../helpers";
+import { context } from "../../src/context-instance";
+import {
+  argHelpTest,
+  argInvalidBlobHashesTests,
+  argInvalidQueueTests,
+  setUpJobs,
+} from "../helpers";
 
 describe("Remove command", () => {
   const jobVersionedHashes = [
@@ -13,19 +20,19 @@ describe("Remove command", () => {
   ];
 
   beforeEach(async () => {
-    const storageQueues = Object.values(queueManager.getStorageQueues());
+    const queues = context.getAllQueues();
 
-    await setUpJobs(storageQueues, jobVersionedHashes);
+    await setUpJobs(queues, jobVersionedHashes);
   });
 
   describe("when removing jobs given a specific queue", () => {
     it("should remove them correctly when a specific queue is given", async () => {
-      const jobsBefore = await queueManager.getJobs();
-      const postgresQueue = queueManager.getQueue("POSTGRES");
+      const jobsBefore = await context.getJobs();
+      const postgresQueue = context.getQueue("POSTGRES")!;
 
       await remove(["-q", "POSTGRES"]);
 
-      const jobsAfter = await queueManager.getJobs();
+      const jobsAfter = await context.getJobs();
       const postgresJobsAfter = await postgresQueue.getJobs();
 
       expect(
@@ -41,21 +48,21 @@ describe("Remove command", () => {
     it("should remove jobs from all the queues when no queue is given", async () => {
       await remove();
 
-      const jobsAfter = await queueManager.getJobs();
+      const jobsAfter = await context.getJobs();
 
       expect(jobsAfter.length, "Total jobs removed mismatch").toBe(0);
     });
   });
 
   it("should remove jobs related to the given blob hashes correctly", async () => {
-    const jobsBefore = await queueManager.getJobs();
+    const jobsBefore = await context.getJobs();
     const blobHash1 = jobVersionedHashes[0] ?? "";
     const blobHash2 = jobVersionedHashes[1] ?? "";
 
     await remove(["-b", blobHash1, "-b", blobHash2]);
 
-    const jobsAfter = await queueManager.getJobs();
-    const queueCounter = Object.values(queueManager.getStorageQueues()).length;
+    const jobsAfter = await context.getJobs();
+    const queueCounter = context.getAllQueues().length;
 
     expect(
       jobsBefore.length - jobsAfter.length,
@@ -69,14 +76,14 @@ describe("Remove command", () => {
   });
 
   it("should remove jobs related to the given blob hashes and queue correctly", async () => {
-    const jobsBefore = await queueManager.getJobs();
+    const jobsBefore = await context.getJobs();
     const blobHash1 = jobVersionedHashes[0] ?? "";
     const blobHash2 = jobVersionedHashes[1] ?? "";
 
     await remove(["-q", "POSTGRES", "-b", blobHash1, "-b", blobHash2]);
 
-    const jobsAfter = await queueManager.getJobs();
-    const postgresJobs = await queueManager.getQueue("POSTGRES").getJobs();
+    const jobsAfter = await context.getJobs();
+    const postgresJobs = await context.getQueue("POSTGRES")!.getJobs();
 
     expect(
       jobsBefore.length - jobsAfter.length,
@@ -90,18 +97,14 @@ describe("Remove command", () => {
   });
 
   describe("when force flag is given", () => {
-    let queueSpies: Record<string, SpyInstance>;
+    let queueSpies: SpyInstance[];
 
     beforeEach(() => {
-      queueSpies = Object.entries(queueManager.getStorageQueues()).reduce(
-        (acc, [storageName, queue]) => ({
-          ...acc,
-          [storageName]: vi
-            .spyOn(queue, "obliterate")
-            .mockImplementation(async () => void {}),
-        }),
-        {} as Record<string, SpyInstance>
-      );
+      queueSpies = context
+        .getAllStorageQueues()
+        .map((q) =>
+          vi.spyOn(q, "obliterate").mockImplementation(async () => void {})
+        );
     });
 
     afterEach(() => {
@@ -109,16 +112,22 @@ describe("Remove command", () => {
     });
 
     it("should force remove the selected queues", async () => {
-      const queueName1 = "POSTGRES";
-      const queueName2 = "SWARM";
+      const queueName1: QueueHumanName = "POSTGRES";
+      const queueName2: QueueHumanName = "GOOGLE";
 
-      const queueSpy1 = queueSpies[queueName1];
-      const queueSpy2 = queueSpies[queueName2];
+      const queueSpy1 = queueSpies[0];
+      const queueSpy2 = queueSpies[1];
 
       await remove(["-f", "-q", queueName1, "-q", queueName2]);
 
-      expect(queueSpy1).toHaveBeenCalledOnce();
-      expect(queueSpy2).toHaveBeenCalledOnce();
+      expect(
+        queueSpy1,
+        "Postgres storage queue calls mismatch"
+      ).toHaveBeenCalledOnce();
+      expect(
+        queueSpy2,
+        "Google storage queue calls mismatch"
+      ).toHaveBeenCalledOnce();
     });
 
     it("should force remove all the queues when no queue is given", async () => {
@@ -133,21 +142,9 @@ describe("Remove command", () => {
     });
   });
 
-  runHelpArgTests(remove, removeCommandUsage);
+  argHelpTest(remove, removeCommandUsage);
 
-  it("should fail when providing non-existing blob hashes", () => {
-    expect(
-      remove(["-q", "postgres", "-b", "invalid-blob-hash"])
-    ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Couldn\'t find job with id postgres-worker-invalid-blob-hash"'
-    );
-  });
+  argInvalidBlobHashesTests(remove);
 
-  it("should fail when providing a non-existing queue", () => {
-    expect(
-      remove(["-q", "invalid-queue-name"])
-    ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Invalid queue name: invalid-queue-name"'
-    );
-  });
+  argInvalidQueueTests(remove);
 });
