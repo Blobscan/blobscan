@@ -44,10 +44,10 @@ pnpm install
 
 3. Configure Environment Variables:
 
-Make a copy of the `.env.example` and rename it to `.env`:
+Make a copy of the `.env.test` and rename it to `.env`:
 
 ```bash
-cp .env.example .env
+cp .env.test .env
 ```
 
 Then, adjust the `.env` file as [outlined here](/docs/environment).
@@ -80,4 +80,5 @@ Our test fixtures provide mock data for both PostgreSQL and Google Cloud Storage
 
 ### Integration with fake GCS server
 
-The mock data present in the `storage` subfolder of `fixtures`, is pre-configured on the [fake-gcs-server](https://github.com/fsouza/fake-gcs-server). This ensures that every time we initiate tests involving storage, the emulator starts with our designated mock data.
+The mock data present in the `storage` subfolder of `fixtures`, is pre-configured on the [fake-gcs-server](https://github.com/fsouza/fake-gcs-server).
+This ensures that every time we initiate tests involving storage, the emulator starts with our designated mock data.
