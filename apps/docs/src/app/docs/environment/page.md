@@ -12,6 +12,7 @@ These are listed by category:
 - [General](#general)
 - [Network](#network)
 - [Blob storages](#blob-storages)
+- [Blob propagator](#blob-propagator)
 - [Indexer](#indexer)
 - [Telemetry](#telemetry)
 
