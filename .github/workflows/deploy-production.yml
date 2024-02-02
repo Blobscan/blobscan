@@ -4,35 +4,17 @@ on:
   pull_request:
     branches: ["*"]
   push:
-    branches: ["master", "next"]
+    branches: ["master"]
   merge_group:
 
 jobs:
-  deploy_staging:
-    if: github.ref_name == 'next'
-    name: Deploy Blobscan API (staging)
-    runs-on: ubuntu-latest
-    environment:
-      name: staging
-      url: https://staging.blobscan.com
-    needs: docker
-    steps:
-      - uses: appleboy/ssh-action@v0.0.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
 
   deploy_prod_goerli:
-    if: github.ref_name == 'master'
     name: Deploy Blobscan API (goerli)
     runs-on: ubuntu-latest
     environment:
       name: goerli
       url: https://goerli.blobscan.com
-    needs: docker
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
@@ -43,13 +25,11 @@ jobs:
           script: ./deploy-blobscan.sh
 
   deploy_prod_sepolia:
-    if: github.ref_name == 'master'
     name: Deploy Blobscan API (sepolia)
     runs-on: ubuntu-latest
     environment:
       name: sepolia
       url: https://sepolia.blobscan.com
-    needs: docker
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
@@ -60,13 +40,11 @@ jobs:
           script: ./deploy-blobscan.sh
 
   deploy_prod_holesky:
-    if: github.ref_name == 'master'
     name: Deploy Blobscan API (holesky)
     runs-on: ubuntu-latest
     environment:
       name: goerli
       url: https://holesky.blobscan.com
-    needs: docker
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:

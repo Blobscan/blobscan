@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["next"]
+  merge_group:
+
+jobs:
+  deploy_staging:
+    name: Deploy Blobscan API (staging)
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh
