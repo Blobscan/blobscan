@@ -3,10 +3,9 @@ name: Deploy staging
 on:
   workflow_run:
     workflows: [CI]
+    branches: ["next"]
     types:
       - completed
-  push:
-    branches: ["next"]
 
 jobs:
   deploy_staging:

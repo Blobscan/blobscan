@@ -3,10 +3,9 @@ name: Deploy production
 on:
   workflow_run:
     workflows: [CI]
+    branches: ["master"]
     types:
       - completed
-  push:
-    branches: ["master"]
 
 
 jobs:
