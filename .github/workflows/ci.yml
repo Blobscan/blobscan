@@ -128,7 +128,7 @@ jobs:
           POSTGRES_STORAGE_ENABLED: true
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
 
-  docker:
+  release_docker:
     if: github.ref_name == 'next' || github.ref_name == 'master'
     runs-on: ubuntu-latest
     needs:
@@ -175,71 +175,3 @@ jobs:
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
-
-  deploy_staging:
-    if: github.ref_name == 'next'
-    name: Deploy Blobscan API (staging)
-    runs-on: ubuntu-latest
-    environment:
-      name: staging
-      url: https://staging.blobscan.com
-    needs: docker
-    steps:
-      - uses: appleboy/ssh-action@v0.0.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
-
-  deploy_prod_goerli:
-    if: github.ref_name == 'master'
-    name: Deploy Blobscan API (goerli)
-    runs-on: ubuntu-latest
-    environment:
-      name: goerli
-      url: https://goerli.blobscan.com
-    needs: docker
-    steps:
-      - uses: appleboy/ssh-action@v0.0.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
-
-  deploy_prod_sepolia:
-    if: github.ref_name == 'master'
-    name: Deploy Blobscan API (sepolia)
-    runs-on: ubuntu-latest
-    environment:
-      name: sepolia
-      url: https://sepolia.blobscan.com
-    needs: docker
-    steps:
-      - uses: appleboy/ssh-action@v0.0.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
-
-  deploy_prod_holesky:
-    if: github.ref_name == 'master'
-    name: Deploy Blobscan API (holesky)
-    runs-on: ubuntu-latest
-    environment:
-      name: goerli
-      url: https://holesky.blobscan.com
-    needs: docker
-    steps:
-      - uses: appleboy/ssh-action@v0.0.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
