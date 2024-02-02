@@ -4,28 +4,39 @@ import type { ReactNode } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
+import { useBreakpoint } from "~/hooks/useBreakpoint";
+
 export type InfoGridProps = {
   fields?: { name: ReactNode; value: ReactNode }[];
 };
 
 export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
+  const breakpoint = useBreakpoint();
+  const isCompact = breakpoint === "default";
+  const headerWidth = isCompact ? "100%" : "55%";
+  const valueWidth = isCompact ? "100%" : "50%";
+  const skeletonsLength = isCompact ? 4 : 7;
+  const skeletonHeight = isCompact ? 15 : 15;
+
   return (
-    <div className="grid w-fit gap-3 md:grid-cols-4">
+    <div className="grid w-full gap-3 md:grid-cols-4">
       {!fields
-        ? Array.from({ length: 4 }).map((_, i) => (
+        ? Array.from({ length: skeletonsLength }).map((_, i) => (
             <Fragment key={i}>
               <div>
-                <Skeleton width={180} />
+                <Skeleton width={headerWidth} height={skeletonHeight} />
               </div>
               <div className="col-span-3">
-                <Skeleton width={400} />
+                <Skeleton width={valueWidth} height={skeletonHeight} />
               </div>
             </Fragment>
           ))
         : fields.map(({ name, value }, i) => (
             <Fragment key={i}>
               <div className="font-semibold dark:text-coolGray-400">{name}</div>
-              <div className="col-span-3 truncate text-sm">{value}</div>
+              <div className="col-span-3 overflow-hidden break-words text-sm">
+                {value}
+              </div>
             </Fragment>
           ))}
     </div>

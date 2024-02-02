@@ -2,39 +2,43 @@ import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import type { AppRouter } from "../src/root";
-import { appRouter } from "../src/root";
-import { getContext } from "./helper";
+import { fixtures } from "@blobscan/test";
 
-describe("Block route", async () => {
+import type { TRPCContext } from "../src";
+import type { AppRouter } from "../src/app-router";
+import { appRouter } from "../src/app-router";
+import { createTestContext, runPaginationTestsSuite } from "./helpers";
+
+type Input = inferProcedureInput<AppRouter["block"]["getByHash"]>;
+
+describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
+  let ctx: TRPCContext;
 
   beforeAll(async () => {
-    const ctx = await getContext();
+    ctx = await createTestContext();
     caller = appRouter.createCaller(ctx);
   });
 
   describe("getAll", () => {
-    it("should get all", async () => {
-      const result = await caller.block.getAll({});
-      expect(result).toMatchSnapshot();
-    });
+    runPaginationTestsSuite("block", (paginationInput) =>
+      caller.block.getAll(paginationInput).then(({ blocks }) => blocks)
+    );
 
-    it("should get all with pagination", async () => {
-      type Input = inferProcedureInput<AppRouter["block"]["getAll"]>;
-      const input: Input = {
-        p: 2,
-        ps: 2,
-      };
+    it("should the total number of blocks correctly", async () => {
+      const expectedTotalBlocks = fixtures.blocks.length;
 
-      const result = await caller.block.getAll(input);
-      expect(result).toMatchSnapshot();
+      await ctx.prisma.blockOverallStats.populate();
+      await caller.block.getAll();
+
+      const { totalBlocks } = await caller.block.getAll();
+
+      expect(totalBlocks).toBe(expectedTotalBlocks);
     });
   });
 
   describe("getByHash", () => {
-    it("should get by hash", async () => {
-      type Input = inferProcedureInput<AppRouter["block"]["getByHash"]>;
+    it("should get a block by hash", async () => {
       const input: Input = {
         hash: "blockHash001",
       };
@@ -43,7 +47,7 @@ describe("Block route", async () => {
       expect(result).toMatchSnapshot();
     });
 
-    it("should error if no block with hash", async () => {
+    it("should fail when trying to get a block with a non-existent hash", async () => {
       await expect(
         caller.block.getByHash({
           hash: "nonExistingHash",
@@ -58,7 +62,7 @@ describe("Block route", async () => {
   });
 
   describe("getByBlockNumber", () => {
-    it("should get by hash", async () => {
+    it("should get a block by block number", async () => {
       type Input = inferProcedureInput<AppRouter["block"]["getByBlockNumber"]>;
       const input: Input = {
         number: 1002,
@@ -68,15 +72,15 @@ describe("Block route", async () => {
       expect(result).toMatchSnapshot();
     });
 
-    it("should error if no block with hash", async () => {
+    it("should fail when trying to get a block with a non-existent block number", async () => {
       await expect(
         caller.block.getByBlockNumber({
-          number: 1004,
+          number: 9999,
         })
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with number '1004'`,
+          message: `No block with number '9999'`,
         })
       );
     });

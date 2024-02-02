@@ -1,6 +1,5 @@
 import type { BlobDataStorageReference } from "@prisma/client";
 
-import { createOrLoadBlobStorageManager } from "@blobscan/blob-storage-manager";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
@@ -12,7 +11,6 @@ const BATCH_SIZE = 1000;
 const STORAGE_BATCH_SIZE = 100;
 
 async function main() {
-  const blobStorageManager = await createOrLoadBlobStorageManager();
   const dataGenerator = new DataGenerator(seedParams);
 
   // 1. Generate mock data
@@ -43,24 +41,26 @@ async function main() {
     );
 
     const blobDataStorageRefs: BlobDataStorageReference[][] = await Promise.all(
-      blobsDataBatch.map((blobData, i) => {
+      blobsDataBatch.map(async (blobData, i) => {
         const blob = blobsBatch[i];
         if (!blob) {
           throw new Error("Blob not found");
         }
 
-        return blobStorageManager
-          .storeBlob({
-            data: blobData,
-            versionedHash: blob.versionedHash,
-          })
-          .then((refs) =>
-            refs.references.map((r) => ({
-              blobHash: blob.versionedHash,
-              blobStorage: r.storage,
-              dataReference: r.reference,
-            }))
-          );
+        await prisma.blobData.create({
+          data: {
+            id: blob.versionedHash,
+            data: Buffer.from(blobData.slice(2), "hex"),
+          },
+        });
+
+        return [
+          {
+            blobHash: blob.versionedHash,
+            blobStorage: "POSTGRES",
+            dataReference: blob.versionedHash,
+          },
+        ];
       })
     );
 
@@ -126,9 +126,9 @@ async function main() {
   console.log(`Data inserted for the last ${seedParams.totalDays} days`);
 
   await Promise.all([
-    prisma.blobOverallStats.backfill(),
-    prisma.blockOverallStats.backfill(),
-    prisma.transactionOverallStats.backfill(),
+    prisma.blobOverallStats.populate(),
+    prisma.blockOverallStats.populate(),
+    prisma.transactionOverallStats.populate(),
   ]);
 
   console.log("Overall stats created.");
@@ -142,9 +142,9 @@ async function main() {
   };
 
   await Promise.all([
-    prisma.blobDailyStats.fill(yesterdayPeriod),
-    prisma.blockDailyStats.fill(yesterdayPeriod),
-    prisma.transactionDailyStats.fill(yesterdayPeriod),
+    prisma.blobDailyStats.populate(yesterdayPeriod),
+    prisma.blockDailyStats.populate(yesterdayPeriod),
+    prisma.transactionDailyStats.populate(yesterdayPeriod),
   ]);
 
   console.log("Daily stats created");

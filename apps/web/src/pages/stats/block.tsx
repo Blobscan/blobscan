@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 
@@ -18,8 +19,22 @@ const BlockStats: NextPage = function () {
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: "30d",
     });
-  const { data: overallBlockStats, error: overallBlockStatsErr } =
+  const { data: overallBlockStats_, error: overallBlockStatsErr } =
     api.stats.getBlockOverallStats.useQuery();
+  const overallBlockStats = useMemo(
+    () => ({
+      ...overallBlockStats_,
+      totalBlobAsCalldataFee: BigInt(
+        overallBlockStats_?.totalBlobAsCalldataFee ?? 0
+      ),
+      totalBlobFee: BigInt(overallBlockStats_?.totalBlobFee ?? 0),
+      totalBlobGasUsed: BigInt(overallBlockStats_?.totalBlobGasUsed ?? 0),
+      totalBlobAsCalldataGasUsed: BigInt(
+        overallBlockStats_?.totalBlobAsCalldataGasUsed ?? 0
+      ),
+    }),
+    [overallBlockStats_]
+  );
 
   const error = dailyBlockErr || overallBlockStatsErr;
 

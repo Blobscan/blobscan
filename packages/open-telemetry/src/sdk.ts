@@ -1,13 +1,18 @@
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
 import type { NodeSDKConfiguration } from "@opentelemetry/sdk-node";
 import { NodeSDK, resources, api } from "@opentelemetry/sdk-node";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { PrismaInstrumentation } from "@prisma/instrumentation";
 
+import { logger } from "@blobscan/logger";
+
 import { env } from "./env";
 
-api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);
+if (env.OTEL_DIAG_ENABLED) {
+  api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);
+}
 
 const exporterOptions: { headers?: Record<string, string> } = {};
 
@@ -41,21 +46,22 @@ export function setUpOpenTelemetry(
     instrumentations: [
       new HttpInstrumentation(),
       new PrismaInstrumentation(),
+      new WinstonInstrumentation(),
       ...(config?.instrumentations ?? []),
     ],
   });
 
   sdk.start();
 
-  console.log("OpenTelemetry SDK started successfully");
+  logger.info("OpenTelemetry SDK started successfully");
 
   // gracefully shut down the SDK on process exit
   const gracefulShutdown = function () {
     sdk
       .shutdown()
       .then(
-        () => console.log("SDK shut down successfully"),
-        (err) => console.log("Error shutting down SDK", err)
+        () => logger.info("SDK shut down successfully"),
+        (err) => logger.error(`Error shutting down SDK: ${err}`)
       )
       .finally(() => process.exit(0));
   };

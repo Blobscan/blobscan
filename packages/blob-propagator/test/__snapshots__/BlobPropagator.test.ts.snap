@@ -1,0 +1,130 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BlobPropagator > when propagating multiple blobs > should create flow jobs correctly 1`] = `
+[
+  {
+    "children": [
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash1",
+        },
+        "name": "storeBlob:google-worker-blobVersionedHash1",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "google-worker-blobVersionedHash1",
+        },
+        "queueName": "google-worker",
+      },
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash1",
+        },
+        "name": "storeBlob:postgres-worker-blobVersionedHash1",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "postgres-worker-blobVersionedHash1",
+        },
+        "queueName": "postgres-worker",
+      },
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash1",
+        },
+        "name": "storeBlob:swarm-worker-blobVersionedHash1",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "swarm-worker-blobVersionedHash1",
+        },
+        "queueName": "swarm-worker",
+      },
+    ],
+    "data": {
+      "versionedHash": "blobVersionedHash1",
+    },
+    "name": "propagateBlob:finalizer-worker-blobVersionedHash1",
+    "opts": {
+      "attempts": 3,
+      "backoff": {
+        "delay": 1000,
+        "type": "exponential",
+      },
+      "jobId": "finalizer-worker-blobVersionedHash1",
+    },
+    "queueName": "finalizer-worker",
+  },
+  {
+    "children": [
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash2",
+        },
+        "name": "storeBlob:google-worker-blobVersionedHash2",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "google-worker-blobVersionedHash2",
+        },
+        "queueName": "google-worker",
+      },
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash2",
+        },
+        "name": "storeBlob:postgres-worker-blobVersionedHash2",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "postgres-worker-blobVersionedHash2",
+        },
+        "queueName": "postgres-worker",
+      },
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash2",
+        },
+        "name": "storeBlob:swarm-worker-blobVersionedHash2",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "swarm-worker-blobVersionedHash2",
+        },
+        "queueName": "swarm-worker",
+      },
+    ],
+    "data": {
+      "versionedHash": "blobVersionedHash2",
+    },
+    "name": "propagateBlob:finalizer-worker-blobVersionedHash2",
+    "opts": {
+      "attempts": 3,
+      "backoff": {
+        "delay": 1000,
+        "type": "exponential",
+      },
+      "jobId": "finalizer-worker-blobVersionedHash2",
+    },
+    "queueName": "finalizer-worker",
+  },
+]
+`;

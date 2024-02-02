@@ -1,5 +1,7 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
+import { logger } from "@blobscan/logger";
+
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
@@ -81,13 +83,17 @@ export class SwarmStorage extends BlobStorage {
     return firstBatch.batchID;
   }
 
-  static tryGetConfigFromEnv(env: Environment): SwarmStorageConfig | undefined {
+  static tryGetConfigFromEnv(
+    env: Partial<Environment>
+  ): SwarmStorageConfig | undefined {
     if (!env.SWARM_STORAGE_ENABLED) {
       return;
     }
 
     if (!env.BEE_ENDPOINT) {
-      console.warn("Swarm storage enabled but no bee endpoint was provided");
+      logger.warn(
+        "Swarm storage: storage is enabled but no bee endpoint was provided"
+      );
       return;
     }
 

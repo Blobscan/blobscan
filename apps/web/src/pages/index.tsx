@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -52,7 +53,7 @@ const Home: NextPage = () => {
     ps: LATEST_BLOBS_LENGTH,
   });
 
-  const { data: overallStats, error: overallStatsErr } =
+  const { data: overallStats_, error: overallStatsErr } =
     api.stats.getAllOverallStats.useQuery();
   const { data: dailyTxStats, error: dailyTxStatsErr } =
     api.stats.getTransactionDailyStats.useQuery({
@@ -62,6 +63,30 @@ const Home: NextPage = () => {
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
+  const overallStats = useMemo(() => {
+    const totalBlobAsCalldataFee = overallStats_?.block?.totalBlobAsCalldataFee;
+    const totalBlobFee = overallStats_?.block?.totalBlobFee;
+    const totalBlobGasUsed = overallStats_?.block?.totalBlobGasUsed;
+    const totalBlobAsCalldataGasUsed =
+      overallStats_?.block?.totalBlobAsCalldataGasUsed;
+
+    return {
+      ...overallStats_,
+      block: {
+        ...overallStats_?.block,
+        totalBlobAsCalldataFee: totalBlobAsCalldataFee
+          ? BigInt(totalBlobAsCalldataFee)
+          : undefined,
+        totalBlobFee: totalBlobFee ? BigInt(totalBlobFee) : undefined,
+        totalBlobGasUsed: totalBlobGasUsed
+          ? BigInt(totalBlobGasUsed)
+          : undefined,
+        totalBlobAsCalldataGasUsed: totalBlobAsCalldataGasUsed
+          ? BigInt(totalBlobAsCalldataGasUsed)
+          : undefined,
+      },
+    };
+  }, [overallStats_]);
 
   const error =
     latestBlocksError ||
@@ -87,7 +112,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
-        <Logo className="h-16 w-64 md:h-20 md:w-80 lg:h-20 lg:w-80" />
+        <Logo className="w-64 md:w-80" />
         <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
           <SearchInput />
           <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -99,7 +124,7 @@ const Home: NextPage = () => {
         </div>
       </div>
       <div className="flex w-full flex-col gap-8 sm:gap-16">
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-10">
+        <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
@@ -110,20 +135,20 @@ const Home: NextPage = () => {
               opts={{ toolbox: { show: false } }}
             />
           </div>
-          <div className="col-span-2 grid grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
+          <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
             <div className="col-span-2">
               <MetricCard
                 name="Total Tx Fees Saved"
-                metric={
-                  overallStats
-                    ? {
-                        value:
-                          overallStats.block.totalBlobAsCalldataFee -
-                          overallStats.block.totalBlobFee,
-                        type: "ethereum",
-                      }
-                    : undefined
-                }
+                metric={{
+                  value:
+                    typeof overallStats?.block?.totalBlobAsCalldataFee !==
+                      "undefined" &&
+                    typeof overallStats?.block?.totalBlobFee !== "undefined"
+                      ? overallStats.block.totalBlobAsCalldataFee -
+                        overallStats.block.totalBlobFee
+                      : undefined,
+                  type: "ethereum",
+                }}
                 compact
               />
             </div>
@@ -151,7 +176,7 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blob Size"
               metric={{
-                value: overallStats?.blob.totalBlobSize,
+                value: overallStats?.blob?.totalBlobSize,
                 type: "bytes",
               }}
               compact
@@ -168,7 +193,7 @@ const Home: NextPage = () => {
         </div>
         <Card
           header={
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-5">
               <div>Latest Blocks</div>
               <Button
                 variant="outline"
@@ -200,12 +225,13 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-2">
           <Card
             header={
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-5">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
                   label="View All Txs"
                   onClick={() => void router.push(buildTransactionsRoute())}
+                  className="h-full"
                 />
               </div>
             }
@@ -233,7 +259,7 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-5">
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"

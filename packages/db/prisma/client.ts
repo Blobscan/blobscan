@@ -1,17 +1,44 @@
 import { PrismaClient } from "@prisma/client";
 
+import { logger } from "@blobscan/logger";
+
 import { baseExtension, statsExtension } from "./extensions";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient;
+};
 
-const prisma_ =
-  globalForPrisma.prisma ||
-  new PrismaClient({
+let prisma_ = globalForPrisma.prisma;
+
+if (!prisma_) {
+  const p = new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+        ? [
+            { emit: "event", level: "query" },
+            { emit: "event", level: "error" },
+            { emit: "event", level: "warn" },
+          ]
+        : [{ emit: "event", level: "error" }],
   });
+
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
+  if (process.env.MODE !== "test") {
+    p.$on("query", (e) => {
+      logger.debug(`${e.query}\nDuration=${e.duration}ms`);
+    });
+
+    p.$on("error", (e) => {
+      logger.error(e.message);
+    });
+
+    p.$on("warn", (e) => {
+      logger.warn(e.message);
+    });
+  }
+
+  prisma_ = p;
+}
 
 export const prisma = prisma_.$extends(baseExtension).$extends(statsExtension);
 

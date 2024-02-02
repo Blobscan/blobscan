@@ -1,0 +1,25 @@
+name: Deploy staging
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["next"]
+    types:
+      - completed
+
+jobs:
+  deploy_staging:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (staging)
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh

@@ -1,3 +1,5 @@
-import vitestConfig from "../../vitest.config";
+import { defineProject } from "vitest/config";
 
-export default vitestConfig;
+import { sharedProjectConfig } from "../../vitest.shared";
+
+export default defineProject(sharedProjectConfig);

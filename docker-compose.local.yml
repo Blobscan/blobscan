@@ -1,0 +1,68 @@
+---
+version: "3.7"
+
+services:
+  web:
+    extends:
+      file: docker-compose.yml
+      service: web
+    image: blossomlabs/blobscan:local
+    build: .
+    ports:
+      - 5556:5556 # Prisma studio
+
+  api:
+    extends:
+      file: docker-compose.yml
+      service: api
+    image: blossomlabs/blobscan:local
+    build: .
+    depends_on:
+      - postgres
+
+  # External dependencies
+
+  postgres:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=blobscan
+      - POSTGRES_DB=blobscan_dev
+      - POSTGRES_PASSWORD=s3cr3t
+
+  storage:
+    image: fsouza/fake-gcs-server
+    ports:
+      - "4443:4443"
+    command: ["-scheme", "http", "-port", "4443", "-data", "/data"]
+    volumes:
+      - storage_data:/storage
+      - type: bind
+        source: ./packages/test/src/fixtures/storage
+        target: /data
+
+  redis:
+    image: "redis:alpine"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./misc/data:/var/lib/redis
+      - ./misc/conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=s3cr3t
+      - REDIS_USERNAME=blobscan
+
+  collector:
+    image: otel/opentelemetry-collector:0.23.0
+    command: "--config /etc/otel-config.yaml"
+    volumes:
+      - ./otel-config.yaml:/etc/otel-config.yaml
+
+volumes:
+  postgres-data:
+  storage_data:

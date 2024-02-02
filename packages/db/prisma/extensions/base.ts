@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   Address,
   Blob,
   BlobDataStorageReference,
+  PrismaPromise,
   Transaction,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
-import type { OmittableFields } from "../types";
+import type { WithoutTimestampFields } from "../types";
 
 const NOW_SQL = Prisma.sql`NOW()`;
 
+type ZeroOpResult = { count: number }[];
 export type RawBlob = {
   versionedHash: string;
   commitment: string;
@@ -52,17 +55,19 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
     name: "Base Extension",
     model: {
+      $allModels: {
+        zero() {
+          return prisma.$queryRaw<ZeroOpResult>`SELECT 0 as count`;
+        },
+      },
       address: {
         upsertAddressesFromTransactions(
-          txs: { from: string; to?: string; blockNumber: number }[]
+          txs: { from: string; to: string; blockNumber: number }[]
         ) {
           const addressToEntity = txs.reduce<Record<string, Address>>(
             (addressesData, { from, to, blockNumber }) => {
               updateAddressData(addressesData, from, blockNumber, true);
-
-              if (to) {
-                updateAddressData(addressesData, to, blockNumber, false);
-              }
+              updateAddressData(addressesData, to, blockNumber, false);
 
               return addressesData;
             },
@@ -73,7 +78,13 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
 
           return Prisma.getExtensionContext(this).upsertMany(addressEntities);
         },
-        upsertMany(addresses: Omit<Address, OmittableFields>[]) {
+        upsertMany(addresses: WithoutTimestampFields<Address>[]) {
+          if (!addresses.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
           const formattedValues = addresses
             .map(
               ({
@@ -107,20 +118,23 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       },
       blob: {
         async filterNewBlobs(blobs: RawBlob[]) {
+          const uniqueBlobVersionedHashes = Array.from(
+            new Set(blobs.map((b) => b.versionedHash))
+          );
           const dbBlobVersionedHashes = (
             await prisma.blob.findMany({
               select: { versionedHash: true },
               where: {
                 versionedHash: {
-                  in: blobs.map((blob) => blob.versionedHash),
+                  in: uniqueBlobVersionedHashes,
                 },
               },
             })
           ).map((b) => b.versionedHash);
           // Remove duplicates and blobs that already exist in the DB
-          const newBlobVersionedHashes = Array.from(
-            new Set(blobs.map((b) => b.versionedHash))
-          ).filter((hash) => !dbBlobVersionedHashes.includes(hash));
+          const newBlobVersionedHashes = uniqueBlobVersionedHashes.filter(
+            (hash) => !dbBlobVersionedHashes.includes(hash)
+          );
 
           return newBlobVersionedHashes.map((versionedHash) => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -134,7 +148,13 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             };
           });
         },
-        upsertMany(blobs: Omit<Blob, OmittableFields>[]) {
+        upsertMany(blobs: WithoutTimestampFields<Blob>[]) {
+          if (!blobs.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
           const formattedValues = blobs
             .map(({ versionedHash, commitment, size, firstBlockNumber }) => [
               versionedHash,
@@ -166,6 +186,12 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
       },
       blobDataStorageReference: {
         upsertMany(refs: BlobDataStorageReference[]) {
+          if (!refs.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
           const formattedValues = refs.map(
             ({ blobHash, blobStorage, dataReference }) =>
               Prisma.sql`(${Prisma.join([
@@ -197,7 +223,13 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       transaction: {
-        upsertMany(transactions: Omit<Transaction, OmittableFields>[]) {
+        upsertMany(transactions: WithoutTimestampFields<Transaction>[]) {
+          if (!transactions.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
           const formattedValues = transactions
             .map(
               ({
@@ -224,26 +256,26 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             );
 
           return prisma.$executeRaw`
-          INSERT INTO "transaction" (
-            "hash",
-            block_number,
-            from_id,
-            to_id,
-            max_fee_per_blob_gas,
-            gas_price,
-            blob_as_calldata_gas_used,
-            inserted_at,
-            updated_at
-          ) VALUES ${Prisma.join(formattedValues)}
-          ON CONFLICT ("hash") DO UPDATE SET
-            block_number = EXCLUDED.block_number,
-            from_id = EXCLUDED.from_id,
-            to_id = EXCLUDED.to_id,
-            max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
-            gas_price = EXCLUDED.gas_price,
-            blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
-            updated_at = NOW()
-        `;
+            INSERT INTO "transaction" (
+              "hash",
+              block_number,
+              from_id,
+              to_id,
+              max_fee_per_blob_gas,
+              gas_price,
+              blob_as_calldata_gas_used,
+              inserted_at,
+              updated_at
+            ) VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("hash") DO UPDATE SET
+              block_number = EXCLUDED.block_number,
+              from_id = EXCLUDED.from_id,
+              to_id = EXCLUDED.to_id,
+              max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
+              gas_price = EXCLUDED.gas_price,
+              blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
+              updated_at = NOW()
+          `;
         },
       },
     },

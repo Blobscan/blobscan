@@ -19,7 +19,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => (isNaN(value) ? "" : formatNumber(value)),
+          yAxisTooltip: (value) => formatNumber(value),
         },
       }),
       series: [

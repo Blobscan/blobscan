@@ -1,5 +1,7 @@
 import "../styles/globals.css";
+import "@upstash/feedback/index.css";
 import type { AppProps as NextAppProps } from "next/app";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider, useTheme } from "next-themes";
 
 import "@fontsource/inter/400.css";
@@ -10,6 +12,7 @@ import Head from "next/head";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
+import { FeedbackWidget } from "~/components/FeedbackWidget";
 import { api } from "~/api-client";
 import { useIsMounted } from "~/hooks/useIsMounted";
 
@@ -37,6 +40,8 @@ function App({ Component, pageProps }: NextAppProps) {
       <AppLayout>
         <Component {...pageProps} />
       </AppLayout>
+      <FeedbackWidget />
+      <Analytics />
     </SkeletonTheme>
   );
 }

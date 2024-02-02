@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "@blobscan/tsconfig/base.json",
   "compilerOptions": {
     "module": "esnext"
   },
@@ -10,5 +10,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["api"]
+  "include": ["src"]
 }

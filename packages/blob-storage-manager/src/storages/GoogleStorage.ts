@@ -1,6 +1,8 @@
 import { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
 
+import { logger } from "@blobscan/logger";
+
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
@@ -86,7 +88,7 @@ export class GoogleStorage extends BlobStorage {
   }
 
   static tryGetConfigFromEnv(
-    env: Environment
+    env: Partial<Environment>
   ): GoogleStorageConfig | undefined {
     if (!env.GOOGLE_STORAGE_ENABLED) {
       return;
@@ -96,8 +98,8 @@ export class GoogleStorage extends BlobStorage {
       !env.GOOGLE_STORAGE_BUCKET_NAME ||
       (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
     ) {
-      console.warn(
-        "Google storage enabled but no bucket name, api endpoint or service key provided."
+      logger.warn(
+        "Google storage: storage is enabled but no bucket name, api endpoint or service key provided."
       );
       return;
     }

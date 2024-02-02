@@ -2,7 +2,8 @@ import { Prisma } from "@prisma/client";
 
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { BlockNumberRange } from "../types";
-import type { DatePeriod } from "../utils/dates";
+import type { RawDatePeriod } from "../utils/dates";
+import { normalizeDailyDatePeriod } from "../utils/dates";
 import { buildRawWhereClause } from "../utils/dates";
 
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("stats");
@@ -23,9 +24,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             return prisma.$executeRawUnsafe("TRUNCATE TABLE blob_daily_stats");
           });
         },
-        fill(datePeriod: DatePeriod) {
+        populate(dailyDatePeriod?: RawDatePeriod) {
+          const normalizedDailyDatePeriod =
+            normalizeDailyDatePeriod(dailyDatePeriod);
           const dateField = Prisma.sql`bl."timestamp"`;
-          const whereClause = buildRawWhereClause(dateField, datePeriod);
+          const whereClause = buildRawWhereClause(
+            dateField,
+            normalizedDailyDatePeriod
+          );
 
           return prisma.$executeRaw`
           INSERT INTO blob_daily_stats (
@@ -56,7 +62,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
         },
       },
       blobOverallStats: {
-        backfill() {
+        populate() {
           return prisma.$executeRaw`
               INSERT INTO blob_overall_stats (
                 id,
@@ -120,9 +126,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             return prisma.$executeRawUnsafe(`TRUNCATE TABLE block_daily_stats`);
           });
         },
-        fill(datePeriod: DatePeriod) {
+        populate(dailyDatePeriod?: RawDatePeriod) {
+          const normalizedDailyDatePeriod =
+            normalizeDailyDatePeriod(dailyDatePeriod);
           const dateField = Prisma.sql`timestamp`;
-          const whereClause = buildRawWhereClause(dateField, datePeriod);
+          const whereClause = buildRawWhereClause(
+            dateField,
+            normalizedDailyDatePeriod
+          );
 
           return prisma.$executeRaw`
             INSERT INTO block_daily_stats (
@@ -139,10 +150,10 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             SELECT
               DATE_TRUNC('day', ${dateField}) as "day",
               COUNT(hash)::INT as total_blocks,
-              SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
-              SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
-              SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
-              SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+              SUM(blob_gas_used)::DECIMAL as total_blob_gas_used,
+              SUM(blob_as_calldata_gas_used)::DECIMAL as total_blob_as_calldata_gas_used,
+              SUM(blob_gas_used * blob_gas_price)::DECIMAL as total_blob_fee,
+              SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL as total_blob_as_calldata_fee,
               AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
               AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
               AVG(blob_gas_price)::FLOAT as avg_blob_gas_price
@@ -162,7 +173,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
         },
       },
       blockOverallStats: {
-        backfill() {
+        populate() {
           return prisma.$executeRaw`
               INSERT INTO block_overall_stats as st (
                 id,
@@ -179,10 +190,10 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               SELECT
                 1 as id,
                 COUNT("hash")::INT as total_blocks,
-                SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
-                SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
-                SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
-                SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+                SUM(blob_gas_used)::DECIMAL(50,0) as total_blob_gas_used,
+                SUM(blob_as_calldata_gas_used)::DECIMAL(50,0) as total_blob_as_calldata_gas_used,
+                SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_fee,
+                SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
                 AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
                 AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
                 AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
@@ -217,10 +228,10 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               SELECT
                 1 as id,
                 COUNT("hash")::INT as total_blocks,
-                SUM(blob_gas_used)::BIGINT as total_blob_gas_used,
-                SUM(blob_as_calldata_gas_used)::BIGINT as total_blob_as_calldata_gas_used,
-                SUM(blob_gas_used * blob_gas_price)::BIGINT as total_blob_fee,
-                SUM(blob_as_calldata_gas_used * blob_gas_price)::BIGINT as total_blob_as_calldata_fee,
+                SUM(blob_gas_used)::DECIMAL(50,0) as total_blob_gas_used,
+                SUM(blob_as_calldata_gas_used)::DECIMAL(50,0) as total_blob_as_calldata_gas_used,
+                SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_fee,
+                SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
                 AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
                 AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
                 AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
@@ -248,9 +259,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             );
           });
         },
-        fill(datePeriod: DatePeriod) {
+        populate(dailyDatePeriod?: RawDatePeriod) {
+          const normalizedDailyDatePeriod =
+            normalizeDailyDatePeriod(dailyDatePeriod);
           const dateField = Prisma.sql`b."timestamp"`;
-          const whereClause = buildRawWhereClause(dateField, datePeriod);
+          const whereClause = buildRawWhereClause(
+            dateField,
+            normalizedDailyDatePeriod
+          );
 
           return prisma.$executeRaw`
             INSERT INTO transaction_daily_stats (
@@ -278,7 +294,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
         },
       },
       transactionOverallStats: {
-        backfill() {
+        populate() {
           return prisma.$executeRaw`
             INSERT INTO transaction_overall_stats (
               id,

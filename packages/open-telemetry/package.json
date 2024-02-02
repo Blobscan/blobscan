@@ -12,17 +12,20 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@blobscan/logger": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
     "@opentelemetry/exporter-metrics-otlp-proto": "^0.41.1",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.41.1",
     "@opentelemetry/instrumentation-http": "^0.41.1",
+    "@opentelemetry/instrumentation-winston": "^0.32.0",
     "@opentelemetry/sdk-node": "^0.41.1",
     "@opentelemetry/semantic-conventions": "^1.15.1",
     "@prisma/instrumentation": "^5.1.1",
     "prom-client": "^14.2.0"
   },
   "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1"
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1"
   },
   "eslintConfig": {
     "root": true,

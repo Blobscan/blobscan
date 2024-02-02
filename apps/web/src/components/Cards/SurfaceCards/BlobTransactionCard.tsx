@@ -120,7 +120,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <div className="flex flex-col gap-1 md:flex-row md:items-center">
                 {fromId && toId ? (
                   <>
-                    <div className="mb-1 text-error-50 md:hidden">From</div>
+                    <div className="mt-1 md:hidden">From</div>
                     <Link href={buildAddressRoute(fromId)}>
                       <span className="text-xs">{fromId}</span>
                     </Link>

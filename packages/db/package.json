@@ -17,32 +17,31 @@
     "db:reset": "pnpm with-env prisma db push --force-reset",
     "dev": "pnpm with-env prisma studio --port 5556",
     "with-env": "dotenv -e ../../.env --",
-    "test": "vitest",
-    "test:ui": "vitest --ui"
+    "with-env:test": "dotenv -e ../../.env.test --",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui"
   },
   "prisma": {
     "seed": "ts-node prisma/seed/main.ts"
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
-    "@prisma/client": "^5.0.0"
+    "@blobscan/logger": "^0.0.1",
+    "@blobscan/open-telemetry": "^0.0.1",
+    "@prisma/client": "^5.5.2"
   },
   "devDependencies": {
-    "@blobscan/blob-storage-manager": "^0.0.1",
     "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/test": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1",
     "@faker-js/faker": "^8.0.2",
     "js-sha256": "^0.9.0",
-    "prisma": "^5.0.0"
+    "prisma": "^5.5.2"
   },
   "eslintConfig": {
     "root": true,
     "extends": [
       "@blobscan/eslint-config/base"
     ]
-  },
-  "peerDependencies": {
-    "@blobscan/open-telemetry": "^0.0.1"
   }
 }

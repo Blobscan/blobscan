@@ -1,0 +1,37 @@
+{
+  "name": "@blobscan/blob-propagator",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit",
+    "with-env:test": "dotenv -e ../../.env.test --",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui"
+  },
+  "dependencies": {
+    "@blobscan/blob-storage-manager": "^0.0.1",
+    "@blobscan/db": "^0.0.1",
+    "@blobscan/logger": "^0.0.1",
+    "@blobscan/open-telemetry": "^0.0.1",
+    "@blobscan/zod": "^0.0.1",
+    "bullmq": "^4.13.2",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/test": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

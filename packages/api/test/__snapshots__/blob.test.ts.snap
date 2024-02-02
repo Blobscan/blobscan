@@ -1,62 +1,36 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Blob route > getAll > should get all 1`] = `
-{
-  "blobs": [
-    {
-      "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
-      "size": 1500,
-      "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
-    },
-    {
-      "commitment": "commitment001",
-      "size": 1000,
-      "versionedHash": "blobHash001",
-    },
-    {
-      "commitment": "commitment002",
-      "size": 1100,
-      "versionedHash": "blobHash002",
-    },
-    {
-      "commitment": "commitment003",
-      "size": 1200,
-      "versionedHash": "blobHash003",
-    },
-    {
-      "commitment": "commitment004",
-      "size": 1300,
-      "versionedHash": "blobHash004",
-    },
-    {
-      "commitment": "commitment005",
-      "size": 1400,
-      "versionedHash": "blobHash005",
-    },
-  ],
-  "totalBlobs": 0,
-}
+exports[`Blob router > getAll > when getting paginated blob results > should default to the first page when no page was specified 1`] = `
+[
+  {
+    "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
+    "size": 1500,
+    "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+  },
+  {
+    "commitment": "commitment001",
+    "size": 1000,
+    "versionedHash": "blobHash001",
+  },
+]
 `;
 
-exports[`Blob route > getAll > should get all with pagination 1`] = `
-{
-  "blobs": [
-    {
-      "commitment": "commitment002",
-      "size": 1100,
-      "versionedHash": "blobHash002",
-    },
-    {
-      "commitment": "commitment003",
-      "size": 1200,
-      "versionedHash": "blobHash003",
-    },
-  ],
-  "totalBlobs": 0,
-}
+exports[`Blob router > getAll > when getting paginated blob results > should return the correct number of results 1`] = `
+[
+  {
+    "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
+    "size": 1500,
+    "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+  },
+  {
+    "commitment": "commitment001",
+    "size": 1000,
+    "versionedHash": "blobHash001",
+  },
+]
 `;
 
-exports[`Blob route > getByVersionedHash > should get by versioned hash 1`] = `
+exports[`Blob router > getByVersionedHash > should get a blob by versioned hash 1`] = `
 {
   "commitment": "commitment004",
   "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
@@ -72,51 +46,9 @@ exports[`Blob route > getByVersionedHash > should get by versioned hash 1`] = `
   ],
   "firstBlock": {
     "number": 1002,
-    "timestamp": 2023-08-26T12:00:00.000Z,
+    "timestamp": 2023-05-10T12:00:00.000Z,
   },
   "size": 1300,
   "versionedHash": "blobHash004",
-}
-`;
-
-exports[`Blob route > getByVersionedHash > should get by versioned hash from GOOGLE 1`] = `
-{
-  "commitment": "commitment001",
-  "data": "1234abcdefg123",
-  "dataStorageReferences": [
-    {
-      "blobStorage": "GOOGLE",
-      "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
-    },
-    {
-      "blobStorage": "SWARM",
-      "dataReference": "bzz://some-hash-for-blobHash001",
-    },
-  ],
-  "firstBlock": {
-    "number": 1001,
-    "timestamp": 2023-08-24T10:00:00.000Z,
-  },
-  "size": 1000,
-  "versionedHash": "blobHash001",
-}
-`;
-
-exports[`Blob route > getByVersionedHash > should get by versioned hash from POSTGRES 1`] = `
-{
-  "commitment": "commitment005",
-  "data": "0xd76df869b71d79f835db7e1a6dc75e7e",
-  "dataStorageReferences": [
-    {
-      "blobStorage": "POSTGRES",
-      "dataReference": "blobHash005",
-    },
-  ],
-  "firstBlock": {
-    "number": 1002,
-    "timestamp": 2023-08-26T12:00:00.000Z,
-  },
-  "size": 1400,
-  "versionedHash": "blobHash005",
 }
 `;

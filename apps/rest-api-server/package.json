@@ -4,31 +4,30 @@
   "private": true,
   "scripts": {
     "clean": "git clean -xdf node_modules",
-    "dev": "pnpm run init:bucket && pnpm with-env ts-node-dev --require ./api/instrumentation.ts --respawn --transpile-only --exit-child ./api/index.ts",
-    "start": "pnpm with-env ts-node --require ./api/instrumentation.ts api/index.ts",
-    "profile": "pnpm with-env node -r ts-node/register --prof --require ./api/instrumentation.ts api/index.ts",
+    "dev": "pnpm with-env ts-node-dev --require ./src/scripts/print-banner.ts --require ./src/scripts/init-bucket.ts --require ./src/scripts/instrumentation.ts --respawn --transpile-only --exit-child ./src/index.ts",
+    "start": "pnpm with-env ts-node --require ./src/scripts/print-banner.ts --require ./src/scripts/instrumentation.ts src/index.ts",
+    "profile": "pnpm with-env node -r ts-node/register --prof --require ./src/scripts/instrumentation.ts src/index.ts",
     "with-env": "dotenv -e ../../.env --",
-    "init:bucket": "pnpm with-env ts-node ../../scripts/init-bucket.ts",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "license": "MIT",
   "dependencies": {
     "@blobscan/api": "^0.0.1",
+    "@blobscan/logger": "^0.0.1",
     "@blobscan/open-telemetry": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
     "@opentelemetry/instrumentation-express": "^0.33.0",
-    "@opentelemetry/instrumentation-winston": "^0.32.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "swagger-ui-express": "^4.6.2",
-    "trpc-openapi": "^1.1.2",
-    "winston": "^3.10.0"
+    "trpc-openapi": "^1.2.0"
   },
   "devDependencies": {
     "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.4",
