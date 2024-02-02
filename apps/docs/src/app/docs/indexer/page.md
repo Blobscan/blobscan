@@ -8,7 +8,7 @@ nextjs:
 
 Here you can find information related to the indexer used by the Blobscan explorer.
 
-Check out the repository [here](https://github.com/Blobscan/blobscan).
+Check out the repository [here](https://github.com/Blobscan/blobscan-indexer.rs).
 
 ## How it works?
 
@@ -29,10 +29,10 @@ git clone https://github.com/Blobscan/blobscan-indexer.rs.git
 cd blobscan-indexer.rs
 ```
 
-3. Set the [environment variables](https://github.com/Blobscan/blobscan-indexer.rs/blob/master/.env.example).
+3. Set the [environment variables](#environment-variables).
 
 The indexer interacts with other services (such as the execution and consensus clients). They can be configured
-by using environment variables or by creating a `.env` file. You can use the `.env.example` file as a reference.
+by creating a `.env` file. You can use the `.env.example` file as a reference.
 
 ```bash
 echo "SECRET_KEY=$(openssl rand -base64 32)" > .env
@@ -49,6 +49,18 @@ cargo run
 ```bash
 cargo build -r
 ```
+
+## Environment variables
+
+Below you can find a list of supported variables:
+
+| Name                      | Required | Description                                        | Default value           |
+| ------------------------- | -------- | -------------------------------------------------- | ----------------------- |
+| `SECRET_KEY`              | **Yes**  | Shared secret key Blobscan API JWT authentication. |                         |
+| `BLOBSCAN_API_ENDPOINT`   | No       | Endpoint for the Blobscan API.                     | `http://localhost:3001` |
+| `BEACON_NODE_ENDPOINT`    | No       | A consensus node REST endpoint.                    | `http://localhost:3500` |
+| `EXECUTION_NODE_ENDPOINT` | No       | An execution node RPC endpoint.                    | `http://localhost:8545` |
+| `SENTRY_DSN`              | No       | Sentry client key.                                 |                         |
 
 ## Docker images
 

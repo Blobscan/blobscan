@@ -61,8 +61,7 @@ pnpm dev
 Lastly, create the database schema:
 
 ```shell
-cd packages/db
-pnpm db:push
+pnpm db:generate
 ```
 
 ## Other commands
@@ -74,17 +73,18 @@ be achieved using the following commands:
 
 ```shell
 # Aggregates all blob data since the beginning
-pnpm backfill:overall
+pnpm job:overall
 ```
 
 ```shell
 # Aggregates all blob data for yesterday
-pnpm backfill:daily
+pnpm job:daily
 ```
 
-In case you need to delete delete aggregated metrics:
+In case you need to delete aggregated metrics you can use the stats aggregation cli:
 
 ```shell
-pnpm delete:overall
-pnpm delete:daily
+cd clis/stats-aggregation-cli
+pnpm start daily --delete
+pnpm start overall --delete
 ```

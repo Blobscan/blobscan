@@ -37,6 +37,7 @@ export const navigation = [
       { title: 'Codebase overview', href: '/docs/codebase-overview' },
       { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Indexer', href: '/docs/indexer' },
+      { title: 'Clis', href: '/docs/clis' },
       { title: 'Testing', href: '/docs/testing' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],

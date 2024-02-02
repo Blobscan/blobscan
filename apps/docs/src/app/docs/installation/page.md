@@ -78,6 +78,6 @@ Check out the [blobscan-helm-charts](https://github.com/Blobscan/blobscan-helm-c
 
 Check out [Running locally](/docs/running-locally).
 
-## Cron jobs
+### Cron jobs
 
 Check out [Cronjobs](/docs/cron-jobs).

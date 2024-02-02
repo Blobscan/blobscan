@@ -44,10 +44,10 @@ pnpm install
 
 3. Configure Environment Variables:
 
-Make a copy of the `.env.example` and rename it to `.env`:
+Make a copy of the `.env.test` and rename it to `.env`:
 
 ```bash
-cp .env.example .env
+cp .env.test .env
 ```
 
 Then, adjust the `.env` file as [outlined here](/docs/environment).

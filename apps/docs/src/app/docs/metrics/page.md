@@ -8,7 +8,7 @@ nextjs:
 
 Would you like to see any metric that is not available? Contact us!
 
-Are you an L2? [Add link to feedback form]
+Are you an L2? We would like to hear your feedback [here](https://forms.gle/YwLwz4QtofmL67Qd8).
 
 ---
 

@@ -11,6 +11,8 @@ The architecture of Blobscan has the following components:
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
 - A blob storage manager with support for different storage providers to keep blob data available.
+- A blob propagator for propagating blob data across various storage systems through sandboxed workers.
+- A couple of clis for managing blobscan stats and blob propagation jobs.
 
 {% quick-links %}
 
