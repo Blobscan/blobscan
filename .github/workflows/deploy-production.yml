@@ -12,10 +12,11 @@ jobs:
 
   deploy_prod_goerli:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (${{ matrix.environment }})
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         environment: ["goerli", "sepolia", "holesky"]
-    name: Deploy Blobscan API (${{ matrix.environment }})
     steps:
       - uses: appleboy/ssh-action@v0.0.7
         with:
