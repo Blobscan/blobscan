@@ -2,13 +2,14 @@ name: Deploy staging
 
 on:
   workflow_run:
-    workflows: [CI]
+    workflows: ["CI"]
     branches: ["next"]
     types:
       - completed
 
 jobs:
   deploy_staging:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy Blobscan API (staging)
     runs-on: ubuntu-latest
     environment:
