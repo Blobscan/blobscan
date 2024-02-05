@@ -1,24 +1,24 @@
 import { TRPCError } from "@trpc/server";
 
 import { jwtAuthedProcedure } from "../../procedures";
-import { INDEXER_PATH } from "./common";
+import { BASE_PATH } from "./common";
 import {
-  updateLastSyncedSlotsInputSchema,
-  updateLastSyncedSlotsOutputSchema,
-} from "./updateLastSyncedSlots.schema";
+  updateStateInputSchema,
+  updateStateOutputSchema,
+} from "./updateState.schema";
 
-export const updateLastSyncedSlots = jwtAuthedProcedure
+export const updateState = jwtAuthedProcedure
   .meta({
     openapi: {
       method: "PUT",
-      path: `${INDEXER_PATH}/slot`,
-      tags: ["indexer"],
-      summary: "Update the latest processed slot in the database",
+      path: BASE_PATH,
+      tags: ["blockchain-sync-state"],
+      summary: "Update the blockchain sync state",
       protect: true,
     },
   })
-  .input(updateLastSyncedSlotsInputSchema)
-  .output(updateLastSyncedSlotsOutputSchema)
+  .input(updateStateInputSchema)
+  .output(updateStateOutputSchema)
   .mutation(async ({ ctx, input }) => {
     const lastLowerSyncedSlot = input.lastLowerSyncedSlot;
     const lastUpperSyncedSlot = input.lastUpperSyncedSlot;

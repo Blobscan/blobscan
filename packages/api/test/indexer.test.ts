@@ -12,13 +12,11 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { BlockchainSyncState } from "@blobscan/db";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import { handleReorgedSlotInput } from "../src/routers/indexer/handleReorgedSlot.schema";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
-import type { UpdateLastSyncedSlotsInput } from "../src/routers/indexer/updateLastSyncedSlots.schema";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
 
@@ -39,75 +37,6 @@ describe("Indexer router", async () => {
   afterAll(async () => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
-  });
-
-  describe("getLastSyncedSlots", () => {
-    it("should return the last synced slots", async () => {
-      const result = await nonAuthorizedCaller.indexer.getLastSyncedSlots();
-
-      expect(result).toMatchObject({
-        lastLowerSyncedSlot: 106,
-        lastUpperSyncedSlot: 107,
-      });
-    });
-  });
-
-  describe("updateLastSyncedSlots", () => {
-    describe("when authorized", () => {
-      it("should update last synced slots correctly", async () => {
-        const input: UpdateLastSyncedSlotsInput = {
-          lastLowerSyncedSlot: 104,
-          lastUpperSyncedSlot: 120,
-        };
-
-        await authorizedCaller.indexer.updateLastSyncedSlots(input);
-
-        const result = await nonAuthorizedCaller.indexer.getLastSyncedSlots();
-
-        expect(result).toMatchObject(input);
-      });
-
-      it("should insert last synced slots properly for the first time", async () => {
-        await authorizedContext.prisma.blockchainSyncState.deleteMany();
-
-        const input: UpdateLastSyncedSlotsInput = {
-          lastLowerSyncedSlot: 1,
-          lastUpperSyncedSlot: 5,
-        };
-
-        await authorizedCaller.indexer.updateLastSyncedSlots(input);
-
-        const result =
-          await authorizedContext.prisma.blockchainSyncState.findFirst();
-        const expectedSyncState: BlockchainSyncState = {
-          id: 1,
-          lastFinalizedBlock: 0,
-          lastLowerSyncedSlot: 1,
-          lastUpperSyncedSlot: 5,
-        };
-
-        expect(result).toMatchObject(expectedSyncState);
-      });
-
-      it("should fail when last lower synced slot is greater than last upper synced slot", async () => {
-        const input: UpdateLastSyncedSlotsInput = {
-          lastLowerSyncedSlot: 120,
-          lastUpperSyncedSlot: 104,
-        };
-
-        await expect(
-          authorizedCaller.indexer.updateLastSyncedSlots(input)
-        ).rejects.toThrowErrorMatchingInlineSnapshot(
-          '"Last lower synced slot must be less than or equal to last upper synced slot"'
-        );
-      });
-    });
-
-    unauthorizedRPCCallTest(() =>
-      nonAuthorizedCaller.indexer.updateLastSyncedSlots({
-        lastLowerSyncedSlot: 10,
-      })
-    );
   });
 
   describe("indexData", () => {
