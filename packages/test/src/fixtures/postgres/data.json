@@ -4,7 +4,8 @@
     {
       "id": 1,
       "lastFinalizedBlock": 1004,
-      "lastSlot": 106
+      "lastLowerSyncedSlot": 106,
+      "lastUpperSyncedSlot": 107
     }
   ],
   "blocks": [

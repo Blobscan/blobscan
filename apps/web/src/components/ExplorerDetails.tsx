@@ -26,7 +26,8 @@ function ExplorerDetailsItem({ name, value }: InfoBarItemProps) {
 }
 
 export function ExplorerDetails() {
-  const { data: syncStateData } = api.syncState.getState.useQuery();
+  const { data: syncStateData } =
+    api.syncState.getBlockchainSyncState.useQuery();
 
   return (
     <div className="flex h-4 gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -37,7 +38,11 @@ export function ExplorerDetails() {
       ･
       <ExplorerDetailsItem
         name="Last synced slot"
-        value={syncStateData ? formatNumber(syncStateData.lastSlot) : undefined}
+        value={
+          syncStateData
+            ? formatNumber(syncStateData.lastUpperSyncedSlot ?? 0)
+            : undefined
+        }
       />
     </div>
   );
