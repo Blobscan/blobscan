@@ -1,6 +1,8 @@
 import { t } from "../../trpc-client";
-import { getBlockchainSyncState } from "./getBlockchainSyncState";
+import { getState } from "./getState";
+import { updateState } from "./updateState";
 
 export const blockchainSyncStateRouter = t.router({
-  getBlockchainSyncState,
+  getState,
+  updateState,
 });
