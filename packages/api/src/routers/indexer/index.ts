@@ -1,12 +1,12 @@
 import { t } from "../../trpc-client";
-import { getSlot } from "./getSlot";
+import { getLastSyncedSlots } from "./getLastSyncedSlots";
 import { handleReorgedSlot } from "./handleReorgedSlot";
 import { indexData } from "./indexData";
-import { updateSlot } from "./updateSlot";
+import { updateLastSyncedSlots } from "./updateLastSyncedSlots";
 
 export const indexerRouter = t.router({
-  getSlot,
+  getLastSyncedSlots,
   handleReorgedSlot,
   indexData,
-  updateSlot,
+  updateLastSyncedSlots,
 });

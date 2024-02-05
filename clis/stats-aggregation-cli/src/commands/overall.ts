@@ -94,7 +94,8 @@ async function deleteOverallStats() {
     prisma.blockchainSyncState.upsert({
       create: {
         lastFinalizedBlock: 0,
-        lastSlot: 0,
+        lastLowerSyncedSlot: 0,
+        lastUpperSyncedSlot: 0,
       },
       update: {
         lastFinalizedBlock: 0,
@@ -177,7 +178,6 @@ async function incrementOverallStats({
       prisma.blobOverallStats.increment(blockRange),
       prisma.blockchainSyncState.upsert({
         create: {
-          lastSlot: 0,
           lastFinalizedBlock: batchTo,
         },
         update: {
