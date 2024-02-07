@@ -45,14 +45,12 @@ export const handleReorgedSlot = jwtAuthedProcedure
       return;
     }
 
-    await prisma.transactionFork.createMany({
-      data: reorgedBlocks.flatMap((b) =>
-        b.transactions.map<TransactionFork>((tx) => ({
+    await prisma.transactionFork.upsertMany(
+      reorgedBlocks.flatMap((b) =>
+        b.transactions.map((tx) => ({
           hash: tx.hash,
           blockHash: b.hash,
-          insertedAt: new Date(),
-          updatedAt: new Date(),
         }))
-      ),
-    });
+      )
+    );
   });

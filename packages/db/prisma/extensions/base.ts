@@ -278,6 +278,33 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           `;
         },
       },
+      transactionFork: {
+        upsertMany(txForks: { hash: string; blockHash: string }[]) {
+          if (!txForks.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
+          const formattedValues = txForks
+            .map(({ hash, blockHash }) => [hash, blockHash])
+            .map(
+              (rowColumns) =>
+                Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
+            );
+
+          return prisma.$executeRaw`
+            INSERT INTO transaction_fork (
+              "hash",
+              block_hash,
+              inserted_at,
+              updated_at
+            ) VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("hash", block_hash) DO UPDATE SET
+              updated_at = NOW()
+          `;
+        },
+      },
     },
   })
 );
