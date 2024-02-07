@@ -140,6 +140,7 @@ model TransactionFork {
   transaction Transaction @relation(fields: [hash], references: [hash])
 
   @@id([hash, blockHash])
+  @@map("transaction_fork")
 }
 
 // Block Metrics
