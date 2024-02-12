@@ -16,22 +16,25 @@ export class Context {
   #finalizerQueue: Queue<BlobPropagationJobData>;
   #propagatorFlowProducer: FlowProducer;
 
-  constructor(storages: $Enums.BlobStorage[], connection: ConnectionOptions) {
+  constructor(storages: $Enums.BlobStorage[], redisUri: string) {
     const uniqueStorageNames = [...new Set(storages)];
 
     this.#storageQueues = uniqueStorageNames.map(
       (storageName) =>
+        // TODO: Type of argument is now string
         new Queue(STORAGE_WORKER_NAMES[storageName], {
-          connection,
+          redisUri,
         })
     );
 
+    // TODO: Type of argument is now string
     this.#finalizerQueue = new Queue(FINALIZER_WORKER_NAME, {
-      connection,
+      redisUri,
     });
 
+    // TODO: Type of argument is now string
     this.#propagatorFlowProducer = new FlowProducer({
-      connection,
+      redisUri,
     });
   }
 

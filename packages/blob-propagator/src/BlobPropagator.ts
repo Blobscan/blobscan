@@ -42,17 +42,6 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   removeOnComplete: { count: 1000 },
 };
 
-function isRedisOptions(
-  connection: ConnectionOptions
-): connection is RedisOptions {
-  return (
-    "host" in connection &&
-    "port" in connection &&
-    "password" in connection &&
-    "username" in connection
-  );
-}
-
 export class BlobPropagator {
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
@@ -150,7 +139,7 @@ export class BlobPropagator {
     return [...Object.values(this.storageWorkers), this.finalizerWorker];
   }
 
-  #createBlobPropagationFlowProducer(connection?: ConnectionOptions) {
+  #createBlobPropagationFlowProducer(redisUri?: string) {
     /*
      * Instantiating a new `FlowProducer` appears to create two separate `RedisConnection` instances.
      * This leads to an issue where one instance remains active, or "dangling", after the `FlowProducer` has been closed.
@@ -159,19 +148,8 @@ export class BlobPropagator {
      *
      * See: https://github.com/taskforcesh/bullmq/blob/d7cf6ea60830b69b636648238a51e5f981616d02/src/classes/flow-producer.ts#L111
      */
-    const redisConnection =
-      connection && isRedisOptions(connection)
-        ? new IORedis({
-            host: connection.host,
-            port: connection.port,
-            username: connection.username,
-            password: connection.password,
-            maxRetriesPerRequest: null,
-          })
-        : connection;
-
     const blobPropagationFlowProducer = new FlowProducer({
-      connection: redisConnection,
+      connection: new IORedis(redisUri),
     });
 
     blobPropagationFlowProducer.on("error", (err) => {

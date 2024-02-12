@@ -3,7 +3,6 @@ import { BlobStorage } from "@blobscan/db";
 
 import { Context } from "./Context";
 import { env } from "./env";
-import { redisConnection } from "./utils";
 
 const availableStorages: $Enums.BlobStorage[] = [];
 
@@ -19,4 +18,4 @@ if (env.SWARM_STORAGE_ENABLED) {
   availableStorages.push(BlobStorage.SWARM);
 }
 
-export const context = new Context(availableStorages, redisConnection);
+export const context = new Context(availableStorages, env.REDIS_URI);
