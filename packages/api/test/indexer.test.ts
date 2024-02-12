@@ -15,7 +15,7 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
-import { handleReorgedSlotInput } from "../src/routers/indexer/handleReorgedSlot.schema";
+import type { HandleReorgedSlotInput } from "../src/routers/indexer/handleReorgedSlot.schema";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
@@ -498,7 +498,7 @@ describe("Indexer router", async () => {
 
   describe("handleReorgedSlot", () => {
     describe("when authorized", () => {
-      const input: handleReorgedSlotInput = {
+      const input: HandleReorgedSlotInput = {
         newHeadSlot: 106,
       };
 

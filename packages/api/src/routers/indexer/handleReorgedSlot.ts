@@ -1,5 +1,3 @@
-import { TransactionFork } from "@blobscan/db";
-
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {

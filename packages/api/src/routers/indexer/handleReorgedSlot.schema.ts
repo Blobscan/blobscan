@@ -6,6 +6,6 @@ export const handleReorgedSlotInputSchema = z.object({
 
 export const handleReorgedSlotOutputSchema = z.void();
 
-export type handleReorgedSlotInput = z.infer<
+export type HandleReorgedSlotInput = z.infer<
   typeof handleReorgedSlotInputSchema
 >;
