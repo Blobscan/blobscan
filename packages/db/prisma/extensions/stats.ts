@@ -4,7 +4,12 @@ import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { BlockNumberRange } from "../types";
 import type { RawDatePeriod } from "../utils/dates";
 import { normalizeDailyDatePeriod } from "../utils/dates";
-import { buildRawWhereClause } from "../utils/dates";
+import {
+  buildAvgUpdateExpression,
+  buildRawWhereClause,
+  coalesceToZero,
+  updatedAtField,
+} from "../utils/sql";
 
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("stats");
 
@@ -90,21 +95,31 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             `;
         },
         increment({ from, to }: BlockNumberRange) {
+          const statsTableAlias = Prisma.sql`bos`;
+          const totalBlobsField = Prisma.sql`total_blobs`;
+          const totalUniqueBlobsField = Prisma.sql`total_unique_blobs`;
+          const totalBlobSizeField = Prisma.sql`total_blob_size`;
+          const avgBlobSizeField = Prisma.sql`avg_blob_size`;
+
           return prisma.$executeRaw`
-              INSERT INTO blob_overall_stats AS st (
+              INSERT INTO blob_overall_stats AS ${statsTableAlias} (
                 id,
-                total_blobs,
-                total_unique_blobs,
-                total_blob_size,
-                avg_blob_size,
-                updated_at
+                ${totalBlobsField},
+                ${totalUniqueBlobsField},
+                ${totalBlobSizeField},
+                ${avgBlobSizeField},
+                ${updatedAtField}
               )
               SELECT 
                 1 AS id,
-                COUNT(btx.blob_hash)::INT AS total_blobs,
-                COUNT(DISTINCT CASE WHEN b.first_block_number BETWEEN ${from} AND ${to} THEN b.versioned_hash END)::INT AS total_unique_blobs,
-                SUM(b.size) AS total_blob_size,
-                AVG(b.size)::FLOAT AS avg_blob_size,
+                ${coalesceToZero(
+                  "COUNT(btx.blob_hash)::INT"
+                )} AS ${totalBlobsField},
+                ${coalesceToZero(
+                  `COUNT(DISTINCT CASE WHEN b.first_block_number BETWEEN ${from} AND ${to} THEN b.versioned_hash END)::INT`
+                )} AS total_unique_blobs,
+                ${coalesceToZero("SUM(b.size)")} AS ${totalBlobSizeField},
+                ${coalesceToZero("AVG(b.size)::FLOAT")} AS avg_blob_size,
                 NOW() AS updated_at
               FROM blob b
                 JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
@@ -112,11 +127,15 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 JOIN "block" bck ON bck."number" = tx.block_number
               WHERE bck."number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
-                total_blobs = st.total_blobs + EXCLUDED.total_blobs,
-                total_unique_blobs = st.total_unique_blobs + EXCLUDED.total_unique_blobs,
-                total_blob_size = st.total_blob_size + EXCLUDED.total_blob_size,
-                avg_blob_size = st.avg_blob_size + ((EXCLUDED.avg_blob_size - st.avg_blob_size) / (st.total_blobs + EXCLUDED.total_blobs)),
-                updated_at = EXCLUDED.updated_at
+                ${totalBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalBlobsField}`},
+                ${totalUniqueBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueBlobsField}`},
+                ${totalBlobSizeField} = ${Prisma.sql`${statsTableAlias}.${totalBlobSizeField}`} + ${Prisma.sql`EXCLUDED.${totalBlobSizeField}`},
+                ${avgBlobSizeField} = ${buildAvgUpdateExpression(
+            statsTableAlias,
+            totalBlobsField,
+            avgBlobSizeField
+          )},
+                ${updatedAtField} = ${Prisma.sql`EXCLUDED.${updatedAtField}`}
             `;
         },
       },
@@ -212,42 +231,78 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             `;
         },
         increment({ from, to }: BlockNumberRange) {
+          const statsTableAlias = Prisma.sql`bos`;
+          const totalBlocksField = Prisma.sql`total_blocks`;
+          const totalBlobGasUsedField = Prisma.sql`total_blob_gas_used`;
+          const totalBlobAsCalldataGasUsedField = Prisma.sql`total_blob_as_calldata_gas_used`;
+          const totalBlobFeeField = Prisma.sql`total_blob_fee`;
+          const totalBlobAsCalldataFeeField = Prisma.sql`total_blob_as_calldata_fee`;
+          const avgBlobFeeField = Prisma.sql`avg_blob_fee`;
+          const avgBlobAsCalldataFeeField = Prisma.sql`avg_blob_as_calldata_fee`;
+          const avgBlobGasPriceField = Prisma.sql`avg_blob_gas_price`;
+
           return prisma.$executeRaw`
-              INSERT INTO block_overall_stats AS st (
+              INSERT INTO block_overall_stats AS ${statsTableAlias} (
                 id,
-                total_blocks,
-                total_blob_gas_used,
-                total_blob_as_calldata_gas_used,
-                total_blob_fee,
-                total_blob_as_calldata_fee,
-                avg_blob_fee,
-                avg_blob_as_calldata_fee,
-                avg_blob_gas_price,
+                ${totalBlocksField},
+                ${totalBlobGasUsedField},
+                ${totalBlobAsCalldataGasUsedField},
+                ${totalBlobFeeField},
+                ${totalBlobAsCalldataFeeField},
+                ${avgBlobFeeField},
+                ${avgBlobAsCalldataFeeField},
+                ${avgBlobGasPriceField},
                 updated_at
               )
               SELECT
                 1 as id,
-                COUNT("hash")::INT as total_blocks,
-                SUM(blob_gas_used)::DECIMAL(50,0) as total_blob_gas_used,
-                SUM(blob_as_calldata_gas_used)::DECIMAL(50,0) as total_blob_as_calldata_gas_used,
-                SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_fee,
-                SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
-                AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
-                AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
-                AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
-                NOW() as updated_at
+                ${coalesceToZero(`COUNT("hash")::INT`)} as ${totalBlocksField},
+                ${coalesceToZero(
+                  `SUM(blob_gas_used)::DECIMAL(50,0)`
+                )} as ${totalBlobGasUsedField},
+                ${coalesceToZero(
+                  `SUM(blob_as_calldata_gas_used)::DECIMAL(50,0)`
+                )} as ${totalBlobAsCalldataGasUsedField},
+                ${coalesceToZero(
+                  `SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0)`
+                )} as ${totalBlobFeeField},
+                ${coalesceToZero(
+                  `SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0)`
+                )} as ${totalBlobAsCalldataFeeField},
+                ${coalesceToZero(
+                  `AVG(blob_gas_used * blob_gas_price)::FLOAT`
+                )} as ${avgBlobFeeField},
+                ${coalesceToZero(
+                  `AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT`
+                )} as ${avgBlobAsCalldataFeeField},
+                ${coalesceToZero(
+                  `AVG(blob_gas_price)::FLOAT`
+                )} as ${avgBlobGasPriceField},
+                NOW() as ${updatedAtField}
               FROM "block"
               WHERE "number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
-                total_blocks = st.total_blocks + EXCLUDED.total_blocks,
-                total_blob_gas_used = st.total_blob_gas_used + EXCLUDED.total_blob_gas_used,
-                total_blob_as_calldata_gas_used = st.total_blob_as_calldata_gas_used + EXCLUDED.total_blob_as_calldata_gas_used,
-                total_blob_fee = st.total_blob_fee + EXCLUDED.total_blob_fee,
-                total_blob_as_calldata_fee = st.total_blob_as_calldata_fee + EXCLUDED.total_blob_as_calldata_fee,
-                avg_blob_fee = st.avg_blob_fee + ((EXCLUDED.avg_blob_fee - st.avg_blob_fee) / (st.total_blocks + EXCLUDED.total_blocks)),
-                avg_blob_as_calldata_fee = st.avg_blob_as_calldata_fee + ((EXCLUDED.avg_blob_as_calldata_fee - st.avg_blob_as_calldata_fee) / (st.total_blocks + EXCLUDED.total_blocks)),
-                avg_blob_gas_price = st.avg_blob_gas_price + ((EXCLUDED.avg_blob_gas_price - st.avg_blob_gas_price) / (st.total_blocks + EXCLUDED.total_blocks)),
-                updated_at = EXCLUDED.updated_at
+                ${totalBlocksField} = ${Prisma.sql`${statsTableAlias}.${totalBlocksField}`} + ${Prisma.sql`EXCLUDED.${totalBlocksField}`},
+                ${totalBlobGasUsedField} = ${Prisma.sql`${statsTableAlias}.${totalBlobGasUsedField}`} + ${Prisma.sql`EXCLUDED.${totalBlobGasUsedField}`},
+                ${totalBlobAsCalldataGasUsedField} = ${Prisma.sql`${statsTableAlias}.${totalBlobAsCalldataGasUsedField}`} + ${Prisma.sql`EXCLUDED.${totalBlobAsCalldataGasUsedField}`},
+                ${totalBlobFeeField} = ${Prisma.sql`${statsTableAlias}.${totalBlobFeeField}`} + ${Prisma.sql`EXCLUDED.${totalBlobFeeField}`},
+                ${totalBlobAsCalldataFeeField} = ${Prisma.sql`${statsTableAlias}.${totalBlobAsCalldataFeeField}`} + ${Prisma.sql`EXCLUDED.${totalBlobAsCalldataFeeField}`},
+                ${avgBlobFeeField} = ${buildAvgUpdateExpression(
+            statsTableAlias,
+            totalBlocksField,
+            avgBlobFeeField
+          )},
+                ${avgBlobAsCalldataFeeField} = ${buildAvgUpdateExpression(
+            statsTableAlias,
+            totalBlocksField,
+            avgBlobAsCalldataFeeField
+          )},
+                ${avgBlobGasPriceField} = ${buildAvgUpdateExpression(
+            statsTableAlias,
+            totalBlocksField,
+            avgBlobGasPriceField
+          )},
+                ${updatedAtField} = ${Prisma.sql`EXCLUDED.${updatedAtField}`}
             `;
         },
       },
@@ -321,30 +376,48 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           `;
         },
         increment({ from, to }: BlockNumberRange) {
+          const statsTableAlias = Prisma.sql`tos`;
+          const totalTransactionsField = Prisma.sql`total_transactions`;
+          const totalUniqueReceiversField = Prisma.sql`total_unique_receivers`;
+          const totalUniqueSendersField = Prisma.sql`total_unique_senders`;
+          const avgMaxBlobGasFeeField = Prisma.sql`avg_max_blob_gas_fee`;
+
           return prisma.$executeRaw`
-              INSERT INTO transaction_overall_stats AS st (
+              INSERT INTO transaction_overall_stats AS ${statsTableAlias} (
                 id,
-                total_transactions,
-                total_unique_receivers,
-                total_unique_senders,
-                avg_max_blob_gas_fee,
-                updated_at
+                ${totalTransactionsField},
+                ${totalUniqueReceiversField},
+                ${totalUniqueSendersField},
+                ${avgMaxBlobGasFeeField},
+                ${updatedAtField}
               )
               SELECT
                 1 AS id,
-                COUNT("hash")::INT AS total_transactions,
-                COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT AS total_unique_receivers,
-                COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT AS total_unique_senders,
-                AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
-                NOW() AS updated_at
+                ${coalesceToZero(
+                  'COUNT("hash")::INT'
+                )} AS ${totalTransactionsField},
+                ${coalesceToZero(
+                  `COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT`
+                )} AS ${totalUniqueReceiversField},
+                ${coalesceToZero(
+                  `COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT`
+                )} AS ${totalUniqueSendersField},
+                ${coalesceToZero(
+                  "AVG(max_fee_per_blob_gas)::FLOAT"
+                )} AS ${avgMaxBlobGasFeeField},
+                NOW() AS ${updatedAtField}
               FROM "transaction" tx JOIN "address" faddr ON faddr.address = tx.from_id JOIN "address" taddr ON taddr.address = tx.to_id
               WHERE tx.block_number BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
-                total_transactions = st.total_transactions + EXCLUDED.total_transactions,
-                total_unique_receivers = st.total_unique_receivers + EXCLUDED.total_unique_receivers,
-                total_unique_senders = st.total_unique_senders + EXCLUDED.total_unique_senders,
-                avg_max_blob_gas_fee = st.avg_max_blob_gas_fee + ((EXCLUDED.avg_max_blob_gas_fee - st.avg_max_blob_gas_fee) / (st.total_transactions + EXCLUDED.total_transactions)),
-                updated_at = EXCLUDED.updated_at
+                ${totalTransactionsField} = ${Prisma.sql`${statsTableAlias}.${totalTransactionsField}`} + ${Prisma.sql`EXCLUDED.${totalTransactionsField}`},
+                ${totalUniqueReceiversField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueReceiversField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueReceiversField}`},
+                ${totalUniqueSendersField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueSendersField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueSendersField}`},
+                ${avgMaxBlobGasFeeField} = ${buildAvgUpdateExpression(
+            statsTableAlias,
+            totalTransactionsField,
+            avgMaxBlobGasFeeField
+          )},
+                ${updatedAtField} = ${Prisma.sql`EXCLUDED.${updatedAtField}`}
             `;
         },
       },
