@@ -40,3 +40,7 @@ export function buildAvgUpdateExpression(
     END
   `;
 }
+
+export function coalesceToZero(value: string) {
+  return Prisma.sql`COALESCE(${Prisma.sql([value])}, 0)`;
+}

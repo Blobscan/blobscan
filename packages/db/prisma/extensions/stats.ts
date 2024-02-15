@@ -7,6 +7,7 @@ import { normalizeDailyDatePeriod } from "../utils/dates";
 import {
   buildAvgUpdateExpression,
   buildRawWhereClause,
+  coalesceToZero,
   updatedAtField,
 } from "../utils/sql";
 
@@ -111,10 +112,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               )
               SELECT 
                 1 AS id,
-                COALESCE(COUNT(btx.blob_hash)::INT, 0) AS ${totalBlobsField},
-                COALESCE(COUNT(DISTINCT CASE WHEN b.first_block_number BETWEEN ${from} AND ${to} THEN b.versioned_hash END)::INT, 0) AS total_unique_blobs,
-                COALESCE(SUM(b.size), 0) AS ${totalBlobSizeField},
-                COALESCE(AVG(b.size)::FLOAT, 0) AS avg_blob_size,
+                ${coalesceToZero(
+                  "COUNT(btx.blob_hash)::INT"
+                )} AS ${totalBlobsField},
+                ${coalesceToZero(
+                  `COUNT(DISTINCT CASE WHEN b.first_block_number BETWEEN ${from} AND ${to} THEN b.versioned_hash END)::INT`
+                )} AS total_unique_blobs,
+                ${coalesceToZero("SUM(b.size)")} AS ${totalBlobSizeField},
+                ${coalesceToZero("AVG(b.size)::FLOAT")} AS avg_blob_size,
                 NOW() AS updated_at
               FROM blob b
                 JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
@@ -251,14 +256,28 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               )
               SELECT
                 1 as id,
-                COALESCE(COUNT("hash")::INT, 0) as ${totalBlocksField},
-                COALESCE(SUM(blob_gas_used)::DECIMAL(50,0), 0) as ${totalBlobGasUsedField},
-                COALESCE(SUM(blob_as_calldata_gas_used)::DECIMAL(50,0), 0) as ${totalBlobAsCalldataGasUsedField},
-                COALESCE(SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0), 0) as ${totalBlobFeeField},
-                COALESCE(SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0), 0) as ${totalBlobAsCalldataFeeField},
-                COALESCE(AVG(blob_gas_used * blob_gas_price)::FLOAT, 0) as ${avgBlobFeeField},
-                COALESCE(AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT, 0) as ${avgBlobAsCalldataFeeField},
-                COALESCE(AVG(blob_gas_price)::FLOAT, 0) as ${avgBlobGasPriceField},
+                ${coalesceToZero(`COUNT("hash")::INT`)} as ${totalBlocksField},
+                ${coalesceToZero(
+                  `SUM(blob_gas_used)::DECIMAL(50,0)`
+                )} as ${totalBlobGasUsedField},
+                ${coalesceToZero(
+                  `SUM(blob_as_calldata_gas_used)::DECIMAL(50,0)`
+                )} as ${totalBlobAsCalldataGasUsedField},
+                ${coalesceToZero(
+                  `SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0)`
+                )} as ${totalBlobFeeField},
+                ${coalesceToZero(
+                  `SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0)`
+                )} as ${totalBlobAsCalldataFeeField},
+                ${coalesceToZero(
+                  `AVG(blob_gas_used * blob_gas_price)::FLOAT`
+                )} as ${avgBlobFeeField},
+                ${coalesceToZero(
+                  `AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT`
+                )} as ${avgBlobAsCalldataFeeField},
+                ${coalesceToZero(
+                  `AVG(blob_gas_price)::FLOAT`
+                )} as ${avgBlobGasPriceField},
                 NOW() as ${updatedAtField}
               FROM "block"
               WHERE "number" BETWEEN ${from} AND ${to}
@@ -374,10 +393,18 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               )
               SELECT
                 1 AS id,
-                COALESCE(COUNT("hash")::INT, 0) AS ${totalTransactionsField},
-                COALESCE(COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT, 0) AS ${totalUniqueReceiversField},
-                COALESCE(COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT, 0) AS ${totalUniqueSendersField},
-                COALESCE(AVG(max_fee_per_blob_gas)::FLOAT, 0) AS ${avgMaxBlobGasFeeField},
+                ${coalesceToZero(
+                  'COUNT("hash")::INT'
+                )} AS ${totalTransactionsField},
+                ${coalesceToZero(
+                  `COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT`
+                )} AS ${totalUniqueReceiversField},
+                ${coalesceToZero(
+                  `COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT`
+                )} AS ${totalUniqueSendersField},
+                ${coalesceToZero(
+                  "AVG(max_fee_per_blob_gas)::FLOAT"
+                )} AS ${avgMaxBlobGasFeeField},
                 NOW() AS ${updatedAtField}
               FROM "transaction" tx JOIN "address" faddr ON faddr.address = tx.from_id JOIN "address" taddr ON taddr.address = tx.to_id
               WHERE tx.block_number BETWEEN ${from} AND ${to}
