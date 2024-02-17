@@ -7,7 +7,7 @@ import { prisma } from "@blobscan/db";
 import { env } from "../env";
 import { deleteOptionDef, helpOptionDef } from "../utils";
 
-const DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE = 100_000;
+const PRISMA_BLOCKS_BATCH_SIZE = 2_000_000;
 
 type BeaconFinalizedBlockResponse = {
   data: {
@@ -44,8 +44,8 @@ const overallCommandOptDefs: commandLineUsage.OptionDefinition[] = [
     name: "batchSize",
     alias: "s",
     typeLabel: "{underline size}",
-    description: `Number of blocks to process in a single batch. It defaults to ${DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE}`,
-    defaultValue: DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE,
+    description: `Number of blocks to process in a single batch. It defaults to ${PRISMA_BLOCKS_BATCH_SIZE}`,
+    defaultValue: PRISMA_BLOCKS_BATCH_SIZE,
     type: Number,
   },
 ];
@@ -111,7 +111,7 @@ async function deleteOverallStats() {
 
 async function incrementOverallStats({
   targetBlockId,
-  batchSize = DEFAULT_UNPROCESSED_BLOCKS_BATCH_SIZE,
+  batchSize = PRISMA_BLOCKS_BATCH_SIZE,
 }: {
   targetBlockId: BlockId;
   batchSize?: number;
@@ -158,7 +158,7 @@ async function incrementOverallStats({
 
   if (fromBlockNumber > toBlockNumber) {
     console.log(
-      `Skipping stats aggregation as there are no new finalized blocks (Latest processed finalized block: ${latestProcessedFinalizedBlock})`
+      `Skipping stats aggregation as there are no new finalized blocks (Last processed finalized block: ${latestProcessedFinalizedBlock.toLocaleString()})`
     );
 
     return;
@@ -193,13 +193,17 @@ async function incrementOverallStats({
       console.log(
         `Batch ${
           i + 1
-        }/${batches} processed. Data aggregated from block ${batchFrom} to ${batchTo}`
+        }/${batches} processed. Data aggregated from block ${batchFrom.toLocaleString()} to ${batchTo.toLocaleString()} (${(
+          batchTo - batchFrom
+        ).toLocaleString()} blocks processed).`
       );
     }
   }
 
   console.log(
-    `Overall stats increment operation executed: Data aggregated from block ${fromBlockNumber} to ${toBlockNumber}.`
+    `Overall stats increment operation executed: Data aggregated from block ${fromBlockNumber.toLocaleString()} to ${toBlockNumber.toLocaleString()} (${(
+      toBlockNumber - fromBlockNumber
+    ).toLocaleString()} blocks processed).`
   );
 }
 

@@ -54,7 +54,7 @@ export const BottomBarLayout = () => {
               ·
               <div className="flex items-center gap-2">
                 <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                  Version:
+                  Version
                 </div>
                 <div className="relative">
                   <Link
