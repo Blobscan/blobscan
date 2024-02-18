@@ -123,7 +123,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
 
       - name: Test
-        run: pnpm test
+        run: pnpm coverage
         env:
           POSTGRES_STORAGE_ENABLED: true
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
