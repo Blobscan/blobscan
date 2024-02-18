@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { FlowProducer, Queue, Worker } from "bullmq";
-import type {
-  ConnectionOptions,
-  FlowJob,
-  WorkerOptions,
-  RedisOptions,
-} from "bullmq";
-import IORedis from "ioredis";
+import type { ConnectionOptions, FlowJob, WorkerOptions } from "bullmq";
 
 import type { $Enums } from "@blobscan/db";
 import type { BlobStorage } from "@blobscan/db";
@@ -139,7 +133,7 @@ export class BlobPropagator {
     return [...Object.values(this.storageWorkers), this.finalizerWorker];
   }
 
-  #createBlobPropagationFlowProducer(redisUri?: string) {
+  #createBlobPropagationFlowProducer(connection?: ConnectionOptions) {
     /*
      * Instantiating a new `FlowProducer` appears to create two separate `RedisConnection` instances.
      * This leads to an issue where one instance remains active, or "dangling", after the `FlowProducer` has been closed.
@@ -149,7 +143,7 @@ export class BlobPropagator {
      * See: https://github.com/taskforcesh/bullmq/blob/d7cf6ea60830b69b636648238a51e5f981616d02/src/classes/flow-producer.ts#L111
      */
     const blobPropagationFlowProducer = new FlowProducer({
-      connection: new IORedis(redisUri),
+      connection,
     });
 
     blobPropagationFlowProducer.on("error", (err) => {

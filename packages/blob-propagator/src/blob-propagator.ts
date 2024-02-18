@@ -1,4 +1,4 @@
-import type { RedisOptions } from "bullmq";
+import IORedis from "ioredis";
 
 import { BlobStorage } from "@blobscan/db";
 
@@ -20,9 +20,11 @@ function createBlobPropagator() {
     availableStorages.push(BlobStorage.SWARM);
   }
 
+  const connection = new IORedis(env.REDIS_URI, { maxRetriesPerRequest: null });
+
   return new BlobPropagator(availableStorages, {
     workerOptions: {
-      env.REDIS_URI,
+      connection,
     },
   });
 }

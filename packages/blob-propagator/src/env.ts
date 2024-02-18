@@ -1,7 +1,7 @@
 import {
   booleanSchema,
   createEnv,
-  maskSensitiveData,
+  maskPassword,
   presetEnvOptions,
   z,
 } from "@blobscan/zod";
@@ -25,7 +25,7 @@ export const env = createEnv({
     console.log(
       `Blob propagator configuration: enabled=${
         env.BLOB_PROPAGATOR_ENABLED
-      } redisUri=${env.REDIS_URI}`  // TODO: mask password
+      } redisUri=${maskPassword(env.REDIS_URI)}`
     );
   },
 });
