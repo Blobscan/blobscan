@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Worker } from "bullmq";
+import IORedis from "ioredis";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { BlobPropagationWorker } from "@blobscan/blob-propagator";
 
 import { retry, retryCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
-import { redisConnection } from "../../src/utils";
+import { env } from "../../src/env";
 import {
   processJobsManually,
   argHelpTest,
@@ -27,7 +28,11 @@ describe("Retry command", () => {
 
     storageWorkers = queues.map(
       (queue) =>
-        new Worker(queue.name, undefined, { connection: redisConnection })
+        new Worker(queue.name, undefined, {
+          connection: new IORedis(env.REDIS_URI, {
+            maxRetriesPerRequest: null,
+          }),
+        })
     );
 
     await setUpJobs(queues, jobVersionedHashes);
