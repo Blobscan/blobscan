@@ -34,6 +34,7 @@
     "@blobscan/stats-aggregation-cli": "^0.0.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.20.0",
+    "@next/bundle-analyzer": "^14.1.0",
     "@sentry/node": "^7.64.0",
     "@types/command-line-args": "^5.2.2",
     "@types/command-line-usage": "^5.0.3",
@@ -50,5 +51,11 @@
     "typescript": "^5.2.2",
     "vitest": "^0.34.1",
     "vitest-mock-extended": "^1.2.0"
+  },
+  "nextBundleAnalysis": {
+    "budget": 358400,
+    "budgetPercentIncreaseRed": 20,
+    "minimumChangeThreshold": 0,
+    "showDetails": true
   }
 }

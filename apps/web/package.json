@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "analyze": "ANALYZE=true pnpm with-env next build",
     "build": "pnpm with-env next build",
     "clean": "git clean -xdf .next .turbo node_modules",
     "print-banner": "pnpm with-env ts-node ./src/scripts/print-banner.ts",
