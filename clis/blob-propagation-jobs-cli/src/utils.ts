@@ -9,13 +9,6 @@ import { env } from "./env";
 
 export type Command<R = unknown> = (argv?: string[]) => Promise<R>;
 
-export const redisConnection = {
-  host: env.REDIS_QUEUE_HOST,
-  port: Number(env.REDIS_QUEUE_PORT),
-  password: env.REDIS_QUEUE_PASSWORD,
-  username: env.REDIS_QUEUE_USERNAME,
-};
-
 export const helpOptionDef: commandLineUsage.OptionDefinition = {
   name: "help",
   alias: "h",

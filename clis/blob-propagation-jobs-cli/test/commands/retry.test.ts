@@ -6,7 +6,6 @@ import type { BlobPropagationWorker } from "@blobscan/blob-propagator";
 
 import { retry, retryCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
-import { redisConnection } from "../../src/utils";
 import {
   processJobsManually,
   argHelpTest,
@@ -27,7 +26,7 @@ describe("Retry command", () => {
 
     storageWorkers = queues.map(
       (queue) =>
-        new Worker(queue.name, undefined, { connection: redisConnection })
+        new Worker(queue.name, undefined, { redisUri: env.REDIS_URI })
     );
 
     await setUpJobs(queues, jobVersionedHashes);
