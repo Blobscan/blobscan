@@ -106,7 +106,7 @@ export class Context {
   }
 
   async clearQueues() {
-    await Promise.all((await this.getJobs()).map(j => j.remove()))
+    await Promise.all((await this.getJobs()).map((j) => j.remove()));
   }
 
   close() {
