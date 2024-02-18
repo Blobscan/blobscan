@@ -4,6 +4,8 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/24/solid";
 
+import { env } from "~/env.mjs";
+import EthereumIcon from "~/icons/ethereum.svg";
 import {
   buildBlobStatsRoute,
   buildBlockStatsRoute,
@@ -42,6 +44,11 @@ export const NavMenusSection: React.FC = () => {
         label="Docs"
         icon={<BookOpenIcon />}
         href="https://docs.blobscan.com"
+      />
+      <NavItem
+        label=""
+        icon={<EthereumIcon />}
+        menuItems={JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]")}
       />
     </div>
   );

@@ -27,14 +27,15 @@ These are listed by category:
 
 ## Network
 
-| Variable                        | Description             | Required | Default value           |
-| ------------------------------- | ----------------------- | -------- | ----------------------- |
-| `BEACON_NODE_ENDPOINT`          | Beacon node endpoint    | Yes      | (empty)                 |
-| `EXECUTION_NODE_ENDPOINT`       | Execution node endpoint | Yes      | (empty)                 |
-| `CHAIN_ID`                      | EVM chain id            | Yes      | `1`                     |
-| `NEXT_PUBLIC_NETWORK_NAME`      | Network name            | Yes      | `Ethereum`              |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer URL      | Yes      | `https://etherscan.io`  |
+| Variable                         | Description             | Required | Default value           |
+| -------------------------------- | ----------------------- | -------- | ----------------------- |
+| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint    | Yes      | (empty)                 |
+| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint | Yes      | (empty)                 |
+| `CHAIN_ID`                       | EVM chain id            | Yes      | `1`                     |
+| `NEXT_PUBLIC_NETWORK_NAME`       | Network name            | Yes      | `Ethereum`              |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Supported networks      | No       | (empty)                 |
+| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL      | Yes      | `https://etherscan.io`  |
 
 ## Blob storages
 
