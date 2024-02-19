@@ -45,14 +45,13 @@ export const NavMenusSection: React.FC = () => {
         icon={<BookOpenIcon />}
         href="https://docs.blobscan.com"
       />
-      {!env.NEXT_PUBLIC_SUPPORTED_NETWORKS ||
-        (!env.NEXT_PUBLIC_SUPPORTED_NETWORKS.length && (
-          <NavItem
-            label=""
-            icon={<EthereumIcon />}
-            menuItems={JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]")}
-          />
-        ))}
+      {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
+        <NavItem
+          label="Networks"
+          icon={<EthereumIcon />}
+          menuItems={JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]")}
+        />
+      )}
     </div>
   );
 };
