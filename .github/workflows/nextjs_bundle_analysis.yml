@@ -21,6 +21,18 @@ permissions:
 
 jobs:
   analyze:
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +54,7 @@ jobs:
 
       - name: Build next.js app
         # change this if your site requires a custom build command
-        run: ./node_modules/.bin/next build
+        run: pnpm build
 
       # Here's the first place where next-bundle-analysis' own script is used
       # This step pulls the raw bundle stats for the current bundle
