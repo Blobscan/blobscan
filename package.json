@@ -51,11 +51,5 @@
     "typescript": "^5.2.2",
     "vitest": "^0.34.1",
     "vitest-mock-extended": "^1.2.0"
-  },
-  "nextBundleAnalysis": {
-    "budget": 358400,
-    "budgetPercentIncreaseRed": 20,
-    "minimumChangeThreshold": 0,
-    "showDetails": true
   }
 }
