@@ -75,10 +75,7 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 | Variable                  | Description             | Required | Default value |
 | ------------------------- | ----------------------- | -------- | ------------- |
 | `BLOB_PROPAGATOR_ENABLED` | Enable blob propagation | No       | `false`       |
-| `REDIS_QUEUE_HOST`        | Redis host              | No       | `localhost`   |
-| `REDIS_QUEUE_PORT`        | Redis port              | No       | 6379          |
-| `REDIS_QUEUE_USERNAME`    | Redis username          | No       | (empty)       |
-| `REDIS_QUEUE_PASSWORD`    | Redis password          | No       | (empty)       |
+| `REDIS_URI`               | Redis host              | No       | `redis://localhost:6379/1`   |
 
 ## Indexer
 
