@@ -26,6 +26,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_NETWORK_NAME: z.string().default("Ethereum"),
+    NEXT_PUBLIC_SUPPORTED_NETWORKS: z.string().optional(),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z
       .string()
       .url()
@@ -44,6 +45,7 @@ export const env = createEnv({
     FEEDBACK_WEBHOOK_URL: process.env.FEEDBACK_WEBHOOK_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME,
+    NEXT_PUBLIC_SUPPORTED_NETWORKS: process.env.NEXT_PUBLIC_SUPPORTED_NETWORKS,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA:
