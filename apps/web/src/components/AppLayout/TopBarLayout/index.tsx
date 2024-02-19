@@ -18,7 +18,9 @@ export const TopBarLayout: React.FC = () => {
         </div>
         <div className="flex items-center gap-3">
           <NavMenusSection />
-          <ThemeModeButton />
+          <div className="relative -top-[2px]">
+            <ThemeModeButton />
+          </div>
         </div>
       </nav>
     );
