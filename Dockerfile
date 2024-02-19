@@ -25,7 +25,7 @@ RUN chown node:node . -R
 
 ADD docker-entrypoint.sh /
 USER node
-RUN mkdir -p /tmp/blobscan-blobs
+RUN mkdir -p /tmp/blobscan-blobs && chown node:node /tmp/blobscan-blobs
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["--help"]
