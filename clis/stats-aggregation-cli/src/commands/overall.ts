@@ -93,12 +93,10 @@ async function deleteOverallStats() {
     prisma.transactionOverallStats.deleteMany(),
     prisma.blockchainSyncState.upsert({
       create: {
-        lastFinalizedBlock: 0,
-        lastLowerSyncedSlot: 0,
-        lastUpperSyncedSlot: 0,
+        lastFinalizedBlock: null,
       },
       update: {
-        lastFinalizedBlock: 0,
+        lastFinalizedBlock: null,
       },
       where: {
         id: 1,

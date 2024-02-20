@@ -21,7 +21,7 @@ enum BlobStorage {
 
 model BlockchainSyncState {
   id                  Int  @id @default(autoincrement())
-  lastFinalizedBlock  Int  @map("last_finalized_block")
+  lastFinalizedBlock  Int? @map("last_finalized_block")
   lastLowerSyncedSlot Int? @map("last_lower_synced_slot")
   lastUpperSyncedSlot Int? @map("last_upper_synced_slot")
 

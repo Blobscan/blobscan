@@ -43,7 +43,6 @@ export const updateState = jwtAuthedProcedure
       },
       create: {
         id: 1,
-        lastFinalizedBlock: 0,
         lastLowerSyncedSlot,
         lastUpperSyncedSlot,
       },
