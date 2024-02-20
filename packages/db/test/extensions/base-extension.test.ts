@@ -335,6 +335,7 @@ describe("Base Extension", () => {
       const newRawBlob = {
         versionedHash: "newHash",
         commitment: "newCommitment",
+        proof: "newProof",
         txHash: "txHash001",
         index: 0,
         data: "data001",
@@ -346,6 +347,7 @@ describe("Base Extension", () => {
           {
             versionedHash: "blobHash001",
             commitment: "commitment001",
+            proof: "proof001",
             txHash: "txHash001",
             index: 0,
             data: "data001",
@@ -353,6 +355,7 @@ describe("Base Extension", () => {
           {
             versionedHash: "blobHash002",
             commitment: "commitment002",
+            proof: "proof002",
             txHash: "txHash002",
             index: 0,
             data: "data002",
