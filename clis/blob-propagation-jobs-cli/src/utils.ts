@@ -5,16 +5,7 @@ import { STORAGE_WORKER_NAMES, buildJobId } from "@blobscan/blob-propagator";
 import dayjs from "@blobscan/dayjs";
 import type { $Enums } from "@blobscan/db";
 
-import { env } from "./env";
-
 export type Command<R = unknown> = (argv?: string[]) => Promise<R>;
-
-export const redisConnection = {
-  host: env.REDIS_QUEUE_HOST,
-  port: Number(env.REDIS_QUEUE_PORT),
-  password: env.REDIS_QUEUE_PASSWORD,
-  username: env.REDIS_QUEUE_USERNAME,
-};
 
 export const helpOptionDef: commandLineUsage.OptionDefinition = {
   name: "help",
@@ -52,7 +43,10 @@ export const blobHashOptionDef: commandLineUsage.OptionDefinition = {
   multiple: true,
 };
 
-export const datePeriodOptionDefs: Record<"to" | "from", commandLineUsage.OptionDefinition>  = {
+export const datePeriodOptionDefs: Record<
+  "to" | "from",
+  commandLineUsage.OptionDefinition
+> = {
   from: {
     name: "from",
     alias: "f",
@@ -60,14 +54,14 @@ export const datePeriodOptionDefs: Record<"to" | "from", commandLineUsage.Option
     description: "Date from which execute jobs.",
     type: String,
   },
-  to:  {
+  to: {
     name: "to",
     alias: "t",
     typeLabel: "{underline to}",
     description: "Date to which execute jobs.",
     type: String,
-  }
-}
+  },
+};
 
 export function normalizeQueueName(input: string) {
   if (input.toUpperCase() === "FINALIZER") {

@@ -1,6 +1,7 @@
-import type { ConnectionOptions, JobType } from "bullmq";
+import type { JobType } from "bullmq";
 import { FlowProducer } from "bullmq";
 import { Queue } from "bullmq";
+import IORedis from "ioredis";
 
 import type { BlobPropagationJobData } from "@blobscan/blob-propagator";
 import {
@@ -16,8 +17,9 @@ export class Context {
   #finalizerQueue: Queue<BlobPropagationJobData>;
   #propagatorFlowProducer: FlowProducer;
 
-  constructor(storages: $Enums.BlobStorage[], connection: ConnectionOptions) {
+  constructor(storages: $Enums.BlobStorage[], redisUri: string) {
     const uniqueStorageNames = [...new Set(storages)];
+    const connection = new IORedis(redisUri, { maxRetriesPerRequest: null });
 
     this.#storageQueues = uniqueStorageNames.map(
       (storageName) =>
@@ -106,7 +108,7 @@ export class Context {
   }
 
   async clearQueues() {
-    await Promise.all((await this.getJobs()).map(j => j.remove()))
+    await Promise.all((await this.getJobs()).map((j) => j.remove()));
   }
 
   close() {

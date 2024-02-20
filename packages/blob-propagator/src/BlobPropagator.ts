@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { FlowProducer, Queue, Worker } from "bullmq";
-import type {
-  ConnectionOptions,
-  FlowJob,
-  WorkerOptions,
-  RedisOptions,
-} from "bullmq";
-import IORedis from "ioredis";
+import type { ConnectionOptions, FlowJob, WorkerOptions } from "bullmq";
 
 import type { $Enums } from "@blobscan/db";
 import type { BlobStorage } from "@blobscan/db";
@@ -41,17 +35,6 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   useWorkerThreads: false,
   removeOnComplete: { count: 1000 },
 };
-
-function isRedisOptions(
-  connection: ConnectionOptions
-): connection is RedisOptions {
-  return (
-    "host" in connection &&
-    "port" in connection &&
-    "password" in connection &&
-    "username" in connection
-  );
-}
 
 export class BlobPropagator {
   protected blobPropagationFlowProducer: FlowProducer;
@@ -159,19 +142,8 @@ export class BlobPropagator {
      *
      * See: https://github.com/taskforcesh/bullmq/blob/d7cf6ea60830b69b636648238a51e5f981616d02/src/classes/flow-producer.ts#L111
      */
-    const redisConnection =
-      connection && isRedisOptions(connection)
-        ? new IORedis({
-            host: connection.host,
-            port: connection.port,
-            username: connection.username,
-            password: connection.password,
-            maxRetriesPerRequest: null,
-          })
-        : connection;
-
     const blobPropagationFlowProducer = new FlowProducer({
-      connection: redisConnection,
+      connection,
     });
 
     blobPropagationFlowProducer.on("error", (err) => {

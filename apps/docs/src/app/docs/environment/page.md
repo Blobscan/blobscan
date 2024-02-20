@@ -27,14 +27,15 @@ These are listed by category:
 
 ## Network
 
-| Variable                        | Description             | Required | Default value           |
-| ------------------------------- | ----------------------- | -------- | ----------------------- |
-| `BEACON_NODE_ENDPOINT`          | Beacon node endpoint    | Yes      | (empty)                 |
-| `EXECUTION_NODE_ENDPOINT`       | Execution node endpoint | Yes      | (empty)                 |
-| `CHAIN_ID`                      | EVM chain id            | Yes      | `1`                     |
-| `NEXT_PUBLIC_NETWORK_NAME`      | Network name            | Yes      | `Ethereum`              |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer URL      | Yes      | `https://etherscan.io`  |
+| Variable                         | Description             | Required | Default value           |
+| -------------------------------- | ----------------------- | -------- | ----------------------- |
+| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint    | Yes      | (empty)                 |
+| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint | Yes      | (empty)                 |
+| `CHAIN_ID`                       | EVM chain id            | Yes      | `1`                     |
+| `NEXT_PUBLIC_NETWORK_NAME`       | Network name            | Yes      | `Ethereum`              |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Supported networks      | No       | (empty)                 |
+| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL      | Yes      | `https://etherscan.io`  |
 
 ## Blob storages
 
@@ -75,10 +76,7 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 | Variable                  | Description             | Required | Default value |
 | ------------------------- | ----------------------- | -------- | ------------- |
 | `BLOB_PROPAGATOR_ENABLED` | Enable blob propagation | No       | `false`       |
-| `REDIS_QUEUE_HOST`        | Redis host              | No       | `localhost`   |
-| `REDIS_QUEUE_PORT`        | Redis port              | No       | 6379          |
-| `REDIS_QUEUE_USERNAME`    | Redis username          | No       | (empty)       |
-| `REDIS_QUEUE_PASSWORD`    | Redis password          | No       | (empty)       |
+| `REDIS_URI`               | Redis host              | No       | `redis://localhost:6379/1`   |
 
 ## Indexer
 
