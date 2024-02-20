@@ -15,6 +15,11 @@ permissions:
   actions: read # for fetching base branch bundle stats
   pull-requests: write # for comments
 
+env:
+  FORCE_COLOR: 3
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
 jobs:
   analyze:
     services:
@@ -36,23 +41,9 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
-      - name: Restore next build
-        uses: actions/cache@v3
-        id: restore-build-cache
-        env:
-          cache-name: cache-next-build
-        with:
-          # if you use a custom build directory, replace all instances of `.next` in this file with your build directory
-          # ex: if your app builds to `dist`, replace `.next` with `dist`
-          path: apps/web/.next/cache
-          # change this if you prefer a more strict cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
-
       - name: Build next.js app
         run: pnpm build
 
-      # Here's the first place where next-bundle-analysis' own script is used
-      # This step pulls the raw bundle stats for the current bundle
       - name: Analyze bundle
         run: |
           cd apps/web
@@ -65,26 +56,11 @@ jobs:
           path: apps/web/.next/analyze/__bundle_analysis.json
 
       - name: Download base branch bundle stats
-        uses: dawidd6/action-download-artifact@v2
-        if: success()
-        with:
-          workflow: nextjs-bundle-analysis.yml
-          branch: ${{ github.event.pull_request.base.ref }}
-          path: apps/web/.next/analyze/base
+        if: success() && github.event.number
+        run: bash ./scripts/github/download_bundle_analyzer_artifact.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # And here's the second place - this runs after we have both the current and
-      # base branch bundle stats, and will compare them to determine what changed.
-      # There are two configurable arguments that come from package.json:
-      #
-      # - budget: optional, set a budget (bytes) against which size changes are measured
-      #           it's set to 350kb here by default, as informed by the following piece:
-      #           https://infrequently.org/2021/03/the-performance-inequality-gap/
-      #
-      # - red-status-percentage: sets the percent size increase where you get a red
-      #                          status indicator, defaults to 20%
-      #
-      # Either of these arguments can be changed or removed by editing the `nextBundleAnalysis`
-      # entry in your package.json file.
       - name: Compare with base branch bundle
         if: success() && github.event.number
         run: |
@@ -101,26 +77,8 @@ jobs:
           echo "$(cat ./apps/web/.next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
           echo EOF >> $GITHUB_OUTPUT
 
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        if: success() && github.event.number
-        id: fc
+      - name: Comment
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          issue-number: ${{ github.event.number }}
-          body-includes: "<!-- __NEXTJS_BUNDLE -->"
-
-      - name: Create Comment
-        uses: peter-evans/create-or-update-comment@v2
-        if: success() && github.event.number && steps.fc.outputs.comment-id == 0
-        with:
-          issue-number: ${{ github.event.number }}
-          body: ${{ steps.get-comment-body.outputs.body }}
-
-      - name: Update Comment
-        uses: peter-evans/create-or-update-comment@v2
-        if: success() && github.event.number && steps.fc.outputs.comment-id != 0
-        with:
-          issue-number: ${{ github.event.number }}
-          body: ${{ steps.get-comment-body.outputs.body }}
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          edit-mode: replace
+          header: next-bundle-analysis
+          message: ${{ steps.get-comment-body.outputs.body }}
