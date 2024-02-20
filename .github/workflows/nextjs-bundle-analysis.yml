@@ -49,7 +49,7 @@ jobs:
 
       - name: Download base branch bundle stats
         if: success() && github.event.number
-        run: bash ./scripts/github/download_bundle_analyzer_artifact.sh
+        run: bash ../../scripts/github/download_bundle_analyzer_artifact.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
