@@ -10,6 +10,10 @@ on:
       - next
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: apps/web
+
 permissions:
   contents: read # for checkout repository
   actions: read # for fetching base branch bundle stats
@@ -22,18 +26,6 @@ env:
 
 jobs:
   analyze:
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,18 +34,19 @@ jobs:
         uses: ./tooling/github/setup
 
       - name: Build next.js app
-        run: pnpm build
+        run: |
+          cd ../../
+          prisma generate --schema packages/db/prisma/schema.prisma
+          turbo run build --filter=web
 
       - name: Analyze bundle
-        run: |
-          cd apps/web
-          npx -p nextjs-bundle-analysis report
+        run: npx -p nextjs-bundle-analysis report
 
       - name: Upload bundle
         uses: actions/upload-artifact@v3
         with:
           name: bundle
-          path: apps/web/.next/analyze/__bundle_analysis.json
+          path: .next/analyze/__bundle_analysis.json
 
       - name: Download base branch bundle stats
         if: success() && github.event.number
@@ -63,9 +56,7 @@ jobs:
 
       - name: Compare with base branch bundle
         if: success() && github.event.number
-        run: |
-          cd apps/web
-          ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
+        run: ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
 
       - name: Get Comment Body
         id: get-comment-body
@@ -74,7 +65,7 @@ jobs:
         run: |
           cd apps/web
           echo "body<<EOF" >> $GITHUB_OUTPUT
-          echo "$(cat ./apps/web/.next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
+          echo "$(cat .next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
           echo EOF >> $GITHUB_OUTPUT
 
       - name: Comment

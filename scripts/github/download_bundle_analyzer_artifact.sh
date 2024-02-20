@@ -5,7 +5,7 @@ ORG="Blobscan"
 REPO="blobscan"
 WORKFLOW="nextjs-bundle-analysis.yml"
 ARTIFACT_NAME="bundle"
-DESTINATION="apps/web/.next/analyze/base"
+DESTINATION=".next/analyze/base"
 BASE_BRANCH="next"
 
 ARTIFACTS_URL=$(
