@@ -36,7 +36,6 @@ jobs:
       - name: Build next.js app
         run: |
           cd ../../
-          prisma generate --schema packages/db/prisma/schema.prisma
           turbo run build --filter=web
 
       - name: Analyze bundle
