@@ -1,4 +1,4 @@
-import { Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type { FC, ReactNode } from "react";
 import Link from "next/link";
 import { Popover, Transition } from "@headlessui/react";
@@ -66,8 +66,23 @@ export const NavItem: FC<NavItemProps> = function ({
   href,
 }) {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [popoverAlignment, setPopoverAlignment] = useState("left-0");
   const isHovered = useHover(popoverRef);
   const hasItems = menuItems && !!menuItems.length;
+
+  useEffect(() => {
+    if (popoverRef.current && hasItems && isHovered) {
+      const popoverRect = popoverRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+
+      // Check if the popover would overflow the right edge of the viewport
+      if (popoverRect.right + 150 > viewportWidth) {
+        setPopoverAlignment("right-0");
+      } else {
+        setPopoverAlignment("left-0");
+      }
+    }
+  }, [isHovered, hasItems]);
 
   if (href && !hasItems) {
     return (
@@ -116,7 +131,10 @@ export const NavItem: FC<NavItemProps> = function ({
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
-                <Popover.Panel className="absolute top-8 z-10 w-44" static>
+                <Popover.Panel
+                  className={`${popoverAlignment} absolute top-8 z-10 w-44`}
+                  static
+                >
                   <div className="rounded-b-lg border-t-4 border-t-primary-400 bg-surface-light text-contentSecondary-light shadow-xl  shadow-primary-400/30 dark:border-t-primary-400 dark:bg-surface-dark dark:text-contentSecondary-dark  dark:shadow-lg dark:shadow-primary-800/20">
                     <div className="flex flex-col flex-nowrap gap-1">
                       {menuItems.map((item, index) => (

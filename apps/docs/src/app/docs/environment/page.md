@@ -12,6 +12,7 @@ These are listed by category:
 - [General](#general)
 - [Network](#network)
 - [Blob storages](#blob-storages)
+- [Blob propagator](#blob-propagator)
 - [Indexer](#indexer)
 - [Telemetry](#telemetry)
 
@@ -26,14 +27,15 @@ These are listed by category:
 
 ## Network
 
-| Variable                        | Description             | Required | Default value           |
-| ------------------------------- | ----------------------- | -------- | ----------------------- |
-| `BEACON_NODE_ENDPOINT`          | Beacon node endpoint    | Yes      | `http://localhost:3500` |
-| `EXECUTION_NODE_ENDPOINT`       | Execution node endpoint | Yes      | (empty)                 |
-| `CHAIN_ID`                      | EVM chain id            | Yes      | `1`                     |
-| `NEXT_PUBLIC_NETWORK_NAME`      | Network name            | Yes      | `Ethereum`              |
-| `NEXT_PUBLIC_BEACON_BASE_URL`   | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL` | Block explorer URL      | Yes      | `https://etherscan.io`  |
+| Variable                         | Description             | Required | Default value           |
+| -------------------------------- | ----------------------- | -------- | ----------------------- |
+| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint    | Yes      | (empty)                 |
+| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint | Yes      | (empty)                 |
+| `CHAIN_ID`                       | EVM chain id            | Yes      | `1`                     |
+| `NEXT_PUBLIC_NETWORK_NAME`       | Network name            | Yes      | `Ethereum`              |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Supported networks      | No       | (empty)                 |
+| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL     | Yes      | `https://beaconcha.in/` |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL      | Yes      | `https://etherscan.io`  |
 
 ## Blob storages
 
@@ -63,11 +65,18 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 **Ethereum Swarm**
 
-| Variable                | Description          | Required | Default value           |
-| ----------------------- | -------------------- | -------- | ----------------------- |
-| `SWARM_STORAGE_ENABLED` | Store blobs in Swarm | No       | `false`                 |
-| `BEE_ENDPOINT`          | Bee endpoint         | No       | `http://localhost:1633` |
-| `BEE_DEBUG_ENDPOINT`    | Bee debug endpoint   | No       | `http://localhost:1635` |
+| Variable                | Description          | Required | Default value |
+| ----------------------- | -------------------- | -------- | ------------- |
+| `SWARM_STORAGE_ENABLED` | Store blobs in Swarm | No       | `false`       |
+| `BEE_ENDPOINT`          | Bee endpoint         | No       | (empty)       |
+| `BEE_DEBUG_ENDPOINT`    | Bee debug endpoint   | No       | (empty)       |
+
+## Blob propagator
+
+| Variable                  | Description             | Required | Default value |
+| ------------------------- | ----------------------- | -------- | ------------- |
+| `BLOB_PROPAGATOR_ENABLED` | Enable blob propagation | No       | `false`       |
+| `REDIS_URI`               | Redis host              | No       | `redis://localhost:6379/1`   |
 
 ## Indexer
 
@@ -81,7 +90,7 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 | Variable                      | Description                                                                     | Required | Default value |
 | ----------------------------- | ------------------------------------------------------------------------------- | -------- | ------------- |
-| `METRICS_ENABLED`             | Expose the /metrics endpoint                                                    | No       | `true`        |
+| `METRICS_ENABLED`             | Expose the /metrics endpoint                                                    | No       | `false`       |
 | `TRACES_ENABLED`              | Enable instrumentation of functions and sending traces to a collector           | No       | `false`       |
 | `OTLP_AUTH_USERNAME`          | Username for basic authentication. E.g. Grafana Cloud ID                        | No       | (empty)       |
 | `OTLP_AUTH_PASSWORD`          | Password for basic authentication. E.g. Grafana Cloud Token                     | No       | (empty)       |

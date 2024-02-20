@@ -3,8 +3,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     coverage: {
-      enabled: true,
-      reporter: ["html"],
+      reporter: ["text", "json", "html"],
     },
     onConsoleLog(log) {
       if (log.includes("prisma:query")) return false;

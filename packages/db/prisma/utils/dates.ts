@@ -1,5 +1,3 @@
-import { Prisma } from "@prisma/client";
-
 import dayjs from "@blobscan/dayjs";
 
 export type RawDate = string | Date | dayjs.Dayjs;
@@ -41,23 +39,4 @@ export function normalizeDailyDatePeriod(
   }
 
   return normalizedDatePeriod;
-}
-
-export function buildRawWhereClause(
-  dateField: Prisma.Sql,
-  { from, to }: DatePeriod
-): Prisma.Sql {
-  if (from && to) {
-    return Prisma.sql`WHERE ${dateField} BETWEEN ${from}::TIMESTAMP AND ${to}::TIMESTAMP`;
-  } else if (from) {
-    return Prisma.sql`WHERE ${dateField} >= ${from}::TIMESTAMP`;
-  } else if (to) {
-    return Prisma.sql`WHERE ${dateField} < ${to}::TIMESTAMP`;
-  }
-
-  return Prisma.empty;
-}
-
-export function buildWhereClause(dateField: string, { from, to }: DatePeriod) {
-  return { [dateField]: { gte: from, lte: to } };
 }

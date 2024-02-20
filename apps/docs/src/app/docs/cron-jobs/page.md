@@ -17,8 +17,8 @@ crontab -e
 Then add the following lines (adjust them to your case):
 
 ```shell
-5	    0	*	*	*	cd $HOME/blobscan && pnpm stats daily >> $HOME/cron.log
-*/15 	* 	* 	* 	*	cd $HOME/blobscan && pnpm stats overall >> $HOME/cron.log
+5	    0	*	*	*	cd $HOME/blobscan && pnpm job:daily >> $HOME/cron.log
+*/15 	* 	* 	* 	*	cd $HOME/blobscan && pnpm job:overall >> $HOME/cron.log
 ```
 
 ## Docker
@@ -26,6 +26,6 @@ Then add the following lines (adjust them to your case):
 When using docker, simply prefix pnpm with `docker compose exec api`:
 
 ```shell
-5	    0	*	*	*	cd $HOME/blobscan && docker compose exec api pnpm stats daily >> $HOME/cron.log
-*/15 	* 	* 	* 	*	cd $HOME/blobscan && docker compose exec api pnpm stats overall >> $HOME/cron.log
+5	    0	*	*	*	cd $HOME/blobscan && docker compose exec api pnpm job:daily >> $HOME/cron.log
+*/15 	* 	* 	* 	*	cd $HOME/blobscan && docker compose exec api pnpm job:overall >> $HOME/cron.log
 ```

@@ -52,9 +52,9 @@ export const BottomBarLayout = () => {
           {env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA && (
             <>
               ·
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                  Version
+                  Version:
                 </div>
                 <div className="relative">
                   <Link

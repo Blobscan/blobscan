@@ -41,7 +41,7 @@ describe("PostgresStorage", () => {
       );
 
       await expect(storage.getBlob(BLOB_HASH)).rejects.toMatchInlineSnapshot(
-        '[NotFoundError: No BlobData found]'
+        "[NotFoundError: No BlobData found]"
       );
     });
   });

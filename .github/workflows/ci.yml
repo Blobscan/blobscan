@@ -123,10 +123,16 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
 
       - name: Test
-        run: pnpm test
+        run: pnpm coverage
         env:
           POSTGRES_STORAGE_ENABLED: true
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Blobscan/blobscan
 
   release_docker:
     if: github.ref_name == 'next' || github.ref_name == 'master'

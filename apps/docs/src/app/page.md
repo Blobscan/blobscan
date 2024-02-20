@@ -2,7 +2,8 @@
 title: Welcome to Blobscan
 ---
 
-Blobscan is a blockchain explorer for those [EIP-4844](https://www.eip4844.com) blobs, providing the necessary infrastructure to scale Ethereum.
+Blobscan is a blockchain explorer for [EIP-4844](https://www.eip4844.com) blobs.
+This standard provides a new type of transaction that will help scaling Ethereum.
 
 The architecture of Blobscan has the following components:
 
@@ -10,6 +11,8 @@ The architecture of Blobscan has the following components:
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
 - A blob storage manager with support for different storage providers to keep blob data available.
+- A blob propagator for propagating blob data across various storage systems through sandboxed workers.
+- A couple of clis for managing blobscan stats and blob propagation jobs.
 
 {% quick-links %}
 

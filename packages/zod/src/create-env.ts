@@ -37,3 +37,9 @@ export const presetEnvOptions = {
 export function maskSensitiveData(sensitiveData: string | undefined) {
   return sensitiveData?.replace(/./g, "*");
 }
+
+export function maskPassword(uri: string | undefined) {
+  const regex = /:\/\/(.*):.*@/;
+
+  return uri?.replace(regex, (_, username) => `://${username}:****@`);
+}
