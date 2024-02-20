@@ -142,6 +142,7 @@ export function createDBBlobs({
       return {
         versionedHash: blob.versionedHash,
         commitment: blob.commitment,
+        proof: blob.proof,
         size: calculateBlobSize(blob.data),
         firstBlockNumber: block.number,
       };

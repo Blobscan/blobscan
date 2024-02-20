@@ -30,6 +30,7 @@ type FullTransaction = {
     index: number;
     blob: {
       commitment: string;
+      proof: string;
       size: number;
     };
   }[];
@@ -53,6 +54,7 @@ export const fullTransactionSelect =
         blob: {
           select: {
             commitment: true,
+            proof: true,
             size: true,
           },
         },

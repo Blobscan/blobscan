@@ -13,7 +13,7 @@ type BlobCardProps = Partial<{
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blob: { versionedHash, commitment, size } = {},
+  blob: { versionedHash, commitment, proof, size } = {},
 }) => {
   return (
     <SurfaceCardBase>

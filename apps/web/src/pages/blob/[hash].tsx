@@ -84,6 +84,7 @@ const Blob: NextPage = function () {
     detailsFields.push(
       { name: "Versioned Hash", value: blob.versionedHash },
       { name: "Commitment", value: blob.commitment },
+      { name: "Proof", value: blob.proof },
       { name: "Size", value: formatBytes(blob.size) }
     );
 

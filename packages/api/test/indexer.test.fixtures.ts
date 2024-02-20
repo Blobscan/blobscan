@@ -29,6 +29,7 @@ export const INPUT = {
     {
       versionedHash: "blobHash999",
       commitment: "commitment999",
+      proof: "proof999",
       data: "0x1234abcdeff123456789ab",
       txHash: "txHash999",
       index: 0,
@@ -36,6 +37,7 @@ export const INPUT = {
     {
       versionedHash: "blobHash1000",
       commitment: "commitment1000",
+      proof: "proof1000",
       data: "0x34567890abcdef1234567890abcdef",
       txHash: "txHash1000",
       index: 0,
@@ -43,6 +45,7 @@ export const INPUT = {
     {
       versionedHash: "blobHash1001",
       commitment: "commitment1001",
+      proof: "proof1001",
       data: "0x34567890abcdef1234567890abcdef1234567890abcdef",
       txHash: "txHash1000",
       index: 1,
@@ -73,6 +76,7 @@ export const INPUT_WITH_DUPLICATED_BLOBS = {
     {
       versionedHash: "blobHash2000",
       commitment: "commitment2000",
+      proof: "proof2000",
       data: "0x1234abcdeff123456789ab34223a4b2c2ed",
       txHash: "txHash2002",
       index: 0,
@@ -80,6 +84,7 @@ export const INPUT_WITH_DUPLICATED_BLOBS = {
     {
       versionedHash: "blobHash2000",
       commitment: "commitment2000",
+      proof: "proof2000",
       data: "0x1234abcdeff123456789ab34223a4b2c2ed",
       txHash: "txHash2002",
       index: 1,
@@ -87,6 +92,7 @@ export const INPUT_WITH_DUPLICATED_BLOBS = {
     {
       versionedHash: "blobHash2000",
       commitment: "commitment2000",
+      proof: "proof2000",
       data: "0x1234abcdeff123456789ab34223a4b2c2ed",
       txHash: "txHash2002",
       index: 2,
