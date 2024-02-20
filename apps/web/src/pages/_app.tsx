@@ -14,6 +14,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import AppLayout from "~/components/AppLayout/AppLayout";
 import { FeedbackWidget } from "~/components/FeedbackWidget";
 import { api } from "~/api-client";
+import { env } from "~/env.mjs";
 import { useIsMounted } from "~/hooks/useIsMounted";
 
 function App({ Component, pageProps }: NextAppProps) {
@@ -41,7 +42,7 @@ function App({ Component, pageProps }: NextAppProps) {
         <Component {...pageProps} />
       </AppLayout>
       <FeedbackWidget />
-      <Analytics />
+      {env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED && <Analytics />}
     </SkeletonTheme>
   );
 }
