@@ -8,15 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@blobscan/dayjs':
-        specifier: ^0.0.1
-        version: link:packages/dayjs
       '@blobscan/eslint-config':
         specifier: ^0.0.1
         version: link:tooling/eslint
-      '@blobscan/stats-aggregation-cli':
-        specifier: ^0.0.1
-        version: link:clis/stats-aggregation-cli
       '@blobscan/svgo-config':
         specifier: ^0.0.1
         version: link:tooling/svgo
@@ -350,6 +344,9 @@ importers:
       '@blobscan/blob-propagator':
         specifier: ^0.0.1
         version: link:../../packages/blob-propagator
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../../packages/dayjs
       '@blobscan/db':
         specifier: ^0.0.1
         version: link:../../packages/db
