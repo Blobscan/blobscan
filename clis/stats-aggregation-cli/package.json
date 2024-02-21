@@ -22,11 +22,6 @@
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1"
   },
-  "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/test": "^0.0.1",
-    "@blobscan/tsconfig": "^0.0.1"
-  },
   "eslintConfig": {
     "root": true,
     "extends": [

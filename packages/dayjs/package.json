@@ -13,10 +13,6 @@
   "dependencies": {
     "dayjs": "^1.11.7"
   },
-  "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/tsconfig": "^0.0.1"
-  },
   "eslintConfig": {
     "root": true,
     "extends": [

@@ -23,11 +23,6 @@
     "bullmq": "^4.13.2",
     "ioredis": "^5.3.2"
   },
-  "devDependencies": {
-    "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/test": "^0.0.1",
-    "@blobscan/tsconfig": "^0.0.1"
-  },
   "eslintConfig": {
     "root": true,
     "extends": [

@@ -8,6 +8,8 @@
   "packageManager": "pnpm@8.6.12",
   "scripts": {
     "build": "turbo build",
+    "changeset:release": "pnpm build && changeset publish",
+    "changeset:version": "changeset version && pnpm install --lockfile-only",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
     "db:generate": "turbo db:generate",
@@ -30,8 +32,12 @@
     "validate": "turbo lint type-check && manypkg check && pnpm test"
   },
   "dependencies": {
-    "@blobscan/dayjs": "^0.0.1",
-    "@blobscan/stats-aggregation-cli": "^0.0.1",
+    "@blobscan/eslint-config": "^0.0.1",
+    "@blobscan/svgo-config": "^0.0.1",
+    "@blobscan/tailwind-config": "^0.0.1",
+    "@blobscan/test": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1",
+    "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.20.0",
     "@next/bundle-analyzer": "^14.1.0",
