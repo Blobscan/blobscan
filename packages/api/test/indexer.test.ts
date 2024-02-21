@@ -12,12 +12,12 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { omitDBTimestampFields } from "@blobscan/test";
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
+import type { HandleReorgedSlotInput } from "../src/routers/indexer/handleReorgedSlot.schema";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
-import type { UpdateSlotInput } from "../src/routers/indexer/updateSlot.schema";
-import { createTestContext } from "./helpers";
+import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
 
 describe("Indexer router", async () => {
@@ -39,55 +39,6 @@ describe("Indexer router", async () => {
     vi.unstubAllEnvs();
   });
 
-  describe("getSlot", () => {
-    it("should return the latest indexed slot", async () => {
-      const result = await nonAuthorizedCaller.indexer.getSlot();
-
-      expect(result).toMatchObject({ slot: 106 });
-    });
-  });
-
-  describe("updateSlot", () => {
-    describe("when authorized", () => {
-      it("should update latest slot correctly", async () => {
-        const input: UpdateSlotInput = {
-          slot: 110,
-        };
-
-        await authorizedCaller.indexer.updateSlot(input);
-
-        const result = await nonAuthorizedCaller.indexer.getSlot();
-
-        expect(result).toMatchObject({ slot: 110 });
-      });
-
-      it("should insert slot properly for the first time", async () => {
-        await authorizedContext.prisma.blockchainSyncState.deleteMany();
-
-        const input: UpdateSlotInput = {
-          slot: 1,
-        };
-
-        await authorizedCaller.indexer.updateSlot(input);
-
-        const result =
-          await authorizedContext.prisma.blockchainSyncState.findFirst();
-
-        expect(result).toMatchObject({
-          id: 1,
-          lastSlot: 1,
-          lastFinalizedBlock: 0,
-        });
-      });
-    });
-
-    it("should fail when calling procedure without auth", async () => {
-      await expect(
-        nonAuthorizedCaller.indexer.updateSlot({ slot: 10 })
-      ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
-    });
-  });
-
   describe("indexData", () => {
     describe("when authorized", () => {
       beforeEach(async () => {
@@ -98,7 +49,7 @@ describe("Indexer router", async () => {
         const indexedBlock = await authorizedContext.prisma.block
           .findUnique({
             where: {
-              number: INPUT.block.number,
+              hash: INPUT.block.hash,
             },
           })
           .then((res) => (res ? omitDBTimestampFields(res) : res));
@@ -125,7 +76,7 @@ describe("Indexer router", async () => {
           {
             "blobGasUsed": "10000",
             "excessBlobGas": "5000",
-            "hash": "blockHash999",
+            "hash": "blockHash2010",
             "number": 2010,
             "slot": 130,
             "timestamp": 2023-09-01T13:50:21.000Z,
@@ -137,7 +88,7 @@ describe("Indexer router", async () => {
         const indexedTxs = await authorizedContext.prisma.transaction
           .findMany({
             where: {
-              blockNumber: INPUT.block.number,
+              blockHash: INPUT.block.hash,
             },
             orderBy: {
               hash: "asc",
@@ -164,7 +115,7 @@ describe("Indexer router", async () => {
         expect(remainingParams).toMatchInlineSnapshot(`
           [
             {
-              "blockNumber": 2010,
+              "blockHash": "blockHash2010",
               "fromId": "address7",
               "gasPrice": "3000000",
               "hash": "txHash1000",
@@ -172,7 +123,7 @@ describe("Indexer router", async () => {
               "toId": "address2",
             },
             {
-              "blockNumber": 2010,
+              "blockHash": "blockHash2010",
               "fromId": "address9",
               "gasPrice": "10000",
               "hash": "txHash999",
@@ -543,5 +494,51 @@ describe("Indexer router", async () => {
         nonAuthorizedCaller.indexer.indexData(INPUT)
       ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
     });
+  });
+
+  describe("handleReorgedSlot", () => {
+    describe("when authorized", () => {
+      const input: HandleReorgedSlotInput = {
+        newHeadSlot: 106,
+      };
+
+      it("should mark the transactions contained in the blocks with a slot greater than the new head slot as reorged", async () => {
+        const expectedTransactionForks = fixtures.txs
+          .filter(({ blockHash }) => {
+            const block = fixtures.blocks.find(
+              ({ hash }) => hash === blockHash
+            );
+
+            return block?.slot && block.slot > input.newHeadSlot;
+          })
+          .map(({ hash, blockHash }) => ({
+            hash,
+            blockHash,
+          }));
+
+        await authorizedCaller.indexer.handleReorgedSlot(input);
+
+        const transactionForks = await authorizedContext.prisma.transactionFork
+          .findMany()
+          .then((txForks) =>
+            txForks.map((txFork) => omitDBTimestampFields(txFork))
+          );
+
+        expect(transactionForks).toEqual(expectedTransactionForks);
+      });
+
+      it("should not mark any block when current head slot is given", async () => {
+        await authorizedCaller.indexer.handleReorgedSlot({ newHeadSlot: 108 });
+
+        const transactionForks =
+          await authorizedContext.prisma.transactionFork.findMany();
+
+        expect(transactionForks).toEqual([]);
+      });
+    });
+
+    unauthorizedRPCCallTest(() =>
+      nonAuthorizedCaller.indexer.handleReorgedSlot({ newHeadSlot: 1000 })
+    );
   });
 });

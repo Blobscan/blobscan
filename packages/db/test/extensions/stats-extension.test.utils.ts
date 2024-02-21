@@ -50,7 +50,7 @@ export function getDailyTransactions(datePeriod: DatePeriod) {
   );
 
   return fixtures.txs.filter((tx) =>
-    dailyBlocks.find((block) => block.number === tx.blockNumber)
+    dailyBlocks.find((block) => block.hash === tx.blockHash)
   );
 }
 

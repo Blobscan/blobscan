@@ -244,13 +244,13 @@ const Home: NextPage = () => {
                       .fill(0)
                       .map((_, i) => <BlobTransactionCard key={i} />)
                   : txs.map((tx) => {
-                      const { block, blockNumber, ...filteredTx } = tx;
+                      const { block, ...filteredTx } = tx;
 
                       return (
                         <BlobTransactionCard
                           key={tx.hash}
                           transaction={filteredTx}
-                          block={{ ...block, number: blockNumber }}
+                          block={{ ...block, number: tx.block.number }}
                         />
                       );
                     })}

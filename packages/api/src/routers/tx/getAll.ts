@@ -6,14 +6,18 @@ import { publicProcedure } from "../../procedures";
 import { formatFullTransaction, fullTransactionSelect } from "./common";
 
 export const getAll = publicProcedure
-  .input(paginationSchema)
+  .input(paginationSchema.optional())
   .use(withPagination)
   .query(async ({ ctx }) => {
     const [transactions, overallStats] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
-          orderBy: { blockNumber: "desc" },
+          orderBy: {
+            block: {
+              number: "desc",
+            },
+          },
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),

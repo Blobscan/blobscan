@@ -3,10 +3,10 @@ import { z } from "zod";
 import { publicProcedure } from "./procedures";
 import { blobRouter } from "./routers/blob";
 import { blockRouter } from "./routers/block";
+import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { indexerRouter } from "./routers/indexer";
 import { searchRouter } from "./routers/search";
 import { statsRouter } from "./routers/stats";
-import { syncStateRouter } from "./routers/sync-state";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
@@ -17,7 +17,7 @@ export const appRouter = t.router({
   search: searchRouter,
   indexer: indexerRouter,
   stats: statsRouter,
-  syncState: syncStateRouter,
+  syncState: blockchainSyncStateRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {

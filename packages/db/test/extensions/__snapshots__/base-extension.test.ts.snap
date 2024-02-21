@@ -1,13 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Base Extension > Address model > upsertAddressesFromTransactions() > should fail when trying to upsert an address from a transaction which is part of a non-existent block 1`] = `
-"
-Invalid \`prisma.$executeRaw()\` invocation:
-
-
-Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"address\\" violates foreign key constraint \\"address_first_block_number_as_sender_fkey\\"\`"
-`;
-
 exports[`Base Extension > Address model > upsertAddressesFromTransactions() > when updating addresses from transactions > should upsert addresses from multiple transactions correctly 1`] = `
 [
   {
@@ -36,22 +28,6 @@ exports[`Base Extension > Address model > upsertAddressesFromTransactions() > wh
     "firstBlockNumberAsSender": 1002,
   },
 ]
-`;
-
-exports[`Base Extension > Address model > upsertMany() > should fail when trying to upsert a receiver address with a non-existent first block 1`] = `
-"
-Invalid \`prisma.$executeRaw()\` invocation:
-
-
-Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"address\\" violates foreign key constraint \\"address_first_block_number_as_receiver_fkey\\"\`"
-`;
-
-exports[`Base Extension > Address model > upsertMany() > should fail when trying to upsert a sender address with a non-existent first block 1`] = `
-"
-Invalid \`prisma.$executeRaw()\` invocation:
-
-
-Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"address\\" violates foreign key constraint \\"address_first_block_number_as_sender_fkey\\"\`"
 `;
 
 exports[`Base Extension > Address model > upsertMany() > should insert multiple addresses correctly 1`] = `
@@ -122,7 +98,7 @@ exports[`Base Extension > Transaction model > upsertMany() > should fail when up
 Invalid \`prisma.$executeRaw()\` invocation:
 
 
-Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_block_number_fkey\\"\`"
+Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"transaction\\" violates foreign key constraint \\"transaction_block_hash_fkey\\"\`"
 `;
 
 exports[`Base Extension > Transaction model > upsertMany() > should fail when upserting a transaction with a non-existent receiver address 1`] = `

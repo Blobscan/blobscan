@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
@@ -89,5 +90,13 @@ export function runPaginationTestsSuite(
 
       expect(result.length).toBe(expectedResultsAmount);
     });
+  });
+}
+
+export async function unauthorizedRPCCallTest(rpcCall: () => Promise<unknown>) {
+  it("should fail when calling procedure without auth", async () => {
+    await expect(rpcCall()).rejects.toThrow(
+      new TRPCError({ code: "UNAUTHORIZED" })
+    );
   });
 }

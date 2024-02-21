@@ -20,9 +20,10 @@ enum BlobStorage {
 }
 
 model BlockchainSyncState {
-  id                 Int @id @default(autoincrement())
-  lastFinalizedBlock Int @map("last_finalized_block")
-  lastSlot           Int @map("last_slot")
+  id                  Int  @id @default(autoincrement())
+  lastFinalizedBlock  Int? @map("last_finalized_block")
+  lastLowerSyncedSlot Int? @map("last_lower_synced_slot")
+  lastUpperSyncedSlot Int? @map("last_upper_synced_slot")
 
   @@map("blockchain_sync_state")
 }
@@ -34,8 +35,6 @@ model Address {
   insertedAt                 DateTime @default(now()) @map("inserted_at")
   updatedAt                  DateTime @default(now()) @map("updated_at")
 
-  firstBlockAsSender     Block?        @relation("firstBlockAsSenderRelation", fields: [firstBlockNumberAsSender], references: [number])
-  firstBlockAsReceiver   Block?        @relation("firstBlockAsReceiverRelation", fields: [firstBlockNumberAsReceiver], references: [number])
   transactionsAsSender   Transaction[] @relation("senderAddressRelation")
   transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
@@ -52,7 +51,6 @@ model Blob {
   updatedAt        DateTime @default(now()) @map("updated_at")
 
   dataStorageReferences BlobDataStorageReference[]
-  firstBlock            Block?                     @relation(fields: [firstBlockNumber], references: [number])
   transactions          BlobsOnTransactions[]
 
   @@index([insertedAt])
@@ -79,7 +77,7 @@ model BlobDataStorageReference {
 
 model Block {
   hash                  String   @id
-  number                Int      @unique
+  number                Int
   timestamp             DateTime @unique
   slot                  Int      @unique
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
@@ -89,10 +87,8 @@ model Block {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  transactions         Transaction[]
-  newSenderAddresses   Address[]     @relation("firstBlockAsSenderRelation")
-  newReceiverAddresses Address[]     @relation("firstBlockAsReceiverRelation")
-  newBlobs             Blob[]
+  transactions     Transaction[]
+  transactionForks TransactionFork[]
 
   @@index([insertedAt])
   @@map("block")
@@ -102,20 +98,21 @@ model Transaction {
   hash                  String   @id
   fromId                String   @map("from_id")
   toId                  String   @map("to_id")
-  blockNumber           Int      @map("block_number")
+  blockHash             String   @map("block_hash")
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  blobs BlobsOnTransactions[]
-  block Block                 @relation(fields: [blockNumber], references: [number])
-  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  blobs            BlobsOnTransactions[]
+  block            Block                 @relation(fields: [blockHash], references: [hash])
+  from             Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to               Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  transactionForks TransactionFork[]
 
   @@index([insertedAt])
-  @@index([blockNumber])
+  @@index([blockHash])
   @@map("transaction")
 }
 
@@ -131,6 +128,19 @@ model BlobsOnTransactions {
   @@index([blobHash])
   @@index([txHash])
   @@map("blobs_on_transactions")
+}
+
+model TransactionFork {
+  hash       String
+  blockHash  String   @map("block_hash")
+  insertedAt DateTime @default(now()) @map("inserted_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  block       Block       @relation(fields: [blockHash], references: [hash])
+  transaction Transaction @relation(fields: [hash], references: [hash])
+
+  @@id([hash, blockHash])
+  @@map("transaction_fork")
 }
 
 // Block Metrics
