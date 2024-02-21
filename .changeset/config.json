@@ -8,5 +8,12 @@
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
   "privatePackages": { "version": true, "tag": true },
-  "ignore": ["@blobscan/github"]
+  "ignore": [
+    "@blobscan/eslint-config",
+    "@blobscan/github",
+    "@blobscan/svgo-config",
+    "@blobscan/tailwind-config",
+    "@blobscan/test",
+    "@blobscan/tsconfig"
+  ]
 }

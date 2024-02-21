@@ -11,9 +11,24 @@ importers:
       '@blobscan/dayjs':
         specifier: ^0.0.1
         version: link:packages/dayjs
+      '@blobscan/eslint-config':
+        specifier: ^0.0.1
+        version: link:tooling/eslint
       '@blobscan/stats-aggregation-cli':
         specifier: ^0.0.1
         version: link:clis/stats-aggregation-cli
+      '@blobscan/svgo-config':
+        specifier: ^0.0.1
+        version: link:tooling/svgo
+      '@blobscan/tailwind-config':
+        specifier: ^0.0.1
+        version: link:tooling/tailwind
+      '@blobscan/test':
+        specifier: ^0.0.1
+        version: link:packages/test
+      '@blobscan/tsconfig':
+        specifier: ^0.0.1
+        version: link:tooling/typescript
       '@changesets/cli':
         specifier: ^2.27.1
         version: 2.27.1
@@ -80,9 +95,6 @@ importers:
       '@algolia/autocomplete-core':
         specifier: ^1.9.2
         version: 1.9.2(@algolia/client-search@4.20.0)(algoliasearch@4.20.0)(search-insights@2.10.0)
-      '@blobscan/tailwind-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/tailwind
       '@headlessui/react':
         specifier: ^1.7.13
         version: 1.7.13(react-dom@18.2.0)(react@18.2.0)
@@ -138,9 +150,6 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1(postcss@8.4.31)(ts-node@10.9.1)
     devDependencies:
-      '@blobscan/svgo-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/svgo
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
@@ -193,12 +202,6 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(@trpc/server@10.43.2)(zod@3.22.4)
     devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
       '@types/cors':
         specifier: ^2.8.13
         version: 2.8.13
@@ -223,9 +226,6 @@ importers:
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../../packages/open-telemetry
-      '@blobscan/tailwind-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/tailwind
       '@fontsource/inter':
         specifier: ^4.5.15
         version: 4.5.15
@@ -314,15 +314,6 @@ importers:
         specifier: ^3.21.4
         version: 3.21.4
     devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/svgo-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/svgo
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.2.2)
@@ -374,16 +365,6 @@ importers:
       command-line-usage:
         specifier: ^7.0.1
         version: 7.0.1
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../../packages/test
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   clis/stats-aggregation-cli:
     dependencies:
@@ -402,16 +383,6 @@ importers:
       command-line-usage:
         specifier: ^7.0.1
         version: 7.0.1
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../../packages/test
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/api:
     dependencies:
@@ -446,15 +417,6 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(@trpc/server@10.43.2)(zod@3.22.4)
     devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../test
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
       '@types/jsonwebtoken':
         specifier: ^9.0.2
         version: 9.0.2
@@ -479,13 +441,6 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/blob-propagator:
     dependencies:
@@ -510,16 +465,6 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.3.2
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../test
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/blob-storage-manager:
     dependencies:
@@ -541,29 +486,12 @@ importers:
       '@google-cloud/storage':
         specifier: ^6.10.1
         version: 6.10.1
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../test
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/dayjs:
     dependencies:
       dayjs:
         specifier: ^1.11.7
         version: 1.11.7
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/db:
     dependencies:
@@ -580,15 +508,6 @@ importers:
         specifier: ^5.5.2
         version: 5.5.2(prisma@5.5.2)
     devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/test':
-        specifier: ^0.0.1
-        version: link:../test
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
       '@faker-js/faker':
         specifier: ^8.0.2
         version: 8.0.2
@@ -607,13 +526,6 @@ importers:
       winston:
         specifier: ^3.10.0
         version: 3.10.0
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/open-telemetry:
     dependencies:
@@ -647,22 +559,9 @@ importers:
       prom-client:
         specifier: ^14.2.0
         version: 14.2.0
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   packages/test:
     devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
       '@prisma/client':
         specifier: ^5.5.2
         version: 5.5.2(prisma@5.5.2)
@@ -675,13 +574,6 @@ importers:
       zod:
         specifier: ^3.21.4
         version: 3.21.4
-    devDependencies:
-      '@blobscan/eslint-config':
-        specifier: ^0.0.1
-        version: link:../../tooling/eslint
-      '@blobscan/tsconfig':
-        specifier: ^0.0.1
-        version: link:../../tooling/typescript
 
   tooling/eslint:
     dependencies:

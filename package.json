@@ -33,7 +33,12 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
+    "@blobscan/eslint-config": "^0.0.1",
     "@blobscan/stats-aggregation-cli": "^0.0.1",
+    "@blobscan/svgo-config": "^0.0.1",
+    "@blobscan/tailwind-config": "^0.0.1",
+    "@blobscan/test": "^0.0.1",
+    "@blobscan/tsconfig": "^0.0.1",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@manypkg/cli": "^0.20.0",
