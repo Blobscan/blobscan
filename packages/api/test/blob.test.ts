@@ -42,7 +42,7 @@ describe("Blob router", async () => {
   describe("getByVersionedHash", () => {
     it("should get a blob by versioned hash", async () => {
       const input: GetByHashInput = {
-        versionedHash: "blobHash004",
+        versioned_hash: "blobHash004",
       };
 
       const result = await caller.blob.getByVersionedHash(input);
@@ -53,7 +53,7 @@ describe("Blob router", async () => {
     it("should fail when trying to get a blob by a non-existent hash", async () => {
       await expect(
         caller.blob.getByVersionedHash({
-          versionedHash: "nonExistingHash",
+          versioned_hash: "nonExistingHash",
         })
       ).rejects.toMatchInlineSnapshot(
         "[TRPCError: No blob with hash nonExistingHash found]"
@@ -63,7 +63,7 @@ describe("Blob router", async () => {
     it("should fail when getting a blob and the blob data is not available", async () => {
       await expect(
         caller.blob.getByVersionedHash({
-          versionedHash: "blobHash003",
+          versioned_hash: "blobHash003",
         })
       ).rejects.toMatchInlineSnapshot(
         "[TRPCError: Failed to get blob from any of the storages: ]"
