@@ -59,9 +59,13 @@ export async function main() {
 
   switch (command) {
     case "daily":
-      return daily(argv);
+      await daily(argv);
+
+      break;
     case "overall":
-      return overall(argv);
+      await overall(argv);
+
+      break;
     default:
       throw new Error(`Invalid command: ${command}`);
   }

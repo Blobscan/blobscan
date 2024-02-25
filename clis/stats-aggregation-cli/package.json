@@ -18,6 +18,7 @@
   "dependencies": {
     "@blobscan/dayjs": "^0.0.1",
     "@blobscan/db": "^0.0.1",
+    "@blobscan/logger": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1"

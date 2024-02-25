@@ -81,7 +81,7 @@ describe("Overall command", () => {
         });
 
         expect(overall(["--to", "finalized"])).rejects.toMatchInlineSnapshot(
-          "[Error: Failed to fetch block from beacon node: Some error from endpoint]"
+          '[Error: Overall stats aggregation failed: Couldn\'t fetch block from beacon node Some error from endpoint]'
         );
       });
     });
@@ -135,7 +135,7 @@ describe("Overall command", () => {
     expect(
       overall(["--to", "invalid-block-height"])
     ).rejects.toMatchInlineSnapshot(
-      '[Error: Invalid `to` flag value: Expected a block number, "latest" or "finalized" but got: invalid-block-height]'
+      '[Error: Overall stats aggregation failed: Invalid `to` flag value. Expected a block number, "latest" or "finalized" but got invalid-block-height]'
     );
   });
 });

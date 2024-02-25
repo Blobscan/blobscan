@@ -371,6 +371,9 @@ importers:
       '@blobscan/db':
         specifier: ^0.0.1
         version: link:../../packages/db
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../../packages/logger
       '@blobscan/zod':
         specifier: ^0.0.1
         version: link:../../packages/zod

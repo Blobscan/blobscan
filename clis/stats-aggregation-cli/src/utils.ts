@@ -1,6 +1,8 @@
 import type commandLineUsage from "command-line-usage";
 
-export type Entity = "blob" | "block" | "tx";
+import { logger } from "@blobscan/logger";
+
+import type { Entity, Operation } from "./types";
 
 export const ALL_ENTITIES: Entity[] = ["blob", "block", "tx"];
 
@@ -17,3 +19,24 @@ export const deleteOptionDef: commandLineUsage.OptionDefinition = {
   description: "Delete existing stats.",
   type: Boolean,
 };
+
+export function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export function commandLog(
+  level: "info" | "error" | "warn" | "debug",
+  statsType: "daily" | "overall",
+  operation: Operation,
+  msg: string
+) {
+  const formattedStatsType = capitalize(statsType);
+  const formattedOperation =
+    operation === "deleteMany" ? "deletion" : "aggregation";
+
+  logger[level](
+    `${formattedStatsType} stats ${formattedOperation}${
+      level === "error" ? " failed" : ""
+    }: ${msg}`
+  );
+}
