@@ -1,4 +1,5 @@
 import { Prisma } from "@blobscan/db";
+import { z } from "@blobscan/zod";
 
 const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   hash: true,
@@ -73,3 +74,18 @@ export function formatFullTransaction(tx: FullTransaction) {
     },
   };
 }
+
+export const getTransactionOutputSchema = z.object({
+  hash: z.string(),
+  fromId: z.string(),
+  toId: z.string(),
+  blobs: z.array(
+    z.object({
+      blobHash: z.string(),
+      index: z.number(),
+      blob: z.object({
+        size: z.number(),
+      }),
+    })
+  ),
+});

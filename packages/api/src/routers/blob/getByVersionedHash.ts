@@ -3,12 +3,24 @@ import { TRPCError } from "@trpc/server";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 
 import { publicProcedure } from "../../procedures";
-import { getByVersionedHashInputSchema } from "./getByVersionedHash.schema";
+import {
+  getByVersionedHashInputSchema,
+  getByVersionedHashOutputSchema,
+} from "./getByVersionedHash.schema";
 
 export const getByVersionedHash = publicProcedure
+  .meta({
+    openapi: {
+      method: "GET",
+      path: "/blobs/{versioned_hash}",
+      tags: ["blobs"],
+      summary: "get blob info",
+    },
+  })
   .input(getByVersionedHashInputSchema)
+  .output(getByVersionedHashOutputSchema)
   .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
-    const { versionedHash } = input;
+    const { versioned_hash } = input;
     const blob = await prisma.blob.findUnique({
       select: {
         versionedHash: true,
@@ -22,14 +34,14 @@ export const getByVersionedHash = publicProcedure
         },
       },
       where: {
-        versionedHash,
+        versionedHash: versioned_hash,
       },
     });
 
     if (!blob) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `No blob with hash ${versionedHash} found`,
+        message: `No blob with hash ${versioned_hash} found`,
       });
     }
 

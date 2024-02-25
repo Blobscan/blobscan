@@ -28,8 +28,8 @@ export const getBlobOverallStats = publicProcedure
     openapi: {
       method: "GET",
       path: `/${BLOB_BASE_PATH}/overall`,
-      tags: ["blobs"],
-      summary: "Get blobs overall stats",
+      tags: ["stats"],
+      summary: "get blobs overall stats",
     },
   })
   .input(getBlobOverallStatsInputSchema)

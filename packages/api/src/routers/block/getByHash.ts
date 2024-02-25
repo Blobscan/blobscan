@@ -1,11 +1,20 @@
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure } from "../../procedures";
-import { fullBlockSelect } from "./common";
+import { fullBlockSelect, getBlockOutputSchema } from "./common";
 import { getByHashInputSchema } from "./getByHash.schema";
 
 export const getByHash = publicProcedure
+  .meta({
+    openapi: {
+      method: "GET",
+      path: "/blocks/{hash}",
+      tags: ["blocks"],
+      summary: "get block info",
+    },
+  })
   .input(getByHashInputSchema)
+  .output(getBlockOutputSchema)
   .query(async ({ ctx, input: { hash } }) => {
     const block = await ctx.prisma.block
       .findUnique({

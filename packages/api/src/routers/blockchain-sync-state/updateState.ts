@@ -12,8 +12,8 @@ export const updateState = jwtAuthedProcedure
     openapi: {
       method: "PUT",
       path: BASE_PATH,
-      tags: ["blockchain-sync-state"],
-      summary: "Update the blockchain sync state",
+      tags: ["indexer"],
+      summary: "update the blockchain sync state",
       protect: true,
     },
   })

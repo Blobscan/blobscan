@@ -1,4 +1,5 @@
 import { Prisma } from "@blobscan/db";
+import { z } from "@blobscan/zod";
 
 const blockSelect = Prisma.validator<Prisma.BlockSelect>()({
   hash: true,
@@ -31,4 +32,31 @@ export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
       },
     },
   },
+});
+
+export const getBlockOutputSchema = z.object({
+  blobAsCalldataGasUsed: z.string(),
+  blobGasUsed: z.string(),
+  excessBlobGas: z.string(),
+  blobGasPrice: z.string(),
+  number: z.number(),
+  hash: z.string(),
+  slot: z.number(),
+  timestamp: z.date(),
+  transactions: z.array(
+    z.object({
+      hash: z.string(),
+      fromId: z.string(),
+      toId: z.string(),
+      blobs: z.array(
+        z.object({
+          blobHash: z.string(),
+          index: z.number(),
+          blob: z.object({
+            size: z.number(),
+          }),
+        })
+      ),
+    })
+  ),
 });

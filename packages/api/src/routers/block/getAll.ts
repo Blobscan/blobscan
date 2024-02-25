@@ -1,10 +1,19 @@
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { fullBlockSelect } from "./common";
-import { getAllInputSchema } from "./getAll.schema";
+import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
 
 export const getAll = publicProcedure
+  .meta({
+    openapi: {
+      method: "GET",
+      path: "/blocks",
+      tags: ["blocks"],
+      summary: "get blocks",
+    },
+  })
   .input(getAllInputSchema)
+  .output(getAllOutputSchema)
   .use(withPagination)
   .query(async ({ input, ctx }) => {
     const [blocks, overallStats] = await Promise.all([

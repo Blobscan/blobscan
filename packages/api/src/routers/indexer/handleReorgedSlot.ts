@@ -9,10 +9,10 @@ export const handleReorgedSlot = jwtAuthedProcedure
   .meta({
     openapi: {
       method: "PUT",
-      path: `${INDEXER_PATH}/reorged-slot`,
+      path: `${INDEXER_PATH}/reorged_slot`,
       tags: ["indexer"],
       summary:
-        "It marks all blocks with slot greater than the new head slot as reorged.",
+        "it marks all blocks with slot greater than the new head slot as reorged.",
       protect: true,
     },
   })

@@ -1,11 +1,8 @@
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure } from "../../procedures";
-import { fullBlockSelect } from "./common";
-import {
-  getByBlockNumberInputSchema,
-  getByBlockNumberOutputSchema,
-} from "./getByBlockNumber.schema";
+import { fullBlockSelect, getBlockOutputSchema } from "./common";
+import { getByBlockNumberInputSchema } from "./getByBlockNumber.schema";
 
 export const getByBlockNumber = publicProcedure
   .meta({
@@ -13,11 +10,11 @@ export const getByBlockNumber = publicProcedure
       method: "GET",
       path: `/blocks/{number}`,
       tags: ["blocks"],
-      summary: "Get blocks time series stats",
+      summary: "get block info",
     },
   })
   .input(getByBlockNumberInputSchema)
-  .output(getByBlockNumberOutputSchema)
+  .output(getBlockOutputSchema)
   .query(async ({ ctx, input: { number, reorg } }) => {
     const block = await ctx.prisma.block
       .findFirst({

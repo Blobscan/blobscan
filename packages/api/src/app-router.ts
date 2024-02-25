@@ -23,7 +23,7 @@ export const appRouter = t.router({
       openapi: {
         method: "GET",
         path: "/healthcheck",
-        summary: "Connection healthcheck",
+        summary: "connection healthcheck",
         tags: ["system"],
       },
     })

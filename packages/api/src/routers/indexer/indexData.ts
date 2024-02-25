@@ -24,7 +24,7 @@ export const indexData = jwtAuthedProcedure
       method: "PUT",
       path: `${INDEXER_PATH}/block-txs-blobs`,
       tags: ["indexer"],
-      summary: "Index data in the database",
+      summary: "index data in the database",
       protect: true,
     },
   })
