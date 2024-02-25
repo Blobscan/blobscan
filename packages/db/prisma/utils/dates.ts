@@ -35,7 +35,7 @@ export function normalizeDailyDatePeriod(
   const { from, to } = normalizedDatePeriod;
 
   if (from && to && new Date(from) > new Date(to)) {
-    throw new Error(`Invalid date period: start date is after end date`);
+    throw new Error(`Invalid date period. Start date is after end date`);
   }
 
   return normalizedDatePeriod;
