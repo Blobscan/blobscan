@@ -79,11 +79,22 @@ export const getTransactionOutputSchema = z.object({
   hash: z.string(),
   fromId: z.string(),
   toId: z.string(),
+  blockHash: z.string(),
+  gasPrice: z.string(),
+  maxFeePerBlobGas: z.string(),
+  blobAsCalldataGasUsed: z.string(),
+  block: z.object({
+    number: z.number(),
+    timestamp: z.date(),
+    excessBlobGas: z.string(),
+    blobGasPrice: z.string(),
+  }),
   blobs: z.array(
     z.object({
       blobHash: z.string(),
       index: z.number(),
       blob: z.object({
+        commitment: z.string(),
         size: z.number(),
       }),
     })
