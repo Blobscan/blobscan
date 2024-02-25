@@ -1,0 +1,28 @@
+{
+  "name": "@blobscan/stats-syncer",
+  "description": "Blobscan's stats syncer",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "start": "pnpm with-env ts-node src/index.ts",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@blobscan/logger": "^0.0.1",
+    "@blobscan/stats-aggregation-cli": "^0.0.1",
+    "@blobscan/zod": "^0.0.1",
+    "bullmq": "^4.13.2",
+    "ioredis": "^5.3.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

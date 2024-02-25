@@ -560,6 +560,24 @@ importers:
         specifier: ^14.2.0
         version: 14.2.0
 
+  packages/stats-syncer:
+    dependencies:
+      '@blobscan/logger':
+        specifier: ^0.0.1
+        version: link:../logger
+      '@blobscan/stats-aggregation-cli':
+        specifier: ^0.0.1
+        version: link:../../clis/stats-aggregation-cli
+      '@blobscan/zod':
+        specifier: ^0.0.1
+        version: link:../zod
+      bullmq:
+        specifier: ^4.13.2
+        version: 4.13.2
+      ioredis:
+        specifier: ^5.3.2
+        version: 5.3.2
+
   packages/test:
     devDependencies:
       '@prisma/client':
