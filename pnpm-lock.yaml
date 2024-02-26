@@ -562,6 +562,9 @@ importers:
 
   packages/stats-syncer:
     dependencies:
+      '@blobscan/dayjs':
+        specifier: ^0.0.1
+        version: link:../dayjs
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../logger

@@ -8,11 +8,13 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
-    "start": "pnpm with-env ts-node src/index.ts",
     "type-check": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --"
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
+    "@blobscan/dayjs": "^0.0.1",
     "@blobscan/logger": "^0.0.1",
     "@blobscan/stats-aggregation-cli": "^0.0.1",
     "@blobscan/zod": "^0.0.1",
