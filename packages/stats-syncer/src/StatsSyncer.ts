@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import dayjs from "dayjs";
+import type { Redis } from "ioredis";
 
 import { logger } from "@blobscan/logger";
 import {
   daily as dailyCommand,
+  gracefulShutdown as statsCommandsGracefulShutdown,
   overall as overallCommand,
 } from "@blobscan/stats-aggregation-cli";
 
@@ -11,6 +13,7 @@ import { PeriodicUpdater } from "./PeriodicUpdater";
 import { createRedisConnection } from "./utils";
 
 export class StatsSyncer {
+  protected connection: Redis;
   protected dailyStatsUpdater: PeriodicUpdater;
   protected overallStatsUpdater: PeriodicUpdater;
 
@@ -33,6 +36,8 @@ export class StatsSyncer {
         return overallCommand(["--to", "finalized"]);
       },
     });
+
+    this.connection = connection;
   }
 
   async run(config: {
@@ -59,7 +64,14 @@ export class StatsSyncer {
     try {
       await this.dailyStatsUpdater
         .close()
-        .finally(() => this.overallStatsUpdater.close());
+        .finally(() => this.overallStatsUpdater.close())
+        .finally(() => {
+          this.connection.removeAllListeners();
+
+          if (this.connection.status === "ready") this.connection.disconnect();
+        })
+        .finally(() => statsCommandsGracefulShutdown());
+
       logger.debug("Stats syncer closed successfully.");
     } catch (err) {
       throw new Error(`Failed to close stats syncer: ${err}`);

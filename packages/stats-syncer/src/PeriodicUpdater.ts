@@ -43,8 +43,8 @@ export class PeriodicUpdater {
       logger.error(`${scope} queue error: ${err}`);
     });
 
-    this.worker.on("error", (err) => {
-      logger.error(`${scope} worker error: ${err}`);
+    this.worker.on("failed", (_, err) => {
+      logger.error(`${scope} worker error: ${err.message}`);
     });
   }
 
@@ -68,8 +68,8 @@ export class PeriodicUpdater {
       await this.worker
         .removeAllListeners()
         .close(true)
-        .finally(async () => this.queue.obliterate({ force: true }))
-        .finally(async () => this.queue.removeAllListeners().close());
+        .finally(() => this.queue.obliterate({ force: true }))
+        .finally(() => this.queue.removeAllListeners().close());
     } catch (err) {
       throw new Error(`Failed to close updater "${this.name}": ${err}`);
     }

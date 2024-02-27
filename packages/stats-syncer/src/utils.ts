@@ -8,7 +8,7 @@ export function createRedisConnection(scope: string, uri: string) {
   });
 
   connection.on("error", (err) => {
-    logger.error(`${scope} redis error: ${err}`);
+    logger.error(`${scope} redis connection error: ${err}`);
   });
 
   return connection;

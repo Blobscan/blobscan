@@ -7,6 +7,10 @@ class StatsSyncerMock extends StatsSyncer {
     super(redisUri);
   }
 
+  getConnection() {
+    return this.connection;
+  }
+
   getDailyStatsUpdater() {
     return this.dailyStatsUpdater;
   }
@@ -69,27 +73,31 @@ describe("StatsSyncer", () => {
       const closeStatsSyncer = new StatsSyncerMock();
       const dailyStatsUpdater = closeStatsSyncer.getDailyStatsUpdater();
       const overallStatsUpdater = closeStatsSyncer.getOverallStatsUpdater();
+      const connection = closeStatsSyncer.getConnection();
 
       const dailyStatsUpdaterCloseSpy = vi.spyOn(dailyStatsUpdater, "close");
       const overallStatsUpdaterCloseSpy = vi.spyOn(
         overallStatsUpdater,
         "close"
       );
+      const connectionCloseSpy = vi.spyOn(connection, "disconnect");
 
       await closeStatsSyncer.close();
 
       expect(dailyStatsUpdaterCloseSpy).toHaveBeenCalledOnce();
       expect(overallStatsUpdaterCloseSpy).toHaveBeenCalledOnce();
+      expect(connectionCloseSpy).toHaveBeenCalledOnce();
     });
 
     it("should throw a valid error when failing to close the stats syncer", async () => {
-      const dailyStatsUpdater = statsSyncer.getDailyStatsUpdater();
+      const closeStatsSyncer = new StatsSyncerMock();
+      const dailyStatsUpdater = closeStatsSyncer.getDailyStatsUpdater();
       vi.spyOn(dailyStatsUpdater, "close").mockRejectedValueOnce(
         new Error("Some daily stats updater closing error")
       );
 
       await expect(
-        statsSyncer.close()
+        closeStatsSyncer.close()
       ).rejects.toThrowErrorMatchingInlineSnapshot(
         '"Failed to close stats syncer: Error: Some daily stats updater closing error"'
       );
