@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { StatsSyncer } from "../src/StatsSyncer";
-import { env } from "../src/env";
 
 class StatsSyncerMock extends StatsSyncer {
-  constructor(redisUri: string = env.REDIS_URI) {
+  constructor(redisUri = "redis://localhost:6379/1") {
     super(redisUri);
   }
 
@@ -91,7 +90,9 @@ describe("StatsSyncer", () => {
 
       await expect(
         statsSyncer.close()
-      ).rejects.toThrowErrorMatchingInlineSnapshot('"Failed to close stats syncer: Error: Some daily stats updater closing error"');
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        '"Failed to close stats syncer: Error: Some daily stats updater closing error"'
+      );
     });
   });
 });

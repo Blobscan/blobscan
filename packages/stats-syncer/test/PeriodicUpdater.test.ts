@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PeriodicUpdater } from "../src/PeriodicUpdater";
 import type { PeriodicUpdaterConfig } from "../src/PeriodicUpdater";
-import { env } from "../src/env";
 
 class PeriodicUpdaterMock extends PeriodicUpdater {
   constructor({
@@ -12,7 +11,7 @@ class PeriodicUpdaterMock extends PeriodicUpdater {
   }: Partial<PeriodicUpdaterConfig> = {}) {
     super({
       name: name ?? "test-updater",
-      redisUriOrConnection: redisUriOrConnection ?? env.REDIS_URI,
+      redisUriOrConnection: redisUriOrConnection ?? "redis://localhost:6379/1",
       updaterFn: updaterFn ?? (() => Promise.resolve()),
     });
   }
