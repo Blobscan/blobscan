@@ -171,6 +171,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: ^0.0.1
         version: link:../../packages/open-telemetry
+      '@blobscan/stats-syncer':
+        specifier: ^0.0.1
+        version: link:../../packages/stats-syncer
       '@blobscan/zod':
         specifier: ^0.0.1
         version: link:../../packages/zod
