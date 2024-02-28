@@ -377,9 +377,6 @@ importers:
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../../packages/logger
-      '@blobscan/zod':
-        specifier: ^0.0.1
-        version: link:../../packages/zod
       command-line-args:
         specifier: ^5.2.1
         version: 5.2.1
@@ -568,15 +565,12 @@ importers:
       '@blobscan/dayjs':
         specifier: ^0.0.1
         version: link:../dayjs
+      '@blobscan/db':
+        specifier: ^0.0.1
+        version: link:../db
       '@blobscan/logger':
         specifier: ^0.0.1
         version: link:../logger
-      '@blobscan/stats-aggregation-cli':
-        specifier: ^0.0.1
-        version: link:../../clis/stats-aggregation-cli
-      '@blobscan/zod':
-        specifier: ^0.0.1
-        version: link:../zod
       bullmq:
         specifier: ^4.13.2
         version: 4.13.2

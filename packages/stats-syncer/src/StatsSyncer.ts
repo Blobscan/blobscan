@@ -1,43 +1,25 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import dayjs from "dayjs";
 import type { Redis } from "ioredis";
 
-import { logger } from "@blobscan/logger";
-import {
-  daily as dailyCommand,
-  gracefulShutdown as statsCommandsGracefulShutdown,
-  overall as overallCommand,
-} from "@blobscan/stats-aggregation-cli";
-
-import { PeriodicUpdater } from "./PeriodicUpdater";
-import { createRedisConnection } from "./utils";
+import { DailyStatsUpdater } from "./updaters/DailyStatsUpdater";
+import { OverallStatsUpdater } from "./updaters/OverallStatsUpdater";
+import { createRedisConnection, log } from "./utils";
 
 export class StatsSyncer {
   protected connection: Redis;
-  protected dailyStatsUpdater: PeriodicUpdater;
-  protected overallStatsUpdater: PeriodicUpdater;
+  protected dailyStatsUpdater: DailyStatsUpdater;
+  protected overallStatsUpdater: OverallStatsUpdater;
 
   constructor(redisUri: string) {
-    const connection = createRedisConnection("Stats syncer", redisUri);
+    const connection = createRedisConnection(redisUri);
 
-    this.dailyStatsUpdater = new PeriodicUpdater({
-      name: "daily-stats-syncer",
-      redisUriOrConnection: connection,
-      updaterFn() {
-        const yesterday = dayjs().subtract(1, "day").format("YYYY-MM-DD");
-
-        return dailyCommand(["-f", yesterday, "-t", yesterday]);
-      },
-    });
-    this.overallStatsUpdater = new PeriodicUpdater({
-      name: "overall-stats-syncer",
-      redisUriOrConnection: connection,
-      updaterFn() {
-        return overallCommand(["--to", "finalized"]);
-      },
+    connection.on("error", (err) => {
+      log("error", `Redis connection error: ${err}`);
     });
 
     this.connection = connection;
+    this.dailyStatsUpdater = new DailyStatsUpdater(connection);
+    this.overallStatsUpdater = new OverallStatsUpdater(connection);
   }
 
   async run(config: {
@@ -54,7 +36,7 @@ export class StatsSyncer {
         this.overallStatsUpdater.run(cronPatterns.overall),
       ]);
 
-      logger.debug("Stats syncer started successfully.");
+      log("debug", "Syncer started successfully.");
     } catch (err) {
       throw new Error(`Failed to run stats syncer: ${err}`);
     }
@@ -69,10 +51,9 @@ export class StatsSyncer {
           this.connection.removeAllListeners();
 
           if (this.connection.status === "ready") this.connection.disconnect();
-        })
-        .finally(() => statsCommandsGracefulShutdown());
+        });
 
-      logger.debug("Stats syncer closed successfully.");
+      log("debug", "Syncer closed successfully.");
     } catch (err) {
       throw new Error(`Failed to close stats syncer: ${err}`);
     }

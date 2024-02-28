@@ -2,20 +2,26 @@
 import { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import { logger } from "@blobscan/logger";
+import type { LoggerLevel } from "@blobscan/logger";
 
-import { createRedisConnection } from "./utils";
+import { createRedisConnection, log } from "./utils";
 
 export type PeriodicUpdaterConfig = {
   name: string;
   redisUriOrConnection: string | Redis;
   updaterFn: () => Promise<void>;
+  log?: (config: {
+    level: LoggerLevel;
+    message: string;
+    updater?: string;
+  }) => void;
 };
 
 export class PeriodicUpdater {
   name: string;
   protected worker: Worker;
   protected queue: Queue;
+  protected updaterFn: () => Promise<void>;
 
   constructor({
     name,
@@ -25,11 +31,19 @@ export class PeriodicUpdater {
     const isRedisUri = typeof redisUriOrConnection === "string";
     this.name = name;
 
-    const scope = `Updater "${this.name}"`;
+    let connection: Redis;
 
-    const connection = isRedisUri
-      ? createRedisConnection(scope, redisUriOrConnection)
-      : redisUriOrConnection;
+    if (isRedisUri) {
+      connection = createRedisConnection(redisUriOrConnection);
+
+      connection.on("error", (err) => {
+        log("error", `redis connection error: ${err}`, {
+          updater: name,
+        });
+      });
+    } else {
+      connection = redisUriOrConnection;
+    }
 
     this.queue = new Queue(this.name, {
       connection,
@@ -39,12 +53,18 @@ export class PeriodicUpdater {
       connection,
     });
 
+    this.updaterFn = updaterFn;
+
     this.queue.on("error", (err) => {
-      logger.error(`${scope} queue error: ${err}`);
+      log("error", `queue error: ${err}`, {
+        updater: name,
+      });
     });
 
     this.worker.on("failed", (_, err) => {
-      logger.error(`${scope} worker error: ${err.message}`);
+      log("error", `worker error: ${err.message}`, {
+        updater: name,
+      });
     });
   }
 

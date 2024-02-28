@@ -1,31 +1,12 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import type { BlockNumberRange } from "@blobscan/db";
+import type { BlockNumberRange, Prisma } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 
-import { env } from "../env";
 import { CommandError } from "../error";
 import type { Command } from "../types";
 import { commandLog, deleteOptionDef, helpOptionDef } from "../utils";
-
-type BeaconFinalizedBlockResponse = {
-  data: {
-    message: {
-      slot: string;
-      body: {
-        execution_payload: {
-          block_number: string;
-        };
-      };
-    };
-  };
-};
-
-type Block = {
-  number: number;
-  slot: number;
-};
 
 type BlockId = number | "latest" | "finalized";
 
@@ -72,41 +53,21 @@ export const overallCommandUsage = commandLineUsage([
   },
 ]);
 
-async function getBlockFromBeacon(id: BlockId): Promise<Block> {
-  let response: Response;
-
-  try {
-    response = await fetch(
-      `${env.BEACON_NODE_ENDPOINT}/eth/v2/beacon/blocks/${id}`
-    );
-  } catch (err) {
-    const err_ = err as Error & { cause?: Error };
-
-    throw new Error(
-      `Couldn't fetch block from beacon node ${err_.cause ?? err_.message}`
-    );
-  }
-
-  const {
-    data: { message },
-  } = (await response.json()) as BeaconFinalizedBlockResponse;
-
-  return {
-    number: Number(message.body.execution_payload.block_number),
-    slot: Number(message.slot),
-  };
-}
-
 async function resolveBlockId(blockId: BlockId): Promise<number> {
   try {
-    if (!env.BEACON_NODE_ENDPOINT && blockId === "finalized") {
-      throw new Error("BEACON_NODE_ENDPOINT not defined");
-    }
-
     if (typeof blockId === "number" || !isNaN(Number(blockId))) {
       return Number(blockId);
     } else if (blockId === "finalized") {
-      return (await getBlockFromBeacon("finalized")).number;
+      const syncState = await prisma.blockchainSyncState.findUnique({
+        select: {
+          lastFinalizedBlock: true,
+        },
+        where: {
+          id: 1,
+        },
+      });
+
+      return syncState?.lastFinalizedBlock ?? 0;
     } else {
       return (await prisma.block.findLatest().then((b) => b?.number)) ?? 0;
     }
@@ -118,17 +79,18 @@ async function resolveBlockId(blockId: BlockId): Promise<number> {
 }
 
 async function deleteOverallStats() {
+  const newBlockchainSyncState: Partial<Prisma.BlockchainSyncStateGroupByOutputType> =
+    {
+      lastAggregatedBlock: null,
+    };
+
   await prisma.$transaction([
     prisma.blobOverallStats.deleteMany(),
     prisma.blockOverallStats.deleteMany(),
     prisma.transactionOverallStats.deleteMany(),
     prisma.blockchainSyncState.upsert({
-      create: {
-        lastFinalizedBlock: null,
-      },
-      update: {
-        lastFinalizedBlock: null,
-      },
+      create: newBlockchainSyncState,
+      update: newBlockchainSyncState,
       where: {
         id: 1,
       },
@@ -152,18 +114,18 @@ async function incrementOverallStats(
     const batchFrom = from + i * batchSize;
     const batchTo = Math.min(batchFrom + batchSize - 1, to);
     const blockRange: BlockNumberRange = { from: batchFrom, to: batchTo };
+    const newBlockchainSyncState: Partial<Prisma.BlockchainSyncStateGroupByOutputType> =
+      {
+        lastAggregatedBlock: batchTo,
+      };
 
     await prisma.$transaction([
       prisma.blockOverallStats.increment(blockRange),
       prisma.transactionOverallStats.increment(blockRange),
       prisma.blobOverallStats.increment(blockRange),
       prisma.blockchainSyncState.upsert({
-        create: {
-          lastFinalizedBlock: batchTo,
-        },
-        update: {
-          lastFinalizedBlock: batchTo,
-        },
+        create: newBlockchainSyncState,
+        update: newBlockchainSyncState,
         where: {
           id: 1,
         },
@@ -231,14 +193,16 @@ const overall: Command = async function (argv) {
     );
   }
   let targetBlockNumber = await resolveBlockId(targetBlockId);
-  const [latestProcessedFinalizedBlock, latestIndexedBlock] = await Promise.all(
-    [
-      prisma.blockchainSyncState
-        .findFirst()
-        .then((state) => state?.lastFinalizedBlock ?? 0),
-      prisma.block.findLatest().then((b) => b?.number),
-    ]
-  );
+  const [lastSyncedFinalizedBlock, latestIndexedBlock] = await Promise.all([
+    prisma.blockchainSyncState
+      .findUnique({
+        where: {
+          id: 1,
+        },
+      })
+      .then((state) => state?.lastAggregatedBlock ?? 0),
+    prisma.block.findLatest().then((b) => b?.number),
+  ]);
 
   // If we haven't indexed any blocks yet, don't do anything
   if (!latestIndexedBlock) {
@@ -246,13 +210,13 @@ const overall: Command = async function (argv) {
       "info",
       "overall",
       "increment",
-      "No blocks have been indexed yet"
+      "Skipping as there as no blocks have been indexed yet"
     );
 
     return;
   }
 
-  const fromBlockNumber = latestProcessedFinalizedBlock + 1;
+  const fromBlockNumber = lastSyncedFinalizedBlock + 1;
 
   // Process only finalized blocks that were indexed
   if (targetBlockNumber > latestIndexedBlock) {
@@ -264,7 +228,7 @@ const overall: Command = async function (argv) {
       "info",
       "overall",
       "increment",
-      `No new finalized blocks (Last processed finalized block: ${latestProcessedFinalizedBlock.toLocaleString()})`
+      `Skipping as there is no new finalized blocks (Last processed finalized block: ${lastSyncedFinalizedBlock.toLocaleString()})`
     );
 
     return;

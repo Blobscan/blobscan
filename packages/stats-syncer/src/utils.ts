@@ -1,15 +1,20 @@
 import { Redis } from "ioredis";
 
 import { logger } from "@blobscan/logger";
+import type { LoggerLevel } from "@blobscan/logger";
 
-export function createRedisConnection(scope: string, uri: string) {
-  const connection = new Redis(uri, {
+export function createRedisConnection(uri: string) {
+  return new Redis(uri, {
     maxRetriesPerRequest: null,
   });
+}
 
-  connection.on("error", (err) => {
-    logger.error(`${scope} redis connection error: ${err}`);
-  });
-
-  return connection;
+export function log(
+  level: LoggerLevel,
+  message: string,
+  { updater }: { updater?: string } = {}
+) {
+  logger[level](
+    `[Stats Syncer]${updater ? ` Updater ${updater}` : ""}: ${message}`
+  );
 }

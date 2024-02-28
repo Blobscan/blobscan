@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DailyStatsUpdater > should aggregate yesterday's stats correctly 1`] = `
+[
+  [
+    {
+      "avgBlobSize": 1280,
+      "day": 2023-08-31T00:00:00.000Z,
+      "totalBlobSize": 6400n,
+      "totalBlobs": 5,
+      "totalUniqueBlobs": 3,
+    },
+  ],
+  [
+    {
+      "avgBlobAsCalldataFee": 5610000,
+      "avgBlobFee": 121000000,
+      "avgBlobGasPrice": 22,
+      "day": 2023-08-31T00:00:00.000Z,
+      "totalBlobAsCalldataFee": "16830000",
+      "totalBlobAsCalldataGasUsed": "765000",
+      "totalBlobFee": "363000000",
+      "totalBlobGasUsed": "16500000",
+      "totalBlocks": 3,
+    },
+  ],
+  [
+    {
+      "avgMaxBlobGasFee": 100,
+      "day": 2023-08-31T00:00:00.000Z,
+      "totalTransactions": 3,
+      "totalUniqueReceivers": 2,
+      "totalUniqueSenders": 2,
+    },
+  ],
+]
+`;

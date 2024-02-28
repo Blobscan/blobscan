@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OverallStatsUpdater > should aggregate all overall stats correctly 1`] = `
+[
+  {
+    "avgBlobSize": 1176.923076923077,
+    "id": 1,
+    "totalBlobSize": 15300n,
+    "totalBlobs": 13,
+    "totalUniqueBlobs": 1,
+  },
+  {
+    "avgBlobAsCalldataFee": 5457500,
+    "avgBlobFee": 115750000,
+    "avgBlobGasPrice": 21.5,
+    "id": 1,
+    "totalBlobAsCalldataFee": "21830000",
+    "totalBlobAsCalldataGasUsed": "1015000",
+    "totalBlobFee": "463000000",
+    "totalBlobGasUsed": "21500000",
+    "totalBlocks": 4,
+  },
+  {
+    "avgMaxBlobGasFee": 100,
+    "id": 1,
+    "totalTransactions": 9,
+    "totalUniqueReceivers": 0,
+    "totalUniqueSenders": 1,
+  },
+]
+`;

@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-import { DatePeriod } from "./dates";
+import type { DatePeriod } from "./dates";
 
 export const updatedAtField = Prisma.sql`updated_at`;
 

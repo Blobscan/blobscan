@@ -25,7 +25,8 @@ describe("Blockchain sync state route", async () => {
       const expectedState: Awaited<
         ReturnType<typeof nonAuthorizedCaller.syncState.getState>
       > = {
-        lastFinalizedBlock: 1004,
+        lastAggregatedBlock: 1004,
+        lastFinalizedBlock: 1007,
         lastLowerSyncedSlot: 106,
         lastUpperSyncedSlot: 107,
       };
