@@ -1,13 +1,17 @@
 import type { Redis } from "ioredis";
 
 import { prisma } from "@blobscan/db";
-import type { BlockNumberRange } from "@blobscan/db";
+import type { BlockNumberRange, Prisma } from "@blobscan/db";
 
 import { PeriodicUpdater } from "../PeriodicUpdater";
 import { log } from "../utils";
 
+const DEFAULT_BATCH_SIZE = 2_000_000;
 export class OverallStatsUpdater extends PeriodicUpdater {
-  constructor(redisUriOrConnection: string | Redis) {
+  constructor(
+    redisUriOrConnection: string | Redis,
+    { batchSize }: { batchSize: number } = { batchSize: DEFAULT_BATCH_SIZE }
+  ) {
     const name = "overall-stats-syncer";
     super({
       name,
@@ -27,7 +31,7 @@ export class OverallStatsUpdater extends PeriodicUpdater {
         if (lastFinalizedBlock === null) {
           log(
             "debug",
-            `Skipping overall stats aggregation. No blocks have been indexed yet`,
+            `Skipping stats aggregation. No blocks have been indexed yet`,
             {
               updater: name,
             }
@@ -37,14 +41,14 @@ export class OverallStatsUpdater extends PeriodicUpdater {
         }
 
         const blockRange: BlockNumberRange = {
-          from: lastAggregatedBlock ?? 0,
+          from: lastAggregatedBlock ? lastAggregatedBlock + 1 : 0,
           to: lastFinalizedBlock,
         };
 
         if (blockRange.from >= blockRange.to) {
           log(
             "debug",
-            `Skipping overall stats aggregation. No new finalized blocks (last aggregated block: ${lastAggregatedBlock})`,
+            `Skipping stats aggregation. No new finalized blocks (last aggregated block: ${lastAggregatedBlock})`,
             {
               updater: name,
             }
@@ -53,26 +57,54 @@ export class OverallStatsUpdater extends PeriodicUpdater {
           return;
         }
 
-        await prisma.$transaction([
-          prisma.blockOverallStats.increment(blockRange),
-          prisma.transactionOverallStats.increment(blockRange),
-          prisma.blobOverallStats.increment(blockRange),
-          prisma.blockchainSyncState.upsert({
-            create: {
-              lastAggregatedBlock: blockRange.to,
-            },
-            update: {
-              lastAggregatedBlock: blockRange.to,
-            },
-            where: {
-              id: 1,
-            },
-          }),
-        ]);
+        const { from, to } = blockRange;
+        const unprocessedBlocks = to - from + 1;
+        const batches = Math.ceil(unprocessedBlocks / batchSize);
+
+        for (let i = 0; i < batches; i++) {
+          const batchFrom = from + i * batchSize;
+          const batchTo = Math.min(batchFrom + batchSize - 1, to);
+          const batchBlockRange: BlockNumberRange = {
+            from: batchFrom,
+            to: batchTo,
+          };
+          const newBlockchainSyncState: Partial<Prisma.BlockchainSyncStateGroupByOutputType> =
+            {
+              lastAggregatedBlock: batchTo,
+            };
+
+          await prisma.$transaction([
+            prisma.blockOverallStats.increment(batchBlockRange),
+            prisma.transactionOverallStats.increment(batchBlockRange),
+            prisma.blobOverallStats.increment(batchBlockRange),
+            prisma.blockchainSyncState.upsert({
+              create: newBlockchainSyncState,
+              update: newBlockchainSyncState,
+              where: {
+                id: 1,
+              },
+            }),
+          ]);
+
+          if (batches > 1) {
+            const formattedFromBlock = batchBlockRange.from.toLocaleString();
+            const formattedToBlock = batchBlockRange.to.toLocaleString();
+
+            log(
+              "debug",
+              `(batch ${
+                i + 1
+              }/${batches}) Data from block ${formattedFromBlock} up to ${formattedToBlock} aggregated successfully`,
+              {
+                updater: name,
+              }
+            );
+          }
+        }
 
         log(
           "info",
-          `Blocks ${blockRange.from} to ${blockRange.to} stats aggregated successfully.`,
+          `Data from block ${blockRange.from.toLocaleString()} up to ${blockRange.to.toLocaleString()} aggregated successfully.`,
           {
             updater: name,
           }

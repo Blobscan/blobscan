@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
-import { PrismaPromise, prisma } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 import { DailyStatsUpdater } from "../src/updaters/DailyStatsUpdater";
 import { formatDate } from "../src/utils";

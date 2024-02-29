@@ -1,13 +1,16 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { prisma } from "@blobscan/db";
-import { omitDBTimestampFields } from "@blobscan/test";
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { OverallStatsUpdater } from "../src/updaters/OverallStatsUpdater";
 
 class OverallStatsUpdaterMock extends OverallStatsUpdater {
-  constructor(redisUri = process.env.REDIS_URI ?? "") {
-    super(redisUri);
+  constructor(
+    redisUri = process.env.REDIS_URI ?? "",
+    config?: ConstructorParameters<typeof OverallStatsUpdater>[1]
+  ) {
+    super(redisUri, config);
   }
 
   getWorker() {
@@ -55,10 +58,98 @@ describe("OverallStatsUpdater", () => {
   it("should aggregate all overall stats correctly", async () => {
     const workerProcessor = overallStatsUpdater.getWorkerProcessor();
 
+    const incrementTransactionSpy = vi.spyOn(prisma, "$transaction");
+
     await workerProcessor();
 
-    const allOverallStats = await getAllOverallStats();
-    expect(allOverallStats).toMatchSnapshot();
+    const [blobOverallStats, blockOverallStats, transactionOverallStats] =
+      await getAllOverallStats();
+
+    expect(
+      incrementTransactionSpy,
+      "Expect to aggregate overall stats within a transaction"
+    ).toHaveBeenCalledOnce();
+    expect(blobOverallStats, "Incorrect blob overall stats aggregation")
+      .toMatchInlineSnapshot(`
+        {
+          "avgBlobSize": 1175,
+          "id": 1,
+          "totalBlobSize": 9400n,
+          "totalBlobs": 8,
+          "totalUniqueBlobs": 1,
+        }
+      `);
+    expect(blockOverallStats, "Incorrect block overall stats aggregation")
+      .toMatchInlineSnapshot(`
+        {
+          "avgBlobAsCalldataFee": 5406666.666666667,
+          "avgBlobFee": 114000000,
+          "avgBlobGasPrice": 21.33333333333333,
+          "id": 1,
+          "totalBlobAsCalldataFee": "16220000",
+          "totalBlobAsCalldataGasUsed": "760000",
+          "totalBlobFee": "342000000",
+          "totalBlobGasUsed": "16000000",
+          "totalBlocks": 3,
+        }
+      `);
+    expect(
+      transactionOverallStats,
+      "Incorrect transaction overall stats aggregation"
+    ).toMatchInlineSnapshot(`
+      {
+        "avgMaxBlobGasFee": 100,
+        "id": 1,
+        "totalTransactions": 4,
+        "totalUniqueReceivers": 0,
+        "totalUniqueSenders": 0,
+      }
+    `);
+  });
+
+  it("should aggregate overall stats in batches correctly when there are too many blocks", async () => {
+    const batchSize = 2;
+    const workerProcessor = new OverallStatsUpdaterMock(undefined, {
+      batchSize,
+    }).getWorkerProcessor();
+    const incrementTransactionSpy = vi.spyOn(prisma, "$transaction");
+    const blockchainSyncState = fixtures.blockchainSyncState[0];
+    const lastAggregatedBlock = blockchainSyncState
+      ? blockchainSyncState.lastAggregatedBlock + 1
+      : 0;
+    const lastFinalizedBlock =
+      fixtures.blockchainSyncState[0]?.lastFinalizedBlock ?? 0;
+    const batches = Math.ceil(
+      (lastFinalizedBlock - lastAggregatedBlock + 1) / batchSize
+    );
+
+    await workerProcessor();
+
+    expect(
+      incrementTransactionSpy,
+      "Incorrect number of stats aggregation calls"
+    ).toHaveBeenCalledTimes(batches);
+  });
+
+  it("should update last aggregated block to last finalized block after aggregation", async () => {
+    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+    const expectedLastAggregatedBlock =
+      fixtures.blockchainSyncState[0]?.lastFinalizedBlock;
+
+    await workerProcessor();
+
+    const lastAggregatedBlock = await prisma.blockchainSyncState
+      .findUnique({
+        select: {
+          lastAggregatedBlock: true,
+        },
+        where: {
+          id: 1,
+        },
+      })
+      .then((state) => state?.lastAggregatedBlock);
+
+    expect(lastAggregatedBlock).toBe(expectedLastAggregatedBlock);
   });
 
   it("should skip aggregation when no blocks have been indexed yet", async () => {
