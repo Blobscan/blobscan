@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { BlockchainSyncState } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
@@ -36,16 +37,111 @@ describe("Blockchain sync state route", async () => {
 
   describe("updateState", () => {
     describe("when authorized", () => {
-      it("should update blockchain sync state", async () => {
-        const { id: _, ...expectedState } =
-          fixtures.blockchainSyncState[0] || {};
+      describe("when updating blockchain sync state", () => {
+        it("should update the last finalized block correctly", async () => {
+          const prevBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+          const newLastFinalizedBlock = 2000;
 
-        await authorizedCaller.syncState.updateState(expectedState);
+          await authorizedCaller.syncState.updateState({
+            lastFinalizedBlock: newLastFinalizedBlock,
+          });
 
-        const state =
-          await authorizedContext.prisma.blockchainSyncState.findFirst();
+          const afterBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
 
-        expect(state).toMatchObject(expectedState);
+          expect(afterBlockchainSyncState).toMatchObject({
+            ...prevBlockchainSyncState,
+            lastFinalizedBlock: newLastFinalizedBlock,
+          });
+        });
+
+        it("should update the last lower synced slot correctly", async () => {
+          const prevBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+          const newLastLowerSyncedSlot = 2000;
+
+          await authorizedCaller.syncState.updateState({
+            lastLowerSyncedSlot: newLastLowerSyncedSlot,
+          });
+
+          const afterBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+
+          expect(afterBlockchainSyncState).toMatchObject({
+            ...prevBlockchainSyncState,
+            lastLowerSyncedSlot: newLastLowerSyncedSlot,
+          });
+        });
+
+        it("should update the last upper synced slot correctly", async () => {
+          const prevBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+          const newLastUpperSyncedSlot = 2000;
+
+          await authorizedCaller.syncState.updateState({
+            lastUpperSyncedSlot: newLastUpperSyncedSlot,
+          });
+
+          const afterBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+
+          expect(afterBlockchainSyncState).toMatchObject({
+            ...prevBlockchainSyncState,
+            lastUpperSyncedSlot: newLastUpperSyncedSlot,
+          });
+        });
+
+        it("should update all fields correctly", async () => {
+          const prevBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+          const newBlockchainSyncState = {
+            lastFinalizedBlock: 2001,
+            lastLowerSyncedSlot: 30,
+            lastUpperSyncedSlot: 560,
+          };
+
+          await authorizedCaller.syncState.updateState(newBlockchainSyncState);
+
+          const afterBlockchainSyncState =
+            await authorizedContext.prisma.blockchainSyncState.findUnique({
+              where: {
+                id: 1,
+              },
+            });
+
+          expect(afterBlockchainSyncState).toMatchObject(
+            newBlockchainSyncState
+          );
+        });
       });
 
       it("should fail when trying to update last lower synced slot to a value greater than last upper synced slot", async () => {
