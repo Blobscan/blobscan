@@ -22,7 +22,10 @@ import { openApiDocument } from "./openapi";
 
 collectDefaultMetrics();
 
-const statsSyncer = new StatsSyncer(env.REDIS_URI);
+const statsSyncer = new StatsSyncer({
+  redisUri: env.REDIS_URI,
+  lowestSlot: env.FORK_SLOT,
+});
 
 statsSyncer.run({
   cronPatterns: {

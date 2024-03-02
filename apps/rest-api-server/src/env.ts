@@ -15,7 +15,8 @@ export const env = createEnv({
       TRACES_ENABLED: booleanSchema.default("false"),
       METRICS_ENABLED: booleanSchema.default("false"),
       REDIS_URI: z.string().default("redis://localhost:6379"),
-      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * *"),
+      FORK_SLOT: z.coerce.number().optional().default(0),
+      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
       STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
     },
 
@@ -29,7 +30,9 @@ export const env = createEnv({
         env.REDIS_URI
       )}, dailyStatsCron=${
         env.STATS_SYNCER_DAILY_CRON_PATTERN
-      }, overallStatsCron=${env.STATS_SYNCER_OVERALL_CRON_PATTERN}`
+      }, overallStatsCron=${env.STATS_SYNCER_OVERALL_CRON_PATTERN}, forkSlot=${
+        env.FORK_SLOT
+      }`
     );
   },
 });
