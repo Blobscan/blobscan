@@ -1,5 +1,4 @@
 export const GAS_PER_BLOB = 131_072; // 2 ** 17
-export const BLOB_GAS_LIMIT_PER_BLOCK = 786_432;
 
 function isValidInt(number: number): boolean {
   const minInt = -2147_483_648;
