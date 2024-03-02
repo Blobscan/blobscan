@@ -1,6 +1,88 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Block router > getAllFull > when getting paginated block results > should default to the first page when no page was specified 1`] = `
+exports[`Block router > 'getAll' > when getting paginated block results > should default to the first page when no page was specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "blobs": [
+      "blobHash001",
+    ],
+    "excessBlobGas": "15000",
+    "hash": "blockHash008",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 1693497600,
+    "totalBlobSize": 1000,
+    "transactions": [
+      "txHash016",
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "blobs": [
+      "blobHash004",
+      "blobHash004",
+      "blobHash004",
+    ],
+    "excessBlobGas": "15000",
+    "hash": "blockHash007",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 1693490400,
+    "totalBlobSize": 3900,
+    "transactions": [
+      "txHash015",
+    ],
+  },
+]
+`;
+
+exports[`Block router > 'getAll' > when getting paginated block results > should return the correct number of results 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "blobs": [
+      "blobHash001",
+    ],
+    "excessBlobGas": "15000",
+    "hash": "blockHash008",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": 1693497600,
+    "totalBlobSize": 1000,
+    "transactions": [
+      "txHash016",
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "blobs": [
+      "blobHash004",
+      "blobHash004",
+      "blobHash004",
+    ],
+    "excessBlobGas": "15000",
+    "hash": "blockHash007",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": 1693490400,
+    "totalBlobSize": 3900,
+    "transactions": [
+      "txHash015",
+    ],
+  },
+]
+`;
+
+exports[`Block router > 'getAllFull' > when getting paginated block results > should default to the first page when no page was specified 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
@@ -73,7 +155,7 @@ exports[`Block router > getAllFull > when getting paginated block results > shou
 ]
 `;
 
-exports[`Block router > getAllFull > when getting paginated block results > should return the correct number of results 1`] = `
+exports[`Block router > 'getAllFull' > when getting paginated block results > should return the correct number of results 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
@@ -146,7 +228,151 @@ exports[`Block router > getAllFull > when getting paginated block results > shou
 ]
 `;
 
-exports[`Block router > getByIdFull > should get a block by hash 1`] = `
+exports[`Block router > 'getByBlockId' > should get a block by block number 1`] = `
+{
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "5500000",
+  "blobs": [
+    "blobHash001",
+    "blobHash002",
+    "blobHash003",
+    "blobHash004",
+    "blobHash005",
+    "blobHash006",
+  ],
+  "excessBlobGas": "15000",
+  "hash": "blockHash002",
+  "number": 1002,
+  "slot": 102,
+  "timestamp": 1683720000,
+  "totalBlobSize": 7500,
+  "transactions": [
+    "txHash004",
+  ],
+}
+`;
+
+exports[`Block router > 'getByBlockId' > should get a block by hash 1`] = `
+{
+  "blobAsCalldataGasUsed": "2042780",
+  "blobGasPrice": "22",
+  "blobGasUsed": "786432",
+  "blobs": [
+    "blobHash001",
+    "blobHash002",
+    "blobHash003",
+    "blobHash001",
+    "blobHash001",
+    "blobHash002",
+  ],
+  "excessBlobGas": "15000",
+  "hash": "blockHash001",
+  "number": 1001,
+  "slot": 101,
+  "timestamp": 1665921600,
+  "totalBlobSize": 6400,
+  "transactions": [
+    "txHash001",
+    "txHash002",
+    "txHash003",
+  ],
+}
+`;
+
+exports[`Block router > 'getByBlockId' > should get a block by slot 1`] = `
+{
+  "blobAsCalldataGasUsed": "2042780",
+  "blobGasPrice": "22",
+  "blobGasUsed": "786432",
+  "blobs": [
+    "blobHash001",
+    "blobHash002",
+    "blobHash003",
+    "blobHash001",
+    "blobHash001",
+    "blobHash002",
+  ],
+  "excessBlobGas": "15000",
+  "hash": "blockHash001",
+  "number": 1001,
+  "slot": 101,
+  "timestamp": 1665921600,
+  "totalBlobSize": 6400,
+  "transactions": [
+    "txHash001",
+    "txHash002",
+    "txHash003",
+  ],
+}
+`;
+
+exports[`Block router > 'getByBlockIdFull' > should get a block by block number 1`] = `
+{
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "5500000",
+  "excessBlobGas": "15000",
+  "hash": "blockHash002",
+  "number": 1002,
+  "slot": 102,
+  "timestamp": 1683720000,
+  "totalBlobSize": 7500,
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "blob": {
+            "size": 1000,
+          },
+          "blobHash": "blobHash001",
+          "index": 0,
+        },
+        {
+          "blob": {
+            "size": 1100,
+          },
+          "blobHash": "blobHash002",
+          "index": 1,
+        },
+        {
+          "blob": {
+            "size": 1200,
+          },
+          "blobHash": "blobHash003",
+          "index": 2,
+        },
+        {
+          "blob": {
+            "size": 1300,
+          },
+          "blobHash": "blobHash004",
+          "index": 3,
+        },
+        {
+          "blob": {
+            "size": 1400,
+          },
+          "blobHash": "blobHash005",
+          "index": 4,
+        },
+        {
+          "blob": {
+            "size": 1500,
+          },
+          "blobHash": "blobHash006",
+          "index": 5,
+        },
+      ],
+      "fromId": "address1",
+      "hash": "txHash004",
+      "toId": "address3",
+    },
+  ],
+}
+`;
+
+exports[`Block router > 'getByBlockIdFull' > should get a block by hash 1`] = `
 {
   "blobAsCalldataGasUsed": "2042780",
   "blobGasPrice": "22",
@@ -225,72 +451,7 @@ exports[`Block router > getByIdFull > should get a block by hash 1`] = `
 }
 `;
 
-exports[`Block router > should get a block by block number 1`] = `
-{
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
-  "hash": "blockHash002",
-  "number": 1002,
-  "slot": 102,
-  "timestamp": 1683720000,
-  "totalBlobSize": 7500,
-  "transactions": [
-    {
-      "blobs": [
-        {
-          "blob": {
-            "size": 1000,
-          },
-          "blobHash": "blobHash001",
-          "index": 0,
-        },
-        {
-          "blob": {
-            "size": 1100,
-          },
-          "blobHash": "blobHash002",
-          "index": 1,
-        },
-        {
-          "blob": {
-            "size": 1200,
-          },
-          "blobHash": "blobHash003",
-          "index": 2,
-        },
-        {
-          "blob": {
-            "size": 1300,
-          },
-          "blobHash": "blobHash004",
-          "index": 3,
-        },
-        {
-          "blob": {
-            "size": 1400,
-          },
-          "blobHash": "blobHash005",
-          "index": 4,
-        },
-        {
-          "blob": {
-            "size": 1500,
-          },
-          "blobHash": "blobHash006",
-          "index": 5,
-        },
-      ],
-      "fromId": "address1",
-      "hash": "txHash004",
-      "toId": "address3",
-    },
-  ],
-}
-`;
-
-exports[`Block router > should get a block by slot 1`] = `
+exports[`Block router > 'getByBlockIdFull' > should get a block by slot 1`] = `
 {
   "blobAsCalldataGasUsed": "2042780",
   "blobGasPrice": "22",

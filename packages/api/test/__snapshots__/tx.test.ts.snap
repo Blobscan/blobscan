@@ -1,6 +1,92 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Transaction router > getAllFull > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
+exports[`Transaction router > 'getAll' > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasPrice": "22",
+    "blobGasUsed": "131072",
+    "blobs": [
+      "blobHash001",
+    ],
+    "blockHash": "blockHash008",
+    "blockNumber": 1008,
+    "from": "address2",
+    "gasPrice": "10",
+    "hash": "txHash016",
+    "maxFeePerBlobGas": "100",
+    "to": "address4",
+    "totalBlobSize": 1000,
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasPrice": "22",
+    "blobGasUsed": "393216",
+    "blobs": [
+      "blobHash004",
+      "blobHash004",
+      "blobHash004",
+    ],
+    "blockHash": "blockHash007",
+    "blockNumber": 1007,
+    "from": "address5",
+    "gasPrice": "10",
+    "hash": "txHash015",
+    "maxFeePerBlobGas": "100",
+    "to": "address4",
+    "totalBlobSize": 3900,
+  },
+]
+`;
+
+exports[`Transaction router > 'getAll' > when getting paginated transaction results > should return the correct number of results 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasPrice": "22",
+    "blobGasUsed": "131072",
+    "blobs": [
+      "blobHash001",
+    ],
+    "blockHash": "blockHash008",
+    "blockNumber": 1008,
+    "from": "address2",
+    "gasPrice": "10",
+    "hash": "txHash016",
+    "maxFeePerBlobGas": "100",
+    "to": "address4",
+    "totalBlobSize": 1000,
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasPrice": "22",
+    "blobGasUsed": "393216",
+    "blobs": [
+      "blobHash004",
+      "blobHash004",
+      "blobHash004",
+    ],
+    "blockHash": "blockHash007",
+    "blockNumber": 1007,
+    "from": "address5",
+    "gasPrice": "10",
+    "hash": "txHash015",
+    "maxFeePerBlobGas": "100",
+    "to": "address4",
+    "totalBlobSize": 3900,
+  },
+]
+`;
+
+exports[`Transaction router > 'getAllFull' > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "1000",
@@ -79,7 +165,7 @@ exports[`Transaction router > getAllFull > when getting paginated transaction re
 ]
 `;
 
-exports[`Transaction router > getAllFull > when getting paginated transaction results > should return the correct number of results 1`] = `
+exports[`Transaction router > 'getAllFull' > when getting paginated transaction results > should return the correct number of results 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "1000",
@@ -156,6 +242,81 @@ exports[`Transaction router > getAllFull > when getting paginated transaction re
     "totalBlobSize": 3900,
   },
 ]
+`;
+
+exports[`Transaction router > 'getByHash' > should fail when providing a non-existent hash > [TRPCError: No transaction with hash 'nonExistingHash'.] 1`] = `[TRPCError: No transaction with hash 'nonExistingHash'.]`;
+
+exports[`Transaction router > 'getByHash' > should get a transaction by hash correctly 1`] = `
+{
+  "blobAsCalldataGasUsed": "1000",
+  "blobGasBaseFee": "8650752",
+  "blobGasMaxFee": "39321600",
+  "blobGasPrice": "22",
+  "blobGasUsed": "393216",
+  "blobs": [
+    "blobHash001",
+    "blobHash002",
+    "blobHash003",
+  ],
+  "blockHash": "blockHash001",
+  "blockNumber": 1001,
+  "from": "address1",
+  "gasPrice": "10",
+  "hash": "txHash001",
+  "maxFeePerBlobGas": "100",
+  "to": "address2",
+  "totalBlobSize": 3300,
+}
+`;
+
+exports[`Transaction router > 'getByHashFull' > should fail when providing a non-existent hash > [TRPCError: No transaction with hash 'nonExistingHash'.] 1`] = `[TRPCError: No transaction with hash 'nonExistingHash'.]`;
+
+exports[`Transaction router > 'getByHashFull' > should get a transaction by hash correctly 1`] = `
+{
+  "blobAsCalldataGasUsed": "1000",
+  "blobGasBaseFee": "8650752",
+  "blobGasMaxFee": "39321600",
+  "blobGasUsed": "393216",
+  "blobs": [
+    {
+      "blob": {
+        "commitment": "commitment001",
+        "size": 1000,
+      },
+      "blobHash": "blobHash001",
+      "index": 0,
+    },
+    {
+      "blob": {
+        "commitment": "commitment002",
+        "size": 1100,
+      },
+      "blobHash": "blobHash002",
+      "index": 1,
+    },
+    {
+      "blob": {
+        "commitment": "commitment003",
+        "size": 1200,
+      },
+      "blobHash": "blobHash003",
+      "index": 2,
+    },
+  ],
+  "block": {
+    "blobGasPrice": "22",
+    "excessBlobGas": "15000",
+    "number": 1001,
+    "timestamp": 1665921600,
+  },
+  "blockHash": "blockHash001",
+  "fromId": "address1",
+  "gasPrice": "10",
+  "hash": "txHash001",
+  "maxFeePerBlobGas": "100",
+  "toId": "address2",
+  "totalBlobSize": 3300,
+}
 `;
 
 exports[`Transaction router > getByAddress > when getting paginated address's transactions results > should default to the first page when no page was specified 1`] = `
@@ -314,52 +475,4 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
     "totalBlobSize": 3000,
   },
 ]
-`;
-
-exports[`Transaction router > getByHashFull > should get a transaction by hash correctly 1`] = `
-{
-  "blobAsCalldataGasUsed": "1000",
-  "blobGasBaseFee": "8650752",
-  "blobGasMaxFee": "39321600",
-  "blobGasUsed": "393216",
-  "blobs": [
-    {
-      "blob": {
-        "commitment": "commitment001",
-        "size": 1000,
-      },
-      "blobHash": "blobHash001",
-      "index": 0,
-    },
-    {
-      "blob": {
-        "commitment": "commitment002",
-        "size": 1100,
-      },
-      "blobHash": "blobHash002",
-      "index": 1,
-    },
-    {
-      "blob": {
-        "commitment": "commitment003",
-        "size": 1200,
-      },
-      "blobHash": "blobHash003",
-      "index": 2,
-    },
-  ],
-  "block": {
-    "blobGasPrice": "22",
-    "excessBlobGas": "15000",
-    "number": 1001,
-    "timestamp": 1665921600,
-  },
-  "blockHash": "blockHash001",
-  "fromId": "address1",
-  "gasPrice": "10",
-  "hash": "txHash001",
-  "maxFeePerBlobGas": "100",
-  "toId": "address2",
-  "totalBlobSize": 3300,
-}
 `;
