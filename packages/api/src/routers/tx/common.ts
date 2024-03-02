@@ -81,6 +81,7 @@ export function formatFullTransaction(tx: FullTransaction) {
     ...commonFields,
     block: {
       ...tx.block,
+      timestamp: Math.floor(tx.block.timestamp.getTime() / 1000),
       blobGasPrice: tx.block.blobGasPrice.toFixed(),
       excessBlobGas: tx.block.excessBlobGas.toFixed(),
     },

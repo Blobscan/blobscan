@@ -250,7 +250,7 @@ const Home: NextPage = () => {
                         <BlobTransactionCard
                           key={tx.hash}
                           transaction={filteredTx}
-                          block={{ ...block, number: tx.block.number }}
+                          block={{ ...block }}
                         />
                       );
                     })}
