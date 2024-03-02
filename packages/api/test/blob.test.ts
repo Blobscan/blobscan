@@ -8,9 +8,7 @@ import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
 import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
-type GetByHashInput = inferProcedureInput<
-  AppRouter["blob"]["getByVersionedHash"]
->;
+type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
 describe("Blob router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -39,31 +37,41 @@ describe("Blob router", async () => {
     });
   });
 
-  describe("getByVersionedHash", () => {
+  describe("getByBlobId", () => {
     it("should get a blob by versioned hash", async () => {
-      const input: GetByHashInput = {
-        versioned_hash: "blobHash004",
+      const input: GetByIdInput = {
+        id: "blobHash004",
       };
 
-      const result = await caller.blob.getByVersionedHash(input);
+      const result = await caller.blob.getByBlobId(input);
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should get a blob by kzg commitment", async () => {
+      const input: GetByIdInput = {
+        id: "commitment004",
+      };
+
+      const result = await caller.blob.getByBlobId(input);
 
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a blob by a non-existent hash", async () => {
       await expect(
-        caller.blob.getByVersionedHash({
-          versioned_hash: "nonExistingHash",
+        caller.blob.getByBlobId({
+          id: "nonExistingHash",
         })
       ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: No blob with hash nonExistingHash found]"
+        "[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]"
       );
     });
 
     it("should fail when getting a blob and the blob data is not available", async () => {
       await expect(
-        caller.blob.getByVersionedHash({
-          versioned_hash: "blobHash003",
+        caller.blob.getByBlobId({
+          id: "blobHash003",
         })
       ).rejects.toMatchInlineSnapshot(
         "[TRPCError: Failed to get blob from any of the storages: ]"

@@ -1,9 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Transaction router > getAll > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
+exports[`Transaction router > getAllFull > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
     "blobs": [
       {
         "blob": {
@@ -26,9 +29,13 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "hash": "txHash016",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 1000,
   },
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
     "blobs": [
       {
         "blob": {
@@ -67,14 +74,18 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "hash": "txHash015",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 3900,
   },
 ]
 `;
 
-exports[`Transaction router > getAll > when getting paginated transaction results > should return the correct number of results 1`] = `
+exports[`Transaction router > getAllFull > when getting paginated transaction results > should return the correct number of results 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
     "blobs": [
       {
         "blob": {
@@ -97,9 +108,13 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "hash": "txHash016",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 1000,
   },
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
     "blobs": [
       {
         "blob": {
@@ -138,6 +153,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "hash": "txHash015",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 3900,
   },
 ]
 `;
@@ -146,6 +162,9 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
 [
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
     "blobs": [
       {
         "blob": {
@@ -168,9 +187,13 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
     "hash": "txHash016",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 1000,
   },
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "7864320",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
     "blobs": [
       {
         "blob": {
@@ -209,6 +232,7 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
     "hash": "txHash012",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 3000,
   },
 ]
 `;
@@ -217,6 +241,9 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
 [
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
     "blobs": [
       {
         "blob": {
@@ -239,9 +266,13 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
     "hash": "txHash016",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 1000,
   },
   {
     "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "7864320",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
     "blobs": [
       {
         "blob": {
@@ -280,13 +311,17 @@ exports[`Transaction router > getByAddress > when getting paginated address's tr
     "hash": "txHash012",
     "maxFeePerBlobGas": "100",
     "toId": "address4",
+    "totalBlobSize": 3000,
   },
 ]
 `;
 
-exports[`Transaction router > getByHash > should get a transaction by hash correctly 1`] = `
+exports[`Transaction router > getByHashFull > should get a transaction by hash correctly 1`] = `
 {
   "blobAsCalldataGasUsed": "1000",
+  "blobGasBaseFee": "8650752",
+  "blobGasMaxFee": "39321600",
+  "blobGasUsed": "393216",
   "blobs": [
     {
       "blob": {
@@ -325,5 +360,6 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
   "hash": "txHash001",
   "maxFeePerBlobGas": "100",
   "toId": "address2",
+  "totalBlobSize": 3300,
 }
 `;

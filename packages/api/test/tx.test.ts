@@ -8,7 +8,7 @@ import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
-type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHash"]>;
+type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHashFull"]>;
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -19,39 +19,41 @@ describe("Transaction router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe("getAll", () => {
+  describe("getAllFull", () => {
     it("should get the total number of transactions", async () => {
       const expectedTotalTransactions = fixtures.txs.length;
 
       await ctx.prisma.transactionOverallStats.populate();
 
-      const { totalTransactions } = await caller.tx.getAll();
+      const { totalTransactions } = await caller.tx.getAllFull();
 
       expect(totalTransactions).toBe(expectedTotalTransactions);
     });
 
     runPaginationTestsSuite("transaction", (paginationInput) =>
-      caller.tx.getAll(paginationInput).then(({ transactions }) => transactions)
+      caller.tx
+        .getAllFull(paginationInput)
+        .then(({ transactions }) => transactions)
     );
   });
 
-  describe("getByHash", () => {
+  describe("getByHashFull", () => {
     it("should get a transaction by hash correctly", async () => {
       const input: GetByHashInput = {
         hash: "txHash001",
       };
 
-      const result = await caller.tx.getByHash(input);
+      const result = await caller.tx.getByHashFull(input);
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when providing a non-existent hash", async () => {
       await expect(
-        caller.tx.getByHash({
+        caller.tx.getByHashFull({
           hash: "nonExistingHash",
         })
       ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: No tx with hash 'nonExistingHash']"
+        "[TRPCError: No transaction with hash 'nonExistingHash'.]"
       );
     });
   });

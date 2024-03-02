@@ -9,7 +9,7 @@ import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
-type Input = inferProcedureInput<AppRouter["block"]["getByHash"]>;
+type Input = inferProcedureInput<AppRouter["block"]["getByBlockIdFull"]>;
 
 describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -20,69 +20,89 @@ describe("Block router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe("getAll", () => {
+  describe("getAllFull", () => {
     runPaginationTestsSuite("block", (paginationInput) =>
-      caller.block.getAll(paginationInput).then(({ blocks }) => blocks)
+      caller.block.getAllFull(paginationInput).then(({ blocks }) => blocks)
     );
 
     it("should the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.blocks.length;
 
       await ctx.prisma.blockOverallStats.populate();
-      await caller.block.getAll();
+      await caller.block.getAllFull();
 
-      const { totalBlocks } = await caller.block.getAll();
+      const { totalBlocks } = await caller.block.getAllFull();
 
       expect(totalBlocks).toBe(expectedTotalBlocks);
     });
   });
 
-  describe("getByHash", () => {
+  describe("getByIdFull", () => {
     it("should get a block by hash", async () => {
       const input: Input = {
-        hash: "blockHash001",
+        id: "blockHash001",
       };
 
-      const result = await caller.block.getByHash(input);
+      const result = await caller.block.getByBlockIdFull(input);
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a block with a non-existent hash", async () => {
       await expect(
-        caller.block.getByHash({
-          hash: "nonExistingHash",
+        caller.block.getByBlockIdFull({
+          id: "nonExistingHash",
         })
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with hash 'nonExistingHash'`,
+          message: `No block with number, slot or hash 'nonExistingHash'.`,
         })
       );
     });
   });
 
-  describe("getByBlockNumber", () => {
-    it("should get a block by block number", async () => {
-      type Input = inferProcedureInput<AppRouter["block"]["getByBlockNumber"]>;
-      const input: Input = {
-        number: 1002,
-      };
+  it("should get a block by slot", async () => {
+    const input: Input = {
+      id: "101",
+    };
 
-      const result = await caller.block.getByBlockNumber(input);
-      expect(result).toMatchSnapshot();
-    });
+    const result = await caller.block.getByBlockIdFull(input);
+    expect(result).toMatchSnapshot();
+  });
 
-    it("should fail when trying to get a block with a non-existent block number", async () => {
-      await expect(
-        caller.block.getByBlockNumber({
-          number: 9999,
-        })
-      ).rejects.toThrow(
-        new TRPCError({
-          code: "NOT_FOUND",
-          message: `No block with number '9999'`,
-        })
-      );
-    });
+  it("should fail when trying to get a block with a non-existent slot", async () => {
+    await expect(
+      caller.block.getByBlockIdFull({
+        id: "nonExistingSlot",
+      })
+    ).rejects.toThrow(
+      new TRPCError({
+        code: "NOT_FOUND",
+        message: `No block with number, slot or hash 'nonExistingSlot'.`,
+      })
+    );
+  });
+
+  it("should get a block by block number", async () => {
+    type Input = inferProcedureInput<AppRouter["block"]["getByBlockIdFull"]>;
+    const input: Input = {
+      id: "1002",
+    };
+
+    const result = await caller.block.getByBlockIdFull(input);
+    expect(result).toMatchSnapshot();
+  });
+
+  it("should fail when trying to get a block with a non-existent block number", async () => {
+    await expect(
+      caller.block.getByBlockIdFull({
+        id: "9999",
+      })
+    ).rejects.toThrow(
+      new TRPCError({
+        code: "NOT_FOUND",
+        message: `No block with number, slot or hash '9999'.`,
+      })
+    );
   });
 });
