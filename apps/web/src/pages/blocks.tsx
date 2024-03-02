@@ -11,7 +11,7 @@ import { formatNumber } from "~/utils";
 const Blocks: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const { data, error } = api.block.getAll.useQuery({ p, ps });
+  const { data, error } = api.block.getAllFull.useQuery({ p, ps });
   const { blocks, totalBlocks } = data || {};
 
   if (error) {

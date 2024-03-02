@@ -37,9 +37,9 @@ const Blob: NextPage = function () {
     data: blob,
     error,
     isLoading,
-  } = api.blob.getByVersionedHash.useQuery(
+  } = api.blob.getByBlobId.useQuery(
     {
-      versioned_hash: versionedHash,
+      id: versionedHash,
     },
     {
       enabled: router.isReady,
