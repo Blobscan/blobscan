@@ -6,35 +6,58 @@ import type { BlockNumberRange, Prisma } from "@blobscan/db";
 import { PeriodicUpdater } from "../PeriodicUpdater";
 import { log } from "../utils";
 
+export type OverallStatsUpdaterOptions = {
+  batchSize?: number;
+  lowestSlot?: number;
+};
+
 const DEFAULT_BATCH_SIZE = 2_000_000;
+const DEFAULT_INITIAL_SLOT = 0;
+
+function isUnset<T>(value: T | undefined | null): value is null | undefined {
+  return value === undefined || value === null;
+}
+
 export class OverallStatsUpdater extends PeriodicUpdater {
   constructor(
     redisUriOrConnection: string | Redis,
-    { batchSize }: { batchSize: number } = { batchSize: DEFAULT_BATCH_SIZE }
+    options: OverallStatsUpdaterOptions = {}
   ) {
     const name = "overall-stats-syncer";
     super({
       name,
       redisUriOrConnection,
       updaterFn: async () => {
-        const { lastAggregatedBlock, lastFinalizedBlock } =
-          (await prisma.blockchainSyncState.findUnique({
+        const {
+          batchSize = DEFAULT_BATCH_SIZE,
+          lowestSlot = DEFAULT_INITIAL_SLOT,
+        } = options ?? {};
+
+        const [blockchainSyncState, latestBlock] = await Promise.all([
+          prisma.blockchainSyncState.findUnique({
             select: {
+              lastLowerSyncedSlot: true,
               lastAggregatedBlock: true,
               lastFinalizedBlock: true,
             },
             where: {
               id: 1,
             },
-          })) ?? { lastAggregatedBlock: null, lastFinalizedBlock: null };
+          }),
+          prisma.block.findLatest(),
+        ]);
+        const { lastAggregatedBlock, lastFinalizedBlock, lastLowerSyncedSlot } =
+          blockchainSyncState ?? {};
+        const lastIndexedBlockNumber = latestBlock?.number;
 
-        if (lastFinalizedBlock === null) {
+        if (
+          isUnset(lastIndexedBlockNumber) ||
+          isUnset(lastFinalizedBlock) ||
+          lastLowerSyncedSlot !== lowestSlot
+        ) {
           log(
             "debug",
-            `Skipping stats aggregation. No blocks have been indexed yet`,
-            {
-              updater: name,
-            }
+            "Skipping stats aggregation. Chain hasn't been fully indexed yet"
           );
 
           return;
@@ -42,7 +65,7 @@ export class OverallStatsUpdater extends PeriodicUpdater {
 
         const blockRange: BlockNumberRange = {
           from: lastAggregatedBlock ? lastAggregatedBlock + 1 : 0,
-          to: lastFinalizedBlock,
+          to: Math.min(lastFinalizedBlock, lastIndexedBlockNumber),
         };
 
         if (blockRange.from >= blockRange.to) {

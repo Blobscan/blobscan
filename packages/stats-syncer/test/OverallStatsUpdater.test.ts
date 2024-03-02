@@ -8,9 +8,14 @@ import { OverallStatsUpdater } from "../src/updaters/OverallStatsUpdater";
 class OverallStatsUpdaterMock extends OverallStatsUpdater {
   constructor(
     redisUri = process.env.REDIS_URI ?? "",
-    config?: ConstructorParameters<typeof OverallStatsUpdater>[1]
+    config: ConstructorParameters<typeof OverallStatsUpdater>[1] = {}
   ) {
-    super(redisUri, config);
+    const lowestSlot =
+      config.lowestSlot ?? fixtures.blockchainSyncState[0]?.lastLowerSyncedSlot;
+    super(redisUri, {
+      ...config,
+      lowestSlot,
+    });
   }
 
   getWorker() {
@@ -152,10 +157,45 @@ describe("OverallStatsUpdater", () => {
     expect(lastAggregatedBlock).toBe(expectedLastAggregatedBlock);
   });
 
+  it("should skip aggregation when no finalized block has been set", async () => {
+    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+
+    await prisma.blockchainSyncState.update({
+      data: {
+        lastFinalizedBlock: null,
+      },
+      where: {
+        id: 1,
+      },
+    });
+
+    await workerProcessor();
+
+    const allOverallStats = await getAllOverallStats().then((allOverallStats) =>
+      allOverallStats.filter((stats) => !!stats)
+    );
+
+    expect(allOverallStats).toEqual([]);
+  });
+
   it("should skip aggregation when no blocks have been indexed yet", async () => {
     const workerProcessor = overallStatsUpdater.getWorkerProcessor();
 
-    await prisma.blockchainSyncState.deleteMany({});
+    vi.spyOn(prisma.block, "findLatest").mockResolvedValueOnce(null);
+
+    await workerProcessor();
+
+    const allOverallStats = await getAllOverallStats().then((allOverallStats) =>
+      allOverallStats.filter((stats) => !!stats)
+    );
+
+    expect(allOverallStats).toEqual([]);
+  });
+
+  it("should skip aggregation when the lowest slot hasn't been reached yet", async () => {
+    const workerProcessor = new OverallStatsUpdaterMock(undefined, {
+      lowestSlot: 1,
+    }).getWorkerProcessor();
 
     await workerProcessor();
 

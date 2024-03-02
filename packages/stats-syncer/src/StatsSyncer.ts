@@ -5,12 +5,16 @@ import { DailyStatsUpdater } from "./updaters/DailyStatsUpdater";
 import { OverallStatsUpdater } from "./updaters/OverallStatsUpdater";
 import { createRedisConnection, log } from "./utils";
 
+export type StatsSyncerOptions = {
+  redisUri: string;
+  lowestSlot?: number;
+};
 export class StatsSyncer {
   protected connection: Redis;
   protected dailyStatsUpdater: DailyStatsUpdater;
   protected overallStatsUpdater: OverallStatsUpdater;
 
-  constructor(redisUri: string) {
+  constructor({ redisUri, lowestSlot }: StatsSyncerOptions) {
     const connection = createRedisConnection(redisUri);
 
     connection.on("error", (err) => {
@@ -19,7 +23,9 @@ export class StatsSyncer {
 
     this.connection = connection;
     this.dailyStatsUpdater = new DailyStatsUpdater(connection);
-    this.overallStatsUpdater = new OverallStatsUpdater(connection);
+    this.overallStatsUpdater = new OverallStatsUpdater(connection, {
+      lowestSlot,
+    });
   }
 
   async run(config: {
