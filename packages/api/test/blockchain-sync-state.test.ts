@@ -1,8 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { BlockchainSyncState } from "@blobscan/db";
-import { fixtures } from "@blobscan/test";
-
 import { appRouter } from "../src/app-router";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 
@@ -117,12 +114,6 @@ describe("Blockchain sync state route", async () => {
         });
 
         it("should update all fields correctly", async () => {
-          const prevBlockchainSyncState =
-            await authorizedContext.prisma.blockchainSyncState.findUnique({
-              where: {
-                id: 1,
-              },
-            });
           const newBlockchainSyncState = {
             lastFinalizedBlock: 2001,
             lastLowerSyncedSlot: 30,

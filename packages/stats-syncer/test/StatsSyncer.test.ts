@@ -4,7 +4,7 @@ import { StatsSyncer } from "../src/StatsSyncer";
 
 class StatsSyncerMock extends StatsSyncer {
   constructor(redisUri = "redis://localhost:6379/1") {
-    super(redisUri);
+    super({ redisUri });
   }
 
   getConnection() {
