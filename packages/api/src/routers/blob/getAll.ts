@@ -11,7 +11,7 @@ export const getAll = publicProcedure
       method: "GET",
       path: "/blobs",
       tags: ["blobs"],
-      summary: "get blobs",
+      summary: "retrieves all blobs.",
     },
   })
   .input(paginationSchema.optional())

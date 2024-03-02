@@ -9,7 +9,7 @@ export const getBlockDailyStats = timeFrameProcedure
       method: "GET",
       path: `/${BLOCK_BASE_PATH}`,
       tags: ["stats"],
-      summary: "get blocks time series stats",
+      summary: "retrieves blocks time series stats.",
     },
   })
   .output(getBlockDailyStatsOutputSchema)

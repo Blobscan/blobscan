@@ -9,7 +9,7 @@ export const getBlobDailyStats = timeFrameProcedure
       method: "GET",
       path: `/${BLOB_BASE_PATH}`,
       tags: ["stats"],
-      summary: "get blobs time series stats",
+      summary: "retrieves blob time series stats.",
     },
   })
   .output(getBlobDailyStatsOutputSchema)

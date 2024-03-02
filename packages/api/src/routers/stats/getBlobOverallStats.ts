@@ -29,7 +29,7 @@ export const getBlobOverallStats = publicProcedure
       method: "GET",
       path: `/${BLOB_BASE_PATH}/overall`,
       tags: ["stats"],
-      summary: "get blobs overall stats",
+      summary: "retrieves blobs overall stats.",
     },
   })
   .input(getBlobOverallStatsInputSchema)

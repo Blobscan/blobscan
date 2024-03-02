@@ -8,7 +8,7 @@ export const getState = publicProcedure
       method: "GET",
       path: BASE_PATH,
       tags: ["indexer"],
-      summary: "get the current blockchain sync state",
+      summary: "retrieves the blockchain sync state.",
     },
   })
   .input(getStateInputSchema)

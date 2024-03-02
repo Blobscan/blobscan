@@ -9,7 +9,7 @@ export const getTransactionDailyStats = timeFrameProcedure
       method: "GET",
       path: `/${TRANSACTION_BASE_PATH}`,
       tags: ["stats"],
-      summary: "get transactions time series stats",
+      summary: "retrieves transactions time series stats.",
     },
   })
   .output(getTransactionDailyStatsOutputSchema)

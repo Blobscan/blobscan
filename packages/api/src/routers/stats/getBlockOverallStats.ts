@@ -43,7 +43,7 @@ export const getBlockOverallStats = publicProcedure
       method: "GET",
       path: `/${BLOCK_BASE_PATH}/overall`,
       tags: ["stats"],
-      summary: "get blocks overall stats",
+      summary: "retrieves blocks overall stats.",
     },
   })
   .input(getBlockOverallStatsInputSchema)

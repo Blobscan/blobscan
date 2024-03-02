@@ -14,7 +14,7 @@ export const getAllOverallStats = publicProcedure
       method: "GET",
       path: `/${BASE_PATH}/overall`,
       tags: ["stats"],
-      summary: "get all overall stats",
+      summary: "retrieves all overall stats.",
     },
   })
   .input(getAllOverallStatsInputSchema)

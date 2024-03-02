@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "./procedures";
 import { blobRouter } from "./routers/blob";
@@ -15,15 +15,15 @@ export const appRouter = t.router({
   tx: transactionRouter,
   blob: blobRouter,
   search: searchRouter,
-  indexer: indexerRouter,
   stats: statsRouter,
+  indexer: indexerRouter,
   syncState: blockchainSyncStateRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {
         method: "GET",
         path: "/healthcheck",
-        summary: "connection healthcheck",
+        summary: "connection healthcheck.",
         tags: ["system"],
       },
     })

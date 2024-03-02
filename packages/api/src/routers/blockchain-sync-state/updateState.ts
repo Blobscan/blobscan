@@ -13,7 +13,7 @@ export const updateState = jwtAuthedProcedure
       method: "PUT",
       path: BASE_PATH,
       tags: ["indexer"],
-      summary: "update the blockchain sync state",
+      summary: "updates the blockchain sync state.",
       protect: true,
     },
   })
