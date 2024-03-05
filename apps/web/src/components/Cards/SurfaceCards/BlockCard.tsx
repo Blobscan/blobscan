@@ -4,10 +4,8 @@ import type { FC } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import dayjs from "@blobscan/dayjs";
-
 import type { Block } from "~/types";
-import { buildBlockRoute } from "~/utils";
+import { buildBlockRoute, normalizeTimestamp } from "~/utils";
 import { Link } from "../../Link";
 import { CardHeader } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -40,7 +38,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
       <div className="pt-2 text-sm">
         {timestamp ? (
           <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-            {dayjs(timestamp).fromNow()}
+            {normalizeTimestamp(timestamp).fromNow()}
           </div>
         ) : (
           <Skeleton width={100} />
