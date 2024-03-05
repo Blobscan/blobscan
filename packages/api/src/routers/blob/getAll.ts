@@ -23,6 +23,7 @@ export const getAll = publicProcedure
         select: {
           versionedHash: true,
           commitment: true,
+          proof: true,
           size: true,
         },
         ...ctx.pagination,

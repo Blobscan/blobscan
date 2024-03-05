@@ -44,6 +44,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
     },
   ],
+  "proof": "proof004",
   "size": 1300,
   "versionedHash": "blobHash004",
 }
@@ -63,6 +64,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
     },
   ],
+  "proof": "proof004",
   "size": 1300,
   "versionedHash": "blobHash004",
 }

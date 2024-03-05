@@ -28,7 +28,7 @@ type FullTransaction = Pick<
   blobs: {
     blobHash: string;
     index: number;
-    blob: Pick<Blob, "commitment" | "size">;
+    blob: Pick<Blob, "commitment" | "proof" | "size">;
   }[];
 };
 
@@ -50,6 +50,7 @@ export const fullTransactionSelect =
         blob: {
           select: {
             commitment: true,
+            proof: true,
             size: true,
           },
         },
