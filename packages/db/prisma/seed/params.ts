@@ -18,15 +18,15 @@ export type SeedParams = {
 };
 
 export const seedParams: SeedParams = {
-  totalDays: 90,
-  minBlocksPerDay: 500,
-  maxBlocksPerDay: 1000,
+  totalDays: 45,
+  minBlocksPerDay: 300,
+  maxBlocksPerDay: 500,
 
   maxBlobsPerBlock: 6,
   maxBlobsPerTx: 3,
 
   maxUniqueBlobs: 100,
-  maxUniqueAddresses: 10_000,
+  maxUniqueAddresses: 1000,
 
   maxBlobBytesSize: 1024,
 

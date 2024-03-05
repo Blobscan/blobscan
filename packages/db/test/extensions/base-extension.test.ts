@@ -335,6 +335,7 @@ describe("Base Extension", () => {
       const newRawBlob = {
         versionedHash: "newHash",
         commitment: "newCommitment",
+        proof: "newProof",
         txHash: "txHash001",
         index: 0,
         data: "data001",
@@ -346,6 +347,7 @@ describe("Base Extension", () => {
           {
             versionedHash: "blobHash001",
             commitment: "commitment001",
+            proof: "proof001",
             txHash: "txHash001",
             index: 0,
             data: "data001",
@@ -353,6 +355,7 @@ describe("Base Extension", () => {
           {
             versionedHash: "blobHash002",
             commitment: "commitment002",
+            proof: "proof002",
             txHash: "txHash002",
             index: 0,
             data: "data002",
@@ -380,18 +383,21 @@ describe("Base Extension", () => {
           {
             versionedHash: "newHash1",
             commitment: "newCommitment1",
+            proof: "newProof1",
             size: 1400,
             firstBlockNumber: 1001,
           },
           {
             versionedHash: "newHash2",
             commitment: "newCommitment2",
+            proof: "newProof2",
             size: 1200,
             firstBlockNumber: 1001,
           },
           {
             versionedHash: "newHash3",
             commitment: "newCommitment3",
+            proof: "newProof3",
             size: 1300,
             firstBlockNumber: 1002,
           },
@@ -434,6 +440,7 @@ describe("Base Extension", () => {
           const expectedUpdatedBlob = {
             versionedHash: blobHash,
             commitment: "newCommitment",
+            proof: "newProof",
             size: 1400,
             firstBlockNumber: oldBlob.firstBlockNumber,
           };
@@ -495,18 +502,21 @@ describe("Base Extension", () => {
           {
             versionedHash: "blobHash001",
             commitment: "newCommitment001",
+            proof: "newProof001",
             size: 1,
             firstBlockNumber: 1001,
           },
           {
             versionedHash: "blobHash002",
             commitment: "newCommitment002",
+            proof: "newProof002",
             size: 2,
             firstBlockNumber: 1001,
           },
           {
             versionedHash: "blobHash003",
             commitment: "newCommitment003",
+            proof: "newProof003",
             size: 3,
             firstBlockNumber: 1001,
           },
@@ -541,6 +551,7 @@ describe("Base Extension", () => {
   describe("BlobDataStorageReference model", () => {
     const newBlob: WithoutTimestampFields<Blob> = {
       commitment: "newCommitment",
+      proof: "newProof",
       versionedHash: "newHash",
       size: 1000,
       firstBlockNumber: 1001,

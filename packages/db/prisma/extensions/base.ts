@@ -17,6 +17,7 @@ type ZeroOpResult = { count: number }[];
 export type RawBlob = {
   versionedHash: string;
   commitment: string;
+  proof: string;
   txHash: string;
   index: number;
   data: string;
@@ -142,6 +143,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
 
             return {
               commitment: b.commitment,
+              proof: b.proof,
               data: b.data,
               txHash: b.txHash,
               versionedHash: b.versionedHash,
@@ -156,12 +158,15 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           }
 
           const formattedValues = blobs
-            .map(({ versionedHash, commitment, size, firstBlockNumber }) => [
-              versionedHash,
-              commitment,
-              size,
-              firstBlockNumber,
-            ])
+            .map(
+              ({
+                versionedHash,
+                commitment,
+                proof,
+                size,
+                firstBlockNumber,
+              }) => [versionedHash, commitment, proof, size, firstBlockNumber]
+            )
             .map(
               (rowColumns) =>
                 Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
@@ -171,6 +176,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             INSERT INTO blob as b (
               versioned_hash,
               commitment,
+              proof,
               size,
               first_block_number,
               inserted_at,
@@ -178,6 +184,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT (versioned_hash) DO UPDATE SET
               commitment = EXCLUDED.commitment,
+              proof = EXCLUDED.proof,
               size = EXCLUDED.size,
               first_block_number = LEAST(b.first_block_number, EXCLUDED.first_block_number),
               updated_at = NOW()

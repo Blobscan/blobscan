@@ -53,6 +53,7 @@ export class DataGenerator {
       const commitment = faker.string.hexadecimal({
         length: 96,
       });
+      const proof = faker.string.hexadecimal({ length: 96 });
       const versionedHash = `0x01${sha256(commitment).slice(2)}`;
       const dataLength = faker.number.int({
         min: this.#seedParams.maxBlobBytesSize,
@@ -62,6 +63,7 @@ export class DataGenerator {
 
       blobs.push({
         commitment,
+        proof,
         size,
         versionedHash,
         firstBlockNumber: Infinity,
