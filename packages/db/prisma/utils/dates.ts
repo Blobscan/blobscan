@@ -16,7 +16,7 @@ export function normalizeDailyDate(
   date: string | Date | dayjs.Dayjs,
   startOfOrEndOfDay: "startOf" | "endOf" = "endOf"
 ) {
-  const date_ = dayjs.isDayjs(date) ? date : dayjs(new Date(date)).utc();
+  const date_ = dayjs.isDayjs(date) ? date.utc() : dayjs(new Date(date)).utc();
 
   return date_[startOfOrEndOfDay]("day").toISOString();
 }
