@@ -1,16 +1,14 @@
 {
-  "name": "@blobscan/stats-aggregation-cli",
-  "version": "0.0.1",
+  "name": "@blobscan/stats-syncer",
+  "description": "Blobscan's stats syncer",
   "private": true,
-  "description": "A CLI that facilitates the aggregation of metrics related to different types of entities.",
+  "version": "0.0.1",
   "main": "./src/index.ts",
-  "types": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "start": "ts-node src/runner.ts",
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui",
     "with-env:test": "dotenv -e ../../.env.test --"
@@ -19,8 +17,8 @@
     "@blobscan/dayjs": "^0.0.1",
     "@blobscan/db": "^0.0.1",
     "@blobscan/logger": "^0.0.1",
-    "command-line-args": "^5.2.1",
-    "command-line-usage": "^7.0.1"
+    "bullmq": "^4.13.2",
+    "ioredis": "^5.3.2"
   },
   "eslintConfig": {
     "root": true,

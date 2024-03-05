@@ -22,6 +22,7 @@ export const updateState = jwtAuthedProcedure
   .mutation(async ({ ctx, input }) => {
     const lastLowerSyncedSlot = input.lastLowerSyncedSlot;
     const lastUpperSyncedSlot = input.lastUpperSyncedSlot;
+    const lastFinalizedBlock = input.lastFinalizedBlock;
 
     if (
       lastLowerSyncedSlot !== undefined &&
@@ -40,11 +41,13 @@ export const updateState = jwtAuthedProcedure
       update: {
         lastLowerSyncedSlot,
         lastUpperSyncedSlot,
+        lastFinalizedBlock,
       },
       create: {
         id: 1,
         lastLowerSyncedSlot,
         lastUpperSyncedSlot,
+        lastFinalizedBlock,
       },
     });
   });

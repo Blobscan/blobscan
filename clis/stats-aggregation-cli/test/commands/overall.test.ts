@@ -6,12 +6,6 @@ import { omitDBTimestampFields } from "@blobscan/test";
 import { overall, overallCommandUsage } from "../../src/commands/overall";
 import { runHelpArgTests } from "../helpers";
 
-vi.mock("../../src/env", () => ({
-  env: {
-    BEACON_NODE_ENDPOINT: "http://localhost:1234",
-  },
-}));
-
 function getAllOverallStats() {
   return Promise.all([
     prisma.blobOverallStats.findMany(),
@@ -43,47 +37,14 @@ describe("Overall command", () => {
       expect(overallStats).toMatchSnapshot();
     });
 
-    describe("when target block 'finalized' is provided", () => {
-      it("should increment them until latest finalized block", async () => {
-        global.fetch = vi.fn().mockImplementation(() => ({
-          json: vi.fn().mockImplementation(() => ({
-            data: {
-              message: {
-                body: {
-                  execution_payload: {
-                    block_number: "1006",
-                  },
-                },
-                slot: "106",
-              },
-            },
-          })),
-        }));
+    it("should increment them until latest finalized block", async () => {
+      await overall(["--to", "finalized"]);
 
-        await overall(["--to", "finalized"]);
+      const overallStats = await getAllOverallStats().then((overallStats) =>
+        overallStats.map((stats) => stats.map(omitDBTimestampFields))
+      );
 
-        const overallStats = await getAllOverallStats().then((overallStats) =>
-          overallStats.map((stats) => stats.map(omitDBTimestampFields))
-        );
-
-        expect(
-          global.fetch,
-          "Fetch should have been called with the correct endpoint"
-        ).toHaveBeenCalledWith(
-          `http://localhost:1234/eth/v2/beacon/blocks/finalized`
-        );
-        expect(overallStats).toMatchSnapshot();
-      });
-
-      it("should handle beacon node endpoint errors correctly", async () => {
-        global.fetch = vi.fn().mockImplementation(() => {
-          throw new Error("Some error from endpoint");
-        });
-
-        expect(overall(["--to", "finalized"])).rejects.toMatchInlineSnapshot(
-          "[Error: Failed to fetch block from beacon node: Some error from endpoint]"
-        );
-      });
+      expect(overallStats).toMatchSnapshot();
     });
 
     it("should increment until provided block number", async () => {
@@ -135,7 +96,7 @@ describe("Overall command", () => {
     expect(
       overall(["--to", "invalid-block-height"])
     ).rejects.toMatchInlineSnapshot(
-      '[Error: Invalid `to` flag value: Expected a block number, "latest" or "finalized" but got: invalid-block-height]'
+      '[Error: Overall stats aggregation failed: Invalid `to` flag value. Expected a block number, "latest" or "finalized" but got invalid-block-height]'
     );
   });
 });

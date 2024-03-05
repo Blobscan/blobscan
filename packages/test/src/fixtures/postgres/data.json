@@ -3,7 +3,8 @@
   "blockchainSyncState": [
     {
       "id": 1,
-      "lastFinalizedBlock": 1004,
+      "lastAggregatedBlock": 1004,
+      "lastFinalizedBlock": 1007,
       "lastLowerSyncedSlot": 106,
       "lastUpperSyncedSlot": 107
     }

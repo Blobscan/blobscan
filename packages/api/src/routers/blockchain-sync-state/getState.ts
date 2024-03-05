@@ -16,18 +16,20 @@ export const getState = publicProcedure
   .query(async ({ ctx }) => {
     const state = await ctx.prisma.blockchainSyncState.findUnique({
       select: {
+        lastAggregatedBlock: true,
+        lastFinalizedBlock: true,
         lastLowerSyncedSlot: true,
         lastUpperSyncedSlot: true,
-        lastFinalizedBlock: true,
       },
       where: { id: 1 },
     });
 
     return (
       state ?? {
+        lastAggregatedBlock: null,
+        lastFinalizedBlock: null,
         lastLowerSyncedSlot: null,
         lastUpperSyncedSlot: null,
-        lastFinalizedBlock: null,
       }
     );
   });
