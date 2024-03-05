@@ -7,6 +7,7 @@ import type { BlobStorage } from "@blobscan/db";
 import { GoogleStorage, PostgresStorage, env } from "../src";
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
+import { BlobStorageError } from "../src/errors";
 import {
   BLOB_DATA,
   BLOB_HASH,
@@ -27,7 +28,10 @@ describe("BlobStorageManager", () => {
 
   beforeAll(() => {
     if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
-      throw new Error("GOOGLE_STORAGE_BUCKET_NAME is not set");
+      throw new BlobStorageError(
+        "GoogleStorage",
+        "GOOGLE_STORAGE_BUCKET_NAME is not set"
+      );
     }
 
     postgresStorage = new PostgresStorage();
@@ -52,13 +56,16 @@ describe("BlobStorageManager", () => {
     failingSwarmStorage = mockDeep<SwarmStorage>();
 
     failingPostgresStorage.storeBlob.mockRejectedValue(
-      new Error("Failed to upload blob to postgres")
+      new BlobStorageError(
+        "PostgresStorage",
+        "Failed to upload blob to postgres"
+      )
     );
     failingGoogleStorage.storeBlob.mockRejectedValue(
-      new Error("Failed to upload blob to google")
+      new BlobStorageError("GoogleStorage", "Failed to upload blob to google")
     );
     failingSwarmStorage.storeBlob.mockRejectedValue(
-      new Error("Failed to upload blob to swarm")
+      new BlobStorageError("SwarmStorage", "Failed to upload blob to swarm")
     );
   });
 
@@ -130,10 +137,7 @@ describe("BlobStorageManager", () => {
       );
 
       await expect(result).rejects.toMatchInlineSnapshot(
-        `
-        [Error: Failed to get blob from any of the storages: POSTGRES - NotFoundError: No BlobData found, GOOGLE - Error: Not Found
-        , SWARM - Error: File not found]
-      `
+        '[BlobStorageManagerError: Failed to get blob from any of the storages. Failed storages: PostgresStorage failed: Failed to get blob "0x6d6f636b2d64617461", GoogleStorage failed: Failed to get blob "1/6d/6f/636b2d64617461.txt", SwarmStorageMock failed: Failed to get blob "123456789abcdef"]'
       );
     });
   });
@@ -182,7 +186,7 @@ describe("BlobStorageManager", () => {
           selectedStorages: selectedStorages,
         })
       ).rejects.toMatchInlineSnapshot(
-        "[Error: Some of the selected storages are not available: POSTGRES, GOOGLE]"
+        '[BlobStorageManagerError: Some of the selected storages are not available: POSTGRES, GOOGLE". ]'
       );
     });
 
@@ -219,7 +223,7 @@ describe("BlobStorageManager", () => {
       await expect(
         newBlobStorageManager.storeBlob(blob)
       ).rejects.toMatchInlineSnapshot(
-        "[Error: Failed to upload blob 0x6d6f636b2d64617461 to any of the storages: POSTGRES: Error: Failed to upload blob to postgres, GOOGLE: Error: Failed to upload blob to google, SWARM: Error: Failed to upload blob to swarm]"
+        '[BlobStorageManagerError: Failed to upload blob "0x6d6f636b2d64617461" to any storage. Failed storages: PostgresStorage failed: Failed to upload blob to postgres, GoogleStorage failed: Failed to upload blob to google, SwarmStorage failed: Failed to upload blob to swarm]'
       );
     });
   });

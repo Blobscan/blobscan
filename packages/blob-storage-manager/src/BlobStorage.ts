@@ -1,16 +1,63 @@
 import type { Environment } from "./env";
+import { BlobStorageError, StorageCreationError } from "./errors";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface BlobStorageConfig {}
 
 export abstract class BlobStorage {
-  abstract healthCheck(): Promise<void>;
-  abstract getBlob(uri: string): Promise<string>;
-  abstract storeBlob(
+  protected abstract _healthCheck(): Promise<void>;
+  protected abstract _getBlob(uri: string): Promise<string>;
+  protected abstract _storeBlob(
     chainId: number,
-    versionedHash: string,
+    hash: string,
     data: string
   ): Promise<string>;
+
+  async healthCheck(): Promise<"OK"> {
+    try {
+      await this._healthCheck();
+
+      return "OK";
+    } catch (err) {
+      throw new BlobStorageError(
+        this.constructor.name,
+        "Storage is not reachable",
+        err as Error
+      );
+    }
+  }
+
+  async getBlob(uri: string): Promise<string> {
+    try {
+      const blob = await this._getBlob(uri);
+
+      return blob;
+    } catch (err) {
+      throw new BlobStorageError(
+        this.constructor.name,
+        `Failed to get blob "${uri}"`,
+        err as Error
+      );
+    }
+  }
+
+  async storeBlob(
+    chainId: number,
+    hash: string,
+    data: string
+  ): Promise<string> {
+    try {
+      const res = await this._storeBlob(chainId, hash, data);
+
+      return res;
+    } catch (err) {
+      throw new BlobStorageError(
+        this.constructor.name,
+        `Failed to store blob "${hash}"`,
+        err as Error
+      );
+    }
+  }
 
   protected buildBlobFileName(chainId: number, hash: string): string {
     return `${chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
@@ -28,8 +75,11 @@ export abstract class BlobStorage {
     try {
       await blobStorage.healthCheck();
     } catch (err) {
-      const err_ = err as Error;
-      throw new Error(`${this.name} is not reachable: ${err_.message}`);
+      throw new StorageCreationError(
+        this.name,
+        "Healthcheck failed",
+        err as BlobStorageError
+      );
     }
 
     return blobStorage;
@@ -44,11 +94,11 @@ export abstract class BlobStorage {
       tryGetConfigFromEnv(env: Partial<Environment>): C | undefined;
     },
     env: Partial<Environment>
-  ): Promise<T | undefined> {
+  ): Promise<[T?, StorageCreationError?]> {
     const config = this.tryGetConfigFromEnv(env);
 
     if (!config) {
-      return;
+      return [, new StorageCreationError(this.name, "No config found")];
     }
 
     const blobStorage = new this(config);
@@ -56,16 +106,18 @@ export abstract class BlobStorage {
     try {
       await blobStorage.healthCheck();
     } catch (err) {
-      const err_ = err as Error;
-      throw new Error(`${this.name} is not reachable: ${err_.message}`);
+      return [, err as StorageCreationError];
     }
 
-    return blobStorage;
+    return [blobStorage];
   }
 
   protected static tryGetConfigFromEnv(
     _: Partial<Environment>
   ): BlobStorageConfig | undefined {
-    throw new Error(`tryGetConfigFromEnv function not implemented`);
+    throw new StorageCreationError(
+      this.name,
+      `"tryGetConfigFromEnv" function not implemented`
+    );
   }
 }

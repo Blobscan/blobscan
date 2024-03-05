@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { env } from "../../src";
 import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
+import { BlobStorageError } from "../../src/errors";
 import {
   BLOB_DATA,
   BLOB_HASH,
@@ -38,20 +39,28 @@ describe("SwarmStorage", () => {
     });
   });
 
-  describe("healthCheck", () => {
+  describe("healthcheck", () => {
     it("should resolve successfully", async () => {
       await expect(storage.healthCheck()).resolves.not.toThrow();
     });
 
     it("should throw error if bee is not healthy", async () => {
-      await expect(storage.healthCheck()).rejects.toMatchInlineSnapshot(
-        "[Error: Bee is not healthy: not ok]"
+      await expect(storage.healthCheck()).rejects.toThrowError(
+        new BlobStorageError(
+          "SwarmStorageMock",
+          `Storage is not reachable`,
+          new Error("Bee is not healthy")
+        )
       );
     });
 
     it("should throw error if bee debug is not healthy", async () => {
-      await expect(storage.healthCheck()).rejects.toMatchInlineSnapshot(
-        "[Error: Bee debug is not healthy: not ok]"
+      await expect(storage.healthCheck()).rejects.toThrowError(
+        new BlobStorageError(
+          "SwarmStorageMock",
+          `Storage is not reachable`,
+          new Error("Bee debug is not healthy: error")
+        )
       );
     });
   });
@@ -78,7 +87,13 @@ describe("SwarmStorage", () => {
     it("should throw an error if no postage batches are available", async () => {
       await expect(
         storage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA)
-      ).rejects.toMatchInlineSnapshot("[Error: No postage batches available]");
+      ).rejects.toThrowError(
+        new BlobStorageError(
+          "SwarmStorageMock",
+          `Failed to store blob "${BLOB_HASH}"`,
+          new Error("No postage batches available")
+        )
+      );
     });
 
     it("should throw an error if beeDebug endpoint is not available", async () => {
@@ -88,8 +103,12 @@ describe("SwarmStorage", () => {
 
       await expect(
         newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA)
-      ).rejects.toMatchInlineSnapshot(
-        "[Error: Bee debug endpoint required to get postage batches]"
+      ).rejects.toThrowError(
+        new BlobStorageError(
+          "SwarmStorageMock",
+          `Failed to store blob "${BLOB_HASH}"`,
+          new Error("Bee debug endpoint required to get postage batches")
+        )
       );
     });
   });

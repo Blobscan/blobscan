@@ -28,7 +28,7 @@ export class SwarmStorage extends BlobStorage {
     };
   }
 
-  async healthCheck(): Promise<void> {
+  protected async _healthCheck() {
     const healthCheckOps = [];
 
     healthCheckOps.push(this._swarmClient.bee.checkConnection());
@@ -46,15 +46,15 @@ export class SwarmStorage extends BlobStorage {
     await Promise.all(healthCheckOps);
   }
 
-  async getBlob(reference: string): Promise<string> {
+  protected async _getBlob(reference: string) {
     return (await this._swarmClient.bee.downloadData(reference)).toString();
   }
 
-  async storeBlob(
+  protected async _storeBlob(
     chainId: number,
     versionedHash: string,
     data: string
-  ): Promise<string> {
+  ) {
     const batchId = await this.#getAvailableBatch();
     const response = await this._swarmClient.bee.uploadFile(
       batchId,
@@ -71,13 +71,13 @@ export class SwarmStorage extends BlobStorage {
 
   async #getAvailableBatch(): Promise<string> {
     if (!this._swarmClient.beeDebug) {
-      throw new Error("Bee debug endpoint required to get postage batches");
+      throw new Error("Bee debug endpoint required to get postage batches.");
     }
 
     const [firstBatch] = await this._swarmClient.beeDebug.getAllPostageBatch();
 
     if (!firstBatch?.batchID) {
-      throw new Error("No postage batches available");
+      throw new Error("No postage batches available.");
     }
 
     return firstBatch.batchID;

@@ -2,6 +2,7 @@ import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { GoogleStorage, env } from "../../src";
+import { BlobStorageError } from "../../src/errors";
 import type { GoogleStorageConfig } from "../../src/storages";
 import { BLOB_DATA, BLOB_HASH, FILE_URI } from "../fixtures";
 
@@ -61,8 +62,12 @@ describe("GoogleStorage", () => {
         bucketName: newBucket,
       });
 
-      await expect(newStorage.healthCheck()).rejects.toMatchInlineSnapshot(
-        "[Error: Bucket new-bucket does not exist]"
+      await expect(newStorage.healthCheck()).rejects.toThrowError(
+        new BlobStorageError(
+          "GoogleStorage",
+          `Storage is not reachable`,
+          new Error(`Bucket ${newBucket} does not exist`)
+        )
       );
     });
   });
@@ -81,6 +86,26 @@ describe("GoogleStorage", () => {
 
       expect(file).toMatchInlineSnapshot(
         '"70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
+      );
+    });
+
+    it("should throw valid error if the bucket does not exist", async () => {
+      const newBucket = "new-bucket";
+
+      const newStorage = new GoogleStorage({
+        projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+        apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+        bucketName: newBucket,
+      });
+
+      await expect(
+        newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA)
+      ).rejects.toThrowError(
+        new BlobStorageError(
+          "GoogleStorage",
+          `Failed to store blob "${BLOB_HASH}"`,
+          new Error("Bucket new-bucket does not exist")
+        )
       );
     });
   });

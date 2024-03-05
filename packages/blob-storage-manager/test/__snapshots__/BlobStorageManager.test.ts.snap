@@ -3,14 +3,8 @@
 exports[`BlobStorageManager > storeBlob > should return errors for failed uploads 1`] = `
 {
   "errors": [
-    {
-      "error": [Error: Failed to upload blob to postgres],
-      "storage": "POSTGRES",
-    },
-    {
-      "error": [Error: Failed to upload blob to swarm],
-      "storage": "SWARM",
-    },
+    [BlobStorageError: PostgresStorage failed: Failed to upload blob to postgres],
+    [BlobStorageError: SwarmStorage failed: Failed to upload blob to swarm],
   ],
   "references": [
     {

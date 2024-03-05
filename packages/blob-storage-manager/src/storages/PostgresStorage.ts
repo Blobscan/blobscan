@@ -5,7 +5,7 @@ import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 
 export class PostgresStorage extends BlobStorage {
-  client: PrismaClient;
+  protected client: PrismaClient;
 
   constructor() {
     super();
@@ -13,11 +13,11 @@ export class PostgresStorage extends BlobStorage {
     this.client = new PrismaClient();
   }
 
-  healthCheck(): Promise<void> {
+  protected _healthCheck(): Promise<void> {
     return Promise.resolve();
   }
 
-  getBlob(versionedHash: string): Promise<string> {
+  protected _getBlob(versionedHash: string) {
     return this.client.blobData
       .findFirstOrThrow({
         select: {
@@ -30,28 +30,28 @@ export class PostgresStorage extends BlobStorage {
       .then(({ data }) => `0x${data.toString("hex")}`);
   }
 
-  async storeBlob(
+  protected async _storeBlob(
     _: number,
     versionedHash: string,
     blobData: string
-  ): Promise<string> {
+  ) {
     const data = Buffer.from(blobData.slice(2), "hex");
     const id = versionedHash;
 
-    return this.client.blobData
-      .upsert({
-        create: {
-          data,
-          id,
-        },
-        update: {
-          data,
-        },
-        where: {
-          id,
-        },
-      })
-      .then(() => versionedHash);
+    await this.client.blobData.upsert({
+      create: {
+        data,
+        id,
+      },
+      update: {
+        data,
+      },
+      where: {
+        id,
+      },
+    });
+
+    return versionedHash;
   }
 
   static tryGetConfigFromEnv(

@@ -6,9 +6,12 @@ let blobStorageManager: BlobStorageManager | undefined;
 
 export async function getBlobStorageManager(): Promise<BlobStorageManager> {
   if (!blobStorageManager) {
-    const googleStorage = await GoogleStorage.tryCreateFromEnv(env);
-    const postgresStorage = await PostgresStorage.tryCreateFromEnv(env);
-    const swarmStorage = await SwarmStorage.tryCreateFromEnv(env);
+    const [googleStorage, googleStorageError] =
+      await GoogleStorage.tryCreateFromEnv(env);
+    const [postgresStorage, postgresStorageError] =
+      await PostgresStorage.tryCreateFromEnv(env);
+    const [swarmStorage, swarmStorageError] =
+      await SwarmStorage.tryCreateFromEnv(env);
 
     blobStorageManager = new BlobStorageManager(
       {

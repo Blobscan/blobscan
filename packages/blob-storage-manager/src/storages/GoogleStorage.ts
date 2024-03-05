@@ -1,5 +1,5 @@
-import { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
+import { Storage } from "@google-cloud/storage";
 
 import { logger } from "@blobscan/logger";
 
@@ -50,7 +50,7 @@ export class GoogleStorage extends BlobStorage {
     this._storageClient = new Storage(storageOptions);
   }
 
-  async healthCheck(): Promise<void> {
+  protected async _healthCheck() {
     const [buckets] = await this._storageClient.getBuckets();
 
     if (!buckets.find((b) => b.name === this._bucketName)) {
@@ -58,13 +58,13 @@ export class GoogleStorage extends BlobStorage {
     }
   }
 
-  async getBlob(uri: string): Promise<string> {
+  protected async _getBlob(uri: string) {
     return (
       await this._storageClient.bucket(this._bucketName).file(uri).download()
     ).toString();
   }
 
-  async storeBlob(
+  protected async _storeBlob(
     chainId: number,
     versionedHash: string,
     data: string
@@ -99,7 +99,7 @@ export class GoogleStorage extends BlobStorage {
       (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
     ) {
       logger.warn(
-        "Google storage: storage is enabled but no bucket name, api endpoint or service key provided."
+        "Google storage: storage is enabled but no bucket name, api endpoint or service key provided"
       );
       return;
     }
