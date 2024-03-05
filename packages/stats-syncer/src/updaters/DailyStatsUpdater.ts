@@ -72,7 +72,7 @@ export class DailyStatsUpdater extends PeriodicUpdater {
 
             const populatedDays = await model.populate({
               from: lastDailyStatsDay
-                ? dayjs(lastDailyStatsDay).add(1, "day")
+                ? lastDailyStatsDay.add(1, "day")
                 : undefined,
               to: yesterday,
             });

@@ -49,7 +49,7 @@ export class PeriodicUpdater {
       connection,
     });
 
-    this.worker = new Worker(this.name, updaterFn, {
+    this.worker = new Worker(this.queue.name, updaterFn, {
       connection,
     });
 

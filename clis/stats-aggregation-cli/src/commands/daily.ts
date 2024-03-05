@@ -6,7 +6,7 @@ import type { DatePeriod, RawDatePeriod } from "@blobscan/db";
 import { normalizeDailyDatePeriod, prisma } from "@blobscan/db";
 
 import { CommandError } from "../error";
-import { Command, Entity } from "../types";
+import type { Command, Entity } from "../types";
 import {
   ALL_ENTITIES,
   commandLog,
