@@ -10,6 +10,10 @@ import {
 export const env = createEnv({
   envOptions: {
     server: {
+      BLOBSCAN_API_BASE_URL: z
+        .string()
+        .url()
+        .default("https://api.blobscan.com"),
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
       NODE_ENV: nodeEnvSchema.optional(),
       TRACES_ENABLED: booleanSchema.default("false"),

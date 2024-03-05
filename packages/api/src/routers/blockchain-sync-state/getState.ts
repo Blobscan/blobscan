@@ -7,8 +7,8 @@ export const getState = publicProcedure
     openapi: {
       method: "GET",
       path: BASE_PATH,
-      tags: ["blockchain-sync-state"],
-      summary: "Get the current blockchain sync state",
+      tags: ["indexer"],
+      summary: "retrieves the blockchain sync state.",
     },
   })
   .input(getStateInputSchema)

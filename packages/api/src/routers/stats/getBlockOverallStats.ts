@@ -42,8 +42,8 @@ export const getBlockOverallStats = publicProcedure
     openapi: {
       method: "GET",
       path: `/${BLOCK_BASE_PATH}/overall`,
-      tags: ["blocks"],
-      summary: "Get blocks overall stats",
+      tags: ["stats"],
+      summary: "retrieves blocks overall stats.",
     },
   })
   .input(getBlockOverallStatsInputSchema)

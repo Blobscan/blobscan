@@ -1,19 +1,10 @@
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { formatFullTransactionForApi, fullTransactionSelect } from "./common";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
+import { formatFullTransaction, fullTransactionSelect } from "./common";
+import { getAllInputSchema } from "./getAll.schema";
 
-export const getAll = publicProcedure
-  .meta({
-    openapi: {
-      method: "GET",
-      path: "/transactions",
-      tags: ["transactions"],
-      summary: "retrieves all blob transactions.",
-    },
-  })
+export const getAllFull = publicProcedure
   .input(getAllInputSchema)
-  .output(getAllOutputSchema)
   .use(withPagination)
   .query(async ({ ctx }) => {
     const [transactions, overallStats] = await Promise.all([
@@ -27,7 +18,7 @@ export const getAll = publicProcedure
           },
           ...ctx.pagination,
         })
-        .then((txs) => txs.map(formatFullTransactionForApi)),
+        .then((txs) => txs.map(formatFullTransaction)),
       ctx.prisma.transactionOverallStats.findFirst({
         select: {
           totalTransactions: true,

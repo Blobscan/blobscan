@@ -12,7 +12,7 @@ export const handleReorgedSlot = jwtAuthedProcedure
       path: `${INDEXER_PATH}/reorged-slot`,
       tags: ["indexer"],
       summary:
-        "It marks all blocks with slot greater than the new head slot as reorged.",
+        "marks all blocks with slot greater than the new head slot as reorged.",
       protect: true,
     },
   })

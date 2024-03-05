@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -9,7 +10,7 @@ import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
-type Input = inferProcedureInput<AppRouter["block"]["getByHash"]>;
+type Input = inferProcedureInput<AppRouter["block"]["getByBlockIdFull"]>;
 
 describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -20,67 +21,101 @@ describe("Block router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe("getAll", () => {
-    runPaginationTestsSuite("block", (paginationInput) =>
-      caller.block.getAll(paginationInput).then(({ blocks }) => blocks)
-    );
+  describe.each([{ functionName: "getAll" }, { functionName: "getAllFull" }])(
+    "$functionName",
+    ({ functionName }) => {
+      runPaginationTestsSuite("block", (paginationInput) =>
+        // @ts-ignore
+        caller.block[functionName](paginationInput).then(({ blocks }) => blocks)
+      );
 
-    it("should the total number of blocks correctly", async () => {
-      const expectedTotalBlocks = fixtures.blocks.length;
+      it("should the total number of blocks correctly", async () => {
+        const expectedTotalBlocks = fixtures.blocks.length;
 
-      await ctx.prisma.blockOverallStats.populate();
-      await caller.block.getAll();
+        await ctx.prisma.blockOverallStats.populate();
+        await caller.block.getAllFull();
 
-      const { totalBlocks } = await caller.block.getAll();
+        // @ts-ignore
+        const { totalBlocks } = await caller.block[functionName]();
 
-      expect(totalBlocks).toBe(expectedTotalBlocks);
-    });
-  });
+        expect(totalBlocks).toBe(expectedTotalBlocks);
+      });
+    }
+  );
 
-  describe("getByHash", () => {
+  describe.each([
+    { functionName: "getByBlockId" },
+    { functionName: "getByBlockIdFull" },
+  ])("$functionName", ({ functionName }) => {
     it("should get a block by hash", async () => {
       const input: Input = {
-        hash: "blockHash001",
+        id: "blockHash001",
       };
 
-      const result = await caller.block.getByHash(input);
+      const result = await caller.block[
+        functionName as keyof typeof caller.block
+      ](input);
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a block with a non-existent hash", async () => {
       await expect(
-        caller.block.getByHash({
-          hash: "nonExistingHash",
+        caller.block[functionName as keyof typeof caller.block]({
+          id: "nonExistingHash",
         })
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with hash 'nonExistingHash'`,
+          message: `No block with number, slot or hash 'nonExistingHash'.`,
         })
       );
     });
-  });
 
-  describe("getByBlockNumber", () => {
-    it("should get a block by block number", async () => {
-      type Input = inferProcedureInput<AppRouter["block"]["getByBlockNumber"]>;
+    it("should get a block by slot", async () => {
       const input: Input = {
-        number: 1002,
+        id: "101",
       };
 
-      const result = await caller.block.getByBlockNumber(input);
+      const result = await caller.block[
+        functionName as keyof typeof caller.block
+      ](input);
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should fail when trying to get a block with a non-existent slot", async () => {
+      await expect(
+        caller.block[functionName as keyof typeof caller.block]({
+          id: "nonExistingSlot",
+        })
+      ).rejects.toThrow(
+        new TRPCError({
+          code: "NOT_FOUND",
+          message: `No block with number, slot or hash 'nonExistingSlot'.`,
+        })
+      );
+    });
+
+    it("should get a block by block number", async () => {
+      type Input = inferProcedureInput<AppRouter["block"]["getByBlockIdFull"]>;
+      const input: Input = {
+        id: "1002",
+      };
+
+      const result = await caller.block[
+        functionName as keyof typeof caller.block
+      ](input);
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a block with a non-existent block number", async () => {
       await expect(
-        caller.block.getByBlockNumber({
-          number: 9999,
+        caller.block[functionName as keyof typeof caller.block]({
+          id: "9999",
         })
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with number '9999'`,
+          message: `No block with number, slot or hash '9999'.`,
         })
       );
     });

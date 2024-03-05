@@ -27,14 +27,9 @@ import {
 function performBlockQuery(router: NextRouter) {
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
-  const blockNumber = Number(blockNumberOrHash);
 
-  if (!Number.isNaN(blockNumber)) {
-    return api.block.getByBlockNumber.useQuery({ number: blockNumber });
-  }
-
-  return api.block.getByHash.useQuery(
-    { hash: blockNumberOrHash ?? "" },
+  return api.block.getByBlockIdFull.useQuery(
+    { id: blockNumberOrHash ?? "" },
     { enabled: isReady }
   );
 }
@@ -47,7 +42,7 @@ const Block: NextPage = function () {
       blockData_
         ? {
             ...blockData_,
-            blobAsCalldataGasUsed: BigInt(blockData_?.blobAsCalldataGasUsed),
+            blobAsCalldataGasUsed: BigInt(blockData_.blobAsCalldataGasUsed),
             blobGasUsed: BigInt(blockData_.blobGasUsed),
             blobGasPrice: BigInt(blockData_.blobGasPrice),
             excessBlobGas: BigInt(blockData_.excessBlobGas),
@@ -68,12 +63,6 @@ const Block: NextPage = function () {
   if (!isLoading && !blockData) {
     return <div>Block not found</div>;
   }
-
-  const totalBlobSize =
-    blockData?.transactions.reduce(
-      (acc, tx) => acc + tx.blobs.reduce((acc, { blob }) => acc + blob.size, 0),
-      0
-    ) ?? 0;
 
   return (
     <>
@@ -110,10 +99,14 @@ const Block: NextPage = function () {
                   name: "Blob Size",
                   value: (
                     <div>
-                      {formatBytes(totalBlobSize)}
+                      {formatBytes(blockData.totalBlobSize)}
                       <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-                        ({formatNumber(totalBlobSize / GAS_PER_BLOB)}{" "}
-                        {pluralize("blob", totalBlobSize / GAS_PER_BLOB)})
+                        ({formatNumber(blockData.totalBlobSize / GAS_PER_BLOB)}{" "}
+                        {pluralize(
+                          "blob",
+                          blockData.totalBlobSize / GAS_PER_BLOB
+                        )}
+                        )
                       </span>
                     </div>
                   ),

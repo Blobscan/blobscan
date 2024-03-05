@@ -12,7 +12,7 @@ const Txs: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
-  const { data, error } = api.tx.getAll.useQuery({ p, ps });
+  const { data, error } = api.tx.getAllFull.useQuery({ p, ps });
   const { transactions, totalTransactions } = data || {};
 
   if (error) {

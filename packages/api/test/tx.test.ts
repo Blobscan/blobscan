@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -8,7 +10,7 @@ import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
-type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHash"]>;
+type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHashFull"]>;
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -19,39 +21,52 @@ describe("Transaction router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe("getAll", () => {
-    it("should get the total number of transactions", async () => {
-      const expectedTotalTransactions = fixtures.txs.length;
+  describe.each([{ functionName: "getAll" }, { functionName: "getAllFull" }])(
+    "$functionName",
+    ({ functionName }) => {
+      it("should get the total number of transactions", async () => {
+        const expectedTotalTransactions = fixtures.txs.length;
 
-      await ctx.prisma.transactionOverallStats.populate();
+        await ctx.prisma.transactionOverallStats.populate();
 
-      const { totalTransactions } = await caller.tx.getAll();
+        // @ts-ignore
+        const { totalTransactions } = await caller.tx[functionName]();
 
-      expect(totalTransactions).toBe(expectedTotalTransactions);
-    });
+        expect(totalTransactions).toBe(expectedTotalTransactions);
+      });
 
-    runPaginationTestsSuite("transaction", (paginationInput) =>
-      caller.tx.getAll(paginationInput).then(({ transactions }) => transactions)
-    );
-  });
+      runPaginationTestsSuite("transaction", (paginationInput) =>
+        // @ts-ignore
+        caller.tx[functionName](paginationInput).then(
+          // @ts-ignore
+          ({ transactions }) => transactions
+        )
+      );
+    }
+  );
 
-  describe("getByHash", () => {
+  describe.each([
+    { functionName: "getByHash" },
+    { functionName: "getByHashFull" },
+  ])("$functionName", ({ functionName }) => {
     it("should get a transaction by hash correctly", async () => {
       const input: GetByHashInput = {
         hash: "txHash001",
       };
 
-      const result = await caller.tx.getByHash(input);
+      // @ts-ignore
+      const result = await caller.tx[functionName](input);
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when providing a non-existent hash", async () => {
       await expect(
-        caller.tx.getByHash({
+        // @ts-ignore
+        caller.tx[functionName]({
           hash: "nonExistingHash",
         })
-      ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: No tx with hash 'nonExistingHash']"
+      ).rejects.toMatchSnapshot(
+        "[TRPCError: No transaction with hash 'nonExistingHash'.]"
       );
     });
   });

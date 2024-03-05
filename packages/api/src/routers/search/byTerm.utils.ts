@@ -2,13 +2,6 @@ const ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/;
 const HASH_REGEX = /^0x[A-Fa-f0-9]{64}$/;
 const COMMITMENT_REGEX = /^0x[A-Fa-f0-9]{96}$/;
 
-function isValidInt(number: number): boolean {
-  const minInt = -2147_483_648;
-  const maxInt = 2147_483_647;
-
-  return number >= minInt && number <= maxInt;
-}
-
 /**
  *
  * Checks if the given string is an address
@@ -31,14 +24,4 @@ export function isHash(hash: string): boolean {
  */
 export function isCommitment(commitment: string): boolean {
   return COMMITMENT_REGEX.test(commitment);
-}
-
-/**
- *
- * Checks if the given string is a number
- */
-export function isBlockNumber(number: string): boolean {
-  const number_ = Number(number);
-
-  return !isNaN(number_) && isValidInt(number_);
 }

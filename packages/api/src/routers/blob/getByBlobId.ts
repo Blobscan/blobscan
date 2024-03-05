@@ -3,13 +3,27 @@ import { TRPCError } from "@trpc/server";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 
 import { publicProcedure } from "../../procedures";
-import { getByVersionedHashInputSchema } from "./getByVersionedHash.schema";
+import {
+  getByBlobIdInputSchema,
+  getByBlobIdOutputSchema,
+} from "./getByBlobId.schema";
 
-export const getByVersionedHash = publicProcedure
-  .input(getByVersionedHashInputSchema)
+export const getByBlobId = publicProcedure
+  .meta({
+    openapi: {
+      method: "GET",
+      path: "/blobs/{id}",
+      tags: ["blobs"],
+      summary:
+        "retrieves blob details for given versioned hash or kzg commitment.",
+    },
+  })
+  .input(getByBlobIdInputSchema)
+  .output(getByBlobIdOutputSchema)
   .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
-    const { versionedHash } = input;
-    const blob = await prisma.blob.findUnique({
+    const { id } = input;
+
+    const blob = await prisma.blob.findFirst({
       select: {
         versionedHash: true,
         commitment: true,
@@ -22,14 +36,14 @@ export const getByVersionedHash = publicProcedure
         },
       },
       where: {
-        versionedHash,
+        OR: [{ versionedHash: id }, { commitment: id }],
       },
     });
 
     if (!blob) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `No blob with hash ${versionedHash} found`,
+        message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
