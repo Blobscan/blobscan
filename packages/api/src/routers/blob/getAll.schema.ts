@@ -5,6 +5,7 @@ export const getAllOutputSchema = z.object({
     z.object({
       versionedHash: z.string(),
       commitment: z.string(),
+      proof: z.string().or(z.null()),
       size: z.number(),
     })
   ),

@@ -8,6 +8,7 @@ export const getByBlobIdInputSchema = z.object({
 export const getByBlobIdOutputSchema = z.object({
   versionedHash: z.string(),
   commitment: z.string(),
+  proof: z.string().or(z.null()),
   size: z.number(),
   dataStorageReferences: z.array(
     z.object({

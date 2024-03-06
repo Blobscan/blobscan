@@ -23,6 +23,7 @@ export const indexDataInputSchema = z.object({
     z.object({
       versionedHash: z.string(),
       commitment: z.string(),
+      proof: z.string(),
       data: z.string(),
       txHash: z.string(),
       index: z.coerce.number(),

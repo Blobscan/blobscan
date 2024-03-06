@@ -27,6 +27,7 @@ export const getByBlobId = publicProcedure
       select: {
         versionedHash: true,
         commitment: true,
+        proof: true,
         size: true,
         dataStorageReferences: {
           select: {

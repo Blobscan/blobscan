@@ -180,6 +180,7 @@ const Tx: NextPage = () => {
                   key={b.blobHash}
                   blob={{
                     commitment: b.blob.commitment,
+                    proof: b.blob.proof,
                     size: b.blob.size,
                     versionedHash: b.blobHash,
                   }}

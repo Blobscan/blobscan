@@ -68,6 +68,7 @@ export function runStorageWorkerTestSuite(
     const blob: Blob = {
       versionedHash: blobVersionedHash,
       commitment: "test-commitment",
+      proof: "test-proof",
       insertedAt: new Date(),
       size: 1,
       updatedAt: new Date(),
