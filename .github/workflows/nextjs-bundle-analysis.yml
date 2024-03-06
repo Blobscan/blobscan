@@ -10,6 +10,8 @@ on:
       - next
   workflow_dispatch:
 
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 permissions:
   contents: read # for checkout repository
   actions: read # for fetching base branch bundle stats

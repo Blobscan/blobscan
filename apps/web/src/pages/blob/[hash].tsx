@@ -2,10 +2,9 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
-
-import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
+import "react-loading-skeleton/dist/skeleton.css";
 import { Card } from "~/components/Cards/Card";
 import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
@@ -37,9 +36,9 @@ const Blob: NextPage = function () {
     data: blob,
     error,
     isLoading,
-  } = api.blob.getByVersionedHash.useQuery(
+  } = api.blob.getByBlobId.useQuery(
     {
-      versionedHash,
+      id: versionedHash,
     },
     {
       enabled: router.isReady,
@@ -83,9 +82,17 @@ const Blob: NextPage = function () {
   if (blob) {
     detailsFields.push(
       { name: "Versioned Hash", value: blob.versionedHash },
-      { name: "Commitment", value: blob.commitment },
-      { name: "Size", value: formatBytes(blob.size) }
+      { name: "Commitment", value: blob.commitment }
     );
+
+    if (blob.proof) {
+      detailsFields.push({
+        name: "Proof",
+        value: blob.proof,
+      });
+    }
+
+    detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
     if (swarmHash) {
       detailsFields.push({

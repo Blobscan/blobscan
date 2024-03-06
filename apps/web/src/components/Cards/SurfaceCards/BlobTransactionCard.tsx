@@ -10,8 +10,6 @@ import { animated, useSpring } from "@react-spring/web";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import dayjs from "@blobscan/dayjs";
-
 import type { Block } from "~/types";
 import {
   buildAddressRoute,
@@ -19,6 +17,7 @@ import {
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
+  normalizeTimestamp,
 } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -164,7 +163,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 <Link href={buildBlockRoute(number)}>{number}</Link>
               </div>
               <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                {dayjs(timestamp).fromNow()}
+                {normalizeTimestamp(timestamp).fromNow()}
               </div>
             </div>
           )}

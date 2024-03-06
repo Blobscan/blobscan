@@ -17,6 +17,7 @@ type ZeroOpResult = { count: number }[];
 export type RawBlob = {
   versionedHash: string;
   commitment: string;
+  proof: string;
   txHash: string;
   index: number;
   data: string;
@@ -142,6 +143,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
 
             return {
               commitment: b.commitment,
+              proof: b.proof,
               data: b.data,
               txHash: b.txHash,
               versionedHash: b.versionedHash,
@@ -156,12 +158,15 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           }
 
           const formattedValues = blobs
-            .map(({ versionedHash, commitment, size, firstBlockNumber }) => [
-              versionedHash,
-              commitment,
-              size,
-              firstBlockNumber,
-            ])
+            .map(
+              ({
+                versionedHash,
+                commitment,
+                proof,
+                size,
+                firstBlockNumber,
+              }) => [versionedHash, commitment, proof, size, firstBlockNumber]
+            )
             .map(
               (rowColumns) =>
                 Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
@@ -171,6 +176,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             INSERT INTO blob as b (
               versioned_hash,
               commitment,
+              proof,
               size,
               first_block_number,
               inserted_at,
@@ -178,6 +184,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT (versioned_hash) DO UPDATE SET
               commitment = EXCLUDED.commitment,
+              proof = EXCLUDED.proof,
               size = EXCLUDED.size,
               first_block_number = LEAST(b.first_block_number, EXCLUDED.first_block_number),
               updated_at = NOW()
@@ -234,7 +241,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             .map(
               ({
                 hash,
-                blockNumber,
+                blockHash,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -242,7 +249,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 blobAsCalldataGasUsed,
               }) => [
                 hash,
-                blockNumber,
+                blockHash,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -258,7 +265,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           return prisma.$executeRaw`
             INSERT INTO "transaction" (
               "hash",
-              block_number,
+              block_hash,
               from_id,
               to_id,
               max_fee_per_blob_gas,
@@ -268,12 +275,39 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("hash") DO UPDATE SET
-              block_number = EXCLUDED.block_number,
+              block_hash = EXCLUDED.block_hash,
               from_id = EXCLUDED.from_id,
               to_id = EXCLUDED.to_id,
               max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
               gas_price = EXCLUDED.gas_price,
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
+              updated_at = NOW()
+          `;
+        },
+      },
+      transactionFork: {
+        upsertMany(txForks: { hash: string; blockHash: string }[]) {
+          if (!txForks.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
+          const formattedValues = txForks
+            .map(({ hash, blockHash }) => [hash, blockHash])
+            .map(
+              (rowColumns) =>
+                Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
+            );
+
+          return prisma.$executeRaw`
+            INSERT INTO transaction_fork (
+              "hash",
+              block_hash,
+              inserted_at,
+              updated_at
+            ) VALUES ${Prisma.join(formattedValues)}
+            ON CONFLICT ("hash", block_hash) DO UPDATE SET
               updated_at = NOW()
           `;
         },

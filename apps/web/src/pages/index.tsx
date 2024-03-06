@@ -32,7 +32,7 @@ const Home: NextPage = () => {
     data: latestBlocks,
     error: latestBlocksError,
     isLoading: latestBlocksLoading,
-  } = api.block.getAll.useQuery({
+  } = api.block.getAllFull.useQuery({
     p: 1,
     ps: LATEST_BLOCKS_LENGTH,
   });
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
     data: latestTxs,
     isLoading: latestTxsLoading,
     error: latestTxsError,
-  } = api.tx.getAll.useQuery({
+  } = api.tx.getAllFull.useQuery({
     p: 1,
     ps: LATEST_TXS_LENGTH,
   });
@@ -244,13 +244,13 @@ const Home: NextPage = () => {
                       .fill(0)
                       .map((_, i) => <BlobTransactionCard key={i} />)
                   : txs.map((tx) => {
-                      const { block, blockNumber, ...filteredTx } = tx;
+                      const { block, ...filteredTx } = tx;
 
                       return (
                         <BlobTransactionCard
                           key={tx.hash}
                           transaction={filteredTx}
-                          block={{ ...block, number: blockNumber }}
+                          block={{ ...block }}
                         />
                       );
                     })}

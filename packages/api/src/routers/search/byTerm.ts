@@ -1,6 +1,7 @@
 import { publicProcedure } from "../../procedures";
+import { isBlockNumber } from "../utils";
 import { byTermInputSchema } from "./byTerm.schema";
-import { isAddress, isBlockNumber, isCommitment, isHash } from "./byTerm.utils";
+import { isAddress, isCommitment, isHash } from "./byTerm.utils";
 
 type SearchCategory = "address" | "blob" | "block" | "slot" | "transaction";
 

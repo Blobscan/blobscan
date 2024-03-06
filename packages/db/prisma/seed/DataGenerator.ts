@@ -26,15 +26,20 @@ export class DataGenerator {
 
   generateDBAddresses(
     addresses: string[],
-    txs: Prisma.TransactionCreateManyInput[]
+    txs: Prisma.TransactionCreateManyInput[],
+    blocks: Prisma.BlockCreateManyInput[]
   ): Address[] {
     const now = new Date();
     return addresses.map((address) => ({
       address,
       firstBlockNumberAsReceiver:
-        txs.find((tx) => tx.toId === address)?.blockNumber ?? null,
+        blocks.find(
+          (b) => txs.find((tx) => tx.toId === address)?.blockHash === b.hash
+        )?.number ?? null,
       firstBlockNumberAsSender:
-        txs.find((tx) => tx.fromId === address)?.blockNumber ?? null,
+        blocks.find(
+          (b) => txs.find((tx) => tx.fromId === address)?.blockHash === b.hash
+        )?.number ?? null,
       insertedAt: now,
       updatedAt: now,
     }));
@@ -48,6 +53,7 @@ export class DataGenerator {
       const commitment = faker.string.hexadecimal({
         length: 96,
       });
+      const proof = faker.string.hexadecimal({ length: 96 });
       const versionedHash = `0x01${sha256(commitment).slice(2)}`;
       const dataLength = faker.number.int({
         min: this.#seedParams.maxBlobBytesSize,
@@ -57,6 +63,7 @@ export class DataGenerator {
 
       blobs.push({
         commitment,
+        proof,
         size,
         versionedHash,
         firstBlockNumber: Infinity,
@@ -73,6 +80,7 @@ export class DataGenerator {
   }
 
   generateDBBlobOnTxs(
+    blocks: Prisma.BlockCreateManyInput[],
     blocksTxs: Prisma.TransactionCreateManyInput[][],
     uniqueBlobs: Blob[]
   ) {
@@ -108,7 +116,7 @@ export class DataGenerator {
 
           blob.firstBlockNumber = Math.min(
             blob.firstBlockNumber ?? Infinity,
-            tx.blockNumber
+            blocks.find((b) => b.hash === tx.blockHash)?.number ?? Infinity
           );
 
           blobsOnTxs.push({
@@ -246,7 +254,7 @@ export class DataGenerator {
           hash: txHash,
           fromId: from,
           toId: to,
-          blockNumber: block.number,
+          blockHash: block.hash,
           blobAsCalldataGasUsed: new Prisma.Decimal(0),
           gasPrice: bigintToDecimal(gasPrice),
           maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),

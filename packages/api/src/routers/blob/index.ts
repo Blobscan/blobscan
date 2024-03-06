@@ -1,8 +1,8 @@
 import { t } from "../../trpc-client";
 import { getAll } from "./getAll";
-import { getByVersionedHash } from "./getByVersionedHash";
+import { getByBlobId } from "./getByBlobId";
 
 export const blobRouter = t.router({
   getAll,
-  getByVersionedHash,
+  getByBlobId,
 });

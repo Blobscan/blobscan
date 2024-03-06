@@ -55,7 +55,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           FROM blob b
             JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
             JOIN "transaction" tx ON tx."hash" = btx.tx_hash
-            JOIN "block" bl ON bl."number" = tx.block_number
+            JOIN "block" bl ON bl."hash" = tx.block_hash
           ${whereClause}
           GROUP BY "day"
           ON CONFLICT ("day") DO UPDATE SET
@@ -124,7 +124,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               FROM blob b
                 JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
                 JOIN "transaction" tx ON tx."hash" = btx.tx_hash
-                JOIN "block" bck ON bck."number" = tx.block_number
+                JOIN "block" bck ON bck."hash" = tx.block_hash
               WHERE bck."number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
                 ${totalBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalBlobsField}`},
@@ -338,7 +338,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT(DISTINCT tx.from_id)::INT AS total_unique_senders,
               AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee
             FROM "transaction" tx
-              JOIN "block" b ON b.number = tx.block_number
+              JOIN "block" b ON b.hash = tx.block_hash
             ${whereClause}
             GROUP BY "day"
             ON CONFLICT ("day") DO UPDATE SET
@@ -394,7 +394,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               SELECT
                 1 AS id,
                 ${coalesceToZero(
-                  'COUNT("hash")::INT'
+                  "COUNT(tx.hash)::INT"
                 )} AS ${totalTransactionsField},
                 ${coalesceToZero(
                   `COUNT(DISTINCT CASE WHEN taddr.first_block_number_as_receiver BETWEEN ${from} AND ${to} THEN taddr.address END)::INT`
@@ -406,8 +406,11 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   "AVG(max_fee_per_blob_gas)::FLOAT"
                 )} AS ${avgMaxBlobGasFeeField},
                 NOW() AS ${updatedAtField}
-              FROM "transaction" tx JOIN "address" faddr ON faddr.address = tx.from_id JOIN "address" taddr ON taddr.address = tx.to_id
-              WHERE tx.block_number BETWEEN ${from} AND ${to}
+              FROM "transaction" tx
+                JOIN "block" b ON b.hash = tx.block_hash
+                JOIN "address" faddr ON faddr.address = tx.from_id
+                JOIN "address" taddr ON taddr.address = tx.to_id
+              WHERE b."number" BETWEEN ${from} AND ${to}
               ON CONFLICT (id) DO UPDATE SET
                 ${totalTransactionsField} = ${Prisma.sql`${statsTableAlias}.${totalTransactionsField}`} + ${Prisma.sql`EXCLUDED.${totalTransactionsField}`},
                 ${totalUniqueReceiversField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueReceiversField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueReceiversField}`},

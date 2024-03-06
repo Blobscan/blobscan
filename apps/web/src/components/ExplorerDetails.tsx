@@ -37,7 +37,11 @@ export function ExplorerDetails() {
       ･
       <ExplorerDetailsItem
         name="Last synced slot"
-        value={syncStateData ? formatNumber(syncStateData.lastSlot) : undefined}
+        value={
+          syncStateData
+            ? formatNumber(syncStateData.lastUpperSyncedSlot ?? 0)
+            : undefined
+        }
       />
     </div>
   );

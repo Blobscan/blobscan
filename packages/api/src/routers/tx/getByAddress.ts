@@ -7,7 +7,7 @@ import { formatFullTransaction, fullTransactionSelect } from "./common";
 import { getByAddressInputSchema } from "./getByAddress.schema";
 
 export const getByAddress = publicProcedure
-  .input(paginationSchema)
+  .input(paginationSchema.optional())
   .use(withPagination)
   .input(getByAddressInputSchema)
   .query(async ({ ctx, input }) => {
@@ -21,7 +21,11 @@ export const getByAddress = publicProcedure
           where: {
             OR: [{ fromId: addressLowerCase }, { toId: addressLowerCase }],
           },
-          orderBy: { blockNumber: "desc" },
+          orderBy: {
+            block: {
+              number: "desc",
+            },
+          },
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),

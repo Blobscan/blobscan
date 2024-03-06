@@ -14,7 +14,6 @@ import {
   buildBlockRoute,
   buildTransactionExternalUrl,
   formatTimestamp,
-  GAS_PER_BLOB,
   formatBytes,
   formatNumber,
   performDiv,
@@ -28,7 +27,7 @@ const Tx: NextPage = () => {
     data: txData_,
     error,
     isLoading,
-  } = api.tx.getByHash.useQuery({ hash }, { enabled: router.isReady });
+  } = api.tx.getByHashFull.useQuery({ hash }, { enabled: router.isReady });
   const txData = useMemo(
     () =>
       txData_
@@ -36,11 +35,13 @@ const Tx: NextPage = () => {
             ...txData_,
             blobAsCalldataGasUsed: BigInt(txData_.blobAsCalldataGasUsed),
             gasPrice: BigInt(txData_.gasPrice),
+            blobGasUsed: BigInt(txData_.blobGasUsed),
+            blobGasBaseFee: BigInt(txData_.blobGasBaseFee),
+            blobGasMaxFee: BigInt(txData_.blobGasMaxFee),
             maxFeePerBlobGas: BigInt(txData_.maxFeePerBlobGas),
             block: {
               ...txData_.block,
               blobGasPrice: BigInt(txData_.block.blobGasPrice),
-
               Gas: BigInt(txData_.block.excessBlobGas),
             },
           }
@@ -63,11 +64,9 @@ const Tx: NextPage = () => {
 
   const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
   const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
-  const blobGasUsed = txData
-    ? BigInt(txData.blobs.length) * BigInt(GAS_PER_BLOB)
-    : BigInt(0);
-  const totalBlobSize =
-    txData?.blobs.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
+  const blobGasUsed = txData?.blobGasUsed ?? BigInt(0);
+  const blobGasBaseFee = txData?.blobGasBaseFee ?? BigInt(0);
+  const blobGasMaxFee = txData?.blobGasMaxFee ?? BigInt(0);
 
   return (
     <>
@@ -83,8 +82,8 @@ const Tx: NextPage = () => {
                 {
                   name: "Block",
                   value: (
-                    <Link href={buildBlockRoute(txData.blockNumber)}>
-                      {txData.blockNumber}
+                    <Link href={buildBlockRoute(txData.block.number)}>
+                      {txData.block.number}
                     </Link>
                   ),
                 },
@@ -114,7 +113,7 @@ const Tx: NextPage = () => {
                 },
                 {
                   name: "Total Blob Size",
-                  value: formatBytes(totalBlobSize),
+                  value: formatBytes(txData.totalBlobSize),
                 },
                 {
                   name: "Blob Fee",
@@ -124,15 +123,13 @@ const Tx: NextPage = () => {
                         <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Base:
                         </div>
-                        <EtherUnitDisplay amount={blobGasPrice * blobGasUsed} />
+                        <EtherUnitDisplay amount={blobGasBaseFee} />
                       </div>
                       <div className=" flex gap-1">
                         <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                           Max:
                         </div>
-                        <EtherUnitDisplay
-                          amount={txData.maxFeePerBlobGas * blobGasUsed}
-                        />
+                        <EtherUnitDisplay amount={blobGasMaxFee} />
                       </div>
                     </div>
                   ),
@@ -183,6 +180,7 @@ const Tx: NextPage = () => {
                   key={b.blobHash}
                   blob={{
                     commitment: b.blob.commitment,
+                    proof: b.blob.proof,
                     size: b.blob.size,
                     versionedHash: b.blobHash,
                   }}

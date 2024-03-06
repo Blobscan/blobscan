@@ -3,9 +3,19 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
+import { getAllOutputSchema } from "./getAll.schema";
 
 export const getAll = publicProcedure
-  .input(paginationSchema)
+  .meta({
+    openapi: {
+      method: "GET",
+      path: "/blobs",
+      tags: ["blobs"],
+      summary: "retrieves all blobs.",
+    },
+  })
+  .input(paginationSchema.optional())
+  .output(getAllOutputSchema)
   .use(withPagination)
   .query(async ({ ctx }) => {
     const [blobs, overallStats] = await Promise.all([
@@ -13,6 +23,7 @@ export const getAll = publicProcedure
         select: {
           versionedHash: true,
           commitment: true,
+          proof: true,
           size: true,
         },
         ...ctx.pagination,

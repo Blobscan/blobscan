@@ -1,12 +1,12 @@
-import { z } from "zod";
+import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "./procedures";
 import { blobRouter } from "./routers/blob";
 import { blockRouter } from "./routers/block";
+import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { indexerRouter } from "./routers/indexer";
 import { searchRouter } from "./routers/search";
 import { statsRouter } from "./routers/stats";
-import { syncStateRouter } from "./routers/sync-state";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
@@ -15,15 +15,15 @@ export const appRouter = t.router({
   tx: transactionRouter,
   blob: blobRouter,
   search: searchRouter,
-  indexer: indexerRouter,
   stats: statsRouter,
-  syncState: syncStateRouter,
+  indexer: indexerRouter,
+  syncState: blockchainSyncStateRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {
         method: "GET",
         path: "/healthcheck",
-        summary: "Connection healthcheck",
+        summary: "connection healthcheck.",
         tags: ["system"],
       },
     })

@@ -2,11 +2,33 @@ import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
 import dayjs from "@blobscan/dayjs";
-import type { RawDatePeriod } from "@blobscan/db";
+import type { DatePeriod, RawDatePeriod } from "@blobscan/db";
 import { normalizeDailyDatePeriod, prisma } from "@blobscan/db";
 
-import type { Entity } from "../utils";
-import { ALL_ENTITIES, deleteOptionDef, helpOptionDef } from "../utils";
+import { CommandError } from "../error";
+import type { Command, Entity } from "../types";
+import {
+  ALL_ENTITIES,
+  commandLog,
+  deleteOptionDef,
+  helpOptionDef,
+} from "../utils";
+
+type Operation = "populate" | "deleteMany" | "deleteAll";
+
+type OperationResult = { entity: Entity; affectedRows: number };
+class DailyCommandError extends CommandError {
+  constructor(operation: Operation, error: Error | string) {
+    const formattedOperation =
+      operation === "deleteMany" ? "deletion" : "aggregation";
+    const message = error instanceof Error ? error.message : error;
+
+    super(message, {
+      command: "daily",
+      operation: formattedOperation,
+    });
+  }
+}
 
 const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   deleteOptionDef,
@@ -47,20 +69,48 @@ export const dailyCommandUsage = commandLineUsage([
   },
 ]);
 
+function buildCommandResultMsg(
+  operation: Operation,
+  datePeriod: DatePeriod,
+  opResults: OperationResult[]
+) {
+  const formattedOperation =
+    operation === "deleteMany" ? "deleted" : "calculated";
+  const { from, to } = datePeriod || {};
+  const formattedFrom = from ? dayjs(from).format("YYYY/MM/DD") : undefined;
+  const formattedTo = to ? dayjs(to).format("YYYY/MM/DD") : undefined;
+  let period = "";
+
+  if (!from && to) {
+    period = `up to ${formattedTo}`;
+  } else if (from && !to) {
+    period = `from ${formattedFrom}`;
+  } else if (from && to) {
+    period = `from ${formattedFrom} to ${formattedTo}`;
+  }
+
+  const formattedResults =
+    opResults
+      ?.map((r) => `${r.entity} (${r.affectedRows} rows affected)`)
+      .join(", ") || "";
+
+  return `stats ${formattedOperation} successfully ${period} for entities: ${formattedResults}`;
+}
+
 async function performDailyStatsOperation(
   entity: Entity,
-  operation: "populate" | "deleteMany",
-  rawDatePeriod?: RawDatePeriod
+  operation: Operation,
+  datePeriod?: DatePeriod
 ) {
   let dailyStatsFn;
-  const datePeriodProvided = rawDatePeriod?.from || rawDatePeriod?.to;
-  const { from, to } = normalizeDailyDatePeriod(rawDatePeriod);
-  const operation_ =
-    operation === "deleteMany" && !datePeriodProvided ? "deleteAll" : operation;
+  const { from, to } = datePeriod || {};
+  const isDateProvided = from || to;
+  const operation_: Operation =
+    operation === "deleteMany" && !isDateProvided ? "deleteAll" : operation;
   const operationParam =
     operation_ === "populate"
-      ? rawDatePeriod
-      : datePeriodProvided
+      ? datePeriod
+      : isDateProvided
       ? {
           where: {
             day: {
@@ -83,32 +133,28 @@ async function performDailyStatsOperation(
       break;
   }
 
-  const result = await dailyStatsFn(operationParam).then((res) => {
-    if (operation_ === "deleteAll") {
-      return "All";
-    }
+  let result;
 
-    return typeof res === "number" ? res : res.count;
-  });
+  try {
+    result = await dailyStatsFn(operationParam).then((res) => {
+      return typeof res === "number" ? res : res.count;
+    });
+  } catch (err) {
+    const err_ = err as Error;
 
-  const formattedFrom = from
-    ? dayjs(from).format("YYYY-MM-DD")
-    : "No specified";
-  const formattedTo = to ? dayjs(to).format("YYYY-MM-DD") : "No specified";
-  const period =
-    operation_ !== "deleteAll"
-      ? `Period: ${formattedFrom} - ${formattedTo}.`
-      : "";
+    throw new DailyCommandError(
+      operation,
+      `Failed to perform operation for entity ${entity}: ${err_.message}`
+    );
+  }
 
-  console.log(
-    `Daily ${entity} stats operation \`${operation_}\` executed: ${period} Total stats affected: ${result}`
-  );
+  return result;
 }
 
-export async function daily(argv?: string[]) {
+const daily: Command = async function daily(argv) {
   const {
-    from,
-    to,
+    from: rawFrom,
+    to: rawTo,
     entity: entities,
     // `delete` is a reserved keyword
     delete: delete_,
@@ -129,17 +175,31 @@ export async function daily(argv?: string[]) {
     return;
   }
 
-  const datePeriod = { from, to };
+  const operation: Operation = delete_ ? "deleteMany" : "populate";
+  const rawDatePeriod: RawDatePeriod = { from: rawFrom, to: rawTo };
+  let datePeriod: DatePeriod;
+  try {
+    datePeriod = normalizeDailyDatePeriod(rawDatePeriod);
+  } catch (err) {
+    const err_ = err as Error;
 
+    throw new DailyCommandError(operation, err_);
+  }
   const selectedEntities = entities?.length ? entities : ALL_ENTITIES;
 
-  return Promise.all(
+  const operationResults: OperationResult[] = await Promise.all(
     selectedEntities.map((e) =>
-      performDailyStatsOperation(
-        e,
-        delete_ ? "deleteMany" : "populate",
-        datePeriod
+      performDailyStatsOperation(e, operation, datePeriod).then(
+        (affectedRows) => ({
+          entity: e,
+          affectedRows,
+        })
       )
     )
   );
-}
+
+  const msg = buildCommandResultMsg(operation, datePeriod, operationResults);
+  commandLog("info", "daily", operation, msg);
+};
+
+export { daily };
