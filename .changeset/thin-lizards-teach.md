@@ -1,5 +1,5 @@
 ---
-"@blobscan/db": patch
+"@blobscan/db": minor
 ---
 
-Add kzg proof field to Blob table
+Added kzg proof field to Blob table

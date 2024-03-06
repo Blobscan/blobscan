@@ -1,6 +1,6 @@
 ---
-"@blobscan/api": patch
-"@blobscan/web": patch
+"@blobscan/api": minor
+"@blobscan/web": minor
 ---
 
-Add support for new blob field (kzg proof)
+Added support for new blob field (kzg proof)
