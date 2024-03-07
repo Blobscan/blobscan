@@ -2,12 +2,13 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
-import type { BlobStorage } from "@blobscan/db";
+import { expectValidError } from "@blobscan/test";
 
 import { GoogleStorage, PostgresStorage, env } from "../src";
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
-import { BlobStorageError } from "../src/errors";
+import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
+import type { BlobStorageName } from "../src/types";
 import {
   BLOB_DATA,
   BLOB_HASH,
@@ -43,11 +44,7 @@ describe("BlobStorageManager", () => {
     swarmStorage = new SwarmStorage(SWARM_STORAGE_CONFIG);
 
     blobStorageManager = new BlobStorageManager(
-      {
-        POSTGRES: postgresStorage,
-        GOOGLE: googleStorage,
-        SWARM: swarmStorage,
-      },
+      [postgresStorage, googleStorage, swarmStorage],
       env.CHAIN_ID
     );
 
@@ -71,7 +68,7 @@ describe("BlobStorageManager", () => {
 
   describe("constructor", () => {
     it("should throw an error if no blob storages are provided", () => {
-      expect(() => new BlobStorageManager({}, env.CHAIN_ID)).toThrow(
+      expect(() => new BlobStorageManager([], env.CHAIN_ID)).toThrow(
         "No blob storages provided"
       );
     });
@@ -121,23 +118,26 @@ describe("BlobStorageManager", () => {
       const UNKNOWN_FILE_URI = "1/6d/6f/636b2d64617461.txt";
       const UNKNOWN_SWARM_REFERENCE = "123456789abcdef";
 
-      const result = blobStorageManager.getBlob(
+      await expectValidError(
+        () =>
+          blobStorageManager.getBlob(
+            {
+              reference: UNKNOWN_BLOB_HASH,
+              storage: "POSTGRES",
+            },
+            {
+              reference: UNKNOWN_FILE_URI,
+              storage: "GOOGLE",
+            },
+            {
+              reference: UNKNOWN_SWARM_REFERENCE,
+              storage: "SWARM",
+            }
+          ),
+        BlobStorageManagerError,
         {
-          reference: UNKNOWN_BLOB_HASH,
-          storage: "POSTGRES",
-        },
-        {
-          reference: UNKNOWN_FILE_URI,
-          storage: "GOOGLE",
-        },
-        {
-          reference: UNKNOWN_SWARM_REFERENCE,
-          storage: "SWARM",
+          checkCause: true,
         }
-      );
-
-      await expect(result).rejects.toMatchInlineSnapshot(
-        '[BlobStorageManagerError: Failed to get blob from any of the storages. Failed storages: PostgresStorage failed: Failed to get blob "0x6d6f636b2d64617461", GoogleStorage failed: Failed to get blob "1/6d/6f/636b2d64617461.txt", SwarmStorageMock failed: Failed to get blob "123456789abcdef"]'
       );
     });
   });
@@ -152,7 +152,7 @@ describe("BlobStorageManager", () => {
     });
 
     it("should store a blob in a specific storage if provided", async () => {
-      const selectedStorage: BlobStorage = "POSTGRES";
+      const selectedStorage: BlobStorageName = "POSTGRES";
 
       const result = await blobStorageManager.storeBlob(blob, {
         selectedStorages: [selectedStorage],
@@ -173,20 +173,18 @@ describe("BlobStorageManager", () => {
     });
 
     it("should throw an error when one of the selected blob storages wasn't found", async () => {
-      const selectedStorages: BlobStorage[] = ["POSTGRES", "GOOGLE"];
+      const selectedStorages: BlobStorageName[] = ["POSTGRES", "GOOGLE"];
       const singleStorageBSM = new BlobStorageManager(
-        {
-          SWARM: swarmStorage,
-        },
+        [swarmStorage],
         env.CHAIN_ID
       );
 
-      await expect(
-        singleStorageBSM.storeBlob(blob, {
-          selectedStorages: selectedStorages,
-        })
-      ).rejects.toMatchInlineSnapshot(
-        '[BlobStorageManagerError: Some of the selected storages are not available: POSTGRES, GOOGLE". ]'
+      await expectValidError(
+        () =>
+          singleStorageBSM.storeBlob(blob, {
+            selectedStorages: selectedStorages,
+          }),
+        BlobStorageManagerError
       );
     });
 
@@ -195,11 +193,7 @@ describe("BlobStorageManager", () => {
       const blob = { data: "New data", versionedHash: newHash };
 
       const blobStorageManager = new BlobStorageManager(
-        {
-          POSTGRES: failingPostgresStorage,
-          GOOGLE: googleStorage,
-          SWARM: failingSwarmStorage,
-        },
+        [failingPostgresStorage, googleStorage, failingSwarmStorage],
         env.CHAIN_ID
       );
 
@@ -210,20 +204,16 @@ describe("BlobStorageManager", () => {
 
     it("should throw an error if all uploads fail", async () => {
       const newBlobStorageManager = new BlobStorageManager(
-        {
-          POSTGRES: failingPostgresStorage,
-          GOOGLE: failingGoogleStorage,
-          SWARM: failingSwarmStorage,
-        },
+        [failingPostgresStorage, failingGoogleStorage, failingSwarmStorage],
         env.CHAIN_ID
       );
 
       const blob = { data: "New data", versionedHash: "0x6d6f636b2d64617461" };
 
-      await expect(
-        newBlobStorageManager.storeBlob(blob)
-      ).rejects.toMatchInlineSnapshot(
-        '[BlobStorageManagerError: Failed to upload blob "0x6d6f636b2d64617461" to any storage. Failed storages: PostgresStorage failed: Failed to upload blob to postgres, GoogleStorage failed: Failed to upload blob to google, SwarmStorage failed: Failed to upload blob to swarm]'
+      await expectValidError(
+        () => newBlobStorageManager.storeBlob(blob),
+        BlobStorageManagerError,
+        { checkCause: true }
       );
     });
   });

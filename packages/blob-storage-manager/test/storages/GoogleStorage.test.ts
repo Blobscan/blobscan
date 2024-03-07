@@ -1,6 +1,8 @@
 import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { expectValidError } from "@blobscan/test";
+
 import { GoogleStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import type { GoogleStorageConfig } from "../../src/storages";
@@ -62,13 +64,9 @@ describe("GoogleStorage", () => {
         bucketName: newBucket,
       });
 
-      await expect(newStorage.healthCheck()).rejects.toThrowError(
-        new BlobStorageError(
-          "GoogleStorage",
-          `Storage is not reachable`,
-          new Error(`Bucket ${newBucket} does not exist`)
-        )
-      );
+      await expectValidError(() => newStorage.healthCheck(), BlobStorageError, {
+        checkCause: true,
+      });
     });
   });
 
@@ -98,44 +96,36 @@ describe("GoogleStorage", () => {
         bucketName: newBucket,
       });
 
-      await expect(
-        newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA)
-      ).rejects.toThrowError(
-        new BlobStorageError(
-          "GoogleStorage",
-          `Failed to store blob "${BLOB_HASH}"`,
-          new Error("Bucket new-bucket does not exist")
-        )
+      await expectValidError(
+        () => newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA),
+        BlobStorageError,
+        {
+          checkCause: true,
+        }
       );
     });
   });
 
   describe("tryGetConfigFromEnv", () => {
-    it("should return undefined if GOOGLE_STORAGE_ENABLiED is false", () => {
-      const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: false,
-      });
-      expect(config).toBeUndefined();
+    it("should throw an error when a bucket name is not provided", () => {
+      expectValidError(
+        () => GoogleStorage.getConfigFromEnv({}),
+        BlobStorageError
+      );
     });
 
-    it("should return undefined if GOOGLE_STORAGE_BUCKET_NAME is not set", () => {
-      const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: true,
-      });
-      expect(config).toBeUndefined();
-    });
-
-    it("should return undefined if GOOGLE_SERVICE_KEY and GOOGLE_STORAGE_API_ENDPOINT are not set", () => {
-      const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: true,
-        GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
-      });
-      expect(config).toBeUndefined();
+    it("should throw an error when a service key and an api endpoint are not provided", () => {
+      expectValidError(
+        () =>
+          GoogleStorage.getConfigFromEnv({
+            GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
+          }),
+        BlobStorageError
+      );
     });
 
     it("should return a config object if all required environment variables are set", () => {
-      const config = GoogleStorage.tryGetConfigFromEnv({
-        GOOGLE_STORAGE_ENABLED: true,
+      const config = GoogleStorage.getConfigFromEnv({
         GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
         GOOGLE_SERVICE_KEY: "my-service-key",
         GOOGLE_STORAGE_API_ENDPOINT: "my-api-endpoint",

@@ -3,12 +3,13 @@ import { PrismaClient } from "@blobscan/db";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
+import { BLOB_STORAGE_NAMES } from "../utils";
 
 export class PostgresStorage extends BlobStorage {
   protected client: PrismaClient;
 
   constructor() {
-    super();
+    super(BLOB_STORAGE_NAMES.POSTGRES);
 
     this.client = new PrismaClient();
   }
@@ -54,13 +55,7 @@ export class PostgresStorage extends BlobStorage {
     return versionedHash;
   }
 
-  static tryGetConfigFromEnv(
-    env: Partial<Environment>
-  ): BlobStorageConfig | undefined {
-    if (!env.POSTGRES_STORAGE_ENABLED) {
-      return;
-    }
-
+  static getConfigFromEnv(_: Partial<Environment>): BlobStorageConfig {
     return {};
   }
 }

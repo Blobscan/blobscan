@@ -1,5 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import { expectValidError } from "@blobscan/test";
+
 import { PostgresStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import { BLOB_HASH, HEX_DATA } from "../fixtures";
@@ -42,14 +44,12 @@ describe("PostgresStorage", () => {
         "upsert"
       ).mockRejectedValueOnce(new Error("Failed to store blob data"));
 
-      await expect(
-        failingStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA)
-      ).rejects.toThrowError(
-        new BlobStorageError(
-          "PostgresStorageMock",
-          `Failed to store blob "${BLOB_HASH}"`,
-          new Error("Failed to store blob data")
-        )
+      await expectValidError(
+        () => failingStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA),
+        BlobStorageError,
+        {
+          checkCause: true,
+        }
       );
     });
   });
@@ -70,29 +70,19 @@ describe("PostgresStorage", () => {
         new Error("Blob data not found")
       );
 
-      await expect(storage.getBlob(BLOB_HASH)).rejects.toThrowError(
-        new BlobStorageError(
-          "PostgresStorageMock",
-          'Failed to get blob "0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174"',
-          new Error("Blob data not found")
-        )
+      await expectValidError(
+        () => storage.getBlob(BLOB_HASH),
+        BlobStorageError,
+        {
+          checkCause: true,
+        }
       );
     });
   });
 
   describe("tryGetConfigFromEnv", () => {
-    it("should return undefined if POSTGRES_STORAGE_ENABLED is false", () => {
-      const result = PostgresStorage.tryGetConfigFromEnv({
-        POSTGRES_STORAGE_ENABLED: false,
-      });
-      expect(result).toBeUndefined();
-    });
-
-    it("should return an object if POSTGRES_STORAGE_ENABLED is true", () => {
-      const result = PostgresStorage.tryGetConfigFromEnv({
-        POSTGRES_STORAGE_ENABLED: true,
-      });
-      expect(result).toEqual({});
+    it("should return a valid config object ", () => {
+      expect(PostgresStorage.getConfigFromEnv({})).toEqual({});
     });
   });
 });

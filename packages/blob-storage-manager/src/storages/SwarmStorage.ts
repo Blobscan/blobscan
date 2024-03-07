@@ -1,10 +1,10 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
-import { logger } from "@blobscan/logger";
-
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
+import { BlobStorageError } from "../errors";
+import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
   beeEndpoint: string;
@@ -20,7 +20,7 @@ export class SwarmStorage extends BlobStorage {
   _swarmClient: SwarmClient;
 
   constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
-    super();
+    super(BLOB_STORAGE_NAMES.SWARM);
 
     this._swarmClient = {
       bee: new Bee(beeEndpoint),
@@ -83,18 +83,12 @@ export class SwarmStorage extends BlobStorage {
     return firstBatch.batchID;
   }
 
-  static tryGetConfigFromEnv(
-    env: Partial<Environment>
-  ): SwarmStorageConfig | undefined {
-    if (!env.SWARM_STORAGE_ENABLED) {
-      return;
-    }
-
+  static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {
     if (!env.BEE_ENDPOINT) {
-      logger.warn(
-        "Swarm storage: storage is enabled but no bee endpoint was provided"
+      throw new BlobStorageError(
+        this.name,
+        "No config variables found: no bee endpoint provided"
       );
-      return;
     }
 
     return {

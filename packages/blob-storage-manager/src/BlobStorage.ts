@@ -1,10 +1,17 @@
 import type { Environment } from "./env";
 import { BlobStorageError, StorageCreationError } from "./errors";
+import type { BlobStorageName } from "./types";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface BlobStorageConfig {}
 
 export abstract class BlobStorage {
+  name: BlobStorageName;
+
+  constructor(name: BlobStorageName) {
+    this.name = name;
+  }
+
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string): Promise<string>;
   protected abstract _storeBlob(
@@ -35,7 +42,7 @@ export abstract class BlobStorage {
     } catch (err) {
       throw new BlobStorageError(
         this.constructor.name,
-        `Failed to get blob "${uri}"`,
+        `Failed to get blob with uri "${uri}"`,
         err as Error
       );
     }
@@ -53,7 +60,7 @@ export abstract class BlobStorage {
     } catch (err) {
       throw new BlobStorageError(
         this.constructor.name,
-        `Failed to store blob "${hash}"`,
+        `Failed to store blob with hash "${hash}"`,
         err as Error
       );
     }
@@ -91,14 +98,23 @@ export abstract class BlobStorage {
   >(
     this: {
       new (config: C): T;
-      tryGetConfigFromEnv(env: Partial<Environment>): C | undefined;
+      getConfigFromEnv(env: Partial<Environment>): C;
     },
     env: Partial<Environment>
   ): Promise<[T?, StorageCreationError?]> {
-    const config = this.tryGetConfigFromEnv(env);
+    let config: C;
 
-    if (!config) {
-      return [, new StorageCreationError(this.name, "No config found")];
+    try {
+      config = this.getConfigFromEnv(env);
+    } catch (err) {
+      return [
+        ,
+        new StorageCreationError(
+          this.name,
+          "Failed to get config",
+          err as Error
+        ),
+      ];
     }
 
     const blobStorage = new this(config);
@@ -112,12 +128,12 @@ export abstract class BlobStorage {
     return [blobStorage];
   }
 
-  protected static tryGetConfigFromEnv(
+  protected static getConfigFromEnv(
     _: Partial<Environment>
   ): BlobStorageConfig | undefined {
-    throw new StorageCreationError(
+    throw new BlobStorageError(
       this.name,
-      `"tryGetConfigFromEnv" function not implemented`
+      `"getConfigFromEnv" function not implemented`
     );
   }
 }

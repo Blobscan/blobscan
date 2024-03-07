@@ -1,5 +1,5 @@
 class ErrorException extends Error {
-  constructor(message: string, cause?: Error) {
+  constructor(message: string, cause?: Error | Error[]) {
     super(message, {
       cause,
     });
@@ -15,19 +15,20 @@ export class BlobStorageError extends ErrorException {
 }
 
 export class StorageCreationError extends BlobStorageError {
-  constructor(storageName: string, message: string, cause?: Error) {
-    super(storageName, `Creation failed: ${message}`, cause);
+  cause: BlobStorageError;
+
+  constructor(storageName: string, message: string, cause: BlobStorageError) {
+    super(storageName, `Creation failed: ${message}`);
+
+    this.cause = cause;
   }
 }
 
 export class BlobStorageManagerError extends ErrorException {
-  constructor(
-    message: string,
-    { storageErrors }: { storageErrors?: BlobStorageError[] } = {}
-  ) {
-    const storageErrorsMessage = storageErrors?.length
-      ? `Failed storages: ${storageErrors.map((e) => e.message).join(", ")}`
-      : "";
-    super(`${message}. ${storageErrorsMessage}`);
+  constructor(message: string, cause?: Error | BlobStorageError[]) {
+    // const storageErrorsMessage = storageErrors?.length
+    //   ? `Failed storages: ${storageErrors.map((e) => e.message).join(", ")}`
+    //   : "";
+    super(message, cause);
   }
 }
