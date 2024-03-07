@@ -108,7 +108,9 @@ describe("Blob router", async () => {
         caller.blob[functionName]({
           id: "blobHash003",
         })
-      ).rejects.toMatchSnapshot();
+      ).rejects.toMatchInlineSnapshot(
+        "[TRPCError: Failed to get blob from any of the storages]"
+      );
     });
   });
 });
