@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { expectValidError } from "@blobscan/test";
+import { testValidError } from "@blobscan/test";
 
 import { PostgresStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
@@ -36,22 +36,23 @@ describe("PostgresStorage", () => {
       expect(result).toBe(BLOB_HASH);
     });
 
-    it("should throw a valid if the blob data has not been stored", async () => {
-      const failingStorage = new PostgresStorageMock();
+    testValidError(
+      "should throw a valid if the blob data has not been stored",
+      async () => {
+        const failingStorage = new PostgresStorageMock();
 
-      vi.spyOn(
-        failingStorage.getClient().blobData,
-        "upsert"
-      ).mockRejectedValueOnce(new Error("Failed to store blob data"));
+        vi.spyOn(
+          failingStorage.getClient().blobData,
+          "upsert"
+        ).mockRejectedValueOnce(new Error("Failed to store blob data"));
 
-      await expectValidError(
-        () => failingStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA),
-        BlobStorageError,
-        {
-          checkCause: true,
-        }
-      );
-    });
+        await failingStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA);
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("getBlob", () => {
@@ -63,21 +64,20 @@ describe("PostgresStorage", () => {
       expect(result).toBe(HEX_DATA);
     });
 
-    it("should throw a valid error if no blob data has been found", async () => {
-      const prisma = storage.getClient();
+    testValidError(
+      "should throw a valid error if no blob data has been found",
+      async () => {
+        const prisma = storage.getClient();
 
-      vi.spyOn(prisma.blobData, "findFirstOrThrow").mockRejectedValueOnce(
-        new Error("Blob data not found")
-      );
+        vi.spyOn(prisma.blobData, "findFirstOrThrow").mockRejectedValueOnce(
+          new Error("Blob data not found")
+        );
 
-      await expectValidError(
-        () => storage.getBlob(BLOB_HASH),
-        BlobStorageError,
-        {
-          checkCause: true,
-        }
-      );
-    });
+        await storage.getBlob(BLOB_HASH);
+      },
+      BlobStorageError,
+      { checkCause: true }
+    );
   });
 
   describe("tryGetConfigFromEnv", () => {

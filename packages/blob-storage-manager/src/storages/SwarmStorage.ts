@@ -3,7 +3,6 @@ import { Bee, BeeDebug } from "@ethersphere/bee-js";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
-import { BlobStorageError } from "../errors";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
@@ -22,10 +21,16 @@ export class SwarmStorage extends BlobStorage {
   constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
     super(BLOB_STORAGE_NAMES.SWARM);
 
-    this._swarmClient = {
-      bee: new Bee(beeEndpoint),
-      beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
-    };
+    try {
+      this._swarmClient = {
+        bee: new Bee(beeEndpoint),
+        beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
+      };
+    } catch (err) {
+      throw new Error("Failed to create swarm clients", {
+        cause: err,
+      });
+    }
   }
 
   protected async _healthCheck() {
@@ -85,10 +90,7 @@ export class SwarmStorage extends BlobStorage {
 
   static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {
     if (!env.BEE_ENDPOINT) {
-      throw new BlobStorageError(
-        this.name,
-        "No config variables found: no bee endpoint provided"
-      );
+      throw new Error("No config variables found: no bee endpoint provided");
     }
 
     return {

@@ -1,7 +1,7 @@
 import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { expectValidError } from "@blobscan/test";
+import { testValidError } from "@blobscan/test";
 
 import { GoogleStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
@@ -55,19 +55,24 @@ describe("GoogleStorage", () => {
       await expect(storage.healthCheck()).resolves.not.toThrow();
     });
 
-    it("should throw an error if the bucket does not exist", async () => {
-      const newBucket = "new-bucket";
+    testValidError(
+      "should throw an error if the bucket does not exist",
+      async () => {
+        const newBucket = "new-bucket";
 
-      const newStorage = new GoogleStorage({
-        projectId: env.GOOGLE_STORAGE_PROJECT_ID,
-        apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
-        bucketName: newBucket,
-      });
+        const newStorage = new GoogleStorage({
+          projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+          apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+          bucketName: newBucket,
+        });
 
-      await expectValidError(() => newStorage.healthCheck(), BlobStorageError, {
+        await newStorage.healthCheck();
+      },
+      Error,
+      {
         checkCause: true,
-      });
-    });
+      }
+    );
   });
 
   describe("getBlob", () => {
@@ -87,40 +92,53 @@ describe("GoogleStorage", () => {
       );
     });
 
-    it("should throw valid error if the bucket does not exist", async () => {
-      const newBucket = "new-bucket";
+    testValidError(
+      "should throw valid error if the bucket does not exist",
+      async () => {
+        const newBucket = "new-bucket";
 
-      const newStorage = new GoogleStorage({
-        projectId: env.GOOGLE_STORAGE_PROJECT_ID,
-        apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
-        bucketName: newBucket,
-      });
+        const newStorage = new GoogleStorage({
+          projectId: env.GOOGLE_STORAGE_PROJECT_ID,
+          apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
+          bucketName: newBucket,
+        });
 
-      await expectValidError(
-        () => newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA),
-        BlobStorageError,
-        {
-          checkCause: true,
-        }
-      );
-    });
+        await newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
+    it("should throw valid error if the bucket does not exist", async () => {});
   });
 
   describe("tryGetConfigFromEnv", () => {
-    it("should throw an error when a bucket name is not provided", () => {
-      expectValidError(
-        () => GoogleStorage.getConfigFromEnv({}),
-        BlobStorageError
-      );
-    });
+    testValidError(
+      "should throw an error when a bucket name is not provided",
+      () => {
+        GoogleStorage.getConfigFromEnv({});
+      },
+      Error
+    );
+
+    testValidError(
+      "should throw an error when a service key and an api endpoint are not provided",
+      () => {
+        GoogleStorage.getConfigFromEnv({
+          GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
+        });
+      },
+      Error
+    );
 
     it("should throw an error when a service key and an api endpoint are not provided", () => {
-      expectValidError(
-        () =>
-          GoogleStorage.getConfigFromEnv({
-            GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
-          }),
-        BlobStorageError
+      expect(() =>
+        GoogleStorage.getConfigFromEnv({
+          GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
+        })
+      ).toThrowErrorMatchingInlineSnapshot(
+        '"No config variables found: no bucket name, api endpoint or service key provided"'
       );
     });
 
@@ -131,6 +149,7 @@ describe("GoogleStorage", () => {
         GOOGLE_STORAGE_API_ENDPOINT: "my-api-endpoint",
         GOOGLE_STORAGE_PROJECT_ID: "my-project-id",
       });
+
       expect(config).toEqual({
         bucketName: "my-bucket",
         projectId: "my-project-id",

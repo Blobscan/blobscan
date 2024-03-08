@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
-import { expectValidError } from "@blobscan/test";
+import { testValidError } from "@blobscan/test";
 
 import { GoogleStorage, PostgresStorage, env } from "../src";
 import { BlobStorageManager } from "../src/BlobStorageManager";
@@ -113,33 +113,33 @@ describe("BlobStorageManager", () => {
       ]).toContainEqual(result);
     });
 
-    it("should throw an error if the blob storage is not found", async () => {
-      const UNKNOWN_BLOB_HASH = "0x6d6f636b2d64617461";
-      const UNKNOWN_FILE_URI = "1/6d/6f/636b2d64617461.txt";
-      const UNKNOWN_SWARM_REFERENCE = "123456789abcdef";
+    testValidError(
+      "should throw an error if the blob storage is not found",
+      async () => {
+        const UNKNOWN_BLOB_HASH = "0x6d6f636b2d64617461";
+        const UNKNOWN_FILE_URI = "1/6d/6f/636b2d64617461.txt";
+        const UNKNOWN_SWARM_REFERENCE = "123456789abcdef";
 
-      await expectValidError(
-        () =>
-          blobStorageManager.getBlob(
-            {
-              reference: UNKNOWN_BLOB_HASH,
-              storage: "POSTGRES",
-            },
-            {
-              reference: UNKNOWN_FILE_URI,
-              storage: "GOOGLE",
-            },
-            {
-              reference: UNKNOWN_SWARM_REFERENCE,
-              storage: "SWARM",
-            }
-          ),
-        BlobStorageManagerError,
-        {
-          checkCause: true,
-        }
-      );
-    });
+        await blobStorageManager.getBlob(
+          {
+            reference: UNKNOWN_BLOB_HASH,
+            storage: "POSTGRES",
+          },
+          {
+            reference: UNKNOWN_FILE_URI,
+            storage: "GOOGLE",
+          },
+          {
+            reference: UNKNOWN_SWARM_REFERENCE,
+            storage: "SWARM",
+          }
+        );
+      },
+      BlobStorageManagerError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("storeBlob", () => {
@@ -172,21 +172,21 @@ describe("BlobStorageManager", () => {
       );
     });
 
-    it("should throw an error when one of the selected blob storages wasn't found", async () => {
-      const selectedStorages: BlobStorageName[] = ["POSTGRES", "GOOGLE"];
-      const singleStorageBSM = new BlobStorageManager(
-        [swarmStorage],
-        env.CHAIN_ID
-      );
+    testValidError(
+      "should throw an error when one of the selected blob storages wasn't found",
+      async () => {
+        const selectedStorages: BlobStorageName[] = ["POSTGRES", "GOOGLE"];
+        const singleStorageBSM = new BlobStorageManager(
+          [swarmStorage],
+          env.CHAIN_ID
+        );
 
-      await expectValidError(
-        () =>
-          singleStorageBSM.storeBlob(blob, {
-            selectedStorages: selectedStorages,
-          }),
-        BlobStorageManagerError
-      );
-    });
+        await singleStorageBSM.storeBlob(blob, {
+          selectedStorages: selectedStorages,
+        });
+      },
+      BlobStorageManagerError
+    );
 
     it("should return errors for failed uploads", async () => {
       const newHash = "0x6d6f636b2d64617461";
@@ -202,19 +202,25 @@ describe("BlobStorageManager", () => {
       expect(result).toMatchSnapshot();
     });
 
-    it("should throw an error if all uploads fail", async () => {
-      const newBlobStorageManager = new BlobStorageManager(
-        [failingPostgresStorage, failingGoogleStorage, failingSwarmStorage],
-        env.CHAIN_ID
-      );
+    testValidError(
+      "should throw an error if all uploads fail",
+      async () => {
+        const newBlobStorageManager = new BlobStorageManager(
+          [failingPostgresStorage, failingGoogleStorage, failingSwarmStorage],
+          env.CHAIN_ID
+        );
 
-      const blob = { data: "New data", versionedHash: "0x6d6f636b2d64617461" };
+        const blob = {
+          data: "New data",
+          versionedHash: "0x6d6f636b2d64617461",
+        };
 
-      await expectValidError(
-        () => newBlobStorageManager.storeBlob(blob),
-        BlobStorageManagerError,
-        { checkCause: true }
-      );
-    });
+        await newBlobStorageManager.storeBlob(blob);
+      },
+      BlobStorageManagerError,
+      {
+        checkCause: true,
+      }
+    );
   });
 });

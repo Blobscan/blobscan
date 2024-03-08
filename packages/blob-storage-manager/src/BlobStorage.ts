@@ -77,19 +77,20 @@ export abstract class BlobStorage {
     this: new (config: C) => T,
     config: C
   ): Promise<T> {
-    const blobStorage = new this(config);
-
     try {
+      const blobStorage = new this(config);
+
       await blobStorage.healthCheck();
+
+      return blobStorage;
     } catch (err) {
+      const err_ = err as Error;
       throw new StorageCreationError(
         this.name,
-        "Healthcheck failed",
-        err as BlobStorageError
+        err_.message,
+        err_.cause as Error
       );
     }
-
-    return blobStorage;
   }
 
   static async tryCreateFromEnv<
@@ -117,15 +118,20 @@ export abstract class BlobStorage {
       ];
     }
 
-    const blobStorage = new this(config);
-
     try {
-      await blobStorage.healthCheck();
-    } catch (err) {
-      return [, err as StorageCreationError];
-    }
+      const blobStorage = new this(config);
 
-    return [blobStorage];
+      await blobStorage.healthCheck();
+
+      return [blobStorage];
+    } catch (err) {
+      const err_ = err as Error;
+
+      return [
+        ,
+        new StorageCreationError(this.name, err_.message, err_.cause as Error),
+      ];
+    }
   }
 
   protected static getConfigFromEnv(

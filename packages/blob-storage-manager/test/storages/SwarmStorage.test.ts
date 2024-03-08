@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { expectValidError } from "@blobscan/test";
+import { testValidError } from "@blobscan/test";
 
 import { env } from "../../src";
 import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
@@ -46,17 +46,27 @@ describe("SwarmStorage", () => {
       await expect(storage.healthCheck()).resolves.not.toThrow();
     });
 
-    it("should throw error if bee is not healthy", async () => {
-      await expectValidError(() => storage.healthCheck(), BlobStorageError, {
+    testValidError(
+      "should throw error if bee is not healthy",
+      async () => {
+        await storage.healthCheck();
+      },
+      BlobStorageError,
+      {
         checkCause: true,
-      });
-    });
+      }
+    );
 
-    it("should throw error if bee debug is not healthy", async () => {
-      await expectValidError(() => storage.healthCheck(), BlobStorageError, {
+    testValidError(
+      "should throw error if bee debug is not healthy",
+      async () => {
+        await storage.healthCheck();
+      },
+      BlobStorageError,
+      {
         checkCause: true,
-      });
-    });
+      }
+    );
   });
 
   describe("getBlob", () => {
@@ -78,29 +88,31 @@ describe("SwarmStorage", () => {
       expect(uploadReference).toEqual(SWARM_REFERENCE);
     });
 
-    it("should throw an error if no postage batches are available", async () => {
-      await expectValidError(
-        () => storage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA),
-        BlobStorageError,
-        {
-          checkCause: true,
-        }
-      );
-    });
+    testValidError(
+      "should throw an error if no postage batches are available",
+      async () => {
+        await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
 
-    it("should throw an error if the bee debug endpoint is not available", async () => {
-      const newStorage = new SwarmStorage({
-        beeEndpoint: SWARM_STORAGE_CONFIG.beeEndpoint,
-      });
+    testValidError(
+      "should throw an error if the bee debug endpoint is not available",
+      async () => {
+        const newStorage = new SwarmStorage({
+          beeEndpoint: SWARM_STORAGE_CONFIG.beeEndpoint,
+        });
 
-      await expectValidError(
-        () => newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA),
-        BlobStorageError,
-        {
-          checkCause: true,
-        }
-      );
-    });
+        await newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("tryGetConfigFromEnv", () => {
@@ -116,11 +128,12 @@ describe("SwarmStorage", () => {
       });
     });
 
-    it("should throw an error when a bee endpoint is not provided", () => {
-      expectValidError(
-        () => SwarmStorage.getConfigFromEnv({}),
-        BlobStorageError
-      );
-    });
+    testValidError(
+      "should throw an error when a bee endpoint is not provided",
+      () => {
+        SwarmStorage.getConfigFromEnv({});
+      },
+      Error
+    );
   });
 });

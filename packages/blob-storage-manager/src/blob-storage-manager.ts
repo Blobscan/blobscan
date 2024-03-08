@@ -1,32 +1,40 @@
+import { BlobStorage as BLOB_STORAGE_NAMES } from "@blobscan/db";
+import { logger } from "@blobscan/logger";
+
+import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManager } from "./BlobStorageManager";
-import { env } from "./env";
-import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
+import { Environment, env } from "./env";
+import { createStorageFromEnv } from "./utils";
 
 let blobStorageManager: BlobStorageManager | undefined;
 
+async function createBlobStorageManager() {
+  const blobStorages = await Promise.all(
+    Object.values(BLOB_STORAGE_NAMES).map(async (storageName) => {
+      if (env[`${storageName}_STORAGE_ENABLED` as keyof Environment] === true) {
+        let [storage, storageError] = await createStorageFromEnv(storageName);
+
+        if (storageError) {
+          logger.warn(
+            `${storageError.message}. Caused by: ${storageError.cause}`
+          );
+        }
+
+        return storage;
+      }
+    })
+  );
+
+  const availableStorages = blobStorages.filter(
+    (storage): storage is BlobStorage => !!storage
+  );
+
+  return new BlobStorageManager(availableStorages, env.CHAIN_ID);
+}
+
 export async function getBlobStorageManager(): Promise<BlobStorageManager> {
   if (!blobStorageManager) {
-    const blobStorages = [];
-    const [googleStorage, googleStorageError] =
-      await GoogleStorage.tryCreateFromEnv(env);
-    const [postgresStorage, postgresStorageError] =
-      await PostgresStorage.tryCreateFromEnv(env);
-    const [swarmStorage, swarmStorageError] =
-      await SwarmStorage.tryCreateFromEnv(env);
-
-    if (googleStorage) {
-      blobStorages.push(googleStorage);
-    }
-
-    if (postgresStorage) {
-      blobStorages.push(postgresStorage);
-    }
-
-    if (swarmStorage) {
-      blobStorages.push(swarmStorage);
-    }
-
-    blobStorageManager = new BlobStorageManager(blobStorages, env.CHAIN_ID);
+    blobStorageManager = await createBlobStorageManager();
   }
 
   return blobStorageManager;
