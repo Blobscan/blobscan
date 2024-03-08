@@ -1,3 +1,5 @@
 {
-  "name": "@blobscan/github"
+  "name": "@blobscan/github",
+  "version": "0.0.1",
+  "private": true
 }
