@@ -2,7 +2,7 @@
   "name": "@blobscan/zod",
   "description": "Blobscan's extended zod library",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
