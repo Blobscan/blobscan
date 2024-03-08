@@ -8,7 +8,7 @@ export interface BlobStorageConfig {}
 export abstract class BlobStorage {
   name: BlobStorageName;
 
-  constructor(name: BlobStorageName) {
+  protected constructor(name: BlobStorageName) {
     this.name = name;
   }
 

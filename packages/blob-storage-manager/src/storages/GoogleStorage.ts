@@ -22,7 +22,7 @@ export class GoogleStorage extends BlobStorage {
   _storageClient: Storage;
   _bucketName: string;
 
-  constructor({
+  protected constructor({
     bucketName,
     projectId,
     serviceKey,
