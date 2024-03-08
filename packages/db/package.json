@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/db",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
@@ -25,9 +25,9 @@
     "seed": "ts-node prisma/seed/main.ts"
   },
   "dependencies": {
-    "@blobscan/dayjs": "^0.0.1",
-    "@blobscan/logger": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.1",
+    "@blobscan/dayjs": "^0.0.2",
+    "@blobscan/logger": "^0.0.2",
+    "@blobscan/open-telemetry": "^0.0.2",
     "@prisma/client": "^5.5.2"
   },
   "devDependencies": {
