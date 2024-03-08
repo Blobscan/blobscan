@@ -18,7 +18,7 @@ export type SwarmClient = {
 export class SwarmStorage extends BlobStorage {
   _swarmClient: SwarmClient;
 
-  protected constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
+  constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
     super(BLOB_STORAGE_NAMES.SWARM);
 
     try {

@@ -110,7 +110,6 @@ describe("GoogleStorage", () => {
         checkCause: true,
       }
     );
-    it("should throw valid error if the bucket does not exist", async () => {});
   });
 
   describe("tryGetConfigFromEnv", () => {

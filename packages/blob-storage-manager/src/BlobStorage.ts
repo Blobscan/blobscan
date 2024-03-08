@@ -8,7 +8,7 @@ export interface BlobStorageConfig {}
 export abstract class BlobStorage {
   name: BlobStorageName;
 
-  protected constructor(name: BlobStorageName) {
+  constructor(name: BlobStorageName) {
     this.name = name;
   }
 
@@ -108,14 +108,12 @@ export abstract class BlobStorage {
     try {
       config = this.getConfigFromEnv(env);
     } catch (err) {
-      return [
-        ,
-        new StorageCreationError(
-          this.name,
-          "Failed to get config",
-          err as Error
-        ),
-      ];
+      const creationError = new StorageCreationError(
+        this.name,
+        "Failed to get config",
+        err as Error
+      );
+      return [, creationError];
     }
 
     try {
@@ -126,11 +124,12 @@ export abstract class BlobStorage {
       return [blobStorage];
     } catch (err) {
       const err_ = err as Error;
-
-      return [
-        ,
-        new StorageCreationError(this.name, err_.message, err_.cause as Error),
-      ];
+      const creationError = new StorageCreationError(
+        this.name,
+        err_.message,
+        err_.cause as Error
+      );
+      return [, creationError];
     }
   }
 

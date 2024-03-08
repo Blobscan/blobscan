@@ -8,7 +8,7 @@ import { BLOB_STORAGE_NAMES } from "../utils";
 export class PostgresStorage extends BlobStorage {
   protected client: PrismaClient;
 
-  protected constructor() {
+  constructor() {
     super(BLOB_STORAGE_NAMES.POSTGRES);
 
     this.client = new PrismaClient();

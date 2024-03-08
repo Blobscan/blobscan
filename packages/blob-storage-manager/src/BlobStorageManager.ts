@@ -1,7 +1,8 @@
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
-import { BlobStorageError, BlobStorageManagerError } from "./errors";
+import { BlobStorageManagerError } from "./errors";
+import type { BlobStorageError } from "./errors";
 import { tracer, updateBlobStorageMetrics } from "./instrumentation";
 import type {
   Blob,

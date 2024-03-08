@@ -1,7 +1,7 @@
-import { $Enums } from "@blobscan/db";
+import type { $Enums } from "@blobscan/db";
 
-import { BlobStorageError } from "./errors";
-import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
+import type { BlobStorageError } from "./errors";
+import type { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
 
 export type BlobStorageName = $Enums.BlobStorage;
 

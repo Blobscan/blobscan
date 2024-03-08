@@ -1,10 +1,10 @@
 import { $Enums } from "@blobscan/db";
 
-import { BlobStorage } from "./BlobStorage";
+import type { BlobStorage } from "./BlobStorage";
 import { env } from "./env";
-import { StorageCreationError } from "./errors";
+import type { StorageCreationError } from "./errors";
 import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
-import { BlobStorageName } from "./types";
+import type { BlobStorageName } from "./types";
 
 export const BLOB_STORAGE_NAMES = $Enums.BlobStorage;
 
