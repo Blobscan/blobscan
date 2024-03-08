@@ -23,6 +23,9 @@ importers:
       '@blobscan/tsconfig':
         specifier: ^0.0.1
         version: link:tooling/typescript
+      '@changesets/changelog-github':
+        specifier: ^0.5.0
+        version: 0.5.0
       '@changesets/cli':
         specifier: ^2.27.1
         version: 2.27.1
@@ -163,19 +166,19 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../../packages/api
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/logger
       '@blobscan/open-telemetry':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/open-telemetry
       '@blobscan/stats-syncer':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../../packages/stats-syncer
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/zod
       '@opentelemetry/instrumentation-express':
         specifier: ^0.33.0
@@ -215,13 +218,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../../packages/api
       '@blobscan/dayjs':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/open-telemetry':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/open-telemetry
       '@fontsource/inter':
         specifier: ^4.5.15
@@ -345,16 +348,16 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../../packages/db
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/zod
       bullmq:
         specifier: ^4.13.2
@@ -369,13 +372,13 @@ importers:
   clis/stats-aggregation-cli:
     dependencies:
       '@blobscan/dayjs':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../../packages/db
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../../packages/logger
       command-line-args:
         specifier: ^5.2.1
@@ -387,22 +390,22 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../db
       '@blobscan/open-telemetry':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../zod
       '@trpc/server':
         specifier: ^10.43.2
@@ -424,7 +427,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -445,19 +448,19 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../db
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../zod
       bullmq:
         specifier: ^4.13.2
@@ -469,16 +472,16 @@ importers:
   packages/blob-storage-manager:
     dependencies:
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../db
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../zod
       '@ethersphere/bee-js':
         specifier: ^6.0.0
@@ -496,13 +499,13 @@ importers:
   packages/db:
     dependencies:
       '@blobscan/dayjs':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../dayjs
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../open-telemetry
       '@prisma/client':
         specifier: ^5.5.2
@@ -521,7 +524,7 @@ importers:
   packages/logger:
     dependencies:
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../zod
       winston:
         specifier: ^3.10.0
@@ -530,10 +533,10 @@ importers:
   packages/open-telemetry:
     dependencies:
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../logger
       '@blobscan/zod':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../zod
       '@opentelemetry/exporter-metrics-otlp-proto':
         specifier: ^0.41.1
@@ -563,13 +566,13 @@ importers:
   packages/stats-syncer:
     dependencies:
       '@blobscan/dayjs':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: ^0.0.1
+        specifier: ^0.1.0
         version: link:../db
       '@blobscan/logger':
-        specifier: ^0.0.1
+        specifier: ^0.0.2
         version: link:../logger
       bullmq:
         specifier: ^4.13.2
@@ -2131,6 +2134,16 @@ packages:
       '@changesets/types': 6.0.0
     dev: false
 
+  /@changesets/changelog-github@0.5.0:
+    resolution: {integrity: sha512-zoeq2LJJVcPJcIotHRJEEA2qCqX0AQIeFE+L21L8sRLPVqDhSXY8ZWAt2sohtBpFZkBwu+LUwMSKRr2lMy3LJA==}
+    dependencies:
+      '@changesets/get-github-info': 0.6.0
+      '@changesets/types': 6.0.0
+      dotenv: 8.6.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@changesets/cli@2.27.1:
     resolution: {integrity: sha512-iJ91xlvRnnrJnELTp4eJJEOPjgpF3NOh4qeQehM6Ugiz9gJPRZ2t+TsXun6E3AMN4hScZKjqVXl0TX+C7AB3ZQ==}
     hasBin: true
@@ -2195,6 +2208,15 @@ packages:
       chalk: 2.4.2
       fs-extra: 7.0.1
       semver: 7.5.4
+    dev: false
+
+  /@changesets/get-github-info@0.6.0:
+    resolution: {integrity: sha512-v/TSnFVXI8vzX9/w3DU2Ol+UlTZcu3m0kXTjTT4KlAdwSvwutcByYwyYn9hwerPWfPkT2JfpoX0KgvCEi8Q/SA==}
+    dependencies:
+      dataloader: 1.4.0
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@changesets/get-release-plan@4.0.0:
@@ -5913,6 +5935,10 @@ packages:
   /damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
 
+  /dataloader@1.4.0:
+    resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
+    dev: false
+
   /dayjs@1.11.7:
     resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
     dev: false
@@ -6162,6 +6188,11 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
+    dev: false
+
+  /dotenv@8.6.0:
+    resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
+    engines: {node: '>=10'}
     dev: false
 
   /duplexer3@0.1.5:

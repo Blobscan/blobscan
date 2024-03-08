@@ -46,7 +46,7 @@ model Address {
 model Blob {
   versionedHash    String   @id @map("versioned_hash")
   commitment       String   @unique
-  proof            String?  @unique
+  proof            String?
   size             Int
   firstBlockNumber Int?     @map("first_block_number")
   insertedAt       DateTime @default(now()) @map("inserted_at")

@@ -42,7 +42,7 @@ export class StatsSyncer {
         this.overallStatsUpdater.run(cronPatterns.overall),
       ]);
 
-      log("debug", "Syncer started successfully.");
+      log("info", "Syncer started successfully.");
     } catch (err) {
       throw new Error(`Failed to run stats syncer: ${err}`);
     }
@@ -59,7 +59,7 @@ export class StatsSyncer {
           if (this.connection.status === "ready") this.connection.disconnect();
         });
 
-      log("debug", "Syncer closed successfully.");
+      log("info", "Syncer closed successfully.");
     } catch (err) {
       throw new Error(`Failed to close stats syncer: ${err}`);
     }

@@ -165,12 +165,12 @@ export class BlobPropagator {
 
     finalizerWorker.on("completed", (job) => {
       logger.debug(
-        `Propagation finalizer job ${job.id} completed. Blob propagated successfully`
+        `Job ${job.id} completed`
       );
     });
 
     finalizerWorker.on("failed", (job, err) => {
-      logger.error(`Propagation finalizer job ${job?.id} failed: ${err}`);
+      logger.error(`Job ${job?.id} failed: ${err}`);
     });
 
     return finalizerWorker;
@@ -194,13 +194,13 @@ export class BlobPropagator {
 
         storageWorker.on("completed", (job) => {
           logger.debug(
-            `${workerName}: storage blob propagation job ${job.id} completed`
+            `Job ${job.id} completed by ${workerName}`
           );
         });
 
         storageWorker.on("failed", (job, err) => {
           logger.error(
-            `${workerName}: storage blob propagation job ${job?.id} failed: ${err}`
+            `Job ${job?.id} failed: ${err} (worker: ${workerName})`
           );
         });
 

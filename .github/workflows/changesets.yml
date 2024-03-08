@@ -1,16 +1,17 @@
-name: Release
+name: Changesets
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - "packages/**"
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["next"]
+    types:
+      - completed
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  release:
-    name: Release
+  changesets:
+    name: Create pull request
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +19,7 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Create version pull request
         id: changesets
         uses: changesets/action@v1
         with:
@@ -28,4 +29,3 @@ jobs:
           publish: pnpm changeset:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
