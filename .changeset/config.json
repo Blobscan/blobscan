@@ -1,11 +1,14 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "Blobscan/blobscan" }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],
   "access": "restricted",
-  "baseBranch": "master",
+  "baseBranch": "next",
   "updateInternalDependencies": "patch",
   "privatePackages": { "version": true, "tag": true },
   "ignore": [
