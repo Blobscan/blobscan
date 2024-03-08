@@ -2,10 +2,9 @@ name: Release
 
 on:
   push:
-    branches: [next]
+    branches: ["next"]
     paths:
       - "packages/**"
-      - "apps/**"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -29,3 +28,4 @@ jobs:
           publish: pnpm changeset:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
