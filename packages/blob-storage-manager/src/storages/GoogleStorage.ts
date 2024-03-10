@@ -43,11 +43,11 @@ export class GoogleStorage extends BlobStorage {
         storageOptions.apiEndpoint = apiEndpoint;
       }
 
-      this._bucketName = bucketName;
-
       storageOptions.projectId = projectId;
 
       this._storageClient = new Storage(storageOptions);
+
+      this._bucketName = bucketName;
     } catch (err) {
       throw new Error("Failed to create google storage client", {
         cause: err,
