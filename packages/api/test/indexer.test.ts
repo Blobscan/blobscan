@@ -570,6 +570,24 @@ describe("Indexer router", async () => {
       });
     });
 
+    it("should not mark any of the provided slots as reorged if all of them are non-existent", async () => {
+      const reorgedSlots = [99999, 99998, 99997];
+      const result = await authorizedCaller.indexer.handleReorgedSlots({
+        reorgedSlots: reorgedSlots as [number, ...number[]],
+      });
+
+      const transactionForks = await authorizedContext.prisma.transactionFork
+        .findMany()
+        .then((txForks) =>
+          txForks.map((txFork) => omitDBTimestampFields(txFork))
+        );
+
+      expect(transactionForks, " Fork transactions mismatch").toEqual([]);
+      expect(result.totalUpdatedSlots, "Total updated slots mismatch").toEqual(
+        0
+      );
+    });
+
     unauthorizedRPCCallTest(() =>
       nonAuthorizedCaller.indexer.handleReorgedSlots({ reorgedSlots: [1000] })
     );
