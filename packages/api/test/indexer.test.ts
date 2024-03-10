@@ -15,7 +15,7 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
-import type { HandleReorgedSlotInput } from "../src/routers/indexer/handleReorgedSlot.schema";
+import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots.schema";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
@@ -496,10 +496,10 @@ describe("Indexer router", async () => {
     });
   });
 
-  describe("handleReorgedSlot", () => {
+  describe("handleReorgedSlots", () => {
     describe("when authorized", () => {
-      const input: HandleReorgedSlotInput = {
-        newHeadSlot: 106,
+      const input: HandleReorgedSlotsInput = {
+        reorgedSlots: [106, 107, 108],
       };
 
       it("should mark the transactions contained in the blocks with a slot greater than the new head slot as reorged", async () => {
@@ -509,14 +509,14 @@ describe("Indexer router", async () => {
               ({ hash }) => hash === blockHash
             );
 
-            return block?.slot && block.slot > input.newHeadSlot;
+            return block?.slot && input.reorgedSlots.includes(block.slot);
           })
           .map(({ hash, blockHash }) => ({
             hash,
             blockHash,
           }));
 
-        await authorizedCaller.indexer.handleReorgedSlot(input);
+        await authorizedCaller.indexer.handleReorgedSlots(input);
 
         const transactionForks = await authorizedContext.prisma.transactionFork
           .findMany()
@@ -527,18 +527,69 @@ describe("Indexer router", async () => {
         expect(transactionForks).toEqual(expectedTransactionForks);
       });
 
-      it("should not mark any block when current head slot is given", async () => {
-        await authorizedCaller.indexer.handleReorgedSlot({ newHeadSlot: 108 });
+      it("should return the number of updated slots", async () => {
+        const result = await authorizedCaller.indexer.handleReorgedSlots(input);
 
-        const transactionForks =
-          await authorizedContext.prisma.transactionFork.findMany();
+        expect(result).toEqual({
+          totalUpdatedSlots: input.reorgedSlots.length,
+        });
+      });
 
-        expect(transactionForks).toEqual([]);
+      it("should ignore non-existent slots and mark the ones that exist as reorged", async () => {
+        const reorgedSlots = [106, 107, 99999];
+        const expectedTransactionForks = fixtures.txs
+          .filter(({ blockHash }) => {
+            const block = fixtures.blocks.find(
+              ({ hash }) => hash === blockHash
+            );
+
+            return block?.slot && reorgedSlots.includes(block.slot);
+          })
+          .map(({ hash, blockHash }) => ({
+            hash,
+            blockHash,
+          }));
+
+        const result = await authorizedCaller.indexer.handleReorgedSlots({
+          reorgedSlots: reorgedSlots as [number, ...number[]],
+        });
+
+        const transactionForks = await authorizedContext.prisma.transactionFork
+          .findMany()
+          .then((txForks) =>
+            txForks.map((txFork) => omitDBTimestampFields(txFork))
+          );
+
+        expect(transactionForks, "Fork transactions mismatch").toEqual(
+          expectedTransactionForks
+        );
+        expect(
+          result.totalUpdatedSlots,
+          "Total updated slots mismatch"
+        ).toEqual(2);
       });
     });
 
+    it("should not mark any of the provided slots as reorged if all of them are non-existent", async () => {
+      const reorgedSlots = [99999, 99998, 99997];
+      const result = await authorizedCaller.indexer.handleReorgedSlots({
+        reorgedSlots: reorgedSlots as [number, ...number[]],
+      });
+
+      const transactionForks = await authorizedContext.prisma.transactionFork
+        .findMany()
+        .then((txForks) =>
+          txForks.map((txFork) => omitDBTimestampFields(txFork))
+        );
+
+      expect(transactionForks, " Fork transactions mismatch").toEqual([]);
+      expect(result.totalUpdatedSlots, "Total updated slots mismatch").toEqual(
+        0
+      );
+    });
+
     unauthorizedRPCCallTest(() =>
-      nonAuthorizedCaller.indexer.handleReorgedSlot({ newHeadSlot: 1000 })
+      nonAuthorizedCaller.indexer.handleReorgedSlots({ reorgedSlots: [1000] })
     );
   });
 });

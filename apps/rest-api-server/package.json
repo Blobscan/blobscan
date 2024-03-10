@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/rest-api-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "clean": "git clean -xdf node_modules",
@@ -15,7 +15,7 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@blobscan/api": "^0.1.0",
+    "@blobscan/api": "^0.2.0",
     "@blobscan/logger": "^0.0.2",
     "@blobscan/open-telemetry": "^0.0.2",
     "@blobscan/stats-syncer": "^0.1.0",
