@@ -1,5 +1,13 @@
 # @blobscan/api
 
+## 0.2.0
+
+### Minor Changes
+
+- [#272](https://github.com/Blobscan/blobscan/pull/272) [`e4bced8`](https://github.com/Blobscan/blobscan/commit/e4bced8334239c71f59f04c0a487e2a71bca7369) Thanks [@PJColombo](https://github.com/PJColombo)! - Revamped the reorged slots handling endpoint.
+
+  The endpoint now accepts a set of forked slots and marks those that exist in the database as reorganized. This is achieved by transferring the transactions of the corresponding blocks to the fork transactions table.
+
 ## 0.1.0
 
 ### Minor Changes
