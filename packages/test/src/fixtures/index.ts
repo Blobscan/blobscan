@@ -1,4 +1,4 @@
-import type { BlobStorage, PrismaClient } from "@prisma/client";
+import type { BlobStorage, PrismaClient, Rollup } from "@prisma/client";
 
 import POSTGRES_DATA from "./postgres/data.json";
 
@@ -17,7 +17,10 @@ export const fixtures = {
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
   blocks: POSTGRES_DATA.blocks,
   addresses: POSTGRES_DATA.addresses,
-  txs: POSTGRES_DATA.txs,
+  txs: POSTGRES_DATA.txs.map((tx) => ({
+    ...tx,
+    sourceRollup: tx.sourceRollup as Rollup | null,
+  })),
   blobs: POSTGRES_DATA.blobs,
   blobDataStorageRefs:
     POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReferenceFixture[],
