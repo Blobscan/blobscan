@@ -16,3 +16,13 @@ export const prismaBatchOperationsMaxSizeSchema = z.coerce
   .number()
   .positive()
   .default(100_000);
+
+export const networkSchema = z.enum([
+  "mainnet",
+  "goerli",
+  "holesky",
+  "sepolia",
+  "gnosis",
+  "chiado",
+  "devnet",
+]);

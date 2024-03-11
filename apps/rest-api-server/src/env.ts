@@ -5,6 +5,7 @@ import {
   presetEnvOptions,
   nodeEnvSchema,
   maskPassword,
+  networkSchema,
 } from "@blobscan/zod";
 
 export const env = createEnv({
@@ -15,6 +16,7 @@ export const env = createEnv({
         .url()
         .default("https://api.blobscan.com"),
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
+      NETWORK_NAME: networkSchema.default("mainnet"),
       NODE_ENV: nodeEnvSchema.optional(),
       TRACES_ENABLED: booleanSchema.default("false"),
       METRICS_ENABLED: booleanSchema.default("false"),
@@ -40,3 +42,5 @@ export const env = createEnv({
     );
   },
 });
+
+export type Environment = typeof env;
