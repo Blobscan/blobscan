@@ -12,11 +12,25 @@ export type DatePeriod = {
   to?: string;
 };
 
+export function normalizeDate(date: string | Date | dayjs.Dayjs) {
+  let date_: dayjs.Dayjs;
+
+  if (dayjs.isDayjs(date)) {
+    date_ = date;
+  } else if (date instanceof Date) {
+    date_ = dayjs(date);
+  } else {
+    date_ = dayjs(new Date(date));
+  }
+
+  return date_.utc();
+}
+
 export function normalizeDailyDate(
   date: string | Date | dayjs.Dayjs,
   startOfOrEndOfDay: "startOf" | "endOf" = "endOf"
 ) {
-  const date_ = dayjs.isDayjs(date) ? date.utc() : dayjs(new Date(date)).utc();
+  const date_ = normalizeDate(date);
 
   return date_[startOfOrEndOfDay]("day").toISOString();
 }

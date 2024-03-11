@@ -1,7 +1,6 @@
 import type { Redis } from "ioredis";
 
-import dayjs from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+import { normalizeDailyDate, normalizeDate, prisma } from "@blobscan/db";
 import type { PrismaPromise, RawDatePeriod } from "@blobscan/db";
 
 import { PeriodicUpdater } from "../PeriodicUpdater";
@@ -44,19 +43,34 @@ export class DailyStatsUpdater extends PeriodicUpdater {
           },
         };
 
-        const yesterday = dayjs().subtract(1, "day");
+        const lastIndexedBlock = await prisma.block.findLatest();
+
+        if (!lastIndexedBlock) {
+          log("debug", "Skipping stats aggregation. No blocks indexed yet", {
+            updater: name,
+          });
+
+          return;
+        }
+        const targetDate = normalizeDate(lastIndexedBlock.timestamp).subtract(
+          1,
+          "day"
+        );
+        const targetDay = normalizeDailyDate(targetDate);
 
         const lastDailyStatsDays = await Promise.all(
           Object.values(dailyStatsModels).map((m) =>
             m
               .findFirst(findLatestArgs)
-              .then((stats) => (stats?.day ? dayjs(stats.day) : undefined))
+              .then((stats) =>
+                stats?.day ? normalizeDate(stats.day) : undefined
+              )
           )
         );
 
         if (
           lastDailyStatsDays.every((lastDay) =>
-            lastDay ? lastDay?.isSame(yesterday, "day") : false
+            lastDay ? lastDay?.isSame(targetDay, "day") : false
           )
         ) {
           log("debug", `Skipping stats aggregation. Already up to date`, {
@@ -69,12 +83,13 @@ export class DailyStatsUpdater extends PeriodicUpdater {
         const entityToPopulatedDays = await Promise.all(
           Object.entries(dailyStatsModels).map(async ([entity, model], i) => {
             const lastDailyStatsDay = lastDailyStatsDays[i];
+            const startDate = lastDailyStatsDay
+              ? lastDailyStatsDay.add(1, "day")
+              : undefined;
 
             const populatedDays = await model.populate({
-              from: lastDailyStatsDay
-                ? lastDailyStatsDay.add(1, "day")
-                : undefined,
-              to: yesterday,
+              from: startDate,
+              to: targetDay,
             });
 
             return [entity, populatedDays];
@@ -91,7 +106,7 @@ export class DailyStatsUpdater extends PeriodicUpdater {
         log(
           "info",
           `Daily data up to day ${formatDate(
-            yesterday
+            targetDay
           )} aggregated. ${results} successfully.`,
           {
             updater: name,
