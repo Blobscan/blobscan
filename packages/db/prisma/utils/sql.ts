@@ -28,15 +28,16 @@ export function buildAvgUpdateExpression(
   totalItemsField: Prisma.Sql,
   avgFieldName: Prisma.Sql
 ) {
-  const prefixedTotalItemsField = Prisma.sql`${tableAlias}.${Prisma.sql`${totalItemsField}`}`;
-  const prefixedAvgField = Prisma.sql`${tableAlias}.${Prisma.sql`${avgFieldName}`}`;
-  const excludedTotalItemsField = Prisma.sql`EXCLUDED.${Prisma.sql`${totalItemsField}`}`;
-  const excludedAvgField = Prisma.sql`EXCLUDED.${Prisma.sql`${avgFieldName}`}`;
+  const prevTotalItemsField = Prisma.sql`${tableAlias}.${Prisma.sql`${totalItemsField}`}`;
+  const prevAvgField = Prisma.sql`${tableAlias}.${Prisma.sql`${avgFieldName}`}`;
+  const newTotalItemsFields = Prisma.sql`EXCLUDED.${Prisma.sql`${totalItemsField}`}`;
+  const newAvgField = Prisma.sql`EXCLUDED.${Prisma.sql`${avgFieldName}`}`;
 
   return Prisma.sql`
     CASE
-      WHEN ${prefixedTotalItemsField} + ${excludedTotalItemsField} = 0 THEN 0
-      ELSE ${prefixedAvgField} + ((${excludedAvgField} - ${prefixedAvgField}) / (${prefixedTotalItemsField} + ${excludedTotalItemsField}))
+      WHEN ${prevTotalItemsField} = 0 AND ${newTotalItemsFields} = 0 THEN 0
+      WHEN ${newAvgField} = 0 THEN ${prevAvgField}
+      ELSE ${prevAvgField} + ((${newAvgField} - ${prevAvgField}) / (${prevTotalItemsField} + ${newTotalItemsFields}))
     END
   `;
 }
