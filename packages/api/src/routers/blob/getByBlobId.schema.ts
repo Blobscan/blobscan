@@ -1,4 +1,4 @@
-import { $Enums } from "@blobscan/db";
+import { BlobStorage } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 export const getByBlobIdInputSchema = z.object({
@@ -13,9 +13,9 @@ export const getByBlobIdOutputSchema = z.object({
   dataStorageReferences: z.array(
     z.object({
       blobStorage: z.enum([
-        $Enums.BlobStorage.GOOGLE,
-        $Enums.BlobStorage.POSTGRES,
-        $Enums.BlobStorage.SWARM,
+        BlobStorage.GOOGLE,
+        BlobStorage.POSTGRES,
+        BlobStorage.SWARM,
       ]),
       dataReference: z.string(),
     })

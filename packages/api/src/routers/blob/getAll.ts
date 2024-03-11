@@ -1,9 +1,8 @@
-import {
-  paginationSchema,
-  withPagination,
-} from "../../middlewares/withPagination";
+import type { Rollup } from "@blobscan/db";
+
+import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { getAllOutputSchema } from "./getAll.schema";
+import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
 
 export const getAll = publicProcedure
   .meta({
@@ -14,10 +13,12 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(paginationSchema.optional())
+  .input(getAllInputSchema)
   .output(getAllOutputSchema)
   .use(withPagination)
-  .query(async ({ ctx }) => {
+  .query(async ({ input, ctx }) => {
+    const sourceRollup = input?.rollup?.toUpperCase() as Rollup | undefined;
+
     const [blobs, overallStats] = await Promise.all([
       ctx.prisma.blob.findMany({
         select: {
@@ -25,6 +26,15 @@ export const getAll = publicProcedure
           commitment: true,
           proof: true,
           size: true,
+        },
+        where: {
+          transactions: {
+            some: {
+              transaction: {
+                sourceRollup,
+              },
+            },
+          },
         },
         ...ctx.pagination,
       }),

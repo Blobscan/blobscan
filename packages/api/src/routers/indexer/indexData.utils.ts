@@ -4,8 +4,9 @@ import type {
   Transaction,
   WithoutTimestampFields,
 } from "@blobscan/db";
-import { Prisma } from "@blobscan/db";
+import { Prisma, Rollup } from "@blobscan/db";
 
+import { env } from "../../env";
 import type { IndexDataInput } from "./indexData.schema";
 
 const MIN_BLOB_GASPRICE = BigInt(1);
@@ -66,6 +67,41 @@ export function calculateBlobGasPrice(excessDataGas: bigint): bigint {
   );
 }
 
+type RollupAddressMapping = {
+  [chainId: string]: Record<string, Rollup>;
+};
+
+const rollupAddressMapping: RollupAddressMapping = {
+  // Mainnet
+  "1": {
+    "0xc1b634853cb333d3ad8663715b08f41a3aec47cc": Rollup.ARBITRUM,
+    "0x5050f69a9786f081509234f1a7f4684b5e5b76c9": Rollup.BASE,
+    "0x6887246668a3b87f54deb3b94ba47a6f63f32985": Rollup.OPTIMISM,
+    "0x2c169dfe5fbba12957bdd0ba47d9cedbfe260ca7": Rollup.STARKNET,
+  },
+  // Holesky
+  "17000": {},
+  // Sepolia
+  "11155111": {
+    "0xb2248390842d3c4acf1d8a893954afc0eac586e5": Rollup.ARBITRUM,
+    "0x6cdebe940bc0f26850285caca097c11c33103e47": Rollup.BASE,
+    "0x8f23bb38f531600e5d8fddaaec41f13fab46e98c": Rollup.OPTIMISM,
+    "0x5b98b836969a60fec50fa925905dd1d382a7db43": Rollup.STARKNET,
+  },
+  // Gnosis
+  "100": {},
+};
+
+export function resolveRollup(from: string): Rollup | null {
+  const addressMapping = rollupAddressMapping[env.CHAIN_ID];
+
+  if (!addressMapping) {
+    return null;
+  }
+
+  return addressMapping[from.toLowerCase()] || null;
+}
+
 export function createDBTransactions({
   blobs,
   block,
@@ -84,6 +120,8 @@ export function createDBTransactions({
       const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
       const blobAsCalldataGasUsed = getEIP2028CalldataGas(txBlob.data);
 
+      const sourceRollup = resolveRollup(from);
+
       return {
         blockHash: block.hash,
         hash,
@@ -93,6 +131,7 @@ export function createDBTransactions({
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
         blobAsCalldataGasUsed: bigIntToDecimal(blobAsCalldataGasUsed),
+        sourceRollup,
       };
     }
   );
