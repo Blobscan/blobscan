@@ -1,3 +1,5 @@
+import type { Rollup } from "@blobscan/db";
+
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { formatFullTransaction, fullTransactionSelect } from "./common";
@@ -6,8 +8,10 @@ import { getAllInputSchema } from "./getAll.schema";
 export const getAllFull = publicProcedure
   .input(getAllInputSchema)
   .use(withPagination)
-  .query(async ({ ctx }) => {
-    const [transactions, overallStats] = await Promise.all([
+  .query(async ({ input, ctx }) => {
+    const sourceRollup = input?.rollup?.toUpperCase() as Rollup | undefined;
+
+    const [transactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
@@ -19,15 +23,24 @@ export const getAllFull = publicProcedure
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),
-      ctx.prisma.transactionOverallStats.findFirst({
-        select: {
-          totalTransactions: true,
-        },
-      }),
+      sourceRollup
+        ? ctx.prisma.transaction.count({
+            where: {
+              sourceRollup,
+            },
+          })
+        : ctx.prisma.transactionOverallStats.findFirst({
+            select: {
+              totalTransactions: true,
+            },
+          }),
     ]);
 
     return {
       transactions,
-      totalTransactions: overallStats?.totalTransactions ?? 0,
+      totalTransactions:
+        typeof txCountOrStats === "number"
+          ? txCountOrStats
+          : txCountOrStats?.totalTransactions ?? 0,
     };
   });

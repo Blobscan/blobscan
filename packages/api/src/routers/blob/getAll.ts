@@ -19,7 +19,7 @@ export const getAll = publicProcedure
   .query(async ({ input, ctx }) => {
     const sourceRollup = input?.rollup?.toUpperCase() as Rollup | undefined;
 
-    const [blobs, overallStats] = await Promise.all([
+    const [blobs, blobCountOrStats] = await Promise.all([
       ctx.prisma.blob.findMany({
         select: {
           versionedHash: true,
@@ -38,15 +38,30 @@ export const getAll = publicProcedure
         },
         ...ctx.pagination,
       }),
-      ctx.prisma.blobOverallStats.findFirst({
-        select: {
-          totalBlobs: true,
-        },
-      }),
+      sourceRollup
+        ? ctx.prisma.blob.count({
+            where: {
+              transactions: {
+                some: {
+                  transaction: {
+                    sourceRollup,
+                  },
+                },
+              },
+            },
+          })
+        : ctx.prisma.blobOverallStats.findFirst({
+            select: {
+              totalBlobs: true,
+            },
+          }),
     ]);
 
     return {
       blobs,
-      totalBlobs: overallStats?.totalBlobs ?? 0,
+      totalBlobs:
+        typeof blobCountOrStats === "number"
+          ? blobCountOrStats
+          : blobCountOrStats?.totalBlobs ?? 0,
     };
   });
