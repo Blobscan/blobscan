@@ -158,21 +158,21 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > when 
 ]
 `;
 
-exports[`Stats Extension > Blob model > Overall stats functions > increment > should increment stats given a block range correctly 1`] = `
+exports[`Stats Extension > Blob model > Overall stats functions > increment > should increment stats correctly when aggregating them after the first time 1`] = `
 {
-  "avgBlobSize": 1100,
+  "avgBlobSize": 1070.833333333333,
   "id": 1,
-  "totalBlobSize": 37400n,
-  "totalBlobs": 34,
-  "totalUniqueBlobs": 9,
+  "totalBlobSize": 20100n,
+  "totalBlobs": 18,
+  "totalUniqueBlobs": 6,
 }
 `;
 
-exports[`Stats Extension > Blob model > Overall stats functions > increment > should update already existing stats correctly 1`] = `
+exports[`Stats Extension > Blob model > Overall stats functions > increment > should insert stats correctly when aggregating them for the first time 1`] = `
 {
-  "avgBlobSize": 1066.666666666667,
+  "avgBlobSize": 1158.333333333333,
   "id": 1,
-  "totalBlobSize": 12800n,
+  "totalBlobSize": 13900n,
   "totalBlobs": 12,
   "totalUniqueBlobs": 6,
 }
@@ -418,30 +418,30 @@ exports[`Stats Extension > Block model > Daily stats functions > populate > when
 ]
 `;
 
-exports[`Stats Extension > Block model > Overall stats functions > increment > should increment stats given a block range correctly 1`] = `
+exports[`Stats Extension > Block model > Overall stats functions > increment > should increment stats correctly when aggregating them after the first time 1`] = `
 {
-  "avgBlobAsCalldataFee": 9421116,
-  "avgBlobFee": 106430150.4,
-  "avgBlobGasPrice": 21.6,
+  "avgBlobAsCalldataFee": 31830773.33333334,
+  "avgBlobFee": 51867669.33333334,
+  "avgBlobGasPrice": 22,
   "id": 1,
-  "totalBlobAsCalldataFee": "94211160",
-  "totalBlobAsCalldataGasUsed": "4327780",
-  "totalBlobFee": "1064301504",
-  "totalBlobGasUsed": "49286432",
-  "totalBlocks": 10,
+  "totalBlobAsCalldataFee": "56161160",
+  "totalBlobAsCalldataGasUsed": "2552780",
+  "totalBlobFee": "259301504",
+  "totalBlobGasUsed": "11786432",
+  "totalBlocks": 3,
 }
 `;
 
-exports[`Stats Extension > Block model > Overall stats functions > increment > should update already existing stats correctly 1`] = `
+exports[`Stats Extension > Block model > Overall stats functions > increment > should insert stats correctly when aggregating them for the first time 1`] = `
 {
-  "avgBlobAsCalldataFee": 44941160,
-  "avgBlobFee": 17301504,
+  "avgBlobAsCalldataFee": 25275580,
+  "avgBlobFee": 69150752,
   "avgBlobGasPrice": 22,
   "id": 1,
-  "totalBlobAsCalldataFee": "89882320",
-  "totalBlobAsCalldataGasUsed": "4085560",
-  "totalBlobFee": "34603008",
-  "totalBlobGasUsed": "1572864",
+  "totalBlobAsCalldataFee": "50551160",
+  "totalBlobAsCalldataGasUsed": "2297780",
+  "totalBlobFee": "138301504",
+  "totalBlobGasUsed": "6286432",
   "totalBlocks": 2,
 }
 `;
@@ -618,23 +618,23 @@ exports[`Stats Extension > Transaction model > Daily stats functions > populate 
 ]
 `;
 
-exports[`Stats Extension > Transaction model > Overall stats functions > increment > should increment stats given a block range correctly 1`] = `
+exports[`Stats Extension > Transaction model > Overall stats functions > increment > should increment stats correctly when aggregating them after the first time 1`] = `
 {
-  "avgMaxBlobGasFee": 102.2222222222222,
+  "avgMaxBlobGasFee": 108.3333333333333,
   "id": 1,
-  "totalTransactions": 18,
-  "totalUniqueReceivers": 5,
-  "totalUniqueSenders": 6,
+  "totalTransactions": 6,
+  "totalUniqueReceivers": 4,
+  "totalUniqueSenders": 3,
 }
 `;
 
-exports[`Stats Extension > Transaction model > Overall stats functions > increment > should update already existing stats correctly 1`] = `
+exports[`Stats Extension > Transaction model > Overall stats functions > increment > should insert stats correctly when aggregating them for the first time 1`] = `
 {
-  "avgMaxBlobGasFee": 110,
+  "avgMaxBlobGasFee": 107.5,
   "id": 1,
-  "totalTransactions": 6,
-  "totalUniqueReceivers": 6,
-  "totalUniqueSenders": 4,
+  "totalTransactions": 4,
+  "totalUniqueReceivers": 4,
+  "totalUniqueSenders": 2,
 }
 `;
 

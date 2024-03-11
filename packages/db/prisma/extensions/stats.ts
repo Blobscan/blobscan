@@ -119,13 +119,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   `COUNT(DISTINCT CASE WHEN b.first_block_number BETWEEN ${from} AND ${to} THEN b.versioned_hash END)::INT`
                 )} AS total_unique_blobs,
                 ${coalesceToZero("SUM(b.size)")} AS ${totalBlobSizeField},
-                ${coalesceToZero("AVG(b.size)::FLOAT")} AS avg_blob_size,
+                ${coalesceToZero("AVG(b.size)::FLOAT")} AS ${avgBlobSizeField},
                 NOW() AS updated_at
               FROM blob b
                 JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
                 JOIN "transaction" tx ON tx."hash" = btx.tx_hash
                 JOIN "block" bck ON bck."hash" = tx.block_hash
-              WHERE bck."number" BETWEEN ${from} AND ${to}
+                LEFT JOIN "transaction_fork" tf ON tf."block_hash" = bck."hash" AND tf."hash" = tx."hash"
+              WHERE bck."number" BETWEEN ${from} AND ${to} AND tf."hash" IS NULL
               ON CONFLICT (id) DO UPDATE SET
                 ${totalBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalBlobsField}`},
                 ${totalUniqueBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueBlobsField}`},
@@ -256,7 +257,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               )
               SELECT
                 1 as id,
-                ${coalesceToZero(`COUNT("hash")::INT`)} as ${totalBlocksField},
+                ${coalesceToZero(
+                  `COUNT(bck."hash")::INT`
+                )} as ${totalBlocksField},
                 ${coalesceToZero(
                   `SUM(blob_gas_used)::DECIMAL(50,0)`
                 )} as ${totalBlobGasUsedField},
@@ -279,8 +282,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   `AVG(blob_gas_price)::FLOAT`
                 )} as ${avgBlobGasPriceField},
                 NOW() as ${updatedAtField}
-              FROM "block"
-              WHERE "number" BETWEEN ${from} AND ${to}
+              FROM "block" bck
+              LEFT JOIN "transaction_fork" tf ON tf."block_hash" = bck."hash"
+              WHERE "number" BETWEEN ${from} AND ${to} AND tf."block_hash" IS NULL
               ON CONFLICT (id) DO UPDATE SET
                 ${totalBlocksField} = ${Prisma.sql`${statsTableAlias}.${totalBlocksField}`} + ${Prisma.sql`EXCLUDED.${totalBlocksField}`},
                 ${totalBlobGasUsedField} = ${Prisma.sql`${statsTableAlias}.${totalBlobGasUsedField}`} + ${Prisma.sql`EXCLUDED.${totalBlobGasUsedField}`},
@@ -410,7 +414,8 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 JOIN "block" b ON b.hash = tx.block_hash
                 JOIN "address" faddr ON faddr.address = tx.from_id
                 JOIN "address" taddr ON taddr.address = tx.to_id
-              WHERE b."number" BETWEEN ${from} AND ${to}
+                LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash" AND tf."hash" = tx."hash"
+              WHERE b."number" BETWEEN ${from} AND ${to} AND tf."hash" IS NULL
               ON CONFLICT (id) DO UPDATE SET
                 ${totalTransactionsField} = ${Prisma.sql`${statsTableAlias}.${totalTransactionsField}`} + ${Prisma.sql`EXCLUDED.${totalTransactionsField}`},
                 ${totalUniqueReceiversField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueReceiversField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueReceiversField}`},
