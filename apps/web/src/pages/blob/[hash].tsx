@@ -5,13 +5,13 @@ import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 import "react-loading-skeleton/dist/skeleton.css";
+import StorageBadge from "~/components/Badges/StorageBadge";
 import { Card } from "~/components/Cards/Card";
 import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
-import StorageBadge from "~/components/StorageBadge";
 import { api } from "~/api-client";
 import { formatBytes, hexStringToUtf8 } from "~/utils";
 
