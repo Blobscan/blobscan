@@ -1,5 +1,3 @@
-import { StatsSyncer } from "@blobscan/stats-syncer";
-
 import type { Environment } from "./env";
 
 export function getNetworkDencunForkSlot(

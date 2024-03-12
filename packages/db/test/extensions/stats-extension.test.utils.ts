@@ -131,8 +131,12 @@ export function indexBlock({ indexAsReorged = false } = {}) {
   return prisma.$transaction(operations);
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function getOverallStats(overallStatsModel: any) {
-  return overallStatsModel
-    .findFirst()
-    .then((res: any) => (res ? omitDBTimestampFields(res) : res));
+  return (
+    overallStatsModel
+      .findFirst()
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      .then((res: any) => (res ? omitDBTimestampFields(res) : res))
+  );
 }
