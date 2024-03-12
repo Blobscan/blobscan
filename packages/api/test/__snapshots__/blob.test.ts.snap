@@ -1,5 +1,93 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Blob router > 'getByBlobId' > should fail when getting a blob and the blob data is not available 1`] = `[TRPCError: Failed to get blob from any of the storages: ]`;
+
+exports[`Blob router > 'getByBlobId' > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
+
+exports[`Blob router > 'getByBlobId' > should get a blob by kzg commitment 1`] = `
+{
+  "commitment": "commitment004",
+  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
+  "proof": "proof004",
+  "size": 1300,
+  "versionedHash": "blobHash004",
+}
+`;
+
+exports[`Blob router > 'getByBlobId' > should get a blob by versioned hash 1`] = `
+{
+  "commitment": "commitment004",
+  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
+  "proof": "proof004",
+  "size": 1300,
+  "versionedHash": "blobHash004",
+}
+`;
+
+exports[`Blob router > 'getByBlobIdFull' > should fail when getting a blob and the blob data is not available 1`] = `[TRPCError: Failed to get blob from any of the storages: ]`;
+
+exports[`Blob router > 'getByBlobIdFull' > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
+
+exports[`Blob router > 'getByBlobIdFull' > should get a blob by kzg commitment 1`] = `
+{
+  "commitment": "commitment004",
+  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
+  "dataStorageReferences": [
+    {
+      "blobStorage": "POSTGRES",
+      "dataReference": "blobHash004",
+    },
+    {
+      "blobStorage": "GOOGLE",
+      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+    },
+  ],
+  "proof": "proof004",
+  "size": 1300,
+  "transactionsWithBlocks": [
+    {
+      "blockNumber": 1002,
+      "txHash": "txHash004",
+    },
+    {
+      "blockNumber": 1007,
+      "txHash": "txHash015",
+    },
+  ],
+  "versionedHash": "blobHash004",
+}
+`;
+
+exports[`Blob router > 'getByBlobIdFull' > should get a blob by versioned hash 1`] = `
+{
+  "commitment": "commitment004",
+  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
+  "dataStorageReferences": [
+    {
+      "blobStorage": "POSTGRES",
+      "dataReference": "blobHash004",
+    },
+    {
+      "blobStorage": "GOOGLE",
+      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+    },
+  ],
+  "proof": "proof004",
+  "size": 1300,
+  "transactionsWithBlocks": [
+    {
+      "blockNumber": 1002,
+      "txHash": "txHash004",
+    },
+    {
+      "blockNumber": 1007,
+      "txHash": "txHash015",
+    },
+  ],
+  "versionedHash": "blobHash004",
+}
+`;
+
 exports[`Blob router > getAll > when getting paginated blob results > should default to the first page when no page was specified 1`] = `
 [
   {
@@ -32,44 +120,4 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "versionedHash": "blobHash001",
   },
 ]
-`;
-
-exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
-{
-  "commitment": "commitment004",
-  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
-  "dataStorageReferences": [
-    {
-      "blobStorage": "POSTGRES",
-      "dataReference": "blobHash004",
-    },
-    {
-      "blobStorage": "GOOGLE",
-      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
-    },
-  ],
-  "proof": "proof004",
-  "size": 1300,
-  "versionedHash": "blobHash004",
-}
-`;
-
-exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
-{
-  "commitment": "commitment004",
-  "data": "0xd76df869b71d79f835db7e39ebbf3d69b71d7e",
-  "dataStorageReferences": [
-    {
-      "blobStorage": "POSTGRES",
-      "dataReference": "blobHash004",
-    },
-    {
-      "blobStorage": "GOOGLE",
-      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
-    },
-  ],
-  "proof": "proof004",
-  "size": 1300,
-  "versionedHash": "blobHash004",
-}
 `;

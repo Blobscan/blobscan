@@ -3,23 +3,10 @@ import { TRPCError } from "@trpc/server";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 
 import { publicProcedure } from "../../procedures";
-import {
-  getByBlobIdInputSchema,
-  getByBlobIdOutputSchema,
-} from "./getByBlobId.schema";
+import { getByBlobIdInputSchema } from "./getByBlobId.schema";
 
-export const getByBlobId = publicProcedure
-  .meta({
-    openapi: {
-      method: "GET",
-      path: "/blobs/{id}",
-      tags: ["blobs"],
-      summary:
-        "retrieves blob details for given versioned hash or kzg commitment.",
-    },
-  })
+export const getByBlobIdFull = publicProcedure
   .input(getByBlobIdInputSchema)
-  .output(getByBlobIdOutputSchema)
   .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
     const { id } = input;
 
@@ -33,6 +20,21 @@ export const getByBlobId = publicProcedure
           select: {
             blobStorage: true,
             dataReference: true,
+          },
+        },
+        transactions: {
+          distinct: ["txHash"],
+          select: {
+            transaction: {
+              select: {
+                hash: true,
+                block: {
+                  select: {
+                    number: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -78,11 +80,19 @@ export const getByBlobId = publicProcedure
       });
     }
 
+    const { transactions, ...blobMetadata } = blob;
+    const transactionsWithBlocks = transactions.map(
+      ({
+        transaction: {
+          hash,
+          block: { number },
+        },
+      }) => ({ txHash: hash, blockNumber: number })
+    );
+
     return {
-      versionedHash: blob.versionedHash,
-      commitment: blob.commitment,
-      proof: blob.proof,
-      size: blob.size,
+      ...blobMetadata,
+      transactionsWithBlocks,
       data: blobData.data,
     };
   });

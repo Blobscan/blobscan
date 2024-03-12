@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -37,13 +38,17 @@ describe("Blob router", async () => {
     });
   });
 
-  describe("getByBlobId", () => {
+  describe.each([
+    { functionName: "getByBlobId" },
+    { functionName: "getByBlobIdFull" },
+  ])("$functionName", ({ functionName }) => {
     it("should get a blob by versioned hash", async () => {
       const input: GetByIdInput = {
         id: "blobHash004",
       };
 
-      const result = await caller.blob.getByBlobId(input);
+      // @ts-ignore
+      const result = await caller.blob[functionName](input);
 
       expect(result).toMatchSnapshot();
     });
@@ -53,29 +58,28 @@ describe("Blob router", async () => {
         id: "commitment004",
       };
 
-      const result = await caller.blob.getByBlobId(input);
+      // @ts-ignore
+      const result = await caller.blob[functionName](input);
 
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a blob by a non-existent hash", async () => {
       await expect(
-        caller.blob.getByBlobId({
+        // @ts-ignore
+        caller.blob[functionName]({
           id: "nonExistingHash",
         })
-      ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]"
-      );
+      ).rejects.toMatchSnapshot();
     });
 
     it("should fail when getting a blob and the blob data is not available", async () => {
       await expect(
-        caller.blob.getByBlobId({
+        // @ts-ignore
+        caller.blob[functionName]({
           id: "blobHash003",
         })
-      ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: Failed to get blob from any of the storages: ]"
-      );
+      ).rejects.toMatchSnapshot();
     });
   });
 });
