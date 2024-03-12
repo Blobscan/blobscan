@@ -25,7 +25,8 @@ collectDefaultMetrics();
 
 const statsSyncer = new StatsSyncer({
   redisUri: env.REDIS_URI,
-  lowestSlot: env.FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
+  lowestSlot:
+    env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
 });
 
 statsSyncer.run({
