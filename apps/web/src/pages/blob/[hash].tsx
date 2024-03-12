@@ -11,8 +11,9 @@ import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
+import { Link } from "~/components/Link";
 import { api } from "~/api-client";
-import { formatBytes, hexStringToUtf8 } from "~/utils";
+import { buildTransactionRoute, formatBytes, hexStringToUtf8 } from "~/utils";
 
 type BlobViewMode = "Original" | "UTF-8";
 
@@ -36,7 +37,7 @@ const Blob: NextPage = function () {
     data: blob,
     error,
     isLoading,
-  } = api.blob.getByBlobId.useQuery(
+  } = api.blob.getByBlobIdFull.useQuery(
     {
       id: versionedHash,
     },
@@ -100,6 +101,19 @@ const Blob: NextPage = function () {
         value: swarmHash,
       });
     }
+
+    detailsFields.push({
+      name: "Transactions",
+      value: (
+        <div className="flex items-center gap-2">
+          {blob.transactions.map(({ txHash }) => (
+            <Link key={txHash} href={buildTransactionRoute(txHash)}>
+              {txHash.slice(0, 20)}...
+            </Link>
+          ))}
+        </div>
+      ),
+    });
   }
 
   return (
