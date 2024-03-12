@@ -12,6 +12,7 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   blobAsCalldataGasUsed: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
+  sourceRollup: true,
 });
 
 type FullTransaction = Pick<
@@ -23,6 +24,7 @@ type FullTransaction = Pick<
   | "blobAsCalldataGasUsed"
   | "gasPrice"
   | "maxFeePerBlobGas"
+  | "sourceRollup"
 > & {
   block: Pick<Block, "number" | "timestamp" | "excessBlobGas" | "blobGasPrice">;
   blobs: {
