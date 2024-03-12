@@ -20,7 +20,7 @@ export function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
         : {
             avgBlobSize: 0,
             totalBlobs: 0,
-            totalBlobSize: BigInt(0).toString(),
+            totalBlobSize: "0",
             totalUniqueBlobs: 0,
             updatedAt: new Date(),
           }
