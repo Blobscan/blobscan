@@ -10,8 +10,6 @@ import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import { createTestContext, runPaginationTestsSuite } from "./helpers";
 
-// type Input = inferProcedureInput<AppRouter["block"]["getByBlockIdFull"]>;
-
 describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
   let ctx: TRPCContext;
@@ -48,8 +46,8 @@ describe("Block router", async () => {
     { functionName: "getByBlockIdFull" },
   ])("$functionName", ({ functionName }) => {
     // it("should get a block by hash", async () => {
-    //   const input: Input = {
-    //     id: "blockHash001",
+    //   const input = {
+    //     id: "0xc6da05a52edaf584c2c340738ae012f229e2cd124f88e6800c56f7359b2401ad",
     //   };
 
     //   const result = await caller.block[
@@ -89,6 +87,7 @@ describe("Block router", async () => {
 
       const result = await caller.block[
         functionName as keyof typeof caller.block
+        // @ts-ignore
       ](input);
       expect(result).toMatchSnapshot();
     });
