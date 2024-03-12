@@ -37,7 +37,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
     NEXT_PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
-    NEXT_PUBLIC_SUPPORTED_NETWORKS: z.string().optional(),
+    NEXT_PUBLIC_SUPPORTED_NETWORKS: z.string().default('[{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]'),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z
       .string()
       .url()
