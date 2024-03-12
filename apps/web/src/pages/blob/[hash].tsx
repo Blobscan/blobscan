@@ -11,6 +11,7 @@ import { Dropdown } from "~/components/Dropdown";
 import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
+import StorageBadge from "~/components/StorageBadge";
 import { api } from "~/api-client";
 import { formatBytes, hexStringToUtf8 } from "~/utils";
 
@@ -98,6 +99,19 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Swarm Hash",
         value: swarmHash,
+      });
+    }
+
+    if (blob.dataStorageReferences.length > 0) {
+      detailsFields.push({
+        name: "Storages",
+        value: (
+          <div className="flex items-center">
+            {blob.dataStorageReferences.map((ref, index) => (
+              <StorageBadge key={index} storage={ref.blobStorage} />
+            ))}
+          </div>
+        ),
       });
     }
   }
