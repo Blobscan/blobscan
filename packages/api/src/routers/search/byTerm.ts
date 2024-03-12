@@ -1,5 +1,5 @@
 import { publicProcedure } from "../../procedures";
-import { isBlockNumber } from "../utils";
+import { isBlockNumber } from "../../utils";
 import { byTermInputSchema } from "./byTerm.schema";
 import { isAddress, isCommitment, isHash } from "./byTerm.utils";
 

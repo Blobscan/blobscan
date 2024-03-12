@@ -19,7 +19,7 @@ export const fixtures = {
   addresses: POSTGRES_DATA.addresses,
   txs: POSTGRES_DATA.txs.map((tx) => ({
     ...tx,
-    sourceRollup: tx.sourceRollup as Rollup | null,
+    rollup: tx.rollup as Rollup | null,
   })),
   blobs: POSTGRES_DATA.blobs,
   blobDataStorageRefs:

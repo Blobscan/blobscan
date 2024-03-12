@@ -687,7 +687,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
-            sourceRollup: "OPTIMISM",
+            rollup: "OPTIMISM",
           },
           {
             hash: "newTxHash2",
@@ -697,7 +697,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
-            sourceRollup: "BASE",
+            rollup: "BASE",
           },
         ];
 
@@ -729,7 +729,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
-            sourceRollup: "ARBITRUM",
+            rollup: "ARBITRUM",
           },
           {
             hash: "txHash002",
@@ -739,7 +739,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
-            sourceRollup: "OPTIMISM",
+            rollup: "OPTIMISM",
           },
         ];
 

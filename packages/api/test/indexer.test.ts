@@ -120,7 +120,7 @@ describe("Indexer router", async () => {
               "gasPrice": "3000000",
               "hash": "txHash1000",
               "maxFeePerBlobGas": "20000",
-              "sourceRollup": null,
+              "rollup": null,
               "toId": "address2",
             },
             {
@@ -129,7 +129,7 @@ describe("Indexer router", async () => {
               "gasPrice": "10000",
               "hash": "txHash999",
               "maxFeePerBlobGas": "1800",
-              "sourceRollup": null,
+              "rollup": null,
               "toId": "address10",
             },
           ]

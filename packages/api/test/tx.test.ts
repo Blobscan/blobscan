@@ -48,7 +48,7 @@ describe("Transaction router", async () => {
       it("should get the total number of transactions for a rollup", async () => {
         const expectedTotalTransactions = await ctx.prisma.transaction.count({
           where: {
-            sourceRollup: Rollup.BASE,
+            rollup: Rollup.BASE,
           },
         });
 

@@ -1,5 +1,3 @@
-import type { Rollup } from "@blobscan/db";
-
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { formatFullTransactionForApi, fullTransactionSelect } from "./common";
@@ -18,7 +16,7 @@ export const getAll = publicProcedure
   .output(getAllOutputSchema)
   .use(withPagination)
   .query(async ({ input, ctx }) => {
-    const sourceRollup = input?.rollup?.toUpperCase() as Rollup | undefined;
+    const rollup = input?.rollup;
 
     const [transactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction
@@ -30,15 +28,15 @@ export const getAll = publicProcedure
             },
           },
           where: {
-            sourceRollup,
+            rollup,
           },
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransactionForApi)),
-      sourceRollup
+      rollup
         ? ctx.prisma.transaction.count({
             where: {
-              sourceRollup,
+              rollup,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({

@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure } from "../../procedures";
-import { isBlockNumber } from "../utils";
+import { isBlockNumber } from "../../utils";
 import { formatFullBlock, fullBlockSelect } from "./common";
 import { getByBlockIdSchema } from "./getByBlockId.schema";
 

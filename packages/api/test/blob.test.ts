@@ -51,7 +51,7 @@ describe("Blob router", async () => {
           transactions: {
             some: {
               transaction: {
-                sourceRollup: Rollup.OPTIMISM,
+                rollup: Rollup.OPTIMISM,
               },
             },
           },

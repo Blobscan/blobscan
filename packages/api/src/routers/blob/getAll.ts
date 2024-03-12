@@ -1,5 +1,3 @@
-import type { Rollup } from "@blobscan/db";
-
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
@@ -17,7 +15,7 @@ export const getAll = publicProcedure
   .output(getAllOutputSchema)
   .use(withPagination)
   .query(async ({ input, ctx }) => {
-    const sourceRollup = input?.rollup?.toUpperCase() as Rollup | undefined;
+    const rollup = input?.rollup;
 
     const [blobs, blobCountOrStats] = await Promise.all([
       ctx.prisma.blob.findMany({
@@ -31,20 +29,21 @@ export const getAll = publicProcedure
           transactions: {
             some: {
               transaction: {
-                sourceRollup,
+                rollup,
               },
             },
           },
         },
         ...ctx.pagination,
       }),
-      sourceRollup
+      // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
+      rollup
         ? ctx.prisma.blob.count({
             where: {
               transactions: {
                 some: {
                   transaction: {
-                    sourceRollup,
+                    rollup,
                   },
                 },
               },
