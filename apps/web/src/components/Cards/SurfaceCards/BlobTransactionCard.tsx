@@ -20,6 +20,7 @@ import {
   normalizeTimestamp,
 } from "~/utils";
 import { Link } from "../../Link";
+import RollupBadge from "../../RollupBadge";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 const CollapseIcon: React.FC<{
@@ -63,7 +64,7 @@ const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   block: { number, timestamp } = {},
-  transaction: { hash, fromId, toId, blobs: blobsOnTx } = {},
+  transaction: { hash, fromId, toId, sourceRollup, blobs: blobsOnTx } = {},
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -111,6 +112,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       Transaction
                     </div>
                     <Link href={buildTransactionRoute(hash)}>{hash}</Link>
+                    {sourceRollup && <RollupBadge rollup={sourceRollup} />}
                   </>
                 ) : (
                   <Skeleton width={400} />

@@ -8,6 +8,7 @@ import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import RollupBadge from "~/components/RollupBadge";
 import { api } from "~/api-client";
 import {
   buildAddressRoute,
@@ -111,6 +112,14 @@ const Tx: NextPage = () => {
                     </Link>
                   ),
                 },
+                ...(txData.sourceRollup
+                  ? [
+                      {
+                        name: "Rollup Source",
+                        value: <RollupBadge rollup={txData.sourceRollup} />,
+                      },
+                    ]
+                  : []),
                 {
                   name: "Total Blob Size",
                   value: formatBytes(txData.totalBlobSize),
