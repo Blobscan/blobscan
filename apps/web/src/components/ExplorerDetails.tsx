@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
-import { formatNumber } from "~/utils";
+import { capitalize, formatNumber } from "~/utils";
 
 type InfoBarItemProps = {
   name: React.ReactNode;
@@ -32,7 +32,7 @@ export function ExplorerDetails() {
     <div className="flex h-4 gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
       <ExplorerDetailsItem
         name="Network"
-        value={env.NEXT_PUBLIC_NETWORK_NAME}
+        value={capitalize(env.NEXT_PUBLIC_NETWORK_NAME)}
       />
       ･
       <ExplorerDetailsItem

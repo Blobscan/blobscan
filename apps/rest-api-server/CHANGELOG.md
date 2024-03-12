@@ -1,5 +1,18 @@
 # @blobscan/rest-api-server
 
+## 0.1.2
+
+### Patch Changes
+
+- [#279](https://github.com/Blobscan/blobscan/pull/279) [`a39efaf`](https://github.com/Blobscan/blobscan/commit/a39efafec2732d0ceced9f97fc0d538cf7b0c922) Thanks [@PJColombo](https://github.com/PJColombo)! - Adjusted stats syncer to default to the network's Dencun fork slot when no specific fork slot is provided.
+
+- Updated dependencies [[`7e221cd`](https://github.com/Blobscan/blobscan/commit/7e221cd1226be84418658e3d6309dc0e396f671e), [`a39efaf`](https://github.com/Blobscan/blobscan/commit/a39efafec2732d0ceced9f97fc0d538cf7b0c922)]:
+  - @blobscan/stats-syncer@0.1.1
+  - @blobscan/zod@0.0.3
+  - @blobscan/api@0.2.1
+  - @blobscan/logger@0.0.3
+  - @blobscan/open-telemetry@0.0.3
+
 ## 0.1.1
 
 ### Patch Changes

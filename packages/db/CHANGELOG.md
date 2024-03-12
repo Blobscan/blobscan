@@ -1,5 +1,19 @@
 # @blobscan/db
 
+## 0.1.1
+
+### Patch Changes
+
+- [#275](https://github.com/Blobscan/blobscan/pull/275) [`411023b`](https://github.com/Blobscan/blobscan/commit/411023b92abe25f21e06e4084faca43cde0f41c3) Thanks [@PJColombo](https://github.com/PJColombo)! - Abstracted date normalization into its own function
+
+- [#278](https://github.com/Blobscan/blobscan/pull/278) [`0c937dc`](https://github.com/Blobscan/blobscan/commit/0c937dc29f1fec3e9390179f0ae37559ba5ce6c3) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed a bug where reorganized blocks were mistakenly included in the aggregation process for stats calculation.
+
+- [#278](https://github.com/Blobscan/blobscan/pull/278) [`824ccc0`](https://github.com/Blobscan/blobscan/commit/824ccc01ef8c533dcf5ed8d9cd1b5f9ce30ed145) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where incrementally updating average-related statistics with a new value of zero—due to the absence of data in the new block range—incorrectly reduced the current average, instead of properly handling cases with no blocks.
+
+- Updated dependencies []:
+  - @blobscan/logger@0.0.3
+  - @blobscan/open-telemetry@0.0.3
+
 ## 0.1.0
 
 ### Minor Changes

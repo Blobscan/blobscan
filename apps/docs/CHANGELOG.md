@@ -1,5 +1,11 @@
 # @blobscan/docs
 
+## 0.0.3
+
+### Patch Changes
+
+- [#279](https://github.com/Blobscan/blobscan/pull/279) [`105e813`](https://github.com/Blobscan/blobscan/commit/105e8134660b8208f148a0482e6a4ecf41dee833) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed network name env var
+
 ## 0.0.2
 
 ### Patch Changes
