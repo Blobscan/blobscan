@@ -1,9 +1,9 @@
 import { z } from "@blobscan/zod";
 
-import { BlockSchema } from "./common";
+import { BlockSchema, blockIdSchema } from "./common";
 
 export const getByBlockIdSchema = z.object({
-  id: z.string(),
+  id: blockIdSchema,
   reorg: z.boolean().optional(),
 });
 

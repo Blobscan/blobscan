@@ -1,7 +1,8 @@
 import { TRPCError } from "@trpc/server";
 
+import { Prisma } from "@blobscan/db";
+
 import { publicProcedure } from "../../procedures";
-import { isBlockNumber } from "../utils";
 import { formatFullBlockForApi, fullBlockSelect } from "./common";
 import {
   getByBlockIdOutputSchema,
@@ -20,13 +21,16 @@ export const getByBlockId = publicProcedure
   .input(getByBlockIdSchema)
   .output(getByBlockIdOutputSchema)
   .query(async ({ ctx, input: { id, reorg } }) => {
-    const numericId = isBlockNumber(id) ? Number(id) : undefined;
+    const isIdNumeric = typeof id === "number";
+    const idWhereFilters: Prisma.BlockWhereInput[] = isIdNumeric
+      ? [{ number: id }]
+      : [{ hash: id }];
 
     const block = await ctx.prisma.block
       .findFirst({
         select: fullBlockSelect,
         where: {
-          OR: [{ number: numericId }, { slot: numericId }, { hash: id }],
+          OR: idWhereFilters,
           transactionForks: {
             ...(reorg ? { some: {} } : { none: {} }),
           },
@@ -37,7 +41,7 @@ export const getByBlockId = publicProcedure
     if (!block) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `No block with number, slot or hash '${id}'.`,
+        message: `No block with id '${id}'.`,
       });
     }
 
