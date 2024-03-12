@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
-import { Prisma } from "@blobscan/db";
+import type { Prisma } from "@blobscan/db";
 
 import { publicProcedure } from "../../procedures";
 import { formatFullBlock, fullBlockSelect } from "./common";

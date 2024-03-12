@@ -41,7 +41,9 @@ const BlobStats: NextPage = function () {
               {
                 name: "Total Blob Size",
                 metric: {
-                  value: overallBlobStats.totalBlobSize,
+                  value: overallBlobStats.totalBlobSize
+                    ? BigInt(overallBlobStats.totalBlobSize)
+                    : undefined,
                   type: "bytes",
                 },
               },
