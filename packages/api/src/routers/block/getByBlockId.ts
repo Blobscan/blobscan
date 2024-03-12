@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import type { Prisma } from "@blobscan/db";
 
 import { publicProcedure } from "../../procedures";
+import { isBlockNumber } from "../utils";
 import { formatFullBlockForApi, fullBlockSelect } from "./common";
 import {
   getByBlockIdOutputSchema,
@@ -15,15 +16,14 @@ export const getByBlockId = publicProcedure
       method: "GET",
       path: `/blocks/{id}`,
       tags: ["blocks"],
-      summary: "retrieves block details for given block number, slot or hash.",
+      summary: "retrieves block details for given block number or hash.",
     },
   })
   .input(getByBlockIdSchema)
   .output(getByBlockIdOutputSchema)
   .query(async ({ ctx, input: { id, reorg } }) => {
-    const isIdNumeric = typeof id === "number";
-    const idWhereFilters: Prisma.BlockWhereInput[] = isIdNumeric
-      ? [{ number: id }]
+    const idWhereFilters: Prisma.BlockWhereInput[] = isBlockNumber(id)
+      ? [{ number: Number(id) }]
       : [{ hash: id }];
 
     const block = await ctx.prisma.block

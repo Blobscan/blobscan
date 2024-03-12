@@ -4,10 +4,10 @@ import type { Prisma } from "@blobscan/db";
 
 import { publicProcedure } from "../../procedures";
 import { formatFullBlock, fullBlockSelect } from "./common";
-import { getByBlockIdSchema } from "./getByBlockId.schema";
+import { getByBlockIdFullSchema } from "./getByBlockId.schema";
 
 export const getByBlockIdFull = publicProcedure
-  .input(getByBlockIdSchema)
+  .input(getByBlockIdFullSchema)
   .query(async ({ ctx, input: { id, reorg } }) => {
     const isIdNumeric = typeof id === "number";
     const idWhereFilters: Prisma.BlockWhereInput[] = isIdNumeric
