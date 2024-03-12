@@ -139,6 +139,8 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > shoul
 ]
 `;
 
+exports[`Stats Extension > Blob model > Daily stats functions > populate > should ignore reorged blocks when aggregating stats 1`] = `[]`;
+
 exports[`Stats Extension > Blob model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`YYYY-MM-DD\` dates are passed 1`] = `
 [
   {
@@ -391,6 +393,8 @@ exports[`Stats Extension > Block model > Daily stats functions > populate > shou
 ]
 `;
 
+exports[`Stats Extension > Block model > Daily stats functions > populate > should ignore reorged blocks when aggregating stats 1`] = `[]`;
+
 exports[`Stats Extension > Block model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`YYYY-MM-DD\` dates are passed 1`] = `
 [
   {
@@ -598,6 +602,8 @@ exports[`Stats Extension > Transaction model > Daily stats functions > populate 
   },
 ]
 `;
+
+exports[`Stats Extension > Transaction model > Daily stats functions > populate > should ignore reorged blocks when aggregating stats 1`] = `[]`;
 
 exports[`Stats Extension > Transaction model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`YYYY-MM-DD\` dates are passed 1`] = `
 [

@@ -101,6 +101,15 @@ function runDailyStatsFunctionsTests(
           to: "2099-12-31",
         });
       });
+
+      it("should ignore reorged blocks when aggregating stats", async () => {
+        await indexBlock({ indexAsReorged: true });
+
+        await checkStats({
+          from: "2023-09-01",
+          to: "2023-09-01",
+        });
+      });
     });
 
     describe("deleteAll", async () => {
