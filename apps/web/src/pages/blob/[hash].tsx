@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -13,7 +13,12 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
-import { buildTransactionRoute, formatBytes, hexStringToUtf8 } from "~/utils";
+import {
+  buildBlockRoute,
+  buildTransactionRoute,
+  formatBytes,
+  hexStringToUtf8,
+} from "~/utils";
 
 type BlobViewMode = "Original" | "UTF-8";
 
@@ -45,6 +50,7 @@ const Blob: NextPage = function () {
       enabled: router.isReady,
     }
   );
+
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
   const [formattedData, formattedDataErr] = useMemo(() => {
@@ -103,13 +109,24 @@ const Blob: NextPage = function () {
     }
 
     detailsFields.push({
-      name: "Transactions",
+      name: "Transactions and Blocks",
       value: (
-        <div className="flex items-center gap-2">
-          {blob.transactions.map(({ txHash }) => (
-            <Link key={txHash} href={buildTransactionRoute(txHash)}>
-              {txHash.slice(0, 20)}...
-            </Link>
+        <div className="grid w-full grid-cols-3 gap-y-3 md:grid-cols-3">
+          {blob.transactionsWithBlocks.map(({ txHash, blockNumber }) => (
+            <Fragment key={`${txHash}-${blockNumber}`}>
+              <div className="col-span-2 flex gap-1 md:col-span-2">
+                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Tx{" "}
+                </div>
+                <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+              </div>
+              <div className="flex gap-1">
+                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Block{" "}
+                </div>
+                <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+              </div>
+            </Fragment>
           ))}
         </div>
       ),
@@ -122,7 +139,6 @@ const Blob: NextPage = function () {
         header="Blob Details"
         fields={blob ? detailsFields : undefined}
       />
-
       <Card
         header={
           <div className="flex items-center justify-between">

@@ -23,8 +23,18 @@ export const getByBlobIdFull = publicProcedure
           },
         },
         transactions: {
+          distinct: ["txHash"],
           select: {
-            txHash: true,
+            transaction: {
+              select: {
+                hash: true,
+                block: {
+                  select: {
+                    number: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -70,8 +80,19 @@ export const getByBlobIdFull = publicProcedure
       });
     }
 
+    const { transactions, ...blobMetadata } = blob;
+    const transactionsWithBlocks = transactions.map(
+      ({
+        transaction: {
+          hash,
+          block: { number },
+        },
+      }) => ({ txHash: hash, blockNumber: number })
+    );
+
     return {
-      ...blob,
+      ...blobMetadata,
+      transactionsWithBlocks,
       data: blobData.data,
     };
   });

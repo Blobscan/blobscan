@@ -1,6 +1,5 @@
 ---
-"@blobscan/api": minor
 "@blobscan/web": minor
 ---
 
-Added support for back navigation from blob to transactions page
+Enhanced navigation from the blob details page, enabling direct links back to associated transactions and blocks
