@@ -11,15 +11,19 @@ export function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
     .findUnique({
       where: { id: 1 },
     })
-    .then(
-      (stats) =>
-        stats ?? {
-          avgBlobSize: 0,
-          totalBlobs: 0,
-          totalBlobSize: BigInt(0),
-          totalUniqueBlobs: 0,
-          updatedAt: new Date(),
-        }
+    .then((stats) =>
+      stats
+        ? {
+            ...stats,
+            totalBlobSize: stats.totalBlobSize.toString(),
+          }
+        : {
+            avgBlobSize: 0,
+            totalBlobs: 0,
+            totalBlobSize: BigInt(0).toString(),
+            totalUniqueBlobs: 0,
+            updatedAt: new Date(),
+          }
     );
 }
 
