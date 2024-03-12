@@ -70,9 +70,7 @@ describe("Blob router", async () => {
         caller.blob[functionName]({
           id: "nonExistingHash",
         })
-      ).rejects.toMatchSnapshot(
-        "[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]"
-      );
+      ).rejects.toMatchSnapshot();
     });
 
     it("should fail when getting a blob and the blob data is not available", async () => {
@@ -81,9 +79,7 @@ describe("Blob router", async () => {
         caller.blob[functionName]({
           id: "blobHash003",
         })
-      ).rejects.toMatchSnapshot(
-        "[TRPCError: Failed to get blob from any of the storages: ]"
-      );
+      ).rejects.toMatchSnapshot();
     });
   });
 });

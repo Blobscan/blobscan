@@ -2,7 +2,11 @@
 
 exports[`Blob router > 'getByBlobId' > should fail when getting a blob and the blob data is not available > [TRPCError: Failed to get blob from any of the storages: ] 1`] = `[TRPCError: Failed to get blob from any of the storages: ]`;
 
+exports[`Blob router > 'getByBlobId' > should fail when getting a blob and the blob data is not available 1`] = `[TRPCError: Failed to get blob from any of the storages: ]`;
+
 exports[`Blob router > 'getByBlobId' > should fail when trying to get a blob by a non-existent hash > [TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.] 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
+
+exports[`Blob router > 'getByBlobId' > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
 
 exports[`Blob router > 'getByBlobId' > should get a blob by kzg commitment 1`] = `
 {
@@ -26,7 +30,11 @@ exports[`Blob router > 'getByBlobId' > should get a blob by versioned hash 1`] =
 
 exports[`Blob router > 'getByBlobIdFull' > should fail when getting a blob and the blob data is not available > [TRPCError: Failed to get blob from any of the storages: ] 1`] = `[TRPCError: Failed to get blob from any of the storages: ]`;
 
+exports[`Blob router > 'getByBlobIdFull' > should fail when getting a blob and the blob data is not available 1`] = `[TRPCError: Failed to get blob from any of the storages: ]`;
+
 exports[`Blob router > 'getByBlobIdFull' > should fail when trying to get a blob by a non-existent hash > [TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.] 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
+
+exports[`Blob router > 'getByBlobIdFull' > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
 
 exports[`Blob router > 'getByBlobIdFull' > should get a blob by kzg commitment 1`] = `
 {
