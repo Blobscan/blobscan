@@ -3,12 +3,12 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import RollupBadge from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import RollupBadge from "~/components/RollupBadge";
 import { api } from "~/api-client";
 import {
   buildAddressRoute,

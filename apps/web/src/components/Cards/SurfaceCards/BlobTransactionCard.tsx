@@ -19,8 +19,8 @@ import {
   formatBytes,
   normalizeTimestamp,
 } from "~/utils";
+import RollupBadge from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
-import RollupBadge from "../../RollupBadge";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 const CollapseIcon: React.FC<{
