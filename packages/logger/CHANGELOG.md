@@ -1,5 +1,11 @@
 # @blobscan/logger
 
+## 0.0.5
+
+### Patch Changes
+
+- [#313](https://github.com/Blobscan/blobscan/pull/313) [`04bfb3c`](https://github.com/Blobscan/blobscan/commit/04bfb3cc78ce76f5e08cca1063f33bd6714b7096) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Updated logger env
+
 ## 0.0.4
 
 ### Patch Changes
