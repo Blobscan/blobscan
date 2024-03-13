@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.2.0
+
+### Minor Changes
+
+- [#284](https://github.com/Blobscan/blobscan/pull/284) [`6949b30`](https://github.com/Blobscan/blobscan/commit/6949b3060c42616dd098484ca0d9d67c140cf2a2) Thanks [@0xGabi](https://github.com/0xGabi)! - Enhanced navigation from the blob details page, enabling direct links back to associated transactions and blocks
+
+### Patch Changes
+
+- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Splited getByBlockId schema to handle openapi parse restrictions
+
+- Updated dependencies [[`14c0ed0`](https://github.com/Blobscan/blobscan/commit/14c0ed06ad543239138fc5c14f753a1cf2175032), [`1f40a4b`](https://github.com/Blobscan/blobscan/commit/1f40a4b7dbe73a947c3325588069bbbd50b334da), [`56ebc7d`](https://github.com/Blobscan/blobscan/commit/56ebc7d0fa44ef5abdea4df4ab31fe697bcfde21), [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63), [`3a9c304`](https://github.com/Blobscan/blobscan/commit/3a9c3045b35dd3efef29caa75b87cbf5549f7ee2)]:
+  - @blobscan/api@0.3.0
+
 ## 0.1.2
 
 ### Patch Changes

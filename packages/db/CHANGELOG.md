@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.1.2
+
+### Patch Changes
+
+- [#287](https://github.com/Blobscan/blobscan/pull/287) [`9d018bd`](https://github.com/Blobscan/blobscan/commit/9d018bd56895ad6e904bda8ec81c850c02230b11) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where reorged blocks where being included in the daily stats aggregations
+
 ## 0.1.1
 
 ### Patch Changes
