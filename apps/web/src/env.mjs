@@ -10,7 +10,6 @@ const booleanSchema = z
 
 const networkSchema = z.enum([
   "mainnet",
-  "goerli",
   "holesky",
   "sepolia",
   "gnosis",
