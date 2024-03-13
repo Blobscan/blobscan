@@ -18,15 +18,15 @@ export const getBlockOverallStatsQuery = function (
         ? {
             ...stats,
             totalBlobGasUsed: stats.totalBlobGasUsed.toFixed(),
-            totalBlobAsCalldataGasUsed:
-              stats.totalBlobAsCalldataGasUsed.toFixed(),
+            totalBlobGasAsCalldataUsed:
+              stats.totalBlobGasAsCalldataUsed.toFixed(),
             totalBlobFee: stats.totalBlobFee.toFixed(),
             totalBlobAsCalldataFee: stats.totalBlobAsCalldataFee.toFixed(),
           }
         : {
             totalBlocks: 0,
             totalBlobGasUsed: "0",
-            totalBlobAsCalldataGasUsed: "0",
+            totalBlobGasAsCalldataUsed: "0",
             totalBlobFee: "0",
             totalBlobAsCalldataFee: "0",
             avgBlobFee: 0,

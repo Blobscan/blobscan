@@ -4,7 +4,7 @@ export const getBlockOverallStatsInputSchema = z.void();
 export const getBlockOverallStatsOutputSchema = z.object({
   totalBlocks: z.number(),
   totalBlobGasUsed: z.string(),
-  totalBlobAsCalldataGasUsed: z.string(),
+  totalBlobGasAsCalldataUsed: z.string(),
   totalBlobFee: z.string(),
   totalBlobAsCalldataFee: z.string(),
   avgBlobFee: z.number(),

@@ -33,7 +33,7 @@ const Tx: NextPage = () => {
       txData_
         ? {
             ...txData_,
-            blobAsCalldataGasUsed: BigInt(txData_.blobAsCalldataGasUsed),
+            blobGasAsCalldataUsed: BigInt(txData_.blobGasAsCalldataUsed),
             gasPrice: BigInt(txData_.gasPrice),
             blobGasUsed: BigInt(txData_.blobGasUsed),
             blobGasBaseFee: BigInt(txData_.blobGasBaseFee),
@@ -146,13 +146,13 @@ const Tx: NextPage = () => {
                   name: "Blob As Calldata Gas",
                   value: (
                     <div>
-                      {formatNumber(txData.blobAsCalldataGasUsed)}{" "}
+                      {formatNumber(txData.blobGasAsCalldataUsed)}{" "}
                       <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
                         (
                         <strong>
                           {formatNumber(
                             performDiv(
-                              txData.blobAsCalldataGasUsed,
+                              txData.blobGasAsCalldataUsed,
                               blobGasUsed
                             ),
                             "standard",

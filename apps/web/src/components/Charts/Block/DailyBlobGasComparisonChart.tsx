@@ -9,12 +9,12 @@ import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 export type DailyBlobGasComparisonChartProps = Partial<{
   days: DailyBlockStats["days"];
   blobGasUsed: DailyBlockStats["totalBlobGasUsed"];
-  blobAsCalldataGasUsed: DailyBlockStats["totalBlobAsCalldataGasUsed"];
+  blobGasAsCalldataUsed: DailyBlockStats["totalBlobGasAsCalldataUsed"];
   opts?: EChartOption;
 }>;
 
 export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
-  function ({ blobAsCalldataGasUsed, blobGasUsed, days, opts = {} }) {
+  function ({ blobGasAsCalldataUsed, blobGasUsed, days, opts = {} }) {
     const options: EChartOption<EChartOption.Series> = {
       ...buildTimeSeriesOptions({
         dates: days,
@@ -48,7 +48,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
         },
         {
           name: "Equivalent Blob As Calldata Gas",
-          data: blobAsCalldataGasUsed,
+          data: blobGasAsCalldataUsed,
           stack: "gas",
           type: "bar",
           itemStyle: {

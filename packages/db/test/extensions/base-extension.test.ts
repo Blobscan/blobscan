@@ -670,8 +670,8 @@ describe("Base Extension", () => {
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,
-        blobAsCalldataGasUsed: new Prisma.Decimal(
-          existingRawTx.blobAsCalldataGasUsed
+        blobGasAsCalldataUsed: new Prisma.Decimal(
+          existingRawTx.blobGasAsCalldataUsed
         ),
         maxFeePerBlobGas: new Prisma.Decimal(existingRawTx.maxFeePerBlobGas),
         gasPrice: new Prisma.Decimal(existingRawTx.gasPrice),
@@ -686,7 +686,7 @@ describe("Base Extension", () => {
             blockHash: "blockHash002",
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
-            blobAsCalldataGasUsed: new Prisma.Decimal(1000),
+            blobGasAsCalldataUsed: new Prisma.Decimal(1000),
           },
           {
             hash: "newTxHash2",
@@ -695,7 +695,7 @@ describe("Base Extension", () => {
             blockHash: "blockHash001",
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
-            blobAsCalldataGasUsed: new Prisma.Decimal(500),
+            blobGasAsCalldataUsed: new Prisma.Decimal(500),
           },
         ];
 
@@ -726,7 +726,7 @@ describe("Base Extension", () => {
             blockHash: "blockHash006",
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
-            blobAsCalldataGasUsed: new Prisma.Decimal(1),
+            blobGasAsCalldataUsed: new Prisma.Decimal(1),
           },
           {
             hash: "txHash002",
@@ -735,7 +735,7 @@ describe("Base Extension", () => {
             blockHash: "blockHash006",
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
-            blobAsCalldataGasUsed: new Prisma.Decimal(999),
+            blobGasAsCalldataUsed: new Prisma.Decimal(999),
           },
         ];
 

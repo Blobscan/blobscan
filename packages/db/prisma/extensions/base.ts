@@ -246,7 +246,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 toId,
                 maxFeePerBlobGas,
                 gasPrice,
-                blobAsCalldataGasUsed,
+                blobGasAsCalldataUsed,
               }) => [
                 hash,
                 blockHash,
@@ -254,7 +254,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 toId,
                 maxFeePerBlobGas,
                 gasPrice,
-                blobAsCalldataGasUsed,
+                blobGasAsCalldataUsed,
               ]
             )
             .map(
@@ -270,7 +270,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               to_id,
               max_fee_per_blob_gas,
               gas_price,
-              blob_as_calldata_gas_used,
+              blob_gas_as_calldata_used,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
@@ -280,7 +280,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               to_id = EXCLUDED.to_id,
               max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
               gas_price = EXCLUDED.gas_price,
-              blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
+              blob_gas_as_calldata_used = EXCLUDED.blob_gas_as_calldata_used,
               updated_at = NOW()
           `;
         },

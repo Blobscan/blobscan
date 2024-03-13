@@ -161,7 +161,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               day,
               total_blocks,
               total_blob_gas_used,
-              total_blob_as_calldata_gas_used,
+              total_blob_gas_as_calldata_used,
               total_blob_fee,
               total_blob_as_calldata_fee,
               avg_blob_fee,
@@ -172,11 +172,11 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               DATE_TRUNC('day', ${dateField}) as "day",
               COUNT(b."hash")::INT as total_blocks,
               SUM(b.blob_gas_used)::DECIMAL as total_blob_gas_used,
-              SUM(b.blob_as_calldata_gas_used)::DECIMAL as total_blob_as_calldata_gas_used,
+              SUM(b.blob_gas_as_calldata_used)::DECIMAL as total_blob_gas_as_calldata_used,
               SUM(b.blob_gas_used * b.blob_gas_price)::DECIMAL as total_blob_fee,
-              SUM(b.blob_as_calldata_gas_used * b.blob_gas_price)::DECIMAL as total_blob_as_calldata_fee,
+              SUM(b.blob_gas_as_calldata_used * b.blob_gas_price)::DECIMAL as total_blob_as_calldata_fee,
               AVG(b.blob_gas_used * b.blob_gas_price)::FLOAT as avg_blob_fee,
-              AVG(b.blob_as_calldata_gas_used * b.blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
+              AVG(b.blob_gas_as_calldata_used * b.blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
               AVG(b.blob_gas_price)::FLOAT as avg_blob_gas_price
             FROM "block" b
             LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash"
@@ -185,7 +185,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             ON CONFLICT (day) DO UPDATE SET
               total_blocks = EXCLUDED.total_blocks,
               total_blob_gas_used = EXCLUDED.total_blob_gas_used,
-              total_blob_as_calldata_gas_used = EXCLUDED.total_blob_as_calldata_gas_used,
+              total_blob_gas_as_calldata_used = EXCLUDED.total_blob_gas_as_calldata_used,
               total_blob_fee = EXCLUDED.total_blob_fee,
               total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
               avg_blob_fee = EXCLUDED.avg_blob_fee,
@@ -201,7 +201,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 id,
                 total_blocks,
                 total_blob_gas_used,
-                total_blob_as_calldata_gas_used,
+                total_blob_gas_as_calldata_used,
                 total_blob_fee,
                 total_blob_as_calldata_fee,
                 avg_blob_fee,
@@ -213,18 +213,18 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 1 as id,
                 COUNT("hash")::INT as total_blocks,
                 SUM(blob_gas_used)::DECIMAL(50,0) as total_blob_gas_used,
-                SUM(blob_as_calldata_gas_used)::DECIMAL(50,0) as total_blob_as_calldata_gas_used,
+                SUM(blob_gas_as_calldata_used)::DECIMAL(50,0) as total_blob_gas_as_calldata_used,
                 SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_fee,
-                SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
+                SUM(blob_gas_as_calldata_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
                 AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
-                AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
+                AVG(blob_gas_as_calldata_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
                 AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
                 NOW() as updated_at
               FROM "block"
               ON CONFLICT (id) DO UPDATE SET
                 total_blocks = EXCLUDED.total_blocks,
                 total_blob_gas_used = EXCLUDED.total_blob_gas_used,
-                total_blob_as_calldata_gas_used = EXCLUDED.total_blob_as_calldata_gas_used,
+                total_blob_gas_as_calldata_used = EXCLUDED.total_blob_gas_as_calldata_used,
                 total_blob_fee = EXCLUDED.total_blob_fee,
                 total_blob_as_calldata_fee = EXCLUDED.total_blob_as_calldata_fee,
                 avg_blob_fee = EXCLUDED.avg_blob_fee,
@@ -237,7 +237,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           const statsTableAlias = Prisma.sql`bos`;
           const totalBlocksField = Prisma.sql`total_blocks`;
           const totalBlobGasUsedField = Prisma.sql`total_blob_gas_used`;
-          const totalBlobAsCalldataGasUsedField = Prisma.sql`total_blob_as_calldata_gas_used`;
+          const totalBlobGasAsCalldataUsedField = Prisma.sql`total_blob_gas_as_calldata_used`;
           const totalBlobFeeField = Prisma.sql`total_blob_fee`;
           const totalBlobAsCalldataFeeField = Prisma.sql`total_blob_as_calldata_fee`;
           const avgBlobFeeField = Prisma.sql`avg_blob_fee`;
@@ -249,7 +249,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 id,
                 ${totalBlocksField},
                 ${totalBlobGasUsedField},
-                ${totalBlobAsCalldataGasUsedField},
+                ${totalBlobGasAsCalldataUsedField},
                 ${totalBlobFeeField},
                 ${totalBlobAsCalldataFeeField},
                 ${avgBlobFeeField},
@@ -266,19 +266,19 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   `SUM(blob_gas_used)::DECIMAL(50,0)`
                 )} as ${totalBlobGasUsedField},
                 ${coalesceToZero(
-                  `SUM(blob_as_calldata_gas_used)::DECIMAL(50,0)`
-                )} as ${totalBlobAsCalldataGasUsedField},
+                  `SUM(blob_gas_as_calldata_used)::DECIMAL(50,0)`
+                )} as ${totalBlobGasAsCalldataUsedField},
                 ${coalesceToZero(
                   `SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0)`
                 )} as ${totalBlobFeeField},
                 ${coalesceToZero(
-                  `SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0)`
+                  `SUM(blob_gas_as_calldata_used * blob_gas_price)::DECIMAL(50,0)`
                 )} as ${totalBlobAsCalldataFeeField},
                 ${coalesceToZero(
                   `AVG(blob_gas_used * blob_gas_price)::FLOAT`
                 )} as ${avgBlobFeeField},
                 ${coalesceToZero(
-                  `AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT`
+                  `AVG(blob_gas_as_calldata_used * blob_gas_price)::FLOAT`
                 )} as ${avgBlobAsCalldataFeeField},
                 ${coalesceToZero(
                   `AVG(blob_gas_price)::FLOAT`
@@ -290,7 +290,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               ON CONFLICT (id) DO UPDATE SET
                 ${totalBlocksField} = ${Prisma.sql`${statsTableAlias}.${totalBlocksField}`} + ${Prisma.sql`EXCLUDED.${totalBlocksField}`},
                 ${totalBlobGasUsedField} = ${Prisma.sql`${statsTableAlias}.${totalBlobGasUsedField}`} + ${Prisma.sql`EXCLUDED.${totalBlobGasUsedField}`},
-                ${totalBlobAsCalldataGasUsedField} = ${Prisma.sql`${statsTableAlias}.${totalBlobAsCalldataGasUsedField}`} + ${Prisma.sql`EXCLUDED.${totalBlobAsCalldataGasUsedField}`},
+                ${totalBlobGasAsCalldataUsedField} = ${Prisma.sql`${statsTableAlias}.${totalBlobGasAsCalldataUsedField}`} + ${Prisma.sql`EXCLUDED.${totalBlobGasAsCalldataUsedField}`},
                 ${totalBlobFeeField} = ${Prisma.sql`${statsTableAlias}.${totalBlobFeeField}`} + ${Prisma.sql`EXCLUDED.${totalBlobFeeField}`},
                 ${totalBlobAsCalldataFeeField} = ${Prisma.sql`${statsTableAlias}.${totalBlobAsCalldataFeeField}`} + ${Prisma.sql`EXCLUDED.${totalBlobAsCalldataFeeField}`},
                 ${avgBlobFeeField} = ${buildAvgUpdateExpression(
