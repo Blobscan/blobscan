@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.3.2
+
+### Patch Changes
+
+- [#317](https://github.com/Blobscan/blobscan/pull/317) [`4e50b54`](https://github.com/Blobscan/blobscan/commit/4e50b545d0448bffbdb0a58f5b894909a65ace01) Thanks [@0xGabi](https://github.com/0xGabi)! - Added gap between storage badges
+
 ## 0.3.1
 
 ### Patch Changes
