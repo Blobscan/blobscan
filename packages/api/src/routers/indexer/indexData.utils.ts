@@ -76,7 +76,7 @@ export function createDBTransactions({
       const txBlobs = blobs.filter((b) => b.txHash === hash);
 
       if (txBlobs.length === 0) {
-        throw new Error(`Blob for transaction ${hash} not found`);
+        throw new Error(`Blobs for transaction ${hash} not found`);
       }
 
       const blobGasAsCalldataUsed = txBlobs.reduce(
