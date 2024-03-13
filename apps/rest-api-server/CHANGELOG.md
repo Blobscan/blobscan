@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.3.0
+
+### Minor Changes
+
+- [#309](https://github.com/Blobscan/blobscan/pull/309) [`20de8e0`](https://github.com/Blobscan/blobscan/commit/20de8e013b2703b98436f773f4ced24ed7200dea) Thanks [@0xGabi](https://github.com/0xGabi)! - Updated the order in which we initialize the api handlers
+
 ## 0.2.0
 
 ### Minor Changes
