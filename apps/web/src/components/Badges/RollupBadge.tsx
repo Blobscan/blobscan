@@ -7,11 +7,15 @@ import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import StarknetIcon from "~/icons/starknet.svg";
-import { Size } from "~/types";
+import ZkSyncIcon from "~/icons/zksync.svg";
+import type { Size } from "~/types";
 import { capitalize } from "~/utils";
 import { Badge } from "./Badge";
 
-const ROLLUP_CONFIG: Record<Rollup, { style: string; icon: ReactNode }> = {
+const ROLLUP_CONFIG: Record<
+  Rollup,
+  { style: string; icon: ReactNode; label?: string }
+> = {
   ARBITRUM: {
     icon: <ArbitrumIcon />,
     style: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-300",
@@ -35,8 +39,9 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; icon: ReactNode }> = {
     style: "",
   },
   ZKSYNC: {
-    icon: <div />,
-    style: "",
+    icon: <ZkSyncIcon />,
+    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300",
+    label: "zkSync",
   },
 };
 
@@ -46,13 +51,13 @@ type RollupBadgeProps = {
 };
 
 export const RollupBadge: React.FC<RollupBadgeProps> = ({ rollup, size }) => {
-  const { icon, style } = ROLLUP_CONFIG[rollup];
+  const { icon, style, label } = ROLLUP_CONFIG[rollup];
 
   return (
     <Badge
       className={style}
       icon={icon}
-      label={capitalize(rollup)}
+      label={label ?? capitalize(rollup)}
       size={size}
     />
   );
