@@ -14,16 +14,16 @@ export const t = initTRPC
   .create({
     transformer: superjson,
     errorFormatter({ shape, error }) {
+      logger.info(error.cause?.message);
+
       if (
         error.code === "INTERNAL_SERVER_ERROR" &&
         env.NODE_ENV === "production"
       ) {
-        logger.info(error.cause.errors);
         return { ...shape, message: "Internal server error" };
       }
 
-      // Log to sentry
-      // https://github.com/trpc/trpc/issues/4120
+      // TODO: Add sentry support
       // if (process.env.NODE_ENV === "production") {
       //   Sentry.captureException(error);
       // }

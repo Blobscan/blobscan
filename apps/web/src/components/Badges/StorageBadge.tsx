@@ -1,11 +1,12 @@
-import React, { FC, ReactNode } from "react";
+import type { FC, ReactNode } from "react";
+import React from "react";
 
-import { BlobStorage } from "@blobscan/api";
+import type { BlobStorage } from "@blobscan/api";
 
 import GoogleIcon from "~/icons/google.svg";
 import PostgresIcon from "~/icons/postgres.svg";
 import SwarmIcon from "~/icons/swarm.svg";
-import { Size } from "~/types";
+import type { Size } from "~/types";
 import { capitalize } from "~/utils";
 import { Badge } from "./Badge";
 

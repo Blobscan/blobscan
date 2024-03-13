@@ -11,7 +11,7 @@ const colors = {
 };
 
 const level = () => {
-  return node_env === "production" ? "info" : "debug";
+  return env.NODE_ENV === "production" ? "info" : "debug";
 };
 
 const format = winston.format.combine(

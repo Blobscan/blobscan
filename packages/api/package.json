@@ -19,6 +19,7 @@
     "@blobscan/blob-storage-manager": "^0.0.4",
     "@blobscan/dayjs": "^0.0.2",
     "@blobscan/db": "^0.2.0",
+    "@blobscan/logger": "^0.0.4",
     "@blobscan/open-telemetry": "^0.0.4",
     "@blobscan/zod": "^0.0.4",
     "@trpc/server": "^10.43.2",
