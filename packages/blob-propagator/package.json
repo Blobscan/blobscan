@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-propagator",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,11 +15,11 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-storage-manager": "^0.0.3",
-    "@blobscan/db": "^0.1.1",
-    "@blobscan/logger": "^0.0.3",
-    "@blobscan/open-telemetry": "^0.0.3",
-    "@blobscan/zod": "^0.0.3",
+    "@blobscan/blob-storage-manager": "^0.0.4",
+    "@blobscan/db": "^0.2.0",
+    "@blobscan/logger": "^0.0.4",
+    "@blobscan/open-telemetry": "^0.0.4",
+    "@blobscan/zod": "^0.0.4",
     "bullmq": "^4.13.2",
     "ioredis": "^5.3.2"
   },

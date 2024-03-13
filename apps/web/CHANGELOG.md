@@ -1,5 +1,15 @@
 # @blobscan/web
 
+## 0.2.1
+
+### Patch Changes
+
+- [#298](https://github.com/Blobscan/blobscan/pull/298) [`3c09b5b`](https://github.com/Blobscan/blobscan/commit/3c09b5bf8ea854f30a6675b022a87b1a04960bf6) Thanks [@0xGabi](https://github.com/0xGabi)! - Deprecated goerli network
+
+- Updated dependencies [[`39fb917`](https://github.com/Blobscan/blobscan/commit/39fb917444f2751ddbd1f571fdcd6f66919c078d)]:
+  - @blobscan/api@0.4.0
+  - @blobscan/open-telemetry@0.0.4
+
 ## 0.2.0
 
 ### Minor Changes

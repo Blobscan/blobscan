@@ -1,5 +1,11 @@
 # @blobscan/zod
 
+## 0.0.4
+
+### Patch Changes
+
+- [#298](https://github.com/Blobscan/blobscan/pull/298) [`3c09b5b`](https://github.com/Blobscan/blobscan/commit/3c09b5bf8ea854f30a6675b022a87b1a04960bf6) Thanks [@0xGabi](https://github.com/0xGabi)! - Deprecated goerli network
+
 ## 0.0.3
 
 ### Patch Changes
