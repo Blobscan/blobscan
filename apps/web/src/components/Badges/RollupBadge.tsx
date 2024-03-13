@@ -1,27 +1,59 @@
 import type { ReactNode } from "react";
 import React from "react";
 
+import type { Rollup } from "@blobscan/api";
+
 import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import StarknetIcon from "~/icons/starknet.svg";
-import Badge from "./Badge";
+import { Size } from "~/types";
+import { capitalize } from "~/utils";
+import { Badge } from "./Badge";
 
-type RollupToBadge = {
-  [rollup: string]: ReactNode;
+const ROLLUP_CONFIG: Record<Rollup, { style: string; icon: ReactNode }> = {
+  ARBITRUM: {
+    icon: <ArbitrumIcon />,
+    style: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-300",
+  },
+  BASE: {
+    icon: <BaseIcon />,
+    style: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+  },
+  OPTIMISM: {
+    icon: <OptimismIcon />,
+    style:
+      "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+  },
+  STARKNET: {
+    icon: <StarknetIcon />,
+    style:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+  },
+  SCROLL: {
+    icon: <div />,
+    style: "",
+  },
+  ZKSYNC: {
+    icon: <div />,
+    style: "",
+  },
 };
 
-const ROLLUP_BADGES: RollupToBadge = {
-  arbitrum: <Badge label="Arbitrum" icon={<ArbitrumIcon />} color="sky" />,
-  base: <Badge label="Base" icon={<BaseIcon />} color="blue" />,
-  optimism: <Badge label="Optimism" icon={<OptimismIcon />} color="orange" />,
-  starknet: <Badge label="Starknet" icon={<StarknetIcon />} color="purple" />,
+type RollupBadgeProps = {
+  rollup: Rollup;
+  size?: Size;
 };
 
-const RollupBadge = ({ rollup }: { rollup: string }) => {
-  const badge = ROLLUP_BADGES[rollup.toLowerCase()];
+export const RollupBadge: React.FC<RollupBadgeProps> = ({ rollup, size }) => {
+  const { icon, style } = ROLLUP_CONFIG[rollup];
 
-  return <div className="flex">{badge}</div>;
+  return (
+    <Badge
+      className={style}
+      icon={icon}
+      label={capitalize(rollup)}
+      size={size}
+    />
+  );
 };
-
-export default RollupBadge;
