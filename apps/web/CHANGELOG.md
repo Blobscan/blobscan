@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.2.2
+
+### Patch Changes
+
+- [#300](https://github.com/Blobscan/blobscan/pull/300) [`20282a5`](https://github.com/Blobscan/blobscan/commit/20282a53da94adbef9ce184698a112dff847e92c) Thanks [@0xGabi](https://github.com/0xGabi)! - Updated next public env
+
 ## 0.2.1
 
 ### Patch Changes
