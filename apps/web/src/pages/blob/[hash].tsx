@@ -115,7 +115,11 @@ const Blob: NextPage = function () {
         value: (
           <div className="flex items-center gap-x-2">
             {blob.dataStorageReferences.map((ref, index) => (
-              <StorageBadge key={index} storage={ref.blobStorage} />
+              <StorageBadge
+                key={index}
+                storage={ref.blobStorage}
+                dataRef={ref.dataReference}
+              />
             ))}
           </div>
         ),
