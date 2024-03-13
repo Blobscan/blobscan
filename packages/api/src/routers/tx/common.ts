@@ -9,7 +9,7 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   fromId: true,
   toId: true,
   blockHash: true,
-  blobAsCalldataGasUsed: true,
+  blobGasAsCalldataUsed: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
 });
@@ -20,7 +20,7 @@ type FullTransaction = Pick<
   | "fromId"
   | "toId"
   | "blockHash"
-  | "blobAsCalldataGasUsed"
+  | "blobGasAsCalldataUsed"
   | "gasPrice"
   | "maxFeePerBlobGas"
 > & {
@@ -67,7 +67,7 @@ function formatCommonFields(tx: FullTransaction) {
     blobGasUsed: blobGasUsed.toString(),
     blobGasBaseFee: blobGasBaseFee.toString(),
     blobGasMaxFee: blobGasMaxFee.toString(),
-    blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed.toFixed(),
+    blobGasAsCalldataUsed: tx.blobGasAsCalldataUsed.toFixed(),
     maxFeePerBlobGas: tx.maxFeePerBlobGas.toFixed(),
     gasPrice: tx.gasPrice.toFixed(),
     totalBlobSize: tx.blobs.reduce((acc, { blob }) => acc + blob.size, 0),
@@ -116,7 +116,7 @@ export const TransactionSchema = z.object({
   blobGasMaxFee: z.string(),
   blobGasUsed: z.string(),
   maxFeePerBlobGas: z.string(),
-  blobAsCalldataGasUsed: z.string(),
+  blobGasAsCalldataUsed: z.string(),
   totalBlobSize: z.number(),
   blobs: z.array(z.string()),
 });

@@ -80,7 +80,7 @@ Raw query failed. Code: \`23503\`. Message: \`insert or update on table \\"blob_
 
 exports[`Base Extension > Block model > findLatest() > should find the latest block correctly 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
+  "blobGasAsCalldataUsed": "255000",
   "blobGasPrice": "22",
   "blobGasUsed": "5500000",
   "excessBlobGas": "15000",

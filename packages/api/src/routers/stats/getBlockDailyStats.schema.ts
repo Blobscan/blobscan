@@ -4,7 +4,7 @@ export const getBlockDailyStatsOutputSchema = z.object({
   days: z.array(z.string()),
   totalBlocks: z.array(z.number()),
   totalBlobGasUsed: z.array(z.string()),
-  totalBlobAsCalldataGasUsed: z.array(z.string()),
+  totalBlobGasAsCalldataUsed: z.array(z.string()),
   totalBlobFees: z.array(z.string()),
   totalBlobAsCalldataFees: z.array(z.string()),
   avgBlobFees: z.array(z.number()),

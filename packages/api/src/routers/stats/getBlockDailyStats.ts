@@ -32,7 +32,7 @@ export const getBlockDailyStats = timeFrameProcedure
               day,
               totalBlocks,
               totalBlobGasUsed,
-              totalBlobAsCalldataGasUsed,
+              totalBlobGasAsCalldataUsed,
               totalBlobFee,
               totalBlobAsCalldataFee,
               avgBlobFee,
@@ -43,8 +43,8 @@ export const getBlockDailyStats = timeFrameProcedure
             transformedStats.days.push(day.toISOString());
             transformedStats.totalBlocks.push(totalBlocks);
             transformedStats.totalBlobGasUsed.push(totalBlobGasUsed.toFixed());
-            transformedStats.totalBlobAsCalldataGasUsed.push(
-              totalBlobAsCalldataGasUsed.toFixed()
+            transformedStats.totalBlobGasAsCalldataUsed.push(
+              totalBlobGasAsCalldataUsed.toFixed()
             );
             transformedStats.totalBlobFees.push(totalBlobFee.toFixed());
             transformedStats.totalBlobAsCalldataFees.push(
@@ -60,7 +60,7 @@ export const getBlockDailyStats = timeFrameProcedure
             days: [],
             totalBlocks: [],
             totalBlobGasUsed: [],
-            totalBlobAsCalldataGasUsed: [],
+            totalBlobGasAsCalldataUsed: [],
             totalBlobFees: [],
             totalBlobAsCalldataFees: [],
             avgBlobFees: [],

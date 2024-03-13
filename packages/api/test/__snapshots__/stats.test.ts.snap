@@ -212,11 +212,11 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
   "totalBlobAsCalldataFees": [
     "16830000",
   ],
-  "totalBlobAsCalldataGasUsed": [
-    "765000",
-  ],
   "totalBlobFees": [
     "363000000",
+  ],
+  "totalBlobGasAsCalldataUsed": [
+    "765000",
   ],
   "totalBlobGasUsed": [
     "16500000",
@@ -249,13 +249,13 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     "5000000",
     "16830000",
   ],
-  "totalBlobAsCalldataGasUsed": [
-    "250000",
-    "765000",
-  ],
   "totalBlobFees": [
     "100000000",
     "363000000",
+  ],
+  "totalBlobGasAsCalldataUsed": [
+    "250000",
+    "765000",
   ],
   "totalBlobGasUsed": [
     "5000000",
@@ -295,15 +295,15 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     "5000000",
     "16830000",
   ],
-  "totalBlobAsCalldataGasUsed": [
-    "255000",
-    "250000",
-    "765000",
-  ],
   "totalBlobFees": [
     "121000000",
     "100000000",
     "363000000",
+  ],
+  "totalBlobGasAsCalldataUsed": [
+    "255000",
+    "250000",
+    "765000",
   ],
   "totalBlobGasUsed": [
     "5500000",
@@ -350,17 +350,17 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     "5000000",
     "16830000",
   ],
-  "totalBlobAsCalldataGasUsed": [
-    "255000",
-    "255000",
-    "250000",
-    "765000",
-  ],
   "totalBlobFees": [
     "121000000",
     "121000000",
     "100000000",
     "363000000",
+  ],
+  "totalBlobGasAsCalldataUsed": [
+    "255000",
+    "255000",
+    "250000",
+    "765000",
   ],
   "totalBlobGasUsed": [
     "5500000",
@@ -414,19 +414,19 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     "5000000",
     "16830000",
   ],
-  "totalBlobAsCalldataGasUsed": [
-    "255000",
-    "255000",
-    "255000",
-    "250000",
-    "765000",
-  ],
   "totalBlobFees": [
     "121000000",
     "121000000",
     "121000000",
     "100000000",
     "363000000",
+  ],
+  "totalBlobGasAsCalldataUsed": [
+    "255000",
+    "255000",
+    "255000",
+    "250000",
+    "765000",
   ],
   "totalBlobGasUsed": [
     "5500000",
@@ -487,14 +487,6 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     "5000000",
     "16830000",
   ],
-  "totalBlobAsCalldataGasUsed": [
-    "2042780",
-    "255000",
-    "255000",
-    "255000",
-    "250000",
-    "765000",
-  ],
   "totalBlobFees": [
     "17301504",
     "121000000",
@@ -502,6 +494,14 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     "121000000",
     "100000000",
     "363000000",
+  ],
+  "totalBlobGasAsCalldataUsed": [
+    "2042780",
+    "255000",
+    "255000",
+    "255000",
+    "250000",
+    "765000",
   ],
   "totalBlobGasUsed": [
     "786432",

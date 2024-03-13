@@ -29,8 +29,8 @@ const BlockStats: NextPage = function () {
       ),
       totalBlobFee: BigInt(overallBlockStats_?.totalBlobFee ?? 0),
       totalBlobGasUsed: BigInt(overallBlockStats_?.totalBlobGasUsed ?? 0),
-      totalBlobAsCalldataGasUsed: BigInt(
-        overallBlockStats_?.totalBlobAsCalldataGasUsed ?? 0
+      totalBlobGasAsCalldataUsed: BigInt(
+        overallBlockStats_?.totalBlobGasAsCalldataUsed ?? 0
       ),
     }),
     [overallBlockStats_]
@@ -108,7 +108,7 @@ const BlockStats: NextPage = function () {
             name: "Total Gas Saved",
             metric: {
               value: overallBlockStats
-                ? overallBlockStats.totalBlobAsCalldataGasUsed -
+                ? overallBlockStats.totalBlobGasAsCalldataUsed -
                   overallBlockStats.totalBlobGasUsed
                 : undefined,
             },
@@ -118,7 +118,7 @@ const BlockStats: NextPage = function () {
                 ? {
                     value: calculatePercentage(
                       overallBlockStats.totalBlobGasUsed,
-                      overallBlockStats.totalBlobAsCalldataGasUsed,
+                      overallBlockStats.totalBlobGasAsCalldataUsed,
                       { returnComplement: true }
                     ),
                     type: "percentage",
@@ -141,7 +141,7 @@ const BlockStats: NextPage = function () {
             key={2}
             days={dailyBlockStats?.days}
             blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
-            blobAsCalldataGasUsed={dailyBlockStats?.totalBlobAsCalldataGasUsed}
+            blobGasAsCalldataUsed={dailyBlockStats?.totalBlobGasAsCalldataUsed}
           />,
           <DailyBlobFeeChart
             key={3}

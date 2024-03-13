@@ -67,8 +67,8 @@ const Home: NextPage = () => {
     const totalBlobAsCalldataFee = overallStats_?.block?.totalBlobAsCalldataFee;
     const totalBlobFee = overallStats_?.block?.totalBlobFee;
     const totalBlobGasUsed = overallStats_?.block?.totalBlobGasUsed;
-    const totalBlobAsCalldataGasUsed =
-      overallStats_?.block?.totalBlobAsCalldataGasUsed;
+    const totalBlobGasAsCalldataUsed =
+      overallStats_?.block?.totalBlobGasAsCalldataUsed;
 
     return {
       ...overallStats_,
@@ -81,8 +81,8 @@ const Home: NextPage = () => {
         totalBlobGasUsed: totalBlobGasUsed
           ? BigInt(totalBlobGasUsed)
           : undefined,
-        totalBlobAsCalldataGasUsed: totalBlobAsCalldataGasUsed
-          ? BigInt(totalBlobAsCalldataGasUsed)
+        totalBlobGasAsCalldataUsed: totalBlobGasAsCalldataUsed
+          ? BigInt(totalBlobGasAsCalldataUsed)
           : undefined,
       },
     };
@@ -129,8 +129,8 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
-              blobAsCalldataGasUsed={
-                dailyBlockStats?.totalBlobAsCalldataGasUsed
+              blobGasAsCalldataUsed={
+                dailyBlockStats?.totalBlobGasAsCalldataUsed
               }
               blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
               opts={{ toolbox: { show: false } }}

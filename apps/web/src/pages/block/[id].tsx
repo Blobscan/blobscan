@@ -42,7 +42,7 @@ const Block: NextPage = function () {
       blockData_
         ? {
             ...blockData_,
-            blobAsCalldataGasUsed: BigInt(blockData_.blobAsCalldataGasUsed),
+            blobGasAsCalldataUsed: BigInt(blockData_.blobGasAsCalldataUsed),
             blobGasUsed: BigInt(blockData_.blobGasUsed),
             blobGasPrice: BigInt(blockData_.blobGasPrice),
             excessBlobGas: BigInt(blockData_.excessBlobGas),
@@ -137,13 +137,13 @@ const Block: NextPage = function () {
                   name: "Blob As Calldata Gas",
                   value: (
                     <div>
-                      {formatNumber(blockData.blobAsCalldataGasUsed)}
+                      {formatNumber(blockData.blobGasAsCalldataUsed)}
                       <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
                         (
                         <strong>
                           {formatNumber(
                             performDiv(
-                              blockData.blobAsCalldataGasUsed,
+                              blockData.blobGasAsCalldataUsed,
                               blockData.blobGasUsed
                             ),
                             "standard",

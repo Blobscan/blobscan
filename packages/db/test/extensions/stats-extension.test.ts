@@ -328,7 +328,7 @@ describe("Stats Extension", () => {
         it("should calculate the average blob as calldata fee correctly", () => {
           const expectedAvgBlobAsCalldataFee =
             expectedDailyBlocks.reduce(
-              (acc, b) => acc + b.blobAsCalldataGasUsed * b.blobGasPrice,
+              (acc, b) => acc + b.blobGasAsCalldataUsed * b.blobGasPrice,
               0
             ) / expectedDailyBlocks.length;
 
@@ -360,7 +360,7 @@ describe("Stats Extension", () => {
         // TODO: Fix this calculation
         // it("should calculate the total blob as calldata fee correctly", () => {
         //   const res = expectedDailyTxs.reduce(
-        //     (acc, tx) => acc + tx.gasPrice * tx.blobAsCalldataGasUsed,
+        //     (acc, tx) => acc + tx.gasPrice * tx.blobGasAsCalldataUsed,
         //     0
         //   );
 
@@ -368,13 +368,13 @@ describe("Stats Extension", () => {
         // });
 
         it("should calculate the total blob as calldata gas used correctly", () => {
-          const expectedTotalBlobAsCalldataGasUsed = expectedDailyBlocks.reduce(
-            (acc, b) => acc + b.blobAsCalldataGasUsed,
+          const expectedtotalBlobGasAsCalldataUsed = expectedDailyBlocks.reduce(
+            (acc, b) => acc + b.blobGasAsCalldataUsed,
             0
           );
 
-          expect(blockDailyStats?.totalBlobAsCalldataGasUsed.toNumber()).toBe(
-            expectedTotalBlobAsCalldataGasUsed
+          expect(blockDailyStats?.totalBlobGasAsCalldataUsed.toNumber()).toBe(
+            expectedtotalBlobGasAsCalldataUsed
           );
         });
 
@@ -441,13 +441,13 @@ describe("Stats Extension", () => {
         it("should calculate the total blob as calldata fee correctly");
 
         it("should calculate the total blob as calldata gas used correctly", () => {
-          const expectedTotalBlobAsCalldataGasUsed = blocks.reduce(
-            (acc, b) => acc + b.blobAsCalldataGasUsed,
+          const expectedtotalBlobGasAsCalldataUsed = blocks.reduce(
+            (acc, b) => acc + b.blobGasAsCalldataUsed,
             0
           );
 
-          expect(overallStats?.totalBlobAsCalldataGasUsed.toNumber()).toBe(
-            expectedTotalBlobAsCalldataGasUsed
+          expect(overallStats?.totalBlobGasAsCalldataUsed.toNumber()).toBe(
+            expectedtotalBlobGasAsCalldataUsed
           );
         });
 

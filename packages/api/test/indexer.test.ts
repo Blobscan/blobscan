@@ -56,10 +56,10 @@ describe("Indexer router", async () => {
 
         const {
           blobGasPrice,
-          blobAsCalldataGasUsed: _,
+          blobGasAsCalldataUsed: _,
           ...remainingParams
         } = indexedBlock ?? {};
-        // const expectedBlobAsCalldataGasUsed = INPUT.blobs.reduce(
+        // const expectedblobGasAsCalldataUsed = INPUT.blobs.reduce(
         //   (acc, b) => acc + getEIP2028CalldataGas(b.data),
         //   0
         // );
@@ -68,7 +68,7 @@ describe("Indexer router", async () => {
         );
 
         // TODO: Fix this test
-        // expect(blobAsCalldataGasUsed).toBe(expectedBlobAsCalldataGasUsed);
+        // expect(blobGasAsCalldataUsed).toBe(expectedblobGasAsCalldataUsed);
         expect(blobGasPrice?.toString(), "Blob gas price mismatch").toBe(
           expectedBlobGasPrice.toString()
         );
@@ -95,23 +95,23 @@ describe("Indexer router", async () => {
             },
           })
           .then((r) => r.map(omitDBTimestampFields));
-        // const expectedBlobAsCalldataGasUsed = INPUT.transactions.map((tx) =>
+        // const expectedblobGasAsCalldataUsed = INPUT.transactions.map((tx) =>
         //   INPUT.blobs
         //     .filter((b) => b.txHash === tx.hash)
         //     .reduce((acc, b) => acc + getEIP2028CalldataGas(b.data), 0)
         // );
-        // const blobAsCalldataGasUsed = indexedTxs.map(
-        //   (tx) => tx.blobAsCalldataGasUsed
+        // const blobGasAsCalldataUsed = indexedTxs.map(
+        //   (tx) => tx.blobGasAsCalldataUsed
         // );
         const remainingParams = indexedTxs.map(
-          ({ blobAsCalldataGasUsed: _, ...remainingParams }) => remainingParams
+          ({ blobGasAsCalldataUsed: _, ...remainingParams }) => remainingParams
         );
 
         // TODO: Fix this test
         // expect(
-        //   blobAsCalldataGasUsed,
+        //   blobGasAsCalldataUsed,
         //   "Transactions' blob as calldata gas used mismatch"
-        // ).toEqual(expectedBlobAsCalldataGasUsed);
+        // ).toEqual(expectedblobGasAsCalldataUsed);
         expect(remainingParams).toMatchInlineSnapshot(`
           [
             {

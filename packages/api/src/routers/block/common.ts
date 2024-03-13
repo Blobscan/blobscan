@@ -24,7 +24,7 @@ const blockSelect = Prisma.validator<Prisma.BlockSelect>()({
   timestamp: true,
   slot: true,
   blobGasUsed: true,
-  blobAsCalldataGasUsed: true,
+  blobGasAsCalldataUsed: true,
   blobGasPrice: true,
   excessBlobGas: true,
 });
@@ -68,7 +68,7 @@ export type FullBlock = Pick<
   | "blobGasPrice"
   | "excessBlobGas"
   | "blobGasUsed"
-  | "blobAsCalldataGasUsed"
+  | "blobGasAsCalldataUsed"
 > & {
   transactions: TransactionSelection[];
 };
@@ -86,7 +86,7 @@ export function formatFullBlock(block: FullBlock) {
     blobGasPrice: block.blobGasPrice.toFixed(),
     blobGasUsed: block.blobGasUsed.toFixed(),
     excessBlobGas: block.excessBlobGas.toFixed(),
-    blobAsCalldataGasUsed: block.blobAsCalldataGasUsed.toFixed(),
+    blobGasAsCalldataUsed: block.blobGasAsCalldataUsed.toFixed(),
   };
 }
 
@@ -107,7 +107,7 @@ export const BlockSchema = z.object({
   excessBlobGas: z.string(),
   blobGasPrice: z.string(),
   blobGasUsed: z.string(),
-  blobAsCalldataGasUsed: z.string(), // TODO: rename to blobGasAsCalldata
+  blobGasAsCalldataUsed: z.string(), // TODO: rename to blobGasAsCalldata
   totalBlobSize: z.number(),
   timestamp: z.date().or(z.number()),
   transactions: z.array(z.string()),

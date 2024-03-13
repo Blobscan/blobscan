@@ -18,7 +18,7 @@
       "blobGasUsed": 786432,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 2042780,
+      "blobGasAsCalldataUsed": 2042780,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -30,7 +30,7 @@
       "blobGasUsed": 5500000,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 255000,
+      "blobGasAsCalldataUsed": 255000,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
     },
@@ -42,7 +42,7 @@
       "blobGasUsed": 5500000,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 255000,
+      "blobGasAsCalldataUsed": 255000,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -54,7 +54,7 @@
       "blobGasUsed": 5500000,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 255000,
+      "blobGasAsCalldataUsed": 255000,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -66,7 +66,7 @@
       "blobGasUsed": 5000000,
       "excessBlobGas": 10000,
       "blobGasPrice": 20,
-      "blobAsCalldataGasUsed": 250000,
+      "blobGasAsCalldataUsed": 250000,
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -78,7 +78,7 @@
       "blobGasUsed": 5500000,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 255000,
+      "blobGasAsCalldataUsed": 255000,
       "insertedAt": "2023-08-31T12:10:00Z",
       "updatedAt": "2023-08-31T12:10:00Z"
     },
@@ -90,7 +90,7 @@
       "blobGasUsed": 5500000,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 255000,
+      "blobGasAsCalldataUsed": 255000,
       "insertedAt": "2023-08-31T14:10:00Z",
       "updatedAt": "2023-08-31T14:10:00Z"
     },
@@ -102,7 +102,7 @@
       "blobGasUsed": 5500000,
       "excessBlobGas": 15000,
       "blobGasPrice": 22,
-      "blobAsCalldataGasUsed": 255000,
+      "blobGasAsCalldataUsed": 255000,
       "insertedAt": "2023-08-31T16:10:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
     }
@@ -115,7 +115,7 @@
       "blockHash": "blockHash001",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -126,7 +126,7 @@
       "blockHash": "blockHash001",
       "maxFeePerBlobGas": 110,
       "gasPrice": 11,
-      "blobAsCalldataGasUsed": 1100,
+      "blobGasAsCalldataUsed": 1100,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -137,7 +137,7 @@
       "blockHash": "blockHash001",
       "maxFeePerBlobGas": 120,
       "gasPrice": 12,
-      "blobAsCalldataGasUsed": 1200,
+      "blobGasAsCalldataUsed": 1200,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -149,7 +149,7 @@
       "blockHash": "blockHash002",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
     },
@@ -160,7 +160,7 @@
       "blockHash": "blockHash003",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -171,7 +171,7 @@
       "blockHash": "blockHash003",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -182,7 +182,7 @@
       "blockHash": "blockHash004",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -193,7 +193,7 @@
       "blockHash": "blockHash004",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -204,7 +204,7 @@
       "blockHash": "blockHash004",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -215,7 +215,7 @@
       "blockHash": "blockHash004",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -226,7 +226,7 @@
       "blockHash": "blockHash004",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -237,7 +237,7 @@
       "blockHash": "blockHash005",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -248,7 +248,7 @@
       "blockHash": "blockHash005",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -259,7 +259,7 @@
       "blockHash": "blockHash006",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-31T12:10:00Z",
       "updatedAt": "2023-08-31T12:10:00Z"
     },
@@ -270,7 +270,7 @@
       "blockHash": "blockHash007",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-31T14:10:00Z",
       "updatedAt": "2023-08-31T14:10:00Z"
     },
@@ -281,7 +281,7 @@
       "blockHash": "blockHash008",
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
-      "blobAsCalldataGasUsed": 1000,
+      "blobGasAsCalldataUsed": 1000,
       "insertedAt": "2023-08-31T16:10:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
     }

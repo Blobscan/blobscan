@@ -92,8 +92,8 @@ describe("OverallStatsUpdater", () => {
           "avgBlobGasPrice": 21.33333333333333,
           "id": 1,
           "totalBlobAsCalldataFee": "16220000",
-          "totalBlobAsCalldataGasUsed": "760000",
           "totalBlobFee": "342000000",
+          "totalBlobGasAsCalldataUsed": "760000",
           "totalBlobGasUsed": "16000000",
           "totalBlocks": 3,
         }

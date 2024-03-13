@@ -94,7 +94,7 @@ export function createDBTransactions({
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
-        blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
+        blobGasAsCalldataUsed: bigIntToDecimal(blobGasAsCalldataUsed),
       };
     }
   );
@@ -104,10 +104,10 @@ export function createDBBlock(
   {
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
   }: IndexDataInput,
-  dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
+  dbTxs: Pick<Transaction, "blobGasAsCalldataUsed">[]
 ): WithoutTimestampFields<Block> {
-  const blobAsCalldataGasUsed = dbTxs.reduce(
-    (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
+  const blobGasAsCalldataUsed = dbTxs.reduce(
+    (acc, tx) => acc.add(tx.blobGasAsCalldataUsed),
     new Prisma.Decimal(0)
   );
 
@@ -120,7 +120,7 @@ export function createDBBlock(
     blobGasUsed: bigIntToDecimal(blobGasUsed),
     blobGasPrice: bigIntToDecimal(blobGasPrice),
     excessBlobGas: bigIntToDecimal(excessBlobGas),
-    blobAsCalldataGasUsed,
+    blobGasAsCalldataUsed,
   };
 }
 

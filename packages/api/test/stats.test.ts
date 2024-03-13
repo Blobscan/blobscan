@@ -82,8 +82,8 @@ describe("Stats router", async () => {
           "avgBlobFee": 105412688,
           "avgBlobGasPrice": 21.75,
           "totalBlobAsCalldataFee": "83601160",
-          "totalBlobAsCalldataGasUsed": "3822780",
           "totalBlobFee": "843301504",
+          "totalBlobGasAsCalldataUsed": "3822780",
           "totalBlobGasUsed": "38786432",
           "totalBlocks": 8,
         }
