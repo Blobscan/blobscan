@@ -1,5 +1,13 @@
 # @blobscan/web
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/api@0.4.2
+  - @blobscan/open-telemetry@0.0.5
+
 ## 0.3.0
 
 ### Minor Changes
