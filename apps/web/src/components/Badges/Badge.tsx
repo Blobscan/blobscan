@@ -49,7 +49,7 @@ export const Badge: React.FC<BadgeProps> = ({
         containerStyles ?? "py-0.5"
       } ${className}`}
     >
-      <div className="flex items-center">
+      <div className="flex items-center text-content-light dark:text-content-dark">
         {icon}
         <div className={`${labelStyles} ml-2`}>{label}</div>
       </div>

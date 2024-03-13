@@ -40,7 +40,7 @@ const ROLLUP_CONFIG: Record<
   },
   ZKSYNC: {
     icon: <ZkSyncIcon />,
-    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300",
+    style: "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300",
     label: "zkSync",
   },
 };
