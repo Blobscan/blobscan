@@ -32,13 +32,13 @@ export const env = createEnv({
     console.log(
       `Configuration: network=${env.NETWORK_NAME} metrics=${
         env.METRICS_ENABLED
-      }, traces=${env.TRACES_ENABLED}, port=${
+      } traces=${env.TRACES_ENABLED} port=${
         env.BLOBSCAN_API_PORT
-      } redisUri=${maskPassword(env.REDIS_URI)}, dailyStatsCron=${
+      } redisUri=${maskPassword(env.REDIS_URI)} dailyStatsCron=${
         env.STATS_SYNCER_DAILY_CRON_PATTERN
-      }, overallStatsCron=${
+      } overallStatsCron=${
         env.STATS_SYNCER_OVERALL_CRON_PATTERN
-      }, dencunForkSlot=${env.DENCUN_FORK_SLOT ?? "auto"}`
+      } dencunForkSlot=${env.DENCUN_FORK_SLOT ?? "auto"}`
     );
   },
 });

@@ -27,15 +27,15 @@ These are listed by category:
 
 ## Network
 
-| Variable                         | Description                               | Required | Default value                                                                                                             |
-| -------------------------------- | ----------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint                      | Yes      | (empty)                                                                                                                   |
-| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint                   | Yes      | (empty)                                                                                                                   |
-| `CHAIN_ID`                       | EVM chain id                              | Yes      | `1`                                                                                                                       |
-| `NETWORK_NAME`                   | Network's name                            | Yes      | `ethereum`                                                                                                                |
-| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Link to other pages from the Network menu | No       | `[{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
-| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL                       | Yes      | `https://beaconcha.in/`                                                                                                   |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL                        | Yes      | `https://etherscan.io`                                                                                                    |
+| Variable                         | Description                               | Required | Default value                                                                                                                                                                |
+| -------------------------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint                      | Yes      | (empty)                                                                                                                                                                      |
+| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint                   | Yes      | (empty)                                                                                                                                                                      |
+| `CHAIN_ID`                       | EVM chain id                              | Yes      | `1`                                                                                                                                                                          |
+| `NETWORK_NAME`                   | Network's name                            | Yes      | `ethereum`                                                                                                                                                                   |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Link to other pages from the Network menu | No       | `[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
+| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL                       | Yes      | `https://beaconcha.in/`                                                                                                                                                      |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL                        | Yes      | `https://etherscan.io`                                                                                                                                                       |
 
 ## Blob storages
 

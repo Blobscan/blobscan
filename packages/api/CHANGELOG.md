@@ -1,5 +1,24 @@
 # @blobscan/api
 
+## 0.3.0
+
+### Minor Changes
+
+- [#284](https://github.com/Blobscan/blobscan/pull/284) [`14c0ed0`](https://github.com/Blobscan/blobscan/commit/14c0ed06ad543239138fc5c14f753a1cf2175032) Thanks [@0xGabi](https://github.com/0xGabi)! - Enhanced the `getByBlobId` procedure to include related transactions and blocks in the blob response
+
+### Patch Changes
+
+- [#291](https://github.com/Blobscan/blobscan/pull/291) [`1f40a4b`](https://github.com/Blobscan/blobscan/commit/1f40a4b7dbe73a947c3325588069bbbd50b334da) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the slot number from block IDs to eliminate ambiguities
+
+- [#296](https://github.com/Blobscan/blobscan/pull/296) [`56ebc7d`](https://github.com/Blobscan/blobscan/commit/56ebc7d0fa44ef5abdea4df4ab31fe697bcfde21) Thanks [@0xGabi](https://github.com/0xGabi)! - Fixed blob gas as calldata calculation
+
+- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Splited getByBlockId schema to handle openapi parse restrictions
+
+- [#294](https://github.com/Blobscan/blobscan/pull/294) [`3a9c304`](https://github.com/Blobscan/blobscan/commit/3a9c3045b35dd3efef29caa75b87cbf5549f7ee2) Thanks [@0xGabi](https://github.com/0xGabi)! - Resolved overall stats format
+
+- Updated dependencies [[`9d018bd`](https://github.com/Blobscan/blobscan/commit/9d018bd56895ad6e904bda8ec81c850c02230b11)]:
+  - @blobscan/db@0.1.2
+
 ## 0.2.1
 
 ### Patch Changes

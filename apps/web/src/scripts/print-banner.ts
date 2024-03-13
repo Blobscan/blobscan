@@ -11,12 +11,12 @@ export function run() {
   console.log("Blobscan Web App (EIP-4844 blob explorer) - blobscan.com");
   console.log("=======================================================\n");
   console.log(
-    `Configuration: network=${process.env.NEXT_PUBLIC_NETWORK_NAME}, explorer=${
+    `Configuration: network=${process.env.NEXT_PUBLIC_NETWORK_NAME} explorer=${
       process.env.NEXT_PUBLIC_EXPLORER_BASE_URL
-    }, beaconExplorer=${
+    } beaconExplorer=${
       process.env.NEXT_PUBLIC_BEACON_BASE_URL
-    }, feedbackEnabled=${!!process.env
-      .FEEDBACK_WEBHOOK_URL}, tracesEnabled=${!!process.env.TRACES_ENABLED}`
+    } feedbackEnabled=${!!process.env
+      .FEEDBACK_WEBHOOK_URL} tracesEnabled=${!!process.env.TRACES_ENABLED}`
   );
   apiEnv.display();
 }
