@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import React from "react";
 
-import { Size } from "~/types";
+import type { Size } from "~/types";
 
 type BadgeProps = {
   className?: string;

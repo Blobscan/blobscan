@@ -19,7 +19,10 @@ if (!prisma_) {
             { emit: "event", level: "error" },
             { emit: "event", level: "warn" },
           ]
-        : [{ emit: "event", level: "error" }],
+        : [
+            { emit: "event", level: "warn" },
+            { emit: "event", level: "error" },
+          ],
   });
 
   // eslint-disable-next-line turbo/no-undeclared-env-vars
