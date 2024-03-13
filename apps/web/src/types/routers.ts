@@ -10,7 +10,7 @@ export type AllTransactions = RouterOutputs["tx"]["getAllFull"];
 
 export type AllBlobs = RouterOutputs["blob"]["getAll"];
 
-export type Blob = RouterOutputs["blob"]["getByBlobId"];
+export type Blob = RouterOutputs["blob"]["getByBlobIdFull"];
 
 export type DailyBlobStats = RouterOutputs["stats"]["getBlobDailyStats"];
 

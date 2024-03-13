@@ -1,5 +1,5 @@
 import dayjs from "@blobscan/dayjs";
-import { fixtures } from "@blobscan/test";
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { prisma } from "../../prisma";
 import type { BlockNumberRange, DatePeriod, RawDatePeriod } from "../../prisma";
@@ -99,13 +99,44 @@ export function getOverallStatsPrismaModel(
   );
 }
 
-export function createNewData() {
-  return prisma.$transaction([
+export function indexBlock({ indexAsReorged = false } = {}) {
+  const operations = [
     prisma.block.createMany({ data: NEW_DATA.blocks }),
     prisma.transaction.createMany({ data: NEW_DATA.transactions }),
     prisma.blob.createMany({ data: NEW_DATA.blobs }),
     prisma.blobsOnTransactions.createMany({
       data: NEW_DATA.blobsOnTransactions,
     }),
-  ]);
+  ];
+
+  if (indexAsReorged) {
+    const transactionForkData = NEW_DATA.blocks.flatMap((b) => {
+      const blockTxs = NEW_DATA.transactions.filter(
+        (tx) => tx.blockHash === b.hash
+      );
+
+      return blockTxs.map((tx) => ({
+        blockHash: b.hash,
+        hash: tx.hash,
+      }));
+    });
+
+    operations.push(
+      prisma.transactionFork.createMany({
+        data: transactionForkData,
+      })
+    );
+  }
+
+  return prisma.$transaction(operations);
+}
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function getOverallStats(overallStatsModel: any) {
+  return (
+    overallStatsModel
+      .findFirst()
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      .then((res: any) => (res ? omitDBTimestampFields(res) : res))
+  );
 }

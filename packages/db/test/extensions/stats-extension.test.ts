@@ -12,18 +12,19 @@ import { beforeEach } from "vitest";
 import { describe, it, expect } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
-import { fixtures, omitDBTimestampFields } from "@blobscan/test";
+import { fixtures } from "@blobscan/test";
 
 import type { DatePeriod, RawDatePeriod } from "../../prisma";
 import { prisma } from "../../prisma";
 import {
-  createNewData,
+  indexBlock,
   dayToDatePeriod,
   getDailyBlobs,
   getDailyBlocks,
   getDailyStatsPrismaModel,
   getDailyTransactions,
   getOverallStatsPrismaModel,
+  getOverallStats,
 } from "./stats-extension.test.utils";
 
 function runDailyStatsFunctionsTests(
@@ -100,6 +101,15 @@ function runDailyStatsFunctionsTests(
           to: "2099-12-31",
         });
       });
+
+      it("should ignore reorged blocks when aggregating stats", async () => {
+        await indexBlock({ indexAsReorged: true });
+
+        await checkStats({
+          from: "2023-09-01",
+          to: "2023-09-01",
+        });
+      });
     });
 
     describe("deleteAll", async () => {
@@ -135,53 +145,51 @@ function runOverallStatsFunctionsTests(
 
         it("should populate stats after adding new items correctly", async () => {
           await prismaModel.populate();
-          await createNewData();
+          await indexBlock();
 
           await prismaModel.populate();
 
-          const result = await prismaModel
-            // @ts-ignore
-            .findFirst()
-            // @ts-ignore
-            .then((res) => (res ? omitDBTimestampFields(res) : res));
+          const result = await getOverallStats(prismaModel);
 
           expect(result).toMatchSnapshot();
         });
       });
 
       describe("increment", () => {
-        it("should increment stats given a block range correctly", async () => {
-          await prismaModel.populate();
-          await createNewData();
+        it("should insert stats correctly when aggregating them for the first time", async () => {
+          await prismaModel.increment({ from: 1001, to: 1002 });
 
-          await prismaModel.populate();
-
-          const result = await prismaModel
-            // @ts-ignore
-            .findFirst()
-            // @ts-ignore
-            .then((res) => (res ? omitDBTimestampFields(res) : res));
+          const result = await getOverallStats(prismaModel);
 
           expect(result).toMatchSnapshot();
         });
 
-        it("should update already existing stats correctly", async () => {
+        it("should increment stats correctly when aggregating them after the first time", async () => {
           await prismaModel.increment({ from: 1000, to: 1001 });
-          await createNewData();
-          await prismaModel.increment({ from: 1000, to: 1001 });
+          await indexBlock();
+          await prismaModel.increment({ from: 1002, to: 1003 });
 
-          const result = await prismaModel
-            // @ts-ignore
-            .findFirst()
-            // @ts-ignore
-            .then((res) => (res ? omitDBTimestampFields(res) : res));
+          const result = await getOverallStats(prismaModel);
 
           expect(result).toMatchSnapshot();
+        });
+
+        it("should ignore reorged blocks when aggregating stats", async () => {
+          await prismaModel.increment({ from: 1000, to: 1008 });
+          const overallStatsBeforeReorg = await getOverallStats(prismaModel);
+
+          await indexBlock({ indexAsReorged: true });
+
+          await prismaModel.increment({ from: 1009, to: 9999 });
+          const overallStatsAfterReorg = await getOverallStats(prismaModel);
+
+          expect(overallStatsBeforeReorg).toEqual(overallStatsAfterReorg);
         });
       });
     }
   });
 }
+
 describe("Stats Extension", () => {
   const dayPeriod: DatePeriod = dayToDatePeriod("2023-08-31");
   const fixtureBlobs = fixtures.blobsOnTransactions.map((btx) => {

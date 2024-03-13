@@ -108,6 +108,7 @@ const Home: NextPage = () => {
   const blocks = latestBlocks?.blocks ?? [];
   const txs = latestTxs?.transactions ?? [];
   const blobs = latestBlobs?.blobs ?? [];
+  const totalBlobSize = overallStats?.blob?.totalBlobSize;
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
@@ -176,7 +177,7 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blob Size"
               metric={{
-                value: overallStats?.blob?.totalBlobSize,
+                value: totalBlobSize ? BigInt(totalBlobSize) : undefined,
                 type: "bytes",
               }}
               compact

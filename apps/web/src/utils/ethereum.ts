@@ -103,3 +103,7 @@ export function formatWei(
 
   return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
 }
+
+export function shortenAddress(address: string, length = 4): string {
+  return `${address.slice(0, length)}…${address.slice(-length)}`;
+}

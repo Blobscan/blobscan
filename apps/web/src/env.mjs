@@ -2,11 +2,21 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 // See booleanSchema from packages/zod/src/schemas.ts
-// We need to redefine it here because we can't import ts files here
+// We need to redefine it because we can't import ts files from here
 const booleanSchema = z
   .string()
   .refine((s) => s === "true" || s === "false")
   .transform((s) => s === "true");
+
+const networkSchema = z.enum([
+  "mainnet",
+  "goerli",
+  "holesky",
+  "sepolia",
+  "gnosis",
+  "chiado",
+  "devnet",
+]);
 
 export const env = createEnv({
   /**
@@ -21,13 +31,13 @@ export const env = createEnv({
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
   },
   /**
-   * Specify your client-side environment variables schema here.
+   * Specify your client-side environment variables schema here.ç
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
     NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
-    NEXT_PUBLIC_NETWORK_NAME: z.string().default("Ethereum"),
-    NEXT_PUBLIC_SUPPORTED_NETWORKS: z.string().optional(),
+    NEXT_PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
+    NEXT_PUBLIC_SUPPORTED_NETWORKS: z.string().default('[{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]'),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z
       .string()
       .url()
@@ -47,7 +57,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED:
       process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED,
-    NEXT_PUBLIC_NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME,
+    NEXT_PUBLIC_NETWORK_NAME: process.env.NETWORK_NAME,
     NEXT_PUBLIC_SUPPORTED_NETWORKS: process.env.NEXT_PUBLIC_SUPPORTED_NETWORKS,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,

@@ -19,12 +19,14 @@ import { StatsSyncer } from "@blobscan/stats-syncer";
 import { env } from "./env";
 import { morganMiddleware } from "./middlewares/morgan";
 import { openApiDocument } from "./openapi";
+import { getNetworkDencunForkSlot } from "./utils";
 
 collectDefaultMetrics();
 
 const statsSyncer = new StatsSyncer({
   redisUri: env.REDIS_URI,
-  lowestSlot: env.FORK_SLOT,
+  lowestSlot:
+    env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
 });
 
 statsSyncer.run({

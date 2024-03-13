@@ -2,6 +2,22 @@ import type { Blob, Block, Transaction } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+export const blockIdSchema = z
+  .string()
+  .refine(
+    (s) => {
+      if (s.startsWith("0x") && s.length === 66) {
+        return s;
+      }
+    },
+    {
+      message: "Invalid block id",
+    }
+  )
+  .or(z.coerce.number().positive());
+
+export type BlockId = z.infer<typeof blockIdSchema>;
+
 const blockSelect = Prisma.validator<Prisma.BlockSelect>()({
   hash: true,
   number: true,
