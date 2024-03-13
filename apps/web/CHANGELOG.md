@@ -1,5 +1,20 @@
 # @blobscan/web
 
+## 0.3.0
+
+### Minor Changes
+
+- [#304](https://github.com/Blobscan/blobscan/pull/304) [`a0afd63`](https://github.com/Blobscan/blobscan/commit/a0afd638d13cd273739c7e40029db8de31794756) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob storage tags to blob details view
+
+### Patch Changes
+
+- [#281](https://github.com/Blobscan/blobscan/pull/281) [`6195838`](https://github.com/Blobscan/blobscan/commit/61958389e1c0fba277800c7e10d0c5e17c9c417d) Thanks [@0xGabi](https://github.com/0xGabi)! - Added rollup badges
+
+- [#308](https://github.com/Blobscan/blobscan/pull/308) [`62ad85c`](https://github.com/Blobscan/blobscan/commit/62ad85c74214e807d9d58a310801dee96befd93c) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for zkSync rollup
+
+- Updated dependencies [[`62ad85c`](https://github.com/Blobscan/blobscan/commit/62ad85c74214e807d9d58a310801dee96befd93c)]:
+  - @blobscan/api@0.4.1
+
 ## 0.2.2
 
 ### Patch Changes

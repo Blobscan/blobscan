@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.4.1
+
+### Patch Changes
+
+- [#308](https://github.com/Blobscan/blobscan/pull/308) [`62ad85c`](https://github.com/Blobscan/blobscan/commit/62ad85c74214e807d9d58a310801dee96befd93c) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for zkSync rollup
+
 ## 0.4.0
 
 ### Minor Changes
