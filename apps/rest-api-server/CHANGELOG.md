@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.3.1
+
+### Patch Changes
+
+- [#312](https://github.com/Blobscan/blobscan/pull/312) [`93ee664`](https://github.com/Blobscan/blobscan/commit/93ee664f948b400025261fd0e3afda26006583e7) Thanks [@0xGabi](https://github.com/0xGabi)! - Allowed logs on production environment
+
 ## 0.3.0
 
 ### Minor Changes
