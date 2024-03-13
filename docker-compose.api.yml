@@ -9,7 +9,7 @@ services:
     ports:
       - ${EXTERNAL_API_PORT}:3001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/healthcheck"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 5
