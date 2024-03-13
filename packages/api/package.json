@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,12 +15,12 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-propagator": "^0.0.3",
-    "@blobscan/blob-storage-manager": "^0.0.3",
+    "@blobscan/blob-propagator": "^0.0.4",
+    "@blobscan/blob-storage-manager": "^0.0.4",
     "@blobscan/dayjs": "^0.0.2",
-    "@blobscan/db": "^0.1.2",
-    "@blobscan/open-telemetry": "^0.0.3",
-    "@blobscan/zod": "^0.0.3",
+    "@blobscan/db": "^0.2.0",
+    "@blobscan/open-telemetry": "^0.0.4",
+    "@blobscan/zod": "^0.0.4",
     "@trpc/server": "^10.43.2",
     "jsonwebtoken": "^9.0.0",
     "superjson": "1.9.1",

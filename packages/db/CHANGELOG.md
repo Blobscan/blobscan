@@ -1,5 +1,17 @@
 # @blobscan/db
 
+## 0.2.0
+
+### Minor Changes
+
+- [#277](https://github.com/Blobscan/blobscan/pull/277) [`1ea0023`](https://github.com/Blobscan/blobscan/commit/1ea0023cdfdba270d0cadb307f8799baa75af414) Thanks [@0xGabi](https://github.com/0xGabi)! - Added Rollup enum and new source rollup field on tx model
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/logger@0.0.4
+  - @blobscan/open-telemetry@0.0.4
+
 ## 0.1.2
 
 ### Patch Changes

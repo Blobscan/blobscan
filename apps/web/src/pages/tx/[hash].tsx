@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
@@ -111,6 +112,14 @@ const Tx: NextPage = () => {
                     </Link>
                   ),
                 },
+                ...(txData.rollup
+                  ? [
+                      {
+                        name: "Rollup",
+                        value: <RollupBadge rollup={txData.rollup} />,
+                      },
+                    ]
+                  : []),
                 {
                   name: "Total Blob Size",
                   value: formatBytes(txData.totalBlobSize),

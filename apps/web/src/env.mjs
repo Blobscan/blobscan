@@ -10,7 +10,6 @@ const booleanSchema = z
 
 const networkSchema = z.enum([
   "mainnet",
-  "goerli",
   "holesky",
   "sepolia",
   "gnosis",
@@ -61,7 +60,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED:
       process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED,
-    NEXT_PUBLIC_NETWORK_NAME: process.env.NETWORK_NAME,
+    NEXT_PUBLIC_NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME,
     NEXT_PUBLIC_SUPPORTED_NETWORKS: process.env.NEXT_PUBLIC_SUPPORTED_NETWORKS,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,

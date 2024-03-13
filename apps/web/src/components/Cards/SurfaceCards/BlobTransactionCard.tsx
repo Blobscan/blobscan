@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { FC } from "react";
-import {
-  ArrowRightIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { animated, useSpring } from "@react-spring/web";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
+import { Button } from "~/components/Button";
 import type { Block } from "~/types";
 import {
   buildAddressRoute,
@@ -19,6 +16,7 @@ import {
   formatBytes,
   normalizeTimestamp,
 } from "~/utils";
+import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
@@ -33,12 +31,9 @@ const CollapseIcon: React.FC<{
 
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-    <div className="flex cursor-pointer flex-col" onClick={onClick}>
-      <animated.div style={props}>
-        <ChevronUpIcon className="h-4 w-4" />
-      </animated.div>
-      <animated.div style={props}>
-        <ChevronDownIcon className="h-4 w-4" />
+    <div className="-p cursor-pointer" onClick={onClick}>
+      <animated.div style={props} className="-mb-2">
+        <Button variant="icon" icon={<ChevronDownIcon />} size="md" />
       </animated.div>
     </div>
   );
@@ -63,7 +58,7 @@ const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   block: { number, timestamp } = {},
-  transaction: { hash, fromId, toId, blobs: blobsOnTx } = {},
+  transaction: { hash, fromId, toId, rollup, blobs: blobsOnTx } = {},
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -95,78 +90,89 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   return (
     <div>
       <SurfaceCardBase className="rounded-none rounded-t-md">
-        <div className="grid grid-cols-1 grid-rows-2 text-sm md:grid-cols-5 md:grid-rows-1">
-          <div className="col-span-1 row-span-2 flex items-center gap-3 md:col-span-4 md:row-span-1">
+        <div className="flex flex-col gap-2 text-sm">
+          <div className="flex gap-2 md:flex-row">
+            {hash ? (
+              <div className="flex w-full flex-col justify-between gap-1 md:flex-row md:items-center md:gap-0">
+                <div className="w-2/3">
+                  <span className="font-semibold text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
+                    Transaction{" "}
+                  </span>
+                  <Link href={buildTransactionRoute(hash)}>{hash}</Link>
+                </div>
+                {rollup && <RollupBadge rollup={rollup} size="xs" />}
+              </div>
+            ) : (
+              <Skeleton width={400} />
+            )}
+          </div>
+          <div className="flex w-full flex-col items-center justify-between md:flex-row">
+            <div className="w-full md:w-2/3">
+              <div className="flex flex-col space-y-2 truncate">
+                <div className="flex flex-col gap-1 md:flex-row md:items-center">
+                  {fromId && toId ? (
+                    <>
+                      <div className="mt-1 md:hidden">From</div>
+                      <Link href={buildAddressRoute(fromId)}>
+                        <span className="text-xs">
+                          {"0x5b98b836969a60fec50fa925905dd1d382a7db43"}
+                        </span>
+                      </Link>
+                      {toId && (
+                        <>
+                          <ArrowRightIcon className="hidden h-2 w-2 md:block" />
+                          <div className="mt-1 md:hidden">To</div>
+                          <Link href={buildAddressRoute(toId)}>
+                            <span className="text-xs">
+                              {"0x5b98b836969a60fec50fa925905dd1d382a7db43"}
+                            </span>
+                          </Link>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <Skeleton width={320} />
+                  )}
+                </div>
+                <div className="flex gap-2 text-xs">
+                  {blobsOnTx ? (
+                    <div className="mb-2">
+                      {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
+                    </div>
+                  ) : (
+                    <Skeleton width={120} />
+                  )}
+                  ·
+                  <div>
+                    {blobsOnTx ? (
+                      formatBytes(totalBlobSize)
+                    ) : (
+                      <Skeleton width={80} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {!!number && !!timestamp && (
+              <div className="t flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
+                <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Block
+                  <Link href={buildBlockRoute(number)}>{number}</Link>
+                </div>
+                <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {normalizeTimestamp(timestamp).fromNow()}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="-mb-2 flex items-center justify-center md:-mt-5">
             <CollapseIcon
               opened={opened}
               onClick={() => {
                 setOpened((op) => !op);
               }}
             />
-            <div className="flex flex-col space-y-2 truncate">
-              <div className="flex flex-col gap-2 md:flex-row">
-                {hash ? (
-                  <>
-                    <div className="font-semibold text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
-                      Transaction
-                    </div>
-                    <Link href={buildTransactionRoute(hash)}>{hash}</Link>
-                  </>
-                ) : (
-                  <Skeleton width={400} />
-                )}
-              </div>
-              <div className="flex flex-col gap-1 md:flex-row md:items-center">
-                {fromId && toId ? (
-                  <>
-                    <div className="mt-1 md:hidden">From</div>
-                    <Link href={buildAddressRoute(fromId)}>
-                      <span className="text-xs">{fromId}</span>
-                    </Link>
-                    {toId && (
-                      <>
-                        <ArrowRightIcon className="hidden h-2 w-2 md:block" />
-                        <div className="mt-1 md:hidden">To</div>
-                        <Link href={buildAddressRoute(toId)}>
-                          <span className="text-xs">{toId}</span>
-                        </Link>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <Skeleton width={320} />
-                )}
-              </div>
-              <div className="flex gap-2">
-                {blobsOnTx ? (
-                  <div className="mb-2 text-sm">
-                    {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
-                  </div>
-                ) : (
-                  <Skeleton width={120} />
-                )}
-                ·
-                <div>
-                  {blobsOnTx ? (
-                    formatBytes(totalBlobSize)
-                  ) : (
-                    <Skeleton width={80} />
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
-          {number && timestamp && (
-            <div className="flex items-center gap-2 place-self-end  md:flex-col md:justify-center md:gap-0 md:place-self-center">
-              <div className="flex gap-1">
-                Block
-                <Link href={buildBlockRoute(number)}>{number}</Link>
-              </div>
-              <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                {normalizeTimestamp(timestamp).fromNow()}
-              </div>
-            </div>
-          )}
         </div>
       </SurfaceCardBase>
       {blobsOnTx && hash && (
