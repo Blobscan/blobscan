@@ -19,6 +19,17 @@ enum BlobStorage {
   @@map("blob_storage")
 }
 
+enum Rollup {
+  ARBITRUM @map("arbitrum")
+  BASE     @map("base")
+  OPTIMISM @map("optimism")
+  SCROLL   @map("scroll")
+  STARKNET @map("starknet")
+  ZKSYNC   @map("zksync")
+
+  @@map("rollup")
+}
+
 model BlockchainSyncState {
   id                  Int  @id @default(autoincrement())
   lastAggregatedBlock Int? @map("last_aggregated_block")
@@ -104,6 +115,7 @@ model Transaction {
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  rollup                Rollup?
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 

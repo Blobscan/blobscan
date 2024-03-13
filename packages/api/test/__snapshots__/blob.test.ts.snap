@@ -88,6 +88,32 @@ exports[`Blob router > 'getByBlobIdFull' > should get a blob by versioned hash 1
 }
 `;
 
+exports[`Blob router > getAll > should return filtered results for a rollup 1`] = `
+{
+  "blobs": [
+    {
+      "commitment": "commitment001",
+      "proof": "proof001",
+      "size": 1000,
+      "versionedHash": "blobHash001",
+    },
+    {
+      "commitment": "commitment002",
+      "proof": "proof002",
+      "size": 1100,
+      "versionedHash": "blobHash002",
+    },
+    {
+      "commitment": "commitment004",
+      "proof": "proof004",
+      "size": 1300,
+      "versionedHash": "blobHash004",
+    },
+  ],
+  "totalBlobs": 3,
+}
+`;
+
 exports[`Blob router > getAll > when getting paginated blob results > should default to the first page when no page was specified 1`] = `
 [
   {

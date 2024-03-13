@@ -6,8 +6,10 @@ import { getAllInputSchema } from "./getAll.schema";
 export const getAllFull = publicProcedure
   .input(getAllInputSchema)
   .use(withPagination)
-  .query(async ({ ctx }) => {
-    const [transactions, overallStats] = await Promise.all([
+  .query(async ({ input, ctx }) => {
+    const rollup = input?.rollup;
+
+    const [transactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
@@ -19,15 +21,24 @@ export const getAllFull = publicProcedure
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),
-      ctx.prisma.transactionOverallStats.findFirst({
-        select: {
-          totalTransactions: true,
-        },
-      }),
+      rollup
+        ? ctx.prisma.transaction.count({
+            where: {
+              rollup,
+            },
+          })
+        : ctx.prisma.transactionOverallStats.findFirst({
+            select: {
+              totalTransactions: true,
+            },
+          }),
     ]);
 
     return {
       transactions,
-      totalTransactions: overallStats?.totalTransactions ?? 0,
+      totalTransactions:
+        typeof txCountOrStats === "number"
+          ? txCountOrStats
+          : txCountOrStats?.totalTransactions ?? 0,
     };
   });

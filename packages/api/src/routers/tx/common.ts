@@ -2,7 +2,7 @@ import type { Blob, Block, Transaction } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
-import { GAS_PER_BLOB } from "../utils";
+const GAS_PER_BLOB = 2 ** 17; // 131_072
 
 const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   hash: true,
@@ -12,6 +12,7 @@ const transactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   blobAsCalldataGasUsed: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
+  rollup: true,
 });
 
 type FullTransaction = Pick<
@@ -23,6 +24,7 @@ type FullTransaction = Pick<
   | "blobAsCalldataGasUsed"
   | "gasPrice"
   | "maxFeePerBlobGas"
+  | "rollup"
 > & {
   block: Pick<Block, "number" | "timestamp" | "excessBlobGas" | "blobGasPrice">;
   blobs: {

@@ -10,7 +10,8 @@
       "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
       "args": ["run", "${relativeFile}"],
       "smartStep": true,
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env.test"
     },
     {
       "name": "Next.js",

@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import type { Address, Blob, BlobsOnTransactions } from "@prisma/client";
-import { Prisma } from "@prisma/client";
+import { $Enums, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
@@ -246,6 +246,7 @@ export class DataGenerator {
           min: 0,
           max: this.#seedParams.maxFeePerBlobGas,
         });
+        const rollup = faker.helpers.enumValue($Enums.Rollup);
 
         // Unreachable code, done only for type checking
         if (!from || !to) throw new Error("Address not found");
@@ -258,6 +259,7 @@ export class DataGenerator {
           blobAsCalldataGasUsed: new Prisma.Decimal(0),
           gasPrice: bigintToDecimal(gasPrice),
           maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),
+          rollup,
           insertedAt: now,
           updatedAt: now,
         };

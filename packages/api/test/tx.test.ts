@@ -3,6 +3,7 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { Rollup } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { TRPCContext } from "../src";
@@ -24,6 +25,15 @@ describe("Transaction router", async () => {
   describe.each([{ functionName: "getAll" }, { functionName: "getAllFull" }])(
     "$functionName",
     ({ functionName }) => {
+      it("should return filtered results for a rollup", async () => {
+        // @ts-ignore
+        const result = await caller.tx[functionName]({
+          rollup: "base",
+        });
+
+        expect(result).toMatchSnapshot();
+      });
+
       it("should get the total number of transactions", async () => {
         const expectedTotalTransactions = fixtures.txs.length;
 
@@ -31,6 +41,21 @@ describe("Transaction router", async () => {
 
         // @ts-ignore
         const { totalTransactions } = await caller.tx[functionName]();
+
+        expect(totalTransactions).toBe(expectedTotalTransactions);
+      });
+
+      it("should get the total number of transactions for a rollup", async () => {
+        const expectedTotalTransactions = await ctx.prisma.transaction.count({
+          where: {
+            rollup: Rollup.BASE,
+          },
+        });
+
+        // @ts-ignore
+        const { totalTransactions } = await caller.tx[functionName]({
+          rollup: "base",
+        });
 
         expect(totalTransactions).toBe(expectedTotalTransactions);
       });

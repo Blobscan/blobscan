@@ -15,8 +15,10 @@ export const getAll = publicProcedure
   .input(getAllInputSchema)
   .output(getAllOutputSchema)
   .use(withPagination)
-  .query(async ({ ctx }) => {
-    const [transactions, overallStats] = await Promise.all([
+  .query(async ({ input, ctx }) => {
+    const rollup = input?.rollup;
+
+    const [transactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
@@ -25,18 +27,30 @@ export const getAll = publicProcedure
               number: "desc",
             },
           },
+          where: {
+            rollup,
+          },
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransactionForApi)),
-      ctx.prisma.transactionOverallStats.findFirst({
-        select: {
-          totalTransactions: true,
-        },
-      }),
+      rollup
+        ? ctx.prisma.transaction.count({
+            where: {
+              rollup,
+            },
+          })
+        : ctx.prisma.transactionOverallStats.findFirst({
+            select: {
+              totalTransactions: true,
+            },
+          }),
     ]);
 
     return {
       transactions,
-      totalTransactions: overallStats?.totalTransactions ?? 0,
+      totalTransactions:
+        typeof txCountOrStats === "number"
+          ? txCountOrStats
+          : txCountOrStats?.totalTransactions ?? 0,
     };
   });

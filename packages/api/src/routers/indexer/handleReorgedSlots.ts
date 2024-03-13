@@ -50,7 +50,7 @@ export const handleReorgedSlots = jwtAuthedProcedure
       )
     );
 
-        const totalUpdatedSlots = result as number;
+    const totalUpdatedSlots = result as number;
 
     return {
       totalUpdatedSlots,

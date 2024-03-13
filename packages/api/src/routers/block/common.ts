@@ -36,6 +36,7 @@ export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
       hash: true,
       fromId: true,
       toId: true,
+      rollup: true,
       blobs: {
         select: {
           blobHash: true,
@@ -51,7 +52,10 @@ export const fullBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   },
 });
 
-type TransactionSelection = Pick<Transaction, "hash" | "fromId" | "toId"> & {
+type TransactionSelection = Pick<
+  Transaction,
+  "hash" | "fromId" | "toId" | "rollup"
+> & {
   blobs: {
     blobHash: string;
     index: number;

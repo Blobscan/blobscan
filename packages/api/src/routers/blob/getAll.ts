@@ -1,9 +1,6 @@
-import {
-  paginationSchema,
-  withPagination,
-} from "../../middlewares/withPagination";
+import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { getAllOutputSchema } from "./getAll.schema";
+import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
 
 export const getAll = publicProcedure
   .meta({
@@ -14,11 +11,13 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(paginationSchema.optional())
+  .input(getAllInputSchema)
   .output(getAllOutputSchema)
   .use(withPagination)
-  .query(async ({ ctx }) => {
-    const [blobs, overallStats] = await Promise.all([
+  .query(async ({ input, ctx }) => {
+    const rollup = input?.rollup;
+
+    const [blobs, blobCountOrStats] = await Promise.all([
       ctx.prisma.blob.findMany({
         select: {
           versionedHash: true,
@@ -26,17 +25,42 @@ export const getAll = publicProcedure
           proof: true,
           size: true,
         },
+        where: {
+          transactions: {
+            some: {
+              transaction: {
+                rollup,
+              },
+            },
+          },
+        },
         ...ctx.pagination,
       }),
-      ctx.prisma.blobOverallStats.findFirst({
-        select: {
-          totalBlobs: true,
-        },
-      }),
+      // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
+      rollup
+        ? ctx.prisma.blob.count({
+            where: {
+              transactions: {
+                some: {
+                  transaction: {
+                    rollup,
+                  },
+                },
+              },
+            },
+          })
+        : ctx.prisma.blobOverallStats.findFirst({
+            select: {
+              totalBlobs: true,
+            },
+          }),
     ]);
 
     return {
       blobs,
-      totalBlobs: overallStats?.totalBlobs ?? 0,
+      totalBlobs:
+        typeof blobCountOrStats === "number"
+          ? blobCountOrStats
+          : blobCountOrStats?.totalBlobs ?? 0,
     };
   });
