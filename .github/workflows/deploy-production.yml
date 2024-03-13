@@ -8,7 +8,8 @@ on:
       - completed
 
 jobs:
-  deploy_prod_sepolia:
+
+  deploy_sepolia:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy Blobscan API (sepolia)
     runs-on: ubuntu-latest
@@ -24,7 +25,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: ./deploy-blobscan.sh
 
-  deploy_prod_holesky:
+  deploy_holesky:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy Blobscan API (holesky)
     runs-on: ubuntu-latest
@@ -39,3 +40,36 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: ./deploy-blobscan.sh
+
+  deploy_gnosis:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (gnosis)
+    runs-on: ubuntu-latest
+    environment:
+      name: gnosis
+      url: https://gnosis.blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh
+
+  deploy_mainnet:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy Blobscan API (mainnet)
+    runs-on: ubuntu-latest
+    environment:
+      name: mainnet
+      url: https://blobscan.com
+    steps:
+      - uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: deploy
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: ./deploy-blobscan.sh
+
