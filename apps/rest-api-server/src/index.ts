@@ -44,9 +44,13 @@ app.use(morganMiddleware);
 
 app.get("/metrics", metricsHandler);
 
+// Serve Swagger UI with our OpenAPI schema
+app.use("/", swaggerUi.serve);
+app.get("/", swaggerUi.setup(openApiDocument));
+
 // Handle incoming OpenAPI requests
 app.use(
-  "/api",
+  "/",
   createOpenApiExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext({
@@ -57,10 +61,6 @@ app.use(
     },
   })
 );
-
-// Serve Swagger UI with our OpenAPI schema
-app.use("/", swaggerUi.serve);
-app.get("/", swaggerUi.setup(openApiDocument));
 
 const server = app.listen(env.BLOBSCAN_API_PORT, () => {
   logger.info(
