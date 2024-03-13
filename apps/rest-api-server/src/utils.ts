@@ -6,8 +6,6 @@ export function getNetworkDencunForkSlot(
   switch (networkName) {
     case "mainnet":
       return 8626176;
-    case "goerli":
-      return 7413760;
     case "holesky":
       return 950272;
     case "sepolia":

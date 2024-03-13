@@ -19,7 +19,6 @@ export const prismaBatchOperationsMaxSizeSchema = z.coerce
 
 export const networkSchema = z.enum([
   "mainnet",
-  "goerli",
   "holesky",
   "sepolia",
   "gnosis",
