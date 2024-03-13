@@ -19,6 +19,7 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
     "0x5050f69a9786f081509234f1a7f4684b5e5b76c9": Rollup.BASE,
     "0x6887246668a3b87f54deb3b94ba47a6f63f32985": Rollup.OPTIMISM,
     "0x2c169dfe5fbba12957bdd0ba47d9cedbfe260ca7": Rollup.STARKNET,
+    "0x0d3250c3d5facb74ac15834096397a3ef790ec99": Rollup.ZKSYNC,
   },
   // Holesky
   "17000": {},
