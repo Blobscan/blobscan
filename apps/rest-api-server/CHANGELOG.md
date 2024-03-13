@@ -1,5 +1,11 @@
 # @blobscan/rest-api-server
 
+## 0.3.0
+
+### Minor Changes
+
+- [#305](https://github.com/Blobscan/blobscan/pull/305) [`b766506`](https://github.com/Blobscan/blobscan/commit/b76650628fafae7b6ecb45ec0916e7307110674e) Thanks [@0xGabi](https://github.com/0xGabi)! - Updated default api endpoint
+
 ## 0.2.0
 
 ### Minor Changes
