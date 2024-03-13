@@ -46,7 +46,7 @@ app.get("/metrics", metricsHandler);
 
 // Handle incoming OpenAPI requests
 app.use(
-  "/api",
+  "/",
   createOpenApiExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext({
