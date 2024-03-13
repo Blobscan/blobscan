@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 import "react-loading-skeleton/dist/skeleton.css";
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Card } from "~/components/Cards/Card";
 import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
@@ -105,6 +106,19 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Swarm Hash",
         value: swarmHash,
+      });
+    }
+
+    if (blob.dataStorageReferences.length > 0) {
+      detailsFields.push({
+        name: "Storages",
+        value: (
+          <div className="flex items-center">
+            {blob.dataStorageReferences.map((ref, index) => (
+              <StorageBadge key={index} storage={ref.blobStorage} />
+            ))}
+          </div>
+        ),
       });
     }
 
