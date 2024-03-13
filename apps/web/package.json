@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true pnpm with-env next build",
@@ -16,9 +16,9 @@
     "with-env": "dotenv -e ../../.env  -v BLOB_PROPAGATOR_ENABLED=false --"
   },
   "dependencies": {
-    "@blobscan/api": "^0.3.0",
+    "@blobscan/api": "^0.4.0",
     "@blobscan/dayjs": "^0.0.2",
-    "@blobscan/open-telemetry": "^0.0.3",
+    "@blobscan/open-telemetry": "^0.0.4",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",
     "@headlessui/react": "^1.7.13",

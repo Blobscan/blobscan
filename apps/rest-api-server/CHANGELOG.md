@@ -1,5 +1,22 @@
 # @blobscan/rest-api-server
 
+## 0.2.0
+
+### Minor Changes
+
+- [#277](https://github.com/Blobscan/blobscan/pull/277) [`39fb917`](https://github.com/Blobscan/blobscan/commit/39fb917444f2751ddbd1f571fdcd6f66919c078d) Thanks [@0xGabi](https://github.com/0xGabi)! - Included filter per rollup for blobs and transactions
+
+### Patch Changes
+
+- [#298](https://github.com/Blobscan/blobscan/pull/298) [`3c09b5b`](https://github.com/Blobscan/blobscan/commit/3c09b5bf8ea854f30a6675b022a87b1a04960bf6) Thanks [@0xGabi](https://github.com/0xGabi)! - Deprecated goerli network
+
+- Updated dependencies [[`39fb917`](https://github.com/Blobscan/blobscan/commit/39fb917444f2751ddbd1f571fdcd6f66919c078d), [`3c09b5b`](https://github.com/Blobscan/blobscan/commit/3c09b5bf8ea854f30a6675b022a87b1a04960bf6)]:
+  - @blobscan/api@0.4.0
+  - @blobscan/zod@0.0.4
+  - @blobscan/logger@0.0.4
+  - @blobscan/open-telemetry@0.0.4
+  - @blobscan/stats-syncer@0.1.2
+
 ## 0.1.3
 
 ### Patch Changes

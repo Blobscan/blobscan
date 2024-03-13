@@ -1,5 +1,20 @@
 # @blobscan/api
 
+## 0.4.0
+
+### Minor Changes
+
+- [#277](https://github.com/Blobscan/blobscan/pull/277) [`39fb917`](https://github.com/Blobscan/blobscan/commit/39fb917444f2751ddbd1f571fdcd6f66919c078d) Thanks [@0xGabi](https://github.com/0xGabi)! - Included filter per rollup for blobs and transactions
+
+### Patch Changes
+
+- Updated dependencies [[`3c09b5b`](https://github.com/Blobscan/blobscan/commit/3c09b5bf8ea854f30a6675b022a87b1a04960bf6), [`1ea0023`](https://github.com/Blobscan/blobscan/commit/1ea0023cdfdba270d0cadb307f8799baa75af414)]:
+  - @blobscan/zod@0.0.4
+  - @blobscan/db@0.2.0
+  - @blobscan/blob-propagator@0.0.4
+  - @blobscan/blob-storage-manager@0.0.4
+  - @blobscan/open-telemetry@0.0.4
+
 ## 0.3.0
 
 ### Minor Changes
