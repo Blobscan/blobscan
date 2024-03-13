@@ -8,8 +8,8 @@ import { Prisma } from "@blobscan/db";
 
 import type { IndexDataInput } from "./indexData.schema";
 
-const MIN_BLOB_GASPRICE = BigInt(1);
-const BLOB_GASPRICE_UPDATE_FRACTION = BigInt(3_338_477);
+const MIN_BLOB_BASE_FEE = BigInt(1);
+const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
 
 export const GAS_PER_BLOB = 2 ** 17; // 131_072
 
@@ -56,12 +56,12 @@ export function calculateBlobSize(blob: string): number {
   return blob.slice(2).length / 2;
 }
 
-export function calculateBlobGasPrice(excessDataGas: bigint): bigint {
+export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
   return BigInt(
     fakeExponential(
-      MIN_BLOB_GASPRICE,
-      excessDataGas,
-      BLOB_GASPRICE_UPDATE_FRACTION
+      MIN_BLOB_BASE_FEE,
+      excessBlobGas,
+      BLOB_BASE_FEE_UPDATE_FRACTION
     )
   );
 }
@@ -73,16 +73,18 @@ export function createDBTransactions({
 }: IndexDataInput): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
-      const txBlob: IndexDataInput["blobs"][0] | undefined = blobs.find(
-        (b) => b.txHash === hash
-      );
+      const txBlobs = blobs.filter((b) => b.txHash === hash);
 
-      if (!txBlob) {
-        throw new Error(`Blob for transaction ${hash} not found`);
+      if (txBlobs.length === 0) {
+        throw new Error(`Blobs for transaction ${hash} not found`);
       }
 
+      const blobGasAsCalldataUsed = txBlobs.reduce(
+        (acc, b) => acc + getEIP2028CalldataGas(b.data),
+        BigInt(0)
+      );
+
       const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
-      const blobAsCalldataGasUsed = getEIP2028CalldataGas(txBlob.data);
 
       return {
         blockHash: block.hash,
@@ -92,7 +94,7 @@ export function createDBTransactions({
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
-        blobAsCalldataGasUsed: bigIntToDecimal(blobAsCalldataGasUsed),
+        blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
       };
     }
   );
