@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 import type { Size } from "~/types";
 
-function getActiveBreakpoint(): Size {
+type AugmentedSize = Size | "default";
+
+function getActiveBreakpoint(): AugmentedSize {
   if (window.matchMedia("(min-width: 1536px)").matches) {
     return "2xl";
   } else if (window.matchMedia("(min-width: 1280px)").matches) {
@@ -19,10 +21,10 @@ function getActiveBreakpoint(): Size {
 }
 
 export function useBreakpoint() {
-  const [currentBreakpoint, setCurrentBreakpoint] = useState<Size>(
+  const [currentBreakpoint, setCurrentBreakpoint] = useState<AugmentedSize>(
     getActiveBreakpoint()
   );
-  const breakpointRef = useRef<Size>();
+  const breakpointRef = useRef<AugmentedSize>();
 
   useEffect(() => {
     function trackResize() {

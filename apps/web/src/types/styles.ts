@@ -1,1 +1,1 @@
-export type Size = "2xl" | "xl" | "lg" | "md" | "sm" | "default";
+export type Size = "2xl" | "xl" | "lg" | "md" | "sm" | "xs";

@@ -15,6 +15,8 @@ export { env } from "./env";
 export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
 export type {
+  BlobStorage,
+  Rollup,
   Metric,
   MetricHistogram,
   MetricHistogramBucket,
