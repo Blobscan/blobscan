@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.3.3
+
+### Patch Changes
+
+- [#319](https://github.com/Blobscan/blobscan/pull/319) [`7382165`](https://github.com/Blobscan/blobscan/commit/7382165b7b66bad49e0402a8037d765be05d7158) Thanks [@0xGabi](https://github.com/0xGabi)! - Enhanced dark mode badges
+
 ## 0.3.2
 
 ### Patch Changes
