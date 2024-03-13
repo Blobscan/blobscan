@@ -9,7 +9,7 @@ export const openApiDocument = generateOpenApiDocument(appRouter, {
   title: "Blobscan API",
   description: "OpenAPI compliant REST API built using tRPC with Express",
   version: "1.0.0",
-  baseUrl: `${env.BLOBSCAN_API_BASE_URL}/api`,
+  baseUrl: `${env.BLOBSCAN_API_BASE_URL}`,
   docsUrl: "https://docs.blobscan.com/",
   tags: ["blobs", "transactions", "blocks", "stats", "indexer", "system"],
 });
