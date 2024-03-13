@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.3.4
+
+### Patch Changes
+
+- [#321](https://github.com/Blobscan/blobscan/pull/321) [`a730a33`](https://github.com/Blobscan/blobscan/commit/a730a3322c6dfa33eb63a3f754264cb1a1f066ca) Thanks [@0xGabi](https://github.com/0xGabi)! - Added link to blob data stored on storages
+
 ## 0.3.3
 
 ### Patch Changes
