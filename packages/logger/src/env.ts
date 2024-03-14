@@ -1,11 +1,14 @@
-import { booleanSchema, createEnv, presetEnvOptions, z } from "@blobscan/zod";
+import {
+  booleanSchema,
+  createEnv,
+  nodeEnvSchema,
+  presetEnvOptions,
+} from "@blobscan/zod";
 
 export const env = createEnv({
   envOptions: {
     server: {
-      LOGGER_LEVEL: z
-        .enum(["error", "warn", "info", "http", "debug"])
-        .default("info"),
+      NODE_ENV: nodeEnvSchema.optional(),
       TEST: booleanSchema.optional(),
     },
 
