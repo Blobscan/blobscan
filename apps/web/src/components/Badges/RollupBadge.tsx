@@ -5,9 +5,11 @@ import type { Rollup } from "@blobscan/api";
 
 import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
+import ModeIcon from "~/icons/mode.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import StarknetIcon from "~/icons/starknet.svg";
 import ZkSyncIcon from "~/icons/zksync.svg";
+import ZoraIcon from "~/icons/zora.svg";
 import type { Size } from "~/types";
 import { capitalize } from "~/utils";
 import { Badge } from "./Badge";
@@ -42,6 +44,16 @@ const ROLLUP_CONFIG: Record<
     icon: <ZkSyncIcon />,
     style: "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300",
     label: "zkSync",
+  },
+  MODE: {
+    icon: <ModeIcon />,
+    style: "bg-lime-200 text-[#000000] dark:bg-lime-700 dark:text-[#DFFE00]",
+    label: "mode",
+  },
+  ZORA: {
+    icon: <ZoraIcon />,
+    style: "bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300",
+    label: "zora",
   },
 };
 
