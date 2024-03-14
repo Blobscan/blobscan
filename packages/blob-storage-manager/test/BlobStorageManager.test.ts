@@ -219,7 +219,7 @@ describe("BlobStorageManager", () => {
       await expect(
         newBlobStorageManager.storeBlob(blob)
       ).rejects.toMatchInlineSnapshot(
-        "[Error: Failed to upload blob 0x6d6f636b2d64617461 to any of the storages: POSTGRES: Error: Failed to upload blob to postgres, GOOGLE: Error: Failed to upload blob to google, SWARM: Error: Failed to upload blob to swarm]"
+        "[Error: Failed to upload blob 0x6d6f636b2d64617461 to storages: POSTGRES, GOOGLE, SWARM]"
       );
     });
   });

@@ -230,13 +230,13 @@ export class BlobStorageManager<
           },
           []
         );
-        const storageErrorMsgs = errors.map(
-          (storageError) => `${storageError.storage}: ${storageError.error}`
+        const failingStorages = errors.map(
+          (storageError) => `${storageError.storage}`
         );
 
         if (!references.length) {
           const err = new Error(
-            `Failed to upload blob ${versionedHash} to any of the storages: ${storageErrorMsgs.join(
+            `Failed to upload blob ${versionedHash} to storages: ${failingStorages.join(
               ", "
             )}`
           );
