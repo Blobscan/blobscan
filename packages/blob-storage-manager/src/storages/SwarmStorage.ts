@@ -1,10 +1,9 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
-import { logger } from "@blobscan/logger";
-
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
+import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
   beeEndpoint: string;
@@ -20,15 +19,21 @@ export class SwarmStorage extends BlobStorage {
   _swarmClient: SwarmClient;
 
   constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
-    super();
+    super(BLOB_STORAGE_NAMES.SWARM);
 
-    this._swarmClient = {
-      bee: new Bee(beeEndpoint),
-      beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
-    };
+    try {
+      this._swarmClient = {
+        bee: new Bee(beeEndpoint),
+        beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
+      };
+    } catch (err) {
+      throw new Error("Failed to create swarm clients", {
+        cause: err,
+      });
+    }
   }
 
-  async healthCheck(): Promise<void> {
+  protected async _healthCheck() {
     const healthCheckOps = [];
 
     healthCheckOps.push(this._swarmClient.bee.checkConnection());
@@ -46,15 +51,15 @@ export class SwarmStorage extends BlobStorage {
     await Promise.all(healthCheckOps);
   }
 
-  async getBlob(reference: string): Promise<string> {
+  protected async _getBlob(reference: string) {
     return (await this._swarmClient.bee.downloadData(reference)).toString();
   }
 
-  async storeBlob(
+  protected async _storeBlob(
     chainId: number,
     versionedHash: string,
     data: string
-  ): Promise<string> {
+  ) {
     const batchId = await this.#getAvailableBatch();
     const response = await this._swarmClient.bee.uploadFile(
       batchId,
@@ -71,30 +76,21 @@ export class SwarmStorage extends BlobStorage {
 
   async #getAvailableBatch(): Promise<string> {
     if (!this._swarmClient.beeDebug) {
-      throw new Error("Bee debug endpoint required to get postage batches");
+      throw new Error("Bee debug endpoint required to get postage batches.");
     }
 
     const [firstBatch] = await this._swarmClient.beeDebug.getAllPostageBatch();
 
     if (!firstBatch?.batchID) {
-      throw new Error("No postage batches available");
+      throw new Error("No postage batches available.");
     }
 
     return firstBatch.batchID;
   }
 
-  static tryGetConfigFromEnv(
-    env: Partial<Environment>
-  ): SwarmStorageConfig | undefined {
-    if (!env.SWARM_STORAGE_ENABLED) {
-      return;
-    }
-
+  static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {
     if (!env.BEE_ENDPOINT) {
-      logger.warn(
-        "Swarm storage: storage is enabled but no bee endpoint was provided"
-      );
-      return;
+      throw new Error("No config variables found: no bee endpoint provided");
     }
 
     return {

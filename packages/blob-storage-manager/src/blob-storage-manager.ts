@@ -1,23 +1,49 @@
+import { logger } from "@blobscan/logger";
+
+import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManager } from "./BlobStorageManager";
 import { env } from "./env";
-import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
+import type { Environment } from "./env";
+import { BlobStorageName } from "./types";
+import { BLOB_STORAGE_NAMES, createStorageFromEnv } from "./utils";
 
 let blobStorageManager: BlobStorageManager | undefined;
 
+function isBlobStorageEnabled(storageName: BlobStorageName) {
+  const storageEnabledKey =
+    `${storageName}_STORAGE_ENABLED` as keyof Environment;
+  const storageEnabled = env[storageEnabledKey];
+
+  return storageEnabled === true || storageEnabled === "true";
+}
+
+async function createBlobStorageManager() {
+  const blobStorages = await Promise.all(
+    Object.values(BLOB_STORAGE_NAMES).map(async (storageName) => {
+      if (isBlobStorageEnabled(storageName)) {
+        const [storage, storageError] = await createStorageFromEnv(storageName);
+
+        if (storageError) {
+          logger.warn(
+            `${storageError.message}. Caused by: ${storageError.cause}`
+          );
+        }
+
+        return storage;
+      }
+    })
+  );
+
+  const availableStorages = blobStorages.filter(
+    (storage): storage is BlobStorage => !!storage
+  );
+
+  return new BlobStorageManager(availableStorages, env.CHAIN_ID);
+}
+
 export async function getBlobStorageManager(): Promise<BlobStorageManager> {
   if (!blobStorageManager) {
-    const googleStorage = await GoogleStorage.tryCreateFromEnv(env);
-    const postgresStorage = await PostgresStorage.tryCreateFromEnv(env);
-    const swarmStorage = await SwarmStorage.tryCreateFromEnv(env);
-
-    blobStorageManager = new BlobStorageManager(
-      {
-        GOOGLE: googleStorage,
-        POSTGRES: postgresStorage,
-        SWARM: swarmStorage,
-      },
-      env.CHAIN_ID
-    );
+    blobStorageManager = await createBlobStorageManager();
   }
 
   return blobStorageManager;

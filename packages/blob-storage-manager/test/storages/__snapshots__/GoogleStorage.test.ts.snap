@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`GoogleStorage > healthCheck > should throw an error if the bucket does not exist 1`] = `"GoogleStorage failed: Storage is not reachable"`;
+
+exports[`GoogleStorage > healthCheck > should throw an error if the bucket does not exist 2`] = `[Error: Bucket new-bucket does not exist]`;
+
+exports[`GoogleStorage > storeBlob > should throw valid error if the bucket does not exist 1`] = `"GoogleStorage failed: Failed to store blob with hash \\"0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174\\""`;
+
+exports[`GoogleStorage > storeBlob > should throw valid error if the bucket does not exist 2`] = `[Error: Request failed with status code 404]`;
+
+exports[`GoogleStorage > tryGetConfigFromEnv > should throw an error when a bucket name is not provided 1`] = `"No config variables found: no bucket name, api endpoint or service key provided"`;
+
+exports[`GoogleStorage > tryGetConfigFromEnv > should throw an error when a service key and an api endpoint are not provided 1`] = `"No config variables found: no bucket name, api endpoint or service key provided"`;

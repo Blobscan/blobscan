@@ -1,16 +1,20 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`BlobStorageManager > getBlob > should throw an error if the blob storage is not found 1`] = `"Failed to get blob from any of the storages"`;
+
+exports[`BlobStorageManager > getBlob > should throw an error if the blob storage is not found 2`] = `
+[
+  [BlobStorageError: PostgresStorage failed: Failed to get blob with uri "0x6d6f636b2d64617461"],
+  [BlobStorageError: GoogleStorage failed: Failed to get blob with uri "1/6d/6f/636b2d64617461.txt"],
+  [BlobStorageError: SwarmStorageMock failed: Failed to get blob with uri "123456789abcdef"],
+]
+`;
+
 exports[`BlobStorageManager > storeBlob > should return errors for failed uploads 1`] = `
 {
   "errors": [
-    {
-      "error": [Error: Failed to upload blob to postgres],
-      "storage": "POSTGRES",
-    },
-    {
-      "error": [Error: Failed to upload blob to swarm],
-      "storage": "SWARM",
-    },
+    [BlobStorageError: PostgresStorage failed: Failed to upload blob to postgres],
+    [BlobStorageError: SwarmStorage failed: Failed to upload blob to swarm],
   ],
   "references": [
     {
@@ -39,3 +43,15 @@ exports[`BlobStorageManager > storeBlob > should store the blob in all available
 `;
 
 exports[`BlobStorageManager > storeBlob > should store the blob in all available storages 2`] = `[]`;
+
+exports[`BlobStorageManager > storeBlob > should throw an error if all uploads fail 1`] = `"Failed to upload blob with hash \\"0x6d6f636b2d64617461\\" to any storage"`;
+
+exports[`BlobStorageManager > storeBlob > should throw an error if all uploads fail 2`] = `
+[
+  [BlobStorageError: PostgresStorage failed: Failed to upload blob to postgres],
+  [BlobStorageError: GoogleStorage failed: Failed to upload blob to google],
+  [BlobStorageError: SwarmStorage failed: Failed to upload blob to swarm],
+]
+`;
+
+exports[`BlobStorageManager > storeBlob > should throw an error when one of the selected blob storages wasn't found 1`] = `"Some of the selected storages are not available: POSTGRES, GOOGLE\\""`;

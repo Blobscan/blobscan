@@ -1,11 +1,10 @@
-import { Storage } from "@google-cloud/storage";
 import type { StorageOptions } from "@google-cloud/storage";
-
-import { logger } from "@blobscan/logger";
+import { Storage } from "@google-cloud/storage";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
+import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface GoogleStorageConfig extends BlobStorageConfig {
   serviceKey?: string;
@@ -29,28 +28,34 @@ export class GoogleStorage extends BlobStorage {
     serviceKey,
     apiEndpoint,
   }: GoogleStorageConfig) {
-    super();
+    super(BLOB_STORAGE_NAMES.GOOGLE);
 
-    const storageOptions: StorageOptions = {};
+    try {
+      const storageOptions: StorageOptions = {};
 
-    if (serviceKey) {
-      storageOptions.credentials = JSON.parse(
-        Buffer.from(serviceKey, "base64").toString()
-      ) as GoogleCredentials;
+      if (serviceKey) {
+        storageOptions.credentials = JSON.parse(
+          Buffer.from(serviceKey, "base64").toString()
+        ) as GoogleCredentials;
+      }
+
+      if (apiEndpoint) {
+        storageOptions.apiEndpoint = apiEndpoint;
+      }
+
+      storageOptions.projectId = projectId;
+
+      this._storageClient = new Storage(storageOptions);
+
+      this._bucketName = bucketName;
+    } catch (err) {
+      throw new Error("Failed to create google storage client", {
+        cause: err,
+      });
     }
-
-    if (apiEndpoint) {
-      storageOptions.apiEndpoint = apiEndpoint;
-    }
-
-    this._bucketName = bucketName;
-
-    storageOptions.projectId = projectId;
-
-    this._storageClient = new Storage(storageOptions);
   }
 
-  async healthCheck(): Promise<void> {
+  protected async _healthCheck() {
     const [buckets] = await this._storageClient.getBuckets();
 
     if (!buckets.find((b) => b.name === this._bucketName)) {
@@ -58,13 +63,13 @@ export class GoogleStorage extends BlobStorage {
     }
   }
 
-  async getBlob(uri: string): Promise<string> {
+  protected async _getBlob(uri: string) {
     return (
       await this._storageClient.bucket(this._bucketName).file(uri).download()
     ).toString();
   }
 
-  async storeBlob(
+  protected async _storeBlob(
     chainId: number,
     versionedHash: string,
     data: string
@@ -87,21 +92,14 @@ export class GoogleStorage extends BlobStorage {
     return this._storageClient.createBucket(this._bucketName);
   }
 
-  static tryGetConfigFromEnv(
-    env: Partial<Environment>
-  ): GoogleStorageConfig | undefined {
-    if (!env.GOOGLE_STORAGE_ENABLED) {
-      return;
-    }
-
+  static getConfigFromEnv(env: Partial<Environment>): GoogleStorageConfig {
     if (
       !env.GOOGLE_STORAGE_BUCKET_NAME ||
       (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
     ) {
-      logger.warn(
-        "Google storage: storage is enabled but no bucket name, api endpoint or service key provided."
+      throw new Error(
+        "No config variables found: no bucket name, api endpoint or service key provided"
       );
-      return;
     }
 
     return {
