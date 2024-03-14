@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 3234 3234">
+  <mask id="zora_svg__a" width="3234" height="3234" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha">
+    <circle cx="1617" cy="1617" r="1617" fill="#D9D9D9"/>
+  </mask>
+  <g mask="url(#zora_svg__a)">
+    <path fill="#A1723A" d="M-499-703h4281v4281H-499z"/>
+    <g filter="url(#zora_svg__b)">
+      <ellipse cx="1740.5" cy="1441" fill="#531002" rx="1725.5" ry="1725"/>
+    </g>
+    <g filter="url(#zora_svg__c)">
+      <ellipse cx="1926.5" cy="1220" fill="#2B5DF0" rx="1399.5" ry="1400"/>
+    </g>
+    <g filter="url(#zora_svg__d)">
+      <ellipse cx="1901" cy="1240.5" fill="url(#zora_svg__e)" rx="1459" ry="1459.5"/>
+    </g>
+    <g filter="url(#zora_svg__f)">
+      <circle cx="2143" cy="873" r="735" fill="#FCB8D4"/>
+    </g>
+    <g filter="url(#zora_svg__g)">
+      <circle cx="2142.5" cy="872.5" r="293.5" fill="#fff"/>
+    </g>
+    <g filter="url(#zora_svg__h)">
+      <circle cx="1947.5" cy="1165.5" r="2637.5" fill="url(#zora_svg__i)" fill-opacity=".9"/>
+    </g>
+  </g>
+  <defs>
+    <filter id="zora_svg__b" width="4251" height="4250" x="-385" y="-684" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur result="effect1_foregroundBlur_501_204" stdDeviation="200"/>
+    </filter>
+    <filter id="zora_svg__c" width="4399" height="4400" x="-273" y="-980" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur result="effect1_foregroundBlur_501_204" stdDeviation="400"/>
+    </filter>
+    <filter id="zora_svg__d" width="3518" height="3519" x="142" y="-519" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur result="effect1_foregroundBlur_501_204" stdDeviation="150"/>
+    </filter>
+    <filter id="zora_svg__f" width="2670" height="2670" x="808" y="-462" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur result="effect1_foregroundBlur_501_204" stdDeviation="300"/>
+    </filter>
+    <filter id="zora_svg__g" width="1387" height="1387" x="1449" y="179" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur result="effect1_foregroundBlur_501_204" stdDeviation="200"/>
+    </filter>
+    <filter id="zora_svg__h" width="5875" height="5875" x="-990" y="-1772" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+      <feGaussianBlur result="effect1_foregroundBlur_501_204" stdDeviation="150"/>
+    </filter>
+    <radialGradient id="zora_svg__e" cx="0" cy="0" r="1" gradientTransform="matrix(-1705.07617 2164.58781 -2164.41499 -1704.94004 2147.09 828.748)" gradientUnits="userSpaceOnUse">
+      <stop offset=".286" stop-color="#387AFA"/>
+      <stop offset=".648" stop-color="#387AFA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="zora_svg__i" cx="0" cy="0" r="1" gradientTransform="rotate(90 391 1556.5)scale(2637.5)" gradientUnits="userSpaceOnUse">
+      <stop offset=".599" stop-opacity="0"/>
+      <stop offset=".672"/>
+      <stop offset=".734" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
