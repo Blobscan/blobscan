@@ -45,7 +45,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <div
-      className={`flex w-fit items-center rounded-full px-2.5 ${
+      className={`flex w-fit items-center rounded-full px-2.5 transition-colors ${
         containerStyles ?? "py-0.5"
       } ${className}`}
     >
