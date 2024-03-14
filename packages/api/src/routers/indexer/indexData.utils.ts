@@ -20,8 +20,8 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
     "0x6887246668a3b87f54deb3b94ba47a6f63f32985": Rollup.OPTIMISM,
     "0x2c169dfe5fbba12957bdd0ba47d9cedbfe260ca7": Rollup.STARKNET,
     "0x0d3250c3d5facb74ac15834096397a3ef790ec99": Rollup.ZKSYNC,
-    "0x99199a22125034c808ff20f377d91187E8050F2E": Rollup.MODE,
-    "0x625726c858dBF78c0125436C943Bf4b4bE9d9033": Rollup.ZORA,
+    "0x99199a22125034c808ff20f377d91187e8050f2e": Rollup.MODE,
+    "0x625726c858dbf78c0125436c943bf4b4be9d9033": Rollup.ZORA,
   },
   // Holesky
   "17000": {},
@@ -31,8 +31,8 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
     "0x6cdebe940bc0f26850285caca097c11c33103e47": Rollup.BASE,
     "0x8f23bb38f531600e5d8fddaaec41f13fab46e98c": Rollup.OPTIMISM,
     "0x5b98b836969a60fec50fa925905dd1d382a7db43": Rollup.STARKNET,
-    "0x4e6BD53883107B063c502dDd49F9600Dc51b3DDc": Rollup.MODE,
-    "0x3Cd868E221A3be64B161D596A7482257a99D857f": Rollup.ZORA,
+    "0x4e6bd53883107b063c502ddd49f9600dc51b3ddc": Rollup.MODE,
+    "0x3cd868e221a3be64b161d596a7482257a99d857f": Rollup.ZORA,
   },
   // Gnosis
   "100": {},
