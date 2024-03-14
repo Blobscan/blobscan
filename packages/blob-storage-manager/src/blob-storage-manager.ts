@@ -1,18 +1,26 @@
-import { BlobStorage as BLOB_STORAGE_NAMES } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
 
 import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManager } from "./BlobStorageManager";
 import { env } from "./env";
 import type { Environment } from "./env";
-import { createStorageFromEnv } from "./utils";
+import { BlobStorageName } from "./types";
+import { BLOB_STORAGE_NAMES, createStorageFromEnv } from "./utils";
 
 let blobStorageManager: BlobStorageManager | undefined;
+
+function isBlobStorageEnabled(storageName: BlobStorageName) {
+  const storageEnabledKey =
+    `${storageName}_STORAGE_ENABLED` as keyof Environment;
+  const storageEnabled = env[storageEnabledKey];
+
+  return storageEnabled === true || storageEnabled === "true";
+}
 
 async function createBlobStorageManager() {
   const blobStorages = await Promise.all(
     Object.values(BLOB_STORAGE_NAMES).map(async (storageName) => {
-      if (env[`${storageName}_STORAGE_ENABLED` as keyof Environment] === true) {
+      if (isBlobStorageEnabled(storageName)) {
         const [storage, storageError] = await createStorageFromEnv(storageName);
 
         if (storageError) {
