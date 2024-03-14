@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.3.0
+
+### Minor Changes
+
+- [#325](https://github.com/Blobscan/blobscan/pull/325) [`a86de7e`](https://github.com/Blobscan/blobscan/commit/a86de7e6a242a7fda0b59a4f214a74a6fdf20167) Thanks [@mirshko](https://github.com/mirshko)! - Added support for mode and zora rollups
+
 ## 0.2.1
 
 ### Patch Changes
