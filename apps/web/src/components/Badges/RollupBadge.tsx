@@ -47,11 +47,11 @@ const ROLLUP_CONFIG: Record<
   },
   MODE: {
     icon: <ModeIcon />,
-    style: "bg-lime-200 text-[#000000] dark:bg-lime-700 dark:text-[#DFFE00]",
+    style: "bg-lime-200 dark:bg-lime-700",
   },
   ZORA: {
     icon: <ZoraIcon />,
-    style: "bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300",
+    style: "bg-zinc-400 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300",
   },
 };
 
