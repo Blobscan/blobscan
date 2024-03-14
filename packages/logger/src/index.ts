@@ -10,10 +10,6 @@ const colors = {
   debug: "white",
 };
 
-const level = () => {
-  return env.NODE_ENV === "production" ? "info" : "debug";
-};
-
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
   winston.format.colorize({ all: true }),
@@ -25,7 +21,7 @@ const format = winston.format.combine(
 winston.addColors(colors);
 
 export const logger = winston.createLogger({
-  level: level(),
+  level: env.LOG_LEVEL,
   format,
   transports: [new winston.transports.Console()],
   silent: env.TEST,
