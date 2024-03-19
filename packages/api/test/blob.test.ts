@@ -2,13 +2,10 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Rollup } from "@blobscan/db";
-import { fixtures } from "@blobscan/test";
-
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
-import { createTestContext, runPaginationTestsSuite } from "./helpers";
+import { createTestContext, runBaseGetAllTestsSuite } from "./helpers";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
@@ -22,49 +19,9 @@ describe("Blob router", async () => {
   });
 
   describe("getAll", () => {
-    runPaginationTestsSuite("blob", (paginationInput) =>
-      caller.blob.getAll(paginationInput).then(({ blobs }) => blobs)
+    runBaseGetAllTestsSuite("blob", (baseGetAllInput) =>
+      caller.blob.getAll(baseGetAllInput).then(({ blobs }) => blobs)
     );
-
-    it("should return filtered results for a rollup", async () => {
-      const result = await caller.blob.getAll({
-        rollup: "optimism",
-      });
-
-      expect(result).toMatchSnapshot();
-    });
-
-    it("should get the total number of blobs correctly", async () => {
-      const expectedTotalBlobs = fixtures.blobsOnTransactions.length;
-
-      await ctx.prisma.blobOverallStats.populate();
-      await caller.blob.getAll();
-
-      // FIXME: this should return the total amount of unique blobs
-      const { totalBlobs } = await caller.blob.getAll({});
-
-      expect(totalBlobs).toBe(expectedTotalBlobs);
-    });
-
-    it("should get the total number of blobs for a rollup correctly", async () => {
-      const expectedTotalBlobs = await ctx.prisma.blob.count({
-        where: {
-          transactions: {
-            some: {
-              transaction: {
-                rollup: Rollup.OPTIMISM,
-              },
-            },
-          },
-        },
-      });
-
-      const { totalBlobs } = await caller.blob.getAll({
-        rollup: "optimism",
-      });
-
-      expect(totalBlobs).toBe(expectedTotalBlobs);
-    });
   });
 
   describe.each([

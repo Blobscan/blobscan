@@ -58,6 +58,7 @@ describe("Block router", async () => {
 
     it("should fail when trying to get a block with an invalid hash", async () => {
       await expect(
+        // @ts-ignore
         caller.block[functionName as keyof typeof caller.block]({
           id: "invalidHash",
         })
@@ -68,6 +69,7 @@ describe("Block router", async () => {
       const invalidHash =
         "0x0132d67fc77e26737632ebda918c689f146196dcd0dc5eab95ab7875cef95ef9";
       await expect(
+        // @ts-ignore
         caller.block[functionName as keyof typeof caller.block]({
           id: invalidHash,
         })
@@ -94,6 +96,7 @@ describe("Block router", async () => {
 
     it("should fail when trying to get a block with a non-existent block number", async () => {
       await expect(
+        // @ts-ignore
         caller.block[functionName as keyof typeof caller.block]({
           id: "9999",
         })

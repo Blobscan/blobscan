@@ -1,7 +1,10 @@
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { formatFullBlockForApi, fullBlockSelect } from "./common";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
+import {
+  getAllBlocksInputSchema,
+  getAllBlocksOutputSchema,
+} from "./getAll.schema";
 
 export const getAll = publicProcedure
   .meta({
@@ -12,32 +15,47 @@ export const getAll = publicProcedure
       summary: "retrieves all blocks.",
     },
   })
-  .input(getAllInputSchema)
-  .output(getAllOutputSchema)
+  .input(getAllBlocksInputSchema)
+  .output(getAllBlocksOutputSchema)
   .use(withPagination)
   .query(async ({ input, ctx }) => {
-    const [blocks, overallStats] = await Promise.all([
+    const { sort, endBlock, startBlock, type, rollup } = input;
+
+    const [blocks, totalBlocks] = await Promise.all([
       ctx.prisma.block
         .findMany({
           select: fullBlockSelect,
-          orderBy: { number: "desc" },
-          ...ctx.pagination,
           where: {
-            transactionForks: {
-              ...(input?.reorgs ? { some: {} } : { none: {} }),
+            number: {
+              lt: endBlock,
+              gte: startBlock,
             },
+            transactionForks: {
+              [type === "reorg" ? "some" : "none"]: {},
+            },
+            transactions: rollup
+              ? {
+                  some: {
+                    rollup,
+                  },
+                }
+              : undefined,
           },
+          orderBy: { number: sort },
+          ...ctx.pagination,
         })
         .then((blocks) => blocks.map(formatFullBlockForApi)),
-      ctx.prisma.blockOverallStats.findFirst({
-        select: {
-          totalBlocks: true,
-        },
-      }),
+      ctx.prisma.blockOverallStats
+        .findFirst({
+          select: {
+            totalBlocks: true,
+          },
+        })
+        .then((stats) => stats?.totalBlocks ?? 0),
     ]);
 
     return {
       blocks,
-      totalBlocks: overallStats?.totalBlocks ?? 0,
+      totalBlocks,
     };
   });

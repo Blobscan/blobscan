@@ -1,16 +1,11 @@
 import { z } from "@blobscan/zod";
 
-import { paginationSchema } from "../../middlewares/withPagination";
+import { baseGetAllInputSchema } from "../../utils";
 import { BlockSchema } from "./common";
 
-export const getAllInputSchema = z
-  .object({
-    reorgs: z.boolean().optional(),
-  })
-  .merge(paginationSchema)
-  .optional();
+export const getAllBlocksInputSchema = baseGetAllInputSchema;
 
-export const getAllOutputSchema = z.object({
+export const getAllBlocksOutputSchema = z.object({
   blocks: BlockSchema.array(),
   totalBlocks: z.number(),
 });

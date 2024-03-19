@@ -41,7 +41,7 @@ exports[`Block router > 'getAll' > when getting paginated block results > should
 ]
 `;
 
-exports[`Block router > 'getAll' > when getting paginated block results > should return the correct number of results 1`] = `
+exports[`Block router > 'getAll' > when getting paginated block results > should return the correct results when a specific page is requested 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
@@ -49,15 +49,23 @@ exports[`Block router > 'getAll' > when getting paginated block results > should
     "blobGasUsed": "5500000",
     "blobs": [
       "blobHash001",
+      "blobHash002",
+      "blobHash003",
+      "blobHash003",
+      "blobHash005",
     ],
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
-    "number": 1008,
-    "slot": 108,
-    "timestamp": 1693497600,
-    "totalBlobSize": 1000,
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": 1692532800,
+    "totalBlobSize": 5900,
     "transactions": [
-      "txHash016",
+      "txHash007",
+      "txHash008",
+      "txHash009",
+      "txHash010",
+      "txHash011",
     ],
   },
   {
@@ -65,18 +73,22 @@ exports[`Block router > 'getAll' > when getting paginated block results > should
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "blobs": [
-      "blobHash004",
-      "blobHash004",
-      "blobHash004",
+      "blobHash002",
+      "blobHash002",
+      "blobHash001",
+      "blobHash001",
+      "blobHash001",
+      "blobHash001",
     ],
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
-    "number": 1007,
-    "slot": 107,
-    "timestamp": 1693490400,
-    "totalBlobSize": 3900,
+    "hash": "blockHash003",
+    "number": 1003,
+    "slot": 103,
+    "timestamp": 1691064000,
+    "totalBlobSize": 6200,
     "transactions": [
-      "txHash015",
+      "txHash005",
+      "txHash006",
     ],
   },
 ]
@@ -157,18 +169,18 @@ exports[`Block router > 'getAllFull' > when getting paginated block results > sh
 ]
 `;
 
-exports[`Block router > 'getAllFull' > when getting paginated block results > should return the correct number of results 1`] = `
+exports[`Block router > 'getAllFull' > when getting paginated block results > should return the correct results when a specific page is requested 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
-    "number": 1008,
-    "slot": 108,
-    "timestamp": 1693497600,
-    "totalBlobSize": 1000,
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": 1692532800,
+    "totalBlobSize": 5900,
     "transactions": [
       {
         "blobs": [
@@ -180,9 +192,69 @@ exports[`Block router > 'getAllFull' > when getting paginated block results > sh
             "index": 0,
           },
         ],
-        "fromId": "address2",
-        "hash": "txHash016",
+        "fromId": "address1",
+        "hash": "txHash007",
+        "rollup": "OPTIMISM",
+        "toId": "address2",
+      },
+      {
+        "blobs": [
+          {
+            "blob": {
+              "size": 1100,
+            },
+            "blobHash": "blobHash002",
+            "index": 0,
+          },
+        ],
+        "fromId": "address5",
+        "hash": "txHash008",
+        "rollup": "ARBITRUM",
+        "toId": "address6",
+      },
+      {
+        "blobs": [
+          {
+            "blob": {
+              "size": 1200,
+            },
+            "blobHash": "blobHash003",
+            "index": 0,
+          },
+        ],
+        "fromId": "address5",
+        "hash": "txHash009",
         "rollup": null,
+        "toId": "address6",
+      },
+      {
+        "blobs": [
+          {
+            "blob": {
+              "size": 1200,
+            },
+            "blobHash": "blobHash003",
+            "index": 0,
+          },
+        ],
+        "fromId": "address3",
+        "hash": "txHash010",
+        "rollup": null,
+        "toId": "address4",
+      },
+      {
+        "blobs": [
+          {
+            "blob": {
+              "size": 1400,
+            },
+            "blobHash": "blobHash005",
+            "index": 0,
+          },
+        ],
+        "fromId": "address2",
+        "hash": "txHash011",
+        "rollup": "BASE",
         "toId": "address4",
       },
     ],
@@ -192,39 +264,68 @@ exports[`Block router > 'getAllFull' > when getting paginated block results > sh
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
-    "number": 1007,
-    "slot": 107,
-    "timestamp": 1693490400,
-    "totalBlobSize": 3900,
+    "hash": "blockHash003",
+    "number": 1003,
+    "slot": 103,
+    "timestamp": 1691064000,
+    "totalBlobSize": 6200,
     "transactions": [
       {
         "blobs": [
           {
             "blob": {
-              "size": 1300,
+              "size": 1100,
             },
-            "blobHash": "blobHash004",
+            "blobHash": "blobHash002",
             "index": 0,
           },
           {
             "blob": {
-              "size": 1300,
+              "size": 1100,
             },
-            "blobHash": "blobHash004",
+            "blobHash": "blobHash002",
             "index": 1,
           },
           {
             "blob": {
-              "size": 1300,
+              "size": 1000,
             },
-            "blobHash": "blobHash004",
+            "blobHash": "blobHash001",
             "index": 2,
           },
         ],
-        "fromId": "address5",
-        "hash": "txHash015",
-        "rollup": "OPTIMISM",
+        "fromId": "address2",
+        "hash": "txHash005",
+        "rollup": null,
+        "toId": "address4",
+      },
+      {
+        "blobs": [
+          {
+            "blob": {
+              "size": 1000,
+            },
+            "blobHash": "blobHash001",
+            "index": 0,
+          },
+          {
+            "blob": {
+              "size": 1000,
+            },
+            "blobHash": "blobHash001",
+            "index": 1,
+          },
+          {
+            "blob": {
+              "size": 1000,
+            },
+            "blobHash": "blobHash001",
+            "index": 2,
+          },
+        ],
+        "fromId": "address2",
+        "hash": "txHash006",
+        "rollup": null,
         "toId": "address4",
       },
     ],

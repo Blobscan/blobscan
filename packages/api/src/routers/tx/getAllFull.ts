@@ -1,21 +1,30 @@
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
+import { baseGetAllInputSchema } from "../../utils";
 import { formatFullTransaction, fullTransactionSelect } from "./common";
-import { getAllInputSchema } from "./getAll.schema";
 
 export const getAllFull = publicProcedure
-  .input(getAllInputSchema)
+  .input(baseGetAllInputSchema)
   .use(withPagination)
   .query(async ({ input, ctx }) => {
-    const rollup = input?.rollup;
+    const { sort, endBlock, rollup, startBlock } = input;
 
     const [transactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
+          where: {
+            rollup,
+            block: {
+              number: {
+                lt: endBlock,
+                gte: startBlock,
+              },
+            },
+          },
           orderBy: {
             block: {
-              number: "desc",
+              number: sort,
             },
           },
           ...ctx.pagination,

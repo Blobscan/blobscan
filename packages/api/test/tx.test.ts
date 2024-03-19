@@ -91,7 +91,7 @@ describe("Transaction router", async () => {
           hash: "nonExistingHash",
         })
       ).rejects.toMatchSnapshot(
-        "[TRPCError: No transaction with hash 'nonExistingHash'.]"
+        "[TRPCError: No transaction with hash 'nonExistingHash' found]"
       );
     });
   });

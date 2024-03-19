@@ -1,7 +1,9 @@
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { formatFullTransactionForApi, fullTransactionSelect } from "./common";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
+import { baseGetAllInputSchema } from "../../utils";
+import { transactionSelect, serializeTransaction } from "./common";
+import { getAllOutputSchema } from "./getAll.schema";
+import type { GetAllOutput } from "./getAll.schema";
 
 export const getAll = publicProcedure
   .meta({
@@ -12,27 +14,36 @@ export const getAll = publicProcedure
       summary: "retrieves all blob transactions.",
     },
   })
-  .input(getAllInputSchema)
+  .input(baseGetAllInputSchema)
   .output(getAllOutputSchema)
   .use(withPagination)
   .query(async ({ input, ctx }) => {
-    const rollup = input?.rollup;
+    const { sort, endBlock, rollup, startBlock } = input;
 
-    const [transactions, txCountOrStats] = await Promise.all([
-      ctx.prisma.transaction
-        .findMany({
-          select: fullTransactionSelect,
-          orderBy: {
-            block: {
-              number: "desc",
+    const [rawTransactions, txCountOrStats] = await Promise.all([
+      ctx.prisma.transaction.findMany({
+        select: transactionSelect,
+        where: {
+          rollup,
+          block: {
+            number: {
+              lt: endBlock,
+              gte: startBlock,
             },
           },
-          where: {
-            rollup,
+        },
+        orderBy: [
+          {
+            block: {
+              number: sort,
+            },
           },
-          ...ctx.pagination,
-        })
-        .then((txs) => txs.map(formatFullTransactionForApi)),
+          {
+            hash: sort,
+          },
+        ],
+        ...ctx.pagination,
+      }),
       rollup
         ? ctx.prisma.transaction.count({
             where: {
@@ -45,6 +56,9 @@ export const getAll = publicProcedure
             },
           }),
     ]);
+
+    const transactions: GetAllOutput["transactions"] =
+      rawTransactions.map(serializeTransaction);
 
     return {
       transactions,
