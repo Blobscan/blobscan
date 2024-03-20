@@ -1,5 +1,7 @@
 import { z } from "@blobscan/zod";
 
+import { filtersSchema } from "../../middlewares/withFilters";
+import { paginationSchema } from "../../middlewares/withPagination";
 import {
   blobIndexSchema,
   blobStorageSchema,
@@ -7,6 +9,10 @@ import {
   rollupSchema,
   slotSchema,
 } from "../../utils";
+
+export const getAllInputSchema = filtersSchema
+  .merge(paginationSchema)
+  .optional();
 
 export const getAllOutputSchema = z.object({
   blobs: z.array(

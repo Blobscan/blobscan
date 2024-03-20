@@ -1,11 +1,8 @@
+import { withFilters } from "../../middlewares/withFilters";
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import {
-  baseGetAllInputSchema,
-  blobStorageSchema,
-  rollupSchema,
-} from "../../utils";
-import { getAllOutputSchema } from "./getAll.schema";
+import { blobStorageSchema, rollupSchema } from "../../utils";
+import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
 import type { GetAllOutput } from "./getAll.schema";
 
 export const getAll = publicProcedure
@@ -17,11 +14,18 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(baseGetAllInputSchema)
+  .input(getAllInputSchema)
   .output(getAllOutputSchema)
   .use(withPagination)
-  .query(async ({ input, ctx }) => {
-    const { sort, endBlock, rollup, startBlock } = input;
+  .use(withFilters)
+  .query(async ({ ctx }) => {
+    const {
+      blockRangeFilter,
+      slotRangeFilter,
+      sort,
+      typeFilter,
+      rollupFilter,
+    } = ctx.filters;
 
     const [txsBlobs, blobCountOrStats] = await Promise.all([
       ctx.prisma.blobsOnTransactions.findMany({
@@ -57,12 +61,11 @@ export const getAll = publicProcedure
         },
         where: {
           transaction: {
-            rollup,
+            rollup: rollupFilter,
             block: {
-              number: {
-                lt: endBlock,
-                gte: startBlock,
-              },
+              ...blockRangeFilter,
+              ...slotRangeFilter,
+              ...typeFilter,
             },
           },
         },
@@ -84,13 +87,13 @@ export const getAll = publicProcedure
         ...ctx.pagination,
       }),
       // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      rollup
+      rollupFilter
         ? ctx.prisma.blob.count({
             where: {
               transactions: {
                 some: {
                   transaction: {
-                    rollup,
+                    rollup: rollupFilter,
                   },
                 },
               },

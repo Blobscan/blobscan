@@ -7,14 +7,19 @@ import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
 import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
+import { Rollup } from "@blobscan/db";
 
 import { env } from "../src";
 import { createTRPCContext } from "../src/context";
-import type { PaginationInput } from "../src/middlewares/withPagination";
+import { FiltersSchema } from "../src/middlewares/withFilters";
+import type { PaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
-import type { BaseGetAllInput } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
+
+type FilterAndPagination = Omit<FiltersSchema, "rollup"> & {
+  rollup?: Lowercase<Rollup>;
+} & PaginationSchema;
 
 export async function createTestContext({
   withAuth,
@@ -55,10 +60,10 @@ export async function createTestContext({
 
 export function runPaginationTestsSuite(
   entity: string,
-  fetcher: (paginationInput: PaginationInput) => Promise<unknown[]>
+  fetcher: (paginationInput: PaginationSchema) => Promise<unknown[]>
 ) {
   return describe(`when getting paginated ${entity} results`, () => {
-    let input: PaginationInput;
+    let input: PaginationSchema;
 
     it("should default to the first page when no page was specified", async () => {
       input = {
@@ -104,15 +109,11 @@ export function runPaginationTestsSuite(
   });
 }
 
-export function runBaseGetAllTestsSuite(
+export function runFiltersTestsSuite(
   entity: string,
-  fetcher: (getAllInput: Partial<BaseGetAllInput>) => Promise<unknown[]>
+  fetcher: (getAllInput: Partial<FilterAndPagination>) => Promise<unknown[]>
 ) {
-  return describe(`when getting ${entity} results`, () => {
-    runPaginationTestsSuite(entity, (paginationInput) =>
-      fetcher(paginationInput)
-    );
-
+  return describe(`when getting filtered ${entity} results`, () => {
     it("should return the latest results when no sort was specified", async () => {
       const result = await fetcher({
         ps: 3,

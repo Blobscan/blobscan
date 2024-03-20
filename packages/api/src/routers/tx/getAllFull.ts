@@ -1,25 +1,32 @@
+import { withFilters } from "../../middlewares/withFilters";
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { baseGetAllInputSchema } from "../../utils";
 import { formatFullTransaction, fullTransactionSelect } from "./common";
+import { getAllInputSchema } from "./getAll.schema";
 
 export const getAllFull = publicProcedure
-  .input(baseGetAllInputSchema)
+  .input(getAllInputSchema)
   .use(withPagination)
-  .query(async ({ input, ctx }) => {
-    const { sort, endBlock, rollup, startBlock } = input;
+  .use(withFilters)
+  .query(async ({ ctx }) => {
+    const {
+      blockRangeFilter,
+      slotRangeFilter,
+      sort,
+      typeFilter,
+      rollupFilter,
+    } = ctx.filters;
 
     const [transactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction
         .findMany({
           select: fullTransactionSelect,
           where: {
-            rollup,
+            rollup: rollupFilter,
             block: {
-              number: {
-                lt: endBlock,
-                gte: startBlock,
-              },
+              ...blockRangeFilter,
+              ...slotRangeFilter,
+              ...typeFilter,
             },
           },
           orderBy: {
@@ -30,10 +37,10 @@ export const getAllFull = publicProcedure
           ...ctx.pagination,
         })
         .then((txs) => txs.map(formatFullTransaction)),
-      rollup
+      rollupFilter
         ? ctx.prisma.transaction.count({
             where: {
-              rollup,
+              rollup: rollupFilter,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({

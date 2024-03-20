@@ -9,7 +9,7 @@ export const paginationSchema = z.object({
   ps: z.number().optional(),
 });
 
-export type PaginationInput = z.infer<typeof paginationSchema>;
+export type PaginationSchema = z.infer<typeof paginationSchema>;
 
 export const withPagination = t.middleware(({ next, input }) => {
   const { p: offset = 1, ps: limit = DEFAULT_PAGE_LIMIT } =

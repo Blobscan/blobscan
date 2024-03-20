@@ -1,4 +1,8 @@
-import { withPagination } from "../../middlewares/withPagination";
+import { filtersSchema, withFilters } from "../../middlewares/withFilters";
+import {
+  paginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { formatFullBlockForApi, fullBlockSelect } from "./common";
 import {
@@ -18,28 +22,29 @@ export const getAll = publicProcedure
   .input(getAllBlocksInputSchema)
   .output(getAllBlocksOutputSchema)
   .use(withPagination)
-  .query(async ({ input, ctx }) => {
-    const { sort, endBlock, startBlock, type, rollup } = input;
+  .use(withFilters)
+  .query(async ({ ctx }) => {
+    const {
+      blockRangeFilter,
+      rollupFilter,
+      slotRangeFilter,
+      typeFilter,
+      sort,
+    } = ctx.filters;
 
     const [blocks, totalBlocks] = await Promise.all([
       ctx.prisma.block
         .findMany({
           select: fullBlockSelect,
           where: {
-            number: {
-              lt: endBlock,
-              gte: startBlock,
+            ...blockRangeFilter,
+            ...slotRangeFilter,
+            ...typeFilter,
+            transactions: {
+              some: {
+                rollup: rollupFilter,
+              },
             },
-            transactionForks: {
-              [type === "reorg" ? "some" : "none"]: {},
-            },
-            transactions: rollup
-              ? {
-                  some: {
-                    rollup,
-                  },
-                }
-              : undefined,
           },
           orderBy: { number: sort },
           ...ctx.pagination,

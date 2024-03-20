@@ -49,11 +49,13 @@ if (missingBlobStorageEnums.length) {
   );
 }
 
+export type ZodRollupEnum = (typeof zodRollupEnums)[number];
+
 export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 
 export const rollupSchema = z.enum(zodRollupEnums);
 
-export const sortSchema = z.enum(["asc", "desc"]).default("desc");
+export const sortSchema = z.enum(["asc", "desc"]);
 
 export const blockNumberSchema = z.number().nonnegative();
 
@@ -61,34 +63,4 @@ export const slotSchema = z.number().nonnegative();
 
 export const blobIndexSchema = z.number().nonnegative();
 
-export const typeSchema = z
-  .enum(["reorg", "finalized", "normal"])
-  .default("normal");
-
-export const baseGetAllInputSchema = z
-  .object({
-    rollup: rollupSchema
-      .transform<Rollup>((rollup) => {
-        return rollup.toUpperCase() as Rollup;
-      })
-      .optional(),
-    startBlock: blockNumberSchema.optional(),
-    endBlock: blockNumberSchema.optional(),
-    startSlot: slotSchema.optional(),
-    endSlot: slotSchema.optional(),
-    sort: sortSchema,
-    type: typeSchema,
-  })
-  .merge(paginationSchema)
-  .default({
-    p: 1,
-    ps: 25,
-    sort: "desc",
-    type: "normal",
-  });
-
-// Zod infers `rollup` field as
-export type BaseGetAllInput =
-  | Omit<z.infer<typeof baseGetAllInputSchema>, "rollup"> & {
-      rollup?: Lowercase<Rollup>;
-    };
+export const typeSchema = z.enum(["reorg", "finalized", "normal"]);

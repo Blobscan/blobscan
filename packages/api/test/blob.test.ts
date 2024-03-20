@@ -5,7 +5,11 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
-import { createTestContext, runBaseGetAllTestsSuite } from "./helpers";
+import {
+  createTestContext,
+  runFiltersTestsSuite,
+  runPaginationTestsSuite,
+} from "./helpers";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
@@ -19,7 +23,11 @@ describe("Blob router", async () => {
   });
 
   describe("getAll", () => {
-    runBaseGetAllTestsSuite("blob", (baseGetAllInput) =>
+    runPaginationTestsSuite("blob", (paginationInput) =>
+      caller.blob.getAll(paginationInput).then(({ blobs }) => blobs)
+    );
+
+    runFiltersTestsSuite("blob", (baseGetAllInput) =>
       caller.blob.getAll(baseGetAllInput).then(({ blobs }) => blobs)
     );
   });

@@ -6,6 +6,8 @@ import type {
 import { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
+import { ZodRollupEnum, rollupSchema } from "../../utils";
+
 type RawTransaction = Pick<
   DBTransaction,
   | "hash"
@@ -62,6 +64,7 @@ export const serializedTransactionSchema = z.object({
   maxFeePerBlobGas: z.string(),
   blobAsCalldataGasUsed: z.string(),
   totalBlobSize: z.number(),
+  rollup: rollupSchema.nullable(),
   blobs: z.array(
     z.object({
       versionedHash: z.string(),
@@ -156,7 +159,7 @@ function buildDerivedFields(tx: RawTransaction): {
 export function serializeTransaction(
   rawTx: RawTransaction
 ): SerializedTransaction {
-  const { blobs, block } = rawTx;
+  const { blobs, block, rollup } = rawTx;
   const sortedBlobs = blobs
     .sort((a, b) => a.index - b.index)
     .map((b) => ({
@@ -177,6 +180,7 @@ export function serializeTransaction(
     blobGasMaxFee: blobGasMaxFee.toFixed(),
     blobGasUsed: blobGasUsed.toFixed(),
     totalBlobSize: totalBlobSize,
+    rollup: rollup ? (rollup.toLowerCase() as ZodRollupEnum) : null,
     blockNumber: block.number,
     blockHash: rawTx.blockHash,
     blobs: sortedBlobs,
@@ -227,6 +231,7 @@ export function formatFullTransactionForApi(
     from: tx.fromId,
     to: tx.toId,
     hash: tx.hash,
+    rollup: tx.rollup ? (tx.rollup.toLowerCase() as ZodRollupEnum) : null,
     blobGasPrice: tx.block.blobGasPrice.toFixed(),
     blobs: tx.blobs.map((b) => {
       return {

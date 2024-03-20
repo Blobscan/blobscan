@@ -9,7 +9,11 @@ import { fixtures } from "@blobscan/test";
 import type { TRPCContext } from "../src";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
-import { createTestContext, runPaginationTestsSuite } from "./helpers";
+import {
+  createTestContext,
+  runFiltersTestsSuite,
+  runPaginationTestsSuite,
+} from "./helpers";
 
 type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHashFull"]>;
 
@@ -22,53 +26,39 @@ describe("Transaction router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe.each([{ functionName: "getAll" }, { functionName: "getAllFull" }])(
-    "$functionName",
-    ({ functionName }) => {
-      it("should return filtered results for a rollup", async () => {
-        // @ts-ignore
-        const result = await caller.tx[functionName]({
-          rollup: "base",
-        });
+  describe("getAll", () => {
+    runPaginationTestsSuite("transaction", (paginationInput) =>
+      caller.tx.getAll(paginationInput).then(({ transactions }) => transactions)
+    );
 
-        expect(result).toMatchSnapshot();
+    runFiltersTestsSuite("transaction", (filterInput) =>
+      caller.tx.getAll(filterInput).then(({ transactions }) => transactions)
+    );
+
+    it("should get the total number of transactions", async () => {
+      const expectedTotalTransactions = fixtures.txs.length;
+
+      await ctx.prisma.transactionOverallStats.populate();
+
+      const { totalTransactions } = await caller.tx.getAll();
+
+      expect(totalTransactions).toBe(expectedTotalTransactions);
+    });
+
+    it("should get the total number of transactions for a rollup", async () => {
+      const expectedTotalTransactions = await ctx.prisma.transaction.count({
+        where: {
+          rollup: "BASE",
+        },
       });
 
-      it("should get the total number of transactions", async () => {
-        const expectedTotalTransactions = fixtures.txs.length;
-
-        await ctx.prisma.transactionOverallStats.populate();
-
-        // @ts-ignore
-        const { totalTransactions } = await caller.tx[functionName]();
-
-        expect(totalTransactions).toBe(expectedTotalTransactions);
+      const { totalTransactions } = await caller.tx.getAll({
+        rollup: "base",
       });
 
-      it("should get the total number of transactions for a rollup", async () => {
-        const expectedTotalTransactions = await ctx.prisma.transaction.count({
-          where: {
-            rollup: Rollup.BASE,
-          },
-        });
-
-        // @ts-ignore
-        const { totalTransactions } = await caller.tx[functionName]({
-          rollup: "base",
-        });
-
-        expect(totalTransactions).toBe(expectedTotalTransactions);
-      });
-
-      runPaginationTestsSuite("transaction", (paginationInput) =>
-        // @ts-ignore
-        caller.tx[functionName](paginationInput).then(
-          // @ts-ignore
-          ({ transactions }) => transactions
-        )
-      );
-    }
-  );
+      expect(totalTransactions).toBe(expectedTotalTransactions);
+    });
+  });
 
   describe.each([
     { functionName: "getByHash" },
