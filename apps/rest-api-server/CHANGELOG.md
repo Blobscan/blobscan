@@ -1,5 +1,15 @@
 # @blobscan/rest-api-server
 
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [[`cafdf6f`](https://github.com/Blobscan/blobscan/commit/cafdf6f5421f50ae0b88ea2563933f14e3db9d76)]:
+  - @blobscan/logger@0.0.6
+  - @blobscan/api@0.5.1
+  - @blobscan/open-telemetry@0.0.6
+  - @blobscan/stats-syncer@0.1.5
+
 ## 0.3.3
 
 ### Patch Changes

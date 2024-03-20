@@ -1,5 +1,17 @@
 # @blobscan/web
 
+## 0.4.1
+
+### Patch Changes
+
+- [#329](https://github.com/Blobscan/blobscan/pull/329) [`1c604e1`](https://github.com/Blobscan/blobscan/commit/1c604e101bc54d17a03b90007bae843492124f14) Thanks [@PJColombo](https://github.com/PJColombo)! - Added highlight effect to blob storage badges
+
+- [#341](https://github.com/Blobscan/blobscan/pull/341) [`d27f283`](https://github.com/Blobscan/blobscan/commit/d27f283eef7547b8a86d023b7c6ff147bd3279da) Thanks [@0xGabi](https://github.com/0xGabi)! - Resolved small issues on the UI
+
+- Updated dependencies []:
+  - @blobscan/api@0.5.1
+  - @blobscan/open-telemetry@0.0.6
+
 ## 0.4.0
 
 ### Minor Changes

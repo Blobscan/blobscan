@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-storage-manager",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,9 +15,9 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/db": "^0.3.0",
-    "@blobscan/logger": "^0.0.5",
-    "@blobscan/open-telemetry": "^0.0.5",
+    "@blobscan/db": "^0.3.1",
+    "@blobscan/logger": "^0.0.6",
+    "@blobscan/open-telemetry": "^0.0.6",
     "@blobscan/zod": "^0.0.4",
     "@ethersphere/bee-js": "^6.0.0",
     "@google-cloud/storage": "^6.10.1"

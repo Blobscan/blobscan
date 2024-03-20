@@ -2,7 +2,7 @@
   "name": "@blobscan/stats-syncer",
   "description": "Blobscan's stats syncer",
   "private": true,
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.2",
-    "@blobscan/db": "^0.3.0",
-    "@blobscan/logger": "^0.0.5",
+    "@blobscan/db": "^0.3.1",
+    "@blobscan/logger": "^0.0.6",
     "bullmq": "^4.13.2",
     "ioredis": "^5.3.2"
   },

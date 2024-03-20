@@ -1,5 +1,11 @@
 # @blobscan/logger
 
+## 0.0.6
+
+### Patch Changes
+
+- [#334](https://github.com/Blobscan/blobscan/pull/334) [`cafdf6f`](https://github.com/Blobscan/blobscan/commit/cafdf6f5421f50ae0b88ea2563933f14e3db9d76) Thanks [@PJColombo](https://github.com/PJColombo)! - Used `LOG_LEVEL` instead of `NODE_ENV` for setting log level
+
 ## 0.0.5
 
 ### Patch Changes
