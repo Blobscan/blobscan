@@ -114,18 +114,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                     <>
                       <div className="mt-1 md:hidden">From</div>
                       <Link href={buildAddressRoute(fromId)}>
-                        <span className="text-xs">
-                          {"0x5b98b836969a60fec50fa925905dd1d382a7db43"}
-                        </span>
+                        <span className="text-xs">{fromId}</span>
                       </Link>
                       {toId && (
                         <>
                           <ArrowRightIcon className="hidden h-2 w-2 md:block" />
                           <div className="mt-1 md:hidden">To</div>
                           <Link href={buildAddressRoute(toId)}>
-                            <span className="text-xs">
-                              {"0x5b98b836969a60fec50fa925905dd1d382a7db43"}
-                            </span>
+                            <span className="text-xs">{toId}</span>
                           </Link>
                         </>
                       )}

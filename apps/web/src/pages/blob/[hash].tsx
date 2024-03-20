@@ -63,7 +63,6 @@ const Blob: NextPage = function () {
     try {
       return [formatBlob(data, selectedBlobViewMode)];
     } catch (err) {
-      // eslint-disable-next-line no-sparse-arrays
       return [, "Couldn't format blob data"];
     }
   }, [blob?.data, selectedBlobViewMode]);
@@ -81,10 +80,6 @@ const Blob: NextPage = function () {
     return <>Blob not found</>;
   }
 
-  const swarmHash = blob?.dataStorageReferences.find(
-    (ref) => ref.blobStorage === "SWARM"
-  )?.dataReference;
-
   const detailsFields: DetailsLayoutProps["fields"] = [];
 
   if (blob) {
@@ -101,13 +96,6 @@ const Blob: NextPage = function () {
     }
 
     detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
-
-    if (swarmHash) {
-      detailsFields.push({
-        name: "Swarm Hash",
-        value: swarmHash,
-      });
-    }
 
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
