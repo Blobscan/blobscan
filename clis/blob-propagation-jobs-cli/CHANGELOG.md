@@ -1,5 +1,13 @@
 # @blobscan/blob-propagation-jobs-cli
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/blob-propagator@0.0.7
+  - @blobscan/db@0.3.1
+
 ## 0.0.6
 
 ### Patch Changes

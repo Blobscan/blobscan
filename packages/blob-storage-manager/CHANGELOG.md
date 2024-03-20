@@ -1,5 +1,20 @@
 # @blobscan/blob-storage-manager
 
+## 0.0.7
+
+### Patch Changes
+
+- [#265](https://github.com/Blobscan/blobscan/pull/265) [`f62f1a2`](https://github.com/Blobscan/blobscan/commit/f62f1a2757d4209e7459ce18c4b7ea132258dbe5) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated blob storage creation to warn on failure, avoiding direct exception throws
+
+- [#265](https://github.com/Blobscan/blobscan/pull/265) [`f62f1a2`](https://github.com/Blobscan/blobscan/commit/f62f1a2757d4209e7459ce18c4b7ea132258dbe5) Thanks [@PJColombo](https://github.com/PJColombo)! - Simplified blob storage manager initialization by accepting an array of blob storages instead of an object
+
+- [#265](https://github.com/Blobscan/blobscan/pull/265) [`f62f1a2`](https://github.com/Blobscan/blobscan/commit/f62f1a2757d4209e7459ce18c4b7ea132258dbe5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added custom blob storage manager errors
+
+- Updated dependencies [[`cafdf6f`](https://github.com/Blobscan/blobscan/commit/cafdf6f5421f50ae0b88ea2563933f14e3db9d76)]:
+  - @blobscan/logger@0.0.6
+  - @blobscan/db@0.3.1
+  - @blobscan/open-telemetry@0.0.6
+
 ## 0.0.6
 
 ### Patch Changes

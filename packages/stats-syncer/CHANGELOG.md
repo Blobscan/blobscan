@@ -1,5 +1,13 @@
 # @blobscan/stats-syncer
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`cafdf6f`](https://github.com/Blobscan/blobscan/commit/cafdf6f5421f50ae0b88ea2563933f14e3db9d76)]:
+  - @blobscan/logger@0.0.6
+  - @blobscan/db@0.3.1
+
 ## 0.1.4
 
 ### Patch Changes
