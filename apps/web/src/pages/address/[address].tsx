@@ -52,9 +52,17 @@ const Address: NextPage = () => {
         title={`Blob Transactions ${
           addressData ? `(${addressData.totalTransactions})` : ""
         }`}
-        items={addressData?.transactions.map((t) => (
-          <BlobTransactionCard key={t.hash} transaction={t} />
-        ))}
+        items={addressData?.transactions.map((tx) => {
+          const { block, ...filteredTx } = tx;
+
+          return (
+            <BlobTransactionCard
+              key={tx.hash}
+              transaction={filteredTx}
+              block={{ ...block }}
+            />
+          );
+        })}
         totalItems={addressData?.totalTransactions}
         page={p}
         pageSize={ps}

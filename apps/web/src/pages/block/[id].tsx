@@ -170,9 +170,20 @@ const Block: NextPage = function () {
             ? Array.from({ length: 3 }).map((_, i) => (
                 <BlobTransactionCard key={i} />
               ))
-            : blockData.transactions.map((t) => (
-                <BlobTransactionCard key={t.hash} transaction={t} />
-              ))}
+            : blockData.transactions.map((tx) => {
+                const block = {
+                  number: blockData.number,
+                  timestamp: blockData.timestamp,
+                };
+
+                return (
+                  <BlobTransactionCard
+                    key={tx.hash}
+                    transaction={tx}
+                    block={{ ...block }}
+                  />
+                );
+              })}
         </div>
       </Card>
     </>

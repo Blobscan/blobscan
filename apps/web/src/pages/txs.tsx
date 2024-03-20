@@ -29,9 +29,17 @@ const Txs: NextPage = function () {
       header={`Blob Transactions ${
         totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
       }`}
-      items={transactions?.map((t) => (
-        <BlobTransactionCard key={t.hash} transaction={t} />
-      ))}
+      items={transactions?.map((tx) => {
+        const { block, ...filteredTx } = tx;
+
+        return (
+          <BlobTransactionCard
+            key={tx.hash}
+            transaction={filteredTx}
+            block={{ ...block }}
+          />
+        );
+      })}
       totalItems={totalTransactions}
       page={p}
       pageSize={ps}
