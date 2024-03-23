@@ -1,7 +1,5 @@
 import { TRPCError } from "@trpc/server";
 
-import type { BlobReference } from "@blobscan/blob-storage-manager";
-
 import { withExpands } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";

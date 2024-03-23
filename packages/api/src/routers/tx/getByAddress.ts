@@ -1,15 +1,12 @@
 import { withExpands } from "../../middlewares/withExpands";
 import { withFilters } from "../../middlewares/withFilters";
-import {
-  paginationSchema,
-  withPagination,
-} from "../../middlewares/withPagination";
+import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { createTransactionSelect } from "./common/selects";
 import {
+  createTransactionSelect,
   addDerivedFieldsToTransaction,
   serializeTransaction,
-} from "./common/serializers";
+} from "./common";
 import { getByAddressInputSchema } from "./getByAddress.schema";
 
 export const getByAddress = publicProcedure

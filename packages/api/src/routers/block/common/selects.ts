@@ -1,6 +1,6 @@
 import { Prisma } from "@blobscan/db";
 
-import { Expands } from "../../../middlewares/withExpands";
+import type { Expands } from "../../../middlewares/withExpands";
 import {
   blobReferenceSelect,
   transactionReferenceSelect,
@@ -17,12 +17,12 @@ export const baseBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   excessBlobGas: true,
 });
 
-export function createBlockSelect(expands?: Expands) {
+export function createBlockSelect(expands: Expands) {
   return Prisma.validator<Prisma.BlockSelect>()({
     ...baseBlockSelect,
     transactions: {
       select: {
-        ...(expands?.expandedTransactionSelect ?? {}),
+        ...expands.expandedTransactionSelect,
         ...transactionReferenceSelect,
         // We need to select the rollup field to filter by it later if needed
         rollup: true,
@@ -32,8 +32,8 @@ export function createBlockSelect(expands?: Expands) {
             blobHash: true,
             blob: {
               select: {
-                ...(expands?.expandedBlobSelect ?? {}),
                 ...blobReferenceSelect,
+                ...expands.expandedBlobSelect,
               },
             },
           },

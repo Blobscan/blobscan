@@ -12,11 +12,10 @@ import {
   serializeRollup,
   isEmptyObject,
   serializeDerivedTxBlobGasFields,
-  DerivedTxBlobGasFields,
   serializedDerivedTxBlobGasFieldsSchema,
   calculateDerivedTxBlobGasFields,
 } from "../../../utils";
-import { FullQueriedTransaction, BaseTransaction } from "./selects";
+import type { FullQueriedTransaction, BaseTransaction } from "./selects";
 
 const baseSerializedTransactionFieldsSchema = z.object({
   hash: z.string(),

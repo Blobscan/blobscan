@@ -1,6 +1,6 @@
 import { Prisma } from "@blobscan/db";
 
-import { Expands } from "../../../middlewares/withExpands";
+import type { Expands } from "../../../middlewares/withExpands";
 import {
   blockReferenceSelect,
   dataStorageReferencesSelect,

@@ -2,19 +2,20 @@ import type { Block as DBBlock } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
-  ExpandedBlob,
-  ExpandedTransaction,
   serializeExpandedBlob,
   serializeExpandedTransaction,
   serializedExpandedBlobSchema,
   serializedExpandedTransactionSchema,
+} from "../../../middlewares/withExpands";
+import type {
+  ExpandedBlob,
+  ExpandedTransaction,
 } from "../../../middlewares/withExpands";
 import {
   blockNumberSchema,
   serializedDerivedTxBlobGasFieldsSchema,
   serializeDate,
   serializeDecimal,
-  serializeDerivedTxBlobGasFields,
   serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../../../utils";
@@ -62,14 +63,14 @@ export type QueriedBlock = Pick<
   | "blobGasPrice"
   | "excessBlobGas"
 > & {
-  transactions: (ExpandedTransaction & {
+  transactions: ({
     hash: string;
     blobs: {
       index: number;
       blobHash: string;
       blob: ExpandedBlob;
     }[];
-  })[];
+  } & ExpandedTransaction)[];
 };
 
 export function serializeBlock(block: QueriedBlock): SerializedBlock {

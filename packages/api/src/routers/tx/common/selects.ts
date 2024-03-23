@@ -1,16 +1,13 @@
 import { Prisma } from "@blobscan/db";
 import type { Transaction as DBTransaction } from "@blobscan/db";
 
-import {
+import type {
   Expands,
   ExpandedBlob,
   ExpandedBlock,
 } from "../../../middlewares/withExpands";
-import {
-  DerivedTxBlobGasFields,
-  blobReferenceSelect,
-  blockReferenceSelect,
-} from "../../../utils";
+import { blobReferenceSelect, blockReferenceSelect } from "../../../utils";
+import type { DerivedTxBlobGasFields } from "../../../utils";
 
 export type BaseTransaction = Pick<
   DBTransaction,
@@ -40,13 +37,13 @@ export const baseTransactionSelect =
     blockHash: true,
   });
 
-export function createTransactionSelect(expands?: Expands) {
+export function createTransactionSelect(expands: Expands) {
   return Prisma.validator<Prisma.TransactionSelect>()({
     ...baseTransactionSelect,
     block: {
       select: {
-        ...(expands?.expandedBlockSelect ?? {}),
         ...blockReferenceSelect,
+        ...expands.expandedBlockSelect,
         blobGasPrice: true,
       },
     },
@@ -56,8 +53,8 @@ export function createTransactionSelect(expands?: Expands) {
         blobHash: true,
         blob: {
           select: {
-            ...(expands?.expandedBlobSelect ?? {}),
             ...blobReferenceSelect,
+            ...expands.expandedBlobSelect,
           },
         },
       },

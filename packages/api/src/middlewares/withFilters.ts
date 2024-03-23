@@ -1,4 +1,4 @@
-import { $Enums, Prisma, Rollup } from "@blobscan/db";
+import type { $Enums, Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -54,7 +54,7 @@ export const allFiltersSchema = sortFilterSchema
 export type FiltersSchema = z.infer<typeof allFiltersSchema>;
 
 export const withFilters = t.middleware(({ next, input = {} }) => {
-  let filters: Filters = {
+  const filters: Filters = {
     blockRangeFilter: {},
     rollupFilter: undefined,
     slotRangeFilter: {},

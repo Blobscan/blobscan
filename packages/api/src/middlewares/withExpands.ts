@@ -1,4 +1,4 @@
-import { Prisma, $Enums } from "@blobscan/db";
+import { Prisma } from "@blobscan/db";
 import type {
   BlobDataStorageReference,
   Blob as DBBlob,
@@ -40,7 +40,6 @@ const expandedBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
   commitment: true,
   proof: true,
   size: true,
-  versionedHash: true,
   dataStorageReferences: {
     select: dataStorageReferencesSelect,
   },
@@ -63,10 +62,16 @@ export type ExpandedTransaction = MakeFieldsMandatory<
   "hash"
 >;
 
-export type ExpandedBlob = MakeFieldsMandatory<DBBlob, "versionedHash"> & {
-  dataStorageReferences: Omit<BlobDataStorageReference, "blobHash">[];
-  data?: string;
-};
+export type ExpandedBlob = MakeFieldsMandatory<
+  DBBlob & {
+    dataStorageReferences: Pick<
+      BlobDataStorageReference,
+      "blobStorage" | "dataReference"
+    >[];
+    data?: string;
+  },
+  "versionedHash"
+>;
 
 export type ZodExpand = (typeof zodExpandEnums)[number];
 
@@ -287,12 +292,12 @@ export const withExpands = t.middleware(({ next, input }) => {
         case "transaction":
           exp.expandedTransactionSelect = expandedTransactionSelect;
           break;
-        case "blob": {
+        case "blob":
           exp.expandedBlobSelect = expandedBlobSelect;
-        }
-        case "block": {
+          break;
+        case "block":
           exp.expandedBlockSelect = expandedBlockSelect;
-        }
+          break;
       }
 
       return exp;

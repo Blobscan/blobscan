@@ -2,11 +2,11 @@ import { withExpands } from "../../middlewares/withExpands";
 import { withFilters } from "../../middlewares/withFilters";
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { createTransactionSelect } from "./common/selects";
 import {
+  createTransactionSelect,
   serializeTransaction,
   addDerivedFieldsToTransaction,
-} from "./common/serializers";
+} from "./common";
 import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
 import type { GetAllOutput } from "./getAll.schema";
 
@@ -33,7 +33,7 @@ export const getAll = publicProcedure
       typeFilter,
     } = ctx.filters;
 
-    const [rawTransactions, txCountOrStats] = await Promise.all([
+    const [queriedTxs, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction.findMany({
         select: createTransactionSelect(ctx.expands),
         where: {
@@ -69,7 +69,7 @@ export const getAll = publicProcedure
           }),
     ]);
 
-    const transactions: GetAllOutput["transactions"] = rawTransactions
+    const transactions: GetAllOutput["transactions"] = queriedTxs
       .map(addDerivedFieldsToTransaction)
       .map(serializeTransaction);
 

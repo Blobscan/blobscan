@@ -1,10 +1,11 @@
 import { TRPCError } from "@trpc/server";
 
-import {
+import type {
   BlobReference,
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
-import { BlobDataStorageReference, Prisma } from "@blobscan/db";
+import { Prisma } from "@blobscan/db";
+import type { BlobDataStorageReference } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { serializeDecimal } from "./serializers";

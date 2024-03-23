@@ -3,9 +3,8 @@ import { withFilters } from "../../middlewares/withFilters";
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { calculateDerivedTxBlobGasFields, isEmptyObject } from "../../utils";
-import { createBlockSelect } from "./common/selects";
-import { serializeBlock } from "./common/serializers";
-import type { QueriedBlock } from "./common/serializers";
+import { createBlockSelect, serializeBlock } from "./common";
+import type { QueriedBlock } from "./common";
 import {
   getAllBlocksInputSchema,
   getAllBlocksOutputSchema,
@@ -66,7 +65,7 @@ export const getAll = publicProcedure
     let blocks: QueriedBlock[] = queriedBlocks;
 
     if (isTransactionSelectExpanded) {
-      blocks = queriedBlocks.map((block) => ({
+      blocks = blocks.map((block) => ({
         ...block,
         transactions: block.transactions.map((tx) => ({
           ...tx,

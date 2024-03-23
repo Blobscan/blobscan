@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach } from "vitest";
+import { beforeAll } from "vitest";
 
 import { GoogleStorage } from "@blobscan/blob-storage-manager";
 import { fixtures } from "@blobscan/test";

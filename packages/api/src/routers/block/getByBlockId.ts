@@ -9,8 +9,8 @@ import {
   isEmptyObject,
   retrieveBlobData,
 } from "../../utils";
-import { createBlockSelect } from "./common/selects";
-import { QueriedBlock, serializeBlock } from "./common/serializers";
+import { createBlockSelect, serializeBlock } from "./common";
+import type { QueriedBlock } from "./common";
 import {
   getByBlockIdOutputSchema,
   getByBlockIdInputSchema,
@@ -76,27 +76,23 @@ export const getByBlockId = publicProcedure
       }
 
       if (isExpandedBlobSet) {
-        const blobHashesAndData = await Promise.all(
-          block.transactions.flatMap<Promise<[string, string]>>((tx) =>
-            tx.blobs.map(({ blob: { dataStorageReferences, versionedHash } }) =>
-              retrieveBlobData(blobStorageManager, dataStorageReferences).then(
-                ({ data }) => [versionedHash, data]
-              )
-            )
-          )
-        );
+        await Promise.all([
+          block.transactions.flatMap((tx) =>
+            tx.blobs.map(async ({ blob }) => {
+              if (
+                blob.dataStorageReferences &&
+                blob.dataStorageReferences.length
+              ) {
+                const { data } = await retrieveBlobData(
+                  blobStorageManager,
+                  blob.dataStorageReferences
+                );
 
-        const blobHashToData = new Map<string, string>(blobHashesAndData);
-
-        block.transactions.forEach((tx) => {
-          tx.blobs.forEach(({ blob }) => {
-            const data = blobHashToData.get(blob.versionedHash);
-
-            if (data) {
-              blob.data = data;
-            }
-          });
-        });
+                blob.data = data;
+              }
+            })
+          ),
+        ]);
       }
 
       return serializeBlock(queriedBlock);

@@ -1,6 +1,4 @@
-import { T } from "vitest/dist/types-3c7dbfa5";
-
-import {
+import type {
   Blob as DBBlob,
   BlobsOnTransactions as DBBlobsOnTransactions,
   BlobDataStorageReference as DBBlobDataStorageReference,

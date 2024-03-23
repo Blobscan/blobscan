@@ -2,19 +2,13 @@ import { TRPCError } from "@trpc/server";
 
 import { withExpands } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import {
-  calculateDerivedTxBlobGasFields,
-  isEmptyObject,
-  retrieveBlobData,
-} from "../../utils";
-import {
-  FullQueriedTransaction,
-  createTransactionSelect,
-} from "./common/selects";
+import { isEmptyObject, retrieveBlobData } from "../../utils";
 import {
   addDerivedFieldsToTransaction,
+  createTransactionSelect,
   serializeTransaction,
-} from "./common/serializers";
+} from "./common";
+import type { BaseTransaction } from "./common";
 import {
   getByHashInputSchema,
   getByHashOutputSchema,
@@ -37,7 +31,7 @@ export const getByHash = publicProcedure
       ctx: { blobStorageManager, expands, prisma },
       input: { hash },
     }) => {
-      const queriedTx: FullQueriedTransaction | null =
+      const queriedTx: BaseTransaction | null =
         await prisma.transaction.findUnique({
           select: createTransactionSelect(expands),
           where: { hash },
@@ -49,17 +43,23 @@ export const getByHash = publicProcedure
           message: `No transaction with hash '${hash}'.`,
         });
       }
+
       const isExpandedBlobSet = !isEmptyObject(expands.expandedBlobSelect);
 
       if (isExpandedBlobSet) {
         await Promise.all(
           queriedTx.blobs.map(async ({ blob }) => {
-            const { data } = await retrieveBlobData(
-              blobStorageManager,
-              blob.dataStorageReferences
-            );
+            if (
+              blob.dataStorageReferences &&
+              blob.dataStorageReferences.length
+            ) {
+              const { data } = await retrieveBlobData(
+                blobStorageManager,
+                blob.dataStorageReferences
+              );
 
-            blob.data = data;
+              blob.data = data;
+            }
           })
         );
       }

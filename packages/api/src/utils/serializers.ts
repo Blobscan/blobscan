@@ -1,16 +1,9 @@
-import {
-  $Enums,
-  Prisma,
-  BlobDataStorageReference as DBBlobDataStorageReference,
-} from "@blobscan/db";
+import type { $Enums, Prisma } from "@blobscan/db";
+import type { BlobDataStorageReference as DBBlobDataStorageReference } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
-import { DerivedTxBlobGasFields } from "./blob";
-import {
-  ZodBlobStorageEnum,
-  ZodRollupEnum,
-  blobStorageSchema,
-} from "./schemas";
+import { blobStorageSchema } from "./schemas";
+import type { ZodBlobStorageEnum, ZodRollupEnum } from "./schemas";
 
 export function serializeDecimal(decimal: Prisma.Decimal): string {
   return decimal.toFixed();

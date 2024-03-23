@@ -1,7 +1,7 @@
 import { z } from "@blobscan/zod";
 
 import { createExpandKeysSchema } from "../../middlewares/withExpands";
-import { serializedBlockSchema } from "./common/serializers";
+import { serializedBlockSchema } from "./common";
 
 export const blockIdSchema = z
   .string()

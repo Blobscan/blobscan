@@ -3,7 +3,7 @@ import { z } from "@blobscan/zod";
 import { createExpandKeysSchema } from "../../middlewares/withExpands";
 import { allFiltersSchema } from "../../middlewares/withFilters";
 import { paginationSchema } from "../../middlewares/withPagination";
-import { serializedTransactionSchema } from "./common/serializers";
+import { serializedTransactionSchema } from "./common";
 
 export const getAllInputSchema = allFiltersSchema
   .merge(paginationSchema)
