@@ -1,9 +1,14 @@
 import { z } from "@blobscan/zod";
 
-import { serializedTransactionSchema } from "./common";
+import { createExpandKeysSchema } from "../../middlewares/withExpands";
+import { serializedTransactionSchema } from "./common/serializers";
 
-export const getByHashInputSchema = z.object({
-  hash: z.string(),
-});
+const expandKeysSchema = createExpandKeysSchema(["block", "blob"]);
+
+export const getByHashInputSchema = z
+  .object({
+    hash: z.string(),
+  })
+  .merge(expandKeysSchema);
 
 export const getByHashOutputSchema = serializedTransactionSchema;

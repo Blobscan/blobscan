@@ -2,7 +2,11 @@ import { TRPCError } from "@trpc/server";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 
+import { withExpands } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
+import { retrieveBlobData } from "../../utils";
+import { createBlobSelect } from "./common/selects";
+import { serializeBlob } from "./common/serializers";
 import {
   getByBlobIdInputSchema,
   getByBlobIdOutputSchema,
@@ -20,69 +24,31 @@ export const getByBlobId = publicProcedure
   })
   .input(getByBlobIdInputSchema)
   .output(getByBlobIdOutputSchema)
-  .query(async ({ ctx: { prisma, blobStorageManager }, input }) => {
+  .use(withExpands)
+  .query(async ({ ctx: { prisma, blobStorageManager, expands }, input }) => {
     const { id } = input;
 
-    const blob = await prisma.blob.findFirst({
-      select: {
-        versionedHash: true,
-        commitment: true,
-        proof: true,
-        size: true,
-        dataStorageReferences: {
-          select: {
-            blobStorage: true,
-            dataReference: true,
-          },
-        },
-      },
+    const queriedBlob = await prisma.blob.findFirst({
+      select: createBlobSelect(expands),
       where: {
         OR: [{ versionedHash: id }, { commitment: id }],
       },
     });
 
-    if (!blob) {
+    if (!queriedBlob) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
-    const blobReferences = blob.dataStorageReferences.map<BlobReference>(
-      ({ blobStorage, dataReference }) => ({
-        storage: blobStorage,
-        reference: dataReference,
-      })
+    const { data: blobData } = await retrieveBlobData(
+      blobStorageManager,
+      queriedBlob.dataStorageReferences
     );
 
-    let blobData: Awaited<ReturnType<typeof blobStorageManager.getBlob>>;
-
-    try {
-      blobData = await blobStorageManager.getBlob(...blobReferences);
-    } catch (err) {
-      const err_ = err as Error;
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: err_.message,
-        cause: err_,
-      });
-    }
-
-    if (!blobData) {
-      const storageReferences = blobReferences
-        .map(({ reference, storage }) => `${storage}:${reference}`)
-        .join(", ");
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `No blob data found on the following storage references: ${storageReferences}`,
-      });
-    }
-
-    return {
-      versionedHash: blob.versionedHash,
-      commitment: blob.commitment,
-      proof: blob.proof,
-      size: blob.size,
-      data: blobData.data,
-    };
+    return serializeBlob({
+      ...queriedBlob,
+      data: blobData,
+    });
   });

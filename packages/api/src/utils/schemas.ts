@@ -1,8 +1,6 @@
 import { BlobStorage, Rollup } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
-import { paginationSchema } from "../middlewares/withPagination";
-
 const zodBlobStorageEnums = ["google", "swarm", "postgres"] as const;
 
 const zodRollupEnums = [
@@ -15,6 +13,8 @@ const zodRollupEnums = [
   "mode",
   "zora",
 ] as const;
+
+const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
 
 /**
  * This is a type-safe way to get the enum values as we can't use `Object.values`
@@ -51,11 +51,13 @@ if (missingBlobStorageEnums.length) {
 
 export type ZodRollupEnum = (typeof zodRollupEnums)[number];
 
+export type ZodExpandEnum = (typeof zodExpandEnums)[number];
+
+export type ZodBlobStorageEnum = (typeof zodBlobStorageEnums)[number];
+
 export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 
-export const rollupSchema = z.enum(zodRollupEnums);
-
-export const sortSchema = z.enum(["asc", "desc"]);
+export const rollupSchema = z.enum(zodRollupEnums).nullable();
 
 export const blockNumberSchema = z.number().nonnegative();
 
@@ -63,4 +65,18 @@ export const slotSchema = z.number().nonnegative();
 
 export const blobIndexSchema = z.number().nonnegative();
 
-export const typeSchema = z.enum(["reorg", "finalized", "normal"]);
+export const expandSchema = z
+  .string()
+  .refine(
+    (value) => {
+      const values = value.split(",");
+
+      return values.every((v) => zodExpandEnums.includes(v as ZodExpandEnum));
+    },
+    {
+      message: `Invalid 'expand' value. It must be a comma separated list of the following values: ${zodExpandEnums.join(
+        ", "
+      )}`,
+    }
+  )
+  .transform((value) => value.split(",") as ZodExpandEnum[]);

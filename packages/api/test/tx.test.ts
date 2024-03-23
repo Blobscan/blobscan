@@ -1,21 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Rollup } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { TRPCContext } from "../src";
-import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import {
   createTestContext,
+  runExpandsTestsSuite,
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
-
-type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHashFull"]>;
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -33,6 +27,10 @@ describe("Transaction router", async () => {
 
     runFiltersTestsSuite("transaction", (filterInput) =>
       caller.tx.getAll(filterInput).then(({ transactions }) => transactions)
+    );
+
+    runExpandsTestsSuite("transaction", ["block", "blob"], (input) =>
+      caller.tx.getAll(input).then(({ transactions }) => transactions)
     );
 
     it("should get the total number of transactions", async () => {
@@ -60,24 +58,21 @@ describe("Transaction router", async () => {
     });
   });
 
-  describe.each([
-    { functionName: "getByHash" },
-    { functionName: "getByHashFull" },
-  ])("$functionName", ({ functionName }) => {
-    it("should get a transaction by hash correctly", async () => {
-      const input: GetByHashInput = {
-        hash: "txHash001",
-      };
+  describe("getByHash", () => {
+    runExpandsTestsSuite("transaction", ["block", "blob"], (expandsInput) =>
+      caller.tx.getByHash({ hash: "txHash001", ...expandsInput })
+    );
 
-      // @ts-ignore
-      const result = await caller.tx[functionName](input);
+    it("should get a transaction by hash correctly", async () => {
+      const result = await caller.tx.getByHash({
+        hash: "txHash001",
+      });
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when providing a non-existent hash", async () => {
       await expect(
-        // @ts-ignore
-        caller.tx[functionName]({
+        caller.tx.getByHash({
           hash: "nonExistingHash",
         })
       ).rejects.toMatchSnapshot(
@@ -89,9 +84,15 @@ describe("Transaction router", async () => {
   describe("getByAddress", () => {
     const address = "address2";
 
-    runPaginationTestsSuite("address's transactions", (paginationInput) =>
+    runPaginationTestsSuite("address", (paginationInput) =>
       caller.tx
         .getByAddress({ ...paginationInput, address })
+        .then(({ transactions }) => transactions)
+    );
+
+    runExpandsTestsSuite("address", ["block", "blob"], (expandsInput) =>
+      caller.tx
+        .getByAddress({ ...expandsInput, address })
         .then(({ transactions }) => transactions)
     );
 

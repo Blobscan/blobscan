@@ -1,7 +1,12 @@
+import { withExpands } from "../../middlewares/withExpands";
 import { withFilters } from "../../middlewares/withFilters";
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { transactionSelect, serializeTransaction } from "./common";
+import { createTransactionSelect } from "./common/selects";
+import {
+  serializeTransaction,
+  addDerivedFieldsToTransaction,
+} from "./common/serializers";
 import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
 import type { GetAllOutput } from "./getAll.schema";
 
@@ -18,6 +23,7 @@ export const getAll = publicProcedure
   .output(getAllOutputSchema)
   .use(withPagination)
   .use(withFilters)
+  .use(withExpands)
   .query(async ({ ctx }) => {
     const {
       blockRangeFilter,
@@ -29,7 +35,7 @@ export const getAll = publicProcedure
 
     const [rawTransactions, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction.findMany({
-        select: transactionSelect,
+        select: createTransactionSelect(ctx.expands),
         where: {
           rollup: rollupFilter,
           block: {
@@ -63,8 +69,9 @@ export const getAll = publicProcedure
           }),
     ]);
 
-    const transactions: GetAllOutput["transactions"] =
-      rawTransactions.map(serializeTransaction);
+    const transactions: GetAllOutput["transactions"] = rawTransactions
+      .map(addDerivedFieldsToTransaction)
+      .map(serializeTransaction);
 
     return {
       transactions,

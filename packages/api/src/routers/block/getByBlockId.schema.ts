@@ -1,15 +1,29 @@
 import { z } from "@blobscan/zod";
 
-import { BlockSchema, blockIdSchema } from "./common";
+import { createExpandKeysSchema } from "../../middlewares/withExpands";
+import { serializedBlockSchema } from "./common/serializers";
 
-export const getByBlockIdSchema = z.object({
-  id: z.string(),
-  reorg: z.boolean().optional(),
-});
+export const blockIdSchema = z
+  .string()
+  .refine(
+    (s) => {
+      if (s.startsWith("0x") && s.length === 66) {
+        return s;
+      }
+    },
+    {
+      message: "Invalid block id",
+    }
+  )
+  .or(z.coerce.number().positive());
 
-export const getByBlockIdFullSchema = z.object({
-  id: blockIdSchema,
-  reorg: z.boolean().optional(),
-});
+export type BlockId = z.infer<typeof blockIdSchema>;
 
-export const getByBlockIdOutputSchema = BlockSchema;
+export const getByBlockIdInputSchema = z
+  .object({
+    id: blockIdSchema,
+    reorg: z.boolean().optional(),
+  })
+  .merge(createExpandKeysSchema(["transaction", "blob"]));
+
+export const getByBlockIdOutputSchema = serializedBlockSchema;

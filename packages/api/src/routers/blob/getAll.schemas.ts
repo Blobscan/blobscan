@@ -3,16 +3,16 @@ import { z } from "@blobscan/zod";
 import { createExpandKeysSchema } from "../../middlewares/withExpands";
 import { allFiltersSchema } from "../../middlewares/withFilters";
 import { paginationSchema } from "../../middlewares/withPagination";
-import { serializedTransactionSchema } from "./common/serializers";
+import { serializedBlobOnTransactionSchema } from "./common/serializers";
 
 export const getAllInputSchema = allFiltersSchema
   .merge(paginationSchema)
-  .merge(createExpandKeysSchema(["block", "blob"]))
+  .merge(createExpandKeysSchema(["block", "transaction"]))
   .optional();
 
 export const getAllOutputSchema = z.object({
-  transactions: serializedTransactionSchema.array(),
-  totalTransactions: z.number(),
+  blobs: serializedBlobOnTransactionSchema.array(),
+  totalBlobs: z.number(),
 });
 
 export type GetAllOutput = z.infer<typeof getAllOutputSchema>;

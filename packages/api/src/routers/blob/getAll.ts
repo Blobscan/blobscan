@@ -1,9 +1,11 @@
+import { withExpands } from "../../middlewares/withExpands";
 import { withFilters } from "../../middlewares/withFilters";
 import { withPagination } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { blobStorageSchema, rollupSchema } from "../../utils";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
-import type { GetAllOutput } from "./getAll.schema";
+import { createBlobsOnTransactionsSelect } from "./common/selects";
+import { serializeBlobOnTransaction } from "./common/serializers";
+import { getAllInputSchema, getAllOutputSchema } from "./getAll.schemas";
+import type { GetAllOutput } from "./getAll.schemas";
 
 export const getAll = publicProcedure
   .meta({
@@ -18,6 +20,7 @@ export const getAll = publicProcedure
   .output(getAllOutputSchema)
   .use(withPagination)
   .use(withFilters)
+  .use(withExpands)
   .query(async ({ ctx }) => {
     const {
       blockRangeFilter,
@@ -29,36 +32,7 @@ export const getAll = publicProcedure
 
     const [txsBlobs, blobCountOrStats] = await Promise.all([
       ctx.prisma.blobsOnTransactions.findMany({
-        select: {
-          index: true,
-          blob: {
-            select: {
-              commitment: true,
-              proof: true,
-              size: true,
-              versionedHash: true,
-              dataStorageReferences: {
-                select: {
-                  dataReference: true,
-                  blobStorage: true,
-                },
-              },
-            },
-          },
-          transaction: {
-            select: {
-              hash: true,
-              rollup: true,
-              block: {
-                select: {
-                  timestamp: true,
-                  number: true,
-                  slot: true,
-                },
-              },
-            },
-          },
-        },
+        select: createBlobsOnTransactionsSelect(ctx.expands),
         where: {
           transaction: {
             rollup: rollupFilter,
@@ -106,29 +80,9 @@ export const getAll = publicProcedure
           }),
     ]);
 
-    const serializedBlobs: GetAllOutput["blobs"] = txsBlobs.map((txBlob) => {
-      const block = txBlob.transaction.block;
-      const tx = txBlob.transaction;
-      const dataStorageReferences = txBlob.blob.dataStorageReferences.map(
-        (storageRef) => ({
-          blobStorage: blobStorageSchema.parse(
-            storageRef.blobStorage.toLowerCase()
-          ),
-          dataReference: storageRef.dataReference,
-        })
-      );
-
-      return {
-        ...txBlob.blob,
-        dataStorageReferences,
-        rollup: tx.rollup ? rollupSchema.parse(tx.rollup.toLowerCase()) : null,
-        timestamp: block.timestamp.toISOString(),
-        index: txBlob.index,
-        txHash: tx.hash,
-        blockNumber: block.number,
-        slot: block.slot,
-      };
-    });
+    const serializedBlobs: GetAllOutput["blobs"] = txsBlobs.map(
+      serializeBlobOnTransaction
+    );
 
     return {
       blobs: serializedBlobs,

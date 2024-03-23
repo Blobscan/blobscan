@@ -1,14 +1,16 @@
 import { z } from "@blobscan/zod";
 
-import { filtersSchema } from "../../middlewares/withFilters";
+import { createExpandKeysSchema } from "../../middlewares/withExpands";
+import { allFiltersSchema } from "../../middlewares/withFilters";
 import { paginationSchema } from "../../middlewares/withPagination";
-import { BlockSchema } from "./common";
+import { serializedBlockSchema } from "./common/serializers";
 
-export const getAllBlocksInputSchema = filtersSchema
+export const getAllBlocksInputSchema = allFiltersSchema
   .merge(paginationSchema)
+  .merge(createExpandKeysSchema(["transaction", "blob"]))
   .optional();
 
 export const getAllBlocksOutputSchema = z.object({
-  blocks: BlockSchema.array(),
+  blocks: serializedBlockSchema.array(),
   totalBlocks: z.number(),
 });

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -8,7 +7,12 @@ import { fixtures } from "@blobscan/test";
 import type { TRPCContext } from "../src";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
-import { createTestContext, runPaginationTestsSuite } from "./helpers";
+import {
+  createTestContext,
+  runExpandsTestsSuite,
+  runFiltersTestsSuite,
+  runPaginationTestsSuite,
+} from "./helpers";
 
 describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -19,32 +23,30 @@ describe("Block router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe.each([{ functionName: "getAll" }, { functionName: "getAllFull" }])(
-    "$functionName",
-    ({ functionName }) => {
-      runPaginationTestsSuite("block", (paginationInput) =>
-        // @ts-ignore
-        caller.block[functionName](paginationInput).then(({ blocks }) => blocks)
-      );
+  describe("getAll", () => {
+    runPaginationTestsSuite("block", (paginationInput) =>
+      caller.block.getAll(paginationInput).then(({ blocks }) => blocks)
+    );
 
-      it("should the total number of blocks correctly", async () => {
-        const expectedTotalBlocks = fixtures.blocks.length;
+    runFiltersTestsSuite("block", (filterInput) =>
+      caller.block.getAll(filterInput).then(({ blocks }) => blocks)
+    );
 
-        await ctx.prisma.blockOverallStats.populate();
-        await caller.block.getAllFull();
+    runExpandsTestsSuite("block", ["transaction", "blob"], (expandInput) =>
+      caller.block.getAll(expandInput).then(({ blocks }) => blocks)
+    );
+    +it("should the total number of blocks correctly", async () => {
+      const expectedTotalBlocks = fixtures.blocks.length;
 
-        // @ts-ignore
-        const { totalBlocks } = await caller.block[functionName]();
+      await ctx.prisma.blockOverallStats.populate();
 
-        expect(totalBlocks).toBe(expectedTotalBlocks);
-      });
-    }
-  );
+      const { totalBlocks } = await caller.block.getAll();
 
-  describe.each([
-    { functionName: "getByBlockId" },
-    { functionName: "getByBlockIdFull" },
-  ])("$functionName", ({ functionName }) => {
+      expect(totalBlocks).toBe(expectedTotalBlocks);
+    });
+  });
+
+  describe("getByBlockId", () => {
     // it("should get a block by hash", async () => {
     //   const input = {
     //     id: "0xc6da05a52edaf584c2c340738ae012f229e2cd124f88e6800c56f7359b2401ad",
@@ -56,10 +58,13 @@ describe("Block router", async () => {
     //   expect(result).toMatchSnapshot();
     // });
 
+    runExpandsTestsSuite("block", ["transaction", "blob"], (expandInput) =>
+      caller.block.getByBlockId({ id: "1002", ...expandInput })
+    );
+
     it("should fail when trying to get a block with an invalid hash", async () => {
       await expect(
-        // @ts-ignore
-        caller.block[functionName as keyof typeof caller.block]({
+        caller.block.getByBlockId({
           id: "invalidHash",
         })
       ).rejects.toThrow();
@@ -69,8 +74,7 @@ describe("Block router", async () => {
       const invalidHash =
         "0x0132d67fc77e26737632ebda918c689f146196dcd0dc5eab95ab7875cef95ef9";
       await expect(
-        // @ts-ignore
-        caller.block[functionName as keyof typeof caller.block]({
+        caller.block.getByBlockId({
           id: invalidHash,
         })
       ).rejects.toThrow(
@@ -82,22 +86,18 @@ describe("Block router", async () => {
     });
 
     it("should get a block by block number", async () => {
-      type Input = inferProcedureInput<AppRouter["block"]["getByBlockIdFull"]>;
+      type Input = inferProcedureInput<AppRouter["block"]["getByBlockId"]>;
       const input: Input = {
         id: "1002",
       };
 
-      const result = await caller.block[
-        functionName as keyof typeof caller.block
-        // @ts-ignore
-      ](input);
+      const result = await caller.block.getByBlockId(input);
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a block with a non-existent block number", async () => {
       await expect(
-        // @ts-ignore
-        caller.block[functionName as keyof typeof caller.block]({
+        caller.block.getByBlockId({
           id: "9999",
         })
       ).rejects.toThrow(

@@ -2,15 +2,8 @@ import { $Enums, Prisma, Rollup } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
-import {
-  blockNumberSchema,
-  rollupSchema,
-  slotSchema,
-  sortSchema,
-  typeSchema,
-} from "../utils";
-
-type TypeOrEmpty<T> = T | {};
+import { blockNumberSchema, rollupSchema, slotSchema } from "../utils";
+import type { TypeOrEmpty } from "../utils";
 
 export type Filters = {
   rollupFilter?: $Enums.Rollup;
@@ -26,17 +19,39 @@ export type Filters = {
   }>;
 };
 
-export const filtersSchema = z.object({
-  rollup: rollupSchema.optional(),
+const sortSchema = z.enum(["asc", "desc"]);
+
+const typeSchema = z.enum(["reorg", "finalized", "normal"]);
+
+export const blockRangeFilterSchema = z.object({
   startBlock: blockNumberSchema.optional(),
   endBlock: blockNumberSchema.optional(),
+});
+
+export const slotRangeFilterSchema = z.object({
   startSlot: slotSchema.optional(),
   endSlot: slotSchema.optional(),
+});
+
+export const rollupFilterSchema = z.object({
+  rollup: rollupSchema.optional(),
+});
+
+export const typeFilterSchema = z.object({
   type: typeSchema.default("normal"),
+});
+
+export const sortFilterSchema = z.object({
   sort: sortSchema.default("desc"),
 });
 
-export type FiltersSchema = z.infer<typeof filtersSchema>;
+export const allFiltersSchema = sortFilterSchema
+  .merge(blockRangeFilterSchema)
+  .merge(slotRangeFilterSchema)
+  .merge(rollupFilterSchema)
+  .merge(typeFilterSchema);
+
+export type FiltersSchema = z.infer<typeof allFiltersSchema>;
 
 export const withFilters = t.middleware(({ next, input = {} }) => {
   let filters: Filters = {
@@ -47,7 +62,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     typeFilter: {},
   };
 
-  const filtersResult = filtersSchema.safeParse(input);
+  const filtersResult = allFiltersSchema.safeParse(input);
 
   if (filtersResult.success) {
     const { sort, type, endBlock, endSlot, rollup, startBlock, startSlot } =

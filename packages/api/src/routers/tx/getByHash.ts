@@ -1,7 +1,20 @@
 import { TRPCError } from "@trpc/server";
 
+import { withExpands } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { formatFullTransactionForApi, fullTransactionSelect } from "./common";
+import {
+  calculateDerivedTxBlobGasFields,
+  isEmptyObject,
+  retrieveBlobData,
+} from "../../utils";
+import {
+  FullQueriedTransaction,
+  createTransactionSelect,
+} from "./common/selects";
+import {
+  addDerivedFieldsToTransaction,
+  serializeTransaction,
+} from "./common/serializers";
 import {
   getByHashInputSchema,
   getByHashOutputSchema,
@@ -18,20 +31,40 @@ export const getByHash = publicProcedure
   })
   .input(getByHashInputSchema)
   .output(getByHashOutputSchema)
-  .query(async ({ ctx, input: { hash } }) => {
-    const tx = await ctx.prisma.transaction
-      .findUnique({
-        select: fullTransactionSelect,
-        where: { hash },
-      })
-      .then((tx) => (tx ? formatFullTransactionForApi(tx) : null));
+  .use(withExpands)
+  .query(
+    async ({
+      ctx: { blobStorageManager, expands, prisma },
+      input: { hash },
+    }) => {
+      const queriedTx: FullQueriedTransaction | null =
+        await prisma.transaction.findUnique({
+          select: createTransactionSelect(expands),
+          where: { hash },
+        });
 
-    if (!tx) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: `No transaction with hash '${hash}'.`,
-      });
+      if (!queriedTx) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No transaction with hash '${hash}'.`,
+        });
+      }
+      const isExpandedBlobSet = !isEmptyObject(expands.expandedBlobSelect);
+
+      if (isExpandedBlobSet) {
+        await Promise.all(
+          queriedTx.blobs.map(async ({ blob }) => {
+            const { data } = await retrieveBlobData(
+              blobStorageManager,
+              blob.dataStorageReferences
+            );
+
+            blob.data = data;
+          })
+        );
+      }
+      const tx = serializeTransaction(addDerivedFieldsToTransaction(queriedTx));
+
+      return tx;
     }
-
-    return tx;
-  });
+  );

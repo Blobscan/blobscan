@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -7,6 +6,7 @@ import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
 import {
   createTestContext,
+  runExpandsTestsSuite,
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
@@ -30,19 +30,19 @@ describe("Blob router", async () => {
     runFiltersTestsSuite("blob", (baseGetAllInput) =>
       caller.blob.getAll(baseGetAllInput).then(({ blobs }) => blobs)
     );
+
+    runExpandsTestsSuite("blob", ["block", "transaction"], (input) =>
+      caller.blob.getAll(input).then(({ blobs }) => blobs)
+    );
   });
 
-  describe.each([
-    { functionName: "getByBlobId" },
-    { functionName: "getByBlobIdFull" },
-  ])("$functionName", ({ functionName }) => {
+  describe("getByBlobId", () => {
     it("should get a blob by versioned hash", async () => {
       const input: GetByIdInput = {
         id: "blobHash004",
       };
 
-      // @ts-ignore
-      const result = await caller.blob[functionName](input);
+      const result = await caller.blob.getByBlobId(input);
 
       expect(result).toMatchSnapshot();
     });
@@ -52,26 +52,31 @@ describe("Blob router", async () => {
         id: "commitment004",
       };
 
-      // @ts-ignore
-      const result = await caller.blob[functionName](input);
+      const result = await caller.blob.getByBlobId(input);
 
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a blob by a non-existent hash", async () => {
       await expect(
-        // @ts-ignore
-        caller.blob[functionName]({
+        caller.blob.getByBlobId({
           id: "nonExistingHash",
         })
       ).rejects.toMatchSnapshot();
     });
 
     it("should fail when getting a blob and the blob data is not available", async () => {
+      const blobHash = "blobHash006";
+
+      await ctx.prisma.blobData.delete({
+        where: {
+          id: blobHash,
+        },
+      });
+
       await expect(
-        // @ts-ignore
-        caller.blob[functionName]({
-          id: "blobHash003",
+        caller.blob.getByBlobId({
+          id: blobHash,
         })
       ).rejects.toMatchSnapshot();
     });

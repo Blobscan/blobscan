@@ -14,12 +14,15 @@ import { createTRPCContext } from "../src/context";
 import { FiltersSchema } from "../src/middlewares/withFilters";
 import type { PaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
+import { ZodExpandEnum } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
 type FilterAndPagination = Omit<FiltersSchema, "rollup"> & {
   rollup?: Lowercase<Rollup>;
 } & PaginationSchema;
+
+type Entity = "address" | "block" | "transaction" | "blob";
 
 export async function createTestContext({
   withAuth,
@@ -59,7 +62,7 @@ export async function createTestContext({
 }
 
 export function runPaginationTestsSuite(
-  entity: string,
+  entity: Entity,
   fetcher: (paginationInput: PaginationSchema) => Promise<unknown[]>
 ) {
   return describe(`when getting paginated ${entity} results`, () => {
@@ -110,7 +113,7 @@ export function runPaginationTestsSuite(
 }
 
 export function runFiltersTestsSuite(
-  entity: string,
+  entity: Entity,
   fetcher: (getAllInput: Partial<FilterAndPagination>) => Promise<unknown[]>
 ) {
   return describe(`when getting filtered ${entity} results`, () => {
@@ -176,6 +179,55 @@ export function runFiltersTestsSuite(
       const result = await fetcher({
         endSlot: 102,
       });
+
+      expect(result).toMatchSnapshot();
+    });
+  });
+}
+
+export function runExpandsTestsSuite(
+  entity: Entity,
+  allowedExpands: ZodExpandEnum[],
+  fetcher: (input: PaginationSchema | { expand?: string }) => Promise<unknown>
+) {
+  describe(`when getting expanded ${entity} results`, () => {
+    if (allowedExpands.includes("block")) {
+      it("should return the correct expanded block", async () => {
+        const result = await fetcher({
+          expand: "block",
+          ps: 2,
+        });
+
+        expect(result).toMatchSnapshot();
+      });
+    }
+
+    if (allowedExpands.includes("transaction")) {
+      it("should return the correct expanded transaction", async () => {
+        const result = await fetcher({ expand: "transaction", ps: 2 });
+
+        expect(result).toMatchSnapshot();
+      });
+    }
+
+    if (allowedExpands.includes("blob")) {
+      it("should return the correct expanded blob", async () => {
+        const result = await fetcher({ expand: "blob", ps: 2 });
+
+        expect(result).toMatchSnapshot();
+      });
+    }
+
+    if (allowedExpands.includes("blob_data")) {
+      it("should return the correct expanded blob data", async () => {
+        const result = await fetcher({ expand: "blob_data", ps: 2 });
+
+        expect(result).toMatchSnapshot();
+      });
+    }
+
+    it("should return the correct expanded results when multiple expands are requested", async () => {
+      const result = await fetcher({ expand: allowedExpands.join(","), ps: 2 });
 
       expect(result).toMatchSnapshot();
     });
