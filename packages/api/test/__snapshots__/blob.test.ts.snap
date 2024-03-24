@@ -17,7 +17,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -44,12 +44,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -81,7 +81,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -114,12 +114,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -146,7 +146,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -170,12 +170,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -202,7 +202,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -220,12 +220,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -242,12 +242,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 1,
@@ -270,7 +270,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -289,7 +289,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -303,12 +303,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -328,7 +328,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -347,7 +347,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -369,7 +369,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -391,7 +391,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -430,12 +430,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -449,12 +449,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -469,7 +469,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -487,7 +487,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -513,12 +513,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -535,12 +535,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 1,
@@ -557,12 +557,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 0,
@@ -580,7 +580,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -602,7 +602,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -624,7 +624,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -646,7 +646,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -668,7 +668,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -686,7 +686,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -713,7 +713,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -731,7 +731,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -753,7 +753,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -771,12 +771,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -791,7 +791,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -806,7 +806,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -830,7 +830,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -848,7 +848,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -870,7 +870,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -888,12 +888,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -908,7 +908,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -923,7 +923,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -947,7 +947,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -965,12 +965,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -987,12 +987,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 1,
@@ -1009,12 +1009,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 0,
@@ -1037,7 +1037,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -1055,12 +1055,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -1077,12 +1077,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 1,
@@ -1099,12 +1099,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 0,
@@ -1127,7 +1127,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -1145,12 +1145,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
       },
     ],
     "index": 2,
@@ -1172,12 +1172,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash006",
-      },
-      {
         "blobStorage": "postgres",
         "dataReference": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
@@ -1192,7 +1192,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "dataStorageReferences": [
       {
         "blobStorage": "google",
-        "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
         "blobStorage": "swarm",
@@ -1208,8 +1208,6 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
 ]
 `;
 
-exports[`Blob router > getByBlobId > should fail when getting a blob and the blob data is not available 1`] = `[TRPCError: Failed to get blob from any of the storages]`;
-
 exports[`Blob router > getByBlobId > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
 
 exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
@@ -1218,12 +1216,12 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
   "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
   "dataStorageReferences": [
     {
-      "blobStorage": "postgres",
-      "dataReference": "blobHash004",
+      "blobStorage": "google",
+      "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
     },
     {
-      "blobStorage": "google",
-      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+      "blobStorage": "postgres",
+      "dataReference": "blobHash004",
     },
   ],
   "proof": "proof004",
@@ -1272,12 +1270,12 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
   "dataStorageReferences": [
     {
-      "blobStorage": "postgres",
-      "dataReference": "blobHash004",
+      "blobStorage": "google",
+      "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
     },
     {
-      "blobStorage": "google",
-      "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+      "blobStorage": "postgres",
+      "dataReference": "blobHash004",
     },
   ],
   "proof": "proof004",

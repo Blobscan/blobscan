@@ -47,3 +47,13 @@ export function serializeBlobDataStorageReference(
     dataReference,
   };
 }
+
+export function serializeBlobDataStorageReferences(
+  dataStorageReferences: Parameters<
+    typeof serializeBlobDataStorageReference
+  >[0][]
+): SerializedBlobDataStorageReference[] {
+  return dataStorageReferences
+    .map(serializeBlobDataStorageReference)
+    .sort((a, b) => a.blobStorage.localeCompare(b.blobStorage));
+}

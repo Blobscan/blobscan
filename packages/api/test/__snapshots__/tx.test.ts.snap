@@ -13,7 +13,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -27,13 +27,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
       "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
-      "hash": "blockHash008",
-      "slot": 108,
-      "timestamp": "2023-08-31T16:00:00.000Z",
     },
     "blockHash": "blockHash008",
     "blockNumber": 1008,
@@ -53,12 +47,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "blobStorage": "google",
+            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+            "blobStorage": "postgres",
+            "dataReference": "blobHash004",
           },
         ],
         "index": 0,
@@ -70,12 +64,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "blobStorage": "google",
+            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+            "blobStorage": "postgres",
+            "dataReference": "blobHash004",
           },
         ],
         "index": 1,
@@ -87,12 +81,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "blobStorage": "google",
+            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+            "blobStorage": "postgres",
+            "dataReference": "blobHash004",
           },
         ],
         "index": 2,
@@ -102,13 +96,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
       "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
-      "hash": "blockHash007",
-      "slot": 107,
-      "timestamp": "2023-08-31T14:00:00.000Z",
     },
     "blockHash": "blockHash007",
     "blockNumber": 1007,
@@ -203,7 +191,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -243,12 +231,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "blobStorage": "google",
+            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+            "blobStorage": "postgres",
+            "dataReference": "blobHash004",
           },
         ],
         "index": 0,
@@ -260,12 +248,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "blobStorage": "google",
+            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+            "blobStorage": "postgres",
+            "dataReference": "blobHash004",
           },
         ],
         "index": 1,
@@ -277,12 +265,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "blobStorage": "google",
+            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash004.txt",
+            "blobStorage": "postgres",
+            "dataReference": "blobHash004",
           },
         ],
         "index": 2,
@@ -1160,7 +1148,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1174,13 +1162,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
       "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
-      "hash": "blockHash008",
-      "slot": 108,
-      "timestamp": "2023-08-31T16:00:00.000Z",
     },
     "blockHash": "blockHash008",
     "blockNumber": 1008,
@@ -1201,7 +1183,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1218,7 +1200,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1235,7 +1217,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1249,13 +1231,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "250000",
       "blobGasPrice": "20",
-      "blobGasUsed": "5000000",
-      "excessBlobGas": "10000",
-      "hash": "blockHash005",
-      "slot": 105,
-      "timestamp": "2023-08-28T10:00:00.000Z",
     },
     "blockHash": "blockHash005",
     "blockNumber": 1005,
@@ -1350,7 +1326,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1391,7 +1367,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1408,7 +1384,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1425,7 +1401,7 @@ exports[`Transaction router > getByAddress > when getting expanded address resul
         "dataStorageReferences": [
           {
             "blobStorage": "google",
-            "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
             "blobStorage": "swarm",
@@ -1628,7 +1604,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "blobStorage": "google",
-          "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+          "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
         },
         {
           "blobStorage": "swarm",
@@ -1646,7 +1622,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "blobStorage": "google",
-          "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+          "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
         },
       ],
       "index": 1,
@@ -1659,12 +1635,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x2142337a5355685b119880ba35efdd6b",
       "dataStorageReferences": [
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash003",
+          "blobStorage": "google",
+          "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
         },
         {
-          "blobStorage": "google",
-          "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+          "blobStorage": "swarm",
+          "dataReference": "bzz://some-hash-for-blobHash003",
         },
       ],
       "index": 2,
@@ -1674,13 +1650,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
   ],
   "block": {
-    "blobAsCalldataGasUsed": "2042780",
     "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
-    "hash": "blockHash001",
-    "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
   },
   "blockHash": "blockHash001",
   "blockNumber": 1001,
@@ -1744,7 +1714,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "blobStorage": "google",
-          "dataReference": "7011893058/ob/Ha/sh/obHash001.txt",
+          "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
         },
         {
           "blobStorage": "swarm",
@@ -1762,7 +1732,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "blobStorage": "google",
-          "dataReference": "7011893058/ob/Ha/sh/obHash002.txt",
+          "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
         },
       ],
       "index": 1,
@@ -1775,12 +1745,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x2142337a5355685b119880ba35efdd6b",
       "dataStorageReferences": [
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash003",
+          "blobStorage": "google",
+          "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
         },
         {
-          "blobStorage": "google",
-          "dataReference": "7011893058/ob/Ha/sh/obHash003.txt",
+          "blobStorage": "swarm",
+          "dataReference": "bzz://some-hash-for-blobHash003",
         },
       ],
       "index": 2,

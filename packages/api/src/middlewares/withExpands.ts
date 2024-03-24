@@ -11,7 +11,7 @@ import { t } from "../trpc-client";
 import {
   dataStorageReferencesSelect,
   rollupSchema,
-  serializeBlobDataStorageReference,
+  serializeBlobDataStorageReferences,
   serializeDate,
   serializeDecimal,
   serializeRollup,
@@ -107,7 +107,7 @@ export const serializedExpandedTransactionSchema = z
     to: z.string().optional(),
     maxFeePerBlobGas: z.string().optional(),
     blobAsCalldataGasUsed: z.string().optional(),
-    rollup: rollupSchema.optional(),
+    rollup: rollupSchema.nullable().optional(),
   })
   .merge(serializedDerivedTxBlobGasFieldsSchema);
 
@@ -141,8 +141,8 @@ export function serializeExpandedBlob(
   }
 
   if (dataStorageReferences) {
-    expandedBlob.dataStorageReferences = dataStorageReferences.map(
-      serializeBlobDataStorageReference
+    expandedBlob.dataStorageReferences = serializeBlobDataStorageReferences(
+      dataStorageReferences
     );
   }
 
@@ -295,6 +295,7 @@ export const withExpands = t.middleware(({ next, input }) => {
         case "blob":
           exp.expandedBlobSelect = expandedBlobSelect;
           break;
+
         case "block":
           exp.expandedBlockSelect = expandedBlockSelect;
           break;

@@ -16,11 +16,11 @@ import type {
   ExpandedTransaction,
 } from "../../../middlewares/withExpands";
 import {
-  serializeBlobStorage,
   blobIndexSchema,
   blockNumberSchema,
   serializedBlobDataStorageReferenceSchema,
   isEmptyObject,
+  serializeBlobDataStorageReferences,
 } from "../../../utils";
 
 type BaseBlob = Pick<
@@ -100,20 +100,6 @@ export const serializedBlobSchema = serializedBaseBlobSchema.merge(
 
 export type SerializedBlob = z.infer<typeof serializedBlobSchema>;
 
-export function serializeBlobDataStorageReference(
-  dataStorageReference: Pick<
-    DBBlobDataStorageReference,
-    "blobStorage" | "dataReference"
-  >
-): SerializedBlobDataStorageReference {
-  const { blobStorage, dataReference } = dataStorageReference;
-
-  return {
-    blobStorage: serializeBlobStorage(blobStorage),
-    dataReference,
-  };
-}
-
 export function serializeBaseBlob({
   commitment,
   proof,
@@ -126,8 +112,8 @@ export function serializeBaseBlob({
     proof,
     size,
     versionedHash,
-    dataStorageReferences: dataStorageReferences.map(
-      serializeBlobDataStorageReference
+    dataStorageReferences: serializeBlobDataStorageReferences(
+      dataStorageReferences
     ),
   };
 }
