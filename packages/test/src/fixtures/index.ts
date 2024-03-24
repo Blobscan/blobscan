@@ -1,22 +1,11 @@
 import {
   BlobData,
-  type BlobStorage,
+  BlobDataStorageReference,
   type PrismaClient,
   type Rollup,
 } from "@prisma/client";
 
 import POSTGRES_DATA from "./postgres/data.json";
-
-type BlobDataStorageReferenceFixture = {
-  blobHash: string;
-  blobStorage: BlobStorage;
-  dataReference: string;
-};
-
-type BlobDataFixture = {
-  id: string;
-  data: Buffer;
-};
 
 export const fixtures = {
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
@@ -28,29 +17,11 @@ export const fixtures = {
   })),
   blobs: POSTGRES_DATA.blobs,
   blobDataStorageRefs:
-    POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReferenceFixture[],
+    POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReference[],
   blobDatas: POSTGRES_DATA.blobDatas.map<BlobData>((blobData) => ({
     id: blobData.id,
     data: Buffer.from(blobData.data, "hex"),
   })),
-  googleBlobData: [
-    {
-      versionedHash: "blobHash001",
-      data: "0x0e2e5a3a2011ad49f5055eb3227d66d5",
-    },
-    {
-      versionedHash: "blobHash002",
-      data: "0x1ad6f58b3af99d6f7f70adcee71a1813",
-    },
-    {
-      versionedHash: "blobHash003",
-      data: "0x2142337a5355685b119880ba35efdd6b",
-    },
-    {
-      versionedHash: "blobHash004",
-      data: "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
-    },
-  ],
   blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions,
   systemDate: POSTGRES_DATA.systemDate,
 
@@ -71,9 +42,7 @@ export const fixtures = {
       prisma.blockOverallStats.deleteMany(),
       prisma.transactionOverallStats.deleteMany(),
       prisma.blobOverallStats.deleteMany(),
-    ]);
 
-    await prisma.$transaction([
       prisma.blockchainSyncState.createMany({
         data: fixtures.blockchainSyncState,
       }),

@@ -39,9 +39,9 @@ services:
       - "4443:4443"
     command: ["-scheme", "http", "-port", "4443", "-data", "/data"]
     volumes:
-      - storage_data:/storage
+      - gcs_data:/data
       - type: bind
-        source: ./packages/test/src/fixtures/storage
+        source: ./packages/test/src/fixtures/gcs
         target: /data
 
   redis:
@@ -65,4 +65,4 @@ services:
 
 volumes:
   postgres-data:
-  storage_data:
+  gcs_data:
