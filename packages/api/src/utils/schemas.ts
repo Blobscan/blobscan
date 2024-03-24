@@ -57,7 +57,16 @@ export type ZodBlobStorageEnum = (typeof zodBlobStorageEnums)[number];
 
 export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 
-export const rollupSchema = z.enum(zodRollupEnums).nullable();
+// Use string and refine it as TRPC OpenAPI doesn't support enums yet
+export const rollupSchema = z
+  .string()
+  .refine((value) => {
+    const isNull = value === null;
+    const isRollupEnum = zodRollupEnums.includes(value as ZodRollupEnum);
+
+    return isNull || isRollupEnum;
+  })
+  .transform((value) => value as ZodRollupEnum);
 
 export const blockNumberSchema = z.number().nonnegative();
 
