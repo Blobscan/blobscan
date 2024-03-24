@@ -35,7 +35,8 @@ describe("Block router", async () => {
     runExpandsTestsSuite("block", ["transaction", "blob"], (expandInput) =>
       caller.block.getAll(expandInput).then(({ blocks }) => blocks)
     );
-    +it("should the total number of blocks correctly", async () => {
+
+    it("should the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.blocks.length;
 
       await ctx.prisma.blockOverallStats.populate();
