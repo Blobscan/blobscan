@@ -1,14 +1,34 @@
-import { withExpands } from "../../middlewares/withExpands";
-import { withFilters } from "../../middlewares/withFilters";
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import {
   createTransactionSelect,
   serializeTransaction,
   addDerivedFieldsToTransaction,
+  serializedTransactionSchema,
 } from "./common";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
-import type { GetAllOutput } from "./getAll.schema";
+
+const inputSchema = withAllFiltersSchema
+  .merge(createExpandsSchema(["block", "blob"]))
+  .merge(withPaginationSchema)
+  .optional();
+
+const outputSchema = z.object({
+  transactions: serializedTransactionSchema.array(),
+  totalTransactions: z.number(),
+});
 
 export const getAll = publicProcedure
   .meta({
@@ -19,11 +39,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blob transactions.",
     },
   })
-  .input(getAllInputSchema)
-  .output(getAllOutputSchema)
-  .use(withPagination)
+  .input(inputSchema)
   .use(withFilters)
   .use(withExpands)
+  .use(withPagination)
+  .output(outputSchema)
   .query(async ({ ctx }) => {
     const {
       blockRangeFilter,
@@ -69,12 +89,10 @@ export const getAll = publicProcedure
           }),
     ]);
 
-    const transactions: GetAllOutput["transactions"] = queriedTxs
-      .map(addDerivedFieldsToTransaction)
-      .map(serializeTransaction);
-
     return {
-      transactions,
+      transactions: queriedTxs
+        .map(addDerivedFieldsToTransaction)
+        .map(serializeTransaction),
       totalTransactions:
         typeof txCountOrStats === "number"
           ? txCountOrStats

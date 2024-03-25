@@ -1,19 +1,37 @@
-import { withExpands } from "../../middlewares/withExpands";
-import { withFilters } from "../../middlewares/withFilters";
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import {
   createTransactionSelect,
   addDerivedFieldsToTransaction,
   serializeTransaction,
 } from "./common";
-import { getByAddressInputSchema } from "./getByAddress.schema";
+
+const inputSchema = z
+  .object({
+    address: z.string(),
+  })
+  .merge(createExpandsSchema(["block", "blob"]))
+  .merge(withAllFiltersSchema)
+  .merge(withPaginationSchema);
 
 export const getByAddress = publicProcedure
-  .input(getByAddressInputSchema)
-  .use(withPagination)
+  .input(inputSchema)
   .use(withExpands)
   .use(withFilters)
+  .use(withPagination)
   .query(async ({ ctx: { prisma, expands, filters, pagination }, input }) => {
     const addressLowerCase = input.address.toLowerCase();
 

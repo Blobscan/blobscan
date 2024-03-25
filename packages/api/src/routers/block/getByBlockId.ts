@@ -1,20 +1,55 @@
 import { TRPCError } from "@trpc/server";
 
 import type { Prisma } from "@blobscan/db";
+import { z } from "@blobscan/zod";
 
-import { withExpands } from "../../middlewares/withExpands";
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import {
   calculateDerivedTxBlobGasFields,
   isEmptyObject,
   retrieveBlobData,
 } from "../../utils";
-import { createBlockSelect, serializeBlock } from "./common";
-import type { QueriedBlock } from "./common";
 import {
-  getByBlockIdOutputSchema,
-  getByBlockIdInputSchema,
-} from "./getByBlockId.schema";
+  createBlockSelect,
+  serializeBlock,
+  serializedBlockSchema,
+} from "./common";
+import type { QueriedBlock } from "./common";
+
+const blockIdSchema = z
+  .string()
+  .refine(
+    (id) => {
+      const isHash = id.startsWith("0x") && id.length === 66;
+      const s_ = Number(id);
+      const isNumber = !isNaN(s_) && s_ > 0;
+
+      return isHash || isNumber;
+    },
+    {
+      message: "Invalid block id",
+    }
+  )
+  .transform((id) => {
+    if (id.startsWith("0x")) {
+      return id;
+    }
+
+    return Number(id);
+  });
+
+const inputSchema = z
+  .object({
+    id: blockIdSchema,
+    reorg: z.boolean().optional(),
+  })
+  .merge(createExpandsSchema(["transaction", "blob"]));
+
+const outputSchema = serializedBlockSchema;
 
 export const getByBlockId = publicProcedure
   .meta({
@@ -25,9 +60,9 @@ export const getByBlockId = publicProcedure
       summary: "retrieves block details for given block number or hash.",
     },
   })
-  .input(getByBlockIdInputSchema)
-  .output(getByBlockIdOutputSchema)
+  .input(inputSchema)
   .use(withExpands)
+  .output(outputSchema)
   .query(
     async ({
       ctx: { blobStorageManager, prisma, expands },

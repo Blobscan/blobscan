@@ -23,35 +23,35 @@ const sortSchema = z.enum(["asc", "desc"]);
 
 const typeSchema = z.enum(["reorg", "finalized", "normal"]);
 
-export const blockRangeFilterSchema = z.object({
+export const withBlockRangeFilterSchema = z.object({
   startBlock: blockNumberSchema.optional(),
   endBlock: blockNumberSchema.optional(),
 });
 
-export const slotRangeFilterSchema = z.object({
+export const withSlotRangeFilterSchema = z.object({
   startSlot: slotSchema.optional(),
   endSlot: slotSchema.optional(),
 });
 
-export const rollupFilterSchema = z.object({
+export const withRollupFilterSchema = z.object({
   rollup: rollupSchema.optional(),
 });
 
-export const typeFilterSchema = z.object({
+export const withTypeFilterSchema = z.object({
   type: typeSchema.default("normal"),
 });
 
-export const sortFilterSchema = z.object({
+export const withSortFilterSchema = z.object({
   sort: sortSchema.default("desc"),
 });
 
-export const allFiltersSchema = sortFilterSchema
-  .merge(blockRangeFilterSchema)
-  .merge(slotRangeFilterSchema)
-  .merge(rollupFilterSchema)
-  .merge(typeFilterSchema);
+export const withAllFiltersSchema = withSortFilterSchema
+  .merge(withBlockRangeFilterSchema)
+  .merge(withSlotRangeFilterSchema)
+  .merge(withRollupFilterSchema)
+  .merge(withTypeFilterSchema);
 
-export type FiltersSchema = z.infer<typeof allFiltersSchema>;
+export type FiltersSchema = z.infer<typeof withAllFiltersSchema>;
 
 export const withFilters = t.middleware(({ next, input = {} }) => {
   const filters: Filters = {
@@ -62,7 +62,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     typeFilter: {},
   };
 
-  const filtersResult = allFiltersSchema.safeParse(input);
+  const filtersResult = withAllFiltersSchema.safeParse(input);
 
   if (filtersResult.success) {
     const { sort, type, endBlock, endSlot, rollup, startBlock, startSlot } =

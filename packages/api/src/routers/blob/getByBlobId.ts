@@ -1,14 +1,23 @@
 import { TRPCError } from "@trpc/server";
 
-import { withExpands } from "../../middlewares/withExpands";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
 import { createBlobSelect } from "./common/selects";
-import { serializeBlob } from "./common/serializers";
-import {
-  getByBlobIdInputSchema,
-  getByBlobIdOutputSchema,
-} from "./getByBlobId.schema";
+import { serializeBlob, serializedBlobSchema } from "./common/serializers";
+
+const inputSchema = z
+  .object({
+    id: z.string(),
+  })
+  .merge(createExpandsSchema(["transaction", "block"]));
+
+const outputSchema = serializedBlobSchema;
 
 export const getByBlobId = publicProcedure
   .meta({
@@ -20,9 +29,9 @@ export const getByBlobId = publicProcedure
         "retrieves blob details for given versioned hash or kzg commitment.",
     },
   })
-  .input(getByBlobIdInputSchema)
-  .output(getByBlobIdOutputSchema)
+  .input(inputSchema)
   .use(withExpands)
+  .output(outputSchema)
   .query(async ({ ctx: { prisma, blobStorageManager, expands }, input }) => {
     const { id } = input;
 

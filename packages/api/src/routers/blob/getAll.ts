@@ -1,11 +1,32 @@
-import { withExpands } from "../../middlewares/withExpands";
-import { withFilters } from "../../middlewares/withFilters";
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { createBlobsOnTransactionsSelect } from "./common/selects";
-import { serializeBlobOnTransaction } from "./common/serializers";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schemas";
-import type { GetAllOutput } from "./getAll.schemas";
+import {
+  serializeBlobOnTransaction,
+  serializedBlobOnTransactionSchema,
+} from "./common/serializers";
+
+const inputSchema = withPaginationSchema
+  .merge(withAllFiltersSchema)
+  .merge(createExpandsSchema(["transaction", "block"]));
+
+const outputSchema = z.object({
+  blobs: serializedBlobOnTransactionSchema.array(),
+  totalBlobs: z.number(),
+});
 
 export const getAll = publicProcedure
   .meta({
@@ -16,11 +37,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(getAllInputSchema)
-  .output(getAllOutputSchema)
+  .input(inputSchema)
   .use(withPagination)
   .use(withFilters)
   .use(withExpands)
+  .output(outputSchema)
   .query(async ({ ctx }) => {
     const {
       blockRangeFilter,
@@ -80,12 +101,8 @@ export const getAll = publicProcedure
           }),
     ]);
 
-    const serializedBlobs: GetAllOutput["blobs"] = txsBlobs.map(
-      serializeBlobOnTransaction
-    );
-
     return {
-      blobs: serializedBlobs,
+      blobs: txsBlobs.map(serializeBlobOnTransaction),
       totalBlobs:
         typeof blobCountOrStats === "number"
           ? blobCountOrStats

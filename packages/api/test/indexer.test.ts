@@ -15,7 +15,7 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
-import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots.schema";
+import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";

@@ -12,7 +12,7 @@ import type { Rollup } from "@blobscan/db";
 import { env } from "../src";
 import { createTRPCContext } from "../src/context";
 import type { FiltersSchema } from "../src/middlewares/withFilters";
-import type { PaginationSchema } from "../src/middlewares/withPagination";
+import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 import type { ZodExpandEnum } from "../src/utils";
 
@@ -20,7 +20,7 @@ type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
 type FilterAndPagination = Omit<FiltersSchema, "rollup"> & {
   rollup?: Lowercase<Rollup>;
-} & PaginationSchema;
+} & WithPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
 
@@ -63,10 +63,10 @@ export async function createTestContext({
 
 export function runPaginationTestsSuite(
   entity: Entity,
-  fetcher: (paginationInput: PaginationSchema) => Promise<unknown[]>
+  fetcher: (paginationInput: WithPaginationSchema) => Promise<unknown[]>
 ) {
   return describe(`when getting paginated ${entity} results`, () => {
-    let input: PaginationSchema;
+    let input: WithPaginationSchema;
 
     it("should default to the first page when no page was specified", async () => {
       input = {
@@ -188,7 +188,9 @@ export function runFiltersTestsSuite(
 export function runExpandsTestsSuite(
   entity: Entity,
   allowedExpands: ZodExpandEnum[],
-  fetcher: (input: PaginationSchema | { expand?: string }) => Promise<unknown>
+  fetcher: (
+    input: WithPaginationSchema | { expand?: string }
+  ) => Promise<unknown>
 ) {
   describe(`when getting expanded ${entity} results`, () => {
     if (allowedExpands.includes("block")) {

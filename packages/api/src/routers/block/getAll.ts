@@ -1,14 +1,35 @@
-import { withExpands } from "../../middlewares/withExpands";
-import { withFilters } from "../../middlewares/withFilters";
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { calculateDerivedTxBlobGasFields, isEmptyObject } from "../../utils";
-import { createBlockSelect, serializeBlock } from "./common";
-import type { QueriedBlock } from "./common";
 import {
-  getAllBlocksInputSchema,
-  getAllBlocksOutputSchema,
-} from "./getAll.schema";
+  createBlockSelect,
+  serializeBlock,
+  serializedBlockSchema,
+} from "./common";
+import type { QueriedBlock } from "./common";
+
+const inputSchema = withAllFiltersSchema
+  .merge(createExpandsSchema(["transaction", "blob"]))
+  .merge(withPaginationSchema)
+  .optional();
+
+const outputSchema = z.object({
+  blocks: serializedBlockSchema.array(),
+  totalBlocks: z.number(),
+});
 
 export const getAll = publicProcedure
   .meta({
@@ -19,11 +40,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blocks.",
     },
   })
-  .input(getAllBlocksInputSchema)
-  .output(getAllBlocksOutputSchema)
-  .use(withPagination)
+  .input(inputSchema)
   .use(withFilters)
   .use(withExpands)
+  .use(withPagination)
+  .output(outputSchema)
   .query(async ({ ctx }) => {
     const {
       blockRangeFilter,
@@ -79,8 +100,8 @@ export const getAll = publicProcedure
     }
 
     /**
-     * When rollup filter is set we need to filter out the transactions that don't match manually as the query returns
-     * all the transactions in the block
+     * When rollup filter is set we need to filter out the transactions don't
+     * match manually as the query returns all the transactions in the block
      */
     if (rollupFilter !== undefined) {
       blocks = queriedBlocks.map((block) => ({

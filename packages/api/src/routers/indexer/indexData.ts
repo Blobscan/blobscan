@@ -1,22 +1,48 @@
-import type { $Enums } from "@blobscan/db";
+import type { BlobDataStorageReference } from "@blobscan/db";
+import { toBigIntSchema, z } from "@blobscan/zod";
 
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
-import {
-  indexDataInputSchema,
-  indexDataOutputSchema,
-} from "./indexData.schema";
 import {
   createDBBlobs,
   createDBBlock,
   createDBTransactions,
 } from "./indexData.utils";
 
-type DBBlobStorageRef = {
-  blobHash: string;
-  blobStorage: $Enums.BlobStorage;
-  dataReference: string;
-};
+export const inputSchema = z.object({
+  block: z.object({
+    number: z.coerce.number(),
+    hash: z.string(),
+    timestamp: z.coerce.number(),
+    slot: z.coerce.number(),
+    blobGasUsed: toBigIntSchema,
+    excessBlobGas: toBigIntSchema,
+  }),
+  transactions: z.array(
+    z.object({
+      hash: z.string(),
+      from: z.string(),
+      to: z.string(),
+      blockNumber: z.coerce.number(),
+      gasPrice: toBigIntSchema,
+      maxFeePerBlobGas: toBigIntSchema,
+    })
+  ),
+  blobs: z.array(
+    z.object({
+      versionedHash: z.string(),
+      commitment: z.string(),
+      proof: z.string(),
+      data: z.string(),
+      txHash: z.string(),
+      index: z.coerce.number(),
+    })
+  ),
+});
+
+export const outputSchema = z.void();
+
+export type IndexDataInput = z.infer<typeof inputSchema>;
 
 export const indexData = jwtAuthedProcedure
   .meta({
@@ -28,15 +54,15 @@ export const indexData = jwtAuthedProcedure
       protect: true,
     },
   })
-  .input(indexDataInputSchema)
-  .output(indexDataOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .mutation(
     async ({ ctx: { prisma, blobStorageManager, blobPropagator }, input }) => {
       const operations = [];
 
       const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
 
-      let dbBlobStorageRefs: DBBlobStorageRef[] | undefined;
+      let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
 
       // 2. Store blobs' data
       if (!blobPropagator) {

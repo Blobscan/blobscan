@@ -1,10 +1,18 @@
+import { z } from "@blobscan/zod";
+
 import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
 import { BLOB_BASE_PATH } from "./common";
-import {
-  getBlobOverallStatsInputSchema,
-  getBlobOverallStatsOutputSchema,
-} from "./getBlobOverallStats.schema";
+
+export const inputSchema = z.void();
+
+export const outputSchema = z.object({
+  totalBlobs: z.number(),
+  totalUniqueBlobs: z.number(),
+  totalBlobSize: z.string(),
+  avgBlobSize: z.number(),
+  updatedAt: z.date(),
+});
 
 export function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
   return prisma.blobOverallStats
@@ -36,6 +44,6 @@ export const getBlobOverallStats = publicProcedure
       summary: "retrieves blobs overall stats.",
     },
   })
-  .input(getBlobOverallStatsInputSchema)
-  .output(getBlobOverallStatsOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .query(({ ctx }) => getBlobOverallStatsQuery(ctx.prisma));

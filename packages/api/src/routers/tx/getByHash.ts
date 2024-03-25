@@ -1,19 +1,28 @@
 import { TRPCError } from "@trpc/server";
 
-import { withExpands } from "../../middlewares/withExpands";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { isEmptyObject, retrieveBlobData } from "../../utils";
 import {
   addDerivedFieldsToTransaction,
   createTransactionSelect,
   serializeTransaction,
+  serializedTransactionSchema,
 } from "./common";
 import type { BaseTransaction } from "./common";
-import {
-  getByHashInputSchema,
-  getByHashOutputSchema,
-} from "./getByHash.schema";
 
+const inputSchema = z
+  .object({
+    hash: z.string(),
+  })
+  .merge(createExpandsSchema(["block", "blob"]));
+
+const outputSchema = serializedTransactionSchema;
 export const getByHash = publicProcedure
   .meta({
     openapi: {
@@ -23,9 +32,9 @@ export const getByHash = publicProcedure
       summary: "retrieves transaction details for given transaction hash.",
     },
   })
-  .input(getByHashInputSchema)
-  .output(getByHashOutputSchema)
+  .input(inputSchema)
   .use(withExpands)
+  .output(outputSchema)
   .query(
     async ({
       ctx: { blobStorageManager, expands, prisma },
@@ -63,8 +72,7 @@ export const getByHash = publicProcedure
           })
         );
       }
-      const tx = serializeTransaction(addDerivedFieldsToTransaction(queriedTx));
 
-      return tx;
+      return serializeTransaction(addDerivedFieldsToTransaction(queriedTx));
     }
   );

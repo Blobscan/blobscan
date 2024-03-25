@@ -27,6 +27,8 @@ import type {
 
 const zodExpandEnums = ["blob", "block", "transaction"] as const;
 
+export type ZodExpandEnum = (typeof zodExpandEnums)[number];
+
 const expandedTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   blobAsCalldataGasUsed: true,
   fromId: true,
@@ -252,7 +254,7 @@ export function serializeExpandedTransaction(
   return expandedTransaction;
 }
 
-export function createExpandKeysSchema(
+export function createExpandsSchema(
   allowedExpands: ZodExpand[] = ["blob", "block", "transaction"]
 ) {
   return z.object({
@@ -274,7 +276,7 @@ export function createExpandKeysSchema(
   });
 }
 
-const allExpandKeysSchema = createExpandKeysSchema();
+const allExpandKeysSchema = createExpandsSchema();
 
 export const withExpands = t.middleware(({ next, input }) => {
   const expandResult = allExpandKeysSchema.safeParse(input);

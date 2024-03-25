@@ -1,10 +1,20 @@
+import { z } from "@blobscan/zod";
+
 import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
 import { BLOCK_BASE_PATH } from "./common";
-import {
-  getBlockOverallStatsInputSchema,
-  getBlockOverallStatsOutputSchema,
-} from "./getBlockOverallStats.schema";
+
+export const outputSchema = z.object({
+  totalBlocks: z.number(),
+  totalBlobGasUsed: z.string(),
+  totalBlobAsCalldataGasUsed: z.string(),
+  totalBlobFee: z.string(),
+  totalBlobAsCalldataFee: z.string(),
+  avgBlobFee: z.number(),
+  avgBlobAsCalldataFee: z.number(),
+  avgBlobGasPrice: z.number(),
+  updatedAt: z.date(),
+});
 
 export const getBlockOverallStatsQuery = function (
   prisma: TRPCContext["prisma"]
@@ -46,6 +56,6 @@ export const getBlockOverallStats = publicProcedure
       summary: "retrieves blocks overall stats.",
     },
   })
-  .input(getBlockOverallStatsInputSchema)
-  .output(getBlockOverallStatsOutputSchema)
+  .input(z.void())
+  .output(outputSchema)
   .query(async ({ ctx }) => getBlockOverallStatsQuery(ctx.prisma));

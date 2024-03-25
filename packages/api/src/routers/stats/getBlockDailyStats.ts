@@ -1,9 +1,29 @@
-import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
-import { BLOCK_BASE_PATH } from "./common";
-import type { GetBlockDailyStatsOutputSchema } from "./getBlockDailyStats.schema";
-import { getBlockDailyStatsOutputSchema } from "./getBlockDailyStats.schema";
+import { z } from "@blobscan/zod";
 
-export const getBlockDailyStats = timeFrameProcedure
+import {
+  withTimeFrame,
+  withTimeFrameSchema,
+} from "../../middlewares/withTimeFrame";
+import { publicProcedure } from "../../procedures";
+import { BLOCK_BASE_PATH } from "./common";
+
+const inputSchema = withTimeFrameSchema;
+
+const outputSchema = z.object({
+  days: z.array(z.string()),
+  totalBlocks: z.array(z.number()),
+  totalBlobGasUsed: z.array(z.string()),
+  totalBlobAsCalldataGasUsed: z.array(z.string()),
+  totalBlobFees: z.array(z.string()),
+  totalBlobAsCalldataFees: z.array(z.string()),
+  avgBlobFees: z.array(z.number()),
+  avgBlobAsCalldataFees: z.array(z.number()),
+  avgBlobGasPrices: z.array(z.number()),
+});
+
+type OutputSchema = z.infer<typeof outputSchema>;
+
+export const getBlockDailyStats = publicProcedure
   .meta({
     openapi: {
       method: "GET",
@@ -12,7 +32,9 @@ export const getBlockDailyStats = timeFrameProcedure
       summary: "retrieves blocks time series stats.",
     },
   })
-  .output(getBlockDailyStatsOutputSchema)
+  .input(inputSchema)
+  .use(withTimeFrame)
+  .output(outputSchema)
   .query(({ ctx: { prisma, timeFrame } }) =>
     prisma.blockDailyStats
       .findMany({
@@ -25,7 +47,7 @@ export const getBlockDailyStats = timeFrameProcedure
         orderBy: { day: "asc" },
       })
       .then((stats) =>
-        stats.reduce<GetBlockDailyStatsOutputSchema>(
+        stats.reduce<OutputSchema>(
           (
             transformedStats,
             {
