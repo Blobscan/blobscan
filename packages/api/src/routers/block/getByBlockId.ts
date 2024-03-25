@@ -47,7 +47,7 @@ const inputSchema = z
     id: blockIdSchema,
     reorg: z.boolean().optional(),
   })
-  .merge(createExpandsSchema(["transaction", "blob"]));
+  .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
 
 const outputSchema = serializedBlockSchema;
 
@@ -93,15 +93,16 @@ export const getByBlockId = publicProcedure
       const isExpandedTransactionSet = !isEmptyObject(
         expands.expandedTransactionSelect
       );
-      const isExpandedBlobSet = !isEmptyObject(expands.expandedBlobSelect);
 
       if (isExpandedTransactionSet) {
         block.transactions = block.transactions.map((tx) => {
-          const derivedFields = calculateDerivedTxBlobGasFields({
-            blobGasPrice: block.blobGasPrice,
-            maxFeePerBlobGas: tx.maxFeePerBlobGas,
-            txBlobsLength: tx.blobs.length,
-          });
+          const derivedFields = tx.maxFeePerBlobGas
+            ? calculateDerivedTxBlobGasFields({
+                blobGasPrice: block.blobGasPrice,
+                maxFeePerBlobGas: tx.maxFeePerBlobGas,
+                txBlobsLength: tx.blobs.length,
+              })
+            : {};
 
           return {
             ...tx,
@@ -110,26 +111,23 @@ export const getByBlockId = publicProcedure
         });
       }
 
-      if (isExpandedBlobSet) {
-        await Promise.all([
-          block.transactions.flatMap((tx) =>
-            tx.blobs.map(async ({ blob }) => {
-              if (
-                blob.dataStorageReferences &&
-                blob.dataStorageReferences.length
-              ) {
-                const { data } = await retrieveBlobData(
-                  blobStorageManager,
-                  blob.dataStorageReferences
-                );
+      if (expands.expandBlobData) {
+        const txsBlobs = block.transactions.flatMap((tx) => tx.blobs);
 
-                blob.data = data;
-              }
-            })
-          ),
-        ]);
+        await Promise.all(
+          txsBlobs.map(async ({ blob }) => {
+            if (blob.dataStorageReferences?.length) {
+              const { data } = await retrieveBlobData(
+                blobStorageManager,
+                blob.dataStorageReferences
+              );
+
+              blob.data = data;
+            }
+          })
+        );
       }
 
-      return serializeBlock(queriedBlock);
+      return serializeBlock(block);
     }
   );

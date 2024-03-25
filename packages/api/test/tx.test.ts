@@ -59,8 +59,11 @@ describe("Transaction router", async () => {
   });
 
   describe("getByHash", () => {
-    runExpandsTestsSuite("transaction", ["block", "blob"], (expandsInput) =>
-      caller.tx.getByHash({ hash: "txHash001", ...expandsInput })
+    runExpandsTestsSuite(
+      "transaction",
+      ["block", "blob", "blob_data"],
+      (expandsInput) =>
+        caller.tx.getByHash({ hash: "txHash001", ...expandsInput })
     );
 
     it("should get a transaction by hash correctly", async () => {

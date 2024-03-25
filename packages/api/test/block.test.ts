@@ -36,7 +36,7 @@ describe("Block router", async () => {
       caller.block.getAll(expandInput).then(({ blocks }) => blocks)
     );
 
-    it("should the total number of blocks correctly", async () => {
+    it("should return the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.blocks.length;
 
       await ctx.prisma.blockOverallStats.populate();
@@ -59,8 +59,10 @@ describe("Block router", async () => {
     //   expect(result).toMatchSnapshot();
     // });
 
-    runExpandsTestsSuite("block", ["transaction", "blob"], (expandInput) =>
-      caller.block.getByBlockId({ id: "1002", ...expandInput })
+    runExpandsTestsSuite(
+      "block",
+      ["transaction", "blob", "blob_data"],
+      (expandInput) => caller.block.getByBlockId({ id: "1002", ...expandInput })
     );
 
     it("should fail when trying to get a block with an invalid hash", async () => {

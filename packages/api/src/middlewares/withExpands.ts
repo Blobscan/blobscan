@@ -16,7 +16,6 @@ import {
   serializeDecimal,
   serializeRollup,
   serializedBlobDataStorageReferenceSchema,
-  serializedDerivedTxBlobGasFieldsSchema,
   slotSchema,
 } from "../utils";
 import type {
@@ -25,7 +24,7 @@ import type {
   TypeOrEmpty,
 } from "../utils";
 
-const zodExpandEnums = ["blob", "block", "transaction"] as const;
+const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
 
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
@@ -59,12 +58,21 @@ const expandedBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
 
 export type ExpandedBlock = MakeFieldsMandatory<DBBlock, "number">;
 
-export type ExpandedTransaction = MakeFieldsMandatory<
-  DBTransaction & DerivedTxBlobGasFields,
-  "hash"
->;
+export type ExpandedTransaction = MakeFieldsMandatory<DBTransaction, "hash"> &
+  Partial<DerivedTxBlobGasFields>;
 
 export type ExpandedBlob = MakeFieldsMandatory<
+  DBBlob & {
+    dataStorageReferences: Pick<
+      BlobDataStorageReference,
+      "blobStorage" | "dataReference"
+    >[];
+    data?: string;
+  },
+  "versionedHash"
+>;
+
+export type ExpandedBlobData = MakeFieldsMandatory<
   DBBlob & {
     dataStorageReferences: Pick<
       BlobDataStorageReference,
@@ -80,6 +88,7 @@ export type ZodExpand = (typeof zodExpandEnums)[number];
 export type Expands = {
   expandedTransactionSelect: TypeOrEmpty<typeof expandedTransactionSelect>;
   expandedBlobSelect: TypeOrEmpty<typeof expandedBlobSelect>;
+  expandBlobData: boolean;
   expandedBlockSelect: TypeOrEmpty<typeof expandedBlockSelect>;
 };
 
@@ -100,8 +109,13 @@ export const serializedExpandedBlobSchema = z.object({
   dataStorageReferences: z
     .array(serializedBlobDataStorageReferenceSchema)
     .optional(),
-  data: z.string().optional(),
 });
+
+export const serializedExpandedBlobDataSchema = z
+  .object({
+    data: z.string().optional(),
+  })
+  .merge(serializedExpandedBlobSchema);
 
 export const serializedExpandedTransactionSchema = z
   .object({
@@ -111,10 +125,20 @@ export const serializedExpandedTransactionSchema = z
     blobAsCalldataGasUsed: z.string().optional(),
     rollup: rollupSchema.nullable().optional(),
   })
-  .merge(serializedDerivedTxBlobGasFieldsSchema);
+  .merge(
+    z.object({
+      blobGasBaseFee: z.string().optional(),
+      blobGasMaxFee: z.string().optional(),
+      blobGasUsed: z.string().optional(),
+    })
+  );
 
 export type SerializedExpandedBlob = z.infer<
   typeof serializedExpandedBlobSchema
+>;
+
+export type SerializedExpandedBlobData = z.infer<
+  typeof serializedExpandedBlobDataSchema
 >;
 
 export type SerializedExpandedBlock = z.infer<
@@ -127,7 +151,7 @@ export type SerializedExpandedTransaction = z.infer<
 export function serializeExpandedBlob(
   blob: ExpandedBlob
 ): SerializedExpandedBlob {
-  const { commitment, proof, size, dataStorageReferences, data } = blob;
+  const { commitment, proof, size, dataStorageReferences } = blob;
   const expandedBlob: SerializedExpandedBlob = {};
 
   if (commitment) {
@@ -148,11 +172,18 @@ export function serializeExpandedBlob(
     );
   }
 
-  if (data) {
-    expandedBlob.data = data;
+  return expandedBlob;
+}
+
+export function serializeExpandedBlobData(blob: ExpandedBlobData) {
+  const serializedBlob: SerializedExpandedBlobData =
+    serializeExpandedBlob(blob);
+
+  if (blob.data) {
+    serializedBlob.data = blob.data;
   }
 
-  return expandedBlob;
+  return serializedBlob;
 }
 
 export function serializeExpandedBlock(
@@ -203,7 +234,7 @@ export function serializeExpandedBlock(
 }
 
 export function serializeExpandedTransaction(
-  transaction: ExpandedTransaction & DerivedTxBlobGasFields
+  transaction: ExpandedTransaction
 ): SerializedExpandedTransaction {
   const {
     blobAsCalldataGasUsed,
@@ -254,9 +285,7 @@ export function serializeExpandedTransaction(
   return expandedTransaction;
 }
 
-export function createExpandsSchema(
-  allowedExpands: ZodExpand[] = ["blob", "block", "transaction"]
-) {
+export function createExpandsSchema(allowedExpands: ZodExpand[]) {
   return z.object({
     expand: z
       .string()
@@ -276,7 +305,12 @@ export function createExpandsSchema(
   });
 }
 
-const allExpandKeysSchema = createExpandsSchema();
+const allExpandKeysSchema = createExpandsSchema([
+  "blob",
+  "blob_data",
+  "block",
+  "transaction",
+]);
 
 export const withExpands = t.middleware(({ next, input }) => {
   const expandResult = allExpandKeysSchema.safeParse(input);
@@ -297,7 +331,12 @@ export const withExpands = t.middleware(({ next, input }) => {
         case "blob":
           exp.expandedBlobSelect = expandedBlobSelect;
           break;
-
+        case "blob_data": {
+          exp.expandBlobData = true;
+          // We need to expand the blob data as well
+          exp.expandedBlobSelect = expandedBlobSelect;
+          break;
+        }
         case "block":
           exp.expandedBlockSelect = expandedBlockSelect;
           break;
@@ -308,6 +347,7 @@ export const withExpands = t.middleware(({ next, input }) => {
     {
       expandedTransactionSelect: {},
       expandedBlobSelect: {},
+      expandBlobData: false,
       expandedBlockSelect: {},
     }
   );

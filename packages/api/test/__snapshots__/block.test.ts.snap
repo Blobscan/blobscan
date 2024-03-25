@@ -1288,6 +1288,123 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
 }
 `;
 
+exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded blob data 1`] = `
+{
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "5500000",
+  "excessBlobGas": "15000",
+  "hash": "blockHash002",
+  "number": 1002,
+  "slot": 102,
+  "timestamp": "2023-05-10T12:00:00.000Z",
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "commitment": "commitment001",
+          "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
+          "dataStorageReferences": [
+            {
+              "blobStorage": "google",
+              "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+            },
+            {
+              "blobStorage": "swarm",
+              "dataReference": "bzz://some-hash-for-blobHash001",
+            },
+          ],
+          "index": 0,
+          "proof": "proof001",
+          "size": 1000,
+          "versionedHash": "blobHash001",
+        },
+        {
+          "commitment": "commitment002",
+          "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
+          "dataStorageReferences": [
+            {
+              "blobStorage": "google",
+              "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+            },
+          ],
+          "index": 1,
+          "proof": "proof002",
+          "size": 1100,
+          "versionedHash": "blobHash002",
+        },
+        {
+          "commitment": "commitment003",
+          "data": "0x2142337a5355685b119880ba35efdd6b",
+          "dataStorageReferences": [
+            {
+              "blobStorage": "google",
+              "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+            },
+            {
+              "blobStorage": "swarm",
+              "dataReference": "bzz://some-hash-for-blobHash003",
+            },
+          ],
+          "index": 2,
+          "proof": "proof003",
+          "size": 1200,
+          "versionedHash": "blobHash003",
+        },
+        {
+          "commitment": "commitment004",
+          "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
+          "dataStorageReferences": [
+            {
+              "blobStorage": "google",
+              "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            },
+            {
+              "blobStorage": "postgres",
+              "dataReference": "blobHash004",
+            },
+          ],
+          "index": 3,
+          "proof": "proof004",
+          "size": 1300,
+          "versionedHash": "blobHash004",
+        },
+        {
+          "commitment": "commitment005",
+          "data": "0x227c67ad87439bf6aa2c94a56a0f099a",
+          "dataStorageReferences": [
+            {
+              "blobStorage": "postgres",
+              "dataReference": "blobHash005",
+            },
+          ],
+          "index": 4,
+          "proof": "proof005",
+          "size": 1400,
+          "versionedHash": "blobHash005",
+        },
+        {
+          "commitment": "commitment006",
+          "data": "0x39b710067e86cf6455c65306bae869dd",
+          "dataStorageReferences": [
+            {
+              "blobStorage": "postgres",
+              "dataReference": "blobHash006",
+            },
+          ],
+          "index": 5,
+          "proof": "proof006",
+          "size": 1500,
+          "versionedHash": "blobHash006",
+        },
+      ],
+      "hash": "txHash004",
+      "rollup": "base",
+    },
+  ],
+}
+`;
+
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
   "blobAsCalldataGasUsed": "255000",
@@ -1307,6 +1424,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
       "blobs": [
         {
           "commitment": "commitment001",
+          "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
           "dataStorageReferences": [
             {
               "blobStorage": "google",
@@ -1324,6 +1442,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "commitment002",
+          "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
           "dataStorageReferences": [
             {
               "blobStorage": "google",
@@ -1337,6 +1456,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "commitment003",
+          "data": "0x2142337a5355685b119880ba35efdd6b",
           "dataStorageReferences": [
             {
               "blobStorage": "google",
@@ -1354,6 +1474,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "commitment004",
+          "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
           "dataStorageReferences": [
             {
               "blobStorage": "google",
@@ -1371,6 +1492,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "commitment005",
+          "data": "0x227c67ad87439bf6aa2c94a56a0f099a",
           "dataStorageReferences": [
             {
               "blobStorage": "postgres",
@@ -1384,6 +1506,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "commitment006",
+          "data": "0x39b710067e86cf6455c65306bae869dd",
           "dataStorageReferences": [
             {
               "blobStorage": "postgres",

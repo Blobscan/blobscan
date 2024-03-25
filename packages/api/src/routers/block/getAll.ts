@@ -88,14 +88,20 @@ export const getAll = publicProcedure
     if (isTransactionSelectExpanded) {
       blocks = blocks.map((block) => ({
         ...block,
-        transactions: block.transactions.map((tx) => ({
-          ...tx,
-          ...calculateDerivedTxBlobGasFields({
-            blobGasPrice: block.blobGasPrice,
-            maxFeePerBlobGas: tx.maxFeePerBlobGas,
-            txBlobsLength: tx.blobs.length,
-          }),
-        })),
+        transactions: block.transactions.map((tx) => {
+          const derivedTxFields = tx.maxFeePerBlobGas
+            ? calculateDerivedTxBlobGasFields({
+                blobGasPrice: block.blobGasPrice,
+                maxFeePerBlobGas: tx.maxFeePerBlobGas,
+                txBlobsLength: tx.blobs.length,
+              })
+            : {};
+
+          return {
+            ...tx,
+            ...derivedTxFields,
+          };
+        }),
       }));
     }
 

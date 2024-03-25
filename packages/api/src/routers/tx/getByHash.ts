@@ -7,7 +7,7 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { isEmptyObject, retrieveBlobData } from "../../utils";
+import { retrieveBlobData } from "../../utils";
 import {
   addDerivedFieldsToTransaction,
   createTransactionSelect,
@@ -20,7 +20,7 @@ const inputSchema = z
   .object({
     hash: z.string(),
   })
-  .merge(createExpandsSchema(["block", "blob"]));
+  .merge(createExpandsSchema(["block", "blob", "blob_data"]));
 
 const outputSchema = serializedTransactionSchema;
 export const getByHash = publicProcedure
@@ -53,9 +53,7 @@ export const getByHash = publicProcedure
         });
       }
 
-      const isExpandedBlobSet = !isEmptyObject(expands.expandedBlobSelect);
-
-      if (isExpandedBlobSet) {
+      if (expands.expandBlobData) {
         await Promise.all(
           queriedTx.blobs.map(async ({ blob }) => {
             if (

@@ -17,12 +17,15 @@ export const baseBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   excessBlobGas: true,
 });
 
-export function createBlockSelect(expands: Expands) {
+export function createBlockSelect({
+  expandedTransactionSelect,
+  expandedBlobSelect,
+}: Expands) {
   return Prisma.validator<Prisma.BlockSelect>()({
     ...baseBlockSelect,
     transactions: {
       select: {
-        ...expands.expandedTransactionSelect,
+        ...expandedTransactionSelect,
         ...transactionReferenceSelect,
         // We need to select the rollup field to filter by it later if needed
         rollup: true,
@@ -33,7 +36,7 @@ export function createBlockSelect(expands: Expands) {
             blob: {
               select: {
                 ...blobReferenceSelect,
-                ...expands.expandedBlobSelect,
+                ...expandedBlobSelect,
               },
             },
           },

@@ -2,18 +2,17 @@ import type { Block as DBBlock } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
-  serializeExpandedBlob,
+  serializeExpandedBlobData,
   serializeExpandedTransaction,
-  serializedExpandedBlobSchema,
+  serializedExpandedBlobDataSchema,
   serializedExpandedTransactionSchema,
 } from "../../../middlewares/withExpands";
 import type {
-  ExpandedBlob,
+  ExpandedBlobData,
   ExpandedTransaction,
 } from "../../../middlewares/withExpands";
 import {
   blockNumberSchema,
-  serializedDerivedTxBlobGasFieldsSchema,
   serializeDate,
   serializeDecimal,
   serializedBlobDataStorageReferenceSchema,
@@ -42,11 +41,18 @@ export const serializedBlockSchema = z.object({
                 serializedBlobDataStorageReferenceSchema
               ),
             })
-            .merge(serializedExpandedBlobSchema)
+            .merge(serializedExpandedBlobDataSchema)
         ),
       })
-      .merge(serializedExpandedTransactionSchema)
-      .merge(serializedDerivedTxBlobGasFieldsSchema)
+      .merge(
+        serializedExpandedTransactionSchema.merge(
+          z.object({
+            blobGasBaseFee: z.string().optional(),
+            blobGasMaxFee: z.string().optional(),
+            blobGasUsed: z.string().optional(),
+          })
+        )
+      )
   ),
 });
 
@@ -68,7 +74,7 @@ export type QueriedBlock = Pick<
     blobs: {
       index: number;
       blobHash: string;
-      blob: ExpandedBlob;
+      blob: ExpandedBlobData;
     }[];
   } & ExpandedTransaction)[];
 };
@@ -86,8 +92,9 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
     transactions: rawTransactions,
   } = block;
 
-  const transactions = rawTransactions.map(
-    (rawTx): SerializedBlock["transactions"][number] => {
+  const transactions = rawTransactions
+    .sort((a, b) => a.hash.localeCompare(b.hash))
+    .map((rawTx): SerializedBlock["transactions"][number] => {
       const { hash, blobs } = rawTx;
       const sortedBlobs = blobs.sort((a, b) => a.index - b.index);
 
@@ -100,12 +107,11 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
           return {
             index,
             versionedHash: blobHash,
-            ...serializeExpandedBlob(blobData),
+            ...serializeExpandedBlobData(blobData),
           };
         }),
       };
-    }
-  );
+    });
 
   return {
     hash,

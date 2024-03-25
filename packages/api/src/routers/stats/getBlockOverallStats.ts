@@ -4,6 +4,7 @@ import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
 import { BLOCK_BASE_PATH } from "./common";
 
+const inputSchema = z.void();
 export const outputSchema = z.object({
   totalBlocks: z.number(),
   totalBlobGasUsed: z.string(),
@@ -56,6 +57,6 @@ export const getBlockOverallStats = publicProcedure
       summary: "retrieves blocks overall stats.",
     },
   })
-  .input(z.void())
+  .input(inputSchema)
   .output(outputSchema)
   .query(async ({ ctx }) => getBlockOverallStatsQuery(ctx.prisma));

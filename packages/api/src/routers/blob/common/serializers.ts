@@ -147,19 +147,21 @@ export function serializeBlob(blob: Blob): SerializedBlob {
   return {
     ...serializeBaseBlob(baseBlob),
     data: blob.data,
-    transactions: transactions.map(({ index, transaction }) => {
-      const { block, hash } = transaction;
-      const { number } = block;
+    transactions: transactions
+      .sort((a, b) => a.transaction.hash.localeCompare(b.transaction.hash))
+      .map(({ index, transaction }) => {
+        const { block, hash } = transaction;
+        const { number } = block;
 
-      return {
-        index,
-        hash,
-        ...serializeExpandedTransaction(transaction),
-        block: {
-          number,
-          ...serializeExpandedBlock(block),
-        },
-      };
-    }),
+        return {
+          index,
+          hash,
+          ...serializeExpandedTransaction(transaction),
+          block: {
+            number,
+            ...serializeExpandedBlock(block),
+          },
+        };
+      }),
   };
 }

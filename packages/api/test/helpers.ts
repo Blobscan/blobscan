@@ -11,10 +11,10 @@ import type { Rollup } from "@blobscan/db";
 
 import { env } from "../src";
 import { createTRPCContext } from "../src/context";
+import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
-import type { ZodExpandEnum } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 

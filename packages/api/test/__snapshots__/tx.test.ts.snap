@@ -1600,6 +1600,74 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blobs": [
     {
       "commitment": "commitment001",
+      "dataStorageReferences": [
+        {
+          "blobStorage": "google",
+          "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        },
+        {
+          "blobStorage": "swarm",
+          "dataReference": "bzz://some-hash-for-blobHash001",
+        },
+      ],
+      "index": 0,
+      "proof": "proof001",
+      "size": 1000,
+      "versionedHash": "blobHash001",
+    },
+    {
+      "commitment": "commitment002",
+      "dataStorageReferences": [
+        {
+          "blobStorage": "google",
+          "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        },
+      ],
+      "index": 1,
+      "proof": "proof002",
+      "size": 1100,
+      "versionedHash": "blobHash002",
+    },
+    {
+      "commitment": "commitment003",
+      "dataStorageReferences": [
+        {
+          "blobStorage": "google",
+          "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        },
+        {
+          "blobStorage": "swarm",
+          "dataReference": "bzz://some-hash-for-blobHash003",
+        },
+      ],
+      "index": 2,
+      "proof": "proof003",
+      "size": 1200,
+      "versionedHash": "blobHash003",
+    },
+  ],
+  "block": {
+    "blobGasPrice": "22",
+  },
+  "blockHash": "blockHash001",
+  "blockNumber": 1001,
+  "from": "address1",
+  "hash": "txHash001",
+  "maxFeePerBlobGas": "100",
+  "rollup": null,
+  "to": "address2",
+}
+`;
+
+exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob data 1`] = `
+{
+  "blobAsCalldataGasUsed": "1000",
+  "blobGasBaseFee": "8650752",
+  "blobGasMaxFee": "39321600",
+  "blobGasUsed": "393216",
+  "blobs": [
+    {
+      "commitment": "commitment001",
       "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
       "dataStorageReferences": [
         {

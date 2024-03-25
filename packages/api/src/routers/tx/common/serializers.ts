@@ -1,9 +1,9 @@
 import { z } from "@blobscan/zod";
 
 import {
-  serializeExpandedBlob,
+  serializeExpandedBlobData,
   serializeExpandedBlock,
-  serializedExpandedBlobSchema,
+  serializedExpandedBlobDataSchema,
   serializedExpandedBlockSchema,
 } from "../../../middlewares/withExpands";
 import {
@@ -32,7 +32,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
         versionedHash: z.string(),
         index: z.number(),
       })
-      .merge(serializedExpandedBlobSchema)
+      .merge(serializedExpandedBlobDataSchema)
   ),
   block: serializedExpandedBlockSchema.optional(),
 });
@@ -74,7 +74,7 @@ export function serializeBaseTransactionFields(
       return {
         versionedHash: blobHash,
         index: index,
-        ...serializeExpandedBlob(blob),
+        ...serializeExpandedBlobData(blob),
       };
     });
 

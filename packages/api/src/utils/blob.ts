@@ -12,8 +12,8 @@ import { serializeDecimal } from "./serializers";
 
 export type DerivedTxBlobGasFields = {
   blobGasBaseFee?: Prisma.Decimal;
-  blobGasMaxFee?: Prisma.Decimal;
-  blobGasUsed?: Prisma.Decimal;
+  blobGasMaxFee: Prisma.Decimal;
+  blobGasUsed: Prisma.Decimal;
 };
 
 const GAS_PER_BLOB = 2 ** 17; // 131_072
@@ -22,29 +22,23 @@ export function calculateDerivedTxBlobGasFields({
   blobGasPrice,
   txBlobsLength,
   maxFeePerBlobGas,
-}: Partial<{
-  blobGasPrice: Prisma.Decimal;
+}: {
+  blobGasPrice?: Prisma.Decimal;
   txBlobsLength: number;
   maxFeePerBlobGas: Prisma.Decimal;
-}>): DerivedTxBlobGasFields {
-  const derivedBlobGasFields: DerivedTxBlobGasFields = {};
+}): DerivedTxBlobGasFields {
+  const blobGasUsed = new Prisma.Decimal(txBlobsLength).mul(GAS_PER_BLOB);
+  const blobGasMaxFee = maxFeePerBlobGas.mul(blobGasUsed);
 
-  if (txBlobsLength) {
-    derivedBlobGasFields.blobGasUsed = new Prisma.Decimal(txBlobsLength).mul(
-      GAS_PER_BLOB
+  const derivedBlobGasFields: DerivedTxBlobGasFields = {
+    blobGasUsed,
+    blobGasMaxFee,
+  };
+
+  if (blobGasPrice) {
+    derivedBlobGasFields.blobGasBaseFee = blobGasPrice.mul(
+      derivedBlobGasFields.blobGasUsed
     );
-
-    if (blobGasPrice) {
-      derivedBlobGasFields.blobGasBaseFee = blobGasPrice.mul(
-        derivedBlobGasFields.blobGasUsed
-      );
-    }
-
-    if (maxFeePerBlobGas) {
-      derivedBlobGasFields.blobGasMaxFee = maxFeePerBlobGas.mul(
-        derivedBlobGasFields.blobGasUsed
-      );
-    }
   }
 
   return derivedBlobGasFields;
@@ -52,8 +46,8 @@ export function calculateDerivedTxBlobGasFields({
 
 export const serializedDerivedTxBlobGasFieldsSchema = z.object({
   blobGasBaseFee: z.string().optional(),
-  blobGasMaxFee: z.string().optional(),
-  blobGasUsed: z.string().optional(),
+  blobGasMaxFee: z.string(),
+  blobGasUsed: z.string(),
 });
 
 export type SerializedDerivedTxBlobGasFields = z.infer<
@@ -65,18 +59,13 @@ export function serializeDerivedTxBlobGasFields({
   blobGasMaxFee,
   blobGasUsed,
 }: DerivedTxBlobGasFields): SerializedDerivedTxBlobGasFields {
-  const serializedFields: SerializedDerivedTxBlobGasFields = {};
+  const serializedFields: SerializedDerivedTxBlobGasFields = {
+    blobGasMaxFee: serializeDecimal(blobGasMaxFee),
+    blobGasUsed: serializeDecimal(blobGasUsed),
+  };
 
   if (blobGasBaseFee) {
     serializedFields.blobGasBaseFee = serializeDecimal(blobGasBaseFee);
-  }
-
-  if (blobGasMaxFee) {
-    serializedFields.blobGasMaxFee = serializeDecimal(blobGasMaxFee);
-  }
-
-  if (blobGasUsed) {
-    serializedFields.blobGasUsed = serializeDecimal(blobGasUsed);
   }
 
   return serializedFields;
