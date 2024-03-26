@@ -628,6 +628,181 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 ]
 `;
 
+exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the date range specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash005",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash004",
+    "blockNumber": 1004,
+    "from": "address2",
+    "hash": "txHash011",
+    "maxFeePerBlobGas": "100",
+    "rollup": "base",
+    "to": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash003",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash004",
+    "blockNumber": 1004,
+    "from": "address3",
+    "hash": "txHash010",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash003",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash004",
+    "blockNumber": 1004,
+    "from": "address5",
+    "hash": "txHash009",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address6",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash002",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash004",
+    "blockNumber": 1004,
+    "from": "address5",
+    "hash": "txHash008",
+    "maxFeePerBlobGas": "100",
+    "rollup": "arbitrum",
+    "to": "address6",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash001",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash004",
+    "blockNumber": 1004,
+    "from": "address1",
+    "hash": "txHash007",
+    "maxFeePerBlobGas": "100",
+    "rollup": "optimism",
+    "to": "address2",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash001",
+      },
+      {
+        "index": 1,
+        "versionedHash": "blobHash001",
+      },
+      {
+        "index": 2,
+        "versionedHash": "blobHash001",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash003",
+    "blockNumber": 1003,
+    "from": "address2",
+    "hash": "txHash006",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash002",
+      },
+      {
+        "index": 1,
+        "versionedHash": "blobHash002",
+      },
+      {
+        "index": 2,
+        "versionedHash": "blobHash001",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash003",
+    "blockNumber": 1003,
+    "from": "address2",
+    "hash": "txHash005",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address4",
+  },
+]
+`;
+
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the rollup specified 1`] = `
 [
   {
@@ -742,6 +917,89 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 `;
 
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the block specified without including it 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "1200",
+    "blobGasBaseFee": "5767168",
+    "blobGasMaxFee": "31457280",
+    "blobGasUsed": "262144",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash001",
+      },
+      {
+        "index": 1,
+        "versionedHash": "blobHash002",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash001",
+    "blockNumber": 1001,
+    "from": "address5",
+    "hash": "txHash003",
+    "maxFeePerBlobGas": "120",
+    "rollup": "optimism",
+    "to": "address6",
+  },
+  {
+    "blobAsCalldataGasUsed": "1100",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "14417920",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash001",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash001",
+    "blockNumber": 1001,
+    "from": "address3",
+    "hash": "txHash002",
+    "maxFeePerBlobGas": "110",
+    "rollup": null,
+    "to": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash001",
+      },
+      {
+        "index": 1,
+        "versionedHash": "blobHash002",
+      },
+      {
+        "index": 2,
+        "versionedHash": "blobHash003",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash001",
+    "blockNumber": 1001,
+    "from": "address1",
+    "hash": "txHash001",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address2",
+  },
+]
+`;
+
+exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the date specified without including it 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "1200",
@@ -960,6 +1218,85 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "maxFeePerBlobGas": "100",
     "rollup": "optimism",
     "to": "address4",
+  },
+]
+`;
+
+exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the date specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash001",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash008",
+    "blockNumber": 1008,
+    "from": "address2",
+    "hash": "txHash016",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "blobHash004",
+      },
+      {
+        "index": 1,
+        "versionedHash": "blobHash004",
+      },
+      {
+        "index": 2,
+        "versionedHash": "blobHash004",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash007",
+    "blockNumber": 1007,
+    "from": "address5",
+    "hash": "txHash015",
+    "maxFeePerBlobGas": "100",
+    "rollup": "optimism",
+    "to": "address4",
+  },
+  {
+    "blobAsCalldataGasUsed": "1000",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "13107200",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "blockHash006",
+    "blockNumber": 1006,
+    "from": "address5",
+    "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+    "maxFeePerBlobGas": "100",
+    "rollup": null,
+    "to": "address6",
   },
 ]
 `;

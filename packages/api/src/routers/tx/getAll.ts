@@ -45,24 +45,14 @@ export const getAll = publicProcedure
   .use(withPagination)
   .output(outputSchema)
   .query(async ({ ctx }) => {
-    const {
-      blockRangeFilter,
-      slotRangeFilter,
-      rollupFilter,
-      sort,
-      typeFilter,
-    } = ctx.filters;
+    const { blockFilters, transactionFilters, sort } = ctx.filters;
 
     const [queriedTxs, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction.findMany({
         select: createTransactionSelect(ctx.expands),
         where: {
-          rollup: rollupFilter,
-          block: {
-            ...blockRangeFilter,
-            ...slotRangeFilter,
-            ...typeFilter,
-          },
+          ...transactionFilters,
+          block: blockFilters,
         },
         orderBy: [
           {
@@ -76,10 +66,10 @@ export const getAll = publicProcedure
         ],
         ...ctx.pagination,
       }),
-      rollupFilter
+      transactionFilters.rollup
         ? ctx.prisma.transaction.count({
             where: {
-              rollup: rollupFilter,
+              rollup: transactionFilters.rollup,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({

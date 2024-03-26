@@ -506,6 +506,213 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 ]
 `;
 
+exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the date range specified 1`] = `
+[
+  {
+    "blockNumber": 1004,
+    "commitment": "commitment005",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "postgres",
+        "dataReference": "blobHash005",
+      },
+    ],
+    "index": 0,
+    "proof": "proof005",
+    "size": 1400,
+    "transaction": {
+      "rollup": "base",
+    },
+    "txHash": "txHash011",
+    "versionedHash": "blobHash005",
+  },
+  {
+    "blockNumber": 1004,
+    "commitment": "commitment003",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
+      },
+    ],
+    "index": 0,
+    "proof": "proof003",
+    "size": 1200,
+    "txHash": "txHash010",
+    "versionedHash": "blobHash003",
+  },
+  {
+    "blockNumber": 1004,
+    "commitment": "commitment003",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
+      },
+    ],
+    "index": 0,
+    "proof": "proof003",
+    "size": 1200,
+    "txHash": "txHash009",
+    "versionedHash": "blobHash003",
+  },
+  {
+    "blockNumber": 1004,
+    "commitment": "commitment002",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+      },
+    ],
+    "index": 0,
+    "proof": "proof002",
+    "size": 1100,
+    "transaction": {
+      "rollup": "arbitrum",
+    },
+    "txHash": "txHash008",
+    "versionedHash": "blobHash002",
+  },
+  {
+    "blockNumber": 1004,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 0,
+    "proof": "proof001",
+    "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "txHash007",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1003,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 2,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash006",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1003,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 1,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash006",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1003,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 0,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash006",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1003,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 2,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash005",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1003,
+    "commitment": "commitment002",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+      },
+    ],
+    "index": 1,
+    "proof": "proof002",
+    "size": 1100,
+    "txHash": "txHash005",
+    "versionedHash": "blobHash002",
+  },
+  {
+    "blockNumber": 1003,
+    "commitment": "commitment002",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+      },
+    ],
+    "index": 0,
+    "proof": "proof002",
+    "size": 1100,
+    "txHash": "txHash005",
+    "versionedHash": "blobHash002",
+  },
+]
+`;
+
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the rollup specified 1`] = `
 [
   {
@@ -706,6 +913,123 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 `;
 
 exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the block specified without including it 1`] = `
+[
+  {
+    "blockNumber": 1001,
+    "commitment": "commitment002",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+      },
+    ],
+    "index": 1,
+    "proof": "proof002",
+    "size": 1100,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "txHash003",
+    "versionedHash": "blobHash002",
+  },
+  {
+    "blockNumber": 1001,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 0,
+    "proof": "proof001",
+    "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "txHash003",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1001,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 0,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash002",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1001,
+    "commitment": "commitment003",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash003",
+      },
+    ],
+    "index": 2,
+    "proof": "proof003",
+    "size": 1200,
+    "txHash": "txHash001",
+    "versionedHash": "blobHash003",
+  },
+  {
+    "blockNumber": 1001,
+    "commitment": "commitment002",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+      },
+    ],
+    "index": 1,
+    "proof": "proof002",
+    "size": 1100,
+    "txHash": "txHash001",
+    "versionedHash": "blobHash002",
+  },
+  {
+    "blockNumber": 1001,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 0,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash001",
+    "versionedHash": "blobHash001",
+  },
+]
+`;
+
+exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the date specified without including it 1`] = `
 [
   {
     "blockNumber": 1001,
@@ -1025,6 +1349,115 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
+  },
+]
+`;
+
+exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the date specified 1`] = `
+[
+  {
+    "blockNumber": 1008,
+    "commitment": "commitment001",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash001",
+      },
+    ],
+    "index": 0,
+    "proof": "proof001",
+    "size": 1000,
+    "txHash": "txHash016",
+    "versionedHash": "blobHash001",
+  },
+  {
+    "blockNumber": 1007,
+    "commitment": "commitment004",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+      },
+      {
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
+      },
+    ],
+    "index": 2,
+    "proof": "proof004",
+    "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "txHash015",
+    "versionedHash": "blobHash004",
+  },
+  {
+    "blockNumber": 1007,
+    "commitment": "commitment004",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+      },
+      {
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
+      },
+    ],
+    "index": 1,
+    "proof": "proof004",
+    "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "txHash015",
+    "versionedHash": "blobHash004",
+  },
+  {
+    "blockNumber": 1007,
+    "commitment": "commitment004",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "google",
+        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+      },
+      {
+        "blobStorage": "postgres",
+        "dataReference": "blobHash004",
+      },
+    ],
+    "index": 0,
+    "proof": "proof004",
+    "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "txHash015",
+    "versionedHash": "blobHash004",
+  },
+  {
+    "blockNumber": 1006,
+    "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "postgres",
+        "dataReference": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+      },
+      {
+        "blobStorage": "swarm",
+        "dataReference": "bzz://some-hash-for-blobHash006",
+      },
+    ],
+    "index": 0,
+    "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
+    "size": 1500,
+    "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+    "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
 ]
 `;

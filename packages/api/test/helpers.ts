@@ -167,6 +167,31 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
+    it("should return the results starting from the date specified", async () => {
+      const result = await fetcher({
+        startDate: new Date("2023-08-31"),
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should return the results ending at the date specified without including it", async () => {
+      const result = await fetcher({
+        endDate: new Date("2022-12-01"),
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should return the results corresponding to the date range specified", async () => {
+      const result = await fetcher({
+        startDate: new Date("2023-08-03"),
+        endDate: new Date("2023-08-28"),
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
     it("should return the results starting from the slot specified", async () => {
       const result = await fetcher({
         startSlot: 107,
