@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -8,17 +9,33 @@ import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
-import { buildAddressExternalUrl } from "~/utils";
+import type { TransactionWithBlock } from "~/types";
+import {
+  buildAddressExternalUrl,
+  deserializeTransactionWithBlock,
+} from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
   const address = (router.query.address as string | undefined) ?? "";
 
-  const { data: addressData, error } = api.tx.getByAddress.useQuery(
-    { address, p, ps },
-    { enabled: router.isReady }
-  );
+  const { data: serializedAddressData, error } = api.tx.getByAddress.useQuery<{
+    transactions: TransactionWithBlock[];
+    totalTransactions: number;
+  }>({ address, p, ps, expand: "block" }, { enabled: router.isReady });
+  const addressData = useMemo(() => {
+    if (!serializedAddressData) {
+      return;
+    }
+
+    return {
+      totalTransactions: serializedAddressData.totalTransactions,
+      transactions: serializedAddressData.transactions.map(
+        deserializeTransactionWithBlock
+      ),
+    };
+  }, [serializedAddressData]);
 
   if (error) {
     return (
@@ -53,17 +70,20 @@ const Address: NextPage = () => {
           addressData ? `(${addressData.totalTransactions})` : ""
         }`}
         items={addressData?.transactions.map((tx) => {
-          const { block, ...filteredTx } = tx;
+          const { block, blobs, ...restTx } = tx;
 
           return (
             <BlobTransactionCard
               key={tx.hash}
-              transaction={filteredTx}
-              block={{ ...block }}
+              transaction={restTx}
+              block={{
+                timestamp: block.timestamp,
+              }}
+              blobs={blobs}
             />
           );
         })}
-        totalItems={addressData?.totalTransactions}
+        totalItems={serializedAddressData?.totalTransactions}
         page={p}
         pageSize={ps}
         itemSkeleton={<BlobTransactionCard />}

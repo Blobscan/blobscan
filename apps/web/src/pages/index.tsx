@@ -15,10 +15,14 @@ import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { api } from "~/api-client";
+import type { TransactionWithBlock } from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
+  deserializeBlock,
+  deserializeBlockOverallStats,
+  deserializeTransactionWithBlock,
 } from "~/utils";
 
 const LATEST_BLOCKS_LENGTH = 4;
@@ -29,23 +33,27 @@ const DAILY_STATS_TIMEFRAME = "15d";
 const Home: NextPage = () => {
   const router = useRouter();
   const {
-    data: latestBlocks,
+    data: rawBlocksData,
     error: latestBlocksError,
     isLoading: latestBlocksLoading,
-  } = api.block.getAllFull.useQuery({
+  } = api.block.getAll.useQuery({
     p: 1,
     ps: LATEST_BLOCKS_LENGTH,
   });
   const {
-    data: latestTxs,
+    data: rawTxsData,
     isLoading: latestTxsLoading,
     error: latestTxsError,
-  } = api.tx.getAllFull.useQuery({
+  } = api.tx.getAll.useQuery<{
+    totalTransactions: number;
+    transactions: TransactionWithBlock[];
+  }>({
     p: 1,
     ps: LATEST_TXS_LENGTH,
+    expand: "block",
   });
   const {
-    data: latestBlobs,
+    data: blobsData,
     isLoading: latestBlobsLoading,
     error: latestBlobsError,
   } = api.blob.getAll.useQuery({
@@ -53,7 +61,7 @@ const Home: NextPage = () => {
     ps: LATEST_BLOBS_LENGTH,
   });
 
-  const { data: overallStats_, error: overallStatsErr } =
+  const { data: rawOverallStats, error: overallStatsErr } =
     api.stats.getAllOverallStats.useQuery();
   const { data: dailyTxStats, error: dailyTxStatsErr } =
     api.stats.getTransactionDailyStats.useQuery({
@@ -63,30 +71,30 @@ const Home: NextPage = () => {
     api.stats.getBlockDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
     });
+  const latestBlocks = useMemo(() => {
+    if (!rawBlocksData) {
+      return [];
+    }
+
+    return rawBlocksData.blocks.map(deserializeBlock);
+  }, [rawBlocksData]);
+  const latestTransactions = useMemo(() => {
+    if (!rawTxsData) {
+      return [];
+    }
+
+    return rawTxsData.transactions.map(deserializeTransactionWithBlock);
+  }, [rawTxsData]);
   const overallStats = useMemo(() => {
-    const totalBlobAsCalldataFee = overallStats_?.block?.totalBlobAsCalldataFee;
-    const totalBlobFee = overallStats_?.block?.totalBlobFee;
-    const totalBlobGasUsed = overallStats_?.block?.totalBlobGasUsed;
-    const totalBlobAsCalldataGasUsed =
-      overallStats_?.block?.totalBlobAsCalldataGasUsed;
+    if (!rawOverallStats) {
+      return;
+    }
 
     return {
-      ...overallStats_,
-      block: {
-        ...overallStats_?.block,
-        totalBlobAsCalldataFee: totalBlobAsCalldataFee
-          ? BigInt(totalBlobAsCalldataFee)
-          : undefined,
-        totalBlobFee: totalBlobFee ? BigInt(totalBlobFee) : undefined,
-        totalBlobGasUsed: totalBlobGasUsed
-          ? BigInt(totalBlobGasUsed)
-          : undefined,
-        totalBlobAsCalldataGasUsed: totalBlobAsCalldataGasUsed
-          ? BigInt(totalBlobAsCalldataGasUsed)
-          : undefined,
-      },
+      ...rawOverallStats,
+      block: deserializeBlockOverallStats(rawOverallStats.block),
     };
-  }, [overallStats_]);
+  }, [rawOverallStats]);
 
   const error =
     latestBlocksError ||
@@ -105,9 +113,7 @@ const Home: NextPage = () => {
     );
   }
 
-  const blocks = latestBlocks?.blocks ?? [];
-  const txs = latestTxs?.transactions ?? [];
-  const blobs = latestBlobs?.blobs ?? [];
+  const latestBlobs = blobsData?.blobs ?? [];
   const totalBlobSize = overallStats?.blob?.totalBlobSize;
 
   return (
@@ -205,7 +211,7 @@ const Home: NextPage = () => {
           }
           emptyState="No blocks"
         >
-          {latestBlocksLoading || !blocks || blocks.length ? (
+          {latestBlocksLoading || !latestBlocks || latestBlocks.length ? (
             <div className="flex flex-col flex-wrap gap-5 lg:flex-row">
               {latestBlocksLoading
                 ? Array(LATEST_BLOCKS_LENGTH)
@@ -215,7 +221,7 @@ const Home: NextPage = () => {
                         <BlockCard />
                       </div>
                     ))
-                : blocks.map((b) => (
+                : latestBlocks.map((b) => (
                     <div className="flex-grow" key={b.hash}>
                       <BlockCard block={b} />
                     </div>
@@ -238,20 +244,23 @@ const Home: NextPage = () => {
             }
             emptyState="No transactions"
           >
-            {latestTxsLoading || !txs || txs.length ? (
+            {latestTxsLoading ||
+            !latestTransactions ||
+            latestTransactions.length ? (
               <div className="flex flex-col gap-5">
                 {latestTxsLoading
                   ? Array(LATEST_TXS_LENGTH)
                       .fill(0)
                       .map((_, i) => <BlobTransactionCard key={i} />)
-                  : txs.map((tx) => {
-                      const { block, ...filteredTx } = tx;
+                  : latestTransactions.map((latestTx) => {
+                      const { block, ...tx } = latestTx;
 
                       return (
                         <BlobTransactionCard
-                          key={tx.hash}
-                          transaction={filteredTx}
-                          block={{ ...block }}
+                          key={latestTx.hash}
+                          transaction={tx}
+                          block={block}
+                          blobs={latestTx.blobs}
                         />
                       );
                     })}
@@ -271,13 +280,13 @@ const Home: NextPage = () => {
             }
             emptyState="No blobs"
           >
-            {latestBlobsLoading || !blobs || blobs.length ? (
+            {latestBlobsLoading || !latestBlobs || latestBlobs.length ? (
               <div className="flex flex-col gap-5">
                 {latestBlobsLoading
                   ? Array(LATEST_BLOBS_LENGTH)
                       .fill(0)
                       .map((_, i) => <BlobCard key={i} />)
-                  : blobs.map((b) => (
+                  : latestBlobs.map((b) => (
                       <BlobCard key={b.versionedHash} blob={b} />
                     ))}
               </div>

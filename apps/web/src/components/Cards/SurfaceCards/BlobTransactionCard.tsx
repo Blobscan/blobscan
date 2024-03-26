@@ -7,15 +7,15 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { Button } from "~/components/Button";
-import type { Block } from "~/types";
 import {
+  BLOB_SIZE,
   buildAddressRoute,
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
-  normalizeTimestamp,
 } from "~/utils";
+import type { DeserializedFullTransaction } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -40,8 +40,15 @@ const CollapseIcon: React.FC<{
 };
 
 type BlobTransactionCardProps = Partial<{
-  block: Pick<Block, "timestamp" | "number">;
-  transaction: Block["transactions"][0];
+  transaction: Pick<
+    DeserializedFullTransaction,
+    "hash" | "from" | "to" | "rollup" | "blockNumber"
+  >;
+  block: Pick<DeserializedFullTransaction["block"], "timestamp">;
+  blobs: Pick<
+    DeserializedFullTransaction["blobs"][number],
+    "versionedHash" | "index"
+  >[];
 }>;
 
 const TableCol: FC<{ children: React.ReactNode }> = function ({ children }) {
@@ -57,8 +64,9 @@ const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
 };
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
-  block: { number, timestamp } = {},
-  transaction: { hash, fromId, toId, rollup, blobs: blobsOnTx } = {},
+  block: { timestamp } = {},
+  transaction: { hash, from, to, rollup, blockNumber } = {},
+  blobs: blobsOnTx,
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -84,8 +92,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 
   useEffect(updateHeight, [opened, updateHeight]);
 
-  const totalBlobSize =
-    blobsOnTx?.reduce((acc, { blob }) => acc + blob.size, 0) ?? 0;
+  const totalBlobSize = (blobsOnTx?.length ?? 0) * BLOB_SIZE;
 
   return (
     <div>
@@ -110,18 +117,18 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
             <div className="w-full md:w-2/3">
               <div className="flex flex-col space-y-2 truncate">
                 <div className="flex flex-col gap-1 md:flex-row md:items-center">
-                  {fromId && toId ? (
+                  {from && to ? (
                     <>
                       <div className="mt-1 md:hidden">From</div>
-                      <Link href={buildAddressRoute(fromId)}>
-                        <span className="text-xs">{fromId}</span>
+                      <Link href={buildAddressRoute(from)}>
+                        <span className="text-xs">{from}</span>
                       </Link>
-                      {toId && (
+                      {to && (
                         <>
-                          <ArrowRightIcon className="hidden h-2 w-2 md:block" />
+                          <ArrowRightIcon className="hidden h-4 w-4 md:block" />
                           <div className="mt-1 md:hidden">To</div>
-                          <Link href={buildAddressRoute(toId)}>
-                            <span className="text-xs">{toId}</span>
+                          <Link href={buildAddressRoute(to)}>
+                            <span className="text-xs">{to}</span>
                           </Link>
                         </>
                       )}
@@ -149,29 +156,31 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 </div>
               </div>
             </div>
-            {!!number && !!timestamp && (
+            {!!blockNumber && !!timestamp && (
               <div className="t flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
                 <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Block
-                  <Link href={buildBlockRoute(number)}>{number}</Link>
+                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
                 </div>
                 <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                  {normalizeTimestamp(timestamp).fromNow()}
+                  {timestamp.fromNow()}
                 </div>
               </div>
             )}
           </div>
-          <div className="-mb-2 flex items-center justify-center md:-mt-5">
-            <CollapseIcon
-              opened={opened}
-              onClick={() => {
-                setOpened((op) => !op);
-              }}
-            />
-          </div>
+          {hash && (
+            <div className="-mb-2 flex items-center justify-center md:-mt-5">
+              <CollapseIcon
+                opened={opened}
+                onClick={() => {
+                  setOpened((op) => !op);
+                }}
+              />
+            </div>
+          )}
         </div>
       </SurfaceCardBase>
-      {blobsOnTx && hash && (
+      {blobsOnTx && (
         <div className="overflow-hidden bg-primary-200 pr-4 dark:bg-primary-900">
           <animated.div
             style={{
@@ -187,13 +196,15 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <TableHeader>Index</TableHeader>
               <TableHeader>Versioned Hash</TableHeader>
               <TableHeader>Size</TableHeader>
-              {blobsOnTx.map(({ blobHash, blob, index }) => (
-                <React.Fragment key={`${blobHash}-${index}`}>
+              {blobsOnTx.map(({ versionedHash, index }) => (
+                <React.Fragment key={`${versionedHash}-${index}`}>
                   <TableCol>{index}</TableCol>
                   <TableCol>
-                    <Link href={buildBlobRoute(blobHash)}>{blobHash}</Link>
+                    <Link href={buildBlobRoute(versionedHash)}>
+                      {versionedHash}
+                    </Link>
                   </TableCol>
-                  <TableCol>{formatBytes(blob.size)}</TableCol>
+                  <TableCol>{formatBytes(BLOB_SIZE)}</TableCol>
                 </React.Fragment>
               ))}
             </div>
