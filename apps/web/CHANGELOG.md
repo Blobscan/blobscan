@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.5.0
+
+### Minor Changes
+
+- [#342](https://github.com/Blobscan/blobscan/pull/342) [`3eae290`](https://github.com/Blobscan/blobscan/commit/3eae290014be20c64d56b72feb9c41dbad056684) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new hamburger mobile menu
+
 ## 0.4.1
 
 ### Patch Changes
