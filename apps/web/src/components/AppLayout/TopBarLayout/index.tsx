@@ -18,9 +18,12 @@ export const TopBarLayout: React.FC = () => {
         </div>
         <div className="flex items-center gap-3">
           <NavMenusSection />
-          <div className="relative -top-[2px]">
+          <div className="relative -top-[2px] hidden md:block">
             <ThemeModeButton />
           </div>
+        </div>
+        <div className="relative -top-[2px] md:hidden">
+          <ThemeModeButton />
         </div>
       </nav>
     );
