@@ -207,6 +207,31 @@ export function runFiltersTestsSuite(
 
       expect(result).toMatchSnapshot();
     });
+
+    it("should return the results corresponding to the sender address specified", async () => {
+      const result = await fetcher({
+        from: "address1",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should return the results corresponding to the receiver address specified", async () => {
+      const result = await fetcher({
+        to: "address2",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should return the results corresponding to the sender and receiver addresses specified", async () => {
+      const result = await fetcher({
+        from: "address1",
+        to: "address2",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
   });
 }
 

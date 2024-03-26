@@ -69,3 +69,7 @@ export const blockNumberSchema = z.number().nonnegative();
 export const slotSchema = z.number().nonnegative();
 
 export const blobIndexSchema = z.number().nonnegative();
+
+export const addressSchema = z
+  .string()
+  .transform((value) => value.toLowerCase());

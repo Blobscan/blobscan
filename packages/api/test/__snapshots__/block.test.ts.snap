@@ -737,6 +737,123 @@ exports[`Block router > getAll > when getting filtered block results > should re
 ]
 `;
 
+exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the receiver address specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": "2023-08-20T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+        "rollup": "optimism",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash008",
+        "rollup": "arbitrum",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash005",
+          },
+        ],
+        "hash": "txHash011",
+        "rollup": "base",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+          {
+            "index": 2,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
+        "rollup": "optimism",
+      },
+    ],
+  },
+]
+`;
+
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the rollup specified 1`] = `
 [
   {
@@ -831,6 +948,324 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "slot": 101,
     "timestamp": "2022-10-16T12:00:00.000Z",
     "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
+        "rollup": "optimism",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the sender address specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": "2023-08-20T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+        "rollup": "optimism",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash008",
+        "rollup": "arbitrum",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash005",
+          },
+        ],
+        "hash": "txHash011",
+        "rollup": "base",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": "2023-05-10T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+          {
+            "index": 2,
+            "versionedHash": "blobHash003",
+          },
+          {
+            "index": 3,
+            "versionedHash": "blobHash004",
+          },
+          {
+            "index": 4,
+            "versionedHash": "blobHash005",
+          },
+          {
+            "index": 5,
+            "versionedHash": "blobHash006",
+          },
+        ],
+        "hash": "txHash004",
+        "rollup": "base",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+          {
+            "index": 2,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
+        "rollup": "optimism",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": "2023-08-20T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+        "rollup": "optimism",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash008",
+        "rollup": "arbitrum",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash005",
+          },
+        ],
+        "hash": "txHash011",
+        "rollup": "base",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": "2023-05-10T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+          {
+            "index": 2,
+            "versionedHash": "blobHash003",
+          },
+          {
+            "index": 3,
+            "versionedHash": "blobHash004",
+          },
+          {
+            "index": 4,
+            "versionedHash": "blobHash005",
+          },
+          {
+            "index": 5,
+            "versionedHash": "blobHash006",
+          },
+        ],
+        "hash": "txHash004",
+        "rollup": "base",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+          {
+            "index": 1,
+            "versionedHash": "blobHash002",
+          },
+          {
+            "index": 2,
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
       {
         "blobs": [
           {

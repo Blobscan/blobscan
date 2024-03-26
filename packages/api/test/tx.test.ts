@@ -83,29 +83,4 @@ describe("Transaction router", async () => {
       );
     });
   });
-
-  describe("getByAddress", () => {
-    const address = "address2";
-
-    runPaginationTestsSuite("address", (paginationInput) =>
-      caller.tx
-        .getByAddress({ ...paginationInput, address })
-        .then(({ transactions }) => transactions)
-    );
-
-    runExpandsTestsSuite("address", ["block", "blob"], (expandsInput) =>
-      caller.tx
-        .getByAddress({ ...expandsInput, address })
-        .then(({ transactions }) => transactions)
-    );
-
-    it("should return the total number of transactions for an address", async () => {
-      const expectedTotalAddressTransactions = fixtures.txs.filter(
-        (tx) => tx.fromId === address || tx.toId === address
-      ).length;
-      const { totalTransactions } = await caller.tx.getByAddress({ address });
-
-      expect(totalTransactions).toBe(expectedTotalAddressTransactions);
-    });
-  });
 });

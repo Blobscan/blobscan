@@ -20,22 +20,25 @@ const Address: NextPage = () => {
   const { p, ps } = getPaginationParams(router.query);
   const address = (router.query.address as string | undefined) ?? "";
 
-  const { data: serializedAddressData, error } = api.tx.getByAddress.useQuery<{
+  const { data: serializedAddressTxs, error } = api.tx.getAll.useQuery<{
     transactions: TransactionWithBlock[];
     totalTransactions: number;
-  }>({ address, p, ps, expand: "block" }, { enabled: router.isReady });
-  const addressData = useMemo(() => {
-    if (!serializedAddressData) {
+  }>(
+    { to: address, from: address, p, ps, expand: "block" },
+    { enabled: router.isReady }
+  );
+  const addressTxsData = useMemo(() => {
+    if (!serializedAddressTxs) {
       return;
     }
 
     return {
-      totalTransactions: serializedAddressData.totalTransactions,
-      transactions: serializedAddressData.transactions.map(
+      totalTransactions: serializedAddressTxs.totalTransactions,
+      transactions: serializedAddressTxs.transactions.map(
         deserializeTransactionWithBlock
       ),
     };
-  }, [serializedAddressData]);
+  }, [serializedAddressTxs]);
 
   if (error) {
     return (
@@ -67,9 +70,9 @@ const Address: NextPage = () => {
       />
       <PaginatedListLayout
         title={`Blob Transactions ${
-          addressData ? `(${addressData.totalTransactions})` : ""
+          addressTxsData ? `(${addressTxsData.totalTransactions})` : ""
         }`}
-        items={addressData?.transactions.map((tx) => {
+        items={addressTxsData?.transactions.map((tx) => {
           const { block, blobs, ...restTx } = tx;
 
           return (
@@ -83,7 +86,7 @@ const Address: NextPage = () => {
             />
           );
         })}
-        totalItems={serializedAddressData?.totalTransactions}
+        totalItems={addressTxsData?.totalTransactions}
         page={p}
         pageSize={ps}
         itemSkeleton={<BlobTransactionCard />}

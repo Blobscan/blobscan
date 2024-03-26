@@ -2,7 +2,12 @@ import type { $Enums, Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
-import { blockNumberSchema, rollupSchema, slotSchema } from "../utils";
+import {
+  addressSchema,
+  blockNumberSchema,
+  rollupSchema,
+  slotSchema,
+} from "../utils";
 import type { TypeOrEmpty } from "../utils";
 
 export type Filters = {
@@ -16,7 +21,10 @@ export type Filters = {
   >;
   transactionFilters: TypeOrEmpty<
     Partial<{
-      rollup?: $Enums.Rollup;
+      rollup: $Enums.Rollup;
+      fromId: Prisma.TransactionWhereInput["fromId"];
+      toId: Prisma.TransactionWhereInput["toId"];
+      OR: Prisma.TransactionWhereInput[];
     }>
   >;
   sort: Prisma.SortOrder;
@@ -49,6 +57,11 @@ export const withDateRangeFilterSchema = z.object({
   endDate: z.date().optional(),
 });
 
+export const withAddressFilterSchema = z.object({
+  from: addressSchema.optional(),
+  to: addressSchema.optional(),
+});
+
 export const withSortFilterSchema = z.object({
   sort: sortSchema.default("desc"),
 });
@@ -58,6 +71,7 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withDateRangeFilterSchema)
   .merge(withSlotRangeFilterSchema)
   .merge(withRollupFilterSchema)
+  .merge(withAddressFilterSchema)
   .merge(withTypeFilterSchema);
 
 export type FiltersSchema = z.infer<typeof withAllFiltersSchema>;
@@ -82,11 +96,14 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
       startSlot,
       startDate,
       endDate,
+      from,
+      to,
     } = filtersResult.data;
 
     const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
     const dateRangeExists = startDate !== undefined || endDate !== undefined;
     const slotRangeExists = startSlot !== undefined || endSlot !== undefined;
+    const addressExists = from !== undefined || to !== undefined;
 
     if (blockRangeExists) {
       filters.blockFilters.number = {
@@ -107,6 +124,23 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
         lt: endSlot,
         gte: startSlot,
       };
+    }
+
+    if (addressExists) {
+      if (from && to) {
+        filters.transactionFilters.OR = [
+          {
+            fromId: from,
+          },
+          {
+            toId: to,
+          },
+        ];
+      } else if (from) {
+        filters.transactionFilters.fromId = from;
+      } else if (to) {
+        filters.transactionFilters.toId = to;
+      }
     }
 
     filters.blockFilters.transactionForks =
