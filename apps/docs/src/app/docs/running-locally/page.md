@@ -38,17 +38,17 @@ SKIP_ENV_VALIDATION=true npm run build
 
 ## Setup environment variables
 
-{% callout type="warning" title="PostgreSQL databse" %}
+{% callout type="warning" title="PostgreSQL database" %}
 You need to have access to a database.
 {% /callout %}
 
 You can use the provided docker-compose file to spin up a PostgreSQL service:
 
 ```shell
-docker compose up -d postgres
+docker compose -f docker-compose.local.yml up -d postgres redis
 ```
 
-Configure the [environment variables](/docs/environment) accordingly including the `DATABASE_URL`.
+Configure the [environment variables](/docs/environment) accordingly, including the `DATABASE_URL`.
 
 ## Run
 
@@ -68,7 +68,7 @@ pnpm db:generate
 
 Metrics are recalculated every 15 minutes if you are running the cron job.
 
-During development you may want to force backfilling all the data which can
+During development, you may want to force backfilling all the data, which can
 be achieved using the following commands:
 
 ```shell
@@ -81,7 +81,7 @@ pnpm job:overall
 pnpm job:daily
 ```
 
-In case you need to delete aggregated metrics you can use the stats aggregation cli:
+In case you need to delete aggregated metrics, you can use the stats aggregation cli:
 
 ```shell
 cd clis/stats-aggregation-cli
