@@ -5,7 +5,12 @@ import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 import "react-loading-skeleton/dist/skeleton.css";
+import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
+import { parseAbi, parseEther } from "viem";
+import { useWriteContract } from "wagmi";
+
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
 import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
@@ -13,6 +18,7 @@ import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import Modal from "~/components/Modal";
 import { api } from "~/api-client";
 import {
   buildBlockRoute,
@@ -51,6 +57,8 @@ const Blob: NextPage = function () {
       enabled: router.isReady,
     }
   );
+  const { data: hash, writeContract } = useWriteContract();
+  const { openConnectModal, connectModalOpen } = useConnectModal();
 
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Original");
@@ -66,6 +74,20 @@ const Blob: NextPage = function () {
       return [, "Couldn't format blob data"];
     }
   }, [blob?.data, selectedBlobViewMode]);
+
+  function handleSwamrDonation() {
+    // writeContract({
+    //   address: "0x45a1502382541cd610cc9068e88727426b696293",
+    //   abi: parseAbi([
+    //     "function topUp(bytes32 _batchId, uint256 _topupAmountPerChunk) external",
+    //   ]),
+    //   functionName: "topUp",
+    //   args: [
+    //     "0x394c6927473b0441b7e0a2bfd94494c4de5b3a3a1515e9689f03d4aac32d791",
+    //     parseEther("2"),
+    //   ],
+    // });
+  }
 
   if (error) {
     return (
@@ -102,13 +124,32 @@ const Blob: NextPage = function () {
         name: "Storages",
         value: (
           <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map((ref, index) => (
-              <StorageBadge
-                key={index}
-                storage={ref.blobStorage}
-                dataRef={ref.dataReference}
-              />
-            ))}
+            {blob.dataStorageReferences.map((ref, index) => {
+              if (ref.blobStorage === "SWARM") {
+                return (
+                  <>
+                    <StorageBadge
+                      key={index}
+                      storage={ref.blobStorage}
+                      dataRef={ref.dataReference}
+                    />
+                    <Button
+                      variant="primary"
+                      label="Donate to preserve data"
+                      onClick={openConnectModal}
+                    />
+                  </>
+                );
+              }
+
+              return (
+                <StorageBadge
+                  key={index}
+                  storage={ref.blobStorage}
+                  dataRef={ref.dataReference}
+                />
+              );
+            })}
           </div>
         ),
       });
@@ -180,6 +221,7 @@ const Blob: NextPage = function () {
           )}
         </SurfaceCardBase>
       </Card>
+      <Modal visible={connectModalOpen} />
     </>
   );
 };

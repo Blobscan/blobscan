@@ -20,9 +20,9 @@ const dailyStatsModels: Record<string, DailyStatsModel> = {
   transaction: prisma.transactionDailyStats,
 };
 
-export class AppConfigUpdater extends PeriodicUpdater {
+export class DailyStatsUpdater extends PeriodicUpdater {
   constructor(redisUriOrConnection: string | Redis) {
-    const name = "app-config-syncer";
+    const name = "daily-stats-syncer";
     super({
       name,
       redisUriOrConnection,
