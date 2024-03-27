@@ -7,6 +7,10 @@ import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
+import {
+  withFilters,
+  withTypeFilterSchema,
+} from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import {
   calculateDerivedTxBlobGasFields,
@@ -45,8 +49,8 @@ const blockIdSchema = z
 const inputSchema = z
   .object({
     id: blockIdSchema,
-    reorg: z.boolean().optional(),
   })
+  .merge(withTypeFilterSchema)
   .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
 
 const outputSchema = serializedBlockSchema;
@@ -62,22 +66,26 @@ export const getByBlockId = publicProcedure
   })
   .input(inputSchema)
   .use(withExpands)
+  .use(withFilters)
   .output(outputSchema)
   .query(
     async ({
-      ctx: { blobStorageManager, prisma, expands },
-      input: { id, reorg },
+      ctx: { blobStorageManager, prisma, expands, filters },
+      input: { id },
     }) => {
-      const idWhereFilters: Prisma.BlockWhereInput[] =
-        typeof id === "number" ? [{ number: id }] : [{ hash: id }];
+      const isNumber = typeof id === "number";
+      const blockIdFilter: Prisma.BlockWhereInput = {
+        [isNumber ? "number" : "hash"]: id,
+      };
 
       const queriedBlock = await prisma.block.findFirst({
         select: createBlockSelect(expands),
         where: {
-          OR: idWhereFilters,
-          transactionForks: {
-            ...(reorg ? { some: {} } : { none: {} }),
-          },
+          ...blockIdFilter,
+          // Hash is unique, so we don't need to filter by transaction forks if we're querying by it
+          transactionForks: isNumber
+            ? filters.blockFilters.transactionForks
+            : undefined,
         },
       });
 

@@ -1857,6 +1857,80 @@ exports[`Block router > getByBlockId > should get a block by block number 1`] = 
 }
 `;
 
+exports[`Block router > getByBlockId > should get a block by hash 1`] = `
+{
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "2500000",
+  "excessBlobGas": "55000",
+  "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+  "number": 1008,
+  "slot": 110,
+  "timestamp": "2023-08-31T15:50:00.000Z",
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "index": 0,
+          "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+        },
+      ],
+      "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+      "rollup": "optimism",
+    },
+  ],
+}
+`;
+
+exports[`Block router > getByBlockId > should get a reorged block by block number 1`] = `
+{
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "2500000",
+  "excessBlobGas": "55000",
+  "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+  "number": 1008,
+  "slot": 110,
+  "timestamp": "2023-08-31T15:50:00.000Z",
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "index": 0,
+          "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+        },
+      ],
+      "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+      "rollup": "optimism",
+    },
+  ],
+}
+`;
+
+exports[`Block router > getByBlockId > should get the canonical block when providing a block number matching a reorged block 1`] = `
+{
+  "blobAsCalldataGasUsed": "255000",
+  "blobGasPrice": "22",
+  "blobGasUsed": "5500000",
+  "excessBlobGas": "15000",
+  "hash": "blockHash008",
+  "number": 1008,
+  "slot": 108,
+  "timestamp": "2023-08-31T16:00:00.000Z",
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "index": 0,
+          "versionedHash": "blobHash001",
+        },
+      ],
+      "hash": "txHash016",
+    },
+  ],
+}
+`;
+
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded blob 1`] = `
 {
   "blobAsCalldataGasUsed": "255000",

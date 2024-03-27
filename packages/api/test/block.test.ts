@@ -37,9 +37,12 @@ describe("Block router", async () => {
     );
 
     it("should return the total number of blocks correctly", async () => {
-      const expectedTotalBlocks = fixtures.blocks.length;
+      const expectedTotalBlocks = fixtures.canonicalBlocks.length;
 
-      await ctx.prisma.blockOverallStats.populate();
+      await ctx.prisma.blockOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
 
       const { totalBlocks } = await caller.block.getAll();
 
@@ -48,16 +51,40 @@ describe("Block router", async () => {
   });
 
   describe("getByBlockId", () => {
-    // it("should get a block by hash", async () => {
-    //   const input = {
-    //     id: "0xc6da05a52edaf584c2c340738ae012f229e2cd124f88e6800c56f7359b2401ad",
-    //   };
+    it("should get a block by hash", async () => {
+      const result = await caller.block.getByBlockId({
+        id: "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+      });
 
-    //   const result = await caller.block[
-    //     functionName as keyof typeof caller.block
-    //   ](input);
-    //   expect(result).toMatchSnapshot();
-    // });
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should get a block by block number", async () => {
+      type Input = inferProcedureInput<AppRouter["block"]["getByBlockId"]>;
+      const input: Input = {
+        id: "1002",
+      };
+
+      const result = await caller.block.getByBlockId(input);
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should get a reorged block by block number", async () => {
+      const result = await caller.block.getByBlockId({
+        id: "1008",
+        type: "reorged",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should get the canonical block when providing a block number matching a reorged block", async () => {
+      const result = await caller.block.getByBlockId({
+        id: "1008",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
 
     runExpandsTestsSuite(
       "block",
@@ -86,16 +113,6 @@ describe("Block router", async () => {
           message: `No block with id '${invalidHash}'.`,
         })
       );
-    });
-
-    it("should get a block by block number", async () => {
-      type Input = inferProcedureInput<AppRouter["block"]["getByBlockId"]>;
-      const input: Input = {
-        id: "1002",
-      };
-
-      const result = await caller.block.getByBlockId(input);
-      expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a block with a non-existent block number", async () => {
