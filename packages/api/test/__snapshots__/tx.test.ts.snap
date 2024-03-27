@@ -461,6 +461,33 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 ]
 `;
 
+exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "15550",
+    "blobGasBaseFee": "2883584",
+    "blobGasMaxFee": "74186752",
+    "blobGasUsed": "131072",
+    "blobs": [
+      {
+        "index": 0,
+        "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+      },
+    ],
+    "block": {
+      "blobGasPrice": "22",
+    },
+    "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+    "blockNumber": 1008,
+    "from": "address6",
+    "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+    "maxFeePerBlobGas": "566",
+    "rollup": "optimism",
+    "to": "address1",
+  },
+]
+`;
+
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the block range specified  1`] = `
 [
   {

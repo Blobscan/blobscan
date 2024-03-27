@@ -232,6 +232,14 @@ export function runFiltersTestsSuite(
 
       expect(result).toMatchSnapshot();
     });
+
+    it("should return the results corresponding to reorged blocks when 'reorged' type is specified", async () => {
+      const result = await fetcher({
+        type: "reorged",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
   });
 }
 

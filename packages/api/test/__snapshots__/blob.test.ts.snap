@@ -320,6 +320,29 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 ]
 `;
 
+exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
+[
+  {
+    "blockNumber": 1008,
+    "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
+    "dataStorageReferences": [
+      {
+        "blobStorage": "postgres",
+        "dataReference": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+      },
+    ],
+    "index": 0,
+    "proof": "0xaf8b65d906c672d670d3d9591ede355ac4dfc2f66f5690e836018fdb8582d3055474e3de6a069d3dfb4c15aa7c7f88a6",
+    "size": 128000,
+    "transaction": {
+      "rollup": "optimism",
+    },
+    "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+    "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+  },
+]
+`;
+
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the block range specified  1`] = `
 [
   {

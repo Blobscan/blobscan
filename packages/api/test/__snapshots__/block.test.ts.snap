@@ -522,6 +522,33 @@ exports[`Block router > getAll > when getting filtered block results > should re
 ]
 `;
 
+exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "2500000",
+    "excessBlobGas": "55000",
+    "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+    "number": 1008,
+    "slot": 110,
+    "timestamp": "2023-08-31T15:50:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "index": 0,
+            "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+          },
+        ],
+        "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+        "rollup": "optimism",
+      },
+    ],
+  },
+]
+`;
+
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the block range specified  1`] = `
 [
   {
