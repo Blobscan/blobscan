@@ -16,10 +16,6 @@ export const TIME_FRAMES = z.enum([
 
 export type TimeFrame = z.infer<typeof TIME_FRAMES>;
 
-export const withTimeFrameSchema = z.object({
-  timeFrame: TIME_FRAMES,
-});
-
 function getTimeFrameIntervals(timeFrame: TimeFrame): {
   initial: dayjs.Dayjs;
   final: dayjs.Dayjs;
@@ -49,6 +45,10 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): {
   }
 }
 
+export const withTimeFrameSchema = z.object({
+  timeFrame: TIME_FRAMES,
+});
+
 export const withTimeFrame = t.middleware(({ next, input }) => {
   const { timeFrame } = withTimeFrameSchema.parse(input);
 
@@ -58,7 +58,3 @@ export const withTimeFrame = t.middleware(({ next, input }) => {
     },
   });
 });
-
-export const timeFrameProcedure = t.procedure
-  .input(withTimeFrameSchema)
-  .use(withTimeFrame);

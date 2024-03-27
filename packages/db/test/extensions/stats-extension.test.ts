@@ -144,10 +144,14 @@ function runOverallStatsFunctionsTests(
         describe("when aggregating overall stats", statsCalculationTestsSuite);
 
         it("should populate stats after adding new items correctly", async () => {
-          await prismaModel.populate();
+          await prismaModel.increment({
+            from: 0,
+            to: 1010,
+          });
+
           await indexBlock();
 
-          await prismaModel.populate();
+          await prismaModel.increment({ from: 1011, to: 9999 });
 
           const result = await getOverallStats(prismaModel);
 
@@ -192,15 +196,6 @@ function runOverallStatsFunctionsTests(
 
 describe("Stats Extension", () => {
   const dayPeriod: DatePeriod = dayToDatePeriod("2023-08-31");
-  const fixtureBlobs = fixtures.blobsOnTransactions.map((btx) => {
-    const blob = fixtures.blobs.find(
-      (blob) => blob.versionedHash === btx.blobHash
-    );
-
-    if (!blob) throw new Error(`Blob with id ${btx.blobHash} not found`);
-
-    return blob;
-  });
 
   describe("Blob model", () => {
     runDailyStatsFunctionsTests("blobDailyStats", {
@@ -260,7 +255,10 @@ describe("Stats Extension", () => {
         let blobOverallStats: BlobOverallStats | null;
 
         beforeEach(async () => {
-          await prisma.blobOverallStats.populate();
+          await prisma.blobOverallStats.increment({
+            from: 0,
+            to: 9999,
+          });
 
           blobOverallStats = await prisma.blobOverallStats.findFirst();
 
@@ -270,13 +268,13 @@ describe("Stats Extension", () => {
         });
 
         it("should calculate the total amount of blobs correctly", async () => {
-          const expectedTotalBlobs = fixtures.blobsOnTransactions.length;
+          const expectedTotalBlobs = fixtures.canonicalBlobs.length;
 
           expect(blobOverallStats?.totalBlobs).toBe(expectedTotalBlobs);
         });
 
         it("should calculate the total amount of unique blobs correctly", async () => {
-          const expectedTotalUniqueBlobs = fixtures.blobs.length;
+          const expectedTotalUniqueBlobs = fixtures.canonicalUniqueBlobs.length;
 
           expect(blobOverallStats?.totalUniqueBlobs).toBe(
             expectedTotalUniqueBlobs
@@ -284,7 +282,7 @@ describe("Stats Extension", () => {
         });
 
         it("should calculate the total blob size correctly", async () => {
-          const expectedTotalBlobSize = fixtureBlobs.reduce(
+          const expectedTotalBlobSize = fixtures.canonicalBlobs.reduce(
             (acc, b) => acc + b.size,
             0
           );
@@ -295,12 +293,12 @@ describe("Stats Extension", () => {
         });
 
         it("should calculate the average blob size correctly", async () => {
-          const expectedTotalBlobSize = fixtureBlobs.reduce(
+          const expectedTotalBlobSize = fixtures.canonicalBlobs.reduce(
             (acc, btx) => acc + btx.size,
             0
           );
           const expectedAvgBlobSize =
-            expectedTotalBlobSize / fixtures.blobsOnTransactions.length;
+            expectedTotalBlobSize / fixtures.canonicalBlobs.length;
 
           expect(blobOverallStats?.avgBlobSize).toBe(expectedAvgBlobSize);
         });
@@ -410,11 +408,14 @@ describe("Stats Extension", () => {
 
     runOverallStatsFunctionsTests("blockOverallStats", {
       statsCalculationTestsSuite() {
-        const blocks = fixtures.blocks;
+        const expectedBlocks = fixtures.canonicalBlocks;
         let overallStats: BlockOverallStats | null;
 
         beforeEach(async () => {
-          await prisma.blockOverallStats.populate();
+          await prisma.blockOverallStats.increment({
+            from: 0,
+            to: 9999,
+          });
 
           overallStats = await prisma.blockOverallStats.findFirst();
         });
@@ -424,15 +425,18 @@ describe("Stats Extension", () => {
 
         it("should calculate the average blob fee correctly", () => {
           const expectedAvgBlobFee =
-            blocks.reduce((acc, b) => acc + b.blobGasUsed * b.blobGasPrice, 0) /
-            blocks.length;
+            expectedBlocks.reduce(
+              (acc, b) => acc + b.blobGasUsed * b.blobGasPrice,
+              0
+            ) / expectedBlocks.length;
 
           expect(overallStats?.avgBlobFee).toBe(expectedAvgBlobFee);
         });
 
         it("should calculate the average blob gas price correctly", () => {
           const expectedAvgBlobGasPrice =
-            blocks.reduce((acc, b) => acc + b.blobGasPrice, 0) / blocks.length;
+            expectedBlocks.reduce((acc, b) => acc + b.blobGasPrice, 0) /
+            expectedBlocks.length;
 
           expect(overallStats?.avgBlobGasPrice).toBe(expectedAvgBlobGasPrice);
         });
@@ -441,7 +445,7 @@ describe("Stats Extension", () => {
         it("should calculate the total blob as calldata fee correctly");
 
         it("should calculate the total blob as calldata gas used correctly", () => {
-          const expectedTotalBlobAsCalldataGasUsed = blocks.reduce(
+          const expectedTotalBlobAsCalldataGasUsed = expectedBlocks.reduce(
             (acc, b) => acc + b.blobAsCalldataGasUsed,
             0
           );
@@ -452,7 +456,7 @@ describe("Stats Extension", () => {
         });
 
         it("should calculate the total blob fee correctly", () => {
-          const expectedTotalBlobFee = blocks.reduce(
+          const expectedTotalBlobFee = expectedBlocks.reduce(
             (acc, b) => acc + b.blobGasUsed * b.blobGasPrice,
             0
           );
@@ -463,7 +467,7 @@ describe("Stats Extension", () => {
         });
 
         it("should calculate the total blob gas used correctly", () => {
-          const expectedTotalBlobGasUsed = blocks.reduce(
+          const expectedTotalBlobGasUsed = expectedBlocks.reduce(
             (acc, b) => acc + b.blobGasUsed,
             0
           );
@@ -474,7 +478,7 @@ describe("Stats Extension", () => {
         });
 
         it("should calculate the total blocks correctly", () => {
-          const expectedTotalBlocks = blocks.length;
+          const expectedTotalBlocks = expectedBlocks.length;
 
           expect(overallStats?.totalBlocks).toBe(expectedTotalBlocks);
         });
@@ -539,11 +543,14 @@ describe("Stats Extension", () => {
 
     runOverallStatsFunctionsTests("transactionOverallStats", {
       statsCalculationTestsSuite() {
-        const transactions = fixtures.txs;
+        const transactions = fixtures.canonicalTxs;
         let overallStats: TransactionOverallStats | null;
 
         beforeEach(async () => {
-          await prisma.transactionOverallStats.populate();
+          await prisma.transactionOverallStats.increment({
+            from: 0,
+            to: 9999,
+          });
 
           overallStats = await prisma.transactionOverallStats.findFirst();
         });

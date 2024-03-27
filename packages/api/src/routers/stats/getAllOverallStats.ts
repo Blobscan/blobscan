@@ -1,12 +1,27 @@
+import { z } from "@blobscan/zod";
+
 import { publicProcedure } from "../../procedures";
 import { BASE_PATH } from "./common";
 import {
-  getAllOverallStatsInputSchema,
-  getAllOverallStatsOutputSchema,
-} from "./getAllOverallStats.schema";
-import { getBlobOverallStatsQuery } from "./getBlobOverallStats";
-import { getBlockOverallStatsQuery } from "./getBlockOverallStats";
-import { getTransactionOverallStatsQuery } from "./getTransactionOverallStats";
+  outputSchema as getBlobOverallStatsOutputSchema,
+  getBlobOverallStatsQuery,
+} from "./getBlobOverallStats";
+import {
+  outputSchema as getBlockOverallStatsOutputSchema,
+  getBlockOverallStatsQuery,
+} from "./getBlockOverallStats";
+import {
+  outputSchema as getTransactionOverallStatsOutputSchema,
+  getTransactionOverallStatsQuery,
+} from "./getTransactionOverallStats";
+
+const inputSchema = z.void();
+
+const outputSchema = z.object({
+  blob: getBlobOverallStatsOutputSchema,
+  block: getBlockOverallStatsOutputSchema,
+  transaction: getTransactionOverallStatsOutputSchema,
+});
 
 export const getAllOverallStats = publicProcedure
   .meta({
@@ -17,9 +32,8 @@ export const getAllOverallStats = publicProcedure
       summary: "retrieves all overall stats.",
     },
   })
-  .input(getAllOverallStatsInputSchema)
-  // TODO: Find a better way to do this by trying to convert prisma types to zod types
-  .output(getAllOverallStatsOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .query(({ ctx: { prisma } }) =>
     Promise.all([
       getBlobOverallStatsQuery(prisma),

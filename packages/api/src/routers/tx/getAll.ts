@@ -1,7 +1,34 @@
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { formatFullTransactionForApi, fullTransactionSelect } from "./common";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
+import {
+  createTransactionSelect,
+  serializeTransaction,
+  addDerivedFieldsToTransaction,
+  serializedTransactionSchema,
+} from "./common";
+
+const inputSchema = withAllFiltersSchema
+  .merge(createExpandsSchema(["block", "blob"]))
+  .merge(withPaginationSchema)
+  .optional();
+
+const outputSchema = z.object({
+  transactions: serializedTransactionSchema.array(),
+  totalTransactions: z.number(),
+});
 
 export const getAll = publicProcedure
   .meta({
@@ -12,31 +39,37 @@ export const getAll = publicProcedure
       summary: "retrieves all blob transactions.",
     },
   })
-  .input(getAllInputSchema)
-  .output(getAllOutputSchema)
+  .input(inputSchema)
+  .use(withFilters)
+  .use(withExpands)
   .use(withPagination)
-  .query(async ({ input, ctx }) => {
-    const rollup = input?.rollup;
+  .output(outputSchema)
+  .query(async ({ ctx }) => {
+    const { blockFilters, transactionFilters, sort } = ctx.filters;
 
-    const [transactions, txCountOrStats] = await Promise.all([
-      ctx.prisma.transaction
-        .findMany({
-          select: fullTransactionSelect,
-          orderBy: {
+    const [queriedTxs, txCountOrStats] = await Promise.all([
+      ctx.prisma.transaction.findMany({
+        select: createTransactionSelect(ctx.expands),
+        where: {
+          ...transactionFilters,
+          block: blockFilters,
+        },
+        orderBy: [
+          {
             block: {
-              number: "desc",
+              number: sort,
             },
           },
-          where: {
-            rollup,
+          {
+            hash: sort,
           },
-          ...ctx.pagination,
-        })
-        .then((txs) => txs.map(formatFullTransactionForApi)),
-      rollup
+        ],
+        ...ctx.pagination,
+      }),
+      transactionFilters.rollup
         ? ctx.prisma.transaction.count({
             where: {
-              rollup,
+              rollup: transactionFilters.rollup,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({
@@ -47,7 +80,9 @@ export const getAll = publicProcedure
     ]);
 
     return {
-      transactions,
+      transactions: queriedTxs
+        .map(addDerivedFieldsToTransaction)
+        .map(serializeTransaction),
       totalTransactions:
         typeof txCountOrStats === "number"
           ? txCountOrStats

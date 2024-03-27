@@ -182,7 +182,7 @@ exports[`Stats Extension > Blob model > Overall stats functions > increment > sh
 
 exports[`Stats Extension > Blob model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
 {
-  "avgBlobSize": 1100,
+  "avgBlobSize": 1118.75,
   "id": 1,
   "totalBlobSize": 37400n,
   "totalBlobs": 34,
@@ -452,9 +452,9 @@ exports[`Stats Extension > Block model > Overall stats functions > increment > s
 
 exports[`Stats Extension > Block model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
 {
-  "avgBlobAsCalldataFee": 9421116,
-  "avgBlobFee": 106430150.4,
-  "avgBlobGasPrice": 21.6,
+  "avgBlobAsCalldataFee": 9935630.5,
+  "avgBlobFee": 105921419.2,
+  "avgBlobGasPrice": 21.675,
   "id": 1,
   "totalBlobAsCalldataFee": "94211160",
   "totalBlobAsCalldataGasUsed": "4327780",
@@ -646,10 +646,10 @@ exports[`Stats Extension > Transaction model > Overall stats functions > increme
 
 exports[`Stats Extension > Transaction model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
 {
-  "avgMaxBlobGasFee": 102.2222222222222,
+  "avgMaxBlobGasFee": 102.0486111111111,
   "id": 1,
   "totalTransactions": 18,
-  "totalUniqueReceivers": 5,
-  "totalUniqueSenders": 6,
+  "totalUniqueReceivers": 4,
+  "totalUniqueSenders": 4,
 }
 `;

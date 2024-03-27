@@ -39,7 +39,7 @@ export function dayToDatePeriod(day: string): DatePeriod {
 }
 
 export function getDailyBlocks(datePeriod: DatePeriod) {
-  return fixtures.blocks.filter((b) =>
+  return fixtures.canonicalBlocks.filter((b) =>
     dayjs(b.timestamp).isBetween(datePeriod.from, datePeriod.to)
   );
 }

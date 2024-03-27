@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { Rollup } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { TRPCContext } from "../src";
-import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
-import { createTestContext, runPaginationTestsSuite } from "./helpers";
-
-type GetByHashInput = inferProcedureInput<AppRouter["tx"]["getByHashFull"]>;
+import {
+  createTestContext,
+  runExpandsTestsSuite,
+  runFiltersTestsSuite,
+  runPaginationTestsSuite,
+} from "./helpers";
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -22,96 +20,70 @@ describe("Transaction router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
-  describe.each([{ functionName: "getAll" }, { functionName: "getAllFull" }])(
-    "$functionName",
-    ({ functionName }) => {
-      it("should return filtered results for a rollup", async () => {
-        // @ts-ignore
-        const result = await caller.tx[functionName]({
-          rollup: "base",
-        });
+  describe("getAll", () => {
+    runPaginationTestsSuite("transaction", (paginationInput) =>
+      caller.tx.getAll(paginationInput).then(({ transactions }) => transactions)
+    );
 
-        expect(result).toMatchSnapshot();
+    runFiltersTestsSuite("transaction", (filterInput) =>
+      caller.tx.getAll(filterInput).then(({ transactions }) => transactions)
+    );
+
+    runExpandsTestsSuite("transaction", ["block", "blob"], (input) =>
+      caller.tx.getAll(input).then(({ transactions }) => transactions)
+    );
+
+    it("should get the total number of transactions", async () => {
+      const expectedTotalTransactions = fixtures.canonicalTxs.length;
+
+      await ctx.prisma.transactionOverallStats.increment({
+        from: 0,
+        to: 9999,
       });
 
-      it("should get the total number of transactions", async () => {
-        const expectedTotalTransactions = fixtures.txs.length;
+      const { totalTransactions } = await caller.tx.getAll();
 
-        await ctx.prisma.transactionOverallStats.populate();
+      expect(totalTransactions).toBe(expectedTotalTransactions);
+    });
 
-        // @ts-ignore
-        const { totalTransactions } = await caller.tx[functionName]();
-
-        expect(totalTransactions).toBe(expectedTotalTransactions);
+    it("should get the total number of transactions for a rollup", async () => {
+      const expectedTotalTransactions = await ctx.prisma.transaction.count({
+        where: {
+          rollup: "BASE",
+        },
       });
 
-      it("should get the total number of transactions for a rollup", async () => {
-        const expectedTotalTransactions = await ctx.prisma.transaction.count({
-          where: {
-            rollup: Rollup.BASE,
-          },
-        });
-
-        // @ts-ignore
-        const { totalTransactions } = await caller.tx[functionName]({
-          rollup: "base",
-        });
-
-        expect(totalTransactions).toBe(expectedTotalTransactions);
+      const { totalTransactions } = await caller.tx.getAll({
+        rollup: "base",
       });
 
-      runPaginationTestsSuite("transaction", (paginationInput) =>
-        // @ts-ignore
-        caller.tx[functionName](paginationInput).then(
-          // @ts-ignore
-          ({ transactions }) => transactions
-        )
-      );
-    }
-  );
+      expect(totalTransactions).toBe(expectedTotalTransactions);
+    });
+  });
 
-  describe.each([
-    { functionName: "getByHash" },
-    { functionName: "getByHashFull" },
-  ])("$functionName", ({ functionName }) => {
+  describe("getByHash", () => {
+    runExpandsTestsSuite(
+      "transaction",
+      ["block", "blob", "blob_data"],
+      (expandsInput) =>
+        caller.tx.getByHash({ hash: "txHash001", ...expandsInput })
+    );
+
     it("should get a transaction by hash correctly", async () => {
-      const input: GetByHashInput = {
+      const result = await caller.tx.getByHash({
         hash: "txHash001",
-      };
-
-      // @ts-ignore
-      const result = await caller.tx[functionName](input);
+      });
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when providing a non-existent hash", async () => {
       await expect(
-        // @ts-ignore
-        caller.tx[functionName]({
+        caller.tx.getByHash({
           hash: "nonExistingHash",
         })
       ).rejects.toMatchSnapshot(
-        "[TRPCError: No transaction with hash 'nonExistingHash'.]"
+        "[TRPCError: No transaction with hash 'nonExistingHash' found]"
       );
-    });
-  });
-
-  describe("getByAddress", () => {
-    const address = "address2";
-
-    runPaginationTestsSuite("address's transactions", (paginationInput) =>
-      caller.tx
-        .getByAddress({ ...paginationInput, address })
-        .then(({ transactions }) => transactions)
-    );
-
-    it("should return the total number of transactions for an address", async () => {
-      const expectedTotalAddressTransactions = fixtures.txs.filter(
-        (tx) => tx.fromId === address || tx.toId === address
-      ).length;
-      const { totalTransactions } = await caller.tx.getByAddress({ address });
-
-      expect(totalTransactions).toBe(expectedTotalAddressTransactions);
     });
   });
 });

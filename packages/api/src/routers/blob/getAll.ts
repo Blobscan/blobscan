@@ -1,6 +1,32 @@
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
+import { createBlobsOnTransactionsSelect } from "./common/selects";
+import {
+  serializeBlobOnTransaction,
+  serializedBlobOnTransactionSchema,
+} from "./common/serializers";
+
+const inputSchema = withPaginationSchema
+  .merge(withAllFiltersSchema)
+  .merge(createExpandsSchema(["transaction", "block"]));
+
+const outputSchema = z.object({
+  blobs: serializedBlobOnTransactionSchema.array(),
+  totalBlobs: z.number(),
+});
 
 export const getAll = publicProcedure
   .meta({
@@ -11,39 +37,48 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(getAllInputSchema)
-  .output(getAllOutputSchema)
+  .input(inputSchema)
   .use(withPagination)
-  .query(async ({ input, ctx }) => {
-    const rollup = input?.rollup;
+  .use(withFilters)
+  .use(withExpands)
+  .output(outputSchema)
+  .query(async ({ ctx }) => {
+    const { blockFilters, transactionFilters, sort } = ctx.filters;
 
-    const [blobs, blobCountOrStats] = await Promise.all([
-      ctx.prisma.blob.findMany({
-        select: {
-          versionedHash: true,
-          commitment: true,
-          proof: true,
-          size: true,
-        },
+    const [txsBlobs, blobCountOrStats] = await Promise.all([
+      ctx.prisma.blobsOnTransactions.findMany({
+        select: createBlobsOnTransactionsSelect(ctx.expands),
         where: {
-          transactions: {
-            some: {
-              transaction: {
-                rollup,
+          transaction: {
+            ...transactionFilters,
+            block: blockFilters,
+          },
+        },
+        orderBy: [
+          {
+            transaction: {
+              block: {
+                number: sort,
               },
             },
           },
-        },
+          {
+            txHash: sort,
+          },
+          {
+            index: sort,
+          },
+        ],
         ...ctx.pagination,
       }),
       // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      rollup
+      transactionFilters.rollup
         ? ctx.prisma.blob.count({
             where: {
               transactions: {
                 some: {
                   transaction: {
-                    rollup,
+                    rollup: transactionFilters.rollup,
                   },
                 },
               },
@@ -57,7 +92,7 @@ export const getAll = publicProcedure
     ]);
 
     return {
-      blobs,
+      blobs: txsBlobs.map(serializeBlobOnTransaction),
       totalBlobs:
         typeof blobCountOrStats === "number"
           ? blobCountOrStats

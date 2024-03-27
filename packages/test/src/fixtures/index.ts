@@ -1,17 +1,11 @@
-import type { BlobStorage, PrismaClient, Rollup } from "@prisma/client";
+import {
+  BlobData,
+  BlobDataStorageReference,
+  type PrismaClient,
+  type Rollup,
+} from "@prisma/client";
 
 import POSTGRES_DATA from "./postgres/data.json";
-
-type BlobDataStorageReferenceFixture = {
-  blobHash: string;
-  blobStorage: BlobStorage;
-  dataReference: string;
-};
-
-type BlobDataFixture = {
-  id: string;
-  data: Buffer;
-};
 
 export const fixtures = {
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
@@ -21,12 +15,53 @@ export const fixtures = {
     ...tx,
     rollup: tx.rollup as Rollup | null,
   })),
+  txForks: POSTGRES_DATA.transactionForks,
   blobs: POSTGRES_DATA.blobs,
   blobDataStorageRefs:
-    POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReferenceFixture[],
-  blobDatas: POSTGRES_DATA.blobDatas as unknown as BlobDataFixture[],
+    POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReference[],
+  blobDatas: POSTGRES_DATA.blobDatas.map<BlobData>((blobData) => ({
+    id: blobData.id,
+    data: Buffer.from(blobData.data, "hex"),
+  })),
   blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions,
   systemDate: POSTGRES_DATA.systemDate,
+
+  canonicalBlocks: POSTGRES_DATA.blocks.filter(
+    (block) =>
+      !POSTGRES_DATA.transactionForks.find(
+        (fork) => fork.blockHash === block.hash
+      )
+  ),
+  canonicalTxs: POSTGRES_DATA.txs.filter(
+    (tx) =>
+      !POSTGRES_DATA.transactionForks.find((fork) => fork.hash === tx.hash)
+  ),
+  canonicalBlobs: POSTGRES_DATA.blobsOnTransactions
+    .filter(
+      (bTx) =>
+        !POSTGRES_DATA.transactionForks.find((fork) => fork.hash === bTx.txHash)
+    )
+    .map((bTx) => {
+      const blob = POSTGRES_DATA.blobs.find(
+        (blob) => blob.versionedHash === bTx.blobHash
+      );
+
+      if (!blob)
+        throw new Error(
+          `Failed to get fixture canonical blobs: Blob with id ${bTx.blobHash} not found`
+        );
+
+      return blob;
+    }),
+  canonicalUniqueBlobs: POSTGRES_DATA.blobs.filter((blob) => {
+    const bTx = POSTGRES_DATA.blobsOnTransactions.find(
+      (bTx) => bTx.blobHash === blob.versionedHash
+    );
+
+    return !POSTGRES_DATA.transactionForks.find(
+      (fork) => fork.hash === bTx?.txHash
+    );
+  }),
 
   async create(prisma: PrismaClient) {
     await prisma.$transaction([
@@ -45,9 +80,7 @@ export const fixtures = {
       prisma.blockOverallStats.deleteMany(),
       prisma.transactionOverallStats.deleteMany(),
       prisma.blobOverallStats.deleteMany(),
-    ]);
 
-    await prisma.$transaction([
       prisma.blockchainSyncState.createMany({
         data: fixtures.blockchainSyncState,
       }),
@@ -61,6 +94,9 @@ export const fixtures = {
       prisma.blobData.createMany({ data: fixtures.blobDatas }),
       prisma.blobsOnTransactions.createMany({
         data: fixtures.blobsOnTransactions,
+      }),
+      prisma.transactionFork.createMany({
+        data: this.txForks,
       }),
     ]);
   },

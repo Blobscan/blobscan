@@ -1,6 +1,7 @@
 import { calculatePercentage, formatNumber, performDiv } from "./number";
 
 export const GAS_PER_BLOB = 131_072; // 2 ** 17
+export const BLOB_SIZE = GAS_PER_BLOB;
 export const TARGET_BLOB_GAS_PER_BLOCK = 393_216;
 export const TARGET_BLOBS_PER_BLOCK = TARGET_BLOB_GAS_PER_BLOCK / GAS_PER_BLOB;
 export const BLOB_GAS_LIMIT_PER_BLOCK = 786_432;

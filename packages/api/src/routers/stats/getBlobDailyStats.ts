@@ -1,9 +1,25 @@
-import { timeFrameProcedure } from "../../middlewares/withTimeFrame";
-import { BLOB_BASE_PATH } from "./common";
-import type { GetBlobDailyStatsOutputSchema } from "./getBlobDailyStats.schema";
-import { getBlobDailyStatsOutputSchema } from "./getBlobDailyStats.schema";
+import { z } from "@blobscan/zod";
 
-export const getBlobDailyStats = timeFrameProcedure
+import {
+  withTimeFrame,
+  withTimeFrameSchema,
+} from "../../middlewares/withTimeFrame";
+import { publicProcedure } from "../../procedures";
+import { BLOB_BASE_PATH } from "./common";
+
+const inputSchema = withTimeFrameSchema;
+
+const outputSchema = z.object({
+  days: z.array(z.string()),
+  totalBlobs: z.array(z.number()),
+  totalUniqueBlobs: z.array(z.number()),
+  totalBlobSizes: z.array(z.number()),
+  avgBlobSizes: z.array(z.number()),
+});
+
+type OutputSchema = z.infer<typeof outputSchema>;
+
+export const getBlobDailyStats = publicProcedure
   .meta({
     openapi: {
       method: "GET",
@@ -12,7 +28,9 @@ export const getBlobDailyStats = timeFrameProcedure
       summary: "retrieves blob time series stats.",
     },
   })
-  .output(getBlobDailyStatsOutputSchema)
+  .input(inputSchema)
+  .use(withTimeFrame)
+  .output(outputSchema)
   .query(({ ctx: { prisma, timeFrame } }) =>
     prisma.blobDailyStats
       .findMany({
@@ -25,7 +43,7 @@ export const getBlobDailyStats = timeFrameProcedure
         orderBy: { day: "asc" },
       })
       .then((stats) =>
-        stats.reduce<GetBlobDailyStatsOutputSchema>(
+        stats.reduce<OutputSchema>(
           (transformedStats, currStats) => {
             transformedStats.days.push(currStats.day.toISOString());
             transformedStats.totalBlobs.push(currStats.totalBlobs);
