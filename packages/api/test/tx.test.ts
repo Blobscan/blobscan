@@ -34,9 +34,12 @@ describe("Transaction router", async () => {
     );
 
     it("should get the total number of transactions", async () => {
-      const expectedTotalTransactions = fixtures.txs.length;
+      const expectedTotalTransactions = fixtures.canonicalTxs.length;
 
-      await ctx.prisma.transactionOverallStats.populate();
+      await ctx.prisma.transactionOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
 
       const { totalTransactions } = await caller.tx.getAll();
 

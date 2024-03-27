@@ -134,9 +134,18 @@ async function main() {
   console.log(`Data inserted for the last ${seedParams.totalDays} days`);
 
   await Promise.all([
-    prisma.blobOverallStats.populate(),
-    prisma.blockOverallStats.populate(),
-    prisma.transactionOverallStats.populate(),
+    prisma.blobOverallStats.increment({
+      from: 0,
+      to: 9999,
+    }),
+    prisma.blockOverallStats.increment({
+      from: 0,
+      to: 9999,
+    }),
+    prisma.transactionOverallStats.increment({
+      from: 0,
+      to: 9999,
+    }),
   ]);
 
   console.log("Overall stats created.");

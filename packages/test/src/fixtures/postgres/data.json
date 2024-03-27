@@ -105,6 +105,18 @@
       "blobAsCalldataGasUsed": 255000,
       "insertedAt": "2023-08-31T16:10:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
+    },
+    {
+      "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+      "number": 1008,
+      "timestamp": "2023-08-31T15:50:00Z",
+      "slot": 110,
+      "blobGasUsed": 2500000,
+      "excessBlobGas": 55000,
+      "blobGasPrice": 22,
+      "blobAsCalldataGasUsed": 255000,
+      "insertedAt": "2023-08-31T15:50:00Z",
+      "updatedAt": "2023-08-31T15:50:00Z"
     }
   ],
   "txs": [
@@ -297,8 +309,20 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "rollup": null,
-      "insertedAt": "2023-08-31T16:10:00Z",
+      "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
+    },
+    {
+      "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+      "fromId": "address6",
+      "toId": "address1",
+      "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+      "maxFeePerBlobGas": 566,
+      "gasPrice": 120,
+      "blobAsCalldataGasUsed": 15550,
+      "rollup": "OPTIMISM",
+      "insertedAt": "2023-08-31T15:50:00Z",
+      "updatedAt": "2023-08-31T15:50:00Z"
     }
   ],
   "blobs": [
@@ -364,6 +388,12 @@
       "firstBlockNumber": 1006,
       "insertedAt": "2023-08-26T12:10:00Z",
       "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+      "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
+      "proof": "0xaf8b65d906c672d670d3d9591ede355ac4dfc2f66f5690e836018fdb8582d3055474e3de6a069d3dfb4c15aa7c7f88a6",
+      "size": 128000
     }
   ],
   "addresses": [
@@ -465,6 +495,11 @@
       "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       "blobStorage": "POSTGRES",
       "dataReference": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368"
+    },
+    {
+      "blobHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+      "blobStorage": "POSTGRES",
+      "dataReference": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436"
     }
   ],
   "blobDatas": [
@@ -483,6 +518,10 @@
     {
       "id": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       "data": "24eb354bd6ba2e5edad4370f874fe2f9"
+    },
+    {
+      "id": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+      "data": "0x2fba0bd756009b29dc26256c2203dd2d5d3176779560683a8c6daff73ca1c418"
     }
   ],
   "blobsOnTransactions": [
@@ -645,6 +684,19 @@
       "blobHash": "blobHash001",
       "txHash": "txHash016",
       "index": 0
+    },
+    {
+      "blobHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+      "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+      "index": 0
+    }
+  ],
+  "transactionForks": [
+    {
+      "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+      "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+      "insertedAt": "2023-08-31T15:50:00Z",
+      "updatedAt": "2023-08-31T15:50:00Z"
     }
   ]
 }

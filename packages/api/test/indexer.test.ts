@@ -505,6 +505,8 @@ describe("Indexer router", async () => {
       };
 
       it("should mark the transactions contained in the blocks with a slot greater than the new head slot as reorged", async () => {
+        const prevTransactionForks =
+          await authorizedContext.prisma.transactionFork.findMany();
         const expectedTransactionForks = fixtures.txs
           .filter(({ blockHash }) => {
             const block = fixtures.blocks.find(
@@ -523,7 +525,14 @@ describe("Indexer router", async () => {
         const transactionForks = await authorizedContext.prisma.transactionFork
           .findMany()
           .then((txForks) =>
-            txForks.map((txFork) => omitDBTimestampFields(txFork))
+            txForks
+              .map((txFork) => omitDBTimestampFields(txFork))
+              .filter(
+                (txFork) =>
+                  !prevTransactionForks.find(
+                    (prevTxFork) => prevTxFork.hash === txFork.hash
+                  )
+              )
           );
 
         expect(transactionForks).toEqual(expectedTransactionForks);
@@ -539,6 +548,8 @@ describe("Indexer router", async () => {
 
       it("should ignore non-existent slots and mark the ones that exist as reorged", async () => {
         const reorgedSlots = [106, 107, 99999];
+        const prevTransactionForks =
+          await authorizedContext.prisma.transactionFork.findMany();
         const expectedTransactionForks = fixtures.txs
           .filter(({ blockHash }) => {
             const block = fixtures.blocks.find(
@@ -559,7 +570,14 @@ describe("Indexer router", async () => {
         const transactionForks = await authorizedContext.prisma.transactionFork
           .findMany()
           .then((txForks) =>
-            txForks.map((txFork) => omitDBTimestampFields(txFork))
+            txForks
+              .map((txFork) => omitDBTimestampFields(txFork))
+              .filter(
+                (txFork) =>
+                  !prevTransactionForks.find(
+                    (prevTxFork) => prevTxFork.hash === txFork.hash
+                  )
+              )
           );
 
         expect(transactionForks, "Fork transactions mismatch").toEqual(
@@ -574,6 +592,9 @@ describe("Indexer router", async () => {
 
     it("should not mark any of the provided slots as reorged if all of them are non-existent", async () => {
       const reorgedSlots = [99999, 99998, 99997];
+      const prevTransactionForks =
+        await authorizedContext.prisma.transactionFork.findMany();
+
       const result = await authorizedCaller.indexer.handleReorgedSlots({
         reorgedSlots: reorgedSlots as [number, ...number[]],
       });
@@ -581,7 +602,14 @@ describe("Indexer router", async () => {
       const transactionForks = await authorizedContext.prisma.transactionFork
         .findMany()
         .then((txForks) =>
-          txForks.map((txFork) => omitDBTimestampFields(txFork))
+          txForks
+            .map((txFork) => omitDBTimestampFields(txFork))
+            .filter(
+              (txFork) =>
+                !prevTransactionForks.find(
+                  (prevTxFork) => prevTxFork.hash === txFork.hash
+                )
+            )
         );
 
       expect(transactionForks, " Fork transactions mismatch").toEqual([]);

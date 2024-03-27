@@ -44,7 +44,10 @@ describe("Stats router", async () => {
 
   describe("getBlobOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blobOverallStats.populate();
+      await prisma.blobOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
 
       const blobOverallStats = await caller.stats.getBlobOverallStats();
 
@@ -72,7 +75,10 @@ describe("Stats router", async () => {
 
   describe("getBlockOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blockOverallStats.populate();
+      await prisma.blockOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
 
       const blockOverallStats = await caller.stats.getBlockOverallStats();
 
@@ -102,7 +108,10 @@ describe("Stats router", async () => {
 
   describe("getTransactionOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.transactionOverallStats.populate();
+      await prisma.transactionOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
       const result = await caller.stats.getTransactionOverallStats();
 
       expect(omitDBTimestampFields(result)).toMatchInlineSnapshot(`
