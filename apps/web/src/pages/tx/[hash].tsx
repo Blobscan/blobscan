@@ -73,6 +73,7 @@ const Tx: NextPage = () => {
       blobGasUsed,
       blobGasBaseFee,
       blobGasMaxFee,
+      blobAsCalldataGasFee,
     } = tx;
 
     detailsFields = [
@@ -146,22 +147,43 @@ const Tx: NextPage = () => {
         value: formatNumber(blobGasUsed),
       },
       {
-        name: "Blob As Calldata Gas",
+        name: "Blob As Calldata Gas Used",
         value: (
           <div>
             {formatNumber(blobAsCalldataGasUsed)}{" "}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              (
+              |{" "}
               <strong>
                 {formatNumber(
                   performDiv(blobAsCalldataGasUsed, blobGasUsed),
-                  "standard",
+                  "compact",
                   {
                     maximumFractionDigits: 2,
                   }
                 )}
               </strong>{" "}
-              times more expensive)
+              times larger
+            </span>
+          </div>
+        ),
+      },
+      {
+        name: "Blob As Calldata Gas Fee",
+        value: (
+          <div className="display flex gap-1">
+            {<EtherUnitDisplay amount={blobAsCalldataGasFee} />}
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+              |{" "}
+              <strong>
+                {formatNumber(
+                  performDiv(blobAsCalldataGasFee, blobGasBaseFee),
+                  "compact",
+                  {
+                    maximumFractionDigits: 2,
+                  }
+                )}
+              </strong>{" "}
+              times more expensive
             </span>
           </div>
         ),
