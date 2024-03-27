@@ -47,6 +47,7 @@ export const serializedBlockSchema = z.object({
       .merge(
         serializedExpandedTransactionSchema.merge(
           z.object({
+            blobAsCalldataGasFee: z.string().optional(),
             blobGasBaseFee: z.string().optional(),
             blobGasMaxFee: z.string().optional(),
             blobGasUsed: z.string().optional(),
