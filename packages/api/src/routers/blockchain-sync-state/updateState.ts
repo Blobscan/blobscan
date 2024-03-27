@@ -1,11 +1,17 @@
 import { TRPCError } from "@trpc/server";
 
+import { z } from "@blobscan/zod";
+
 import { jwtAuthedProcedure } from "../../procedures";
 import { BASE_PATH } from "./common";
-import {
-  updateStateInputSchema,
-  updateStateOutputSchema,
-} from "./updateState.schema";
+
+export const inputSchema = z.object({
+  lastLowerSyncedSlot: z.number().optional(),
+  lastUpperSyncedSlot: z.number().optional(),
+  lastFinalizedBlock: z.number().optional(),
+});
+
+export const outputSchema = z.void();
 
 export const updateState = jwtAuthedProcedure
   .meta({
@@ -17,8 +23,8 @@ export const updateState = jwtAuthedProcedure
       protect: true,
     },
   })
-  .input(updateStateInputSchema)
-  .output(updateStateOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .mutation(async ({ ctx, input }) => {
     const lastLowerSyncedSlot = input.lastLowerSyncedSlot;
     const lastUpperSyncedSlot = input.lastUpperSyncedSlot;

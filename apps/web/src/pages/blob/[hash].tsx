@@ -43,7 +43,7 @@ const Blob: NextPage = function () {
     data: blob,
     error,
     isLoading,
-  } = api.blob.getByBlobIdFull.useQuery(
+  } = api.blob.getByBlobId.useQuery(
     {
       id: versionedHash,
     },
@@ -102,13 +102,15 @@ const Blob: NextPage = function () {
         name: "Storages",
         value: (
           <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map((ref, index) => (
-              <StorageBadge
-                key={index}
-                storage={ref.blobStorage}
-                dataRef={ref.dataReference}
-              />
-            ))}
+            {blob.dataStorageReferences.map(
+              ({ blobStorage, dataReference }, index) => (
+                <StorageBadge
+                  key={index}
+                  storage={blobStorage}
+                  dataRef={dataReference}
+                />
+              )
+            )}
           </div>
         ),
       });
@@ -118,22 +120,24 @@ const Blob: NextPage = function () {
       name: "Transactions and Blocks",
       value: (
         <div className="grid w-full grid-cols-3 gap-y-3 md:grid-cols-3">
-          {blob.transactionsWithBlocks.map(({ txHash, blockNumber }) => (
-            <Fragment key={`${txHash}-${blockNumber}`}>
-              <div className="col-span-2 flex gap-1 md:col-span-2">
-                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Tx{" "}
+          {blob.transactions.map(
+            ({ hash: txHash, block: { number: blockNumber } }) => (
+              <Fragment key={`${txHash}-${blockNumber}`}>
+                <div className="col-span-2 flex gap-1 md:col-span-2">
+                  <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                    Tx{" "}
+                  </div>
+                  <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
                 </div>
-                <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
-              </div>
-              <div className="flex gap-1">
-                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Block{" "}
+                <div className="flex gap-1">
+                  <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                    Block{" "}
+                  </div>
+                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
                 </div>
-                <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
-              </div>
-            </Fragment>
-          ))}
+              </Fragment>
+            )
+          )}
         </div>
       ),
     });

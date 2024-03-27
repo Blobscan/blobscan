@@ -2,13 +2,11 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import React from "react";
 import NextLink from "next/link";
 
-import type { BlobStorage } from "@blobscan/api";
-
 import { env } from "~/env.mjs";
 import GoogleIcon from "~/icons/google.svg";
 import PostgresIcon from "~/icons/postgres.svg";
 import SwarmIcon from "~/icons/swarm.svg";
-import type { Size } from "~/types";
+import type { BlobStorage, Size } from "~/types";
 import { capitalize } from "~/utils";
 import { Badge } from "./Badge";
 
@@ -19,7 +17,7 @@ type StorageConfig = {
 };
 
 const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
-  GOOGLE: {
+  google: {
     icon: <GoogleIcon />,
     style:
       "bg-slate-100 hover:bg-slate-200 text-slate-800 hover:text-slate-900 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-slate-200",
@@ -27,7 +25,7 @@ const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
       return `https://storage.googleapis.com/${env.NEXT_PUBLIC_GOOGLE_STORAGE_BUCKET_NAME}/${blobReference}`;
     },
   },
-  SWARM: {
+  swarm: {
     icon: <SwarmIcon />,
     style:
       "bg-orange-100 hover:bg-orange-200 text-orange-800 hover:text-orange-900 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 dark:hover:text-orange-200",
@@ -35,7 +33,7 @@ const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
       return `https://gateway.ethswarm.org/access/${blobReference}`;
     },
   },
-  POSTGRES: {
+  postgres: {
     icon: <PostgresIcon />,
     style: "bg-blue-100 text-blue-800 dark:text-blue-300 hover:bg-blue-200",
     buildDownloadUrl(_) {

@@ -1,6 +1,16 @@
+import { z } from "@blobscan/zod";
+
 import { publicProcedure } from "../../procedures";
 import { BASE_PATH } from "./common";
-import { getStateInputSchema, getStateOutputSchema } from "./getState.schema";
+
+export const inputSchema = z.void();
+
+export const outputSchema = z.object({
+  lastAggregatedBlock: z.number().nullable(),
+  lastFinalizedBlock: z.number().nullable(),
+  lastLowerSyncedSlot: z.number().nullable(),
+  lastUpperSyncedSlot: z.number().nullable(),
+});
 
 export const getState = publicProcedure
   .meta({
@@ -11,8 +21,8 @@ export const getState = publicProcedure
       summary: "retrieves the blockchain sync state.",
     },
   })
-  .input(getStateInputSchema)
-  .output(getStateOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .query(async ({ ctx }) => {
     const state = await ctx.prisma.blockchainSyncState.findUnique({
       select: {

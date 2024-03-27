@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
@@ -6,13 +7,23 @@ import { getPaginationParams } from "~/utils/pagination";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
-import { formatNumber } from "~/utils";
+import { deserializeBlock, formatNumber } from "~/utils";
 
 const Blocks: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const { data, error } = api.block.getAllFull.useQuery({ p, ps });
-  const { blocks, totalBlocks } = data || {};
+  const { data: rawBlocksData, error } = api.block.getAll.useQuery({ p, ps });
+  const blocksData = useMemo(() => {
+    if (!rawBlocksData) {
+      return {};
+    }
+
+    return {
+      totalBlocks: rawBlocksData.totalBlocks,
+      blocks: rawBlocksData.blocks.map(deserializeBlock),
+    };
+  }, [rawBlocksData]);
+  const { blocks, totalBlocks } = blocksData;
 
   if (error) {
     return (
