@@ -32,7 +32,7 @@ export type Filters = {
 
 const sortSchema = z.enum(["asc", "desc"]);
 
-const typeSchema = z.enum(["reorg", "finalized", "normal"]);
+const typeSchema = z.enum(["reorged", "normal"]);
 
 export const withBlockRangeFilterSchema = z.object({
   startBlock: blockNumberSchema.optional(),
@@ -144,7 +144,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     }
 
     filters.blockFilters.transactionForks =
-      type === "reorg" ? { some: {} } : { none: {} };
+      type === "reorged" ? { some: {} } : { none: {} };
 
     filters.transactionFilters.rollup = rollup?.toUpperCase() as
       | $Enums.Rollup
