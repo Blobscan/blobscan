@@ -32,7 +32,7 @@ export type Filters = {
 
 const sortSchema = z.enum(["asc", "desc"]);
 
-const typeSchema = z.enum(["reorged", "normal"]);
+const typeSchema = z.enum(["reorged", "canonical"]);
 
 export const withBlockRangeFilterSchema = z.object({
   startBlock: blockNumberSchema.optional(),
@@ -49,7 +49,7 @@ export const withRollupFilterSchema = z.object({
 });
 
 export const withTypeFilterSchema = z.object({
-  type: typeSchema.default("normal"),
+  type: typeSchema.default("canonical"),
 });
 
 export const withDateRangeFilterSchema = z.object({
