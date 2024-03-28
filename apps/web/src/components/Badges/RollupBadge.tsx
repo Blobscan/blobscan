@@ -29,12 +29,17 @@ const ROLLUP_CONFIG: Record<
   },
   LINEA: {
     icon: <LineaIcon />,
-    style: "bg-black-100 text-black-800 dark:bg-black-900 dark:text-black-300",
+    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300",
   },
   OPTIMISM: {
     icon: <OptimismIcon />,
     style:
       "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+  },
+  PARADEX: {
+    icon: null,
+    style:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
   },
   STARKNET: {
     icon: <StarknetIcon />,
@@ -42,7 +47,7 @@ const ROLLUP_CONFIG: Record<
       "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
   },
   SCROLL: {
-    icon: <div />,
+    icon: null,
     style: "",
   },
   ZKSYNC: {
