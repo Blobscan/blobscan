@@ -218,7 +218,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.5.2
+        specifier: ^0.5.3
         version: link:../../packages/api
       '@blobscan/dayjs':
         specifier: ^0.0.2
@@ -399,7 +399,7 @@ importers:
         specifier: ^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: ^0.3.2
+        specifier: ^0.3.3
         version: link:../db
       '@blobscan/logger':
         specifier: ^0.0.6

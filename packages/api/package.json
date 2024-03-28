@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -18,7 +18,7 @@
     "@blobscan/blob-propagator": "^0.0.7",
     "@blobscan/blob-storage-manager": "^0.0.7",
     "@blobscan/dayjs": "^0.0.2",
-    "@blobscan/db": "^0.3.2",
+    "@blobscan/db": "^0.3.3",
     "@blobscan/logger": "^0.0.6",
     "@blobscan/open-telemetry": "^0.0.6",
     "@blobscan/zod": "^0.0.4",
