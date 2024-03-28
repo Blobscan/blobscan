@@ -1,5 +1,14 @@
 # @blobscan/api
 
+## 0.5.3
+
+### Patch Changes
+
+- [#349](https://github.com/Blobscan/blobscan/pull/349) [`f138c01`](https://github.com/Blobscan/blobscan/commit/f138c01d1d656396cc6a48ee79700cd21bc9703f) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for paradex rollup and applied db migrations
+
+- Updated dependencies [[`f138c01`](https://github.com/Blobscan/blobscan/commit/f138c01d1d656396cc6a48ee79700cd21bc9703f)]:
+  - @blobscan/db@0.3.3
+
 ## 0.5.2
 
 ### Patch Changes
