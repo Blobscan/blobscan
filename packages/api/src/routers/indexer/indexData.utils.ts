@@ -17,6 +17,7 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
   "1": {
     "0xc1b634853cb333d3ad8663715b08f41a3aec47cc": Rollup.ARBITRUM,
     "0x5050f69a9786f081509234f1a7f4684b5e5b76c9": Rollup.BASE,
+    "0xa9268341831efa4937537bc3e9eb36dbece83c7e": Rollup.LINEA,
     "0x6887246668a3b87f54deb3b94ba47a6f63f32985": Rollup.OPTIMISM,
     "0x2c169dfe5fbba12957bdd0ba47d9cedbfe260ca7": Rollup.STARKNET,
     "0x0d3250c3d5facb74ac15834096397a3ef790ec99": Rollup.ZKSYNC,
@@ -29,6 +30,7 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
   "11155111": {
     "0xb2248390842d3c4acf1d8a893954afc0eac586e5": Rollup.ARBITRUM,
     "0x6cdebe940bc0f26850285caca097c11c33103e47": Rollup.BASE,
+    "0x47c63d1e391fcb3dcdc40c4d7fa58adb172f8c38": Rollup.LINEA,
     "0x8f23bb38f531600e5d8fddaaec41f13fab46e98c": Rollup.OPTIMISM,
     "0x5b98b836969a60fec50fa925905dd1d382a7db43": Rollup.STARKNET,
     "0x4e6bd53883107b063c502ddd49f9600dc51b3ddc": Rollup.MODE,

@@ -5,6 +5,7 @@ import type { Rollup } from "@blobscan/api";
 
 import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
+import LineaIcon from "~/icons/linea.svg";
 import ModeIcon from "~/icons/mode.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import StarknetIcon from "~/icons/starknet.svg";
@@ -25,6 +26,10 @@ const ROLLUP_CONFIG: Record<
   BASE: {
     icon: <BaseIcon />,
     style: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+  },
+  LINEA: {
+    icon: <LineaIcon />,
+    style: "bg-black-100 text-black-800 dark:bg-black-900 dark:text-black-300",
   },
   OPTIMISM: {
     icon: <OptimismIcon />,
