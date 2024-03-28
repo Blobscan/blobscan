@@ -1,5 +1,14 @@
 # @blobscan/web
 
+## 0.5.1
+
+### Patch Changes
+
+- [#347](https://github.com/Blobscan/blobscan/pull/347) [`24846f7`](https://github.com/Blobscan/blobscan/commit/24846f7ce2875ceabd7751f2e9359131e5820933) Thanks [@julien-marchand](https://github.com/julien-marchand)! - Added support for Linea Rollup
+
+- Updated dependencies [[`24846f7`](https://github.com/Blobscan/blobscan/commit/24846f7ce2875ceabd7751f2e9359131e5820933)]:
+  - @blobscan/api@0.5.2
+
 ## 0.5.0
 
 ### Minor Changes
