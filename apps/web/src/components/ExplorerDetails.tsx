@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
-import { capitalize, formatNumber } from "~/utils";
+import { capitalize, formatNumber, formatTtl } from "~/utils";
 
 type InfoBarItemProps = {
   name: React.ReactNode;
@@ -27,6 +27,7 @@ function ExplorerDetailsItem({ name, value }: InfoBarItemProps) {
 
 export function ExplorerDetails() {
   const { data: syncStateData } = api.syncState.getState.useQuery();
+  const { data: swarmData } = api.swarmState.getState.useQuery();
 
   return (
     <div className="flex h-4 gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -43,6 +44,15 @@ export function ExplorerDetails() {
             : undefined
         }
       />
+      {swarmData && (
+        <>
+          .
+          <ExplorerDetailsItem
+            name="Swarm data expiry"
+            value={formatTtl(swarmData.batchTtl ?? 0)}
+          />
+        </>
+      )}
     </div>
   );
 }

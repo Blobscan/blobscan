@@ -13,6 +13,7 @@ import {
 export const env = createEnv({
   envOptions: {
     server: {
+      BEE_DEBUG_ENDPOINT: z.string().url().default("http://localhost:1635"),
       CHAIN_ID: z.coerce.number().positive().default(1),
       SECRET_KEY: z.string(),
       NODE_ENV: nodeEnvSchema.optional(),
