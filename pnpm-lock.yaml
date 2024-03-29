@@ -348,7 +348,7 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: ^0.0.7
+        specifier: ^0.0.8
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: ^0.0.2
@@ -390,10 +390,10 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: ^0.0.7
+        specifier: ^0.0.8
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: ^0.0.7
+        specifier: ^0.0.8
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: ^0.0.2
@@ -451,7 +451,7 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: ^0.0.7
+        specifier: ^0.0.8
         version: link:../blob-storage-manager
       '@blobscan/db':
         specifier: ^0.3.1
