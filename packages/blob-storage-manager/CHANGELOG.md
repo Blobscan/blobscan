@@ -1,5 +1,11 @@
 # @blobscan/blob-storage-manager
 
+## 0.0.8
+
+### Patch Changes
+
+- [#353](https://github.com/Blobscan/blobscan/pull/353) [`fc6298f`](https://github.com/Blobscan/blobscan/commit/fc6298fcbdc17b89bd0289ddd1f8d252870cd402) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed swarm storage blob data decoding
+
 ## 0.0.7
 
 ### Patch Changes
