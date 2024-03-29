@@ -52,7 +52,9 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _getBlob(reference: string) {
-    return (await this._swarmClient.bee.downloadData(reference)).toString();
+    const file = await this._swarmClient.bee.downloadFile(reference);
+
+    return file.data.text();
   }
 
   protected async _storeBlob(
