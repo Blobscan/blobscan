@@ -44,12 +44,12 @@ export function ExplorerDetails() {
             : undefined
         }
       />
-      {swarmData && (
+      {swarmData?.batchTtl && (
         <>
           .
           <ExplorerDetailsItem
             name="Swarm data expiry"
-            value={formatTtl(swarmData.batchTtl ?? 0)}
+            value={formatTtl(swarmData.batchTtl)}
           />
         </>
       )}
