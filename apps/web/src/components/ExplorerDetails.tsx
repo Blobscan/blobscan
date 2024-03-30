@@ -1,4 +1,5 @@
 import React from "react";
+import { ClockIcon } from "@heroicons/react/24/solid";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
@@ -46,7 +47,8 @@ export function ExplorerDetails() {
       />
       {swarmData?.batchTtl && (
         <>
-          .
+          ･
+          <ClockIcon />
           <ExplorerDetailsItem
             name="Swarm data expiry"
             value={formatTtl(swarmData.batchTtl)}
