@@ -1,5 +1,17 @@
 # @blobscan/api
 
+## 0.6.0
+
+### Minor Changes
+
+- [#355](https://github.com/Blobscan/blobscan/pull/355) [`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new procedure to fetch swarm state
+
+### Patch Changes
+
+- Updated dependencies [[`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7)]:
+  - @blobscan/blob-storage-manager@0.1.0
+  - @blobscan/blob-propagator@0.0.9
+
 ## 0.5.4
 
 ### Patch Changes

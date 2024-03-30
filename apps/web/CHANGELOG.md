@@ -1,5 +1,16 @@
 # @blobscan/web
 
+## 0.6.0
+
+### Minor Changes
+
+- [#355](https://github.com/Blobscan/blobscan/pull/355) [`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7) Thanks [@0xGabi](https://github.com/0xGabi)! - Added swarm data expiration time to header
+
+### Patch Changes
+
+- Updated dependencies [[`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7)]:
+  - @blobscan/api@0.6.0
+
 ## 0.5.2
 
 ### Patch Changes
