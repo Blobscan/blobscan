@@ -7,6 +7,7 @@ import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { indexerRouter } from "./routers/indexer";
 import { searchRouter } from "./routers/search";
 import { statsRouter } from "./routers/stats";
+import { swarmStateRouter } from "./routers/swarm-state";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
@@ -18,6 +19,7 @@ export const appRouter = t.router({
   stats: statsRouter,
   indexer: indexerRouter,
   syncState: blockchainSyncStateRouter,
+  swarmState: swarmStateRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {

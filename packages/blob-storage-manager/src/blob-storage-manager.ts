@@ -4,7 +4,7 @@ import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManager } from "./BlobStorageManager";
 import { env } from "./env";
 import type { Environment } from "./env";
-import { BlobStorageName } from "./types";
+import type { BlobStorageName } from "./types";
 import { BLOB_STORAGE_NAMES, createStorageFromEnv } from "./utils";
 
 let blobStorageManager: BlobStorageManager | undefined;
