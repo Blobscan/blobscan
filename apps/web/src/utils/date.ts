@@ -26,7 +26,7 @@ export function formatDate(
 }
 
 export function formatTtl(ttl: number) {
-  return dayjs.duration({ seconds: ttl }).humanize();
+  return dayjs().to(dayjs().add(ttl, "second"), true);
 }
 
 export function getHumanDate(date: string | Date) {
