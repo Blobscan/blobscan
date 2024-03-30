@@ -1,5 +1,5 @@
 ---
-"@blobscan/web": patch
+"@blobscan/web":  minor
 ---
 
-Updated explorer details component to visualize swarm data expiry
+Added swarm data expiration time to header
