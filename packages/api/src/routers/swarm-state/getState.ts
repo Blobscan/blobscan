@@ -1,42 +1,44 @@
 import { TRPCError } from "@trpc/server";
 
-import { BeeDebug } from "@blobscan/blob-storage-manager";
 import { z } from "@blobscan/zod";
 
-import { env } from "../../env";
 import { publicProcedure } from "../../procedures";
+import { BlobStorage } from "@blobscan/db";
 
-const beeDebug =
-  env.SWARM_STORAGE_ENABLED && env.BEE_DEBUG_ENDPOINT
-    ? new BeeDebug(env.BEE_DEBUG_ENDPOINT)
-    : undefined;
+const BATCH_LABEL = "blobs2" // TODO: use chain id when we move a per network batch
 
 export const inputSchema = z.void();
 
 export const outputSchema = z.object({
-  batchTtl: z.number().nullable(),
+  batchId: z.string(),
+  batchTtl: z.number(),
 });
 
 export const getState = publicProcedure
   .input(inputSchema)
   .output(outputSchema)
-  .query(async () => {
-    if (!beeDebug) {
-      return {
-        batchTtl: null,
-      };
-    }
+  .query(async ({ ctx: { blobStorageManager } }) => {
 
-    const [firstBatch] = await beeDebug.getAllPostageBatch();
+    const swarmStorage = blobStorageManager.getStorage(BlobStorage.SWARM)
 
-    if (!firstBatch?.batchTTL) {
+    if (!swarmStorage) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "No postage batches available.",
+        message: "Swarm storage not available."
+      });
+    }
+
+    const batch = await swarmStorage.getPostageBatch(BATCH_LABEL)
+
+    if (!batch) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No postage batch '${BATCH_LABEL}' available.`,
       });
     }
 
     return {
-      batchTtl: firstBatch.batchTTL,
+      batchId: batch.batchID,
+      batchTtl: batch.batchTTL,
     };
   });
