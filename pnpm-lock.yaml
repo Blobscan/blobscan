@@ -166,7 +166,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.5.1
+        specifier: ^0.6.0
         version: link:../../packages/api
       '@blobscan/logger':
         specifier: ^0.0.6
@@ -218,7 +218,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.5.3
+        specifier: ^0.6.0
         version: link:../../packages/api
       '@blobscan/dayjs':
         specifier: ^0.0.2
@@ -348,7 +348,7 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: ^0.0.8
+        specifier: ^0.0.9
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: ^0.0.2
@@ -390,10 +390,10 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: ^0.0.8
+        specifier: ^0.0.9
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: ^0.0.8
+        specifier: ^0.1.0
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: ^0.0.2
@@ -451,7 +451,7 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: ^0.0.8
+        specifier: ^0.1.0
         version: link:../blob-storage-manager
       '@blobscan/db':
         specifier: ^0.3.1
