@@ -9,13 +9,7 @@ import { BlobStorageManager } from "../src/BlobStorageManager";
 import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
 import type { BlobStorageName } from "../src/types";
-import {
-  BLOB_DATA,
-  BLOB_HASH,
-  FILE_URI,
-  SWARM_REFERENCE,
-  SWARM_STORAGE_CONFIG,
-} from "./fixtures";
+import { BLOB_DATA, BLOB_HASH, FILE_URI, SWARM_REFERENCE } from "./fixtures";
 
 describe("BlobStorageManager", () => {
   let blobStorageManager: BlobStorageManager;
@@ -35,18 +29,24 @@ describe("BlobStorageManager", () => {
       );
     }
 
-    postgresStorage = new PostgresStorage();
+    postgresStorage = new PostgresStorage({ chainId: env.CHAIN_ID });
     googleStorage = new GoogleStorage({
+      chainId: env.CHAIN_ID,
       bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
       apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
       projectId: env.GOOGLE_STORAGE_PROJECT_ID,
     });
-    swarmStorage = new SwarmStorage(SWARM_STORAGE_CONFIG);
+    swarmStorage = new SwarmStorage({
+      chainId: env.CHAIN_ID,
+      beeEndpoint: env.BEE_ENDPOINT ?? "",
+      beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
+    });
 
-    blobStorageManager = new BlobStorageManager(
-      [postgresStorage, googleStorage, swarmStorage],
-      env.CHAIN_ID
-    );
+    blobStorageManager = new BlobStorageManager([
+      postgresStorage,
+      googleStorage,
+      swarmStorage,
+    ]);
 
     failingPostgresStorage = mockDeep<PostgresStorage>();
     failingGoogleStorage = mockDeep<GoogleStorage>();
@@ -68,13 +68,9 @@ describe("BlobStorageManager", () => {
 
   describe("constructor", () => {
     it("should throw an error if no blob storages are provided", () => {
-      expect(() => new BlobStorageManager([], env.CHAIN_ID)).toThrow(
+      expect(() => new BlobStorageManager([])).toThrow(
         "No blob storages provided"
       );
-    });
-
-    it("should return the correct chain id", async () => {
-      expect(blobStorageManager.chainId).toBe(env.CHAIN_ID);
     });
   });
 
@@ -176,10 +172,7 @@ describe("BlobStorageManager", () => {
       "should throw an error when one of the selected blob storages wasn't found",
       async () => {
         const selectedStorages: BlobStorageName[] = ["POSTGRES", "GOOGLE"];
-        const singleStorageBSM = new BlobStorageManager(
-          [swarmStorage],
-          env.CHAIN_ID
-        );
+        const singleStorageBSM = new BlobStorageManager([swarmStorage]);
 
         await singleStorageBSM.storeBlob(blob, {
           selectedStorages: selectedStorages,
@@ -192,10 +185,11 @@ describe("BlobStorageManager", () => {
       const newHash = "0x6d6f636b2d64617461";
       const blob = { data: "New data", versionedHash: newHash };
 
-      const blobStorageManager = new BlobStorageManager(
-        [failingPostgresStorage, googleStorage, failingSwarmStorage],
-        env.CHAIN_ID
-      );
+      const blobStorageManager = new BlobStorageManager([
+        failingPostgresStorage,
+        googleStorage,
+        failingSwarmStorage,
+      ]);
 
       const result = await blobStorageManager.storeBlob(blob);
 
@@ -205,10 +199,11 @@ describe("BlobStorageManager", () => {
     testValidError(
       "should throw an error if all uploads fail",
       async () => {
-        const newBlobStorageManager = new BlobStorageManager(
-          [failingPostgresStorage, failingGoogleStorage, failingSwarmStorage],
-          env.CHAIN_ID
-        );
+        const newBlobStorageManager = new BlobStorageManager([
+          failingPostgresStorage,
+          failingGoogleStorage,
+          failingSwarmStorage,
+        ]);
 
         const blob = {
           data: "New data",

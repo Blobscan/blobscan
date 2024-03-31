@@ -16,4 +16,4 @@ exports[`SwarmStorage > storeBlob > should throw an error if the bee debug endpo
 
 exports[`SwarmStorage > storeBlob > should throw an error if the bee debug endpoint is not available 2`] = `[Error: Bee debug endpoint required to get postage batches.]`;
 
-exports[`SwarmStorage > tryGetConfigFromEnv > should throw an error when a bee endpoint is not provided 1`] = `"No config variables found: no bee endpoint provided"`;
+exports[`SwarmStorage > tryGetConfigFromEnv > should throw an error when a bee endpoint is not provided 1`] = `"SwarmStorageMock failed: No config variables found: no bee endpoint provided"`;

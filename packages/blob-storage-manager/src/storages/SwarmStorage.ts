@@ -1,8 +1,10 @@
-import { Bee, BeeDebug, PostageBatch } from "@ethersphere/bee-js";
+import { Bee, BeeDebug } from "@ethersphere/bee-js";
+import type { PostageBatch } from "@ethersphere/bee-js";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
+import { BlobStorageError } from "../errors";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
@@ -18,8 +20,8 @@ export type SwarmClient = {
 export class SwarmStorage extends BlobStorage {
   _swarmClient: SwarmClient;
 
-  constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
-    super(BLOB_STORAGE_NAMES.SWARM);
+  constructor({ beeDebugEndpoint, beeEndpoint, chainId }: SwarmStorageConfig) {
+    super(BLOB_STORAGE_NAMES.SWARM, chainId);
 
     try {
       this._swarmClient = {
@@ -34,9 +36,9 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async getPostageBatch(batchLabel: string): Promise<PostageBatch | undefined> {
-    const batches = await this.#getAllPostageBatch()
+    const batches = await this.#getAllPostageBatch();
 
-    return batches.find((b) => b.label === batchLabel)
+    return batches.find((b) => b.label === batchLabel);
   }
 
   protected async _healthCheck() {
@@ -63,16 +65,12 @@ export class SwarmStorage extends BlobStorage {
     return file.data.text();
   }
 
-  protected async _storeBlob(
-    chainId: number,
-    versionedHash: string,
-    data: string
-  ) {
+  protected async _storeBlob(versionedHash: string, data: string) {
     const batchId = await this.#getAvailableBatch();
     const response = await this._swarmClient.bee.uploadFile(
       batchId,
       data,
-      this.buildBlobFileName(chainId, versionedHash),
+      this.buildBlobFileName(versionedHash),
       {
         pin: true,
         contentType: "text/plain",
@@ -101,11 +99,17 @@ export class SwarmStorage extends BlobStorage {
   }
 
   static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {
+    const baseConfig = super.getConfigFromEnv(env);
+
     if (!env.BEE_ENDPOINT) {
-      throw new Error("No config variables found: no bee endpoint provided");
+      throw new BlobStorageError(
+        this.name,
+        "No config variables found: no bee endpoint provided"
+      );
     }
 
     return {
+      ...baseConfig,
       beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
       beeEndpoint: env.BEE_ENDPOINT,
     };

@@ -65,8 +65,8 @@ vi.mock("@ethersphere/bee-js", async () => {
 });
 
 export class SwarmStorageMock extends SwarmStorage {
-  constructor({ beeDebugEndpoint, beeEndpoint }: SwarmStorageConfig) {
-    super({ beeDebugEndpoint, beeEndpoint });
+  constructor({ beeDebugEndpoint, beeEndpoint, chainId }: SwarmStorageConfig) {
+    super({ beeDebugEndpoint, beeEndpoint, chainId });
 
     this._swarmClient = {
       bee: new Bee(beeEndpoint),

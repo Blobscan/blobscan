@@ -2,23 +2,22 @@ import type { Environment } from "./env";
 import { BlobStorageError, StorageCreationError } from "./errors";
 import type { BlobStorageName } from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface BlobStorageConfig {}
+export interface BlobStorageConfig {
+  chainId: number;
+}
 
 export abstract class BlobStorage {
+  chainId: number;
   name: BlobStorageName;
 
-  constructor(name: BlobStorageName) {
+  constructor(name: BlobStorageName, chainId: number) {
     this.name = name;
+    this.chainId = chainId;
   }
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string): Promise<string>;
-  protected abstract _storeBlob(
-    chainId: number,
-    hash: string,
-    data: string
-  ): Promise<string>;
+  protected abstract _storeBlob(hash: string, data: string): Promise<string>;
 
   async healthCheck(): Promise<"OK"> {
     try {
@@ -48,13 +47,9 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeBlob(
-    chainId: number,
-    hash: string,
-    data: string
-  ): Promise<string> {
+  async storeBlob(hash: string, data: string): Promise<string> {
     try {
-      const res = await this._storeBlob(chainId, hash, data);
+      const res = await this._storeBlob(hash, data);
 
       return res;
     } catch (err) {
@@ -66,8 +61,8 @@ export abstract class BlobStorage {
     }
   }
 
-  protected buildBlobFileName(chainId: number, hash: string): string {
-    return `${chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
+  protected buildBlobFileName(hash: string): string {
+    return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
       6
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
@@ -134,11 +129,17 @@ export abstract class BlobStorage {
   }
 
   protected static getConfigFromEnv(
-    _: Partial<Environment>
-  ): BlobStorageConfig | undefined {
-    throw new BlobStorageError(
-      this.name,
-      `"getConfigFromEnv" function not implemented`
-    );
+    env: Partial<Environment>
+  ): BlobStorageConfig {
+    if (!env.CHAIN_ID) {
+      throw new BlobStorageError(
+        this.name,
+        `No config variables found: no chain id provided`
+      );
+    }
+
+    return {
+      chainId: env.CHAIN_ID,
+    };
   }
 }

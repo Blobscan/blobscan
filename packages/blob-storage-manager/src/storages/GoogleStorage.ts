@@ -23,12 +23,13 @@ export class GoogleStorage extends BlobStorage {
   _bucketName: string;
 
   constructor({
+    chainId,
     bucketName,
     projectId,
     serviceKey,
     apiEndpoint,
   }: GoogleStorageConfig) {
-    super(BLOB_STORAGE_NAMES.GOOGLE);
+    super(BLOB_STORAGE_NAMES.GOOGLE, chainId);
 
     try {
       const storageOptions: StorageOptions = {};
@@ -70,11 +71,10 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _storeBlob(
-    chainId: number,
     versionedHash: string,
     data: string
   ): Promise<string> {
-    const fileName = this.buildBlobFileName(chainId, versionedHash);
+    const fileName = this.buildBlobFileName(versionedHash);
 
     await this._storageClient
       .bucket(this._bucketName)
@@ -93,6 +93,8 @@ export class GoogleStorage extends BlobStorage {
   }
 
   static getConfigFromEnv(env: Partial<Environment>): GoogleStorageConfig {
+    const baseConfig = super.getConfigFromEnv(env);
+
     if (
       !env.GOOGLE_STORAGE_BUCKET_NAME ||
       (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
@@ -103,6 +105,7 @@ export class GoogleStorage extends BlobStorage {
     }
 
     return {
+      ...baseConfig,
       bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
       projectId: env.GOOGLE_STORAGE_PROJECT_ID,
       serviceKey: env.GOOGLE_SERVICE_KEY,

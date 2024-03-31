@@ -8,7 +8,7 @@ import { BLOB_HASH, HEX_DATA } from "../fixtures";
 
 class PostgresStorageMock extends PostgresStorage {
   constructor() {
-    super();
+    super({ chainId: env.CHAIN_ID });
   }
 
   getClient() {
@@ -31,7 +31,7 @@ describe("PostgresStorage", () => {
 
   describe("storeBlob", () => {
     it("should store the blob data and return versionedHash", async () => {
-      const result = await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA);
+      const result = await storage.storeBlob(BLOB_HASH, HEX_DATA);
 
       expect(result).toBe(BLOB_HASH);
     });
@@ -46,7 +46,7 @@ describe("PostgresStorage", () => {
           "upsert"
         ).mockRejectedValueOnce(new Error("Failed to store blob data"));
 
-        await failingStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA);
+        await failingStorage.storeBlob(BLOB_HASH, HEX_DATA);
       },
       BlobStorageError,
       {
@@ -57,7 +57,7 @@ describe("PostgresStorage", () => {
 
   describe("getBlob", () => {
     it("should fetch the blob data by a given versioned hash correctly", async () => {
-      await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, HEX_DATA);
+      await storage.storeBlob(BLOB_HASH, HEX_DATA);
 
       const result = await storage.getBlob(BLOB_HASH);
 
@@ -82,7 +82,11 @@ describe("PostgresStorage", () => {
 
   describe("tryGetConfigFromEnv", () => {
     it("should return a valid config object ", () => {
-      expect(PostgresStorage.getConfigFromEnv({})).toEqual({});
+      expect(
+        PostgresStorage.getConfigFromEnv({ CHAIN_ID: env.CHAIN_ID })
+      ).toEqual({
+        chainId: env.CHAIN_ID,
+      });
     });
   });
 });
