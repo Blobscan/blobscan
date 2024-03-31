@@ -1,10 +1,18 @@
+import { z } from "@blobscan/zod";
+
 import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
 import { TRANSACTION_BASE_PATH } from "./common";
-import {
-  getTransactionOverallStatsInputSchema,
-  getTransactionOverallStatsOutputSchema,
-} from "./getTransactionOverallStats.schema";
+
+export const inputSchema = z.void();
+
+export const outputSchema = z.object({
+  totalTransactions: z.number(),
+  totalUniqueReceivers: z.number(),
+  totalUniqueSenders: z.number(),
+  avgMaxBlobGasFee: z.number(),
+  updatedAt: z.date(),
+});
 
 export function getTransactionOverallStatsQuery(prisma: TRPCContext["prisma"]) {
   return prisma.transactionOverallStats
@@ -22,6 +30,7 @@ export function getTransactionOverallStatsQuery(prisma: TRPCContext["prisma"]) {
         }
     );
 }
+
 export const getTransactionOverallStats = publicProcedure
   .meta({
     openapi: {
@@ -31,6 +40,6 @@ export const getTransactionOverallStats = publicProcedure
       summary: "retrieves transactions overall stats.",
     },
   })
-  .input(getTransactionOverallStatsInputSchema)
-  .output(getTransactionOverallStatsOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .query(({ ctx }) => getTransactionOverallStatsQuery(ctx.prisma));

@@ -1,7 +1,35 @@
-import { withPagination } from "../../middlewares/withPagination";
+import { z } from "@blobscan/zod";
+
+import {
+  createExpandsSchema,
+  withExpands,
+} from "../../middlewares/withExpands";
+import {
+  withAllFiltersSchema,
+  withFilters,
+} from "../../middlewares/withFilters";
+import {
+  withPaginationSchema,
+  withPagination,
+} from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { formatFullBlockForApi, fullBlockSelect } from "./common";
-import { getAllInputSchema, getAllOutputSchema } from "./getAll.schema";
+import { calculateDerivedTxBlobGasFields, isEmptyObject } from "../../utils";
+import {
+  createBlockSelect,
+  serializeBlock,
+  serializedBlockSchema,
+} from "./common";
+import type { QueriedBlock } from "./common";
+
+const inputSchema = withAllFiltersSchema
+  .merge(createExpandsSchema(["transaction", "blob"]))
+  .merge(withPaginationSchema)
+  .optional();
+
+const outputSchema = z.object({
+  blocks: serializedBlockSchema.array(),
+  totalBlocks: z.number(),
+});
 
 export const getAll = publicProcedure
   .meta({
@@ -12,32 +40,76 @@ export const getAll = publicProcedure
       summary: "retrieves all blocks.",
     },
   })
-  .input(getAllInputSchema)
-  .output(getAllOutputSchema)
+  .input(inputSchema)
+  .use(withFilters)
+  .use(withExpands)
   .use(withPagination)
-  .query(async ({ input, ctx }) => {
-    const [blocks, overallStats] = await Promise.all([
-      ctx.prisma.block
-        .findMany({
-          select: fullBlockSelect,
-          orderBy: { number: "desc" },
-          ...ctx.pagination,
-          where: {
-            transactionForks: {
-              ...(input?.reorgs ? { some: {} } : { none: {} }),
-            },
+  .output(outputSchema)
+  .query(async ({ ctx }) => {
+    const { blockFilters, transactionFilters, sort } = ctx.filters;
+
+    const [queriedBlocks, totalBlocks] = await Promise.all([
+      ctx.prisma.block.findMany({
+        select: createBlockSelect(ctx.expands),
+        where: {
+          ...blockFilters,
+          transactions: {
+            some: transactionFilters,
+          },
+        },
+        orderBy: { number: sort },
+        ...ctx.pagination,
+      }),
+      ctx.prisma.blockOverallStats
+        .findFirst({
+          select: {
+            totalBlocks: true,
           },
         })
-        .then((blocks) => blocks.map(formatFullBlockForApi)),
-      ctx.prisma.blockOverallStats.findFirst({
-        select: {
-          totalBlocks: true,
-        },
-      }),
+        .then((stats) => stats?.totalBlocks ?? 0),
     ]);
 
+    const isTransactionSelectExpanded = !isEmptyObject(
+      ctx.expands.expandedTransactionSelect
+    );
+
+    let blocks: QueriedBlock[] = queriedBlocks;
+
+    if (isTransactionSelectExpanded) {
+      blocks = blocks.map((block) => ({
+        ...block,
+        transactions: block.transactions.map((tx) => {
+          const derivedTxFields = tx.maxFeePerBlobGas
+            ? calculateDerivedTxBlobGasFields({
+                blobGasPrice: block.blobGasPrice,
+                maxFeePerBlobGas: tx.maxFeePerBlobGas,
+                txBlobsLength: tx.blobs.length,
+              })
+            : {};
+
+          return {
+            ...tx,
+            ...derivedTxFields,
+          };
+        }),
+      }));
+    }
+
+    /**
+     * When rollup filter is set we need to filter out the transactions don't
+     * match manually as the query returns all the transactions in the block
+     */
+    if (transactionFilters.rollup !== undefined) {
+      blocks = queriedBlocks.map((block) => ({
+        ...block,
+        transactions: block.transactions.filter(
+          (tx) => tx.rollup === transactionFilters.rollup
+        ),
+      }));
+    }
+
     return {
-      blocks,
-      totalBlocks: overallStats?.totalBlocks ?? 0,
+      blocks: blocks.map(serializeBlock),
+      totalBlocks,
     };
   });

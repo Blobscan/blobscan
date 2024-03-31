@@ -1,16 +1,18 @@
 import type { RouterOutputs } from "~/api-client";
 
-export type AllBlocks = RouterOutputs["block"]["getAllFull"];
+export type AllBlocks = RouterOutputs["block"]["getAll"];
 
-export type Block = RouterOutputs["block"]["getByBlockIdFull"];
+export type GetByBlockIdOutput = RouterOutputs["block"]["getByBlockId"];
 
-export type Transaction = RouterOutputs["tx"]["getByHashFull"];
+export type ExpandedBlock = RouterOutputs["tx"]["getByHash"]["block"];
 
-export type AllTransactions = RouterOutputs["tx"]["getAllFull"];
+export type GetTxByHashOutput = RouterOutputs["tx"]["getByHash"];
+
+export type AllTransactions = RouterOutputs["tx"]["getAll"];
 
 export type AllBlobs = RouterOutputs["blob"]["getAll"];
 
-export type Blob = RouterOutputs["blob"]["getByBlobIdFull"];
+export type GetByBlobIdOutput = RouterOutputs["blob"]["getByBlobId"];
 
 export type DailyBlobStats = RouterOutputs["stats"]["getBlobDailyStats"];
 

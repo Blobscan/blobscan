@@ -4,14 +4,14 @@ import type { FC } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import type { Block } from "~/types";
-import { buildBlockRoute, normalizeTimestamp } from "~/utils";
+import { buildBlockRoute } from "~/utils";
+import type { DeserializedBlock } from "~/utils";
 import { Link } from "../../Link";
 import { CardHeader } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlockCardProps = {
-  block: Block;
+  block: Pick<DeserializedBlock, "number" | "timestamp" | "transactions">;
 };
 
 const BlockCard: FC<Partial<BlockCardProps>> = function ({
@@ -38,7 +38,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
       <div className="pt-2 text-sm">
         {timestamp ? (
           <div className="mb-2 text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-            {normalizeTimestamp(timestamp).fromNow()}
+            {timestamp.fromNow()}
           </div>
         ) : (
           <Skeleton width={100} />

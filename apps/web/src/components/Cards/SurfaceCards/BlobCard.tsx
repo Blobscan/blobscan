@@ -3,13 +3,13 @@ import type { FC } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import type { AllBlobs } from "~/types";
 import { buildBlobRoute, formatBytes } from "~/utils";
+import type { DeserializedBlob } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlobCardProps = Partial<{
-  blob: AllBlobs["blobs"][number];
+  blob: Pick<DeserializedBlob, "versionedHash" | "commitment" | "size">;
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({

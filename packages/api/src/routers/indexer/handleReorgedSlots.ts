@@ -1,9 +1,17 @@
+import { z } from "@blobscan/zod";
+
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
-import {
-  handleReorgedSlotsInputSchema,
-  handleReorgedSlotsOutputSchema,
-} from "./handleReorgedSlots.schema";
+
+const inputSchema = z.object({
+  reorgedSlots: z.array(z.coerce.number().positive()).nonempty(),
+});
+
+const outputSchema = z.object({
+  totalUpdatedSlots: z.number(),
+});
+
+export type HandleReorgedSlotsInput = z.infer<typeof inputSchema>;
 
 export const handleReorgedSlots = jwtAuthedProcedure
   .meta({
@@ -16,8 +24,8 @@ export const handleReorgedSlots = jwtAuthedProcedure
       protect: true,
     },
   })
-  .input(handleReorgedSlotsInputSchema)
-  .output(handleReorgedSlotsOutputSchema)
+  .input(inputSchema)
+  .output(outputSchema)
   .mutation(async ({ ctx: { prisma }, input: { reorgedSlots } }) => {
     const reorgedBlocks = await prisma.block.findMany({
       select: {

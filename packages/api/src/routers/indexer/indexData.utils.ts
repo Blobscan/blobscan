@@ -7,7 +7,7 @@ import type {
 import { Prisma, Rollup } from "@blobscan/db";
 
 import { env } from "../../env";
-import type { IndexDataInput } from "./indexData.schema";
+import type { IndexDataInput } from "./indexData";
 
 const MIN_BLOB_BASE_FEE = BigInt(1);
 const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);

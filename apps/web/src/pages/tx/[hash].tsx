@@ -8,8 +8,10 @@ import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
+import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
+import type { FullTransaction } from "~/types";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -18,6 +20,7 @@ import {
   formatBytes,
   formatNumber,
   performDiv,
+  deserializeFullTransaction,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -25,30 +28,20 @@ const Tx: NextPage = () => {
   const hash = (router.query.hash as string | undefined) ?? "";
 
   const {
-    data: txData_,
+    data: rawTxData,
     error,
     isLoading,
-  } = api.tx.getByHashFull.useQuery({ hash }, { enabled: router.isReady });
-  const txData = useMemo(
-    () =>
-      txData_
-        ? {
-            ...txData_,
-            blobAsCalldataGasUsed: BigInt(txData_.blobAsCalldataGasUsed),
-            gasPrice: BigInt(txData_.gasPrice),
-            blobGasUsed: BigInt(txData_.blobGasUsed),
-            blobGasBaseFee: BigInt(txData_.blobGasBaseFee),
-            blobGasMaxFee: BigInt(txData_.blobGasMaxFee),
-            maxFeePerBlobGas: BigInt(txData_.maxFeePerBlobGas),
-            block: {
-              ...txData_.block,
-              blobGasPrice: BigInt(txData_.block.blobGasPrice),
-              Gas: BigInt(txData_.block.excessBlobGas),
-            },
-          }
-        : undefined,
-    [txData_]
+  } = api.tx.getByHash.useQuery<FullTransaction>(
+    { hash, expand: "block,blob" },
+    { enabled: router.isReady }
   );
+  const tx = useMemo(() => {
+    if (!rawTxData) {
+      return;
+    }
+
+    return deserializeFullTransaction(rawTxData);
+  }, [rawTxData]);
 
   if (error) {
     return (
@@ -59,142 +52,136 @@ const Tx: NextPage = () => {
     );
   }
 
-  if (!isLoading && !txData) {
+  if (!isLoading && !tx) {
     return <div>Transaction not found</div>;
   }
 
-  const sortedBlobs = txData?.blobs.sort((a, b) => a.index - b.index);
-  const blobGasPrice = txData?.block.blobGasPrice ?? BigInt(0);
-  const blobGasUsed = txData?.blobGasUsed ?? BigInt(0);
-  const blobGasBaseFee = txData?.blobGasBaseFee ?? BigInt(0);
-  const blobGasMaxFee = txData?.blobGasMaxFee ?? BigInt(0);
+  let detailsFields: DetailsLayoutProps["fields"] | undefined;
+
+  if (tx) {
+    detailsFields = [];
+
+    const {
+      blobAsCalldataGasUsed,
+      blobs,
+      block,
+      hash,
+      blockNumber,
+      from,
+      to,
+      rollup,
+      blobGasUsed,
+      blobGasBaseFee,
+      blobGasMaxFee,
+    } = tx;
+
+    detailsFields = [
+      {
+        name: "Hash",
+        value: hash,
+      },
+      {
+        name: "Block",
+        value: <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>,
+      },
+      {
+        name: "Timestamp",
+        value: (
+          <div className="whitespace-break-spaces">
+            {formatTimestamp(block.timestamp)}
+          </div>
+        ),
+      },
+      {
+        name: "From",
+        value: <Link href={buildAddressRoute(from)}>{from}</Link>,
+      },
+      {
+        name: "To",
+        value: <Link href={buildAddressRoute(to)}>{to}</Link>,
+      },
+    ];
+
+    if (rollup) {
+      detailsFields.push({
+        name: "Rollup",
+        value: <RollupBadge rollup={rollup} />,
+      });
+    }
+
+    const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
+
+    detailsFields.push(
+      {
+        name: "Total Blob Size",
+        value: formatBytes(totalBlobSize),
+      },
+      {
+        name: "Blob Gas Price",
+        value: <EtherUnitDisplay amount={block?.blobGasPrice} />,
+      },
+      {
+        name: "Blob Fee",
+        value: (
+          <div className="flex flex-col gap-4">
+            {blobGasBaseFee ? (
+              <div className="flex gap-1">
+                <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Base:
+                </div>
+                <EtherUnitDisplay amount={blobGasBaseFee} />
+              </div>
+            ) : null}
+            <div className=" flex gap-1">
+              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                Max:
+              </div>
+              <EtherUnitDisplay amount={blobGasMaxFee} />
+            </div>
+          </div>
+        ),
+      },
+      {
+        name: "Blob Gas Used",
+        value: formatNumber(blobGasUsed),
+      },
+      {
+        name: "Blob As Calldata Gas",
+        value: (
+          <div>
+            {formatNumber(blobAsCalldataGasUsed)}{" "}
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+              (
+              <strong>
+                {formatNumber(
+                  performDiv(blobAsCalldataGasUsed, blobGasUsed),
+                  "standard",
+                  {
+                    maximumFractionDigits: 2,
+                  }
+                )}
+              </strong>{" "}
+              times more expensive)
+            </span>
+          </div>
+        ),
+      }
+    );
+  }
 
   return (
     <>
       <DetailsLayout
         header="Transaction Details"
-        externalLink={
-          txData ? buildTransactionExternalUrl(txData.hash) : undefined
-        }
-        fields={
-          txData
-            ? [
-                { name: "Hash", value: txData.hash },
-                {
-                  name: "Block",
-                  value: (
-                    <Link href={buildBlockRoute(txData.block.number)}>
-                      {txData.block.number}
-                    </Link>
-                  ),
-                },
-                {
-                  name: "Timestamp",
-                  value: (
-                    <div className="whitespace-break-spaces">
-                      {formatTimestamp(txData.block.timestamp)}
-                    </div>
-                  ),
-                },
-                {
-                  name: "From",
-                  value: (
-                    <Link href={buildAddressRoute(txData.fromId)}>
-                      {txData.fromId}
-                    </Link>
-                  ),
-                },
-                {
-                  name: "To",
-                  value: (
-                    <Link href={buildAddressRoute(txData.toId)}>
-                      {txData.toId}
-                    </Link>
-                  ),
-                },
-                ...(txData.rollup
-                  ? [
-                      {
-                        name: "Rollup",
-                        value: <RollupBadge rollup={txData.rollup} />,
-                      },
-                    ]
-                  : []),
-                {
-                  name: "Total Blob Size",
-                  value: formatBytes(txData.totalBlobSize),
-                },
-                {
-                  name: "Blob Fee",
-                  value: (
-                    <div className="flex flex-col gap-4">
-                      <div className="flex gap-1">
-                        <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                          Base:
-                        </div>
-                        <EtherUnitDisplay amount={blobGasBaseFee} />
-                      </div>
-                      <div className=" flex gap-1">
-                        <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                          Max:
-                        </div>
-                        <EtherUnitDisplay amount={blobGasMaxFee} />
-                      </div>
-                    </div>
-                  ),
-                },
-                {
-                  name: "Blob Gas Price",
-                  value: <EtherUnitDisplay amount={blobGasPrice} />,
-                },
-                {
-                  name: "Blob Gas Used",
-                  value: formatNumber(blobGasUsed),
-                },
-                {
-                  name: "Blob As Calldata Gas",
-                  value: (
-                    <div>
-                      {formatNumber(txData.blobAsCalldataGasUsed)}{" "}
-                      <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                        (
-                        <strong>
-                          {formatNumber(
-                            performDiv(
-                              txData.blobAsCalldataGasUsed,
-                              blobGasUsed
-                            ),
-                            "standard",
-                            {
-                              maximumFractionDigits: 2,
-                            }
-                          )}
-                        </strong>{" "}
-                        times more expensive)
-                      </span>
-                    </div>
-                  ),
-                },
-              ]
-            : undefined
-        }
+        externalLink={tx ? buildTransactionExternalUrl(tx.hash) : undefined}
+        fields={detailsFields}
       />
 
-      <Card header={`Blobs ${txData ? `(${txData.blobs.length})` : ""}`}>
+      <Card header={`Blobs ${tx ? `(${tx.blobs.length})` : ""}`}>
         <div className="space-y-6">
-          {isLoading || !txData || !sortedBlobs
+          {isLoading || !tx || !tx.blobs
             ? Array.from({ length: 2 }).map((_, i) => <BlobCard key={i} />)
-            : sortedBlobs.map((b) => (
-                <BlobCard
-                  key={b.blobHash}
-                  blob={{
-                    commitment: b.blob.commitment,
-                    proof: b.blob.proof,
-                    size: b.blob.size,
-                    versionedHash: b.blobHash,
-                  }}
-                />
-              ))}
+            : tx.blobs.map((b) => <BlobCard key={b.versionedHash} blob={b} />)}
         </div>
       </Card>
     </>

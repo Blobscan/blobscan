@@ -112,7 +112,7 @@ jobs:
           version: "1.37.2"
           backend: memory
           scheme: http
-          data: packages/test/src/fixtures/storage
+          data: packages/test/src/fixtures/gcs
 
       - name: Generate Prisma Client
         run: pnpm db:generate

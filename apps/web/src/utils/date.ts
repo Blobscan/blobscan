@@ -1,13 +1,17 @@
 import dayjs from "@blobscan/dayjs";
 
-export function normalizeTimestamp(timestamp: number | Date) {
+export function normalizeTimestamp(timestamp: number | Date | string) {
   return typeof timestamp === "number"
     ? dayjs.unix(timestamp)
     : dayjs(timestamp);
 }
 
-export function formatTimestamp(timestamp: number | Date) {
-  const unixHandler = normalizeTimestamp(timestamp);
+export function formatTimestamp(
+  timestamp: number | Date | string | dayjs.Dayjs
+) {
+  const unixHandler = dayjs.isDayjs(timestamp)
+    ? timestamp
+    : normalizeTimestamp(timestamp);
 
   return `${unixHandler.fromNow()} (${unixHandler.format(
     "MMM D, YYYY h:mm AZ"
