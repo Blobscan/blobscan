@@ -15,14 +15,14 @@ import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { api } from "~/api-client";
-import type { TransactionWithBlock } from "~/types";
+import type { FullTransaction } from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
   deserializeBlock,
   deserializeBlockOverallStats,
-  deserializeTransactionWithBlock,
+  deserializeFullTransaction,
 } from "~/utils";
 
 const LATEST_BLOCKS_LENGTH = 4;
@@ -46,11 +46,11 @@ const Home: NextPage = () => {
     error: latestTxsError,
   } = api.tx.getAll.useQuery<{
     totalTransactions: number;
-    transactions: TransactionWithBlock[];
+    transactions: FullTransaction[];
   }>({
     p: 1,
     ps: LATEST_TXS_LENGTH,
-    expand: "block",
+    expand: "block,blob",
   });
   const {
     data: blobsData,
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
       return [];
     }
 
-    return rawTxsData.transactions.map(deserializeTransactionWithBlock);
+    return rawTxsData.transactions.map(deserializeFullTransaction);
   }, [rawTxsData]);
   const overallStats = useMemo(() => {
     if (!rawOverallStats) {

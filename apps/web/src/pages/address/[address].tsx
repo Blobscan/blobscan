@@ -9,11 +9,8 @@ import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
-import type { TransactionWithBlock } from "~/types";
-import {
-  buildAddressExternalUrl,
-  deserializeTransactionWithBlock,
-} from "~/utils";
+import type { FullTransaction } from "~/types";
+import { buildAddressExternalUrl, deserializeFullTransaction } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
@@ -21,10 +18,10 @@ const Address: NextPage = () => {
   const address = (router.query.address as string | undefined) ?? "";
 
   const { data: serializedAddressTxs, error } = api.tx.getAll.useQuery<{
-    transactions: TransactionWithBlock[];
+    transactions: FullTransaction[];
     totalTransactions: number;
   }>(
-    { to: address, from: address, p, ps, expand: "block" },
+    { to: address, from: address, p, ps, expand: "block,blob" },
     { enabled: router.isReady }
   );
   const addressTxsData = useMemo(() => {
@@ -35,7 +32,7 @@ const Address: NextPage = () => {
     return {
       totalTransactions: serializedAddressTxs.totalTransactions,
       transactions: serializedAddressTxs.transactions.map(
-        deserializeTransactionWithBlock
+        deserializeFullTransaction
       ),
     };
   }, [serializedAddressTxs]);

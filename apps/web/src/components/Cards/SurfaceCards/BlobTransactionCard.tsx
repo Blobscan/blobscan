@@ -8,7 +8,6 @@ import Skeleton from "react-loading-skeleton";
 
 import { Button } from "~/components/Button";
 import {
-  BLOB_SIZE,
   buildAddressRoute,
   buildBlobRoute,
   buildBlockRoute,
@@ -47,7 +46,7 @@ type BlobTransactionCardProps = Partial<{
   block: Pick<DeserializedFullTransaction["block"], "timestamp">;
   blobs: Pick<
     DeserializedFullTransaction["blobs"][number],
-    "versionedHash" | "index"
+    "versionedHash" | "index" | "size"
   >[];
 }>;
 
@@ -92,7 +91,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 
   useEffect(updateHeight, [opened, updateHeight]);
 
-  const totalBlobSize = (blobsOnTx?.length ?? 0) * BLOB_SIZE;
+  const totalBlobSize = blobsOnTx?.reduce((acc, { size }) => acc + size, 0);
 
   return (
     <div>
@@ -147,7 +146,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   )}
                   ·
                   <div>
-                    {blobsOnTx ? (
+                    {totalBlobSize !== undefined ? (
                       formatBytes(totalBlobSize)
                     ) : (
                       <Skeleton width={80} />
@@ -196,7 +195,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <TableHeader>Index</TableHeader>
               <TableHeader>Versioned Hash</TableHeader>
               <TableHeader>Size</TableHeader>
-              {blobsOnTx.map(({ versionedHash, index }) => (
+              {blobsOnTx.map(({ versionedHash, index, size }) => (
                 <React.Fragment key={`${versionedHash}-${index}`}>
                   <TableCol>{index}</TableCol>
                   <TableCol>
@@ -204,7 +203,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       {versionedHash}
                     </Link>
                   </TableCol>
-                  <TableCol>{formatBytes(BLOB_SIZE)}</TableCol>
+                  <TableCol>{formatBytes(size)}</TableCol>
                 </React.Fragment>
               ))}
             </div>

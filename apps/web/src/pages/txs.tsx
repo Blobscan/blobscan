@@ -7,20 +7,20 @@ import { getPaginationParams } from "~/utils/pagination";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
-import type { TransactionWithBlock } from "~/types";
-import { deserializeTransactionWithBlock, formatNumber } from "~/utils";
+import type { FullTransaction } from "~/types";
+import { deserializeFullTransaction, formatNumber } from "~/utils";
 
 const Txs: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
 
   const { data: rawTxsData, error } = api.tx.getAll.useQuery<{
-    transactions: TransactionWithBlock[];
+    transactions: FullTransaction[];
     totalTransactions: number;
   }>({
     p,
     ps,
-    expand: "block",
+    expand: "block,blob",
   });
   const txsData = useMemo(() => {
     if (!rawTxsData) {
@@ -29,9 +29,7 @@ const Txs: NextPage = function () {
 
     return {
       totalTransactions: rawTxsData.totalTransactions,
-      transactions: rawTxsData.transactions.map(
-        deserializeTransactionWithBlock
-      ),
+      transactions: rawTxsData.transactions.map(deserializeFullTransaction),
     };
   }, [rawTxsData]);
   const { transactions, totalTransactions } = txsData || {};
