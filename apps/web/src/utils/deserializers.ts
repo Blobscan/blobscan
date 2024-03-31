@@ -46,6 +46,7 @@ function getDeserializedTransactionFields(
     | "blobGasMaxFee"
     | "blobGasUsed"
     | "blobAsCalldataGasUsed"
+    | "blobAsCalldataGasFee"
   >
 ) {
   const {
@@ -53,6 +54,7 @@ function getDeserializedTransactionFields(
     blobGasMaxFee,
     blobGasUsed,
     blobAsCalldataGasUsed,
+    blobAsCalldataGasFee,
   } = transaction;
 
   return {
@@ -60,6 +62,7 @@ function getDeserializedTransactionFields(
     blobGasMaxFee: BigInt(blobGasMaxFee),
     blobGasUsed: BigInt(blobGasUsed),
     blobAsCalldataGasUsed: BigInt(blobAsCalldataGasUsed),
+    blobAsCalldataGasFee: BigInt(blobAsCalldataGasFee),
   };
 }
 

@@ -127,6 +127,7 @@ export const serializedExpandedTransactionSchema = z
   })
   .merge(
     z.object({
+      blobAsCalldataGasFee: z.string().optional(),
       blobGasBaseFee: z.string().optional(),
       blobGasMaxFee: z.string().optional(),
       blobGasUsed: z.string().optional(),
@@ -242,6 +243,7 @@ export function serializeExpandedTransaction(
     fromId,
     toId,
     rollup,
+    blobAsCalldataGasFee,
     blobGasBaseFee,
     blobGasMaxFee,
     blobGasUsed,
@@ -280,6 +282,11 @@ export function serializeExpandedTransaction(
 
   if (blobGasUsed) {
     expandedTransaction.blobGasUsed = serializeDecimal(blobGasUsed);
+  }
+
+  if (blobAsCalldataGasFee) {
+    expandedTransaction.blobAsCalldataGasFee =
+      serializeDecimal(blobAsCalldataGasFee);
   }
 
   return expandedTransaction;

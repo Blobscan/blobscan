@@ -51,11 +51,14 @@ export type SerializedTransaction = z.infer<typeof serializedTransactionSchema>;
 export function addDerivedFieldsToTransaction(
   txQuery: BaseTransaction
 ): FullQueriedTransaction {
-  const { block, blobs, maxFeePerBlobGas } = txQuery;
+  const { block, blobs, maxFeePerBlobGas, blobAsCalldataGasUsed, gasPrice } =
+    txQuery;
 
   return {
     ...txQuery,
     ...calculateDerivedTxBlobGasFields({
+      blobAsCalldataGasUsed,
+      gasPrice,
       blobGasPrice: block.blobGasPrice,
       txBlobsLength: blobs.length,
       maxFeePerBlobGas,

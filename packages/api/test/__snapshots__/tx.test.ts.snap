@@ -3,6 +3,7 @@
 exports[`Transaction router > getAll > when getting expanded transaction results > should return the correct expanded blob 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -38,6 +39,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -112,6 +114,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 exports[`Transaction router > getAll > when getting expanded transaction results > should return the correct expanded block 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -140,6 +143,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -181,6 +185,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 exports[`Transaction router > getAll > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -222,6 +227,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -302,6 +308,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the latest results when no sort was specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -324,6 +331,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -354,6 +362,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -381,6 +390,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the oldest results when ascending order is specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -411,6 +421,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address2",
   },
   {
+    "blobAsCalldataGasFee": "12100",
     "blobAsCalldataGasUsed": "1100",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "14417920",
@@ -433,6 +444,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "14400",
     "blobAsCalldataGasUsed": "1200",
     "blobGasBaseFee": "5767168",
     "blobGasMaxFee": "31457280",
@@ -464,6 +476,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "1866000",
     "blobAsCalldataGasUsed": "15550",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "74186752",
@@ -491,6 +504,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the block range specified  1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2621440",
     "blobGasMaxFee": "13107200",
@@ -513,6 +527,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "7864320",
     "blobGasMaxFee": "39321600",
@@ -543,6 +558,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -565,6 +581,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -587,6 +604,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -609,6 +627,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -631,6 +650,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -658,6 +678,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the date range specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -680,6 +701,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -702,6 +724,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -724,6 +747,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -746,6 +770,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -768,6 +793,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address2",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -798,6 +824,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -833,6 +860,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the receiver address specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -855,6 +883,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address2",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -890,6 +919,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the rollup specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -920,6 +950,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "7864320",
     "blobGasMaxFee": "39321600",
@@ -950,6 +981,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -972,6 +1004,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address2",
   },
   {
+    "blobAsCalldataGasFee": "14400",
     "blobAsCalldataGasUsed": "1200",
     "blobGasBaseFee": "5767168",
     "blobGasMaxFee": "31457280",
@@ -1003,6 +1036,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1025,6 +1059,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address2",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "17301504",
     "blobGasMaxFee": "78643200",
@@ -1067,6 +1102,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address3",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1102,6 +1138,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1124,6 +1161,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address2",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "17301504",
     "blobGasMaxFee": "78643200",
@@ -1166,6 +1204,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address3",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1201,6 +1240,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the block specified without including it 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "14400",
     "blobAsCalldataGasUsed": "1200",
     "blobGasBaseFee": "5767168",
     "blobGasMaxFee": "31457280",
@@ -1227,6 +1267,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "12100",
     "blobAsCalldataGasUsed": "1100",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "14417920",
@@ -1249,6 +1290,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1284,6 +1326,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the date specified without including it 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "14400",
     "blobAsCalldataGasUsed": "1200",
     "blobGasBaseFee": "5767168",
     "blobGasMaxFee": "31457280",
@@ -1310,6 +1353,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "12100",
     "blobAsCalldataGasUsed": "1100",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "14417920",
@@ -1332,6 +1376,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1367,6 +1412,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the slot specified without including it 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "14400",
     "blobAsCalldataGasUsed": "1200",
     "blobGasBaseFee": "5767168",
     "blobGasMaxFee": "31457280",
@@ -1393,6 +1439,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address6",
   },
   {
+    "blobAsCalldataGasFee": "12100",
     "blobAsCalldataGasUsed": "1100",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "14417920",
@@ -1415,6 +1462,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1450,6 +1498,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the block specificed 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1472,6 +1521,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1507,6 +1557,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the date specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1529,6 +1580,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1559,6 +1611,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1586,6 +1639,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the slot specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1608,6 +1662,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1643,6 +1698,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1665,6 +1721,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
@@ -1700,6 +1757,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 exports[`Transaction router > getAll > when getting paginated transaction results > should return the correct results when a specific page is requested 1`] = `
 [
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "7864320",
     "blobGasMaxFee": "39321600",
@@ -1730,6 +1788,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "to": "address4",
   },
   {
+    "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "2883584",
     "blobGasMaxFee": "13107200",
@@ -1758,6 +1817,7 @@ exports[`Transaction router > getByHash > should fail when providing a non-exist
 
 exports[`Transaction router > getByHash > should get a transaction by hash correctly 1`] = `
 {
+  "blobAsCalldataGasFee": "10000",
   "blobAsCalldataGasUsed": "1000",
   "blobGasBaseFee": "8650752",
   "blobGasMaxFee": "39321600",
@@ -1791,6 +1851,7 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob 1`] = `
 {
+  "blobAsCalldataGasFee": "10000",
   "blobAsCalldataGasUsed": "1000",
   "blobGasBaseFee": "8650752",
   "blobGasMaxFee": "39321600",
@@ -1859,6 +1920,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob data 1`] = `
 {
+  "blobAsCalldataGasFee": "10000",
   "blobAsCalldataGasUsed": "1000",
   "blobGasBaseFee": "8650752",
   "blobGasMaxFee": "39321600",
@@ -1930,6 +1992,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded block 1`] = `
 {
+  "blobAsCalldataGasFee": "10000",
   "blobAsCalldataGasUsed": "1000",
   "blobGasBaseFee": "8650752",
   "blobGasMaxFee": "39321600",
@@ -1969,6 +2032,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
+  "blobAsCalldataGasFee": "10000",
   "blobAsCalldataGasUsed": "1000",
   "blobGasBaseFee": "8650752",
   "blobGasMaxFee": "39321600",

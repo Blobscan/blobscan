@@ -104,13 +104,16 @@ export const getByBlockId = publicProcedure
 
       if (isExpandedTransactionSet) {
         block.transactions = block.transactions.map((tx) => {
-          const derivedFields = tx.maxFeePerBlobGas
-            ? calculateDerivedTxBlobGasFields({
-                blobGasPrice: block.blobGasPrice,
-                maxFeePerBlobGas: tx.maxFeePerBlobGas,
-                txBlobsLength: tx.blobs.length,
-              })
-            : {};
+          const derivedFields =
+            tx.maxFeePerBlobGas && tx.blobAsCalldataGasUsed && tx.gasPrice
+              ? calculateDerivedTxBlobGasFields({
+                  blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed,
+                  gasPrice: tx.gasPrice,
+                  blobGasPrice: block.blobGasPrice,
+                  maxFeePerBlobGas: tx.maxFeePerBlobGas,
+                  txBlobsLength: tx.blobs.length,
+                })
+              : {};
 
           return {
             ...tx,

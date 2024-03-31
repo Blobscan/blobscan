@@ -16,6 +16,7 @@ export type BaseTransaction = Pick<
   | "fromId"
   | "hash"
   | "maxFeePerBlobGas"
+  | "gasPrice"
   | "rollup"
   | "toId"
 > & {

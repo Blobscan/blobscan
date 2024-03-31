@@ -11,6 +11,7 @@ import { z } from "@blobscan/zod";
 import { serializeDecimal } from "./serializers";
 
 export type DerivedTxBlobGasFields = {
+  blobAsCalldataGasFee: Prisma.Decimal;
   blobGasBaseFee?: Prisma.Decimal;
   blobGasMaxFee: Prisma.Decimal;
   blobGasUsed: Prisma.Decimal;
@@ -19,11 +20,15 @@ export type DerivedTxBlobGasFields = {
 const GAS_PER_BLOB = 2 ** 17; // 131_072
 
 export function calculateDerivedTxBlobGasFields({
+  blobAsCalldataGasUsed,
   blobGasPrice,
+  gasPrice,
   txBlobsLength,
   maxFeePerBlobGas,
 }: {
+  blobAsCalldataGasUsed: Prisma.Decimal;
   blobGasPrice?: Prisma.Decimal;
+  gasPrice: Prisma.Decimal;
   txBlobsLength: number;
   maxFeePerBlobGas: Prisma.Decimal;
 }): DerivedTxBlobGasFields {
@@ -31,6 +36,7 @@ export function calculateDerivedTxBlobGasFields({
   const blobGasMaxFee = maxFeePerBlobGas.mul(blobGasUsed);
 
   const derivedBlobGasFields: DerivedTxBlobGasFields = {
+    blobAsCalldataGasFee: gasPrice.mul(blobAsCalldataGasUsed),
     blobGasUsed,
     blobGasMaxFee,
   };
@@ -45,6 +51,7 @@ export function calculateDerivedTxBlobGasFields({
 }
 
 export const serializedDerivedTxBlobGasFieldsSchema = z.object({
+  blobAsCalldataGasFee: z.string(),
   blobGasBaseFee: z.string().optional(),
   blobGasMaxFee: z.string(),
   blobGasUsed: z.string(),
@@ -55,11 +62,13 @@ export type SerializedDerivedTxBlobGasFields = z.infer<
 >;
 
 export function serializeDerivedTxBlobGasFields({
+  blobAsCalldataGasFee,
   blobGasBaseFee,
   blobGasMaxFee,
   blobGasUsed,
 }: DerivedTxBlobGasFields): SerializedDerivedTxBlobGasFields {
   const serializedFields: SerializedDerivedTxBlobGasFields = {
+    blobAsCalldataGasFee: serializeDecimal(blobAsCalldataGasFee),
     blobGasMaxFee: serializeDecimal(blobGasMaxFee),
     blobGasUsed: serializeDecimal(blobGasUsed),
   };
