@@ -30,7 +30,7 @@ export const BottomBarLayout = () => {
       <div className="sm:hidden">
         <ExplorerDetails />
       </div>
-      <div className="flex flex-col items-center gap-3">
+      <div className="mt-8 flex flex-col items-center gap-3">
         <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
             <Link key={href} href={href} isExternal hideExternalIcon>

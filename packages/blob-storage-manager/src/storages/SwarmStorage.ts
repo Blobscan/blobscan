@@ -1,4 +1,4 @@
-import { Bee, BeeDebug } from "@ethersphere/bee-js";
+import { Bee, BeeDebug, PostageBatch } from "@ethersphere/bee-js";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -33,6 +33,12 @@ export class SwarmStorage extends BlobStorage {
     }
   }
 
+  async getPostageBatch(batchLabel: string): Promise<PostageBatch | undefined> {
+    const batches = await this.#getAllPostageBatch()
+
+    return batches.find((b) => b.label === batchLabel)
+  }
+
   protected async _healthCheck() {
     const healthCheckOps = [];
 
@@ -52,7 +58,9 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _getBlob(reference: string) {
-    return (await this._swarmClient.bee.downloadData(reference)).toString();
+    const file = await this._swarmClient.bee.downloadFile(reference);
+
+    return file.data.text();
   }
 
   protected async _storeBlob(
@@ -74,12 +82,16 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toString();
   }
 
-  async #getAvailableBatch(): Promise<string> {
+  async #getAllPostageBatch(): Promise<PostageBatch[]> {
     if (!this._swarmClient.beeDebug) {
       throw new Error("Bee debug endpoint required to get postage batches.");
     }
 
-    const [firstBatch] = await this._swarmClient.beeDebug.getAllPostageBatch();
+    return this._swarmClient.beeDebug.getAllPostageBatch();
+  }
+
+  async #getAvailableBatch(): Promise<string> {
+    const [firstBatch] = await this.#getAllPostageBatch();
 
     if (!firstBatch?.batchID) {
       throw new Error("No postage batches available.");

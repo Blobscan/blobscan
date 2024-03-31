@@ -117,7 +117,7 @@ export const NavItem: FC<NavItemProps> = function ({
                     Empty div that allows us to move the cursor down to the menu without
                     without losing the hover state on the button
                 */}
-              <div className="absolute h-4 w-full" />
+              <div className="h-4 w-full md:absolute" />
             </Popover.Button>
 
             {hasItems && (
@@ -132,7 +132,7 @@ export const NavItem: FC<NavItemProps> = function ({
                 leaveTo="opacity-0 translate-y-1"
               >
                 <Popover.Panel
-                  className={`${popoverAlignment} absolute top-8 z-10 w-44`}
+                  className={`${popoverAlignment} top-8 z-10 w-44 md:absolute`}
                   static
                 >
                   <div className="rounded-b-lg border-t-4 border-t-primary-400 bg-surface-light text-contentSecondary-light shadow-xl  shadow-primary-400/30 dark:border-t-primary-400 dark:bg-surface-dark dark:text-contentSecondary-dark  dark:shadow-lg dark:shadow-primary-800/20">

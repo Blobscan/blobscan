@@ -29,6 +29,10 @@ export function formatDate(
   return date;
 }
 
+export function formatTtl(ttl: number) {
+  return dayjs().to(dayjs().add(ttl, "second"), true);
+}
+
 export function getHumanDate(date: string | Date) {
   return dayjs(date).format("dddd, MMMM, DD YYYY");
 }

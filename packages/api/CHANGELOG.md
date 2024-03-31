@@ -1,5 +1,43 @@
 # @blobscan/api
 
+## 0.6.0
+
+### Minor Changes
+
+- [#355](https://github.com/Blobscan/blobscan/pull/355) [`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new procedure to fetch swarm state
+
+### Patch Changes
+
+- Updated dependencies [[`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7)]:
+  - @blobscan/blob-storage-manager@0.1.0
+  - @blobscan/blob-propagator@0.0.9
+
+## 0.5.4
+
+### Patch Changes
+
+- Updated dependencies [[`fc6298f`](https://github.com/Blobscan/blobscan/commit/fc6298fcbdc17b89bd0289ddd1f8d252870cd402)]:
+  - @blobscan/blob-storage-manager@0.0.8
+  - @blobscan/blob-propagator@0.0.8
+
+## 0.5.3
+
+### Patch Changes
+
+- [#349](https://github.com/Blobscan/blobscan/pull/349) [`f138c01`](https://github.com/Blobscan/blobscan/commit/f138c01d1d656396cc6a48ee79700cd21bc9703f) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for paradex rollup and applied db migrations
+
+- Updated dependencies [[`f138c01`](https://github.com/Blobscan/blobscan/commit/f138c01d1d656396cc6a48ee79700cd21bc9703f)]:
+  - @blobscan/db@0.3.3
+
+## 0.5.2
+
+### Patch Changes
+
+- [#347](https://github.com/Blobscan/blobscan/pull/347) [`24846f7`](https://github.com/Blobscan/blobscan/commit/24846f7ce2875ceabd7751f2e9359131e5820933) Thanks [@julien-marchand](https://github.com/julien-marchand)! - Added support for Linea Rollup
+
+- Updated dependencies [[`24846f7`](https://github.com/Blobscan/blobscan/commit/24846f7ce2875ceabd7751f2e9359131e5820933)]:
+  - @blobscan/db@0.3.2
+
 ## 0.5.1
 
 ### Patch Changes

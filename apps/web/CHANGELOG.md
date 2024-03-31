@@ -1,5 +1,40 @@
 # @blobscan/web
 
+## 0.6.0
+
+### Minor Changes
+
+- [#355](https://github.com/Blobscan/blobscan/pull/355) [`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7) Thanks [@0xGabi](https://github.com/0xGabi)! - Added swarm data expiration time to header
+
+### Patch Changes
+
+- Updated dependencies [[`37539a6`](https://github.com/Blobscan/blobscan/commit/37539a6881e1cffe2cd3e7ef6f1686e6d6f39bd7)]:
+  - @blobscan/api@0.6.0
+
+## 0.5.2
+
+### Patch Changes
+
+- [#349](https://github.com/Blobscan/blobscan/pull/349) [`f138c01`](https://github.com/Blobscan/blobscan/commit/f138c01d1d656396cc6a48ee79700cd21bc9703f) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for paradex rollup and applied db migrations
+
+- Updated dependencies [[`f138c01`](https://github.com/Blobscan/blobscan/commit/f138c01d1d656396cc6a48ee79700cd21bc9703f)]:
+  - @blobscan/api@0.5.3
+
+## 0.5.1
+
+### Patch Changes
+
+- [#347](https://github.com/Blobscan/blobscan/pull/347) [`24846f7`](https://github.com/Blobscan/blobscan/commit/24846f7ce2875ceabd7751f2e9359131e5820933) Thanks [@julien-marchand](https://github.com/julien-marchand)! - Added support for Linea Rollup
+
+- Updated dependencies [[`24846f7`](https://github.com/Blobscan/blobscan/commit/24846f7ce2875ceabd7751f2e9359131e5820933)]:
+  - @blobscan/api@0.5.2
+
+## 0.5.0
+
+### Minor Changes
+
+- [#342](https://github.com/Blobscan/blobscan/pull/342) [`3eae290`](https://github.com/Blobscan/blobscan/commit/3eae290014be20c64d56b72feb9c41dbad056684) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new hamburger mobile menu
+
 ## 0.4.1
 
 ### Patch Changes

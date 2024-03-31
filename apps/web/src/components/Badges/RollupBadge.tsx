@@ -3,6 +3,7 @@ import React from "react";
 
 import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
+import LineaIcon from "~/icons/linea.svg";
 import ModeIcon from "~/icons/mode.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import StarknetIcon from "~/icons/starknet.svg";
@@ -24,10 +25,19 @@ const ROLLUP_CONFIG: Record<
     icon: <BaseIcon />,
     style: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
   },
+  linea: {
+    icon: <LineaIcon />,
+    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300",
+  },
   optimism: {
     icon: <OptimismIcon />,
     style:
       "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+  },
+  paradex: {
+    icon: null,
+    style:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
   },
   starknet: {
     icon: <StarknetIcon />,

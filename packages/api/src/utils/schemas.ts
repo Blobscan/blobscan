@@ -7,6 +7,8 @@ const zodRollupEnums = [
   "arbitrum",
   "base",
   "optimism",
+  "linea",
+  "paradex",
   "scroll",
   "starknet",
   "zksync",

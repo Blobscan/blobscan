@@ -19,9 +19,15 @@ vi.mock("@ethersphere/bee-js", async () => {
           .mockResolvedValueOnce({
             status: "ok",
           }),
-        downloadData: vi.fn().mockImplementation((reference) => {
+        downloadFile: vi.fn().mockImplementation((reference) => {
           if (reference === SWARM_REFERENCE) {
-            return Buffer.from("mock-data");
+            return {
+              data: {
+                text() {
+                  return "mock-data";
+                },
+              },
+            };
           }
           throw new Error("File not found");
         }),

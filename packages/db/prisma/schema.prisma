@@ -22,7 +22,9 @@ enum BlobStorage {
 enum Rollup {
   ARBITRUM @map("arbitrum")
   BASE     @map("base")
+  LINEA    @map("linea")
   OPTIMISM @map("optimism")
+  PARADEX  @map("paradex")
   SCROLL   @map("scroll")
   STARKNET @map("starknet")
   ZKSYNC   @map("zksync")
