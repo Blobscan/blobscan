@@ -65,6 +65,10 @@ export class SwarmStorage extends BlobStorage {
     return file.data.text();
   }
 
+  protected async _removeBlob(reference: string): Promise<void> {
+    await this._swarmClient.bee.unpin(reference);
+  }
+
   protected async _storeBlob(versionedHash: string, data: string) {
     const batchId = await this.#getAvailableBatch();
     const response = await this._swarmClient.bee.uploadFile(
@@ -81,11 +85,9 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async #getAllPostageBatch(): Promise<PostageBatch[]> {
-    if (!this._swarmClient.beeDebug) {
-      throw new Error("Bee debug endpoint required to get postage batches.");
-    }
+    const beeDebug = this.getBeeDebug();
 
-    return this._swarmClient.beeDebug.getAllPostageBatch();
+    return beeDebug.getAllPostageBatch();
   }
 
   async #getAvailableBatch(): Promise<string> {
@@ -96,6 +98,14 @@ export class SwarmStorage extends BlobStorage {
     }
 
     return firstBatch.batchID;
+  }
+
+  protected getBeeDebug() {
+    if (!this._swarmClient.beeDebug) {
+      throw new Error("Bee debug endpoint required to get postage batches.");
+    }
+
+    return this._swarmClient.beeDebug;
   }
 
   static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {

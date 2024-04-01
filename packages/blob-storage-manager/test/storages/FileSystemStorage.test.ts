@@ -23,9 +23,11 @@ class FileSystemStorageMock extends FileSystemStorage {
     return super.buildBlobFileName(versionedHash);
   }
 
-  closeMock() {
+  async closeMock() {
     if (fs.existsSync(this.blobDirPath)) {
-      fs.rmdirSync(this.blobDirPath, { recursive: true });
+      await fs.promises.rm(this.blobDirPath, {
+        recursive: true,
+      });
     }
   }
 }
@@ -36,8 +38,8 @@ describe("FileSystemStorage", () => {
   beforeEach(() => {
     storage = new FileSystemStorageMock();
 
-    return () => {
-      storage.closeMock();
+    return async () => {
+      await storage.closeMock();
     };
   });
 
@@ -77,6 +79,31 @@ describe("FileSystemStorage", () => {
       },
       BlobStorageError,
       { checkCause: true }
+    );
+  });
+
+  describe("removeBlob", () => {
+    it("should remove a blob", async () => {
+      const blobFilePath = storage.buildBlobFileName(BLOB_HASH);
+      const blobDirPath = blobFilePath.slice(0, blobFilePath.lastIndexOf("/"));
+
+      fs.mkdirSync(blobDirPath, { recursive: true });
+      fs.writeFileSync(blobFilePath, BLOB_DATA, { encoding: "utf-8" });
+
+      await storage.removeBlob(BLOB_HASH);
+
+      expect(fs.existsSync(blobFilePath)).toBeFalsy();
+    });
+
+    testValidError(
+      "should throw a valid error if trying to remove a non-existent blob",
+      async () => {
+        await storage.removeBlob("missing-blob");
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
     );
   });
 

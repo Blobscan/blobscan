@@ -18,6 +18,7 @@ export abstract class BlobStorage {
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string): Promise<string>;
   protected abstract _storeBlob(hash: string, data: string): Promise<string>;
+  protected abstract _removeBlob(uri: string): Promise<void>;
 
   async healthCheck(): Promise<"OK"> {
     try {
@@ -42,6 +43,18 @@ export abstract class BlobStorage {
       throw new BlobStorageError(
         this.constructor.name,
         `Failed to get blob with uri "${uri}"`,
+        err as Error
+      );
+    }
+  }
+
+  async removeBlob(uri: string): Promise<void> {
+    try {
+      await this._removeBlob(uri);
+    } catch (err) {
+      throw new BlobStorageError(
+        this.constructor.name,
+        `Failed to remove blob with uri "${uri}"`,
         err as Error
       );
     }

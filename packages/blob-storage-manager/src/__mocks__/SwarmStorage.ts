@@ -6,21 +6,29 @@ import type { SwarmClient, SwarmStorageConfig } from "../storages";
 import { SwarmStorage } from "../storages";
 
 vi.mock("@ethersphere/bee-js", async () => {
+  const blobBatches: Record<string, { reference: string; data: string }[]> = {
+    ["mock-batch-id"]: [],
+  };
+
   return {
     Bee: vi.fn().mockImplementation((endpoint) => {
       return {
         url: endpoint,
-        checkConnection: vi
-          .fn()
-          .mockResolvedValueOnce({
+        checkConnection: vi.fn().mockImplementation(() => {
+          return {
             status: "ok",
-          })
-          .mockRejectedValueOnce(new Error("Bee is not healthy: not ok"))
-          .mockResolvedValueOnce({
-            status: "ok",
-          }),
+          };
+        }),
         downloadFile: vi.fn().mockImplementation((reference) => {
-          if (reference === SWARM_REFERENCE) {
+          const batch = blobBatches["mock-batch-id"];
+
+          if (!batch) {
+            throw new Error("Batch not found");
+          }
+
+          const file = batch.find((b) => b.reference === reference);
+
+          if (file) {
             return {
               data: {
                 text() {
@@ -29,36 +37,49 @@ vi.mock("@ethersphere/bee-js", async () => {
               },
             };
           }
+
           throw new Error("File not found");
         }),
-        uploadFile: vi.fn().mockResolvedValue({
-          reference: "mock-reference",
+        uploadFile: vi.fn().mockImplementation((batchId, blobData) => {
+          const batch = blobBatches[batchId];
+          if (batch) {
+            batch.push({ data: blobData, reference: SWARM_REFERENCE });
+          }
+
+          return {
+            reference: SWARM_REFERENCE,
+          };
+        }),
+        unpin: vi.fn().mockImplementation((reference) => {
+          const batch = blobBatches["mock-batch-id"];
+
+          if (!batch) {
+            throw new Error("Batch not found");
+          }
+
+          if (!batch.find((b) => b.reference === reference)) {
+            throw new Error("File not found");
+          }
+
+          blobBatches["mock-batch-id"] = [];
         }),
       };
     }),
     BeeDebug: vi.fn().mockImplementation((endpoint) => {
       return {
         url: endpoint,
-        getHealth: vi
-          .fn()
-          .mockResolvedValueOnce({
+        getHealth: vi.fn().mockImplementation(() => {
+          return Promise.resolve({
             status: "ok",
-          })
-          .mockResolvedValueOnce({
-            status: "ok",
-          })
-          .mockResolvedValueOnce({
-            status: "not ok",
-          }),
-        getAllPostageBatch: vi
-          .fn()
-          .mockResolvedValueOnce([
+          });
+        }),
+        getAllPostageBatch: vi.fn().mockImplementation(() => {
+          return [
             {
               batchID: "mock-batch-id",
             },
-          ])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([]),
+          ];
+        }),
       };
     }),
   };

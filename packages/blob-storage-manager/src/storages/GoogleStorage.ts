@@ -65,9 +65,17 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _getBlob(uri: string) {
-    return (
-      await this._storageClient.bucket(this._bucketName).file(uri).download()
-    ).toString();
+    const blobFile = await this.getBlobFile(uri).download();
+
+    return blobFile.toString();
+  }
+
+  protected async _removeBlob(uri: string): Promise<void> {
+    const blobFile = await this.getBlobFile(uri);
+
+    if (await blobFile.exists()) {
+      await blobFile.delete();
+    }
   }
 
   protected async _storeBlob(
@@ -84,12 +92,8 @@ export class GoogleStorage extends BlobStorage {
     return fileName;
   }
 
-  async setUpBucket() {
-    if (this._storageClient.bucket(this._bucketName)) {
-      return;
-    }
-
-    return this._storageClient.createBucket(this._bucketName);
+  protected getBlobFile(uri: string) {
+    return this._storageClient.bucket(this._bucketName).file(uri);
   }
 
   static getConfigFromEnv(env: Partial<Environment>): GoogleStorageConfig {

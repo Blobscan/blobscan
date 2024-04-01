@@ -32,6 +32,13 @@ export class PostgresStorage extends BlobStorage {
       })
       .then(({ data }) => `0x${data.toString("hex")}`);
   }
+  protected async _removeBlob(versionedHash: string): Promise<void> {
+    await this.client.blobData.delete({
+      where: {
+        id: versionedHash,
+      },
+    });
+  }
 
   protected async _storeBlob(versionedHash: string, blobData: string) {
     const data = Buffer.from(blobData.slice(2), "hex");

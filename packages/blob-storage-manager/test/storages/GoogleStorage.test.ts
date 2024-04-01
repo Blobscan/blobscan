@@ -86,6 +86,25 @@ describe("GoogleStorage", () => {
     });
   });
 
+  describe("removeBlob", () => {
+    it("should remove a blob", async () => {
+      await storage.removeBlob(FILE_URI);
+
+      await expect(storage.getBlob(FILE_URI)).rejects.toThrowError();
+    });
+
+    testValidError(
+      "should throw a valid error if trying to remove a non-existent blob",
+      async () => {
+        await storage.removeBlob("missing-blob");
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
+  });
+
   describe("storeBlob", () => {
     it("should return the correct file", async () => {
       const file = await storage.storeBlob(BLOB_HASH, BLOB_DATA);

@@ -40,6 +40,12 @@ export class FileSystemStorage extends BlobStorage {
     }
   }
 
+  protected async _removeBlob(uri: string): Promise<void> {
+    const blobFilePath = this.buildBlobFileName(uri);
+
+    await fs.promises.unlink(blobFilePath);
+  }
+
   protected async _storeBlob(
     versionedHash: string,
     data: string

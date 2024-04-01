@@ -4,7 +4,7 @@ import { testValidError } from "@blobscan/test";
 
 import { PostgresStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
-import { BLOB_HASH, HEX_DATA } from "../fixtures";
+import { BLOB_DATA, BLOB_HASH, HEX_DATA } from "../fixtures";
 
 class PostgresStorageMock extends PostgresStorage {
   constructor() {
@@ -27,6 +27,23 @@ describe("PostgresStorage", () => {
     it("should resolve successfully", async () => {
       await expect(storage.healthCheck()).resolves.not.toThrow();
     });
+  });
+
+  describe("removeBlob", () => {
+    it("should remove a blob", async () => {
+      await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+      await storage.removeBlob(BLOB_HASH);
+
+      await expect(storage.getBlob(BLOB_HASH)).rejects.toThrowError();
+    });
+
+    testValidError(
+      "should throw a valid error if trying to remove a non-existent blob",
+      async () => {
+        await storage.removeBlob("missing-blob");
+      },
+      BlobStorageError
+    );
   });
 
   describe("storeBlob", () => {
