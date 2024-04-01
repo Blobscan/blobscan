@@ -14,6 +14,7 @@ import {
   createBlobPropagationFlowJob,
 } from "./utils";
 import {
+  fileSystemProcessor,
   finalizerProcessor,
   gcsProcessor,
   postgresProcessor,
@@ -24,6 +25,7 @@ const STORAGE_WORKER_PROCESSORS = {
   GOOGLE: gcsProcessor,
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
+  FILE_SYSTEM: fileSystemProcessor,
 };
 
 export type BlobPropagatorOptions = Partial<{
@@ -164,9 +166,7 @@ export class BlobPropagator {
     );
 
     finalizerWorker.on("completed", (job) => {
-      logger.debug(
-        `Job ${job.id} completed`
-      );
+      logger.debug(`Job ${job.id} completed`);
     });
 
     finalizerWorker.on("failed", (job, err) => {
@@ -193,15 +193,11 @@ export class BlobPropagator {
         );
 
         storageWorker.on("completed", (job) => {
-          logger.debug(
-            `Job ${job.id} completed by ${workerName}`
-          );
+          logger.debug(`Job ${job.id} completed by ${workerName}`);
         });
 
         storageWorker.on("failed", (job, err) => {
-          logger.error(
-            `Job ${job?.id} failed: ${err} (worker: ${workerName})`
-          );
+          logger.error(`Job ${job?.id} failed: ${err} (worker: ${workerName})`);
         });
 
         workers[storageName] = storageWorker;

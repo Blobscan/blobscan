@@ -13,6 +13,7 @@ export function parseEnv() {
         BEE_DEBUG_ENDPOINT: z.string().url().optional(),
         BEE_ENDPOINT: z.string().url().optional(),
         CHAIN_ID: z.coerce.number().positive().default(1),
+        FILE_SYSTEM_STORAGE_BLOB_DIR_PATH: z.string().optional(),
         GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
         GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
         GOOGLE_SERVICE_KEY: z.string().optional(),

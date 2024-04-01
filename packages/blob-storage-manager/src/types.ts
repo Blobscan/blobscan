@@ -1,7 +1,12 @@
 import type { $Enums } from "@blobscan/db";
 
 import type { BlobStorageError } from "./errors";
-import type { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
+import type {
+  FileSystemStorage,
+  GoogleStorage,
+  PostgresStorage,
+  SwarmStorage,
+} from "./storages";
 
 export type BlobStorageName = $Enums.BlobStorage;
 
@@ -11,6 +16,8 @@ export type StorageOf<N extends BlobStorageName> = N extends "GOOGLE"
   ? SwarmStorage
   : N extends "POSTGRES"
   ? PostgresStorage
+  : N extends "FILE_SYSTEM"
+  ? FileSystemStorage
   : never;
 
 export type BlobReference<N extends BlobStorageName = BlobStorageName> = {
