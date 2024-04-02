@@ -44,6 +44,14 @@ model BlockchainSyncState {
   @@map("blockchain_sync_state")
 }
 
+model BlobStoragesState {
+  id           Int     @id @default(autoincrement())
+  swarmDataId  String? @map("swarm_data_id")
+  swarmDataTTL Int?    @map("swarm_data_ttl")
+
+  @@map("blob_storages_state")
+}
+
 model Address {
   address                    String   @id
   firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
