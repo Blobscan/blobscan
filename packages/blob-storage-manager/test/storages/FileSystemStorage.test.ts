@@ -9,13 +9,13 @@ import { BLOB_DATA, BLOB_HASH, FILE_URI } from "../fixtures";
 
 class FileSystemStorageMock extends FileSystemStorage {
   constructor() {
-    if (!env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH) {
-      throw new Error("FILE_SYSTEM_STORAGE_BLOB_DIR_PATH is not set");
+    if (!env.FILE_SYSTEM_STORAGE_PATH) {
+      throw new Error("FILE_SYSTEM_STORAGE_PATH is not set");
     }
 
     super({
       chainId: env.CHAIN_ID,
-      blobDirPath: env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH,
+      blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
     });
   }
 
@@ -46,7 +46,7 @@ describe("FileSystemStorage", () => {
       expect(storage).toBeDefined();
       expect(storage.chainId).toEqual(env.CHAIN_ID);
       expect(storage.blobDirPath).toEqual(
-        env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH
+        env.FILE_SYSTEM_STORAGE_PATH
       );
     });
   });
@@ -82,7 +82,7 @@ describe("FileSystemStorage", () => {
 
   describe("storeBlob", () => {
     it("should return the correct blob file reference", async () => {
-      const expectedFilePath = `${env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH}/${FILE_URI}`;
+      const expectedFilePath = `${env.FILE_SYSTEM_STORAGE_PATH}/${FILE_URI}`;
 
       const filePath = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
 
@@ -102,13 +102,13 @@ describe("FileSystemStorage", () => {
     it("should return a config object if all required environment variables are set", () => {
       const config = FileSystemStorageMock.getConfigFromEnv({
         CHAIN_ID: env.CHAIN_ID,
-        FILE_SYSTEM_STORAGE_BLOB_DIR_PATH:
-          env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH,
+        FILE_SYSTEM_STORAGE_PATH:
+          env.FILE_SYSTEM_STORAGE_PATH,
       });
 
       expect(config).toEqual({
         chainId: env.CHAIN_ID,
-        blobDirPath: env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH,
+        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
       });
     });
   });

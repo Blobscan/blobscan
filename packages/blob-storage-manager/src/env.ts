@@ -14,7 +14,7 @@ export function parseEnv() {
         BEE_ENDPOINT: z.string().url().optional(),
         CHAIN_ID: z.coerce.number().positive().default(1),
         FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-        FILE_SYSTEM_STORAGE_BLOB_DIR_PATH: z.string().optional(),
+        FILE_SYSTEM_STORAGE_PATH: z.string().optional(),
         GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
         GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
         GOOGLE_SERVICE_KEY: z.string().optional(),
@@ -49,7 +49,7 @@ export function parseEnv() {
 
       if (env.FILE_SYSTEM_STORAGE_ENABLED) {
         console.log(
-          `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH}`
+          `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
         );
       }
     },

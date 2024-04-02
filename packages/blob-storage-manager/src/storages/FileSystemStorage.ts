@@ -65,16 +65,16 @@ export class FileSystemStorage extends BlobStorage {
   static getConfigFromEnv(env: Partial<Environment>): FileSystemStorageConfig {
     const baseConfig = super.getConfigFromEnv(env);
 
-    if (!env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH) {
+    if (!env.FILE_SYSTEM_STORAGE_PATH) {
       throw new BlobStorageError(
         this.name,
-        "No config variables found: no blob directory path provided"
+        "No path provided. You must define variable FILE_SYSTEM_STORAGE_PATH in order to use the Filesystem storage"
       );
     }
 
     return {
       ...baseConfig,
-      blobDirPath: env.FILE_SYSTEM_STORAGE_BLOB_DIR_PATH,
+      blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
     };
   }
 }

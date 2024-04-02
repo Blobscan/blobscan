@@ -104,7 +104,7 @@ export class SwarmStorage extends BlobStorage {
     if (!env.BEE_ENDPOINT) {
       throw new BlobStorageError(
         this.name,
-        "No config variables found: no bee endpoint provided"
+        "No endpoint provided. You need to define BEE_ENDPOINT variable in order to use the Swarm storage"
       );
     }
 
