@@ -7,13 +7,19 @@ import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStora
 import { BlobStorageError } from "../../src/errors";
 import { BLOB_DATA, BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
 
+if (!env.BEE_ENDPOINT) {
+  throw new Error("BEE_ENDPOINT test env var is not set");
+}
+
+const BEE_ENDPOINT = env.BEE_ENDPOINT;
+
 describe("SwarmStorage", () => {
   let storage: SwarmStorage;
 
   beforeAll(() => {
     storage = new SwarmStorage({
       chainId: env.CHAIN_ID,
-      beeEndpoint: env.BEE_ENDPOINT ?? "",
+      beeEndpoint: BEE_ENDPOINT,
       beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
     });
   });
@@ -30,7 +36,7 @@ describe("SwarmStorage", () => {
     it("should not create beeDebug when beeDebugEndpoint is not set", () => {
       const newStorage = new SwarmStorage({
         chainId: env.CHAIN_ID,
-        beeEndpoint: env.BEE_ENDPOINT ?? "",
+        beeEndpoint: BEE_ENDPOINT,
       });
 
       expect(newStorage.swarmClient.beeDebug).toBeUndefined();
@@ -96,7 +102,7 @@ describe("SwarmStorage", () => {
       async () => {
         const newStorage = new SwarmStorage({
           chainId: env.CHAIN_ID,
-          beeEndpoint: env.BEE_ENDPOINT ?? "",
+          beeEndpoint: BEE_ENDPOINT,
         });
 
         await newStorage.storeBlob(BLOB_HASH, BLOB_DATA);

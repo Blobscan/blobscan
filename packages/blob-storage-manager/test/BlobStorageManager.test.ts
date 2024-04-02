@@ -11,6 +11,12 @@ import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
 import type { BlobStorageName } from "../src/types";
 import { BLOB_DATA, BLOB_HASH, FILE_URI, SWARM_REFERENCE } from "./fixtures";
 
+if (!env.BEE_ENDPOINT) {
+  throw new Error("BEE_ENDPOINT test env var is not set");
+}
+
+const BEE_ENDPOINT = env.BEE_ENDPOINT;
+
 describe("BlobStorageManager", () => {
   let blobStorageManager: BlobStorageManager;
   let postgresStorage: PostgresStorage;
@@ -38,7 +44,7 @@ describe("BlobStorageManager", () => {
     });
     swarmStorage = new SwarmStorage({
       chainId: env.CHAIN_ID,
-      beeEndpoint: env.BEE_ENDPOINT ?? "",
+      beeEndpoint: BEE_ENDPOINT,
       beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
     });
 
