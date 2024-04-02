@@ -1,5 +1,23 @@
 # @blobscan/api
 
+## 0.7.0
+
+### Minor Changes
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`206612c`](https://github.com/Blobscan/blobscan/commit/206612c839226972dcac39903e2f327a3207c456) Thanks [@PJColombo](https://github.com/PJColombo)! - Added address filter search query
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`7bd5980`](https://github.com/Blobscan/blobscan/commit/7bd59806fe299de53c3476103a54f7c528eb3089) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support to filter results by rollup, slot range and block number range
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`3828885`](https://github.com/Blobscan/blobscan/commit/38288856af47de5573b64feeb82c7c9e05b91339) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support to filter blobs, blocks and transactions by date range
+
+- [#362](https://github.com/Blobscan/blobscan/pull/362) [`4ebf184`](https://github.com/Blobscan/blobscan/commit/4ebf184cbb928a510a0ec201869a9413787a0036) Thanks [@0xGabi](https://github.com/0xGabi)! - Added blob storage state router
+
+- [#345](https://github.com/Blobscan/blobscan/pull/345) [`b2d1e16`](https://github.com/Blobscan/blobscan/commit/b2d1e16456321c9ab5420114e93173cdaf27d938) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob as calldata gas fee field to returned transaction resource
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`aeaae7f`](https://github.com/Blobscan/blobscan/commit/aeaae7fdfe1dc800955643fe651cd264a6676b6c) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support to expanding linked resources within a resource via a new `expand` search param
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`7bd5980`](https://github.com/Blobscan/blobscan/commit/7bd59806fe299de53c3476103a54f7c528eb3089) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for sorting results in ascending (asc) and descending (desc) order
+
 ## 0.6.0
 
 ### Minor Changes

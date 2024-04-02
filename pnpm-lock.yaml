@@ -166,7 +166,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.6.0
+        specifier: ^0.7.0
         version: link:../../packages/api
       '@blobscan/logger':
         specifier: ^0.0.6
@@ -218,7 +218,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: ^0.6.0
+        specifier: ^0.7.0
         version: link:../../packages/api
       '@blobscan/dayjs':
         specifier: ^0.0.2

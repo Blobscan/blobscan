@@ -1,5 +1,22 @@
 # @blobscan/web
 
+## 0.7.0
+
+### Minor Changes
+
+- [#362](https://github.com/Blobscan/blobscan/pull/362) [`4ebf184`](https://github.com/Blobscan/blobscan/commit/4ebf184cbb928a510a0ec201869a9413787a0036) Thanks [@0xGabi](https://github.com/0xGabi)! - Create blob storage state model
+
+- [#345](https://github.com/Blobscan/blobscan/pull/345) [`42ba940`](https://github.com/Blobscan/blobscan/commit/42ba940c15e56e19403755a3218374051540e114) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob as calldata gas fee on transaction page
+
+### Patch Changes
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`206612c`](https://github.com/Blobscan/blobscan/commit/206612c839226972dcac39903e2f327a3207c456) Thanks [@PJColombo](https://github.com/PJColombo)! - Added address filter search query
+
+- [#343](https://github.com/Blobscan/blobscan/pull/343) [`3db8d0e`](https://github.com/Blobscan/blobscan/commit/3db8d0e0526291179b179731a38d3d82767e104c) Thanks [@PJColombo](https://github.com/PJColombo)! - Modified API procedure calls to work with the newly supported search queries introduced in the latest version of `@blobscan/api`
+
+- Updated dependencies [[`206612c`](https://github.com/Blobscan/blobscan/commit/206612c839226972dcac39903e2f327a3207c456), [`7bd5980`](https://github.com/Blobscan/blobscan/commit/7bd59806fe299de53c3476103a54f7c528eb3089), [`3828885`](https://github.com/Blobscan/blobscan/commit/38288856af47de5573b64feeb82c7c9e05b91339), [`4ebf184`](https://github.com/Blobscan/blobscan/commit/4ebf184cbb928a510a0ec201869a9413787a0036), [`b2d1e16`](https://github.com/Blobscan/blobscan/commit/b2d1e16456321c9ab5420114e93173cdaf27d938), [`aeaae7f`](https://github.com/Blobscan/blobscan/commit/aeaae7fdfe1dc800955643fe651cd264a6676b6c), [`7bd5980`](https://github.com/Blobscan/blobscan/commit/7bd59806fe299de53c3476103a54f7c528eb3089)]:
+  - @blobscan/api@0.7.0
+
 ## 0.6.0
 
 ### Minor Changes
