@@ -2,6 +2,6 @@
 
 exports[`FileSystemStorage > getBlob > should throw a valid error if the blob file is missing 1`] = `"FileSystemStorageMock failed: Failed to get blob with uri \\"missing-blob\\""`;
 
-exports[`FileSystemStorage > getBlob > should throw a valid error if the blob file is missing 2`] = `[Error: Blob file missing-blob missing: Error: ENOENT: no such file or directory, open 'blobscan-test-blob-dir/70118930558/ss/in/g-/ssing-blob.txt']`;
+exports[`FileSystemStorage > getBlob > should throw a valid error if the blob file is missing 2`] = `[Error: Blob file missing-blob missing: Error: ENOENT: no such file or directory, open '/tmp/blobscan-test-blob-dir/70118930558/ss/in/g-/ssing-blob.txt']`;
 
 exports[`FileSystemStorage > tryGetConfigFromEnv > should throw a valid error if the blob dir path is not set 1`] = `"FileSystemStorageMock failed: No config variables found: no chain id provided"`;
