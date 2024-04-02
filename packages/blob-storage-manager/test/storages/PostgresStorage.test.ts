@@ -4,7 +4,7 @@ import { testValidError } from "@blobscan/test";
 
 import { PostgresStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
-import { BLOB_DATA, BLOB_HASH, HEX_DATA } from "../fixtures";
+import { NEW_BLOB_HASH, HEX_DATA } from "../fixtures";
 
 class PostgresStorageMock extends PostgresStorage {
   constructor() {
@@ -18,6 +18,9 @@ class PostgresStorageMock extends PostgresStorage {
 
 describe("PostgresStorage", () => {
   let storage: PostgresStorageMock;
+  const expectedStoredBlobHash = "blobHash004";
+  const expectedStoredBlobUri = expectedStoredBlobHash;
+  const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
 
   beforeAll(() => {
     storage = new PostgresStorageMock();
@@ -31,10 +34,11 @@ describe("PostgresStorage", () => {
 
   describe("removeBlob", () => {
     it("should remove a blob", async () => {
-      await storage.storeBlob(BLOB_HASH, BLOB_DATA);
-      await storage.removeBlob(BLOB_HASH);
+      await storage.removeBlob(expectedStoredBlobHash);
 
-      await expect(storage.getBlob(BLOB_HASH)).rejects.toThrowError();
+      await expect(
+        storage.getBlob(expectedStoredBlobUri)
+      ).rejects.toThrowError();
     });
 
     testValidError(
@@ -48,9 +52,9 @@ describe("PostgresStorage", () => {
 
   describe("storeBlob", () => {
     it("should store the blob data and return versionedHash", async () => {
-      const result = await storage.storeBlob(BLOB_HASH, HEX_DATA);
+      const result = await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
 
-      expect(result).toBe(BLOB_HASH);
+      expect(result).toBe(NEW_BLOB_HASH);
     });
 
     testValidError(
@@ -63,7 +67,7 @@ describe("PostgresStorage", () => {
           "upsert"
         ).mockRejectedValueOnce(new Error("Failed to store blob data"));
 
-        await failingStorage.storeBlob(BLOB_HASH, HEX_DATA);
+        await failingStorage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
       },
       BlobStorageError,
       {
@@ -74,11 +78,9 @@ describe("PostgresStorage", () => {
 
   describe("getBlob", () => {
     it("should fetch the blob data by a given versioned hash correctly", async () => {
-      await storage.storeBlob(BLOB_HASH, HEX_DATA);
+      const result = await storage.getBlob(expectedStoredBlobUri);
 
-      const result = await storage.getBlob(BLOB_HASH);
-
-      expect(result).toBe(HEX_DATA);
+      expect(result).toBe(expectedStoredBlobData);
     });
 
     testValidError(
@@ -90,7 +92,7 @@ describe("PostgresStorage", () => {
           new Error("Blob data not found")
         );
 
-        await storage.getBlob(BLOB_HASH);
+        await storage.getBlob(expectedStoredBlobUri);
       },
       BlobStorageError,
       { checkCause: true }

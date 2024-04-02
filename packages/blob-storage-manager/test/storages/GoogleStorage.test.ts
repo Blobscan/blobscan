@@ -6,11 +6,15 @@ import { testValidError } from "@blobscan/test";
 import { GoogleStorage, env } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import type { GoogleStorageConfig } from "../../src/storages";
-import { BLOB_DATA, BLOB_HASH, FILE_URI } from "../fixtures";
+import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "../fixtures";
 
 class GoogleStorageMock extends GoogleStorage {
   constructor(config: GoogleStorageConfig) {
     super(config);
+  }
+
+  closeMock() {
+    return this.storageClient.bucket(this.bucketName).deleteFiles();
   }
 
   get bucketName(): string {
@@ -24,6 +28,16 @@ class GoogleStorageMock extends GoogleStorage {
 
 describe("GoogleStorage", () => {
   let storage: GoogleStorageMock;
+  const expectedStoredBlobHash = "blobHash004";
+  const expectedStoredBlobFileUri = `${
+    env.CHAIN_ID
+  }/${expectedStoredBlobHash.slice(2, 4)}/${expectedStoredBlobHash.slice(
+    4,
+    6
+  )}/${expectedStoredBlobHash.slice(6, 8)}/${expectedStoredBlobHash.slice(
+    2
+  )}.txt`;
+  const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
 
   beforeAll(() => {
     if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
@@ -80,17 +94,24 @@ describe("GoogleStorage", () => {
 
   describe("getBlob", () => {
     it("should return the contents of the blob", async () => {
-      const blob = await storage.getBlob(FILE_URI);
+      await storage.storageClient
+        .bucket(storage.bucketName)
+        .file(expectedStoredBlobFileUri)
+        .save(expectedStoredBlobData);
 
-      expect(blob).toEqual(BLOB_DATA);
+      const blob = await storage.getBlob(expectedStoredBlobFileUri);
+
+      expect(blob).toEqual(expectedStoredBlobData);
     });
   });
 
   describe("removeBlob", () => {
     it("should remove a blob", async () => {
-      await storage.removeBlob(FILE_URI);
+      await storage.removeBlob(expectedStoredBlobFileUri);
 
-      await expect(storage.getBlob(FILE_URI)).rejects.toThrowError();
+      await expect(
+        storage.getBlob(expectedStoredBlobFileUri)
+      ).rejects.toThrowError();
     });
 
     testValidError(
@@ -107,7 +128,7 @@ describe("GoogleStorage", () => {
 
   describe("storeBlob", () => {
     it("should return the correct file", async () => {
-      const file = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+      const file = await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
 
       expect(file).toMatchInlineSnapshot(
         '"70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
@@ -126,7 +147,10 @@ describe("GoogleStorage", () => {
           bucketName: newBucket,
         });
 
-        await newStorage.storeBlob(BLOB_HASH, BLOB_DATA);
+        await newStorage.storeBlob(
+          expectedStoredBlobHash,
+          expectedStoredBlobData
+        );
       },
       BlobStorageError,
       {

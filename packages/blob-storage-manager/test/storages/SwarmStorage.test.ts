@@ -5,7 +5,7 @@ import { testValidError } from "@blobscan/test";
 import { env } from "../../src";
 import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
 import { BlobStorageError } from "../../src/errors";
-import { BLOB_DATA, BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
+import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
 
 if (!env.BEE_ENDPOINT) {
   throw new Error("BEE_ENDPOINT test env var is not set");
@@ -83,17 +83,17 @@ describe("SwarmStorage", () => {
 
   describe("getBlob", () => {
     it("should return the contents of the blob", async () => {
-      await storage._swarmClient.bee.uploadFile("mock-batch-id", BLOB_DATA);
+      await storage._swarmClient.bee.uploadFile("mock-batch-id", NEW_BLOB_DATA);
 
       const blob = await storage.getBlob(SWARM_REFERENCE);
 
-      expect(blob).toEqual(BLOB_DATA);
+      expect(blob).toEqual(NEW_BLOB_DATA);
     });
   });
 
   describe("removeBlob", () => {
     it("should remove a blob", async () => {
-      const ref = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+      const ref = await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
       await storage.removeBlob(ref);
 
       await expect(storage.getBlob(ref)).rejects.toThrowError();
@@ -113,7 +113,10 @@ describe("SwarmStorage", () => {
 
   describe("storeBlob", () => {
     it("should store the blob in the bucket", async () => {
-      const uploadReference = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+      const uploadReference = await storage.storeBlob(
+        NEW_BLOB_HASH,
+        NEW_BLOB_DATA
+      );
 
       expect(uploadReference).toEqual(SWARM_REFERENCE);
     });
@@ -127,7 +130,7 @@ describe("SwarmStorage", () => {
           "getAllPostageBatch"
         ).mockResolvedValueOnce([]);
 
-        await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+        await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
       },
       BlobStorageError,
       {
@@ -143,7 +146,7 @@ describe("SwarmStorage", () => {
           beeEndpoint: BEE_ENDPOINT,
         });
 
-        await newStorage.storeBlob(BLOB_HASH, BLOB_DATA);
+        await newStorage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
       },
       BlobStorageError,
       {

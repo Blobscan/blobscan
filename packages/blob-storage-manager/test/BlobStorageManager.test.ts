@@ -9,7 +9,7 @@ import { BlobStorageManager } from "../src/BlobStorageManager";
 import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
 import type { BlobStorageName } from "../src/types";
-import { BLOB_DATA, BLOB_HASH, FILE_URI, SWARM_REFERENCE } from "./fixtures";
+import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "./fixtures";
 
 if (!env.BEE_ENDPOINT) {
   throw new Error("BEE_ENDPOINT test env var is not set");
@@ -26,6 +26,17 @@ describe("BlobStorageManager", () => {
   let failingPostgresStorage: DeepMockProxy<PostgresStorage>;
   let failingGoogleStorage: DeepMockProxy<GoogleStorage>;
   let failingSwarmStorage: DeepMockProxy<SwarmStorage>;
+
+  const expectedStoredBlobHash = "blobHash004";
+  const expectedPostgresStoredBlobUri = expectedStoredBlobHash;
+  const expectedGoogleStoredBlobUri = `${
+    env.CHAIN_ID
+  }/${expectedStoredBlobHash.slice(2, 4)}/${expectedStoredBlobHash.slice(
+    4,
+    6
+  )}/${expectedStoredBlobHash.slice(6, 8)}/${expectedStoredBlobHash.slice(
+    2
+  )}.txt`;
 
   beforeAll(() => {
     if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
@@ -95,23 +106,18 @@ describe("BlobStorageManager", () => {
     it("should return the blob data and storage name", async () => {
       const result = await blobStorageManager.getBlob(
         {
-          reference: BLOB_HASH,
+          reference: expectedPostgresStoredBlobUri,
           storage: "POSTGRES",
         },
         {
-          reference: FILE_URI,
+          reference: expectedGoogleStoredBlobUri,
           storage: "GOOGLE",
-        },
-        {
-          reference: SWARM_REFERENCE,
-          storage: "SWARM",
         }
       );
 
       expect([
-        { data: "0x6d6f636b2d64617461", storage: "POSTGRES" },
-        { data: "mock-data", storage: "GOOGLE" },
-        { data: "mock-data", storage: "SWARM" },
+        { data: "0x4fe40fc67f9c3a3ffa2be77d10fe7818", storage: "POSTGRES" },
+        { data: "0x4fe40fc67f9c3a3ffa2be77d10fe7818", storage: "GOOGLE" },
       ]).toContainEqual(result);
     });
 
@@ -145,7 +151,7 @@ describe("BlobStorageManager", () => {
   });
 
   describe("storeBlob", () => {
-    const blob = { data: BLOB_DATA, versionedHash: BLOB_HASH };
+    const blob = { data: NEW_BLOB_DATA, versionedHash: NEW_BLOB_HASH };
     it("should store the blob in all available storages", async () => {
       const result = await blobStorageManager.storeBlob(blob);
 
@@ -167,7 +173,7 @@ describe("BlobStorageManager", () => {
         "Returned blob storage refs length mismatch"
       ).toBe(1);
       expect(blobReference?.reference, "Blob storage ref mismatch").toBe(
-        BLOB_HASH
+        NEW_BLOB_HASH
       );
       expect(blobReference?.storage, "Blob storage mismatch").toBe(
         selectedStorage
