@@ -1,6 +1,6 @@
 import { t } from "../../trpc-client";
 import { getState } from "./getState";
 
-export const swarmStateRouter = t.router({
+export const blobStoragesStateRouter = t.router({
   getState,
 });
