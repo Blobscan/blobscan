@@ -113,6 +113,21 @@ describe("BlobPropagator", () => {
               "data": {
                 "versionedHash": "blobVersionedHash",
               },
+              "name": "storeBlob:file_system-worker-blobVersionedHash",
+              "opts": {
+                "attempts": 3,
+                "backoff": {
+                  "delay": 1000,
+                  "type": "exponential",
+                },
+                "jobId": "file_system-worker-blobVersionedHash",
+              },
+              "queueName": "file_system-worker",
+            },
+            {
+              "data": {
+                "versionedHash": "blobVersionedHash",
+              },
               "name": "storeBlob:google-worker-blobVersionedHash",
               "opts": {
                 "attempts": 3,

@@ -1,7 +1,12 @@
 import { BlobStorage, Rollup } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
-const zodBlobStorageEnums = ["google", "swarm", "postgres"] as const;
+const zodBlobStorageEnums = [
+  "google",
+  "swarm",
+  "postgres",
+  "file_system",
+] as const;
 
 const zodRollupEnums = [
   "arbitrum",

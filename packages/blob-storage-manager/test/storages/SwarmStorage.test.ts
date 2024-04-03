@@ -5,36 +5,38 @@ import { testValidError } from "@blobscan/test";
 import { env } from "../../src";
 import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
 import { BlobStorageError } from "../../src/errors";
-import {
-  BLOB_DATA,
-  BLOB_HASH,
-  SWARM_REFERENCE,
-  SWARM_STORAGE_CONFIG,
-} from "../fixtures";
+import { BLOB_DATA, BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
+
+if (!env.BEE_ENDPOINT) {
+  throw new Error("BEE_ENDPOINT test env var is not set");
+}
+
+const BEE_ENDPOINT = env.BEE_ENDPOINT;
 
 describe("SwarmStorage", () => {
   let storage: SwarmStorage;
 
   beforeAll(() => {
-    storage = new SwarmStorage(SWARM_STORAGE_CONFIG);
+    storage = new SwarmStorage({
+      chainId: env.CHAIN_ID,
+      beeEndpoint: BEE_ENDPOINT,
+      beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
+    });
   });
 
   describe("constructor", () => {
     it("should create a new instance with the provided configuration", () => {
       expect(storage).toBeDefined();
       expect(storage.swarmClient.bee).toBeDefined();
-      expect(storage.swarmClient.bee.url).toBe(
-        SWARM_STORAGE_CONFIG.beeEndpoint
-      );
+      expect(storage.swarmClient.bee.url).toBe(env.BEE_ENDPOINT);
       expect(storage.swarmClient.beeDebug).toBeDefined();
-      expect(storage.swarmClient.beeDebug?.url).toBe(
-        SWARM_STORAGE_CONFIG.beeDebugEndpoint
-      );
+      expect(storage.swarmClient.beeDebug?.url).toBe(env.BEE_DEBUG_ENDPOINT);
     });
 
     it("should not create beeDebug when beeDebugEndpoint is not set", () => {
       const newStorage = new SwarmStorage({
-        beeEndpoint: SWARM_STORAGE_CONFIG.beeEndpoint,
+        chainId: env.CHAIN_ID,
+        beeEndpoint: BEE_ENDPOINT,
       });
 
       expect(newStorage.swarmClient.beeDebug).toBeUndefined();
@@ -79,11 +81,7 @@ describe("SwarmStorage", () => {
 
   describe("storeBlob", () => {
     it("should store the blob in the bucket", async () => {
-      const uploadReference = await storage.storeBlob(
-        env.CHAIN_ID,
-        BLOB_HASH,
-        BLOB_DATA
-      );
+      const uploadReference = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
 
       expect(uploadReference).toEqual(SWARM_REFERENCE);
     });
@@ -91,7 +89,7 @@ describe("SwarmStorage", () => {
     testValidError(
       "should throw an error if no postage batches are available",
       async () => {
-        await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+        await storage.storeBlob(BLOB_HASH, BLOB_DATA);
       },
       BlobStorageError,
       {
@@ -103,10 +101,11 @@ describe("SwarmStorage", () => {
       "should throw an error if the bee debug endpoint is not available",
       async () => {
         const newStorage = new SwarmStorage({
-          beeEndpoint: SWARM_STORAGE_CONFIG.beeEndpoint,
+          chainId: env.CHAIN_ID,
+          beeEndpoint: BEE_ENDPOINT,
         });
 
-        await newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+        await newStorage.storeBlob(BLOB_HASH, BLOB_DATA);
       },
       BlobStorageError,
       {
@@ -118,20 +117,22 @@ describe("SwarmStorage", () => {
   describe("tryGetConfigFromEnv", () => {
     it("should return a config object correctly", () => {
       const config = SwarmStorage.getConfigFromEnv({
-        BEE_ENDPOINT: SWARM_STORAGE_CONFIG.beeEndpoint,
-        BEE_DEBUG_ENDPOINT: SWARM_STORAGE_CONFIG.beeDebugEndpoint,
+        CHAIN_ID: env.CHAIN_ID,
+        BEE_ENDPOINT: env.BEE_ENDPOINT,
+        BEE_DEBUG_ENDPOINT: env.BEE_DEBUG_ENDPOINT,
       });
 
       expect(config).toEqual({
-        beeDebugEndpoint: SWARM_STORAGE_CONFIG.beeDebugEndpoint,
-        beeEndpoint: SWARM_STORAGE_CONFIG.beeEndpoint,
+        chainId: env.CHAIN_ID,
+        beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
+        beeEndpoint: env.BEE_ENDPOINT,
       });
     });
 
     testValidError(
       "should throw an error when a bee endpoint is not provided",
       () => {
-        SwarmStorage.getConfigFromEnv({});
+        SwarmStorage.getConfigFromEnv({ CHAIN_ID: env.CHAIN_ID });
       },
       Error
     );

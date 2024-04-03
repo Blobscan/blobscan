@@ -8,6 +8,6 @@ exports[`GoogleStorage > storeBlob > should throw valid error if the bucket does
 
 exports[`GoogleStorage > storeBlob > should throw valid error if the bucket does not exist 2`] = `[Error: Request failed with status code 404]`;
 
-exports[`GoogleStorage > tryGetConfigFromEnv > should throw an error when a bucket name is not provided 1`] = `"No config variables found: no bucket name, api endpoint or service key provided"`;
+exports[`GoogleStorage > tryGetConfigFromEnv > should throw an error when a bucket name is not provided 1`] = `"GoogleStorage failed: No config variables found: no chain id provided"`;
 
-exports[`GoogleStorage > tryGetConfigFromEnv > should throw an error when a service key and an api endpoint are not provided 1`] = `"No config variables found: no bucket name, api endpoint or service key provided"`;
+exports[`GoogleStorage > tryGetConfigFromEnv > should throw an error when a service key and an api endpoint are not provided 1`] = `"GoogleStorage failed: No config variables found: no chain id provided"`;

@@ -13,6 +13,8 @@ export function parseEnv() {
         BEE_DEBUG_ENDPOINT: z.string().url().optional(),
         BEE_ENDPOINT: z.string().url().optional(),
         CHAIN_ID: z.coerce.number().positive().default(1),
+        FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
+        FILE_SYSTEM_STORAGE_PATH: z.string().optional(),
         GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
         GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
         GOOGLE_SERVICE_KEY: z.string().optional(),
@@ -26,7 +28,7 @@ export function parseEnv() {
     },
     display(env) {
       console.log(
-        `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
+        `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
       );
 
       if (env.GOOGLE_STORAGE_ENABLED) {
@@ -42,6 +44,12 @@ export function parseEnv() {
       if (env.SWARM_STORAGE_ENABLED) {
         console.log(
           `Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}, debugEndpoint=${env.BEE_DEBUG_ENDPOINT}`
+        );
+      }
+
+      if (env.FILE_SYSTEM_STORAGE_ENABLED) {
+        console.log(
+          `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
         );
       }
     },

@@ -3,7 +3,12 @@ import { $Enums } from "@blobscan/db";
 import type { BlobStorage } from "./BlobStorage";
 import { env } from "./env";
 import type { StorageCreationError } from "./errors";
-import { GoogleStorage, PostgresStorage, SwarmStorage } from "./storages";
+import {
+  FileSystemStorage,
+  GoogleStorage,
+  PostgresStorage,
+  SwarmStorage,
+} from "./storages";
 import type { BlobStorageName } from "./types";
 
 export const BLOB_STORAGE_NAMES = $Enums.BlobStorage;
@@ -36,6 +41,9 @@ export async function createStorageFromEnv(
       break;
     case BLOB_STORAGE_NAMES.SWARM:
       [storage, storageError] = await SwarmStorage.tryCreateFromEnv(env);
+      break;
+    case BLOB_STORAGE_NAMES.FILE_SYSTEM:
+      [storage, storageError] = await FileSystemStorage.tryCreateFromEnv(env);
       break;
   }
 

@@ -5,11 +5,13 @@ import { BlobStorage } from "../BlobStorage";
 import type { Environment } from "../env";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
+export type PostgresStorageConfig = BlobStorageConfig;
+
 export class PostgresStorage extends BlobStorage {
   protected client: PrismaClient;
 
-  constructor() {
-    super(BLOB_STORAGE_NAMES.POSTGRES);
+  constructor({ chainId }: PostgresStorageConfig) {
+    super(BLOB_STORAGE_NAMES.POSTGRES, chainId);
 
     this.client = new PrismaClient();
   }
@@ -31,11 +33,7 @@ export class PostgresStorage extends BlobStorage {
       .then(({ data }) => `0x${data.toString("hex")}`);
   }
 
-  protected async _storeBlob(
-    _: number,
-    versionedHash: string,
-    blobData: string
-  ) {
+  protected async _storeBlob(versionedHash: string, blobData: string) {
     const data = Buffer.from(blobData.slice(2), "hex");
     const id = versionedHash;
 
@@ -55,7 +53,11 @@ export class PostgresStorage extends BlobStorage {
     return versionedHash;
   }
 
-  static getConfigFromEnv(_: Partial<Environment>): BlobStorageConfig {
-    return {};
+  static getConfigFromEnv(env: Partial<Environment>): PostgresStorageConfig {
+    const baseConfig = super.getConfigFromEnv(env);
+
+    return {
+      ...baseConfig,
+    };
   }
 }

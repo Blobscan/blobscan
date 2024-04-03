@@ -12,9 +12,10 @@ datasource db {
 }
 
 enum BlobStorage {
-  GOOGLE   @map("google")
-  POSTGRES @map("postgres")
-  SWARM    @map("swarm")
+  FILE_SYSTEM @map("file_system")
+  GOOGLE      @map("google")
+  POSTGRES    @map("postgres")
+  SWARM       @map("swarm")
 
   @@map("blob_storage")
 }

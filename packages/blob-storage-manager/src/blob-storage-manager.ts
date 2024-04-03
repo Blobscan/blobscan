@@ -38,7 +38,7 @@ async function createBlobStorageManager() {
     (storage): storage is BlobStorage => !!storage
   );
 
-  return new BlobStorageManager(availableStorages, env.CHAIN_ID);
+  return new BlobStorageManager(availableStorages);
 }
 
 export async function getBlobStorageManager(): Promise<BlobStorageManager> {

@@ -9,7 +9,3 @@ export const RAW_DATA = Buffer.from("mock-data");
 export const HEX_DATA = `0x${RAW_DATA.toString("hex")}`;
 export const SWARM_REFERENCE = "mock-reference";
 export const SWARM_BATCH_ID = "mock-batch-id";
-export const SWARM_STORAGE_CONFIG = {
-  beeDebugEndpoint: "http://localhost:1635",
-  beeEndpoint: "http://localhost:1633",
-};

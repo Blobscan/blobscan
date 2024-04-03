@@ -1,6 +1,7 @@
 import type { FC, HTMLAttributes, ReactNode } from "react";
 import React from "react";
 import NextLink from "next/link";
+import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 
 import { env } from "~/env.mjs";
 import GoogleIcon from "~/icons/google.svg";
@@ -11,12 +12,22 @@ import { capitalize } from "~/utils";
 import { Badge } from "./Badge";
 
 type StorageConfig = {
+  name?: string;
   icon: ReactNode;
   style: HTMLAttributes<HTMLDivElement>["className"];
   buildDownloadUrl(blobReference: string): string;
 };
 
 const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
+  file_system: {
+    name: "File System",
+    icon: <ArchiveBoxIcon className="h-4 w-4" />,
+    style:
+      "bg-gray-100 hover:bg-gray-200 text-gray-800 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-200",
+    buildDownloadUrl(_) {
+      return "#";
+    },
+  },
   google: {
     icon: <GoogleIcon />,
     style:
@@ -35,7 +46,8 @@ const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
   },
   postgres: {
     icon: <PostgresIcon />,
-    style: "bg-blue-100 text-blue-800 dark:text-blue-300 hover:bg-blue-200",
+    style:
+      "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800",
     buildDownloadUrl(_) {
       return "#";
     },
@@ -53,7 +65,7 @@ export const StorageBadge: FC<StorageBadgeProps> = ({
   storage,
   dataRef,
 }) => {
-  const { icon, style, buildDownloadUrl } = STORAGE_CONFIGS[storage];
+  const { icon, name, style, buildDownloadUrl } = STORAGE_CONFIGS[storage];
   const downloadUrl = buildDownloadUrl(dataRef);
 
   return (
@@ -64,7 +76,7 @@ export const StorageBadge: FC<StorageBadgeProps> = ({
       <Badge
         className={style}
         icon={icon}
-        label={capitalize(storage)}
+        label={name ?? capitalize(storage)}
         size={size}
       />
     </NextLink>

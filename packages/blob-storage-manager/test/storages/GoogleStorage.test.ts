@@ -31,6 +31,7 @@ describe("GoogleStorage", () => {
     }
 
     storage = new GoogleStorageMock({
+      chainId: env.CHAIN_ID,
       bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
       projectId: env.GOOGLE_STORAGE_PROJECT_ID,
       apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
@@ -40,6 +41,7 @@ describe("GoogleStorage", () => {
   describe("constructor", () => {
     it("should create a new instance with all configuration options", async () => {
       expect(storage).toBeDefined();
+      expect(storage.chainId).toEqual(env.CHAIN_ID);
       expect(storage.bucketName).toEqual(env.GOOGLE_STORAGE_BUCKET_NAME);
       expect(storage.storageClient.projectId).toEqual(
         env.GOOGLE_STORAGE_PROJECT_ID
@@ -61,6 +63,7 @@ describe("GoogleStorage", () => {
         const newBucket = "new-bucket";
 
         const newStorage = new GoogleStorage({
+          chainId: env.CHAIN_ID,
           projectId: env.GOOGLE_STORAGE_PROJECT_ID,
           apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
           bucketName: newBucket,
@@ -85,7 +88,7 @@ describe("GoogleStorage", () => {
 
   describe("storeBlob", () => {
     it("should return the correct file", async () => {
-      const file = await storage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+      const file = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
 
       expect(file).toMatchInlineSnapshot(
         '"70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
@@ -98,12 +101,13 @@ describe("GoogleStorage", () => {
         const newBucket = "new-bucket";
 
         const newStorage = new GoogleStorage({
+          chainId: env.CHAIN_ID,
           projectId: env.GOOGLE_STORAGE_PROJECT_ID,
           apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
           bucketName: newBucket,
         });
 
-        await newStorage.storeBlob(env.CHAIN_ID, BLOB_HASH, BLOB_DATA);
+        await newStorage.storeBlob(BLOB_HASH, BLOB_DATA);
       },
       BlobStorageError,
       {
@@ -134,6 +138,7 @@ describe("GoogleStorage", () => {
     it("should throw an error when a service key and an api endpoint are not provided", () => {
       expect(() =>
         GoogleStorage.getConfigFromEnv({
+          CHAIN_ID: env.CHAIN_ID,
           GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
         })
       ).toThrowErrorMatchingInlineSnapshot(
@@ -143,6 +148,7 @@ describe("GoogleStorage", () => {
 
     it("should return a config object if all required environment variables are set", () => {
       const config = GoogleStorage.getConfigFromEnv({
+        CHAIN_ID: env.CHAIN_ID,
         GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
         GOOGLE_SERVICE_KEY: "my-service-key",
         GOOGLE_STORAGE_API_ENDPOINT: "my-api-endpoint",
@@ -152,6 +158,7 @@ describe("GoogleStorage", () => {
       expect(config).toEqual({
         bucketName: "my-bucket",
         projectId: "my-project-id",
+        chainId: env.CHAIN_ID,
         serviceKey: "my-service-key",
         apiEndpoint: "my-api-endpoint",
       });

@@ -15,15 +15,13 @@ import { calculateBlobBytes, removeDuplicatedStorages } from "./utils";
 
 export class BlobStorageManager {
   #blobStorages: BlobStorage[];
-  chainId: number;
 
-  constructor(blobStorages: BlobStorage[], chainId: number) {
+  constructor(blobStorages: BlobStorage[]) {
     if (!blobStorages.length) {
       throw new BlobStorageManagerError("No blob storages provided");
     }
 
     this.#blobStorages = removeDuplicatedStorages(blobStorages);
-    this.chainId = chainId;
   }
 
   getStorage<T extends BlobStorageName>(name: T): StorageOf<T> | undefined {
@@ -155,7 +153,7 @@ export class BlobStorageManager {
               async (storageSpan) => {
                 const start = performance.now();
                 const blobReference = await storage
-                  .storeBlob(this.chainId, versionedHash, data)
+                  .storeBlob(versionedHash, data)
                   .then<BlobReference<BlobStorageName>>((reference) => ({
                     reference,
                     storage: storage.name,
