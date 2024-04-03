@@ -8,7 +8,7 @@ import type {
 } from "@trpc/server/adapters/node-http";
 import jwt from "jsonwebtoken";
 
-import { blobPropagator } from "@blobscan/blob-propagator";
+import { getBlobPropagator } from "@blobscan/blob-propagator";
 import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
@@ -50,6 +50,7 @@ function getJWTFromRequest(
 
 export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   const blobStorageManager = await getBlobStorageManager();
+  const blobPropagator = await getBlobPropagator();
 
   return {
     prisma,

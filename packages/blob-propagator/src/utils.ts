@@ -1,9 +1,12 @@
 import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
 
-import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
-import { prisma, $Enums } from "@blobscan/db";
+import type { BlobReference } from "@blobscan/blob-storage-manager";
+import { $Enums } from "@blobscan/db";
 
-import { blobFileManager } from "./blob-file-manager";
+import type {
+  BlobPropagationJobData,
+  BlobPropagationWorkerParams,
+} from "./types";
 
 const DEFAULT_JOB_OPTIONS: Omit<JobsOptions, "repeat"> = {
   attempts: 3,
@@ -73,11 +76,37 @@ export function createBlobPropagationFlowJob(
 }
 
 export async function propagateBlob(
-  versionedHash: string,
+  { versionedHash, tmpBlobStorageDataRef }: BlobPropagationJobData,
   targetStorage: $Enums.BlobStorage,
-  { blobStorageManager }: { blobStorageManager: BlobStorageManager }
+  { blobStorageManager, prisma }: BlobPropagationWorkerParams
 ) {
-  const blobData = await blobFileManager.readFile(versionedHash);
+  let blobData: string;
+
+  try {
+    const result = await blobStorageManager.getBlob(tmpBlobStorageDataRef);
+    blobData = result.data;
+  } catch (err) {
+    const blobRefs = await prisma.blobDataStorageReference
+      .findMany({
+        where: {
+          blobHash: versionedHash,
+        },
+      })
+      .then((refs): BlobReference[] =>
+        refs.map((ref) => ({
+          reference: ref.dataReference,
+          storage: ref.blobStorage,
+        }))
+      );
+
+    if (!blobRefs.length) {
+      throw new Error(`Blob data not found for ${versionedHash}`);
+    }
+
+    const result = await blobStorageManager.getBlob(...blobRefs);
+
+    blobData = result.data;
+  }
 
   const result = await blobStorageManager.storeBlob(
     {

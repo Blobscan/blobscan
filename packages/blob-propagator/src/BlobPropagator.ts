@@ -2,12 +2,19 @@
 import { FlowProducer, Queue, Worker } from "bullmq";
 import type { ConnectionOptions, FlowJob, WorkerOptions } from "bullmq";
 
-import type { $Enums } from "@blobscan/db";
-import type { BlobStorage } from "@blobscan/db";
+import type {
+  BlobStorage,
+  BlobStorageManager,
+} from "@blobscan/blob-storage-manager";
+import type { $Enums, BlobscanPrismaClient } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
 
 import { blobFileManager } from "./blob-file-manager";
-import type { Blob, BlobPropagationJobData } from "./types";
+import type {
+  Blob,
+  BlobPropagationJobData,
+  BlobPropagationWorkerParams,
+} from "./types";
 import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
@@ -28,9 +35,12 @@ const STORAGE_WORKER_PROCESSORS = {
   FILE_SYSTEM: fileSystemProcessor,
 };
 
-export type BlobPropagatorOptions = Partial<{
-  workerOptions: WorkerOptions;
-}>;
+export type BlobPropagatorConfig = {
+  blobStorageManager: BlobStorageManager;
+  tmpBlobStorage: $Enums.BlobStorage;
+  prisma: BlobscanPrismaClient;
+  workerOptions: Partial<WorkerOptions>;
+};
 
 const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   autorun: true,
@@ -39,6 +49,10 @@ const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
 };
 
 export class BlobPropagator {
+  protected blobStorageManager: BlobStorageManager;
+  protected prisma: BlobscanPrismaClient;
+  protected temporaryBlobStorage: BlobStorage;
+
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
   protected storageWorkers: Record<
@@ -46,18 +60,47 @@ export class BlobPropagator {
     Worker<BlobPropagationJobData>
   >;
 
-  constructor(
-    storages: $Enums.BlobStorage[],
-    { workerOptions }: BlobPropagatorOptions = {}
-  ) {
-    if (!storages.length) {
+  constructor({
+    blobStorageManager,
+    prisma,
+    tmpBlobStorage,
+    workerOptions,
+  }: BlobPropagatorConfig) {
+    const availableStorageNames = blobStorageManager
+      .getAllStorages()
+      .map((s) => s.name);
+
+    if (!availableStorageNames) {
       throw new Error(
-        "Couldn't instantiate blob propagator: no storages given"
+        "Couldn't instantiate blob propagator: No storages available"
       );
     }
 
+    if (!availableStorageNames.find((s) => s === tmpBlobStorage)) {
+      throw new Error(
+        "Couldn't instantiate blob propagator: Temporary storage not found in blob storage manager"
+      );
+    }
+
+    this.blobStorageManager = blobStorageManager;
+    this.prisma = prisma;
+
+    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
+
+    if (!temporaryBlobStorage) {
+      throw new Error(
+        "Couldn't instantiate blob propagator: Temporary storage not found in blob storage manager"
+      );
+    }
+
+    this.temporaryBlobStorage = temporaryBlobStorage;
+
     this.storageWorkers = this.#createBlobStorageWorkers(
-      storages,
+      availableStorageNames,
+      {
+        blobStorageManager,
+        prisma,
+      },
       workerOptions
     );
     this.finalizerWorker = this.#createFinalizerWorker(workerOptions);
@@ -111,14 +154,12 @@ export class BlobPropagator {
       });
   }
 
-  async propagateBlob(blob: Blob) {
-    await blobFileManager.createFile(blob);
+  async propagateBlob({ versionedHash, data }: Blob) {
+    await this.temporaryBlobStorage.storeBlob(versionedHash, data);
 
-    const blobFlowJob = await this.#createBlobPropagationFlowJob({
-      versionedHash: blob.versionedHash,
-    });
+    const flowJob = await this.#createBlobPropagationFlowJob(versionedHash);
 
-    await this.blobPropagationFlowProducer.add(blobFlowJob);
+    await this.blobPropagationFlowProducer.add(flowJob);
   }
 
   async propagateBlobs(blobs: Blob[]) {
@@ -132,11 +173,13 @@ export class BlobPropagator {
     });
 
     await Promise.all(
-      uniqueBlobs.map((blob) => blobFileManager.createFile(blob))
+      uniqueBlobs.map(({ versionedHash, data }) =>
+        this.temporaryBlobStorage.storeBlob(versionedHash, data)
+      )
     );
 
     const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }) =>
-      this.#createBlobPropagationFlowJob({ versionedHash })
+      this.#createBlobPropagationFlowJob(versionedHash)
     );
 
     await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
@@ -189,39 +232,37 @@ export class BlobPropagator {
 
   #createBlobStorageWorkers(
     storages: $Enums.BlobStorage[],
+    params: BlobPropagationWorkerParams,
     opts: WorkerOptions = {}
   ) {
-    return storages.reduce<Record<BlobStorage, Worker<BlobPropagationJobData>>>(
-      (workers, storageName) => {
-        const workerName = STORAGE_WORKER_NAMES[storageName];
-        const storageWorker = new Worker<BlobPropagationJobData>(
-          workerName,
-          STORAGE_WORKER_PROCESSORS[storageName],
-          {
-            ...DEFAULT_WORKER_OPTIONS,
-            ...opts,
-          }
-        );
+    return storages.reduce<
+      Record<$Enums.BlobStorage, Worker<BlobPropagationJobData>>
+    >((workers, storageName) => {
+      const workerName = STORAGE_WORKER_NAMES[storageName];
+      const storageWorker = new Worker<BlobPropagationJobData>(
+        workerName,
+        STORAGE_WORKER_PROCESSORS[storageName](params),
+        {
+          ...DEFAULT_WORKER_OPTIONS,
+          ...opts,
+        }
+      );
 
-        storageWorker.on("completed", (job) => {
-          logger.debug(`Job ${job.id} completed by ${workerName}`);
-        });
+      storageWorker.on("completed", (job) => {
+        logger.debug(`Job ${job.id} completed by ${workerName}`);
+      });
 
-        storageWorker.on("failed", (job, err) => {
-          logger.error(`Job ${job?.id} failed: ${err} (worker: ${workerName})`);
-        });
+      storageWorker.on("failed", (job, err) => {
+        logger.error(`Job ${job?.id} failed: ${err} (worker: ${workerName})`);
+      });
 
-        workers[storageName] = storageWorker;
+      workers[storageName] = storageWorker;
 
-        return workers;
-      },
-      {} as Record<BlobStorage, Worker<BlobPropagationJobData>>
-    );
+      return workers;
+    }, {} as Record<$Enums.BlobStorage, Worker<BlobPropagationJobData>>);
   }
 
-  #createBlobPropagationFlowJob(data: BlobPropagationJobData): FlowJob {
-    const versionedHash = data.versionedHash;
-
+  #createBlobPropagationFlowJob(versionedHash: string): FlowJob {
     const storageWorkerNames = Object.values(this.storageWorkers).map(
       (storageWorker) => storageWorker.name
     );

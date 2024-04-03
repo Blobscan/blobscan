@@ -24,6 +24,10 @@ export class BlobStorageManager {
     this.#blobStorages = removeDuplicatedStorages(blobStorages);
   }
 
+  getAllStorages(): BlobStorage[] {
+    return this.#blobStorages;
+  }
+
   getStorage<T extends BlobStorageName>(name: T): StorageOf<T> | undefined {
     const blobStorage = this.#blobStorages.find(
       (storage): storage is StorageOf<T> => storage.name === name
@@ -38,7 +42,7 @@ export class BlobStorageManager {
 
   async getBlob(
     ...blobReferences: BlobReference<BlobStorageName>[]
-  ): Promise<{ data: string; storage: BlobStorageName } | null> {
+  ): Promise<{ data: string; storage: BlobStorageName }> {
     return tracer.startActiveSpan(
       "blob_storage_manager",
       {

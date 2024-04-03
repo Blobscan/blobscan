@@ -1,3 +1,4 @@
+export { BlobStorage } from "./BlobStorage";
 export { BlobStorageManager } from "./BlobStorageManager";
 export * from "./blob-storage-manager";
 export { env } from "./env";
