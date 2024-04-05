@@ -38,9 +38,6 @@ importers:
       '@next/bundle-analyzer':
         specifier: ^14.1.0
         version: 14.1.0
-      '@sentry/node':
-        specifier: ^7.109.0
-        version: 7.109.0
       '@types/command-line-args':
         specifier: ^5.2.2
         version: 5.2.2
@@ -183,6 +180,9 @@ importers:
       '@opentelemetry/instrumentation-express':
         specifier: ^0.33.0
         version: 0.33.0(@opentelemetry/api@1.7.0)
+      '@sentry/node':
+        specifier: ^7.109.0
+        version: 7.109.0
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2

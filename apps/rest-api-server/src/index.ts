@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
+import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
@@ -19,7 +19,10 @@ import { StatsSyncer } from "@blobscan/stats-syncer";
 
 import { env } from "./env";
 import { openApiDocument } from "./openapi";
+import { initializeSentry } from "./sentry";
 import { getNetworkDencunForkSlot } from "./utils";
+
+initializeSentry();
 
 collectDefaultMetrics();
 

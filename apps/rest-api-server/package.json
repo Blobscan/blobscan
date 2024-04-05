@@ -21,6 +21,7 @@
     "@blobscan/stats-syncer": "^0.1.5",
     "@blobscan/zod": "^0.0.4",
     "@opentelemetry/instrumentation-express": "^0.33.0",
+    "@sentry/node": "^7.109.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",

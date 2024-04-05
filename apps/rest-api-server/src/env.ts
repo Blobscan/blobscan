@@ -24,13 +24,16 @@ export const env = createEnv({
       DENCUN_FORK_SLOT: z.coerce.number().optional(),
       STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
       STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
+      SENTRY_DSN_API: z.string().url().optional(),
     },
 
     ...presetEnvOptions,
   },
   display(env) {
     console.log(
-      `Configuration: network=${env.NETWORK_NAME} metrics=${
+      `Configuration: network=${
+        env.NETWORK_NAME
+      } sentryEnabled=${!!env.SENTRY_DSN_API} metrics=${
         env.METRICS_ENABLED
       } traces=${env.TRACES_ENABLED} port=${
         env.BLOBSCAN_API_PORT

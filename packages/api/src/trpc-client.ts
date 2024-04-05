@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-openapi";
@@ -14,7 +15,9 @@ export const t = initTRPC
   .create({
     transformer: superjson,
     errorFormatter({ shape, error }) {
-      logger.info(error.cause?.message);
+      logger.error(error.cause?.message);
+
+      Sentry.captureException(error);
 
       if (
         error.code === "INTERNAL_SERVER_ERROR" &&
@@ -23,10 +26,6 @@ export const t = initTRPC
         return { ...shape, message: "Internal server error" };
       }
 
-      // TODO: Add sentry support
-      // if (process.env.NODE_ENV === "production") {
-      //   Sentry.captureException(error);
-      // }
       return {
         ...shape,
         data: {
