@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/stats-aggregation-cli",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "description": "A CLI that facilitates the aggregation of metrics related to different types of entities.",
   "main": "./src/index.ts",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "^0.0.2",
-    "@blobscan/db": "^0.3.1",
+    "@blobscan/db": "^0.4.0",
     "@blobscan/logger": "^0.0.6",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1"

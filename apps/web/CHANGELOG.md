@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.8.0
+
+### Minor Changes
+
+- [#358](https://github.com/Blobscan/blobscan/pull/358) [`d8551d2`](https://github.com/Blobscan/blobscan/commit/d8551d2eeea50fde3c6fbc4f4773c59be89a44a8) Thanks [@PJColombo](https://github.com/PJColombo)! - Added file system blob storage
+
+### Patch Changes
+
+- [#367](https://github.com/Blobscan/blobscan/pull/367) [`d185c88`](https://github.com/Blobscan/blobscan/commit/d185c88ac2d757ab621e88797f5a8bf644b99072) Thanks [@PJColombo](https://github.com/PJColombo)! - Set up sentry
+
+- Updated dependencies [[`d8551d2`](https://github.com/Blobscan/blobscan/commit/d8551d2eeea50fde3c6fbc4f4773c59be89a44a8)]:
+  - @blobscan/api@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes
