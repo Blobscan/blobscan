@@ -1,9 +1,9 @@
 import { Fragment, useMemo, useState } from "react";
 import type { NextPage } from "next";
-import NextError from "next/error";
 import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
+import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Card } from "~/components/Cards/Card";

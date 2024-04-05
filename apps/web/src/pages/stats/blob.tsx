@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import NextError from "next/error";
 
 import {
   DailyAvgBlobSizeChart,
@@ -8,6 +7,7 @@ import {
 } from "~/components/Charts/Blob/";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
+import NextError from "~/pages/_error";
 
 const BlobStats: NextPage = function () {
   const { data: dailyBlobStats, error: dailyBlobStatsErr } =

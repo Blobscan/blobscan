@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import morgan from "morgan";
+import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
+import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
@@ -57,6 +58,8 @@ app.use(
       scope: "rest-api",
     }),
     onError({ error }) {
+      Sentry.captureException(error);
+
       logger.error(error);
     },
   })

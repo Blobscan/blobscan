@@ -16,7 +16,9 @@ export function run() {
     } beaconExplorer=${
       process.env.NEXT_PUBLIC_BEACON_BASE_URL
     } feedbackEnabled=${!!process.env
-      .FEEDBACK_WEBHOOK_URL} tracesEnabled=${!!process.env.TRACES_ENABLED}`
+      .FEEDBACK_WEBHOOK_URL} tracesEnabled=${!!process.env
+      .TRACES_ENABLED} sentryEnabled=${!!process.env
+      .NEXT_PUBLIC_SENTRY_DSN_WEB}`
   );
   apiEnv.display();
 }

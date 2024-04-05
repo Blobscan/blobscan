@@ -53,6 +53,7 @@ export const env = createEnv({
       .url()
       .default("https://beaconcha.in/"),
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
+    NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
@@ -71,6 +72,7 @@ export const env = createEnv({
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA:
       process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+    NEXT_PUBLIC_SENTRY_DSN_WEB: process.env.NEXT_PUBLIC_SENTRY_DSN_WEB,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
   },

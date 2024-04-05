@@ -1,5 +1,5 @@
 {
-  "extends": "@blobscan/tsconfig/base.json",
+  "extends": "@blobscan/tsconfig/base.production.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -15,6 +15,9 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
-    "src/declarations.d.ts"
+    "src/declarations.d.ts",
+    "sentry.client.config.ts",
+    "sentry.server.config.ts",
+    "sentry.edge.config.ts"
   ]
 }

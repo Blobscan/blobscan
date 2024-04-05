@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import NextError from "next/error";
 import { useRouter } from "next/router";
 
 import { getPaginationParams } from "~/utils/pagination";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
+import NextError from "~/pages/_error";
 import { deserializeBlock, formatNumber } from "~/utils";
 
 const Blocks: NextPage = function () {

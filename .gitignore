@@ -47,3 +47,6 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# Sentry config file
+.sentryclirc
