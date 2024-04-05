@@ -1,13 +1,9 @@
-import * as Sentry from "@sentry/node";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import type { OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
-import { logger } from "@blobscan/logger";
-
 import type { TRPCContext } from "./context";
-import { env } from "./env";
 
 export const t = initTRPC
   .context<TRPCContext>()
@@ -15,23 +11,14 @@ export const t = initTRPC
   .create({
     transformer: superjson,
     errorFormatter({ shape, error }) {
-      logger.error(error.cause?.message);
-
-      Sentry.captureException(error);
-
-      if (
-        error.code === "INTERNAL_SERVER_ERROR" &&
-        env.NODE_ENV === "production"
-      ) {
-        return { ...shape, message: "Internal server error" };
-      }
-
       return {
         ...shape,
         data: {
           ...shape.data,
           zodError:
-            error.cause instanceof ZodError ? error.cause.flatten() : null,
+            error.code === "BAD_REQUEST" && error.cause instanceof ZodError
+              ? error.cause.flatten()
+              : null,
         },
       };
     },

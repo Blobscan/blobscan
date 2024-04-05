@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import NextError from "next/error";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
@@ -12,6 +11,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
+import NextError from "~/pages/_error";
 import type { FullBlock } from "~/types";
 import {
   BLOB_GAS_LIMIT_PER_BLOCK,

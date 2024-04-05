@@ -15,6 +15,9 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
-    "src/declarations.d.ts"
+    "src/declarations.d.ts",
+    "sentry.client.config.ts",
+    "sentry.server.config.ts",
+    "sentry.edge.config.ts"
   ]
 }

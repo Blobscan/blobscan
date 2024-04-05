@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react";
 import type { FormEventHandler, HTMLAttributes } from "react";
-import NextError from "next/error";
 import { useRouter } from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
@@ -8,6 +7,7 @@ import { api } from "~/api-client";
 import type { RouterOutputs } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
+import NextError from "~/pages/_error";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
 import { Input } from "../Input";

@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import NextError from "next/error";
 import { useRouter } from "next/router";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -11,6 +10,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
+import NextError from "~/pages/_error";
 import type { FullTransaction } from "~/types";
 import {
   buildAddressRoute,

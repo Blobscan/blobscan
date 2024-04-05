@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { createNextApiHandler } from "@trpc/server/adapters/next";
 
 import { appRouter, createTRPCContext } from "@blobscan/api";
@@ -9,6 +10,8 @@ export default createNextApiHandler({
     scope: "web",
   }),
   onError({ error }) {
+    Sentry.captureException(error);
+
     if (error.code === "INTERNAL_SERVER_ERROR") {
       console.error(error);
     }

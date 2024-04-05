@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import NextError from "next/error";
 
 import {
   DailyAvgMaxBlobGasFeeChart,
@@ -8,6 +7,7 @@ import {
 } from "~/components/Charts/Transaction";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
+import NextError from "~/pages/_error";
 
 const TransactionStats: NextPage = function () {
   const { data: dailyTxStats, error: dailyTxStatsErr } =

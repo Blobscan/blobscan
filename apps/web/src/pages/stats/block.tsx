@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import NextError from "next/error";
 
 import {
   DailyAvgBlobGasPriceChart,
@@ -12,6 +11,7 @@ import {
 } from "~/components/Charts/Block";
 import { StatsLayout } from "~/components/Layouts/StatsLayout";
 import { api } from "~/api-client";
+import NextError from "~/pages/_error";
 import { calculatePercentage } from "~/utils";
 
 const BlockStats: NextPage = function () {
