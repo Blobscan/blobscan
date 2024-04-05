@@ -86,8 +86,8 @@ export default withSentryConfig(
 
     // Suppresses source map uploading logs during build
     silent: true,
-    org: "blossom-labs",
-    project: "blobscan-web",
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
   },
   {
     // For all available options, see:
