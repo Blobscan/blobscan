@@ -8,6 +8,7 @@ import { env } from "~/env.mjs";
 
 Sentry.init({
   dsn: env.SENTRY_DSN_WEB,
+  environment: env.NEXT_PUBLIC_NETWORK_NAME,
   tracesSampleRate: 1,
   debug: false,
 });
