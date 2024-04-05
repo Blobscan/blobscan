@@ -28,7 +28,6 @@ export const env = createEnv({
     TRACES_ENABLED: booleanSchema.default("false"),
     METRICS_ENABLED: booleanSchema.default("false"),
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
-    SENTRY_DSN_WEB: z.string().url().optional(),
   },
   /**
    * Specify your client-side environment variables schema here.ç
@@ -74,7 +73,6 @@ export const env = createEnv({
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA:
       process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
     NEXT_PUBLIC_SENTRY_DSN_WEB: process.env.NEXT_PUBLIC_SENTRY_DSN_WEB,
-    SENTRY_DSN_WEB: process.env.SENTRY_DSN_WEB,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
   },

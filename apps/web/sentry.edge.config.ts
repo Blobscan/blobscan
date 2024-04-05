@@ -5,10 +5,10 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-import { env } from "~/env.mjs";
+import { env } from "./src/env.mjs";
 
 Sentry.init({
-  dsn: env.SENTRY_DSN_WEB,
+  dsn: env.NEXT_PUBLIC_NETWORK_NAME,
   environment: env.NEXT_PUBLIC_NETWORK_NAME,
   tracesSampleRate: 1,
   debug: false,

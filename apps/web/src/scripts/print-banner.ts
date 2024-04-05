@@ -17,9 +17,8 @@ export function run() {
       process.env.NEXT_PUBLIC_BEACON_BASE_URL
     } feedbackEnabled=${!!process.env
       .FEEDBACK_WEBHOOK_URL} tracesEnabled=${!!process.env
-      .TRACES_ENABLED} sentryEnabled=${!!(
-      process.env.NEXT_PUBLIC_SENTRY_DSN_WEB && process.env.SENTRY_DSN_WEB
-    )}`
+      .TRACES_ENABLED} sentryEnabled=${!!process.env
+      .NEXT_PUBLIC_SENTRY_DSN_WEB}`
   );
   apiEnv.display();
 }
