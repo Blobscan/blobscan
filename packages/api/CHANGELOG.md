@@ -1,5 +1,18 @@
 # @blobscan/api
 
+## 0.8.0
+
+### Minor Changes
+
+- [#358](https://github.com/Blobscan/blobscan/pull/358) [`d8551d2`](https://github.com/Blobscan/blobscan/commit/d8551d2eeea50fde3c6fbc4f4773c59be89a44a8) Thanks [@PJColombo](https://github.com/PJColombo)! - Added file system blob storage
+
+### Patch Changes
+
+- Updated dependencies [[`b50d0be`](https://github.com/Blobscan/blobscan/commit/b50d0be3ca660eb8d0c46df2e6f3b9d5d212b4b4), [`d8551d2`](https://github.com/Blobscan/blobscan/commit/d8551d2eeea50fde3c6fbc4f4773c59be89a44a8)]:
+  - @blobscan/blob-storage-manager@0.2.0
+  - @blobscan/blob-propagator@0.1.0
+  - @blobscan/db@0.4.0
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.4.0
+
+### Minor Changes
+
+- [#358](https://github.com/Blobscan/blobscan/pull/358) [`d8551d2`](https://github.com/Blobscan/blobscan/commit/d8551d2eeea50fde3c6fbc4f4773c59be89a44a8) Thanks [@PJColombo](https://github.com/PJColombo)! - Added file system blob storage
+
 ## 0.3.3
 
 ### Patch Changes

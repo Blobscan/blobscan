@@ -1,5 +1,15 @@
 # @blobscan/rest-api-server
 
+## 0.3.7
+
+### Patch Changes
+
+- [#367](https://github.com/Blobscan/blobscan/pull/367) [`d185c88`](https://github.com/Blobscan/blobscan/commit/d185c88ac2d757ab621e88797f5a8bf644b99072) Thanks [@PJColombo](https://github.com/PJColombo)! - Set up sentry
+
+- Updated dependencies [[`d8551d2`](https://github.com/Blobscan/blobscan/commit/d8551d2eeea50fde3c6fbc4f4773c59be89a44a8)]:
+  - @blobscan/api@0.8.0
+  - @blobscan/stats-syncer@0.1.6
+
 ## 0.3.6
 
 ### Patch Changes
