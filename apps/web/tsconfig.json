@@ -1,5 +1,5 @@
 {
-  "extends": "@blobscan/tsconfig/base.json",
+  "extends": "@blobscan/tsconfig/base.production.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
