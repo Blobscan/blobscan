@@ -200,7 +200,7 @@ importers:
         version: 4.6.2(express@4.18.2)
       trpc-openapi:
         specifier: ^1.2.0
-        version: 1.2.0(@trpc/server@10.45.2)(zod@3.22.4)
+        version: 1.2.0(@trpc/server@10.43.2)(zod@3.22.4)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.13
@@ -4585,10 +4585,6 @@ packages:
   /@trpc/server@10.43.2:
     resolution: {integrity: sha512-88C9sFCdmk1IFL4ub7gqRPM0lFVmyZPjxpOcYy4GZw5yJif/FLyFuzSJiwsy9NygHOjqpfCxsDrLYsFr4eANPA==}
     engines: {node: '>=18.0.0'}
-    dev: false
-
-  /@trpc/server@10.45.2:
-    resolution: {integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==}
     dev: false
 
   /@trysound/sax@0.2.0:
@@ -10877,22 +10873,6 @@ packages:
       zod: ^3.14.4
     dependencies:
       '@trpc/server': 10.43.2
-      co-body: 6.1.0
-      h3: 1.8.2
-      lodash.clonedeep: 4.5.0
-      node-mocks-http: 1.13.0
-      openapi-types: 12.1.3
-      zod: 3.22.4
-      zod-to-json-schema: 3.21.4(zod@3.22.4)
-    dev: false
-
-  /trpc-openapi@1.2.0(@trpc/server@10.45.2)(zod@3.22.4):
-    resolution: {integrity: sha512-pfYoCd/3KYXWXvUPZBKJw455OOwngKN/6SIcj7Yit19OMLJ+8yVZkEvGEeg5wUSwfsiTdRsKuvqkRPXVSwV7ew==}
-    peerDependencies:
-      '@trpc/server': ^10.0.0
-      zod: ^3.14.4
-    dependencies:
-      '@trpc/server': 10.45.2
       co-body: 6.1.0
       h3: 1.8.2
       lodash.clonedeep: 4.5.0

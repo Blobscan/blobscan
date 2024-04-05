@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
+import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
@@ -19,10 +20,7 @@ import { StatsSyncer } from "@blobscan/stats-syncer";
 
 import { env } from "./env";
 import { openApiDocument } from "./openapi";
-import { initializeSentry } from "./sentry";
 import { getNetworkDencunForkSlot } from "./utils";
-
-initializeSentry();
 
 collectDefaultMetrics();
 
@@ -60,6 +58,8 @@ app.use(
       scope: "rest-api",
     }),
     onError({ error }) {
+      Sentry.captureException(error);
+
       logger.error(error);
     },
   })
