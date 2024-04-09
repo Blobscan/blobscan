@@ -112,6 +112,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
                 <Dropdown
                   items={PAGE_SIZES}
                   selected={pageSize}
+                  width="w-full"
                   onChange={handlePageSizeSelection}
                 />
               </div>
