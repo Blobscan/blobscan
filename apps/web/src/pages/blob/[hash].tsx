@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
-import { isValidDecoder } from "@blobscan/blob-decoder";
 import type { Decoder } from "@blobscan/blob-decoder";
 
 import { StorageBadge } from "~/components/Badges/StorageBadge";
@@ -16,7 +15,12 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
-import { buildBlockRoute, buildTransactionRoute, formatBytes } from "~/utils";
+import {
+  buildBlockRoute,
+  buildTransactionRoute,
+  formatBytes,
+  isValidDecoder,
+} from "~/utils";
 
 const Blob: NextPage = function () {
   const router = useRouter();
