@@ -1,8 +1,11 @@
-import { type FC, type ReactNode, Fragment } from "react";
+import { Fragment } from "react";
+import type { FC, ReactNode } from "react";
 
-import { Size } from "~/types";
-import { TableCell, TableCellProps } from "./TableCell";
-import { TableHeader, TableHeaderProps } from "./TableHeader";
+import type { Size } from "~/types";
+import { TableCell } from "./TableCell";
+import type { TableCellProps } from "./TableCell";
+import { TableHeader } from "./TableHeader";
+import type { TableHeaderProps } from "./TableHeader";
 import { ExpandableTableRow, TableRow } from "./TableRow";
 import type { Alignment, Variant } from "./utils";
 

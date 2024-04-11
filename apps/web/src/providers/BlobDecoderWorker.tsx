@@ -87,7 +87,7 @@ export function useBlobDecoderWorker<
       worker.onmessage = null;
       worker.onmessageerror = null;
     };
-  }, [blobData, decoder]);
+  }, [blobData, decoder, workerRef]);
 
   return [decodedBlob, { loading, error }];
 }

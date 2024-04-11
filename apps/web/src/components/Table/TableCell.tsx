@@ -1,6 +1,7 @@
 import type { FC } from "react";
 
-import { BaseTableCellElementProps, TableElementProps, colSpan } from "./utils";
+import { colSpan } from "./utils";
+import type { BaseTableCellElementProps, TableElementProps } from "./utils";
 import { alignmentStyles, sizeStyles } from "./utils";
 
 export type TableCellProps = TableElementProps & BaseTableCellElementProps;
@@ -8,7 +9,6 @@ export type TableCellProps = TableElementProps & BaseTableCellElementProps;
 export const TableCell: FC<TableCellProps> = function ({
   alignment = "left",
   size = "md",
-  variant = "normal",
   spanFullRow = false,
   colSpan: colSpanProp,
   children,

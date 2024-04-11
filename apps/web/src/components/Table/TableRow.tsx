@@ -1,6 +1,6 @@
-import { useState, type FC, type HTMLAttributes, type ReactNode } from "react";
+import { useState } from "react";
+import type { FC, HTMLAttributes, ReactNode } from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import classNames from "classnames";
 
 import { Rotable } from "~/components/Rotable";
 import { Button } from "../Button";

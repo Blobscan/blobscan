@@ -9,7 +9,7 @@ export type DropdownProps = {
   onChange(newValue: string | number): void;
 };
 
-const DEFAULT_WIDTH = "w-36";
+const DEFAULT_WIDTH = "w-32";
 
 export const Dropdown: React.FC<DropdownProps> = function ({
   items,
@@ -41,7 +41,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-controlBackground-light py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-controlBackground-dark sm:text-sm">
+          <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-controlBackground-light py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-controlBackground-dark sm:text-sm">
             {items.map((item, personIdx) => (
               <Listbox.Option
                 key={personIdx}
