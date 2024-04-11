@@ -1,9 +1,12 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
+import { isValidDecoder } from "@blobscan/blob-decoder";
+import type { Decoder } from "@blobscan/blob-decoder";
+
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
@@ -30,8 +33,24 @@ const Blob: NextPage = function () {
       enabled: router.isReady,
     }
   );
+
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Raw");
+  const decoder = blob?.transactions.find(
+    ({ rollup }) => rollup && isValidDecoder(rollup)
+  )?.rollup as Decoder | undefined;
+  const blobViewModes: BlobViewMode[] = [
+    ...(blob && decoder ? ["Decoded" as BlobViewMode] : []),
+    ...DEFAULT_BLOB_VIEW_MODES,
+  ];
+
+  useEffect(() => {
+    if (!decoder) {
+      return;
+    }
+
+    setSelectedBlobViewMode("Decoded");
+  }, [decoder]);
 
   if (error) {
     return (
@@ -119,22 +138,28 @@ const Blob: NextPage = function () {
         header={
           <div className="flex items-center justify-between">
             <div>Blob Data</div>
-            <div className="flex items-center gap-2">
-              <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
-                View as:
+            {blob && (
+              <div className="flex items-center gap-2">
+                <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
+                  View as:
+                </div>
+                <Dropdown
+                  items={blobViewModes}
+                  selected={selectedBlobViewMode}
+                  onChange={(newViewMode) =>
+                    setSelectedBlobViewMode(newViewMode as BlobViewMode)
+                  }
+                />
               </div>
-              <Dropdown
-                items={[...DEFAULT_BLOB_VIEW_MODES]}
-                selected={selectedBlobViewMode}
-                onChange={(newViewMode) =>
-                  setSelectedBlobViewMode(newViewMode as BlobViewMode)
-                }
-              />
-            </div>
+            )}
           </div>
         }
       >
-        <BlobViewer data={blob?.data} selectedView={selectedBlobViewMode} />
+        <BlobViewer
+          data={blob?.data}
+          selectedView={selectedBlobViewMode}
+          decoder={decoder}
+        />
       </Card>
     </>
   );

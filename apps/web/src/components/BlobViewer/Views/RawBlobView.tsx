@@ -5,7 +5,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { ExpandableContent } from "../../ExpandableContent";
 import type { BlobViewProps } from "../index";
 
-export const RawBlobView: FC<BlobViewProps> = function ({ data }) {
+export type RawBlobViewProps = BlobViewProps<string>;
+
+export const RawBlobView: FC<RawBlobViewProps> = function ({ data }) {
   return (
     <div className="break-words p-3 text-left text-sm leading-7">
       {data !== undefined ? (
