@@ -78,7 +78,7 @@ export const Table: FC<TableProps> = function ({
                                 <TableHeader className="sr-only" />
                               )}
                               <TableHeader
-                                className={`${generalHeaderStyles} ${specificHeaderStyles}`}
+                                className={`${generalHeaderStyles} ${specificHeaderStyles} truncate`}
                                 alignment={alignment}
                                 size={size}
                                 spanFullRow={spanFullRow}
@@ -113,7 +113,7 @@ export const Table: FC<TableProps> = function ({
                           sticky={sticky}
                           className={`${generalRowClassName} ${
                             expandableRowsMode ? "border-none" : ""
-                          }`}
+                          } truncate`}
                           {...props}
                         >
                           {item}

@@ -1,17 +1,60 @@
+import { useState, useEffect, useRef } from "react";
 import type { FC } from "react";
 
 import type { DecodedStarknetBlob } from "@blobscan/blob-decoder";
 
 import { Table } from "~/components/Table";
+import { Toggle } from "~/components/Toggle";
 import { ErrorMessage } from "../ErrorMessage";
 import type { BlobViewProps } from "../index";
 
 export type StarknetBlobViewProps = BlobViewProps<DecodedStarknetBlob>;
 
+function hexToBigInt(hex: string): string {
+  return BigInt(hex).toString(10);
+}
 export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
-  data: starknetStateDiffs,
+  data: stateDiffsProps,
 }) {
-  if (!starknetStateDiffs) {
+  const originalStateDiffsRef = useRef<DecodedStarknetBlob>();
+  const [stateDiffs, setStateDiffs] = useState<
+    DecodedStarknetBlob | undefined | null
+  >(stateDiffsProps);
+  const [originalDataToggle, setOriginalDataToggle] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (originalDataToggle) {
+      let cachedOriginalStateDiffs = originalStateDiffsRef.current;
+      if (!cachedOriginalStateDiffs) {
+        cachedOriginalStateDiffs = stateDiffsProps?.map(
+          ({
+            contractAddress,
+            newClassHash,
+            nonce,
+            numberOfStorageUpdates,
+            storageUpdates,
+          }) => ({
+            contractAddress: hexToBigInt(contractAddress),
+            newClassHash: hexToBigInt(newClassHash),
+            nonce,
+            numberOfStorageUpdates,
+            storageUpdates: storageUpdates.map(({ key, value }) => ({
+              key: hexToBigInt(key),
+              value: hexToBigInt(value),
+            })),
+          })
+        );
+
+        originalStateDiffsRef.current = cachedOriginalStateDiffs;
+      }
+
+      setStateDiffs(cachedOriginalStateDiffs);
+    } else {
+      setStateDiffs(stateDiffsProps);
+    }
+  }, [originalDataToggle, stateDiffsProps, originalStateDiffsRef]);
+
+  if (!stateDiffs) {
     return <ErrorMessage error="No starknet state diffs found" />;
   }
 
@@ -22,7 +65,23 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
         {
           cells: [
             {
-              item: `Starknet State Diffs (${starknetStateDiffs.length})`,
+              item: (
+                <div className="relative w-full">
+                  Starknet State Diffs ({stateDiffs.length}){" "}
+                  <div className="absolute right-10 top-1">
+                    <div className="flex items-center justify-center gap-2">
+                      <Toggle
+                        onToggle={() =>
+                          setOriginalDataToggle((prevToggle) => !prevToggle)
+                        }
+                      />{" "}
+                      <div className="text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
+                        Original Data
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ),
               alignment: "center",
             },
           ],
@@ -42,7 +101,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
           ],
         },
       ]}
-      rows={starknetStateDiffs.map(
+      rows={stateDiffs.map(
         ({ contractAddress, newClassHash, nonce, storageUpdates }) => ({
           cells: [
             {
