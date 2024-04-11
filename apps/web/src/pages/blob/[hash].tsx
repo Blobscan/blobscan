@@ -6,6 +6,7 @@ import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import type { Decoder } from "@blobscan/blob-decoder";
 
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
@@ -15,6 +16,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
+import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
   buildTransactionRoute,
@@ -72,6 +74,18 @@ const Blob: NextPage = function () {
   const detailsFields: DetailsLayoutProps["fields"] = [];
 
   if (blob) {
+    const rollups = blob.transactions
+      .filter(({ rollup }) => !!rollup)
+      .map(({ rollup }) => rollup as Rollup);
+
+    if (rollups.length > 0) {
+      detailsFields.push({
+        name: "Rollup",
+        value: rollups.map((rollup) => (
+          <RollupBadge key={rollup} rollup={rollup} />
+        )),
+      });
+    }
     detailsFields.push(
       { name: "Versioned Hash", value: blob.versionedHash },
       { name: "Commitment", value: blob.commitment }
