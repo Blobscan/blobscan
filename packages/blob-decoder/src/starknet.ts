@@ -27,11 +27,13 @@ export const starknetStateDiffSchema = z
 
 export type StarknetStateDiff = z.infer<typeof starknetStateDiffSchema>;
 
+export type DecodedStarknetBlob = StarknetStateDiff[];
+
 function normalizeBlobData(blobData: string) {
   return blobData.startsWith("0x") ? blobData.slice(2) : blobData;
 }
 
-export const decodeStarknetBlob: BlobDecoderFn<StarknetStateDiff[]> = function (
+export const decodeStarknetBlob: BlobDecoderFn<DecodedStarknetBlob> = function (
   blobData
 ) {
   const normalizedBlobData = normalizeBlobData(blobData);

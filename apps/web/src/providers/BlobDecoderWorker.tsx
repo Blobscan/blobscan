@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import type { ReactNode } from "react";
 
-import type { Rollup } from "~/types";
+import type { DecodedResultOf, Decoder } from "@blobscan/blob-decoder";
 
 type BlobDecoderWorkerContextValue = {
   workerRef: React.MutableRefObject<Worker | undefined>;
@@ -40,12 +40,15 @@ export function BlobDecoderWorkerProvider({
   );
 }
 
-export function useBlobDecoderWorker(
+export function useBlobDecoderWorker<
+  D extends Decoder,
+  R extends DecodedResultOf<D>
+>(
   blobData?: string,
-  rollup?: Rollup | null
-): [string | undefined | null, { loading: boolean; error?: Error }] {
+  decoder?: D
+): [R | undefined, { loading: boolean; error?: Error }] {
   const { workerRef } = useContext(BlobDecoderWorkerContext);
-  const [decodedBlob, setDecodedBlob] = useState<string | undefined | null>();
+  const [decodedBlob, setDecodedBlob] = useState<R | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>();
 
@@ -57,12 +60,19 @@ export function useBlobDecoderWorker(
       );
     }
 
-    if (!blobData || !rollup) {
+    if (!blobData || !decoder) {
       return;
     }
 
     worker.onmessage = (event) => {
-      setDecodedBlob(event.data);
+      setLoading(false);
+
+      if (event.data.error) {
+        setError(new Error(event.data.error));
+        return;
+      }
+
+      setDecodedBlob(event.data.decodedBlob);
       setLoading(false);
     };
 
@@ -71,13 +81,13 @@ export function useBlobDecoderWorker(
     };
 
     setLoading(true);
-    worker.postMessage({ rollup, blobData });
+    worker.postMessage({ decoder, blobData });
 
     return () => {
       worker.onmessage = null;
       worker.onmessageerror = null;
     };
-  }, [blobData, rollup]);
+  }, [blobData, decoder]);
 
   return [decodedBlob, { loading, error }];
 }

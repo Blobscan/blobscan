@@ -1,19 +1,30 @@
-import { decodeBlob, isDecodableRollup } from "@blobscan/blob-decoder";
+import { decodeBlob, isValidDecoder } from "@blobscan/blob-decoder";
 
-import type { Rollup } from "./types";
+type BlobDecoderEvent = {
+  blobData?: string;
+  decoder?: string;
+};
 
-addEventListener(
-  "message",
-  (event: MessageEvent<{ rollup: Rollup; blobData: string }>) => {
-    const { rollup, blobData } = event.data;
-    const normalizedRollup = rollup.toUpperCase();
+addEventListener("message", (event: MessageEvent<BlobDecoderEvent>) => {
+  try {
+    const { decoder, blobData } = event.data;
 
-    if (isDecodableRollup(normalizedRollup)) {
-      decodeBlob(normalizedRollup, blobData).then((result) => {
-        postMessage(result);
+    if (!decoder) {
+      throw new Error("No decoder provided");
+    }
+
+    if (!blobData) {
+      throw new Error("No blob data provided");
+    }
+
+    if (isValidDecoder(decoder)) {
+      decodeBlob(blobData, decoder).then((result) => {
+        postMessage({ decodedBlob: result });
       });
     } else {
-      postMessage(null);
+      throw new Error(`${decoder} decoder is not supported`);
     }
+  } catch (err) {
+    postMessage({ error: (err as Error).message });
   }
-);
+});
