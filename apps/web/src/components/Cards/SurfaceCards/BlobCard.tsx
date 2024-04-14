@@ -32,14 +32,19 @@ const BlobCard: FC<BlobCardProps> = ({
         </div>
         <div>
           {commitment ? (
-            <div className="truncate text-xs">{commitment}</div>
+            <div className="truncate text-xs">
+              <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                Commitment
+              </span>{" "}
+              {commitment}
+            </div>
           ) : (
             <Skeleton width={700} />
           )}
         </div>
         <div>
           {size ? (
-            <div className="rwz flex gap-2">
+            <div className="flex gap-2 text-xs">
               <span>{formatBytes(size)}</span>
             </div>
           ) : (

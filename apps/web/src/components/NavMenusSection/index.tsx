@@ -48,7 +48,7 @@ export const NavMenusSection: React.FC = () => {
         } md:relative md:top-auto md:mt-0 md:block`}
         id="navbar-dropdown"
       >
-        <div className="mx-auto w-full max-w-md rounded-lg bg-surface-light p-4 shadow-lg dark:bg-surface-dark md:max-w-screen-xl md:bg-transparent md:p-0 md:shadow-none">
+        <div className="mx-auto w-full max-w-md rounded-lg bg-surface-light p-4 shadow-lg md:max-w-screen-xl md:bg-transparent md:p-0 md:shadow-none">
           <div className="flex flex-col gap-4 md:flex-row">
             <NavItem
               label="Blockchain"
