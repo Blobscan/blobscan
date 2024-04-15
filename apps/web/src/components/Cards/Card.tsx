@@ -83,3 +83,19 @@ export const CardHeader: FC<CardHeaderProps> = function ({
     </div>
   );
 };
+
+export type CardFieldProps = { name: ReactNode; value: ReactNode };
+
+export const CardField: FC<{ name: ReactNode; value: ReactNode }> = function ({
+  name,
+  value,
+}) {
+  return (
+    <div className="flex w-full gap-1 text-xs">
+      <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+        {name}
+      </span>
+      <div className="truncate">{value}</div>
+    </div>
+  );
+};

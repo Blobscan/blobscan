@@ -27,6 +27,8 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 const DAILY_STATS_TIMEFRAME = "15d";
 
+const CARD_HEIGHT = "h-28";
+
 const Home: NextPage = () => {
   const router = useRouter();
   const {
@@ -58,7 +60,7 @@ const Home: NextPage = () => {
       .flatMap((b) => b.transactions)
       .slice(0, LATEST_ITEMS_LENGTH);
     const blobs = transactions
-      .flatMap((t) => t.blobs)
+      .flatMap(({ blobs, ...t }) => blobs.map((b) => ({ ...b, tx: t })))
       .slice(0, LATEST_ITEMS_LENGTH);
 
     return {
@@ -202,7 +204,7 @@ const Home: NextPage = () => {
                         </div>
                       ))
                   : blocks.map((b) => (
-                      <div className="h-28 flex-grow" key={b.hash}>
+                      <div className={`${CARD_HEIGHT} flex-grow`} key={b.hash}>
                         <BlockCard block={b} />
                       </div>
                     ))}
@@ -231,7 +233,7 @@ const Home: NextPage = () => {
                       .map((_, i) => <BlobTransactionCard key={i} />)
                   : transactions.map((tx) => {
                       return (
-                        <div className="h-28" key={tx.hash}>
+                        <div className={CARD_HEIGHT} key={tx.hash}>
                           <BlobTransactionCard
                             transaction={{
                               from: tx.from,
@@ -268,10 +270,10 @@ const Home: NextPage = () => {
                 {latestBlocksLoading
                   ? Array(LATEST_ITEMS_LENGTH)
                       .fill(0)
-                      .map((_, i) => <BlobCard key={i} />)
+                      .map((_, i) => <BlobCard key={i} compact />)
                   : blobs.map((b) => (
-                      <div key={b.versionedHash} className="h-28">
-                        <BlobCard blob={b} />
+                      <div key={b.versionedHash} className={CARD_HEIGHT}>
+                        <BlobCard blob={b} transactions={[b.tx]} compact />
                       </div>
                     ))}
               </div>

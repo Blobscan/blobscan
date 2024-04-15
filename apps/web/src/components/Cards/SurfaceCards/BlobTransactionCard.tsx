@@ -174,7 +174,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       <div className="flex flex-row gap-1">
                         <div
                           title="Blob Base Fee"
-                          className="text-contentTer ary-light dark:text-contentTertiary-dark"
+                          className="text-contentTertiary-light dark:text-contentTertiary-dark"
                         >
                           Base Fee
                         </div>

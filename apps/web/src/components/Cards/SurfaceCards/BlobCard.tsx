@@ -1,54 +1,83 @@
 import type { FC } from "react";
 
-import "react-loading-skeleton/dist/skeleton.css";
-import Skeleton from "react-loading-skeleton";
-
-import { buildBlobRoute, formatBytes } from "~/utils";
+import { RollupIcon } from "~/components/RollupIcon";
+import { Skeleton } from "~/components/Skeleton";
+import { StorageIcon } from "~/components/StorageIcon";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
+import type { Rollup } from "~/types";
+import { buildBlobRoute, formatBytes, shortenAddress } from "~/utils";
 import type { DeserializedBlob } from "~/utils";
 import { Link } from "../../Link";
+import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlobCardProps = Partial<{
-  blob: Pick<DeserializedBlob, "versionedHash" | "commitment" | "size">;
+  blob: Pick<
+    DeserializedBlob,
+    "versionedHash" | "commitment" | "size" | "dataStorageReferences" | "proof"
+  >;
+  transactions: { rollup: Rollup | null }[];
+  compact?: boolean;
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blob: { versionedHash, commitment, size } = {},
+  blob: { versionedHash, commitment, size, dataStorageReferences, proof } = {},
+  transactions,
+  compact,
 }) => {
+  const breakpoint = useBreakpoint();
+  const isMobile = compact || breakpoint === "sm" || breakpoint === "md";
+
   return (
     <SurfaceCardBase>
-      <div className="flex flex-col gap-2 text-sm">
-        <div>
-          {versionedHash ? (
-            <div className="flex gap-2">
-              <span className="font-bold text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
+      <div className="flex flex-col gap-1 text-sm">
+        {versionedHash ? (
+          <div className="flex justify-between gap-2">
+            <div className={`flex  gap-2 ${compact ? "max-w-[92%]" : ""}`}>
+              <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
                 Blob
               </span>
               <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
             </div>
+            {transactions
+              ?.filter((tx) => !!tx.rollup)
+              .map(({ rollup }) => (
+                <RollupIcon key={rollup} rollup={rollup as Rollup} />
+              ))}
+          </div>
+        ) : (
+          <Skeleton width={isMobile ? undefined : 630} />
+        )}
+        {commitment ? (
+          <CardField name="Commitment" value={commitment} />
+        ) : (
+          <Skeleton width={isMobile ? undefined : 760} size="xs" />
+        )}
+        {proof ? (
+          <CardField name="Proof" value={proof} />
+        ) : (
+          <Skeleton width={isMobile ? undefined : 740} size="xs" />
+        )}
+        <div className="flex flex-row gap-2">
+          {size && dataStorageReferences ? (
+            <>
+              <div className="flex gap-2 text-xs">
+                <span>{formatBytes(size)}</span>
+              </div>
+              <span>·</span>
+              <div className="flex flex-row gap-1">
+                {dataStorageReferences.map((ref) => (
+                  <StorageIcon
+                    key={ref.blobStorage}
+                    storage={ref.blobStorage}
+                    blobReference={ref.dataReference}
+                    size="md"
+                  />
+                ))}
+              </div>
+            </>
           ) : (
-            <Skeleton width={400} />
-          )}
-        </div>
-        <div>
-          {commitment ? (
-            <div className="truncate text-xs">
-              <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                Commitment
-              </span>{" "}
-              {commitment}
-            </div>
-          ) : (
-            <Skeleton width={700} />
-          )}
-        </div>
-        <div>
-          {size ? (
-            <div className="flex gap-2 text-xs">
-              <span>{formatBytes(size)}</span>
-            </div>
-          ) : (
-            <Skeleton width={120} />
+            <Skeleton width={120} size="xs" />
           )}
         </div>
       </div>
