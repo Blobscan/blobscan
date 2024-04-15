@@ -26,7 +26,11 @@ const BlobCard: FC<BlobCardProps> = ({
   compact,
 }) => {
   const breakpoint = useBreakpoint();
-  const isMobile = compact || breakpoint === "sm" || breakpoint === "md";
+  const isCompact =
+    compact ||
+    breakpoint === "sm" ||
+    breakpoint === "md" ||
+    breakpoint === "default";
 
   return (
     <SurfaceCardBase>
@@ -46,17 +50,17 @@ const BlobCard: FC<BlobCardProps> = ({
               ))}
           </div>
         ) : (
-          <Skeleton width={isMobile ? undefined : 630} />
+          <Skeleton width={isCompact ? undefined : 630} />
         )}
         {commitment ? (
           <CardField name="Commitment" value={commitment} />
         ) : (
-          <Skeleton width={isMobile ? undefined : 760} size="xs" />
+          <Skeleton width={isCompact ? undefined : 760} size="xs" />
         )}
         {proof ? (
           <CardField name="Proof" value={proof} />
         ) : (
-          <Skeleton width={isMobile ? undefined : 740} size="xs" />
+          <Skeleton width={isCompact ? undefined : 740} size="xs" />
         )}
         <div className="flex flex-row gap-2">
           {size && dataStorageReferences ? (

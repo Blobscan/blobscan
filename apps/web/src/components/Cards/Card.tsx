@@ -91,7 +91,7 @@ export const CardField: FC<{ name: ReactNode; value: ReactNode }> = function ({
   value,
 }) {
   return (
-    <div className="flex w-full gap-1 text-xs">
+    <div className="flex gap-1 truncate text-xs">
       <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
         {name}
       </span>

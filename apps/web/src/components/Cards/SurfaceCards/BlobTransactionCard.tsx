@@ -7,6 +7,7 @@ import { Button } from "~/components/Button";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
 import {
   buildAddressRoute,
   buildBlobRoute,
@@ -18,6 +19,7 @@ import {
 import type { DeserializedFullTransaction } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
+import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 const CollapseIcon: React.FC<{
@@ -84,7 +86,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     blobGasMaxFee,
   } = {},
   blobs: blobsOnTx,
-  compact = false,
+  compact,
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -93,6 +95,12 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     from: { openProgress: 0 },
     to: { openProgress: Number(opened) },
   });
+  const breakpoint = useBreakpoint();
+  const isCompact =
+    compact ||
+    breakpoint === "sm" ||
+    breakpoint === "md" ||
+    breakpoint === "default";
 
   const updateHeight = useCallback(() => {
     if (contentRef.current) {
@@ -118,92 +126,78 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
         className={compact ? "rounded" : "rounded-none rounded-t-md"}
       >
         <div className="flex flex-col text-sm">
-          <div className="flex gap-2 md:flex-row">
-            {hash ? (
-              <div className="flex w-full flex-col justify-between gap-1 md:flex-row md:items-center md:gap-0">
-                <div>
-                  <div>
-                    <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
-                      Tx{" "}
-                    </span>
-                    <Link href={buildTransactionRoute(hash)}>
-                      {compact ? shortenAddress(hash, 16) : hash}
-                    </Link>
-                  </div>
-                </div>
+          {hash ? (
+            <div className="flex w-full items-center justify-between gap-2 md:gap-0">
+              <div
+                className={`${
+                  isCompact ? "max-w-[86%]" : "max-w-[70%] sm:w-full"
+                }`}
+              >
+                <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
+                  Tx{" "}
+                </span>
+                <Link href={buildTransactionRoute(hash)}>{hash}</Link>
+              </div>
+              <div>
                 {rollup &&
-                  (compact ? (
+                  (isCompact ? (
                     <RollupIcon rollup={rollup} />
                   ) : (
                     <RollupBadge rollup={rollup} size="xs" />
                   ))}
               </div>
-            ) : (
-              <Skeleton width={300} className="mb-1" />
-            )}
-          </div>
+            </div>
+          ) : (
+            <Skeleton width={isCompact ? undefined : 500} className="mb-1" />
+          )}
           <div className="flex w-full flex-col items-center justify-between text-xs md:flex-row">
             <div
               className={`w-full ${timestamp && blockNumber ? "w-2/3" : ""}`}
             >
               <div className="flex flex-col gap-1 truncate">
-                <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                  {from && to ? (
-                    <>
-                      <div className="flex justify-start gap-0.5">
-                        <Link href={buildAddressRoute(from)}>
-                          {compact ? shortenAddress(from, 8) : from}
+                {from && to ? (
+                  <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                    <div className="flex justify-start gap-0.5">
+                      <Link href={buildAddressRoute(from)}>
+                        {isCompact ? shortenAddress(from, 8) : from}
+                      </Link>
+                    </div>
+                    <ArrowRightIcon className="h-3 w-3" />
+                    <div>
+                      <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                        <Link href={buildAddressRoute(to)}>
+                          {isCompact ? shortenAddress(to, 8) : to}
                         </Link>
                       </div>
-                      <ArrowRightIcon className="h-3 w-3" />
-                      <div>
-                        <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                          <Link href={buildAddressRoute(to)}>
-                            {compact ? shortenAddress(to, 8) : to}
-                          </Link>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <Skeleton width={270} size="sm" />
-                  )}
-                </div>
-                <div className="flex flex-row gap-1">
-                  {blobGasBaseFee && blobGasMaxFee ? (
-                    <>
-                      <div className="flex flex-row gap-1">
-                        <div
-                          title="Blob Base Fee"
-                          className="text-contentTertiary-light dark:text-contentTertiary-dark"
-                        >
-                          Base Fee
-                        </div>
-                        <div>
-                          <EtherUnitDisplay
-                            amount={blobGasBaseFee}
-                            toUnit="Gwei"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-row gap-1">
-                        <div
-                          title="Blob Max Fee"
-                          className="text-contentTertiary-light dark:text-contentTertiary-dark"
-                        >
-                          Max Fee
-                        </div>
-                        <div>
-                          <EtherUnitDisplay
-                            amount={blobGasMaxFee}
-                            toUnit="Gwei"
-                          />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <Skeleton width={300} size="xs" />
-                  )}
-                </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Skeleton width={isCompact ? "80%" : 590} size="xs" />
+                )}
+                {blobGasBaseFee && blobGasMaxFee ? (
+                  <div className="flex w-full flex-row gap-1">
+                    <CardField
+                      name={<div title="Base Fee">Base Fee</div>}
+                      value={
+                        <EtherUnitDisplay
+                          amount={blobGasBaseFee}
+                          toUnit="Gwei"
+                        />
+                      }
+                    />
+                    <CardField
+                      name={<div title="Blob Max Fee">Max Fee</div>}
+                      value={
+                        <EtherUnitDisplay
+                          amount={blobGasMaxFee}
+                          toUnit="Gwei"
+                        />
+                      }
+                    />
+                  </div>
+                ) : (
+                  <Skeleton width={isCompact ? "90%" : 320} size="xs" />
+                )}
                 <div className="flex gap-2 text-xs">
                   {blobsOnTx ? (
                     <>

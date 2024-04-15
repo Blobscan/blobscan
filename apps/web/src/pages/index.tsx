@@ -27,7 +27,7 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 const DAILY_STATS_TIMEFRAME = "15d";
 
-const CARD_HEIGHT = "h-28";
+const CARD_HEIGHT = "sm:h-28";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -230,7 +230,7 @@ const Home: NextPage = () => {
                 {latestBlocksLoading
                   ? Array(LATEST_ITEMS_LENGTH)
                       .fill(0)
-                      .map((_, i) => <BlobTransactionCard key={i} />)
+                      .map((_, i) => <BlobTransactionCard key={i} compact />)
                   : transactions.map((tx) => {
                       return (
                         <div className={CARD_HEIGHT} key={tx.hash}>

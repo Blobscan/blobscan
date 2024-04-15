@@ -13,7 +13,7 @@ export const EtherUnitDisplay: FC<EtherUnitDisplayProps> = function ({
   toUnit = "ether",
 }) {
   return (
-    <div>
+    <div className="truncate">
       {formatWei(amount, { toUnit })}
       {toUnit !== "Gwei" && (
         <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">

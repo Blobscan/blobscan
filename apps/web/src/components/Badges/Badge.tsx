@@ -16,7 +16,7 @@ const BADGE_STYLES: Record<
 > = {
   xs: {
     labelStyles: "text-xs",
-    containerStyles: "py-1",
+    containerStyles: "py-0.5",
   },
   sm: {
     labelStyles: "text-sm",
