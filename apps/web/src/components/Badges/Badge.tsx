@@ -5,7 +5,7 @@ import type { Size } from "~/types";
 
 type BadgeProps = {
   className?: string;
-  label?: string;
+  label?: ReactNode;
   icon?: ReactNode;
   size?: Size;
 };
