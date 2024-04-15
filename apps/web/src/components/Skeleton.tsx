@@ -2,9 +2,8 @@ import type { FC } from "react";
 
 import type { Size } from "~/types";
 import "react-loading-skeleton/dist/skeleton.css";
-import ReactLoadingSkeleton, {
-  SkeletonProps as ReactLoadingSkeletonProps,
-} from "react-loading-skeleton";
+import ReactLoadingSkeleton from "react-loading-skeleton";
+import type { SkeletonProps as ReactLoadingSkeletonProps } from "react-loading-skeleton";
 
 export type SkeletonProps = ReactLoadingSkeletonProps & {
   size?: Size;

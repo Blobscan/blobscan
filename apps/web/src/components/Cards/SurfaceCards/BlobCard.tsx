@@ -5,7 +5,7 @@ import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Rollup } from "~/types";
-import { buildBlobRoute, formatBytes, shortenAddress } from "~/utils";
+import { buildBlobRoute, formatBytes } from "~/utils";
 import type { DeserializedBlob } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";

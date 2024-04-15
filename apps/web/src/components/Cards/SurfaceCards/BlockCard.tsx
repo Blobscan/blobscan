@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import type { FC } from "react";
 
-import dayjs from "@blobscan/dayjs";
+import type dayjs from "@blobscan/dayjs";
 
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
-import { Rollup } from "~/types";
+import type { Rollup } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -19,7 +19,7 @@ type BlockCardProps = {
     blobGasUsed: bigint;
     timestamp: dayjs.Dayjs;
     transactions: {
-      rollup: Rollup | null;
+      rollup?: Rollup | null;
       blobs: { versionedHash: string }[];
     }[];
   };

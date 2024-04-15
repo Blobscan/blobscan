@@ -1,14 +1,5 @@
-import type { ReactNode } from "react";
 import React from "react";
 
-import ArbitrumIcon from "~/icons/arbitrum.svg";
-import BaseIcon from "~/icons/base.svg";
-import LineaIcon from "~/icons/linea.svg";
-import ModeIcon from "~/icons/mode.svg";
-import OptimismIcon from "~/icons/optimism.svg";
-import StarknetIcon from "~/icons/starknet.svg";
-import ZkSyncIcon from "~/icons/zksync.svg";
-import ZoraIcon from "~/icons/zora.svg";
 import type { Rollup, Size } from "~/types";
 import { capitalize } from "~/utils";
 import { RollupIcon } from "../RollupIcon";
