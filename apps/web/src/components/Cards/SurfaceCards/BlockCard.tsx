@@ -9,6 +9,7 @@ import { Skeleton } from "~/components/Skeleton";
 import type { Rollup } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";
+import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlockCardProps = {
@@ -67,21 +68,14 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
         <div className="flex flex-row flex-wrap gap-1">
           {blobGasPrice && blobGasUsed ? (
             <>
-              <div title="Blob Gas Price" className="flex gap-1">
-                <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                  Gas Price
-                </span>
-                <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />
-              </div>
-              <div title="Blob Gas Used" className="truncate">
-                <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                  Gas Used
-                </span>{" "}
-                {blobGasUsed.toString()}
-              </div>
+              <CardField
+                name="Blob Gas Price"
+                value={<EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />}
+              />
+              <CardField name="Blob Gas Used" value={blobGasUsed.toString()} />
             </>
           ) : (
-            <Skeleton width={250} size="xs" />
+            <Skeleton width={300} size="xs" />
           )}
         </div>
         {transactions ? (
