@@ -70,7 +70,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
             <>
               <CardField
                 name={<div title="Blob Gas Price">B. Gas Price</div>}
-                value={<EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />}
+                value={<EtherUnitDisplay amount={blobGasPrice} />}
               />
               <CardField
                 name={<div title="Blob Gas Used">B. Gas Used</div>}

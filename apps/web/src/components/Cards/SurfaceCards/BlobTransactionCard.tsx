@@ -177,22 +177,12 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 {blobGasBaseFee && blobGasMaxFee ? (
                   <div className="flex w-full flex-row gap-1">
                     <CardField
-                      name={<div title="Base Fee">B. Base Fee</div>}
-                      value={
-                        <EtherUnitDisplay
-                          amount={blobGasBaseFee}
-                          toUnit="Gwei"
-                        />
-                      }
+                      name={<div title="Blob Base Fee">B. Base Fee</div>}
+                      value={<EtherUnitDisplay amount={blobGasBaseFee} />}
                     />
                     <CardField
-                      name={<div title="Blob Max Fee">B. Max Fee</div>}
-                      value={
-                        <EtherUnitDisplay
-                          amount={blobGasMaxFee}
-                          toUnit="Gwei"
-                        />
-                      }
+                      name={<div title="Blob Max Fee">B.Max Fee</div>}
+                      value={<EtherUnitDisplay amount={blobGasMaxFee} />}
                     />
                   </div>
                 ) : (

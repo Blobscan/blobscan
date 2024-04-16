@@ -6,7 +6,7 @@ import type { NextRouter } from "next/router";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -109,7 +109,7 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Gas Price",
-        value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
+        value: <StandardEtherUnitDisplay amount={blockData.blobGasPrice} />,
       },
       {
         name: "Blob Gas Used",

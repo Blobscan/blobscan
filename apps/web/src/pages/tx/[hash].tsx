@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -119,7 +119,7 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Price",
-        value: <EtherUnitDisplay amount={block?.blobGasPrice} />,
+        value: <StandardEtherUnitDisplay amount={block?.blobGasPrice} />,
       },
       {
         name: "Blob Fee",
@@ -130,14 +130,14 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <EtherUnitDisplay amount={blobGasBaseFee} />
+                <StandardEtherUnitDisplay amount={blobGasBaseFee} />
               </div>
             ) : null}
             <div className=" flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <EtherUnitDisplay amount={blobGasMaxFee} />
+              <StandardEtherUnitDisplay amount={blobGasMaxFee} />
             </div>
           </div>
         ),
@@ -171,7 +171,7 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<EtherUnitDisplay amount={blobAsCalldataGasFee} />}
+            {<StandardEtherUnitDisplay amount={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               |{" "}
               <strong>
