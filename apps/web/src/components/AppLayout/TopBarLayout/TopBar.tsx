@@ -1,4 +1,4 @@
-import { Logo } from "../../BlobscanLogo";
+import { BlobscanLogo } from "../../BlobscanLogo";
 import { ExplorerDetails } from "../../ExplorerDetails";
 import { NavMenusSection } from "../../NavMenusSection";
 import { SearchInput } from "../../SearchInput";
@@ -11,7 +11,7 @@ export const TopBar: React.FC = () => {
       <TopBarSurface>
         <div className="flex h-full justify-between">
           <div className="flex grow items-center gap-12">
-            <Logo className="w-40" />
+            <BlobscanLogo className="w-40" />
           </div>
           <div className="flex grow-[3] justify-end gap-5">
             <div className="self-end">

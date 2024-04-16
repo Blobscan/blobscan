@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { Logo } from "~/components/BlobscanLogo";
+import { BlobscanLogo } from "~/components/BlobscanLogo";
 import { Button } from "~/components/Button";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
@@ -101,10 +101,10 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
       <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
-        <Logo className="w-64 md:w-80" />
+        <BlobscanLogo className="w-64 md:w-80" />
         <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
           <SearchInput />
-          <span className="text- text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
+          <span className="text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
             <Link href="https://www.eip4844.com/" isExternal>
               EIP-4844
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>
-      <div className="flex w-full flex-col gap-8 sm:gap-16">
+      <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
