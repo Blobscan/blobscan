@@ -3,8 +3,10 @@ import cn from "classnames";
 import type { EChartOption } from "echarts";
 
 import "react-loading-skeleton/dist/skeleton.css";
+import React from "react";
 import Skeleton from "react-loading-skeleton";
 
+import { ChartSkeleton } from "../ChartSkeleton";
 import { ChartBase } from "../Charts/ChartBase";
 import { Card, CardHeader } from "./Card";
 
@@ -22,20 +24,6 @@ function getSeriesDataState(series: EChartOption.Series[] | undefined) {
     isEmpty: series ? series.some(({ data }) => data?.length === 0) : false,
   };
 }
-
-const ChartSkeleton: FC = function () {
-  return (
-    <div className="flex items-end gap-1">
-      <Skeleton width={20} height={20} />
-      <Skeleton width={20} height={50} />
-      <Skeleton width={20} height={70} />
-      <Skeleton width={20} height={40} />
-      <Skeleton width={20} height={80} />
-      <Skeleton width={20} height={60} />
-      <Skeleton width={20} height={100} />
-    </div>
-  );
-};
 
 export const ChartCard: FC<ChartCardProps> = function ({
   title,
@@ -62,7 +50,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
             </div>
           ) : isLoading ? (
             <div className="flex h-full w-full items-center justify-center">
-              <ChartSkeleton />
+              <ChartSkeleton itemsCount={6} />
             </div>
           ) : (
             <ChartBase options={options} />
