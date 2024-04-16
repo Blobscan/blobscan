@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FC, ReactNode } from "react";
-import { animated, useTransition } from "@react-spring/web";
+import { animated, config, useTransition } from "@react-spring/web";
 
 const DEFAULT_MAX_ITEMS = 5;
 
@@ -28,7 +28,7 @@ export const SlidableList: FC<SlidableListProps> = function ({
       await next({ opacity: 1, height: refMap.get(item).offsetHeight });
     },
     leave: [{ opacity: 0 }, { height: 0 }],
-    config: { tension: 160, friction: 20 },
+    config: config.gentle,
     onStart: () => {
       // Remove oldest items if the list exceeds the maxItems limit
       if (items.length > maxItems) {
