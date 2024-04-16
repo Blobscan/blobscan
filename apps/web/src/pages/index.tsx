@@ -13,6 +13,7 @@ import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
+import { SlidableList } from "~/components/SlidableList";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { FullBlock } from "~/types";
@@ -193,6 +194,132 @@ const Home: NextPage = () => {
             }
             emptyState="No blocks"
           >
+            <div className="h-[630px]">
+              {latestBlocksLoading ? (
+                <div className="flex flex-col gap-4">
+                  {Array(LATEST_ITEMS_LENGTH)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className={CARD_HEIGHT} key={i}>
+                        <BlockCard />
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <SlidableList
+                  items={blocks?.map((b) => ({
+                    id: b.hash,
+                    element: (
+                      <div className={CARD_HEIGHT} key={b.hash}>
+                        <BlockCard block={b} />
+                      </div>
+                    ),
+                  }))}
+                />
+              )}
+            </div>
+          </Card>
+          <Card
+            header={
+              <div className="flex items-center justify-between gap-5">
+                <div>Latest Blob Transactions</div>
+                <Button
+                  variant="outline"
+                  label="View All Txs"
+                  onClick={() => void router.push(buildTransactionsRoute())}
+                  className="h-full"
+                />
+              </div>
+            }
+            emptyState="No transactions"
+          >
+            <div className="h-[630px]">
+              {latestBlocksLoading ? (
+                <div className="flex flex-col gap-3">
+                  {Array(LATEST_ITEMS_LENGTH)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className={CARD_HEIGHT} key={i}>
+                        <BlobTransactionCard compact />
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <SlidableList
+                  items={transactions.map((tx) => ({
+                    id: tx.hash,
+                    element: (
+                      <div className={CARD_HEIGHT} key={tx.hash}>
+                        <BlobTransactionCard
+                          transaction={{
+                            from: tx.from,
+                            to: tx.to,
+                            hash: tx.hash,
+                            rollup: tx.rollup,
+                            blobGasBaseFee: tx.blobGasBaseFee,
+                            blobGasMaxFee: tx.blobGasMaxFee,
+                          }}
+                          blobs={tx.blobs}
+                          compact
+                        />
+                      </div>
+                    ),
+                  }))}
+                />
+              )}
+            </div>
+          </Card>
+          <Card
+            header={
+              <div className="flex items-center justify-between gap-5">
+                <div>Latest Blobs</div>
+                <Button
+                  variant="outline"
+                  label="View All Blobs"
+                  onClick={() => void router.push(buildBlobsRoute())}
+                />
+              </div>
+            }
+            emptyState="No blobs"
+          >
+            <div className="h-[650px] sm:h-[630px]">
+              {latestBlocksLoading ? (
+                <div className="flex flex-col gap-3">
+                  {Array(LATEST_ITEMS_LENGTH)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div className={CARD_HEIGHT} key={i}>
+                        <BlobTransactionCard compact />
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <SlidableList
+                  items={blobs.map((b) => ({
+                    id: b.versionedHash,
+                    element: (
+                      <div className={CARD_HEIGHT} key={b.versionedHash}>
+                        <BlobCard blob={b} transactions={[b.tx]} compact />
+                      </div>
+                    ),
+                  }))}
+                />
+              )}
+            </div>
+          </Card>
+          {/* <Card
+            header={
+              <div className="flex items-center justify-between gap-5">
+                <div>Latest Blocks</div>
+                <Button
+                  variant="outline"
+                  label="View All Blocks"
+                  onClick={() => void router.push(buildBlocksRoute())}
+                />
+              </div>
+            }
+            emptyState="No blocks"
+          >
             {latestBlocksLoading || !blocks || blocks.length ? (
               <div className="flex flex-col gap-5">
                 {latestBlocksLoading
@@ -278,7 +405,7 @@ const Home: NextPage = () => {
                     ))}
               </div>
             ) : undefined}
-          </Card>
+          </Card> */}
         </div>
       </div>
     </div>
