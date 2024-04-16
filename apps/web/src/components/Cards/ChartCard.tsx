@@ -8,7 +8,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { ChartSkeleton } from "../ChartSkeleton";
 import { ChartBase } from "../Charts/ChartBase";
-import { Card, CardHeader } from "./Card";
+import { Card } from "./Card";
 
 type ChartCardProps = {
   title?: ReactNode;
@@ -34,6 +34,9 @@ export const ChartCard: FC<ChartCardProps> = function ({
 
   return (
     <Card compact>
+      <div className="flex-start -mb-2 ml-2 flex font-semibold dark:text-warmGray-50">
+        {title ?? <Skeleton width={150} />}
+      </div>
       <div className="flex h-full flex-col gap-2">
         <div
           className={cn({
@@ -56,12 +59,6 @@ export const ChartCard: FC<ChartCardProps> = function ({
             <ChartBase options={options} />
           )}
         </div>
-
-        <CardHeader inverse compact>
-          <div className="flex justify-center text-sm">
-            {title ?? <Skeleton width={150} />}
-          </div>
-        </CardHeader>
       </div>
     </Card>
   );

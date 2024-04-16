@@ -65,14 +65,17 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
         <Skeleton width={110} size="xs" />
       )}
       <div className="mt-1.5 flex flex-col gap-1 text-xs">
-        <div className="flex flex-row flex-wrap gap-1">
+        <div className="flex w-full gap-1">
           {blobGasPrice && blobGasUsed ? (
             <>
               <CardField
-                name="Blob Gas Price"
+                name={<div title="Blob Gas Price">B. Gas Price</div>}
                 value={<EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />}
               />
-              <CardField name="Blob Gas Used" value={blobGasUsed.toString()} />
+              <CardField
+                name={<div title="Blob Gas Used">B. Gas Used</div>}
+                value={blobGasUsed.toString()}
+              />
             </>
           ) : (
             <Skeleton width={300} size="xs" />

@@ -38,7 +38,9 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(function (
       )}
     >
       {header && (
-        <div className="text-lg font-bold dark:text-warmGray-50">{header}</div>
+        <div className="text-lg font-semibold dark:text-warmGray-50">
+          {header}
+        </div>
       )}
       <div className={header ? "mt-5" : ""}>
         {children ?? (

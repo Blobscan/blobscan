@@ -104,7 +104,6 @@ function MetricLayout({
           "text-lg sm:text-xl": compact,
           "text-lg lg:text-2xl": !compact,
         },
-        "font-semibold",
         {
           "text-sm text-contentSecondary-light dark:text-contentSecondary-dark lg:text-base":
             isSecondary,
@@ -137,7 +136,7 @@ function Metric({
   return (
     <div>
       {isValueSet ? (
-        <div className="flex gap-2">
+        <div className="flex gap-2 dark:text-warmGray-50">
           <MetricLayout compact={compact} isSecondary={isSecondary}>
             {isValueSet ? (
               <animated.div>
@@ -168,7 +167,7 @@ function Metric({
             </div>
             <div
               className={cn(
-                "relative left-0.5 text-xs font-semibold text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
+                "relative left-0.5 text-xs text-contentSecondary-light dark:text-contentSecondary-dark md:left-0",
                 { " sm:text-xs": compact },
                 { " sm:text-sm": !compact },
                 { "bottom-1": !isSecondary },
@@ -204,8 +203,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
         )}
       >
         <div
-          className={cn("text-xs font-semibold", {
-            "sm:text-xs": compact,
+          className={cn("text-sm", "font-semibold dark:text-warmGray-50", {
             "sm:text-sm": !compact,
           })}
         >
