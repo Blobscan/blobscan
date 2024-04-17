@@ -25,7 +25,6 @@ const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
 ];
 
 export const BottomBarLayout = () => {
-  console.log(env.NEXT_PUBLIC_VERSION);
   return (
     <div className=" flex flex-col items-center justify-center p-2">
       <div className="sm:hidden">

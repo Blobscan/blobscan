@@ -35,7 +35,11 @@ const CollapseIcon: React.FC<{
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className="-p cursor-pointer" onClick={onClick}>
       <animated.div style={props} className="-mb-2">
-        <Button variant="icon" icon={<ChevronDownIcon />} size="md" />
+        <Button
+          variant="icon"
+          icon={<ChevronDownIcon className="h-5 w-5" />}
+          size="md"
+        />
       </animated.div>
     </div>
   );
@@ -101,6 +105,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     breakpoint === "sm" ||
     breakpoint === "md" ||
     breakpoint === "default";
+  const displayBlobs = !compact && !!blobsOnTx?.length;
 
   const updateHeight = useCallback(() => {
     if (contentRef.current) {
@@ -227,7 +232,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               </div>
             )}
           </div>
-          {!compact && blobsOnTx && (
+          {displayBlobs && (
             <div className="-mb-2 flex items-center justify-center md:-mt-5">
               <CollapseIcon
                 opened={opened}
@@ -239,7 +244,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           )}
         </div>
       </SurfaceCardBase>
-      {!compact && blobsOnTx && (
+      {displayBlobs && (
         <div className="overflow-hidden bg-primary-200 pr-4 dark:bg-primary-900">
           <animated.div
             style={{
