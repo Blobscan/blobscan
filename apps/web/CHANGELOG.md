@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.9.1
+
+### Patch Changes
+
+- [`6cddc5f`](https://github.com/Blobscan/blobscan/commit/6cddc5f17bc23f086b35218a105cd3649ab0415e) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed issue related to not display blobs when displaying a non-compacted blob transaction card
+
 ## 0.9.0
 
 ### Minor Changes
