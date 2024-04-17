@@ -194,7 +194,7 @@ const Home: NextPage = () => {
             }
             emptyState="No blocks"
           >
-            <div className="h-[630px]">
+            <div className="h-[660px] sm:h-[630px]">
               {latestBlocksLoading ? (
                 <div className="flex flex-col gap-4">
                   {Array(LATEST_ITEMS_LENGTH)

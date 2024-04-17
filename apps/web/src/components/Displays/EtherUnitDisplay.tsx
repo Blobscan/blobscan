@@ -33,7 +33,7 @@ export const EtherUnitDisplay: FC<EtherUnitDisplayProps> = function ({
   const toUnit = toUnitProp ?? getTargetUnit(amount, unitScaleFactor);
 
   return (
-    <div className="truncate">
+    <div>
       {formatWei(amount, { toUnit })}
       {alternateUnit && (
         <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
