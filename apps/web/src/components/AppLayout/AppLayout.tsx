@@ -16,9 +16,9 @@ const AppLayout = ({ children }: LayoutProps) => {
     <div className="flex min-h-screen flex-col">
       <TopBarLayout />
       <main
-        className={cn("container mx-auto mb-24 grow", {
+        className={cn("container mx-auto grow", {
           "mt-14": isHomepage,
-          "mt-12 sm:my-14": !isHomepage,
+          "mt-8  sm:mb-16 sm:mt-20": !isHomepage,
         })}
       >
         <div className="mx-auto flex w-11/12 flex-col gap-8">{children}</div>

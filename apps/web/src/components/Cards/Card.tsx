@@ -38,7 +38,9 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(function (
       )}
     >
       {header && (
-        <div className="text-lg font-bold dark:text-warmGray-50">{header}</div>
+        <div className="text-lg font-semibold dark:text-warmGray-50">
+          {header}
+        </div>
       )}
       <div className={header ? "mt-5" : ""}>
         {children ?? (
@@ -80,6 +82,22 @@ export const CardHeader: FC<CardHeaderProps> = function ({
       )}
     >
       {children}
+    </div>
+  );
+};
+
+export type CardFieldProps = { name: ReactNode; value: ReactNode };
+
+export const CardField: FC<{ name: ReactNode; value: ReactNode }> = function ({
+  name,
+  value,
+}) {
+  return (
+    <div className="flex gap-1 truncate text-xs">
+      <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+        {name}
+      </span>
+      <div className="truncate">{value}</div>
     </div>
   );
 };

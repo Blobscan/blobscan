@@ -5,7 +5,7 @@ import type { Size } from "~/types";
 
 type BadgeProps = {
   className?: string;
-  label: string;
+  label?: ReactNode;
   icon?: ReactNode;
   size?: Size;
 };
@@ -16,7 +16,7 @@ const BADGE_STYLES: Record<
 > = {
   xs: {
     labelStyles: "text-xs",
-    containerStyles: "py-1",
+    containerStyles: "py-0.5",
   },
   sm: {
     labelStyles: "text-sm",
@@ -45,18 +45,14 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <div
-      className={`flex w-fit items-center rounded-full px-2.5 transition-colors ${
+      className={`flex w-fit items-center gap-1.5 rounded-full px-2.5 transition-colors ${
         containerStyles ?? "py-0.5"
       } ${className}`}
     >
       {icon && (
-        <div className="flex items-center">
-          <div className="text-content-light dark:text-content-dark">
-            {icon}
-          </div>
-        </div>
+        <div className="text-content-light dark:text-content-dark">{icon}</div>
       )}
-      <div className={`${labelStyles} ${icon ? "ml-2" : ""}`}>{label}</div>
+      <div className={labelStyles}>{label}</div>
     </div>
   );
 };

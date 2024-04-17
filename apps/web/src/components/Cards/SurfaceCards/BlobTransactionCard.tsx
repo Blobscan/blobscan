@@ -3,20 +3,23 @@ import type { FC } from "react";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { animated, useSpring } from "@react-spring/web";
 
-import "react-loading-skeleton/dist/skeleton.css";
-import Skeleton from "react-loading-skeleton";
-
 import { Button } from "~/components/Button";
+import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { RollupIcon } from "~/components/RollupIcon";
+import { Skeleton } from "~/components/Skeleton";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
 import {
   buildAddressRoute,
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
+  shortenAddress,
 } from "~/utils";
 import type { DeserializedFullTransaction } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
+import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 const CollapseIcon: React.FC<{
@@ -39,15 +42,24 @@ const CollapseIcon: React.FC<{
 };
 
 type BlobTransactionCardProps = Partial<{
-  transaction: Pick<
-    DeserializedFullTransaction,
-    "hash" | "from" | "to" | "rollup" | "blockNumber"
-  >;
-  block: Pick<DeserializedFullTransaction["block"], "timestamp">;
+  transaction: Partial<
+    Pick<
+      DeserializedFullTransaction,
+      | "hash"
+      | "from"
+      | "to"
+      | "rollup"
+      | "blockNumber"
+      | "blobGasBaseFee"
+      | "blobGasMaxFee"
+    >
+  > & { blobsLength?: number };
+  block: Partial<Pick<DeserializedFullTransaction["block"], "timestamp">>;
   blobs: Pick<
     DeserializedFullTransaction["blobs"][number],
     "versionedHash" | "index" | "size"
   >[];
+  compact?: boolean;
 }>;
 
 const TableCol: FC<{ children: React.ReactNode }> = function ({ children }) {
@@ -64,8 +76,17 @@ const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   block: { timestamp } = {},
-  transaction: { hash, from, to, rollup, blockNumber } = {},
+  transaction: {
+    hash,
+    from,
+    to,
+    rollup,
+    blockNumber,
+    blobGasBaseFee,
+    blobGasMaxFee,
+  } = {},
   blobs: blobsOnTx,
+  compact,
 }) {
   const [opened, setOpened] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -74,6 +95,12 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     from: { openProgress: 0 },
     to: { openProgress: Number(opened) },
   });
+  const breakpoint = useBreakpoint();
+  const isCompact =
+    compact ||
+    breakpoint === "sm" ||
+    breakpoint === "md" ||
+    breakpoint === "default";
 
   const updateHeight = useCallback(() => {
     if (contentRef.current) {
@@ -95,68 +122,101 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 
   return (
     <div>
-      <SurfaceCardBase className="rounded-none rounded-t-md">
-        <div className="flex flex-col gap-2 text-sm">
-          <div className="flex gap-2 md:flex-row">
-            {hash ? (
-              <div className="flex w-full flex-col justify-between gap-1 md:flex-row md:items-center md:gap-0">
-                <div className="w-2/3">
-                  <span className="font-semibold text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
-                    Transaction{" "}
-                  </span>
-                  <Link href={buildTransactionRoute(hash)}>{hash}</Link>
-                </div>
-                {rollup && <RollupBadge rollup={rollup} size="xs" />}
+      <SurfaceCardBase
+        className={compact ? "rounded" : "rounded-none rounded-t-md"}
+      >
+        <div className="flex flex-col text-sm">
+          {hash ? (
+            <div className="flex w-full items-center justify-between gap-2 md:gap-0">
+              <div
+                className={`${
+                  isCompact ? "max-w-[86%]" : "max-w-[70%] sm:w-full"
+                }`}
+              >
+                <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
+                  Tx{" "}
+                </span>
+                <Link href={buildTransactionRoute(hash)}>{hash}</Link>
               </div>
-            ) : (
-              <Skeleton width={400} />
-            )}
-          </div>
-          <div className="flex w-full flex-col items-center justify-between md:flex-row">
-            <div className="w-full md:w-2/3">
-              <div className="flex flex-col space-y-2 truncate">
-                <div className="flex flex-col gap-1 md:flex-row md:items-center">
-                  {from && to ? (
-                    <>
-                      <div className="mt-1 md:hidden">From</div>
-                      <Link href={buildAddressRoute(from)}>
-                        <span className="text-xs">{from}</span>
-                      </Link>
-                      {to && (
-                        <>
-                          <ArrowRightIcon className="hidden h-4 w-4 md:block" />
-                          <div className="mt-1 md:hidden">To</div>
-                          <Link href={buildAddressRoute(to)}>
-                            <span className="text-xs">{to}</span>
-                          </Link>
-                        </>
-                      )}
-                    </>
+              <div>
+                {rollup &&
+                  (isCompact ? (
+                    <RollupIcon rollup={rollup} />
                   ) : (
-                    <Skeleton width={320} />
-                  )}
-                </div>
+                    <RollupBadge rollup={rollup} size="xs" />
+                  ))}
+              </div>
+            </div>
+          ) : (
+            <Skeleton width={isCompact ? undefined : 500} className="mb-1" />
+          )}
+          <div className="flex w-full flex-col items-center justify-between text-xs md:flex-row">
+            <div
+              className={`w-full ${timestamp && blockNumber ? "w-2/3" : ""}`}
+            >
+              <div className="flex flex-col gap-1 truncate">
+                {from && to ? (
+                  <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                    <div className="flex justify-start gap-0.5">
+                      <Link href={buildAddressRoute(from)}>
+                        {isCompact ? shortenAddress(from, 8) : from}
+                      </Link>
+                    </div>
+                    <ArrowRightIcon className="h-3 w-3" />
+                    <div>
+                      <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                        <Link href={buildAddressRoute(to)}>
+                          {isCompact ? shortenAddress(to, 8) : to}
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Skeleton width={isCompact ? "80%" : 590} size="xs" />
+                )}
+                {blobGasBaseFee && blobGasMaxFee ? (
+                  <div className="flex w-full flex-row gap-1">
+                    <CardField
+                      name={<div title="Blob Base Fee">B. Base Fee</div>}
+                      value={
+                        <div className="truncate">
+                          <EtherUnitDisplay amount={blobGasBaseFee} />
+                        </div>
+                      }
+                    />
+                    <CardField
+                      name={<div title="Blob Max Fee">B.Max Fee</div>}
+                      value={
+                        <div className="truncate">
+                          <EtherUnitDisplay amount={blobGasMaxFee} />
+                        </div>
+                      }
+                    />
+                  </div>
+                ) : (
+                  <Skeleton width={isCompact ? "90%" : 320} size="xs" />
+                )}
                 <div className="flex gap-2 text-xs">
                   {blobsOnTx ? (
-                    <div className="mb-2">
-                      {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
-                    </div>
+                    <>
+                      <div>
+                        {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
+                      </div>
+                      ·
+                      <div>
+                        {totalBlobSize !== undefined
+                          ? formatBytes(totalBlobSize)
+                          : undefined}
+                      </div>
+                    </>
                   ) : (
-                    <Skeleton width={120} />
+                    <Skeleton width={140} size="xs" />
                   )}
-                  ·
-                  <div>
-                    {totalBlobSize !== undefined ? (
-                      formatBytes(totalBlobSize)
-                    ) : (
-                      <Skeleton width={80} />
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
             {!!blockNumber && !!timestamp && (
-              <div className="t flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
+              <div className="t mt-1 flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
                 <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Block
                   <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
@@ -167,7 +227,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               </div>
             )}
           </div>
-          {hash && (
+          {!compact && blobsOnTx && (
             <div className="-mb-2 flex items-center justify-center md:-mt-5">
               <CollapseIcon
                 opened={opened}
@@ -179,7 +239,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           )}
         </div>
       </SurfaceCardBase>
-      {blobsOnTx && (
+      {!compact && blobsOnTx && (
         <div className="overflow-hidden bg-primary-200 pr-4 dark:bg-primary-900">
           <animated.div
             style={{

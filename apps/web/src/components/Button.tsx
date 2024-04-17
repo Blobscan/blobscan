@@ -1,10 +1,10 @@
 import type {
   ButtonHTMLAttributes,
   DOMAttributes,
+  FC,
   HTMLAttributes,
   ReactElement,
 } from "react";
-import React, { cloneElement } from "react";
 import classNames from "classnames";
 
 import type { Size } from "~/types";
@@ -76,7 +76,7 @@ const VARIANT_STYLES: VariantStyles = {
   `,
 };
 
-export function Button({
+export const Button: FC<ButtonProps> = function ({
   disabled = false,
   type = "button",
   className,
@@ -86,12 +86,6 @@ export function Button({
   size = "md",
   variant,
 }: ButtonProps) {
-  const normalizedIcon = React.isValidElement(icon)
-    ? cloneElement(icon, {
-        className: `h-full w-full`,
-      })
-    : icon;
-
   return (
     <button
       disabled={disabled}
@@ -141,8 +135,10 @@ export function Button({
       `}
       onClick={onClick}
     >
-      {normalizedIcon}
-      {label}
+      <div className="flex h-full items-center gap-1">
+        {icon && <div className="h-full">{icon}</div>}
+        {label}
+      </div>
     </button>
   );
-}
+};

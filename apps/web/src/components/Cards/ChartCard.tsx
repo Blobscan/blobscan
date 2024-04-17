@@ -3,10 +3,12 @@ import cn from "classnames";
 import type { EChartOption } from "echarts";
 
 import "react-loading-skeleton/dist/skeleton.css";
+import React from "react";
 import Skeleton from "react-loading-skeleton";
 
+import { ChartSkeleton } from "../ChartSkeleton";
 import { ChartBase } from "../Charts/ChartBase";
-import { Card, CardHeader } from "./Card";
+import { Card } from "./Card";
 
 type ChartCardProps = {
   title?: ReactNode;
@@ -23,20 +25,6 @@ function getSeriesDataState(series: EChartOption.Series[] | undefined) {
   };
 }
 
-const ChartSkeleton: FC = function () {
-  return (
-    <div className="flex items-end gap-1">
-      <Skeleton width={20} height={20} />
-      <Skeleton width={20} height={50} />
-      <Skeleton width={20} height={70} />
-      <Skeleton width={20} height={40} />
-      <Skeleton width={20} height={80} />
-      <Skeleton width={20} height={60} />
-      <Skeleton width={20} height={100} />
-    </div>
-  );
-};
-
 export const ChartCard: FC<ChartCardProps> = function ({
   title,
   size = "md",
@@ -45,7 +33,10 @@ export const ChartCard: FC<ChartCardProps> = function ({
   const { isEmpty, isLoading } = getSeriesDataState(options.series);
 
   return (
-    <Card compact>
+    <Card className="overflow-visible" compact>
+      <div className="flex-start -mb-2 ml-2 flex font-semibold dark:text-warmGray-50">
+        {title ?? <Skeleton width={150} />}
+      </div>
       <div className="flex h-full flex-col gap-2">
         <div
           className={cn({
@@ -62,18 +53,12 @@ export const ChartCard: FC<ChartCardProps> = function ({
             </div>
           ) : isLoading ? (
             <div className="flex h-full w-full items-center justify-center">
-              <ChartSkeleton />
+              <ChartSkeleton itemsCount={6} />
             </div>
           ) : (
             <ChartBase options={options} />
           )}
         </div>
-
-        <CardHeader inverse compact>
-          <div className="flex justify-center text-sm">
-            {title ?? <Skeleton width={150} />}
-          </div>
-        </CardHeader>
       </div>
     </Card>
   );

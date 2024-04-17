@@ -18,9 +18,9 @@ export function ThemeModeButton() {
       variant="icon"
       icon={
         resolvedTheme === "dark" ? (
-          <SunIcon aria-hidden="true" />
+          <SunIcon aria-hidden="true" className="h-5 w-5" />
         ) : (
-          <MoonIcon aria-hidden="true" />
+          <MoonIcon aria-hidden="true" className="h-5 w-5" />
         )
       }
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}

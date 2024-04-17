@@ -5,5 +5,6 @@ export * from "./date";
 export * from "./explorers";
 export * from "./routes";
 export * from "./search";
+export * from "./blob-storages";
 export * from "./number";
 export * from "./text";

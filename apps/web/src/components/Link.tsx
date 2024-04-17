@@ -21,13 +21,13 @@ export const Link: React.FC<LinkProps> = function ({
       <NextLink
         href={href}
         target={isExternal ? "_blank" : "_self"}
-        className="relative z-0 inline-flex max-w-full items-center text-link-light hover:underline dark:text-link-dark"
+        className="relative z-0 inline-flex max-w-full items-center align-middle text-link-light hover:underline dark:text-link-dark"
       >
         <div className="flex w-full items-center">
           <span className="truncate">{children}</span>
           {Boolean(isExternal && !hideExternalIcon) && (
             <ArrowTopRightOnSquareIcon
-              className="relative bottom-[2px] ml-1 h-4 w-4"
+              className="relative bottom-[2.5px] ml-1 h-3 w-3"
               aria-hidden="true"
             />
           )}
