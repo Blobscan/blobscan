@@ -1,5 +1,41 @@
 # @blobscan/web
 
+## 0.9.0
+
+### Minor Changes
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`4b5be80`](https://github.com/Blobscan/blobscan/commit/4b5be80e46f1290d136cbfbc3ed2f117f195c84f) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed web app's version instead of last commit
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`04d6061`](https://github.com/Blobscan/blobscan/commit/04d60618542bb66fc64645829c191f2379bbd2ab) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup and blob storage icons to blob card
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`bc2572f`](https://github.com/Blobscan/blobscan/commit/bc2572f4a020dd5c374c96d9998212017ca4dd98) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for automatically choosing the most suitable target unit on ether unit displays
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`e7c7bbe`](https://github.com/Blobscan/blobscan/commit/e7c7bbe3d126affba027a71008883a1e2d640f78) Thanks [@PJColombo](https://github.com/PJColombo)! - Added sliding items animation to latest blobs, blocks and transactions section in homepage
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`7d50130`](https://github.com/Blobscan/blobscan/commit/7d5013079ccc8d6e0f6cccd39faf60186853e532) Thanks [@PJColombo](https://github.com/PJColombo)! - Added animation to loading chart skeleton
+
+### Patch Changes
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`3e83465`](https://github.com/Blobscan/blobscan/commit/3e8346573a164db081e80173048549e3f5ff44f1) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed blob transaction card skeletons
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`d5c1388`](https://github.com/Blobscan/blobscan/commit/d5c1388e86b13cc4b6fb9ac28500b1cd4d409da8) Thanks [@PJColombo](https://github.com/PJColombo)! - Unified card headers stylings
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`08679e1`](https://github.com/Blobscan/blobscan/commit/08679e193596b239c24fcf61eda9ee0b72580d57) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved Blobscan logo layout shift issue
+
+- [#371](https://github.com/Blobscan/blobscan/pull/371) [`277e1a8`](https://github.com/Blobscan/blobscan/commit/277e1a812dfdffe8a9fbe9bc262a5058e1418464) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed top bar details item's layout
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`9140be4`](https://github.com/Blobscan/blobscan/commit/9140be48889c7afef774ab6ed87e06c03a806992) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed app layout margins
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`019c3cc`](https://github.com/Blobscan/blobscan/commit/019c3cc767021e9241b312346ac6ec52d63dec35) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed search button extended size on Safari and Firefox issue
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`45ad566`](https://github.com/Blobscan/blobscan/commit/45ad56641dc1fca4978ac2a4ba898adb0fa80ad3) Thanks [@PJColombo](https://github.com/PJColombo)! - Grouped top bar's navigation menu items together
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`b19fa45`](https://github.com/Blobscan/blobscan/commit/b19fa45b1582feeca7e08a63815a59923e8ef021) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed chart tooltip display
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`3c6dc91`](https://github.com/Blobscan/blobscan/commit/3c6dc919c97ed7e48e4afe5ea26f6f5c6f317cb0) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved block and transaction cards
+
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`76b83e9`](https://github.com/Blobscan/blobscan/commit/76b83e934ee0686875887a161d7f119f139c7d8d) Thanks [@PJColombo](https://github.com/PJColombo)! - Adjust light theme colors in blob gas comparison chart
+
 ## 0.8.0
 
 ### Minor Changes
