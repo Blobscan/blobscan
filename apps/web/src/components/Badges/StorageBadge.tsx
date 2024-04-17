@@ -29,7 +29,7 @@ const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
     style:
       "bg-slate-100 hover:bg-slate-200 text-slate-800 hover:text-slate-900 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-slate-200",
     buildDownloadUrl(blobReference) {
-      return buildStorageDownloadUrl("google", blobReference) ?? "#";
+      return buildStorageDownloadUrl("google", blobReference);
     },
   },
   swarm: {
@@ -37,7 +37,7 @@ const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
     style:
       "bg-orange-100 hover:bg-orange-200 text-orange-800 hover:text-orange-900 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 dark:hover:text-orange-200",
     buildDownloadUrl(blobReference) {
-      return buildStorageDownloadUrl("swarm", blobReference) ?? "#";
+      return buildStorageDownloadUrl("swarm", blobReference);
     },
   },
   postgres: {

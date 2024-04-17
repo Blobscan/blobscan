@@ -1,20 +1,36 @@
 import { env } from "~/env.mjs";
 import type { BlobStorage } from "~/types";
 
-export function buildStorageDownloadUrl(
-  storage: BlobStorage,
+type StorageUrl<S extends BlobStorage> = S extends "file_system"
+  ? null
+  : S extends "google"
+  ? string
+  : S extends "postgres"
+  ? null
+  : S extends "swarm"
+  ? string
+  : null;
+
+export function buildStorageDownloadUrl<S extends BlobStorage>(
+  storage: S,
   blobReference: string
-): string | null {
+): StorageUrl<S> {
+  let url;
+
   switch (storage) {
     case "file_system":
-      return null;
-    case "google":
-      return `https://storage.googleapis.com/${env.NEXT_PUBLIC_GOOGLE_STORAGE_BUCKET_NAME}/${blobReference}`;
+      url = null;
+      break;
     case "postgres":
-      return null;
+      url = null;
+      break;
+    case "google":
+      url = `https://storage.googleapis.com/${env.NEXT_PUBLIC_GOOGLE_STORAGE_BUCKET_NAME}/${blobReference}`;
+      break;
     case "swarm":
-      return `https://gateway.ethswarm.org/access/${blobReference}`;
-    default:
-      return null;
+      url = `https://gateway.ethswarm.org/access/${blobReference}`;
+      break;
   }
+
+  return url as StorageUrl<S>;
 }
