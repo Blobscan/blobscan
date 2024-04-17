@@ -11,20 +11,21 @@ import XIcon from "~/icons/x.svg";
 
 const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
   {
-    icon: <GithubIcon />,
+    icon: <GithubIcon className="h-5 w-5" />,
     href: "https://github.com/Blobscan/blobscan",
   },
   {
-    icon: <DiscordIcon />,
+    icon: <DiscordIcon className="h-5 w-5" />,
     href: "https://discord.gg/6KNZ2UVFRt",
   },
   {
-    icon: <XIcon />,
+    icon: <XIcon className="h-5 w-5" />,
     href: "https://twitter.com/blobscan",
   },
 ];
 
 export const BottomBarLayout = () => {
+  console.log(env.NEXT_PUBLIC_VERSION);
   return (
     <div className=" flex flex-col items-center justify-center p-2">
       <div className="sm:hidden">
@@ -40,16 +41,20 @@ export const BottomBarLayout = () => {
         </div>
         <div className="max-w-lg text-center text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
           Blobscan is the first open-source block explorer for the{" "}
-          <Link href="https://www.eip4844.com/">EIP-4844</Link> shard blob
-          transactions, providing the necessary infrastructure to scale
-          Ethereum.
+          <Link href="https://www.eip4844.com/" isExternal>
+            EIP-4844
+          </Link>{" "}
+          shard blob transactions, providing the necessary infrastructure to
+          scale Ethereum.
         </div>
         <div className="flex items-center gap-2">
           <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
             Made with ❤️ by{" "}
-            <Link href="https://blossom.software/">Blossom Labs</Link>
+            <Link href="https://blossom.software/" isExternal>
+              Blossom Labs
+            </Link>
           </div>
-          {env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA && (
+          {env.NEXT_PUBLIC_VERSION && (
             <>
               ·
               <div className="flex items-center gap-1">
@@ -58,10 +63,11 @@ export const BottomBarLayout = () => {
                 </div>
                 <div className="relative">
                   <Link
-                    href={`https://github.com/Blobscan/blobscan/commit/${env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
+                    href={`https://github.com/Blobscan/blobscan/tree/%40blobscan/web%40${env.NEXT_PUBLIC_VERSION}`}
+                    isExternal
                   >
                     <div className="relative -top-0.5 text-xs">
-                      {env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
+                      {env.NEXT_PUBLIC_VERSION}
                     </div>
                   </Link>
                 </div>
