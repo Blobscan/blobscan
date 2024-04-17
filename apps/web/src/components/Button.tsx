@@ -5,7 +5,6 @@ import type {
   HTMLAttributes,
   ReactElement,
 } from "react";
-import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 
 import type { Size } from "~/types";
