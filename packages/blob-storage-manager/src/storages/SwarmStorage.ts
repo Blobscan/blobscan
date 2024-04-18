@@ -74,6 +74,7 @@ export class SwarmStorage extends BlobStorage {
       {
         pin: true,
         contentType: "text/plain",
+        deferred: false
       }
     );
 
