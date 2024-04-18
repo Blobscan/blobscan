@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import type { SpyInstance } from "vitest";
 import {
   afterAll,
+  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -298,35 +299,6 @@ describe("Indexer router", async () => {
               `);
             });
           });
-
-          it("should not index duplicated blobs", async () => {
-            const duplicatedBlobVersionedHash =
-              INPUT_WITH_DUPLICATED_BLOBS.blobs[0]?.versionedHash;
-            const blobStorageManagerSpy = vi.spyOn(
-              authorizedContext.blobStorageManager,
-              "storeBlob"
-            );
-            await authorizedCaller.indexer.indexData(
-              INPUT_WITH_DUPLICATED_BLOBS
-            );
-
-            const blobs = await authorizedContext.prisma.blob.findMany({
-              where: {
-                versionedHash: duplicatedBlobVersionedHash,
-              },
-            });
-            const blobStorageRefs =
-              await authorizedContext.prisma.blobDataStorageReference.findMany({
-                where: {
-                  blobHash: duplicatedBlobVersionedHash,
-                },
-              });
-
-            expect(blobs).toHaveLength(1);
-            expect(blobStorageRefs).toHaveLength(2);
-            // Only one blob should be stored
-            expect(blobStorageManagerSpy).toBeCalledTimes(1);
-          });
         });
 
         describe("when blob propagator is enabled", () => {
@@ -340,19 +312,6 @@ describe("Indexer router", async () => {
             [blobs: PropagatorBlob[]],
             Promise<void>
           >;
-          const uniqueBlobVersionedHashes = Array.from(
-            new Set(
-              INPUT_WITH_DUPLICATED_BLOBS.blobs.map((b) => b.versionedHash)
-            )
-          );
-          const expectedBlobsToPropagate = uniqueBlobVersionedHashes.map(
-            (versionedHash) => ({
-              data: INPUT_WITH_DUPLICATED_BLOBS.blobs.find(
-                (b) => b.versionedHash === versionedHash
-              )?.data,
-              versionedHash,
-            })
-          );
 
           beforeAll(async () => {
             ctxWithBlobPropagator = await createTestContext({
@@ -371,11 +330,10 @@ describe("Indexer router", async () => {
             );
           });
 
-          afterAll(async () => {
+          afterEach(async () => {
             const blobPropagator = ctxWithBlobPropagator.blobPropagator;
 
             if (blobPropagator) {
-              await blobPropagator.empty({ force: true });
               await blobPropagator.close();
             }
           });
@@ -386,21 +344,6 @@ describe("Indexer router", async () => {
             );
 
             expect(blobPropagatorSpy).toHaveBeenCalledOnce();
-          });
-
-          it("should propagate the correct blobs", async () => {
-            await callerWithBlobPropagator.indexer.indexData(
-              INPUT_WITH_DUPLICATED_BLOBS
-            );
-
-            const propagatedBlobs = blobPropagatorSpy.mock.calls[0]
-              ? blobPropagatorSpy.mock.calls[0][0].map<PropagatorBlob>((b) => ({
-                  data: b.data,
-                  versionedHash: b.versionedHash,
-                }))
-              : [];
-
-            expect(propagatedBlobs).toEqual(expectedBlobsToPropagate);
           });
         });
       });

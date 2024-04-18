@@ -9,35 +9,41 @@ import {
   createDBTransactions,
 } from "./indexData.utils";
 
+const rawBlockSchema = z.object({
+  number: z.coerce.number(),
+  hash: z.string(),
+  timestamp: z.coerce.number(),
+  slot: z.coerce.number(),
+  blobGasUsed: toBigIntSchema,
+  excessBlobGas: toBigIntSchema,
+});
+
+const rawTxSchema = z.object({
+  hash: z.string(),
+  from: z.string(),
+  to: z.string(),
+  blockNumber: z.coerce.number(),
+  gasPrice: toBigIntSchema,
+  maxFeePerBlobGas: toBigIntSchema,
+});
+
+const rawBlobSchema = z.object({
+  versionedHash: z.string(),
+  commitment: z.string(),
+  proof: z.string(),
+  data: z.string(),
+  txHash: z.string(),
+  index: z.coerce.number(),
+});
+
+export type RawBlock = z.infer<typeof rawBlockSchema>;
+export type RawTx = z.infer<typeof rawTxSchema>;
+export type RawBlob = z.infer<typeof rawBlobSchema>;
+
 export const inputSchema = z.object({
-  block: z.object({
-    number: z.coerce.number(),
-    hash: z.string(),
-    timestamp: z.coerce.number(),
-    slot: z.coerce.number(),
-    blobGasUsed: toBigIntSchema,
-    excessBlobGas: toBigIntSchema,
-  }),
-  transactions: z.array(
-    z.object({
-      hash: z.string(),
-      from: z.string(),
-      to: z.string(),
-      blockNumber: z.coerce.number(),
-      gasPrice: toBigIntSchema,
-      maxFeePerBlobGas: toBigIntSchema,
-    })
-  ),
-  blobs: z.array(
-    z.object({
-      versionedHash: z.string(),
-      commitment: z.string(),
-      proof: z.string(),
-      data: z.string(),
-      txHash: z.string(),
-      index: z.coerce.number(),
-    })
-  ),
+  block: rawBlockSchema,
+  transactions: z.array(rawTxSchema),
+  blobs: z.array(rawBlobSchema),
 });
 
 export const outputSchema = z.void();
@@ -60,13 +66,21 @@ export const indexData = jwtAuthedProcedure
     async ({ ctx: { prisma, blobStorageManager, blobPropagator }, input }) => {
       const operations = [];
 
-      const newBlobs = await prisma.blob.filterNewBlobs(input.blobs);
-
       let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
 
-      // 2. Store blobs' data
+      // 1. Store blobs' data
       if (!blobPropagator) {
-        const blobStorageOps = newBlobs.map(async (b) =>
+        const uniqueBlobs: RawBlob[] = Array.from(
+          new Set(input.blobs.map((b) => b.versionedHash))
+        ).map((versionedHash) => {
+          const blob = input.blobs.find(
+            (b) => b.versionedHash === versionedHash
+          )!;
+
+          return blob;
+        });
+
+        const blobStorageOps = uniqueBlobs.map(async (b) =>
           blobStorageManager.storeBlob(b).then((uploadRes) => ({
             blob: b,
             uploadRes,
@@ -87,7 +101,7 @@ export const indexData = jwtAuthedProcedure
       // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
       const now = new Date();
 
-      // 3. Prepare address, block, transaction and blob insertions
+      // 2. Prepare address, block, transaction and blob insertions
       const dbTxs = createDBTransactions(input);
       const dbBlock = createDBBlock(input, dbTxs);
       const dbBlobs = createDBBlobs(input);
@@ -129,12 +143,12 @@ export const indexData = jwtAuthedProcedure
         })
       );
 
-      // 4. Execute all database operations in a single transaction
+      // 3. Execute all database operations in a single transaction
       await prisma.$transaction(operations);
 
-      // 5. Propagate blobs to storages
+      // 4. Propagate blobs to storages
       if (blobPropagator) {
-        await blobPropagator.propagateBlobs(newBlobs);
+        await blobPropagator.propagateBlobs(input.blobs);
       }
     }
   );
