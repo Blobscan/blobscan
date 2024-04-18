@@ -85,9 +85,7 @@ export class BlobPropagator {
       });
     });
 
-    try {
-      await emptyPromise;
-    } catch (err) {}
+    await emptyPromise;
   }
 
   close() {
@@ -127,6 +125,7 @@ export class BlobPropagator {
     const uniqueBlobs = Array.from(
       new Set(blobs.map((b) => b.versionedHash))
     ).map((versionedHash) => {
+      // @typescript-eslint/no-non-null-assertion
       const blob = blobs.find((b) => b.versionedHash === versionedHash)!;
 
       return blob;
