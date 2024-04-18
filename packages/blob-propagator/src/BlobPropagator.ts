@@ -85,7 +85,9 @@ export class BlobPropagator {
       });
     });
 
-    await emptyPromise;
+    try {
+      await emptyPromise;
+    } catch (err) {}
   }
 
   close() {
@@ -122,9 +124,19 @@ export class BlobPropagator {
   }
 
   async propagateBlobs(blobs: Blob[]) {
-    await Promise.all(blobs.map((blob) => blobFileManager.createFile(blob)));
+    const uniqueBlobs = Array.from(
+      new Set(blobs.map((b) => b.versionedHash))
+    ).map((versionedHash) => {
+      const blob = blobs.find((b) => b.versionedHash === versionedHash)!;
 
-    const blobPropagationFlowJobs = blobs.map(({ versionedHash }) =>
+      return blob;
+    });
+
+    await Promise.all(
+      uniqueBlobs.map((blob) => blobFileManager.createFile(blob))
+    );
+
+    const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }) =>
       this.#createBlobPropagationFlowJob({ versionedHash })
     );
 
