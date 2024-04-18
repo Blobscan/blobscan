@@ -331,52 +331,6 @@ describe("Base Extension", () => {
   });
 
   describe("Blob model", () => {
-    describe("filterNewBlobs()", () => {
-      const newRawBlob = {
-        versionedHash: "newHash",
-        commitment: "newCommitment",
-        proof: "newProof",
-        txHash: "txHash001",
-        index: 0,
-        data: "data001",
-      };
-      const { index: _, ...newBlob } = newRawBlob;
-
-      it("should filter out stored blobs", async () => {
-        const rawBlobs = [
-          {
-            versionedHash: "blobHash001",
-            commitment: "commitment001",
-            proof: "proof001",
-            txHash: "txHash001",
-            index: 0,
-            data: "data001",
-          },
-          {
-            versionedHash: "blobHash002",
-            commitment: "commitment002",
-            proof: "proof002",
-            txHash: "txHash002",
-            index: 0,
-            data: "data002",
-          },
-          newRawBlob,
-        ];
-
-        await expect(
-          prisma.blob.filterNewBlobs(rawBlobs)
-        ).resolves.toStrictEqual([newBlob]);
-      });
-
-      it("should filter out duplicated blobs", async () => {
-        const rawBlobs = [newRawBlob, newRawBlob];
-
-        await expect(
-          prisma.blob.filterNewBlobs(rawBlobs)
-        ).resolves.toStrictEqual([newBlob]);
-      });
-    });
-
     describe("upsertMany()", () => {
       it("should insert multiple blobs correctly", async () => {
         const newBlobs: WithoutTimestampFields<Blob>[] = [
