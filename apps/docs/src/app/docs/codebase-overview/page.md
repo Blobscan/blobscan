@@ -34,9 +34,9 @@ Blobscan is composed of the following apps:
 |  [`@blobscan/web`](https://github.com/Blobscan/blobscan/tree/next/apps/web)                         | Nextjs app that contains the web app.       |
 |  [`@blobscan/rest-api-server`](https://github.com/Blobscan/blobscan/tree/next/apps/rest-api-server) | Express app that contains the REST API.     |
 
-### Clis
+### CLI
 
-Blobscan has the following clis:
+Blobscan has the following command line interfaces:
 
 | CLI                                                                                                                     | Description                            |
 | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |

@@ -1,21 +1,21 @@
 ---
-title: Clis
+title: Command line interface
 nextjs:
   metadata:
-    title: Clis
-    description: Blobscan clis
+    title: Command line interface
+    description: Blobscan CLI
 ---
 
-Blobscan has the following clis:
+Blobscan offers the following commands:
 
 - [`@blobscan/blob-propagation-jobs-cli`](https://github.com/Blobscan/blobscan/tree/next/clis/blob-propagation-jobs-cli): to run the blob propagation jobs.
 - [`@blobscan/stats-aggregation-cli`](https://github.com/Blobscan/blobscan/tree/next/clis/stats-aggregation-cli): to run the stats aggregation jobs.
 
-## Blob propagation cli
+## Blob propagation
 
-You can use the blob propagation cli to propagate blobs across different storage systems. There are three commands available: `create`, `remove`, and `retry`.
+You can use the blob propagation CLI to propagate blobs across different storage systems. There are three commands available: `create`, `remove`, and `retry`.
 
-To run the cli, use the following command:
+To run the CLI, use the following command:
 
 ```bash
 cd clis/blob-propagation-jobs-cli
@@ -79,11 +79,11 @@ Options
   -b, --blobHash blob-hash   Blob hash of the failed jobs to retry.
 ```
 
-## Stats aggregation cli
+## Stats aggregation
 
-You can use the stats aggregation cli to aggregate daily and overall stats. There are two commands available: `daily`, `overall`.
+You can use the stats aggregation CLI to aggregate daily and overall stats. There are two commands available: `daily`, `overall`.
 
-To run the cli, use the following command:
+To run the CLI, use the following command:
 
 ```bash
 cd clis/stats-aggregation-cli
