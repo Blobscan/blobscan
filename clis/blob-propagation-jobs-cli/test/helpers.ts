@@ -75,7 +75,7 @@ export function argHelpTest(c: Command, expectedDisplayedUsage: string) {
   it("should display the command usage when the help flag is given", async () => {
     const consoleLogSpy = vi
       .spyOn(console, "log")
-      .mockImplementation(() => void {});
+      .mockImplementationOnce(() => void {});
 
     await c(["-h"]);
 
