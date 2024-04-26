@@ -5,6 +5,36 @@ import { STORAGE_WORKER_NAMES, buildJobId } from "@blobscan/blob-propagator";
 import dayjs from "@blobscan/dayjs";
 import type { $Enums } from "@blobscan/db";
 
+function isPositiveInteger(value: string | number) {
+  const number = Number(value);
+
+  return !isNaN(number) && Number.isInteger(number) && number >= 0;
+}
+
+const blockType = (input: string): number => {
+  const value = Number(input);
+
+  if (!isPositiveInteger(value)) {
+    throw new Error(
+      `Invalid value "${input}". Block must be a positive integer.`
+    );
+  }
+
+  return value;
+};
+
+const slotType = (input: string): number => {
+  const value = Number(input);
+
+  if (!isPositiveInteger(value)) {
+    throw new Error(
+      `Invalid value "${input}". Slot must be a positive integer.`
+    );
+  }
+
+  return value;
+};
+
 export type Command<R = unknown> = (argv?: string[]) => Promise<R>;
 
 export const helpOptionDef: commandLineUsage.OptionDefinition = {
@@ -48,19 +78,58 @@ export const datePeriodOptionDefs: Record<
   commandLineUsage.OptionDefinition
 > = {
   from: {
-    name: "from",
-    alias: "f",
-    typeLabel: "{underline from}",
+    name: "fromDate",
+    typeLabel: "{underline from-date}",
     description: "Date from which execute jobs.",
     type: String,
   },
   to: {
-    name: "to",
-    alias: "t",
-    typeLabel: "{underline to}",
+    name: "toDate",
+    typeLabel: "{underline to-date}",
     description: "Date to which execute jobs.",
     type: String,
   },
+};
+
+export const slotRangeOptionDefs = {
+  from: {
+    name: "fromSlot",
+    typeLabel: "{underline from-slot}",
+    type: slotType,
+  },
+  to: {
+    name: "toSlot",
+    typeLabel: "{underline to-slot}",
+    type: slotType,
+  },
+};
+
+export const blockRangeOptionDefs = {
+  from: {
+    name: "fromBlock",
+    typeLabel: "{underline from-block}",
+    type: blockType,
+  },
+  to: {
+    name: "toBlock",
+    typeLabel: "{underline to-block}",
+    type: blockType,
+  },
+};
+
+export const sortOptionDefs = {
+  name: "sort",
+  alias: "s",
+  description:
+    "Sort the jobs in ascending or descending order. Valid values are {italic asc} or {italic desc}. Default is {italic desc}.",
+  type: (value: string): "asc" | "desc" => {
+    if (value !== "asc" && value !== "desc") {
+      throw new Error("Sort must be 'asc' or 'desc'.");
+    }
+
+    return value as "asc" | "desc";
+  },
+  defaultValue: "desc",
 };
 
 export function normalizeQueueName(input: string) {

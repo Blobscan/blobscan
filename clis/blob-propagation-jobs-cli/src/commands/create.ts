@@ -93,16 +93,16 @@ export const create: Command = async function (argv) {
     blobHash: rawBlobHashes,
     help,
     storage: rawStorageNames,
-    from: rawFrom,
-    to: rawTo,
+    fromDate: rawFromDate,
+    toDate: rawToDate,
   } = commandLineArgs(createCommandOptDefs, {
     argv,
   }) as {
     blobHash?: string[];
     help?: boolean;
     storage?: string[];
-    from?: string;
-    to?: string;
+    fromDate?: string;
+    toDate?: string;
   };
 
   if (help) {
@@ -111,8 +111,8 @@ export const create: Command = async function (argv) {
     return;
   }
 
-  const from = rawFrom ? normalizeDate(rawFrom) : undefined;
-  const to = rawTo ? normalizeDate(rawTo) : undefined;
+  const from = rawFromDate ? normalizeDate(rawFromDate) : undefined;
+  const to = rawToDate ? normalizeDate(rawToDate) : undefined;
   const argStorageNames = rawStorageNames?.map((rawName) =>
     normalizeStorageQueueName(rawName)
   );

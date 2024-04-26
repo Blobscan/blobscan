@@ -69,7 +69,7 @@ describe("Create command", () => {
   it("should create jobs for all blobs greater than a given date correctly", async () => {
     const from = "2023-08-25";
 
-    await create(["-f", from]);
+    await create(["--fromDate", from]);
 
     const expectedBlobHashes = await fetchBlobHashesByDatePeriod(from);
 
@@ -81,7 +81,7 @@ describe("Create command", () => {
   it("should create jobs for all blobs less than a given date correctly", async () => {
     const to = "2022-12-20";
 
-    await create(["-t", to]);
+    await create(["--toDate", to]);
 
     const expectedBlobHashes = await fetchBlobHashesByDatePeriod(undefined, to);
     const createdJobs = await context.getJobs();
@@ -93,7 +93,7 @@ describe("Create command", () => {
     const from = "2023-08-25";
     const to = "2023-09-10";
 
-    await create(["-f", from, "-t", to]);
+    await create(["--fromDate", from, "--toDate", to]);
 
     const expectedBlobHashes = await fetchBlobHashesByDatePeriod(from, to);
 
