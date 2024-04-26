@@ -1,20 +1,19 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
+import type { QueueHumanName } from "../Context";
 import { context } from "../context-instance";
-import type { Command } from "../utils";
-import {
-  blobHashOptionDef,
-  getJobsByBlobHashes,
-  helpOptionDef,
-  allQueuesOptionDef,
-  normalizeQueueName,
-} from "../utils";
+import type { Command } from "../types";
+import { getJobsByBlobHashes } from "../utils";
+import { blobHashOptionDef, helpOptionDef, queuesOptionDef } from "../utils";
 
 const retryCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
-  allQueuesOptionDef,
   blobHashOptionDef,
+  {
+    ...queuesOptionDef,
+    description: `Queue to retry the jobs from. ${queuesOptionDef.description}`,
+  },
 ];
 
 export const retryCommandUsage = commandLineUsage([
@@ -31,13 +30,13 @@ export const retryCommandUsage = commandLineUsage([
 export const retry: Command = async function (argv?: string[]) {
   const {
     help,
-    queue: rawQueueNames,
+    queue: queueNames,
     blobHash: blobHashes,
   } = commandLineArgs(retryCommandOptDefs, {
     argv,
   }) as {
     help?: boolean;
-    queue?: string[];
+    queue?: QueueHumanName[];
     blobHash?: string[];
   };
 
@@ -47,9 +46,6 @@ export const retry: Command = async function (argv?: string[]) {
     return;
   }
 
-  const queueNames = rawQueueNames?.map((rawName) =>
-    normalizeQueueName(rawName)
-  );
   const queues = queueNames
     ? context.getQueues(queueNames)
     : context.getAllQueues();

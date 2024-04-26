@@ -54,7 +54,7 @@ describe("Retry command", () => {
   });
 
   it("should retry failed jobs from a specific queue correctly", async () => {
-    await retry(["-q", "POSTGRES"]);
+    await retry(["-q", "postgres"]);
 
     const failedJobsAfterRetry = await context.getJobs(["failed"]);
     const postgresFailedJobs = failedJobsAfterRetry.filter((j) =>

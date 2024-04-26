@@ -1,7 +1,7 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import { create, remove, retry } from "./commands";
+import { count, create, get, remove, retry } from "./commands";
 import { helpOptionDef } from "./utils";
 
 const mainDefs: commandLineUsage.OptionDefinition[] = [
@@ -16,7 +16,13 @@ export const mainUsage = commandLineUsage([
   },
   {
     header: "Command List",
-    content: [{ name: "{bold retry}", summary: "Retries failed jobs" }],
+    content: [
+      { name: "{bold count}", summary: "Count blob propagation jobs" },
+      { name: "{bold create}", summary: "Create blob propagation jobs" },
+      { name: "{bold get}", summary: "Get blob propagation jobs" },
+      { name: "{bold remove}", summary: "Remove blob propagation jobs" },
+      { name: "{bold retry}", summary: "Retries failed jobs" },
+    ],
   },
   {
     header: "Options",
@@ -54,8 +60,12 @@ export async function main() {
   }
 
   switch (command) {
+    case "count":
+      return count(argv);
     case "create":
       return create(argv);
+    case "get":
+      return get(argv);
     case "remove":
       return remove(argv);
     case "retry":

@@ -2,7 +2,6 @@
 import type { SpyInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { QueueHumanName } from "../../src/Context";
 import { remove, removeCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
 import {
@@ -30,7 +29,7 @@ describe("Remove command", () => {
       const jobsBefore = await context.getJobs();
       const postgresQueue = context.getQueue("POSTGRES")!;
 
-      await remove(["-q", "POSTGRES"]);
+      await remove(["-q", "postgres"]);
 
       const jobsAfter = await context.getJobs();
       const postgresJobsAfter = await postgresQueue.getJobs();
@@ -80,7 +79,7 @@ describe("Remove command", () => {
     const blobHash1 = jobVersionedHashes[0] ?? "";
     const blobHash2 = jobVersionedHashes[1] ?? "";
 
-    await remove(["-q", "POSTGRES", "-b", blobHash1, "-b", blobHash2]);
+    await remove(["-q", "postgres", "-b", blobHash1, "-b", blobHash2]);
 
     const jobsAfter = await context.getJobs();
     const postgresJobs = await context.getQueue("POSTGRES")!.getJobs();
@@ -112,8 +111,8 @@ describe("Remove command", () => {
     });
 
     it("should force remove the selected queues", async () => {
-      const queueName1: QueueHumanName = "POSTGRES";
-      const queueName2: QueueHumanName = "GOOGLE";
+      const queueName1 = "postgres";
+      const queueName2 = "google";
 
       const queueSpy1 = queueSpies[0];
       const queueSpy2 = queueSpies[1];

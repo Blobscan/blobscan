@@ -7,16 +7,15 @@ import {
 } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
 
+import type { QueueHumanName } from "../Context";
 import { context } from "../context-instance";
 import { env } from "../env";
-import type { Command } from "../utils";
+import type { Command } from "../types";
 import {
   blobHashOptionDef,
   datePeriodOptionDefs,
   helpOptionDef,
-  normalizeBlobHashes,
-  normalizeDate,
-  normalizeStorageQueueName,
+  queuesOptionDef,
 } from "../utils";
 
 // TODO: Need to convert it to number explicity due to ci tests failing
@@ -31,13 +30,8 @@ const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
     description: "Blob hash of the blobs to create jobs for.",
   },
   {
-    name: "storage",
-    alias: "s",
-    typeLabel: "{underline storage}",
-    description:
-      "Storage used to propagate the selected blobs. Valid values are {italic google}, {italic postgres} or {italic swarm}.",
-    multiple: true,
-    type: String,
+    ...queuesOptionDef,
+    description: `Queue to create the jobs in. ${queuesOptionDef.description}`,
   },
   {
     ...datePeriodOptionDefs.from,
@@ -92,17 +86,17 @@ export const create: Command = async function (argv) {
   const {
     blobHash: rawBlobHashes,
     help,
-    storage: rawStorageNames,
-    from: rawFrom,
-    to: rawTo,
+    queue: queueNames,
+    fromDate,
+    toDate,
   } = commandLineArgs(createCommandOptDefs, {
     argv,
   }) as {
     blobHash?: string[];
     help?: boolean;
-    storage?: string[];
-    from?: string;
-    to?: string;
+    queue?: QueueHumanName[];
+    fromDate?: string;
+    toDate?: string;
   };
 
   if (help) {
@@ -111,19 +105,14 @@ export const create: Command = async function (argv) {
     return;
   }
 
-  const from = rawFrom ? normalizeDate(rawFrom) : undefined;
-  const to = rawTo ? normalizeDate(rawTo) : undefined;
-  const argStorageNames = rawStorageNames?.map((rawName) =>
-    normalizeStorageQueueName(rawName)
-  );
-  const storageQueues = argStorageNames
-    ? context.getQueuesOrThrow(argStorageNames)
+  const storageQueues = queueNames
+    ? context.getQueuesOrThrow(queueNames)
     : context.getAllStorageQueues();
   const storageQueueNames = storageQueues.map((q) => q.name);
   let blobHashes: string[];
 
   if (rawBlobHashes?.length) {
-    blobHashes = normalizeBlobHashes(rawBlobHashes);
+    blobHashes = [...new Set(rawBlobHashes.map((blobHash) => blobHash))];
 
     const dbBlobs = await prisma.blob.findMany({
       where: {
@@ -154,7 +143,7 @@ export const create: Command = async function (argv) {
     );
 
     await context.getPropagatorFlowProducer().addBulk(jobs);
-  } else if (from || to) {
+  } else if (fromDate || toDate) {
     await createBlobPropagationJobsInBatches(
       storageQueueNames,
       async (cursorId) => {
@@ -180,8 +169,8 @@ export const create: Command = async function (argv) {
           },
           where: {
             timestamp: {
-              gte: from,
-              lte: to,
+              gte: fromDate,
+              lte: toDate,
             },
           },
         });
