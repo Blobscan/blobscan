@@ -1,9 +1,9 @@
-import type { Queue } from "bullmq";
 import type commandLineUsage from "command-line-usage";
 
-import { STORAGE_WORKER_NAMES, buildJobId } from "@blobscan/blob-propagator";
+import { STORAGE_WORKER_NAMES } from "@blobscan/blob-propagator";
 import dayjs from "@blobscan/dayjs";
-import type { $Enums } from "@blobscan/db";
+
+const QUEUE_NAMES = ["FINALIZER", ...Object.keys(STORAGE_WORKER_NAMES)];
 
 function isPositiveInteger(value: string | number) {
   const number = Number(value);
@@ -35,7 +35,28 @@ const slotType = (input: string): number => {
   return value;
 };
 
-export type Command<R = unknown> = (argv?: string[]) => Promise<R>;
+const dateType = (input: string): string => {
+  const date = dayjs(input);
+  if (!date.isValid()) {
+    throw new Error(`Invalid date "${input}". Expected a ISO 8601 date.`);
+  }
+
+  return date.toISOString();
+};
+
+const queueType = (input: string): string => {
+  const input_ = input.toUpperCase();
+
+  if (!QUEUE_NAMES.includes(input_)) {
+    throw new Error(
+      `Invalid queue '${input}'. Valid values are ${QUEUE_NAMES.map((q) =>
+        q.toLowerCase()
+      ).join(", ")}.`
+    );
+  }
+
+  return input_;
+};
 
 export const helpOptionDef: commandLineUsage.OptionDefinition = {
   name: "help",
@@ -44,23 +65,14 @@ export const helpOptionDef: commandLineUsage.OptionDefinition = {
   type: Boolean,
 };
 
-export const allQueuesOptionDef: commandLineUsage.OptionDefinition = {
+export const queuesOptionDef: commandLineUsage.OptionDefinition = {
   name: "queue",
   alias: "q",
   typeLabel: "{underline queue}",
-  description:
-    "Queue to retry failed jobs from. Valid valures are {italic finalizer}, {italic google}, {italic postgres} or {italic swarm}.",
-  type: String,
-  multiple: true,
-};
-
-export const storageQueuesOptionDef: commandLineUsage.OptionDefinition = {
-  name: "queue",
-  alias: "q",
-  typeLabel: "{underline queue}",
-  description:
-    "Queue to retry failed jobs from. Valid valures are {italic google}, {italic postgres} or {italic swarm}.",
-  type: String,
+  description: `Valid values are ${QUEUE_NAMES.map(
+    (q) => `{italic ${q.toLowerCase()}}`
+  ).join(", ")}`,
+  type: queueType,
   multiple: true,
 };
 
@@ -81,13 +93,13 @@ export const datePeriodOptionDefs: Record<
     name: "fromDate",
     typeLabel: "{underline from-date}",
     description: "Date from which execute jobs.",
-    type: String,
+    type: dateType,
   },
   to: {
     name: "toDate",
     typeLabel: "{underline to-date}",
     description: "Date to which execute jobs.",
-    type: String,
+    type: dateType,
   },
 };
 
@@ -131,48 +143,3 @@ export const sortOptionDefs = {
   },
   defaultValue: "desc",
 };
-
-export function normalizeQueueName(input: string) {
-  if (input.toUpperCase() === "FINALIZER") {
-    return "FINALIZER";
-  }
-
-  return normalizeStorageQueueName(input);
-}
-
-export function normalizeStorageQueueName(input: string) {
-  const input_ = input.toUpperCase();
-
-  const selectedBlobStorage = Object.keys(STORAGE_WORKER_NAMES).find(
-    (blobStorageName) => blobStorageName === input_
-  );
-
-  if (!selectedBlobStorage) {
-    throw new Error(`Invalid queue name: ${input}`);
-  }
-
-  return selectedBlobStorage as $Enums.BlobStorage;
-}
-
-export function normalizeDate(input: string) {
-  return dayjs(input).toISOString();
-}
-
-export function normalizeBlobHashes(input: string[]) {
-  return [...new Set(input.map((blobHash) => blobHash))];
-}
-
-export async function getJobsByBlobHashes(queue: Queue, blobHashes: string[]) {
-  return Promise.all(
-    blobHashes.map(async (blobHash) => {
-      const jobId = buildJobId(queue.name, blobHash);
-      const job = await queue.getJob(jobId);
-
-      if (!job) {
-        throw new Error(`Couldn't find job with id ${jobId}`);
-      }
-
-      return job;
-    })
-  );
-}

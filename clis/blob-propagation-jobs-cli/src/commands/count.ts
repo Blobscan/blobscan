@@ -1,20 +1,16 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
+import type { QueueHumanName } from "../Context";
 import { context } from "../context-instance";
-import {
-  helpOptionDef,
-  allQueuesOptionDef,
-  normalizeQueueName,
-} from "../utils";
-import type { Command } from "../utils";
+import type { Command } from "../types";
+import { helpOptionDef, queuesOptionDef } from "../utils";
 
 const countCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
   {
-    ...allQueuesOptionDef,
-    description:
-      "Queue to get the jobs count of. Valid values are {italic finalizer}, {italic google}, {italic postgres} or {italic swarm}.",
+    ...queuesOptionDef,
+    description: `Queue to get the jobs count of. ${queuesOptionDef.description}`,
   },
 ];
 
@@ -30,11 +26,11 @@ export const countCommandUsage = commandLineUsage([
 ]);
 
 export const count: Command = async function (argv) {
-  const { help, queue: rawQueueNames } = commandLineArgs(countCommandOptDefs, {
+  const { help, queue: queueNames } = commandLineArgs(countCommandOptDefs, {
     argv,
   }) as {
     help?: boolean;
-    queue?: string[];
+    queue?: QueueHumanName[];
   };
 
   if (help) {
@@ -43,9 +39,6 @@ export const count: Command = async function (argv) {
     return;
   }
 
-  const queueNames = rawQueueNames?.map((rawName) =>
-    normalizeQueueName(rawName)
-  );
   const queues = queueNames
     ? context.getQueues(queueNames)
     : context.getAllQueues();

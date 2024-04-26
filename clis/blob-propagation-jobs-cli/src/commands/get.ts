@@ -1,25 +1,24 @@
-import type { Job, JobState } from "bullmq";
+import type { JobState } from "bullmq";
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
 import { buildJobId } from "@blobscan/blob-propagator";
-import type { BlobPropagationJobData } from "@blobscan/blob-propagator";
+import type { BlobPropagationJob } from "@blobscan/blob-propagator";
 import dayjs from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 
+import type { QueueHumanName } from "../Context";
 import { context } from "../context-instance";
+import type { Command } from "../types";
 import {
   blobHashOptionDef,
   helpOptionDef,
-  allQueuesOptionDef,
+  queuesOptionDef,
   datePeriodOptionDefs,
-  normalizeBlobHashes,
-  normalizeQueueName,
   blockRangeOptionDefs,
   slotRangeOptionDefs,
   sortOptionDefs,
 } from "../utils";
-import type { Command } from "../utils";
 
 type JobStatus = (typeof jobStatus)[number];
 
@@ -33,7 +32,7 @@ const jobStatus = [
 ] as const;
 
 type PrintableJob = Pick<
-  Job<BlobPropagationJobData, any, string>,
+  BlobPropagationJob,
   "id" | "timestamp" | "attemptsMade" | "finishedOn" | "failedReason"
 > & { index: number; status: JobState | "unknown" };
 
@@ -62,9 +61,8 @@ const getCommandOptDefs: commandLineArgs.OptionDefinition[] = [
     description: "Hash of the blob to get the job of",
   },
   {
-    ...allQueuesOptionDef,
-    description:
-      "Queue to get the jobs from. Valid values are {italic finalizer}, {italic google}, {italic postgres} or {italic swarm}.",
+    ...queuesOptionDef,
+    description: `Queue to get the jobs from. ${queuesOptionDef.description}`,
   },
   {
     ...datePeriodOptionDefs.from,
@@ -138,11 +136,11 @@ export const get: Command = async function (argv) {
   const {
     blobHash: rawBlobHashes,
     help,
-    queue: rawQueueNames,
+    queue: queueNames,
     fromBlock,
     toBlock,
-    fromDate: rawFromDate,
-    toDate: rawToDate,
+    fromDate,
+    toDate,
     fromSlot,
     toSlot,
     fromIndex,
@@ -154,7 +152,7 @@ export const get: Command = async function (argv) {
   }) as {
     blobHash?: string[];
     help?: boolean;
-    queue?: string[];
+    queue?: QueueHumanName[];
     fromBlock: number;
     toBlock: number;
     fromDate?: string;
@@ -173,17 +171,12 @@ export const get: Command = async function (argv) {
     return;
   }
 
-  const queueNames = rawQueueNames?.map((rawName) =>
-    normalizeQueueName(rawName)
-  );
   const queues = queueNames
     ? context.getQueues(queueNames)
     : context.getAllQueues();
   let blobHashes: string[] = rawBlobHashes
-    ? normalizeBlobHashes(rawBlobHashes)
+    ? [...new Set(rawBlobHashes.map((blobHash) => blobHash))]
     : [];
-  const fromDate = rawFromDate ? new Date(rawFromDate) : undefined;
-  const toDate = rawToDate ? new Date(rawToDate) : undefined;
 
   const filtersProvided =
     fromBlock || toBlock || fromDate || toDate || fromSlot || toSlot;
@@ -196,9 +189,7 @@ export const get: Command = async function (argv) {
     throw new Error("toSlot must be greater than fromSlot.");
   }
 
-  if (blobHashes.length) {
-    blobHashes = normalizeBlobHashes(blobHashes);
-  } else if (filtersProvided) {
+  if (filtersProvided) {
     const dbBlobs = await prisma.blobsOnTransactions.findMany({
       take: toIndex - fromIndex,
       skip: fromIndex,

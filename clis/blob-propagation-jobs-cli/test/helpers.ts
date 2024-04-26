@@ -9,7 +9,7 @@ import type {
 } from "@blobscan/blob-propagator";
 
 import type { context } from "../src/context-instance";
-import type { Command } from "../src/utils";
+import type { Command } from "../src/types";
 
 export function setUpJobs(
   queues: BlobPropagationQueue[],
@@ -94,7 +94,7 @@ export function argInvalidQueueTests(c: Command) {
     expect(
       c(["-q", "invalid-queue-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Invalid queue name: invalid-queue-name"'
+      `"Invalid queue 'invalid-queue-name'. Valid values are finalizer, file_system, google, postgres, swarm."`
     );
   });
 }

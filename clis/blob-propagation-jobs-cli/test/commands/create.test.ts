@@ -106,9 +106,9 @@ describe("Create command", () => {
 
   it("should fail when providing a non-existing storage", () => {
     expect(
-      create(["-s", "invalid-storage-name"])
+      create(["-q", "invalid-storage-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Invalid queue name: invalid-storage-name"'
+      `"Invalid queue 'invalid-storage-name'. Valid values are finalizer, file_system, google, postgres, swarm."`
     );
   });
 
