@@ -25,3 +25,10 @@ export const networkSchema = z.enum([
   "chiado",
   "devnet",
 ]);
+
+export const blobStorageSchema = z.enum([
+  "FILE_SYSTEM",
+  "GOOGLE",
+  "POSTGRES",
+  "SWARM",
+] as const);
