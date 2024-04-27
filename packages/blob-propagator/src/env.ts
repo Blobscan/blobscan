@@ -1,4 +1,5 @@
 import {
+  blobStorageSchema,
   booleanSchema,
   createEnv,
   maskPassword,
@@ -16,12 +17,8 @@ export const env = createEnv({
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
 
       BLOB_PROPAGATOR_ENABLED: booleanSchema.default("false"),
-      BLOB_PROPAGATOR_TMP_STORAGE: z.enum([
-        "FILE_SYSTEM",
-        "GOOGLE",
-        "POSTGRES",
-        "SWARM",
-      ] as const),
+      BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
+        blobStorageSchema.default("FILE_SYSTEM"),
       TEST: booleanSchema.optional(),
     },
 
@@ -31,8 +28,8 @@ export const env = createEnv({
     console.log(
       `Blob propagator configuration: enabled=${
         env.BLOB_PROPAGATOR_ENABLED
-      } redisUri=${maskPassword(env.REDIS_URI)} tmpStorage=${
-        env.BLOB_PROPAGATOR_TMP_STORAGE
+      } redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
+        env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
       }`
     );
   },
