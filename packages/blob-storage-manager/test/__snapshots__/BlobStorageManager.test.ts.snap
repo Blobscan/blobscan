@@ -1,16 +1,29 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BlobStorageManager > getBlob > should throw an error if the blob storage is not found 1`] = `"Failed to get blob from any of the storages"`;
+exports[`BlobStorageManager > when getting a blob > when getting a blob by its hash > should throw an error if no storage is supported that can get the blob by its hash 1`] = `"No storage supported that can get the blob by its hash"`;
 
-exports[`BlobStorageManager > getBlob > should throw an error if the blob storage is not found 2`] = `
+exports[`BlobStorageManager > when getting a blob > when getting a blob by its hash > should throw an error if the data for the provided blob hash is not found 1`] = `"Failed to get blob from any of the storages"`;
+
+exports[`BlobStorageManager > when getting a blob > when getting a blob by its hash > should throw an error if the data for the provided blob hash is not found 2`] = `
 [
-  [BlobStorageError: PostgresStorage failed: Failed to get blob with uri "0x6d6f636b2d64617461"],
+  [BlobStorageError: PostgresStorage failed: Failed to get blob with uri "0xa123bc3245cde"],
+  [BlobStorageError: GoogleStorage failed: Failed to get blob with uri "70118930558/a1/23/bc/a123bc3245cde.txt"],
+]
+`;
+
+exports[`BlobStorageManager > when getting a blob > when getting a blob by its references > should throw an error if no storage is supported for the provided references 1`] = `"No storage supported for the provided references"`;
+
+exports[`BlobStorageManager > when getting a blob > when getting a blob by its references > should throw an error if the data for the provided blob uri is not found 1`] = `"Failed to get blob from any of the storages"`;
+
+exports[`BlobStorageManager > when getting a blob > when getting a blob by its references > should throw an error if the data for the provided blob uri is not found 2`] = `
+[
+  [BlobStorageError: PostgresStorage failed: Failed to get blob with uri "0x6d6f60xa123bc3245cde6b2d64617461"],
   [BlobStorageError: GoogleStorage failed: Failed to get blob with uri "1/6d/6f/636b2d64617461.txt"],
   [BlobStorageError: SwarmStorageMock failed: Failed to get blob with uri "123456789abcdef"],
 ]
 `;
 
-exports[`BlobStorageManager > storeBlob > should return errors for failed uploads 1`] = `
+exports[`BlobStorageManager > when storing a blob > should return errors for failed uploads 1`] = `
 {
   "errors": [
     [BlobStorageError: PostgresStorage failed: Failed to upload blob to postgres],
@@ -25,7 +38,7 @@ exports[`BlobStorageManager > storeBlob > should return errors for failed upload
 }
 `;
 
-exports[`BlobStorageManager > storeBlob > should store the blob in all available storages 1`] = `
+exports[`BlobStorageManager > when storing a blob > should store the blob in all available storages 1`] = `
 [
   {
     "reference": "0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174",
@@ -42,11 +55,11 @@ exports[`BlobStorageManager > storeBlob > should store the blob in all available
 ]
 `;
 
-exports[`BlobStorageManager > storeBlob > should store the blob in all available storages 2`] = `[]`;
+exports[`BlobStorageManager > when storing a blob > should store the blob in all available storages 2`] = `[]`;
 
-exports[`BlobStorageManager > storeBlob > should throw an error if all uploads fail 1`] = `"Failed to upload blob with hash \\"0x6d6f636b2d64617461\\" to any storage"`;
+exports[`BlobStorageManager > when storing a blob > should throw an error if all uploads fail 1`] = `"Failed to upload blob with hash \\"0x6d6f636b2d64617461\\" to any storage"`;
 
-exports[`BlobStorageManager > storeBlob > should throw an error if all uploads fail 2`] = `
+exports[`BlobStorageManager > when storing a blob > should throw an error if all uploads fail 2`] = `
 [
   [BlobStorageError: PostgresStorage failed: Failed to upload blob to postgres],
   [BlobStorageError: GoogleStorage failed: Failed to upload blob to google],
@@ -54,4 +67,4 @@ exports[`BlobStorageManager > storeBlob > should throw an error if all uploads f
 ]
 `;
 
-exports[`BlobStorageManager > storeBlob > should throw an error when one of the selected blob storages wasn't found 1`] = `"Some of the selected storages are not available: POSTGRES, GOOGLE\\""`;
+exports[`BlobStorageManager > when storing a blob > should throw an error when one of the selected blob storages wasn't found 1`] = `"Some of the selected storages are not available: POSTGRES, GOOGLE\\""`;

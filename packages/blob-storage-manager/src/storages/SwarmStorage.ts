@@ -59,14 +59,14 @@ export class SwarmStorage extends BlobStorage {
     await Promise.all(healthCheckOps);
   }
 
-  protected async _getBlob(reference: string) {
-    const file = await this._swarmClient.bee.downloadFile(reference);
+  protected async _getBlob(uri: string) {
+    const file = await this._swarmClient.bee.downloadFile(uri);
 
     return file.data.text();
   }
 
-  protected async _removeBlob(reference: string): Promise<void> {
-    await this._swarmClient.bee.unpin(reference);
+  protected async _removeBlob(uri: string): Promise<void> {
+    await this._swarmClient.bee.unpin(uri);
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
@@ -74,7 +74,7 @@ export class SwarmStorage extends BlobStorage {
     const response = await this._swarmClient.bee.uploadFile(
       batchId,
       data,
-      this.buildBlobFileName(versionedHash),
+      this.getBlobFilePath(versionedHash),
       {
         pin: true,
         contentType: "text/plain",
@@ -82,6 +82,17 @@ export class SwarmStorage extends BlobStorage {
     );
 
     return response.reference.toString();
+  }
+
+  getBlobUri(hash: string) {
+    return undefined;
+  }
+
+  protected getBlobFilePath(hash: string) {
+    return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
+      4,
+      6
+    )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
   }
 
   async #getAllPostageBatch(): Promise<PostageBatch[]> {

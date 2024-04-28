@@ -17,7 +17,7 @@ async function createBlobPropagator(
   return new BlobPropagator({
     blobStorageManager,
     prisma,
-    tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_STORAGE,
+    tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
     workerOptions: {
       connection,
     },

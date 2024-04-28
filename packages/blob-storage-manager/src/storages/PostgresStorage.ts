@@ -20,18 +20,19 @@ export class PostgresStorage extends BlobStorage {
     return Promise.resolve();
   }
 
-  protected _getBlob(versionedHash: string) {
+  protected _getBlob(uri: string) {
     return this.client.blobData
       .findFirstOrThrow({
         select: {
           data: true,
         },
         where: {
-          id: versionedHash,
+          id: uri,
         },
       })
       .then(({ data }) => `0x${data.toString("hex")}`);
   }
+
   protected async _removeBlob(versionedHash: string): Promise<void> {
     await this.client.blobData.delete({
       where: {
@@ -58,6 +59,10 @@ export class PostgresStorage extends BlobStorage {
     });
 
     return versionedHash;
+  }
+
+  getBlobUri(hash: string) {
+    return hash;
   }
 
   static getConfigFromEnv(env: Partial<Environment>): PostgresStorageConfig {

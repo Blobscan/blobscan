@@ -26,14 +26,43 @@ describe("PostgresStorage", () => {
     storage = new PostgresStorageMock();
   });
 
-  describe("healthCheck", () => {
-    it("should resolve successfully", async () => {
-      await expect(storage.healthCheck()).resolves.not.toThrow();
+  it("should return a config object if all required environment variables are set", () => {
+    expect(
+      PostgresStorage.getConfigFromEnv({ CHAIN_ID: env.CHAIN_ID })
+    ).toEqual({
+      chainId: env.CHAIN_ID,
     });
   });
 
-  describe("removeBlob", () => {
-    it("should remove a blob", async () => {
+  it("should healthcheck correctly", async () => {
+    await expect(storage.healthCheck()).resolves.not.toThrow();
+  });
+
+  describe("when getting a blob", () => {
+    it("get it correctly", async () => {
+      const result = await storage.getBlob(expectedStoredBlobUri);
+
+      expect(result).toBe(expectedStoredBlobData);
+    });
+
+    testValidError(
+      "should throw a valid error if no blob data has been found",
+      async () => {
+        const prisma = storage.getClient();
+
+        vi.spyOn(prisma.blobData, "findFirstOrThrow").mockRejectedValueOnce(
+          new Error("Blob data not found")
+        );
+
+        await storage.getBlob(expectedStoredBlobUri);
+      },
+      BlobStorageError,
+      { checkCause: true }
+    );
+  });
+
+  describe("when removing a blob", () => {
+    it("should remove it correctly", async () => {
       await storage.removeBlob(expectedStoredBlobHash);
 
       await expect(
@@ -74,38 +103,5 @@ describe("PostgresStorage", () => {
         checkCause: true,
       }
     );
-  });
-
-  describe("getBlob", () => {
-    it("should fetch the blob data by a given versioned hash correctly", async () => {
-      const result = await storage.getBlob(expectedStoredBlobUri);
-
-      expect(result).toBe(expectedStoredBlobData);
-    });
-
-    testValidError(
-      "should throw a valid error if no blob data has been found",
-      async () => {
-        const prisma = storage.getClient();
-
-        vi.spyOn(prisma.blobData, "findFirstOrThrow").mockRejectedValueOnce(
-          new Error("Blob data not found")
-        );
-
-        await storage.getBlob(expectedStoredBlobUri);
-      },
-      BlobStorageError,
-      { checkCause: true }
-    );
-  });
-
-  describe("tryGetConfigFromEnv", () => {
-    it("should return a valid config object ", () => {
-      expect(
-        PostgresStorage.getConfigFromEnv({ CHAIN_ID: env.CHAIN_ID })
-      ).toEqual({
-        chainId: env.CHAIN_ID,
-      });
-    });
   });
 });

@@ -76,15 +76,16 @@ export function createBlobPropagationFlowJob(
 }
 
 export async function propagateBlob(
-  { versionedHash, tmpBlobStorageDataRef }: BlobPropagationJobData,
+  { versionedHash }: BlobPropagationJobData,
   targetStorage: $Enums.BlobStorage,
   { blobStorageManager, prisma }: BlobPropagationWorkerParams
 ) {
   let blobData: string;
 
   try {
-    const result = await blobStorageManager.getBlob(tmpBlobStorageDataRef);
-    blobData = result.data;
+    blobData = await blobStorageManager
+      .getBlobByHash(versionedHash)
+      .then(({ data }) => data);
   } catch (err) {
     const blobRefs = await prisma.blobDataStorageReference
       .findMany({
@@ -100,10 +101,10 @@ export async function propagateBlob(
       );
 
     if (!blobRefs.length) {
-      throw new Error(`Blob data not found for ${versionedHash}`);
+      throw new Error(`Data not found for blob ${versionedHash}`);
     }
 
-    const result = await blobStorageManager.getBlob(...blobRefs);
+    const result = await blobStorageManager.getBlobByReferences(...blobRefs);
 
     blobData = result.data;
   }

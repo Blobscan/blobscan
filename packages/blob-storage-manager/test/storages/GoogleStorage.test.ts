@@ -52,21 +52,37 @@ describe("GoogleStorage", () => {
     });
   });
 
-  describe("constructor", () => {
-    it("should create a new instance with all configuration options", async () => {
-      expect(storage).toBeDefined();
-      expect(storage.chainId).toEqual(env.CHAIN_ID);
-      expect(storage.bucketName).toEqual(env.GOOGLE_STORAGE_BUCKET_NAME);
-      expect(storage.storageClient.projectId).toEqual(
-        env.GOOGLE_STORAGE_PROJECT_ID
-      );
-      expect(storage.storageClient.apiEndpoint).toEqual(
-        env.GOOGLE_STORAGE_API_ENDPOINT
-      );
+  it("should create a new instance correctly", async () => {
+    expect(storage).toBeDefined();
+    expect(storage.chainId).toEqual(env.CHAIN_ID);
+    expect(storage.bucketName).toEqual(env.GOOGLE_STORAGE_BUCKET_NAME);
+    expect(storage.storageClient.projectId).toEqual(
+      env.GOOGLE_STORAGE_PROJECT_ID
+    );
+    expect(storage.storageClient.apiEndpoint).toEqual(
+      env.GOOGLE_STORAGE_API_ENDPOINT
+    );
+  });
+
+  it("should return a config object if all required environment variables are set", () => {
+    const config = GoogleStorage.getConfigFromEnv({
+      CHAIN_ID: env.CHAIN_ID,
+      GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
+      GOOGLE_SERVICE_KEY: "my-service-key",
+      GOOGLE_STORAGE_API_ENDPOINT: "my-api-endpoint",
+      GOOGLE_STORAGE_PROJECT_ID: "my-project-id",
+    });
+
+    expect(config).toEqual({
+      bucketName: "my-bucket",
+      projectId: "my-project-id",
+      chainId: env.CHAIN_ID,
+      serviceKey: "my-service-key",
+      apiEndpoint: "my-api-endpoint",
     });
   });
 
-  describe("healthCheck", () => {
+  describe("when checking health", () => {
     it("should resolve successfully", async () => {
       await expect(storage.healthCheck()).resolves.not.toThrow();
     });
@@ -92,8 +108,8 @@ describe("GoogleStorage", () => {
     );
   });
 
-  describe("getBlob", () => {
-    it("should return the contents of the blob", async () => {
+  describe("when getting a blob", () => {
+    it("should get it correctly", async () => {
       await storage.storageClient
         .bucket(storage.bucketName)
         .file(expectedStoredBlobFileUri)
@@ -103,6 +119,15 @@ describe("GoogleStorage", () => {
 
       expect(blob).toEqual(expectedStoredBlobData);
     });
+
+    testValidError(
+      "should throw a valid error when getting a non-existent blob",
+      async () => {
+        await storage.getBlob("missing-blob");
+      },
+      BlobStorageError,
+      { checkCause: true }
+    );
   });
 
   describe("removeBlob", () => {
@@ -187,24 +212,6 @@ describe("GoogleStorage", () => {
       ).toThrowErrorMatchingInlineSnapshot(
         '"No config variables found: no bucket name, api endpoint or service key provided"'
       );
-    });
-
-    it("should return a config object if all required environment variables are set", () => {
-      const config = GoogleStorage.getConfigFromEnv({
-        CHAIN_ID: env.CHAIN_ID,
-        GOOGLE_STORAGE_BUCKET_NAME: "my-bucket",
-        GOOGLE_SERVICE_KEY: "my-service-key",
-        GOOGLE_STORAGE_API_ENDPOINT: "my-api-endpoint",
-        GOOGLE_STORAGE_PROJECT_ID: "my-project-id",
-      });
-
-      expect(config).toEqual({
-        bucketName: "my-bucket",
-        projectId: "my-project-id",
-        chainId: env.CHAIN_ID,
-        serviceKey: "my-service-key",
-        apiEndpoint: "my-api-endpoint",
-      });
     });
   });
 });

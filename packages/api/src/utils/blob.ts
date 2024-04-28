@@ -87,7 +87,9 @@ export async function retrieveBlobData(
     "blobStorage" | "dataReference"
   >[]
 ) {
-  let storageBlobData: Awaited<ReturnType<typeof blobStorageManager.getBlob>>;
+  let storageBlobData: Awaited<
+    ReturnType<typeof blobStorageManager.getBlobByReferences>
+  >;
   const blobReferences = dataStorageRefs.map<BlobReference>(
     ({ blobStorage, dataReference }) => ({
       storage: blobStorage,
@@ -96,7 +98,9 @@ export async function retrieveBlobData(
   );
 
   try {
-    storageBlobData = await blobStorageManager.getBlob(...blobReferences);
+    storageBlobData = await blobStorageManager.getBlobByReferences(
+      ...blobReferences
+    );
   } catch (err) {
     const err_ = err as Error;
 

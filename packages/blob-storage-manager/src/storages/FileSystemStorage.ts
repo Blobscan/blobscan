@@ -28,44 +28,43 @@ export class FileSystemStorage extends BlobStorage {
     return Promise.resolve();
   }
 
-  protected async _getBlob(versionedHash: string): Promise<string> {
-    const blobFilePath = this.buildBlobFileName(versionedHash);
-
+  protected async _getBlob(reference: string): Promise<string> {
     try {
-      const blobData = await fs.promises.readFile(blobFilePath, "utf-8");
+      const blobData = await fs.promises.readFile(reference, "utf-8");
 
       return blobData;
     } catch (error) {
-      throw new Error(`Blob file ${versionedHash} missing: ${error}`);
+      throw new Error(`Blob file ${reference} missing: ${error}`);
     }
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    const blobFilePath = this.buildBlobFileName(uri);
-
-    await fs.promises.unlink(blobFilePath);
+    await fs.promises.unlink(uri);
   }
 
   protected async _storeBlob(
     versionedHash: string,
     data: string
   ): Promise<string> {
-    const blobfilePath = this.buildBlobFileName(versionedHash);
-    const blobDirPath = blobfilePath.slice(0, blobfilePath.lastIndexOf("/"));
+    const blobUri = this.getBlobUri(versionedHash);
+    const blobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
     if (!fs.existsSync(blobDirPath)) {
       fs.mkdirSync(blobDirPath, { recursive: true });
     }
 
-    await fs.promises.writeFile(blobfilePath, data, { encoding: "utf-8" });
+    await fs.promises.writeFile(blobUri, data, { encoding: "utf-8" });
 
-    return blobfilePath;
+    return blobUri;
   }
 
-  protected buildBlobFileName(versionedHash: string) {
-    const blobFileName = super.buildBlobFileName(versionedHash);
+  getBlobUri(hash: string) {
+    const blobFilePath = `${this.chainId.toString()}/${hash.slice(
+      2,
+      4
+    )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
 
-    return path.join(this.blobDirPath, blobFileName);
+    return path.join(this.blobDirPath, blobFilePath);
   }
 
   static getConfigFromEnv(env: Partial<Environment>): FileSystemStorageConfig {
