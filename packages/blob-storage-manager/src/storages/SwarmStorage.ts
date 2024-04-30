@@ -1,5 +1,6 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
-import type { PostageBatch } from "@ethersphere/bee-js";
+
+import { PrismaClient } from "@blobscan/db";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
@@ -19,9 +20,11 @@ export type SwarmClient = {
 
 export class SwarmStorage extends BlobStorage {
   _swarmClient: SwarmClient;
+  protected client: PrismaClient;
 
   constructor({ beeDebugEndpoint, beeEndpoint, chainId }: SwarmStorageConfig) {
     super(BLOB_STORAGE_NAMES.SWARM, chainId);
+    this.client = new PrismaClient();
 
     try {
       this._swarmClient = {
@@ -33,12 +36,6 @@ export class SwarmStorage extends BlobStorage {
         cause: err,
       });
     }
-  }
-
-  async getPostageBatch(batchLabel: string): Promise<PostageBatch | undefined> {
-    const batches = await this.#getAllPostageBatch();
-
-    return batches.find((b) => b.label === batchLabel);
   }
 
   protected async _healthCheck() {
@@ -78,7 +75,7 @@ export class SwarmStorage extends BlobStorage {
       {
         pin: true,
         contentType: "text/plain",
-        deferred: false
+        deferred: false,
       }
     );
 
@@ -96,20 +93,30 @@ export class SwarmStorage extends BlobStorage {
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
   }
 
-  async #getAllPostageBatch(): Promise<PostageBatch[]> {
-    const beeDebug = this.getBeeDebug();
-
-    return beeDebug.getAllPostageBatch();
-  }
-
   async #getAvailableBatch(): Promise<string> {
-    const [firstBatch] = await this.#getAllPostageBatch();
-
-    if (!firstBatch?.batchID) {
-      throw new Error("No postage batches available.");
+    if (!this._swarmClient.beeDebug) {
+      throw new Error("Bee debug endpoint required to get postage batches.");
     }
 
-    return firstBatch.batchID;
+    const state = await this.client.blobStoragesState.findUnique({
+      select: {
+        swarmDataId: true,
+      },
+      where: { id: 1 },
+    });
+
+    if (!state?.swarmDataId) {
+      throw new Error("Swarm batch id is not configured.");
+    }
+
+    const batch = await this._swarmClient.beeDebug.getPostageBatch(
+      state.swarmDataId
+    );
+
+    if (!batch) {
+      throw new Error(`Swarm batch id ${state.swarmDataId} not found.`);
+    }
+    return state.swarmDataId;
   }
 
   protected getBeeDebug() {
