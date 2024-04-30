@@ -84,7 +84,7 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toString();
   }
 
-  getBlobUri(hash: string) {
+  getBlobUri(_: string) {
     return undefined;
   }
 

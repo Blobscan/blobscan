@@ -1,10 +1,11 @@
 import fs from "fs";
 import path from "path";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { BlobStorageError, env } from "../../src";
+import { env } from "../../src/env";
+import { BlobStorageError } from "../../src/errors";
 import { FileSystemStorage } from "../../src/storages/FileSystemStorage";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, NEW_BLOB_FILE_URI } from "../fixtures";
 

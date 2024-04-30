@@ -6,3 +6,4 @@ export type { Environment } from "./env";
 export * from "./errors";
 export * from "./storages";
 export * from "./types";
+export { createStorageFromEnv } from "./utils";
