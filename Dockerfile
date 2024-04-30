@@ -40,7 +40,7 @@ ENTRYPOINT ["/docker-entrypoint.sh", "web"]
 CMD ["--help"]
 
 FROM base as api
-# TODO: Probar sin node_modules
+# TODO: Test without node_modules
 COPY --from=api-builder /app/node_modules /app/node_modules
 COPY --from=api-builder /app/packages/db/prisma/schema.prisma /app/packages/db/prisma/schema.prisma
 COPY --from=api-builder /app/apps/rest-api-server /app/apps/rest-api-server
