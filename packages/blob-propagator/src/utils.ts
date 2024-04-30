@@ -58,6 +58,7 @@ export function createBlobStorageJob(
       ...DEFAULT_JOB_OPTIONS,
       ...opts,
       jobId,
+      removeDependencyOnFailure: true,
     },
   };
 }
