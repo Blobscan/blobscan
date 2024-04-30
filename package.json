@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=v18.15.0"
   },
-  "packageManager": "^pnpm@9.0.0",
+  "packageManager": "pnpm@9.0.6",
   "scripts": {
     "build": "turbo build",
     "changeset:release": "pnpm build && changeset publish",
