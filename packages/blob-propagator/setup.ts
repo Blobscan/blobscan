@@ -22,13 +22,6 @@ afterAll(async () => {
     ...queues.map((q) => q.obliterate({ force: true })),
   ]);
 
-  if (
-    env.FILE_SYSTEM_STORAGE_PATH &&
-    fs.existsSync(env.FILE_SYSTEM_STORAGE_PATH)
-  ) {
-    fs.rmSync(env.FILE_SYSTEM_STORAGE_PATH, { recursive: true });
-  }
-
   queues.forEach((q) => {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     teardownPromise = teardownPromise.finally(async () => {
