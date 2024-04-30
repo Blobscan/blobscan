@@ -3,7 +3,7 @@ import { FlowProducer } from "bullmq";
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
 
-import type { BlobPropagationJobData } from "@blobscan/blob-propagator";
+import type { BlobPropagationQueue } from "@blobscan/blob-propagator";
 import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
@@ -13,8 +13,8 @@ import type { $Enums } from "@blobscan/db";
 export type QueueHumanName = "FINALIZER" | $Enums.BlobStorage;
 
 export class Context {
-  #storageQueues: Queue<BlobPropagationJobData>[];
-  #finalizerQueue: Queue<BlobPropagationJobData>;
+  #storageQueues: BlobPropagationQueue[];
+  #finalizerQueue: BlobPropagationQueue;
   #propagatorFlowProducer: FlowProducer;
 
   constructor(storages: $Enums.BlobStorage[], redisUri: string) {
@@ -45,7 +45,7 @@ export class Context {
     queueName: QueueHumanName
   ): typeof queueName extends "FINALIZER"
     ? Queue
-    : Queue<BlobPropagationJobData> | undefined {
+    : BlobPropagationQueue | undefined {
     if (queueName === "FINALIZER") {
       return this.#finalizerQueue;
     }
@@ -58,7 +58,7 @@ export class Context {
   getQueues(queueNames: QueueHumanName[]) {
     return queueNames
       .map((queueName) => this.getQueue(queueName))
-      .filter((q): q is Queue<BlobPropagationJobData> => !!q);
+      .filter((q): q is BlobPropagationQueue => !!q);
   }
 
   getQueuesOrThrow(queueNames: QueueHumanName[]) {

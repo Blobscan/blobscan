@@ -1,9 +1,13 @@
 import IORedis from "ioredis";
 
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
+import {
+  createStorageFromEnv,
+  getBlobStorageManager,
+} from "@blobscan/blob-storage-manager";
 import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import { logger } from "@blobscan/logger";
 
 import { BlobPropagator } from "./BlobPropagator";
 import { env } from "./env";
@@ -13,6 +17,26 @@ async function createBlobPropagator(
   prisma: BlobscanPrismaClient
 ) {
   const connection = new IORedis(env.REDIS_URI, { maxRetriesPerRequest: null });
+
+  if (
+    !blobStorageManager
+      .getAllStorages()
+      .find((storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE)
+  ) {
+    const [tmpStorage, tmpStorageError] = await createStorageFromEnv(
+      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+    );
+
+    if (tmpStorageError) {
+      logger.warn(
+        `${tmpStorageError.message}. Caused by: ${tmpStorageError.cause}`
+      );
+    }
+
+    if (tmpStorage) {
+      blobStorageManager.addStorage(tmpStorage);
+    }
+  }
 
   return new BlobPropagator({
     blobStorageManager,

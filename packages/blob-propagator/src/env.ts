@@ -15,10 +15,10 @@ export const env = createEnv({
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
       GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
-
       BLOB_PROPAGATOR_ENABLED: booleanSchema.default("false"),
       BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
         blobStorageSchema.default("FILE_SYSTEM"),
+      FILE_SYSTEM_STORAGE_PATH: z.string().optional(),
       TEST: booleanSchema.optional(),
     },
 

@@ -1,10 +1,16 @@
 import type { ConnectionOptions } from "bullmq";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { BlobStorage } from "@blobscan/db";
+import {
+  BlobStorageManager,
+  FileSystemStorage,
+  createStorageFromEnv,
+  getBlobStorageManager,
+} from "@blobscan/blob-storage-manager";
+import { prisma } from "@blobscan/db";
 
+import { env } from "../src";
 import { BlobPropagator } from "../src/BlobPropagator";
-import { blobFileManager } from "../src/blob-file-manager";
 import type { Blob } from "../src/types";
 
 export class MockedBlobPropagator extends BlobPropagator {
@@ -22,7 +28,9 @@ export class MockedBlobPropagator extends BlobPropagator {
 }
 
 describe("BlobPropagator", () => {
-  const blobStorages = Object.values(BlobStorage);
+  let blobStorageManager: BlobStorageManager;
+  let tmpBlobStorage: FileSystemStorage;
+
   const connection: ConnectionOptions = {
     host: "localhost",
     port: 6379,
@@ -34,8 +42,22 @@ describe("BlobPropagator", () => {
 
   let blobPropagator: MockedBlobPropagator;
 
-  beforeEach(() => {
-    blobPropagator = new MockedBlobPropagator(blobStorages, {
+  beforeEach(async () => {
+    blobStorageManager = await getBlobStorageManager();
+    const [tmpStorage] = await createStorageFromEnv(
+      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+    );
+
+    if (tmpStorage) {
+      blobStorageManager.addStorage(tmpStorage);
+    }
+
+    tmpBlobStorage = tmpStorage as FileSystemStorage;
+
+    blobPropagator = new MockedBlobPropagator({
+      blobStorageManager,
+      prisma,
+      tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
       workerOptions: {
         connection,
       },
@@ -46,16 +68,11 @@ describe("BlobPropagator", () => {
     await blobPropagator.close();
   });
 
-  it("should throw an error when trying to instantiate it with no storages", () => {
-    expect(
-      () => new MockedBlobPropagator([])
-    ).toThrowErrorMatchingInlineSnapshot(
-      '"Couldn\'t instantiate blob propagator: no storages given"'
-    );
-  });
-
   it("should close correctly", async () => {
-    const testBlobPropagator = new MockedBlobPropagator(blobStorages, {
+    const testBlobPropagator = new MockedBlobPropagator({
+      blobStorageManager,
+      prisma,
+      tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
       workerOptions: {
         connection,
       },
@@ -83,17 +100,18 @@ describe("BlobPropagator", () => {
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
-      blobFileManager.removeFile(blob.versionedHash);
+      const blobUri = tmpBlobStorage.getBlobUri(blob.versionedHash);
+
+      tmpBlobStorage.removeBlob(blobUri);
     });
 
-    it("should store blob data on disk", async () => {
+    it("should store blob data on temporary blob storage", async () => {
       await blobPropagator.propagateBlob(blob);
 
-      const fileExists = await blobFileManager.checkFileExists(
-        blob.versionedHash
-      );
+      const blobUri = tmpBlobStorage.getBlobUri(blob.versionedHash);
+      const blobData = await tmpBlobStorage.getBlob(blobUri);
 
-      expect(fileExists).toBe(true);
+      expect(blobData).toEqual(blob.data);
     });
 
     it("should create a blob propagation flow job correctly", async () => {
@@ -109,21 +127,6 @@ describe("BlobPropagator", () => {
       expect(createdFlowJob).toMatchInlineSnapshot(`
         {
           "children": [
-            {
-              "data": {
-                "versionedHash": "blobVersionedHash",
-              },
-              "name": "storeBlob:file_system-worker-blobVersionedHash",
-              "opts": {
-                "attempts": 3,
-                "backoff": {
-                  "delay": 1000,
-                  "type": "exponential",
-                },
-                "jobId": "file_system-worker-blobVersionedHash",
-              },
-              "queueName": "file_system-worker",
-            },
             {
               "data": {
                 "versionedHash": "blobVersionedHash",
@@ -154,24 +157,9 @@ describe("BlobPropagator", () => {
               },
               "queueName": "postgres-worker",
             },
-            {
-              "data": {
-                "versionedHash": "blobVersionedHash",
-              },
-              "name": "storeBlob:swarm-worker-blobVersionedHash",
-              "opts": {
-                "attempts": 3,
-                "backoff": {
-                  "delay": 1000,
-                  "type": "exponential",
-                },
-                "jobId": "swarm-worker-blobVersionedHash",
-              },
-              "queueName": "swarm-worker",
-            },
           ],
           "data": {
-            "versionedHash": "blobVersionedHash",
+            "temporaryBlobUri": "test-blobscan-blobs/70118930558/ob/Ve/rs/obVersionedHash.txt",
           },
           "name": "propagateBlob:finalizer-worker-blobVersionedHash",
           "opts": {
@@ -203,23 +191,25 @@ describe("BlobPropagator", () => {
     afterEach(async () => {
       await Promise.all(
         blobs.map(async (b) => {
-          if (await blobFileManager.checkFileExists(b.versionedHash)) {
-            blobFileManager.removeFile(b.versionedHash);
-          }
+          const blobUri = tmpBlobStorage.getBlobUri(b.versionedHash);
+
+          await tmpBlobStorage.removeBlob(blobUri);
         })
       );
     });
 
-    it("should store blob data on disk", async () => {
+    it("should store all blobs data in temporary blob storage", async () => {
       await blobPropagator.propagateBlobs(blobs);
 
-      const filesExists = (
+      const allBlobDataExists = (
         await Promise.all(
-          blobs.map((b) => blobFileManager.checkFileExists(b.versionedHash))
+          blobs.map(({ versionedHash }) =>
+            tmpBlobStorage.getBlob(tmpBlobStorage.getBlobUri(versionedHash))
+          )
         )
-      ).every((exists) => exists);
+      ).every((blobData) => !!blobData);
 
-      expect(filesExists).toBe(true);
+      expect(allBlobDataExists).toBe(true);
     });
 
     it("should create flow jobs correctly", async () => {

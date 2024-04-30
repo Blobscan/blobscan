@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { FlowProducer, Queue, Worker } from "bullmq";
-import type { ConnectionOptions, FlowJob, WorkerOptions } from "bullmq";
+import { FlowProducer, Worker } from "bullmq";
+import type { ConnectionOptions, JobsOptions, WorkerOptions } from "bullmq";
 
 import type {
   BlobStorage,
@@ -9,17 +9,20 @@ import type {
 import type { $Enums, BlobscanPrismaClient } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
 
-import { blobFileManager } from "./blob-file-manager";
-import type {
-  Blob,
-  BlobPropagationJobData,
-  BlobPropagationWorkerParams,
-} from "./types";
 import {
+  DEFAULT_JOB_OPTIONS,
+  DEFAULT_WORKER_OPTIONS,
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
-  createBlobPropagationFlowJob,
-} from "./utils";
+} from "./constants";
+import type {
+  Blob,
+  BlobPropagationFinalizerWorkerParams,
+  BlobPropagationJobData,
+  BlobPropagationWorker,
+  BlobPropagationWorkerParams,
+} from "./types";
+import { createBlobPropagationFlowJob } from "./utils";
 import {
   fileSystemProcessor,
   finalizerProcessor,
@@ -28,47 +31,47 @@ import {
   swarmProcessor,
 } from "./worker-processors";
 
-const STORAGE_WORKER_PROCESSORS = {
+export type BlobPropagatorConfig = {
+  blobStorageManager: BlobStorageManager;
+  tmpBlobStorage: $Enums.BlobStorage;
+  prisma: BlobscanPrismaClient;
+  workerOptions: Partial<WorkerOptions>;
+  jobOptions?: Partial<JobsOptions>;
+};
+
+export const STORAGE_WORKER_PROCESSORS = {
   GOOGLE: gcsProcessor,
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
   FILE_SYSTEM: fileSystemProcessor,
 };
 
-export type BlobPropagatorConfig = {
-  blobStorageManager: BlobStorageManager;
-  tmpBlobStorage: $Enums.BlobStorage;
-  prisma: BlobscanPrismaClient;
-  workerOptions: Partial<WorkerOptions>;
-};
-
-const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
-  autorun: true,
-  useWorkerThreads: false,
-  removeOnComplete: { count: 1000 },
-};
-
 export class BlobPropagator {
-  protected blobStorageManager: BlobStorageManager;
-  protected prisma: BlobscanPrismaClient;
   protected temporaryBlobStorage: BlobStorage;
 
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
-  protected storageWorkers: Record<
-    $Enums.BlobStorage,
-    Worker<BlobPropagationJobData>
-  >;
+  protected storageWorkers: BlobPropagationWorker[];
+
+  protected jobOptions: Partial<JobsOptions>;
 
   constructor({
     blobStorageManager,
     prisma,
     tmpBlobStorage,
-    workerOptions,
+    jobOptions: jobOptions_ = {},
+    workerOptions: workerOptions_ = {},
   }: BlobPropagatorConfig) {
+    const workerOptions = {
+      ...DEFAULT_WORKER_OPTIONS,
+      ...workerOptions_,
+    };
+
     const availableStorageNames = blobStorageManager
       .getAllStorages()
-      .map((s) => s.name);
+      .map((s) => s.name)
+      .filter((name) => name !== tmpBlobStorage);
+    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
 
     if (!availableStorageNames) {
       throw new Error(
@@ -76,24 +79,11 @@ export class BlobPropagator {
       );
     }
 
-    if (!availableStorageNames.find((s) => s === tmpBlobStorage)) {
-      throw new Error(
-        "Couldn't instantiate blob propagator: Temporary storage not found in blob storage manager"
-      );
-    }
-
-    this.blobStorageManager = blobStorageManager;
-    this.prisma = prisma;
-
-    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
-
     if (!temporaryBlobStorage) {
       throw new Error(
         "Couldn't instantiate blob propagator: Temporary storage not found in blob storage manager"
       );
     }
-
-    this.temporaryBlobStorage = temporaryBlobStorage;
 
     this.storageWorkers = this.#createBlobStorageWorkers(
       availableStorageNames,
@@ -103,38 +93,24 @@ export class BlobPropagator {
       },
       workerOptions
     );
-    this.finalizerWorker = this.#createFinalizerWorker(workerOptions);
+    this.finalizerWorker = this.#createFinalizerWorker(
+      { temporaryBlobStorage },
+      workerOptions
+    );
     this.blobPropagationFlowProducer = this.#createBlobPropagationFlowProducer(
       workerOptions?.connection
     );
-  }
-
-  async empty({ force }: { force: boolean } = { force: false }) {
-    const workers = this.#getWorkers();
-    const queues = await Promise.all(
-      workers.map(
-        async (w) => new Queue(w.name, { connection: await w.client })
-      )
-    );
-
-    let emptyPromise = Promise.all([
-      ...queues.map((q) => q.obliterate({ force })),
-      blobFileManager.removeFolder(),
-    ]);
-
-    queues.forEach((q) => {
-      emptyPromise = emptyPromise.finally(async () => {
-        await q.close();
-      });
-    });
-
-    await emptyPromise;
+    this.temporaryBlobStorage = temporaryBlobStorage;
+    this.jobOptions = {
+      ...DEFAULT_JOB_OPTIONS,
+      ...jobOptions_,
+    };
   }
 
   close() {
     let teardownPromise: Promise<void> = Promise.resolve();
 
-    Object.values(this.storageWorkers).forEach((w) => {
+    this.storageWorkers.forEach((w) => {
       teardownPromise = teardownPromise.finally(async () => {
         await w.close();
       });
@@ -155,9 +131,18 @@ export class BlobPropagator {
   }
 
   async propagateBlob({ versionedHash, data }: Blob) {
-    await this.temporaryBlobStorage.storeBlob(versionedHash, data);
+    const temporalBlobUri = await this.temporaryBlobStorage.storeBlob(
+      versionedHash,
+      data
+    );
 
-    const flowJob = await this.#createBlobPropagationFlowJob(versionedHash);
+    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
+    const flowJob = createBlobPropagationFlowJob(
+      this.finalizerWorker.name,
+      storageWorkerNames,
+      versionedHash,
+      temporalBlobUri
+    );
 
     await this.blobPropagationFlowProducer.add(flowJob);
   }
@@ -172,21 +157,23 @@ export class BlobPropagator {
       return blob;
     });
 
-    await Promise.all(
+    const temporalBlobUris = await Promise.all(
       uniqueBlobs.map(({ versionedHash, data }) =>
         this.temporaryBlobStorage.storeBlob(versionedHash, data)
       )
     );
 
-    const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }) =>
-      this.#createBlobPropagationFlowJob(versionedHash)
+    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
+    const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }, i) =>
+      createBlobPropagationFlowJob(
+        this.finalizerWorker.name,
+        storageWorkerNames,
+        versionedHash,
+        temporalBlobUris[i] as string
+      )
     );
 
     await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
-  }
-
-  #getWorkers() {
-    return [...Object.values(this.storageWorkers), this.finalizerWorker];
   }
 
   #createBlobPropagationFlowProducer(connection?: ConnectionOptions) {
@@ -209,10 +196,13 @@ export class BlobPropagator {
     return blobPropagationFlowProducer;
   }
 
-  #createFinalizerWorker(opts: WorkerOptions = {}) {
+  #createFinalizerWorker(
+    params: BlobPropagationFinalizerWorkerParams,
+    opts: WorkerOptions = {}
+  ) {
     const finalizerWorker = new Worker(
       FINALIZER_WORKER_NAME,
-      finalizerProcessor,
+      finalizerProcessor(params),
       {
         ...DEFAULT_WORKER_OPTIONS,
         ...opts,
@@ -220,11 +210,13 @@ export class BlobPropagator {
     );
 
     finalizerWorker.on("completed", (job) => {
-      logger.debug(`Job ${job.id} completed`);
+      logger.debug(`Worker ${FINALIZER_WORKER_NAME}: Job ${job.id} completed`);
     });
 
     finalizerWorker.on("failed", (job, err) => {
-      logger.error(`Job ${job?.id} failed: ${err}`);
+      logger.error(
+        `Worker ${FINALIZER_WORKER_NAME}: Job ${job?.id} failed: ${err}`
+      );
     });
 
     return finalizerWorker;
@@ -235,42 +227,23 @@ export class BlobPropagator {
     params: BlobPropagationWorkerParams,
     opts: WorkerOptions = {}
   ) {
-    return storages.reduce<
-      Record<$Enums.BlobStorage, Worker<BlobPropagationJobData>>
-    >((workers, storageName) => {
+    return storages.map((storageName) => {
       const workerName = STORAGE_WORKER_NAMES[storageName];
       const storageWorker = new Worker<BlobPropagationJobData>(
         workerName,
         STORAGE_WORKER_PROCESSORS[storageName](params),
-        {
-          ...DEFAULT_WORKER_OPTIONS,
-          ...opts,
-        }
+        opts
       );
 
       storageWorker.on("completed", (job) => {
-        logger.debug(`Job ${job.id} completed by ${workerName}`);
+        logger.debug(`Worker ${workerName}: Job ${job.id} completed`);
       });
 
       storageWorker.on("failed", (job, err) => {
-        logger.error(`Job ${job?.id} failed: ${err} (worker: ${workerName})`);
+        logger.error(`Worker: ${workerName}: Job ${job?.id} failed: ${err}`);
       });
 
-      workers[storageName] = storageWorker;
-
-      return workers;
-    }, {} as Record<$Enums.BlobStorage, Worker<BlobPropagationJobData>>);
-  }
-
-  #createBlobPropagationFlowJob(versionedHash: string): FlowJob {
-    const storageWorkerNames = Object.values(this.storageWorkers).map(
-      (storageWorker) => storageWorker.name
-    );
-
-    return createBlobPropagationFlowJob(
-      this.finalizerWorker.name,
-      storageWorkerNames,
-      versionedHash
-    );
+      return storageWorker;
+    });
   }
 }
