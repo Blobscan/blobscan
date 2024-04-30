@@ -1,5 +1,4 @@
 import { Queue } from "bullmq";
-import fs from "fs";
 import IORedis from "ioredis";
 import { afterAll } from "vitest";
 
