@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 209 201">
+  <path fill="url(#kroma_svg__a)" d="M104.352 0 0 66.662l52.173 33.339 52.179-33.339 52.173 33.339 52.172-33.339z"/>
+  <path fill="url(#kroma_svg__b)" d="m208.697 66.663-104.345 66.67L0 66.663v66.67l104.352 66.669 104.345-66.669z"/>
+  <defs>
+    <linearGradient id="kroma_svg__a" x1="104.349" x2="104.349" y1="0" y2="100.001" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#70DE2C"/>
+      <stop offset="1" stop-color="#8EE558"/>
+    </linearGradient>
+    <linearGradient id="kroma_svg__b" x1="104.349" x2="104.349" y1="66.663" y2="200.002" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#70DE2C"/>
+      <stop offset="1" stop-color="#8EE558"/>
+    </linearGradient>
+  </defs>
+</svg>
