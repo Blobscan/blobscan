@@ -1,9 +1,10 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import {
-  FINALIZER_WORKER_NAME,
-  createBlobPropagationFlowJob,
+import { createBlobStorageJob } from "@blobscan/blob-propagator";
+import type {
+  BlobPropagationJob,
+  BlobPropagationQueue,
 } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
 
@@ -54,8 +55,23 @@ export const createCommandUsage = commandLineUsage([
   },
 ]);
 
+function createBlobPropagationJobs(
+  storageQueues: BlobPropagationQueue[],
+  blobHashes: string[]
+) {
+  return Promise.all(
+    storageQueues.map((q) => {
+      const storageJobs = blobHashes.map((hash) =>
+        createBlobStorageJob(q.name, hash)
+      );
+
+      q.addBulk(storageJobs as BlobPropagationJob[]);
+    })
+  );
+}
+
 async function createBlobPropagationJobsInBatches(
-  storageQueueNames: string[],
+  storageQueues: BlobPropagationQueue[],
   blobHashesBatchFetcher: (cursorId?: string) => Promise<{
     blobHashes: string[];
     nextCursorId?: string;
@@ -66,17 +82,7 @@ async function createBlobPropagationJobsInBatches(
   do {
     const { blobHashes, nextCursorId } = await blobHashesBatchFetcher(cursorId);
 
-    const jobs = blobHashes.map((blobHash) =>
-      createBlobPropagationFlowJob(
-        FINALIZER_WORKER_NAME,
-        storageQueueNames,
-        blobHash
-      )
-    );
-
-    if (jobs.length) {
-      await context.getPropagatorFlowProducer().addBulk(jobs);
-    }
+    await createBlobPropagationJobs(storageQueues, blobHashes);
 
     cursorId = nextCursorId;
   } while (cursorId);
@@ -108,7 +114,6 @@ export const create: Command = async function (argv) {
   const storageQueues = queueNames
     ? context.getQueuesOrThrow(queueNames)
     : context.getAllStorageQueues();
-  const storageQueueNames = storageQueues.map((q) => q.name);
   let blobHashes: string[];
 
   if (rawBlobHashes?.length) {
@@ -134,18 +139,10 @@ export const create: Command = async function (argv) {
       );
     }
 
-    const jobs = blobHashes.map((blobHash) =>
-      createBlobPropagationFlowJob(
-        FINALIZER_WORKER_NAME,
-        storageQueueNames,
-        blobHash
-      )
-    );
-
-    await context.getPropagatorFlowProducer().addBulk(jobs);
+    await createBlobPropagationJobs(storageQueues, blobHashes);
   } else if (fromDate || toDate) {
     await createBlobPropagationJobsInBatches(
-      storageQueueNames,
+      storageQueues,
       async (cursorId) => {
         const dbBlocks = await prisma.block.findMany({
           take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
@@ -193,7 +190,7 @@ export const create: Command = async function (argv) {
     );
   } else {
     await createBlobPropagationJobsInBatches(
-      storageQueueNames,
+      storageQueues,
       async (cursorId) => {
         const dbBlobs = await prisma.blob.findMany({
           take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
