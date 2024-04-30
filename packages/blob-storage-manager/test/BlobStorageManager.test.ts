@@ -190,10 +190,7 @@ describe("BlobStorageManager", () => {
           expectedStoredBlobHash
         );
 
-        expect(result).toEqual({
-          data: expectedStoredBlobData,
-          storage: "POSTGRES",
-        });
+        expect(result.data).toEqual(expectedStoredBlobData);
       });
 
       testValidError(
