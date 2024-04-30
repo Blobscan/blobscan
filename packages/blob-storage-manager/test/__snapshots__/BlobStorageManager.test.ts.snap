@@ -66,5 +66,3 @@ exports[`BlobStorageManager > when storing a blob > should throw an error if all
   [BlobStorageError: SwarmStorage failed: Failed to upload blob to swarm],
 ]
 `;
-
-exports[`BlobStorageManager > when storing a blob > should throw an error when one of the selected blob storages wasn't found 1`] = `"Some of the selected storages are not available: POSTGRES, GOOGLE\\""`;

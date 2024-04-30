@@ -107,10 +107,7 @@ export class BlobStorageManager {
     return this.#getBlob(operations);
   }
 
-  async storeBlob(
-    { data, versionedHash }: Blob,
-    opts?: StoreOptions
-  ): Promise<{
+  async storeBlob({ data, versionedHash }: Blob): Promise<{
     references: BlobReference<BlobStorageName>[];
     errors: BlobStorageError[];
   }> {
@@ -122,10 +119,8 @@ export class BlobStorageManager {
         },
       },
       async (span) => {
-        const selectedStorages = this.#getSelectedStorages(opts);
-
         const results = await Promise.allSettled(
-          selectedStorages.map((storage) => {
+          this.#blobStorages.map((storage) => {
             return tracer.startActiveSpan(
               "blob_storage_manager:storage",
               {

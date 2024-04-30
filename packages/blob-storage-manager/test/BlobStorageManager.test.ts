@@ -233,40 +233,6 @@ describe("BlobStorageManager", () => {
       expect(result.errors).toMatchSnapshot();
     });
 
-    it("should store a blob in a specific storage if provided", async () => {
-      const selectedStorage: BlobStorageName = "POSTGRES";
-
-      const result = await blobStorageManager.storeBlob(blob, {
-        selectedStorages: [selectedStorage],
-      });
-
-      const blobReference = result.references[0];
-
-      expect(
-        result.references.length,
-        "Returned blob storage refs length mismatch"
-      ).toBe(1);
-      expect(blobReference?.reference, "Blob storage ref mismatch").toBe(
-        NEW_BLOB_HASH
-      );
-      expect(blobReference?.storage, "Blob storage mismatch").toBe(
-        selectedStorage
-      );
-    });
-
-    testValidError(
-      "should throw an error when one of the selected blob storages wasn't found",
-      async () => {
-        const selectedStorages: BlobStorageName[] = ["POSTGRES", "GOOGLE"];
-        const singleStorageBSM = new BlobStorageManager([swarmStorage]);
-
-        await singleStorageBSM.storeBlob(blob, {
-          selectedStorages: selectedStorages,
-        });
-      },
-      BlobStorageManagerError
-    );
-
     it("should return errors for failed uploads", async () => {
       const newHash = "0x6d6f636b2d64617461";
       const blob = { data: "New data", versionedHash: newHash };
