@@ -1,47 +1,48 @@
 #FROM node:20-alpine as builder
 # Pinned due to https://github.com/nodejs/docker-node/issues/2009
-FROM node:20-alpine3.18
+FROM node:20-alpine3.18 as base
 
 ARG BUILD_TIMESTAMP
 ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+# Do not perform environment variable validation during build time
+ENV SKIP_ENV_VALIDATION=true
 
 RUN apk add bash curl
-RUN npm install -g pnpm
+RUN npm install -g pnpm turbo
 WORKDIR /app
-
-# pnpm fetch does require only lockfile
-COPY pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm fetch -r
-
-ADD . ./
-RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store/v3 pnpm install -r
-
-# Do not perform environment variable validation during build time
-RUN SKIP_ENV_VALIDATION=true npm run build
-
-RUN mkdir -p /tmp/blobscan-blobs
-RUN chown node:node . /tmp/blobscan-blobs -R
+RUN mkdir -p /tmp/blobscan-blobs && chmod 777 /tmp/blobscan-blobs
 
 ADD docker-entrypoint.sh /
-USER node
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+FROM base AS api-builder
+COPY . /app
+WORKDIR /app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=./apps/rest-api-server
+
+FROM base AS web-builder
+COPY . /app
+WORKDIR /app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=./apps/web
+
+FROM base as web
+COPY --from=web-builder /app/node_modules /app/node_modules
+COPY --from=web-builder /app/packages/db/prisma/schema.prisma /app/packages/db/prisma/schema.prisma
+COPY --from=web-builder /app/apps/web /app/apps/web
+ENTRYPOINT ["/docker-entrypoint.sh", "web"]
 CMD ["--help"]
 
-# FROM node:18-alpine AS production
-# RUN npm install -g pnpm
-# WORKDIR /app
-# COPY --chown=node --from=builder /app/apps/web/next.config.mjs ./
-# COPY --chown=node --from=builder /app/apps/web/package.json ./
-# COPY --chown=node --from=builder /app/apps/web/postcss.config.cjs ./
-# COPY --chown=node --from=builder /app/apps/web/tailwind.config.ts.json ./
-# COPY --chown=node --from=builder /app/apps/web/tsconfig.json ./
-# COPY --chown=node --from=builder /app/apps/web/public ./public
-# COPY --chown=node --from=builder /app/apps/web/.next ./.next
-# COPY --chown=node --from=builder /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/turbo.json ./
-# COPY --chown=node --from=builder /app/node_modules ./node_modules
-# USER node
-#
-# CMD ["pnpm", "start"]
+FROM base as api
+# TODO: Probar sin node_modules
+COPY --from=api-builder /app/node_modules /app/node_modules
+COPY --from=api-builder /app/packages/db/prisma/schema.prisma /app/packages/db/prisma/schema.prisma
+COPY --from=api-builder /app/apps/rest-api-server /app/apps/rest-api-server
+ENTRYPOINT ["/docker-entrypoint.sh", "api"]
+CMD ["--help"]
