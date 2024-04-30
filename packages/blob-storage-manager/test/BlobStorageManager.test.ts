@@ -8,7 +8,6 @@ import { GoogleStorage, PostgresStorage, env } from "../src";
 import { BlobStorageManager } from "../src/BlobStorageManager";
 import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
-import type { BlobStorageName } from "../src/types";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "./fixtures";
 
 if (!env.BEE_ENDPOINT) {
