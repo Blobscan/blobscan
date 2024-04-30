@@ -73,7 +73,6 @@ export class SwarmStorage extends BlobStorage {
       data,
       this.getBlobFilePath(versionedHash),
       {
-        pin: true,
         contentType: "text/plain",
         deferred: false,
       }
