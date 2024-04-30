@@ -19,7 +19,7 @@
     "@blobscan/logger": "^0.0.6",
     "@blobscan/open-telemetry": "^0.0.6",
     "@blobscan/zod": "^0.0.4",
-    "@ethersphere/bee-js": "^6.0.0",
+    "@ethersphere/bee-js": "6.4.0",
     "@google-cloud/storage": "^6.10.1"
   },
   "eslintConfig": {

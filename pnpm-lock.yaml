@@ -490,8 +490,8 @@ importers:
         specifier: ^0.0.4
         version: link:../zod
       '@ethersphere/bee-js':
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: 6.4.0
+        version: 6.4.0
       '@google-cloud/storage':
         specifier: ^6.10.1
         version: 6.10.1
@@ -2583,14 +2583,14 @@ packages:
     resolution: {integrity: sha512-Ag+9YM4ocKQx9AarydN0KY2j0ErMHNIocPDrVo8zAE44xLTjEtz81OdR68/cydGtk6m6jDb5Za3r2useMzYmSw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  /@ethersphere/bee-js@6.0.0:
-    resolution: {integrity: sha512-Ae+GTGSmNjLY1mw2kz9GmXtHqjU3/OHKb6jeXJuh8oLuHKGXJ1LbhUCSlV5aX0dOA83H/4iay4B8OEqjIJmv4w==}
+  /@ethersphere/bee-js@6.4.0:
+    resolution: {integrity: sha512-QGbjwRpgaiDEB4E2l2JkHxw+vlhmqp6z4qkIdRC7FNfwq7UUg4ZfeJe8Ujn8eZLMC//Zue/4g77OXa1L/pXjqA==}
     engines: {bee: 1.13.0-f1067884, beeApiVersion: 4.0.0, beeDebugApiVersion: 4.0.0, node: '>=14.0.0', npm: '>=6.0.0'}
     dependencies:
       '@ethersphere/swarm-cid': 0.1.0
       '@types/readable-stream': 2.3.15
-      axios: 1.6.1
-      cafe-utility: 9.10.0
+      axios: 1.6.8
+      cafe-utility: 10.29.0
       elliptic: 6.5.4
       fetch-blob: 2.1.2
       isomorphic-ws: 4.0.1(ws@8.14.2)
@@ -4705,7 +4705,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.16.19
+      '@types/node': 18.18.9
     dev: false
 
   /@types/linkify-it@3.0.5:
@@ -4809,7 +4809,7 @@ packages:
   /@types/responselike@1.0.3:
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
     dependencies:
-      '@types/node': 18.16.19
+      '@types/node': 18.18.9
     dev: false
 
   /@types/scheduler@0.16.6:
@@ -5433,10 +5433,10 @@ packages:
     resolution: {integrity: sha512-M0JtH+hlOL5pLQwHOLNYZaXuhqmvS8oExsqB1SBYgA4Dk7u/xx+YdGHXaK5pyUfed5mYXdlYiphWq3G8cRi5JQ==}
     engines: {node: '>=4'}
 
-  /axios@1.6.1:
-    resolution: {integrity: sha512-vfBmhDpKafglh0EldBEbVuoe7DyAavGSLWhuSm5ZSEKQnHhBf0xAAwybbNH1IkrJNGnS/VG4I5yxig1pCEXE4g==}
+  /axios@1.6.8:
+    resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
     dependencies:
-      follow-redirects: 1.15.3
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -5707,8 +5707,8 @@ packages:
       responselike: 1.0.2
     dev: false
 
-  /cafe-utility@9.10.0:
-    resolution: {integrity: sha512-m14jYM3DbtMcCfp09HzLI4mdd3jbgR6+bb3a0jB/HC2pQnIB+5LS45wrcUt2XPHq2YUkVmhHzyRbnesIHer6uQ==}
+  /cafe-utility@10.29.0:
+    resolution: {integrity: sha512-B9smYtLQ0iicTMT2RMuflXNIIDRnny+Evdg5ztoJLom2B2V3Xd1te8IiHvWM0elqUbcjTI4ODrBGQeLluWsDwA==}
     dev: false
 
   /call-bind@1.0.5:
@@ -7272,8 +7272,8 @@ packages:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
     dev: false
 
-  /follow-redirects@1.15.3:
-    resolution: {integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==}
+  /follow-redirects@1.15.6:
+    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
