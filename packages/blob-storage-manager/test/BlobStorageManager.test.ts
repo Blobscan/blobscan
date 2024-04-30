@@ -99,6 +99,32 @@ describe("BlobStorageManager", () => {
     expect(blobStorageManager.getStorage("SWARM")).toEqual(swarmStorage);
   });
 
+  describe("when checking if a blob storage exists", () => {
+    it("should return true if it does", () => {
+      expect(blobStorageManager.hasStorage("GOOGLE")).toBeTruthy();
+    });
+
+    it("should return false if it does not", () => {
+      expect(blobStorageManager.hasStorage("FILE_SYSTEM")).toBeFalsy();
+    });
+  });
+
+  it("should add a new blob storage correctly", () => {
+    const bsm = new BlobStorageManager([postgresStorage]);
+
+    bsm.addStorage(googleStorage);
+
+    expect(bsm.getStorage("GOOGLE")).toEqual(googleStorage);
+  });
+
+  it("should remove a blob storage correctly", () => {
+    const bsm = new BlobStorageManager([postgresStorage, googleStorage]);
+
+    bsm.removeStorage("GOOGLE");
+
+    expect(bsm.hasStorage("GOOGLE")).toBeFalsy();
+  });
+
   describe("when getting a blob", async () => {
     describe("when getting a blob by its references", () => {
       it("should return the blob data", async () => {

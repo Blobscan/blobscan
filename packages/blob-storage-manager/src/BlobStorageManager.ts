@@ -25,6 +25,12 @@ export class BlobStorageManager {
     this.#blobStorages = removeDuplicatedStorages(blobStorages);
   }
 
+  addStorage(storage: BlobStorage) {
+    if (!this.hasStorage(storage.name)) {
+      this.#blobStorages.push(storage);
+    }
+  }
+
   getAllStorages(): BlobStorage[] {
     return this.#blobStorages;
   }
@@ -39,6 +45,12 @@ export class BlobStorageManager {
 
   hasStorage<T extends BlobStorageName>(name: T): boolean {
     return !!this.getStorage(name);
+  }
+
+  removeStorage(storageName: BlobStorageName) {
+    this.#blobStorages = this.#blobStorages.filter(
+      (storage) => storage.name !== storageName
+    );
   }
 
   async getBlobByReferences(
