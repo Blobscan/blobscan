@@ -221,7 +221,7 @@ describe("Indexer router", async () => {
               );
               const gcsBlobData = await Promise.all(
                 blobRefs.map((ref) =>
-                  authorizedContext.blobStorageManager.getBlob(ref)
+                  authorizedContext.blobStorageManager.getBlobByReferences(ref)
                 )
               ).then((res) =>
                 res.sort((a, b) => (a && b ? a.data.localeCompare(b.data) : 0))

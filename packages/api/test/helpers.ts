@@ -55,7 +55,12 @@ export async function createTestContext({
   });
 
   if (withBlobPropagator) {
-    ctx.blobPropagator = createBlobPropagator();
+    ctx.blobPropagator = await createBlobPropagator(
+      ctx.blobStorageManager,
+      ctx.prisma
+    );
+  } else {
+    ctx.blobPropagator = undefined;
   }
 
   return ctx;

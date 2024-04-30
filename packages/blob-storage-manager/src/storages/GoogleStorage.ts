@@ -65,31 +65,39 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _getBlob(uri: string) {
-    return (
-      await this._storageClient.bucket(this._bucketName).file(uri).download()
-    ).toString();
+    const blobFile = await this.getBlobFile(uri).download();
+
+    return blobFile.toString();
+  }
+
+  protected async _removeBlob(uri: string): Promise<void> {
+    const blobFile = await this.getBlobFile(uri);
+
+    if (await blobFile.exists()) {
+      await blobFile.delete();
+    }
   }
 
   protected async _storeBlob(
     versionedHash: string,
     data: string
   ): Promise<string> {
-    const fileName = this.buildBlobFileName(versionedHash);
+    const blobUri = this.getBlobUri(versionedHash);
 
-    await this._storageClient
-      .bucket(this._bucketName)
-      .file(fileName)
-      .save(data);
+    await this._storageClient.bucket(this._bucketName).file(blobUri).save(data);
 
-    return fileName;
+    return blobUri;
   }
 
-  async setUpBucket() {
-    if (this._storageClient.bucket(this._bucketName)) {
-      return;
-    }
+  getBlobUri(hash: string) {
+    return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
+      4,
+      6
+    )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+  }
 
-    return this._storageClient.createBucket(this._bucketName);
+  protected getBlobFile(uri: string) {
+    return this._storageClient.bucket(this._bucketName).file(uri);
   }
 
   static getConfigFromEnv(env: Partial<Environment>): GoogleStorageConfig {

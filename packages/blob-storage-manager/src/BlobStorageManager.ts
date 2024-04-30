@@ -13,6 +13,7 @@ import type {
 } from "./types";
 import { calculateBlobBytes, removeDuplicatedStorages } from "./utils";
 
+type GetBlobOperation = [BlobStorageName, () => Promise<string>];
 export class BlobStorageManager {
   #blobStorages: BlobStorage[];
 
@@ -22,6 +23,16 @@ export class BlobStorageManager {
     }
 
     this.#blobStorages = removeDuplicatedStorages(blobStorages);
+  }
+
+  addStorage(storage: BlobStorage) {
+    if (!this.hasStorage(storage.name)) {
+      this.#blobStorages.push(storage);
+    }
+  }
+
+  getAllStorages(): BlobStorage[] {
+    return this.#blobStorages;
   }
 
   getStorage<T extends BlobStorageName>(name: T): StorageOf<T> | undefined {
@@ -36,97 +47,67 @@ export class BlobStorageManager {
     return !!this.getStorage(name);
   }
 
-  async getBlob(
-    ...blobReferences: BlobReference<BlobStorageName>[]
-  ): Promise<{ data: string; storage: BlobStorageName } | null> {
-    return tracer.startActiveSpan(
-      "blob_storage_manager",
-      {
-        attributes: {
-          [SemanticAttributes.CODE_FUNCTION]: "getBlob",
-        },
-      },
-      async (span) => {
-        const availableReferences = blobReferences.filter(({ storage }) =>
-          this.hasStorage(storage)
-        );
-
-        try {
-          const blob = await Promise.any(
-            availableReferences.map(({ reference, storage: storageName }) =>
-              tracer.startActiveSpan(
-                "blob_storage_manager:storage",
-                {
-                  attributes: {
-                    storage: storageName,
-                    [SemanticAttributes.CODE_FUNCTION]: "getBlob",
-                  },
-                },
-                async (storageSpan) => {
-                  const start = performance.now();
-                  const storage = this.getStorage(storageName);
-
-                  if (!storage) {
-                    throw new BlobStorageManagerError(
-                      `Storage "${storageName}" is not available`
-                    );
-                  }
-
-                  const blob = await storage
-                    .getBlob(reference)
-                    .then((data) => ({
-                      data,
-                      storage: storageName,
-                    }));
-                  const end = performance.now();
-
-                  storageSpan.end();
-
-                  updateBlobStorageMetrics({
-                    storage: storageName,
-                    blobSize: calculateBlobBytes(blob.data),
-                    direction: "received",
-                    duration: end - start,
-                  });
-
-                  return blob;
-                }
-              )
-            )
-          );
-
-          span.end();
-
-          return blob;
-        } catch (e) {
-          const message = "Failed to get blob from any of the storages";
-          let err: BlobStorageManagerError;
-
-          // Aggregate errors are thrown when all the promises fail
-          if (e instanceof AggregateError) {
-            err = new BlobStorageManagerError(
-              message,
-              e.errors as BlobStorageError[]
-            );
-          } else {
-            err = new BlobStorageManagerError(message, e as Error);
-          }
-
-          span.setStatus({ code: api.SpanStatusCode.ERROR });
-          span.recordException(err);
-
-          throw err;
-        } finally {
-          span.end();
-        }
-      }
+  removeStorage(storageName: BlobStorageName) {
+    this.#blobStorages = this.#blobStorages.filter(
+      (storage) => storage.name !== storageName
     );
   }
 
-  async storeBlob(
-    { data, versionedHash }: Blob,
-    opts?: StoreOptions
-  ): Promise<{
+  async getBlobByReferences(
+    ...blobReferences: BlobReference<BlobStorageName>[]
+  ): Promise<{ data: string; storage: BlobStorageName }> {
+    const supportedReferences = blobReferences.filter(({ storage }) =>
+      this.hasStorage(storage)
+    );
+
+    if (!supportedReferences.length) {
+      throw new BlobStorageManagerError(
+        "No storage supported for the provided references"
+      );
+    }
+
+    const getBlobOperations = supportedReferences
+      .map<GetBlobOperation | undefined>(
+        ({ reference, storage: storageName }) => {
+          const storage = this.getStorage(storageName);
+
+          if (!storage) {
+            return;
+          }
+
+          const getBlobFn = () => storage.getBlob(reference);
+
+          return [storageName, getBlobFn];
+        }
+      )
+      .filter((op): op is GetBlobOperation => !!op);
+
+    return this.#getBlob(getBlobOperations);
+  }
+
+  async getBlobByHash(hash: string) {
+    const operations = this.#blobStorages
+      .map<GetBlobOperation | undefined>((storage) => {
+        const blobUri = storage.getBlobUri(hash);
+
+        if (!blobUri) {
+          return;
+        }
+
+        return [storage.name, () => storage.getBlob(blobUri)];
+      })
+      .filter((op): op is GetBlobOperation => !!op);
+
+    if (!operations.length) {
+      throw new BlobStorageManagerError(
+        `No storage supported that can get the blob by its hash`
+      );
+    }
+
+    return this.#getBlob(operations);
+  }
+
+  async storeBlob({ data, versionedHash }: Blob): Promise<{
     references: BlobReference<BlobStorageName>[];
     errors: BlobStorageError[];
   }> {
@@ -138,10 +119,8 @@ export class BlobStorageManager {
         },
       },
       async (span) => {
-        const selectedStorages = this.#getSelectedStorages(opts);
-
         const results = await Promise.allSettled(
-          selectedStorages.map((storage) => {
+          this.#blobStorages.map((storage) => {
             return tracer.startActiveSpan(
               "blob_storage_manager:storage",
               {
@@ -203,6 +182,78 @@ export class BlobStorageManager {
           references,
           errors: storageErrors,
         };
+      }
+    );
+  }
+
+  async #getBlob(operations: GetBlobOperation[]) {
+    return tracer.startActiveSpan(
+      "blob_storage_manager",
+      {
+        attributes: {
+          [SemanticAttributes.CODE_FUNCTION]: "getBlob",
+        },
+      },
+      async (span) => {
+        try {
+          const blob = await Promise.any(
+            operations.map(([storageName, getBlobFn]) =>
+              tracer.startActiveSpan(
+                "blob_storage_manager:storage",
+                {
+                  attributes: {
+                    storage: storageName,
+                  },
+                },
+                async (storageSpan) => {
+                  const start = performance.now();
+
+                  const blobData = await getBlobFn();
+
+                  const end = performance.now();
+
+                  storageSpan.end();
+
+                  updateBlobStorageMetrics({
+                    storage: storageName,
+                    blobSize: calculateBlobBytes(blobData),
+                    direction: "received",
+                    duration: end - start,
+                  });
+
+                  return {
+                    storage: storageName,
+                    data: blobData,
+                  };
+                }
+              )
+            )
+          );
+
+          span.end();
+
+          return blob;
+        } catch (e) {
+          const message = "Failed to get blob from any of the storages";
+          let err: BlobStorageManagerError;
+
+          // Aggregate errors are thrown when all the promises fail
+          if (e instanceof AggregateError) {
+            err = new BlobStorageManagerError(
+              message,
+              e.errors as BlobStorageError[]
+            );
+          } else {
+            err = new BlobStorageManagerError(message, e as Error);
+          }
+
+          span.setStatus({ code: api.SpanStatusCode.ERROR });
+          span.recordException(err);
+
+          throw err;
+        } finally {
+          span.end();
+        }
       }
     );
   }

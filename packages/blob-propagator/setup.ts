@@ -1,10 +1,10 @@
 import { Queue } from "bullmq";
+import fs from "fs";
 import IORedis from "ioredis";
 import { afterAll } from "vitest";
 
-import { blobFileManager } from "./src/blob-file-manager";
+import { FINALIZER_WORKER_NAME, STORAGE_WORKER_NAMES } from "./src/constants";
 import { env } from "./src/env";
-import { FINALIZER_WORKER_NAME, STORAGE_WORKER_NAMES } from "./src/utils";
 
 afterAll(async () => {
   const queues = [
@@ -20,8 +20,14 @@ afterAll(async () => {
 
   let teardownPromise = Promise.all([
     ...queues.map((q) => q.obliterate({ force: true })),
-    blobFileManager.removeFolder(),
   ]);
+
+  if (
+    env.FILE_SYSTEM_STORAGE_PATH &&
+    fs.existsSync(env.FILE_SYSTEM_STORAGE_PATH)
+  ) {
+    fs.rmSync(env.FILE_SYSTEM_STORAGE_PATH, { recursive: true });
+  }
 
   queues.forEach((q) => {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

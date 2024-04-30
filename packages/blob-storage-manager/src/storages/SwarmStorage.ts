@@ -59,10 +59,14 @@ export class SwarmStorage extends BlobStorage {
     await Promise.all(healthCheckOps);
   }
 
-  protected async _getBlob(reference: string) {
-    const file = await this._swarmClient.bee.downloadFile(reference);
+  protected async _getBlob(uri: string) {
+    const file = await this._swarmClient.bee.downloadFile(uri);
 
     return file.data.text();
+  }
+
+  protected async _removeBlob(uri: string): Promise<void> {
+    await this._swarmClient.bee.unpin(uri);
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
@@ -70,7 +74,7 @@ export class SwarmStorage extends BlobStorage {
     const response = await this._swarmClient.bee.uploadFile(
       batchId,
       data,
-      this.buildBlobFileName(versionedHash),
+      this.getBlobFilePath(versionedHash),
       {
         pin: true,
         contentType: "text/plain",
@@ -81,12 +85,21 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toString();
   }
 
-  async #getAllPostageBatch(): Promise<PostageBatch[]> {
-    if (!this._swarmClient.beeDebug) {
-      throw new Error("Bee debug endpoint required to get postage batches.");
-    }
+  getBlobUri(_: string) {
+    return undefined;
+  }
 
-    return this._swarmClient.beeDebug.getAllPostageBatch();
+  protected getBlobFilePath(hash: string) {
+    return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
+      4,
+      6
+    )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+  }
+
+  async #getAllPostageBatch(): Promise<PostageBatch[]> {
+    const beeDebug = this.getBeeDebug();
+
+    return beeDebug.getAllPostageBatch();
   }
 
   async #getAvailableBatch(): Promise<string> {
@@ -97,6 +110,14 @@ export class SwarmStorage extends BlobStorage {
     }
 
     return firstBatch.batchID;
+  }
+
+  protected getBeeDebug() {
+    if (!this._swarmClient.beeDebug) {
+      throw new Error("Bee debug endpoint required to get postage batches.");
+    }
+
+    return this._swarmClient.beeDebug;
   }
 
   static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {

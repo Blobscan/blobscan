@@ -1,37 +1,50 @@
 import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
 
-import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
-import { prisma, $Enums } from "@blobscan/db";
+import type { BlobReference } from "@blobscan/blob-storage-manager";
+import { $Enums } from "@blobscan/db";
 
-import { blobFileManager } from "./blob-file-manager";
-
-const DEFAULT_JOB_OPTIONS: Omit<JobsOptions, "repeat"> = {
-  attempts: 3,
-  backoff: {
-    type: "exponential",
-    delay: 1000,
-  },
-};
-
-export const STORAGE_WORKER_NAMES = Object.values($Enums.BlobStorage).reduce<
-  Record<$Enums.BlobStorage, string>
->(
-  (names, storage) => ({
-    ...names,
-    [storage]: `${storage.toLowerCase()}-worker`,
-  }),
-  {} as Record<$Enums.BlobStorage, string>
-);
-
-export const FINALIZER_WORKER_NAME = "finalizer-worker";
+import { DEFAULT_JOB_OPTIONS } from "./constants";
+import type {
+  BlobPropagationJobData,
+  BlobPropagationWorkerParams,
+} from "./types";
 
 export function buildJobId(...parts: string[]) {
   return parts.join("-");
 }
 
+export function createBlobPropagationFlowJob(
+  workerName: string,
+  storageWorkerNames: string[],
+  versionedHash: string,
+  temporaryBlobUri: string,
+  opts: Partial<JobsOptions> = {}
+): FlowJob {
+  const propagationFlowJobId = buildJobId(workerName, versionedHash);
+
+  const children = storageWorkerNames.map((name) =>
+    createBlobStorageJob(name, versionedHash)
+  );
+
+  return {
+    name: `propagateBlob:${propagationFlowJobId}`,
+    queueName: workerName,
+    data: {
+      temporaryBlobUri,
+    },
+    opts: {
+      ...DEFAULT_JOB_OPTIONS,
+      ...opts,
+      jobId: propagationFlowJobId,
+    },
+    children,
+  };
+}
+
 export function createBlobStorageJob(
   storageWorkerName: string,
-  versionedHash: string
+  versionedHash: string,
+  opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
 
@@ -43,76 +56,78 @@ export function createBlobStorageJob(
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
+      ...opts,
       jobId,
+      removeDependencyOnFailure: true,
     },
-  };
-}
-
-export function createBlobPropagationFlowJob(
-  workerName: string,
-  storageWorkerNames: string[],
-  versionedHash: string
-): FlowJob {
-  const jobId = buildJobId(workerName, versionedHash);
-  const children = storageWorkerNames.map((storageWorkerName) =>
-    createBlobStorageJob(storageWorkerName, versionedHash)
-  );
-
-  return {
-    name: `propagateBlob:${jobId}`,
-    queueName: workerName,
-    data: {
-      versionedHash,
-    },
-    opts: {
-      ...DEFAULT_JOB_OPTIONS,
-      jobId,
-    },
-    children,
   };
 }
 
 export async function propagateBlob(
-  versionedHash: string,
-  targetStorage: $Enums.BlobStorage,
-  { blobStorageManager }: { blobStorageManager: BlobStorageManager }
+  { versionedHash }: BlobPropagationJobData,
+  targetStorageName: $Enums.BlobStorage,
+  { blobStorageManager, prisma }: BlobPropagationWorkerParams
 ) {
-  const blobData = await blobFileManager.readFile(versionedHash);
+  let blobData: string;
 
-  const result = await blobStorageManager.storeBlob(
-    {
-      data: blobData,
-      versionedHash,
-    },
-    {
-      selectedStorages: [targetStorage],
+  try {
+    blobData = await blobStorageManager
+      .getBlobByHash(versionedHash)
+      .then(({ data }) => data);
+  } catch (err) {
+    const blobRefs = await prisma.blobDataStorageReference
+      .findMany({
+        where: {
+          blobHash: versionedHash,
+        },
+      })
+      .then((refs): BlobReference[] =>
+        refs.map((ref) => ({
+          reference: ref.dataReference,
+          storage: ref.blobStorage,
+        }))
+      );
+
+    if (!blobRefs.length) {
+      throw new Error(
+        `Failed to propagate blob with hash "${versionedHash}": no blob storage references found to retrieve data from`
+      );
     }
-  );
 
-  const storageRef = result.references[0];
+    const result = await blobStorageManager.getBlobByReferences(...blobRefs);
 
-  if (!storageRef) {
+    blobData = result.data;
+  }
+
+  const targetStorage = blobStorageManager.getStorage(targetStorageName);
+
+  if (!targetStorage) {
     throw new Error(
-      `Blob reference missing when storing ${versionedHash} in ${targetStorage}`
+      `Failed to propagate blob with hash "${versionedHash}": target storage "${targetStorageName}" not found`
     );
   }
 
+  const blobUri = await targetStorage.storeBlob(versionedHash, blobData);
+
   await prisma.blobDataStorageReference.upsert({
     create: {
-      blobStorage: targetStorage,
+      blobStorage: targetStorageName,
       blobHash: versionedHash,
-      dataReference: storageRef.reference,
+      dataReference: blobUri,
     },
     update: {
-      dataReference: storageRef.reference,
+      dataReference: blobUri,
     },
     where: {
       blobHash_blobStorage: {
         blobHash: versionedHash,
-        blobStorage: targetStorage,
+        blobStorage: targetStorageName,
       },
     },
   });
 
-  return storageRef;
+  return {
+    storage: targetStorageName,
+    reference: blobUri,
+  };
 }

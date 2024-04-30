@@ -1,11 +1,11 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
 import { env } from "../../src";
 import { SwarmStorageMock as SwarmStorage } from "../../src/__mocks__/SwarmStorage";
 import { BlobStorageError } from "../../src/errors";
-import { BLOB_DATA, BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
+import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
 
 if (!env.BEE_ENDPOINT) {
   throw new Error("BEE_ENDPOINT test env var is not set");
@@ -16,7 +16,7 @@ const BEE_ENDPOINT = env.BEE_ENDPOINT;
 describe("SwarmStorage", () => {
   let storage: SwarmStorage;
 
-  beforeAll(() => {
+  beforeEach(() => {
     storage = new SwarmStorage({
       chainId: env.CHAIN_ID,
       beeEndpoint: BEE_ENDPOINT,
@@ -51,6 +51,11 @@ describe("SwarmStorage", () => {
     testValidError(
       "should throw error if bee is not healthy",
       async () => {
+        vi.spyOn(
+          storage.swarmClient.bee,
+          "checkConnection"
+        ).mockRejectedValueOnce(new Error("Bee is not healthy: not ok"));
+
         await storage.healthCheck();
       },
       BlobStorageError,
@@ -62,6 +67,11 @@ describe("SwarmStorage", () => {
     testValidError(
       "should throw error if bee debug is not healthy",
       async () => {
+        vi.spyOn(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          storage.swarmClient.beeDebug!,
+          "getHealth"
+        ).mockRejectedValueOnce(new Error("Bee debug is not healthy: not ok"));
         await storage.healthCheck();
       },
       BlobStorageError,
@@ -73,15 +83,40 @@ describe("SwarmStorage", () => {
 
   describe("getBlob", () => {
     it("should return the contents of the blob", async () => {
+      await storage._swarmClient.bee.uploadFile("mock-batch-id", NEW_BLOB_DATA);
+
       const blob = await storage.getBlob(SWARM_REFERENCE);
 
-      expect(blob).toEqual(BLOB_DATA);
+      expect(blob).toEqual(NEW_BLOB_DATA);
     });
+  });
+
+  describe("removeBlob", () => {
+    it("should remove a blob", async () => {
+      const ref = await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
+      await storage.removeBlob(ref);
+
+      await expect(storage.getBlob(ref)).rejects.toThrowError();
+    });
+
+    testValidError(
+      "should throw a valid error if trying to remove a non-existent blob",
+      async () => {
+        await storage.removeBlob("missing-blob");
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("storeBlob", () => {
     it("should store the blob in the bucket", async () => {
-      const uploadReference = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+      const uploadReference = await storage.storeBlob(
+        NEW_BLOB_HASH,
+        NEW_BLOB_DATA
+      );
 
       expect(uploadReference).toEqual(SWARM_REFERENCE);
     });
@@ -89,7 +124,13 @@ describe("SwarmStorage", () => {
     testValidError(
       "should throw an error if no postage batches are available",
       async () => {
-        await storage.storeBlob(BLOB_HASH, BLOB_DATA);
+        vi.spyOn(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          storage.swarmClient.beeDebug!,
+          "getAllPostageBatch"
+        ).mockResolvedValueOnce([]);
+
+        await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
       },
       BlobStorageError,
       {
@@ -105,7 +146,7 @@ describe("SwarmStorage", () => {
           beeEndpoint: BEE_ENDPOINT,
         });
 
-        await newStorage.storeBlob(BLOB_HASH, BLOB_DATA);
+        await newStorage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
       },
       BlobStorageError,
       {

@@ -1,11 +1,13 @@
 import fs from "fs";
-import { beforeEach, describe, expect, it } from "vitest";
+import path from "path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { BlobStorageError, env } from "../../src";
+import { env } from "../../src/env";
+import { BlobStorageError } from "../../src/errors";
 import { FileSystemStorage } from "../../src/storages/FileSystemStorage";
-import { BLOB_DATA, BLOB_HASH, FILE_URI } from "../fixtures";
+import { NEW_BLOB_DATA, NEW_BLOB_HASH, NEW_BLOB_FILE_URI } from "../fixtures";
 
 class FileSystemStorageMock extends FileSystemStorage {
   constructor() {
@@ -19,13 +21,11 @@ class FileSystemStorageMock extends FileSystemStorage {
     });
   }
 
-  buildBlobFileName(versionedHash: string) {
-    return super.buildBlobFileName(versionedHash);
-  }
-
-  closeMock() {
+  async closeMock() {
     if (fs.existsSync(this.blobDirPath)) {
-      fs.rmdirSync(this.blobDirPath, { recursive: true });
+      await fs.promises.rm(this.blobDirPath, {
+        recursive: true,
+      });
     }
   }
 }
@@ -36,42 +36,81 @@ describe("FileSystemStorage", () => {
   beforeEach(() => {
     storage = new FileSystemStorageMock();
 
-    return () => {
-      storage.closeMock();
+    return async () => {
+      await storage.closeMock();
     };
   });
 
-  describe("constructor", () => {
-    it("should create a new instance with all configuration options", () => {
-      expect(storage).toBeDefined();
-      expect(storage.chainId).toEqual(env.CHAIN_ID);
-      expect(storage.blobDirPath).toEqual(
-        env.FILE_SYSTEM_STORAGE_PATH
-      );
+  it("should create a new instance correctly", () => {
+    expect(storage).toBeDefined();
+    expect(storage.chainId).toEqual(env.CHAIN_ID);
+    expect(storage.blobDirPath).toEqual(env.FILE_SYSTEM_STORAGE_PATH);
+  });
+
+  it("should return a config object if all required environment variables are set", () => {
+    const config = FileSystemStorage.getConfigFromEnv({
+      CHAIN_ID: env.CHAIN_ID,
+      FILE_SYSTEM_STORAGE_PATH: env.FILE_SYSTEM_STORAGE_PATH,
+    });
+
+    expect(config).toEqual({
+      chainId: env.CHAIN_ID,
+      blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
     });
   });
 
-  describe("healthCheck", () => {
-    it("should resolve successfully", async () => {
-      await expect(storage.healthCheck()).resolves.not.toThrow();
-    });
+  testValidError(
+    "should throw a valid error if the blob dir path is not set",
+    () => {
+      FileSystemStorageMock.getConfigFromEnv({});
+    },
+    BlobStorageError
+  );
+
+  it("should healthcheck correctly", async () => {
+    await expect(storage.healthCheck()).resolves.not.toThrow();
   });
 
-  describe("getBlob", () => {
-    it("should return the contents of the blob", async () => {
-      const blobFilePath = storage.buildBlobFileName(BLOB_HASH);
-      const blobDirPath = blobFilePath.slice(0, blobFilePath.lastIndexOf("/"));
+  it("should return the correct uri given a blob hash", () => {
+    const blobFilePath = storage.getBlobUri(NEW_BLOB_HASH);
 
-      fs.mkdirSync(blobDirPath, { recursive: true });
-      fs.writeFileSync(blobFilePath, BLOB_DATA, { encoding: "utf-8" });
+    const expectedBlobFilePath = path.join(
+      storage.blobDirPath,
+      `${storage.chainId.toString()}/${NEW_BLOB_HASH.slice(
+        2,
+        4
+      )}/${NEW_BLOB_HASH.slice(4, 6)}/${NEW_BLOB_HASH.slice(
+        6,
+        8
+      )}/${NEW_BLOB_HASH.slice(2)}.txt`
+    );
 
-      const blob = await storage.getBlob(BLOB_HASH);
+    expect(blobFilePath).toEqual(expectedBlobFilePath);
+  });
 
-      expect(blob).toEqual(BLOB_DATA);
+  describe("when getting a blob", () => {
+    beforeEach(() => {
+      const blobFilePath = storage.getBlobUri(NEW_BLOB_HASH);
+      const blobDirs = blobFilePath.slice(0, blobFilePath.lastIndexOf("/"));
+
+      fs.mkdirSync(blobDirs, { recursive: true });
+      fs.writeFileSync(blobFilePath, NEW_BLOB_DATA, { encoding: "utf-8" });
+
+      return () => {
+        fs.rmSync(storage.blobDirPath, { recursive: true });
+      };
+    });
+
+    it("should get it correctly", async () => {
+      const blobUri = storage.getBlobUri(NEW_BLOB_HASH);
+
+      const blob = await storage.getBlob(blobUri);
+
+      expect(blob).toEqual(NEW_BLOB_DATA);
     });
 
     testValidError(
-      "should throw a valid error if the blob file is missing",
+      "should throw a valid error when getting a non-existent blob",
       async () => {
         await storage.getBlob("missing-blob");
       },
@@ -80,36 +119,76 @@ describe("FileSystemStorage", () => {
     );
   });
 
-  describe("storeBlob", () => {
-    it("should return the correct blob file reference", async () => {
-      const expectedFilePath = `${env.FILE_SYSTEM_STORAGE_PATH}/${FILE_URI}`;
+  describe("when removing a blob", () => {
+    beforeEach(() => {
+      const blobFilePath = storage.getBlobUri(NEW_BLOB_HASH);
+      const blobDirs = blobFilePath.slice(0, blobFilePath.lastIndexOf("/"));
 
-      const filePath = await storage.storeBlob(BLOB_HASH, BLOB_DATA);
-
-      expect(filePath).toEqual(expectedFilePath);
+      fs.mkdirSync(blobDirs, { recursive: true });
+      fs.writeFileSync(blobFilePath, NEW_BLOB_DATA, { encoding: "utf-8" });
     });
+
+    it("should remove it correctly", async () => {
+      const blobUri = storage.getBlobUri(NEW_BLOB_HASH);
+
+      await storage.removeBlob(blobUri);
+
+      expect(
+        fs.existsSync(blobUri),
+        "Blob file should not exist after removal"
+      ).toBeFalsy();
+    });
+
+    testValidError(
+      "should throw a valid error if trying to remove a non-existent blob",
+      async () => {
+        await storage.removeBlob("missing-blob");
+      },
+      BlobStorageError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
-  describe("tryGetConfigFromEnv", () => {
-    testValidError(
-      "should throw a valid error if the blob dir path is not set",
-      () => {
-        FileSystemStorageMock.getConfigFromEnv({});
-      },
-      BlobStorageError
-    );
+  describe("when storing a blob", () => {
+    afterEach(() => {
+      if (fs.existsSync(NEW_BLOB_FILE_URI)) {
+        fs.rmSync(NEW_BLOB_FILE_URI);
+      }
+    });
 
-    it("should return a config object if all required environment variables are set", () => {
-      const config = FileSystemStorageMock.getConfigFromEnv({
-        CHAIN_ID: env.CHAIN_ID,
-        FILE_SYSTEM_STORAGE_PATH:
-          env.FILE_SYSTEM_STORAGE_PATH,
-      });
+    it("should store the correct blob data", async () => {
+      const blobReference = await storage.storeBlob(
+        NEW_BLOB_HASH,
+        NEW_BLOB_DATA
+      );
 
-      expect(config).toEqual({
-        chainId: env.CHAIN_ID,
-        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
-      });
+      const fileData = fs.readFileSync(blobReference, { encoding: "utf-8" });
+
+      expect(fileData).toEqual(NEW_BLOB_DATA);
+    });
+
+    it("should create the correct blob file", async () => {
+      const blobReference = await storage.storeBlob(
+        NEW_BLOB_HASH,
+        NEW_BLOB_DATA
+      );
+
+      const fileExists = fs.existsSync(blobReference);
+
+      expect(fileExists, "Blob file not created").toBeTruthy();
+    });
+
+    it("should return the correct blob reference", async () => {
+      const blobReference = await storage.storeBlob(
+        NEW_BLOB_HASH,
+        NEW_BLOB_DATA
+      );
+
+      const expectedBlobReference = storage.getBlobUri(NEW_BLOB_HASH);
+
+      expect(blobReference).toEqual(expectedBlobReference);
     });
   });
 });

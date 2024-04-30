@@ -40,7 +40,7 @@ async function fetchBlobHashesByDatePeriod(from?: string, to?: string) {
 }
 
 describe("Create command", () => {
-  const queues = context.getAllQueues();
+  const queues = context.getAllStorageQueues();
 
   it("should create jobs for a set of given blob hashes correctly", async () => {
     const blobHashes = fixtures.blobs
