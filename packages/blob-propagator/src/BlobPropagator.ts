@@ -152,7 +152,11 @@ export class BlobPropagator {
       new Set(blobs.map((b) => b.versionedHash))
     ).map((versionedHash) => {
       // @typescript-eslint/no-non-null-assertion
-      const blob = blobs.find((b) => b.versionedHash === versionedHash)!;
+      const blob = blobs.find((b) => b.versionedHash === versionedHash);
+
+      if (!blob) {
+        throw new Error(`Blob not found for versioned hash ${versionedHash}`);
+      }
 
       return blob;
     });

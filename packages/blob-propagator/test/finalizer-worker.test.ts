@@ -27,15 +27,9 @@ describe("Finalizer Worker", () => {
   beforeAll(async () => {
     blobStorageManager = await getBlobStorageManager();
 
-    const [tmpBlobStorage, tmpBlobStorageError] = await createStorageFromEnv(
+    const tmpBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
-
-    if (!tmpBlobStorage || tmpBlobStorageError) {
-      throw new Error(
-        `Error creating temporal blob storage: ${tmpBlobStorageError}`
-      );
-    }
 
     blobStorageManager.addStorage(tmpBlobStorage);
 

@@ -1,5 +1,12 @@
-import { defineProject } from "vitest/config";
+import { defineConfig, mergeConfig } from "vitest/config";
 
 import { sharedProjectConfig } from "../../vitest.shared";
 
-export default defineProject(sharedProjectConfig);
+export default mergeConfig(
+  sharedProjectConfig,
+  defineConfig({
+    test: {
+      setupFiles: ["./setup.ts"],
+    },
+  })
+);

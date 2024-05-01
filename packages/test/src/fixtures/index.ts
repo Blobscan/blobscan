@@ -8,6 +8,7 @@ import {
 import POSTGRES_DATA from "./postgres/data.json";
 
 export const fixtures = {
+  blobStoragesState: POSTGRES_DATA.blobStoragesState,
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
   blocks: POSTGRES_DATA.blocks,
   addresses: POSTGRES_DATA.addresses,
@@ -66,6 +67,7 @@ export const fixtures = {
   async create(prisma: PrismaClient) {
     await prisma.$transaction([
       prisma.blockchainSyncState.deleteMany(),
+      prisma.blobStoragesState.deleteMany(),
       prisma.blobData.deleteMany(),
       prisma.blobsOnTransactions.deleteMany(),
       prisma.blobDataStorageReference.deleteMany(),
@@ -81,6 +83,9 @@ export const fixtures = {
       prisma.transactionOverallStats.deleteMany(),
       prisma.blobOverallStats.deleteMany(),
 
+      prisma.blobStoragesState.createMany({
+        data: fixtures.blobStoragesState,
+      }),
       prisma.blockchainSyncState.createMany({
         data: fixtures.blockchainSyncState,
       }),

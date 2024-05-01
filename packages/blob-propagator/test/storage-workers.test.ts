@@ -10,12 +10,14 @@ import {
 } from "vitest";
 
 import {
+  createStorageFromEnv,
+  getBlobStorageManager,
+} from "@blobscan/blob-storage-manager";
+import {
   BlobStorage,
   BlobStorageManager,
   BlobStorageName,
   SwarmStorage,
-  createStorageFromEnv,
-  getBlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import type { BlobscanPrismaClient, Blob as DBBlob } from "@blobscan/db";
@@ -137,15 +139,9 @@ describe("Storage Workers", () => {
   beforeAll(async () => {
     const bsm = await getBlobStorageManager();
 
-    const [tmpStorage, tmpBlobStorageError] = await createStorageFromEnv(
+    const tmpStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
-
-    if (!tmpStorage || tmpBlobStorageError) {
-      throw new Error(
-        `Error creating temporal blob storage: ${tmpBlobStorageError}`
-      );
-    }
 
     bsm.addStorage(tmpStorage);
 

@@ -3,8 +3,7 @@ import path from "path";
 
 import { BlobStorage } from "../BlobStorage";
 import type { BlobStorageConfig } from "../BlobStorage";
-import type { Environment } from "../env";
-import { BlobStorageError } from "../errors";
+import { StorageCreationError } from "../errors";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface FileSystemStorageConfig extends BlobStorageConfig {
@@ -14,7 +13,7 @@ export interface FileSystemStorageConfig extends BlobStorageConfig {
 export class FileSystemStorage extends BlobStorage {
   blobDirPath: string;
 
-  constructor({ blobDirPath, chainId }: FileSystemStorageConfig) {
+  protected constructor({ blobDirPath, chainId }: FileSystemStorageConfig) {
     super(BLOB_STORAGE_NAMES.FILE_SYSTEM, chainId);
 
     this.blobDirPath = blobDirPath;
@@ -67,19 +66,19 @@ export class FileSystemStorage extends BlobStorage {
     return path.join(this.blobDirPath, blobFilePath);
   }
 
-  static getConfigFromEnv(env: Partial<Environment>): FileSystemStorageConfig {
-    const baseConfig = super.getConfigFromEnv(env);
+  static async create(config: FileSystemStorageConfig) {
+    try {
+      const storage = new FileSystemStorage(config);
+      await storage.healthCheck();
+      return storage;
+    } catch (err) {
+      const err_ = err as Error;
 
-    if (!env.FILE_SYSTEM_STORAGE_PATH) {
-      throw new BlobStorageError(
+      throw new StorageCreationError(
         this.name,
-        "No path provided. You must define variable FILE_SYSTEM_STORAGE_PATH in order to use the Filesystem storage"
+        err_.message,
+        err_.cause as Error
       );
     }
-
-    return {
-      ...baseConfig,
-      blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
-    };
   }
 }

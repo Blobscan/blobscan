@@ -1,19 +1,22 @@
 import { PrismaClient } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
-import type { Environment } from "../env";
+import { StorageCreationError } from "../errors";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
-export type PostgresStorageConfig = BlobStorageConfig;
+export interface PostgresStorageConfig extends BlobStorageConfig {
+  prisma?: PrismaClient | BlobscanPrismaClient;
+}
 
 export class PostgresStorage extends BlobStorage {
-  protected client: PrismaClient;
+  protected client: PrismaClient | BlobscanPrismaClient;
 
-  constructor({ chainId }: PostgresStorageConfig) {
+  protected constructor({ chainId, prisma }: PostgresStorageConfig) {
     super(BLOB_STORAGE_NAMES.POSTGRES, chainId);
 
-    this.client = new PrismaClient();
+    this.client = prisma ?? new PrismaClient();
   }
 
   protected _healthCheck(): Promise<void> {
@@ -22,7 +25,7 @@ export class PostgresStorage extends BlobStorage {
 
   protected _getBlob(uri: string) {
     return this.client.blobData
-      .findFirstOrThrow({
+      .findUniqueOrThrow({
         select: {
           data: true,
         },
@@ -65,11 +68,21 @@ export class PostgresStorage extends BlobStorage {
     return hash;
   }
 
-  static getConfigFromEnv(env: Partial<Environment>): PostgresStorageConfig {
-    const baseConfig = super.getConfigFromEnv(env);
+  static async create(config: PostgresStorageConfig) {
+    try {
+      const storage = new PostgresStorage(config);
 
-    return {
-      ...baseConfig,
-    };
+      await storage.healthCheck();
+
+      return storage;
+    } catch (err) {
+      const err_ = err as Error;
+
+      throw new StorageCreationError(
+        this.name,
+        err_.message,
+        err_.cause as Error
+      );
+    }
   }
 }
