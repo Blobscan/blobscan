@@ -15,10 +15,10 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/db": "^0.4.0",
-    "@blobscan/logger": "^0.0.6",
-    "@blobscan/open-telemetry": "^0.0.6",
-    "@blobscan/zod": "^0.0.4",
+    "@blobscan/db": "workspace:^0.4.0",
+    "@blobscan/logger": "workspace:^0.0.6",
+    "@blobscan/open-telemetry": "workspace:^0.0.6",
+    "@blobscan/zod": "workspace:^0.0.4",
     "@ethersphere/bee-js": "6.4.0",
     "@google-cloud/storage": "^6.10.1"
   },

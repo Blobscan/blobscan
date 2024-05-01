@@ -12,8 +12,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/logger": "^0.0.6",
-    "@blobscan/zod": "^0.0.4",
+    "@blobscan/logger": "workspace:^0.0.6",
+    "@blobscan/zod": "workspace:^0.0.4",
     "@opentelemetry/exporter-metrics-otlp-proto": "^0.41.1",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.41.1",
     "@opentelemetry/instrumentation-http": "^0.41.1",
