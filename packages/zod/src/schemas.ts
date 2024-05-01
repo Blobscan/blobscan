@@ -32,3 +32,21 @@ export const blobStorageSchema = z.enum([
   "POSTGRES",
   "SWARM",
 ] as const);
+
+export function conditionalRequiredSchema(
+  schema: z.ZodTypeAny,
+  conditionalField?: string,
+  expectedValue?: string,
+  errorMessage?: string
+) {
+  return schema.optional().refine(
+    (value) => {
+      const isConditionalFieldSet = conditionalField === expectedValue;
+
+      return !isConditionalFieldSet || !!value;
+    },
+    {
+      message: errorMessage,
+    }
+  );
+}
