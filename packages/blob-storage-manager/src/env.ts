@@ -29,10 +29,7 @@ export function parseEnv() {
         BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
         CHAIN_ID: z.coerce.number().positive().default(1),
         FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-        FILE_SYSTEM_STORAGE_PATH: requiredStorageConfigSchema(
-          "FILE_SYSTEM",
-          z.string()
-        ),
+        FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
         GOOGLE_STORAGE_BUCKET_NAME: requiredStorageConfigSchema(
           "GOOGLE",
           z.string()
