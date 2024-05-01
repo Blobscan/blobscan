@@ -61,6 +61,8 @@ export const SlidableList: FC<SlidableListProps> = function ({
           }}
         >
           <div
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}
             key={item.id}
           >
