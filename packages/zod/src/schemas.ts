@@ -33,8 +33,8 @@ export const blobStorageSchema = z.enum([
   "SWARM",
 ] as const);
 
-export function conditionalRequiredSchema(
-  schema: z.ZodTypeAny,
+export function conditionalRequiredSchema<T extends z.ZodTypeAny>(
+  schema: T,
   conditionalField?: string,
   expectedValue?: string,
   errorMessage?: string

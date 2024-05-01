@@ -4,18 +4,39 @@ import {
   createEnv,
   presetEnvOptions,
   maskSensitiveData,
+  conditionalRequiredSchema,
 } from "@blobscan/zod";
+
+import { BlobStorageName } from "./types";
+
+export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
+  storageName: BlobStorageName,
+  schema: T
+) {
+  return conditionalRequiredSchema(
+    schema,
+    process.env[`${storageName}_STORAGE_ENABLED`],
+    "true",
+    `This configuration variable is required when ${storageName} storage is enabled.`
+  );
+}
 
 export function parseEnv() {
   return createEnv({
     envOptions: {
       server: {
         BEE_DEBUG_ENDPOINT: z.string().url().optional(),
-        BEE_ENDPOINT: z.string().url().optional(),
+        BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
         CHAIN_ID: z.coerce.number().positive().default(1),
         FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-        FILE_SYSTEM_STORAGE_PATH: z.string().optional(),
-        GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
+        FILE_SYSTEM_STORAGE_PATH: requiredStorageConfigSchema(
+          "FILE_SYSTEM",
+          z.string()
+        ),
+        GOOGLE_STORAGE_BUCKET_NAME: requiredStorageConfigSchema(
+          "GOOGLE",
+          z.string()
+        ),
         GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
         GOOGLE_SERVICE_KEY: z.string().optional(),
         GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
