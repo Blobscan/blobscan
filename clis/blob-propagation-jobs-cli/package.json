@@ -16,10 +16,10 @@
     "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
-    "@blobscan/blob-propagator": "^0.1.0",
-    "@blobscan/dayjs": "^0.0.2",
-    "@blobscan/db": "^0.4.0",
-    "@blobscan/zod": "^0.0.4",
+    "@blobscan/blob-propagator": "workspace:^0.1.0",
+    "@blobscan/dayjs": "workspace:^0.0.2",
+    "@blobscan/db": "workspace:^0.4.0",
+    "@blobscan/zod": "workspace:^0.0.4",
     "bullmq": "^4.13.2",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1"
