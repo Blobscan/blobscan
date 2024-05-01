@@ -1,14 +1,14 @@
 import { Bee, BeeDebug } from "@ethersphere/bee-js";
 
-import { PrismaClient } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
-import type { Environment } from "../env";
-import { BlobStorageError } from "../errors";
+import { StorageCreationError } from "../errors";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
+  batchId: string;
   beeEndpoint: string;
   beeDebugEndpoint?: string;
 }
@@ -18,14 +18,42 @@ export type SwarmClient = {
   beeDebug?: BeeDebug;
 };
 
+async function getBatchId(prisma: BlobscanPrismaClient) {
+  try {
+    const state = await prisma.blobStoragesState.findUnique({
+      select: {
+        swarmDataId: true,
+      },
+      where: { id: 1 },
+    });
+
+    const batchId = state?.swarmDataId;
+
+    if (!batchId) {
+      throw new Error("No batch id found");
+    }
+
+    return batchId;
+  } catch (err) {
+    throw new Error("Failed to get swarm batch id from the database", {
+      cause: err,
+    });
+  }
+}
+
 export class SwarmStorage extends BlobStorage {
   _swarmClient: SwarmClient;
-  protected client: PrismaClient;
+  batchId: string;
 
-  constructor({ beeDebugEndpoint, beeEndpoint, chainId }: SwarmStorageConfig) {
+  protected constructor({
+    batchId,
+    beeDebugEndpoint,
+    beeEndpoint,
+    chainId,
+  }: SwarmStorageConfig) {
     super(BLOB_STORAGE_NAMES.SWARM, chainId);
-    this.client = new PrismaClient();
 
+    this.batchId = batchId;
     try {
       this._swarmClient = {
         bee: new Bee(beeEndpoint),
@@ -67,9 +95,8 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    const batchId = await this.#getAvailableBatch();
     const response = await this._swarmClient.bee.uploadFile(
-      batchId,
+      this.batchId,
       data,
       this.getBlobFilePath(versionedHash),
       {
@@ -92,54 +119,25 @@ export class SwarmStorage extends BlobStorage {
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
   }
 
-  async #getAvailableBatch(): Promise<string> {
-    if (!this._swarmClient.beeDebug) {
-      throw new Error("Bee debug endpoint required to get postage batches.");
-    }
+  static async create({
+    prisma,
+    ...config
+  }: Omit<SwarmStorageConfig, "batchId"> & { prisma: BlobscanPrismaClient }) {
+    try {
+      const batchId = await getBatchId(prisma);
+      const storage = new SwarmStorage({ ...config, batchId });
 
-    const state = await this.client.blobStoragesState.findUnique({
-      select: {
-        swarmDataId: true,
-      },
-      where: { id: 1 },
-    });
+      await storage.healthCheck();
 
-    if (!state?.swarmDataId) {
-      throw new Error("Swarm batch id is not configured.");
-    }
+      return storage;
+    } catch (err) {
+      const err_ = err as Error;
 
-    const batch = await this._swarmClient.beeDebug.getPostageBatch(
-      state.swarmDataId
-    );
-
-    if (!batch) {
-      throw new Error(`Swarm batch id ${state.swarmDataId} not found.`);
-    }
-    return state.swarmDataId;
-  }
-
-  protected getBeeDebug() {
-    if (!this._swarmClient.beeDebug) {
-      throw new Error("Bee debug endpoint required to get postage batches.");
-    }
-
-    return this._swarmClient.beeDebug;
-  }
-
-  static getConfigFromEnv(env: Partial<Environment>): SwarmStorageConfig {
-    const baseConfig = super.getConfigFromEnv(env);
-
-    if (!env.BEE_ENDPOINT) {
-      throw new BlobStorageError(
+      throw new StorageCreationError(
         this.name,
-        "No endpoint provided. You need to define BEE_ENDPOINT variable in order to use the Swarm storage"
+        err_.message,
+        err_.cause as Error
       );
     }
-
-    return {
-      ...baseConfig,
-      beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
-      beeEndpoint: env.BEE_ENDPOINT,
-    };
   }
 }

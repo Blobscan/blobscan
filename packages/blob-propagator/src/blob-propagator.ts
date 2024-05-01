@@ -7,7 +7,6 @@ import {
 import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import type { BlobscanPrismaClient } from "@blobscan/db";
-import { logger } from "@blobscan/logger";
 
 import { BlobPropagator } from "./BlobPropagator";
 import { env } from "./env";
@@ -23,18 +22,16 @@ async function createBlobPropagator(
       .getAllStorages()
       .find((storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE)
   ) {
-    const [tmpStorage, tmpStorageError] = await createStorageFromEnv(
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    );
-
-    if (tmpStorageError) {
-      logger.warn(
-        `${tmpStorageError.message}. Caused by: ${tmpStorageError.cause}`
+    try {
+      const tmpStorage = await createStorageFromEnv(
+        env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
       );
-    }
 
-    if (tmpStorage) {
-      blobStorageManager.addStorage(tmpStorage);
+      if (tmpStorage) {
+        blobStorageManager.addStorage(tmpStorage);
+      }
+    } catch (err) {
+      throw new Error(`Failed to create temporary blob storage: ${err}`);
     }
   }
 

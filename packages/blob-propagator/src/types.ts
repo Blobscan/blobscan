@@ -5,7 +5,7 @@ import type {
   BlobStorage,
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
-import { BlobscanPrismaClient } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 
 export type Blob = {
   versionedHash: string;

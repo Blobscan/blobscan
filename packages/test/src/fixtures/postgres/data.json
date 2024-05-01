@@ -9,6 +9,13 @@
       "lastUpperSyncedSlot": 107
     }
   ],
+  "blobStoragesState": [
+    {
+      "id": 1,
+      "swarmDataId": "batch-1",
+      "swarmDataTTL": 1000
+    }
+  ],
   "blocks": [
     {
       "hash": "blockHash001",

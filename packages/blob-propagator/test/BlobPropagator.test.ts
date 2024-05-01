@@ -2,10 +2,12 @@ import type { ConnectionOptions } from "bullmq";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
-  BlobStorageManager,
-  FileSystemStorage,
   createStorageFromEnv,
   getBlobStorageManager,
+} from "@blobscan/blob-storage-manager";
+import {
+  BlobStorageManager,
+  FileSystemStorage,
 } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
@@ -44,13 +46,11 @@ describe("BlobPropagator", () => {
 
   beforeEach(async () => {
     blobStorageManager = await getBlobStorageManager();
-    const [tmpStorage] = await createStorageFromEnv(
+    const tmpStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
 
-    if (tmpStorage) {
-      blobStorageManager.addStorage(tmpStorage);
-    }
+    blobStorageManager.addStorage(tmpStorage);
 
     tmpBlobStorage = tmpStorage as FileSystemStorage;
 

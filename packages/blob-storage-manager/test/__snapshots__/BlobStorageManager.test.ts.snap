@@ -19,7 +19,7 @@ exports[`BlobStorageManager > when getting a blob > when getting a blob by its r
 [
   [BlobStorageError: PostgresStorage failed: Failed to get blob with uri "0x6d6f60xa123bc3245cde6b2d64617461"],
   [BlobStorageError: GoogleStorage failed: Failed to get blob with uri "1/6d/6f/636b2d64617461.txt"],
-  [BlobStorageError: SwarmStorageMock failed: Failed to get blob with uri "123456789abcdef"],
+  [BlobStorageError: SwarmStorage failed: Failed to get blob with uri "123456789abcdef"],
 ]
 `;
 

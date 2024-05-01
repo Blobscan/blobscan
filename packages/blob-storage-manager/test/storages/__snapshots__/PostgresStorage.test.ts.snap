@@ -1,11 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PostgresStorage > storeBlob > should throw a valid if the blob data has not been stored 1`] = `"PostgresStorageMock failed: Failed to store blob with hash \\"0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174\\""`;
+exports[`PostgresStorage > should throw a valid error when trying to get a non-existent blob 1`] = `"PostgresStorageMock failed: Failed to get blob with uri \\"blobHash004\\""`;
 
-exports[`PostgresStorage > storeBlob > should throw a valid if the blob data has not been stored 2`] = `[Error: Failed to store blob data]`;
+exports[`PostgresStorage > should throw a valid error when trying to get a non-existent blob 2`] = `[Error: Blob data not found]`;
 
-exports[`PostgresStorage > when getting a blob > should throw a valid error if no blob data has been found 1`] = `"PostgresStorageMock failed: Failed to get blob with uri \\"blobHash004\\""`;
+exports[`PostgresStorage > should throw a valid error when trying to remove a non-existent blob 1`] = `"PostgresStorageMock failed: Failed to remove blob with uri \\"missing-blob\\""`;
 
-exports[`PostgresStorage > when getting a blob > should throw a valid error if no blob data has been found 2`] = `[Error: Blob data not found]`;
+exports[`PostgresStorage > should throw a valid if the blob data has not been stored 1`] = `"PostgresStorageMock failed: Failed to store blob with hash \\"0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174\\""`;
 
-exports[`PostgresStorage > when removing a blob > should throw a valid error if trying to remove a non-existent blob 1`] = `"PostgresStorageMock failed: Failed to remove blob with uri \\"missing-blob\\""`;
+exports[`PostgresStorage > should throw a valid if the blob data has not been stored 2`] = `[Error: Failed to store blob data]`;

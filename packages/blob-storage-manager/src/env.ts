@@ -7,7 +7,7 @@ import {
   conditionalRequiredSchema,
 } from "@blobscan/zod";
 
-import { BlobStorageName } from "./types";
+import type { BlobStorageName } from "./types";
 
 export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
   storageName: BlobStorageName,

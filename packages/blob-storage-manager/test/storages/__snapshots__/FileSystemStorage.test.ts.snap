@@ -1,7 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`FileSystemStorage > should throw a valid error if the blob dir path is not set 1`] = `"FileSystemStorageMock failed: No config variables found: no chain id provided"`;
-
 exports[`FileSystemStorage > when getting a blob > should throw a valid error when getting a non-existent blob 1`] = `"FileSystemStorageMock failed: Failed to get blob with uri \\"missing-blob\\""`;
 
 exports[`FileSystemStorage > when getting a blob > should throw a valid error when getting a non-existent blob 2`] = `[Error: Blob file missing-blob missing: Error: ENOENT: no such file or directory, open 'missing-blob']`;

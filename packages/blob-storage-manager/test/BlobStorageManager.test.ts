@@ -2,12 +2,13 @@ import { beforeAll, describe, expect, it } from "vitest";
 import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
+import { prisma } from "@blobscan/db";
 import { testValidError } from "@blobscan/test";
 
-import { GoogleStorage, PostgresStorage, env } from "../src";
 import { BlobStorageManager } from "../src/BlobStorageManager";
-import { SwarmStorageMock as SwarmStorage } from "../src/__mocks__";
+import { env } from "../src/env";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
+import { GoogleStorage, PostgresStorage, SwarmStorage } from "../src/storages";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "./fixtures";
 
 if (!env.BEE_ENDPOINT) {
@@ -38,7 +39,7 @@ describe("BlobStorageManager", () => {
     2
   )}.txt`;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
       throw new BlobStorageError(
         "GoogleStorage",
@@ -46,17 +47,18 @@ describe("BlobStorageManager", () => {
       );
     }
 
-    postgresStorage = new PostgresStorage({ chainId: env.CHAIN_ID });
-    googleStorage = new GoogleStorage({
+    postgresStorage = await PostgresStorage.create({ chainId: env.CHAIN_ID });
+    googleStorage = await GoogleStorage.create({
       chainId: env.CHAIN_ID,
       bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
       apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
       projectId: env.GOOGLE_STORAGE_PROJECT_ID,
     });
-    swarmStorage = new SwarmStorage({
+    swarmStorage = await SwarmStorage.create({
       chainId: env.CHAIN_ID,
       beeEndpoint: BEE_ENDPOINT,
       beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
+      prisma,
     });
 
     blobStorageManager = new BlobStorageManager([

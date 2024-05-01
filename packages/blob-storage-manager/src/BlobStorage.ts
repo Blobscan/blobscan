@@ -1,5 +1,4 @@
-import type { Environment } from "./env";
-import { BlobStorageError, StorageCreationError } from "./errors";
+import { BlobStorageError } from "./errors";
 import type { BlobStorageName } from "./types";
 
 export interface BlobStorageConfig {
@@ -22,17 +21,15 @@ export abstract class BlobStorage {
 
   abstract getBlobUri(hash: string): string | undefined;
 
-  async healthCheck(): Promise<"OK"> {
+  protected async healthCheck(): Promise<"OK"> {
     try {
       await this._healthCheck();
 
       return "OK";
     } catch (err) {
-      throw new BlobStorageError(
-        this.constructor.name,
-        "Storage is not reachable",
-        err as Error
-      );
+      throw new Error("Storage is not reachable", {
+        cause: err as Error,
+      });
     }
   }
 
@@ -74,80 +71,5 @@ export abstract class BlobStorage {
         err as Error
       );
     }
-  }
-
-  static async create<T extends BlobStorage, C extends BlobStorageConfig>(
-    this: new (config: C) => T,
-    config: C
-  ): Promise<T> {
-    try {
-      const blobStorage = new this(config);
-
-      await blobStorage.healthCheck();
-
-      return blobStorage;
-    } catch (err) {
-      const err_ = err as Error;
-      throw new StorageCreationError(
-        this.name,
-        err_.message,
-        err_.cause as Error
-      );
-    }
-  }
-
-  static async tryCreateFromEnv<
-    C extends BlobStorageConfig,
-    T extends BlobStorage
-  >(
-    this: {
-      new (config: C): T;
-      getConfigFromEnv(env: Partial<Environment>): C;
-    },
-    env: Partial<Environment>
-  ): Promise<[T?, StorageCreationError?]> {
-    let config: C;
-
-    try {
-      config = this.getConfigFromEnv(env);
-    } catch (err) {
-      const creationError = new StorageCreationError(
-        this.name,
-        "Failed to get config",
-        err as Error
-      );
-      return [, creationError];
-    }
-
-    try {
-      const blobStorage = new this(config);
-
-      await blobStorage.healthCheck();
-
-      return [blobStorage];
-    } catch (err) {
-      const err_ = err as Error;
-      const creationError = new StorageCreationError(
-        this.name,
-        err_.message,
-        err_.cause as Error
-      );
-      return [, creationError];
-    }
-  }
-
-  protected static getConfigFromEnv(
-    env: Partial<Environment>
-  ): BlobStorageConfig {
-    if (!env.CHAIN_ID) {
-      throw new BlobStorageError(
-        this.name,
-        `No config variables found: no chain id provided`
-      );
-    }
-
-    return {
-      chainId: env.CHAIN_ID,
-    };
   }
 }

@@ -1,9 +1,6 @@
-import { Bee, BeeDebug } from "@ethersphere/bee-js";
-import { vi } from "vitest";
+import { afterAll, vi } from "vitest";
 
-import { SWARM_REFERENCE } from "../../test/fixtures";
-import type { SwarmClient, SwarmStorageConfig } from "../storages";
-import { SwarmStorage } from "../storages";
+import { SWARM_REFERENCE } from "./test/fixtures";
 
 vi.mock("@ethersphere/bee-js", async () => {
   const blobBatches: Record<string, { reference: string; data: string }[]> = {
@@ -85,17 +82,6 @@ vi.mock("@ethersphere/bee-js", async () => {
   };
 });
 
-export class SwarmStorageMock extends SwarmStorage {
-  constructor({ beeDebugEndpoint, beeEndpoint, chainId }: SwarmStorageConfig) {
-    super({ beeDebugEndpoint, beeEndpoint, chainId });
-
-    this._swarmClient = {
-      bee: new Bee(beeEndpoint),
-      beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
-    };
-  }
-
-  get swarmClient(): SwarmClient {
-    return this._swarmClient;
-  }
-}
+afterAll(() => {
+  vi.clearAllMocks();
+});
