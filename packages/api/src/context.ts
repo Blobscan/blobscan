@@ -87,6 +87,7 @@ export function createTRPCContext(
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `Failed to create TRPC context: ${err_.message}`,
+        cause: err_.cause,
       });
     }
   };
