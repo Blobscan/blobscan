@@ -1,7 +1,7 @@
 import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { $Enums } from "@blobscan/db";
+import type { $Enums } from "@blobscan/db";
 
 import { DEFAULT_JOB_OPTIONS } from "./constants";
 import type {
