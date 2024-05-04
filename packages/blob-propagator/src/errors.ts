@@ -21,9 +21,3 @@ export class BlobPropagatorCreationError extends BlobPropagatorError {
     super("Failed to create blob propagator", cause);
   }
 }
-
-export class BlobPropagatorWorkerError extends BlobPropagatorError {
-  constructor(workerName: string, jobId: string, cause: ErrorCause) {
-    super(`Worker ${workerName} failed: Job ${jobId} failed`, cause);
-  }
-}

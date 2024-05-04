@@ -13,7 +13,7 @@ import type {
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { $Enums, BlobscanPrismaClient } from "@blobscan/db";
-import { logger } from "@blobscan/logger";
+import { createModuleLogger } from "@blobscan/logger";
 
 import {
   DEFAULT_JOB_OPTIONS,
@@ -25,8 +25,8 @@ import {
   BlobPropagatorCreationError,
   BlobPropagatorError,
   ErrorException,
-  BlobPropagatorWorkerError,
 } from "./errors";
+import { logger } from "./logger";
 import type { Blob, BlobPropagationWorker } from "./types";
 import { createBlobPropagationFlowJob } from "./utils";
 import {
@@ -109,6 +109,8 @@ export class BlobPropagator {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
     };
+
+    logger.info("Blob propagator started successfully");
   }
 
   async propagateBlob({ versionedHash, data }: Blob) {
@@ -178,7 +180,7 @@ export class BlobPropagator {
     }
   }
 
-  close() {
+  async close() {
     let teardownPromise: Promise<void> = Promise.resolve();
 
     this.storageWorkers.forEach((w) => {
@@ -187,7 +189,7 @@ export class BlobPropagator {
       });
     });
 
-    return teardownPromise
+    await teardownPromise
       .finally(async () => {
         await this.#performClosingOperation(() => this.finalizerWorker.close());
       })
@@ -203,6 +205,8 @@ export class BlobPropagator {
           this.blobPropagationFlowProducer.close()
         );
       });
+
+    logger.info("Blob propagator closed successfully.");
   }
 
   #createFlowProducer(connection?: ConnectionOptions) {
@@ -217,11 +221,13 @@ export class BlobPropagator {
     const blobPropagationFlowProducer = new FlowProducer({
       connection,
     });
+    const flowProducerLogger = createModuleLogger(
+      "blob-propagator",
+      "flow-producer"
+    );
 
     blobPropagationFlowProducer.on("error", (err) => {
-      logger.error(
-        new BlobPropagatorWorkerError("flow producer", "", err as Error)
-      );
+      flowProducerLogger.error(err);
     });
 
     return blobPropagationFlowProducer;
@@ -232,30 +238,15 @@ export class BlobPropagator {
     workerProcessor: Processor,
     opts: WorkerOptions = {}
   ) {
-    const worker = new Worker(
-      workerName,
-      async (job) => {
-        try {
-          const result = await workerProcessor(job);
-
-          return result;
-        } catch (workerError) {
-          throw new BlobPropagatorWorkerError(
-            workerName,
-            job.id ?? "",
-            workerError as Error
-          );
-        }
-      },
-      opts
-    );
+    const worker = new Worker(workerName, workerProcessor, opts);
+    const workerLogger = createModuleLogger("blob-propagator", worker.name);
 
     worker.on("completed", (job) => {
-      logger.debug(`Worker ${workerName}: Job ${job.id} completed`);
+      workerLogger.debug(`Job ${job.id} completed`);
     });
 
     worker.on("failed", (_, err) => {
-      logger.error(err);
+      workerLogger.error(err);
     });
 
     return worker;
