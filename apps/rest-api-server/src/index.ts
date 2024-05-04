@@ -14,11 +14,11 @@ import {
   metricsHandler,
   gracefulShutdown as apiGracefulShutdown,
 } from "@blobscan/api";
-import { logger } from "@blobscan/logger";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 import { StatsSyncer } from "@blobscan/stats-syncer";
 
 import { env } from "./env";
+import { logger } from "./logger";
 import { openApiDocument } from "./openapi";
 import { getNetworkDencunForkSlot } from "./utils";
 
@@ -66,9 +66,7 @@ app.use(
 );
 
 const server = app.listen(env.BLOBSCAN_API_PORT, () => {
-  logger.info(
-    `REST API server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`
-  );
+  logger.info(`Server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`);
 });
 
 async function gracefulShutdown(signal: string) {
@@ -78,7 +76,7 @@ async function gracefulShutdown(signal: string) {
     .finally(() => statsSyncer.close())
     .finally(() => {
       server.close(() => {
-        logger.debug("REST API server shut down successfully");
+        logger.debug("Server shut down successfully");
       });
     });
 }
