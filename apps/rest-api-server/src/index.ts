@@ -30,7 +30,7 @@ const statsSyncer = new StatsSyncer({
     env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
 });
 
-statsSyncer.run({
+statsSyncer.start({
   cronPatterns: {
     daily: env.STATS_SYNCER_DAILY_CRON_PATTERN,
     overall: env.STATS_SYNCER_OVERALL_CRON_PATTERN,

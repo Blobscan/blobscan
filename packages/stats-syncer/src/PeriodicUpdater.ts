@@ -2,19 +2,16 @@
 import { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import type { LoggerLevel } from "@blobscan/logger";
+import { createModuleLogger } from "@blobscan/logger";
+import type { Logger } from "@blobscan/logger";
 
-import { createRedisConnection, log } from "./utils";
+import { ErrorException, PeriodicUpdaterError } from "./errors";
+import { createRedisConnection } from "./utils";
 
 export type PeriodicUpdaterConfig = {
   name: string;
   redisUriOrConnection: string | Redis;
   updaterFn: () => Promise<void>;
-  log?: (config: {
-    level: LoggerLevel;
-    message: string;
-    updater?: string;
-  }) => void;
 };
 
 export class PeriodicUpdater {
@@ -22,6 +19,7 @@ export class PeriodicUpdater {
   protected worker: Worker;
   protected queue: Queue;
   protected updaterFn: () => Promise<void>;
+  protected logger: Logger;
 
   constructor({
     name,
@@ -30,6 +28,7 @@ export class PeriodicUpdater {
   }: PeriodicUpdaterConfig) {
     const isRedisUri = typeof redisUriOrConnection === "string";
     this.name = name;
+    this.logger = createModuleLogger("stats-syncer", this.name);
 
     let connection: Redis;
 
@@ -37,9 +36,9 @@ export class PeriodicUpdater {
       connection = createRedisConnection(redisUriOrConnection);
 
       connection.on("error", (err) => {
-        log("error", `redis connection error: ${err}`, {
-          updater: name,
-        });
+        this.logger.error(
+          new ErrorException("A Redis connection error ocurred", err)
+        );
       });
     } else {
       connection = redisUriOrConnection;
@@ -56,19 +55,15 @@ export class PeriodicUpdater {
     this.updaterFn = updaterFn;
 
     this.queue.on("error", (err) => {
-      log("error", `queue error: ${err}`, {
-        updater: name,
-      });
+      this.logger.error(new ErrorException("A queue error occurred", err));
     });
 
     this.worker.on("failed", (_, err) => {
-      log("error", `worker error: ${err.message}`, {
-        updater: name,
-      });
+      this.logger.error(new ErrorException("A worker error ocurred", err));
     });
   }
 
-  async run(cronPattern: string) {
+  async start(cronPattern: string) {
     try {
       const jobName = `${this.name}-job`;
       const repeatableJob = await this.queue.add(jobName, null, {
@@ -79,19 +74,46 @@ export class PeriodicUpdater {
 
       return repeatableJob;
     } catch (err) {
-      throw new Error(`Failed to run updater "${this.name}": ${err}`);
+      throw new PeriodicUpdaterError(
+        this.name,
+        "An error ocurred when starting updater",
+        err
+      );
     }
   }
 
-  async close() {
+  close() {
+    const teardownPromise: Promise<void> = Promise.resolve();
+
+    return teardownPromise
+      .finally(async () => {
+        await this.#performClosingOperation(() =>
+          this.worker.removeAllListeners().close(true)
+        );
+      })
+      .finally(async () => {
+        await this.#performClosingOperation(() =>
+          this.queue.obliterate({ force: true })
+        );
+      })
+      .finally(async () => {
+        await this.#performClosingOperation(() =>
+          this.queue.removeAllListeners().close()
+        );
+      });
+  }
+
+  async #performClosingOperation(operation: () => Promise<void>) {
     try {
-      await this.worker
-        .removeAllListeners()
-        .close(true)
-        .finally(() => this.queue.obliterate({ force: true }))
-        .finally(() => this.queue.removeAllListeners().close());
+      await operation();
     } catch (err) {
-      throw new Error(`Failed to close updater "${this.name}": ${err}`);
+      const err_ = new PeriodicUpdaterError(
+        this.name,
+        "An error ocurred when performing closing operation",
+        err
+      );
+
+      throw err_;
     }
   }
 }

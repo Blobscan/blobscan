@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { Redis } from "ioredis";
 
+import { ErrorException, StatsSyncerError } from "./errors";
+import { logger } from "./logger";
 import { DailyStatsUpdater } from "./updaters/DailyStatsUpdater";
 import { OverallStatsUpdater } from "./updaters/OverallStatsUpdater";
-import { createRedisConnection, log } from "./utils";
+import { createRedisConnection } from "./utils";
 
 export type StatsSyncerOptions = {
   redisUri: string;
   lowestSlot?: number;
 };
+
 export class StatsSyncer {
   protected connection: Redis;
   protected dailyStatsUpdater: DailyStatsUpdater;
@@ -18,7 +21,7 @@ export class StatsSyncer {
     const connection = createRedisConnection(redisUri);
 
     connection.on("error", (err) => {
-      log("error", `Redis connection error: ${err}`);
+      logger.error(new ErrorException("The Redis connection failed", err));
     });
 
     this.connection = connection;
@@ -28,7 +31,7 @@ export class StatsSyncer {
     });
   }
 
-  async run(config: {
+  async start(config: {
     cronPatterns: {
       daily: string;
       overall: string;
@@ -38,13 +41,20 @@ export class StatsSyncer {
       const cronPatterns = config.cronPatterns;
 
       await Promise.all([
-        this.dailyStatsUpdater.run(cronPatterns.daily),
-        this.overallStatsUpdater.run(cronPatterns.overall),
+        this.dailyStatsUpdater.start(cronPatterns.daily),
+        this.overallStatsUpdater.start(cronPatterns.overall),
       ]);
 
-      log("info", "Syncer started successfully.");
+      logger.info("Stats syncer started successfully.");
     } catch (err) {
-      throw new Error(`Failed to run stats syncer: ${err}`);
+      const err_ = new StatsSyncerError(
+        "An error occurred when starting syncer",
+        err
+      );
+
+      logger.error(err_);
+
+      throw err_;
     }
   }
 
@@ -59,9 +69,16 @@ export class StatsSyncer {
           if (this.connection.status === "ready") this.connection.disconnect();
         });
 
-      log("info", "Syncer closed successfully.");
+      logger.info("Stats syncer closed successfully.");
     } catch (err) {
-      throw new Error(`Failed to close stats syncer: ${err}`);
+      const err_ = new StatsSyncerError(
+        "An error ocurred when closing syncer",
+        err
+      );
+
+      logger.error(err_);
+
+      throw err_;
     }
   }
 }

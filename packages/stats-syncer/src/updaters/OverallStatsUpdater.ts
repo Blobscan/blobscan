@@ -4,7 +4,6 @@ import { prisma } from "@blobscan/db";
 import type { BlockNumberRange, Prisma } from "@blobscan/db";
 
 import { PeriodicUpdater } from "../PeriodicUpdater";
-import { log } from "../utils";
 
 export type OverallStatsUpdaterOptions = {
   batchSize?: number;
@@ -23,7 +22,7 @@ export class OverallStatsUpdater extends PeriodicUpdater {
     redisUriOrConnection: string | Redis,
     options: OverallStatsUpdaterOptions = {}
   ) {
-    const name = "overall-stats-syncer";
+    const name = "overall";
     super({
       name,
       redisUriOrConnection,
@@ -55,8 +54,7 @@ export class OverallStatsUpdater extends PeriodicUpdater {
           isUnset(lastFinalizedBlock) ||
           lastLowerSyncedSlot !== lowestSlot
         ) {
-          log(
-            "debug",
+          this.logger.debug(
             "Skipping stats aggregation. Chain hasn't been fully indexed yet"
           );
 
@@ -69,12 +67,8 @@ export class OverallStatsUpdater extends PeriodicUpdater {
         };
 
         if (blockRange.from >= blockRange.to) {
-          log(
-            "debug",
-            `Skipping stats aggregation. No new finalized blocks (last aggregated block: ${lastAggregatedBlock})`,
-            {
-              updater: name,
-            }
+          this.logger.debug(
+            `Skipping stats aggregation. No new finalized blocks (last aggregated block: ${lastAggregatedBlock})`
           );
 
           return;
@@ -113,24 +107,16 @@ export class OverallStatsUpdater extends PeriodicUpdater {
             const formattedFromBlock = batchBlockRange.from.toLocaleString();
             const formattedToBlock = batchBlockRange.to.toLocaleString();
 
-            log(
-              "debug",
+            this.logger.debug(
               `(batch ${
                 i + 1
-              }/${batches}) Data from block ${formattedFromBlock} up to ${formattedToBlock} aggregated successfully`,
-              {
-                updater: name,
-              }
+              }/${batches}) Data from block ${formattedFromBlock} up to ${formattedToBlock} aggregated successfully`
             );
           }
         }
 
-        log(
-          "info",
-          `Data from block ${blockRange.from.toLocaleString()} up to ${blockRange.to.toLocaleString()} aggregated successfully.`,
-          {
-            updater: name,
-          }
+        this.logger.info(
+          `Data from block ${blockRange.from.toLocaleString()} up to ${blockRange.to.toLocaleString()} aggregated successfully.`
         );
       },
     });

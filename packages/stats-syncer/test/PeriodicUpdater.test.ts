@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { testValidError } from "@blobscan/test";
+
 import { PeriodicUpdater } from "../src/PeriodicUpdater";
 import type { PeriodicUpdaterConfig } from "../src/PeriodicUpdater";
+import { PeriodicUpdaterError } from "../src/errors";
 
 class PeriodicUpdaterMock extends PeriodicUpdater {
   constructor({
@@ -50,7 +53,7 @@ describe("PeriodicUpdater", () => {
       const queue = periodicUpdater.getQueue();
       const cronPattern = "* * * * *";
 
-      await periodicUpdater.run(cronPattern);
+      await periodicUpdater.start(cronPattern);
 
       const jobs = await queue.getRepeatableJobs();
 
@@ -60,17 +63,18 @@ describe("PeriodicUpdater", () => {
       );
     });
 
-    it("should throw a valid error when failing to run", async () => {
-      const queue = periodicUpdater.getQueue();
+    testValidError(
+      "should throw a valid error when failing to run",
+      async () => {
+        const queue = periodicUpdater.getQueue();
 
-      vi.spyOn(queue, "add").mockRejectedValueOnce(new Error("Queue error"));
+        vi.spyOn(queue, "add").mockRejectedValueOnce(new Error("Queue error"));
 
-      await expect(
-        periodicUpdater.run("* * * * *")
-      ).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"Failed to run updater \\"test-updater\\": Error: Queue error"'
-      );
-    });
+        await periodicUpdater.start("* * * * *");
+      },
+      PeriodicUpdaterError,
+      { checkCause: true }
+    );
   });
 
   describe("when closing an updater", () => {
@@ -98,21 +102,24 @@ describe("PeriodicUpdater", () => {
     });
   });
 
-  it("should throw a valid error when failing to close", async () => {
-    const queue = periodicUpdater.getQueue();
-    const worker = periodicUpdater.getWorker();
+  testValidError(
+    "should throw a valid error when failing to close it",
+    async () => {
+      const queue = periodicUpdater.getQueue();
+      const worker = periodicUpdater.getWorker();
 
-    vi.spyOn(queue, "close").mockRejectedValueOnce(
-      new Error("Queue closing error")
-    );
-    vi.spyOn(worker, "close").mockRejectedValueOnce(
-      new Error("Worker closing error")
-    );
+      vi.spyOn(queue, "close").mockRejectedValueOnce(
+        new Error("Queue closing error")
+      );
+      vi.spyOn(worker, "close").mockRejectedValueOnce(
+        new Error("Worker closing error")
+      );
 
-    await expect(
-      periodicUpdater.close()
-    ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"Failed to close updater \\"test-updater\\": Error: Queue closing error"'
-    );
-  });
+      await periodicUpdater.close();
+    },
+    PeriodicUpdaterError,
+    {
+      checkCause: true,
+    }
+  );
 });

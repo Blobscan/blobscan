@@ -4,7 +4,7 @@ import { normalizeDailyDate, normalizeDate, prisma } from "@blobscan/db";
 import type { PrismaPromise, RawDatePeriod } from "@blobscan/db";
 
 import { PeriodicUpdater } from "../PeriodicUpdater";
-import { formatDate, log } from "../utils";
+import { formatDate } from "../utils";
 
 interface DailyStatsModel {
   findFirst: (args: {
@@ -22,7 +22,7 @@ const dailyStatsModels: Record<string, DailyStatsModel> = {
 
 export class DailyStatsUpdater extends PeriodicUpdater {
   constructor(redisUriOrConnection: string | Redis) {
-    const name = "daily-stats-syncer";
+    const name = "daily";
     super({
       name,
       redisUriOrConnection,
@@ -46,9 +46,9 @@ export class DailyStatsUpdater extends PeriodicUpdater {
         const lastIndexedBlock = await prisma.block.findLatest();
 
         if (!lastIndexedBlock) {
-          log("debug", "Skipping stats aggregation. No blocks indexed yet", {
-            updater: name,
-          });
+          this.logger.debug(
+            "Skipping stats aggregation. No blocks indexed yet"
+          );
 
           return;
         }
@@ -73,9 +73,7 @@ export class DailyStatsUpdater extends PeriodicUpdater {
             lastDay ? lastDay?.isSame(targetDay, "day") : false
           )
         ) {
-          log("debug", `Skipping stats aggregation. Already up to date`, {
-            updater: name,
-          });
+          this.logger.debug(`Skipping stats aggregation. Already up to date`);
 
           return;
         }
@@ -103,14 +101,10 @@ export class DailyStatsUpdater extends PeriodicUpdater {
           )
           .join(", ");
 
-        log(
-          "info",
+        this.logger.info(
           `Daily data up to day ${formatDate(
             targetDay
-          )} aggregated. ${results} successfully.`,
-          {
-            updater: name,
-          }
+          )} aggregated. ${results} successfully.`
         );
       },
     });
