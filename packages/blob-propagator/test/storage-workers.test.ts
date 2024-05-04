@@ -13,7 +13,7 @@ import {
   createStorageFromEnv,
   getBlobStorageManager,
 } from "@blobscan/blob-storage-manager";
-import {
+import type {
   BlobStorage,
   BlobStorageManager,
   BlobStorageName,

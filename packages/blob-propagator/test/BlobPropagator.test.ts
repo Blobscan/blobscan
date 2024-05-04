@@ -2,17 +2,21 @@ import type { ConnectionOptions } from "bullmq";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
+  PostgresStorage,
   createStorageFromEnv,
   getBlobStorageManager,
 } from "@blobscan/blob-storage-manager";
-import {
-  BlobStorageManager,
-  FileSystemStorage,
-} from "@blobscan/blob-storage-manager";
+import { BlobStorageManager } from "@blobscan/blob-storage-manager";
+import type { FileSystemStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
+import { testValidError } from "@blobscan/test";
 
 import { env } from "../src";
 import { BlobPropagator } from "../src/BlobPropagator";
+import {
+  BlobPropagatorCreationError,
+  BlobPropagatorError,
+} from "../src/errors";
 import type { Blob } from "../src/types";
 
 export class MockedBlobPropagator extends BlobPropagator {
@@ -26,6 +30,10 @@ export class MockedBlobPropagator extends BlobPropagator {
 
   getBlobPropagationFlowProducer() {
     return this.blobPropagationFlowProducer;
+  }
+
+  getTemporaryBlobStorage() {
+    return this.temporaryBlobStorage;
   }
 }
 
@@ -68,41 +76,165 @@ describe("BlobPropagator", () => {
     await blobPropagator.close();
   });
 
-  it("should close correctly", async () => {
-    const testBlobPropagator = new MockedBlobPropagator({
-      blobStorageManager,
-      prisma,
-      tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-      workerOptions: {
-        connection,
-      },
+  testValidError(
+    "should throw a valid error when creating a blob propagator with no blob storages",
+    async () => {
+      const postgresStorage = await PostgresStorage.create({
+        chainId: 1,
+        prisma,
+      });
+      const emptyBlobStorageManager = new BlobStorageManager([postgresStorage]);
+
+      emptyBlobStorageManager.removeStorage("POSTGRES");
+
+      new MockedBlobPropagator({
+        blobStorageManager: emptyBlobStorageManager,
+        prisma,
+        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        workerOptions: {
+          connection,
+        },
+      });
+    },
+    BlobPropagatorCreationError,
+    {
+      checkCause: true,
+    }
+  );
+
+  testValidError(
+    "should throw a valid error when creating a blob propagator with no temporary blob storage",
+    async () => {
+      const postgresStorage = await PostgresStorage.create({
+        chainId: 1,
+        prisma,
+      });
+      const noTmpStorageBlobStorageManager = new BlobStorageManager([
+        postgresStorage,
+      ]);
+
+      new MockedBlobPropagator({
+        blobStorageManager: noTmpStorageBlobStorageManager,
+        prisma,
+        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        workerOptions: {
+          connection,
+        },
+      });
+    },
+    BlobPropagatorCreationError,
+    {
+      checkCause: true,
+    }
+  );
+
+  describe("when closing", () => {
+    let closingBlobPropagator: MockedBlobPropagator;
+
+    beforeEach(() => {
+      closingBlobPropagator = new MockedBlobPropagator({
+        blobStorageManager,
+        prisma,
+        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        workerOptions: {
+          connection,
+        },
+      });
     });
-    // Flow producer doesn't have a running state, so we need to spy on its close method
-    const flowProducer = testBlobPropagator.getBlobPropagationFlowProducer();
-    const flowProducerCloseSpy = vi.spyOn(flowProducer, "close");
 
-    await testBlobPropagator.close();
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
-    const finalizerClosed = !testBlobPropagator
-      .getFinalizerWorker()
-      .isRunning();
-    const storageWorkersClosed = Object.values(
-      testBlobPropagator.getStorageWorkers()
-    ).every((worker) => !worker.isRunning());
+    it("should close correctly", async () => {
+      // Flow producer doesn't have a running state, so we need to spy on its close method
+      const flowProducer =
+        closingBlobPropagator.getBlobPropagationFlowProducer();
+      const flowProducerCloseSpy = vi.spyOn(flowProducer, "close");
 
-    expect(finalizerClosed, "Finalizer worker still running").toBe(true);
-    expect(storageWorkersClosed, "Storage workers still running").toBe(true);
-    expect(
-      flowProducerCloseSpy,
-      "Flow producer still running"
-    ).toHaveBeenCalled();
+      await closingBlobPropagator.close();
+
+      const finalizerClosed = !closingBlobPropagator
+        .getFinalizerWorker()
+        .isRunning();
+      const storageWorkersClosed = Object.values(
+        closingBlobPropagator.getStorageWorkers()
+      ).every((worker) => !worker.isRunning());
+
+      expect(finalizerClosed, "Finalizer worker still running").toBe(true);
+      expect(storageWorkersClosed, "Storage workers still running").toBe(true);
+      expect(
+        flowProducerCloseSpy,
+        "Flow producer still running"
+      ).toHaveBeenCalled();
+    });
+
+    testValidError(
+      "should throw a valid error when the storage worker operation fails",
+      async () => {
+        const storageWorker = closingBlobPropagator.getStorageWorkers()[0];
+
+        if (!storageWorker) {
+          throw new Error("Storage worker not found ");
+        }
+
+        vi.spyOn(storageWorker, "close").mockImplementationOnce(() => {
+          throw new Error("Closing storage worker failed");
+        });
+
+        await closingBlobPropagator.close();
+      },
+      BlobPropagatorError,
+      {
+        checkCause: true,
+      }
+    );
+
+    testValidError(
+      "should throw a valid error when the finalizer worker closing operation fails",
+      async () => {
+        const finalizer = closingBlobPropagator.getFinalizerWorker();
+
+        vi.spyOn(finalizer, "close").mockImplementationOnce(() => {
+          throw new Error("Closing finalizer worker failed");
+        });
+
+        await closingBlobPropagator.close();
+      },
+      BlobPropagatorError,
+      {
+        checkCause: true,
+      }
+    );
+
+    testValidError(
+      "should throw a valid error when the flow producer closing operation fails",
+      async () => {
+        const flowProducer =
+          closingBlobPropagator.getBlobPropagationFlowProducer();
+
+        vi.spyOn(flowProducer, "close").mockImplementationOnce(() => {
+          throw new Error("Closing flow producer failed");
+        });
+
+        await closingBlobPropagator.close();
+      },
+      BlobPropagatorError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
       const blobUri = tmpBlobStorage.getBlobUri(blob.versionedHash);
 
-      tmpBlobStorage.removeBlob(blobUri);
+      try {
+        await tmpBlobStorage.removeBlob(blobUri);
+      } catch (_) {
+        /* empty */
+      }
     });
 
     it("should store blob data on temporary blob storage", async () => {
@@ -176,6 +308,23 @@ describe("BlobPropagator", () => {
         }
       `);
     });
+
+    testValidError(
+      "should throw a valid error if the blob failed to be stored in the temporary blob storage",
+      async () => {
+        const temporaryBlobStorage = blobPropagator.getTemporaryBlobStorage();
+
+        vi.spyOn(temporaryBlobStorage, "storeBlob").mockImplementationOnce(
+          () => {
+            throw new Error("Internal temporary blob storage error");
+          }
+        );
+
+        await blobPropagator.propagateBlob(blob);
+      },
+      BlobPropagatorError,
+      { checkCause: true }
+    );
   });
 
   describe("when propagating multiple blobs", () => {
@@ -195,7 +344,11 @@ describe("BlobPropagator", () => {
         blobs.map(async (b) => {
           const blobUri = tmpBlobStorage.getBlobUri(b.versionedHash);
 
-          await tmpBlobStorage.removeBlob(blobUri);
+          try {
+            await tmpBlobStorage.removeBlob(blobUri);
+          } catch (_) {
+            /* empty */
+          }
         })
       );
     });
@@ -226,5 +379,21 @@ describe("BlobPropagator", () => {
 
       expect(createdFlowJobs).toMatchSnapshot();
     });
+
+    testValidError(
+      "should throw a valid error if some of the blobs failed to be stored in the temporary blob storage",
+      async () => {
+        const temporaryBlobStorage = blobPropagator.getTemporaryBlobStorage();
+        vi.spyOn(temporaryBlobStorage, "storeBlob").mockImplementation(() => {
+          throw new Error("Internal temporal blob storage error");
+        });
+
+        await blobPropagator.propagateBlobs(blobs);
+      },
+      BlobPropagatorError,
+      {
+        checkCause: true,
+      }
+    );
   });
 });

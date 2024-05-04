@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { testValidError } from "@blobscan/test";
+
 import { StatsSyncer } from "../src/StatsSyncer";
+import { StatsSyncerError } from "../src/errors";
 
 class StatsSyncerMock extends StatsSyncer {
   constructor(redisUri = "redis://localhost:6379/1") {
@@ -32,40 +35,50 @@ describe("StatsSyncer", () => {
   });
 
   describe("when running the stats syncer", () => {
-    it("should run updaters correctly", async () => {
-      const dailyStatsUpdaterRunSpy = vi.spyOn(
+    it("should start updaters correctly", async () => {
+      const dailyStatsUpdaterStartSpy = vi.spyOn(
         statsSyncer.getDailyStatsUpdater(),
-        "run"
+        "start"
       );
-      const overallStatsUpdaterRunSpy = vi.spyOn(
+      const overallStatsUpdaterStartSpy = vi.spyOn(
         statsSyncer.getOverallStatsUpdater(),
-        "run"
+        "start"
       );
 
-      await statsSyncer.run({
+      await statsSyncer.start({
         cronPatterns: { daily: "* * * * *", overall: "* * * * *" },
       });
 
-      expect(dailyStatsUpdaterRunSpy).toHaveBeenCalledWith("* * * * *");
-      expect(overallStatsUpdaterRunSpy).toHaveBeenCalledWith("* * * * *");
+      expect(dailyStatsUpdaterStartSpy).toHaveBeenCalledWith("* * * * *");
+      expect(overallStatsUpdaterStartSpy).toHaveBeenCalledWith("* * * * *");
     });
 
-    it("should throw a valid error when failing to run a stats syncer", async () => {
-      const cronPatterns = {
-        daily: "* * * * *",
-        overall: "* * * * *",
-      };
+    testValidError(
+      "should throw a valid error when failing to start it",
+      async () => {
+        const cronPatterns = {
+          daily: "* * * * *",
+          overall: "* * * * *",
+        };
 
-      vi.spyOn(statsSyncer.getDailyStatsUpdater(), "run").mockRejectedValueOnce(
-        new Error("Daily stats updater error")
-      );
+        vi.spyOn(
+          statsSyncer.getDailyStatsUpdater(),
+          "start"
+        ).mockRejectedValueOnce(
+          new Error(
+            "Something happened when trying to start daily stats updater"
+          )
+        );
 
-      await expect(
-        statsSyncer.run({ cronPatterns })
-      ).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"Failed to run stats syncer: Error: Daily stats updater error"'
-      );
-    });
+        await statsSyncer.start({
+          cronPatterns,
+        });
+      },
+      StatsSyncerError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("when closing the stats syncer", () => {
@@ -89,18 +102,19 @@ describe("StatsSyncer", () => {
       expect(connectionCloseSpy).toHaveBeenCalledOnce();
     });
 
-    it("should throw a valid error when failing to close the stats syncer", async () => {
-      const closeStatsSyncer = new StatsSyncerMock();
-      const dailyStatsUpdater = closeStatsSyncer.getDailyStatsUpdater();
-      vi.spyOn(dailyStatsUpdater, "close").mockRejectedValueOnce(
-        new Error("Some daily stats updater closing error")
-      );
+    testValidError(
+      "should throw a valid error when failing to close it",
+      async () => {
+        const closeStatsSyncer = new StatsSyncerMock();
+        const dailyStatsUpdater = closeStatsSyncer.getDailyStatsUpdater();
+        vi.spyOn(dailyStatsUpdater, "close").mockRejectedValueOnce(
+          new Error("Some daily stats updater closing error")
+        );
 
-      await expect(
-        closeStatsSyncer.close()
-      ).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"Failed to close stats syncer: Error: Some daily stats updater closing error"'
-      );
-    });
+        await closeStatsSyncer.close();
+      },
+      StatsSyncerError,
+      { checkCause: true }
+    );
   });
 });
