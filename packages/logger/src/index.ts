@@ -11,23 +11,26 @@ function buildErrorCause(err: Error) {
 
   return msg;
 }
-const colors = {
-  error: "red",
-  warn: "yellow",
-  info: "green",
-  http: "magenta",
-  debug: "white",
-};
 
-const colorFormat = winston.format.colorize();
+const colorFormat = winston.format.colorize({
+  colors: {
+    error: "red",
+    warn: "yellow",
+    info: "green",
+    http: "magenta",
+    debug: "white",
+    module: "blue",
+  },
+});
 
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
-  winston.format.printf(({ timestamp, level, message, cause }) => {
-    let msg = `${timestamp} ${colorFormat.colorize(
-      level,
-      level
-    )}: ${colorFormat.colorize(level, message)}`;
+  winston.format.printf(({ timestamp, level, message, cause, module }) => {
+    const formattedLevel = colorFormat.colorize(level, level.toUpperCase());
+    const formattedModule = colorFormat.colorize("module", module ?? "app");
+    const formattedMessage = colorFormat.colorize(level, message);
+
+    let msg = `${timestamp} ${formattedLevel} ${formattedModule}: ${formattedMessage}`;
 
     if (cause instanceof Error) {
       msg += colorFormat.colorize(level, buildErrorCause(cause));
@@ -37,14 +40,18 @@ const format = winston.format.combine(
   })
 );
 
-winston.addColors(colors);
-
 export const logger = winston.createLogger({
   level: env.LOG_LEVEL,
   format,
   transports: [new winston.transports.Console()],
   silent: env.TEST,
 });
+
+export function createModuleLogger(...moduleParts: string[]) {
+  const module = moduleParts.join(":");
+
+  return logger.child({ module });
+}
 
 export type Logger = typeof logger;
 
