@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
-import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
@@ -19,6 +18,7 @@ import { StatsSyncer } from "@blobscan/stats-syncer";
 
 import { env } from "./env";
 import { logger } from "./logger";
+import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
 import { getNetworkDencunForkSlot } from "./utils";
 
@@ -41,7 +41,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "2mb" }));
-app.use(morgan("tiny"));
+app.use(morganMiddleware);
 
 app.get("/metrics", metricsHandler);
 
