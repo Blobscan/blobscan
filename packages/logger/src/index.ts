@@ -25,7 +25,8 @@ const colorFormat = winston.format.colorize({
 
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-  winston.format.printf(({ timestamp, level, message, cause, module }) => {
+  winston.format.printf((info) => {
+    const { timestamp, level, message, cause, module } = info;
     const formattedLevel = colorFormat.colorize(level, level.toUpperCase());
     const formattedModule = colorFormat.colorize("module", module ?? "app");
     const formattedMessage = colorFormat.colorize(level, message);
@@ -40,17 +41,24 @@ const format = winston.format.combine(
   })
 );
 
-export const logger = winston.createLogger({
-  level: env.LOG_LEVEL,
-  format,
-  transports: [new winston.transports.Console()],
-  silent: env.TEST,
-});
+function createLogger(opts: winston.LoggerOptions = {}) {
+  return winston.createLogger({
+    level: env.LOG_LEVEL,
+    format,
+    transports: [new winston.transports.Console()],
+    silent: env.TEST,
+    ...opts,
+  });
+}
+
+export const logger = createLogger();
 
 export function createModuleLogger(...moduleParts: string[]) {
   const module = moduleParts.join(":");
 
-  return logger.child({ module });
+  return createLogger({
+    defaultMeta: { module },
+  });
 }
 
 export type Logger = typeof logger;
