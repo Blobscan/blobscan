@@ -1,5 +1,18 @@
 # @blobscan/rest-api-server
 
+## 0.3.8
+
+### Patch Changes
+
+- [#395](https://github.com/Blobscan/blobscan/pull/395) [`c928ae0`](https://github.com/Blobscan/blobscan/commit/c928ae0ef914944c4dc3c27b0b7b4e725a92bcfd) Thanks [@PJColombo](https://github.com/PJColombo)! - Used custom logger
+
+- Updated dependencies [[`0a61aec`](https://github.com/Blobscan/blobscan/commit/0a61aec545fa1b3b7a44b2a7c9e9a8e8250c1362), [`b1141b1`](https://github.com/Blobscan/blobscan/commit/b1141b1ca369ee8c3d02c4cb3dd4e47ebca08120), [`72e4b96`](https://github.com/Blobscan/blobscan/commit/72e4b963e2e735156032467554e6cc3cd311097e), [`737272d`](https://github.com/Blobscan/blobscan/commit/737272d6312bd478b1662133b875b50457694f10), [`ffbb8e6`](https://github.com/Blobscan/blobscan/commit/ffbb8e6074878e30c9aa5ac8e774dbbb8060fb96), [`7bb6f49`](https://github.com/Blobscan/blobscan/commit/7bb6f4912c89d0dd436e325677c801200e32edba), [`57723f3`](https://github.com/Blobscan/blobscan/commit/57723f351f4a63a5b86558e447ee5d6fe2f947c8), [`514784a`](https://github.com/Blobscan/blobscan/commit/514784a743937dc2d1af1ed533e90fef3b3aa057), [`1cce838`](https://github.com/Blobscan/blobscan/commit/1cce8387e28488946b83c5a8a36a2e0db1d595c9), [`5ffb8ca`](https://github.com/Blobscan/blobscan/commit/5ffb8ca355bfcd02393a3b40e89b9d7a1a5a05e8), [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5)]:
+  - @blobscan/logger@0.1.0
+  - @blobscan/zod@0.1.0
+  - @blobscan/api@0.8.1
+  - @blobscan/open-telemetry@0.0.7
+  - @blobscan/stats-syncer@0.1.7
+
 ## 0.3.7
 
 ### Patch Changes

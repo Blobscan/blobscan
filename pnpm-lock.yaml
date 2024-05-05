@@ -163,19 +163,19 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.8.0
+        specifier: workspace:^0.8.1
         version: link:../../packages/api
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../../packages/logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../../packages/open-telemetry
       '@blobscan/stats-syncer':
-        specifier: workspace:^0.1.6
+        specifier: workspace:^0.1.7
         version: link:../../packages/stats-syncer
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../../packages/zod
       '@opentelemetry/instrumentation-express':
         specifier: ^0.33.0
@@ -218,13 +218,13 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.8.0
+        specifier: workspace:^0.8.1
         version: link:../../packages/api
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../../packages/open-telemetry
       '@fontsource/inter':
         specifier: ^4.5.15
@@ -351,16 +351,16 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.2.0
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../../packages/db
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../../packages/zod
       bullmq:
         specifier: ^4.13.2
@@ -378,10 +378,10 @@ importers:
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../../packages/db
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../../packages/logger
       command-line-args:
         specifier: ^5.2.1
@@ -393,25 +393,25 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.2.0
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.2.0
+        specifier: workspace:^0.3.0
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../db
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../zod
       '@trpc/server':
         specifier: ^10.43.2
@@ -433,7 +433,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -454,19 +454,19 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.2.0
+        specifier: workspace:^0.3.0
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../db
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../zod
       bullmq:
         specifier: ^4.13.2
@@ -478,16 +478,16 @@ importers:
   packages/blob-storage-manager:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../db
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../zod
       '@ethersphere/bee-js':
         specifier: 6.4.0
@@ -508,10 +508,10 @@ importers:
         specifier: workspace:^0.0.2
         version: link:../dayjs
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../open-telemetry
       '@prisma/client':
         specifier: ^5.5.2
@@ -530,7 +530,7 @@ importers:
   packages/logger:
     dependencies:
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../zod
       winston:
         specifier: ^3.10.0
@@ -539,10 +539,10 @@ importers:
   packages/open-telemetry:
     dependencies:
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       '@blobscan/zod':
-        specifier: workspace:^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../zod
       '@opentelemetry/exporter-metrics-otlp-proto':
         specifier: ^0.41.1
@@ -575,10 +575,10 @@ importers:
         specifier: workspace:^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.5.0
         version: link:../db
       '@blobscan/logger':
-        specifier: workspace:^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       bullmq:
         specifier: ^4.13.2
