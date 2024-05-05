@@ -24,7 +24,7 @@ const colorFormat = winston.format.colorize({
 });
 
 const format = winston.format.combine(
-  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
+  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf(({ timestamp, level, message, cause, module }) => {
     const formattedLevel = colorFormat.colorize(level, level.toUpperCase());
     const formattedModule = colorFormat.colorize("module", module ?? "app");
