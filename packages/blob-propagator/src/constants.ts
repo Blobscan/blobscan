@@ -2,6 +2,8 @@ import type { JobsOptions, WorkerOptions } from "bullmq";
 
 import { $Enums } from "@blobscan/db";
 
+import { env } from "./env";
+
 export const STORAGE_WORKER_NAMES = Object.values($Enums.BlobStorage).reduce<
   Record<$Enums.BlobStorage, string>
 >(
@@ -25,5 +27,6 @@ export const DEFAULT_JOB_OPTIONS: Omit<JobsOptions, "repeat"> = {
 export const DEFAULT_WORKER_OPTIONS: WorkerOptions = {
   autorun: true,
   useWorkerThreads: false,
-  removeOnComplete: { count: 1000 },
+  removeOnComplete: { age: env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE },
+  removeOnFail: { age: env.BLOB_PROPAGATOR_FAILED_JOBS_AGE },
 };
