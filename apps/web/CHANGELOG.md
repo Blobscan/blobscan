@@ -1,5 +1,15 @@
 # @blobscan/web
 
+## 0.9.2
+
+### Patch Changes
+
+- [#387](https://github.com/Blobscan/blobscan/pull/387) [`7e12a3e`](https://github.com/Blobscan/blobscan/commit/7e12a3e3b17c59750bdcd0fcede4bc67c9b23211) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new rollups badges and icons
+
+- Updated dependencies [[`737272d`](https://github.com/Blobscan/blobscan/commit/737272d6312bd478b1662133b875b50457694f10), [`ffbb8e6`](https://github.com/Blobscan/blobscan/commit/ffbb8e6074878e30c9aa5ac8e774dbbb8060fb96), [`57723f3`](https://github.com/Blobscan/blobscan/commit/57723f351f4a63a5b86558e447ee5d6fe2f947c8), [`1cce838`](https://github.com/Blobscan/blobscan/commit/1cce8387e28488946b83c5a8a36a2e0db1d595c9), [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5)]:
+  - @blobscan/api@0.8.1
+  - @blobscan/open-telemetry@0.0.7
+
 ## 0.9.1
 
 ### Patch Changes

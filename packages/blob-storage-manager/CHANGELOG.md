@@ -1,5 +1,33 @@
 # @blobscan/blob-storage-manager
 
+## 0.3.0
+
+### Minor Changes
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`67a7472`](https://github.com/Blobscan/blobscan/commit/67a7472e14e4488a9425016e11fd52f963b570ef) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed to add and remove storages to/from the blob storage manager after instantiation
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`ba066e0`](https://github.com/Blobscan/blobscan/commit/ba066e0db6b19ae1056ecc17c3b42acc64627a7f) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob removal logic to blob storages
+
+- [#388](https://github.com/Blobscan/blobscan/pull/388) [`40824c2`](https://github.com/Blobscan/blobscan/commit/40824c26f6d8a360592c812bd1afe505d9fc4f6d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Retrieved swarm storage batch ID from database
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`a5bc257`](https://github.com/Blobscan/blobscan/commit/a5bc257090fd6c832b3379b56281c82db5936a01) Thanks [@PJColombo](https://github.com/PJColombo)! - Exported create storage from env vars function
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving blob data by hash in addition to by its references.
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`db1d90a`](https://github.com/Blobscan/blobscan/commit/db1d90a95ebd633620c667d96c42a6a2ea6ef814) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the option to select specific storages when storing a blob.
+
+### Patch Changes
+
+- [#379](https://github.com/Blobscan/blobscan/pull/379) [`db42b53`](https://github.com/Blobscan/blobscan/commit/db42b539582d2b9a19339bd3b9b610d5d90b71b9) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Bumped bee client version to use non-deferred uploads
+
+- [#388](https://github.com/Blobscan/blobscan/pull/388) [`40824c2`](https://github.com/Blobscan/blobscan/commit/40824c26f6d8a360592c812bd1afe505d9fc4f6d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Decoupled blob storage creation from enviroment variables
+
+- Updated dependencies [[`0a61aec`](https://github.com/Blobscan/blobscan/commit/0a61aec545fa1b3b7a44b2a7c9e9a8e8250c1362), [`b1141b1`](https://github.com/Blobscan/blobscan/commit/b1141b1ca369ee8c3d02c4cb3dd4e47ebca08120), [`72e4b96`](https://github.com/Blobscan/blobscan/commit/72e4b963e2e735156032467554e6cc3cd311097e), [`7bb6f49`](https://github.com/Blobscan/blobscan/commit/7bb6f4912c89d0dd436e325677c801200e32edba), [`514784a`](https://github.com/Blobscan/blobscan/commit/514784a743937dc2d1af1ed533e90fef3b3aa057), [`5ffb8ca`](https://github.com/Blobscan/blobscan/commit/5ffb8ca355bfcd02393a3b40e89b9d7a1a5a05e8), [`89df217`](https://github.com/Blobscan/blobscan/commit/89df217e817727a710a7c3217ad7be4750de93ce), [`b4e8d2c`](https://github.com/Blobscan/blobscan/commit/b4e8d2cd63d4f2b307f21848c23da14acc265ab0)]:
+  - @blobscan/logger@0.1.0
+  - @blobscan/zod@0.1.0
+  - @blobscan/db@0.5.0
+  - @blobscan/open-telemetry@0.0.7
+
 ## 0.2.0
 
 ### Minor Changes

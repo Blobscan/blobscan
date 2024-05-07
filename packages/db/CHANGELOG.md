@@ -1,5 +1,19 @@
 # @blobscan/db
 
+## 0.5.0
+
+### Minor Changes
+
+- [#380](https://github.com/Blobscan/blobscan/pull/380) [`89df217`](https://github.com/Blobscan/blobscan/commit/89df217e817727a710a7c3217ad7be4750de93ce) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped `filterNewBlobs` method from base extension
+
+### Patch Changes
+
+- [#387](https://github.com/Blobscan/blobscan/pull/387) [`b4e8d2c`](https://github.com/Blobscan/blobscan/commit/b4e8d2cd63d4f2b307f21848c23da14acc265ab0) Thanks [@0xGabi](https://github.com/0xGabi)! - Added boba, camp, kroma, metal and pgn rollups
+
+- Updated dependencies [[`0a61aec`](https://github.com/Blobscan/blobscan/commit/0a61aec545fa1b3b7a44b2a7c9e9a8e8250c1362), [`72e4b96`](https://github.com/Blobscan/blobscan/commit/72e4b963e2e735156032467554e6cc3cd311097e), [`7bb6f49`](https://github.com/Blobscan/blobscan/commit/7bb6f4912c89d0dd436e325677c801200e32edba), [`5ffb8ca`](https://github.com/Blobscan/blobscan/commit/5ffb8ca355bfcd02393a3b40e89b9d7a1a5a05e8)]:
+  - @blobscan/logger@0.1.0
+  - @blobscan/open-telemetry@0.0.7
+
 ## 0.4.0
 
 ### Minor Changes

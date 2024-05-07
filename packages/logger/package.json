@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/logger",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/zod": "workspace:^0.0.4",
+    "@blobscan/zod": "workspace:^0.1.0",
     "winston": "^3.10.0"
   },
   "eslintConfig": {
