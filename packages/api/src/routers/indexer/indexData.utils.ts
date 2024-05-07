@@ -37,8 +37,10 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
   "11155111": {
     "0xb2248390842d3c4acf1d8a893954afc0eac586e5": Rollup.ARBITRUM,
     "0x6cdebe940bc0f26850285caca097c11c33103e47": Rollup.BASE,
+    "0xf15dc770221b99c98d4aaed568f2ab04b9d16e42": Rollup.KROMA,
     "0x47c63d1e391fcb3dcdc40c4d7fa58adb172f8c38": Rollup.LINEA,
     "0x8f23bb38f531600e5d8fddaaec41f13fab46e98c": Rollup.OPTIMISM,
+    "0x2d567ece699eabe5afcd141edb7a4f2d0d6ce8a0": Rollup.SCROLL,
     "0x5b98b836969a60fec50fa925905dd1d382a7db43": Rollup.STARKNET,
     "0x4e6bd53883107b063c502ddd49f9600dc51b3ddc": Rollup.MODE,
     "0x3cd868e221a3be64b161d596a7482257a99d857f": Rollup.ZORA,
