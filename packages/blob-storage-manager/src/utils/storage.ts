@@ -1,14 +1,14 @@
 import { $Enums, prisma } from "@blobscan/db";
 
-import type { BlobStorage } from "./BlobStorage";
-import { env } from "./env";
+import type { BlobStorage } from "../BlobStorage";
+import { env } from "../env";
 import {
   FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
   SwarmStorage,
-} from "./storages";
-import type { BlobStorageName } from "./types";
+} from "../storages";
+import type { BlobStorageName } from "../types";
 
 export const BLOB_STORAGE_NAMES = $Enums.BlobStorage;
 
@@ -19,10 +19,6 @@ export function removeDuplicatedStorages(
     (blobStorage, index, self) =>
       index === self.findIndex((t) => t.name === blobStorage.name)
   );
-}
-
-export function calculateBlobBytes(blob: string): number {
-  return blob.slice(2).length / 2;
 }
 
 export async function createStorageFromEnv(

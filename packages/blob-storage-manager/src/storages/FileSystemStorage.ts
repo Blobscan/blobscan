@@ -4,7 +4,11 @@ import path from "path";
 import { BlobStorage } from "../BlobStorage";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
-import { BLOB_STORAGE_NAMES } from "../utils";
+import {
+  BLOB_STORAGE_NAMES,
+  createFullPermissionDirectory,
+  createFullPermissionFile,
+} from "../utils";
 
 export interface FileSystemStorageConfig extends BlobStorageConfig {
   blobDirPath: string;
@@ -18,9 +22,7 @@ export class FileSystemStorage extends BlobStorage {
 
     this.blobDirPath = blobDirPath;
 
-    if (!fs.existsSync(this.blobDirPath)) {
-      fs.mkdirSync(this.blobDirPath);
-    }
+    createFullPermissionDirectory(this.blobDirPath);
   }
 
   protected async _healthCheck(): Promise<void> {
@@ -38,7 +40,11 @@ export class FileSystemStorage extends BlobStorage {
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    await fs.promises.unlink(uri);
+    const fileExists = fs.existsSync(uri);
+
+    if (fileExists) {
+      return fs.promises.unlink(uri);
+    }
   }
 
   protected async _storeBlob(
@@ -48,11 +54,8 @@ export class FileSystemStorage extends BlobStorage {
     const blobUri = this.getBlobUri(versionedHash);
     const blobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
-    if (!fs.existsSync(blobDirPath)) {
-      fs.mkdirSync(blobDirPath, { recursive: true });
-    }
-
-    await fs.promises.writeFile(blobUri, data, { encoding: "utf-8" });
+    createFullPermissionDirectory(blobDirPath);
+    createFullPermissionFile(blobUri, data);
 
     return blobUri;
   }
