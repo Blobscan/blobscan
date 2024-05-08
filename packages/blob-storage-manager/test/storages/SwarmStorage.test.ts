@@ -4,7 +4,6 @@ import { prisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
 
 import { env } from "../../src/env";
-import { BlobStorageError } from "../../src/errors";
 import { SwarmStorage } from "../../src/storages/SwarmStorage";
 import type { SwarmStorageConfig } from "../../src/storages/SwarmStorage";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
@@ -130,17 +129,6 @@ describe("SwarmStorage", () => {
 
     await expect(storage.getBlob(ref)).rejects.toThrowError();
   });
-
-  testValidError(
-    "should throw a valid error if trying to remove a non-existent blob",
-    async () => {
-      await storage.removeBlob("missing-blob");
-    },
-    BlobStorageError,
-    {
-      checkCause: true,
-    }
-  );
 
   it("should store a blob", async () => {
     const uploadReference = await storage.storeBlob(

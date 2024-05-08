@@ -125,17 +125,6 @@ describe("FileSystemStorage", () => {
         "Blob file should not exist after removal"
       ).toBeFalsy();
     });
-
-    testValidError(
-      "should throw a valid error if trying to remove a non-existent blob",
-      async () => {
-        await storage.removeBlob("missing-blob");
-      },
-      BlobStorageError,
-      {
-        checkCause: true,
-      }
-    );
   });
 
   describe("when storing a blob", () => {

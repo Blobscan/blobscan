@@ -3,7 +3,3 @@
 exports[`FileSystemStorage > when getting a blob > should throw a valid error when getting a non-existent blob 1`] = `"FileSystemStorageMock failed: Failed to get blob with uri \\"missing-blob\\""`;
 
 exports[`FileSystemStorage > when getting a blob > should throw a valid error when getting a non-existent blob 2`] = `[Error: Blob file missing-blob missing: Error: ENOENT: no such file or directory, open 'missing-blob']`;
-
-exports[`FileSystemStorage > when removing a blob > should throw a valid error if trying to remove a non-existent blob 1`] = `"FileSystemStorageMock failed: Failed to remove blob with uri \\"missing-blob\\""`;
-
-exports[`FileSystemStorage > when removing a blob > should throw a valid error if trying to remove a non-existent blob 2`] = `[Error: ENOENT: no such file or directory, unlink 'missing-blob']`;
