@@ -1,6 +1,6 @@
 ---
-"@blobscan/api": patch
-"@blobscan/db": patch
+"@blobscan/api": minor
+"@blobscan/db": minor
 ---
 
 Added sepolia new rollups
