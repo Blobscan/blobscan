@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.6.0
+
+### Minor Changes
+
+- [#398](https://github.com/Blobscan/blobscan/pull/398) [`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c) Thanks [@0xGabi](https://github.com/0xGabi)! - Added sepolia new rollups
+
 ## 0.5.0
 
 ### Minor Changes
