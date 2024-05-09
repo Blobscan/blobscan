@@ -1,5 +1,20 @@
 # @blobscan/blob-storage-manager
 
+## 0.3.1
+
+### Patch Changes
+
+- [#399](https://github.com/Blobscan/blobscan/pull/399) [`fad721d`](https://github.com/Blobscan/blobscan/commit/fad721de28cb131ed988a1f2333d7b35e8261df2) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed file system storage issue where blob removal operation was throwing error if the blob path didn't exists
+
+- [`c4c94f4`](https://github.com/Blobscan/blobscan/commit/c4c94f453146beefe853dfedf8681db472155c34) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed a postgres storage issue where the existence of a blob wasn't checked before removal
+
+- [#399](https://github.com/Blobscan/blobscan/pull/399) [`fad721d`](https://github.com/Blobscan/blobscan/commit/fad721de28cb131ed988a1f2333d7b35e8261df2) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed file system storage issue where files and directories were not being created with the correct full permissions
+
+- [`4aa1198`](https://github.com/Blobscan/blobscan/commit/4aa1198d2f3d4387f9cabb2b791a7a2b8b863938) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed google storage issue where the existence of a blob wasn't being checked properly before removal
+
+- Updated dependencies [[`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c)]:
+  - @blobscan/db@0.6.0
+
 ## 0.3.0
 
 ### Minor Changes

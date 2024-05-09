@@ -1,5 +1,12 @@
 # @blobscan/auth
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c)]:
+  - @blobscan/db@0.6.0
+
 ## 0.0.6
 
 ### Patch Changes
