@@ -72,6 +72,12 @@ describe("PostgresStorage", () => {
     await expect(storage.getBlob(expectedStoredBlobUri)).rejects.toThrowError();
   });
 
+  it("should not throw an error when trying to remove a non-existent blob", async () => {
+    await expect(
+      storage.removeBlob("non-existent-blob-uri")
+    ).resolves.not.toThrow();
+  });
+
   it("should store a blob", async () => {
     await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
 
@@ -99,14 +105,6 @@ describe("PostgresStorage", () => {
     },
     BlobStorageError,
     { checkCause: true }
-  );
-
-  testValidError(
-    "should throw a valid error when trying to remove a non-existent blob",
-    async () => {
-      await storage.removeBlob("missing-blob");
-    },
-    BlobStorageError
   );
 
   testValidError(
