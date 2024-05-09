@@ -125,6 +125,12 @@ describe("FileSystemStorage", () => {
         "Blob file should not exist after removal"
       ).toBeFalsy();
     });
+
+    it("should not throw an error when trying to remove a non-existent blob", async () => {
+      await expect(
+        storage.removeBlob("non-existent-blob-uri")
+      ).resolves.not.toThrow();
+    });
   });
 
   describe("when storing a blob", () => {
