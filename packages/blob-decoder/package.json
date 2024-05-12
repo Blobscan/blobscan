@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-decoder",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "types": "./src/index.ts",
   "exports": {
