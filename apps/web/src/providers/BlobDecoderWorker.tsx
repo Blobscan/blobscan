@@ -73,7 +73,6 @@ export function useBlobDecoderWorker<
       }
 
       setDecodedBlob(event.data.decodedBlob);
-      setLoading(false);
     };
 
     worker.onmessageerror = (event) => {
