@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.9.1
+
+### Patch Changes
+
+- [#401](https://github.com/Blobscan/blobscan/pull/401) [`2d59e7a`](https://github.com/Blobscan/blobscan/commit/2d59e7a62ac5167f8bd458df68acbc21fdac4e52) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced blob data retrieval by trying to fetch data by versioned hash and/or blob data storage references
+
 ## 0.9.0
 
 ### Minor Changes
