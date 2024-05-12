@@ -3,6 +3,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 // Importing env files here to validate on build
 import "./src/env.mjs";
+import { printBanner } from "./banner.mjs";
+
+printBanner();
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -65,6 +68,11 @@ const config = {
 
     // Modify the file loader rule to ignore *.svg, since we have it handled now.
     fileLoaderRule.exclude = /\.svg$/i;
+
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
 
     return config;
   },

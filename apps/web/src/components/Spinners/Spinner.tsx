@@ -5,9 +5,9 @@ type SpinnerProps = {
 
 const SIZES = {
   sm: "h-4 w-4",
-  md: "h-10 w-10",
-  lg: "h-16 w-16",
-  xlg: "h-24 w-24",
+  md: "h-8 w-8",
+  lg: "h-12 w-12",
+  xlg: "h-16 w-16",
 };
 
 export const Spinner: React.FC<SpinnerProps> = function ({
@@ -19,7 +19,7 @@ export const Spinner: React.FC<SpinnerProps> = function ({
       <div
         className={`${SIZES[size]} animate-spin rounded-full border-l-2 border-primary-400`}
       />
-      <div className="font-light text-content-light dark:text-content-dark">
+      <div className="font-light text-contentSecondary-light dark:text-contentSecondary-dark">
         {label}
       </div>
     </div>

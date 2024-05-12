@@ -1,0 +1,18 @@
+{
+  "name": "@blobscan/majin-blob-wasm",
+  "private": true,
+  "collaborators": [
+    "Abdelhamid Bakhta <@AbdelStark>"
+  ],
+  "version": "0.0.1",
+  "files": [
+    "browser/*",
+    "node/*"
+  ],
+  "types": "majin_blob_wasm.d.ts",
+  "main": "./majin_blob_wasm.js",
+  "sideEffects": [
+    "./majin_blob_wasm.js",
+    "./snippets/*"
+  ]
+}

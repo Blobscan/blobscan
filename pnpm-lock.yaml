@@ -220,6 +220,9 @@ importers:
       '@blobscan/api':
         specifier: workspace:^0.9.0
         version: link:../../packages/api
+      '@blobscan/blob-decoder':
+        specifier: workspace:^0.0.1
+        version: link:../../packages/blob-decoder
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
@@ -451,6 +454,21 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
 
+  packages/blob-decoder:
+    dependencies:
+      '@blobscan/logger':
+        specifier: workspace:^0.1.0
+        version: link:../logger
+      '@blobscan/majin-blob-wasm':
+        specifier: workspace:^0.0.1
+        version: link:../../wasms/majin-blob-wasm
+      '@blobscan/open-telemetry':
+        specifier: workspace:^0.0.7
+        version: link:../open-telemetry
+      '@blobscan/zod':
+        specifier: workspace:^0.1.0
+        version: link:../zod
+
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
@@ -660,6 +678,8 @@ importers:
         version: 3.4.3(ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5))
 
   tooling/typescript: {}
+
+  wasms/majin-blob-wasm: {}
 
 packages:
 
