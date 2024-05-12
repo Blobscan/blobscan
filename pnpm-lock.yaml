@@ -221,7 +221,7 @@ importers:
         specifier: workspace:^0.9.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
-        specifier: ^0.0.1
+        specifier: workspace:^0.0.1
         version: link:../../packages/blob-decoder
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
@@ -457,16 +457,16 @@ importers:
   packages/blob-decoder:
     dependencies:
       '@blobscan/logger':
-        specifier: ^0.0.6
+        specifier: workspace:^0.1.0
         version: link:../logger
       '@blobscan/majin-blob-wasm':
-        specifier: ^0.0.1
+        specifier: workspace:^0.0.1
         version: link:../../wasms/majin-blob-wasm
       '@blobscan/open-telemetry':
-        specifier: ^0.0.6
+        specifier: workspace:^0.0.7
         version: link:../open-telemetry
       '@blobscan/zod':
-        specifier: ^0.0.4
+        specifier: workspace:^0.1.0
         version: link:../zod
 
   packages/blob-propagator:
