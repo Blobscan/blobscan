@@ -1,7 +1,7 @@
 import { blob_recover } from "@blobscan/majin-blob-wasm";
 import { z } from "@blobscan/zod";
 
-import { BlobDecoderFn } from "./types";
+import type { BlobDecoderFn } from "./types";
 import { bigIntToHex } from "./utils";
 
 export const starknetStateDiffSchema = z

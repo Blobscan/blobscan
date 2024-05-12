@@ -20,10 +20,10 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/logger": "^0.0.6",
-    "@blobscan/majin-blob-wasm": "^0.0.1",
-    "@blobscan/open-telemetry": "^0.0.6",
-    "@blobscan/zod": "^0.0.4"
+    "@blobscan/logger": "workspace:^0.0.6",
+    "@blobscan/majin-blob-wasm": "workspace:^0.0.1",
+    "@blobscan/open-telemetry": "workspace:^0.0.6",
+    "@blobscan/zod": "workspace:^0.0.4"
   },
   "eslintConfig": {
     "root": true,

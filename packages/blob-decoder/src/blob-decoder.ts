@@ -1,6 +1,6 @@
 import { decodeStarknetBlob } from "./starknet";
 import type { DecodedStarknetBlob } from "./starknet";
-import { Decoder } from "./types";
+import type { Decoder } from "./types";
 
 export type DecodedResultOf<T extends Decoder> = T extends "starknet"
   ? DecodedStarknetBlob
