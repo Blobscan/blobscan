@@ -53,10 +53,6 @@ We extend our gratitude to each one of them. Thank you 🙏
   </a>
 </p>
 
-# About Blossom Labs
-
-![blossom labs](https://blossom.software/img/logo.svg)
-
-Blobscan is being developed by [Blossom Labs](https://blossom.software/), a developer team specialized in building blockchain-based infrastructure for online communities.
+#
 
 [Join us on Discord!](https://discordapp.com/invite/fmqrqhkjHY/)

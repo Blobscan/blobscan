@@ -30,7 +30,7 @@ export const BottomBarLayout = () => {
       <div className="sm:hidden">
         <ExplorerDetails />
       </div>
-      <div className="mt-4 flex flex-col items-center gap-3 sm:mt-8">
+      <div className="mt-4 flex flex-col items-center gap-2 sm:mt-8">
         <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
             <Link key={href} href={href} isExternal hideExternalIcon>
@@ -46,35 +46,23 @@ export const BottomBarLayout = () => {
           shard blob transactions, providing the necessary infrastructure to
           scale Ethereum.
         </div>
-        <div className="flex items-center gap-2">
-          <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-            Made with ❤️ by{" "}
-            <Link href="https://blossom.software/" isExternal>
-              Blossom Labs
-            </Link>
+        {env.NEXT_PUBLIC_VERSION && (
+          <div className="flex items-center gap-1">
+            <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+              Version:
+            </div>
+            <div className="relative">
+              <Link
+                href={`https://github.com/Blobscan/blobscan/tree/%40blobscan/web%40${env.NEXT_PUBLIC_VERSION}`}
+                isExternal
+              >
+                <div className="relative -top-0.5 text-xs">
+                  {env.NEXT_PUBLIC_VERSION}
+                </div>
+              </Link>
+            </div>
           </div>
-          {env.NEXT_PUBLIC_VERSION && (
-            <>
-              ·
-              <div className="flex items-center gap-1">
-                <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-                  Version:
-                </div>
-                <div className="relative">
-                  <Link
-                    href={`https://github.com/Blobscan/blobscan/tree/%40blobscan/web%40${env.NEXT_PUBLIC_VERSION}`}
-                    isExternal
-                  >
-                    <div className="relative -top-0.5 text-xs">
-                      {env.NEXT_PUBLIC_VERSION}
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-
+        )}
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
             Blobscan © 2024
