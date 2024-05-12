@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
+import { BlobStorageManagerError } from "@blobscan/blob-storage-manager";
 import type {
   BlobReference,
   BlobStorageManager,
@@ -82,45 +83,81 @@ export function serializeDerivedTxBlobGasFields({
 
 export async function retrieveBlobData(
   blobStorageManager: BlobStorageManager,
-  dataStorageRefs: Pick<
-    BlobDataStorageReference,
-    "blobStorage" | "dataReference"
-  >[]
+  {
+    versionedHash,
+    dataStorageReferences,
+  }: {
+    versionedHash?: string;
+    dataStorageReferences?: Pick<
+      BlobDataStorageReference,
+      "blobStorage" | "dataReference"
+    >[];
+  }
 ) {
-  let storageBlobData: Awaited<
-    ReturnType<typeof blobStorageManager.getBlobByReferences>
-  >;
-  const blobReferences = dataStorageRefs.map<BlobReference>(
+  const blobReferences = dataStorageReferences?.map<BlobReference>(
     ({ blobStorage, dataReference }) => ({
       storage: blobStorage,
       reference: dataReference,
     })
   );
 
-  try {
-    storageBlobData = await blobStorageManager.getBlobByReferences(
-      ...blobReferences
-    );
-  } catch (err) {
-    const err_ = err as Error;
-
+  if (!versionedHash && !blobReferences?.length) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: err_.message,
-      cause: err_.cause,
+      message:
+        "No versioned hash nor data storage references provided to retrieve blob data",
     });
   }
 
-  if (!storageBlobData) {
-    const storageReferences = blobReferences
-      .map(({ reference, storage }) => `${storage}:${reference}`)
-      .join(", ");
+  const blobRetrievalOps: (() => Promise<string>)[] = [];
 
+  if (blobReferences?.length) {
+    blobRetrievalOps.push(() =>
+      blobStorageManager
+        .getBlobByReferences(...blobReferences)
+        .then((res) => res.data)
+    );
+  }
+
+  if (versionedHash) {
+    blobRetrievalOps.push(() =>
+      blobStorageManager.getBlobByHash(versionedHash).then((res) => res.data)
+    );
+  }
+
+  if (!blobRetrievalOps.length) {
     throw new TRPCError({
-      code: "NOT_FOUND",
-      message: `No blob data found on the following storage references: ${storageReferences}`,
+      code: "INTERNAL_SERVER_ERROR",
+      message:
+        "No identifier (versioned hash or data storage refs) provided to retrieve blob data",
     });
   }
 
-  return storageBlobData;
+  let blobData: string | undefined;
+  let retrievalOp = blobRetrievalOps.pop();
+  let retrievalOpError: BlobStorageManagerError | Error | undefined;
+
+  while (retrievalOp && !blobData) {
+    try {
+      blobData = await retrievalOp();
+    } catch (err) {
+      if (err instanceof BlobStorageManagerError) {
+        retrievalOpError = err;
+      } else if (err instanceof Error) {
+        retrievalOpError = err;
+      }
+    } finally {
+      retrievalOp = blobRetrievalOps.pop();
+    }
+  }
+
+  if (!blobData) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: retrievalOpError?.message ?? "Failed to retrieve blob data",
+      cause: retrievalOpError?.cause,
+    });
+  }
+
+  return blobData;
 }
