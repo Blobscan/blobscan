@@ -128,10 +128,7 @@ export const getByBlockId = publicProcedure
         await Promise.all(
           txsBlobs.map(async ({ blob }) => {
             if (blob.dataStorageReferences?.length) {
-              const { data } = await retrieveBlobData(
-                blobStorageManager,
-                blob.dataStorageReferences
-              );
+              const data = await retrieveBlobData(blobStorageManager, blob);
 
               blob.data = data;
             }

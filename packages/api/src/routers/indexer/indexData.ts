@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 import type { BlobDataStorageReference } from "@blobscan/db";
 import { toBigIntSchema, z } from "@blobscan/zod";
 
@@ -75,7 +77,14 @@ export const indexData = jwtAuthedProcedure
         ).map((versionedHash) => {
           const blob = input.blobs.find(
             (b) => b.versionedHash === versionedHash
-          )!;
+          );
+
+          if (!blob) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: `No blob found for hash ${versionedHash}`,
+            });
+          }
 
           return blob;
         });

@@ -49,13 +49,10 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    const { data: blobData } = await retrieveBlobData(
-      blobStorageManager,
-      queriedBlob.dataStorageReferences
-    );
+    const data = await retrieveBlobData(blobStorageManager, queriedBlob);
 
     return serializeBlob({
       ...queriedBlob,
-      data: blobData,
+      data,
     });
   });
