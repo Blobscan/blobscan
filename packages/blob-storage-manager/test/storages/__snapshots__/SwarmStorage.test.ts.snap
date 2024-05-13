@@ -4,10 +4,6 @@ exports[`SwarmStorage > should throw a valid error if bee client is not healthy 
 
 exports[`SwarmStorage > should throw a valid error if bee client is not healthy 2`] = `[Error: Bee is not healthy: not ok]`;
 
-exports[`SwarmStorage > should throw a valid error if trying to remove a non-existent blob 1`] = `"SwarmStorageMock failed: Failed to remove blob with uri \\"missing-blob\\""`;
-
-exports[`SwarmStorage > should throw a valid error if trying to remove a non-existent blob 2`] = `[Error: File not found]`;
-
 exports[`SwarmStorage > should throw valid error if bee debug client is not healthy 1`] = `"Storage is not reachable"`;
 
 exports[`SwarmStorage > should throw valid error if bee debug client is not healthy 2`] = `[Error: Bee debug is not healthy: not ok]`;

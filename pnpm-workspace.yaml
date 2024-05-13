@@ -3,3 +3,4 @@ packages:
   - "clis/*"
   - "packages/*"
   - "tooling/*"
+  - "wasms/*"

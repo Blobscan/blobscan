@@ -5,12 +5,12 @@ import cn from "classnames";
 
 import type { Size } from "~/types";
 
-type ToggleProps = {
+export type ToggleProps = {
   size?: Size;
   onToggle(enabled: boolean): void;
 };
 
-export const Toggle: FC<ToggleProps> = function ({ size = "sm", onToggle }) {
+export const Toggle: FC<ToggleProps> = function ({ size = "md", onToggle }) {
   const [isEnabled, setIsEnabled] = useState(false);
   return (
     <Switch
@@ -21,7 +21,7 @@ export const Toggle: FC<ToggleProps> = function ({ size = "sm", onToggle }) {
       }}
       className={cn(
         {
-          "bg-controlBackground-light dark:bg-primary-400": isEnabled,
+          "bg-primary-400 dark:bg-primary-400": isEnabled,
           "bg-neutral-400 dark:bg-neutral-500": !isEnabled,
         },
         {

@@ -16,7 +16,7 @@ export const baseColors = {
 
   warmGray: {
     50: "#FAFAFA",
-    100: "#F5F5F5",
+    100: "#EEF1F5",
     200: "#E5E5E5",
     300: "#D4D4D4",
     400: "#A3A3A3",
@@ -32,11 +32,12 @@ export const baseColors = {
     300: "#E2CFFF",
     400: "#AE8CF5",
     500: "#9A71F2",
-    600: "#896EE1",
-    700: "#5D25D4",
+    600: "#7D5BFF",
+    700: "#6541EF",
     800: "#3A3369",
     900: "#2E2854",
     1000: "#372779",
+    1100: "#f2eeff",
   },
 
   shades: {
@@ -99,6 +100,7 @@ export const semanticColors = {
   accentHighlight: {
     light: primary[600],
     dark: primary[400],
+    hover: primary[1100],
   },
   accentDisabled: {
     light: warmGray[500],

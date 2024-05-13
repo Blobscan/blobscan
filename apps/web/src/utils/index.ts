@@ -1,4 +1,5 @@
 export * from "./charts";
+export * from "./blob-decoders";
 export * from "./deserializers";
 export * from "./ethereum";
 export * from "./date";

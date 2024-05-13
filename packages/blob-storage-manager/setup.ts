@@ -47,15 +47,11 @@ vi.mock("@ethersphere/bee-js", async () => {
             reference: SWARM_REFERENCE,
           };
         }),
-        unpin: vi.fn().mockImplementation((reference) => {
+        unpin: vi.fn().mockImplementation((_) => {
           const batch = blobBatches["mock-batch-id"];
 
           if (!batch) {
             throw new Error("Batch not found");
-          }
-
-          if (!batch.find((b) => b.reference === reference)) {
-            throw new Error("File not found");
           }
 
           blobBatches["mock-batch-id"] = [];

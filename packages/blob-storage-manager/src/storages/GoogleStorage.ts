@@ -71,9 +71,10 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    const blobFile = await this.getBlobFile(uri);
+    const blobFile = this.getBlobFile(uri);
+    const [blobExists] = await blobFile.exists();
 
-    if (await blobFile.exists()) {
+    if (blobExists) {
       await blobFile.delete();
     }
   }

@@ -1,5 +1,41 @@
 # @blobscan/web
 
+## 0.10.0
+
+### Minor Changes
+
+- [#370](https://github.com/Blobscan/blobscan/pull/370) [`f89531c`](https://github.com/Blobscan/blobscan/commit/f89531cae5751f184e6cc5a89261d72f1a64dfb9) Thanks [@PJColombo](https://github.com/PJColombo)! - Added starknet decoded blob view
+
+- [#370](https://github.com/Blobscan/blobscan/pull/370) [`f3cac78`](https://github.com/Blobscan/blobscan/commit/f3cac784beb47f7638715b88b78408b9555f36ce) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup tag to blob details page
+
+- [#404](https://github.com/Blobscan/blobscan/pull/404) [`35723aa`](https://github.com/Blobscan/blobscan/commit/35723aad13746ee6e50a22f2abd4200a3c8cadb5) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed Blossom Labs footer text
+
+### Patch Changes
+
+- [#370](https://github.com/Blobscan/blobscan/pull/370) [`aa1b3cd`](https://github.com/Blobscan/blobscan/commit/aa1b3cd2510de52665192da6f22dceac13edab84) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed dropdown list
+
+- [#370](https://github.com/Blobscan/blobscan/pull/370) [`874c8f0`](https://github.com/Blobscan/blobscan/commit/874c8f0702b3b82f0bc3d4737503a941d8120fcd) Thanks [@PJColombo](https://github.com/PJColombo)! - Handled blob decoding errors
+
+- Updated dependencies [[`874c8f0`](https://github.com/Blobscan/blobscan/commit/874c8f0702b3b82f0bc3d4737503a941d8120fcd), [`9d865cd`](https://github.com/Blobscan/blobscan/commit/9d865cdddc88c472f0b0e177b4705288d1f57791)]:
+  - @blobscan/blob-decoder@0.1.0
+
+## 0.9.3
+
+### Patch Changes
+
+- Updated dependencies [[`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c)]:
+  - @blobscan/api@0.9.0
+
+## 0.9.2
+
+### Patch Changes
+
+- [#387](https://github.com/Blobscan/blobscan/pull/387) [`7e12a3e`](https://github.com/Blobscan/blobscan/commit/7e12a3e3b17c59750bdcd0fcede4bc67c9b23211) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new rollups badges and icons
+
+- Updated dependencies [[`737272d`](https://github.com/Blobscan/blobscan/commit/737272d6312bd478b1662133b875b50457694f10), [`ffbb8e6`](https://github.com/Blobscan/blobscan/commit/ffbb8e6074878e30c9aa5ac8e774dbbb8060fb96), [`57723f3`](https://github.com/Blobscan/blobscan/commit/57723f351f4a63a5b86558e447ee5d6fe2f947c8), [`1cce838`](https://github.com/Blobscan/blobscan/commit/1cce8387e28488946b83c5a8a36a2e0db1d595c9), [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5)]:
+  - @blobscan/api@0.8.1
+  - @blobscan/open-telemetry@0.0.7
+
 ## 0.9.1
 
 ### Patch Changes

@@ -22,7 +22,6 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(function (
       className={cn(
         `
         w-full 
-        overflow-hidden
         break-words
         rounded-lg 
         border-surface-light  

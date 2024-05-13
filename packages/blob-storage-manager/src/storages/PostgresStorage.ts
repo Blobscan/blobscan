@@ -37,11 +37,22 @@ export class PostgresStorage extends BlobStorage {
   }
 
   protected async _removeBlob(versionedHash: string): Promise<void> {
-    await this.client.blobData.delete({
+    const blobExists = !!(await this.client.blobData.findUnique({
+      select: {
+        id: true,
+      },
       where: {
         id: versionedHash,
       },
-    });
+    }));
+
+    if (blobExists) {
+      await this.client.blobData.delete({
+        where: {
+          id: versionedHash,
+        },
+      });
+    }
   }
 
   protected async _storeBlob(versionedHash: string, blobData: string) {
