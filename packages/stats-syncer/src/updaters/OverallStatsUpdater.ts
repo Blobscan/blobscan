@@ -55,7 +55,7 @@ export class OverallStatsUpdater extends PeriodicUpdater {
           lastLowerSyncedSlot !== lowestSlot
         ) {
           this.logger.debug(
-            "Skipping stats aggregation. Chain hasn't been fully indexed yet"
+            `Skipping stats aggregation. Chain hasn't been fully indexed yet lastIndexedBlockNumber:${lastIndexedBlockNumber},lastFinalizedBlock:${lastFinalizedBlock},lastLowerSyncedSlot:${lastLowerSyncedSlot},lowestSlot:${lowestSlot}`
           );
 
           return;

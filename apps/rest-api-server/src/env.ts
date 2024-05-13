@@ -14,7 +14,7 @@ export const env = createEnv({
       BLOBSCAN_API_BASE_URL: z
         .string()
         .url()
-        .default("https://api.blobscan.com"),
+        .default("http://127.0.0.1"),
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
       NETWORK_NAME: networkSchema.default("mainnet"),
       NODE_ENV: nodeEnvSchema.optional(),
@@ -22,8 +22,8 @@ export const env = createEnv({
       METRICS_ENABLED: booleanSchema.default("false"),
       REDIS_URI: z.string().default("redis://localhost:6379"),
       DENCUN_FORK_SLOT: z.coerce.number().optional(),
-      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
-      STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
+      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * ?"),
+      STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * * ?"),
       SENTRY_DSN_API: z.string().url().optional(),
     },
 
@@ -41,7 +41,9 @@ export const env = createEnv({
         env.STATS_SYNCER_DAILY_CRON_PATTERN
       } overallStatsCron=${
         env.STATS_SYNCER_OVERALL_CRON_PATTERN
-      } dencunForkSlot=${env.DENCUN_FORK_SLOT ?? "auto"}`
+      } dencunForkSlot=${env.DENCUN_FORK_SLOT ?? "auto"} blobscanApiBaseUrl=${
+        env.BLOBSCAN_API_BASE_URL
+        }`
     );
   },
 });

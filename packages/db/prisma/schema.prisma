@@ -8,7 +8,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+//  url      = env("DATABASE_URL")
+  url      = "postgresql://root:YongWu897&@10.9.156.245:5432/blobscan?schema=public"
 }
 
 enum BlobStorage {
