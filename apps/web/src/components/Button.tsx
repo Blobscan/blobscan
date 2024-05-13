@@ -51,7 +51,7 @@ const VARIANT_STYLES: VariantStyles = {
     dark:border-accent-dark
     text-accent-light
     dark:text-accent-dark
-    hover:text-content-dark
+    hover:text-accent-light 
     dark:hover:text-content-dark
     hover:bg-accentHighlight-hover
     dark:hover:bg-accentHighlight-dark
