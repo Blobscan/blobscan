@@ -6,8 +6,10 @@ services:
     extends:
       file: docker-compose.yml
       service: web
-    image: blossomlabs/blobscan:local
-    build: .
+    image: blossomlabs/blobscan:web-local
+    build:
+      context: .
+      target: web
     ports:
       - 5556:5556 # Prisma studio
 
@@ -15,8 +17,10 @@ services:
     extends:
       file: docker-compose.yml
       service: api
-    image: blossomlabs/blobscan:local
-    build: .
+    image: blossomlabs/blobscan:api-local
+    build:
+      context: .
+      target: api
     depends_on:
       - postgres
 
