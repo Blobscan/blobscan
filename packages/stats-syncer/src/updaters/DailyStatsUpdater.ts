@@ -67,13 +67,13 @@ export class DailyStatsUpdater extends PeriodicUpdater {
               )
           )
         );
-
+        this.logger.debug(`Start daily aggregation task. lastDailyStatsDay:${lastDailyStatsDays[0]}, targetDay:${targetDay}`);
         if (
           lastDailyStatsDays.every((lastDay) =>
             lastDay ? lastDay?.isSame(targetDay, "day") : false
           )
         ) {
-          this.logger.debug(`Skipping stats aggregation. Already up to date`);
+          this.logger.debug(`Skipping stats aggregation. Already up to date, targetDate:${targetDate}, targetDay:${targetDay}, lastDailyStatsDays:${lastDailyStatsDays}`);
 
           return;
         }
@@ -89,7 +89,7 @@ export class DailyStatsUpdater extends PeriodicUpdater {
               from: startDate,
               to: targetDay,
             });
-
+            this.logger.info(`populated from:${startDate},to:${targetDay}, lastDailyStatsDay:${lastDailyStatsDay}`);
             return [entity, populatedDays];
           })
         );

@@ -6,5 +6,5 @@
 -- the enum.
 
 
-ALTER TYPE "rollup" ADD VALUE 'mode';
-ALTER TYPE "rollup" ADD VALUE 'zora';
+ALTER TYPE "rollup" ADD VALUE 'kroma';
+

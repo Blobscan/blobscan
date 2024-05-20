@@ -48,7 +48,9 @@ export class OverallStatsUpdater extends PeriodicUpdater {
         const { lastAggregatedBlock, lastFinalizedBlock, lastLowerSyncedSlot } =
           blockchainSyncState ?? {};
         const lastIndexedBlockNumber = latestBlock?.number;
-
+        this.logger.debug(
+            `Start overall task: lastIndexedBlockNumber:${lastIndexedBlockNumber},lastFinalizedBlock:${lastFinalizedBlock},lastLowerSyncedSlot:${lastLowerSyncedSlot},lowestSlot:${lowestSlot}`
+          );
         if (
           isUnset(lastIndexedBlockNumber) ||
           isUnset(lastFinalizedBlock) ||

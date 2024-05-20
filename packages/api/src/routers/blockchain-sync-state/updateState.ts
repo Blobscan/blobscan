@@ -51,7 +51,7 @@ export const updateState = jwtAuthedProcedure
       },
       create: {
         id: 1,
-        lastLowerSyncedSlot,
+        lastLowerSyncedSlot:0,
         lastUpperSyncedSlot,
         lastFinalizedBlock,
       },
