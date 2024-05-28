@@ -43,12 +43,6 @@ export const handleReorgedSlots = jwtAuthedProcedure
       },
     });
 
-    if (!reorgedBlocks.length) {
-      return {
-        totalUpdatedSlots: 0,
-      };
-    }
-
     const result = await prisma.transactionFork.upsertMany(
       reorgedBlocks.flatMap((b) =>
         b.transactions.map((tx) => ({
@@ -58,7 +52,16 @@ export const handleReorgedSlots = jwtAuthedProcedure
       )
     );
 
-    const totalUpdatedSlots = result as number;
+    let totalUpdatedSlots: number;
+
+    if (typeof result === "number") {
+      totalUpdatedSlots = result;
+    } else {
+      totalUpdatedSlots = result.reduce(
+        (acc, totalSlots) => acc + totalSlots.count,
+        0
+      );
+    }
 
     return {
       totalUpdatedSlots,
