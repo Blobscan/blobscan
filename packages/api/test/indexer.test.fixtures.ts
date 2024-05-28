@@ -1,4 +1,6 @@
-export const INPUT = {
+import { IndexDataInput } from "../src/routers/indexer/indexData";
+
+export const INPUT: IndexDataInput = {
   block: {
     number: 2010,
     hash: "blockHash2010",
@@ -53,7 +55,7 @@ export const INPUT = {
   ],
 };
 
-export const INPUT_WITH_DUPLICATED_BLOBS = {
+export const INPUT_WITH_DUPLICATED_BLOBS: IndexDataInput = {
   block: {
     number: 9999,
     hash: "blockHash9999",

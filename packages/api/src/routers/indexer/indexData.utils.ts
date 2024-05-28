@@ -7,7 +7,7 @@ import type {
 import { Prisma, Rollup } from "@blobscan/db";
 
 import { env } from "../../env";
-import type { IndexDataInput } from "./indexData";
+import type { IndexDataFormattedInput } from "./indexData";
 
 const MIN_BLOB_BASE_FEE = BigInt(1);
 const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
@@ -116,7 +116,7 @@ export function createDBTransactions({
   blobs,
   block,
   transactions,
-}: IndexDataInput): WithoutTimestampFields<Transaction>[] {
+}: IndexDataFormattedInput): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
@@ -151,7 +151,7 @@ export function createDBTransactions({
 export function createDBBlock(
   {
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
-  }: IndexDataInput,
+  }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
@@ -175,7 +175,7 @@ export function createDBBlock(
 export function createDBBlobs({
   blobs,
   block,
-}: IndexDataInput): WithoutTimestampFields<Blob>[] {
+}: IndexDataFormattedInput): WithoutTimestampFields<Blob>[] {
   const uniqueBlobVersionedHashes = Array.from(
     new Set(blobs.map((b) => b.versionedHash))
   );
