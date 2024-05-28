@@ -1,4 +1,4 @@
-import { IndexDataInput } from "../src/routers/indexer/indexData";
+import type { IndexDataInput } from "../src/routers/indexer/indexData";
 
 export const INPUT: IndexDataInput = {
   block: {

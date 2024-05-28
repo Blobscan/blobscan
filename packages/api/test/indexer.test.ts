@@ -18,7 +18,6 @@ import {
   omitDBTimestampFields,
   testValidError,
 } from "@blobscan/test";
-import { ZodError } from "@blobscan/zod";
 
 import { appRouter } from "../src/app-router";
 import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots";
