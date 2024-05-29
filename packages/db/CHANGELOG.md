@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.7.0
+
+### Minor Changes
+
+- [#409](https://github.com/Blobscan/blobscan/pull/409) [`4ff5c4d`](https://github.com/Blobscan/blobscan/commit/4ff5c4d720463fd607a32fe35466a3e0dad045f9) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for Taiko, Blast, and Optopia rollups
+
 ## 0.6.0
 
 ### Minor Changes
