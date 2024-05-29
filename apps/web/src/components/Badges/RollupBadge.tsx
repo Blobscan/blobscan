@@ -12,6 +12,9 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   base: {
     style: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
   },
+  blast: {
+    style: "bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-50",
+  },
   boba: {
     style: "bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-50",
   },
@@ -34,6 +37,9 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
     style:
       "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
   },
+  optopia: {
+    style: "bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-50",
+  },
   paradex: {
     style:
       "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
@@ -48,6 +54,9 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
   scroll: {
     style: "bg-amber-100 text-slate-950 dark:bg-slate-950 dark:text-slate-50",
+  },
+  taiko: {
+    style: "bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-50",
   },
   zksync: {
     style: "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300",
