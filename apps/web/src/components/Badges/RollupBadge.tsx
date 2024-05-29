@@ -31,7 +31,7 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
     style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
   },
   mode: {
-    style: "bg-lime-100 dark:bg-lime-800 text-lime-800 dark:text-lime-300",
+    style: "bg-slate-950 dark:bg-lime-700 text-lime-50 dark:text-lime-300",
   },
   optimism: {
     style:

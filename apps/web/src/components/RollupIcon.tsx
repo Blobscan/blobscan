@@ -70,9 +70,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <MetalIcon className={commonStyles} />;
       break;
     case "mode":
-      rollupIcon = (
-        <ModeIcon className="h-5 w-5 text-[#ceb245] dark:text-[#ffd940]" />
-      );
+      rollupIcon = <ModeIcon className={commonStyles} />;
       break;
     case "optimism":
       rollupIcon = <OptimismIcon className={commonStyles} />;
