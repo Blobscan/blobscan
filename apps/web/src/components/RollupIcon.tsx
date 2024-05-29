@@ -40,7 +40,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "arbitrum":
       rollupIcon = (
         <ArbitrumIcon
-          className={`${commonStyles} text-[#1b4add] dark:text-[#8395cc]`}
+          className={`${commonStyles} text-[#1b4add] dark:text-[#ffffff]`}
         />
       );
       break;
@@ -48,7 +48,11 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <BaseIcon className={commonStyles} />;
       break;
     case "blast":
-      rollupIcon = <BlastIcon className={commonStyles} />;
+      rollupIcon = (
+        <BlastIcon
+          className={`${commonStyles} rounded bg-black dark:bg-opacity-0`}
+        />
+      );
       break;
     case "boba":
       rollupIcon = <BobaIcon className={commonStyles} />;
