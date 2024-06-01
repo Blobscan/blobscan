@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StatsSyncer > when closing the stats syncer > should throw a valid error when failing to close it 1`] = `"Stats syncer failed: An error ocurred when closing syncer"`;
+
+exports[`StatsSyncer > when closing the stats syncer > should throw a valid error when failing to close it 2`] = `[Error: Some daily stats updater closing error]`;
+
+exports[`StatsSyncer > when running the stats syncer > should throw a valid error when failing to start it 1`] = `"Stats syncer failed: An error occurred when starting syncer"`;
+
+exports[`StatsSyncer > when running the stats syncer > should throw a valid error when failing to start it 2`] = `[Error: Something happened when trying to start daily stats updater]`;

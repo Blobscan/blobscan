@@ -53,10 +53,18 @@ model BlockchainSyncState {
   @@map("blockchain_sync_state")
 }
 
+//TODO: Rename to SwarmBatchStorage
 model BlobStoragesState {
-  id           Int     @id @default(autoincrement())
-  swarmDataId  String? @map("swarm_data_id")
-  swarmDataTTL Int?    @map("swarm_data_ttl")
+  id            Int      @id @default(autoincrement())
+  swarmDataId   String?  @map("swarm_data_id") // TODO: rename to batchId
+  swarmDataTTL  Int?     @map("swarm_data_ttl") // TODO: rename to batchTtl
+  updatedAt     DateTime @default(now()) @map("updated_at")
+  label         String   @map("label")
+  depth         Int      @map("depth")
+  utilization   Int      @map("utilization")
+  amount        String   @map("amount")
+  immutableFlag Boolean  @map("immutable_flag")
+  exists        Boolean  @map("exists")
 
   @@map("blob_storages_state")
 }
