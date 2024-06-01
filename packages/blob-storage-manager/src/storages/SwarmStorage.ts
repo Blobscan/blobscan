@@ -1,4 +1,4 @@
-import { Bee, BeeDebug } from "@ethersphere/bee-js";
+import { Bee } from "@ethersphere/bee-js";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
@@ -10,13 +10,7 @@ import { BLOB_STORAGE_NAMES } from "../utils";
 export interface SwarmStorageConfig extends BlobStorageConfig {
   batchId: string;
   beeEndpoint: string;
-  beeDebugEndpoint?: string;
 }
-
-export type SwarmClient = {
-  bee: Bee;
-  beeDebug?: BeeDebug;
-};
 
 async function getBatchId(prisma: BlobscanPrismaClient) {
   try {
@@ -42,12 +36,11 @@ async function getBatchId(prisma: BlobscanPrismaClient) {
 }
 
 export class SwarmStorage extends BlobStorage {
-  _swarmClient: SwarmClient;
+  _beeClient: Bee;
   batchId: string;
 
   protected constructor({
     batchId,
-    beeDebugEndpoint,
     beeEndpoint,
     chainId,
   }: SwarmStorageConfig) {
@@ -55,10 +48,7 @@ export class SwarmStorage extends BlobStorage {
 
     this.batchId = batchId;
     try {
-      this._swarmClient = {
-        bee: new Bee(beeEndpoint),
-        beeDebug: beeDebugEndpoint ? new BeeDebug(beeDebugEndpoint) : undefined,
-      };
+      this._beeClient = new Bee(beeEndpoint);
     } catch (err) {
       throw new Error("Failed to create swarm clients", {
         cause: err,
@@ -67,35 +57,21 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _healthCheck() {
-    const healthCheckOps = [];
-
-    healthCheckOps.push(this._swarmClient.bee.checkConnection());
-
-    if (this._swarmClient.beeDebug) {
-      healthCheckOps.push(
-        this._swarmClient.beeDebug.getHealth().then((health) => {
-          if (health.status !== "ok") {
-            throw new Error(`Bee debug is not healthy: ${health.status}`);
-          }
-        })
-      );
-    }
-
-    await Promise.all(healthCheckOps);
+    await this._beeClient.checkConnection();
   }
 
   protected async _getBlob(uri: string) {
-    const file = await this._swarmClient.bee.downloadFile(uri);
+    const file = await this._beeClient.downloadFile(uri);
 
     return file.data.text();
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    await this._swarmClient.bee.unpin(uri);
+    await this._beeClient.unpin(uri);
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    const response = await this._swarmClient.bee.uploadFile(
+    const response = await this._beeClient.uploadFile(
       this.batchId,
       data,
       this.getBlobFilePath(versionedHash),

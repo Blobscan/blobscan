@@ -36,7 +36,7 @@ export function printBanner() {
 
   if (process.env.SWARM_STORAGE_ENABLED) {
     console.log(
-      `Swarm configuration: beeEndpoint=${process.env.BEE_ENDPOINT}, debugEndpoint=${process.env.BEE_DEBUG_ENDPOINT}`
+      `Swarm configuration: beeEndpoint=${process.env.BEE_ENDPOINT}`
     );
   }
 
