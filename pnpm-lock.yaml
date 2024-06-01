@@ -165,6 +165,9 @@ importers:
       '@blobscan/api':
         specifier: workspace:^0.9.0
         version: link:../../packages/api
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../../packages/env
       '@blobscan/logger':
         specifier: workspace:^0.1.0
         version: link:../../packages/logger
@@ -226,6 +229,9 @@ importers:
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../../packages/env
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.7
         version: link:../../packages/open-telemetry
@@ -362,6 +368,9 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.7.0
         version: link:../../packages/db
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../../packages/env
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../../packages/zod
@@ -407,6 +416,9 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.7.0
         version: link:../db
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.0
         version: link:../logger
@@ -477,6 +489,9 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.7.0
         version: link:../db
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.0
         version: link:../logger
@@ -498,6 +513,9 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.7.0
         version: link:../db
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.0
         version: link:../logger
@@ -545,8 +563,17 @@ importers:
         specifier: ^5.5.2
         version: 5.13.0
 
+  packages/env:
+    dependencies:
+      '@blobscan/zod':
+        specifier: workspace:^0.1.0
+        version: link:../zod
+
   packages/logger:
     dependencies:
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../env
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../zod
@@ -556,6 +583,9 @@ importers:
 
   packages/open-telemetry:
     dependencies:
+      '@blobscan/env':
+        specifier: workspace:^0.0.1
+        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.0
         version: link:../logger

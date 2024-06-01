@@ -1,0 +1,10 @@
+{
+  "extends": "@blobscan/tsconfig/base.production.json",
+  "include": [
+    "src/**/*.ts",
+    "scripts/**/*.ts",
+    "test/**/*.ts",
+    "vitest.config.ts",
+    "index.ts"
+  ]
+}

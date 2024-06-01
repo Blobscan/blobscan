@@ -5,5 +5,4 @@ export {
 } from "@opentelemetry/semantic-conventions";
 export { collectDefaultMetrics, register as promRegister } from "prom-client";
 
-export { env } from "./env";
 export { setUpOpenTelemetry } from "./sdk";

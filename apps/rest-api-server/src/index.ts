@@ -13,10 +13,10 @@ import {
   metricsHandler,
   gracefulShutdown as apiGracefulShutdown,
 } from "@blobscan/api";
+import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 import { StatsSyncer } from "@blobscan/stats-syncer";
 
-import { env } from "./env";
 import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";

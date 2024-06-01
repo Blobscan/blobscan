@@ -19,6 +19,7 @@
   "dependencies": {
     "@blobscan/blob-propagator": "workspace:^0.2.2",
     "@blobscan/dayjs": "workspace:^0.0.2",
+    "@blobscan/env": "workspace:^0.0.1",
     "@blobscan/db": "workspace:^0.7.0",
     "@blobscan/zod": "workspace:^0.1.0",
     "bullmq": "^4.13.2",

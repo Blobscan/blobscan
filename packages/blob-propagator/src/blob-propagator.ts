@@ -7,9 +7,9 @@ import {
 import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
 import { BlobPropagator } from "./BlobPropagator";
-import { env } from "./env";
 
 async function createBlobPropagator(
   blobStorageManager: BlobStorageManager,

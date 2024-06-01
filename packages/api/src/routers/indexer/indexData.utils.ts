@@ -5,8 +5,8 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma, Rollup } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
-import { env } from "../../env";
 import type { IndexDataFormattedInput } from "./indexData";
 
 const MIN_BLOB_BASE_FEE = BigInt(1);

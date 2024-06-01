@@ -1,7 +1,7 @@
 import { $Enums, prisma } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
 import type { BlobStorage } from "../BlobStorage";
-import { env } from "../env";
 import {
   FileSystemStorage,
   GoogleStorage,

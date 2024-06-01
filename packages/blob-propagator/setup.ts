@@ -2,8 +2,9 @@ import { Queue } from "bullmq";
 import IORedis from "ioredis";
 import { afterAll } from "vitest";
 
+import { env } from "@blobscan/env";
+
 import { FINALIZER_WORKER_NAME, STORAGE_WORKER_NAMES } from "./src/constants";
-import { env } from "./src/env";
 
 afterAll(async () => {
   const queues = [

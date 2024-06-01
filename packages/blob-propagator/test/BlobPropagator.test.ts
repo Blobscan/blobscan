@@ -9,9 +9,9 @@ import {
 import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { FileSystemStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
+import { env } from "@blobscan/env";
 import { testValidError } from "@blobscan/test";
 
-import { env } from "../src";
 import { BlobPropagator } from "../src/BlobPropagator";
 import {
   BlobPropagatorCreationError,

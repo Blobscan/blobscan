@@ -6,9 +6,8 @@ import { NodeSDK, resources, api } from "@opentelemetry/sdk-node";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { PrismaInstrumentation } from "@prisma/instrumentation";
 
+import { env } from "@blobscan/env";
 import { logger } from "@blobscan/logger";
-
-import { env } from "./env";
 
 if (env.OTEL_DIAG_ENABLED) {
   api.diag.setLogger(new api.DiagConsoleLogger(), api.DiagLogLevel.INFO);

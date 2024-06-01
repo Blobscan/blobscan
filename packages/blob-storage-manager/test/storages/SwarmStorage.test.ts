@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { prisma } from "@blobscan/db";
+import { env } from "@blobscan/env";
 import { fixtures, testValidError } from "@blobscan/test";
 
-import { env } from "../../src/env";
 import { SwarmStorage } from "../../src/storages/SwarmStorage";
 import type { SwarmStorageConfig } from "../../src/storages/SwarmStorage";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_REFERENCE } from "../fixtures";

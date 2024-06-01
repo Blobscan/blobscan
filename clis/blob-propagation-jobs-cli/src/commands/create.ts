@@ -7,10 +7,10 @@ import type {
   BlobPropagationQueue,
 } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
 import type { QueueHumanName } from "../Context";
 import { context } from "../context-instance";
-import { env } from "../env";
 import type { Command } from "../types";
 import {
   blobHashOptionDef,

@@ -11,7 +11,6 @@ export type {
 
 export * from "@trpc/server/adapters/express";
 
-export { env } from "./env";
 export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
 export type {

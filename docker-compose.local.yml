@@ -6,7 +6,6 @@ services:
     extends:
       file: docker-compose.yml
       service: web
-    image: blossomlabs/blobscan:local
     build: .
     ports:
       - 5556:5556 # Prisma studio
@@ -15,7 +14,6 @@ services:
     extends:
       file: docker-compose.yml
       service: api
-    image: blossomlabs/blobscan:local
     build: .
     depends_on:
       - postgres
@@ -24,6 +22,8 @@ services:
 
   postgres:
     image: postgres:15
+    profiles:
+      - dev
     ports:
       - 5432:5432
     volumes:
@@ -35,6 +35,8 @@ services:
 
   storage:
     image: fsouza/fake-gcs-server
+    profiles:
+      - dev
     ports:
       - "4443:4443"
     command: ["-scheme", "http", "-port", "4443", "-data", "/data"]
@@ -46,6 +48,8 @@ services:
 
   redis:
     image: "redis:alpine"
+    profiles:
+      - dev
     command: redis-server /usr/local/etc/redis/redis.conf
     ports:
       - "6379:6379"
@@ -59,6 +63,8 @@ services:
 
   collector:
     image: otel/opentelemetry-collector:0.23.0
+    profiles:
+      - dev
     command: "--config /etc/otel-config.yaml"
     volumes:
       - ./otel-config.yaml:/etc/otel-config.yaml
