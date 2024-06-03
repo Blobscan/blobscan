@@ -57,11 +57,11 @@ const BlobCard: FC<BlobCardProps> = ({
         ) : (
           <Skeleton width={isCompact ? undefined : 760} size="xs" />
         )}
-        {proof ? (
+        {/* {proof ? (
           <CardField name="Proof" value={proof} />
         ) : (
           <Skeleton width={isCompact ? undefined : 740} size="xs" />
-        )}
+        )} */}
         <div className="flex flex-row gap-2">
           {size && dataStorageReferences ? (
             <>

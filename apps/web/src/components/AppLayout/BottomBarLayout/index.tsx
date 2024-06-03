@@ -12,15 +12,15 @@ import XIcon from "~/icons/x.svg";
 const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
   {
     icon: <GithubIcon className="h-5 w-5" />,
-    href: "https://github.com/Blobscan/blobscan",
+    href: "https://github.com/DillLabs/blobscan",
   },
   {
     icon: <DiscordIcon className="h-5 w-5" />,
-    href: "https://discord.gg/6KNZ2UVFRt",
+    href: "https://discord.gg/UPSFTbcmtv",
   },
   {
     icon: <XIcon className="h-5 w-5" />,
-    href: "https://twitter.com/blobscan",
+    href: "https://twitter.com/dill_xyz_",
   },
 ];
 
@@ -38,7 +38,7 @@ export const BottomBarLayout = () => {
             </Link>
           ))}
         </div>
-        <div className="max-w-lg text-center text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+        {/* <div className="max-w-lg text-center text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
           Blobscan is the first open-source block explorer for the{" "}
           <Link href="https://www.eip4844.com/" isExternal>
             EIP-4844
@@ -62,10 +62,10 @@ export const BottomBarLayout = () => {
               </Link>
             </div>
           </div>
-        )}
+        )} */}
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-            Blobscan © 2024
+            Dillscan © 2024
           </div>
         </div>
       </div>

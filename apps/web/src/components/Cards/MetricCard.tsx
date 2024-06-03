@@ -197,9 +197,11 @@ export const MetricCard: FC<MetricCardProps> = function ({
         className={cn(
           {
             "sm:gap-4": !compact,
-            "sm:gap-1": compact,
+            // "sm:gap-1": compact,
+            "sm:gap-5": compact,
           },
-          "flex flex-col justify-between gap-1"
+          // "flex flex-col justify-between gap-1"
+          "flex flex-col justify-center items-center"
         )}
       >
         <div
@@ -209,7 +211,8 @@ export const MetricCard: FC<MetricCardProps> = function ({
         >
           {name ?? <Skeleton width={80} height={20} />}
         </div>
-        <div>
+        {/* <div> */}
+        <div className="flex flex-col justify-center items-center">
           <Metric {...(metric || {})} compact={compact} />
           {secondaryMetric && (
             <Metric {...secondaryMetric} compact={compact} isSecondary />

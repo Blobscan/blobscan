@@ -7,7 +7,8 @@ export const BlobscanLogo: React.FC<{ className?: string }> = ({
   <Link href="/">
     <NextImage
       className={`block dark:hidden ${className}`}
-      src="/logo-light.svg"
+      // src="/logo-light.svg"
+      src = "/blobscan.png"
       width="0"
       height="0"
       sizes="100vw"

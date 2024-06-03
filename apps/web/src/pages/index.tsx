@@ -104,12 +104,12 @@ const Home: NextPage = () => {
         <BlobscanLogo className="w-64 md:w-80" />
         <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
           <SearchInput />
-          <span className="text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
+          {/* <span className="text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
             <Link href="https://www.eip4844.com/" isExternal>
               EIP-4844
             </Link>
-          </span>
+          </span> */}
         </div>
       </div>
       <div className="flex w-full flex-col gap-8 sm:gap-10">
@@ -125,7 +125,7 @@ const Home: NextPage = () => {
             />
           </div>
           <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
-            <div className="col-span-2">
+            {/* <div className="col-span-2">
               <MetricCard
                 name="Total Tx Fees Saved"
                 metric={{
@@ -140,7 +140,7 @@ const Home: NextPage = () => {
                 }}
                 compact
               />
-            </div>
+            </div> */}
             <MetricCard
               name="Total Blocks"
               metric={{

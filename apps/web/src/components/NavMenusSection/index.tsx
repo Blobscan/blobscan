@@ -74,7 +74,7 @@ export const NavMenusSection: React.FC = () => {
                 },
               ]}
             />
-            {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
+            {/* {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
               <NavItem
                 label="Networks"
                 icon={<EthereumIcon />}
@@ -82,8 +82,8 @@ export const NavMenusSection: React.FC = () => {
                   env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"
                 )}
               />
-            )}
-            <NavItem
+            )} */}
+            {/* <NavItem
               label="API"
               icon={<CommandLineIcon />}
               href={resolveApiUrl()}
@@ -92,7 +92,7 @@ export const NavMenusSection: React.FC = () => {
               label="Docs"
               icon={<BookOpenIcon />}
               href="https://docs.blobscan.com"
-            />
+            /> */}
           </div>
         </div>
       </div>

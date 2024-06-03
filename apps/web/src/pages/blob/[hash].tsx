@@ -152,7 +152,7 @@ const Blob: NextPage = function () {
         header="Blob Details"
         fields={blob ? detailsFields : undefined}
       />
-      <Card
+      {/* <Card
         header={
           <div className="flex items-center justify-between">
             <div>Blob Data</div>
@@ -178,7 +178,7 @@ const Blob: NextPage = function () {
           selectedView={selectedBlobViewMode}
           decoder={decoder}
         />
-      </Card>
+      </Card> */}
     </>
   );
 };
