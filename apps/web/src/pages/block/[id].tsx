@@ -23,7 +23,6 @@ import {
   formatTimestamp,
   GAS_PER_BLOB,
   MAX_BLOBS_PER_BLOCK,
-  performDiv,
   pluralize,
 } from "~/utils";
 
@@ -123,28 +122,6 @@ const Block: NextPage = function () {
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
               ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
               {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
-            </span>
-          </div>
-        ),
-      },
-      {
-        name: "Blob As Calldata Gas",
-        value: (
-          <div>
-            {formatNumber(blockData.blobAsCalldataGasUsed)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              (
-              <strong>
-                {formatNumber(
-                  performDiv(
-                    blockData.blobAsCalldataGasUsed,
-                    blockData.blobGasUsed
-                  ),
-                  "standard",
-                  { maximumFractionDigits: 2 }
-                )}
-              </strong>{" "}
-              times more expensive)
             </span>
           </div>
         ),

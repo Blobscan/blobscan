@@ -16,7 +16,7 @@ const networkSchema = z.enum([
   "sepolia",
   "gnosis",
   "chiado",
-  "devnet",
+  "testnet",
 ]);
 
 export const env = createEnv({

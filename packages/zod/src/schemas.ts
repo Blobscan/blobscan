@@ -23,7 +23,7 @@ export const networkSchema = z.enum([
   "sepolia",
   "gnosis",
   "chiado",
-  "devnet",
+  "testnet",
 ]);
 
 export const blobStorageSchema = z.enum([

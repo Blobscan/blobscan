@@ -21,7 +21,7 @@ type BlobCardProps = Partial<{
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blob: { versionedHash, commitment, size, dataStorageReferences, proof } = {},
+  blob: { versionedHash, commitment, size, dataStorageReferences} = {},
   transactions,
   compact,
 }) => {
@@ -57,11 +57,6 @@ const BlobCard: FC<BlobCardProps> = ({
         ) : (
           <Skeleton width={isCompact ? undefined : 760} size="xs" />
         )}
-        {/* {proof ? (
-          <CardField name="Proof" value={proof} />
-        ) : (
-          <Skeleton width={isCompact ? undefined : 740} size="xs" />
-        )} */}
         <div className="flex flex-row gap-2">
           {size && dataStorageReferences ? (
             <>

@@ -1,15 +1,11 @@
 import { useState } from "react";
 import {
   Bars3Icon,
-  BookOpenIcon,
   ChartBarIcon,
-  CommandLineIcon,
   Squares2X2Icon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 
-import { env } from "~/env.mjs";
-import EthereumIcon from "~/icons/ethereum.svg";
 import {
   buildBlobStatsRoute,
   buildBlockStatsRoute,
@@ -21,10 +17,6 @@ import {
 import { Button } from "../Button";
 import { NavItem } from "./NavItem";
 
-const resolveApiUrl = () =>
-  env.NEXT_PUBLIC_NETWORK_NAME === "mainnet"
-    ? "https://api.blobscan.com"
-    : `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
 
 export const NavMenusSection: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -74,25 +66,6 @@ export const NavMenusSection: React.FC = () => {
                 },
               ]}
             />
-            {/* {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
-              <NavItem
-                label="Networks"
-                icon={<EthereumIcon />}
-                menuItems={JSON.parse(
-                  env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"
-                )}
-              />
-            )} */}
-            {/* <NavItem
-              label="API"
-              icon={<CommandLineIcon />}
-              href={resolveApiUrl()}
-            />
-            <NavItem
-              label="Docs"
-              icon={<BookOpenIcon />}
-              href="https://docs.blobscan.com"
-            /> */}
           </div>
         </div>
       </div>

@@ -141,7 +141,6 @@ const BlockStats: NextPage = function () {
             key={2}
             days={dailyBlockStats?.days}
             blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
-            blobAsCalldataGasUsed={dailyBlockStats?.totalBlobAsCalldataGasUsed}
           />,
           <DailyBlobFeeChart
             key={3}

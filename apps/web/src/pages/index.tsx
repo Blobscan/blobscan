@@ -11,7 +11,6 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
 import { DailyTransactionsChart } from "~/components/Charts/Transaction";
-import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
 import { api } from "~/api-client";
@@ -117,30 +116,11 @@ const Home: NextPage = () => {
           <div className="col-span-2 sm:col-span-4">
             <DailyBlobGasComparisonChart
               days={dailyBlockStats?.days}
-              blobAsCalldataGasUsed={
-                dailyBlockStats?.totalBlobAsCalldataGasUsed
-              }
               blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
               opts={{ toolbox: { show: false } }}
             />
           </div>
           <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
-            {/* <div className="col-span-2">
-              <MetricCard
-                name="Total Tx Fees Saved"
-                metric={{
-                  value:
-                    typeof overallStats?.block?.totalBlobAsCalldataFee !==
-                      "undefined" &&
-                    typeof overallStats?.block?.totalBlobFee !== "undefined"
-                      ? overallStats.block.totalBlobAsCalldataFee -
-                        overallStats.block.totalBlobFee
-                      : undefined,
-                  type: "ethereum",
-                }}
-                compact
-              />
-            </div> */}
             <MetricCard
               name="Total Blocks"
               metric={{

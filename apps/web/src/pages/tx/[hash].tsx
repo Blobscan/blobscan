@@ -19,7 +19,6 @@ import {
   formatTimestamp,
   formatBytes,
   formatNumber,
-  performDiv,
   deserializeFullTransaction,
 } from "~/utils";
 
@@ -62,7 +61,6 @@ const Tx: NextPage = () => {
     detailsFields = [];
 
     const {
-      blobAsCalldataGasUsed,
       blobs,
       block,
       hash,
@@ -73,7 +71,6 @@ const Tx: NextPage = () => {
       blobGasUsed,
       blobGasBaseFee,
       blobGasMaxFee,
-      blobAsCalldataGasFee,
     } = tx;
 
     detailsFields = [
@@ -146,48 +143,6 @@ const Tx: NextPage = () => {
         name: "Blob Gas Used",
         value: formatNumber(blobGasUsed),
       },
-      {
-        name: "Blob As Calldata Gas Used",
-        value: (
-          <div>
-            {formatNumber(blobAsCalldataGasUsed)}{" "}
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              |{" "}
-              <strong>
-                {formatNumber(
-                  performDiv(blobAsCalldataGasUsed, blobGasUsed),
-                  "compact",
-                  {
-                    maximumFractionDigits: 2,
-                  }
-                )}
-              </strong>{" "}
-              times larger
-            </span>
-          </div>
-        ),
-      },
-      {
-        name: "Blob As Calldata Gas Fee",
-        value: (
-          <div className="display flex gap-1">
-            {<StandardEtherUnitDisplay amount={blobAsCalldataGasFee} />}
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              |{" "}
-              <strong>
-                {formatNumber(
-                  performDiv(blobAsCalldataGasFee, blobGasBaseFee),
-                  "compact",
-                  {
-                    maximumFractionDigits: 2,
-                  }
-                )}
-              </strong>{" "}
-              times more expensive
-            </span>
-          </div>
-        ),
-      }
     );
   }
 

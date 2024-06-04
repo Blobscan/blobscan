@@ -14,7 +14,7 @@ export function getNetworkDencunForkSlot(
       return 14237696;
     case "chiado":
       return 8265728;
-    case "devnet":
+    case "testnet":
       return 0;
   }
 }

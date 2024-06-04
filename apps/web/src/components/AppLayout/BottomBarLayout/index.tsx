@@ -4,7 +4,6 @@ import React from "react";
 import { Button } from "~/components/Button";
 import { ExplorerDetails } from "~/components/ExplorerDetails";
 import { Link } from "~/components/Link";
-import { env } from "~/env.mjs";
 import DiscordIcon from "~/icons/discord.svg";
 import GithubIcon from "~/icons/github.svg";
 import XIcon from "~/icons/x.svg";
@@ -38,31 +37,6 @@ export const BottomBarLayout = () => {
             </Link>
           ))}
         </div>
-        {/* <div className="max-w-lg text-center text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-          Blobscan is the first open-source block explorer for the{" "}
-          <Link href="https://www.eip4844.com/" isExternal>
-            EIP-4844
-          </Link>{" "}
-          shard blob transactions, providing the necessary infrastructure to
-          scale Ethereum.
-        </div>
-        {env.NEXT_PUBLIC_VERSION && (
-          <div className="flex items-center gap-1">
-            <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-              Version:
-            </div>
-            <div className="relative">
-              <Link
-                href={`https://github.com/Blobscan/blobscan/tree/%40blobscan/web%40${env.NEXT_PUBLIC_VERSION}`}
-                isExternal
-              >
-                <div className="relative -top-0.5 text-xs">
-                  {env.NEXT_PUBLIC_VERSION}
-                </div>
-              </Link>
-            </div>
-          </div>
-        )} */}
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
             Dillscan © 2024
