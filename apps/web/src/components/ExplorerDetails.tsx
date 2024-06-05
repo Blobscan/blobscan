@@ -42,17 +42,16 @@ export function ExplorerDetails() {
       value: syncStateData
         ? formatNumber(syncStateData.lastUpperSyncedSlot ?? 0)
         : undefined,
-    },
-    {
-      name: "Swarm blob data expiry",
-      value: blobStoragesState
-        ? blobStoragesState.swarmDataTTL
-          ? formatTtl(blobStoragesState.swarmDataTTL)
-          : null
-        : undefined,
-      icon: <ClockIcon className="h-4 w-4" />,
-    },
+    }
   ];
+
+  if (blobStoragesState && blobStoragesState.swarmDataTTL) {
+    explorerDetailsItems.push({
+      name: "Swarm blob data expiry",
+      value: formatTtl(blobStoragesState.swarmDataTTL),
+      icon: <ClockIcon className="h-4 w-4" />,
+    });
+  }
 
   return (
     <div className="sm:fle flex w-full flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:justify-start">
