@@ -32,10 +32,10 @@ function App({ Component, pageProps }: NextAppProps) {
       highlightColor={resolvedTheme === "dark" ? "#7D80AB" : "#E2CFFF"}
     >
       <Head>
-        <title>Blobscan</title>
+        <title>Dillscan</title>
         <meta
           name="description"
-          content="Blobscan is the first EIP4844 Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
+          content="Dillscan is a Blob Transaction explorer, a web-based application that offers a seamless experience for navigating and indexing blob data."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>

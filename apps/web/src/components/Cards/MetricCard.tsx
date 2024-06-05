@@ -211,8 +211,8 @@ export const MetricCard: FC<MetricCardProps> = function ({
         >
           {name ?? <Skeleton width={80} height={20} />}
         </div>
-        {/* <div> */}
-        <div className="flex flex-col justify-center items-center">
+        <div>
+        {/* <div className="flex flex-col justify-center items-center"> */}
           <Metric {...(metric || {})} compact={compact} />
           {secondaryMetric && (
             <Metric {...secondaryMetric} compact={compact} isSecondary />

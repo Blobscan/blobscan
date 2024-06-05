@@ -9,20 +9,16 @@ import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
-import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { FullBlock } from "~/types";
 import {
-  BLOB_GAS_LIMIT_PER_BLOCK,
   buildBlockExternalUrl,
-  buildSlotExternalUrl,
   deserializeFullBlock,
   formatBytes,
   formatNumber,
   formatTimestamp,
   GAS_PER_BLOB,
-  MAX_BLOBS_PER_BLOCK,
   pluralize,
 } from "~/utils";
 
@@ -88,11 +84,7 @@ const Block: NextPage = function () {
       },
       {
         name: "Slot",
-        value: (
-          <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
-            {blockData.slot}
-          </Link>
-        ),
+        value: blockData.slot,
       },
       {
         name: "Blob Size",
@@ -113,18 +105,6 @@ const Block: NextPage = function () {
       {
         name: "Blob Gas Used",
         value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
-      },
-      {
-        name: "Blob Gas Limit",
-        value: (
-          <div>
-            {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
-              {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
-            </span>
-          </div>
-        ),
       },
     ];
   }

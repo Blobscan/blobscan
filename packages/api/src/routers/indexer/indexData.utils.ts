@@ -89,7 +89,8 @@ export function getEIP2028CalldataGas(hexData: string) {
 }
 
 export function calculateBlobSize(blob: string): number {
-  return blob.slice(2).length / 2;
+  // return blob.slice(2).length / 2;
+  return 131_072
 }
 
 export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
