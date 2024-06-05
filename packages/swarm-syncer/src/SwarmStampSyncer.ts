@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+ 
 import type { Redis } from "ioredis";
 
 import { ErrorException, SwarmStampSyncerError } from "./errors";

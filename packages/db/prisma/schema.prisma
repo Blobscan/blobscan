@@ -59,12 +59,6 @@ model BlobStoragesState {
   swarmDataId   String?  @map("swarm_data_id") // TODO: rename to batchId
   swarmDataTTL  Int?     @map("swarm_data_ttl") // TODO: rename to batchTtl
   updatedAt     DateTime @default(now()) @map("updated_at")
-  label         String   @map("label")
-  depth         Int      @map("depth")
-  utilization   Int      @map("utilization")
-  amount        String   @map("amount")
-  immutableFlag Boolean  @map("immutable_flag")
-  exists        Boolean  @map("exists")
 
   @@map("blob_storages_state")
 }
@@ -267,7 +261,7 @@ model BlobDailyStats {
 }
 
 // NextAuth.js Models
-// NOTE: When using postgresql, mysql or sqlserver, 
+// NOTE: When using postgresql, mysql or sqlserver,
 // uncomment the @db.Text annotations below
 // @see https://next-auth.js.org/schemas/models
 // model Account {

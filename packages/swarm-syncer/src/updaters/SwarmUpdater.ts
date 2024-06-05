@@ -27,18 +27,12 @@ export class SwarmStampUpdater extends PeriodicUpdater {
         await prisma.blobStoragesState.update({
           data: {
             swarmDataTTL: data.batchTTL,
-            label: data.label,
-            depth: data.depth,
-            utilization: data.utilization,
-            amount: data.amount,
-            immutableFlag: data.immutableFlag,
-            exists: data.exists,
           },
           where: {
             swarmDataId: batchId,
           },
         });
-        
+
         this.logger.info(`Updated swarm stamp ${batchId}`);
       },
     });
