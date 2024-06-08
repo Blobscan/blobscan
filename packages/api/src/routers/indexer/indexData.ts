@@ -71,7 +71,7 @@ export const indexData = jwtAuthedProcedure
       let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
 
       // 1. Store blobs' data
-      if (!blobPropagator) {
+      if (!blobPropagator && input.blobs.length > 0) {
         const uniqueBlobs: RawBlob[] = Array.from(
           new Set(input.blobs.map((b) => b.versionedHash))
         ).map((versionedHash) => {
@@ -113,7 +113,6 @@ export const indexData = jwtAuthedProcedure
       // 2. Prepare address, block, transaction and blob insertions
       const dbTxs = createDBTransactions(input);
       const dbBlock = createDBBlock(input, dbTxs);
-      const dbBlobs = createDBBlobs(input);
 
       operations.push(
         prisma.block.upsert({
@@ -133,7 +132,12 @@ export const indexData = jwtAuthedProcedure
         prisma.address.upsertAddressesFromTransactions(input.transactions)
       );
       operations.push(prisma.transaction.upsertMany(dbTxs));
-      operations.push(prisma.blob.upsertMany(dbBlobs));
+
+      if (input.blobs.length > 0) {
+        const dbBlobs = createDBBlobs(input);
+        operations.push(prisma.blob.upsertMany(dbBlobs));
+      }
+      
 
       if (dbBlobStorageRefs?.length) {
         operations.push(

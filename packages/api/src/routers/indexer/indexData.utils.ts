@@ -121,9 +121,22 @@ export function createDBTransactions({
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
-
+      //if this transaction has no blobs, we will set blobAsCalldataGasUsed=0
+      //then store it in the database
       if (txBlobs.length === 0) {
-        throw new Error(`Blobs for transaction ${hash} not found`);
+        // throw new Error(`Blobs for transaction ${hash} not found`);
+        const fakeBlobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
+        return {
+          blockHash: block.hash,
+          hash,
+          fromId: from,
+          toId: to,
+          gasPrice: bigIntToDecimal(gasPrice),
+          blobGasPrice: bigIntToDecimal(fakeBlobGasPrice),
+          maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
+          blobAsCalldataGasUsed: new Prisma.Decimal(0),
+          rollup: resolveRollup(from),
+        };
       }
 
       const blobGasAsCalldataUsed = txBlobs.reduce(
