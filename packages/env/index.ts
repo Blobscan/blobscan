@@ -1,4 +1,3 @@
-import type { BlobStorageName } from "@blobscan/blob-storage-manager";
 import {
   z,
   blobStorageSchema,
@@ -14,7 +13,7 @@ import {
 } from "@blobscan/zod";
 
 export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
-  storageName: BlobStorageName,
+  storageName: "FILE_SYSTEM" | "GOOGLE" | "POSTGRES" | "SWARM",
   schema: T
 ) {
   return conditionalRequiredSchema(
