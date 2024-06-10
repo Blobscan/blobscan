@@ -3,42 +3,36 @@
 exports[`Daily command > when aggregating daily stats > should aggregate all entities' data when no entity is provided 1`] = `
 [
   {
-    "avgBlobSize": 1066.666666666667,
     "day": 2022-10-16T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 3,
   },
   {
-    "avgBlobSize": 1250,
     "day": 2023-05-10T00:00:00.000Z,
     "totalBlobSize": 7500n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 6,
   },
   {
-    "avgBlobSize": 1033.333333333333,
     "day": 2023-08-03T00:00:00.000Z,
     "totalBlobSize": 6200n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 2,
   },
   {
-    "avgBlobSize": 1180,
     "day": 2023-08-20T00:00:00.000Z,
     "totalBlobSize": 5900n,
     "totalBlobs": 5,
     "totalUniqueBlobs": 4,
   },
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,
@@ -168,42 +162,36 @@ exports[`Daily command > when aggregating daily stats > should aggregate all ent
 exports[`Daily command > when aggregating daily stats > should aggregate blob data when the blob entity is provided 1`] = `
 [
   {
-    "avgBlobSize": 1066.666666666667,
     "day": 2022-10-16T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 3,
   },
   {
-    "avgBlobSize": 1250,
     "day": 2023-05-10T00:00:00.000Z,
     "totalBlobSize": 7500n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 6,
   },
   {
-    "avgBlobSize": 1033.333333333333,
     "day": 2023-08-03T00:00:00.000Z,
     "totalBlobSize": 6200n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 2,
   },
   {
-    "avgBlobSize": 1180,
     "day": 2023-08-20T00:00:00.000Z,
     "totalBlobSize": 5900n,
     "totalBlobs": 5,
     "totalUniqueBlobs": 4,
   },
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,

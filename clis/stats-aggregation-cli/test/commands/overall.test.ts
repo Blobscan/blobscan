@@ -58,7 +58,6 @@ describe("Overall command", () => {
         [
           [
             {
-              "avgBlobSize": 1000,
               "id": 1,
               "totalBlobSize": 4000n,
               "totalBlobs": 4,

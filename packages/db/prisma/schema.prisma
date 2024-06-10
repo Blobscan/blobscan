@@ -243,7 +243,6 @@ model BlobOverallStats {
   totalBlobs       Int    @map("total_blobs")
   totalUniqueBlobs Int    @map("total_unique_blobs")
   totalBlobSize    BigInt @map("total_blob_size")
-  avgBlobSize      Float  @map("avg_blob_size")
 
   updatedAt DateTime @map("updated_at")
 
@@ -255,7 +254,6 @@ model BlobDailyStats {
   totalBlobs       Int      @map("total_blobs")
   totalUniqueBlobs Int      @map("total_unique_blobs")
   totalBlobSize    BigInt   @map("total_blob_size")
-  avgBlobSize      Float    @map("avg_blob_size")
 
   @@map("blob_daily_stats")
 }

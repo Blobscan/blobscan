@@ -10,7 +10,6 @@ export const outputSchema = z.object({
   totalBlobs: z.number(),
   totalUniqueBlobs: z.number(),
   totalBlobSize: z.string(),
-  avgBlobSize: z.number(),
   updatedAt: z.date(),
 });
 
@@ -26,7 +25,6 @@ export function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
             totalBlobSize: stats.totalBlobSize.toString(),
           }
         : {
-            avgBlobSize: 0,
             totalBlobs: 0,
             totalBlobSize: "0",
             totalUniqueBlobs: 0,
