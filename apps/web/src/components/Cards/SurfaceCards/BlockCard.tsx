@@ -38,6 +38,8 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
     (transactions?.map((tx) => tx.rollup).filter(Boolean) as Rollup[]) ?? [];
 
   const hasOneBlob = blobCount === 1;
+  const transactionsWithBlobs = transactions?.filter(transaction => transaction.blobs && transaction.blobs.length > 0);
+  const transactionsWithoutBlobs = transactions?.filter(transaction => !transaction.blobs || transaction.blobs.length === 0);
 
   return (
     <SurfaceCardBase>
@@ -65,30 +67,26 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
         <Skeleton width={110} size="xs" />
       )}
       <div className="mt-1.5 flex flex-col gap-1 text-xs">
-        <div className="flex w-full gap-1">
-          {blobGasPrice && blobGasUsed ? (
-            <>
-              <CardField
-                name={<div title="Blob Gas Price">B. Gas Price</div>}
-                value={<EtherUnitDisplay amount={blobGasPrice} />}
-              />
-              <CardField
-                name={<div title="Blob Gas Used">B. Gas Used</div>}
-                value={blobGasUsed.toString()}
-              />
-            </>
-          ) : (
-            <Skeleton width={300} size="xs" />
-          )}
-        </div>
+      {blobGasPrice && blobGasUsed ? (
+          <div className="flex w-full gap-1">
+            <CardField
+              name={<div title="Blob Gas Price">B. Gas Price</div>}
+              value={<EtherUnitDisplay amount={blobGasPrice} />}
+            />
+            <CardField
+              name={<div title="Blob Gas Used">B. Gas Used</div>}
+              value={blobGasUsed.toString()}
+            />
+          </div>
+        ) : null}
         {transactions ? (
           <div className="mt-1 flex">
             <span>
-              {transactions.length} Blob Tx{hasOneTx ? "" : "s"}
+              {transactionsWithoutBlobs?.length || 0} Tx{hasOneTx ? "" : "s"}
             </span>
             <span className="mx-1 inline-block">･</span>
             <span>
-              {blobCount} Blob{hasOneBlob ? "" : "s"}
+              {transactionsWithBlobs?.length || 0} Blob Tx{hasOneBlob ? "" : "s"}
             </span>
           </div>
         ) : (

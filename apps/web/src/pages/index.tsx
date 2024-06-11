@@ -59,7 +59,8 @@ const Home: NextPage = () => {
     const transactions = blocks
       .flatMap((b) => b.transactions)
       .slice(0, LATEST_ITEMS_LENGTH);
-    const blobs = transactions
+    const allTransactions = blocks.flatMap((b) => b.transactions);
+    const blobs = allTransactions
       .flatMap(({ blobs, ...t }) => blobs.map((b) => ({ ...b, tx: t })))
       .slice(0, LATEST_ITEMS_LENGTH);
 
@@ -202,7 +203,7 @@ const Home: NextPage = () => {
           <Card
             header={
               <div className="flex items-center justify-between gap-5">
-                <div>Latest Blob Transactions</div>
+                <div>Latest Transactions</div>
                 <Button
                   variant="outline"
                   label="View All Txs"

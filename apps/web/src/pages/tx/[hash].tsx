@@ -108,45 +108,47 @@ const Tx: NextPage = () => {
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
-
-    detailsFields.push(
-      {
-        name: "Total Blob Size",
-        value: formatBytes(totalBlobSize),
-      },
-      {
-        name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={block?.blobGasPrice} />,
-      },
-      {
-        name: "Blob Fee",
-        value: (
-          <div className="flex flex-col gap-4">
-            {blobGasBaseFee ? (
-              <div className="flex gap-1">
-                <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Base:
+    if (tx && tx.blobs.length > 0){
+      detailsFields.push(
+        {
+          name: "Total Blob Size",
+          value: formatBytes(totalBlobSize),
+        },
+        {
+          name: "Blob Gas Price",
+          value: <StandardEtherUnitDisplay amount={block?.blobGasPrice} />,
+        },
+        {
+          name: "Blob Fee",
+          value: (
+            <div className="flex flex-col gap-4">
+              {blobGasBaseFee ? (
+                <div className="flex gap-1">
+                  <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                    Base:
+                  </div>
+                  <StandardEtherUnitDisplay amount={blobGasBaseFee} />
                 </div>
-                <StandardEtherUnitDisplay amount={blobGasBaseFee} />
+              ) : null}
+              <div className=" flex gap-1">
+                <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Max:
+                </div>
+                <StandardEtherUnitDisplay amount={blobGasMaxFee} />
               </div>
-            ) : null}
-            <div className=" flex gap-1">
-              <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
-                Max:
-              </div>
-              <StandardEtherUnitDisplay amount={blobGasMaxFee} />
             </div>
-          </div>
-        ),
-      },
-      {
-        name: "Blob Gas Used",
-        value: formatNumber(blobGasUsed),
-      },
-    );
+          ),
+        },
+        {
+          name: "Blob Gas Used",
+          value: formatNumber(blobGasUsed),
+        },
+      );
+    }
+
   }
 
-  return (
+  return tx && tx.blobs && tx.blobs.length > 0 ?(
     <>
       <DetailsLayout
         header="Transaction Details"
@@ -161,6 +163,14 @@ const Tx: NextPage = () => {
             : tx.blobs.map((b) => <BlobCard key={b.versionedHash} blob={b} />)}
         </div>
       </Card>
+    </>
+  ):(
+    <>
+      <DetailsLayout
+        header="Transaction Details"
+        externalLink={tx ? buildTransactionExternalUrl(tx.hash) : undefined}
+        fields={detailsFields}
+      />
     </>
   );
 };

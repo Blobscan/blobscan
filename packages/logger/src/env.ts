@@ -5,7 +5,7 @@ export const env = createEnv({
     server: {
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])
-        .default("debug"),
+        .default("info"),
       TEST: booleanSchema.optional(),
     },
 

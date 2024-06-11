@@ -70,43 +70,63 @@ const Block: NextPage = function () {
       },
       0
     );
+    if(totalBlockBlobSize == 0) {
+      detailsFields = [
+        { name: "Block Height", value: blockData.number },
+        { name: "Hash", value: blockData.hash },
+        {
+          name: "Timestamp",
+          value: (
+            <div className="whitespace-break-spaces">
+              {formatTimestamp(blockData.timestamp)}
+            </div>
+          ),
+        },
+        {
+          name: "Slot",
+          value: blockData.slot,
+        }
+      ];
+    }
+    else {
+      detailsFields = [
+        { name: "Block Height", value: blockData.number },
+        { name: "Hash", value: blockData.hash },
+        {
+          name: "Timestamp",
+          value: (
+            <div className="whitespace-break-spaces">
+              {formatTimestamp(blockData.timestamp)}
+            </div>
+          ),
+        },
+        {
+          name: "Slot",
+          value: blockData.slot,
+        },
+        {
+          name: "Blob Size",
+          value: (
+            <div>
+              {formatBytes(totalBlockBlobSize)}
+              <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+                ({formatNumber(totalBlockBlobSize / GAS_PER_BLOB)}{" "}
+                {pluralize("blob", totalBlockBlobSize / GAS_PER_BLOB)})
+              </span>
+            </div>
+          ),
+        },
+        {
+          name: "Blob Gas Price",
+          value: <StandardEtherUnitDisplay amount={blockData.blobGasPrice} />,
+        },
+        {
+          name: "Blob Gas Used",
+          value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
+        },
+      ];
+    }
 
-    detailsFields = [
-      { name: "Block Height", value: blockData.number },
-      { name: "Hash", value: blockData.hash },
-      {
-        name: "Timestamp",
-        value: (
-          <div className="whitespace-break-spaces">
-            {formatTimestamp(blockData.timestamp)}
-          </div>
-        ),
-      },
-      {
-        name: "Slot",
-        value: blockData.slot,
-      },
-      {
-        name: "Blob Size",
-        value: (
-          <div>
-            {formatBytes(totalBlockBlobSize)}
-            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(totalBlockBlobSize / GAS_PER_BLOB)}{" "}
-              {pluralize("blob", totalBlockBlobSize / GAS_PER_BLOB)})
-            </span>
-          </div>
-        ),
-      },
-      {
-        name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={blockData.blobGasPrice} />,
-      },
-      {
-        name: "Blob Gas Used",
-        value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
-      },
-    ];
   }
 
   return (
@@ -120,7 +140,7 @@ const Block: NextPage = function () {
       />
 
       <Card
-        header={`Blob Transactions ${
+        header={`Transactions ${
           blockData ? `(${blockData.transactions.length})` : ""
         }`}
       >

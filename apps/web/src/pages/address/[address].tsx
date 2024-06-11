@@ -66,7 +66,7 @@ const Address: NextPage = () => {
         ]}
       />
       <PaginatedListLayout
-        title={`Blob Transactions ${
+        title={`Transactions ${
           addressTxsData ? `(${addressTxsData.totalTransactions})` : ""
         }`}
         items={addressTxsData?.transactions.map((tx) => {

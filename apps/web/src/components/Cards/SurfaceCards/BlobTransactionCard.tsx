@@ -81,7 +81,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   const totalBlobSize = blobsOnTx?.reduce((acc, { size }) => acc + size, 0);
 
   console.log(displayBlobs);
-  return (
+  return blobsOnTx?.length?(
     <div>
       <SurfaceCardBase
         className={compact ? "rounded" : "rounded-none rounded-t-md"}
@@ -227,6 +227,94 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           </div>
         </Collapsable>
       )}
+    </div>
+  ):(
+    <div>
+      <SurfaceCardBase
+        className={compact ? "rounded" : "rounded-none rounded-t-md"}
+      >
+        <div className="flex flex-col text-sm">
+          {hash ? (
+            <div className="flex w-full items-center justify-between gap-2 md:gap-0">
+              <div
+                className={`${
+                  isCompact ? "max-w-[86%]" : "max-w-[70%] sm:w-full"
+                }`}
+              >
+                <span className="text-surfaceContentSecondary-light dark:text-surfaceContentSecondary-dark">
+                  Tx{" "}
+                </span>
+                <Link href={buildTransactionRoute(hash)}>{hash}</Link>
+              </div>
+              <div>
+                {rollup &&
+                  (isCompact ? (
+                    <RollupIcon rollup={rollup} />
+                  ) : (
+                    <RollupBadge rollup={rollup} size="xs" />
+                  ))}
+              </div>
+            </div>
+          ) : (
+            <Skeleton width={isCompact ? undefined : 500} className="mb-1" />
+          )}
+          <div className="flex w-full flex-col items-center justify-between text-xs md:flex-row">
+            <div
+              className={`w-full ${timestamp && blockNumber ? "w-2/3" : ""}`}
+            >
+              <div className="flex flex-col gap-1 truncate">
+                {from && to ? (
+                  <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+                    <div className="flex justify-start gap-0.5">
+                      <Link href={buildAddressRoute(from)}>
+                        {isCompact ? shortenAddress(from, 8) : from}
+                      </Link>
+                    </div>
+                    <ArrowRightIcon className="h-3 w-3" />
+                    <div>
+                      <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                        <Link href={buildAddressRoute(to)}>
+                          {isCompact ? shortenAddress(to, 8) : to}
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Skeleton width={isCompact ? "80%" : 590} size="xs" />
+                )}
+                <div className="flex gap-2 text-xs">
+                  {blobsOnTx ? (
+                    <>
+                      <div>
+                        {0} Blob
+                      </div>
+                      ·
+                      <div>
+                        {totalBlobSize !== undefined
+                          ? formatBytes(0)
+                          : undefined}
+                      </div>
+                    </>
+                  ) : (
+                    <Skeleton width={140} size="xs" />
+                  )}
+                </div>
+              </div>
+            </div>
+            {!!blockNumber && !!timestamp && (
+              <div className="t mt-1 flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
+                <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Block
+                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+                </div>
+                <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {timestamp.fromNow()}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </SurfaceCardBase>
     </div>
   );
 };

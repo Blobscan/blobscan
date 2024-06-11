@@ -45,7 +45,7 @@ const Txs: NextPage = function () {
 
   return (
     <PaginatedListLayout
-      header={`Blob Transactions ${
+      header={`Transactions ${
         totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
       }`}
       items={transactions?.map((tx) => (
@@ -60,7 +60,7 @@ const Txs: NextPage = function () {
       page={p}
       pageSize={ps}
       itemSkeleton={<BlobTransactionCard />}
-      emptyState="No blob transactions"
+      emptyState="No transactions"
     />
   );
 };
