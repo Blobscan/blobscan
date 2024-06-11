@@ -175,9 +175,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               SUM(b.blob_as_calldata_gas_used)::DECIMAL as total_blob_as_calldata_gas_used,
               SUM(b.blob_gas_used * b.blob_gas_price)::DECIMAL as total_blob_fee,
               SUM(b.blob_as_calldata_gas_used * b.blob_gas_price)::DECIMAL as total_blob_as_calldata_fee,
-              AVG(b.blob_gas_used * b.blob_gas_price)::FLOAT as avg_blob_fee,
-              AVG(b.blob_as_calldata_gas_used * b.blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
-              AVG(b.blob_gas_price)::FLOAT as avg_blob_gas_price
+              AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_used * b.blob_gas_price ELSE NULL END)::FLOAT as avg_blob_fee,
+              AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_as_calldata_gas_used * b.blob_gas_price ELSE NULL END)::FLOAT as avg_blob_as_calldata_fee,
+              AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_price ELSE NULL END)::FLOAT as avg_blob_gas_price
             FROM "block" b
             LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash"
             ${whereClause} AND tf."block_hash" IS NULL
@@ -216,9 +216,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 SUM(blob_as_calldata_gas_used)::DECIMAL(50,0) as total_blob_as_calldata_gas_used,
                 SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_fee,
                 SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
-                AVG(blob_gas_used * blob_gas_price)::FLOAT as avg_blob_fee,
-                AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT as avg_blob_as_calldata_fee,
-                AVG(blob_gas_price)::FLOAT as avg_blob_gas_price,
+                AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_used * blob_gas_price ELSE NULL END)::FLOAT as avg_blob_fee,
+                AVG(CASE WHEN blob_gas_used != 0 THEN blob_as_calldata_gas_used * blob_gas_price ELSE NULL END)::FLOAT as avg_blob_as_calldata_fee,
+                AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_price ELSE NULL END)::FLOAT as avg_blob_gas_price,
                 NOW() as updated_at
               FROM "block"
               ON CONFLICT (id) DO UPDATE SET
@@ -275,13 +275,13 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   `SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0)`
                 )} as ${totalBlobAsCalldataFeeField},
                 ${coalesceToZero(
-                  `AVG(blob_gas_used * blob_gas_price)::FLOAT`
+                  `AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_used * blob_gas_price ELSE NULL END)::FLOAT`
                 )} as ${avgBlobFeeField},
                 ${coalesceToZero(
-                  `AVG(blob_as_calldata_gas_used * blob_gas_price)::FLOAT`
+                  `AVG(CASE WHEN blob_gas_used != 0 THEN blob_as_calldata_gas_used * blob_gas_price ELSE NULL END)::FLOAT`
                 )} as ${avgBlobAsCalldataFeeField},
                 ${coalesceToZero(
-                  `AVG(blob_gas_price)::FLOAT`
+                  `AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_price ELSE NULL END)::FLOAT`
                 )} as ${avgBlobGasPriceField},
                 NOW() as ${updatedAtField}
               FROM "block" bck
@@ -342,7 +342,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT(tx."hash")::INT AS total_transactions,
               COUNT(DISTINCT tx.to_id)::INT AS total_unique_receivers,
               COUNT(DISTINCT tx.from_id)::INT AS total_unique_senders,
-              AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee
+              AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END)::FLOAT AS avg_max_blob_gas_fee
             FROM "transaction" tx
               JOIN "block" b ON b.hash = tx.block_hash
               LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash" AND tf."hash" = tx."hash"
@@ -371,7 +371,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT("hash")::INT AS total_transactions,
               COUNT(DISTINCT to_id)::INT AS total_unique_receivers,
               COUNT(DISTINCT from_id)::INT AS total_unique_senders,
-              AVG(max_fee_per_blob_gas)::FLOAT AS avg_max_blob_gas_fee,
+              AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END)::FLOAT AS avg_max_blob_gas_fee,
               NOW() AS updated_at
             FROM "transaction"
             ON CONFLICT (id) DO UPDATE SET
@@ -410,7 +410,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   `COUNT(DISTINCT CASE WHEN faddr.first_block_number_as_sender BETWEEN ${from} AND ${to} THEN faddr.address END )::INT`
                 )} AS ${totalUniqueSendersField},
                 ${coalesceToZero(
-                  "AVG(max_fee_per_blob_gas)::FLOAT"
+                  "AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END)::FLOAT"
                 )} AS ${avgMaxBlobGasFeeField},
                 NOW() AS ${updatedAtField}
               FROM "transaction" tx
