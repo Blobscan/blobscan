@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/stats-syncer",
+  "name": "@blobscan/syncers",
   "description": "Blobscan's stats syncer",
   "private": true,
   "version": "0.1.9",

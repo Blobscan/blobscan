@@ -14,38 +14,16 @@ import {
   gracefulShutdown as apiGracefulShutdown,
 } from "@blobscan/api";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
-import { StatsSyncer } from "@blobscan/stats-syncer";
-import { SwarmStampSyncer } from "@blobscan/swarm-syncer";
 
 import { env } from "./env";
 import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
-import { getNetworkDencunForkSlot } from "./utils";
+import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
 
-const statsSyncer = new StatsSyncer({
-  redisUri: env.REDIS_URI,
-  lowestSlot:
-    env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
-});
-
-statsSyncer.start({
-  cronPatterns: {
-    daily: env.STATS_SYNCER_DAILY_CRON_PATTERN,
-    overall: env.STATS_SYNCER_OVERALL_CRON_PATTERN,
-  },
-});
-
-
-if (env.SWARM_STORAGE_ENABLED && env.SWARM_BATCH_ID) {
-  const swarmSyncer = new SwarmStampSyncer({
-    redisUri: env.REDIS_URI,
-    env.BEE_ENDPOINT, //FIXME
-  );
-  swarmSyncer.start(env.SWARM_SYNCER_CRON);
-}
+const closeSyncers = setUpSyncers();
 
 const app = express();
 
@@ -83,7 +61,7 @@ async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
   await apiGracefulShutdown()
-    .finally(() => statsSyncer.close())
+    .finally(() => closeSyncers())
     .finally(() => {
       server.close(() => {
         logger.debug("Server shut down successfully");

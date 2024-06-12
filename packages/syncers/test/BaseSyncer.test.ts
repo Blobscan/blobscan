@@ -2,28 +2,29 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { PeriodicUpdater } from "../src/PeriodicUpdater";
-import type { PeriodicUpdaterConfig } from "../src/PeriodicUpdater";
-import { PeriodicUpdaterError } from "../src/errors";
+import { BaseSyncer } from "../src/BaseSyncer";
+import type { BaseSyncerConfig } from "../src/BaseSyncer";
+import { SyncerError } from "../src/errors";
 
-class PeriodicUpdaterMock extends PeriodicUpdater {
-  constructor({
-    name,
-    redisUriOrConnection,
-    updaterFn,
-  }: Partial<PeriodicUpdaterConfig> = {}) {
+class PeriodicUpdaterMock extends BaseSyncer {
+  constructor({ name, syncerFn: updaterFn }: Partial<BaseSyncerConfig> = {}) {
     super({
       name: name ?? "test-updater",
-      redisUriOrConnection: redisUriOrConnection ?? "redis://localhost:6379/1",
-      updaterFn: updaterFn ?? (() => Promise.resolve()),
+      redisUriOrConnection: "redis://localhost:6379/1",
+      cronPattern: "* * * * *",
+      syncerFn: updaterFn ?? (() => Promise.resolve()),
     });
   }
 
   getWorker() {
+    if (!this.worker) throw new Error("Worker not initialized");
+
     return this.worker;
   }
 
   getQueue() {
+    if (!this.queue) throw new Error("Queue not initialized");
+
     return this.queue;
   }
 }
@@ -51,15 +52,14 @@ describe("PeriodicUpdater", () => {
   describe("when running an updater", () => {
     it("should set up a repeatable job correctly", async () => {
       const queue = periodicUpdater.getQueue();
-      const cronPattern = "* * * * *";
 
-      await periodicUpdater.start(cronPattern);
+      await periodicUpdater.start();
 
       const jobs = await queue.getRepeatableJobs();
 
       expect(jobs.length, "Expected one repeatable job").toBe(1);
       expect(jobs[0]?.pattern, "Repetable job cron pattern mismatch").toEqual(
-        cronPattern
+        "* * * * *"
       );
     });
 
@@ -70,17 +70,21 @@ describe("PeriodicUpdater", () => {
 
         vi.spyOn(queue, "add").mockRejectedValueOnce(new Error("Queue error"));
 
-        await periodicUpdater.start("* * * * *");
+        await periodicUpdater.start();
       },
-      PeriodicUpdaterError,
+      SyncerError,
       { checkCause: true }
     );
   });
 
   describe("when closing an updater", () => {
     it("should close correctly", async () => {
-      const queue = periodicUpdater.getQueue();
-      const worker = periodicUpdater.getWorker();
+      const closingPeriodicUpdater = new PeriodicUpdaterMock();
+
+      await closingPeriodicUpdater.start();
+
+      const queue = closingPeriodicUpdater.getQueue();
+      const worker = closingPeriodicUpdater.getWorker();
 
       const queueCloseSpy = vi.spyOn(queue, "close").mockResolvedValueOnce();
       const queueRemoveAllListenersSpy = vi
@@ -92,7 +96,7 @@ describe("PeriodicUpdater", () => {
         .spyOn(worker, "removeAllListeners")
         .mockReturnValueOnce(worker);
 
-      await periodicUpdater.close();
+      await closingPeriodicUpdater.close();
 
       expect(queueCloseSpy).toHaveBeenCalledOnce();
       expect(workerCloseSpy).toHaveBeenCalledOnce();
@@ -117,7 +121,7 @@ describe("PeriodicUpdater", () => {
 
       await periodicUpdater.close();
     },
-    PeriodicUpdaterError,
+    SyncerError,
     {
       checkCause: true,
     }

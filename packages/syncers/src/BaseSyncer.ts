@@ -5,42 +5,44 @@ import type { Redis } from "ioredis";
 import { createModuleLogger } from "@blobscan/logger";
 import type { Logger } from "@blobscan/logger";
 
-import { ErrorException, PeriodicUpdaterError } from "./errors";
+import { ErrorException, SyncerError } from "./errors";
 import { createRedisConnection } from "./utils";
 
-// TODO: Refactor, this file is duplicate (packages: stats-syncer and swarm-syncer)
-export type PeriodicUpdaterConfig = {
-  name: string;
-  redisUriOrConnection: string | Redis;
-  updaterFn: () => Promise<void>;
-};
+export interface CommonSyncerConfig {
+  redisUriOrConnection: Redis | string;
+  cronPattern: string;
+}
 
-export class PeriodicUpdater {
+export interface BaseSyncerConfig extends CommonSyncerConfig {
   name: string;
-  protected worker: Worker;
-  protected queue: Queue;
-  protected updaterFn: () => Promise<void>;
+  syncerFn: () => Promise<void>;
+}
+
+export class BaseSyncer {
+  name: string;
+  cronPattern: string;
+
+  protected syncerFn: () => Promise<void>;
   protected logger: Logger;
+
+  protected connection: Redis;
+  protected worker: Worker | undefined;
+  protected queue: Queue | undefined;
 
   constructor({
     name,
+    cronPattern,
     redisUriOrConnection,
-    updaterFn,
-  }: PeriodicUpdaterConfig) {
-    const isRedisUri = typeof redisUriOrConnection === "string";
-    this.name = name;
-    this.logger = createModuleLogger("stats-syncer", this.name);
+    syncerFn,
+  }: BaseSyncerConfig) {
+    this.name = `${name}-syncer`;
+    this.cronPattern = cronPattern;
+    this.logger = createModuleLogger(this.name);
 
     let connection: Redis;
 
-    if (isRedisUri) {
+    if (typeof redisUriOrConnection === "string") {
       connection = createRedisConnection(redisUriOrConnection);
-
-      connection.on("error", (err) => {
-        this.logger.error(
-          new ErrorException("A Redis connection error ocurred", err)
-        );
-      });
     } else {
       connection = redisUriOrConnection;
     }
@@ -49,11 +51,9 @@ export class PeriodicUpdater {
       connection,
     });
 
-    this.worker = new Worker(this.queue.name, updaterFn, {
+    this.worker = new Worker(this.queue.name, syncerFn, {
       connection,
     });
-
-    this.updaterFn = updaterFn;
 
     this.queue.on("error", (err) => {
       this.logger.error(new ErrorException("A queue error occurred", err));
@@ -62,22 +62,27 @@ export class PeriodicUpdater {
     this.worker.on("failed", (_, err) => {
       this.logger.error(new ErrorException("A worker error ocurred", err));
     });
+
+    this.connection = connection;
+    this.syncerFn = syncerFn;
   }
 
-  async start(cronPattern: string) {
+  async start() {
     try {
       const jobName = `${this.name}-job`;
-      const repeatableJob = await this.queue.add(jobName, null, {
+      const repeatableJob = await this.queue?.add(jobName, null, {
         repeat: {
-          pattern: cronPattern,
+          pattern: this.cronPattern,
         },
       });
 
+      this.logger.info("Syncer started successfully");
+
       return repeatableJob;
     } catch (err) {
-      throw new PeriodicUpdaterError(
+      throw new SyncerError(
         this.name,
-        "An error ocurred when starting updater",
+        "An error ocurred when starting syncer",
         err
       );
     }
@@ -89,26 +94,28 @@ export class PeriodicUpdater {
     return teardownPromise
       .finally(async () => {
         await this.#performClosingOperation(() =>
-          this.worker.removeAllListeners().close(true)
+          this.worker?.removeAllListeners().close(true)
         );
       })
       .finally(async () => {
         await this.#performClosingOperation(() =>
-          this.queue.obliterate({ force: true })
+          this.queue?.obliterate({ force: true })
         );
       })
       .finally(async () => {
         await this.#performClosingOperation(() =>
-          this.queue.removeAllListeners().close()
+          this.queue?.removeAllListeners().close()
         );
+
+        this.logger.info("Syncer closed successfully");
       });
   }
 
-  async #performClosingOperation(operation: () => Promise<void>) {
+  async #performClosingOperation(operation: () => Promise<void> | undefined) {
     try {
       await operation();
     } catch (err) {
-      const err_ = new PeriodicUpdaterError(
+      const err_ = new SyncerError(
         this.name,
         "An error ocurred when performing closing operation",
         err
