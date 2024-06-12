@@ -57,7 +57,7 @@ describe("GoogleStorage", () => {
   });
 
   it("should create a storage", async () => {
-    expect(storage, "Storage should exists").toBeDefined();
+    expect(storage, "Storage should exist").toBeDefined();
     expect(storage.chainId, "Chain ID mismatch").toEqual(env.CHAIN_ID);
     expect(storage.bucketName, "Bucket name mismatch").toEqual(
       env.GOOGLE_STORAGE_BUCKET_NAME

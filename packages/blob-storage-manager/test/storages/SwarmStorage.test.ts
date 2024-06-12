@@ -41,9 +41,9 @@ describe("SwarmStorage", () => {
       prisma,
     });
 
-    expect(storage_, "Storage should exists").toBeDefined();
+    expect(storage_, "Storage should exist").toBeDefined();
     expect(storage_.chainId, "Chain ID mismatch").toBe(env.CHAIN_ID);
-    expect(storage_._beeClient, "Bee client should exists").toBeDefined();
+    expect(storage_._beeClient, "Bee client should exist").toBeDefined();
     expect(storage_._beeClient.url, "Bee client endpoint mismatch").toBe(
       beeEndpoint
     );
