@@ -66,9 +66,10 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
       ) : (
         <Skeleton width={110} size="xs" />
       )}
-      <div className="mt-1.5 flex flex-col gap-1 text-xs">
-      {blobGasPrice && blobGasUsed ? (
-          <div className="flex w-full gap-1">
+      <div className="mt-1.5 flex flex-col gap-0 text-xs">
+      <div className="flex w-full gap-1">
+        {blobGasPrice && blobGasUsed ? (
+          <>
             <CardField
               name={<div title="Blob Gas Price">B. Gas Price</div>}
               value={<EtherUnitDisplay amount={blobGasPrice} />}
@@ -77,8 +78,13 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
               name={<div title="Blob Gas Used">B. Gas Used</div>}
               value={blobGasUsed.toString()}
             />
+          </>
+        ) : (
+          <div className="text-gray-400">
+            No blob exists in this block.
           </div>
-        ) : null}
+        )}
+        </div>
         {transactions ? (
           <div className="mt-1 flex">
             <span>
