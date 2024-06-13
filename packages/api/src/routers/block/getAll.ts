@@ -57,7 +57,7 @@ export const getAll = publicProcedure
             some: transactionFilters,
           },
         },
-        orderBy: { number: sort },
+        orderBy: { slot: sort },
         ...ctx.pagination,
       }),
       ctx.prisma.blockOverallStats
