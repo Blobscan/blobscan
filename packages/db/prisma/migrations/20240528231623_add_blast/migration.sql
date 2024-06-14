@@ -7,5 +7,3 @@
 
 
 ALTER TYPE "rollup" ADD VALUE 'blast';
-ALTER TYPE "rollup" ADD VALUE 'optopia';
-ALTER TYPE "rollup" ADD VALUE 'taiko';
