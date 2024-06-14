@@ -337,7 +337,8 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             ON CONFLICT ("day") DO UPDATE SET
               total_transactions = EXCLUDED.total_transactions,
               total_unique_receivers = EXCLUDED.total_unique_receivers,
-              total_unique_senders = EXCLUDED.total_unique_senders
+              total_unique_senders = EXCLUDED.total_unique_senders,
+              avg_max_blob_gas_fee = EXCLUDED.avg_max_blob_gas_fee
             `;
         },
       },
