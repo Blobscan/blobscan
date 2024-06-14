@@ -61,7 +61,9 @@ async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
   await apiGracefulShutdown()
-    .finally(() => closeSyncers())
+    .finally(async () => {
+      await closeSyncers();
+    })
     .finally(() => {
       server.close(() => {
         logger.debug("Server shut down successfully");
@@ -70,7 +72,11 @@ async function gracefulShutdown(signal: string) {
 }
 
 // Listen for TERM signal .e.g. kill
-process.on("SIGTERM", () => void gracefulShutdown("SIGTERM"));
+process.on("SIGTERM", async () => {
+  await gracefulShutdown("SIGTERM");
+});
 
 // Listen for INT signal e.g. Ctrl-C
-process.on("SIGINT", () => void gracefulShutdown("SIGINT"));
+process.on("SIGINT", async () => {
+  await gracefulShutdown("SIGINT");
+});
