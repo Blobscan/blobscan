@@ -1,19 +1,13 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "globalDependencies": [
-    "**/.env"
-  ],
+  "globalDependencies": ["**/.env"],
   "pipeline": {
     "db:generate": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
+      "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
     "push": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
+      "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
     "dev": {
@@ -21,31 +15,20 @@
       "cache": false
     },
     "build": {
-      "dependsOn": [
-        "^build",
-        "^db:generate"
-      ],
-      "outputs": [
-        ".next/**"
-      ]
+      "dependsOn": ["^build", "^db:generate"],
+      "outputs": [".next/**"]
     },
     "lint": {},
     "lint:fix": {},
     "svg:format": {},
     "test": {
-      "inputs": [
-        "test/**/*.test.ts"
-      ]
+      "inputs": ["test/**/*.test.ts"]
     },
     "test:ui": {
-      "inputs": [
-        "test/**/*.test.ts"
-      ]
+      "inputs": ["test/**/*.test.ts"]
     },
     "test:dev": {
-      "inputs": [
-        "test/**/*.test.ts"
-      ],
+      "inputs": ["test/**/*.test.ts"],
       "cache": false
     },
     "test:setup": {
@@ -55,9 +38,7 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": [
-        "@blobscan/db#db:generate"
-      ],
+      "dependsOn": ["@blobscan/db#db:generate"],
       "cache": false
     }
   },
@@ -105,8 +86,10 @@
     "REDIS_URI",
     "SECRET_KEY",
     "SENTRY_DSN_API",
+    "SYNCER_SWARM_STAMP_CRON_PATTERN",
     "SKIP_ENV_VALIDATION",
     "SWARM_STORAGE_ENABLED",
+    "SWARM_BATCH_ID",
     "VERCEL_URL",
     "TS_NODE"
   ]
