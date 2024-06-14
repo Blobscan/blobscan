@@ -7,7 +7,7 @@ import type {
 import { Prisma, Rollup } from "@blobscan/db";
 
 import { env } from "../../env";
-import type { IndexDataInput } from "./indexData";
+import type { IndexDataFormattedInput } from "./indexData";
 
 const MIN_BLOB_BASE_FEE = BigInt(1);
 const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
@@ -17,16 +17,19 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
   "1": {
     "0xc1b634853cb333d3ad8663715b08f41a3aec47cc": Rollup.ARBITRUM,
     "0x5050f69a9786f081509234f1a7f4684b5e5b76c9": Rollup.BASE,
+    "0x415c8893d514f9bc5211d36eeda4183226b84aa7": Rollup.BLAST,
     "0xe1b64045351b0b6e9821f19b39f81bc4711d2230": Rollup.BOBA,
     "0x08f9f14ff43e112b18c96f0986f28cb1878f1d11": Rollup.CAMP,
     "0x41b8cd6791de4d8f9e0eaf7861ac506822adce12": Rollup.KROMA,
     "0xa9268341831efa4937537bc3e9eb36dbece83c7e": Rollup.LINEA,
     "0xc94c243f8fb37223f3eb2f7961f7072602a51b8b": Rollup.METAL,
     "0x6887246668a3b87f54deb3b94ba47a6f63f32985": Rollup.OPTIMISM,
+    "0x3d0bf26e60a689a7da5ea3ddad7371f27f7671a5": Rollup.OPTOPIA,
     "0xc70ae19b5feaa5c19f576e621d2bad9771864fe2": Rollup.PARADEX,
     "0x5ead389b57d533a94a0eacd570dc1cc59c25f2d4": Rollup.PGN,
     "0xcf2898225ed05be911d3709d9417e86e0b4cfc8f": Rollup.SCROLL,
     "0x2c169dfe5fbba12957bdd0ba47d9cedbfe260ca7": Rollup.STARKNET,
+    "0x000000633b68f5d8d3a86593ebb815b4663bcbe0": Rollup.TAIKO,
     "0x0d3250c3d5facb74ac15834096397a3ef790ec99": Rollup.ZKSYNC,
     "0x99199a22125034c808ff20f377d91187e8050f2e": Rollup.MODE,
     "0x625726c858dbf78c0125436c943bf4b4be9d9033": Rollup.ZORA,
@@ -117,7 +120,7 @@ export function createDBTransactions({
   blobs,
   block,
   transactions,
-}: IndexDataInput): WithoutTimestampFields<Transaction>[] {
+}: IndexDataFormattedInput): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
     ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
@@ -165,7 +168,7 @@ export function createDBTransactions({
 export function createDBBlock(
   {
     block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
-  }: IndexDataInput,
+  }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
 ): WithoutTimestampFields<Block> {
   const blobAsCalldataGasUsed = dbTxs.reduce(
@@ -189,7 +192,7 @@ export function createDBBlock(
 export function createDBBlobs({
   blobs,
   block,
-}: IndexDataInput): WithoutTimestampFields<Blob>[] {
+}: IndexDataFormattedInput): WithoutTimestampFields<Blob>[] {
   const uniqueBlobVersionedHashes = Array.from(
     new Set(blobs.map((b) => b.versionedHash))
   );

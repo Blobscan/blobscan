@@ -1,5 +1,16 @@
 # @blobscan/web
 
+## 0.11.0
+
+### Minor Changes
+
+- [#409](https://github.com/Blobscan/blobscan/pull/409) [`4ff5c4d`](https://github.com/Blobscan/blobscan/commit/4ff5c4d720463fd607a32fe35466a3e0dad045f9) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for Taiko, Blast, and Optopia rollups
+
+### Patch Changes
+
+- Updated dependencies [[`274e838`](https://github.com/Blobscan/blobscan/commit/274e838c71e7364068cc4c156e2f310cb58122ee), [`274e838`](https://github.com/Blobscan/blobscan/commit/274e838c71e7364068cc4c156e2f310cb58122ee)]:
+  - @blobscan/api@0.9.2
+
 ## 0.10.0
 
 ### Minor Changes

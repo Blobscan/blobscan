@@ -44,13 +44,15 @@ export type RawBlob = z.infer<typeof rawBlobSchema>;
 
 export const inputSchema = z.object({
   block: rawBlockSchema,
-  transactions: z.array(rawTxSchema),
+  transactions: z.array(rawTxSchema).nonempty(),
   blobs: z.array(rawBlobSchema),
 });
 
 export const outputSchema = z.void();
 
-export type IndexDataInput = z.infer<typeof inputSchema>;
+export type IndexDataInput = z.input<typeof inputSchema>;
+
+export type IndexDataFormattedInput = z.output<typeof inputSchema>;
 
 export const indexData = jwtAuthedProcedure
   .meta({

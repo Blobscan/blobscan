@@ -2,15 +2,18 @@ import classNames from "classnames";
 
 import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
+import BlastIcon from "~/icons/blast.svg";
 import BobaIcon from "~/icons/boba.svg";
 import KromaIcon from "~/icons/kroma.svg";
 import LineaIcon from "~/icons/linea.svg";
 import MetalIcon from "~/icons/metal.svg";
 import ModeIcon from "~/icons/mode.svg";
 import OptimismIcon from "~/icons/optimism.svg";
+import OptopiaIcon from "~/icons/optopia.svg";
 import PGNIcon from "~/icons/pgn.svg";
 import ScrollIcon from "~/icons/scroll.svg";
 import StarknetIcon from "~/icons/starknet.svg";
+import TaikoIcon from "~/icons/taiko.svg";
 import ZkSyncIcon from "~/icons/zksync.svg";
 import ZoraIcon from "~/icons/zora.svg";
 import type { Rollup, Size } from "~/types";
@@ -37,12 +40,19 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "arbitrum":
       rollupIcon = (
         <ArbitrumIcon
-          className={`${commonStyles} text-[#1b4add] dark:text-[#8395cc]`}
+          className={`${commonStyles} text-[#1b4add] dark:text-[#ffffff]`}
         />
       );
       break;
     case "base":
       rollupIcon = <BaseIcon className={commonStyles} />;
+      break;
+    case "blast":
+      rollupIcon = (
+        <BlastIcon
+          className={`${commonStyles} rounded bg-black dark:bg-opacity-0`}
+        />
+      );
       break;
     case "boba":
       rollupIcon = <BobaIcon className={commonStyles} />;
@@ -67,6 +77,9 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "optimism":
       rollupIcon = <OptimismIcon className={commonStyles} />;
       break;
+    case "optopia":
+      rollupIcon = <OptopiaIcon className={commonStyles} />;
+      break;
     case "paradex":
       rollupIcon = null;
       break;
@@ -78,6 +91,9 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
     case "scroll":
       rollupIcon = <ScrollIcon className={commonStyles} />;
+      break;
+    case "taiko":
+      rollupIcon = <TaikoIcon className={commonStyles} />;
       break;
     case "zksync":
       rollupIcon = <ZkSyncIcon className={commonStyles} />;

@@ -76,7 +76,7 @@ Our test fixtures provide mock data for both PostgreSQL and Google Cloud Storage
 
 - **fixtures**: This directory contains separate subfolders with the mock data for each service.
 
-- **helpers**: Within this folder, you'll find utility functions that helps to load and reset the fixtures using [prisma](https://www.prisma.io), ensuring a clean slate.
+- **helpers**: Within this folder, you'll find utility functions that help to load and reset the fixtures using [prisma](https://www.prisma.io), ensuring a clean slate.
 
 ### Integration with fake GCS server
 
