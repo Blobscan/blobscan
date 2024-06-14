@@ -6,7 +6,7 @@ nextjs:
     description: Blobscan troubleshooting
 ---
 
-Here is a collection of common issue and questions.
+Here is a collection of common issues and questions.
 
 ---
 
@@ -29,7 +29,7 @@ pnpm prisma migrate reset --schema packages/db/prisma/schema.prisma
 
 ## Docker
 
-### How can I get a SQL shell
+### How can I get a SQL shell?
 
 ```shell
 docker compose exec postgres psql -h localhost blobscan_dev blobscan

@@ -1,5 +1,18 @@
 # @blobscan/api
 
+## 0.9.2
+
+### Patch Changes
+
+- [#407](https://github.com/Blobscan/blobscan/pull/407) [`274e838`](https://github.com/Blobscan/blobscan/commit/274e838c71e7364068cc4c156e2f310cb58122ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Ensure `transactions` and `blobs` input are not empty on `indexData` procedure
+
+- [#407](https://github.com/Blobscan/blobscan/pull/407) [`274e838`](https://github.com/Blobscan/blobscan/commit/274e838c71e7364068cc4c156e2f310cb58122ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved issue where the reorg handling procedure wasn't processing db operation results correctly
+
+- Updated dependencies [[`4ff5c4d`](https://github.com/Blobscan/blobscan/commit/4ff5c4d720463fd607a32fe35466a3e0dad045f9)]:
+  - @blobscan/db@0.7.0
+  - @blobscan/blob-propagator@0.2.2
+  - @blobscan/blob-storage-manager@0.3.2
+
 ## 0.9.1
 
 ### Patch Changes

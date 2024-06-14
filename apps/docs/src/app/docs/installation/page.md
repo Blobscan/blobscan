@@ -49,7 +49,7 @@ In order to run Blobscan you are required to define the following ones:
 A recent version of docker with BuildKit support is required.
 {% /callout %}
 
-Docker makes very straightforward to run Blobscan. Docker images are automatically [published](https://hub.docker.com/u/blossomlabs) and a docker-compose file is provided for convenience.
+Docker makes it very straightforward to run Blobscan. Docker images are automatically [published](https://hub.docker.com/u/blossomlabs) and a docker-compose file is provided for convenience.
 
 Spinning up the containers:
 

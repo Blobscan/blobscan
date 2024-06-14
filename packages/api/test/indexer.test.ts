@@ -13,7 +13,11 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { fixtures, omitDBTimestampFields } from "@blobscan/test";
+import {
+  fixtures,
+  omitDBTimestampFields,
+  testValidError,
+} from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots";
@@ -432,6 +436,28 @@ describe("Indexer router", async () => {
           authorizedCaller.indexer.indexData(INPUT)
         ).resolves.toBeUndefined();
       });
+
+      testValidError(
+        "should fail when receiving an empty array of transactions",
+        async () => {
+          await authorizedCaller.indexer.indexData({
+            ...INPUT,
+            transactions: [] as unknown as typeof INPUT.transactions,
+          });
+        },
+        TRPCError
+      );
+
+      testValidError(
+        "should fail when receiving an empty array of blobs",
+        async () => {
+          await authorizedCaller.indexer.indexData({
+            ...INPUT,
+            blobs: [] as unknown as typeof INPUT.blobs,
+          });
+        },
+        TRPCError
+      );
     });
 
     it("should fail when calling procedure without auth", async () => {
