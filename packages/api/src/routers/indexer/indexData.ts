@@ -45,7 +45,7 @@ export type RawBlob = z.infer<typeof rawBlobSchema>;
 export const inputSchema = z.object({
   block: rawBlockSchema,
   transactions: z.array(rawTxSchema).nonempty(),
-  blobs: z.array(rawBlobSchema).nonempty(),
+  blobs: z.array(rawBlobSchema),
 });
 
 export const outputSchema = z.void();
