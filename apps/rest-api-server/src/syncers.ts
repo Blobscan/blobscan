@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { BaseSyncer } from "@blobscan/syncers";
 import {
   DailyStatsSyncer,
@@ -17,13 +16,13 @@ export function setUpSyncers() {
 
   if (env.SWARM_STORAGE_ENABLED) {
     if (!env.SWARM_BATCH_ID) {
-      logger.warn(`Swarm stamp syncer not created: no batch ID provided`);
+      logger.error(`Can't initialize Swarm stamp job: no batch ID provided`);
     } else if (!env.BEE_ENDPOINT) {
-      logger.warn("Swarm stamp syncer not created: no Bee endpoint provided");
+      logger.error("Can't initialize Swarm stamp job: no Bee endpoint provided");
     } else {
       syncers.push(
         new SwarmStampSyncer({
-          cronPattern: env.SYNCER_SWARM_STAMP_CRON_PATTERN,
+          cronPattern: env.SWARM_STAMP_CRON_PATTERN,
           redisUriOrConnection: connection,
           batchId: env.SWARM_BATCH_ID,
           beeEndpoint: env.BEE_ENDPOINT,

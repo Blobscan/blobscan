@@ -65,12 +65,13 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 **Ethereum Swarm**
 
-| Variable                | Description                | Required | Default value |
-| ----------------------- | -------------------------- | -------- | ------------- |
-| `SWARM_BATCH_ID`        | Swarm address of the stamp | No       | (empty)       |
-| `SWARM_STORAGE_ENABLED` | Store blobs in Swarm       | No       | `false`       |
-| `BEE_ENDPOINT`          | Bee endpoint               | No       | (empty)       |
-| `BEE_DEBUG_ENDPOINT`    | Bee debug endpoint         | No       | (empty)       |
+| Variable                   | Description                | Required                        | Default value  |
+| -------------------------- | -------------------------- | ------------------------------- | -------------- |
+| `SWARM_STORAGE_ENABLED`    | Store blobs in Swarm       | No                              | `false`        |
+| `SWARM_BATCH_ID`           | Swarm address of the stamp | If `SWARM_STORAGE_ENABLED=true` | (empty)        |
+| `SWARM_STAMP_CRON_PATTERN` | Cron pattern for swarm job | No                              | `*/15 * * * *` |
+| `BEE_ENDPOINT`             | Bee endpoint               | No                              | (empty)        |
+| `BEE_DEBUG_ENDPOINT`       | Bee debug endpoint         | No                              | (empty)        |
 
 ## Blob propagator
 
