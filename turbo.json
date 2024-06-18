@@ -1,13 +1,19 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "globalDependencies": ["**/.env"],
+  "globalDependencies": [
+    "**/.env"
+  ],
   "pipeline": {
     "db:generate": {
-      "inputs": ["prisma/schema.prisma"],
+      "inputs": [
+        "prisma/schema.prisma"
+      ],
       "cache": false
     },
     "push": {
-      "inputs": ["prisma/schema.prisma"],
+      "inputs": [
+        "prisma/schema.prisma"
+      ],
       "cache": false
     },
     "dev": {
@@ -15,20 +21,31 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
-      "outputs": [".next/**"]
+      "dependsOn": [
+        "^build",
+        "^db:generate"
+      ],
+      "outputs": [
+        ".next/**"
+      ]
     },
     "lint": {},
     "lint:fix": {},
     "svg:format": {},
     "test": {
-      "inputs": ["test/**/*.test.ts"]
+      "inputs": [
+        "test/**/*.test.ts"
+      ]
     },
     "test:ui": {
-      "inputs": ["test/**/*.test.ts"]
+      "inputs": [
+        "test/**/*.test.ts"
+      ]
     },
     "test:dev": {
-      "inputs": ["test/**/*.test.ts"],
+      "inputs": [
+        "test/**/*.test.ts"
+      ],
       "cache": false
     },
     "test:setup": {
@@ -38,7 +55,9 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": ["@blobscan/db#db:generate"],
+      "dependsOn": [
+        "@blobscan/db#db:generate"
+      ],
       "cache": false
     }
   },
@@ -48,7 +67,6 @@
     "AUTH0_ISSUER",
     "ANALYZE",
     "BEACON_NODE_ENDPOINT",
-    "BEE_DEBUG_ENDPOINT",
     "BEE_ENDPOINT",
     "BLOB_PROPAGATOR_ENABLED",
     "BLOB_PROPAGATOR_TMP_BLOB_STORAGE",

@@ -69,7 +69,6 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 | ----------------------- | -------------------- | -------- | ------------- |
 | `SWARM_STORAGE_ENABLED` | Store blobs in Swarm | No       | `false`       |
 | `BEE_ENDPOINT`          | Bee endpoint         | No       | (empty)       |
-| `BEE_DEBUG_ENDPOINT`    | Bee debug endpoint   | No       | (empty)       |
 
 ## Blob propagator
 
