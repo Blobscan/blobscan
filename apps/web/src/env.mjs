@@ -44,7 +44,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPPORTED_NETWORKS: z
       .string()
       .default(
-        '[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]'
+        '[{"label":"Andes","href":"https://dillscan.dill.xyz/"}]'
       ),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z
       .string()

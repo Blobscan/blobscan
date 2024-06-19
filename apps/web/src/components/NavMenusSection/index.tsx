@@ -5,7 +5,8 @@ import {
   Squares2X2Icon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
-
+import { env } from "~/env.mjs";
+import EthereumIcon from "~/icons/ethereum.svg";
 import {
   buildBlobStatsRoute,
   buildBlockStatsRoute,
@@ -66,6 +67,15 @@ export const NavMenusSection: React.FC = () => {
                 },
               ]}
             />
+            {!!env.NEXT_PUBLIC_SUPPORTED_NETWORKS?.length && (
+              <NavItem
+                label="Networks"
+                icon={<EthereumIcon />}
+                menuItems={JSON.parse(
+                  env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"
+                )}
+              />
+            )}
           </div>
         </div>
       </div>
