@@ -55,10 +55,10 @@ model BlockchainSyncState {
 
 //TODO: Rename to SwarmBatchStorage
 model BlobStoragesState {
-  id            Int      @id @default(autoincrement())
-  swarmDataId   String?  @map("swarm_data_id") // TODO: rename to batchId
-  swarmDataTTL  Int?     @map("swarm_data_ttl") // TODO: rename to batchTtl
-  updatedAt     DateTime @default(now()) @map("updated_at")
+  id           Int      @id @default(autoincrement())
+  swarmDataId  String?  @map("swarm_data_id") // TODO: rename to batchId
+  swarmDataTTL Int?     @map("swarm_data_ttl") // TODO: rename to batchTtl
+  updatedAt    DateTime @default(now()) @map("updated_at")
 
   @@map("blob_storages_state")
 }
@@ -126,6 +126,7 @@ model Block {
   transactions     Transaction[]
   transactionForks TransactionFork[]
 
+  @@index([number])
   @@index([insertedAt])
   @@map("block")
 }
