@@ -192,6 +192,11 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         findLatest() {
           return startBlockModelFnSpan("findLatest", () => {
             return prisma.block.findFirst({
+              where: {
+                transactionForks: {
+                  none: {},
+                },
+              },
               orderBy: { number: "desc" },
             });
           });
