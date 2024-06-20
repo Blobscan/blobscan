@@ -1,6 +1,6 @@
 import winston from "winston";
 
-import { env } from "./env";
+import { env } from "@blobscan/env";
 
 function buildErrorCause(err: Error) {
   let msg = ` - Cause: ${err.message}`;

@@ -1,6 +1,6 @@
-export type { EnvVars as Environment } from "./env";
+export type { Environment } from "@blobscan/env";
 
-export { env } from "./env";
+export { env } from "@blobscan/env";
 export * from "./errors";
 export { BlobPropagator } from "./BlobPropagator";
 export { getBlobPropagator } from "./blob-propagator";

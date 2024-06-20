@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@blobscan/db": "workspace:^0.7.0",
+    "@blobscan/env": "workspace:^0.0.1",
     "@blobscan/logger": "workspace:^0.1.0",
     "@blobscan/open-telemetry": "workspace:^0.0.7",
     "@blobscan/zod": "workspace:^0.1.0",

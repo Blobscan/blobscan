@@ -6,7 +6,7 @@ import {
   createRedisConnection,
 } from "@blobscan/syncers";
 
-import { env } from "./env";
+import { env } from "@blobscan/env";
 import { logger } from "./logger";
 import { getNetworkDencunForkSlot } from "./utils";
 

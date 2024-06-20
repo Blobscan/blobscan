@@ -8,8 +8,8 @@ import { describe, expect, it } from "vitest";
 
 import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
 import type { Rollup } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
-import { env } from "../src";
 import { createTRPCContext } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersSchema } from "../src/middlewares/withFilters";

@@ -2,8 +2,9 @@ import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { testValidError } from "@blobscan/test";
+import { env } from "@blobscan/env";
 
-import { GoogleStorage, env } from "../../src";
+import { GoogleStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import type { GoogleStorageConfig } from "../../src/storages";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "../fixtures";

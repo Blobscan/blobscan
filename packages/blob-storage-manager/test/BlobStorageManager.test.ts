@@ -3,10 +3,10 @@ import type { DeepMockProxy } from "vitest-mock-extended";
 import { mockDeep } from "vitest-mock-extended";
 
 import { prisma } from "@blobscan/db";
+import { env } from "@blobscan/env";
 import { testValidError } from "@blobscan/test";
 
 import { BlobStorageManager } from "../src/BlobStorageManager";
-import { env } from "../src/env";
 import { BlobStorageError, BlobStorageManagerError } from "../src/errors";
 import { GoogleStorage, PostgresStorage, SwarmStorage } from "../src/storages";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "./fixtures";

@@ -2,9 +2,9 @@ import fs from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { env } from "@blobscan/env";
 import { testValidError } from "@blobscan/test";
 
-import { env } from "../../src/env";
 import { BlobStorageError } from "../../src/errors";
 import { FileSystemStorage } from "../../src/storages/FileSystemStorage";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, NEW_BLOB_FILE_URI } from "../fixtures";

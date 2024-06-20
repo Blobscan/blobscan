@@ -1,8 +1,7 @@
 import type { JobsOptions, WorkerOptions } from "bullmq";
 
 import { $Enums } from "@blobscan/db";
-
-import { env } from "./env";
+import { env } from "@blobscan/env";
 
 export const STORAGE_WORKER_NAMES = Object.values($Enums.BlobStorage).reduce<
   Record<$Enums.BlobStorage, string>

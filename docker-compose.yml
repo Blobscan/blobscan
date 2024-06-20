@@ -3,7 +3,7 @@ version: "3.7"
 
 services:
   web:
-    image: blossomlabs/blobscan:stable
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
     command: web
     restart: always
     ports:
@@ -12,7 +12,7 @@ services:
       - ".env"
 
   api:
-    image: blossomlabs/blobscan:stable
+    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
     command: api
     restart: always
     ports:
@@ -23,6 +23,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 5s
+    volumes:
+      - /tmp/blobscan-blobs:/tmp/blobscan-blobs
     env_file:
       - ".env"
 

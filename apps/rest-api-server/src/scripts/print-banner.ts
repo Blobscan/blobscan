@@ -1,6 +1,4 @@
-import { env as apiEnv } from "@blobscan/api";
-
-import { env as restEnv } from "../env";
+import { env } from "@blobscan/env";
 
 function run() {
   console.log(" ____  _       _");
@@ -11,8 +9,7 @@ function run() {
   console.log("Blobscan REST API (EIP-4844 blob explorer) - blobscan.com");
   console.log("====================================================\n");
 
-  restEnv.display();
-  apiEnv.display();
+  env.display();
 }
 
 run();
