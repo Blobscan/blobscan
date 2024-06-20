@@ -18,7 +18,9 @@ export function setUpSyncers() {
     if (!env.SWARM_BATCH_ID) {
       logger.error(`Can't initialize Swarm stamp job: no batch ID provided`);
     } else if (!env.BEE_ENDPOINT) {
-      logger.error("Can't initialize Swarm stamp job: no Bee endpoint provided");
+      logger.error(
+        "Can't initialize Swarm stamp job: no Bee endpoint provided"
+      );
     } else {
       syncers.push(
         new SwarmStampSyncer({
@@ -53,6 +55,7 @@ export function setUpSyncers() {
     let teardownPromise = Promise.resolve();
 
     for (const syncer of syncers) {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       teardownPromise = teardownPromise.finally(() => syncer.close());
     }
 
