@@ -182,6 +182,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash"
             ${whereClause} AND tf."block_hash" IS NULL
             GROUP BY "day"
+            HAVING AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_used * b.blob_gas_price ELSE NULL END) IS NOT NULL
             ON CONFLICT (day) DO UPDATE SET
               total_blocks = EXCLUDED.total_blocks,
               total_blob_gas_used = EXCLUDED.total_blob_gas_used,
@@ -348,6 +349,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash" AND tf."hash" = tx."hash"
             ${whereClause} AND tf."hash" IS NULL
             GROUP BY "day"
+            HAVING AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END) IS NOT NULL
             ON CONFLICT ("day") DO UPDATE SET
               total_transactions = EXCLUDED.total_transactions,
               total_unique_receivers = EXCLUDED.total_unique_receivers,
