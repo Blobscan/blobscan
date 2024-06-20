@@ -9,7 +9,7 @@ import { env } from "~/env.mjs";
 import { capitalize, formatNumber, formatTtl } from "~/utils";
 
 type ExplorerDetailsItemProps = {
-  name: React.ReactNode;
+  name: string;
   value: React.ReactNode;
   icon?: React.ReactNode;
 };
@@ -35,14 +35,14 @@ function ExplorerDetailsItem({
 export function ExplorerDetails() {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
-  const explorerDetailsItems = [
+  const explorerDetailsItems: ExplorerDetailsItemProps[] = [
     { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
     {
       name: "Last synced slot",
       value: syncStateData
         ? formatNumber(syncStateData.lastUpperSyncedSlot ?? 0)
         : undefined,
-    }
+    },
   ];
 
   if (blobStoragesState && blobStoragesState.swarmDataTTL) {
