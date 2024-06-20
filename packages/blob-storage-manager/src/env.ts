@@ -25,7 +25,6 @@ export function parseEnv() {
   return createEnv({
     envOptions: {
       server: {
-        BEE_DEBUG_ENDPOINT: z.string().url().optional(),
         BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
         CHAIN_ID: z.coerce.number().positive().default(1),
         FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -61,7 +60,7 @@ export function parseEnv() {
 
       if (env.SWARM_STORAGE_ENABLED) {
         console.log(
-          `Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}, debugEndpoint=${env.BEE_DEBUG_ENDPOINT}`
+          `Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}`
         );
       }
 
