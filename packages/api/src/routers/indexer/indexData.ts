@@ -10,7 +10,7 @@ import {
   createDBBlock,
   createDBTransactions,
 } from "./indexData.utils";
-
+import { logger } from "@blobscan/logger";
 const rawBlockSchema = z.object({
   number: z.coerce.number(),
   hash: z.string(),
@@ -159,7 +159,25 @@ export const indexData = jwtAuthedProcedure
       );
 
       // 3. Execute all database operations in a single transaction
-      await prisma.$transaction(operations);
+      // await prisma.$transaction(operations);
+      let retryCount = 0;
+      const maxRetries = 5;
+      logger.info("indexing Data ===============>");
+      
+      while (retryCount < maxRetries) {
+        try {
+          await prisma.$transaction(operations);
+          break; // 如果事务成功，跳出循环
+        } catch (error: any) {
+          if ((error.code === 'P2010' || error.meta?.cause?.includes('40P01')) && retryCount < maxRetries) { // 如果错误是由于死锁引起的
+            retryCount++;
+            console.log(`Transaction failed due to deadlock, retrying (${retryCount}/${maxRetries}) after ${Math.pow(2, retryCount)} seconds...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 *  Math.pow(2, retryCount))); // 等待一段时间再重试，每次重试的等待时间逐渐增加
+          } else {
+            throw error; // 如果错误不是由于死锁引起的，或者已经达到最大重试次数，抛出错误
+          }
+        }
+      }
 
       // 4. Propagate blobs to storages
       if (blobPropagator) {
