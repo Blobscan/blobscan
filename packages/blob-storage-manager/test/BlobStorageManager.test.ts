@@ -57,7 +57,6 @@ describe("BlobStorageManager", () => {
     swarmStorage = await SwarmStorage.create({
       chainId: env.CHAIN_ID,
       beeEndpoint: BEE_ENDPOINT,
-      beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
       prisma,
     });
 

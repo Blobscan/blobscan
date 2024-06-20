@@ -15,27 +15,15 @@ import {
 } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
-import { StatsSyncer } from "@blobscan/stats-syncer";
 
 import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
-import { getNetworkDencunForkSlot } from "./utils";
+import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
 
-const statsSyncer = new StatsSyncer({
-  redisUri: env.REDIS_URI,
-  lowestSlot:
-    env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
-});
-
-statsSyncer.start({
-  cronPatterns: {
-    daily: env.STATS_SYNCER_DAILY_CRON_PATTERN,
-    overall: env.STATS_SYNCER_OVERALL_CRON_PATTERN,
-  },
-});
+const closeSyncers = setUpSyncers();
 
 const app = express();
 
@@ -73,7 +61,9 @@ async function gracefulShutdown(signal: string) {
   logger.debug(`Received ${signal}. Shutting down...`);
 
   await apiGracefulShutdown()
-    .finally(() => statsSyncer.close())
+    .finally(async () => {
+      await closeSyncers();
+    })
     .finally(() => {
       server.close(() => {
         logger.debug("Server shut down successfully");
@@ -82,7 +72,11 @@ async function gracefulShutdown(signal: string) {
 }
 
 // Listen for TERM signal .e.g. kill
-process.on("SIGTERM", () => void gracefulShutdown("SIGTERM"));
+process.on("SIGTERM", async () => {
+  await gracefulShutdown("SIGTERM");
+});
 
 // Listen for INT signal e.g. Ctrl-C
-process.on("SIGINT", () => void gracefulShutdown("SIGINT"));
+process.on("SIGINT", async () => {
+  await gracefulShutdown("SIGINT");
+});

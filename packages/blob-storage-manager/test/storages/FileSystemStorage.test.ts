@@ -47,7 +47,7 @@ describe("FileSystemStorage", () => {
       chainId: env.CHAIN_ID,
     });
 
-    expect(storage_, "Storage should exists").toBeDefined();
+    expect(storage_, "Storage should exist").toBeDefined();
     expect(storage_.chainId, "Chain ID mistmatch").toEqual(env.CHAIN_ID);
     expect(storage_.blobDirPath, "Blob directory path mismatch").toEqual(
       env.FILE_SYSTEM_STORAGE_PATH

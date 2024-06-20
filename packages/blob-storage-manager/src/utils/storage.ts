@@ -62,7 +62,6 @@ export async function createStorageFromEnv(
       const swarmStorage = await SwarmStorage.create({
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
-        beeDebugEndpoint: env.BEE_DEBUG_ENDPOINT,
         prisma,
       });
 

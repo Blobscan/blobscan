@@ -58,23 +58,6 @@ vi.mock("@ethersphere/bee-js", async () => {
         }),
       };
     }),
-    BeeDebug: vi.fn().mockImplementation((endpoint) => {
-      return {
-        url: endpoint,
-        getHealth: vi.fn().mockImplementation(() => {
-          return Promise.resolve({
-            status: "ok",
-          });
-        }),
-        getAllPostageBatch: vi.fn().mockImplementation(() => {
-          return [
-            {
-              batchID: "mock-batch-id",
-            },
-          ];
-        }),
-      };
-    }),
   };
 });
 

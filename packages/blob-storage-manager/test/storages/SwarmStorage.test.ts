@@ -13,8 +13,8 @@ class SwarmStorageMock extends SwarmStorage {
     super(config);
   }
 
-  get swarmClient() {
-    return this._swarmClient;
+  get beeClient() {
+    return this._beeClient;
   }
 
   healthCheck() {
@@ -25,14 +25,12 @@ class SwarmStorageMock extends SwarmStorage {
 describe("SwarmStorage", () => {
   let storage: SwarmStorageMock;
   const beeEndpoint = "bee-endpoint";
-  const beeDebugEndpoint = "bee-debug-endpoint";
 
   beforeEach(async () => {
     storage = new SwarmStorageMock({
       chainId: env.CHAIN_ID,
       batchId: "mock-batch-id",
       beeEndpoint: beeEndpoint,
-      beeDebugEndpoint: beeDebugEndpoint,
     });
   });
 
@@ -41,36 +39,17 @@ describe("SwarmStorage", () => {
       chainId: env.CHAIN_ID,
       beeEndpoint: beeEndpoint,
       prisma,
-      beeDebugEndpoint: beeDebugEndpoint,
     });
 
-    expect(storage_, "Storage should exists").toBeDefined();
+    expect(storage_, "Storage should exist").toBeDefined();
     expect(storage_.chainId, "Chain ID mismatch").toBe(env.CHAIN_ID);
-    expect(storage_._swarmClient.bee, "Bee client should exists").toBeDefined();
-    expect(storage_._swarmClient.bee.url, "Bee client endpoint mismatch").toBe(
+    expect(storage_._beeClient, "Bee client should exist").toBeDefined();
+    expect(storage_._beeClient.url, "Bee client endpoint mismatch").toBe(
       beeEndpoint
     );
-    expect(
-      storage_._swarmClient.beeDebug,
-      "Bee client should exists"
-    ).toBeDefined();
-    expect(
-      storage_._swarmClient.beeDebug?.url,
-      "Bee debug client endpoint mismatch"
-    ).toBe(beeDebugEndpoint);
     expect(storage_.batchId, "Batch ID mismatch").toBe(
       fixtures.blobStoragesState[0]?.swarmDataId
     );
-  });
-
-  it("should not create the beeDebug client when beeDebugEndpoint is not provided", async () => {
-    const storage_ = await SwarmStorage.create({
-      chainId: env.CHAIN_ID,
-      beeEndpoint: beeEndpoint,
-      prisma,
-    });
-
-    expect(storage_._swarmClient.beeDebug).toBeUndefined();
   });
 
   it("should return undefined when trying to get an uri given a blob hash", () => {
@@ -87,7 +66,7 @@ describe("SwarmStorage", () => {
     "should throw a valid error if bee client is not healthy",
     async () => {
       vi.spyOn(
-        storage.swarmClient.bee,
+        storage.beeClient,
         "checkConnection"
       ).mockRejectedValueOnce(new Error("Bee is not healthy: not ok"));
 
@@ -99,24 +78,8 @@ describe("SwarmStorage", () => {
     }
   );
 
-  testValidError(
-    "should throw valid error if bee debug client is not healthy",
-    async () => {
-      vi.spyOn(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        storage.swarmClient.beeDebug!,
-        "getHealth"
-      ).mockRejectedValueOnce(new Error("Bee debug is not healthy: not ok"));
-      await storage.healthCheck();
-    },
-    Error,
-    {
-      checkCause: true,
-    }
-  );
-
   it("should get a blob given its reference", async () => {
-    await storage._swarmClient.bee.uploadFile("mock-batch-id", NEW_BLOB_DATA);
+    await storage._beeClient.uploadFile("mock-batch-id", NEW_BLOB_DATA);
 
     const blob = await storage.getBlob(SWARM_REFERENCE);
 
