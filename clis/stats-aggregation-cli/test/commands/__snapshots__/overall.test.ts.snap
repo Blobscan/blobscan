@@ -4,7 +4,6 @@ exports[`Overall command > when incrementing overall stats > should increment th
 [
   [
     {
-      "avgBlobSize": 1175,
       "id": 1,
       "totalBlobSize": 9400n,
       "totalBlobs": 8,
@@ -40,7 +39,6 @@ exports[`Overall command > when incrementing overall stats > should increment th
 [
   [
     {
-      "avgBlobSize": 1155.555555555556,
       "id": 1,
       "totalBlobSize": 10400n,
       "totalBlobs": 9,

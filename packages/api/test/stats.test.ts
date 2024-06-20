@@ -53,7 +53,6 @@ describe("Stats router", async () => {
 
       expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
         {
-          "avgBlobSize": 1137.5,
           "totalBlobSize": "36400",
           "totalBlobs": 32,
           "totalUniqueBlobs": 7,

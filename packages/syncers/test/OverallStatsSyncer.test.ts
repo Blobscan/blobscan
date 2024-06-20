@@ -77,7 +77,6 @@ describe("OverallStatsUpdater", () => {
     expect(blobOverallStats, "Incorrect blob overall stats aggregation")
       .toMatchInlineSnapshot(`
         {
-          "avgBlobSize": 1175,
           "id": 1,
           "totalBlobSize": 9400n,
           "totalBlobs": 8,
