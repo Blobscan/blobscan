@@ -11,6 +11,9 @@ import {
 export const env = createEnv({
   envOptions: {
     server: {
+      // FIXME
+      // BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
+      BEE_ENDPOINT: z.string().optional(),
       BLOBSCAN_API_BASE_URL: z
         .string()
         .url()
@@ -22,8 +25,11 @@ export const env = createEnv({
       METRICS_ENABLED: booleanSchema.default("false"),
       REDIS_URI: z.string().default("redis://localhost:6379"),
       DENCUN_FORK_SLOT: z.coerce.number().optional(),
+      SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
       STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
       STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
+      SWARM_BATCH_ID: z.string().optional(),
+      SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
       SENTRY_DSN_API: z.string().url().optional(),
     },
 

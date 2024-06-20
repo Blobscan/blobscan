@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SyncerManager > when closing the syncer manager > should throw a valid error when failing to close it 1`] = `"Periodic updater manager failed: An error ocurred when closing syncers"`;
+
+exports[`SyncerManager > when closing the syncer manager > should throw a valid error when failing to close it 2`] = `[Error: Some daily stats updater closing error]`;
+
+exports[`SyncerManager > when running the syncer manager > should throw a valid error when failing to start it 1`] = `"Periodic updater manager failed: An error occurred when starting syncers"`;
+
+exports[`SyncerManager > when running the syncer manager > should throw a valid error when failing to start it 2`] = `[Error: Something happened when trying to start daily stats updater]`;

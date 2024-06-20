@@ -1,14 +1,13 @@
-import type { Redis } from "ioredis";
-
 import { prisma } from "@blobscan/db";
 import type { BlockNumberRange, Prisma } from "@blobscan/db";
 
-import { PeriodicUpdater } from "../PeriodicUpdater";
+import { BaseSyncer } from "../BaseSyncer";
+import type { CommonSyncerConfig } from "../BaseSyncer";
 
-export type OverallStatsUpdaterOptions = {
+export interface OverallStatsSyncerConfig extends CommonSyncerConfig {
   batchSize?: number;
   lowestSlot?: number;
-};
+}
 
 const DEFAULT_BATCH_SIZE = 2_000_000;
 const DEFAULT_INITIAL_SLOT = 0;
@@ -17,21 +16,19 @@ function isUnset<T>(value: T | undefined | null): value is null | undefined {
   return value === undefined || value === null;
 }
 
-export class OverallStatsUpdater extends PeriodicUpdater {
-  constructor(
-    redisUriOrConnection: string | Redis,
-    options: OverallStatsUpdaterOptions = {}
-  ) {
-    const name = "overall";
+export class OverallStatsSyncer extends BaseSyncer {
+  constructor({
+    cronPattern,
+    redisUriOrConnection,
+    batchSize = DEFAULT_BATCH_SIZE,
+    lowestSlot = DEFAULT_INITIAL_SLOT,
+  }: OverallStatsSyncerConfig) {
+    const name = "overall-stats";
     super({
       name,
+      cronPattern,
       redisUriOrConnection,
-      updaterFn: async () => {
-        const {
-          batchSize = DEFAULT_BATCH_SIZE,
-          lowestSlot = DEFAULT_INITIAL_SLOT,
-        } = options ?? {};
-
+      syncerFn: async () => {
         const [blockchainSyncState, latestBlock] = await Promise.all([
           prisma.blockchainSyncState.findUnique({
             select: {

@@ -1,9 +1,5 @@
-import {
-  BlobData,
-  BlobDataStorageReference,
-  type PrismaClient,
-  type Rollup,
-} from "@prisma/client";
+import type { BlobData, BlobDataStorageReference } from "@prisma/client";
+import type { PrismaClient, Rollup } from "@prisma/client";
 
 import POSTGRES_DATA from "./postgres/data.json";
 

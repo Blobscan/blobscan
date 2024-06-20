@@ -12,8 +12,9 @@
   "blobStoragesState": [
     {
       "id": 1,
-      "swarmDataId": "batch-1",
-      "swarmDataTTL": 1000
+      "swarmDataId": "f89e63edf757f06e89933761d6d46592d03026efb9871f9d244f34da86b6c242",
+      "swarmDataTTL": 1000,
+      "updatedAt": "2023-10-31T12:10:00Z"
     }
   ],
   "blocks": [

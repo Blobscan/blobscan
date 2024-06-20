@@ -1,4 +1,4 @@
-# @blobscan/stats-syncer
+# @blobscan/syncers
 
 ## 0.1.9
 

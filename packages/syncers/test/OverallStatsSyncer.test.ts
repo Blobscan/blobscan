@@ -3,16 +3,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@blobscan/db";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
-import { OverallStatsUpdater } from "../src/updaters/OverallStatsUpdater";
+import { OverallStatsSyncer } from "../src/syncers/OverallStatsSyncer";
+import type { OverallStatsSyncerConfig } from "../src/syncers/OverallStatsSyncer";
 
-class OverallStatsUpdaterMock extends OverallStatsUpdater {
-  constructor(
-    redisUri = process.env.REDIS_URI ?? "",
-    config: ConstructorParameters<typeof OverallStatsUpdater>[1] = {}
-  ) {
+class OverallStatsUpdaterMock extends OverallStatsSyncer {
+  constructor(config: Partial<OverallStatsSyncerConfig> = {}) {
     const lowestSlot =
       config.lowestSlot ?? fixtures.blockchainSyncState[0]?.lastLowerSyncedSlot;
-    super(redisUri, {
+    super({
+      cronPattern: "* * * * *",
+      redisUriOrConnection: "redis://localhost:6379/1",
       ...config,
       lowestSlot,
     });
@@ -23,7 +23,7 @@ class OverallStatsUpdaterMock extends OverallStatsUpdater {
   }
 
   getWorkerProcessor() {
-    return this.updaterFn;
+    return this.syncerFn;
   }
 
   getQueue() {
@@ -114,7 +114,7 @@ describe("OverallStatsUpdater", () => {
 
   it("should aggregate overall stats in batches correctly when there are too many blocks", async () => {
     const batchSize = 2;
-    const workerProcessor = new OverallStatsUpdaterMock(undefined, {
+    const workerProcessor = new OverallStatsUpdaterMock({
       batchSize,
     }).getWorkerProcessor();
     const incrementTransactionSpy = vi.spyOn(prisma, "$transaction");
@@ -193,7 +193,7 @@ describe("OverallStatsUpdater", () => {
   });
 
   it("should skip aggregation when the lowest slot hasn't been reached yet", async () => {
-    const workerProcessor = new OverallStatsUpdaterMock(undefined, {
+    const workerProcessor = new OverallStatsUpdaterMock({
       lowestSlot: 1,
     }).getWorkerProcessor();
 

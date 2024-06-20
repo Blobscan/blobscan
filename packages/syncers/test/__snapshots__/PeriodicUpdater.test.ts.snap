@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PeriodicUpdater > should throw a valid error when failing to close it 1`] = `"Updater \\"test-updater-updater\\" failed: An error ocurred when performing closing operation"`;
+
+exports[`PeriodicUpdater > should throw a valid error when failing to close it 2`] = `[Error: Queue closing error]`;
+
+exports[`PeriodicUpdater > when running an updater > should throw a valid error when failing to run 1`] = `"Updater \\"test-updater-updater\\" failed: An error ocurred when starting updater"`;
+
+exports[`PeriodicUpdater > when running an updater > should throw a valid error when failing to run 2`] = `[Error: Queue error]`;

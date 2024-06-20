@@ -1,9 +1,8 @@
-import type { Redis } from "ioredis";
-
 import { normalizeDailyDate, normalizeDate, prisma } from "@blobscan/db";
 import type { PrismaPromise, RawDatePeriod } from "@blobscan/db";
 
-import { PeriodicUpdater } from "../PeriodicUpdater";
+import { BaseSyncer } from "../BaseSyncer";
+import type { CommonSyncerConfig } from "../BaseSyncer";
 import { formatDate } from "../utils";
 
 interface DailyStatsModel {
@@ -20,13 +19,17 @@ const dailyStatsModels: Record<string, DailyStatsModel> = {
   transaction: prisma.transactionDailyStats,
 };
 
-export class DailyStatsUpdater extends PeriodicUpdater {
-  constructor(redisUriOrConnection: string | Redis) {
-    const name = "daily";
+export type DailyStatsSyncerConfig = CommonSyncerConfig;
+
+export class DailyStatsSyncer extends BaseSyncer {
+  constructor({ redisUriOrConnection, cronPattern }: DailyStatsSyncerConfig) {
+    const name = "daily-stats";
+
     super({
       name,
       redisUriOrConnection,
-      updaterFn: async () => {
+      cronPattern,
+      syncerFn: async () => {
         const findLatestArgs: {
           select: {
             day: boolean;
