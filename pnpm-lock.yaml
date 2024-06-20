@@ -166,19 +166,19 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../../packages/api
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../../packages/env
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../../packages/logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@blobscan/syncers':
-        specifier: workspace:^0.1.9
+        specifier: workspace:^0.2.0
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -224,10 +224,10 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.9.2
+        specifier: workspace:^0.10.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../../packages/blob-decoder
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
@@ -236,7 +236,7 @@ importers:
         specifier: workspace:^0.0.1
         version: link:../../packages/env
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@fontsource/inter':
         specifier: ^4.5.15
@@ -363,13 +363,13 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.2
+        specifier: workspace:^0.2.3
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -393,10 +393,10 @@ importers:
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../../packages/db
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../../packages/logger
       command-line-args:
         specifier: ^5.2.1
@@ -408,25 +408,25 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.2
+        specifier: workspace:^0.2.3
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.3.2
+        specifier: workspace:^0.3.3
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../env
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -451,7 +451,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -472,13 +472,13 @@ importers:
   packages/blob-decoder:
     dependencies:
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/majin-blob-wasm':
         specifier: workspace:^0.0.1
         version: link:../../wasms/majin-blob-wasm
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -487,19 +487,19 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.3.2
+        specifier: workspace:^0.3.3
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../env
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -514,16 +514,16 @@ importers:
   packages/blob-storage-manager:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../env
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -547,10 +547,10 @@ importers:
         specifier: workspace:^0.0.2
         version: link:../dayjs
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/open-telemetry':
-        specifier: workspace:^0.0.7
+        specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@prisma/client':
         specifier: ^5.5.2
@@ -590,7 +590,7 @@ importers:
         specifier: workspace:^0.0.1
         version: link:../env
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -626,10 +626,10 @@ importers:
         specifier: workspace:^0.0.2
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.7.0
+        specifier: workspace:^0.8.0
         version: link:../db
       '@blobscan/logger':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -1819,6 +1819,7 @@ packages:
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
+    deprecated: Use @eslint/config-array instead
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -1826,6 +1827,7 @@ packages:
 
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
+    deprecated: Use @eslint/object-schema instead
 
   '@ianvs/prettier-plugin-sort-imports@3.7.2':
     resolution: {integrity: sha512-bVckKToJM8XV2wTOG1VpeXrSmfAG49esVrikbxeFbY51RJdNke9AdMANJtGuACB59uo+pGlz0wBdWFrRzWyO1A==}
