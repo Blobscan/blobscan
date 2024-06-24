@@ -43,6 +43,8 @@ function getTRPCProcedure(url: URL) {
 
 export const withTelemetry = t.middleware(
   async ({ ctx: { req, res, scope }, next }) => {
+    res = res ?? { statusCode: 500, statusMessage: "Request is not available" };
+    req = req ?? { method: "GET" , headers: { host: "localhost:3000"}};
     const url = buildURL(req);
     const endpoint = url.pathname;
     const procedureName = getTRPCProcedure(url);
