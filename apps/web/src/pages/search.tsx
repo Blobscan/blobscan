@@ -92,7 +92,7 @@ export default function Search({ term }: SearchProps) {
               {term}
             </span>
             &quot;
-            <span> does not match any results.</span>
+            <span> match more than one result or does not match any results.</span>
           </p>
         ) : (
           <p>No search string provided.</p>
