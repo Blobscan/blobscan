@@ -167,7 +167,7 @@ export function createDBTransactions({
 
 export function createDBBlock(
   {
-    block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp },
+    block: { blobGasUsed, excessBlobGas, hash, number, slot, timestamp, validatorPubkey },
   }: IndexDataFormattedInput,
   dbTxs: Pick<Transaction, "blobAsCalldataGasUsed">[]
 ): WithoutTimestampFields<Block> {
@@ -180,6 +180,7 @@ export function createDBBlock(
   return {
     number,
     hash,
+    validatorPubkey,
     timestamp: new Date(timestamp * 1000),
     slot,
     blobGasUsed: bigIntToDecimal(blobGasUsed),

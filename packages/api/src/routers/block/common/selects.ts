@@ -8,6 +8,7 @@ import {
 
 export const baseBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   hash: true,
+  validatorPubkey: true,
   number: true,
   timestamp: true,
   slot: true,

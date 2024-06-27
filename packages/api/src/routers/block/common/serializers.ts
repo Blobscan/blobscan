@@ -21,6 +21,7 @@ import {
 
 export const serializedBlockSchema = z.object({
   hash: z.string(),
+  validatorPubkey: z.string(),
   number: blockNumberSchema,
   timestamp: z.string(),
   slot: slotSchema,
@@ -63,6 +64,7 @@ export type QueriedBlock = Pick<
   DBBlock,
   | "blobAsCalldataGasUsed"
   | "hash"
+  | "validatorPubkey"
   | "number"
   | "slot"
   | "timestamp"
@@ -87,6 +89,7 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
     blobGasUsed,
     excessBlobGas,
     hash,
+    validatorPubkey,
     number,
     slot,
     timestamp,
@@ -116,6 +119,7 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
 
   return {
     hash,
+    validatorPubkey,
     number,
     slot,
     blobAsCalldataGasUsed: serializeDecimal(blobAsCalldataGasUsed),

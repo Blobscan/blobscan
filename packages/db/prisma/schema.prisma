@@ -112,6 +112,7 @@ model BlobDataStorageReference {
 model Block {
   hash                  String   @id
   number                Int
+  validatorPubkey       String   @map("validator_pubkey")
   timestamp             DateTime @unique
   slot                  Int      @unique
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)

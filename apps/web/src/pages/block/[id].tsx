@@ -74,6 +74,7 @@ const Block: NextPage = function () {
       detailsFields = [
         { name: "Block Height", value: blockData.number },
         { name: "Hash", value: blockData.hash },
+        { name: "Validator", value: blockData.validatorPubkey},
         {
           name: "Timestamp",
           value: (
@@ -92,6 +93,7 @@ const Block: NextPage = function () {
       detailsFields = [
         { name: "Block Height", value: blockData.number },
         { name: "Hash", value: blockData.hash },
+        { name: "Validator", value: blockData.validatorPubkey},
         {
           name: "Timestamp",
           value: (

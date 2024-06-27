@@ -80,7 +80,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   const displayBlobs = !compact && !!blobsOnTx?.length;
   const totalBlobSize = blobsOnTx?.reduce((acc, { size }) => acc + size, 0);
 
-  console.log(displayBlobs);
+  // console.log(displayBlobs);
   return blobsOnTx?.length?(
     <div>
       <SurfaceCardBase

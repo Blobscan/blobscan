@@ -18,6 +18,7 @@ const rawBlockSchema = z.object({
   slot: z.coerce.number(),
   blobGasUsed: toBigIntSchema,
   excessBlobGas: toBigIntSchema,
+  validatorPubkey: z.string(),
 });
 
 const rawTxSchema = z.object({
