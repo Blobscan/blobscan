@@ -10,7 +10,7 @@ import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { FullTransaction } from "~/types";
-import { buildAddressExternalUrl, deserializeFullTransaction } from "~/utils";
+import { buildAddressExternalUrl, deserializeFullTransaction, formatWei } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
@@ -42,7 +42,9 @@ const Address: NextPage = () => {
     { enabled: router.isReady }
   );
   console.log(balanceData);
-  const balance = balanceData?.balance ?? null;
+  // const balance = balanceData ? convertWei(balanceData.balance.toString(), "ether") : null;
+  const balance = balanceData ? formatWei(balanceData.balance, {toUnit: "ether"}) : null;
+
 
   if (error) {
     return (
@@ -74,7 +76,7 @@ const Address: NextPage = () => {
             name: "Balance",
             value: (
               <div className="flex items-center gap-2">
-                <div className="">{balance?.toString()}</div>
+                <div className="">{balance}</div>
               </div>
             ),
           },
