@@ -37,6 +37,13 @@ const Address: NextPage = () => {
     };
   }, [serializedAddressTxs]);
 
+  const { data: balanceData } = api.stats.getBalance.useQuery(
+    { address },
+    { enabled: router.isReady }
+  );
+  console.log(balanceData);
+  const balance = balanceData?.balance ?? null;
+
   if (error) {
     return (
       <NextError
@@ -60,6 +67,14 @@ const Address: NextPage = () => {
                   <EthIdenticon address={address} />
                 </div>
                 <div className="">{address}</div>
+              </div>
+            ),
+          },
+          {
+            name: "Balance",
+            value: (
+              <div className="flex items-center gap-2">
+                <div className="">{balance?.toString()}</div>
               </div>
             ),
           },
