@@ -7,4 +7,4 @@ dir_path="../logs"
 latest_file=$(ls -t ${dir_path}/blobscan_*.log | head -n 1)
 
 # 打印最新的文件
-cat ${latest_file}
+tail -f ${latest_file}

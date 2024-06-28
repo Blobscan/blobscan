@@ -5,14 +5,14 @@ import { Button } from "~/components/Button";
 import { ExplorerDetails } from "~/components/ExplorerDetails";
 import { Link } from "~/components/Link";
 import DiscordIcon from "~/icons/discord.svg";
-import GithubIcon from "~/icons/github.svg";
+// import GithubIcon from "~/icons/github.svg";
 import XIcon from "~/icons/x.svg";
 
 const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
-  {
-    icon: <GithubIcon className="h-5 w-5" />,
-    href: "https://github.com/DillLabs/blobscan",
-  },
+  // {
+  //   icon: <GithubIcon className="h-5 w-5" />,
+  //   href: "https://github.com/DillLabs/blobscan",
+  // },
   {
     icon: <DiscordIcon className="h-5 w-5" />,
     href: "https://discord.gg/UPSFTbcmtv",
