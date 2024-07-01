@@ -121,6 +121,8 @@ describe("Indexer router", async () => {
           [
             {
               "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "fromId": "address7",
               "gasPrice": "3000000",
               "hash": "txHash1000",
@@ -130,6 +132,8 @@ describe("Indexer router", async () => {
             },
             {
               "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "fromId": "address9",
               "gasPrice": "10000",
               "hash": "txHash999",

@@ -12,7 +12,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "slot": 108,
       "timestamp": "2023-08-31T16:00:00.000Z",
     },
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -40,7 +42,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "slot": 107,
       "timestamp": "2023-08-31T14:00:00.000Z",
     },
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -76,7 +80,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "slot": 108,
       "timestamp": "2023-08-31T16:00:00.000Z",
     },
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -110,7 +116,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "slot": 107,
       "timestamp": "2023-08-31T14:00:00.000Z",
     },
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -141,7 +149,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
 exports[`Blob router > getAll > when getting expanded blob results > should return the correct expanded transaction 1`] = `
 [
   {
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -166,7 +176,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -197,7 +209,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the latest results when no sort was specified 1`] = `
 [
   {
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -216,7 +230,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -238,7 +254,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -265,7 +283,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the oldest results when ascending order is specified 1`] = `
 [
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -284,7 +304,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -299,7 +321,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -323,7 +347,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
 [
   {
+    "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T15:50:00.000Z",
     "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
     "dataStorageReferences": [
       {
@@ -346,7 +372,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the block range specified  1`] = `
 [
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -365,7 +393,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -387,7 +417,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -409,7 +441,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -431,7 +465,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -449,7 +485,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash005",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -468,7 +506,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -487,7 +527,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -505,7 +547,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -532,7 +576,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the date range specified 1`] = `
 [
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -550,7 +596,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash005",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -569,7 +617,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -588,7 +638,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -606,7 +658,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -628,7 +682,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash003",
     "blockNumber": 1003,
+    "blockTimestamp": "2023-08-03T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -647,7 +703,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash003",
     "blockNumber": 1003,
+    "blockTimestamp": "2023-08-03T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -666,7 +724,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash003",
     "blockNumber": 1003,
+    "blockTimestamp": "2023-08-03T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -685,7 +745,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash003",
     "blockNumber": 1003,
+    "blockTimestamp": "2023-08-03T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -704,7 +766,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash003",
     "blockNumber": 1003,
+    "blockTimestamp": "2023-08-03T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -719,7 +783,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash003",
     "blockNumber": 1003,
+    "blockTimestamp": "2023-08-03T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -739,7 +805,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the receiver address specified 1`] = `
 [
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -761,7 +829,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -780,7 +850,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -795,7 +867,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -819,7 +893,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the rollup specified 1`] = `
 [
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -841,7 +917,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -863,7 +941,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -885,7 +965,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -907,7 +989,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -929,7 +1013,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -951,7 +1037,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -973,7 +1061,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -991,7 +1081,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1018,7 +1110,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1040,7 +1134,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
@@ -1058,7 +1154,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash006",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1076,7 +1174,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash005",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1098,7 +1198,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1120,7 +1222,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1138,7 +1242,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1160,7 +1266,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1179,7 +1287,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1194,7 +1304,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1218,7 +1330,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
   {
+    "blockHash": "blockHash004",
     "blockNumber": 1004,
+    "blockTimestamp": "2023-08-20T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1240,7 +1354,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
@@ -1258,7 +1374,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash006",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1276,7 +1394,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash005",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1298,7 +1418,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1320,7 +1442,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1338,7 +1462,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash002",
     "blockNumber": 1002,
+    "blockTimestamp": "2023-05-10T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1360,7 +1486,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1379,7 +1507,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1394,7 +1524,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1418,7 +1550,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the block specified without including it 1`] = `
 [
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1436,7 +1570,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1458,7 +1594,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1477,7 +1615,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1496,7 +1636,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1511,7 +1653,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1535,7 +1679,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the date specified without including it 1`] = `
 [
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1553,7 +1699,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1575,7 +1723,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1594,7 +1744,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1613,7 +1765,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1628,7 +1782,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1652,7 +1808,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the slot specified without including it 1`] = `
 [
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1670,7 +1828,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1692,7 +1852,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1711,7 +1873,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1730,7 +1894,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1745,7 +1911,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
+    "blockHash": "blockHash001",
     "blockNumber": 1001,
+    "blockTimestamp": "2022-10-16T12:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1769,7 +1937,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the block specificed 1`] = `
 [
   {
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1788,7 +1958,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1810,7 +1982,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1832,7 +2006,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1859,7 +2035,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the date specified 1`] = `
 [
   {
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1878,7 +2056,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1900,7 +2080,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1922,7 +2104,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1944,7 +2128,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash006",
     "blockNumber": 1006,
+    "blockTimestamp": "2023-08-31T12:00:00.000Z",
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -1968,7 +2154,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the slot specified 1`] = `
 [
   {
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1987,7 +2175,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2009,7 +2199,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2031,7 +2223,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2058,7 +2252,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting paginated blob results > should default to the first page when no page was specified 1`] = `
 [
   {
+    "blockHash": "blockHash008",
     "blockNumber": 1008,
+    "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2077,7 +2273,9 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "versionedHash": "blobHash001",
   },
   {
+    "blockHash": "blockHash007",
     "blockNumber": 1007,
+    "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2104,7 +2302,9 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
 exports[`Blob router > getAll > when getting paginated blob results > should return the correct results when a specific page is requested 1`] = `
 [
   {
+    "blockHash": "blockHash006",
     "blockNumber": 1006,
+    "blockTimestamp": "2023-08-31T12:00:00.000Z",
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -2123,7 +2323,9 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
+    "blockHash": "blockHash005",
     "blockNumber": 1005,
+    "blockTimestamp": "2023-08-28T10:00:00.000Z",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2166,33 +2368,33 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
   "size": 1300,
   "transactions": [
     {
-      "block": {
-        "number": 1002,
-      },
+      "blockHash": "blockHash002",
+      "blockNumber": 1002,
+      "blockTimestamp": 2023-05-10T12:00:00.000Z,
       "hash": "txHash004",
       "index": 3,
       "rollup": "base",
     },
     {
-      "block": {
-        "number": 1007,
-      },
+      "blockHash": "blockHash007",
+      "blockNumber": 1007,
+      "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 0,
       "rollup": "optimism",
     },
     {
-      "block": {
-        "number": 1007,
-      },
+      "blockHash": "blockHash007",
+      "blockNumber": 1007,
+      "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 1,
       "rollup": "optimism",
     },
     {
-      "block": {
-        "number": 1007,
-      },
+      "blockHash": "blockHash007",
+      "blockNumber": 1007,
+      "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 2,
       "rollup": "optimism",
@@ -2220,33 +2422,33 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "size": 1300,
   "transactions": [
     {
-      "block": {
-        "number": 1002,
-      },
+      "blockHash": "blockHash002",
+      "blockNumber": 1002,
+      "blockTimestamp": 2023-05-10T12:00:00.000Z,
       "hash": "txHash004",
       "index": 3,
       "rollup": "base",
     },
     {
-      "block": {
-        "number": 1007,
-      },
+      "blockHash": "blockHash007",
+      "blockNumber": 1007,
+      "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 0,
       "rollup": "optimism",
     },
     {
-      "block": {
-        "number": 1007,
-      },
+      "blockHash": "blockHash007",
+      "blockNumber": 1007,
+      "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 1,
       "rollup": "optimism",
     },
     {
-      "block": {
-        "number": 1007,
-      },
+      "blockHash": "blockHash007",
+      "blockNumber": 1007,
+      "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 2,
       "rollup": "optimism",

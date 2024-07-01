@@ -13,7 +13,7 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateDerivedTxBlobGasFields, isEmptyObject } from "../../utils";
+import { calculateDerivedTxBlobGasFields } from "../../utils";
 import {
   createBlockSelect,
   serializeBlock,
@@ -45,22 +45,30 @@ export const getAll = publicProcedure
   .use(withExpands)
   .use(withPagination)
   .output(outputSchema)
-  .query(async ({ ctx }) => {
-    const { blockFilters, transactionFilters, sort } = ctx.filters;
-
+  .query(async ({ ctx: { expands, filters, pagination, prisma } }) => {
     const [queriedBlocks, totalBlocks] = await Promise.all([
-      ctx.prisma.block.findMany({
-        select: createBlockSelect(ctx.expands),
+      prisma.block.findMany({
+        select: createBlockSelect(expands),
         where: {
-          ...blockFilters,
-          transactions: {
-            some: transactionFilters,
-          },
+          number: filters.blockNumber,
+          timestamp: filters.blockTimestamp,
+          slot: filters.blockSlot,
+
+          transactionForks: filters.blockType,
+          transactions:
+            filters.transactionRollup || filters.transactionAddresses
+              ? {
+                  some: {
+                    rollup: filters.transactionRollup,
+                    OR: filters.transactionAddresses,
+                  },
+                }
+              : undefined,
         },
-        orderBy: { number: sort },
-        ...ctx.pagination,
+        orderBy: { number: filters.sort },
+        ...pagination,
       }),
-      ctx.prisma.blockOverallStats
+      prisma.blockOverallStats
         .findFirst({
           select: {
             totalBlocks: true,
@@ -69,13 +77,9 @@ export const getAll = publicProcedure
         .then((stats) => stats?.totalBlocks ?? 0),
     ]);
 
-    const isTransactionSelectExpanded = !isEmptyObject(
-      ctx.expands.expandedTransactionSelect
-    );
-
     let blocks: QueriedBlock[] = queriedBlocks;
 
-    if (isTransactionSelectExpanded) {
+    if (expands.transaction) {
       blocks = blocks.map((block) => ({
         ...block,
         transactions: block.transactions.map((tx) => {
@@ -102,11 +106,11 @@ export const getAll = publicProcedure
      * When rollup filter is set we need to filter out the transactions don't
      * match manually as the query returns all the transactions in the block
      */
-    if (transactionFilters.rollup !== undefined) {
+    if (filters.transactionRollup !== undefined) {
       blocks = queriedBlocks.map((block) => ({
         ...block,
         transactions: block.transactions.filter(
-          (tx) => tx.rollup === transactionFilters.rollup
+          (tx) => tx.rollup === filters.transactionRollup
         ),
       }));
     }

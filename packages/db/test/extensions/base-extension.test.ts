@@ -624,6 +624,7 @@ describe("Base Extension", () => {
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,
+        blockTimestamp: new Date(existingRawTx.blockTimestamp),
         blobAsCalldataGasUsed: new Prisma.Decimal(
           existingRawTx.blobAsCalldataGasUsed
         ),
@@ -638,6 +639,8 @@ describe("Base Extension", () => {
             fromId: "address1",
             toId: "address3",
             blockHash: "blockHash002",
+            blockNumber: 1002,
+            blockTimestamp: new Date("2023-05-10T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
@@ -648,6 +651,8 @@ describe("Base Extension", () => {
             fromId: "address5",
             toId: "address3",
             blockHash: "blockHash001",
+            blockNumber: 1001,
+            blockTimestamp: new Date("2022-10-16T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
@@ -680,6 +685,8 @@ describe("Base Extension", () => {
             fromId: "address5",
             toId: "address6",
             blockHash: "blockHash006",
+            blockNumber: 1006,
+            blockTimestamp: new Date("2023-08-31T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
@@ -690,6 +697,8 @@ describe("Base Extension", () => {
             fromId: "address6",
             toId: "address5",
             blockHash: "blockHash006",
+            blockNumber: 1006,
+            blockTimestamp: new Date("2023-08-31T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
             blobAsCalldataGasUsed: new Prisma.Decimal(999),

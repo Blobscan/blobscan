@@ -256,6 +256,8 @@ export class DataGenerator {
           fromId: from,
           toId: to,
           blockHash: block.hash,
+          blockNumber: block.number,
+          blockTimestamp: block.timestamp,
           blobAsCalldataGasUsed: new Prisma.Decimal(0),
           gasPrice: bigintToDecimal(gasPrice),
           maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),

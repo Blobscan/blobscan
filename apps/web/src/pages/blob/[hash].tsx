@@ -123,24 +123,22 @@ const Blob: NextPage = function () {
       name: "Transactions and Blocks",
       value: (
         <div className="grid w-full grid-cols-3 gap-y-3 md:grid-cols-3">
-          {blob.transactions.map(
-            ({ hash: txHash, block: { number: blockNumber } }) => (
-              <Fragment key={`${txHash}-${blockNumber}`}>
-                <div className="col-span-2 flex gap-1 md:col-span-2">
-                  <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                    Tx{" "}
-                  </div>
-                  <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+          {blob.transactions.map(({ hash: txHash, blockNumber }) => (
+            <Fragment key={`${txHash}-${blockNumber}`}>
+              <div className="col-span-2 flex gap-1 md:col-span-2">
+                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Tx{" "}
                 </div>
-                <div className="flex gap-1">
-                  <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                    Block{" "}
-                  </div>
-                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+                <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+              </div>
+              <div className="flex gap-1">
+                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Block{" "}
                 </div>
-              </Fragment>
-            )
-          )}
+                <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+              </div>
+            </Fragment>
+          ))}
         </div>
       ),
     });
