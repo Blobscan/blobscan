@@ -14,9 +14,9 @@ import {
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import {
+  addDerivedFieldsToTransaction,
   createTransactionSelect,
   serializeTransaction,
-  addDerivedFieldsToTransaction,
   serializedTransactionSchema,
 } from "./common";
 
@@ -56,9 +56,7 @@ export const getAll = publicProcedure
         },
         orderBy: [
           {
-            block: {
-              number: sort,
-            },
+            blockNumber: sort,
           },
           {
             hash: sort,

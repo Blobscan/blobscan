@@ -14,12 +14,14 @@ import {
   serializeDerivedTxBlobGasFields,
   serializedDerivedTxBlobGasFieldsSchema,
   calculateDerivedTxBlobGasFields,
+  serializeDate,
 } from "../../../utils";
 import type { FullQueriedTransaction, BaseTransaction } from "./selects";
 
 const baseSerializedTransactionFieldsSchema = z.object({
   hash: z.string(),
   blockNumber: z.number(),
+  blockTimestamp: z.string(),
   blockHash: z.string(),
   from: z.string(),
   to: z.string(),
@@ -69,8 +71,17 @@ export function addDerivedFieldsToTransaction(
 export function serializeBaseTransactionFields(
   txQuery: BaseTransaction
 ): SerializedBaseTransactionFields {
-  const { hash, blockHash, fromId, toId, rollup, blobs, block } = txQuery;
-  const { number } = block;
+  const {
+    hash,
+    blockHash,
+    blockNumber,
+    blockTimestamp,
+    fromId,
+    toId,
+    rollup,
+    blobs,
+    block,
+  } = txQuery;
   const sortedBlobs: SerializedBaseTransactionFields["blobs"] = blobs
     .sort((a, b) => a.index - b.index)
     .map(({ blob, blobHash, index }) => {
@@ -85,7 +96,8 @@ export function serializeBaseTransactionFields(
 
   return {
     hash,
-    blockNumber: number,
+    blockNumber: blockNumber,
+    blockTimestamp: serializeDate(blockTimestamp),
     blockHash,
     to: toId,
     from: fromId,

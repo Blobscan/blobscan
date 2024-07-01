@@ -28,7 +28,7 @@ if (!prisma_) {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
   if (process.env.MODE !== "test") {
     p.$on("query", (e) => {
-      logger.debug(`${e.query}\nDuration=${e.duration}ms`);
+      logger.info(`${e.query}\nDuration=${e.duration}ms`);
     });
 
     p.$on("error", (e) => {
