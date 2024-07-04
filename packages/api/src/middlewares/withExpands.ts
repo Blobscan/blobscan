@@ -47,8 +47,6 @@ const expandedBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   blobGasPrice: true,
   blobGasUsed: true,
   excessBlobGas: true,
-  hash: true,
-  timestamp: true,
   slot: true,
 });
 

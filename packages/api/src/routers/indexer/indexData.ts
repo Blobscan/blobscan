@@ -7,6 +7,7 @@ import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {
   createDBBlobs,
+  createDBBlobsOnTransactions,
   createDBBlock,
   createDBTransactions,
 } from "./indexData.utils";
@@ -116,6 +117,7 @@ export const indexData = jwtAuthedProcedure
       const dbTxs = createDBTransactions(input);
       const dbBlock = createDBBlock(input, dbTxs);
       const dbBlobs = createDBBlobs(input);
+      const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
 
       operations.push(
         prisma.block.upsert({
@@ -144,14 +146,7 @@ export const indexData = jwtAuthedProcedure
       }
 
       operations.push(
-        prisma.blobsOnTransactions.createMany({
-          data: input.blobs.map((blob) => ({
-            blobHash: blob.versionedHash,
-            txHash: blob.txHash,
-            index: blob.index,
-          })),
-          skipDuplicates: true,
-        })
+        prisma.blobsOnTransactions.upsertMany(dbBlobsOnTransactions)
       );
 
       // 3. Execute all database operations in a single transaction

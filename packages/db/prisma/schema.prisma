@@ -123,8 +123,9 @@ model Block {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  transactions     Transaction[]
-  transactionForks TransactionFork[]
+  blobsOnTransactions BlobsOnTransactions[]
+  transactions        Transaction[]
+  transactionForks    TransactionFork[]
 
   @@index([number])
   @@index([insertedAt])
@@ -159,15 +160,22 @@ model Transaction {
 }
 
 model BlobsOnTransactions {
-  blobHash String @map("blob_hash")
-  txHash   String @map("tx_hash")
-  index    Int
+  blobHash       String   @map("blob_hash")
+  blockHash      String   @map("block_hash")
+  blockNumber    Int      @map("block_number")
+  blockTimestamp DateTime @map("block_timestamp")
+  txHash         String   @map("tx_hash")
+  index          Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
+  block       Block       @relation(fields: [blockHash], references: [hash])
   transaction Transaction @relation(fields: [txHash], references: [hash])
 
   @@id([txHash, index])
   @@index([blobHash])
+  @@index([blockHash])
+  @@index([blockNumber])
+  @@index([blockTimestamp])
   @@index([txHash])
   @@map("blobs_on_transactions")
 }

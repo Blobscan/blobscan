@@ -3,6 +3,7 @@ import type {
   Address,
   Blob,
   BlobDataStorageReference,
+  BlobsOnTransactions,
   PrismaPromise,
   Transaction,
 } from "@prisma/client";
@@ -156,6 +157,52 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               size = EXCLUDED.size,
               first_block_number = LEAST(b.first_block_number, EXCLUDED.first_block_number),
               updated_at = NOW()
+          `;
+        },
+      },
+      blobsOnTransactions: {
+        upsertMany(blobsOnTransactions: BlobsOnTransactions[]) {
+          if (!blobsOnTransactions.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
+          const sqlValues = blobsOnTransactions
+            .map(
+              ({
+                blobHash,
+                blockHash,
+                blockNumber,
+                blockTimestamp,
+                index,
+                txHash,
+              }) =>
+                Prisma.join([
+                  blobHash,
+                  blockHash,
+                  blockNumber,
+                  Prisma.sql`${blockTimestamp}::timestamp`,
+                  index,
+                  txHash,
+                ])
+            )
+            .map((rowColumnsSql) => Prisma.sql`(${rowColumnsSql})`);
+
+          return prisma.$executeRaw`
+            INSERT INTO blobs_on_transactions (
+              blob_hash,
+              block_hash,
+              block_number,
+              block_timestamp,
+              index,
+              tx_hash
+            ) VALUES ${Prisma.join(sqlValues)}
+            ON CONFLICT (tx_hash, index) DO UPDATE SET
+              block_hash = EXCLUDED.block_hash,
+              block_number = EXCLUDED.block_number,
+              block_timestamp = EXCLUDED.block_timestamp,
+              index = EXCLUDED.index
           `;
         },
       },

@@ -1,5 +1,6 @@
 import type {
   Blob,
+  BlobsOnTransactions,
   Block,
   Transaction,
   WithoutTimestampFields,
@@ -54,6 +55,10 @@ const ROLLUPS_ADDRESSES: { [chainId: string]: Record<string, Rollup> } = {
 
 function bigIntToDecimal(bigint: bigint) {
   return new Prisma.Decimal(bigint.toString());
+}
+
+function timestampToDate(timestamp: number) {
+  return new Date(timestamp * 1000);
 }
 
 function fakeExponential(
@@ -139,7 +144,7 @@ export function createDBTransactions({
       return {
         blockHash: block.hash,
         blockNumber: block.number,
-        blockTimestamp: new Date(block.timestamp * 1000),
+        blockTimestamp: timestampToDate(block.timestamp),
         hash,
         fromId: from,
         toId: to,
@@ -168,7 +173,7 @@ export function createDBBlock(
   return {
     number,
     hash,
-    timestamp: new Date(timestamp * 1000),
+    timestamp: timestampToDate(timestamp),
     slot,
     blobGasUsed: bigIntToDecimal(blobGasUsed),
     blobGasPrice: bigIntToDecimal(blobGasPrice),
@@ -203,4 +208,18 @@ export function createDBBlobs({
       };
     }
   );
+}
+
+export function createDBBlobsOnTransactions({
+  block,
+  blobs,
+}: IndexDataFormattedInput): BlobsOnTransactions[] {
+  return blobs.map(({ versionedHash, txHash, index }) => ({
+    blobHash: versionedHash,
+    blockHash: block.hash,
+    blockNumber: block.number,
+    blockTimestamp: timestampToDate(block.timestamp),
+    txHash: txHash,
+    index,
+  }));
 }

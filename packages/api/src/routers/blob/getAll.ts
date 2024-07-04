@@ -49,23 +49,19 @@ export const getAll = publicProcedure
       ctx.prisma.blobsOnTransactions.findMany({
         select: createBlobsOnTransactionsSelect(ctx.expands),
         where: {
+          blockNumber: filters.blockNumber,
+          blockTimestamp: filters.blockTimestamp,
+          block: {
+            slot: filters.blockSlot,
+            transactionForks: filters.blockType,
+          },
           transaction: {
-            blockNumber: filters.blockNumber,
-            blockTimestamp: filters.blockTimestamp,
             rollup: filters.transactionRollup,
             OR: filters.transactionAddresses,
-            block: {
-              slot: filters.blockSlot,
-              transactionForks: filters.blockType,
-            },
           },
         },
         orderBy: [
-          {
-            transaction: {
-              blockNumber: filters.sort,
-            },
-          },
+          { blockNumber: filters.sort },
           {
             txHash: filters.sort,
           },

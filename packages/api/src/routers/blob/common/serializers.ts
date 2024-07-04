@@ -2,7 +2,6 @@ import type {
   Blob as DBBlob,
   BlobsOnTransactions as DBBlobsOnTransactions,
   BlobDataStorageReference as DBBlobDataStorageReference,
-  Transaction as DBTransaction,
 } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
@@ -12,12 +11,14 @@ import {
   serializedExpandedBlockSchema,
   serializedExpandedTransactionSchema,
 } from "../../../middlewares/withExpands";
-import type { ExpandedBlock } from "../../../middlewares/withExpands";
+import type {
+  ExpandedBlock,
+  ExpandedTransaction,
+} from "../../../middlewares/withExpands";
 import {
   blobIndexSchema,
   blockNumberSchema,
   serializedBlobDataStorageReferenceSchema,
-  isEmptyObject,
   serializeBlobDataStorageReferences,
   serializeDate,
 } from "../../../utils";
@@ -32,21 +33,18 @@ type BaseBlob = Pick<
   >[];
 };
 
-type Transaction = Omit<DBTransaction, "insertedAt" | "updatedAt"> & {
-  block?: ExpandedBlock;
-};
-
-type Blob = BaseBlob & {
+type QueriedBlob = BaseBlob & {
   data: string;
-  transactions: {
-    index: number;
-    transaction: Transaction;
-  }[];
+  transactions: (Omit<DBBlobsOnTransactions, "blobHash"> & {
+    block?: ExpandedBlock;
+    transaction?: ExpandedTransaction;
+  })[];
 };
 
-type BlobOnTransaction = Pick<DBBlobsOnTransactions, "index"> & {
+type QueriedBlobOnTransaction = DBBlobsOnTransactions & {
   blob: BaseBlob;
-  transaction: Transaction;
+  block?: ExpandedBlock;
+  transaction?: ExpandedTransaction;
 };
 
 export type SerializedBlobDataStorageReference = z.infer<
@@ -119,50 +117,66 @@ export function serializeBaseBlob({
 }
 
 export function serializeBlobOnTransaction(
-  blobOnTransaction: BlobOnTransaction
+  blobOnTransaction: QueriedBlobOnTransaction
 ): SerializedBlobOnTransaction {
-  const { blob, transaction, index } = blobOnTransaction;
-
-  const { hash, blockHash, blockTimestamp, blockNumber, block } = transaction;
-
-  const expandedBlock = block ? serializeExpandedBlock(block) : undefined;
-  const expandedTransaction = serializeExpandedTransaction(transaction);
-
-  return {
-    ...serializeBaseBlob(blob),
+  const {
+    blob,
+    blockHash,
+    blockNumber,
+    blockTimestamp,
     index,
+    txHash,
+    block,
+    transaction,
+  } = blobOnTransaction;
+  const serializedBlob: SerializedBlobOnTransaction = {
+    ...serializeBaseBlob(blob),
     blockHash,
     blockNumber,
     blockTimestamp: serializeDate(blockTimestamp),
-    txHash: hash,
-    ...(expandedBlock ? { block: expandedBlock } : {}),
-    ...(isEmptyObject(expandedTransaction)
-      ? {}
-      : { transaction: expandedTransaction }),
+    txHash,
+    index,
   };
+
+  if (block) {
+    serializedBlob.block = serializeExpandedBlock(block);
+  }
+
+  if (transaction) {
+    serializedBlob.transaction = serializeExpandedTransaction(transaction);
+  }
+
+  return serializedBlob;
 }
 
-export function serializeBlob(blob: Blob): SerializedBlob {
+export function serializeBlob(blob: QueriedBlob): SerializedBlob {
   const { transactions, ...baseBlob } = blob;
 
   return {
     ...serializeBaseBlob(baseBlob),
     data: blob.data,
     transactions: transactions
-      .sort((a, b) => a.transaction.hash.localeCompare(b.transaction.hash))
-      .map(({ index, transaction }) => {
-        const { block, hash, blockHash, blockNumber, blockTimestamp } =
-          transaction;
-
-        return {
-          index,
-          hash,
+      .sort((a, b) => a.txHash.localeCompare(b.txHash))
+      .map(
+        ({
           blockHash,
           blockNumber,
           blockTimestamp,
-          ...serializeExpandedTransaction(transaction),
-          ...(block ? { block: serializeExpandedBlock(block) } : {}),
-        };
-      }),
+          index,
+          txHash,
+          block,
+          transaction,
+        }) => {
+          return {
+            index,
+            hash: txHash,
+            blockHash,
+            blockNumber,
+            blockTimestamp,
+            ...(transaction ? serializeExpandedTransaction(transaction) : {}),
+            ...(block ? { block: serializeExpandedBlock(block) } : {}),
+          };
+        }
+      ),
   };
 }
