@@ -2,6 +2,7 @@ import type {
   Address as AddressEntity,
   Blob,
   BlobDataStorageReference,
+  BlobsOnTransactions,
   Transaction,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
@@ -496,6 +497,108 @@ describe("Base Extension", () => {
 
       it("should upsert an empty array correctly", async () => {
         const result = await prisma.blob.upsertMany([]);
+
+        expect(result).toStrictEqual(expectedEmptyInputRes);
+      });
+    });
+  });
+
+  describe("BlobsOnTransactions model", () => {
+    describe("upsertMany()", () => {
+      const newBlobsOnTransactions: WithoutTimestampFields<BlobsOnTransactions>[] =
+        [
+          {
+            blobHash: "blobHash002",
+            blockHash: "blockHash005",
+            blockNumber: 1008,
+            blockTimestamp: new Date("2023-08-31T16:00:00Z"),
+            txHash: "txHash016",
+            index: 1,
+          },
+          {
+            blobHash: "blobHash003",
+            blockHash: "blockHash008",
+            blockNumber: 1008,
+            blockTimestamp: new Date("2023-08-31T16:00:00Z"),
+            txHash: "txHash016",
+            index: 2,
+          },
+        ];
+      it("should insert multiple blobs on transactions correctly", async () => {
+        await prisma.blobsOnTransactions.upsertMany(newBlobsOnTransactions);
+
+        const result = await prisma.blobsOnTransactions.findMany({
+          where: {
+            AND: [
+              {
+                txHash: {
+                  in: newBlobsOnTransactions.map((btx) => btx.txHash),
+                },
+              },
+              {
+                index: {
+                  in: newBlobsOnTransactions.map((btx) => btx.index),
+                },
+              },
+            ],
+          },
+          orderBy: [
+            {
+              txHash: "asc",
+            },
+            {
+              index: "asc",
+            },
+          ],
+        });
+
+        expect(result).toStrictEqual(newBlobsOnTransactions);
+      });
+
+      it("should update multiple blobs on transactions correctly", async () => {
+        await prisma.blobsOnTransactions.upsertMany(newBlobsOnTransactions);
+
+        const updatedBlobsOnTransactions = newBlobsOnTransactions.map(
+          (btx) => ({
+            ...btx,
+            blockHash: "blockHash007",
+            blockNumber: 1007,
+            blockTimestamp: new Date("2023-08-31T14:00:00Z"),
+          })
+        );
+
+        await prisma.blobsOnTransactions.upsertMany(updatedBlobsOnTransactions);
+
+        const result = await prisma.blobsOnTransactions.findMany({
+          where: {
+            AND: [
+              {
+                txHash: {
+                  in: updatedBlobsOnTransactions.map((btx) => btx.txHash),
+                },
+              },
+              {
+                index: {
+                  in: updatedBlobsOnTransactions.map((btx) => btx.index),
+                },
+              },
+            ],
+          },
+          orderBy: [
+            {
+              txHash: "asc",
+            },
+            {
+              index: "asc",
+            },
+          ],
+        });
+
+        expect(result).toStrictEqual(updatedBlobsOnTransactions);
+      });
+
+      it("should upsert an empty array correctly", async () => {
+        const result = await prisma.blobsOnTransactions.upsertMany([]);
 
         expect(result).toStrictEqual(expectedEmptyInputRes);
       });
