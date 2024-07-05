@@ -36,7 +36,7 @@ return (
         <CardContent>
         <Grid container spacing={3}>
             <Grid item xs={2}>
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>
                 Public Key
               </Typography>
               <div style={{ display: 'flex', justifyContent: 'center', color:"#87CEFA" }}>
@@ -51,53 +51,39 @@ return (
               </div>
             </Grid>
             <Grid item xs={1}>
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Index</Typography>
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Index</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', color:"#87CEFA" }}>
                 <Typography style={{ lineHeight: '40px' }}>{validator.index}</Typography>
               </div>
             </Grid>
             <Grid item xs={2.5}>
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Balance</Typography>
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Balance</Typography>
               <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ convertWei(validator.balance)} ETH ({convertWei(validator.validator.effective_balance)} ETH)</Typography>
             </Grid>
             <Grid item xs={1.5}>
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>State</Typography>
-              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px', color: validator.status === 'active_ongoing' ? '#00FA9A' : validator.status === 'exited' ? 'red' : '' }}>
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>State</Typography>
+              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px', color: validator.status.includes('active') ? '#00FA9A' : validator.status.includes('exited') ? 'red' : '' }}>
                 {validator.status}
               </Typography>       
             </Grid>
             <Grid item xs={1.5}>
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Activation</Typography>
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Activation</Typography>
               <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.activation_epoch}</Typography>       
             </Grid>
             <Grid item xs={1.5}>
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Exit</Typography>
-              {
-                validator.status === "exited" ? 
-                <div style={{ display: 'flex', color:"#87CEFA" }}>
-                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.exit_epoch.substring(0, 8)}...</Typography>  
-                  <CopyToClipboard text={validator.validator.exit_epoch}>
-                      <IconButton>
-                        <FileCopyIcon fontSize="small" />
-                      </IconButton>
-                  </CopyToClipboard>   
-                </div>  :
-                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> 
-              }     
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>Exit</Typography>
+                {
+                  validator.validator.exit_epoch === "18446744073709551615" ?
+                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> : 
+                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.exit_epoch}</Typography>  
+                }     
             </Grid>
             <Grid item xs={1.5} >
-              <Typography variant="h6" style={{ lineHeight: '40px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>W/able</Typography>
+              <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#9370DB', fontWeight: 'bold'  }}>W/able</Typography>
               {
-                validator.status.includes("exit") ? 
-                <div style={{ display: 'flex', color:"#87CEFA" }}>
-                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.withdrawable_epoch.substring(0, 8)}...</Typography>  
-                  <CopyToClipboard text={validator.validator.withdrawable_epoch}>
-                      <IconButton>
-                        <FileCopyIcon fontSize="small" />
-                      </IconButton>
-                  </CopyToClipboard>   
-                </div>  :
-                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> 
+                validator.validator.exit_epoch === "18446744073709551615" ?
+                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> :
+                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.withdrawable_epoch}</Typography>  
               } 
             </Grid>
           </Grid>
@@ -129,7 +115,7 @@ return (
               <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ convertWei(validator.balance)} ETH ({convertWei(validator.validator.effective_balance)} ETH)</Typography>
             </Grid>
             <Grid item xs={1.5}>
-              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px', color: validator.status === 'active_ongoing' ? '#00FA9A' : validator.status === 'exit' ? 'red' : 'inherit' }}>
+            <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px', color: validator.status.includes('active') ? '#00FA9A' : validator.status.includes('exited') ? 'red' : '' }}>
                 {validator.status}
               </Typography>       
             </Grid>
@@ -138,30 +124,16 @@ return (
             </Grid>
             <Grid item xs={1.5}>
               {
-                  validator.status === "exited" ? 
-                  <div style={{ display: 'flex', color:"#87CEFA" }}>
-                    <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.exit_epoch.substring(0, 8)}...</Typography>  
-                    <CopyToClipboard text={validator.validator.exit_epoch}>
-                        <IconButton>
-                          <FileCopyIcon fontSize="small" />
-                        </IconButton>
-                    </CopyToClipboard>   
-                  </div>  :
-                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> 
+                  validator.validator.exit_epoch === "18446744073709551615" ?
+                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> : 
+                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.exit_epoch}</Typography>  
                 }      
             </Grid>
             <Grid item xs={1.5} >
-            {
-                validator.status.includes("exit") ? 
-                <div style={{ display: 'flex', color:"#87CEFA" }}>
-                  <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.withdrawable_epoch.substring(0, 8)}...</Typography>  
-                  <CopyToClipboard text={validator.validator.withdrawable_epoch}>
-                      <IconButton>
-                        <FileCopyIcon fontSize="small" />
-                      </IconButton>
-                  </CopyToClipboard>   
-                </div>  :
-                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> 
+              {
+                validator.validator.exit_epoch === "18446744073709551615" ?
+                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>----</Typography> :
+                <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>Epoch {validator.validator.withdrawable_epoch}</Typography>  
               } 
             </Grid>
           </Grid>
