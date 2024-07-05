@@ -50,6 +50,9 @@ importers:
       '@types/prettier':
         specifier: ^2.7.3
         version: 2.7.3
+      '@types/react-copy-to-clipboard':
+        specifier: ^5.0.7
+        version: 5.0.7
       '@vitest/coverage-v8':
         specifier: ^0.34.3
         version: 0.34.6(vitest@0.34.6(@vitest/ui@0.34.7))
@@ -277,9 +280,6 @@ importers:
       '@trpc/server':
         specifier: ^10.43.2
         version: 10.45.2
-      '@types/react-copy-to-clipboard':
-        specifier: 5.0.7
-        version: 5.0.7
       '@upstash/feedback':
         specifier: ^2.0.0
         version: 2.0.0(@babel/core@7.24.5)
