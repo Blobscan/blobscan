@@ -37,3 +37,7 @@ export function buildBlockStatsRoute() {
 export function buildTransactionStatsRoute() {
   return "/stats/tx";
 }
+
+export function buildValidatorStatsRoute() {
+  return "/validators";
+}

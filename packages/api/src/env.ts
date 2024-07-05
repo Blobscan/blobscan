@@ -17,7 +17,8 @@ export const env = createEnv({
       SECRET_KEY: z.string(),
       NODE_ENV: nodeEnvSchema.optional(),
       METRICS_ENABLED: booleanSchema.default("false"),
-      EXECUTION_NODE_ENDPOINT: z.string(),
+      EXECUTION_NODE_ENDPOINT: z.string().default("http://localhost:8545"),
+      BEACON_NODE_ENDPOINT: z.string().default("http://localhost:3500"),
     },
 
     ...presetEnvOptions,

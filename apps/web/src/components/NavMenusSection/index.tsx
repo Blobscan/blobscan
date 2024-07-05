@@ -14,6 +14,7 @@ import {
   buildTransactionStatsRoute,
   buildTransactionsRoute,
   buildBlobsRoute,
+  buildValidatorStatsRoute,
 } from "~/utils";
 import { Button } from "../Button";
 import { NavItem } from "./NavItem";
@@ -64,6 +65,10 @@ export const NavMenusSection: React.FC = () => {
                 {
                   label: "Transaction Metrics",
                   href: buildTransactionStatsRoute(),
+                },
+                {
+                  label: "Validators",
+                  href: buildValidatorStatsRoute(),
                 },
               ]}
             />

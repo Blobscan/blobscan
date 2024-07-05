@@ -48,7 +48,9 @@
     "react-dom": "18.2.0",
     "react-loading-skeleton": "^3.3.1",
     "superjson": "1.9.1",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "@mui/material":"5.15.21",
+    "@mui/icons-material":"5.15.21"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
