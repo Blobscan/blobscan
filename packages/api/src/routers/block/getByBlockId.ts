@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server";
 
-import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -12,11 +11,7 @@ import {
   withTypeFilterSchema,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
-import {
-  calculateDerivedTxBlobGasFields,
-  isEmptyObject,
-  retrieveBlobData,
-} from "../../utils";
+import { calculateDerivedTxBlobGasFields, retrieveBlobData } from "../../utils";
 import {
   createBlockSelect,
   serializeBlock,
@@ -74,18 +69,13 @@ export const getByBlockId = publicProcedure
       input: { id },
     }) => {
       const isNumber = typeof id === "number";
-      const blockIdFilter: Prisma.BlockWhereInput = {
-        [isNumber ? "number" : "hash"]: id,
-      };
 
       const queriedBlock = await prisma.block.findFirst({
         select: createBlockSelect(expands),
         where: {
-          ...blockIdFilter,
+          [isNumber ? "number" : "hash"]: id,
           // Hash is unique, so we don't need to filter by transaction forks if we're querying by it
-          transactionForks: isNumber
-            ? filters.blockFilters.transactionForks
-            : undefined,
+          transactionForks: isNumber ? filters.blockType : undefined,
         },
       });
 
@@ -98,11 +88,7 @@ export const getByBlockId = publicProcedure
 
       const block: QueriedBlock = queriedBlock;
 
-      const isExpandedTransactionSet = !isEmptyObject(
-        expands.expandedTransactionSelect
-      );
-
-      if (isExpandedTransactionSet) {
+      if (expands.transaction) {
         block.transactions = block.transactions.map((tx) => {
           const derivedFields =
             tx.maxFeePerBlobGas && tx.blobAsCalldataGasUsed && tx.gasPrice
@@ -122,7 +108,7 @@ export const getByBlockId = publicProcedure
         });
       }
 
-      if (expands.expandBlobData) {
+      if (expands.blobData) {
         const txsBlobs = block.transactions.flatMap((tx) => tx.blobs);
 
         await Promise.all(

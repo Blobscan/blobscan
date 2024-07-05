@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["tracing", "metrics"]
+  previewFeatures = ["relationJoins", "tracing", "metrics"]
 }
 
 datasource db {
@@ -136,6 +136,8 @@ model Transaction {
   fromId                String   @map("from_id")
   toId                  String   @map("to_id")
   blockHash             String   @map("block_hash")
+  blockNumber           Int      @map("block_number")
+  blockTimestamp        DateTime @map("block_timestamp")
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
@@ -151,6 +153,8 @@ model Transaction {
 
   @@index([insertedAt])
   @@index([blockHash])
+  @@index([blockNumber])
+  @@index([blockTimestamp])
   @@map("transaction")
 }
 

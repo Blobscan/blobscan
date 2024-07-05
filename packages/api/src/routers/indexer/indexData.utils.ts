@@ -138,6 +138,8 @@ export function createDBTransactions({
 
       return {
         blockHash: block.hash,
+        blockNumber: block.number,
+        blockTimestamp: new Date(block.timestamp * 1000),
         hash,
         fromId: from,
         toId: to,

@@ -43,42 +43,46 @@ export const getAll = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx }) => {
-    const { blockFilters, transactionFilters, sort } = ctx.filters;
+    const filters = ctx.filters;
 
     const [txsBlobs, blobCountOrStats] = await Promise.all([
       ctx.prisma.blobsOnTransactions.findMany({
         select: createBlobsOnTransactionsSelect(ctx.expands),
         where: {
           transaction: {
-            ...transactionFilters,
-            block: blockFilters,
+            blockNumber: filters.blockNumber,
+            blockTimestamp: filters.blockTimestamp,
+            rollup: filters.transactionRollup,
+            OR: filters.transactionAddresses,
+            block: {
+              slot: filters.blockSlot,
+              transactionForks: filters.blockType,
+            },
           },
         },
         orderBy: [
           {
             transaction: {
-              block: {
-                number: sort,
-              },
+              blockNumber: filters.sort,
             },
           },
           {
-            txHash: sort,
+            txHash: filters.sort,
           },
           {
-            index: sort,
+            index: filters.sort,
           },
         ],
         ...ctx.pagination,
       }),
       // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      transactionFilters.rollup
+      filters.transactionRollup
         ? ctx.prisma.blob.count({
             where: {
               transactions: {
                 some: {
                   transaction: {
-                    rollup: transactionFilters.rollup,
+                    rollup: filters.transactionRollup,
                   },
                 },
               },

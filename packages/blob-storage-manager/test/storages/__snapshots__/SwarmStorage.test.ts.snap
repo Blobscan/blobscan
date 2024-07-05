@@ -3,7 +3,3 @@
 exports[`SwarmStorage > should throw a valid error if bee client is not healthy 1`] = `"Storage is not reachable"`;
 
 exports[`SwarmStorage > should throw a valid error if bee client is not healthy 2`] = `[Error: Bee is not healthy: not ok]`;
-
-exports[`SwarmStorage > should throw valid error if bee debug client is not healthy 1`] = `"Storage is not reachable"`;
-
-exports[`SwarmStorage > should throw valid error if bee debug client is not healthy 2`] = `[Error: Bee debug is not healthy: not ok]`;

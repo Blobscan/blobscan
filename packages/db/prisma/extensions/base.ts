@@ -215,6 +215,8 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               ({
                 hash,
                 blockHash,
+                blockNumber,
+                blockTimestamp,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -224,6 +226,8 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               }) => [
                 hash,
                 blockHash,
+                blockNumber,
+                Prisma.sql`${blockTimestamp}::timestamp`,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -243,6 +247,8 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             INSERT INTO "transaction" (
               "hash",
               block_hash,
+              block_number,
+              block_timestamp,
               from_id,
               to_id,
               max_fee_per_blob_gas,
@@ -254,6 +260,8 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("hash") DO UPDATE SET
               block_hash = EXCLUDED.block_hash,
+              block_number = EXCLUDED.block_number,
+              block_timestamp = EXCLUDED.block_timestamp,
               from_id = EXCLUDED.from_id,
               to_id = EXCLUDED.to_id,
               max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,

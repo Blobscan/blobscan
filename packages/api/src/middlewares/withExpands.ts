@@ -18,11 +18,7 @@ import {
   serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../utils";
-import type {
-  DerivedTxBlobGasFields,
-  MakeFieldsMandatory,
-  TypeOrEmpty,
-} from "../utils";
+import type { DerivedTxBlobGasFields, MakeFieldsMandatory } from "../utils";
 
 const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
 
@@ -56,7 +52,7 @@ const expandedBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   slot: true,
 });
 
-export type ExpandedBlock = MakeFieldsMandatory<DBBlock, "number">;
+export type ExpandedBlock = Partial<DBBlock>;
 
 export type ExpandedTransaction = MakeFieldsMandatory<DBTransaction, "hash"> &
   Partial<DerivedTxBlobGasFields>;
@@ -85,11 +81,13 @@ export type ExpandedBlobData = MakeFieldsMandatory<
 
 export type ZodExpand = (typeof zodExpandEnums)[number];
 
+export type ExpandSelect<T> = { select: T };
+
 export type Expands = {
-  expandedTransactionSelect: TypeOrEmpty<typeof expandedTransactionSelect>;
-  expandedBlobSelect: TypeOrEmpty<typeof expandedBlobSelect>;
-  expandBlobData: boolean;
-  expandedBlockSelect: TypeOrEmpty<typeof expandedBlockSelect>;
+  transaction?: ExpandSelect<typeof expandedTransactionSelect>;
+  blob?: ExpandSelect<typeof expandedBlobSelect>;
+  blobData?: boolean;
+  block?: ExpandSelect<typeof expandedBlockSelect>;
 };
 
 export const serializedExpandedBlockSchema = z.object({
@@ -329,35 +327,27 @@ export const withExpands = t.middleware(({ next, input }) => {
       .map((expand) => expand as ZodExpand);
   }
 
-  const expands = expandKeys.reduce<Expands>(
-    (exp, current) => {
-      switch (current) {
-        case "transaction":
-          exp.expandedTransactionSelect = expandedTransactionSelect;
-          break;
-        case "blob":
-          exp.expandedBlobSelect = expandedBlobSelect;
-          break;
-        case "blob_data": {
-          exp.expandBlobData = true;
-          // We need to expand the blob data as well
-          exp.expandedBlobSelect = expandedBlobSelect;
-          break;
-        }
-        case "block":
-          exp.expandedBlockSelect = expandedBlockSelect;
-          break;
+  const expands = expandKeys.reduce<Expands>((exp, current) => {
+    switch (current) {
+      case "transaction":
+        exp.transaction = { select: expandedTransactionSelect };
+        break;
+      case "blob":
+        exp.blob = { select: expandedBlobSelect };
+        break;
+      case "blob_data": {
+        exp.blobData = true;
+        // We need to expand the blob data as well
+        exp.blob = { select: expandedBlobSelect };
+        break;
       }
-
-      return exp;
-    },
-    {
-      expandedTransactionSelect: {},
-      expandedBlobSelect: {},
-      expandBlobData: false,
-      expandedBlockSelect: {},
+      case "block":
+        exp.block = { select: expandedBlockSelect };
+        break;
     }
-  );
+
+    return exp;
+  }, {});
 
   return next({
     ctx: {
