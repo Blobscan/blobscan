@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["relationJoins", "tracing", "metrics"]
+  previewFeatures = ["tracing", "metrics"]
 }
 
 datasource db {
