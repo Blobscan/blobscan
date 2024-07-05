@@ -45,7 +45,8 @@ const Address: NextPage = () => {
   // const balance = balanceData ? convertWei(balanceData.balance.toString(), "ether") : null;
   // const balance = balanceData ? formatWei(balanceData.balance, {toUnit: "ether"}) : null;
   const rawBalance = balanceData ? balanceData.balance : null;
-  const balance = rawBalance === BigInt(-1) ? "loading..." : rawBalance ? formatWei(rawBalance, {toUnit: "ether"}) : null;
+  const balance = rawBalance === BigInt(-1) ? "Loading..." : rawBalance ? formatWei(rawBalance, {toUnit: "ether"}) : "0 ether";
+
 
   if (error) {
     return (
