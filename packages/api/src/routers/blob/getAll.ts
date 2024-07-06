@@ -63,7 +63,9 @@ export const getAll = publicProcedure
         orderBy: [
           { blockNumber: filters.sort },
           {
-            txHash: filters.sort,
+            transaction: {
+              index: filters.sort,
+            },
           },
           {
             index: filters.sort,

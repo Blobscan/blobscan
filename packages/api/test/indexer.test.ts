@@ -95,9 +95,14 @@ describe("Indexer router", async () => {
             where: {
               blockHash: INPUT.block.hash,
             },
-            orderBy: {
-              hash: "asc",
-            },
+            orderBy: [
+              {
+                blockNumber: "asc",
+              },
+              {
+                index: "asc",
+              },
+            ],
           })
           .then((r) => r.map(omitDBTimestampFields));
         // const expectedBlobAsCalldataGasUsed = INPUT.transactions.map((tx) =>
@@ -123,23 +128,25 @@ describe("Indexer router", async () => {
               "blockHash": "blockHash2010",
               "blockNumber": 2010,
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
-              "fromId": "address7",
-              "gasPrice": "3000000",
-              "hash": "txHash1000",
-              "maxFeePerBlobGas": "20000",
+              "fromId": "address9",
+              "gasPrice": "10000",
+              "hash": "txHash999",
+              "index": 0,
+              "maxFeePerBlobGas": "1800",
               "rollup": null,
-              "toId": "address2",
+              "toId": "address10",
             },
             {
               "blockHash": "blockHash2010",
               "blockNumber": 2010,
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
-              "fromId": "address9",
-              "gasPrice": "10000",
-              "hash": "txHash999",
-              "maxFeePerBlobGas": "1800",
+              "fromId": "address7",
+              "gasPrice": "3000000",
+              "hash": "txHash1000",
+              "index": 1,
+              "maxFeePerBlobGas": "20000",
               "rollup": null,
-              "toId": "address10",
+              "toId": "address2",
             },
           ]
         `);
