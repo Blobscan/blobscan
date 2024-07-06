@@ -67,7 +67,7 @@ export const getAll = publicProcedure
             blockNumber: filters.sort,
           },
           {
-            hash: filters.sort,
+            index: filters.sort,
           },
         ],
         ...ctx.pagination,
