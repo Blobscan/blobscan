@@ -2,6 +2,7 @@ import { Prisma } from "@blobscan/db";
 import type {
   Block as DBBlock,
   Transaction as DBTransaction,
+  WithoutTimestampFields,
 } from "@blobscan/db";
 
 import type {
@@ -11,19 +12,7 @@ import type {
 import { blobReferenceSelect } from "../../../utils";
 import type { DerivedTxBlobGasFields } from "../../../utils";
 
-export type BaseTransaction = Pick<
-  DBTransaction,
-  | "blobAsCalldataGasUsed"
-  | "blockHash"
-  | "blockNumber"
-  | "blockTimestamp"
-  | "fromId"
-  | "hash"
-  | "maxFeePerBlobGas"
-  | "gasPrice"
-  | "rollup"
-  | "toId"
-> & {
+export type BaseTransaction = WithoutTimestampFields<DBTransaction> & {
   block: Partial<DBBlock>;
   blobs: { blob: ExpandedBlobData; index: number; blobHash: string }[];
 };
@@ -42,6 +31,7 @@ export const baseTransactionSelect =
     blockHash: true,
     blockNumber: true,
     blockTimestamp: true,
+    index: true,
   });
 
 export function createTransactionSelect(expands: Expands) {

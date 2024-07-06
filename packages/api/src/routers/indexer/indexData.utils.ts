@@ -126,7 +126,7 @@ export function createDBTransactions({
   transactions,
 }: IndexDataFormattedInput): WithoutTimestampFields<Transaction>[] {
   return transactions.map<WithoutTimestampFields<Transaction>>(
-    ({ from, gasPrice, hash, maxFeePerBlobGas, to }) => {
+    ({ from, gasPrice, hash, maxFeePerBlobGas, to, index }) => {
       const txBlobs = blobs.filter((b) => b.txHash === hash);
 
       if (txBlobs.length === 0) {
@@ -148,6 +148,7 @@ export function createDBTransactions({
         hash,
         fromId: from,
         toId: to,
+        index,
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),

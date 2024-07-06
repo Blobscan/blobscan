@@ -25,6 +25,7 @@ const rawTxSchema = z.object({
   hash: z.string(),
   from: z.string(),
   to: z.string(),
+  index: z.coerce.number(),
   blockNumber: z.coerce.number(),
   gasPrice: toBigIntSchema,
   maxFeePerBlobGas: toBigIntSchema,

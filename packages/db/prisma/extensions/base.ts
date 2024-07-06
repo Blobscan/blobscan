@@ -264,6 +264,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 blockHash,
                 blockNumber,
                 blockTimestamp,
+                index,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -275,6 +276,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 blockHash,
                 blockNumber,
                 Prisma.sql`${blockTimestamp}::timestamp`,
+                index,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -283,12 +285,11 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 rollup
                   ? Prisma.sql`${rollup.toLowerCase()}::rollup`
                   : Prisma.sql`NULL`,
+                NOW_SQL,
+                NOW_SQL,
               ]
             )
-            .map(
-              (rowColumns) =>
-                Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
-            );
+            .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
           return prisma.$executeRaw`
             INSERT INTO "transaction" (
@@ -296,12 +297,13 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               block_hash,
               block_number,
               block_timestamp,
+              index,
               from_id,
               to_id,
               max_fee_per_blob_gas,
               gas_price,
               blob_as_calldata_gas_used,
-              "rollup",
+              rollup,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
@@ -309,12 +311,13 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               block_hash = EXCLUDED.block_hash,
               block_number = EXCLUDED.block_number,
               block_timestamp = EXCLUDED.block_timestamp,
+              index = EXCLUDED.index,
               from_id = EXCLUDED.from_id,
               to_id = EXCLUDED.to_id,
               max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
               gas_price = EXCLUDED.gas_price,
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
-              "rollup" = EXCLUDED.rollup,
+              rollup = EXCLUDED.rollup,
               updated_at = NOW()
           `;
         },
