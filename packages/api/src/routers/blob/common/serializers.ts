@@ -21,6 +21,7 @@ import {
   serializedBlobDataStorageReferenceSchema,
   serializeBlobDataStorageReferences,
   serializeDate,
+  isEmptyObject,
 } from "../../../utils";
 
 type BaseBlob = Pick<
@@ -44,7 +45,7 @@ type QueriedBlob = BaseBlob & {
 type QueriedBlobOnTransaction = DBBlobsOnTransactions & {
   blob: BaseBlob;
   block?: ExpandedBlock;
-  transaction?: ExpandedTransaction;
+  transaction: ExpandedTransaction;
 };
 
 export type SerializedBlobDataStorageReference = z.infer<
@@ -142,8 +143,12 @@ export function serializeBlobOnTransaction(
     serializedBlob.block = serializeExpandedBlock(block);
   }
 
-  if (transaction) {
-    serializedBlob.transaction = serializeExpandedTransaction(transaction);
+  if (transaction && !isEmptyObject(transaction)) {
+    const expandedTransaction = serializeExpandedTransaction(transaction);
+
+    if (!isEmptyObject(expandedTransaction)) {
+      serializedBlob.transaction = expandedTransaction;
+    }
   }
 
   return serializedBlob;

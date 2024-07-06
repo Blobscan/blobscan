@@ -23,12 +23,17 @@ export function createBlobSelect(expands: Expands) {
         blockTimestamp: true,
         index: true,
         txHash: true,
+        transaction: {
+          select: {
+            rollup: true,
+            ...(expands.transaction?.select ?? {}),
+          },
+        },
         ...(expands.block
           ? {
               block: expands.block,
             }
           : {}),
-        ...(expands.transaction ? { transaction: expands.transaction } : {}),
       },
     },
   });
@@ -45,7 +50,12 @@ export function createBlobsOnTransactionsSelect(expands: Expands) {
     blob: {
       select: baseBlobSelect,
     },
+    transaction: {
+      select: {
+        rollup: true,
+        ...(expands.transaction?.select ?? {}),
+      },
+    },
     ...(expands.block ? { block: expands.block } : {}),
-    ...(expands.transaction ? { transaction: expands.transaction } : {}),
   });
 }

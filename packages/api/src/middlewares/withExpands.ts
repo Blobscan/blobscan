@@ -52,7 +52,7 @@ const expandedBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
 
 export type ExpandedBlock = Partial<DBBlock>;
 
-export type ExpandedTransaction = MakeFieldsMandatory<DBTransaction, "hash"> &
+export type ExpandedTransaction = Partial<DBTransaction> &
   Partial<DerivedTxBlobGasFields>;
 
 export type ExpandedBlob = MakeFieldsMandatory<

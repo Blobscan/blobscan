@@ -55,6 +55,9 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -236,6 +239,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -257,6 +263,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -343,6 +352,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "0xaf8b65d906c672d670d3d9591ede355ac4dfc2f66f5690e836018fdb8582d3055474e3de6a069d3dfb4c15aa7c7f88a6",
     "size": 128000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
   },
@@ -390,6 +402,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash012",
     "versionedHash": "blobHash001",
   },
@@ -411,6 +426,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash012",
     "versionedHash": "blobHash001",
   },
@@ -432,6 +450,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash012",
     "versionedHash": "blobHash001",
   },
@@ -449,6 +470,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof005",
     "size": 1400,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash011",
     "versionedHash": "blobHash005",
   },
@@ -508,6 +532,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "arbitrum",
+    },
     "txHash": "txHash008",
     "versionedHash": "blobHash002",
   },
@@ -529,6 +556,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash007",
     "versionedHash": "blobHash001",
   },
@@ -551,6 +581,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof005",
     "size": 1400,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash011",
     "versionedHash": "blobHash005",
   },
@@ -610,6 +643,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "arbitrum",
+    },
     "txHash": "txHash008",
     "versionedHash": "blobHash002",
   },
@@ -631,6 +667,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash007",
     "versionedHash": "blobHash001",
   },
@@ -775,6 +814,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash007",
     "versionedHash": "blobHash001",
   },
@@ -860,6 +902,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -881,6 +926,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -902,6 +950,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -923,6 +974,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash012",
     "versionedHash": "blobHash001",
   },
@@ -944,6 +998,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash012",
     "versionedHash": "blobHash001",
   },
@@ -965,6 +1022,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash012",
     "versionedHash": "blobHash001",
   },
@@ -986,6 +1046,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash007",
     "versionedHash": "blobHash001",
   },
@@ -1003,6 +1066,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash002",
   },
@@ -1024,6 +1090,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash001",
   },
@@ -1050,6 +1119,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash007",
     "versionedHash": "blobHash001",
   },
@@ -1067,6 +1139,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 5,
     "proof": "proof006",
     "size": 1500,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash006",
   },
@@ -1084,6 +1159,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 4,
     "proof": "proof005",
     "size": 1400,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash005",
   },
@@ -1105,6 +1183,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 3,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash004",
   },
@@ -1126,6 +1207,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof003",
     "size": 1200,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash003",
   },
@@ -1143,6 +1227,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash002",
   },
@@ -1164,6 +1251,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash001",
   },
@@ -1249,6 +1339,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash007",
     "versionedHash": "blobHash001",
   },
@@ -1266,6 +1359,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 5,
     "proof": "proof006",
     "size": 1500,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash006",
   },
@@ -1283,6 +1379,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 4,
     "proof": "proof005",
     "size": 1400,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash005",
   },
@@ -1304,6 +1403,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 3,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash004",
   },
@@ -1325,6 +1427,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof003",
     "size": 1200,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash003",
   },
@@ -1342,6 +1447,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash002",
   },
@@ -1363,6 +1471,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "base",
+    },
     "txHash": "txHash004",
     "versionedHash": "blobHash001",
   },
@@ -1444,6 +1555,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash002",
   },
@@ -1465,6 +1579,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash001",
   },
@@ -1567,6 +1684,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash002",
   },
@@ -1588,6 +1708,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash001",
   },
@@ -1690,6 +1813,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof002",
     "size": 1100,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash002",
   },
@@ -1711,6 +1837,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof001",
     "size": 1000,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash003",
     "versionedHash": "blobHash001",
   },
@@ -1838,6 +1967,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -1859,6 +1991,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -1880,6 +2015,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -1927,6 +2065,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -1948,6 +2089,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -1969,6 +2113,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -2037,6 +2184,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -2058,6 +2208,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 1,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -2079,6 +2232,9 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "index": 0,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -2126,6 +2282,9 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "index": 2,
     "proof": "proof004",
     "size": 1300,
+    "transaction": {
+      "rollup": "optimism",
+    },
     "txHash": "txHash015",
     "versionedHash": "blobHash004",
   },
@@ -2206,6 +2365,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockTimestamp": 2023-05-10T12:00:00.000Z,
       "hash": "txHash004",
       "index": 3,
+      "rollup": "base",
     },
     {
       "blockHash": "blockHash007",
@@ -2213,6 +2373,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 0,
+      "rollup": "optimism",
     },
     {
       "blockHash": "blockHash007",
@@ -2220,6 +2381,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 1,
+      "rollup": "optimism",
     },
     {
       "blockHash": "blockHash007",
@@ -2227,6 +2389,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 2,
+      "rollup": "optimism",
     },
   ],
   "versionedHash": "blobHash004",
@@ -2256,6 +2419,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockTimestamp": 2023-05-10T12:00:00.000Z,
       "hash": "txHash004",
       "index": 3,
+      "rollup": "base",
     },
     {
       "blockHash": "blockHash007",
@@ -2263,6 +2427,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 0,
+      "rollup": "optimism",
     },
     {
       "blockHash": "blockHash007",
@@ -2270,6 +2435,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 1,
+      "rollup": "optimism",
     },
     {
       "blockHash": "blockHash007",
@@ -2277,6 +2443,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
       "index": 2,
+      "rollup": "optimism",
     },
   ],
   "versionedHash": "blobHash004",
