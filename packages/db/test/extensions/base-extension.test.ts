@@ -679,6 +679,14 @@ describe("Base Extension", () => {
               in: updatedBlobVersionedHashes,
             },
           },
+          orderBy: [
+            {
+              blobHash: "asc",
+            },
+            {
+              blobStorage: "asc",
+            },
+          ],
         });
 
         expect(updatedRefs).toStrictEqual(input);
