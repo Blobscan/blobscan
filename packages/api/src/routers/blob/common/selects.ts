@@ -1,10 +1,7 @@
 import { Prisma } from "@blobscan/db";
 
 import type { Expands } from "../../../middlewares/withExpands";
-import {
-  dataStorageReferencesSelect,
-  transactionReferenceSelect,
-} from "../../../utils";
+import { dataStorageReferencesSelect } from "../../../utils";
 
 export const baseBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
   commitment: true,
@@ -16,27 +13,27 @@ export const baseBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
   },
 });
 
-function createTransactionSelect(expands: Expands) {
-  return Prisma.validator<Prisma.TransactionSelect>()({
-    ...(expands.transaction?.select ?? {}),
-    ...transactionReferenceSelect,
-    rollup: true,
-    blockHash: true,
-    blockNumber: true,
-    blockTimestamp: true,
-    block: expands.block,
-  });
-}
-
 export function createBlobSelect(expands: Expands) {
   return Prisma.validator<Prisma.BlobSelect>()({
     ...baseBlobSelect,
     transactions: {
       select: {
+        blockHash: true,
+        blockNumber: true,
+        blockTimestamp: true,
         index: true,
+        txHash: true,
         transaction: {
-          select: createTransactionSelect(expands),
+          select: {
+            rollup: true,
+            ...(expands.transaction?.select ?? {}),
+          },
         },
+        ...(expands.block
+          ? {
+              block: expands.block,
+            }
+          : {}),
       },
     },
   });
@@ -45,11 +42,20 @@ export function createBlobSelect(expands: Expands) {
 export function createBlobsOnTransactionsSelect(expands: Expands) {
   return Prisma.validator<Prisma.BlobsOnTransactionsSelect>()({
     index: true,
+    blobHash: true,
+    blockHash: true,
+    blockNumber: true,
+    blockTimestamp: true,
+    txHash: true,
     blob: {
       select: baseBlobSelect,
     },
     transaction: {
-      select: createTransactionSelect(expands),
+      select: {
+        rollup: true,
+        ...(expands.transaction?.select ?? {}),
+      },
     },
+    ...(expands.block ? { block: expands.block } : {}),
   });
 }

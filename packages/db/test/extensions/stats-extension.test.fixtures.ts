@@ -79,11 +79,17 @@ export const NEW_DATA = {
     {
       blobHash: "newBlobHash001",
       txHash: "newTxHash001",
+      blockHash: "newBlockHash001",
+      blockNumber: 2001,
+      blockTimestamp: "2023-09-01T10:00:00Z",
       index: 0,
     },
     {
       blobHash: "newBlobHash002",
       txHash: "newTxHash002",
+      blockHash: "newBlockHash002",
+      blockNumber: 2002,
+      blockTimestamp: "2023-09-01T12:00:00Z",
       index: 0,
     },
   ],

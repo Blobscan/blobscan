@@ -162,16 +162,25 @@ describe("Indexer router", async () => {
             [
               {
                 "blobHash": "blobHash1000",
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash1000",
               },
               {
                 "blobHash": "blobHash1001",
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 1,
                 "txHash": "txHash1000",
               },
               {
                 "blobHash": "blobHash999",
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash999",
               },
@@ -371,16 +380,25 @@ describe("Indexer router", async () => {
           [
             {
               "blobHash": "blobHash1000",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash1000",
             },
             {
               "blobHash": "blobHash1001",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 1,
               "txHash": "txHash1000",
             },
             {
               "blobHash": "blobHash999",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash999",
             },
