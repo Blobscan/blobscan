@@ -27,7 +27,6 @@ export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
 export const env = createEnv({
   envOptions: {
     server: {
-      BEE_DEBUG_ENDPOINT: z.string().url().optional(),
       BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
       BLOBSCAN_API_BASE_URL: z
         .string()
@@ -128,7 +127,7 @@ export const env = createEnv({
 
     if (env.SWARM_STORAGE_ENABLED) {
       console.log(
-        `Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}, debugEndpoint=${env.BEE_DEBUG_ENDPOINT}`
+        `Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}`
       );
     }
 
