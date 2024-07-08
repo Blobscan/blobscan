@@ -73,6 +73,7 @@ Optional (cron patterns):
 Optional:
 
 - `DENCUN_FORK_SLOT`
+- `RUST_LOG`
 - `SENTRY_DSN`
 
 # By Category
@@ -98,15 +99,15 @@ These are listed by category:
 
 ## Network
 
-| Variable                         | Description                               | Required | Default value                                                                                                                                                                |
-| -------------------------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint                      | Yes      | (empty)                                                                                                                                                                      |
-| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint                   | Yes      | (empty)                                                                                                                                                                      |
-| `CHAIN_ID`                       | EVM chain id                              | Yes      | `1`                                                                                                                                                                          |
-| `NETWORK_NAME`                   | Network's name                            | Yes      | `ethereum`                                                                                                                                                                   |
-| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Link to other pages from the Network menu | No       | `[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
-| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL                       | Yes      | `https://beaconcha.in/`                                                                                                                                                      |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL                        | Yes      | `https://etherscan.io`                                                                                                                                                       |
+| Variable                         | Description                                                                                      | Required | Default value                                                                                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint                                                                             | Yes      | (empty)                                                                                                                                                                      |
+| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint                                                                          | Yes      | (empty)                                                                                                                                                                      |
+| `CHAIN_ID`                       | EVM chain id                                                                                     | Yes      | `1`                                                                                                                                                                          |
+| `NETWORK_NAME`                   | Network's name (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`) | No       | `mainnet`                                                                                                                                                                    |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Link to other pages from the Network menu                                                        | No       | `[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
+| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL                                                                              | Yes      | `https://beaconcha.in/`                                                                                                                                                      |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL                                                                               | Yes      | `https://etherscan.io`                                                                                                                                                       |
 
 ## Blob storages
 
@@ -152,13 +153,13 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 ## Indexer
 
-| Variable                | Description                                           | Required | Default value       |
-| ----------------------- | ----------------------------------------------------- | -------- | ------------------- |
-| `BLOBSCAN_API_ENDPOINT` | Blobscan API endpoint                                 | Yes      | (empty)             |
-| `RUST_LOG`              | Configure logger                                      | No       | `blob-indexer=INFO` |
-| `SENTRY_DSN_INDEXER`    | Sentry SDN                                            | No       | (empty)             |
-| `NETWORK_NAME`          | Automatically retrieve slot when blobs were activated | No       | `mainnet`           |
-| `DENCUN_FORK_SLOT`      | Custom slot when blobs are activated                  | No       | (empty)             |
+| Variable                | Description                                                                                                                                   | Required | Default value       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------- |
+| `BLOBSCAN_API_ENDPOINT` | Blobscan API endpoint                                                                                                                         | Yes      | (empty)             |
+| `RUST_LOG`              | Configure logger                                                                                                                              | No       | `blob-indexer=INFO` |
+| `SENTRY_DSN_INDEXER`    | Sentry SDN                                                                                                                                    | No       | (empty)             |
+| `NETWORK_NAME`          | Automatically start from the slot when blobs were activated (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`) | No       | `mainnet`           |
+| `DENCUN_FORK_SLOT`      | Custom slot when blobs are activated (use when `NETWORK_NAME=devnet`)                                                                         | No       | (empty)             |
 
 ## Telemetry
 
