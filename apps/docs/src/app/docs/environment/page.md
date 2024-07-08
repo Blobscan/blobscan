@@ -6,76 +6,74 @@ nextjs:
     description: How to configure your Blobscan instance
 ---
 
-
 # By Component
 
 ## Blobscan web
 
-* `DATABASE_URL`
-* `FEEDBACK_WEBHOOK_URL`
-* `NEXT_PUBLIC_NETWORK_NAME`
-* `NEXT_PUBLIC_EXPLORER_BASE_URL`
-* `NEXT_PUBLIC_BEACON_BASE_URL`
-* `NEXT_PUBLIC_VERSION`
-* `NEXT_PUBLIC_SUPPORTED_NETWORKS`
-* `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED`
-* `NEXT_PUBLIC_GOOGLE_STORAGE_BUCKET_NAME`
+- `DATABASE_URL`
+- `FEEDBACK_WEBHOOK_URL`
+- `NEXT_PUBLIC_NETWORK_NAME`
+- `NEXT_PUBLIC_EXPLORER_BASE_URL`
+- `NEXT_PUBLIC_BEACON_BASE_URL`
+- `NEXT_PUBLIC_VERSION`
+- `NEXT_PUBLIC_SUPPORTED_NETWORKS`
+- `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED`
+- `NEXT_PUBLIC_GOOGLE_STORAGE_BUCKET_NAME`
 
 Optional:
 
-* `NEXT_PUBLIC_SENTRY_DSN_WEB`
-* `NODE_ENV`
-* `SENTRY_PROJECT`
-* `SENTRY_ORG`
-
+- `NEXT_PUBLIC_SENTRY_DSN_WEB`
+- `NODE_ENV`
+- `SENTRY_PROJECT`
+- `SENTRY_ORG`
 
 ## Blobscan API
 
-* `CHAIN_ID`
-* `DATABASE_URL`
-* `NETWORK_NAME`
-* `REDIS_URI`
-* `SECRET_KEY`
+- `CHAIN_ID`
+- `DATABASE_URL`
+- `NETWORK_NAME`
+- `REDIS_URI`
+- `SECRET_KEY`
 
 Optional (general):
 
-* `BLOBSCAN_API_BASE_URL`
-* `BLOBSCAN_API_PORT`
-* `DENCUN_FORK_SLOT`
-* `METRICS_ENABLED`
-* `NODE_ENV`
-* `SENTRY_DSN_API`
-* `TRACES_ENABLED`
+- `BLOBSCAN_API_BASE_URL`
+- `BLOBSCAN_API_PORT`
+- `DENCUN_FORK_SLOT`
+- `METRICS_ENABLED`
+- `NODE_ENV`
+- `SENTRY_DSN_API`
+- `TRACES_ENABLED`
 
 Optional (blob storages):
 
-* `GOOGLE_SERVICE_KEY`
-* `GOOGLE_STORAGE_ENABLED`
-* `GOOGLE_STORAGE_API_ENDPOINT`
-* `GOOGLE_STORAGE_BUCKET_NAME`
-* `POSTGRES_STORAGE_ENABLED`
-* `SWARM_STORAGE_ENABLED`
-* `SWARM_BATCH_ID`
-* `BEE_ENDPOINT`
+- `GOOGLE_SERVICE_KEY`
+- `GOOGLE_STORAGE_ENABLED`
+- `GOOGLE_STORAGE_API_ENDPOINT`
+- `GOOGLE_STORAGE_BUCKET_NAME`
+- `POSTGRES_STORAGE_ENABLED`
+- `SWARM_STORAGE_ENABLED`
+- `SWARM_BATCH_ID`
+- `BEE_ENDPOINT`
 
 Optional (cron patterns):
 
-* `STATS_SYNCER_DAILY_CRON_PATTERN`
-* `STATS_SYNCER_OVERALL_CRON_PATTERN`
-* `SWARM_STAMP_CRON_PATTERN`
+- `STATS_SYNCER_DAILY_CRON_PATTERN`
+- `STATS_SYNCER_OVERALL_CRON_PATTERN`
+- `SWARM_STAMP_CRON_PATTERN`
 
 ## Blobscan indexer
 
-* `BEACON_NODE_ENDPOINT`
-* `BLOBSCAN_API_ENDPOINT`
-* `EXECUTION_NODE_ENDPOINT`
-* `NETWORK_NAME`
-* `SECRET_KEY`
+- `BEACON_NODE_ENDPOINT`
+- `BLOBSCAN_API_ENDPOINT`
+- `EXECUTION_NODE_ENDPOINT`
+- `NETWORK_NAME`
+- `SECRET_KEY`
 
 Optional:
 
-* `DENCUN_FORK_SLOT`
-* `SENTRY_DSN`
+- `DENCUN_FORK_SLOT`
+- `SENTRY_DSN`
 
 # By Category
 
@@ -154,13 +152,13 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 ## Indexer
 
-| Variable                | Description           | Required | Default value       |
-| ----------------------- | --------------------- | -------- | ------------------- |
-| `BLOBSCAN_API_ENDPOINT` | Blobscan API endpoint | Yes      | (empty)             |
-| `RUST_LOG`              | Configure logger      | No       | `blob-indexer=INFO` |
-| `SENTRY_DSN_INDEXER`    | Sentry SDN            | No       | (empty)             |
-| `NETWORK_NAME`          | Automatically retrieve slot when blobs were activated | No | `mainnet` |
-| `DENCUN_FORK_SLOT`      | Custom slot when blobs are activated | No | (empty) |
+| Variable                | Description                                           | Required | Default value       |
+| ----------------------- | ----------------------------------------------------- | -------- | ------------------- |
+| `BLOBSCAN_API_ENDPOINT` | Blobscan API endpoint                                 | Yes      | (empty)             |
+| `RUST_LOG`              | Configure logger                                      | No       | `blob-indexer=INFO` |
+| `SENTRY_DSN_INDEXER`    | Sentry SDN                                            | No       | (empty)             |
+| `NETWORK_NAME`          | Automatically retrieve slot when blobs were activated | No       | `mainnet`           |
+| `DENCUN_FORK_SLOT`      | Custom slot when blobs are activated                  | No       | (empty)             |
 
 ## Telemetry
 
