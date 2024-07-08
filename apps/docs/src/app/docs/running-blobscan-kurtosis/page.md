@@ -27,7 +27,15 @@ The screenshot above displays all the services that are running now and their po
 
 For debugging or development it can be useful to clone the ethereum-package
 and run kurtosis from it
+
+```
+git clone https://github.com/ethpandaops/ethereum-package.git
+
+cd ethereum-package
 kurtosis clean -a && kurtosis run . --image-download always '{"additional_services": ["blobscan", "goomy_blob"]}'
+```
+
+This time we also included **goomy_blob**, a blob spammer.
 
 {% callout title="Kurtosis" %}
 [Installation guide](https://docs.kurtosis.com/install/)
