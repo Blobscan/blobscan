@@ -52,6 +52,7 @@ Optional (blob storages):
 - `GOOGLE_STORAGE_API_ENDPOINT`
 - `GOOGLE_STORAGE_BUCKET_NAME`
 - `POSTGRES_STORAGE_ENABLED`
+- `SWARM_DEFERRED_UPLOAD`
 - `SWARM_STORAGE_ENABLED`
 - `SWARM_BATCH_ID`
 - `BEE_ENDPOINT`
@@ -137,12 +138,13 @@ At the moment Postgres is the default storage and Blobscan won't be able to run 
 
 **Ethereum Swarm**
 
-| Variable                   | Description                | Required                        | Default value  |
-| -------------------------- | -------------------------- | ------------------------------- | -------------- |
-| `SWARM_STORAGE_ENABLED`    | Store blobs in Swarm       | No                              | `false`        |
-| `SWARM_BATCH_ID`           | Swarm address of the stamp | If `SWARM_STORAGE_ENABLED=true` | (empty)        |
-| `SWARM_STAMP_CRON_PATTERN` | Cron pattern for swarm job | No                              | `*/15 * * * *` |
-| `BEE_ENDPOINT`             | Bee endpoint               | No                              | (empty)        |
+| Variable                   | Description                                                                                        | Required                        | Default value  |
+| -------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------- | -------------- |
+| `SWARM_STORAGE_ENABLED`    | Store blobs in Swarm                                                                               | No                              | `false`        |
+| `SWARM_BATCH_ID`           | Swarm address of the stamp                                                                         | If `SWARM_STORAGE_ENABLED=true` | (empty)        |
+| `SWARM_DEFERRED_UPLOAD`    | Determines if the uploaded data should be sent to the network immediately or in a deferred fashion | No                              | false          |
+| `SWARM_STAMP_CRON_PATTERN` | Cron pattern for swarm job                                                                         | No                              | `*/15 * * * *` |
+| `BEE_ENDPOINT`             | Bee endpoint                                                                                       | No                              | (empty)        |
 
 ## Blob propagator
 
