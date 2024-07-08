@@ -35,11 +35,18 @@ export const navigation = [
     title: 'Development',
     links: [
       { title: 'Codebase overview', href: '/docs/codebase-overview' },
-      { title: 'Running locally', href: '/docs/running-locally' },
       { title: 'Indexer', href: '/docs/indexer' },
       { title: 'Clis', href: '/docs/clis' },
       { title: 'Testing', href: '/docs/testing' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
+    ],
+  },
+  {
+    title: 'Run your Blobscan instance',
+    links: [
+      { title: 'Running Blobscan locally', href: '/docs/running-blobscan-locally' },
+      { title: 'Running Blobscan in Kind', href: '/docs/running-blobscan-kind' },
+      { title: 'Running Blobscan in Kurtosis', href: '/docs/running-blobscan-kurtosis' },
     ],
   },
   {
