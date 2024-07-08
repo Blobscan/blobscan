@@ -105,7 +105,7 @@ export const env = createEnv({
         env.METRICS_ENABLED
       } traces=${env.TRACES_ENABLED} port=${
         env.BLOBSCAN_API_PORT
-      } redisUri=${maskPassword(env.REDIS_URI)} dailyStatsCron=${
+      } dailyStatsCron=${
         env.STATS_SYNCER_DAILY_CRON_PATTERN
       } overallStatsCron=${
         env.STATS_SYNCER_OVERALL_CRON_PATTERN
