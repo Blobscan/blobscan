@@ -1,5 +1,24 @@
 # @blobscan/syncers
 
+## 0.2.0
+
+### Minor Changes
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`fb9c084`](https://github.com/Blobscan/blobscan/commit/fb9c08409ff43f2be14197bf0db9f5a2d2965ee9) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added swarm stamp syncer
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`3393953`](https://github.com/Blobscan/blobscan/commit/33939533cf153b8caefff1b70c6dca5a6fe5c53b) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Refactored the stats syncer package to support general-purpose synchronization workers/queues.
+
+  Key changes include:
+
+      •	Renamed the package to syncers.
+      •	Exported each syncer directly, removing the StatsSyncer managing entity.
+
+### Patch Changes
+
+- Updated dependencies [[`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7), [`3e15dd1`](https://github.com/Blobscan/blobscan/commit/3e15dd1bc074cde951aedf307fdbdb668bcc081b), [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735), [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae), [`cd96277`](https://github.com/Blobscan/blobscan/commit/cd96277acf3a2e25f6ca1332fc66283cfd95f673), [`363a5aa`](https://github.com/Blobscan/blobscan/commit/363a5aae45e087b8938325a472e2c1c1dcfde42d), [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae), [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84), [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a)]:
+  - @blobscan/db@0.8.0
+  - @blobscan/logger@0.1.1
+
 ## 0.1.9
 
 ### Patch Changes

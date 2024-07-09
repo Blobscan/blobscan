@@ -1,5 +1,28 @@
 # @blobscan/rest-api-server
 
+## 0.4.0
+
+### Minor Changes
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`e74971f`](https://github.com/Blobscan/blobscan/commit/e74971f8cf198d33d62b41451d3dc096e66070ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added Swarm stamp syncer
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`3393953`](https://github.com/Blobscan/blobscan/commit/33939533cf153b8caefff1b70c6dca5a6fe5c53b) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Refactored the stats syncer package to support general-purpose synchronization workers/queues.
+
+  Key changes include:
+
+      •	Renamed the package to syncers.
+      •	Exported each syncer directly, removing the StatsSyncer managing entity.
+
+### Patch Changes
+
+- [#412](https://github.com/Blobscan/blobscan/pull/412) [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Replaced local environment variables with the `@blobscan/env` package
+
+- Updated dependencies [[`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7), [`fb9c084`](https://github.com/Blobscan/blobscan/commit/fb9c08409ff43f2be14197bf0db9f5a2d2965ee9), [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735), [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae), [`89d80a8`](https://github.com/Blobscan/blobscan/commit/89d80a83257659074c6e3da2e4dfb0f87842a5b8), [`3393953`](https://github.com/Blobscan/blobscan/commit/33939533cf153b8caefff1b70c6dca5a6fe5c53b), [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84), [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a)]:
+  - @blobscan/api@0.10.0
+  - @blobscan/syncers@0.2.0
+  - @blobscan/open-telemetry@0.0.8
+  - @blobscan/logger@0.1.1
+
 ## 0.3.9
 
 ### Patch Changes
