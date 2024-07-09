@@ -1,4 +1,5 @@
 import { Bee } from "@ethersphere/bee-js";
+import { env } from "@blobscan/env";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
@@ -77,7 +78,7 @@ export class SwarmStorage extends BlobStorage {
       this.getBlobFilePath(versionedHash),
       {
         contentType: "text/plain",
-        deferred: false,
+        deferred: env.SWARM_DEFERRED_UPLOAD,
       }
     );
 
