@@ -1,5 +1,14 @@
 # @blobscan/open-telemetry
 
+## 0.0.8
+
+### Patch Changes
+
+- [#412](https://github.com/Blobscan/blobscan/pull/412) [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Replaced local environment variables with the `@blobscan/env` package
+
+- Updated dependencies [[`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735)]:
+  - @blobscan/logger@0.1.1
+
 ## 0.0.7
 
 ### Patch Changes

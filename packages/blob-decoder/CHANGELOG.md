@@ -1,5 +1,13 @@
 # @blobscan/blob-decoder
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735)]:
+  - @blobscan/open-telemetry@0.0.8
+  - @blobscan/logger@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

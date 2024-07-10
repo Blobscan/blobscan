@@ -1,5 +1,31 @@
 # @blobscan/db
 
+## 0.8.0
+
+### Minor Changes
+
+- [#422](https://github.com/Blobscan/blobscan/pull/422) [`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced block number and timestamp columns to the transaction table, enabling faster and more efficient sorting and filtering when retrieving multiple transactions.
+
+- [#415](https://github.com/Blobscan/blobscan/pull/415) [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Dropped average blob size stat
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`363a5aa`](https://github.com/Blobscan/blobscan/commit/363a5aae45e087b8938325a472e2c1c1dcfde42d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added an updated at field to blob storages state model
+
+- [#423](https://github.com/Blobscan/blobscan/pull/423) [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced block number and timestamp fields to the `BlobsOnTransactions` model, enabling faster and more efficient sorting and filtering when retrieving multiple blobs.
+
+- [#424](https://github.com/Blobscan/blobscan/pull/424) [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added transaction index
+
+### Patch Changes
+
+- [#419](https://github.com/Blobscan/blobscan/pull/419) [`3e15dd1`](https://github.com/Blobscan/blobscan/commit/3e15dd1bc074cde951aedf307fdbdb668bcc081b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added block number index
+
+- [#420](https://github.com/Blobscan/blobscan/pull/420) [`cd96277`](https://github.com/Blobscan/blobscan/commit/cd96277acf3a2e25f6ca1332fc66283cfd95f673) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where get latest block extension function was taking into account reorged blocks as well
+
+- [#415](https://github.com/Blobscan/blobscan/pull/415) [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed an issue where the daily average max blob gas fee wasn't getting updated when running the stats aggregations
+
+- Updated dependencies [[`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735)]:
+  - @blobscan/open-telemetry@0.0.8
+  - @blobscan/logger@0.1.1
+
 ## 0.7.0
 
 ### Minor Changes
