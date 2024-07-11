@@ -93,16 +93,14 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
     transactions: rawTransactions,
   } = block;
 
-  const transactions = rawTransactions
-    .sort((a, b) => a.hash.localeCompare(b.hash))
-    .map((rawTx): SerializedBlock["transactions"][number] => {
+  const transactions = rawTransactions.map(
+    (rawTx): SerializedBlock["transactions"][number] => {
       const { hash, blobs } = rawTx;
-      const sortedBlobs = blobs.sort((a, b) => a.index - b.index);
 
       return {
         hash,
         ...serializeExpandedTransaction(rawTx),
-        blobs: sortedBlobs.map((blob) => {
+        blobs: blobs.map((blob) => {
           const { index, blobHash, blob: blobData } = blob;
 
           return {
@@ -112,7 +110,8 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
           };
         }),
       };
-    });
+    }
+  );
 
   return {
     hash,

@@ -37,7 +37,13 @@ export function createBlockSelect(expands: Expands) {
               },
             },
           },
+          orderBy: {
+            index: "asc",
+          },
         },
+      },
+      orderBy: {
+        index: "asc",
       },
     },
   });

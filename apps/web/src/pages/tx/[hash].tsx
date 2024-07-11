@@ -43,6 +43,7 @@ const Tx: NextPage = () => {
     return deserializeFullTransaction(rawTxData);
   }, [rawTxData]);
 
+  console.log(tx);
   if (error) {
     return (
       <NextError
@@ -92,6 +93,10 @@ const Tx: NextPage = () => {
             {formatTimestamp(block.timestamp)}
           </div>
         ),
+      },
+      {
+        name: "Position In Block",
+        value: tx.index,
       },
       {
         name: "From",
