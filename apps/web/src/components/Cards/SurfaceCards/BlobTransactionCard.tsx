@@ -32,11 +32,11 @@ type BlobTransactionCardProps = Partial<{
       | "to"
       | "rollup"
       | "blockNumber"
+      | "blockTimestamp"
       | "blobGasBaseFee"
       | "blobGasMaxFee"
     >
   > & { blobsLength?: number };
-  block: Partial<Pick<DeserializedFullTransaction["block"], "timestamp">>;
   blobs: Pick<
     DeserializedFullTransaction["blobs"][number],
     "versionedHash" | "index" | "size"
@@ -57,13 +57,13 @@ const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
 };
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
-  block: { timestamp } = {},
   transaction: {
     hash,
     from,
     to,
     rollup,
     blockNumber,
+    blockTimestamp,
     blobGasBaseFee,
     blobGasMaxFee,
   } = {},
@@ -112,7 +112,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
           )}
           <div className="flex w-full flex-col items-center justify-between text-xs md:flex-row">
             <div
-              className={`w-full ${timestamp && blockNumber ? "w-2/3" : ""}`}
+              className={`w-full ${
+                blockTimestamp && blockNumber ? "w-2/3" : ""
+              }`}
             >
               <div className="flex flex-col gap-1 truncate">
                 {from && to ? (
@@ -175,14 +177,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 </div>
               </div>
             </div>
-            {!!blockNumber && !!timestamp && (
+            {!!blockNumber && !!blockTimestamp && (
               <div className="t mt-1 flex items-center gap-2 self-start md:flex-col md:justify-center md:gap-0">
                 <div className="flex gap-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Block
                   <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
                 </div>
                 <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                  {timestamp.fromNow()}
+                  {blockTimestamp.fromNow()}
                 </div>
               </div>
             )}

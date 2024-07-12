@@ -12,7 +12,6 @@ import {
   dataStorageReferencesSelect,
   rollupSchema,
   serializeBlobDataStorageReferences,
-  serializeDate,
   serializeDecimal,
   serializeRollup,
   serializedBlobDataStorageReferenceSchema,
@@ -93,8 +92,6 @@ export const serializedExpandedBlockSchema = z.object({
   blobAsCalldataGasUsed: z.string().optional(),
   blobGasPrice: z.string().optional(),
   excessBlobGas: z.string().optional(),
-  hash: z.string().optional(),
-  timestamp: z.string().optional(),
   slot: slotSchema.optional(),
 });
 
@@ -191,9 +188,7 @@ export function serializeExpandedBlock(
     blobAsCalldataGasUsed,
     blobGasUsed,
     excessBlobGas,
-    hash,
     slot,
-    timestamp,
   } = block;
   const expandedBlock: SerializedExpandedBlock = {};
 
@@ -215,16 +210,8 @@ export function serializeExpandedBlock(
     expandedBlock.excessBlobGas = serializeDecimal(excessBlobGas);
   }
 
-  if (hash) {
-    expandedBlock.hash = hash;
-  }
-
   if (slot) {
     expandedBlock.slot = slot;
-  }
-
-  if (timestamp) {
-    expandedBlock.timestamp = serializeDate(timestamp);
   }
 
   return expandedBlock;

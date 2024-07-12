@@ -84,16 +84,6 @@ export function serializeBaseTransactionFields(
     blobs,
     block,
   } = txQuery;
-  const sortedBlobs: SerializedBaseTransactionFields["blobs"] = blobs
-    .sort((a, b) => a.index - b.index)
-    .map(({ blob, blobHash, index }) => {
-      return {
-        versionedHash: blobHash,
-        index: index,
-        ...serializeExpandedBlobData(blob),
-      };
-    });
-
   const expandedBlock = serializeExpandedBlock(block);
 
   return {
@@ -107,7 +97,13 @@ export function serializeBaseTransactionFields(
     blobAsCalldataGasUsed: serializeDecimal(txQuery.blobAsCalldataGasUsed),
     maxFeePerBlobGas: serializeDecimal(txQuery.maxFeePerBlobGas),
     rollup: serializeRollup(rollup),
-    blobs: sortedBlobs,
+    blobs: blobs.map(({ blob, blobHash, index }) => {
+      return {
+        versionedHash: blobHash,
+        index: index,
+        ...serializeExpandedBlobData(blob),
+      };
+    }),
     ...(isEmptyObject(expandedBlock) ? {} : { block: expandedBlock }),
   };
 }

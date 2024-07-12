@@ -11,7 +11,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { FullTransaction } from "~/types";
+import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -31,7 +31,7 @@ const Tx: NextPage = () => {
     data: rawTxData,
     error,
     isLoading,
-  } = api.tx.getByHash.useQuery<FullTransaction>(
+  } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
     { hash, expand: "block,blob" },
     { enabled: router.isReady }
   );
@@ -43,7 +43,6 @@ const Tx: NextPage = () => {
     return deserializeFullTransaction(rawTxData);
   }, [rawTxData]);
 
-  console.log(tx);
   if (error) {
     return (
       <NextError
@@ -68,6 +67,7 @@ const Tx: NextPage = () => {
       block,
       hash,
       blockNumber,
+      blockTimestamp,
       from,
       to,
       rollup,
@@ -90,7 +90,7 @@ const Tx: NextPage = () => {
         name: "Timestamp",
         value: (
           <div className="whitespace-break-spaces">
-            {formatTimestamp(block.timestamp)}
+            {formatTimestamp(blockTimestamp)}
           </div>
         ),
       },

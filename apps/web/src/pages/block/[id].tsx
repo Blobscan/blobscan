@@ -12,7 +12,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { FullBlock } from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   BLOB_GAS_LIMIT_PER_BLOCK,
   buildBlockExternalUrl,
@@ -31,7 +31,7 @@ function performBlockQuery(router: NextRouter) {
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
 
-  return api.block.getByBlockId.useQuery<FullBlock>(
+  return api.block.getByBlockId.useQuery<BlockWithExpandedBlobsAndTransactions>(
     { id: blockNumberOrHash ?? "", expand: "transaction,blob" },
     { enabled: isReady }
   );
