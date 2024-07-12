@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-
+import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { getPaginationParams } from "~/utils/pagination";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
@@ -18,7 +18,7 @@ const Validators: NextPage = function () {
   const {data: validators, error} = api.stats.getAllValidators.useQuery();
 //   const { data: rawBlocksData, error } = api.block.getAll.useQuery({ p, ps });
   const validatorsCount = validators?.data.length;
-
+  const validatorsShow = validators?.data.slice((p - 1) * ps, p * ps);
   if (error) {
     return (
       <NextError
@@ -31,7 +31,7 @@ const Validators: NextPage = function () {
 return (
 <PaginatedListLayout
   header={`Validators ${validatorsCount ? `(${validatorsCount})` : ""}`}
-  items={validators?.data.map((validator, index) => (
+  items={validatorsShow?.map((validator, index) => (
     index === 0 ? (
       <Card key={validator.index}>
         <CardContent>
@@ -57,7 +57,7 @@ return (
                 <Typography style={{ lineHeight: '40px' }}>{validator.index}</Typography>
               </div>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#143226', fontWeight: 'bold'  }}>Balance</Typography>
               <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ parseFloat(convertWei(validator.balance)).toFixed(4)} DILL ({convertWei(validator.validator.effective_balance)} DILL)</Typography>
             </Grid>
@@ -126,7 +126,7 @@ return (
                 <Typography style={{ lineHeight: '40px' }}>{validator.index}</Typography>
               </div>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ parseFloat(convertWei(validator.balance)).toFixed(4)} DILL ({convertWei(validator.validator.effective_balance)} DILL)</Typography>
             </Grid>
             <Grid item xs={1.5}>
@@ -173,9 +173,9 @@ return (
   totalItems={validatorsCount}
   page={p}
   pageSize={ps}
-  itemSkeleton={<Card />}
+  itemSkeleton={<BlockCard />}
   emptyState="No blocks, please refresh your web page."
-/>
+  />
 );
 };
 
