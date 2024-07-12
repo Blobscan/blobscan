@@ -11,36 +11,36 @@ export type Block = GetByBlockIdOutput;
 
 export type Transaction = GetTxByHashOutput;
 
-export type TransactionWithBlock = MakeFieldRequired<
-  GetTxByHashOutput,
+export type TransactionWithExpandedBlock = MakeFieldRequired<
+  Transaction,
   "block" | "blobGasBaseFee"
 >;
 
-type TransactionBlob = Required<Transaction["blobs"][number]>;
+export type TransactionWithExpandedBlob = MakeFieldRequired<
+  Transaction,
+  "blobs"
+>;
 
-export type TransactionWithBlob = Omit<GetByBlockIdOutput, "blobs"> &
-  Required<{
-    blobs: TransactionBlob[];
-  }>;
+export type TransactionWithExpandedBlockAndBlob = MakeFieldRequired<
+  Transaction,
+  "blobs" | "block" | "blobGasBaseFee"
+>;
 
-export type FullTransaction = Omit<TransactionWithBlock, "blobs"> & {
-  blobs: TransactionBlob[];
-};
+type BlockExpandedTransactionWithExpandedBlobs = MakeFieldRequired<
+  Required<Block["transactions"][number]>,
+  "blobs"
+>;
 
-type BlockTransaction = Required<GetByBlockIdOutput["transactions"][number]>;
+export type BlockWithExpandedTransactions = MakeFieldRequired<
+  Block,
+  "transactions"
+>;
 
-type BlockTransactionBlob = Required<BlockTransaction["blobs"][number]>;
-
-type FullBlockTransaction = Omit<BlockTransaction, "blobs"> & {
-  blobs: BlockTransactionBlob[];
-};
-
-export type BlockWithTransactions = Omit<GetByBlockIdOutput, "transactions"> & {
-  transactions: BlockTransaction[];
-};
-
-export type FullBlock = Omit<GetByBlockIdOutput, "transactions"> & {
-  transactions: Required<FullBlockTransaction>[];
+export type BlockWithExpandedBlobsAndTransactions = Omit<
+  Block,
+  "transactions"
+> & {
+  transactions: BlockExpandedTransactionWithExpandedBlobs[];
 };
 
 export type Rollup = NonNullable<Transaction["rollup"]>;

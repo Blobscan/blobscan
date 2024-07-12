@@ -7,7 +7,7 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { FullTransaction } from "~/types";
+import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import { deserializeFullTransaction, formatNumber } from "~/utils";
 
 const Txs: NextPage = function () {
@@ -15,7 +15,7 @@ const Txs: NextPage = function () {
   const { p, ps } = getPaginationParams(router.query);
 
   const { data: rawTxsData, error } = api.tx.getAll.useQuery<{
-    transactions: FullTransaction[];
+    transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>({
     p,
@@ -49,12 +49,7 @@ const Txs: NextPage = function () {
         totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
       }`}
       items={transactions?.map((tx) => (
-        <BlobTransactionCard
-          key={tx.hash}
-          transaction={tx}
-          block={tx.block}
-          blobs={tx.blobs}
-        />
+        <BlobTransactionCard key={tx.hash} transaction={tx} blobs={tx.blobs} />
       ))}
       totalItems={totalTransactions}
       page={p}

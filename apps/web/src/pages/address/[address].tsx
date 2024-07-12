@@ -9,7 +9,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { FullTransaction } from "~/types";
+import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import { buildAddressExternalUrl, deserializeFullTransaction } from "~/utils";
 
 const Address: NextPage = () => {
@@ -18,7 +18,7 @@ const Address: NextPage = () => {
   const address = (router.query.address as string | undefined) ?? "";
 
   const { data: serializedAddressTxs, error } = api.tx.getAll.useQuery<{
-    transactions: FullTransaction[];
+    transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>(
     { to: address, from: address, p, ps, expand: "block,blob" },
@@ -70,15 +70,12 @@ const Address: NextPage = () => {
           addressTxsData ? `(${addressTxsData.totalTransactions})` : ""
         }`}
         items={addressTxsData?.transactions.map((tx) => {
-          const { block, blobs, ...restTx } = tx;
+          const { blobs, ...restTx } = tx;
 
           return (
             <BlobTransactionCard
               key={tx.hash}
               transaction={restTx}
-              block={{
-                timestamp: block.timestamp,
-              }}
               blobs={blobs}
             />
           );

@@ -16,7 +16,7 @@ import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { FullBlock } from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   buildBlobsRoute,
   buildBlocksRoute,
@@ -36,7 +36,10 @@ const Home: NextPage = () => {
     data: rawBlocksData,
     error: latestBlocksError,
     isLoading: latestBlocksLoading,
-  } = api.block.getAll.useQuery<{ blocks: FullBlock[]; totalBlocks: number }>({
+  } = api.block.getAll.useQuery<{
+    blocks: BlockWithExpandedBlobsAndTransactions[];
+    totalBlocks: number;
+  }>({
     p: 1,
     ps: LATEST_ITEMS_LENGTH,
     expand: "transaction,blob",
@@ -58,7 +61,12 @@ const Home: NextPage = () => {
 
     const blocks = rawBlocksData.blocks.map(deserializeFullBlock);
     const transactions = blocks
-      .flatMap((b) => b.transactions)
+      .flatMap((b) =>
+        b.transactions.map((tx) => ({
+          ...tx,
+          blockTimestamp: b.timestamp,
+        }))
+      )
       .slice(0, LATEST_ITEMS_LENGTH);
     const blobs = transactions
       .flatMap(({ blobs, ...t }) => blobs.map((b) => ({ ...b, tx: t })))
@@ -256,6 +264,7 @@ const Home: NextPage = () => {
                             to: tx.to,
                             hash: tx.hash,
                             rollup: tx.rollup,
+                            blockTimestamp: tx.blockTimestamp,
                             blobGasBaseFee: tx.blobGasBaseFee,
                             blobGasMaxFee: tx.blobGasMaxFee,
                           }}

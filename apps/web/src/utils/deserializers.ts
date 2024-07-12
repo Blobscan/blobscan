@@ -2,10 +2,10 @@ import type {
   AllOverallStats,
   Blob,
   Block,
-  FullBlock,
-  FullTransaction,
+  BlockWithExpandedBlobsAndTransactions,
+  TransactionWithExpandedBlockAndBlob,
   Transaction,
-  TransactionWithBlock,
+  TransactionWithExpandedBlock,
 } from "~/types";
 import { normalizeTimestamp } from "./date";
 
@@ -21,25 +21,21 @@ export type DeserializedFullTransaction = ReturnType<
   typeof deserializeFullTransaction
 >;
 
-function getDeserializedBlockFields(block: TransactionWithBlock["block"]) {
-  const {
-    blobAsCalldataGasUsed,
-    blobGasPrice,
-    blobGasUsed,
-    excessBlobGas,
-    timestamp,
-  } = block;
+function deserializedBlockCommonFields(
+  block: TransactionWithExpandedBlock["block"]
+) {
+  const { blobAsCalldataGasUsed, blobGasPrice, blobGasUsed, excessBlobGas } =
+    block;
 
   return {
     blobAsCalldataGasUsed: BigInt(blobAsCalldataGasUsed),
     blobGasPrice: BigInt(blobGasPrice),
     blobGasUsed: BigInt(blobGasUsed),
     excessBlobGas: BigInt(excessBlobGas),
-    timestamp: normalizeTimestamp(timestamp),
   };
 }
 
-function getDeserializedTransactionFields(
+function deserializeTransactionCommonFields(
   transaction: Pick<
     Transaction,
     | "maxFeePerBlobGas"
@@ -67,42 +63,43 @@ function getDeserializedTransactionFields(
 }
 
 export function deserializeTransaction(transaction: Transaction) {
-  const normalizedTxFields = getDeserializedTransactionFields(transaction);
-
   return {
     ...transaction,
-    ...normalizedTxFields,
+    ...deserializeTransactionCommonFields(transaction),
+    blockTimestamp: normalizeTimestamp(transaction.blockTimestamp),
   };
 }
 
 export function deserializeTransactionWithBlock(
-  transactionWithBlock: TransactionWithBlock
+  transactionWithBlock: TransactionWithExpandedBlock
 ) {
   const { block, blobGasBaseFee, ...transaction } = transactionWithBlock;
-  const normalizedTxFields = deserializeTransaction(transaction);
-  const normalizedBlockFields = getDeserializedBlockFields(block);
 
   return {
     ...transactionWithBlock,
-    ...normalizedTxFields,
+    ...transaction,
+    ...deserializeTransaction(transaction),
     blobGasBaseFee: BigInt(blobGasBaseFee),
     block: {
       ...block,
-      ...normalizedBlockFields,
+      ...deserializedBlockCommonFields(block),
     },
   };
 }
 
-export function deserializeFullTransaction(fullTransaction: FullTransaction) {
+export function deserializeFullTransaction(
+  fullTransaction: TransactionWithExpandedBlockAndBlob
+) {
   const { block, blobGasBaseFee, ...transaction } = fullTransaction;
 
   return {
     ...transaction,
-    ...getDeserializedTransactionFields(transaction),
+    ...deserializeTransactionCommonFields(transaction),
+    blockTimestamp: normalizeTimestamp(transaction.blockTimestamp),
     blobGasBaseFee: BigInt(blobGasBaseFee),
     block: {
       ...block,
-      ...getDeserializedBlockFields(block),
+      ...deserializedBlockCommonFields(block),
     },
   };
 }
@@ -110,19 +107,23 @@ export function deserializeFullTransaction(fullTransaction: FullTransaction) {
 export function deserializeBlock(block: Block) {
   return {
     ...block,
-    ...getDeserializedBlockFields(block),
+    timestamp: normalizeTimestamp(block.timestamp),
+    ...deserializedBlockCommonFields(block),
   };
 }
 
-export function deserializeFullBlock(fullBlock: FullBlock) {
+export function deserializeFullBlock(
+  fullBlock: BlockWithExpandedBlobsAndTransactions
+) {
   const { transactions, ...block } = fullBlock;
 
   return {
     ...block,
-    ...getDeserializedBlockFields(block),
+    ...deserializedBlockCommonFields(block),
+    timestamp: normalizeTimestamp(block.timestamp),
     transactions: transactions.map((tx) => ({
       ...tx,
-      ...getDeserializedTransactionFields(tx),
+      ...deserializeTransactionCommonFields(tx),
       blobGasBaseFee: BigInt(tx.blobGasBaseFee),
     })),
   };
