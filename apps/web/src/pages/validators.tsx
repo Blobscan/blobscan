@@ -59,7 +59,7 @@ return (
             </Grid>
             <Grid item xs={2}>
               <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#143226', fontWeight: 'bold'  }}>Balance</Typography>
-              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ parseFloat(convertWei(validator.balance)).toFixed(4)} ETH ({convertWei(validator.validator.effective_balance)} ETH)</Typography>
+              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ parseFloat(convertWei(validator.balance)).toFixed(4)} DILL ({convertWei(validator.validator.effective_balance)} DILL)</Typography>
             </Grid>
             <Grid item xs={1.5}>
               <Typography variant="h6" style={{ lineHeight: '60px' , display: 'flex', justifyContent: 'center', color: '#143226', fontWeight: 'bold'  }}>State</Typography>
@@ -127,7 +127,7 @@ return (
               </div>
             </Grid>
             <Grid item xs={2}>
-              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ parseFloat(convertWei(validator.balance)).toFixed(4)} ETH ({convertWei(validator.validator.effective_balance)} ETH)</Typography>
+              <Typography style={{ display: 'flex', justifyContent: 'center', lineHeight: '40px' }}>{ parseFloat(convertWei(validator.balance)).toFixed(4)} DILL ({convertWei(validator.validator.effective_balance)} DILL)</Typography>
             </Grid>
             <Grid item xs={1.5}>
             <div style={{ display: 'flex', justifyContent: 'center'}}>
