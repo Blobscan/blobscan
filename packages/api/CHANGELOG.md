@@ -1,5 +1,15 @@
 # @blobscan/api
 
+## 0.11.0
+
+### Minor Changes
+
+- [#441](https://github.com/Blobscan/blobscan/pull/441) [`f86465f`](https://github.com/Blobscan/blobscan/commit/f86465f88fb46150b5fbf7623a9d7242c06490c2) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed block timestamp and number from block expanded fields as all entities (transaction and blob) already this block fields
+
+### Patch Changes
+
+- [#439](https://github.com/Blobscan/blobscan/pull/439) [`28a9642`](https://github.com/Blobscan/blobscan/commit/28a96423215afdfeb89850d2ebcb17180f3ff7c4) Thanks [@PJColombo](https://github.com/PJColombo)! - Performed sorting of block's transactions and blobs directly in the db query instead of during serialization
+
 ## 0.10.0
 
 ### Minor Changes

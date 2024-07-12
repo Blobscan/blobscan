@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.13.0
+
+### Minor Changes
+
+- [#439](https://github.com/Blobscan/blobscan/pull/439) [`28a9642`](https://github.com/Blobscan/blobscan/commit/28a96423215afdfeb89850d2ebcb17180f3ff7c4) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed transaction index on transaction details page
+
+### Patch Changes
+
+- [#441](https://github.com/Blobscan/blobscan/pull/441) [`f86465f`](https://github.com/Blobscan/blobscan/commit/f86465f88fb46150b5fbf7623a9d7242c06490c2) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where blob transaction card wasn't displaying block timestamp correctly
+
+- Updated dependencies [[`f86465f`](https://github.com/Blobscan/blobscan/commit/f86465f88fb46150b5fbf7623a9d7242c06490c2), [`28a9642`](https://github.com/Blobscan/blobscan/commit/28a96423215afdfeb89850d2ebcb17180f3ff7c4)]:
+  - @blobscan/api@0.11.0
+
 ## 0.12.0
 
 ### Minor Changes
