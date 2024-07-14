@@ -61,7 +61,7 @@
 
 - [#374](https://github.com/Blobscan/blobscan/pull/374) [`04d6061`](https://github.com/Blobscan/blobscan/commit/04d60618542bb66fc64645829c191f2379bbd2ab) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup and blob storage icons to blob card
 
-- [#374](https://github.com/Blobscan/blobscan/pull/374) [`bc2572f`](https://github.com/Blobscan/blobscan/commit/bc2572f4a020dd5c374c96d9998212017ca4dd98) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for automatically choosing the most suitable target unit on ether unit displays
+- [#374](https://github.com/Blobscan/blobscan/pull/374) [`bc2572f`](https://github.com/Blobscan/blobscan/commit/bc2572f4a020dd5c374c96d9998212017ca4dd98) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for automatically choosing the most suitable target unit on DILL unit displays
 
 - [#374](https://github.com/Blobscan/blobscan/pull/374) [`e7c7bbe`](https://github.com/Blobscan/blobscan/commit/e7c7bbe3d126affba027a71008883a1e2d640f78) Thanks [@PJColombo](https://github.com/PJColombo)! - Added sliding items animation to latest blobs, blocks and transactions section in homepage
 

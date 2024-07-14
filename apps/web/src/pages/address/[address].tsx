@@ -42,10 +42,10 @@ const Address: NextPage = () => {
     { enabled: router.isReady }
   );
   console.log(balanceData);
-  // const balance = balanceData ? convertWei(balanceData.balance.toString(), "ether") : null;
-  // const balance = balanceData ? formatWei(balanceData.balance, {toUnit: "ether"}) : null;
+  // const balance = balanceData ? convertWei(balanceData.balance.toString(), "DILL") : null;
+  // const balance = balanceData ? formatWei(balanceData.balance, {toUnit: "DILL"}) : null;
   const rawBalance = balanceData ? balanceData.balance : null;
-  const balance = rawBalance === BigInt(-1) ? "Loading..." : rawBalance ? formatWei(rawBalance, {toUnit: "ether"}) : "0 ether";
+  const balance = rawBalance === BigInt(-1) ? "Loading..." : rawBalance ? formatWei(rawBalance, {toUnit: "DILL"}) : "0 DILL";
 
   if (error) {
     return (

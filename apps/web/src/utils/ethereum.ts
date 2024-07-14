@@ -7,7 +7,7 @@ export const TARGET_BLOBS_PER_BLOCK = TARGET_BLOB_GAS_PER_BLOCK / GAS_PER_BLOB;
 export const BLOB_GAS_LIMIT_PER_BLOCK = 67_108_864;
 export const MAX_BLOBS_PER_BLOCK = BLOB_GAS_LIMIT_PER_BLOCK / GAS_PER_BLOB;
 
-export type EtherUnit = "wei" | "Gwei" | "ether";
+export type EtherUnit = "wei" | "Gwei" | "DILL";
 
 export type FormatWeiOptions = {
   toUnit: EtherUnit;
@@ -55,7 +55,7 @@ export function convertWei(
       return weiAmount_;
     case "Gwei":
       return formatWithDecimal(weiAmount_, 9);
-    case "ether":
+    case "DILL":
       return formatWithDecimal(weiAmount_, 18);
   }
 }

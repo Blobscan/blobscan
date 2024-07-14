@@ -3,7 +3,7 @@ import type { FC } from "react";
 import { formatWei } from "~/utils";
 import type { EtherUnit } from "~/utils";
 
-const ETHER_UNITS: EtherUnit[] = ["wei", "Gwei", "ether"];
+const ETHER_UNITS: EtherUnit[] = ["wei", "Gwei", "DILL"];
 const DEFAULT_UNIT_SCALE_FACTOR = 7;
 
 type EtherUnitDisplayProps = {

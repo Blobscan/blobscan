@@ -4,6 +4,6 @@ export const StandardEtherUnitDisplay: React.FC<{
   amount: bigint | number;
 }> = function ({ amount }) {
   return (
-    <EtherUnitDisplay amount={amount} toUnit="ether" alternateUnit="Gwei" />
+    <EtherUnitDisplay amount={amount} toUnit="DILL" alternateUnit="Gwei" />
   );
 };
