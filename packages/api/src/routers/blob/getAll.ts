@@ -55,10 +55,14 @@ export const getAll = publicProcedure
             slot: filters.blockSlot,
             transactionForks: filters.blockType,
           },
-          transaction: {
-            rollup: filters.transactionRollup,
-            OR: filters.transactionAddresses,
-          },
+          transaction:
+            filters.transactionRollup !== undefined ||
+            filters.transactionAddresses
+              ? {
+                  rollup: filters.transactionRollup,
+                  OR: filters.transactionAddresses,
+                }
+              : undefined,
         },
         orderBy: [
           { blockNumber: filters.sort },
