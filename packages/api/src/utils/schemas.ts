@@ -27,6 +27,7 @@ const zodRollupEnums = [
   "zksync",
   "mode",
   "zora",
+  "null",
 ] as const;
 
 /**
@@ -72,10 +73,7 @@ export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 export const rollupSchema = z
   .string()
   .refine((value) => {
-    const isNull = value === null;
-    const isRollupEnum = zodRollupEnums.includes(value as ZodRollupEnum);
-
-    return isNull || isRollupEnum;
+    return zodRollupEnums.includes(value as ZodRollupEnum);
   })
   .transform((value) => value as ZodRollupEnum);
 
