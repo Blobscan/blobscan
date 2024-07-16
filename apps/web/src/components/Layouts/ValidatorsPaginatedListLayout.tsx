@@ -72,6 +72,7 @@ export const ValidatorsPaginatedListLayout: FC<ValidatorsPaginatedListLayoutProp
           ...router.query,
           p: newPage,
           ps: pageSize,
+          pubkey: '',
         },
       }),
     [pageSize, router]
@@ -83,8 +84,10 @@ export const ValidatorsPaginatedListLayout: FC<ValidatorsPaginatedListLayoutProp
     e.preventDefault();
     //获取搜索框的值
     const pubkey = searchRef.current?.querySelector<HTMLInputElement>('#search')?.value;
-    console.log('pubkey:', pubkey);
-    // void router.push(getRouteBySearchCategory(category, results[0].id));
+    if (searchRef.current) {
+      searchRef.current.value = '';
+    }
+    // console.log('pubkey:', pubkey);
     void router.push({
       pathname: router.pathname,
       query: {
