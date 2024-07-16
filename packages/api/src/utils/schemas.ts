@@ -27,7 +27,6 @@ const zodRollupEnums = [
   "zksync",
   "mode",
   "zora",
-  "null",
 ] as const;
 
 /**
@@ -76,6 +75,13 @@ export const rollupSchema = z
     return zodRollupEnums.includes(value as ZodRollupEnum);
   })
   .transform((value) => value as ZodRollupEnum);
+
+export const nullableRollupSchema = z
+  .string()
+  .refine((value) => {
+    return value === "null" || zodRollupEnums.includes(value as ZodRollupEnum);
+  })
+  .transform((value) => value as ZodRollupEnum | "null");
 
 export const blockNumberSchema = z.number().nonnegative();
 
