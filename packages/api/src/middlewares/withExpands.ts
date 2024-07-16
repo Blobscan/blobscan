@@ -30,6 +30,7 @@ const expandedTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   gasPrice: true,
   maxFeePerBlobGas: true,
   rollup: true,
+  index: true,
 });
 
 const expandedBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
@@ -102,6 +103,7 @@ export const serializedExpandedBlobSchema = z.object({
   dataStorageReferences: z
     .array(serializedBlobDataStorageReferenceSchema)
     .optional(),
+  index: z.number().nonnegative().optional(),
 });
 
 export const serializedExpandedBlobDataSchema = z
@@ -117,6 +119,7 @@ export const serializedExpandedTransactionSchema = z
     maxFeePerBlobGas: z.string().optional(),
     blobAsCalldataGasUsed: z.string().optional(),
     rollup: rollupSchema.nullable().optional(),
+    index: z.number().nonnegative().optional(),
   })
   .merge(
     z.object({
@@ -230,6 +233,7 @@ export function serializeExpandedTransaction(
     blobGasBaseFee,
     blobGasMaxFee,
     blobGasUsed,
+    index,
   } = transaction;
   const expandedTransaction: SerializedExpandedTransaction = {};
 
@@ -270,6 +274,10 @@ export function serializeExpandedTransaction(
   if (blobAsCalldataGasFee) {
     expandedTransaction.blobAsCalldataGasFee =
       serializeDecimal(blobAsCalldataGasFee);
+  }
+
+  if (index !== undefined && index !== null) {
+    expandedTransaction.index = index;
   }
 
   return expandedTransaction;

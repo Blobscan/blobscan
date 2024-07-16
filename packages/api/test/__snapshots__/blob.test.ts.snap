@@ -94,6 +94,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "from": "address2",
+      "index": 0,
       "maxFeePerBlobGas": "100",
       "to": "address4",
     },
@@ -128,6 +129,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "from": "address5",
+      "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "optimism",
       "to": "address4",
@@ -161,6 +163,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "from": "address2",
+      "index": 0,
       "maxFeePerBlobGas": "100",
       "to": "address4",
     },
@@ -188,6 +191,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "from": "address5",
+      "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "optimism",
       "to": "address4",

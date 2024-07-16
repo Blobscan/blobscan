@@ -35,7 +35,6 @@ export const serializedBlockSchema = z.object({
         blobs: z.array(
           z
             .object({
-              index: z.number(),
               versionedHash: z.string(),
               dataStorageReferences: z.array(
                 serializedBlobDataStorageReferenceSchema
@@ -44,16 +43,7 @@ export const serializedBlockSchema = z.object({
             .merge(serializedExpandedBlobDataSchema)
         ),
       })
-      .merge(
-        serializedExpandedTransactionSchema.merge(
-          z.object({
-            blobAsCalldataGasFee: z.string().optional(),
-            blobGasBaseFee: z.string().optional(),
-            blobGasMaxFee: z.string().optional(),
-            blobGasUsed: z.string().optional(),
-          })
-        )
-      )
+      .merge(serializedExpandedTransactionSchema)
   ),
 });
 
@@ -73,7 +63,7 @@ export type QueriedBlock = Pick<
   transactions: ({
     hash: string;
     blobs: {
-      index: number;
+      index?: number;
       blobHash: string;
       blob: ExpandedBlobData;
     }[];
@@ -101,11 +91,11 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
         hash,
         ...serializeExpandedTransaction(rawTx),
         blobs: blobs.map((blob) => {
-          const { index, blobHash, blob: blobData } = blob;
+          const { blobHash, index, blob: blobData } = blob;
 
           return {
-            index,
             versionedHash: blobHash,
+            ...(index !== undefined ? { index } : {}),
             ...serializeExpandedBlobData(blobData),
           };
         }),
