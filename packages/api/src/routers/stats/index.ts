@@ -8,6 +8,7 @@ import { getTransactionDailyStats } from "./getTransactionDailyStats";
 import { getTransactionOverallStats } from "./getTransactionOverallStats";
 import { getBalance } from "./getBalance";
 import { getAllValidators } from "./getValidators"
+import { getTransaction } from "./getTransaction";
 
 export const statsRouter = t.router({
   getAllOverallStats,
@@ -19,4 +20,5 @@ export const statsRouter = t.router({
   getTransactionOverallStats,
   getBalance,
   getAllValidators,
+  getTransaction,
 });

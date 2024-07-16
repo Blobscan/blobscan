@@ -19,6 +19,7 @@ import {
   formatTimestamp,
   formatBytes,
   formatNumber,
+  formatWei,
   deserializeFullTransaction,
 } from "~/utils";
 
@@ -55,6 +56,12 @@ const Tx: NextPage = () => {
     return <div>Transaction not found</div>;
   }
 
+  const { data: transactionDetail } = api.stats.getTransaction.useQuery(
+    { hash },
+    { enabled: router.isReady }
+  );
+  console.log(transactionDetail);
+
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (tx) {
@@ -73,6 +80,9 @@ const Tx: NextPage = () => {
       blobGasMaxFee,
     } = tx;
 
+    const gasPrice = transactionDetail?.data? BigInt(transactionDetail.data.gasPrice) : BigInt(0);
+    const gasUsed = transactionDetail?.data? BigInt(transactionDetail.data.gas) : BigInt(0);
+    const transactionFee = gasPrice * gasUsed;
     detailsFields = [
       {
         name: "Hash",
@@ -98,6 +108,26 @@ const Tx: NextPage = () => {
         name: "To",
         value: <Link href={buildAddressRoute(to)}>{to}</Link>,
       },
+      {
+        name: "Nonce",
+        value: transactionDetail? BigInt(transactionDetail.data.nonce).toString() : "refresh to load.",
+      },
+      {
+        name: "Value",
+        value: transactionDetail?.data? formatWei(BigInt(transactionDetail.data.value), {toUnit: "DILL"}) : "refresh to load.",
+      },
+      {
+        name: "Gas Price",
+        value: transactionDetail?.data? <StandardEtherUnitDisplay amount={gasPrice} /> : "refresh to load.",
+      },
+      {
+        name: "Usage by Txn",
+        value: gasUsed.toString(),
+      },
+      {
+        name: "Transaction Fee",
+        value: transactionDetail?.data? <StandardEtherUnitDisplay amount={transactionFee} /> : "refresh to load.",
+      },
     ];
 
     if (rollup) {
@@ -108,7 +138,7 @@ const Tx: NextPage = () => {
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
-    if (tx && tx.blobs.length > 0){
+    if (tx.blobs.length > 0){
       detailsFields.push(
         {
           name: "Total Blob Size",
