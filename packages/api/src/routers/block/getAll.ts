@@ -56,7 +56,8 @@ export const getAll = publicProcedure
 
           transactionForks: filters.blockType,
           transactions:
-            filters.transactionRollup || filters.transactionAddresses
+            filters.transactionRollup !== undefined ||
+            filters.transactionAddresses
               ? {
                   some: {
                     rollup: filters.transactionRollup,

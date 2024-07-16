@@ -72,12 +72,16 @@ export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 export const rollupSchema = z
   .string()
   .refine((value) => {
-    const isNull = value === null;
-    const isRollupEnum = zodRollupEnums.includes(value as ZodRollupEnum);
-
-    return isNull || isRollupEnum;
+    return zodRollupEnums.includes(value as ZodRollupEnum);
   })
   .transform((value) => value as ZodRollupEnum);
+
+export const nullableRollupSchema = z
+  .string()
+  .refine((value) => {
+    return value === "null" || zodRollupEnums.includes(value as ZodRollupEnum);
+  })
+  .transform((value) => value as ZodRollupEnum | "null");
 
 export const blockNumberSchema = z.number().nonnegative();
 

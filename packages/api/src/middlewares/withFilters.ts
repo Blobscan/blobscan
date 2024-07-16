@@ -5,7 +5,7 @@ import { t } from "../trpc-client";
 import {
   addressSchema,
   blockNumberSchema,
-  rollupSchema,
+  nullableRollupSchema,
   slotSchema,
 } from "../utils";
 
@@ -45,7 +45,7 @@ export const withSlotRangeFilterSchema = z.object({
 });
 
 export const withRollupFilterSchema = z.object({
-  rollup: rollupSchema.optional(),
+  rollup: nullableRollupSchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -141,9 +141,10 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
 
-    filters.transactionRollup = rollup?.toUpperCase() as
-      | $Enums.Rollup
-      | undefined;
+    filters.transactionRollup =
+      rollup === "null"
+        ? null
+        : (rollup?.toUpperCase() as $Enums.Rollup | undefined);
     filters.sort = sort;
   }
 
