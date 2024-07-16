@@ -19,9 +19,9 @@ const Validators: NextPage = function () {
 //   const { data: rawBlocksData, error } = api.block.getAll.useQuery({ p, ps });
   const validatorsCount = validators?.data.length;
   //筛选validator种带pubkey的数据
-  const validatorsShowable = pubkey ? validators?.data.filter((validator) => validator.validator.pubkey.includes(pubkey)) : validators?.data;
+  const validatorsShow = pubkey ? validators?.data.filter((validator) => validator.validator.pubkey.includes(pubkey)) : validators?.data.slice((p - 1) * ps, p * ps);
   //根据p和ps分页选取数据
-  const validatorsShow = validatorsShowable?.slice((p - 1) * ps, p * ps);
+  // const validatorsShow = pubkey ? validatorsShowable : validatorsShowable?.slice((p - 1) * ps, p * ps);
   if (error) {
     return (
       <NextError
@@ -177,7 +177,7 @@ return (
   page={p}
   pageSize={ps}
   itemSkeleton={<Card />}
-  emptyState="No blocks, please refresh your web page."
+  emptyState="No validators, please refresh your web page."
   />
 );
 };
