@@ -48,7 +48,7 @@ export const getAll = publicProcedure
   .query(async ({ ctx: { expands, filters, pagination, prisma } }) => {
     const [queriedBlocks, totalBlocks] = await Promise.all([
       prisma.block.findMany({
-        select: createBlockSelect(expands),
+        select: createBlockSelect(expands, filters),
         where: {
           number: filters.blockNumber,
           timestamp: filters.blockTimestamp,
@@ -100,19 +100,6 @@ export const getAll = publicProcedure
             ...derivedTxFields,
           };
         }),
-      }));
-    }
-
-    /**
-     * When rollup filter is set we need to filter out the transactions don't
-     * match manually as the query returns all the transactions in the block
-     */
-    if (filters.transactionRollup !== undefined) {
-      blocks = queriedBlocks.map((block) => ({
-        ...block,
-        transactions: block.transactions.filter(
-          (tx) => tx.rollup === filters.transactionRollup
-        ),
       }));
     }
 
