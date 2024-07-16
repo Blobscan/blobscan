@@ -98,7 +98,7 @@ export const serializedExpandedBlockSchema = z.object({
 
 export const serializedExpandedBlobSchema = z.object({
   commitment: z.string().optional(),
-  proof: z.string().nullable().optional(),
+  proof: z.string().optional(),
   size: z.number().optional(),
   dataStorageReferences: z
     .array(serializedBlobDataStorageReferenceSchema)

@@ -61,6 +61,7 @@ export const NEW_DATA = {
     {
       versionedHash: "newBlobHash001",
       commitment: "newCommitment001",
+      proof: "newProof001",
       size: 500,
       firstBlockNumber: 2001,
       insertedAt: "2023-09-01T10:00:00Z",
@@ -69,6 +70,7 @@ export const NEW_DATA = {
     {
       versionedHash: "newBlobHash002",
       commitment: "newCommitment002",
+      proof: "newProof002",
       size: 500,
       firstBlockNumber: 2002,
       insertedAt: "2023-09-01T12:00:00Z",
