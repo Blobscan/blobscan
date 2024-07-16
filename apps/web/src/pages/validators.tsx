@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { getPaginationParams } from "~/utils/pagination";
-import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { ValidatorsPaginatedListLayout } from "~/components/Layouts/ValidatorsPaginatedListLayout";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import { Card, CardContent, Grid, Typography } from '@mui/material';
@@ -15,10 +14,14 @@ import {convertWei } from "~/utils";
 const Validators: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
+  const pubkey = router.query.pubkey as string | undefined;
   const {data: validators, error} = api.stats.getAllValidators.useQuery();
 //   const { data: rawBlocksData, error } = api.block.getAll.useQuery({ p, ps });
   const validatorsCount = validators?.data.length;
-  const validatorsShow = validators?.data.slice((p - 1) * ps, p * ps);
+  //筛选validator种带pubkey的数据
+  const validatorsShowable = pubkey ? validators?.data.filter((validator) => validator.validator.pubkey.includes(pubkey)) : validators?.data;
+  //根据p和ps分页选取数据
+  const validatorsShow = validatorsShowable?.slice((p - 1) * ps, p * ps);
   if (error) {
     return (
       <NextError
@@ -29,7 +32,7 @@ const Validators: NextPage = function () {
   }
 
 return (
-<PaginatedListLayout
+<ValidatorsPaginatedListLayout
   header={`Validators ${validatorsCount ? `(${validatorsCount})` : ""}`}
   items={validatorsShow?.map((validator, index) => (
     index === 0 ? (
@@ -173,7 +176,7 @@ return (
   totalItems={validatorsCount}
   page={p}
   pageSize={ps}
-  itemSkeleton={<BlockCard />}
+  itemSkeleton={<Card />}
   emptyState="No blocks, please refresh your web page."
   />
 );
