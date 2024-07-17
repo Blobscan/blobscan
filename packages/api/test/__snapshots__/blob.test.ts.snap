@@ -16,12 +16,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -44,12 +44,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -80,12 +80,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -115,12 +115,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -149,12 +149,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -177,12 +177,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -211,12 +211,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -232,12 +232,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+        "storage": "postgres",
+        "url": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash006",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
@@ -253,12 +253,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -274,12 +274,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -295,12 +295,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -316,12 +316,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -337,12 +337,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -358,12 +358,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -379,12 +379,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -400,8 +400,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -417,8 +417,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -434,12 +434,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -455,12 +455,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -476,8 +476,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -493,12 +493,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -519,12 +519,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -540,12 +540,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -564,12 +564,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 1,
@@ -593,12 +593,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -614,8 +614,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -631,12 +631,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -657,12 +657,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -681,12 +681,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 1,
@@ -705,12 +705,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 0,
@@ -729,12 +729,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -753,12 +753,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -777,12 +777,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -801,12 +801,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -825,8 +825,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -845,12 +845,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -874,8 +874,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+        "storage": "postgres",
+        "url": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
       },
     ],
     "index": 0,
@@ -899,12 +899,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -920,12 +920,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -944,12 +944,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -968,12 +968,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -992,8 +992,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash005",
+        "storage": "postgres",
+        "url": "blobHash005",
       },
     ],
     "index": 0,
@@ -1012,12 +1012,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -1033,12 +1033,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -1054,8 +1054,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -1074,12 +1074,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1103,8 +1103,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash005",
+        "storage": "postgres",
+        "url": "blobHash005",
       },
     ],
     "index": 0,
@@ -1123,12 +1123,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -1144,12 +1144,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 0,
@@ -1165,8 +1165,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -1185,12 +1185,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1209,12 +1209,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -1230,12 +1230,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 1,
@@ -1251,12 +1251,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1272,12 +1272,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 2,
@@ -1293,8 +1293,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1310,8 +1310,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -1332,12 +1332,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1356,12 +1356,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1377,8 +1377,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1394,12 +1394,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1420,12 +1420,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1444,8 +1444,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash006",
+        "storage": "postgres",
+        "url": "blobHash006",
       },
     ],
     "index": 5,
@@ -1464,8 +1464,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash005",
+        "storage": "postgres",
+        "url": "blobHash005",
       },
     ],
     "index": 4,
@@ -1484,12 +1484,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 3,
@@ -1508,12 +1508,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1532,8 +1532,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1552,12 +1552,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1576,12 +1576,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1597,8 +1597,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1614,12 +1614,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1640,12 +1640,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1664,8 +1664,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash006",
+        "storage": "postgres",
+        "url": "blobHash006",
       },
     ],
     "index": 5,
@@ -1684,8 +1684,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash005",
+        "storage": "postgres",
+        "url": "blobHash005",
       },
     ],
     "index": 4,
@@ -1704,12 +1704,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 3,
@@ -1728,12 +1728,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1752,8 +1752,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1772,12 +1772,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1796,12 +1796,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1817,8 +1817,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1834,12 +1834,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1860,8 +1860,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1880,12 +1880,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1904,12 +1904,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1925,12 +1925,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -1946,8 +1946,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1963,12 +1963,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -1989,8 +1989,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -2009,12 +2009,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2033,12 +2033,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2054,12 +2054,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -2075,8 +2075,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -2092,12 +2092,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2118,8 +2118,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -2138,12 +2138,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2162,12 +2162,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2183,12 +2183,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash003",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
       },
     ],
     "index": 2,
@@ -2204,8 +2204,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -2221,12 +2221,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2247,12 +2247,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2268,12 +2268,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -2292,12 +2292,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 1,
@@ -2316,12 +2316,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 0,
@@ -2345,12 +2345,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2366,12 +2366,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -2390,12 +2390,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 1,
@@ -2414,12 +2414,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 0,
@@ -2438,12 +2438,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+        "storage": "postgres",
+        "url": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash006",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
@@ -2464,12 +2464,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2485,12 +2485,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -2509,12 +2509,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 1,
@@ -2533,12 +2533,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 0,
@@ -2562,12 +2562,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2583,12 +2583,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
       },
       {
-        "blobStorage": "postgres",
-        "dataReference": "blobHash004",
+        "storage": "postgres",
+        "url": "blobHash004",
       },
     ],
     "index": 2,
@@ -2612,12 +2612,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
-        "blobStorage": "postgres",
-        "dataReference": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+        "storage": "postgres",
+        "url": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash006",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
       },
     ],
     "index": 0,
@@ -2633,12 +2633,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
-        "blobStorage": "google",
-        "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+        "storage": "google",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
       },
       {
-        "blobStorage": "swarm",
-        "dataReference": "bzz://some-hash-for-blobHash001",
+        "storage": "swarm",
+        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
       },
     ],
     "index": 0,
@@ -2701,12 +2701,12 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
   "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
   "dataStorageReferences": [
     {
-      "blobStorage": "google",
-      "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+      "storage": "google",
+      "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
     },
     {
-      "blobStorage": "postgres",
-      "dataReference": "blobHash004",
+      "storage": "postgres",
+      "url": "blobHash004",
     },
   ],
   "proof": "proof004",
@@ -2755,12 +2755,12 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
   "dataStorageReferences": [
     {
-      "blobStorage": "google",
-      "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+      "storage": "google",
+      "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
     },
     {
-      "blobStorage": "postgres",
-      "dataReference": "blobHash004",
+      "storage": "postgres",
+      "url": "blobHash004",
     },
   ],
   "proof": "proof004",
