@@ -1,5 +1,15 @@
 # @blobscan/db
 
+## 0.9.0
+
+### Minor Changes
+
+- [#445](https://github.com/Blobscan/blobscan/pull/445) [`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7) Thanks [@PJColombo](https://github.com/PJColombo)! - Made `proof` field on `Blob` model mandatory
+
+### Patch Changes
+
+- [#445](https://github.com/Blobscan/blobscan/pull/445) [`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7) Thanks [@PJColombo](https://github.com/PJColombo)! - Created index for `proof` field on `Blob` model
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,5 +1,20 @@
 # @blobscan/api
 
+## 0.12.0
+
+### Minor Changes
+
+- [#444](https://github.com/Blobscan/blobscan/pull/444) [`8d27043`](https://github.com/Blobscan/blobscan/commit/8d27043ea464c34cfeef29ae996fca0ee6d2c1ab) Thanks [@PJColombo](https://github.com/PJColombo)! - Moved tx rollup, index and blob index field to expandable fields in block retrieval
+
+- [#442](https://github.com/Blobscan/blobscan/pull/442) [`634274b`](https://github.com/Blobscan/blobscan/commit/634274bd0940f081d8faa54fd68a892e450ae7ad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support to filter entities (blobs, blocks or transactions) by no rollup
+
+### Patch Changes
+
+- Updated dependencies [[`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7), [`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7)]:
+  - @blobscan/db@0.9.0
+  - @blobscan/blob-propagator@0.2.4
+  - @blobscan/blob-storage-manager@0.3.4
+
 ## 0.11.0
 
 ### Minor Changes
