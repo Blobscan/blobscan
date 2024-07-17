@@ -1,5 +1,12 @@
 # @blobscan/web
 
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [[`8d27043`](https://github.com/Blobscan/blobscan/commit/8d27043ea464c34cfeef29ae996fca0ee6d2c1ab), [`634274b`](https://github.com/Blobscan/blobscan/commit/634274bd0940f081d8faa54fd68a892e450ae7ad)]:
+  - @blobscan/api@0.12.0
+
 ## 0.13.0
 
 ### Minor Changes
