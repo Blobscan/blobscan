@@ -175,14 +175,14 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               SUM(b.blob_as_calldata_gas_used)::DECIMAL as total_blob_as_calldata_gas_used,
               SUM(b.blob_gas_used * b.blob_gas_price)::DECIMAL as total_blob_fee,
               SUM(b.blob_as_calldata_gas_used * b.blob_gas_price)::DECIMAL as total_blob_as_calldata_fee,
-              AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_used * b.blob_gas_price ELSE NULL END)::FLOAT as avg_blob_fee,
-              AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_as_calldata_gas_used * b.blob_gas_price ELSE NULL END)::FLOAT as avg_blob_as_calldata_fee,
-              AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_price ELSE NULL END)::FLOAT as avg_blob_gas_price
+              COALESCE(AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_used * b.blob_gas_price ELSE NULL END), 0)::FLOAT as avg_blob_fee,
+              COALESCE(AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_as_calldata_gas_used * b.blob_gas_price ELSE NULL END), 0)::FLOAT as avg_blob_as_calldata_fee,
+              COALESCE(AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_price ELSE NULL END), 0)::FLOAT as avg_blob_gas_price
             FROM "block" b
             LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash"
             ${whereClause} AND tf."block_hash" IS NULL
             GROUP BY "day"
-            HAVING AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_used * b.blob_gas_price ELSE NULL END) IS NOT NULL
+            -- HAVING AVG(CASE WHEN b.blob_gas_used != 0 THEN b.blob_gas_used * b.blob_gas_price ELSE NULL END) IS NOT NULL
             ON CONFLICT (day) DO UPDATE SET
               total_blocks = EXCLUDED.total_blocks,
               total_blob_gas_used = EXCLUDED.total_blob_gas_used,
@@ -217,9 +217,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 SUM(blob_as_calldata_gas_used)::DECIMAL(50,0) as total_blob_as_calldata_gas_used,
                 SUM(blob_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_fee,
                 SUM(blob_as_calldata_gas_used * blob_gas_price)::DECIMAL(50,0) as total_blob_as_calldata_fee,
-                AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_used * blob_gas_price ELSE NULL END)::FLOAT as avg_blob_fee,
-                AVG(CASE WHEN blob_gas_used != 0 THEN blob_as_calldata_gas_used * blob_gas_price ELSE NULL END)::FLOAT as avg_blob_as_calldata_fee,
-                AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_price ELSE NULL END)::FLOAT as avg_blob_gas_price,
+                COALESCE(AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_used * blob_gas_price ELSE NULL END), 0)::FLOAT as avg_blob_fee,
+                COALESCE(AVG(CASE WHEN blob_gas_used != 0 THEN blob_as_calldata_gas_used * blob_gas_price ELSE NULL END), 0)::FLOAT as avg_blob_as_calldata_fee,
+                COALESCE(AVG(CASE WHEN blob_gas_used != 0 THEN blob_gas_price ELSE NULL END), 0)::FLOAT as avg_blob_gas_price,
                 NOW() as updated_at
               FROM "block"
               ON CONFLICT (id) DO UPDATE SET
@@ -343,13 +343,13 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT(tx."hash")::INT AS total_transactions,
               COUNT(DISTINCT tx.to_id)::INT AS total_unique_receivers,
               COUNT(DISTINCT tx.from_id)::INT AS total_unique_senders,
-              AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END)::FLOAT AS avg_max_blob_gas_fee
+              COALESCE(AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END), 0)::FLOAT AS avg_max_blob_gas_fee
             FROM "transaction" tx
               JOIN "block" b ON b.hash = tx.block_hash
               LEFT JOIN "transaction_fork" tf ON tf."block_hash" = b."hash" AND tf."hash" = tx."hash"
             ${whereClause} AND tf."hash" IS NULL
             GROUP BY "day"
-            HAVING AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END) IS NOT NULL
+            -- HAVING AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END) IS NOT NULL
             ON CONFLICT ("day") DO UPDATE SET
               total_transactions = EXCLUDED.total_transactions,
               total_unique_receivers = EXCLUDED.total_unique_receivers,
@@ -373,7 +373,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               COUNT("hash")::INT AS total_transactions,
               COUNT(DISTINCT to_id)::INT AS total_unique_receivers,
               COUNT(DISTINCT from_id)::INT AS total_unique_senders,
-              AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END)::FLOAT AS avg_max_blob_gas_fee,
+              COALESCE(AVG(CASE WHEN max_fee_per_blob_gas != 0 THEN max_fee_per_blob_gas ELSE NULL END), 0)::FLOAT AS avg_max_blob_gas_fee,
               NOW() AS updated_at
             FROM "transaction"
             ON CONFLICT (id) DO UPDATE SET

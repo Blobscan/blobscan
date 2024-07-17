@@ -120,10 +120,10 @@ const Tx: NextPage = () => {
         name: "Gas Price",
         value: transactionDetail?.data? <StandardEtherUnitDisplay amount={gasPrice} /> : "refresh to load.",
       },
-      {
-        name: "Usage by Txn",
-        value: gasUsed.toString(),
-      },
+      //{
+      //  name: "Gas Usage",
+      //  value: gasUsed.toString(),
+      //},
       {
         name: "Transaction Fee",
         value: transactionDetail?.data? <StandardEtherUnitDisplay amount={transactionFee} /> : "refresh to load.",
