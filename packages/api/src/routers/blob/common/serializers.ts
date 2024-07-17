@@ -54,7 +54,7 @@ export type SerializedBlobDataStorageReference = z.infer<
 
 export const serializedBaseBlobSchema = z.object({
   commitment: z.string(),
-  proof: z.string().nullable(),
+  proof: z.string(),
   size: z.number(),
   versionedHash: z.string(),
   data: z.string().optional(),
