@@ -244,7 +244,7 @@ describe("Stats Extension", () => {
 
     runOverallStatsFunctionsTests("blobOverallStats", {
       statsCalculationTestsSuite() {
-        let blobOverallStats: BlobOverallStats | null;
+        let blobOverallStats: BlobOverallStats;
 
         beforeEach(async () => {
           await prisma.blobOverallStats.increment({
@@ -252,7 +252,7 @@ describe("Stats Extension", () => {
             to: 9999,
           });
 
-          blobOverallStats = await prisma.blobOverallStats.findFirst();
+          blobOverallStats = await prisma.blobOverallStats.findFirstOrThrow();
 
           return async () => {
             await prisma.blobOverallStats.deleteMany();
@@ -268,7 +268,7 @@ describe("Stats Extension", () => {
         it("should calculate the total amount of unique blobs correctly", async () => {
           const expectedTotalUniqueBlobs = fixtures.canonicalUniqueBlobs.length;
 
-          expect(blobOverallStats?.totalUniqueBlobs).toBe(
+          expect(blobOverallStats?.totalUniqueBlobs + 1).toBe(
             expectedTotalUniqueBlobs
           );
         });

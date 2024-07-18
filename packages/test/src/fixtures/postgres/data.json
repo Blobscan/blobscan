@@ -453,6 +453,12 @@
       "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
       "proof": "0xaf8b65d906c672d670d3d9591ede355ac4dfc2f66f5690e836018fdb8582d3055474e3de6a069d3dfb4c15aa7c7f88a6",
       "size": 128000
+    },
+    {
+      "versionedHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "commitment": "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce",
+      "proof": "0x992c686396169cb1d4b19cbd77db2b9c8a4ad702419285b1e35288c496225c43c9d17abe669bd63b858832c40321e39e",
+      "size": 128000
     }
   ],
   "addresses": [
@@ -559,6 +565,11 @@
       "blobHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
       "blobStorage": "POSTGRES",
       "dataReference": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436"
+    },
+    {
+      "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "blobStorage": "POSTGRES",
+      "dataReference": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734"
     }
   ],
   "blobDatas": [
@@ -580,7 +591,11 @@
     },
     {
       "id": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
-      "data": "0x2fba0bd756009b29dc26256c2203dd2d5d3176779560683a8c6daff73ca1c418"
+      "data": "2fba0bd756009b29dc26256c2203dd2d5d3176779560683a8c6daff73ca1c4181"
+    },
+    {
+      "id": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
+      "data": "cc4d7802def45b483ffedd310430bacf929d0160261691dd9cdecfdb6d920586991bd058e7d25020"
     }
   ],
   "blobsOnTransactions": [

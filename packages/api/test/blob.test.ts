@@ -1,6 +1,8 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { fixtures } from "@blobscan/test";
+
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
@@ -10,6 +12,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
@@ -79,6 +82,40 @@ describe("Blob router", async () => {
           id: blobHash,
         })
       ).rejects.toMatchSnapshot();
+    });
+  });
+
+  describe("getBlobDataByBlobId", () => {
+    const versionedHash =
+      "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
+    const unprefixedBlobData = fixtures.blobDatas
+      .find((d) => d.id === versionedHash)
+      ?.data.toString("hex");
+    const expectedBlobData = `0x${unprefixedBlobData}`;
+
+    it("should get data by versioned hash", async () => {
+      const result = await caller.blob.getBlobDataByBlobId({
+        id: versionedHash,
+      });
+
+      expect(result).toEqual(expectedBlobData);
+    });
+
+    it("should get data by kzg commitment", async () => {
+      const commitment =
+        "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
+
+      const result = await caller.blob.getBlobDataByBlobId({
+        id: commitment,
+      });
+
+      expect(result).toEqual(expectedBlobData);
+    });
+
+    blobIdSchemaTestsSuite(async (invalidBlobId) => {
+      await caller.blob.getBlobDataByBlobId({
+        id: invalidBlobId,
+      });
     });
   });
 });
