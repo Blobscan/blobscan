@@ -13,12 +13,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment001",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
-            "blobStorage": "swarm",
-            "dataReference": "bzz://some-hash-for-blobHash001",
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
           },
         ],
         "index": 0,
@@ -51,12 +51,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
         "index": 0,
@@ -68,12 +68,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
         "index": 1,
@@ -85,12 +85,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
         "index": 2,
@@ -199,12 +199,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment001",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
           },
           {
-            "blobStorage": "swarm",
-            "dataReference": "bzz://some-hash-for-blobHash001",
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
           },
         ],
         "index": 0,
@@ -241,12 +241,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
         "index": 0,
@@ -258,12 +258,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
         "index": 1,
@@ -275,12 +275,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "commitment": "commitment004",
         "dataStorageReferences": [
           {
-            "blobStorage": "google",
-            "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
           },
           {
-            "blobStorage": "postgres",
-            "dataReference": "blobHash004",
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
         "index": 2,
@@ -2227,12 +2227,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "commitment": "commitment001",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
         },
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash001",
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
         },
       ],
       "index": 0,
@@ -2244,8 +2244,8 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "commitment": "commitment002",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
         },
       ],
       "index": 1,
@@ -2257,12 +2257,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "commitment": "commitment003",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
         },
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash003",
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
         },
       ],
       "index": 2,
@@ -2299,12 +2299,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
         },
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash001",
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
         },
       ],
       "index": 0,
@@ -2317,8 +2317,8 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
         },
       ],
       "index": 1,
@@ -2331,12 +2331,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x2142337a5355685b119880ba35efdd6b",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
         },
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash003",
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
         },
       ],
       "index": 2,
@@ -2413,12 +2413,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
         },
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash001",
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
         },
       ],
       "index": 0,
@@ -2431,8 +2431,8 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
         },
       ],
       "index": 1,
@@ -2445,12 +2445,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "data": "0x2142337a5355685b119880ba35efdd6b",
       "dataStorageReferences": [
         {
-          "blobStorage": "google",
-          "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
         },
         {
-          "blobStorage": "swarm",
-          "dataReference": "bzz://some-hash-for-blobHash003",
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
         },
       ],
       "index": 2,

@@ -70,11 +70,11 @@ const BlobCard: FC<BlobCardProps> = ({
               </div>
               <span>·</span>
               <div className="flex flex-row gap-1">
-                {dataStorageReferences.map((ref) => (
+                {dataStorageReferences.map(({ storage, url }) => (
                   <StorageIcon
-                    key={ref.blobStorage}
-                    storage={ref.blobStorage}
-                    blobReference={ref.dataReference}
+                    key={storage}
+                    storage={storage}
+                    url={url}
                     size="md"
                   />
                 ))}

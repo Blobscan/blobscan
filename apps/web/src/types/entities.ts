@@ -46,4 +46,4 @@ export type BlockWithExpandedBlobsAndTransactions = Omit<
 export type Rollup = NonNullable<Transaction["rollup"]>;
 
 export type BlobStorage =
-  GetByBlobIdOutput["dataStorageReferences"][number]["blobStorage"];
+  GetByBlobIdOutput["dataStorageReferences"][number]["storage"];

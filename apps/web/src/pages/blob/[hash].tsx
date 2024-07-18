@@ -99,15 +99,9 @@ const Blob: NextPage = function () {
         name: "Storages",
         value: (
           <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map(
-              ({ blobStorage, dataReference }, index) => (
-                <StorageBadge
-                  key={index}
-                  storage={blobStorage}
-                  dataRef={dataReference}
-                />
-              )
-            )}
+            {blob.dataStorageReferences.map(({ storage, url }, index) => (
+              <StorageBadge key={index} storage={storage} url={url} />
+            ))}
           </div>
         ),
       });
