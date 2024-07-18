@@ -26,7 +26,8 @@
     "@trpc/server": "^10.43.2",
     "jsonwebtoken": "^9.0.0",
     "superjson": "1.9.1",
-    "trpc-openapi": "^1.2.0"
+    "trpc-openapi": "^1.2.0",
+    "viem": "^2.17.4"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2"
