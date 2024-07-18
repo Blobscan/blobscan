@@ -1,6 +1,6 @@
 import React from "react";
-import { utils } from "ethers";
 import Blockies from "react-blockies";
+import { isAddress } from "viem";
 
 const PX_RATIO = typeof devicePixelRatio === "undefined" ? 2 : devicePixelRatio;
 const BLOCKIES_SQUARES = 8; // commonly used to represent Ethereum addresses
@@ -33,7 +33,7 @@ export const EthIdenticon: React.FC<EthIdenticonProps> = ({
 }) => {
   const blockiesScale = SCALES[size] * BASE_SCALE;
 
-  return utils.isAddress(address) ? (
+  return isAddress(address) ? (
     <div
       className={`
         w-[${BLOCKIES_SQUARES * blockiesScale}px] 
