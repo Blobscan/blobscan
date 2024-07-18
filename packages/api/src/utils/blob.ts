@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { sha256 } from "viem";
 
 import { BlobStorageManagerError } from "@blobscan/blob-storage-manager";
 import type {
@@ -81,6 +82,12 @@ export function serializeDerivedTxBlobGasFields({
   return serializedFields;
 }
 
+export function buildVersionedHash(commitment: string) {
+  const hashedCommitment = sha256(commitment as `0x${string}`);
+
+  return `0x01${hashedCommitment.slice(4)}`;
+}
+
 export async function retrieveBlobData(
   blobStorageManager: BlobStorageManager,
   {
@@ -121,7 +128,7 @@ export async function retrieveBlobData(
 
   if (versionedHash) {
     blobRetrievalOps.push(() =>
-      blobStorageManager.getBlobByHash(versionedHash).then((res) => res.data)
+      blobStorageManager.getBlobByHash(versionedHash).then(({ data }) => data)
     );
   }
 
