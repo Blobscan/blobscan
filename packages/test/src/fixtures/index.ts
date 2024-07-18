@@ -16,10 +16,11 @@ export const fixtures = {
   blobs: POSTGRES_DATA.blobs,
   blobDataStorageRefs:
     POSTGRES_DATA.blobDataStorageReferences as BlobDataStorageReference[],
-  blobDatas: POSTGRES_DATA.blobDatas.map<BlobData>((blobData) => ({
-    id: blobData.id,
-    data: Buffer.from(blobData.data, "hex"),
+  blobDatas: POSTGRES_DATA.blobDatas.map<BlobData>(({ data: rawData, id }) => ({
+    id,
+    data: Buffer.from(rawData, "hex"),
   })),
+
   blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions,
   systemDate: POSTGRES_DATA.systemDate,
 
