@@ -57,7 +57,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
               },
               {
                 "storage": "postgres",
-                "url": "blobHash004",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 0,
@@ -74,7 +74,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
               },
               {
                 "storage": "postgres",
-                "url": "blobHash004",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 1,
@@ -91,7 +91,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
               },
               {
                 "storage": "postgres",
-                "url": "blobHash004",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 2,
@@ -178,7 +178,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
               },
               {
                 "storage": "postgres",
-                "url": "blobHash004",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 0,
@@ -195,7 +195,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
               },
               {
                 "storage": "postgres",
-                "url": "blobHash004",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 1,
@@ -212,7 +212,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
               },
               {
                 "storage": "postgres",
-                "url": "blobHash004",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 2,
@@ -1849,7 +1849,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
             },
             {
               "storage": "postgres",
-              "url": "blobHash004",
+              "url": "http://localhost:3001/blobs/blobHash004/data",
             },
           ],
           "index": 3,
@@ -1862,7 +1862,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "dataStorageReferences": [
             {
               "storage": "postgres",
-              "url": "blobHash005",
+              "url": "http://localhost:3001/blobs/blobHash005/data",
             },
           ],
           "index": 4,
@@ -1875,7 +1875,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "dataStorageReferences": [
             {
               "storage": "postgres",
-              "url": "blobHash006",
+              "url": "http://localhost:3001/blobs/blobHash006/data",
             },
           ],
           "index": 5,
@@ -1963,7 +1963,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
             },
             {
               "storage": "postgres",
-              "url": "blobHash004",
+              "url": "http://localhost:3001/blobs/blobHash004/data",
             },
           ],
           "index": 3,
@@ -1977,7 +1977,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "dataStorageReferences": [
             {
               "storage": "postgres",
-              "url": "blobHash005",
+              "url": "http://localhost:3001/blobs/blobHash005/data",
             },
           ],
           "index": 4,
@@ -1991,7 +1991,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "dataStorageReferences": [
             {
               "storage": "postgres",
-              "url": "blobHash006",
+              "url": "http://localhost:3001/blobs/blobHash006/data",
             },
           ],
           "index": 5,
@@ -2084,7 +2084,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
             },
             {
               "storage": "postgres",
-              "url": "blobHash004",
+              "url": "http://localhost:3001/blobs/blobHash004/data",
             },
           ],
           "index": 3,
@@ -2098,7 +2098,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "dataStorageReferences": [
             {
               "storage": "postgres",
-              "url": "blobHash005",
+              "url": "http://localhost:3001/blobs/blobHash005/data",
             },
           ],
           "index": 4,
@@ -2112,7 +2112,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "dataStorageReferences": [
             {
               "storage": "postgres",
-              "url": "blobHash006",
+              "url": "http://localhost:3001/blobs/blobHash006/data",
             },
           ],
           "index": 5,

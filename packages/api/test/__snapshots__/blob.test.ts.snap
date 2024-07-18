@@ -49,7 +49,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -120,7 +120,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -182,7 +182,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -233,7 +233,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should only
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+        "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
       },
       {
         "storage": "swarm",
@@ -545,7 +545,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -569,7 +569,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 1,
@@ -662,7 +662,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -686,7 +686,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 1,
@@ -710,7 +710,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 0,
@@ -875,7 +875,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
+        "url": "http://localhost:3001/blobs/0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436/data",
       },
     ],
     "index": 0,
@@ -993,7 +993,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "blobHash005",
+        "url": "http://localhost:3001/blobs/blobHash005/data",
       },
     ],
     "index": 0,
@@ -1104,7 +1104,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "blobHash005",
+        "url": "http://localhost:3001/blobs/blobHash005/data",
       },
     ],
     "index": 0,
@@ -1445,7 +1445,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "blobHash006",
+        "url": "http://localhost:3001/blobs/blobHash006/data",
       },
     ],
     "index": 5,
@@ -1465,7 +1465,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "blobHash005",
+        "url": "http://localhost:3001/blobs/blobHash005/data",
       },
     ],
     "index": 4,
@@ -1489,7 +1489,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 3,
@@ -1665,7 +1665,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "blobHash006",
+        "url": "http://localhost:3001/blobs/blobHash006/data",
       },
     ],
     "index": 5,
@@ -1685,7 +1685,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "blobHash005",
+        "url": "http://localhost:3001/blobs/blobHash005/data",
       },
     ],
     "index": 4,
@@ -1709,7 +1709,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 3,
@@ -2273,7 +2273,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -2297,7 +2297,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 1,
@@ -2321,7 +2321,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 0,
@@ -2371,7 +2371,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -2395,7 +2395,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 1,
@@ -2419,7 +2419,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 0,
@@ -2439,7 +2439,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+        "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
       },
       {
         "storage": "swarm",
@@ -2490,7 +2490,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -2514,7 +2514,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 1,
@@ -2538,7 +2538,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 0,
@@ -2588,7 +2588,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
       },
       {
         "storage": "postgres",
-        "url": "blobHash004",
+        "url": "http://localhost:3001/blobs/blobHash004/data",
       },
     ],
     "index": 2,
@@ -2613,7 +2613,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "dataStorageReferences": [
       {
         "storage": "postgres",
-        "url": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+        "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
       },
       {
         "storage": "swarm",
@@ -2706,7 +2706,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
     },
     {
       "storage": "postgres",
-      "url": "blobHash004",
+      "url": "http://localhost:3001/blobs/blobHash004/data",
     },
   ],
   "proof": "proof004",
@@ -2760,7 +2760,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
     },
     {
       "storage": "postgres",
-      "url": "blobHash004",
+      "url": "http://localhost:3001/blobs/blobHash004/data",
     },
   ],
   "proof": "proof004",
