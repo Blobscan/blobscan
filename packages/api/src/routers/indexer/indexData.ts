@@ -168,14 +168,14 @@ export const indexData = jwtAuthedProcedure
       while (retryCount < maxRetries) {
         try {
           await prisma.$transaction(operations);
-          break; // 如果事务成功，跳出循环
+          break; // successful
         } catch (error: any) {
-          if ((error.code === 'P2010' || error.meta?.cause?.includes('40P01')) && retryCount < maxRetries) { // 如果错误是由于死锁引起的
+          if ((error.code === 'P2010' || error.meta?.cause?.includes('40P01')) && retryCount < maxRetries) { // caused by dead lock, still retry
             retryCount++;
             console.log(`Transaction failed due to deadlock, retrying (${retryCount}/${maxRetries}) after ${Math.pow(2, retryCount)} seconds...`);
-            await new Promise(resolve => setTimeout(resolve, 1000 *  Math.pow(2, retryCount))); // 等待一段时间再重试，每次重试的等待时间逐渐增加
+            await new Promise(resolve => setTimeout(resolve, 1000 *  Math.pow(2, retryCount))); // wait for some time
           } else {
-            throw error; // 如果错误不是由于死锁引起的，或者已经达到最大重试次数，抛出错误
+            throw error; // if not caused by dead lock, or after max retries, throw error
           }
         }
       }
