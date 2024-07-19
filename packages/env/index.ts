@@ -32,7 +32,7 @@ export const env = createEnv({
       BLOBSCAN_API_BASE_URL: z
         .string()
         .url()
-        .default("https://api.blobscan.com"),
+        .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
       BLOB_PROPAGATOR_ENABLED: booleanSchema.default("false"),
       BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
