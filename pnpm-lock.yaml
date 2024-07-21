@@ -245,8 +245,8 @@ importers:
         specifier: ^4.5.12
         version: 4.5.12
       '@headlessui/react':
-        specifier: ^1.7.13
-        version: 1.7.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^2.1.0
+        version: 2.1.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@headlessui/tailwindcss':
         specifier: ^0.1.3
         version: 0.1.3(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@18.19.41)(typescript@5.5.3)))
@@ -357,7 +357,7 @@ importers:
         specifier: ^8.4.21
         version: 8.4.39
       tailwindcss:
-        specifier: ^3.3.1
+        specifier: ^3.4.1
         version: 3.4.6(ts-node@10.9.2(@types/node@18.19.41)(typescript@5.5.3))
 
   clis/blob-propagation-jobs-cli:
@@ -716,7 +716,7 @@ importers:
         specifier: ^8.4.21
         version: 8.4.39
       tailwindcss:
-        specifier: ^3.3.1
+        specifier: ^3.4.1
         version: 3.4.6(ts-node@10.9.2(@types/node@18.19.41)(typescript@5.5.3))
 
   tooling/typescript: {}
@@ -1828,13 +1828,6 @@ packages:
     resolution: {integrity: sha512-AiXO/bfe9bmxBjxxtYxFAXGZvMaN5s8kO+jBHAJCON8rJoB5YS/D6X7ZNc6XQkuHNmyl4CYaMI1fJ/Gn27RGGw==}
     engines: {node: '>=6'}
     hasBin: true
-
-  '@headlessui/react@1.7.19':
-    resolution: {integrity: sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
-      react-dom: ^16 || ^17 || ^18
 
   '@headlessui/react@2.1.2':
     resolution: {integrity: sha512-Kb3hgk9gRNRcTZktBrKdHhF3xFhYkca1Rk6e1/im2ENf83dgN54orMW0uSKTXFnUpZOUFZ+wcY05LlipwgZIFQ==}
@@ -8427,13 +8420,6 @@ snapshots:
       long: 5.2.3
       protobufjs: 7.3.2
       yargs: 17.7.2
-
-  '@headlessui/react@1.7.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
-    dependencies:
-      '@tanstack/react-virtual': 3.8.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      client-only: 0.0.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
 
   '@headlessui/react@2.1.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
