@@ -11,9 +11,9 @@ The architecture of Blobscan has the following components:
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
 - A blob storage manager with support for different storage providers to keep blob data available.
-- Blobscan uses [BullMQ](https://bullmq.io/) for processing jobs in the background, such as:
-    - Update charts
-    - Upload blobs in parallel to multiple storage services
+- A Redis-based [BullMQ](https://bullmq.io/) queue for processing jobs in the background, such as:
+    - Updating data of the charts
+    - Uploading blobs in parallel to multiple storage services
 - CLI tools for managing background jobs
 
 {% quick-links %}
