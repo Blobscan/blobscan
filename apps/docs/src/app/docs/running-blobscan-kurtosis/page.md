@@ -8,7 +8,7 @@ nextjs:
 
 [Kurtosis](https://www.kurtosis.com/) is a tool for packaging and launching environments of containerized services where you want them and with one liners.
 
-There is also a [kurtosis' ethereum-package](https://github.com/ethpandaops/ethereum-package) maintained by ethpandaops, which makes it really easy to
+There is also a [Kurtosis' ethereum-package](https://github.com/ethpandaops/ethereum-package) maintained by ethpandaops, which makes it really easy to
 spin up up a local PoS Ethereum testnet with blobscan as an additional service, so you can explore blobs sent in your local network.
 
 ```bash
@@ -19,14 +19,14 @@ kurtosis clean -a && kurtosis run github.com/ethpandaops/ethereum-package --imag
 
 The screenshot above displays all the services that are running now and their port redirects:
 
-- blobscan web: http://127.0.0.1:32811
-- blobscan api: http://127.0.0.1:32810
-- postgres: 127.0.0.1:32855
+- **Web**: http://127.0.0.1:32811
+- **API**: http://127.0.0.1:32810
+- **Database**: 127.0.0.1:32855
 
 ## Development
 
 For debugging or development it can be useful to clone the ethereum-package
-and run kurtosis from it
+and run Kurtosis from it. The Blobscan service is defined in [blobscan_launcher.star](https://github.com/ethpandaops/ethereum-package/blob/main/src/blobscan/blobscan_launcher.star).
 
 ```bash
 git clone https://github.com/ethpandaops/ethereum-package.git
