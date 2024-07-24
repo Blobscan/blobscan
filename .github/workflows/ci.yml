@@ -5,8 +5,6 @@ on:
     branches:
       - next
       - master
-  push:
-    branches: ["master", "next"]
   merge_group:
 
 concurrency:
@@ -135,60 +133,3 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: Blobscan/blobscan
-
-  release_docker:
-    if: github.ref_name == 'next' || github.ref_name == 'master'
-    runs-on: ubuntu-latest
-    needs:
-      - lint
-      - typecheck
-      - build
-      - test
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set tag prefix
-        id: prefix
-        run: |
-          if [[ ${{ github.ref_name }} == 'master' ]]; then
-            echo "::set-output name=TAG_SUFFIX::stable"
-          elif [[ ${{ github.ref_name }} == 'next' ]]; then
-            echo "::set-output name=TAG_SUFFIX::latest"
-          fi
-
-      - name: Set Github ENV variables
-        shell: bash
-        run: |
-          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
-          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-
-      - name: Build and push (api)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          target: api
-          tags: blossomlabs/blobscan:api-${{ steps.prefix.outputs.TAG_SUFFIX }}
-          push: ${{ github.event_name != 'pull_request' }}
-          build-args: |
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}
-
-      - name: Build and push (web)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          target: web
-          tags: blossomlabs/blobscan:web-${{ steps.prefix.outputs.TAG_SUFFIX }}
-          push: ${{ github.event_name != 'pull_request' }}
-          build-args: |
-            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
-            GIT_COMMIT=${{ env.GIT_COMMIT }}

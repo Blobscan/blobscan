@@ -1,0 +1,65 @@
+name: Docker
+
+on:
+  push:
+    branches: ["master", "next"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+env:
+  FORCE_COLOR: 3
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+jobs:
+  release_docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set tag prefix
+        id: prefix
+        run: |
+          if [[ ${{ github.ref_name }} == 'master' ]]; then
+            echo "::set-output name=TAG_SUFFIX::stable"
+          elif [[ ${{ github.ref_name }} == 'next' ]]; then
+            echo "::set-output name=TAG_SUFFIX::latest"
+          fi
+
+      - name: Set Github ENV variables
+        shell: bash
+        run: |
+          echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
+          echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Build and push (api)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          target: api
+          tags: blossomlabs/blobscan:api-${{ steps.prefix.outputs.TAG_SUFFIX }}
+          push: ${{ github.event_name != 'pull_request' }}
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+
+      - name: Build and push (web)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          target: web
+          tags: blossomlabs/blobscan:web-${{ steps.prefix.outputs.TAG_SUFFIX }}
+          push: ${{ github.event_name != 'pull_request' }}
+          build-args: |
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
