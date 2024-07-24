@@ -3,14 +3,12 @@
 exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats correctly when \`Date\` objects are passed 1`] = `
 [
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,
@@ -22,14 +20,12 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > shoul
 exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats correctly when \`dayjs\` objects are passed 1`] = `
 [
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,
@@ -41,28 +37,24 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > shoul
 exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats for a period that doesn't have a starting date 1`] = `
 [
   {
-    "avgBlobSize": 1066.666666666667,
     "day": 2022-10-16T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 3,
   },
   {
-    "avgBlobSize": 1250,
     "day": 2023-05-10T00:00:00.000Z,
     "totalBlobSize": 7500n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 6,
   },
   {
-    "avgBlobSize": 1033.333333333333,
     "day": 2023-08-03T00:00:00.000Z,
     "totalBlobSize": 6200n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 2,
   },
   {
-    "avgBlobSize": 1180,
     "day": 2023-08-20T00:00:00.000Z,
     "totalBlobSize": 5900n,
     "totalBlobs": 5,
@@ -74,14 +66,12 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > shoul
 exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats for a period that doesn't have an ending date 1`] = `
 [
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,
@@ -95,42 +85,36 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > shoul
 exports[`Stats Extension > Blob model > Daily stats functions > populate > should fill in stats up to current date if no period is specified 1`] = `
 [
   {
-    "avgBlobSize": 1066.666666666667,
     "day": 2022-10-16T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 3,
   },
   {
-    "avgBlobSize": 1250,
     "day": 2023-05-10T00:00:00.000Z,
     "totalBlobSize": 7500n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 6,
   },
   {
-    "avgBlobSize": 1033.333333333333,
     "day": 2023-08-03T00:00:00.000Z,
     "totalBlobSize": 6200n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 2,
   },
   {
-    "avgBlobSize": 1180,
     "day": 2023-08-20T00:00:00.000Z,
     "totalBlobSize": 5900n,
     "totalBlobs": 5,
     "totalUniqueBlobs": 4,
   },
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,
@@ -144,14 +128,12 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > shoul
 exports[`Stats Extension > Blob model > Daily stats functions > populate > when filling in stats for a multiple days period > should do it correctly when \`YYYY-MM-DD\` dates are passed 1`] = `
 [
   {
-    "avgBlobSize": 1000,
     "day": 2023-08-28T00:00:00.000Z,
     "totalBlobSize": 4000n,
     "totalBlobs": 4,
     "totalUniqueBlobs": 1,
   },
   {
-    "avgBlobSize": 1280,
     "day": 2023-08-31T00:00:00.000Z,
     "totalBlobSize": 6400n,
     "totalBlobs": 5,
@@ -162,7 +144,6 @@ exports[`Stats Extension > Blob model > Daily stats functions > populate > when 
 
 exports[`Stats Extension > Blob model > Overall stats functions > increment > should increment stats correctly when aggregating them after the first time 1`] = `
 {
-  "avgBlobSize": 1070.833333333333,
   "id": 1,
   "totalBlobSize": 20100n,
   "totalBlobs": 18,
@@ -172,7 +153,6 @@ exports[`Stats Extension > Blob model > Overall stats functions > increment > sh
 
 exports[`Stats Extension > Blob model > Overall stats functions > increment > should insert stats correctly when aggregating them for the first time 1`] = `
 {
-  "avgBlobSize": 1158.333333333333,
   "id": 1,
   "totalBlobSize": 13900n,
   "totalBlobs": 12,
@@ -182,7 +162,6 @@ exports[`Stats Extension > Blob model > Overall stats functions > increment > sh
 
 exports[`Stats Extension > Blob model > Overall stats functions > populate > should populate stats after adding new items correctly 1`] = `
 {
-  "avgBlobSize": 1118.75,
   "id": 1,
   "totalBlobSize": 37400n,
   "totalBlobs": 34,

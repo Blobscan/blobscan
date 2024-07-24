@@ -2,23 +2,23 @@ import fs from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { env } from "@blobscan/env";
 import { testValidError } from "@blobscan/test";
 
-import { env } from "../../src/env";
 import { BlobStorageError } from "../../src/errors";
 import { FileSystemStorage } from "../../src/storages/FileSystemStorage";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, NEW_BLOB_FILE_URI } from "../fixtures";
 
 class FileSystemStorageMock extends FileSystemStorage {
   constructor() {
-    if (!env.FILE_SYSTEM_STORAGE_PATH) {
-      throw new Error("FILE_SYSTEM_STORAGE_PATH is not set");
-    }
-
     super({
       chainId: env.CHAIN_ID,
       blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
     });
+  }
+
+  healthCheck() {
+    return super.healthCheck();
   }
 
   async closeMock() {
@@ -41,33 +41,20 @@ describe("FileSystemStorage", () => {
     };
   });
 
-  it("should create a new instance correctly", () => {
-    expect(storage).toBeDefined();
-    expect(storage.chainId).toEqual(env.CHAIN_ID);
-    expect(storage.blobDirPath).toEqual(env.FILE_SYSTEM_STORAGE_PATH);
-  });
-
-  it("should return a config object if all required environment variables are set", () => {
-    const config = FileSystemStorage.getConfigFromEnv({
-      CHAIN_ID: env.CHAIN_ID,
-      FILE_SYSTEM_STORAGE_PATH: env.FILE_SYSTEM_STORAGE_PATH,
-    });
-
-    expect(config).toEqual({
-      chainId: env.CHAIN_ID,
+  it("should create storage", async () => {
+    const storage_ = await FileSystemStorageMock.create({
       blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
+      chainId: env.CHAIN_ID,
     });
+
+    expect(storage_, "Storage should exist").toBeDefined();
+    expect(storage_.chainId, "Chain ID mistmatch").toEqual(env.CHAIN_ID);
+    expect(storage_.blobDirPath, "Blob directory path mismatch").toEqual(
+      env.FILE_SYSTEM_STORAGE_PATH
+    );
   });
 
-  testValidError(
-    "should throw a valid error if the blob dir path is not set",
-    () => {
-      FileSystemStorageMock.getConfigFromEnv({});
-    },
-    BlobStorageError
-  );
-
-  it("should healthcheck correctly", async () => {
+  it("should return 'OK' if storage is healthy", async () => {
     await expect(storage.healthCheck()).resolves.not.toThrow();
   });
 
@@ -101,7 +88,7 @@ describe("FileSystemStorage", () => {
       };
     });
 
-    it("should get it correctly", async () => {
+    it("should get a blob by its reference", async () => {
       const blobUri = storage.getBlobUri(NEW_BLOB_HASH);
 
       const blob = await storage.getBlob(blobUri);
@@ -128,7 +115,7 @@ describe("FileSystemStorage", () => {
       fs.writeFileSync(blobFilePath, NEW_BLOB_DATA, { encoding: "utf-8" });
     });
 
-    it("should remove it correctly", async () => {
+    it("should remove it by its reference", async () => {
       const blobUri = storage.getBlobUri(NEW_BLOB_HASH);
 
       await storage.removeBlob(blobUri);
@@ -139,16 +126,11 @@ describe("FileSystemStorage", () => {
       ).toBeFalsy();
     });
 
-    testValidError(
-      "should throw a valid error if trying to remove a non-existent blob",
-      async () => {
-        await storage.removeBlob("missing-blob");
-      },
-      BlobStorageError,
-      {
-        checkCause: true,
-      }
-    );
+    it("should not throw an error when trying to remove a non-existent blob", async () => {
+      await expect(
+        storage.removeBlob("non-existent-blob-uri")
+      ).resolves.not.toThrow();
+    });
   });
 
   describe("when storing a blob", () => {
@@ -158,7 +140,7 @@ describe("FileSystemStorage", () => {
       }
     });
 
-    it("should store the correct blob data", async () => {
+    it("should store it", async () => {
       const blobReference = await storage.storeBlob(
         NEW_BLOB_HASH,
         NEW_BLOB_DATA
@@ -169,15 +151,15 @@ describe("FileSystemStorage", () => {
       expect(fileData).toEqual(NEW_BLOB_DATA);
     });
 
-    it("should create the correct blob file", async () => {
+    it("should return a reference", async () => {
       const blobReference = await storage.storeBlob(
         NEW_BLOB_HASH,
         NEW_BLOB_DATA
       );
 
-      const fileExists = fs.existsSync(blobReference);
+      const expectedBlobUri = storage.getBlobUri(NEW_BLOB_HASH);
 
-      expect(fileExists, "Blob file not created").toBeTruthy();
+      expect(blobReference).toEqual(expectedBlobUri);
     });
 
     it("should return the correct blob reference", async () => {

@@ -5,7 +5,7 @@
   "engines": {
     "node": ">=v18.15.0"
   },
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.4",
   "scripts": {
     "build": "turbo build",
     "changeset:release": "pnpm build && changeset publish",
@@ -19,27 +19,29 @@
     "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,md,json}\" --ignore-path .gitignore",
     "lint": "turbo lint && manypkg check",
     "lint:fix": "turbo lint:fix && manypkg fix",
-    "test": "dotenv -e .env.test -- vitest",
-    "coverage": "dotenv -e .env.test -- vitest --coverage",
-    "test:ui": "dotenv -e .env.test -- vitest --ui",
+    "test": "pnpm with-env:test vitest",
+    "coverage": "pnpm with-env:test vitest --coverage",
+    "test:ui": "pnpm with-env:test vitest --ui",
     "test:setup": "turbo test:setup",
     "test:dev": "pnpm test:setup && pnpm test",
     "type-check": "turbo type-check",
-    "stats": "pnpm -F stats-aggregation-cli start",
-    "propagator": "pnpm -F blob-propagation-jobs-cli start",
+    "stats": "pnpm with-env pnpm -F stats-aggregation-cli start",
+    "propagator": "pnpm with-env pnpm -F blob-propagation-jobs-cli start",
     "svg:format": "turbo svg:format",
-    "validate": "turbo lint type-check && manypkg check && pnpm test"
+    "validate": "turbo lint type-check && manypkg check && pnpm test",
+    "with-env": "dotenv -e .env --",
+    "with-env:test": "dotenv -e .env.test --"
   },
   "dependencies": {
-    "@blobscan/eslint-config": "^0.0.1",
-    "@blobscan/svgo-config": "^0.0.1",
-    "@blobscan/tailwind-config": "^0.0.1",
-    "@blobscan/test": "^0.0.1",
-    "@blobscan/tsconfig": "^0.0.1",
+    "@blobscan/eslint-config": "workspace:^0.0.1",
+    "@blobscan/svgo-config": "workspace:^0.0.1",
+    "@blobscan/tailwind-config": "workspace:^0.0.1",
+    "@blobscan/test": "workspace:^0.0.1",
+    "@blobscan/tsconfig": "workspace:^0.0.1",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
-    "@manypkg/cli": "^0.20.0",
+    "@manypkg/cli": "^0.21.4",
     "@next/bundle-analyzer": "^14.1.0",
     "@types/command-line-args": "^5.2.2",
     "@types/command-line-usage": "^5.0.3",
@@ -48,6 +50,7 @@
     "@vitest/coverage-v8": "^0.34.3",
     "@vitest/ui": "^0.34.1",
     "dotenv-cli": "^7.2.1",
+    "msw": "^2.3.1",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
     "ts-node": "^10.9.1",
@@ -56,5 +59,8 @@
     "typescript": "^5.2.2",
     "vitest": "^0.34.1",
     "vitest-mock-extended": "^1.2.0"
+  },
+  "manypkg": {
+    "workspaceProtocool": "require"
   }
 }

@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 
 import {
-  DailyAvgBlobSizeChart,
   DailyBlobSizeChart,
   DailyBlobsChart,
 } from "~/components/Charts/Blob/";
@@ -53,13 +52,6 @@ const BlobStats: NextPage = function () {
                   value: overallBlobStats.totalUniqueBlobs,
                 },
               },
-              {
-                name: "Average Blob Size",
-                metric: {
-                  value: overallBlobStats.avgBlobSize,
-                  type: "bytes",
-                },
-              },
             ]
           : undefined
       }
@@ -74,11 +66,6 @@ const BlobStats: NextPage = function () {
           key={1}
           days={dailyBlobStats?.days}
           blobSizes={dailyBlobStats?.totalBlobSizes}
-        />,
-        <DailyAvgBlobSizeChart
-          key={2}
-          days={dailyBlobStats?.days}
-          avgBlobSizes={dailyBlobStats?.avgBlobSizes}
         />,
       ]}
     />

@@ -1,40 +1,28 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import Skeleton from "react-loading-skeleton";
 
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
+import type { Decoder } from "@blobscan/blob-decoder";
+
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
+import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
-import { SurfaceCardBase } from "~/components/Cards/SurfaceCards/SurfaceCardBase";
 import { Dropdown } from "~/components/Dropdown";
-import { ExpandableContent } from "~/components/ExpandableContent";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
+import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
-  hexStringToUtf8,
+  isValidDecoder,
 } from "~/utils";
-
-type BlobViewMode = "Original" | "UTF-8";
-
-const BLOB_VIEW_MODES: BlobViewMode[] = ["Original", "UTF-8"];
-
-function formatBlob(blob: string, viewMode: BlobViewMode): string {
-  switch (viewMode) {
-    case "Original":
-      return blob;
-    case "UTF-8":
-      return hexStringToUtf8(blob);
-    default:
-      return blob;
-  }
-}
 
 const Blob: NextPage = function () {
   const router = useRouter();
@@ -53,19 +41,22 @@ const Blob: NextPage = function () {
   );
 
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
-    useState<BlobViewMode>("Original");
-  const [formattedData, formattedDataErr] = useMemo(() => {
-    const data = blob?.data;
-    if (!data) {
-      return [""];
+    useState<BlobViewMode>("Raw");
+  const decoder = blob?.transactions.find(
+    ({ rollup }) => rollup && isValidDecoder(rollup)
+  )?.rollup as Decoder | undefined;
+  const blobViewModes: BlobViewMode[] = [
+    ...(blob && decoder ? ["Decoded" as BlobViewMode] : []),
+    ...DEFAULT_BLOB_VIEW_MODES,
+  ];
+
+  useEffect(() => {
+    if (!decoder) {
+      return;
     }
 
-    try {
-      return [formatBlob(data, selectedBlobViewMode)];
-    } catch (err) {
-      return [, "Couldn't format blob data"];
-    }
-  }, [blob?.data, selectedBlobViewMode]);
+    setSelectedBlobViewMode("Decoded");
+  }, [decoder]);
 
   if (error) {
     return (
@@ -83,17 +74,23 @@ const Blob: NextPage = function () {
   const detailsFields: DetailsLayoutProps["fields"] = [];
 
   if (blob) {
-    detailsFields.push(
-      { name: "Versioned Hash", value: blob.versionedHash },
-      { name: "Commitment", value: blob.commitment }
-    );
+    const rollups = blob.transactions
+      .filter(({ rollup }) => !!rollup)
+      .map(({ rollup }) => rollup as Rollup);
 
-    if (blob.proof) {
+    if (rollups.length > 0) {
       detailsFields.push({
-        name: "Proof",
-        value: blob.proof,
+        name: "Rollup",
+        value: rollups.map((rollup) => (
+          <RollupBadge key={rollup} rollup={rollup} />
+        )),
       });
     }
+    detailsFields.push(
+      { name: "Versioned Hash", value: blob.versionedHash },
+      { name: "Commitment", value: blob.commitment },
+      { name: "Proof", value: blob.proof }
+    );
 
     detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
@@ -102,15 +99,9 @@ const Blob: NextPage = function () {
         name: "Storages",
         value: (
           <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map(
-              ({ blobStorage, dataReference }, index) => (
-                <StorageBadge
-                  key={index}
-                  storage={blobStorage}
-                  dataRef={dataReference}
-                />
-              )
-            )}
+            {blob.dataStorageReferences.map(({ storage, url }, index) => (
+              <StorageBadge key={index} storage={storage} url={url} />
+            ))}
           </div>
         ),
       });
@@ -120,24 +111,22 @@ const Blob: NextPage = function () {
       name: "Transactions and Blocks",
       value: (
         <div className="grid w-full grid-cols-3 gap-y-3 md:grid-cols-3">
-          {blob.transactions.map(
-            ({ hash: txHash, block: { number: blockNumber } }) => (
-              <Fragment key={`${txHash}-${blockNumber}`}>
-                <div className="col-span-2 flex gap-1 md:col-span-2">
-                  <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                    Tx{" "}
-                  </div>
-                  <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+          {blob.transactions.map(({ hash: txHash, blockNumber }) => (
+            <Fragment key={`${txHash}-${blockNumber}`}>
+              <div className="col-span-2 flex gap-1 md:col-span-2">
+                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Tx{" "}
                 </div>
-                <div className="flex gap-1">
-                  <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                    Block{" "}
-                  </div>
-                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+                <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+              </div>
+              <div className="flex gap-1">
+                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  Block{" "}
                 </div>
-              </Fragment>
-            )
-          )}
+                <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+              </div>
+            </Fragment>
+          ))}
         </div>
       ),
     });
@@ -152,37 +141,29 @@ const Blob: NextPage = function () {
       <Card
         header={
           <div className="flex items-center justify-between">
-            Data
-            <div className="flex items-center gap-2">
-              <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
-                View as:
+            <div>Blob Data</div>
+            {blob && (
+              <div className="flex items-center gap-2">
+                <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
+                  View as:
+                </div>
+                <Dropdown
+                  items={blobViewModes}
+                  selected={selectedBlobViewMode}
+                  onChange={(newViewMode) =>
+                    setSelectedBlobViewMode(newViewMode as BlobViewMode)
+                  }
+                />
               </div>
-              <Dropdown
-                items={BLOB_VIEW_MODES}
-                selected={selectedBlobViewMode}
-                onChange={(newViewMode) =>
-                  setSelectedBlobViewMode(newViewMode as BlobViewMode)
-                }
-              />
-            </div>
+            )}
           </div>
         }
       >
-        <SurfaceCardBase truncateText={false}>
-          {isLoading ? (
-            <Skeleton count={10} />
-          ) : (
-            <div className="t break-words p-3 text-left text-sm leading-7">
-              {formattedDataErr ? (
-                <span className="text-error-400">
-                  Couldn&rsquo;t format blob data.
-                </span>
-              ) : (
-                <ExpandableContent>{formattedData}</ExpandableContent>
-              )}
-            </div>
-          )}
-        </SurfaceCardBase>
+        <BlobViewer
+          data={blob?.data}
+          selectedView={selectedBlobViewMode}
+          decoder={decoder}
+        />
       </Card>
     </>
   );

@@ -1,4 +1,6 @@
-export const INPUT = {
+import type { IndexDataInput } from "../src/routers/indexer/indexData";
+
+export const INPUT: IndexDataInput = {
   block: {
     number: 2010,
     hash: "blockHash2010",
@@ -13,6 +15,7 @@ export const INPUT = {
       from: "address9",
       to: "address10",
       blockNumber: 2010,
+      index: 0,
       gasPrice: "10000",
       maxFeePerBlobGas: "1800",
     },
@@ -21,6 +24,7 @@ export const INPUT = {
       from: "address7",
       to: "address2",
       blockNumber: 2010,
+      index: 1,
       gasPrice: "3000000",
       maxFeePerBlobGas: "20000",
     },
@@ -53,7 +57,7 @@ export const INPUT = {
   ],
 };
 
-export const INPUT_WITH_DUPLICATED_BLOBS = {
+export const INPUT_WITH_DUPLICATED_BLOBS: IndexDataInput = {
   block: {
     number: 9999,
     hash: "blockHash9999",
@@ -68,6 +72,7 @@ export const INPUT_WITH_DUPLICATED_BLOBS = {
       from: "address9",
       to: "address10",
       blockNumber: 9999,
+      index: 0,
       gasPrice: "10000",
       maxFeePerBlobGas: "1800",
     },

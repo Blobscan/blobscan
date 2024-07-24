@@ -23,11 +23,19 @@ enum BlobStorage {
 enum Rollup {
   ARBITRUM @map("arbitrum")
   BASE     @map("base")
+  BLAST    @map("blast")
+  BOBA     @map("boba")
+  CAMP     @map("camp")
+  KROMA    @map("kroma")
   LINEA    @map("linea")
+  METAL    @map("metal")
   OPTIMISM @map("optimism")
+  OPTOPIA  @map("optopia")
   PARADEX  @map("paradex")
+  PGN      @map("pgn")
   SCROLL   @map("scroll")
   STARKNET @map("starknet")
+  TAIKO    @map("taiko")
   ZKSYNC   @map("zksync")
   MODE     @map("mode")
   ZORA     @map("zora")
@@ -45,10 +53,12 @@ model BlockchainSyncState {
   @@map("blockchain_sync_state")
 }
 
+//TODO: Rename to SwarmBatchStorage
 model BlobStoragesState {
-  id           Int     @id @default(autoincrement())
-  swarmDataId  String? @map("swarm_data_id")
-  swarmDataTTL Int?    @map("swarm_data_ttl")
+  id           Int      @id @default(autoincrement())
+  swarmDataId  String?  @map("swarm_data_id") // TODO: rename to batchId
+  swarmDataTTL Int?     @map("swarm_data_ttl") // TODO: rename to batchTtl
+  updatedAt    DateTime @default(now()) @map("updated_at")
 
   @@map("blob_storages_state")
 }
@@ -70,7 +80,7 @@ model Address {
 model Blob {
   versionedHash    String   @id @map("versioned_hash")
   commitment       String   @unique
-  proof            String?
+  proof            String
   size             Int
   firstBlockNumber Int?     @map("first_block_number")
   insertedAt       DateTime @default(now()) @map("inserted_at")
@@ -79,6 +89,7 @@ model Blob {
   dataStorageReferences BlobDataStorageReference[]
   transactions          BlobsOnTransactions[]
 
+  @@index([proof])
   @@index([insertedAt])
   @@map("blob")
 }
@@ -113,9 +124,11 @@ model Block {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  transactions     Transaction[]
-  transactionForks TransactionFork[]
+  blobsOnTransactions BlobsOnTransactions[]
+  transactions        Transaction[]
+  transactionForks    TransactionFork[]
 
+  @@index([number])
   @@index([insertedAt])
   @@map("block")
 }
@@ -125,6 +138,9 @@ model Transaction {
   fromId                String   @map("from_id")
   toId                  String   @map("to_id")
   blockHash             String   @map("block_hash")
+  blockNumber           Int      @map("block_number")
+  blockTimestamp        DateTime @map("block_timestamp")
+  index                 Int?
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
@@ -140,19 +156,29 @@ model Transaction {
 
   @@index([insertedAt])
   @@index([blockHash])
+  @@index([blockNumber])
+  @@index([blockNumber, index])
+  @@index([blockTimestamp])
   @@map("transaction")
 }
 
 model BlobsOnTransactions {
-  blobHash String @map("blob_hash")
-  txHash   String @map("tx_hash")
-  index    Int
+  blobHash       String   @map("blob_hash")
+  blockHash      String   @map("block_hash")
+  blockNumber    Int      @map("block_number")
+  blockTimestamp DateTime @map("block_timestamp")
+  txHash         String   @map("tx_hash")
+  index          Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
+  block       Block       @relation(fields: [blockHash], references: [hash])
   transaction Transaction @relation(fields: [txHash], references: [hash])
 
   @@id([txHash, index])
   @@index([blobHash])
+  @@index([blockHash])
+  @@index([blockNumber])
+  @@index([blockTimestamp])
   @@index([txHash])
   @@map("blobs_on_transactions")
 }
@@ -233,7 +259,6 @@ model BlobOverallStats {
   totalBlobs       Int    @map("total_blobs")
   totalUniqueBlobs Int    @map("total_unique_blobs")
   totalBlobSize    BigInt @map("total_blob_size")
-  avgBlobSize      Float  @map("avg_blob_size")
 
   updatedAt DateTime @map("updated_at")
 
@@ -245,13 +270,12 @@ model BlobDailyStats {
   totalBlobs       Int      @map("total_blobs")
   totalUniqueBlobs Int      @map("total_unique_blobs")
   totalBlobSize    BigInt   @map("total_blob_size")
-  avgBlobSize      Float    @map("avg_blob_size")
 
   @@map("blob_daily_stats")
 }
 
 // NextAuth.js Models
-// NOTE: When using postgresql, mysql or sqlserver, 
+// NOTE: When using postgresql, mysql or sqlserver,
 // uncomment the @db.Text annotations below
 // @see https://next-auth.js.org/schemas/models
 // model Account {

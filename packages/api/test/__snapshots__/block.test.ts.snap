@@ -18,12 +18,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment001",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
               },
               {
-                "blobStorage": "swarm",
-                "dataReference": "bzz://some-hash-for-blobHash001",
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
               },
             ],
             "index": 0,
@@ -52,12 +52,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment004",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
               },
               {
-                "blobStorage": "postgres",
-                "dataReference": "blobHash004",
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 0,
@@ -69,12 +69,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment004",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
               },
               {
-                "blobStorage": "postgres",
-                "dataReference": "blobHash004",
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 1,
@@ -86,12 +86,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment004",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
               },
               {
-                "blobStorage": "postgres",
-                "dataReference": "blobHash004",
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 2,
@@ -101,7 +101,6 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -131,12 +130,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment001",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
               },
               {
-                "blobStorage": "swarm",
-                "dataReference": "bzz://some-hash-for-blobHash001",
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
               },
             ],
             "index": 0,
@@ -147,6 +146,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
         ],
         "from": "address2",
         "hash": "txHash016",
+        "index": 0,
         "maxFeePerBlobGas": "100",
         "to": "address4",
       },
@@ -173,12 +173,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment004",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
               },
               {
-                "blobStorage": "postgres",
-                "dataReference": "blobHash004",
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 0,
@@ -190,12 +190,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment004",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
               },
               {
-                "blobStorage": "postgres",
-                "dataReference": "blobHash004",
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 1,
@@ -207,12 +207,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "commitment": "commitment004",
             "dataStorageReferences": [
               {
-                "blobStorage": "google",
-                "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
               },
               {
-                "blobStorage": "postgres",
-                "dataReference": "blobHash004",
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
             "index": 2,
@@ -223,6 +223,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
         ],
         "from": "address5",
         "hash": "txHash015",
+        "index": 0,
         "maxFeePerBlobGas": "100",
         "rollup": "optimism",
         "to": "address4",
@@ -252,12 +253,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
         "blobGasUsed": "131072",
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "from": "address2",
         "hash": "txHash016",
+        "index": 0,
         "maxFeePerBlobGas": "100",
         "to": "address4",
       },
@@ -281,23 +282,188 @@ exports[`Block router > getAll > when getting expanded block results > should re
         "blobGasUsed": "393216",
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash004",
           },
         ],
         "from": "address5",
         "hash": "txHash015",
+        "index": 0,
         "maxFeePerBlobGas": "100",
         "rollup": "optimism",
         "to": "address4",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Block router > getAll > when getting filtered block results > should only return the results that do not have a rollup when 'null' is provided 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash008",
+    "number": 1008,
+    "slot": 108,
+    "timestamp": "2023-08-31T16:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash016",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash006",
+    "number": 1006,
+    "slot": 106,
+    "timestamp": "2023-08-31T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+          },
+        ],
+        "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "250000",
+    "blobGasPrice": "20",
+    "blobGasUsed": "5000000",
+    "excessBlobGas": "10000",
+    "hash": "blockHash005",
+    "number": 1005,
+    "slot": 105,
+    "timestamp": "2023-08-28T10:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash013",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": "2023-08-20T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash009",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash010",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash003",
+    "number": 1003,
+    "slot": 103,
+    "timestamp": "2023-08-03T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash005",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash006",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
       },
     ],
   },
@@ -319,7 +485,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -340,20 +505,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash004",
           },
         ],
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -370,7 +531,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
@@ -396,15 +556,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
@@ -413,7 +570,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -422,16 +578,13 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -448,32 +601,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
           {
-            "index": 3,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 4,
             "versionedHash": "blobHash005",
           },
           {
-            "index": 5,
             "versionedHash": "blobHash006",
           },
         ],
         "hash": "txHash004",
-        "rollup": "base",
       },
     ],
   },
@@ -490,15 +636,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
@@ -507,19 +650,116 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash006",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to a provided rollup 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash007",
+    "number": 1007,
+    "slot": 107,
+    "timestamp": "2023-08-31T14:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash004",
+          },
+          {
+            "versionedHash": "blobHash004",
+          },
+          {
+            "versionedHash": "blobHash004",
+          },
+        ],
+        "hash": "txHash015",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "250000",
+    "blobGasPrice": "20",
+    "blobGasUsed": "5000000",
+    "excessBlobGas": "10000",
+    "hash": "blockHash005",
+    "number": 1005,
+    "slot": 105,
+    "timestamp": "2023-08-28T10:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash012",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash004",
+    "number": 1004,
+    "slot": 104,
+    "timestamp": "2023-08-20T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash007",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
       },
     ],
   },
@@ -541,12 +781,10 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
           },
         ],
         "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-        "rollup": "optimism",
       },
     ],
   },
@@ -568,25 +806,20 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash012",
-        "rollup": "optimism",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -607,27 +840,22 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash007",
-        "rollup": "optimism",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash008",
-        "rollup": "arbitrum",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash003",
           },
         ],
@@ -636,7 +864,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash003",
           },
         ],
@@ -645,12 +872,10 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash005",
           },
         ],
         "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -672,27 +897,22 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash007",
-        "rollup": "optimism",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash008",
-        "rollup": "arbitrum",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash003",
           },
         ],
@@ -701,7 +921,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash003",
           },
         ],
@@ -710,12 +929,10 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash005",
           },
         ],
         "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -732,15 +949,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
@@ -749,15 +963,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
@@ -783,50 +994,10 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash007",
-        "rollup": "optimism",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash008",
-        "rollup": "arbitrum",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash009",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash010",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash005",
-          },
-        ],
-        "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -843,155 +1014,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
         "hash": "txHash001",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash002",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-          {
-            "index": 1,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash003",
-        "rollup": "optimism",
-      },
-    ],
-  },
-]
-`;
-
-exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the rollup specified 1`] = `
-[
-  {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash007",
-    "number": 1007,
-    "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash004",
-          },
-          {
-            "index": 1,
-            "versionedHash": "blobHash004",
-          },
-          {
-            "index": 2,
-            "versionedHash": "blobHash004",
-          },
-        ],
-        "hash": "txHash015",
-        "rollup": "optimism",
-      },
-    ],
-  },
-  {
-    "blobAsCalldataGasUsed": "250000",
-    "blobGasPrice": "20",
-    "blobGasUsed": "5000000",
-    "excessBlobGas": "10000",
-    "hash": "blockHash005",
-    "number": 1005,
-    "slot": 105,
-    "timestamp": "2023-08-28T10:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-          {
-            "index": 1,
-            "versionedHash": "blobHash001",
-          },
-          {
-            "index": 2,
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash012",
-        "rollup": "optimism",
-      },
-    ],
-  },
-  {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash004",
-    "number": 1004,
-    "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash007",
-        "rollup": "optimism",
-      },
-    ],
-  },
-  {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
-    "hash": "blockHash001",
-    "number": 1001,
-    "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-          {
-            "index": 1,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1013,50 +1045,10 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash007",
-        "rollup": "optimism",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash008",
-        "rollup": "arbitrum",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash009",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash010",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash005",
-          },
-        ],
-        "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -1073,32 +1065,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
           {
-            "index": 3,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 4,
             "versionedHash": "blobHash005",
           },
           {
-            "index": 5,
             "versionedHash": "blobHash006",
           },
         ],
         "hash": "txHash004",
-        "rollup": "base",
       },
     ],
   },
@@ -1115,42 +1100,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
         "hash": "txHash001",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash002",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-          {
-            "index": 1,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1172,50 +1131,10 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash007",
-        "rollup": "optimism",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash008",
-        "rollup": "arbitrum",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash009",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash010",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash005",
-          },
-        ],
-        "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -1232,32 +1151,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
           {
-            "index": 3,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 4,
             "versionedHash": "blobHash005",
           },
           {
-            "index": 5,
             "versionedHash": "blobHash006",
           },
         ],
         "hash": "txHash004",
-        "rollup": "base",
       },
     ],
   },
@@ -1274,42 +1186,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
         "hash": "txHash001",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash002",
-      },
-      {
-        "blobs": [
-          {
-            "index": 0,
-            "versionedHash": "blobHash001",
-          },
-          {
-            "index": 1,
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1331,15 +1217,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
@@ -1348,7 +1231,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1357,16 +1239,13 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1388,15 +1267,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
@@ -1405,7 +1281,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1414,16 +1289,13 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1445,15 +1317,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash003",
           },
         ],
@@ -1462,7 +1331,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1471,16 +1339,13 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1502,7 +1367,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1523,20 +1387,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash004",
           },
         ],
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1558,7 +1418,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1579,20 +1438,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash004",
           },
         ],
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1609,7 +1464,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
@@ -1635,7 +1489,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1656,20 +1509,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash004",
           },
         ],
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1691,7 +1540,6 @@ exports[`Block router > getAll > when getting paginated block results > should d
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1712,20 +1560,16 @@ exports[`Block router > getAll > when getting paginated block results > should d
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash004",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash004",
           },
         ],
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1747,27 +1591,22 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
         ],
         "hash": "txHash007",
-        "rollup": "optimism",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash002",
           },
         ],
         "hash": "txHash008",
-        "rollup": "arbitrum",
       },
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash003",
           },
         ],
@@ -1776,7 +1615,6 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash003",
           },
         ],
@@ -1785,12 +1623,10 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash005",
           },
         ],
         "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -1807,15 +1643,12 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash002",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1824,15 +1657,12 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
-            "index": 0,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 1,
             "versionedHash": "blobHash001",
           },
           {
-            "index": 2,
             "versionedHash": "blobHash001",
           },
         ],
@@ -1857,32 +1687,25 @@ exports[`Block router > getByBlockId > should get a block by block number 1`] = 
     {
       "blobs": [
         {
-          "index": 0,
           "versionedHash": "blobHash001",
         },
         {
-          "index": 1,
           "versionedHash": "blobHash002",
         },
         {
-          "index": 2,
           "versionedHash": "blobHash003",
         },
         {
-          "index": 3,
           "versionedHash": "blobHash004",
         },
         {
-          "index": 4,
           "versionedHash": "blobHash005",
         },
         {
-          "index": 5,
           "versionedHash": "blobHash006",
         },
       ],
       "hash": "txHash004",
-      "rollup": "base",
     },
   ],
 }
@@ -1902,12 +1725,10 @@ exports[`Block router > getByBlockId > should get a block by hash 1`] = `
     {
       "blobs": [
         {
-          "index": 0,
           "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
         },
       ],
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "rollup": "optimism",
     },
   ],
 }
@@ -1927,12 +1748,10 @@ exports[`Block router > getByBlockId > should get a reorged block by block numbe
     {
       "blobs": [
         {
-          "index": 0,
           "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
         },
       ],
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "rollup": "optimism",
     },
   ],
 }
@@ -1952,7 +1771,6 @@ exports[`Block router > getByBlockId > should get the canonical block when provi
     {
       "blobs": [
         {
-          "index": 0,
           "versionedHash": "blobHash001",
         },
       ],
@@ -1979,12 +1797,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "commitment": "commitment001",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
             },
             {
-              "blobStorage": "swarm",
-              "dataReference": "bzz://some-hash-for-blobHash001",
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
             },
           ],
           "index": 0,
@@ -1996,8 +1814,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "commitment": "commitment002",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
             },
           ],
           "index": 1,
@@ -2009,12 +1827,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "commitment": "commitment003",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
             },
             {
-              "blobStorage": "swarm",
-              "dataReference": "bzz://some-hash-for-blobHash003",
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
             },
           ],
           "index": 2,
@@ -2026,12 +1844,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "commitment": "commitment004",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
             },
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash004",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash004/data",
             },
           ],
           "index": 3,
@@ -2043,8 +1861,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "commitment": "commitment005",
           "dataStorageReferences": [
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash005",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash005/data",
             },
           ],
           "index": 4,
@@ -2056,8 +1874,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "commitment": "commitment006",
           "dataStorageReferences": [
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash006",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash006/data",
             },
           ],
           "index": 5,
@@ -2067,7 +1885,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "hash": "txHash004",
-      "rollup": "base",
     },
   ],
 }
@@ -2091,12 +1908,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
             },
             {
-              "blobStorage": "swarm",
-              "dataReference": "bzz://some-hash-for-blobHash001",
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
             },
           ],
           "index": 0,
@@ -2109,8 +1926,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
             },
           ],
           "index": 1,
@@ -2123,12 +1940,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x2142337a5355685b119880ba35efdd6b",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
             },
             {
-              "blobStorage": "swarm",
-              "dataReference": "bzz://some-hash-for-blobHash003",
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
             },
           ],
           "index": 2,
@@ -2141,12 +1958,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
             },
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash004",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash004/data",
             },
           ],
           "index": 3,
@@ -2159,8 +1976,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x227c67ad87439bf6aa2c94a56a0f099a",
           "dataStorageReferences": [
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash005",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash005/data",
             },
           ],
           "index": 4,
@@ -2173,8 +1990,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x39b710067e86cf6455c65306bae869dd",
           "dataStorageReferences": [
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash006",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash006/data",
             },
           ],
           "index": 5,
@@ -2184,7 +2001,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "hash": "txHash004",
-      "rollup": "base",
     },
   ],
 }
@@ -2213,12 +2029,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash001.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
             },
             {
-              "blobStorage": "swarm",
-              "dataReference": "bzz://some-hash-for-blobHash001",
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
             },
           ],
           "index": 0,
@@ -2231,8 +2047,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash002.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
             },
           ],
           "index": 1,
@@ -2245,12 +2061,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x2142337a5355685b119880ba35efdd6b",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash003.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
             },
             {
-              "blobStorage": "swarm",
-              "dataReference": "bzz://some-hash-for-blobHash003",
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
             },
           ],
           "index": 2,
@@ -2263,12 +2079,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
           "dataStorageReferences": [
             {
-              "blobStorage": "google",
-              "dataReference": "70118930558/ob/Ha/sh/obHash004.txt",
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
             },
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash004",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash004/data",
             },
           ],
           "index": 3,
@@ -2281,8 +2097,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x227c67ad87439bf6aa2c94a56a0f099a",
           "dataStorageReferences": [
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash005",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash005/data",
             },
           ],
           "index": 4,
@@ -2295,8 +2111,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "data": "0x39b710067e86cf6455c65306bae869dd",
           "dataStorageReferences": [
             {
-              "blobStorage": "postgres",
-              "dataReference": "blobHash006",
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/blobHash006/data",
             },
           ],
           "index": 5,
@@ -2307,6 +2123,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
       ],
       "from": "address1",
       "hash": "txHash004",
+      "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "base",
       "to": "address3",
@@ -2334,32 +2151,27 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
       "blobGasUsed": "786432",
       "blobs": [
         {
-          "index": 0,
           "versionedHash": "blobHash001",
         },
         {
-          "index": 1,
           "versionedHash": "blobHash002",
         },
         {
-          "index": 2,
           "versionedHash": "blobHash003",
         },
         {
-          "index": 3,
           "versionedHash": "blobHash004",
         },
         {
-          "index": 4,
           "versionedHash": "blobHash005",
         },
         {
-          "index": 5,
           "versionedHash": "blobHash006",
         },
       ],
       "from": "address1",
       "hash": "txHash004",
+      "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "base",
       "to": "address3",

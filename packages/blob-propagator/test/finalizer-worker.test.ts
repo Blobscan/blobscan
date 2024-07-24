@@ -9,9 +9,9 @@ import type {
   BlobStorage,
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
+import { env } from "@blobscan/env";
 import { fixtures } from "@blobscan/test";
 
-import { env } from "../src/env";
 import type { Blob, BlobPropagationFinalizerJob } from "../src/types";
 import { finalizerProcessor } from "../src/worker-processors";
 
@@ -27,15 +27,9 @@ describe("Finalizer Worker", () => {
   beforeAll(async () => {
     blobStorageManager = await getBlobStorageManager();
 
-    const [tmpBlobStorage, tmpBlobStorageError] = await createStorageFromEnv(
+    const tmpBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
-
-    if (!tmpBlobStorage || tmpBlobStorageError) {
-      throw new Error(
-        `Error creating temporal blob storage: ${tmpBlobStorageError}`
-      );
-    }
 
     blobStorageManager.addStorage(tmpBlobStorage);
 

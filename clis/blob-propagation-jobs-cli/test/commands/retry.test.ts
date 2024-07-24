@@ -4,10 +4,10 @@ import IORedis from "ioredis";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { BlobPropagationWorker } from "@blobscan/blob-propagator";
+import { env } from "@blobscan/env";
 
 import { retry, retryCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
-import { env } from "../../src/env";
 import {
   processJobsManually,
   argHelpTest,

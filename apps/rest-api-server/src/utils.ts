@@ -1,4 +1,4 @@
-import type { Environment } from "./env";
+import type { Environment } from "@blobscan/env";
 
 export function getNetworkDencunForkSlot(
   networkName: Environment["NETWORK_NAME"]

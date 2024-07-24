@@ -1,5 +1,64 @@
 # @blobscan/rest-api-server
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [[`8d27043`](https://github.com/Blobscan/blobscan/commit/8d27043ea464c34cfeef29ae996fca0ee6d2c1ab), [`634274b`](https://github.com/Blobscan/blobscan/commit/634274bd0940f081d8faa54fd68a892e450ae7ad)]:
+  - @blobscan/api@0.12.0
+  - @blobscan/syncers@0.2.1
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`f86465f`](https://github.com/Blobscan/blobscan/commit/f86465f88fb46150b5fbf7623a9d7242c06490c2), [`28a9642`](https://github.com/Blobscan/blobscan/commit/28a96423215afdfeb89850d2ebcb17180f3ff7c4)]:
+  - @blobscan/api@0.11.0
+
+## 0.4.0
+
+### Minor Changes
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`e74971f`](https://github.com/Blobscan/blobscan/commit/e74971f8cf198d33d62b41451d3dc096e66070ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added Swarm stamp syncer
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`3393953`](https://github.com/Blobscan/blobscan/commit/33939533cf153b8caefff1b70c6dca5a6fe5c53b) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Refactored the stats syncer package to support general-purpose synchronization workers/queues.
+
+  Key changes include:
+
+      •	Renamed the package to syncers.
+      •	Exported each syncer directly, removing the StatsSyncer managing entity.
+
+### Patch Changes
+
+- [#412](https://github.com/Blobscan/blobscan/pull/412) [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Replaced local environment variables with the `@blobscan/env` package
+
+- Updated dependencies [[`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7), [`fb9c084`](https://github.com/Blobscan/blobscan/commit/fb9c08409ff43f2be14197bf0db9f5a2d2965ee9), [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735), [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae), [`89d80a8`](https://github.com/Blobscan/blobscan/commit/89d80a83257659074c6e3da2e4dfb0f87842a5b8), [`3393953`](https://github.com/Blobscan/blobscan/commit/33939533cf153b8caefff1b70c6dca5a6fe5c53b), [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84), [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a)]:
+  - @blobscan/api@0.10.0
+  - @blobscan/syncers@0.2.0
+  - @blobscan/open-telemetry@0.0.8
+  - @blobscan/logger@0.1.1
+
+## 0.3.9
+
+### Patch Changes
+
+- Updated dependencies [[`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c)]:
+  - @blobscan/api@0.9.0
+  - @blobscan/stats-syncer@0.1.8
+
+## 0.3.8
+
+### Patch Changes
+
+- [#395](https://github.com/Blobscan/blobscan/pull/395) [`c928ae0`](https://github.com/Blobscan/blobscan/commit/c928ae0ef914944c4dc3c27b0b7b4e725a92bcfd) Thanks [@PJColombo](https://github.com/PJColombo)! - Used custom logger
+
+- Updated dependencies [[`0a61aec`](https://github.com/Blobscan/blobscan/commit/0a61aec545fa1b3b7a44b2a7c9e9a8e8250c1362), [`b1141b1`](https://github.com/Blobscan/blobscan/commit/b1141b1ca369ee8c3d02c4cb3dd4e47ebca08120), [`72e4b96`](https://github.com/Blobscan/blobscan/commit/72e4b963e2e735156032467554e6cc3cd311097e), [`737272d`](https://github.com/Blobscan/blobscan/commit/737272d6312bd478b1662133b875b50457694f10), [`ffbb8e6`](https://github.com/Blobscan/blobscan/commit/ffbb8e6074878e30c9aa5ac8e774dbbb8060fb96), [`7bb6f49`](https://github.com/Blobscan/blobscan/commit/7bb6f4912c89d0dd436e325677c801200e32edba), [`57723f3`](https://github.com/Blobscan/blobscan/commit/57723f351f4a63a5b86558e447ee5d6fe2f947c8), [`514784a`](https://github.com/Blobscan/blobscan/commit/514784a743937dc2d1af1ed533e90fef3b3aa057), [`1cce838`](https://github.com/Blobscan/blobscan/commit/1cce8387e28488946b83c5a8a36a2e0db1d595c9), [`5ffb8ca`](https://github.com/Blobscan/blobscan/commit/5ffb8ca355bfcd02393a3b40e89b9d7a1a5a05e8), [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5)]:
+  - @blobscan/logger@0.1.0
+  - @blobscan/zod@0.1.0
+  - @blobscan/api@0.8.1
+  - @blobscan/open-telemetry@0.0.7
+  - @blobscan/stats-syncer@0.1.7
+
 ## 0.3.7
 
 ### Patch Changes

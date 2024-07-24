@@ -6,27 +6,25 @@ import GoogleIcon from "~/icons/google.svg";
 import PostgresIcon from "~/icons/postgres.svg";
 import SwarmIcon from "~/icons/swarm.svg";
 import type { BlobStorage, Size } from "~/types";
-import { buildStorageDownloadUrl, capitalize } from "~/utils";
+import { capitalize } from "~/utils";
 
 export type StorageIconProps = {
   storage: BlobStorage;
   size?: Size;
-  blobReference?: string;
+  url?: string;
 };
 
 export const StorageIcon: React.FC<StorageIconProps> = ({
   size = "md",
   storage,
-  blobReference,
+  url = "#",
 }) => {
   const commonStyles = cn({
     "h-3 w-3": size === "sm",
     "h-4 w-4": size === "md",
     "h-5 w-5": size === "lg",
   });
-  const downloadUrl = blobReference
-    ? buildStorageDownloadUrl(storage, blobReference) ?? "#"
-    : "#";
+
   let storageIcon;
 
   switch (storage) {
@@ -45,13 +43,10 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
   }
 
   return (
-    <NextLink
-      href={downloadUrl}
-      target={downloadUrl !== "#" ? "_blank" : "_self"}
-    >
+    <NextLink href={url} target={url !== "#" ? "_blank" : "_self"}>
       <div
         title={capitalize(storage)}
-        className={downloadUrl ? `hover:opacity-70` : ""}
+        className={url ? `hover:opacity-70` : ""}
       >
         {storageIcon}
       </div>

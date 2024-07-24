@@ -13,7 +13,11 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { fixtures, omitDBTimestampFields } from "@blobscan/test";
+import {
+  fixtures,
+  omitDBTimestampFields,
+  testValidError,
+} from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots";
@@ -91,9 +95,14 @@ describe("Indexer router", async () => {
             where: {
               blockHash: INPUT.block.hash,
             },
-            orderBy: {
-              hash: "asc",
-            },
+            orderBy: [
+              {
+                blockNumber: "asc",
+              },
+              {
+                index: "asc",
+              },
+            ],
           })
           .then((r) => r.map(omitDBTimestampFields));
         // const expectedBlobAsCalldataGasUsed = INPUT.transactions.map((tx) =>
@@ -117,21 +126,27 @@ describe("Indexer router", async () => {
           [
             {
               "blockHash": "blockHash2010",
-              "fromId": "address7",
-              "gasPrice": "3000000",
-              "hash": "txHash1000",
-              "maxFeePerBlobGas": "20000",
-              "rollup": null,
-              "toId": "address2",
-            },
-            {
-              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "fromId": "address9",
               "gasPrice": "10000",
               "hash": "txHash999",
+              "index": 0,
               "maxFeePerBlobGas": "1800",
               "rollup": null,
               "toId": "address10",
+            },
+            {
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
+              "fromId": "address7",
+              "gasPrice": "3000000",
+              "hash": "txHash1000",
+              "index": 1,
+              "maxFeePerBlobGas": "20000",
+              "rollup": null,
+              "toId": "address2",
             },
           ]
         `);
@@ -154,16 +169,25 @@ describe("Indexer router", async () => {
             [
               {
                 "blobHash": "blobHash1000",
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash1000",
               },
               {
                 "blobHash": "blobHash1001",
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 1,
                 "txHash": "txHash1000",
               },
               {
                 "blobHash": "blobHash999",
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash999",
               },
@@ -363,16 +387,25 @@ describe("Indexer router", async () => {
           [
             {
               "blobHash": "blobHash1000",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash1000",
             },
             {
               "blobHash": "blobHash1001",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 1,
               "txHash": "txHash1000",
             },
             {
               "blobHash": "blobHash999",
+              "blockHash": "blockHash2010",
+              "blockNumber": 2010,
+              "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash999",
             },
@@ -432,6 +465,28 @@ describe("Indexer router", async () => {
           authorizedCaller.indexer.indexData(INPUT)
         ).resolves.toBeUndefined();
       });
+
+      testValidError(
+        "should fail when receiving an empty array of transactions",
+        async () => {
+          await authorizedCaller.indexer.indexData({
+            ...INPUT,
+            transactions: [] as unknown as typeof INPUT.transactions,
+          });
+        },
+        TRPCError
+      );
+
+      testValidError(
+        "should fail when receiving an empty array of blobs",
+        async () => {
+          await authorizedCaller.indexer.indexData({
+            ...INPUT,
+            blobs: [] as unknown as typeof INPUT.blobs,
+          });
+        },
+        TRPCError
+      );
     });
 
     it("should fail when calling procedure without auth", async () => {

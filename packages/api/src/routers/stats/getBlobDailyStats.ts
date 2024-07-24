@@ -14,7 +14,6 @@ const outputSchema = z.object({
   totalBlobs: z.array(z.number()),
   totalUniqueBlobs: z.array(z.number()),
   totalBlobSizes: z.array(z.number()),
-  avgBlobSizes: z.array(z.number()),
 });
 
 type OutputSchema = z.infer<typeof outputSchema>;
@@ -51,7 +50,6 @@ export const getBlobDailyStats = publicProcedure
             transformedStats.totalBlobSizes.push(
               Number(currStats.totalBlobSize)
             );
-            transformedStats.avgBlobSizes.push(currStats.avgBlobSize);
 
             return transformedStats;
           },
@@ -60,7 +58,6 @@ export const getBlobDailyStats = publicProcedure
             totalBlobs: [],
             totalUniqueBlobs: [],
             totalBlobSizes: [],
-            avgBlobSizes: [],
           }
         )
       )

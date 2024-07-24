@@ -1,26 +1,19 @@
 import { Prisma } from "@blobscan/db";
-import type { Transaction as DBTransaction } from "@blobscan/db";
+import type {
+  Block as DBBlock,
+  Transaction as DBTransaction,
+  WithoutTimestampFields,
+} from "@blobscan/db";
 
 import type {
   Expands,
-  ExpandedBlock,
   ExpandedBlobData,
 } from "../../../middlewares/withExpands";
-import { blobReferenceSelect, blockReferenceSelect } from "../../../utils";
+import { blobReferenceSelect } from "../../../utils";
 import type { DerivedTxBlobGasFields } from "../../../utils";
 
-export type BaseTransaction = Pick<
-  DBTransaction,
-  | "blobAsCalldataGasUsed"
-  | "blockHash"
-  | "fromId"
-  | "hash"
-  | "maxFeePerBlobGas"
-  | "gasPrice"
-  | "rollup"
-  | "toId"
-> & {
-  block: ExpandedBlock & { blobGasPrice: Prisma.Decimal };
+export type BaseTransaction = WithoutTimestampFields<DBTransaction> & {
+  block: Partial<DBBlock>;
   blobs: { blob: ExpandedBlobData; index: number; blobHash: string }[];
 };
 
@@ -36,18 +29,17 @@ export const baseTransactionSelect =
     maxFeePerBlobGas: true,
     rollup: true,
     blockHash: true,
+    blockNumber: true,
+    blockTimestamp: true,
+    index: true,
   });
 
-export function createTransactionSelect({
-  expandedBlockSelect,
-  expandedBlobSelect,
-}: Expands) {
+export function createTransactionSelect(expands: Expands) {
   return Prisma.validator<Prisma.TransactionSelect>()({
     ...baseTransactionSelect,
     block: {
       select: {
-        ...blockReferenceSelect,
-        ...expandedBlockSelect,
+        ...(expands.block?.select ?? {}),
         blobGasPrice: true,
       },
     },
@@ -58,7 +50,7 @@ export function createTransactionSelect({
         blob: {
           select: {
             ...blobReferenceSelect,
-            ...expandedBlobSelect,
+            ...(expands.blob?.select ?? {}),
           },
         },
       },

@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+
 import type { BlobDataStorageReference } from "@blobscan/db";
 import { toBigIntSchema, z } from "@blobscan/zod";
 
@@ -5,6 +7,7 @@ import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {
   createDBBlobs,
+  createDBBlobsOnTransactions,
   createDBBlock,
   createDBTransactions,
 } from "./indexData.utils";
@@ -22,6 +25,7 @@ const rawTxSchema = z.object({
   hash: z.string(),
   from: z.string(),
   to: z.string(),
+  index: z.coerce.number(),
   blockNumber: z.coerce.number(),
   gasPrice: toBigIntSchema,
   maxFeePerBlobGas: toBigIntSchema,
@@ -42,13 +46,15 @@ export type RawBlob = z.infer<typeof rawBlobSchema>;
 
 export const inputSchema = z.object({
   block: rawBlockSchema,
-  transactions: z.array(rawTxSchema),
-  blobs: z.array(rawBlobSchema),
+  transactions: z.array(rawTxSchema).nonempty(),
+  blobs: z.array(rawBlobSchema).nonempty(),
 });
 
 export const outputSchema = z.void();
 
-export type IndexDataInput = z.infer<typeof inputSchema>;
+export type IndexDataInput = z.input<typeof inputSchema>;
+
+export type IndexDataFormattedInput = z.output<typeof inputSchema>;
 
 export const indexData = jwtAuthedProcedure
   .meta({
@@ -75,7 +81,14 @@ export const indexData = jwtAuthedProcedure
         ).map((versionedHash) => {
           const blob = input.blobs.find(
             (b) => b.versionedHash === versionedHash
-          )!;
+          );
+
+          if (!blob) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: `No blob found for hash ${versionedHash}`,
+            });
+          }
 
           return blob;
         });
@@ -105,6 +118,7 @@ export const indexData = jwtAuthedProcedure
       const dbTxs = createDBTransactions(input);
       const dbBlock = createDBBlock(input, dbTxs);
       const dbBlobs = createDBBlobs(input);
+      const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
 
       operations.push(
         prisma.block.upsert({
@@ -133,14 +147,7 @@ export const indexData = jwtAuthedProcedure
       }
 
       operations.push(
-        prisma.blobsOnTransactions.createMany({
-          data: input.blobs.map((blob) => ({
-            blobHash: blob.versionedHash,
-            txHash: blob.txHash,
-            index: blob.index,
-          })),
-          skipDuplicates: true,
-        })
+        prisma.blobsOnTransactions.upsertMany(dbBlobsOnTransactions)
       );
 
       // 3. Execute all database operations in a single transaction

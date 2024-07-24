@@ -14,9 +14,9 @@ import {
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import {
+  addDerivedFieldsToTransaction,
   createTransactionSelect,
   serializeTransaction,
-  addDerivedFieldsToTransaction,
   serializedTransactionSchema,
 } from "./common";
 
@@ -45,31 +45,37 @@ export const getAll = publicProcedure
   .use(withPagination)
   .output(outputSchema)
   .query(async ({ ctx }) => {
-    const { blockFilters, transactionFilters, sort } = ctx.filters;
+    const filters = ctx.filters;
 
     const [queriedTxs, txCountOrStats] = await Promise.all([
       ctx.prisma.transaction.findMany({
         select: createTransactionSelect(ctx.expands),
         where: {
-          ...transactionFilters,
-          block: blockFilters,
+          blockNumber: filters.blockNumber,
+          blockTimestamp: filters.blockTimestamp,
+          rollup: filters.transactionRollup,
+          OR: filters.transactionAddresses,
+          block: filters.blockSlot
+            ? {
+                slot: filters.blockSlot,
+              }
+            : undefined,
+          transactionForks: filters.blockType,
         },
         orderBy: [
           {
-            block: {
-              number: sort,
-            },
+            blockNumber: filters.sort,
           },
           {
-            hash: sort,
+            index: filters.sort,
           },
         ],
         ...ctx.pagination,
       }),
-      transactionFilters.rollup
+      filters.transactionRollup
         ? ctx.prisma.transaction.count({
             where: {
-              rollup: transactionFilters.rollup,
+              rollup: filters.transactionRollup,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({

@@ -16,6 +16,7 @@ import { FeedbackWidget } from "~/components/FeedbackWidget";
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
 
 function App({ Component, pageProps }: NextAppProps) {
   const { resolvedTheme } = useTheme();
@@ -50,7 +51,9 @@ function App({ Component, pageProps }: NextAppProps) {
 function AppWrapper(props: NextAppProps) {
   return (
     <ThemeProvider attribute="class">
-      <App {...props} />
+      <BlobDecoderWorkerProvider>
+        <App {...props} />
+      </BlobDecoderWorkerProvider>
     </ThemeProvider>
   );
 }

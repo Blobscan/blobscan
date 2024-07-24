@@ -14,13 +14,16 @@ import {
   serializeDerivedTxBlobGasFields,
   serializedDerivedTxBlobGasFieldsSchema,
   calculateDerivedTxBlobGasFields,
+  serializeDate,
 } from "../../../utils";
 import type { FullQueriedTransaction, BaseTransaction } from "./selects";
 
 const baseSerializedTransactionFieldsSchema = z.object({
   hash: z.string(),
   blockNumber: z.number(),
+  blockTimestamp: z.string(),
   blockHash: z.string(),
+  index: z.number().nullable(),
   from: z.string(),
   to: z.string(),
   maxFeePerBlobGas: z.string(),
@@ -69,30 +72,38 @@ export function addDerivedFieldsToTransaction(
 export function serializeBaseTransactionFields(
   txQuery: BaseTransaction
 ): SerializedBaseTransactionFields {
-  const { hash, blockHash, fromId, toId, rollup, blobs, block } = txQuery;
-  const { number } = block;
-  const sortedBlobs: SerializedBaseTransactionFields["blobs"] = blobs
-    .sort((a, b) => a.index - b.index)
-    .map(({ blob, blobHash, index }) => {
-      return {
-        versionedHash: blobHash,
-        index: index,
-        ...serializeExpandedBlobData(blob),
-      };
-    });
-
+  const {
+    hash,
+    blockHash,
+    blockNumber,
+    blockTimestamp,
+    index,
+    fromId,
+    toId,
+    rollup,
+    blobs,
+    block,
+  } = txQuery;
   const expandedBlock = serializeExpandedBlock(block);
 
   return {
     hash,
-    blockNumber: number,
+    blockNumber: blockNumber,
+    blockTimestamp: serializeDate(blockTimestamp),
     blockHash,
+    index,
     to: toId,
     from: fromId,
     blobAsCalldataGasUsed: serializeDecimal(txQuery.blobAsCalldataGasUsed),
     maxFeePerBlobGas: serializeDecimal(txQuery.maxFeePerBlobGas),
     rollup: serializeRollup(rollup),
-    blobs: sortedBlobs,
+    blobs: blobs.map(({ blob, blobHash, index }) => {
+      return {
+        versionedHash: blobHash,
+        index: index,
+        ...serializeExpandedBlobData(blob),
+      };
+    }),
     ...(isEmptyObject(expandedBlock) ? {} : { block: expandedBlock }),
   };
 }

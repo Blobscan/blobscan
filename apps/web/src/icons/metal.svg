@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 111 118">
+  <path fill="url(#metal_svg__a)" fill-rule="evenodd" d="M45.523 9.801c0-5.408 4.4-9.801 9.84-9.801s9.839 4.383 9.839 9.801v57.492c0 5.409-4.4 9.802-9.84 9.802-5.429 0-9.839-4.383-9.839-9.802zM0 9.801c0-5.418 4.41-9.8 9.84-9.8 5.44 0 9.85 4.382 9.839 9.8v88.52h47.614c5.409 0 9.802 4.399 9.802 9.839s-4.383 9.839-9.802 9.839H9.953L9.84 118l-.178-.001a9.75 9.75 0 0 1-6.7-2.791A9.75 9.75 0 0 1 0 108.091zM100.89 0c-5.44 0-9.84 4.393-9.84 9.801v57.492c0 5.42 4.41 9.802 9.84 9.802 5.439 0 9.839-4.393 9.839-9.802V9.801c0-5.418-4.4-9.801-9.839-9.801" clip-rule="evenodd"/>
+  <defs>
+    <linearGradient id="metal_svg__a" x1="0" x2="110.728" y1="59" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4400E2"/>
+      <stop offset=".422" stop-color="#F94E6C"/>
+      <stop offset="1" stop-color="#FFCB00"/>
+    </linearGradient>
+  </defs>
+</svg>

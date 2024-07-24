@@ -8,8 +8,8 @@ import { describe, expect, it } from "vitest";
 
 import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
 import type { Rollup } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
-import { env } from "../src";
 import { createTRPCContext } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersSchema } from "../src/middlewares/withFilters";
@@ -19,7 +19,7 @@ import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
 type FilterAndPagination = Omit<FiltersSchema, "rollup"> & {
-  rollup?: Lowercase<Rollup>;
+  rollup?: Lowercase<Rollup> | "null";
 } & WithPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
@@ -139,9 +139,17 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
-    it("should return the results corresponding to the rollup specified", async () => {
+    it("should return the results corresponding to a provided rollup", async () => {
       const result = await fetcher({
         rollup: "optimism",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should only return the results that do not have a rollup when 'null' is provided", async () => {
+      const result = await fetcher({
+        rollup: "null",
       });
 
       expect(result).toMatchSnapshot();

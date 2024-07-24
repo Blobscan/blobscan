@@ -5,9 +5,8 @@ import type {
 
 import { prisma } from "@blobscan/db";
 import type { MetricsClient } from "@blobscan/db";
+import { env } from "@blobscan/env";
 import { api, promRegister } from "@blobscan/open-telemetry";
-
-import { env } from "./env";
 
 const scopeName = "blobscan_api";
 

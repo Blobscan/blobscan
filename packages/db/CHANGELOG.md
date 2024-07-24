@@ -1,5 +1,67 @@
 # @blobscan/db
 
+## 0.9.0
+
+### Minor Changes
+
+- [#445](https://github.com/Blobscan/blobscan/pull/445) [`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7) Thanks [@PJColombo](https://github.com/PJColombo)! - Made `proof` field on `Blob` model mandatory
+
+### Patch Changes
+
+- [#445](https://github.com/Blobscan/blobscan/pull/445) [`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7) Thanks [@PJColombo](https://github.com/PJColombo)! - Created index for `proof` field on `Blob` model
+
+## 0.8.0
+
+### Minor Changes
+
+- [#422](https://github.com/Blobscan/blobscan/pull/422) [`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced block number and timestamp columns to the transaction table, enabling faster and more efficient sorting and filtering when retrieving multiple transactions.
+
+- [#415](https://github.com/Blobscan/blobscan/pull/415) [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Dropped average blob size stat
+
+- [#411](https://github.com/Blobscan/blobscan/pull/411) [`363a5aa`](https://github.com/Blobscan/blobscan/commit/363a5aae45e087b8938325a472e2c1c1dcfde42d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added an updated at field to blob storages state model
+
+- [#423](https://github.com/Blobscan/blobscan/pull/423) [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced block number and timestamp fields to the `BlobsOnTransactions` model, enabling faster and more efficient sorting and filtering when retrieving multiple blobs.
+
+- [#424](https://github.com/Blobscan/blobscan/pull/424) [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added transaction index
+
+### Patch Changes
+
+- [#419](https://github.com/Blobscan/blobscan/pull/419) [`3e15dd1`](https://github.com/Blobscan/blobscan/commit/3e15dd1bc074cde951aedf307fdbdb668bcc081b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added block number index
+
+- [#420](https://github.com/Blobscan/blobscan/pull/420) [`cd96277`](https://github.com/Blobscan/blobscan/commit/cd96277acf3a2e25f6ca1332fc66283cfd95f673) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where get latest block extension function was taking into account reorged blocks as well
+
+- [#415](https://github.com/Blobscan/blobscan/pull/415) [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed an issue where the daily average max blob gas fee wasn't getting updated when running the stats aggregations
+
+- Updated dependencies [[`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735)]:
+  - @blobscan/open-telemetry@0.0.8
+  - @blobscan/logger@0.1.1
+
+## 0.7.0
+
+### Minor Changes
+
+- [#409](https://github.com/Blobscan/blobscan/pull/409) [`4ff5c4d`](https://github.com/Blobscan/blobscan/commit/4ff5c4d720463fd607a32fe35466a3e0dad045f9) Thanks [@0xGabi](https://github.com/0xGabi)! - Added support for Taiko, Blast, and Optopia rollups
+
+## 0.6.0
+
+### Minor Changes
+
+- [#398](https://github.com/Blobscan/blobscan/pull/398) [`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c) Thanks [@0xGabi](https://github.com/0xGabi)! - Added sepolia new rollups
+
+## 0.5.0
+
+### Minor Changes
+
+- [#380](https://github.com/Blobscan/blobscan/pull/380) [`89df217`](https://github.com/Blobscan/blobscan/commit/89df217e817727a710a7c3217ad7be4750de93ce) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped `filterNewBlobs` method from base extension
+
+### Patch Changes
+
+- [#387](https://github.com/Blobscan/blobscan/pull/387) [`b4e8d2c`](https://github.com/Blobscan/blobscan/commit/b4e8d2cd63d4f2b307f21848c23da14acc265ab0) Thanks [@0xGabi](https://github.com/0xGabi)! - Added boba, camp, kroma, metal and pgn rollups
+
+- Updated dependencies [[`0a61aec`](https://github.com/Blobscan/blobscan/commit/0a61aec545fa1b3b7a44b2a7c9e9a8e8250c1362), [`72e4b96`](https://github.com/Blobscan/blobscan/commit/72e4b963e2e735156032467554e6cc3cd311097e), [`7bb6f49`](https://github.com/Blobscan/blobscan/commit/7bb6f4912c89d0dd436e325677c801200e32edba), [`5ffb8ca`](https://github.com/Blobscan/blobscan/commit/5ffb8ca355bfcd02393a3b40e89b9d7a1a5a05e8)]:
+  - @blobscan/logger@0.1.0
+  - @blobscan/open-telemetry@0.0.7
+
 ## 0.4.0
 
 ### Minor Changes

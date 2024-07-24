@@ -3,6 +3,7 @@ import type {
   Address,
   Blob,
   BlobDataStorageReference,
+  BlobsOnTransactions,
   PrismaPromise,
   Transaction,
 } from "@prisma/client";
@@ -159,6 +160,52 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           `;
         },
       },
+      blobsOnTransactions: {
+        upsertMany(blobsOnTransactions: BlobsOnTransactions[]) {
+          if (!blobsOnTransactions.length) {
+            return (
+              Prisma.getExtensionContext(this) as any
+            ).zero() as PrismaPromise<ZeroOpResult>;
+          }
+
+          const sqlValues = blobsOnTransactions
+            .map(
+              ({
+                blobHash,
+                blockHash,
+                blockNumber,
+                blockTimestamp,
+                index,
+                txHash,
+              }) =>
+                Prisma.join([
+                  blobHash,
+                  blockHash,
+                  blockNumber,
+                  Prisma.sql`${blockTimestamp}::timestamp`,
+                  index,
+                  txHash,
+                ])
+            )
+            .map((rowColumnsSql) => Prisma.sql`(${rowColumnsSql})`);
+
+          return prisma.$executeRaw`
+            INSERT INTO blobs_on_transactions (
+              blob_hash,
+              block_hash,
+              block_number,
+              block_timestamp,
+              index,
+              tx_hash
+            ) VALUES ${Prisma.join(sqlValues)}
+            ON CONFLICT (tx_hash, index) DO UPDATE SET
+              block_hash = EXCLUDED.block_hash,
+              block_number = EXCLUDED.block_number,
+              block_timestamp = EXCLUDED.block_timestamp,
+              index = EXCLUDED.index
+          `;
+        },
+      },
       blobDataStorageReference: {
         upsertMany(refs: BlobDataStorageReference[]) {
           if (!refs.length) {
@@ -192,6 +239,11 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         findLatest() {
           return startBlockModelFnSpan("findLatest", () => {
             return prisma.block.findFirst({
+              where: {
+                transactionForks: {
+                  none: {},
+                },
+              },
               orderBy: { number: "desc" },
             });
           });
@@ -210,6 +262,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               ({
                 hash,
                 blockHash,
+                blockNumber,
+                blockTimestamp,
+                index,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -219,6 +274,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               }) => [
                 hash,
                 blockHash,
+                blockNumber,
+                Prisma.sql`${blockTimestamp}::timestamp`,
+                index,
                 fromId,
                 toId,
                 maxFeePerBlobGas,
@@ -227,34 +285,39 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 rollup
                   ? Prisma.sql`${rollup.toLowerCase()}::rollup`
                   : Prisma.sql`NULL`,
+                NOW_SQL,
+                NOW_SQL,
               ]
             )
-            .map(
-              (rowColumns) =>
-                Prisma.sql`(${Prisma.join(rowColumns)}, ${NOW_SQL}, ${NOW_SQL})`
-            );
+            .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
           return prisma.$executeRaw`
             INSERT INTO "transaction" (
               "hash",
               block_hash,
+              block_number,
+              block_timestamp,
+              index,
               from_id,
               to_id,
               max_fee_per_blob_gas,
               gas_price,
               blob_as_calldata_gas_used,
-              "rollup",
+              rollup,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT ("hash") DO UPDATE SET
               block_hash = EXCLUDED.block_hash,
+              block_number = EXCLUDED.block_number,
+              block_timestamp = EXCLUDED.block_timestamp,
+              index = EXCLUDED.index,
               from_id = EXCLUDED.from_id,
               to_id = EXCLUDED.to_id,
               max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
               gas_price = EXCLUDED.gas_price,
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
-              "rollup" = EXCLUDED.rollup,
+              rollup = EXCLUDED.rollup,
               updated_at = NOW()
           `;
         },

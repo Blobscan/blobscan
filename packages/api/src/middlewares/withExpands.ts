@@ -12,17 +12,12 @@ import {
   dataStorageReferencesSelect,
   rollupSchema,
   serializeBlobDataStorageReferences,
-  serializeDate,
   serializeDecimal,
   serializeRollup,
   serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../utils";
-import type {
-  DerivedTxBlobGasFields,
-  MakeFieldsMandatory,
-  TypeOrEmpty,
-} from "../utils";
+import type { DerivedTxBlobGasFields, MakeFieldsMandatory } from "../utils";
 
 const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
 
@@ -35,6 +30,7 @@ const expandedTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   gasPrice: true,
   maxFeePerBlobGas: true,
   rollup: true,
+  index: true,
 });
 
 const expandedBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
@@ -51,14 +47,12 @@ const expandedBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
   blobGasPrice: true,
   blobGasUsed: true,
   excessBlobGas: true,
-  hash: true,
-  timestamp: true,
   slot: true,
 });
 
-export type ExpandedBlock = MakeFieldsMandatory<DBBlock, "number">;
+export type ExpandedBlock = Partial<DBBlock>;
 
-export type ExpandedTransaction = MakeFieldsMandatory<DBTransaction, "hash"> &
+export type ExpandedTransaction = Partial<DBTransaction> &
   Partial<DerivedTxBlobGasFields>;
 
 export type ExpandedBlob = MakeFieldsMandatory<
@@ -85,11 +79,13 @@ export type ExpandedBlobData = MakeFieldsMandatory<
 
 export type ZodExpand = (typeof zodExpandEnums)[number];
 
+export type ExpandSelect<T> = { select: T };
+
 export type Expands = {
-  expandedTransactionSelect: TypeOrEmpty<typeof expandedTransactionSelect>;
-  expandedBlobSelect: TypeOrEmpty<typeof expandedBlobSelect>;
-  expandBlobData: boolean;
-  expandedBlockSelect: TypeOrEmpty<typeof expandedBlockSelect>;
+  transaction?: ExpandSelect<typeof expandedTransactionSelect>;
+  blob?: ExpandSelect<typeof expandedBlobSelect>;
+  blobData?: boolean;
+  block?: ExpandSelect<typeof expandedBlockSelect>;
 };
 
 export const serializedExpandedBlockSchema = z.object({
@@ -97,18 +93,17 @@ export const serializedExpandedBlockSchema = z.object({
   blobAsCalldataGasUsed: z.string().optional(),
   blobGasPrice: z.string().optional(),
   excessBlobGas: z.string().optional(),
-  hash: z.string().optional(),
-  timestamp: z.string().optional(),
   slot: slotSchema.optional(),
 });
 
 export const serializedExpandedBlobSchema = z.object({
   commitment: z.string().optional(),
-  proof: z.string().nullable().optional(),
+  proof: z.string().optional(),
   size: z.number().optional(),
   dataStorageReferences: z
     .array(serializedBlobDataStorageReferenceSchema)
     .optional(),
+  index: z.number().nonnegative().optional(),
 });
 
 export const serializedExpandedBlobDataSchema = z
@@ -124,6 +119,7 @@ export const serializedExpandedTransactionSchema = z
     maxFeePerBlobGas: z.string().optional(),
     blobAsCalldataGasUsed: z.string().optional(),
     rollup: rollupSchema.nullable().optional(),
+    index: z.number().nonnegative().optional(),
   })
   .merge(
     z.object({
@@ -195,9 +191,7 @@ export function serializeExpandedBlock(
     blobAsCalldataGasUsed,
     blobGasUsed,
     excessBlobGas,
-    hash,
     slot,
-    timestamp,
   } = block;
   const expandedBlock: SerializedExpandedBlock = {};
 
@@ -219,16 +213,8 @@ export function serializeExpandedBlock(
     expandedBlock.excessBlobGas = serializeDecimal(excessBlobGas);
   }
 
-  if (hash) {
-    expandedBlock.hash = hash;
-  }
-
   if (slot) {
     expandedBlock.slot = slot;
-  }
-
-  if (timestamp) {
-    expandedBlock.timestamp = serializeDate(timestamp);
   }
 
   return expandedBlock;
@@ -247,6 +233,7 @@ export function serializeExpandedTransaction(
     blobGasBaseFee,
     blobGasMaxFee,
     blobGasUsed,
+    index,
   } = transaction;
   const expandedTransaction: SerializedExpandedTransaction = {};
 
@@ -289,6 +276,10 @@ export function serializeExpandedTransaction(
       serializeDecimal(blobAsCalldataGasFee);
   }
 
+  if (index !== undefined && index !== null) {
+    expandedTransaction.index = index;
+  }
+
   return expandedTransaction;
 }
 
@@ -329,35 +320,27 @@ export const withExpands = t.middleware(({ next, input }) => {
       .map((expand) => expand as ZodExpand);
   }
 
-  const expands = expandKeys.reduce<Expands>(
-    (exp, current) => {
-      switch (current) {
-        case "transaction":
-          exp.expandedTransactionSelect = expandedTransactionSelect;
-          break;
-        case "blob":
-          exp.expandedBlobSelect = expandedBlobSelect;
-          break;
-        case "blob_data": {
-          exp.expandBlobData = true;
-          // We need to expand the blob data as well
-          exp.expandedBlobSelect = expandedBlobSelect;
-          break;
-        }
-        case "block":
-          exp.expandedBlockSelect = expandedBlockSelect;
-          break;
+  const expands = expandKeys.reduce<Expands>((exp, current) => {
+    switch (current) {
+      case "transaction":
+        exp.transaction = { select: expandedTransactionSelect };
+        break;
+      case "blob":
+        exp.blob = { select: expandedBlobSelect };
+        break;
+      case "blob_data": {
+        exp.blobData = true;
+        // We need to expand the blob data as well
+        exp.blob = { select: expandedBlobSelect };
+        break;
       }
-
-      return exp;
-    },
-    {
-      expandedTransactionSelect: {},
-      expandedBlobSelect: {},
-      expandBlobData: false,
-      expandedBlockSelect: {},
+      case "block":
+        exp.block = { select: expandedBlockSelect };
+        break;
     }
-  );
+
+    return exp;
+  }, {});
 
   return next({
     ctx: {

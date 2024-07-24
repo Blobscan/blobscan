@@ -14,7 +14,6 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs",
     ".next/types/**/*.ts",
     "sentry.client.config.ts",
     "sentry.server.config.ts",

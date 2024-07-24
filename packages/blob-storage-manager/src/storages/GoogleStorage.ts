@@ -3,7 +3,7 @@ import { Storage } from "@google-cloud/storage";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
-import type { Environment } from "../env";
+import { StorageCreationError } from "../errors";
 import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface GoogleStorageConfig extends BlobStorageConfig {
@@ -22,7 +22,7 @@ export class GoogleStorage extends BlobStorage {
   _storageClient: Storage;
   _bucketName: string;
 
-  constructor({
+  protected constructor({
     chainId,
     bucketName,
     projectId,
@@ -71,9 +71,10 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    const blobFile = await this.getBlobFile(uri);
+    const blobFile = this.getBlobFile(uri);
+    const [blobExists] = await blobFile.exists();
 
-    if (await blobFile.exists()) {
+    if (blobExists) {
       await blobFile.delete();
     }
   }
@@ -100,24 +101,21 @@ export class GoogleStorage extends BlobStorage {
     return this._storageClient.bucket(this._bucketName).file(uri);
   }
 
-  static getConfigFromEnv(env: Partial<Environment>): GoogleStorageConfig {
-    const baseConfig = super.getConfigFromEnv(env);
+  static async create(config: GoogleStorageConfig) {
+    try {
+      const storage = new GoogleStorage(config);
 
-    if (
-      !env.GOOGLE_STORAGE_BUCKET_NAME ||
-      (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
-    ) {
-      throw new Error(
-        "No config variables found: no bucket name, api endpoint or service key provided"
+      await storage.healthCheck();
+
+      return storage;
+    } catch (err) {
+      const err_ = err as Error;
+
+      throw new StorageCreationError(
+        this.name,
+        err_.message,
+        err_.cause as Error
       );
     }
-
-    return {
-      ...baseConfig,
-      bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
-      projectId: env.GOOGLE_STORAGE_PROJECT_ID,
-      serviceKey: env.GOOGLE_SERVICE_KEY,
-      apiEndpoint: env.GOOGLE_STORAGE_API_ENDPOINT,
-    };
   }
 }

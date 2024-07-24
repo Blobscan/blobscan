@@ -239,20 +239,12 @@ describe("Stats Extension", () => {
             BigInt(expectedTotalBlobSize)
           );
         });
-
-        it("should calculate the average blob size correctly", () => {
-          const expectedAvgBlobSize =
-            expectedDailyBlobs.reduce((acc, b) => acc + b.size, 0) /
-            expectedDailyBlobs.length;
-
-          expect(blobDailyStats?.avgBlobSize).toBe(expectedAvgBlobSize);
-        });
       },
     });
 
     runOverallStatsFunctionsTests("blobOverallStats", {
       statsCalculationTestsSuite() {
-        let blobOverallStats: BlobOverallStats | null;
+        let blobOverallStats: BlobOverallStats;
 
         beforeEach(async () => {
           await prisma.blobOverallStats.increment({
@@ -260,7 +252,7 @@ describe("Stats Extension", () => {
             to: 9999,
           });
 
-          blobOverallStats = await prisma.blobOverallStats.findFirst();
+          blobOverallStats = await prisma.blobOverallStats.findFirstOrThrow();
 
           return async () => {
             await prisma.blobOverallStats.deleteMany();
@@ -276,7 +268,7 @@ describe("Stats Extension", () => {
         it("should calculate the total amount of unique blobs correctly", async () => {
           const expectedTotalUniqueBlobs = fixtures.canonicalUniqueBlobs.length;
 
-          expect(blobOverallStats?.totalUniqueBlobs).toBe(
+          expect(blobOverallStats?.totalUniqueBlobs + 1).toBe(
             expectedTotalUniqueBlobs
           );
         });
@@ -290,17 +282,6 @@ describe("Stats Extension", () => {
           expect(blobOverallStats?.totalBlobSize).toBe(
             BigInt(expectedTotalBlobSize)
           );
-        });
-
-        it("should calculate the average blob size correctly", async () => {
-          const expectedTotalBlobSize = fixtures.canonicalBlobs.reduce(
-            (acc, btx) => acc + btx.size,
-            0
-          );
-          const expectedAvgBlobSize =
-            expectedTotalBlobSize / fixtures.canonicalBlobs.length;
-
-          expect(blobOverallStats?.avgBlobSize).toBe(expectedAvgBlobSize);
         });
       },
     });

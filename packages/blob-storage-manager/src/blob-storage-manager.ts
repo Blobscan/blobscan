@@ -1,9 +1,8 @@
-import { logger } from "@blobscan/logger";
+import { env } from "@blobscan/env";
+import type { Environment } from "@blobscan/env";
 
 import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManager } from "./BlobStorageManager";
-import { env } from "./env";
-import type { Environment } from "./env";
 import type { BlobStorageName } from "./types";
 import { BLOB_STORAGE_NAMES, createStorageFromEnv } from "./utils";
 
@@ -21,24 +20,16 @@ async function createBlobStorageManager() {
   const blobStorages = await Promise.all(
     Object.values(BLOB_STORAGE_NAMES).map(async (storageName) => {
       if (isBlobStorageEnabled(storageName)) {
-        const [storage, storageError] = await createStorageFromEnv(storageName);
-
-        if (storageError) {
-          logger.warn(
-            `${storageError.message}. Caused by: ${storageError.cause}`
-          );
-        }
+        const storage = await createStorageFromEnv(storageName);
 
         return storage;
       }
     })
+  ).then((storages) =>
+    storages.filter((storage): storage is BlobStorage => !!storage)
   );
 
-  const availableStorages = blobStorages.filter(
-    (storage): storage is BlobStorage => !!storage
-  );
-
-  return new BlobStorageManager(availableStorages);
+  return new BlobStorageManager(blobStorages);
 }
 
 export async function getBlobStorageManager(): Promise<BlobStorageManager> {

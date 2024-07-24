@@ -11,8 +11,7 @@ import jwt from "jsonwebtoken";
 import { getBlobPropagator } from "@blobscan/blob-propagator";
 import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
-
-import { env } from "./env";
+import { env } from "@blobscan/env";
 
 export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
@@ -87,6 +86,7 @@ export function createTRPCContext(
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `Failed to create TRPC context: ${err_.message}`,
+        cause: err_.cause,
       });
     }
   };

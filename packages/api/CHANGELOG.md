@@ -1,5 +1,109 @@
 # @blobscan/api
 
+## 0.12.0
+
+### Minor Changes
+
+- [#444](https://github.com/Blobscan/blobscan/pull/444) [`8d27043`](https://github.com/Blobscan/blobscan/commit/8d27043ea464c34cfeef29ae996fca0ee6d2c1ab) Thanks [@PJColombo](https://github.com/PJColombo)! - Moved tx rollup, index and blob index field to expandable fields in block retrieval
+
+- [#442](https://github.com/Blobscan/blobscan/pull/442) [`634274b`](https://github.com/Blobscan/blobscan/commit/634274bd0940f081d8faa54fd68a892e450ae7ad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support to filter entities (blobs, blocks or transactions) by no rollup
+
+### Patch Changes
+
+- Updated dependencies [[`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7), [`de3ceb5`](https://github.com/Blobscan/blobscan/commit/de3ceb5c9f2130ba407c64effe744f214fd6cad7)]:
+  - @blobscan/db@0.9.0
+  - @blobscan/blob-propagator@0.2.4
+  - @blobscan/blob-storage-manager@0.3.4
+
+## 0.11.0
+
+### Minor Changes
+
+- [#441](https://github.com/Blobscan/blobscan/pull/441) [`f86465f`](https://github.com/Blobscan/blobscan/commit/f86465f88fb46150b5fbf7623a9d7242c06490c2) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed block timestamp and number from block expanded fields as all entities (transaction and blob) already this block fields
+
+### Patch Changes
+
+- [#439](https://github.com/Blobscan/blobscan/pull/439) [`28a9642`](https://github.com/Blobscan/blobscan/commit/28a96423215afdfeb89850d2ebcb17180f3ff7c4) Thanks [@PJColombo](https://github.com/PJColombo)! - Performed sorting of block's transactions and blobs directly in the db query instead of during serialization
+
+## 0.10.0
+
+### Minor Changes
+
+- [#422](https://github.com/Blobscan/blobscan/pull/422) [`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced block number and timestamp columns to the transaction table, enabling faster and more efficient sorting and filtering when retrieving multiple transactions.
+
+- [#415](https://github.com/Blobscan/blobscan/pull/415) [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Dropped average blob size stat
+
+- [#423](https://github.com/Blobscan/blobscan/pull/423) [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced block number and timestamp fields to the `BlobsOnTransactions` model, enabling faster and more efficient sorting and filtering when retrieving multiple blobs.
+
+- [#424](https://github.com/Blobscan/blobscan/pull/424) [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added transaction index
+
+### Patch Changes
+
+- [#412](https://github.com/Blobscan/blobscan/pull/412) [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Replaced local environment variables with the `@blobscan/env` package
+
+- [#424](https://github.com/Blobscan/blobscan/pull/424) [`89d80a8`](https://github.com/Blobscan/blobscan/commit/89d80a83257659074c6e3da2e4dfb0f87842a5b8) Thanks [@PJColombo](https://github.com/PJColombo)! - Changed the sorting criteria for transactions and blobs within the same block to index-based instead of hash-based
+
+- Updated dependencies [[`a00fdbb`](https://github.com/Blobscan/blobscan/commit/a00fdbb08a5d17a07e7a4f759572fd598ccf7ce7), [`3e15dd1`](https://github.com/Blobscan/blobscan/commit/3e15dd1bc074cde951aedf307fdbdb668bcc081b), [`253e5c4`](https://github.com/Blobscan/blobscan/commit/253e5c480f988993730b30197444a63c39fc9735), [`28da372`](https://github.com/Blobscan/blobscan/commit/28da372f217ce44cb7e16cd02bcc02633576879a), [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae), [`cd96277`](https://github.com/Blobscan/blobscan/commit/cd96277acf3a2e25f6ca1332fc66283cfd95f673), [`363a5aa`](https://github.com/Blobscan/blobscan/commit/363a5aae45e087b8938325a472e2c1c1dcfde42d), [`49455b8`](https://github.com/Blobscan/blobscan/commit/49455b86282dac56692085751e28494773e274ae), [`e2bc7cc`](https://github.com/Blobscan/blobscan/commit/e2bc7ccb0cedf74fd1811f6ba76f672d67218e84), [`097f5d5`](https://github.com/Blobscan/blobscan/commit/097f5d5be60a2bfb82faf8731e1901144abf125a)]:
+  - @blobscan/db@0.8.0
+  - @blobscan/blob-storage-manager@0.3.3
+  - @blobscan/blob-propagator@0.2.3
+  - @blobscan/open-telemetry@0.0.8
+  - @blobscan/logger@0.1.1
+
+## 0.9.2
+
+### Patch Changes
+
+- [#407](https://github.com/Blobscan/blobscan/pull/407) [`274e838`](https://github.com/Blobscan/blobscan/commit/274e838c71e7364068cc4c156e2f310cb58122ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Ensure `transactions` and `blobs` input are not empty on `indexData` procedure
+
+- [#407](https://github.com/Blobscan/blobscan/pull/407) [`274e838`](https://github.com/Blobscan/blobscan/commit/274e838c71e7364068cc4c156e2f310cb58122ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved issue where the reorg handling procedure wasn't processing db operation results correctly
+
+- Updated dependencies [[`4ff5c4d`](https://github.com/Blobscan/blobscan/commit/4ff5c4d720463fd607a32fe35466a3e0dad045f9)]:
+  - @blobscan/db@0.7.0
+  - @blobscan/blob-propagator@0.2.2
+  - @blobscan/blob-storage-manager@0.3.2
+
+## 0.9.1
+
+### Patch Changes
+
+- [#401](https://github.com/Blobscan/blobscan/pull/401) [`2d59e7a`](https://github.com/Blobscan/blobscan/commit/2d59e7a62ac5167f8bd458df68acbc21fdac4e52) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced blob data retrieval by trying to fetch data by versioned hash and/or blob data storage references
+
+## 0.9.0
+
+### Minor Changes
+
+- [#398](https://github.com/Blobscan/blobscan/pull/398) [`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c) Thanks [@0xGabi](https://github.com/0xGabi)! - Added sepolia new rollups
+
+### Patch Changes
+
+- Updated dependencies [[`9d2e6ac`](https://github.com/Blobscan/blobscan/commit/9d2e6aca545a3dde9be5742afbe71b12d675420c), [`fad721d`](https://github.com/Blobscan/blobscan/commit/fad721de28cb131ed988a1f2333d7b35e8261df2), [`c4c94f4`](https://github.com/Blobscan/blobscan/commit/c4c94f453146beefe853dfedf8681db472155c34), [`fad721d`](https://github.com/Blobscan/blobscan/commit/fad721de28cb131ed988a1f2333d7b35e8261df2), [`4aa1198`](https://github.com/Blobscan/blobscan/commit/4aa1198d2f3d4387f9cabb2b791a7a2b8b863938)]:
+  - @blobscan/db@0.6.0
+  - @blobscan/blob-storage-manager@0.3.1
+  - @blobscan/blob-propagator@0.2.1
+
+## 0.8.1
+
+### Patch Changes
+
+- [#380](https://github.com/Blobscan/blobscan/pull/380) [`737272d`](https://github.com/Blobscan/blobscan/commit/737272d6312bd478b1662133b875b50457694f10) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced the indexing procedure to be idempotent, allowing for re-propagation of already-indexed blob data
+
+- [#395](https://github.com/Blobscan/blobscan/pull/395) [`ffbb8e6`](https://github.com/Blobscan/blobscan/commit/ffbb8e6074878e30c9aa5ac8e774dbbb8060fb96) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved error handling by surfacing causes of context creation failures
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`57723f3`](https://github.com/Blobscan/blobscan/commit/57723f351f4a63a5b86558e447ee5d6fe2f947c8) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed blob propagator import
+
+- [#387](https://github.com/Blobscan/blobscan/pull/387) [`1cce838`](https://github.com/Blobscan/blobscan/commit/1cce8387e28488946b83c5a8a36a2e0db1d595c9) Thanks [@0xGabi](https://github.com/0xGabi)! - Added new rollup addresses to indexer
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving blob data by hash in addition to by its references.
+
+- Updated dependencies [[`0a61aec`](https://github.com/Blobscan/blobscan/commit/0a61aec545fa1b3b7a44b2a7c9e9a8e8250c1362), [`67a7472`](https://github.com/Blobscan/blobscan/commit/67a7472e14e4488a9425016e11fd52f963b570ef), [`b1141b1`](https://github.com/Blobscan/blobscan/commit/b1141b1ca369ee8c3d02c4cb3dd4e47ebca08120), [`72e4b96`](https://github.com/Blobscan/blobscan/commit/72e4b963e2e735156032467554e6cc3cd311097e), [`ba066e0`](https://github.com/Blobscan/blobscan/commit/ba066e0db6b19ae1056ecc17c3b42acc64627a7f), [`52804b1`](https://github.com/Blobscan/blobscan/commit/52804b1a71c645242719230b3d68240b6a30687a), [`40824c2`](https://github.com/Blobscan/blobscan/commit/40824c26f6d8a360592c812bd1afe505d9fc4f6d), [`7bb6f49`](https://github.com/Blobscan/blobscan/commit/7bb6f4912c89d0dd436e325677c801200e32edba), [`514784a`](https://github.com/Blobscan/blobscan/commit/514784a743937dc2d1af1ed533e90fef3b3aa057), [`a5bc257`](https://github.com/Blobscan/blobscan/commit/a5bc257090fd6c832b3379b56281c82db5936a01), [`5ffb8ca`](https://github.com/Blobscan/blobscan/commit/5ffb8ca355bfcd02393a3b40e89b9d7a1a5a05e8), [`89df217`](https://github.com/Blobscan/blobscan/commit/89df217e817727a710a7c3217ad7be4750de93ce), [`95fbf74`](https://github.com/Blobscan/blobscan/commit/95fbf7471f5e5cacec7513f0736a70a18f971ce1), [`7c95fdd`](https://github.com/Blobscan/blobscan/commit/7c95fddb50e4939844a933ded836916792e07323), [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5), [`db1d90a`](https://github.com/Blobscan/blobscan/commit/db1d90a95ebd633620c667d96c42a6a2ea6ef814), [`d42f1a9`](https://github.com/Blobscan/blobscan/commit/d42f1a9e7dffc5a204c067251947db25cdbc3cf1), [`db42b53`](https://github.com/Blobscan/blobscan/commit/db42b539582d2b9a19339bd3b9b610d5d90b71b9), [`7e2d4d0`](https://github.com/Blobscan/blobscan/commit/7e2d4d0f601127c00ade2f01e4936579463230fd), [`40824c2`](https://github.com/Blobscan/blobscan/commit/40824c26f6d8a360592c812bd1afe505d9fc4f6d), [`b4e8d2c`](https://github.com/Blobscan/blobscan/commit/b4e8d2cd63d4f2b307f21848c23da14acc265ab0), [`0570eee`](https://github.com/Blobscan/blobscan/commit/0570eee9a4d30f5c07cef177ba79cd1798992761)]:
+  - @blobscan/logger@0.1.0
+  - @blobscan/blob-storage-manager@0.3.0
+  - @blobscan/zod@0.1.0
+  - @blobscan/blob-propagator@0.2.0
+  - @blobscan/db@0.5.0
+  - @blobscan/open-telemetry@0.0.7
+
 ## 0.8.0
 
 ### Minor Changes

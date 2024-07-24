@@ -6,7 +6,6 @@ services:
     extends:
       file: docker-compose.yml
       service: web
-    image: blossomlabs/blobscan:web-local
     build:
       context: .
       target: web
@@ -17,7 +16,6 @@ services:
     extends:
       file: docker-compose.yml
       service: api
-    image: blossomlabs/blobscan:api-local
     build:
       context: .
       target: api

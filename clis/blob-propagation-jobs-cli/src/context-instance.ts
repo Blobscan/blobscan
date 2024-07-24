@@ -1,8 +1,8 @@
 import type { $Enums } from "@blobscan/db";
 import { BlobStorage } from "@blobscan/db";
+import { env } from "@blobscan/env";
 
 import { Context } from "./Context";
-import { env } from "./env";
 
 const availableStorages: $Enums.BlobStorage[] = [];
 

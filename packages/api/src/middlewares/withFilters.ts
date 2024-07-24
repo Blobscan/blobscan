@@ -5,30 +5,30 @@ import { t } from "../trpc-client";
 import {
   addressSchema,
   blockNumberSchema,
-  rollupSchema,
+  nullableRollupSchema,
   slotSchema,
 } from "../utils";
-import type { TypeOrEmpty } from "../utils";
 
-export type Filters = {
-  blockFilters: TypeOrEmpty<
-    Partial<{
-      transactionForks: Prisma.TransactionForkListRelationFilter;
-      number: Prisma.BlockWhereInput["number"];
-      timestamp: Prisma.BlockWhereInput["timestamp"];
-      slot: Prisma.BlockWhereInput["slot"];
-    }>
-  >;
-  transactionFilters: TypeOrEmpty<
-    Partial<{
-      rollup: $Enums.Rollup;
-      fromId: Prisma.TransactionWhereInput["fromId"];
-      toId: Prisma.TransactionWhereInput["toId"];
-      OR: Prisma.TransactionWhereInput[];
-    }>
-  >;
-  sort: Prisma.SortOrder;
+type NumberRange = {
+  gte?: number;
+  lt?: number;
 };
+
+type DateRange = {
+  gte?: Date;
+  lt?: Date;
+};
+
+export type Filters = Partial<{
+  blockNumber: NumberRange;
+  blockTimestamp: DateRange;
+  blockSlot: NumberRange;
+  blockType: Prisma.TransactionForkListRelationFilter;
+  transactionAddresses: Prisma.TransactionWhereInput["OR"];
+  transactionRollup: Prisma.TransactionWhereInput["rollup"];
+
+  sort: Prisma.SortOrder;
+}>;
 
 const sortSchema = z.enum(["asc", "desc"]);
 
@@ -45,7 +45,7 @@ export const withSlotRangeFilterSchema = z.object({
 });
 
 export const withRollupFilterSchema = z.object({
-  rollup: rollupSchema.optional(),
+  rollup: nullableRollupSchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -78,8 +78,6 @@ export type FiltersSchema = z.infer<typeof withAllFiltersSchema>;
 
 export const withFilters = t.middleware(({ next, input = {} }) => {
   const filters: Filters = {
-    blockFilters: {},
-    transactionFilters: {},
     sort: "desc",
   };
 
@@ -106,49 +104,47 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     const addressExists = from !== undefined || to !== undefined;
 
     if (blockRangeExists) {
-      filters.blockFilters.number = {
+      filters.blockNumber = {
         lt: endBlock,
         gte: startBlock,
       };
     }
 
     if (dateRangeExists) {
-      filters.blockFilters.timestamp = {
+      filters.blockTimestamp = {
         lt: endDate,
         gte: startDate,
       };
     }
 
     if (slotRangeExists) {
-      filters.blockFilters.slot = {
+      filters.blockSlot = {
         lt: endSlot,
         gte: startSlot,
       };
     }
 
     if (addressExists) {
-      if (from && to) {
-        filters.transactionFilters.OR = [
-          {
-            fromId: from,
-          },
-          {
-            toId: to,
-          },
-        ];
-      } else if (from) {
-        filters.transactionFilters.fromId = from;
-      } else if (to) {
-        filters.transactionFilters.toId = to;
+      filters.transactionAddresses = [];
+      if (from) {
+        filters.transactionAddresses.push({
+          fromId: from,
+        });
+      }
+
+      if (to) {
+        filters.transactionAddresses.push({
+          toId: to,
+        });
       }
     }
 
-    filters.blockFilters.transactionForks =
-      type === "reorged" ? { some: {} } : { none: {} };
+    filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
 
-    filters.transactionFilters.rollup = rollup?.toUpperCase() as
-      | $Enums.Rollup
-      | undefined;
+    filters.transactionRollup =
+      rollup === "null"
+        ? null
+        : (rollup?.toUpperCase() as $Enums.Rollup | undefined);
     filters.sort = sort;
   }
 

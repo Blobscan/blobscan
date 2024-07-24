@@ -53,17 +53,11 @@ export const getByHash = publicProcedure
         });
       }
 
-      if (expands.expandBlobData) {
+      if (expands.blobData) {
         await Promise.all(
           queriedTx.blobs.map(async ({ blob }) => {
-            if (
-              blob.dataStorageReferences &&
-              blob.dataStorageReferences.length
-            ) {
-              const { data } = await retrieveBlobData(
-                blobStorageManager,
-                blob.dataStorageReferences
-              );
+            if (blob.dataStorageReferences?.length) {
+              const data = await retrieveBlobData(blobStorageManager, blob);
 
               blob.data = data;
             }

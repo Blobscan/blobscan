@@ -43,15 +43,13 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             "day",
             total_blobs,
             total_unique_blobs,
-            total_blob_size,
-            avg_blob_size
+            total_blob_size
           )
-          SELECT 
+          SELECT
             DATE_TRUNC('day', ${dateField}) AS "day",
             COUNT(btx.blob_hash)::INT AS total_blobs,
             COUNT(DISTINCT b.versioned_hash)::INT AS total_unique_blobs,
-            SUM(b.size) AS total_blob_size,
-            AVG(b.size)::FLOAT AS avg_blob_size
+            SUM(b.size) AS total_blob_size
           FROM blob b
             JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
             JOIN "transaction" tx ON tx."hash" = btx.tx_hash
@@ -62,8 +60,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           ON CONFLICT ("day") DO UPDATE SET
             total_blobs = EXCLUDED.total_blobs,
             total_unique_blobs = EXCLUDED.total_unique_blobs,
-            total_blob_size = EXCLUDED.total_blob_size,
-            avg_blob_size = EXCLUDED.avg_blob_size
+            total_blob_size = EXCLUDED.total_blob_size
         `;
         },
       },
@@ -75,7 +72,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 total_blobs,
                 total_unique_blobs,
                 total_blob_size,
-                avg_blob_size,
                 updated_at
               )
               SELECT
@@ -83,7 +79,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 COUNT(btx.blob_hash)::INT AS total_blobs,
                 COUNT(DISTINCT b.versioned_hash)::INT AS total_unique_blobs,
                 SUM(b.size) AS total_blob_size,
-                AVG(b.size)::FLOAT AS avg_blob_size,
                 NOW() AS updated_at
               FROM blob b
               JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
@@ -91,7 +86,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 total_blobs = EXCLUDED.total_blobs,
                 total_unique_blobs = EXCLUDED.total_unique_blobs,
                 total_blob_size = EXCLUDED.total_blob_size,
-                avg_blob_size = EXCLUDED.avg_blob_size,
                 updated_at = EXCLUDED.updated_at
             `;
         },
@@ -100,7 +94,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           const totalBlobsField = Prisma.sql`total_blobs`;
           const totalUniqueBlobsField = Prisma.sql`total_unique_blobs`;
           const totalBlobSizeField = Prisma.sql`total_blob_size`;
-          const avgBlobSizeField = Prisma.sql`avg_blob_size`;
 
           return prisma.$executeRaw`
               INSERT INTO blob_overall_stats AS ${statsTableAlias} (
@@ -108,10 +101,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 ${totalBlobsField},
                 ${totalUniqueBlobsField},
                 ${totalBlobSizeField},
-                ${avgBlobSizeField},
                 ${updatedAtField}
               )
-              SELECT 
+              SELECT
                 1 AS id,
                 ${coalesceToZero(
                   "COUNT(btx.blob_hash)::INT"
@@ -120,7 +112,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                   `COUNT(DISTINCT CASE WHEN b.first_block_number BETWEEN ${from} AND ${to} THEN b.versioned_hash END)::INT`
                 )} AS total_unique_blobs,
                 ${coalesceToZero("SUM(b.size)")} AS ${totalBlobSizeField},
-                ${coalesceToZero("AVG(b.size)::FLOAT")} AS ${avgBlobSizeField},
                 NOW() AS updated_at
               FROM blob b
                 JOIN blobs_on_transactions btx ON btx.blob_hash = b.versioned_hash
@@ -132,11 +123,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
                 ${totalBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalBlobsField}`},
                 ${totalUniqueBlobsField} = ${Prisma.sql`${statsTableAlias}.${totalUniqueBlobsField}`} + ${Prisma.sql`EXCLUDED.${totalUniqueBlobsField}`},
                 ${totalBlobSizeField} = ${Prisma.sql`${statsTableAlias}.${totalBlobSizeField}`} + ${Prisma.sql`EXCLUDED.${totalBlobSizeField}`},
-                ${avgBlobSizeField} = ${buildAvgUpdateExpression(
-            statsTableAlias,
-            totalBlobsField,
-            avgBlobSizeField
-          )},
                 ${updatedAtField} = ${Prisma.sql`EXCLUDED.${updatedAtField}`}
             `;
         },
@@ -337,7 +323,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               total_unique_senders,
               avg_max_blob_gas_fee
             )
-            SELECT 
+            SELECT
               DATE_TRUNC('day', ${dateField}) AS "day",
               COUNT(tx."hash")::INT AS total_transactions,
               COUNT(DISTINCT tx.to_id)::INT AS total_unique_receivers,
@@ -351,7 +337,8 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             ON CONFLICT ("day") DO UPDATE SET
               total_transactions = EXCLUDED.total_transactions,
               total_unique_receivers = EXCLUDED.total_unique_receivers,
-              total_unique_senders = EXCLUDED.total_unique_senders
+              total_unique_senders = EXCLUDED.total_unique_senders,
+              avg_max_blob_gas_fee = EXCLUDED.avg_max_blob_gas_fee
             `;
         },
       },

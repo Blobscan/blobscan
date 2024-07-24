@@ -16,8 +16,10 @@ export const ExpandableContent: FC<ExpandableElementProps> = function ({
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [opened, setOpened] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
-  const isLargeContent = contentHeight > EXPANDABLE_THRESHOLD;
+  const [contentHeight, setContentHeight] = useState<number | undefined>();
+  const isLargeContent = contentHeight
+    ? contentHeight > EXPANDABLE_THRESHOLD
+    : true;
 
   useEffect(() => {
     if (contentRef.current) {

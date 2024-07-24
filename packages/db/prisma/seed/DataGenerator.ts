@@ -114,15 +114,20 @@ export class DataGenerator {
             throw new Error("Blob not found");
           }
 
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const block = blocks.find((b) => b.hash === tx.blockHash)!;
           blob.firstBlockNumber = Math.min(
             blob.firstBlockNumber ?? Infinity,
-            blocks.find((b) => b.hash === tx.blockHash)?.number ?? Infinity
+            block.number ?? Infinity
           );
 
           blobsOnTxs.push({
             blobHash: blob.versionedHash,
             index: i,
             txHash: tx.hash,
+            blockHash: block.hash,
+            blockNumber: block.number,
+            blockTimestamp: new Date(block.timestamp),
           });
         }
 
@@ -256,6 +261,8 @@ export class DataGenerator {
           fromId: from,
           toId: to,
           blockHash: block.hash,
+          blockNumber: block.number,
+          blockTimestamp: block.timestamp,
           blobAsCalldataGasUsed: new Prisma.Decimal(0),
           gasPrice: bigintToDecimal(gasPrice),
           maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),

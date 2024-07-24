@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { FlowProducer, Worker } from "bullmq";
-import type { ConnectionOptions, JobsOptions, WorkerOptions } from "bullmq";
+import type {
+  ConnectionOptions,
+  JobsOptions,
+  Processor,
+  WorkerOptions,
+} from "bullmq";
 
 import type {
   BlobStorage,
+  BlobStorageError,
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { $Enums, BlobscanPrismaClient } from "@blobscan/db";
-import { logger } from "@blobscan/logger";
+import { createModuleLogger } from "@blobscan/logger";
 
 import {
   DEFAULT_JOB_OPTIONS,
@@ -15,13 +21,13 @@ import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
-import type {
-  Blob,
-  BlobPropagationFinalizerWorkerParams,
-  BlobPropagationJobData,
-  BlobPropagationWorker,
-  BlobPropagationWorkerParams,
-} from "./types";
+import {
+  BlobPropagatorCreationError,
+  BlobPropagatorError,
+  ErrorException,
+} from "./errors";
+import { logger } from "./logger";
+import type { Blob, BlobPropagationWorker } from "./types";
 import { createBlobPropagationFlowJob } from "./utils";
 import {
   fileSystemProcessor,
@@ -60,11 +66,11 @@ export class BlobPropagator {
     prisma,
     tmpBlobStorage,
     jobOptions: jobOptions_ = {},
-    workerOptions: workerOptions_ = {},
+    workerOptions = {},
   }: BlobPropagatorConfig) {
-    const workerOptions = {
+    const workerOptions_ = {
       ...DEFAULT_WORKER_OPTIONS,
-      ...workerOptions_,
+      ...workerOptions,
     };
 
     const availableStorageNames = blobStorageManager
@@ -74,30 +80,28 @@ export class BlobPropagator {
     const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
 
     if (!availableStorageNames) {
-      throw new Error(
-        "Couldn't instantiate blob propagator: No storages available"
-      );
+      throw new BlobPropagatorCreationError("No blob storages available");
     }
 
     if (!temporaryBlobStorage) {
-      throw new Error(
-        "Couldn't instantiate blob propagator: Temporary storage not found in blob storage manager"
-      );
+      throw new BlobPropagatorCreationError("Temporary blob storage not found");
     }
 
-    this.storageWorkers = this.#createBlobStorageWorkers(
-      availableStorageNames,
-      {
-        blobStorageManager,
-        prisma,
-      },
-      workerOptions
+    this.storageWorkers = availableStorageNames.map((storageName) => {
+      return this.#createWorker(
+        STORAGE_WORKER_NAMES[storageName],
+        STORAGE_WORKER_PROCESSORS[storageName]({ prisma, blobStorageManager }),
+        workerOptions_
+      );
+    });
+
+    this.finalizerWorker = this.#createWorker(
+      FINALIZER_WORKER_NAME,
+      finalizerProcessor({ temporaryBlobStorage }),
+      workerOptions_
     );
-    this.finalizerWorker = this.#createFinalizerWorker(
-      { temporaryBlobStorage },
-      workerOptions
-    );
-    this.blobPropagationFlowProducer = this.#createBlobPropagationFlowProducer(
+
+    this.blobPropagationFlowProducer = this.#createFlowProducer(
       workerOptions?.connection
     );
     this.temporaryBlobStorage = temporaryBlobStorage;
@@ -105,78 +109,107 @@ export class BlobPropagator {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
     };
+
+    logger.info("Blob propagator started successfully");
   }
 
-  close() {
+  async propagateBlob({ versionedHash, data }: Blob) {
+    try {
+      const temporalBlobUri = await this.#storeBlobInTemporaryStorage(
+        versionedHash,
+        data
+      );
+
+      const storageWorkerNames = this.storageWorkers.map((w) => w.name);
+      const flowJob = createBlobPropagationFlowJob(
+        this.finalizerWorker.name,
+        storageWorkerNames,
+        versionedHash,
+        temporalBlobUri
+      );
+
+      await this.blobPropagationFlowProducer.add(flowJob);
+    } catch (err) {
+      throw new BlobPropagatorError(
+        `Failed to propagate blob with hash "${versionedHash}"`,
+        err as Error
+      );
+    }
+  }
+
+  async propagateBlobs(blobs: Blob[]) {
+    try {
+      const uniqueBlobs = Array.from(
+        new Set(blobs.map((b) => b.versionedHash))
+      ).map((versionedHash) => {
+        const blob = blobs.find((b) => b.versionedHash === versionedHash);
+
+        if (!blob) {
+          throw new Error(
+            `Blob not found for versioned hash "${versionedHash}"`
+          );
+        }
+
+        return blob;
+      });
+
+      const temporalBlobUris = await Promise.all(
+        uniqueBlobs.map(({ versionedHash, data }) =>
+          this.temporaryBlobStorage.storeBlob(versionedHash, data)
+        )
+      );
+
+      const storageWorkerNames = this.storageWorkers.map((w) => w.name);
+      const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }, i) =>
+        createBlobPropagationFlowJob(
+          this.finalizerWorker.name,
+          storageWorkerNames,
+          versionedHash,
+          temporalBlobUris[i] as string
+        )
+      );
+
+      await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
+    } catch (err) {
+      const blobHashes = blobs.map((b) => `"${b.versionedHash}"`).join(", ");
+
+      throw new BlobPropagatorError(
+        `Failed to propagate blobs with hashes ${blobHashes}`,
+        err as Error
+      );
+    }
+  }
+
+  async close() {
     let teardownPromise: Promise<void> = Promise.resolve();
 
     this.storageWorkers.forEach((w) => {
       teardownPromise = teardownPromise.finally(async () => {
-        await w.close();
+        await this.#performClosingOperation(() => w.close());
       });
     });
 
-    return teardownPromise
+    await teardownPromise
       .finally(async () => {
-        await this.finalizerWorker.close();
+        await this.#performClosingOperation(() => this.finalizerWorker.close());
       })
       .finally(async () => {
-        const redisClient = await this.blobPropagationFlowProducer.client;
+        await this.#performClosingOperation(async () => {
+          const redisClient = await this.blobPropagationFlowProducer.client;
 
-        await redisClient.quit();
+          await redisClient.quit();
+        });
       })
       .finally(async () => {
-        await this.blobPropagationFlowProducer.close();
+        await this.#performClosingOperation(() =>
+          this.blobPropagationFlowProducer.close()
+        );
       });
+
+    logger.info("Blob propagator closed successfully.");
   }
 
-  async propagateBlob({ versionedHash, data }: Blob) {
-    const temporalBlobUri = await this.temporaryBlobStorage.storeBlob(
-      versionedHash,
-      data
-    );
-
-    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
-    const flowJob = createBlobPropagationFlowJob(
-      this.finalizerWorker.name,
-      storageWorkerNames,
-      versionedHash,
-      temporalBlobUri
-    );
-
-    await this.blobPropagationFlowProducer.add(flowJob);
-  }
-
-  async propagateBlobs(blobs: Blob[]) {
-    const uniqueBlobs = Array.from(
-      new Set(blobs.map((b) => b.versionedHash))
-    ).map((versionedHash) => {
-      // @typescript-eslint/no-non-null-assertion
-      const blob = blobs.find((b) => b.versionedHash === versionedHash)!;
-
-      return blob;
-    });
-
-    const temporalBlobUris = await Promise.all(
-      uniqueBlobs.map(({ versionedHash, data }) =>
-        this.temporaryBlobStorage.storeBlob(versionedHash, data)
-      )
-    );
-
-    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
-    const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }, i) =>
-      createBlobPropagationFlowJob(
-        this.finalizerWorker.name,
-        storageWorkerNames,
-        versionedHash,
-        temporalBlobUris[i] as string
-      )
-    );
-
-    await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
-  }
-
-  #createBlobPropagationFlowProducer(connection?: ConnectionOptions) {
+  #createFlowProducer(connection?: ConnectionOptions) {
     /*
      * Instantiating a new `FlowProducer` appears to create two separate `RedisConnection` instances.
      * This leads to an issue where one instance remains active, or "dangling", after the `FlowProducer` has been closed.
@@ -188,62 +221,61 @@ export class BlobPropagator {
     const blobPropagationFlowProducer = new FlowProducer({
       connection,
     });
+    const flowProducerLogger = createModuleLogger(
+      "blob-propagator",
+      "flow-producer"
+    );
 
     blobPropagationFlowProducer.on("error", (err) => {
-      logger.error(`Blob propagation flow producer error: ${err}`);
+      flowProducerLogger.error(err);
     });
 
     return blobPropagationFlowProducer;
   }
 
-  #createFinalizerWorker(
-    params: BlobPropagationFinalizerWorkerParams,
+  #createWorker(
+    workerName: string,
+    workerProcessor: Processor,
     opts: WorkerOptions = {}
   ) {
-    const finalizerWorker = new Worker(
-      FINALIZER_WORKER_NAME,
-      finalizerProcessor(params),
-      {
-        ...DEFAULT_WORKER_OPTIONS,
-        ...opts,
-      }
-    );
+    const worker = new Worker(workerName, workerProcessor, opts);
+    const workerLogger = createModuleLogger("blob-propagator", worker.name);
 
-    finalizerWorker.on("completed", (job) => {
-      logger.debug(`Worker ${FINALIZER_WORKER_NAME}: Job ${job.id} completed`);
+    worker.on("completed", (job) => {
+      workerLogger.debug(`Job ${job.id} completed`);
     });
 
-    finalizerWorker.on("failed", (job, err) => {
-      logger.error(
-        `Worker ${FINALIZER_WORKER_NAME}: Job ${job?.id} failed: ${err}`
-      );
+    worker.on("failed", (_, err) => {
+      workerLogger.error(err);
     });
 
-    return finalizerWorker;
+    return worker;
   }
 
-  #createBlobStorageWorkers(
-    storages: $Enums.BlobStorage[],
-    params: BlobPropagationWorkerParams,
-    opts: WorkerOptions = {}
-  ) {
-    return storages.map((storageName) => {
-      const workerName = STORAGE_WORKER_NAMES[storageName];
-      const storageWorker = new Worker<BlobPropagationJobData>(
-        workerName,
-        STORAGE_WORKER_PROCESSORS[storageName](params),
-        opts
+  async #storeBlobInTemporaryStorage(versionedHash: string, data: string) {
+    try {
+      const blobUri = await this.temporaryBlobStorage.storeBlob(
+        versionedHash,
+        data
       );
 
-      storageWorker.on("completed", (job) => {
-        logger.debug(`Worker ${workerName}: Job ${job.id} completed`);
-      });
+      return blobUri;
+    } catch (err) {
+      throw new ErrorException(
+        "Failed to store blob in temporary storage",
+        err as BlobStorageError
+      );
+    }
+  }
 
-      storageWorker.on("failed", (job, err) => {
-        logger.error(`Worker: ${workerName}: Job ${job?.id} failed: ${err}`);
-      });
-
-      return storageWorker;
-    });
+  async #performClosingOperation(operation: () => Promise<void>) {
+    try {
+      await operation();
+    } catch (err) {
+      throw new BlobPropagatorError(
+        "Failed to perform closing operation",
+        err as Error
+      );
+    }
   }
 }

@@ -1,5 +1,13 @@
 # @blobscan/zod
 
+## 0.1.0
+
+### Minor Changes
+
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`b1141b1`](https://github.com/Blobscan/blobscan/commit/b1141b1ca369ee8c3d02c4cb3dd4e47ebca08120) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob storages schema
+
+- [#388](https://github.com/Blobscan/blobscan/pull/388) [`514784a`](https://github.com/Blobscan/blobscan/commit/514784a743937dc2d1af1ed533e90fef3b3aa057) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added a schema for conditionally verifying the presence of a value based on another value matching a specific criterion.
+
 ## 0.0.4
 
 ### Patch Changes

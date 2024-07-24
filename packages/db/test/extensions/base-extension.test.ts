@@ -2,6 +2,7 @@ import type {
   Address as AddressEntity,
   Blob,
   BlobDataStorageReference,
+  BlobsOnTransactions,
   Transaction,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
@@ -502,6 +503,108 @@ describe("Base Extension", () => {
     });
   });
 
+  describe("BlobsOnTransactions model", () => {
+    describe("upsertMany()", () => {
+      const newBlobsOnTransactions: WithoutTimestampFields<BlobsOnTransactions>[] =
+        [
+          {
+            blobHash: "blobHash002",
+            blockHash: "blockHash005",
+            blockNumber: 1008,
+            blockTimestamp: new Date("2023-08-31T16:00:00Z"),
+            txHash: "txHash016",
+            index: 1,
+          },
+          {
+            blobHash: "blobHash003",
+            blockHash: "blockHash008",
+            blockNumber: 1008,
+            blockTimestamp: new Date("2023-08-31T16:00:00Z"),
+            txHash: "txHash016",
+            index: 2,
+          },
+        ];
+      it("should insert multiple blobs on transactions correctly", async () => {
+        await prisma.blobsOnTransactions.upsertMany(newBlobsOnTransactions);
+
+        const result = await prisma.blobsOnTransactions.findMany({
+          where: {
+            AND: [
+              {
+                txHash: {
+                  in: newBlobsOnTransactions.map((btx) => btx.txHash),
+                },
+              },
+              {
+                index: {
+                  in: newBlobsOnTransactions.map((btx) => btx.index),
+                },
+              },
+            ],
+          },
+          orderBy: [
+            {
+              txHash: "asc",
+            },
+            {
+              index: "asc",
+            },
+          ],
+        });
+
+        expect(result).toStrictEqual(newBlobsOnTransactions);
+      });
+
+      it("should update multiple blobs on transactions correctly", async () => {
+        await prisma.blobsOnTransactions.upsertMany(newBlobsOnTransactions);
+
+        const updatedBlobsOnTransactions = newBlobsOnTransactions.map(
+          (btx) => ({
+            ...btx,
+            blockHash: "blockHash007",
+            blockNumber: 1007,
+            blockTimestamp: new Date("2023-08-31T14:00:00Z"),
+          })
+        );
+
+        await prisma.blobsOnTransactions.upsertMany(updatedBlobsOnTransactions);
+
+        const result = await prisma.blobsOnTransactions.findMany({
+          where: {
+            AND: [
+              {
+                txHash: {
+                  in: updatedBlobsOnTransactions.map((btx) => btx.txHash),
+                },
+              },
+              {
+                index: {
+                  in: updatedBlobsOnTransactions.map((btx) => btx.index),
+                },
+              },
+            ],
+          },
+          orderBy: [
+            {
+              txHash: "asc",
+            },
+            {
+              index: "asc",
+            },
+          ],
+        });
+
+        expect(result).toStrictEqual(updatedBlobsOnTransactions);
+      });
+
+      it("should upsert an empty array correctly", async () => {
+        const result = await prisma.blobsOnTransactions.upsertMany([]);
+
+        expect(result).toStrictEqual(expectedEmptyInputRes);
+      });
+    });
+  });
+
   describe("BlobDataStorageReference model", () => {
     const newBlob: WithoutTimestampFields<Blob> = {
       commitment: "newCommitment",
@@ -576,6 +679,14 @@ describe("Base Extension", () => {
               in: updatedBlobVersionedHashes,
             },
           },
+          orderBy: [
+            {
+              blobHash: "asc",
+            },
+            {
+              blobStorage: "asc",
+            },
+          ],
         });
 
         expect(updatedRefs).toStrictEqual(input);
@@ -624,6 +735,7 @@ describe("Base Extension", () => {
       } = fixtures.txs[0]!;
       const existingTx: WithoutTimestampFields<Transaction> = {
         ...existingRawTx,
+        blockTimestamp: new Date(existingRawTx.blockTimestamp),
         blobAsCalldataGasUsed: new Prisma.Decimal(
           existingRawTx.blobAsCalldataGasUsed
         ),
@@ -638,6 +750,9 @@ describe("Base Extension", () => {
             fromId: "address1",
             toId: "address3",
             blockHash: "blockHash002",
+            blockNumber: 1002,
+            blockTimestamp: new Date("2023-05-10T12:00:00Z"),
+            index: 0,
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
@@ -648,6 +763,9 @@ describe("Base Extension", () => {
             fromId: "address5",
             toId: "address3",
             blockHash: "blockHash001",
+            blockNumber: 1001,
+            index: 0,
+            blockTimestamp: new Date("2022-10-16T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
@@ -680,6 +798,9 @@ describe("Base Extension", () => {
             fromId: "address5",
             toId: "address6",
             blockHash: "blockHash006",
+            blockNumber: 1006,
+            index: 0,
+            blockTimestamp: new Date("2023-08-31T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
@@ -690,6 +811,9 @@ describe("Base Extension", () => {
             fromId: "address6",
             toId: "address5",
             blockHash: "blockHash006",
+            blockNumber: 1006,
+            index: 1,
+            blockTimestamp: new Date("2023-08-31T12:00:00Z"),
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
