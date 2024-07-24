@@ -1,3 +1,4 @@
+import path from 'path';
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
 
@@ -14,6 +15,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  output: 'standalone',
   async rewrites() {
     /**
      * Redirect Grafana's metrics scrape requests from /metrics to the Next.js
@@ -83,6 +85,7 @@ const config = {
   experimental: {
     instrumentationHook:
       !!process.env.TRACES_ENABLED || !!process.env.METRICS_ENABLED,
+    outputFileTracingRoot: path.join(import.meta.dirname, '../../'),
   },
 };
 

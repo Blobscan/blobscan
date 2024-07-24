@@ -2,6 +2,8 @@
 # Pinned due to https://github.com/nodejs/docker-node/issues/2009
 FROM node:20-alpine3.18 as base
 
+FROM base as deps
+
 ARG BUILD_TIMESTAMP
 ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
 ARG GIT_COMMIT
@@ -18,31 +20,50 @@ RUN mkdir -p /tmp/blobscan-blobs && chmod 777 /tmp/blobscan-blobs
 
 ADD docker-entrypoint.sh /
 
-FROM base AS api-builder
-COPY . /app
+COPY . /prepare
+WORKDIR /prepare
+
+RUN turbo prune @blobscan/web --docker --out-dir /prepare/web
+
+FROM deps AS web-builder
+
 WORKDIR /app
+COPY --from=deps /prepare/web/json .
+COPY --from=deps /prepare/web/pnpm-lock.yaml .
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=./apps/rest-api-server
 
-FROM base AS web-builder
-COPY . /app
+COPY --from=deps /prepare/web/full .
+
+# Copy original which includes pipelines
+COPY --from=deps /prepare/turbo.json .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/web
+
+FROM base AS web
+
 WORKDIR /app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=./apps/web
 
-FROM base as web
-COPY --from=web-builder /app/node_modules /app/node_modules
-COPY --from=web-builder /app/packages/db/prisma/schema.prisma /app/packages/db/prisma/schema.prisma
-COPY --from=web-builder /app/apps/web /app/apps/web
-ENTRYPOINT ["/docker-entrypoint.sh", "web"]
-CMD ["--help"]
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-FROM base as api
-# TODO: Test without node_modules
-COPY --from=api-builder /app/node_modules /app/node_modules
-COPY --from=api-builder /app/packages/db/prisma/schema.prisma /app/packages/db/prisma/schema.prisma
-COPY --from=api-builder /app/apps/rest-api-server /app/apps/rest-api-server
-ENTRYPOINT ["/docker-entrypoint.sh", "api"]
-CMD ["--help"]
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./public
+
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+
+# USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD node /app/apps/web/server.js
+# ENTRYPOINT ["/docker-entrypoint.sh", "web"]
+# CMD ["--help"]
