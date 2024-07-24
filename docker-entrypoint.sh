@@ -30,8 +30,7 @@ _main() {
 	if [ "$1" = 'web' ]; then
 		cd /app
 		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
-		cd /app/apps/web
-		pnpm start
+		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
 		cd /app
 		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma

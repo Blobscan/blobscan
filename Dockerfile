@@ -18,8 +18,6 @@ RUN npm install -g pnpm turbo
 WORKDIR /app
 RUN mkdir -p /tmp/blobscan-blobs && chmod 777 /tmp/blobscan-blobs
 
-ADD docker-entrypoint.sh /
-
 COPY . /prepare
 WORKDIR /prepare
 
@@ -41,7 +39,7 @@ COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/web
 
 FROM base AS web
-
+RUN apk add bash
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -50,20 +48,22 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./public
-
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/web/full/packages/db ./packages/db
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-# USER nextjs
+USER nextjs
 
 EXPOSE 3000
 
 ENV PORT 3000
 
-CMD node /app/apps/web/server.js
-# ENTRYPOINT ["/docker-entrypoint.sh", "web"]
-# CMD ["--help"]
+ADD docker-entrypoint.sh /
+
+# CMD node /app/apps/web/server.js
+ENTRYPOINT ["/docker-entrypoint.sh", "web"]
+CMD ["--help"]
