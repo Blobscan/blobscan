@@ -34,8 +34,7 @@ _main() {
 	elif [ "$1" = 'api' ]; then
 		cd /app
 		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
-		cd /app/apps/rest-api-server
-		pnpm start
+		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
 		echo ""

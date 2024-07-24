@@ -16,10 +16,9 @@ services:
     extends:
       file: docker-compose.yml
       service: api
-    image: blossomlabs/blobscan:latest
-#    build:
-#      context: .
-#      target: api
+    build:
+      context: .
+      target: api
     depends_on:
       - postgres
 

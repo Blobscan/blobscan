@@ -2,6 +2,8 @@
 # Pinned due to https://github.com/nodejs/docker-node/issues/2009
 FROM node:20-alpine3.18 as base
 
+ADD docker-entrypoint.sh /
+
 FROM base as deps
 
 ARG BUILD_TIMESTAMP
@@ -22,6 +24,7 @@ COPY . /prepare
 WORKDIR /prepare
 
 RUN turbo prune @blobscan/web --docker --out-dir /prepare/web
+RUN turbo prune @blobscan/rest-api-server --docker --out-dir /prepare/api
 
 FROM deps AS web-builder
 
@@ -59,11 +62,39 @@ COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/pu
 USER nextjs
 
 EXPOSE 3000
-
 ENV PORT 3000
 
-ADD docker-entrypoint.sh /
-
-# CMD node /app/apps/web/server.js
 ENTRYPOINT ["/docker-entrypoint.sh", "web"]
+CMD ["--help"]
+
+FROM deps AS api-builder
+
+WORKDIR /app
+COPY --from=deps /prepare/api/json .
+COPY --from=deps /prepare/api/pnpm-lock.yaml .
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+COPY --from=deps /prepare/api/full .
+
+# Copy original which includes pipelines
+COPY --from=deps /prepare/turbo.json .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/rest-api-server
+
+FROM node:20-bookworm as api
+RUN apt install -y bash
+WORKDIR /app
+
+ENV NODE_ENV production
+
+COPY --from=api-builder /app/apps/rest-api-server/dist ./
+COPY --from=api-builder /prepare/api/full/packages/db ./packages/db
+RUN mv /app/client/* /app/
+
+EXPOSE 3001
+ENV PORT 3001
+
+ADD docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh", "api"]
 CMD ["--help"]
