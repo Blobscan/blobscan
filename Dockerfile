@@ -82,8 +82,8 @@ COPY --from=deps /prepare/api/full .
 COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/rest-api-server
 
-FROM node:20-bookworm as api
-RUN apt install -y bash
+FROM node:20-bookworm-slim as api
+RUN apt-get update -y && apt-get install -y openssl bash
 WORKDIR /app
 
 ENV NODE_ENV production
