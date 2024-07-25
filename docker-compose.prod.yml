@@ -6,7 +6,7 @@ services:
     extends:
       file: docker-compose.yml
       service: web
-    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
+    image: blossomlabs/blobscan-web:${BLOBSCAN_WEB_TAG}
     ports:
       - ${EXTERNAL_WEB_PORT}:3000
 
@@ -14,7 +14,7 @@ services:
     extends:
       file: docker-compose.yml
       service: api
-    image: blossomlabs/blobscan:${BLOBSCAN_TAG}
+    image: blossomlabs/blobscan-api:${BLOBSCAN_API_TAG}
     ports:
       - ${EXTERNAL_API_PORT}:3001
 
