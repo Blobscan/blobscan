@@ -18,6 +18,7 @@ export const TableHeader: FC<TableHeaderProps> = function ({
   ...props
 }) {
   const variantStyles = cn({
+    "dark:bg-transparent": variant === "transparent",
     "dark:bg-primary-900": variant === "normal",
     "dark:bg-surface-dark bg-surface-light": variant === "simple",
   });

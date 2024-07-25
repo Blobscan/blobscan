@@ -1,4 +1,3 @@
-import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Link } from "~/components/Link";
@@ -70,16 +69,15 @@ export const getBlocksTableRowExpandItem = ({
           item: blobVersionedHash,
         },
       ],
-      className: "dark:border-border-dark/10",
     })
   );
 
   return (
     <Table
-      className="max-h-[420px]"
+      className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
       size="xs"
-      alignment="center"
-      variant="simple"
+      alignment="left"
+      variant="transparent"
       headers={headers}
       rows={rows}
     />
