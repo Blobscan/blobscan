@@ -3,8 +3,11 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { getPaginationParams } from "~/utils/pagination";
-import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
+import { PaginatedTable } from "~/components/PaginatedTable/PaginatedTable";
+import {
+  getBlocksTableRows,
+  blocksTableHeaders,
+} from "~/components/PaginatedTable/helpers";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import { deserializeBlock, formatNumber } from "~/utils";
@@ -12,7 +15,11 @@ import { deserializeBlock, formatNumber } from "~/utils";
 const Blocks: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const { data: rawBlocksData, error } = api.block.getAll.useQuery({ p, ps });
+  const {
+    data: rawBlocksData,
+    isLoading,
+    error,
+  } = api.block.getAll.useQuery({ p, ps });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {
       return {};
@@ -25,6 +32,8 @@ const Blocks: NextPage = function () {
   }, [rawBlocksData]);
   const { blocks, totalBlocks } = blocksData;
 
+  const blobRows = useMemo(() => getBlocksTableRows(blocks), [blocks]);
+
   if (error) {
     return (
       <NextError
@@ -35,16 +44,13 @@ const Blocks: NextPage = function () {
   }
 
   return (
-    <PaginatedListLayout
-      header={`Blocks ${totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}`}
-      items={blocks?.map((b) => (
-        <BlockCard key={b.hash} block={b} />
-      ))}
-      totalItems={totalBlocks}
-      page={p}
-      pageSize={ps}
-      itemSkeleton={<BlockCard />}
-      emptyState="No blocks"
+    <PaginatedTable
+      title={`Blocks ${totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}`}
+      isLoading={isLoading}
+      headers={blocksTableHeaders}
+      rows={blobRows}
+      totalItems={totalBlocks || 0}
+      paginationData={{ pageSize: ps, page: p }}
     />
   );
 };
