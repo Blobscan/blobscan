@@ -51,6 +51,7 @@ const Blocks: NextPage = function () {
       rows={blobRows}
       totalItems={totalBlocks || 0}
       paginationData={{ pageSize: ps, page: p }}
+      isExpandable
     />
   );
 };

@@ -1,5 +1,9 @@
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { Link } from "~/components/Link";
+import { Table } from "~/components/Table";
+import { buildBlockRoute } from "~/utils";
 import type { DeserializedBlock } from "~/utils";
 
 export const blocksTableHeaders = [
@@ -30,50 +34,115 @@ export const blocksTableHeaders = [
   },
 ];
 
+export const getBlocksTableRowExpandItem = ({
+  transactions,
+}: DeserializedBlock) => {
+  const headers = [
+    {
+      cells: [
+        {
+          item: "Tx Hash",
+        },
+        {
+          item: "Blob Versioned Hash",
+        },
+      ],
+      className: "dark:border-border-dark/20",
+      sticky: true,
+    },
+  ];
+
+  const transactionsCombinedWithInnerBlobs = transactions.flatMap(
+    (transaction) =>
+      transaction.blobs.map((blob) => ({
+        transactionHash: transaction.hash,
+        blobVersionedHash: blob.versionedHash,
+      }))
+  );
+
+  const rows = transactionsCombinedWithInnerBlobs.map(
+    ({ transactionHash, blobVersionedHash }) => ({
+      cells: [
+        {
+          item: transactionHash,
+        },
+        {
+          item: blobVersionedHash,
+        },
+      ],
+      className: "dark:border-border-dark/10",
+    })
+  );
+
+  return (
+    <Table
+      className="max-h-[420px]"
+      size="xs"
+      alignment="center"
+      variant="simple"
+      headers={headers}
+      rows={rows}
+    />
+  );
+};
+
 export const getBlocksTableRows = (blocks?: DeserializedBlock[]) =>
   blocks
-    ? blocks.map(
-        ({
+    ? blocks.map((block: DeserializedBlock) => {
+        const {
           blobGasPrice,
           blobGasUsed,
           number,
           slot,
           timestamp,
           transactions,
-        }) => {
-          const blobCount = transactions?.reduce(
-            (acc, tx) => acc + tx.blobs.length,
-            0
-          );
+        } = block;
+        const blobCount = transactions?.reduce(
+          (acc, tx) => acc + tx.blobs.length,
+          0
+        );
 
-          return {
-            cells: [
-              {
-                item: <></>,
-              },
-              {
-                item: number,
-              },
-              {
-                item: timestamp.fromNow(),
-              },
-              {
-                item: slot,
-              },
-              {
-                item: <span>{transactions.length}</span>,
-              },
-              {
-                item: <span>{blobCount}</span>,
-              },
-              {
-                item: <EtherUnitDisplay amount={blobGasPrice} />,
-              },
-              {
-                item: <BlobGasUsageDisplay blobGasUsed={blobGasUsed} />,
-              },
-            ],
-          };
-        }
-      )
+        return {
+          cells: [
+            {
+              item: (
+                <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                  <Link href={buildBlockRoute(number)}>{number}</Link>
+                </div>
+              ),
+            },
+            {
+              item: timestamp.fromNow(),
+            },
+            {
+              item: (
+                <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {slot}
+                </span>
+              ),
+            },
+            {
+              item: (
+                <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {transactions.length}
+                </span>
+              ),
+            },
+            {
+              item: (
+                <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {blobCount}
+                </span>
+              ),
+            },
+            {
+              item: <EtherUnitDisplay amount={blobGasPrice} />,
+            },
+            {
+              item: <BlobGasUsageDisplay blobGasUsed={blobGasUsed} />,
+            },
+          ],
+          expandItem: getBlocksTableRowExpandItem(block),
+        };
+      })
     : undefined;
