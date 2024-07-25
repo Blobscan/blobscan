@@ -24,6 +24,7 @@ export type PaginatedTableProps = {
   isLoading: boolean;
   title: string;
   totalItems: number;
+  isExpandable?: boolean;
   paginationData: PaginationData;
 } & Pick<TableProps, "headers" | "rows">;
 
@@ -35,6 +36,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   rows,
   totalItems,
   paginationData,
+  isExpandable = false,
 }) {
   const { page, pageSize } = paginationData;
 
@@ -101,7 +103,11 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         >
           {hasItems ? (
             <div className="flex flex-col gap-6">
-              <Table expandableRowsMode headers={headers} rows={rows} />
+              <Table
+                expandableRowsMode={isExpandable}
+                headers={headers}
+                rows={rows}
+              />
               <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
                 <div className="flex items-center justify-start gap-2">
                   Displayed items:
