@@ -17,21 +17,25 @@ type RowCell = {
   item: ReactNode;
 } & TableCellProps;
 
+export type TableHeader = {
+  cells: HeaderCell[];
+  sticky?: boolean;
+  spanFullRow?: boolean;
+  className?: string;
+};
+
+export type TableRow = {
+  cells: RowCell[];
+  expandItem?: ReactNode;
+  sticky?: boolean;
+  spanFullRow?: boolean;
+  className?: string;
+};
+
 export type TableProps = {
   expandableRowsMode?: boolean;
-  headers?: {
-    cells: HeaderCell[];
-    sticky?: boolean;
-    spanFullRow?: boolean;
-    className?: string;
-  }[];
-  rows?: {
-    cells: RowCell[];
-    expandItem?: ReactNode;
-    sticky?: boolean;
-    spanFullRow?: boolean;
-    className?: string;
-  }[];
+  headers?: TableHeader[];
+  rows?: TableRow[];
   className?: string;
   size?: Size;
   alignment?: Alignment;
