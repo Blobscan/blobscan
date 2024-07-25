@@ -36,7 +36,7 @@ const Blobs: NextPage = function () {
       isLoading={isLoading}
       headers={blobsTableHeaders}
       rows={blobRows}
-      totalItems={totalBlobs || 0}
+      totalItems={totalBlobs}
       paginationData={{ pageSize: ps, page: p }}
     />
   );

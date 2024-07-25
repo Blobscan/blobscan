@@ -23,12 +23,19 @@ type PaginationData = {
 export type PaginatedTableProps = {
   isLoading: boolean;
   title: string;
-  totalItems: number;
+  totalItems?: number;
   isExpandable?: boolean;
   paginationData: PaginationData;
 } & Pick<TableProps, "headers" | "rows">;
 
-// TODO: Improve skeleton UI
+const getRowsSkeleton = (cellsNumber?: number) => {
+  return Array.from({ length: 10 }).map((_) => ({
+    cells: Array.from({ length: cellsNumber || 0 }).map((_, i) => ({
+      item: <Skeleton key={i} height={22} width={"100%"} />,
+    })),
+  }));
+};
+
 export const PaginatedTable: FC<PaginatedTableProps> = function ({
   title,
   isLoading,
@@ -47,7 +54,6 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         ? 1
         : Math.ceil(totalItems / 10)
       : undefined;
-  const hasItems = totalItems > 0;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
     (newPageSize: number) =>
@@ -82,55 +88,49 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   return (
     <>
       <Header>{title}</Header>
-      {isLoading ? (
-        <Skeleton height={400} width={"100%"} />
-      ) : (
-        <Card
-          header={
-            hasItems ? (
-              <div className={`flex flex-col justify-end md:flex-row`}>
-                <div className="w-full self-center sm:w-auto">
-                  <Pagination
-                    selected={page}
-                    pages={pages}
-                    onChange={handlePageSelection}
-                  />
-                </div>
-              </div>
-            ) : undefined
-          }
-          emptyState={DEFAULT_TABLE_EMPTY_STATE}
-        >
-          {hasItems ? (
-            <div className="flex flex-col gap-6">
-              <Table
-                expandableRowsMode={isExpandable}
-                headers={headers}
-                rows={rows}
+      <Card
+        header={
+          <div className={`flex flex-col justify-end md:flex-row`}>
+            <div className="w-full self-center sm:w-auto">
+              <Pagination
+                selected={page}
+                pages={pages}
+                onChange={handlePageSelection}
               />
-              <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
-                <div className="flex items-center justify-start gap-2">
-                  Displayed items:
-                  <Dropdown
-                    items={PAGE_SIZES}
-                    selected={pageSize}
-                    width="w-full"
-                    onChange={handlePageSizeSelection}
-                  />
-                </div>
-                <div className="w-full sm:w-auto">
-                  <Pagination
-                    selected={page}
-                    pages={pages}
-                    inverseCompact
-                    onChange={handlePageSelection}
-                  />
-                </div>
-              </div>
             </div>
-          ) : undefined}
-        </Card>
-      )}
+          </div>
+        }
+        emptyState={DEFAULT_TABLE_EMPTY_STATE}
+      >
+        <div className="flex flex-col gap-6">
+          <Table
+            expandableRowsMode={isExpandable}
+            headers={headers}
+            rows={
+              isLoading ? getRowsSkeleton(headers?.[0]?.cells.length) : rows
+            }
+          />
+          <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
+            <div className="flex items-center justify-start gap-2">
+              Displayed items:
+              <Dropdown
+                items={PAGE_SIZES}
+                selected={pageSize}
+                width="w-full"
+                onChange={handlePageSizeSelection}
+              />
+            </div>
+            <div className="w-full sm:w-auto">
+              <Pagination
+                selected={page}
+                pages={pages}
+                inverseCompact
+                onChange={handlePageSelection}
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
     </>
   );
 };
