@@ -3,9 +3,9 @@ import type { FC } from "react";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "~/components/Button";
+import { CategoryIcon } from "~/components/CategoryIcon";
 import { Collapsable } from "~/components/Collapsable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
-import { RollupIcon } from "~/components/RollupIcon";
 import { Rotable } from "~/components/Rotable";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -18,7 +18,7 @@ import {
   shortenAddress,
 } from "~/utils";
 import type { DeserializedFullTransaction } from "~/utils";
-import { RollupBadge } from "../../Badges/RollupBadge";
+import { CategoryBadge } from "../../Badges/CategoryBadge";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -30,7 +30,7 @@ type BlobTransactionCardProps = Partial<{
       | "hash"
       | "from"
       | "to"
-      | "rollup"
+      | "category"
       | "blockNumber"
       | "blockTimestamp"
       | "blobGasBaseFee"
@@ -61,7 +61,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     hash,
     from,
     to,
-    rollup,
+    category,
     blockNumber,
     blockTimestamp,
     blobGasBaseFee,
@@ -99,11 +99,11 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 <Link href={buildTransactionRoute(hash)}>{hash}</Link>
               </div>
               <div>
-                {rollup &&
+                {category &&
                   (isCompact ? (
-                    <RollupIcon rollup={rollup} />
+                    <CategoryIcon category={category} />
                   ) : (
-                    <RollupBadge rollup={rollup} size="xs" />
+                    <CategoryBadge category={category} size="xs" />
                   ))}
               </div>
             </div>

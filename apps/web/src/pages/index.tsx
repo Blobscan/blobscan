@@ -263,7 +263,7 @@ const Home: NextPage = () => {
                             from: tx.from,
                             to: tx.to,
                             hash: tx.hash,
-                            rollup: tx.rollup,
+                            category: tx.category,
                             blockTimestamp: tx.blockTimestamp,
                             blobGasBaseFee: tx.blobGasBaseFee,
                             blobGasMaxFee: tx.blobGasMaxFee,

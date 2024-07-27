@@ -10,10 +10,10 @@ import { z } from "@blobscan/zod";
 import { t } from "../trpc-client";
 import {
   dataStorageReferencesSelect,
-  rollupSchema,
+  categorySchema,
   serializeBlobDataStorageReferences,
   serializeDecimal,
-  serializeRollup,
+  serializeCategory,
   serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../utils";
@@ -29,7 +29,7 @@ const expandedTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   toId: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
-  rollup: true,
+  category: true,
   index: true,
 });
 
@@ -118,7 +118,7 @@ export const serializedExpandedTransactionSchema = z
     to: z.string().optional(),
     maxFeePerBlobGas: z.string().optional(),
     blobAsCalldataGasUsed: z.string().optional(),
-    rollup: rollupSchema.nullable().optional(),
+    category: categorySchema.nullable().optional(),
     index: z.number().nonnegative().optional(),
   })
   .merge(
@@ -228,7 +228,7 @@ export function serializeExpandedTransaction(
     maxFeePerBlobGas,
     fromId,
     toId,
-    rollup,
+    category,
     blobAsCalldataGasFee,
     blobGasBaseFee,
     blobGasMaxFee,
@@ -255,8 +255,8 @@ export function serializeExpandedTransaction(
     expandedTransaction.to = toId;
   }
 
-  if (rollup) {
-    expandedTransaction.rollup = serializeRollup(rollup);
+  if (category) {
+    expandedTransaction.category = serializeCategory(category);
   }
 
   if (blobGasBaseFee) {

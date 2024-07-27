@@ -27,7 +27,7 @@ export const baseTransactionSelect =
     blobAsCalldataGasUsed: true,
     gasPrice: true,
     maxFeePerBlobGas: true,
-    rollup: true,
+    category: true,
     blockHash: true,
     blockNumber: true,
     blockTimestamp: true,

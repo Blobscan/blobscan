@@ -1,4 +1,4 @@
-import { BlobStorage, Rollup } from "@blobscan/db";
+import { BlobStorage, Category } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 const zodBlobStorageEnums = [
@@ -8,7 +8,7 @@ const zodBlobStorageEnums = [
   "file_system",
 ] as const;
 
-const zodRollupEnums = [
+const categoryEnums = [
   "arbitrum",
   "base",
   "blast",
@@ -27,6 +27,7 @@ const zodRollupEnums = [
   "zksync",
   "mode",
   "zora",
+  "unknown",
 ] as const;
 
 /**
@@ -34,9 +35,9 @@ const zodRollupEnums = [
  * on zod enums directly
  */
 
-const missingRollupEnums = Object.values(Rollup).filter(
+const missingCategoryEnums = Object.values(Category).filter(
   (r) =>
-    !zodRollupEnums.includes(r.toLowerCase() as (typeof zodRollupEnums)[number])
+    !categoryEnums.includes(r.toLowerCase() as (typeof categoryEnums)[number])
 );
 
 const missingBlobStorageEnums = Object.values(BlobStorage).filter(
@@ -46,9 +47,9 @@ const missingBlobStorageEnums = Object.values(BlobStorage).filter(
     )
 );
 
-if (missingRollupEnums.length) {
+if (missingCategoryEnums.length) {
   throw new Error(
-    `Zod rollup enums is not in sync with Prisma rollup enums. Missing zod enums: ${missingRollupEnums.join(
+    `Zod category enums is not in sync with Prisma category enums. Missing zod enums: ${missingCategoryEnums.join(
       ", "
     )}`
   );
@@ -62,26 +63,26 @@ if (missingBlobStorageEnums.length) {
   );
 }
 
-export type ZodRollupEnum = (typeof zodRollupEnums)[number];
+export type ZodCategoryEnum = (typeof categoryEnums)[number];
 
 export type ZodBlobStorageEnum = (typeof zodBlobStorageEnums)[number];
 
 export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 
 // Use string and refine it as TRPC OpenAPI doesn't support enums yet
-export const rollupSchema = z
+export const categorySchema = z
   .string()
   .refine((value) => {
-    return zodRollupEnums.includes(value as ZodRollupEnum);
+    return categoryEnums.includes(value as ZodCategoryEnum);
   })
-  .transform((value) => value as ZodRollupEnum);
+  .transform((value) => value as ZodCategoryEnum);
 
-export const nullableRollupSchema = z
+export const nullableCategorySchema = z
   .string()
   .refine((value) => {
-    return value === "null" || zodRollupEnums.includes(value as ZodRollupEnum);
+    return value === "null" || categoryEnums.includes(value as ZodCategoryEnum);
   })
-  .transform((value) => value as ZodRollupEnum | "null");
+  .transform((value) => value as ZodCategoryEnum | "null");
 
 export const blockNumberSchema = z.number().nonnegative();
 

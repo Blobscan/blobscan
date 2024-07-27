@@ -56,10 +56,10 @@ export const getAll = publicProcedure
             transactionForks: filters.blockType,
           },
           transaction:
-            filters.transactionRollup !== undefined ||
+            filters.transactionCategory !== undefined ||
             filters.transactionAddresses
               ? {
-                  rollup: filters.transactionRollup,
+                  category: filters.transactionCategory,
                   OR: filters.transactionAddresses,
                 }
               : undefined,
@@ -77,14 +77,14 @@ export const getAll = publicProcedure
         ],
         ...ctx.pagination,
       }),
-      // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      filters.transactionRollup
+      // TODO: this is a workaround while we don't have proper category counts on the overall stats
+      filters.transactionCategory
         ? ctx.prisma.blob.count({
             where: {
               transactions: {
                 some: {
                   transaction: {
-                    rollup: filters.transactionRollup,
+                    category: filters.transactionCategory,
                   },
                 },
               },

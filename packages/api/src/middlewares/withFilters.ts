@@ -5,7 +5,7 @@ import { t } from "../trpc-client";
 import {
   addressSchema,
   blockNumberSchema,
-  nullableRollupSchema,
+  nullableCategorySchema,
   slotSchema,
 } from "../utils";
 
@@ -25,7 +25,7 @@ export type Filters = Partial<{
   blockSlot: NumberRange;
   blockType: Prisma.TransactionForkListRelationFilter;
   transactionAddresses: Prisma.TransactionWhereInput["OR"];
-  transactionRollup: Prisma.TransactionWhereInput["rollup"];
+  transactionCategory: Prisma.TransactionWhereInput["category"];
 
   sort: Prisma.SortOrder;
 }>;
@@ -44,8 +44,8 @@ export const withSlotRangeFilterSchema = z.object({
   endSlot: slotSchema.optional(),
 });
 
-export const withRollupFilterSchema = z.object({
-  rollup: nullableRollupSchema.optional(),
+export const withCategoryFilterSchema = z.object({
+  category: nullableCategorySchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -70,7 +70,7 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withBlockRangeFilterSchema)
   .merge(withDateRangeFilterSchema)
   .merge(withSlotRangeFilterSchema)
-  .merge(withRollupFilterSchema)
+  .merge(withCategoryFilterSchema)
   .merge(withAddressFilterSchema)
   .merge(withTypeFilterSchema);
 
@@ -89,7 +89,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
       type,
       endBlock,
       endSlot,
-      rollup,
+      category,
       startBlock,
       startSlot,
       startDate,
@@ -141,10 +141,10 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
 
-    filters.transactionRollup =
-      rollup === "null"
+    filters.transactionCategory =
+      category === "null"
         ? null
-        : (rollup?.toUpperCase() as $Enums.Rollup | undefined);
+        : (category?.toUpperCase() as $Enums.Category | undefined);
     filters.sort = sort;
   }
 

@@ -251,7 +251,7 @@ export class DataGenerator {
           min: 0,
           max: this.#seedParams.maxFeePerBlobGas,
         });
-        const rollup = faker.helpers.enumValue($Enums.Rollup);
+        const category = faker.helpers.enumValue($Enums.Category);
 
         // Unreachable code, done only for type checking
         if (!from || !to) throw new Error("Address not found");
@@ -266,7 +266,7 @@ export class DataGenerator {
           blobAsCalldataGasUsed: new Prisma.Decimal(0),
           gasPrice: bigintToDecimal(gasPrice),
           maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),
-          rollup,
+          category,
           insertedAt: now,
           updatedAt: now,
         };

@@ -221,11 +221,11 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "versionedHash": "blobHash004",
           },
         ],
+        "category": "optimism",
         "from": "address5",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
-        "rollup": "optimism",
         "to": "address4",
       },
     ],
@@ -291,11 +291,11 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "versionedHash": "blobHash004",
           },
         ],
+        "category": "optimism",
         "from": "address5",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
-        "rollup": "optimism",
         "to": "address4",
       },
     ],
@@ -303,7 +303,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
 ]
 `;
 
-exports[`Block router > getAll > when getting filtered block results > should only return the results that do not have a rollup when 'null' is provided 1`] = `
+exports[`Block router > getAll > when getting filtered block results > should only return the results that do not have a category when 'null' is provided 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
@@ -666,7 +666,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
 ]
 `;
 
-exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to a provided rollup 1`] = `
+exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to a provided category 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
@@ -2121,11 +2121,11 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "versionedHash": "blobHash006",
         },
       ],
+      "category": "base",
       "from": "address1",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",
-      "rollup": "base",
       "to": "address3",
     },
   ],
@@ -2169,11 +2169,11 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "versionedHash": "blobHash006",
         },
       ],
+      "category": "base",
       "from": "address1",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",
-      "rollup": "base",
       "to": "address3",
     },
   ],

@@ -4,7 +4,7 @@ import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
 
 import { blobStorageSchema } from "./schemas";
-import type { ZodBlobStorageEnum, ZodRollupEnum } from "./schemas";
+import type { ZodBlobStorageEnum, ZodCategoryEnum } from "./schemas";
 
 export function serializeDecimal(decimal: Prisma.Decimal): string {
   return decimal.toFixed();
@@ -14,10 +14,10 @@ export function serializeDate(date: Date): string {
   return date.toISOString();
 }
 
-export function serializeRollup(
-  rollup?: $Enums.Rollup | null
-): ZodRollupEnum | null {
-  return rollup ? (rollup.toLowerCase() as ZodRollupEnum) : null;
+export function serializeCategory(
+  category?: $Enums.Category | null
+): ZodCategoryEnum | null {
+  return category ? (category.toLowerCase() as ZodCategoryEnum) : null;
 }
 
 export function serializeBlobStorage(

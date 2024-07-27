@@ -53,7 +53,7 @@ export const getAll = publicProcedure
         where: {
           blockNumber: filters.blockNumber,
           blockTimestamp: filters.blockTimestamp,
-          rollup: filters.transactionRollup,
+          category: filters.transactionCategory,
           OR: filters.transactionAddresses,
           block: filters.blockSlot
             ? {
@@ -72,10 +72,10 @@ export const getAll = publicProcedure
         ],
         ...ctx.pagination,
       }),
-      filters.transactionRollup
+      filters.transactionCategory
         ? ctx.prisma.transaction.count({
             where: {
-              rollup: filters.transactionRollup,
+              category: filters.transactionCategory,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({

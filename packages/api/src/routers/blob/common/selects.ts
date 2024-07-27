@@ -25,7 +25,7 @@ export function createBlobSelect(expands: Expands) {
         txHash: true,
         transaction: {
           select: {
-            rollup: true,
+            category: true,
             ...(expands.transaction?.select ?? {}),
           },
         },
@@ -52,7 +52,7 @@ export function createBlobsOnTransactionsSelect(expands: Expands) {
     },
     transaction: {
       select: {
-        rollup: true,
+        category: true,
         ...(expands.transaction?.select ?? {}),
       },
     },

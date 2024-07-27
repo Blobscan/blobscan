@@ -46,15 +46,15 @@ describe("Transaction router", async () => {
       expect(totalTransactions).toBe(expectedTotalTransactions);
     });
 
-    it("should get the total number of transactions for a rollup", async () => {
+    it("should get the total number of transactions for a category", async () => {
       const expectedTotalTransactions = await ctx.prisma.transaction.count({
         where: {
-          rollup: "BASE",
+          category: "BASE",
         },
       });
 
       const { totalTransactions } = await caller.tx.getAll({
-        rollup: "base",
+        category: "base",
       });
 
       expect(totalTransactions).toBe(expectedTotalTransactions);

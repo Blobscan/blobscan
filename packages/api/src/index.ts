@@ -15,7 +15,7 @@ export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
 export type {
   BlobStorage,
-  Rollup,
+  Category,
   Metric,
   MetricHistogram,
   MetricHistogramBucket,

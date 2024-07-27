@@ -7,9 +7,9 @@ import {
   serializedExpandedBlockSchema,
 } from "../../../middlewares/withExpands";
 import {
-  rollupSchema,
+  categorySchema,
   serializeDecimal,
-  serializeRollup,
+  serializeCategory,
   isEmptyObject,
   serializeDerivedTxBlobGasFields,
   serializedDerivedTxBlobGasFieldsSchema,
@@ -28,7 +28,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
   to: z.string(),
   maxFeePerBlobGas: z.string(),
   blobAsCalldataGasUsed: z.string(),
-  rollup: rollupSchema.nullable(),
+  category: categorySchema.nullable(),
   blobs: z.array(
     z
       .object({
@@ -80,7 +80,7 @@ export function serializeBaseTransactionFields(
     index,
     fromId,
     toId,
-    rollup,
+    category,
     blobs,
     block,
   } = txQuery;
@@ -96,7 +96,7 @@ export function serializeBaseTransactionFields(
     from: fromId,
     blobAsCalldataGasUsed: serializeDecimal(txQuery.blobAsCalldataGasUsed),
     maxFeePerBlobGas: serializeDecimal(txQuery.maxFeePerBlobGas),
-    rollup: serializeRollup(rollup),
+    category: serializeCategory(category),
     blobs: blobs.map(({ blob, blobHash, index }) => {
       return {
         versionedHash: blobHash,

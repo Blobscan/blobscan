@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
 import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
-import type { Rollup } from "@blobscan/db";
+import type { Category } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import { createTRPCContext } from "../src/context";
@@ -18,8 +18,8 @@ import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
-type FilterAndPagination = Omit<FiltersSchema, "rollup"> & {
-  rollup?: Lowercase<Rollup> | "null";
+type FilterAndPagination = Omit<FiltersSchema, "category"> & {
+  category?: Lowercase<Category> | "null";
 } & WithPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
@@ -139,17 +139,17 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
-    it("should return the results corresponding to a provided rollup", async () => {
+    it("should return the results corresponding to a provided category", async () => {
       const result = await fetcher({
-        rollup: "optimism",
+        category: "optimism",
       });
 
       expect(result).toMatchSnapshot();
     });
 
-    it("should only return the results that do not have a rollup when 'null' is provided", async () => {
+    it("should only return the results that do not have a category when 'null' is provided", async () => {
       const result = await fetcher({
-        rollup: "null",
+        category: "null",
       });
 
       expect(result).toMatchSnapshot();

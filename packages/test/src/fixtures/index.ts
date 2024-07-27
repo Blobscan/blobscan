@@ -1,5 +1,5 @@
 import type { BlobData, BlobDataStorageReference } from "@prisma/client";
-import type { PrismaClient, Rollup } from "@prisma/client";
+import type { PrismaClient, Category } from "@prisma/client";
 
 import POSTGRES_DATA from "./postgres/data.json";
 
@@ -10,7 +10,7 @@ export const fixtures = {
   addresses: POSTGRES_DATA.addresses,
   txs: POSTGRES_DATA.txs.map((tx) => ({
     ...tx,
-    rollup: tx.rollup as Rollup | null,
+    category: tx.category as Category | null,
   })),
   txForks: POSTGRES_DATA.transactionForks,
   blobs: POSTGRES_DATA.blobs,

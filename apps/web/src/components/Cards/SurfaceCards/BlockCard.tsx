@@ -3,10 +3,10 @@ import type { FC } from "react";
 
 import type dayjs from "@blobscan/dayjs";
 
+import { CategoryIcon } from "~/components/CategoryIcon";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
-import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
-import type { Rollup } from "~/types";
+import type { Category } from "~/types";
 import { buildBlockRoute } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
@@ -20,7 +20,7 @@ type BlockCardProps = {
     blobGasUsed: bigint;
     timestamp: dayjs.Dayjs;
     transactions: {
-      rollup?: Rollup | null;
+      category?: Category | null;
       blobs: { versionedHash: string }[];
     }[];
   };
@@ -34,8 +34,9 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
     () => transactions?.reduce((acc, tx) => acc + tx.blobs.length, 0),
     [transactions]
   );
-  const rollups =
-    (transactions?.map((tx) => tx.rollup).filter(Boolean) as Rollup[]) ?? [];
+  const categories =
+    (transactions?.map((tx) => tx.category).filter(Boolean) as Category[]) ??
+    [];
 
   const hasOneBlob = blobCount === 1;
 
@@ -52,8 +53,8 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
           )}
         </div>
         <div className="flex items-center gap-2">
-          {rollups.map((rollup, i) => (
-            <RollupIcon key={i} rollup={rollup} />
+          {categories.map((category, i) => (
+            <CategoryIcon key={i} category={category} />
           ))}
         </div>
       </div>

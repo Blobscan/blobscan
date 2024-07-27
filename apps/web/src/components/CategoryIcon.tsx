@@ -16,16 +16,16 @@ import StarknetIcon from "~/icons/starknet.svg";
 import TaikoIcon from "~/icons/taiko.svg";
 import ZkSyncIcon from "~/icons/zksync.svg";
 import ZoraIcon from "~/icons/zora.svg";
-import type { Rollup, Size } from "~/types";
+import type { Category, Size } from "~/types";
 import { capitalize } from "~/utils";
 
-export type RollupIconProps = {
-  rollup: Required<Rollup>;
+export type CategoryIconProps = {
+  category: Required<Category>;
   size?: Size;
 };
 
-export const RollupIcon: React.FC<RollupIconProps> = ({
-  rollup,
+export const CategoryIcon: React.FC<CategoryIconProps> = ({
+  category,
   size = "md",
 }) => {
   const commonStyles = classNames({
@@ -33,75 +33,75 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     "h-4 w-4": size === "md",
     "h-5 w-5": size === "lg",
   });
-  const rollupLabel = capitalize(rollup);
-  let rollupIcon;
+  const categoryLabel = capitalize(category);
+  let categoryIcon;
 
-  switch (rollup) {
+  switch (category) {
     case "arbitrum":
-      rollupIcon = (
+      categoryIcon = (
         <ArbitrumIcon
           className={`${commonStyles} text-[#1b4add] dark:text-[#ffffff]`}
         />
       );
       break;
     case "base":
-      rollupIcon = <BaseIcon className={commonStyles} />;
+      categoryIcon = <BaseIcon className={commonStyles} />;
       break;
     case "blast":
-      rollupIcon = (
+      categoryIcon = (
         <BlastIcon
           className={`${commonStyles} rounded bg-black dark:bg-opacity-0`}
         />
       );
       break;
     case "boba":
-      rollupIcon = <BobaIcon className={commonStyles} />;
+      categoryIcon = <BobaIcon className={commonStyles} />;
       break;
     case "camp":
-      rollupIcon = null;
+      categoryIcon = null;
       break;
     case "kroma":
-      rollupIcon = <KromaIcon className={commonStyles} />;
+      categoryIcon = <KromaIcon className={commonStyles} />;
       break;
     case "linea":
-      rollupIcon = <LineaIcon className={"h-3.5 w-3.5"} />;
+      categoryIcon = <LineaIcon className={"h-3.5 w-3.5"} />;
       break;
     case "metal":
-      rollupIcon = <MetalIcon className={commonStyles} />;
+      categoryIcon = <MetalIcon className={commonStyles} />;
       break;
     case "mode":
-      rollupIcon = (
+      categoryIcon = (
         <ModeIcon className="h-5 w-5 text-[#ceb245] dark:text-[#ffd940]" />
       );
       break;
     case "optimism":
-      rollupIcon = <OptimismIcon className={commonStyles} />;
+      categoryIcon = <OptimismIcon className={commonStyles} />;
       break;
     case "optopia":
-      rollupIcon = <OptopiaIcon className={commonStyles} />;
+      categoryIcon = <OptopiaIcon className={commonStyles} />;
       break;
     case "paradex":
-      rollupIcon = null;
+      categoryIcon = null;
       break;
     case "pgn":
-      rollupIcon = <PGNIcon className={commonStyles} />;
+      categoryIcon = <PGNIcon className={commonStyles} />;
       break;
     case "starknet":
-      rollupIcon = <StarknetIcon className={commonStyles} />;
+      categoryIcon = <StarknetIcon className={commonStyles} />;
       break;
     case "scroll":
-      rollupIcon = <ScrollIcon className={commonStyles} />;
+      categoryIcon = <ScrollIcon className={commonStyles} />;
       break;
     case "taiko":
-      rollupIcon = <TaikoIcon className={commonStyles} />;
+      categoryIcon = <TaikoIcon className={commonStyles} />;
       break;
     case "zksync":
-      rollupIcon = <ZkSyncIcon className={commonStyles} />;
+      categoryIcon = <ZkSyncIcon className={commonStyles} />;
       break;
     case "zora":
-      rollupIcon = <ZoraIcon className={commonStyles} />;
+      categoryIcon = <ZoraIcon className={commonStyles} />;
       break;
   }
 
-  return <div title={rollupLabel}>{rollupIcon}</div>;
+  return <div title={categoryLabel}>{categoryIcon}</div>;
 };

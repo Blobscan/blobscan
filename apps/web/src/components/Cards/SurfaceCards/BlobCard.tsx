@@ -1,10 +1,10 @@
 import type { FC } from "react";
 
-import { RollupIcon } from "~/components/RollupIcon";
+import { CategoryIcon } from "~/components/CategoryIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
-import type { Rollup } from "~/types";
+import type { Category } from "~/types";
 import { buildBlobRoute, formatBytes } from "~/utils";
 import type { DeserializedBlob } from "~/utils";
 import { Link } from "../../Link";
@@ -16,7 +16,7 @@ type BlobCardProps = Partial<{
     DeserializedBlob,
     "versionedHash" | "commitment" | "size" | "dataStorageReferences" | "proof"
   >;
-  transactions: { rollup: Rollup | null }[];
+  transactions: { category: Category | null }[];
   compact?: boolean;
 }>;
 
@@ -44,9 +44,9 @@ const BlobCard: FC<BlobCardProps> = ({
               <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
             </div>
             {transactions
-              ?.filter((tx) => !!tx.rollup)
-              .map(({ rollup }) => (
-                <RollupIcon key={rollup} rollup={rollup as Rollup} />
+              ?.filter((tx) => !!tx.category)
+              .map(({ category }) => (
+                <CategoryIcon key={category} category={category as Category} />
               ))}
           </div>
         ) : (

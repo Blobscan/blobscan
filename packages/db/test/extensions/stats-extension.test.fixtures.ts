@@ -1,4 +1,4 @@
-import { Rollup } from "@prisma/client";
+import { Category } from "@prisma/client";
 
 export const NEW_DATA = {
   blocks: [
@@ -38,7 +38,7 @@ export const NEW_DATA = {
       maxFeePerBlobGas: 100,
       gasPrice: 10,
       blobAsCalldataGasUsed: 1000,
-      rollup: Rollup.BASE,
+      category: Category.BASE,
       insertedAt: "2023-09-01T10:00:00Z",
       updatedAt: "2023-09-01T10:00:00Z",
     },
@@ -52,7 +52,7 @@ export const NEW_DATA = {
       maxFeePerBlobGas: 110,
       gasPrice: 11,
       blobAsCalldataGasUsed: 1100,
-      rollup: Rollup.OPTIMISM,
+      category: Category.OPTIMISM,
       insertedAt: "2023-09-01T12:00:00Z",
       updatedAt: "2023-09-01T12:00:00Z",
     },

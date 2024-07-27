@@ -1,11 +1,11 @@
 import React from "react";
 
-import type { Rollup, Size } from "~/types";
+import type { Category, Size } from "~/types";
 import { capitalize } from "~/utils";
-import { RollupIcon } from "../RollupIcon";
+import { CategoryIcon } from "../CategoryIcon";
 import { Badge } from "./Badge";
 
-const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
+const CATEGORY_CONFIG: Record<Category, { style: string; label?: string }> = {
   arbitrum: {
     style: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
   },
@@ -67,19 +67,22 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
 };
 
-type RollupBadgeProps = {
-  rollup: Rollup;
+type CategoryBadgeProps = {
+  category: Category;
   size?: Size;
 };
 
-export const RollupBadge: React.FC<RollupBadgeProps> = ({ rollup, size }) => {
-  const { style, label } = ROLLUP_CONFIG[rollup];
+export const CategoryBadge: React.FC<CategoryBadgeProps> = ({
+  category,
+  size,
+}) => {
+  const { style, label } = CATEGORY_CONFIG[category];
 
   return (
     <Badge
       className={style}
-      icon={<RollupIcon rollup={rollup} />}
-      label={label ?? capitalize(rollup)}
+      icon={<CategoryIcon category={category} />}
+      label={label ?? capitalize(category)}
       size={size}
     />
   );

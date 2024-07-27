@@ -18,7 +18,7 @@ export type SeedParams = {
 };
 
 export const seedParams: SeedParams = {
-  totalDays: 45,
+  totalDays: 5,
   minBlocksPerDay: 300,
   maxBlocksPerDay: 500,
 

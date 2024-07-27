@@ -43,7 +43,7 @@ export type BlockWithExpandedBlobsAndTransactions = Omit<
   transactions: BlockExpandedTransactionWithExpandedBlobs[];
 };
 
-export type Rollup = NonNullable<Transaction["rollup"]>;
+export type Category = NonNullable<Transaction["category"]>;
 
 export type BlobStorage =
   GetByBlobIdOutput["dataStorageReferences"][number]["storage"];

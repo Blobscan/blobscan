@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { CategoryBadge } from "~/components/Badges/CategoryBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
@@ -70,7 +70,7 @@ const Tx: NextPage = () => {
       blockTimestamp,
       from,
       to,
-      rollup,
+      category,
       blobGasUsed,
       blobGasBaseFee,
       blobGasMaxFee,
@@ -108,10 +108,10 @@ const Tx: NextPage = () => {
       },
     ];
 
-    if (rollup) {
+    if (category) {
       detailsFields.push({
-        name: "Rollup",
-        value: <RollupBadge rollup={rollup} />,
+        name: "Category",
+        value: <CategoryBadge category={category} />,
       });
     }
 

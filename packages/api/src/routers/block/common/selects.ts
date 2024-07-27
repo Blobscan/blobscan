@@ -45,10 +45,10 @@ export function createBlockSelect(expands: Expands, filters?: Filters) {
         index: "asc",
       },
       where:
-        filters?.transactionRollup !== undefined ||
+        filters?.transactionCategory !== undefined ||
         filters?.transactionAddresses
           ? {
-              rollup: filters.transactionRollup,
+              category: filters.transactionCategory,
               OR: filters.transactionAddresses,
             }
           : undefined,
