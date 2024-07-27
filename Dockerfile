@@ -25,6 +25,19 @@ WORKDIR /prepare
 
 RUN turbo prune @blobscan/web --docker --out-dir /prepare/web
 RUN turbo prune @blobscan/rest-api-server --docker --out-dir /prepare/api
+RUN turbo prune @blobscan/prisma --docker --out-dir /prepare/prisma
+
+FROM deps as prisma-builder
+
+WORKDIR /prisma
+COPY --from=deps /prepare/prisma/json/packages/prisma/package.json .
+COPY --from=deps /prepare/prisma/pnpm-lock.yaml .
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install -D --ignore-workspace
+
+COPY --from=deps /prepare/web/full/packages/db/prisma/schema.prisma .
+COPY --from=deps /prepare/web/full/packages/db/prisma/migrations ./migrations
 
 FROM deps AS web-builder
 
@@ -54,7 +67,8 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-COPY --from=web-builder --chown=nextjs:nodejs /prepare/web/full/packages/db ./packages/db
+COPY --from=prisma-builder --chown=nextjs:nodejs /prisma ./prisma
+
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
@@ -88,8 +102,10 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+COPY --from=prisma-builder --chown=nextjs:nodejs /prisma ./prisma
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
-COPY --from=api-builder /prepare/api/full/packages/db ./packages/db
+
+
 RUN mv /app/client/* /app/
 
 EXPOSE 3001
