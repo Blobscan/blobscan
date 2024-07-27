@@ -558,9 +558,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
         version: link:../open-telemetry
-      '@prisma/client':
-        specifier: ^5.5.2
-        version: 5.17.0(prisma@5.17.0)
+      '@blobscan/prisma':
+        specifier: workspace:^0.0.1
+        version: link:../prisma
     devDependencies:
       '@faker-js/faker':
         specifier: ^8.0.2
@@ -568,9 +568,6 @@ importers:
       js-sha256:
         specifier: ^0.9.0
         version: 0.9.0
-      prisma:
-        specifier: ^5.5.2
-        version: 5.17.0
 
   packages/env:
     dependencies:
@@ -625,6 +622,16 @@ importers:
       prom-client:
         specifier: ^14.2.0
         version: 14.2.0
+
+  packages/prisma:
+    dependencies:
+      '@prisma/client':
+        specifier: ^5.5.2
+        version: 5.17.0(prisma@5.17.0)
+    devDependencies:
+      prisma:
+        specifier: ^5.5.2
+        version: 5.17.0
 
   packages/syncers:
     dependencies:
