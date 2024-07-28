@@ -19,7 +19,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  output: "standalone",
+  output: process.env.NEXT_BUILD_OUTPUT,
   async rewrites() {
     /**
      * Redirect Grafana's metrics scrape requests from /metrics to the Next.js

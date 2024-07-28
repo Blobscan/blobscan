@@ -42,6 +42,9 @@ COPY --from=deps /prepare/web/full/packages/db/prisma/migrations ./migrations
 FROM deps AS web-builder
 
 WORKDIR /app
+
+ENV NEXT_BUILD_OUTPUT standalone
+
 COPY --from=deps /prepare/web/json .
 COPY --from=deps /prepare/web/pnpm-lock.yaml .
 
