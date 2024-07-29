@@ -108,9 +108,6 @@ ENV NODE_ENV production
 COPY --from=prisma-builder --chown=nextjs:nodejs /prisma ./prisma
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
 
-
-RUN mv /app/client/* /app/
-
 EXPOSE 3001
 ENV PORT 3001
 

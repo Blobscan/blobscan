@@ -10,5 +10,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["src", "sentry.ts"]
+  "include": ["src", "scripts"]
 }
