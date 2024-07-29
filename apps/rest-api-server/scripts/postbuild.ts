@@ -5,7 +5,7 @@ async function main() {
 
   await $`mv ${prismaFiles} dist`;
 
-  console.log("Prisma client files moved to dist root");
+  console.log("postbuild: Prisma client files moved to `dist` directory");
 
   const swaggerUiDist = path.join(
     __dirname,
@@ -25,7 +25,7 @@ async function main() {
   await $`cp ${path.join(swaggerUiDist, "favicon-16x16.png")} dist`;
   await $`cp ${path.join(swaggerUiDist, "favicon-32x32.png")} dist`;
 
-  console.log("Swagger UI assets copied to dist");
+  console.log("postbuild: Swagger UI assets copied to `dist` directory");
 }
 
 main().then(
