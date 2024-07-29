@@ -1,3 +1,4 @@
+import { env } from "@blobscan/env";
 import type { BaseSyncer } from "@blobscan/syncers";
 import {
   DailyStatsSyncer,
@@ -6,7 +7,6 @@ import {
   createRedisConnection,
 } from "@blobscan/syncers";
 
-import { env } from "@blobscan/env";
 import { logger } from "./logger";
 import { getNetworkDencunForkSlot } from "./utils";
 
@@ -56,7 +56,9 @@ export function setUpSyncers() {
 
     for (const syncer of syncers) {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      teardownPromise = teardownPromise.finally(() => syncer.close());
+      teardownPromise = teardownPromise.finally(async () => {
+        await syncer.close();
+      });
     }
 
     return teardownPromise;
