@@ -21,6 +21,11 @@
     "lint": {},
     "lint:fix": {},
     "svg:format": {},
+    "start": {
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "cache": false
+    },
     "test": {
       "inputs": ["test/**/*.test.ts"]
     },
