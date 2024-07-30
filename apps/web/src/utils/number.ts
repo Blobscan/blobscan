@@ -3,7 +3,13 @@ import prettyBytes from "pretty-bytes";
 
 type FormatMode = "compact" | "standard";
 
-export type BigIntLike = bigint | number | string;
+export function numberToBigInt(value: number): bigint {
+  if (Number.isNaN(value) || !Number.isFinite(value)) {
+    return BigInt(0);
+  }
+
+  return BigInt(Math.round(value));
+}
 
 const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
   compact: {
@@ -34,16 +40,13 @@ export function abbreviateNumber(value: number | string): string {
   }).format(Number(value));
 }
 
-export function performDiv(a: BigIntLike, b: BigIntLike, precision = 16) {
-  const a_ = BigInt(a);
-  const b_ = BigInt(b);
-
-  if (b_ === BigInt(0)) {
+export function performDiv(a: bigint, b: bigint, precision = 16) {
+  if (b === BigInt(0)) {
     throw new Error("Division by zero");
   }
 
   const scaleFactor = 10 ** precision;
-  const scaledResult = (a_ * BigInt(scaleFactor)) / b_;
+  const scaledResult = (a * BigInt(scaleFactor)) / b;
 
   return Number(scaledResult) / scaleFactor;
 }
@@ -59,18 +62,15 @@ export function formatNumber(
 }
 
 export function calculatePercentage(
-  numerator: BigIntLike,
-  denominator: BigIntLike,
+  numerator: bigint,
+  denominator: bigint,
   opts?: Partial<{ returnComplement: boolean }>
 ): number {
-  const num = BigInt(numerator);
-  const denom = BigInt(denominator);
-
-  if (denom === BigInt(0)) {
-    return Number(0);
+  if (denominator === BigInt(0)) {
+    return 0;
   }
 
-  const pct = performDiv(num, denom) * 100;
+  const pct = performDiv(numerator, denominator) * 100;
 
   if (opts?.returnComplement) {
     return 100 - pct;
