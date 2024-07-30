@@ -82,8 +82,8 @@ export const getBlobsTableRows = (blobs?: BlobItem[]) =>
             },
             {
               item: (
-                <div className="min-w-60 whitespace-break-spaces">
-                  {formatTimestamp(blockTimestamp)}
+                <div className="whitespace-break-spaces">
+                  {formatTimestamp(blockTimestamp, true)}
                 </div>
               ),
             },
