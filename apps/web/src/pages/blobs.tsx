@@ -12,9 +12,14 @@ import {
 import { api } from "~/api-client";
 import { formatNumber } from "~/utils";
 
+const BLOBS_TABLE_DEFAULT_PAGE_SIZE = 50;
+
 const Blobs: NextPage = function () {
   const router = useRouter();
-  const { p, ps } = getPaginationParams(router.query);
+  const { p, ps } = getPaginationParams(
+    router.query,
+    BLOBS_TABLE_DEFAULT_PAGE_SIZE
+  );
 
   const { data, error, isLoading } = api.blob.getAll.useQuery({ p, ps });
   const { blobs, totalBlobs } = data || {};
