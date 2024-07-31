@@ -84,7 +84,7 @@ export const MENU_DATA: Array<MenuItem | ExpandibleMenuItem> = [
   {
     label: "Networks",
     icon: <EthereumIcon />,
-    items: JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS),
+    items: JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"),
     type: "expandible",
   },
   {
