@@ -7,7 +7,7 @@ import { NavItem } from "./NavItem";
 import { MENU_DATA } from "./data";
 
 export const NavMenusSection: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (mobileMenuOpen) {

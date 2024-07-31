@@ -24,7 +24,7 @@ export function MobileMenu({
         <Button variant="icon" onClick={closeMenu} icon={<XMarkIcon />} />
         <div className="flex flex-col justify-center gap-4 p-2">
           {data.map((item) => (
-            <MobileMenuItem {...item} />
+            <MobileMenuItem {...item} key={`${item.label}-mobile`} />
           ))}
         </div>
       </div>
@@ -52,8 +52,9 @@ function MobileMenuItem(item: MenuItem | ExpandibleMenuItem) {
         {item.label}
       </div>
       <div className="flex flex-col gap-2 p-4">
-        {item.items.map((subItem) => (
+        {item.items.map((subItem, index) => (
           <a
+            key={`${subItem.label}-${index}-mobile`}
             href={subItem.href}
             className="duration-200 hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
           >
