@@ -1,10 +1,7 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import superjson from "superjson";
 
-import type { TRPCContext } from "@blobscan/api";
-import { appRouter, createTRPCInnerContext } from "@blobscan/api";
+import { searchByTerm } from "@blobscan/api/src/routers/search/byTerm";
 
 import { Button } from "~/components/Button";
 import type { RouterOutputs } from "~/api-client";
@@ -19,12 +16,6 @@ type SearchProps = {
 
 export const getServerSideProps: GetServerSideProps<SearchProps> =
   async function ({ query }) {
-    const ctx = (await createTRPCInnerContext()) as TRPCContext;
-    const helpers = createServerSideHelpers({
-      router: appRouter,
-      ctx,
-      transformer: superjson,
-    });
     const term = query.q as string | undefined;
 
     if (!term) {
@@ -35,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
       };
     }
 
-    const searchResults = await helpers.search.byTerm.fetch({ term });
+    const searchResults = await searchByTerm(term);
     const categories = Object.keys(searchResults) as SearchCategory[];
 
     if (categories.length === 0) {
