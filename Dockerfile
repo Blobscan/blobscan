@@ -4,6 +4,7 @@ FROM node:20-alpine3.18 as base
 
 ADD docker-entrypoint.sh /
 
+# stage: deps
 FROM base as deps
 
 ARG BUILD_TIMESTAMP
@@ -27,6 +28,7 @@ RUN turbo prune @blobscan/web --docker --out-dir /prepare/web
 RUN turbo prune @blobscan/rest-api-server --docker --out-dir /prepare/api
 RUN turbo prune @blobscan/prisma --docker --out-dir /prepare/prisma
 
+# stage: prisma-builder
 FROM deps as prisma-builder
 
 WORKDIR /prisma
@@ -39,6 +41,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install -D --ignore-works
 COPY --from=deps /prepare/web/full/packages/db/prisma/schema.prisma .
 COPY --from=deps /prepare/web/full/packages/db/prisma/migrations ./migrations
 
+# stage: web-builder
 FROM deps AS web-builder
 
 WORKDIR /app
@@ -57,6 +60,7 @@ COPY --from=deps /prepare/web/full .
 COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/web
 
+# stage: web
 FROM base AS web
 RUN apk add bash
 WORKDIR /app
@@ -84,6 +88,7 @@ ENV PORT 3000
 ENTRYPOINT ["/docker-entrypoint.sh", "web"]
 CMD ["--help"]
 
+# stage: api-builder
 FROM deps AS api-builder
 
 WORKDIR /app
@@ -99,6 +104,7 @@ COPY --from=deps /prepare/api/full .
 COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/rest-api-server
 
+# stage: api
 FROM node:20-bookworm-slim as api
 RUN apt-get update -y && apt-get install -y openssl bash
 WORKDIR /app
