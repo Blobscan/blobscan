@@ -176,7 +176,7 @@ const Blocks: NextPage = function () {
                 item: <EtherUnitDisplay amount={blobGasPrice} />,
               },
               {
-                item: <BlobGasUsageDisplay blobGasUsed={blobGasUsed} />,
+                item: <BlobGasUsageDisplay blobGasUsed={blobGasUsed} compact />,
               },
             ],
             expandItem: getBlocksTableRowExpandItem(block),
