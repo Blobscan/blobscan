@@ -105,13 +105,13 @@ COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/rest-api-server
 
 # stage: api
-FROM node:20-bookworm-slim as api
-RUN apt-get update -y && apt-get install -y openssl bash
+FROM base as api
+RUN apk add bash
 WORKDIR /app
 
 ENV NODE_ENV production
 
-COPY --from=prisma-builder --chown=nextjs:nodejs /prisma ./prisma
+COPY --from=prisma-builder /prisma ./prisma
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
 
 EXPOSE 3001
