@@ -11,6 +11,7 @@ import NextError from "~/pages/_error";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
 import { Input } from "../Input";
+import { Loading } from "../Loading";
 import { SearchResults } from "./SearchResults";
 import type { SearchResultsProps } from "./SearchResults";
 
@@ -26,7 +27,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 }: SearchInputProps) {
   const router = useRouter();
   const [term, setTerm] = useState("");
-  const debouncedTerm = useDebounce(term, 600);
+  const debouncedTerm = useDebounce(term, 200);
   const searchRef = useRef<HTMLFormElement>(null);
   const clickOutside = useClickOutside(searchRef);
 
@@ -36,7 +37,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     },
     {
       queryKey: ["search.byTerm", { term: debouncedTerm }],
-      enabled: !!debouncedTerm.length,
+      enabled: Boolean(debouncedTerm),
       staleTime: Infinity,
     }
   );
@@ -138,10 +139,14 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
           icon={
-            <MagnifyingGlassIcon
-              className="-ml-0.5 h-5 w-5"
-              aria-hidden="true"
-            />
+            searchQuery.isFetching ? (
+              <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
+            ) : (
+              <MagnifyingGlassIcon
+                className="-ml-0.5 h-5 w-5"
+                aria-hidden="true"
+              />
+            )
           }
           size="md"
         />
