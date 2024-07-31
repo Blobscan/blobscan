@@ -55,20 +55,20 @@ const NavItemBase: FC<{
 type NavItemProps = {
   label: string;
   icon?: ReactNode;
-  menuItems?: { label: string; href: string; icon?: ReactNode }[];
+  items?: { label: string; href: string; icon?: ReactNode }[];
   href?: string;
 };
 
 export const NavItem: FC<NavItemProps> = function ({
   label,
-  menuItems,
+  items,
   icon,
   href,
 }) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const [popoverAlignment, setPopoverAlignment] = useState("left-0");
   const isHovered = useHover(popoverRef);
-  const hasItems = menuItems && !!menuItems.length;
+  const hasItems = items && !!items.length;
 
   useEffect(() => {
     if (popoverRef.current && hasItems && isHovered) {
@@ -95,7 +95,10 @@ export const NavItem: FC<NavItemProps> = function ({
   }
 
   return (
-    <Popover ref={popoverRef} className="relative">
+    <Popover
+      ref={popoverRef}
+      className="relative flex items-center justify-center"
+    >
       {() => {
         return (
           <>
@@ -137,13 +140,13 @@ export const NavItem: FC<NavItemProps> = function ({
                 >
                   <div className="rounded-b-lg border-t-4 border-t-primary-400 bg-surface-light text-contentSecondary-light shadow-xl  shadow-primary-400/30 dark:border-t-primary-400 dark:bg-surface-dark dark:text-contentSecondary-dark  dark:shadow-lg dark:shadow-primary-800/20">
                     <div className="flex flex-col flex-nowrap gap-1">
-                      {menuItems.map((item, index) => (
+                      {items.map((item, index) => (
                         <MenuItem
                           key={index}
                           href={item.href}
                           label={item.label}
                           icon={item.icon}
-                          isLast={index === menuItems.length - 1}
+                          isLast={index === items.length - 1}
                         />
                       ))}
                     </div>
