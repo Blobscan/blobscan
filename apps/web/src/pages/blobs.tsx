@@ -104,7 +104,7 @@ const Blobs: NextPage = function () {
               },
               {
                 item: (
-                  <div className="flex gap-2 text-xs">
+                  <div className="flex gap-2">
                     <span>{formatBytes(size)}</span>
                   </div>
                 ),
