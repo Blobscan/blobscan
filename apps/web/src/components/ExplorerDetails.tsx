@@ -6,8 +6,8 @@ import Skeleton from "react-loading-skeleton";
 
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
+import Gas from "~/icons/gas.svg";
 import { capitalize, formatNumber, formatTtl } from "~/utils";
-import { LatestGasPrice } from "./GasPrice";
 
 type ExplorerDetailsItemProps = {
   name: string;
@@ -36,7 +36,19 @@ function ExplorerDetailsItem({
 export function ExplorerDetails() {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
+  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
+
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [
+    {
+      name: "Blob gas price",
+      icon: <Gas className="h-4 w-4" />,
+      value: latestBlock ? (
+        <div>
+          {latestBlock.blobGasPrice.toString()}
+          <span className="text-xs opacity-80"> wei</span>
+        </div>
+      ) : undefined,
+    },
     { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
     {
       name: "Last synced slot",
@@ -56,7 +68,6 @@ export function ExplorerDetails() {
 
   return (
     <div className="sm:fle flex w-full flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:justify-start">
-      <LatestGasPrice />
       {explorerDetailsItems.map(({ name, value, icon }, i) => {
         return (
           <div key={name} className="flex items-center gap-2">
