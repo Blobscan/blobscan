@@ -61,7 +61,7 @@ export const TRANSACTIONS_TABLE_HEADERS = [
       },
       {
         item: "Blob Gas Price",
-        className: "w-[180px]",
+        className: "2xl:w-full w-[180px]",
       },
     ],
   },
