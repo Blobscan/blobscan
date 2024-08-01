@@ -25,24 +25,31 @@ export const BLOCKS_TABLE_HEADERS = [
     cells: [
       {
         item: "Block number",
+        className: "2xl:w-[187px] lg:w-[158px] w-[118px]",
       },
       {
         item: "Timestamp",
+        className: "2xl:w-[237px] lg:w-[200px] w-[158px]",
       },
       {
         item: "Slot",
+        className: "2xl:w-[136px] lg:w-[115px] w-[96px]",
       },
       {
         item: "Txs",
+        className: "2xl:w-[77px] w-[66px]",
       },
       {
         item: "Blobs",
+        className: "2xl:w-[98px] w-[83px]",
       },
       {
         item: "Blob Gas Price",
+        className: "2xl:w-[195px] w-[165px]",
       },
       {
         item: "Blob Gas Used",
+        className: "2xl:w-full w-[240px]",
       },
     ],
   },
@@ -200,9 +207,10 @@ const Blocks: NextPage = function () {
       isLoading={isLoading}
       headers={BLOCKS_TABLE_HEADERS}
       rows={blocksRows}
-      totalItems={totalBlocks || 0}
+      totalItems={totalBlocks}
       paginationData={{ pageSize: ps, page: p }}
       isExpandable
+      rowSkeletonHeight={44}
     />
   );
 };
