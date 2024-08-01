@@ -86,7 +86,7 @@ export const Table: FC<TableProps> = function ({
                           ) => (
                             <Fragment key={i}>
                               {Boolean(expandableRowsMode && i === 0) && (
-                                <TableHeader className="sr-only w-16" />
+                                <TableHeader className="sr-only w-12" />
                               )}
                               <TableHeader
                                 className={`${generalHeaderStyles} ${specificHeaderStyles} truncate`}
