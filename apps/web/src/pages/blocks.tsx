@@ -180,7 +180,7 @@ const Blocks: NextPage = function () {
                 ),
               },
               {
-                item: <EtherUnitDisplay amount={blobGasPrice} />,
+                item: <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />,
               },
               {
                 item: <BlobGasUsageDisplay blobGasUsed={blobGasUsed} compact />,
