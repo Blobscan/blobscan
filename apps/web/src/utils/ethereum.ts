@@ -1,4 +1,9 @@
-import { calculatePercentage, formatNumber, performDiv } from "./number";
+import {
+  calculatePercentage,
+  formatNumber,
+  numberToBigInt,
+  performDiv,
+} from "./number";
 
 export const GAS_PER_BLOB = 131_072; // 2 ** 17
 export const BLOB_SIZE = GAS_PER_BLOB;
@@ -62,12 +67,16 @@ export function convertWei(
 
 export function calculateBlobGasTarget(blobGasUsed: bigint) {
   const blobsInBlock = performDiv(blobGasUsed, BigInt(GAS_PER_BLOB));
+
   const targetPercentage =
     blobsInBlock < TARGET_BLOBS_PER_BLOCK
-      ? calculatePercentage(blobsInBlock, TARGET_BLOBS_PER_BLOCK)
+      ? calculatePercentage(
+          numberToBigInt(blobsInBlock),
+          numberToBigInt(TARGET_BLOBS_PER_BLOCK)
+        )
       : calculatePercentage(
-          blobsInBlock - TARGET_BLOBS_PER_BLOCK,
-          TARGET_BLOBS_PER_BLOCK
+          numberToBigInt(blobsInBlock - TARGET_BLOBS_PER_BLOCK),
+          numberToBigInt(TARGET_BLOBS_PER_BLOCK)
         );
 
   return targetPercentage;
