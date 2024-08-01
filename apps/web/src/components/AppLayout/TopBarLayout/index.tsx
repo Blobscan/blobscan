@@ -22,9 +22,6 @@ export const TopBarLayout: React.FC = () => {
             <ThemeModeButton />
           </div>
         </div>
-        <div className="relative md:hidden">
-          <ThemeModeButton />
-        </div>
       </nav>
     );
   }

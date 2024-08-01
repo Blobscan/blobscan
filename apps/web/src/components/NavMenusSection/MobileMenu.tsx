@@ -32,7 +32,7 @@ export function MobileMenu() {
       />
       <MobileMenuBackground open={open} close={() => setOpen(false)} />
       <div
-        className={`fixed left-0 top-0 z-50 h-full w-[80%] overflow-y-auto border-r border-black border-opacity-20 bg-background-light p-4 duration-300 dark:bg-background-dark ${
+        className={`fixed left-0 top-0 z-50 h-full w-[80%] overflow-y-auto border-r border-black border-opacity-20 bg-background-light p-4 pb-16 duration-300 dark:bg-background-dark ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -46,9 +46,13 @@ export function MobileMenu() {
             )
           )}
         </div>
-        <div className="absolute bottom-4 left-4">
-          <ThemeModeButton />
-        </div>
+      </div>
+      <div
+        className={`fixed bottom-4 left-4 z-[60] rounded-full border border-[#888] border-opacity-10 bg-background-light duration-500 dark:bg-background-dark ${
+          open ? "translate-x-0" : "translate-x-[-200px]"
+        }`}
+      >
+        <ThemeModeButton />
       </div>
     </>
   );
@@ -112,9 +116,9 @@ function ExpandibleItem({ label, icon, items }: ExpandibleMenuItem) {
     <div>
       <button
         onClick={() => setOpen((value) => !value)}
-        className={`flex w-full items-center gap-3 rounded bg-opacity-20 p-2 ${
+        className={`flex w-full items-center gap-3 rounded border-iconHighlight-dark border-opacity-20 bg-opacity-20 p-2 duration-300 ${
           open
-            ? "border border-iconHighlight-dark border-opacity-20 bg-iconHighlight-dark bg-opacity-10 text-iconHighlight-light dark:text-iconHighlight-dark"
+            ? "border bg-iconHighlight-dark bg-opacity-10 text-iconHighlight-light dark:text-iconHighlight-dark"
             : ""
         }`}
       >
