@@ -14,11 +14,9 @@ export function MobileMenu({
 }) {
   return (
     <div
-      className="fixed left-0 top-0 z-10 h-full w-full overflow-y-auto bg-background-light p-4 shadow dark:bg-background-dark"
-      style={{
-        transform: open ? "translateX(0)" : "translateX(-100%)",
-        transition: "transform 0.6s",
-      }}
+      className={`fixed left-0 top-0 z-10 h-full w-full overflow-y-auto bg-background-light p-4 shadow duration-300 dark:bg-background-dark ${
+        open ? "translate-x-0" : "-translate-x-full"
+      }`}
     >
       <div>
         <Button variant="icon" onClick={closeMenu} icon={<XMarkIcon />} />
