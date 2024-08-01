@@ -77,7 +77,7 @@ function MobileMenuBackground({
 
   return (
     <div
-      className={`fixed left-0 top-0 h-full w-full bg-black ${
+      className={`fixed left-0 top-0 z-10 h-full w-full bg-black ${
         open ? "opacity-80" : "pointer-events-none opacity-0"
       }`}
       onClick={close}
