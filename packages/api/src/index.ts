@@ -23,6 +23,8 @@ export type {
   MetricsClient,
 } from "@blobscan/db";
 
+export { searchByTerm } from "./routers/search/byTerm";
+
 /**
  * Inference helpers for input types
  * @example type HelloInput = RouterInputs['example']['hello']
