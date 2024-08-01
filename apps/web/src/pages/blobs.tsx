@@ -24,21 +24,27 @@ const BLOBS_TABLE_HEADERS = [
     cells: [
       {
         item: "Versioned Hash",
+        className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
       },
       {
         item: "Transaction Hash",
+        className: "2xl:w-[318px] xl:w-[276px] lg:w-[218px] w-[172px]",
       },
       {
         item: "Block Number",
+        className: "2xl:w-[221px] xl:w-[191px] lg:w-[152px] w-[120px]",
       },
       {
         item: "Timestamp",
+        className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
       },
       {
         item: "Size",
+        className: "2xl:w-[178px] xl:w-[145px] lg:w-[101px] w-[66px]",
       },
       {
         item: "Storage",
+        className: "w-auto",
       },
     ],
   },
