@@ -27,7 +27,7 @@ nextjs:
 | `SENTRY_ORG`                             | Sentry organization                                                                         | No       | (empty)                                                                                                                                                                      |
 | `METRICS_ENABLED`                        | Expose the /metrics endpoint                                                                | No       | `false`                                                                                                                                                                      |
 | `TRACES_ENABLED`                         | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                                                                                                                                                                      |
-| `BLOB_PROPAGATOR_ENABLED`                | Enable blob propagation                                                                     | No       | `false`                                                                                                                                                                      |
+| `BLOB_PROPAGATOR_ENABLED`                | Enable uploading blobs to multiple storages in parallel                                     | No       | `false`                                                                                                                                                                      |
 
 # Blobscan API
 
@@ -58,7 +58,7 @@ nextjs:
 | `STATS_SYNCER_DAILY_CRON_PATTERN`   | Cron pattern for the daily stats job                                                               | No                              | `30 0 * * * *`             |
 | `STATS_SYNCER_OVERALL_CRON_PATTERN` | Cron pattern for the overall stats job                                                             | No                              | `*/15 * * * *`             |
 | `SWARM_STAMP_CRON_PATTERN`          | Cron pattern for swarm job                                                                         | No                              | `*/15 * * * *`             |
-| `BLOB_PROPAGATOR_ENABLED`           | Enable blob propagation                                                                            | No                              | `false`                    |
+| `BLOB_PROPAGATOR_ENABLED`           | Enable parallel uploading of blobs to multiple storage locations                                   | No                              | `false`                    |
 
 # Blobscan indexer
 
