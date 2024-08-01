@@ -7,15 +7,18 @@ export function normalizeTimestamp(timestamp: number | Date | string) {
 }
 
 export function formatTimestamp(
-  timestamp: number | Date | string | dayjs.Dayjs
+  timestamp: number | Date | string | dayjs.Dayjs,
+  compact = false
 ) {
   const unixHandler = dayjs.isDayjs(timestamp)
     ? timestamp
     : normalizeTimestamp(timestamp);
 
-  return `${unixHandler.fromNow()} (${unixHandler.format(
-    "MMM D, YYYY h:mm AZ"
-  )})`;
+  const dateFormattedSuffix = compact
+    ? ""
+    : `(${unixHandler.format("MMM D, YYYY h:mm AZ")})`;
+
+  return `${unixHandler.fromNow()} ${dateFormattedSuffix}`;
 }
 
 export function formatDate(

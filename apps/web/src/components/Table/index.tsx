@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import type { FC, ReactNode } from "react";
+import cn from "classnames";
 
 import type { Size } from "~/types";
 import { TableCell } from "./TableCell";
@@ -17,25 +18,30 @@ type RowCell = {
   item: ReactNode;
 } & TableCellProps;
 
+export type TableHeader = {
+  cells: HeaderCell[];
+  sticky?: boolean;
+  spanFullRow?: boolean;
+  className?: string;
+};
+
+export type TableRow = {
+  cells: RowCell[];
+  expandItem?: ReactNode;
+  sticky?: boolean;
+  spanFullRow?: boolean;
+  className?: string;
+};
+
 export type TableProps = {
   expandableRowsMode?: boolean;
-  headers?: {
-    cells: HeaderCell[];
-    sticky?: boolean;
-    spanFullRow?: boolean;
-    className?: string;
-  }[];
-  rows?: {
-    cells: RowCell[];
-    expandItem?: ReactNode;
-    sticky?: boolean;
-    spanFullRow?: boolean;
-    className?: string;
-  }[];
+  headers?: TableHeader[];
+  rows?: TableRow[];
   className?: string;
   size?: Size;
   alignment?: Alignment;
   variant?: Variant;
+  fixedColumnsWidth?: boolean;
 };
 
 export const Table: FC<TableProps> = function ({
@@ -46,6 +52,7 @@ export const Table: FC<TableProps> = function ({
   expandableRowsMode,
   headers,
   rows,
+  fixedColumnsWidth = false,
 }) {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -54,7 +61,11 @@ export const Table: FC<TableProps> = function ({
           <div
             className={`inline-block min-w-full py-2 align-middle ${className}`}
           >
-            <table className="min-w-full border-separate border-spacing-0 rounded">
+            <table
+              className={cn("w-full border-separate border-spacing-0 rounded", {
+                "table-fixed": fixedColumnsWidth,
+              })}
+            >
               {headers && (
                 <thead>
                   {headers.map(
