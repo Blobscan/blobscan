@@ -29,30 +29,39 @@ export const TRANSACTIONS_TABLE_HEADERS = [
     cells: [
       {
         item: "Hash",
+        className: "w-[150px]",
       },
       {
         item: "Block number",
+        className: "w-[127px]",
       },
       {
         item: "Timestamp",
+        className: "w-[160px]",
       },
       {
         item: "From",
+        className: "w-[150px]",
       },
       {
         item: "To",
+        className: "w-[148px]",
       },
       {
         item: "Rollup",
+        className: "w-[72px]",
       },
       {
         item: "Blob Base Fee",
+        className: "w-[172px]",
       },
       {
         item: "Blob Max Fee",
+        className: "w-[162px]",
       },
       {
         item: "Blob Gas Price",
+        className: "w-[180px]",
       },
     ],
   },
@@ -266,7 +275,7 @@ const Txs: NextPage = function () {
       isLoading={isLoading}
       headers={TRANSACTIONS_TABLE_HEADERS}
       rows={transactionRows}
-      totalItems={totalTransactions || 0}
+      totalItems={totalTransactions}
       paginationData={{ pageSize: ps, page: p }}
       isExpandable
     />
