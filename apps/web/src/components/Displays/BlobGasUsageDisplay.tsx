@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import cn from "classnames";
 
 import {
   BLOB_GAS_LIMIT_PER_BLOCK,
@@ -11,6 +12,7 @@ import { PercentageBar } from "../PercentageBar";
 
 type BlobGasUsageDisplayProps = {
   blobGasUsed: bigint;
+  compact?: boolean;
 };
 
 function getTargetSign(blobGasUsed: bigint): "+" | "-" | undefined {
@@ -25,6 +27,7 @@ function getTargetSign(blobGasUsed: bigint): "+" | "-" | undefined {
 
 export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   blobGasUsed,
+  compact = false,
 }) {
   const blobGasUsedPercentage = calculatePercentage(
     blobGasUsed,
@@ -36,7 +39,11 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   const isNegative = targetSign === "-";
 
   return (
-    <div className="flex flex-col gap-2 md:flex-row">
+    <div
+      className={cn("flex flex-col gap-2 md:flex-row", {
+        "md:flex-col": compact,
+      })}
+    >
       <div>
         {formatNumber(blobGasUsed)}
         <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
@@ -57,15 +64,19 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
               : "bg-contentTertiary-light dark:bg-contentTertiary-dark"
           }
           percentage={blobGasUsedPercentage / 100}
+          compact={compact}
         />
         <div
-          className={
+          className={cn(
             isPositive
               ? "text-positive-light dark:text-positive-dark"
               : isNegative
               ? "text-negative-light dark:text-negative-dark"
-              : "text-contentTertiary-light dark:text-contentTertiary-dark"
-          }
+              : "text-contentTertiary-light dark:text-contentTertiary-dark",
+            {
+              "text-xs": compact,
+            }
+          )}
         >
           {targetSign}
           {blobGasTarget > 0 ? blobGasTarget.toFixed(2) : blobGasTarget}% Blob

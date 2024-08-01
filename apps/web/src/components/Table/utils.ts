@@ -5,7 +5,7 @@ import type { Size } from "~/types";
 
 export type Alignment = "left" | "center" | "right";
 
-export type Variant = "simple" | "normal";
+export type Variant = "simple" | "normal" | "transparent";
 
 export interface TableElementProps {
   className?: string;

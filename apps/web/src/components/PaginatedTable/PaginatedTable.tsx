@@ -14,6 +14,7 @@ import { Table } from "~/components/Table";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 const PAGE_SIZES = [10, 25, 50, 100];
+const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 type PaginationData = {
   page: number;
@@ -26,12 +27,19 @@ export type PaginatedTableProps = {
   totalItems?: number;
   isExpandable?: boolean;
   paginationData: PaginationData;
+  rowSkeletonHeight?: string | number;
 } & Pick<TableProps, "headers" | "rows">;
 
-const getRowsSkeleton = (cellsNumber?: number) => {
+const getRowsSkeleton = (
+  cellsNumber = 0,
+  isExpandable: boolean,
+  height: PaginatedTableProps["rowSkeletonHeight"]
+) => {
   return Array.from({ length: 10 }).map((_) => ({
-    cells: Array.from({ length: cellsNumber || 0 }).map((_, i) => ({
-      item: <Skeleton key={i} height={22} width={"100%"} />,
+    cells: Array.from({
+      length: isExpandable ? cellsNumber + 1 : cellsNumber,
+    }).map((_, i) => ({
+      item: <Skeleton key={i} height={height} width={"100%"} />,
     })),
   }));
 };
@@ -44,6 +52,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   totalItems,
   paginationData,
   isExpandable = false,
+  rowSkeletonHeight = DEFAULT_ROW_SKELETON_HEIGHT,
 }) {
   const { page, pageSize } = paginationData;
 
@@ -108,7 +117,13 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
             expandableRowsMode={isExpandable}
             headers={headers}
             rows={
-              isLoading ? getRowsSkeleton(headers?.[0]?.cells.length) : rows
+              isLoading
+                ? getRowsSkeleton(
+                    headers?.[0]?.cells.length,
+                    isExpandable,
+                    rowSkeletonHeight
+                  )
+                : rows
             }
           />
           <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
