@@ -3,8 +3,10 @@ docker-compose*.yml
 README.md
 LICENSE
 node_modules
+.changeset
 .env*
 .env.example
 .git*
+.next
 .vscode
 out

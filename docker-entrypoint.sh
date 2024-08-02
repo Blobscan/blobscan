@@ -1,22 +1,5 @@
 #!/bin/bash
-set -eo pipefail
-shopt -s nullglob
-
-# logging functions
-blobscan_log() {
-	local type="$1"; shift
-	printf '%s [%s] [Entrypoint]: %s\n' "$(date --rfc-3339=seconds)" "$type" "$*"
-}
-blobscan_note() {
-	blobscan_log Note "$@"
-}
-blobscan_warn() {
-	blobscan_log Warn "$@" >&2
-}
-blobscan_error() {
-	blobscan_log ERROR "$@" >&2
-	exit 1
-}
+set -e
 
 apply_prisma_migrations() {
 	./node_modules/prisma/build/index.js migrate deploy $@
@@ -43,7 +26,8 @@ _main() {
 		echo "Usage:"
 		echo "$0 [web|api]"
 	else
-		blobscan_error "Invalid command: $1"
+		echo "Invalid command: $1"
+		exit 1
 	fi
 }
 
