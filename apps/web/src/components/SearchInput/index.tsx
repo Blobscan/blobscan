@@ -7,6 +7,8 @@ import { api } from "~/api-client";
 import type { RouterOutputs } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
+import EmptyBox from "~/icons/empty-box.svg";
+import Loading from "~/icons/loading.svg";
 import NextError from "~/pages/_error";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
@@ -26,7 +28,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 }: SearchInputProps) {
   const router = useRouter();
   const [term, setTerm] = useState("");
-  const debouncedTerm = useDebounce(term, 600);
+  const debouncedTerm = useDebounce(term, 200);
   const searchRef = useRef<HTMLFormElement>(null);
   const clickOutside = useClickOutside(searchRef);
 
@@ -36,7 +38,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     },
     {
       queryKey: ["search.byTerm", { term: debouncedTerm }],
-      enabled: !!debouncedTerm.length,
+      enabled: Boolean(debouncedTerm),
       staleTime: Infinity,
     }
   );
@@ -90,10 +92,20 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     );
   }
 
+  const debouncing = term !== debouncedTerm;
+
   const searchResults = searchQuery.data;
   const displayResults =
     !!searchResults &&
     !!Object.keys(searchResults).length &&
+    !clickOutside &&
+    term;
+
+  const displayNotFound =
+    !debouncing &&
+    !searchQuery.isFetching &&
+    searchResults &&
+    !Object.keys(searchResults).length &&
     !clickOutside &&
     term;
 
@@ -113,6 +125,9 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             placeholder={`Search by Blob / KZG / Txn / Block / Slot / Address`}
           />
         </div>
+
+        {displayNotFound && <NotFound />}
+
         {displayResults && searchResults && (
           <div className="absolute inset-x-0 top-11 z-10 rounded-md border border-border-light dark:border-border-dark">
             <SearchResults
@@ -138,10 +153,14 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
           icon={
-            <MagnifyingGlassIcon
-              className="-ml-0.5 h-5 w-5"
-              aria-hidden="true"
-            />
+            searchQuery.isFetching || debouncing ? (
+              <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
+            ) : (
+              <MagnifyingGlassIcon
+                className="-ml-0.5 h-5 w-5"
+                aria-hidden="true"
+              />
+            )
           }
           size="md"
         />
@@ -149,3 +168,14 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     </form>
   );
 };
+
+function NotFound() {
+  return (
+    <div className="absolute top-11 z-10 w-full rounded-md border border-border-light bg-surface-light p-8 dark:border-border-dark dark:bg-surface-dark">
+      <div className="flex flex-col items-center justify-center gap-2">
+        <EmptyBox className="h-8 w-8" strokeWidth={1} />
+        <div className="text-sm font-medium">No results found</div>
+      </div>
+    </div>
+  );
+}
