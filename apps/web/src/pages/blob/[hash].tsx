@@ -88,7 +88,18 @@ const Blob: NextPage = function () {
       });
     }
     detailsFields.push(
-      { name: "Versioned Hash", value: blob.versionedHash },
+      {
+        name: "Versioned Hash",
+        value: (
+          <div className="flex items-center gap-2">
+            {blob.versionedHash}
+            <CopyToClipboard
+              value={blob.versionedHash}
+              label="Copy versioned hash"
+            />
+          </div>
+        ),
+      },
       {
         name: "Commitment",
         value: (
