@@ -89,7 +89,15 @@ const Blob: NextPage = function () {
     }
     detailsFields.push(
       { name: "Versioned Hash", value: blob.versionedHash },
-      { name: "Commitment", value: blob.commitment },
+      {
+        name: "Commitment",
+        value: (
+          <div className="flex items-center gap-2">
+            {blob.commitment}
+            <CopyToClipboard value={blob.commitment} label="Copy commitment" />
+          </div>
+        ),
+      },
       {
         name: "Proof",
         value: (
