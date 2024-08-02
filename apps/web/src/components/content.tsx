@@ -29,20 +29,24 @@ export type NavItem = {
   label: string;
   href: string;
   icon: ReactNode;
-  type: "single";
 };
 
 export type ExpandibleNavItem = {
   label: string;
   icon: ReactNode;
   items: ExpandibleSubItem[];
-  type: "expandible";
 };
 
 export type ExpandibleSubItem = {
   label: string;
   href: string;
 };
+
+export function isExpandible(
+  item: ExpandibleNavItem | NavItem
+): item is ExpandibleNavItem {
+  return (item as ExpandibleNavItem).items !== undefined;
+}
 
 export const MENU_ITEMS: Array<NavItem | ExpandibleNavItem> = [
   {
@@ -62,7 +66,6 @@ export const MENU_ITEMS: Array<NavItem | ExpandibleNavItem> = [
         href: buildTransactionsRoute(),
       },
     ],
-    type: "expandible",
   },
   {
     label: "Stats",
@@ -81,24 +84,20 @@ export const MENU_ITEMS: Array<NavItem | ExpandibleNavItem> = [
         href: buildTransactionStatsRoute(),
       },
     ],
-    type: "expandible",
   },
   {
     label: "Networks",
     icon: <EthereumIcon />,
     items: JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"),
-    type: "expandible",
   },
   {
     label: "API",
     icon: <CommandLineIcon />,
     href: resolveApiUrl(),
-    type: "single",
   },
   {
     label: "Docs",
     icon: <BookOpenIcon />,
     href: "https://docs.blobscan.com",
-    type: "single",
   },
 ];

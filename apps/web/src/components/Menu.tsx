@@ -10,14 +10,15 @@ import {
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 import { useHover } from "~/hooks/useHover";
+import { isExpandible } from "./content";
 import type { ExpandibleNavItem, ExpandibleSubItem, NavItem } from "./content";
 
-export function NavItemComponent(props: ExpandibleNavItem | NavItem) {
-  if (props.type === "expandible") {
-    return <ExpandibleItem {...props} />;
+export function NavItemComponent(item: ExpandibleNavItem | NavItem) {
+  if (isExpandible(item)) {
+    return <ExpandibleItem {...item} />;
   }
 
-  return <SingleItem {...props} />;
+  return <SingleItem {...item} />;
 }
 
 function SingleItem({ label, href, icon }: NavItem) {
