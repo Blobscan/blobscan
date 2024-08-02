@@ -6,7 +6,9 @@ import Skeleton from "react-loading-skeleton";
 
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
+import Gas from "~/icons/gas.svg";
 import { capitalize, formatNumber, formatTtl } from "~/utils";
+import { EtherUnitDisplay } from "./Displays/EtherUnitDisplay";
 
 type ExplorerDetailsItemProps = {
   name: string;
@@ -35,6 +37,8 @@ function ExplorerDetailsItem({
 export function ExplorerDetails() {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
+  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
+
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [
     { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
     {
@@ -42,6 +46,16 @@ export function ExplorerDetails() {
       value: syncStateData
         ? formatNumber(syncStateData.lastUpperSyncedSlot ?? 0)
         : undefined,
+    },
+    {
+      name: "Blob gas price",
+      icon: <Gas className="h-4 w-4" />,
+      value: latestBlock && (
+        <EtherUnitDisplay
+          amount={Number(latestBlock.blobGasPrice.toString())}
+          toUnit="Gwei"
+        />
+      ),
     },
   ];
 
