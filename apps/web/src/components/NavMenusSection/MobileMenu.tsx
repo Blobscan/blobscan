@@ -30,7 +30,7 @@ export function MobileMenu() {
         onClick={() => setOpen(true)}
         icon={<Bars3Icon />}
       />
-      <MobileMenuBackground open={open} onClose={() => setOpen(false)} />
+      <MobileMenuBackground show={open} onClose={() => setOpen(false)} />
       <div
         className={`fixed left-0 top-0 z-50 h-full w-[80%] overflow-y-auto border-r border-black border-opacity-20 bg-background-light p-4 pb-16 duration-300 dark:bg-background-dark ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -59,10 +59,10 @@ export function MobileMenu() {
 }
 
 function MobileMenuBackground({
-  open,
+  show,
   onClose,
 }: {
-  open: boolean;
+  show: boolean;
   onClose: () => void;
 }) {
   useEffect(() => {
@@ -82,7 +82,7 @@ function MobileMenuBackground({
   return (
     <div
       className={`fixed left-0 top-0 z-10 h-full w-full bg-black ${
-        open ? "opacity-80" : "pointer-events-none opacity-0"
+        show ? "opacity-80" : "pointer-events-none opacity-0"
       }`}
       onClick={onClose}
       tabIndex={0}
