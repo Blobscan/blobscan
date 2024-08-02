@@ -16,25 +16,23 @@ The following metrics are provided by Blobscan:
 
 ## Blob metrics
 
-- **Total blobs**: Number of blobs sent since Dencun
-- **Total blob size**: Size of all blobs sent since Dencun
-- **Average blob size**: Average size of the blobs sent since Dencun
-- **Total unique blobs**: Number of unique blobs sent since Dencun
+- **Total blobs**: Number of blobs sent since Dencun fork
+- **Total blob size**: Size of all blobs sent since Dencun fork
+- **Total unique blobs**: Number of unique blobs sent since Dencun fork
 - **Daily blobs**: Number of blobs sent per day
 - **Daily unique blobs**: Number of unique blobs sent per day
 - **Daily blob size**: Size of blobs sent per day
-- **Daily average blob size**: Average size of blobs sent per day
 
 ## Block metrics
 
-- **Total blocks**: Number of blocks containing blobs since Dencun
+- **Total blocks**: Number of blocks containing blobs since Dencun fork
 - **Daily blocks**: Number of blocks containing blobs per day
 
 ## Transaction metrics
 
-- **Total transactions**: Number of transactions containing blobs since Dencun
-- **Total unique receivers**: Number of unique addresses that have received blobs since Dencun
-- **Total unique senders**: Number of unique addresses that have sent blobs since Dencun
+- **Total transactions**: Number of transactions containing blobs since Dencun fork
+- **Total unique receivers**: Number of unique addresses that have received blobs since Dencun fork
+- **Total unique senders**: Number of unique addresses that have sent blobs since Dencun fork
 - **Daily transactions**: Number of transactions containing blobs per day
 - **Daily unique receivers**: Number of unique addresses that have received blobs per day
 - **Daily unique senders**: Number of unique addresses that have sent blobs per day
