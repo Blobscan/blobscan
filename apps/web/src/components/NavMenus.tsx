@@ -1,6 +1,6 @@
 import { NavItem } from "./Menu";
 import { SidebarMenu } from "./SidebarMenu/SidebarMenu";
-import { MENU_DATA } from "./content";
+import { MENU_ITEMS } from "./content";
 
 export const NavMenusSection: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ export const NavMenusSection: React.FC = () => {
       <SidebarMenu />
 
       <div className="hidden items-center gap-4 md:flex">
-        {MENU_DATA.map((item) => (
+        {MENU_ITEMS.map((item) => (
           <NavItem {...item} key={item.label} />
         ))}
       </div>

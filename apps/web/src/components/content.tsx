@@ -42,7 +42,7 @@ export type ExpandibleMenuItem = {
   type: "expandible";
 };
 
-export const MENU_DATA: Array<MenuItem | ExpandibleMenuItem> = [
+export const MENU_ITEMS: Array<MenuItem | ExpandibleMenuItem> = [
   {
     label: "Blockchain",
     icon: <Squares2X2Icon />,

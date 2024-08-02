@@ -9,7 +9,7 @@ import { Collapsable } from "../Collapsable";
 import { Rotable } from "../Rotable";
 import { ThemeModeButton } from "../ThemeModeButton";
 import type { ExpandibleMenuItem, MenuItem } from "../content";
-import { MENU_DATA } from "../content";
+import { MENU_ITEMS } from "../content";
 import { SidePanel } from "./SidePanel";
 
 export function SidebarMenu() {
@@ -27,7 +27,7 @@ export function SidebarMenu() {
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
-            {MENU_DATA.map((item, i) =>
+            {MENU_ITEMS.map((item, i) =>
               item.type === "expandible" ? (
                 <ExpandibleItem {...item} key={`mobile-${i}`} />
               ) : (
