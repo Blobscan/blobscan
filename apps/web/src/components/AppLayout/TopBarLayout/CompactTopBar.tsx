@@ -1,4 +1,4 @@
-import { SidebarMenu } from "~/components/NavMenusSection/SidebarMenu";
+import { SidebarMenu } from "~/components/SidebarMenu/SidebarMenu";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
 import { TopBarSurface } from "./TopBarSurface";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
@@ -6,21 +6,14 @@ import { Bars3Icon } from "@heroicons/react/24/solid";
 import { BlobscanLogo } from "../BlobscanLogo";
 import { Button } from "../Button";
 import { Collapsable } from "../Collapsable";
+import type { ExpandibleMenuItem, MenuItem } from "../NavMenusSection/data";
+import { MENU_DATA } from "../NavMenusSection/data";
 import { Rotable } from "../Rotable";
 import { ThemeModeButton } from "../ThemeModeButton";
-import type { ExpandibleMenuItem, MenuItem } from "./data";
-import { MENU_DATA } from "./data";
+import { SidePanel } from "./SidePanel";
 
 export function SidebarMenu() {
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [open]);
 
   return (
     <>
@@ -30,23 +23,20 @@ export function SidebarMenu() {
         onClick={() => setOpen(true)}
         icon={<Bars3Icon />}
       />
-      <MobileMenuBackground show={open} onClose={() => setOpen(false)} />
-      <div
-        className={`fixed left-0 top-0 z-50 h-full w-[80%] overflow-y-auto border-r border-black border-opacity-20 bg-background-light p-4 pb-16 duration-300 dark:bg-background-dark ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <BlobscanLogo className="mb-8 mt-4 w-40" />
-        <div className="flex flex-col justify-center gap-2 opacity-80">
-          {MENU_DATA.map((item, i) =>
-            item.type === "expandible" ? (
-              <ExpandibleItem {...item} key={`mobile-${i}`} />
-            ) : (
-              <SingleItem {...item} key={`mobile-${i}`} />
-            )
-          )}
+      <SidePanel open={open} setOpen={setOpen}>
+        <div className="p-4 pb-16">
+          <BlobscanLogo className="mb-8 mt-4 w-40" />
+          <div className="flex flex-col justify-center gap-2 opacity-80">
+            {MENU_DATA.map((item, i) =>
+              item.type === "expandible" ? (
+                <ExpandibleItem {...item} key={`mobile-${i}`} />
+              ) : (
+                <SingleItem {...item} key={`mobile-${i}`} />
+              )
+            )}
+          </div>
         </div>
-      </div>
+      </SidePanel>
       <div
         className={`fixed bottom-4 left-4 z-[60] rounded-full border border-[#888] border-opacity-10 bg-background-light duration-500 dark:bg-background-dark ${
           open ? "translate-x-0" : "translate-x-[-200px]"
@@ -55,44 +45,6 @@ export function SidebarMenu() {
         <ThemeModeButton />
       </div>
     </>
-  );
-}
-
-function MobileMenuBackground({
-  show,
-  onClose,
-}: {
-  show: boolean;
-  onClose: () => void;
-}) {
-  useEffect(() => {
-    const keydownHandler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", keydownHandler);
-
-    return () => {
-      document.removeEventListener("keydown", keydownHandler);
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      className={`fixed left-0 top-0 z-10 h-full w-full bg-black ${
-        show ? "opacity-80" : "pointer-events-none opacity-0"
-      }`}
-      onClick={onClose}
-      tabIndex={0}
-      role="button"
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          onClose();
-        }
-      }}
-    />
   );
 }
 
