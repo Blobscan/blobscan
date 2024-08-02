@@ -38,7 +38,7 @@ export function SidePanel({
     <>
       <Overlay show={open} onClose={onClose} />
       <div
-        className={`fixed left-0 top-0 z-50 h-full w-[80%] overflow-y-auto border-r border-black border-opacity-20 bg-background-light duration-300 dark:bg-background-dark ${
+        className={`fixed left-0 top-0 z-50 h-full w-[80%] max-w-[400px] overflow-y-auto border-r border-black border-opacity-20 bg-background-light duration-300 dark:bg-background-dark ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

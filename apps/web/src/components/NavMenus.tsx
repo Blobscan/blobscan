@@ -5,9 +5,9 @@ import { MENU_ITEMS } from "./content";
 export const NavMenusSection: React.FC = () => {
   return (
     <div className="flex items-center justify-between">
-      <SidebarMenu className="md:hidden" />
+      <SidebarMenu className="xl:hidden" />
 
-      <div className="hidden items-center gap-4 md:flex">
+      <div className="hidden items-center gap-4 xl:flex">
         {MENU_ITEMS.map((item) => (
           <NavItemComponent {...item} key={item.label} />
         ))}
