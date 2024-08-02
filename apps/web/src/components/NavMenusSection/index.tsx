@@ -1,4 +1,4 @@
-import { NavItem } from "./NavItem";
+import { NavItem } from "../Menu";
 import { SidebarMenu } from "./SidebarMenu";
 import { MENU_DATA } from "./data";
 
