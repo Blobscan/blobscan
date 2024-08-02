@@ -10,7 +10,7 @@
   "access": "restricted",
   "baseBranch": "next",
   "updateInternalDependencies": "patch",
-  "privatePackages": { "version": true, "tag": true },
+  "privatePackages": { "version": true, "tag": false },
   "ignore": [
     "@blobscan/eslint-config",
     "@blobscan/github",
