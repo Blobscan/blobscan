@@ -11,7 +11,7 @@ import { ThemeModeButton } from "../ThemeModeButton";
 import type { ExpandibleMenuItem, MenuItem } from "./data";
 import { MENU_DATA } from "./data";
 
-export function MobileMenu() {
+export function SidebarMenu() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

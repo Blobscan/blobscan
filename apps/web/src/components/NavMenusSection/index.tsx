@@ -1,11 +1,11 @@
-import { MobileMenu } from "./MobileMenu";
 import { NavItem } from "./NavItem";
+import { SidebarMenu } from "./SidebarMenu";
 import { MENU_DATA } from "./data";
 
 export const NavMenusSection: React.FC = () => {
   return (
     <div className="flex items-center justify-between">
-      <MobileMenu />
+      <SidebarMenu />
 
       <div className="hidden items-center gap-4 md:flex">
         {MENU_DATA.map((item) => (

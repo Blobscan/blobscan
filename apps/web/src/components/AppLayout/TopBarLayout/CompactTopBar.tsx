@@ -1,4 +1,4 @@
-import { MobileMenu } from "~/components/NavMenusSection/MobileMenu";
+import { SidebarMenu } from "~/components/NavMenusSection/SidebarMenu";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
 import { TopBarSurface } from "./TopBarSurface";
@@ -10,7 +10,7 @@ export const CompactTopBar = function () {
         <TopBarSurface>
           <div className="flex w-full items-center justify-between">
             <BlobscanLogo className="w-40" />
-            <MobileMenu />
+            <SidebarMenu />
           </div>
         </TopBarSurface>
       </div>
