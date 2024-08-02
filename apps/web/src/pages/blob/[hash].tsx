@@ -11,6 +11,7 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
+import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Dropdown } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -89,7 +90,15 @@ const Blob: NextPage = function () {
     detailsFields.push(
       { name: "Versioned Hash", value: blob.versionedHash },
       { name: "Commitment", value: blob.commitment },
-      { name: "Proof", value: blob.proof }
+      {
+        name: "Proof",
+        value: (
+          <div className="flex items-center gap-2">
+            {blob.proof}
+            <CopyToClipboard value={blob.proof} label="Copy proof" />
+          </div>
+        ),
+      }
     );
 
     detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
