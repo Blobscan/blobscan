@@ -6,7 +6,9 @@ services:
     extends:
       file: docker-compose.yml
       service: web
-    build: .
+    build:
+      context: .
+      target: web
     ports:
       - 5556:5556 # Prisma studio
 
@@ -14,7 +16,9 @@ services:
     extends:
       file: docker-compose.yml
       service: api
-    build: .
+    build:
+      context: .
+      target: api
     depends_on:
       - postgres
 

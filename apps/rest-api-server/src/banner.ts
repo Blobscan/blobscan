@@ -1,6 +1,6 @@
 import { env } from "@blobscan/env";
 
-function run() {
+export function printBanner() {
   console.log(" ____  _       _");
   console.log("| __ )| | ___ | |__  ___  ___ __ _ _ __");
   console.log("|  _ \\| |/ _ \\| '_ \\/ __|/ __/ _` | '_ \\");
@@ -11,5 +11,3 @@ function run() {
 
   env.display();
 }
-
-run();

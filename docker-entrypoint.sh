@@ -1,21 +1,8 @@
 #!/bin/bash
-set -eo pipefail
-shopt -s nullglob
+set -e
 
-# logging functions
-blobscan_log() {
-	local type="$1"; shift
-	printf '%s [%s] [Entrypoint]: %s\n' "$(date --rfc-3339=seconds)" "$type" "$*"
-}
-blobscan_note() {
-	blobscan_log Note "$@"
-}
-blobscan_warn() {
-	blobscan_log Warn "$@" >&2
-}
-blobscan_error() {
-	blobscan_log ERROR "$@" >&2
-	exit 1
+apply_prisma_migrations() {
+	./node_modules/prisma/build/index.js migrate deploy $@
 }
 
 # check to see if this file is being run or sourced from another script
@@ -28,22 +15,19 @@ _is_sourced() {
 
 _main() {
 	if [ "$1" = 'web' ]; then
-		cd /app
-		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
-		cd /app/apps/web
-		pnpm start
+		apply_prisma_migrations --schema node_modules/.prisma/client/schema.prisma
+		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
-		cd /app
-		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
-		cd /app/apps/rest-api-server
-		pnpm start
+		apply_prisma_migrations --schema schema.prisma
+		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
 		echo ""
 		echo "Usage:"
 		echo "$0 [web|api]"
 	else
-		blobscan_error "Invalid command: $1"
+		echo "Invalid command: $1"
+		exit 1
 	fi
 }
 

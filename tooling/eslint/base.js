@@ -35,6 +35,7 @@ const config = {
     "**/.eslintrc.cjs",
     "**/*.config.js",
     "**/*.config.cjs",
+    "**/*.config.mjs",
     "packages/config/**",
     "coverage",
     ".next",

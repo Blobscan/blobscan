@@ -1,19 +1,13 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "globalDependencies": [
-    "**/.env"
-  ],
+  "globalDependencies": ["**/.env"],
   "pipeline": {
     "db:generate": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
+      "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
     "push": {
-      "inputs": [
-        "prisma/schema.prisma"
-      ],
+      "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
     "dev": {
@@ -21,31 +15,25 @@
       "cache": false
     },
     "build": {
-      "dependsOn": [
-        "^build",
-        "^db:generate"
-      ],
-      "outputs": [
-        ".next/**"
-      ]
+      "dependsOn": ["^build", "^db:generate"],
+      "outputs": [".next/**", "dist/**"]
     },
     "lint": {},
     "lint:fix": {},
     "svg:format": {},
+    "start": {
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "cache": false
+    },
     "test": {
-      "inputs": [
-        "test/**/*.test.ts"
-      ]
+      "inputs": ["test/**/*.test.ts"]
     },
     "test:ui": {
-      "inputs": [
-        "test/**/*.test.ts"
-      ]
+      "inputs": ["test/**/*.test.ts"]
     },
     "test:dev": {
-      "inputs": [
-        "test/**/*.test.ts"
-      ],
+      "inputs": ["test/**/*.test.ts"],
       "cache": false
     },
     "test:setup": {
@@ -55,9 +43,7 @@
       "cache": false
     },
     "type-check": {
-      "dependsOn": [
-        "@blobscan/db#db:generate"
-      ],
+      "dependsOn": ["@blobscan/db#db:generate"],
       "cache": false
     }
   },

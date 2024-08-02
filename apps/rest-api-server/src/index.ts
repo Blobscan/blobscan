@@ -16,12 +16,16 @@ import {
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
+import "./instrumentation";
+import { printBanner } from "./banner";
 import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
 import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
+
+printBanner();
 
 const closeSyncers = setUpSyncers();
 

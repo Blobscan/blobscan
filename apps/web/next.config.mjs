@@ -1,11 +1,16 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
+import path from "path";
 
 // Importing env files here to validate on build
 import "./src/env.mjs";
+import { fileURLToPath } from "url";
+
 import { printBanner } from "./banner.mjs";
 
 printBanner();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -14,6 +19,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  output: process.env.NEXT_BUILD_OUTPUT,
   async rewrites() {
     /**
      * Redirect Grafana's metrics scrape requests from /metrics to the Next.js
@@ -83,6 +89,7 @@ const config = {
   experimental: {
     instrumentationHook:
       !!process.env.TRACES_ENABLED || !!process.env.METRICS_ENABLED,
+    outputFileTracingRoot: path.join(__dirname, "../../"),
   },
 };
 
