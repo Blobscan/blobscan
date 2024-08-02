@@ -60,7 +60,9 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-COPY --from=web-builder --chown=nextjs:nodejs /prepare/web/full/packages/db ./packages/db
+COPY --from=web-builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+COPY --from=web-builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=web-builder --chown=nextjs:nodejs /prepare/api/full/packages/db/prisma/migrations ./migrations
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
@@ -96,9 +98,10 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+COPY --from=api-builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=api-builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=api-builder /app/apps/rest-api-server/dist ./
-COPY --from=api-builder /prepare/api/full/packages/db ./packages/db
-RUN mv /app/client/* /app/
+COPY --from=api-builder /prepare/api/full/packages/db/prisma/migrations ./migrations
 
 EXPOSE 3001
 ENV PORT 3001

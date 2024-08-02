@@ -18,6 +18,10 @@ blobscan_error() {
 	exit 1
 }
 
+apply_prisma_migrations() {
+	./node_modules/prisma/build/index.js migrate deploy $@
+}
+
 # check to see if this file is being run or sourced from another script
 _is_sourced() {
 	# https://unix.stackexchange.com/a/215279
@@ -28,12 +32,10 @@ _is_sourced() {
 
 _main() {
 	if [ "$1" = 'web' ]; then
-		cd /app
-		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+		apply_prisma_migrations --schema node_modules/.prisma/client/schema.prisma
 		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
-		cd /app
-		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+		apply_prisma_migrations --schema schema.prisma
 		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
