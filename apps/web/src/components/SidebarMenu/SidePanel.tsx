@@ -3,11 +3,11 @@ import { useEffect } from "react";
 
 export function SidePanel({
   open,
-  setOpen,
+  onClose,
   children,
 }: {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  onClose: () => void;
   children: ReactNode;
 }) {
   // Hides the scrollbar when the side panel is open
@@ -23,7 +23,7 @@ export function SidePanel({
   useEffect(() => {
     const keydownHandler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setOpen(false);
+        onClose();
       }
     };
 
@@ -32,11 +32,11 @@ export function SidePanel({
     return () => {
       document.removeEventListener("keydown", keydownHandler);
     };
-  }, [setOpen]);
+  }, [onClose]);
 
   return (
     <>
-      <MobileMenuBackground show={open} onClose={() => setOpen(false)} />
+      <MobileMenuBackground show={open} onClose={onClose} />
       <div
         className={`fixed left-0 top-0 z-50 h-full w-[80%] overflow-y-auto border-r border-black border-opacity-20 bg-background-light duration-300 dark:bg-background-dark ${
           open ? "translate-x-0" : "-translate-x-full"

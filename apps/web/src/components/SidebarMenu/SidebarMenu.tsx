@@ -23,7 +23,7 @@ export function SidebarMenu() {
         onClick={() => setOpen(true)}
         icon={<Bars3Icon />}
       />
-      <SidePanel open={open} setOpen={setOpen}>
+      <SidePanel open={open} onClose={() => setOpen(false)}>
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
