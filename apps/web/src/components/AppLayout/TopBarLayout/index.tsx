@@ -12,7 +12,7 @@ export const TopBarLayout: React.FC = () => {
 
   if (isHomepage) {
     return (
-      <nav className="z-10 flex h-16 w-full items-center justify-between px-4">
+      <nav className="z-10 flex h-16 w-full items-center justify-end px-4 md:justify-between">
         <div className="hidden w-full md:flex">
           <ExplorerDetails />
         </div>
