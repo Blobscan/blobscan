@@ -12,14 +12,13 @@ import type { ExpandibleNavItem, NavItem, ExpandibleSubItem } from "../content";
 import { isExpandible, MENU_ITEMS } from "../content";
 import { SidePanel } from "./SidePanel";
 
-export function SidebarMenu() {
+export function SidebarMenu({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
+    <div className={className}>
       <Button
         variant="icon"
-        className="md:hidden"
         onClick={() => setOpen(true)}
         icon={<Bars3Icon />}
       />
@@ -44,7 +43,7 @@ export function SidebarMenu() {
       >
         <ThemeModeButton />
       </div>
-    </>
+    </div>
   );
 }
 

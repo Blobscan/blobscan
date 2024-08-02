@@ -10,7 +10,7 @@ export const CompactTopBar = function () {
         <TopBarSurface>
           <div className="flex w-full items-center justify-between">
             <BlobscanLogo className="w-40" />
-            <SidebarMenu />
+            <SidebarMenu className="md:hidden" />
           </div>
         </TopBarSurface>
       </div>
