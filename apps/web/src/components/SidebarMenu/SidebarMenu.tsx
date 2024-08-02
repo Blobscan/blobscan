@@ -8,7 +8,7 @@ import { Button } from "../Button";
 import { Collapsable } from "../Collapsable";
 import { Rotable } from "../Rotable";
 import { ThemeModeButton } from "../ThemeModeButton";
-import type { ExpandibleMenuItem, MenuItem } from "../content";
+import type { ExpandibleNavItem, NavItem, ExpandibleSubItem } from "../content";
 import { MENU_ITEMS } from "../content";
 import { SidePanel } from "./SidePanel";
 
@@ -48,7 +48,7 @@ export function SidebarMenu() {
   );
 }
 
-function SingleItem({ label, href, icon }: MenuItem) {
+function SingleItem({ label, href, icon }: NavItem) {
   return (
     <a
       className="flex cursor-pointer items-center gap-1 p-2 duration-200 hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
@@ -60,7 +60,7 @@ function SingleItem({ label, href, icon }: MenuItem) {
   );
 }
 
-function ExpandibleItem({ label, icon, items }: ExpandibleMenuItem) {
+function ExpandibleItem({ label, icon, items }: ExpandibleNavItem) {
   const pathname = usePathname();
   const [open, setOpen] = useState(items.some((x) => x.href === pathname));
 
@@ -85,7 +85,7 @@ function ExpandibleItem({ label, icon, items }: ExpandibleMenuItem) {
       <Collapsable opened={open}>
         <div className="flex flex-col gap-2 pb-4 pl-10 pt-2">
           {items.map((subItem, index) => (
-            <ExpandibleSubItem {...subItem} key={`${label}-${index}-mobile`} />
+            <SubItem {...subItem} key={`${label}-${index}-mobile`} />
           ))}
         </div>
       </Collapsable>
@@ -93,7 +93,7 @@ function ExpandibleItem({ label, icon, items }: ExpandibleMenuItem) {
   );
 }
 
-function ExpandibleSubItem({ label, href }: { label: string; href: string }) {
+function SubItem({ label, href }: ExpandibleSubItem) {
   const pathname = usePathname();
 
   return (

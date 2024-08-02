@@ -25,24 +25,26 @@ function resolveApiUrl(): string {
   return `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
 }
 
-export type MenuItem = {
+export type NavItem = {
   label: string;
   href: string;
   icon: ReactNode;
   type: "single";
 };
 
-export type ExpandibleMenuItem = {
+export type ExpandibleNavItem = {
   label: string;
   icon: ReactNode;
-  items: {
-    label: string;
-    href: string;
-  }[];
+  items: ExpandibleSubItem[];
   type: "expandible";
 };
 
-export const MENU_ITEMS: Array<MenuItem | ExpandibleMenuItem> = [
+export type ExpandibleSubItem = {
+  label: string;
+  href: string;
+};
+
+export const MENU_ITEMS: Array<NavItem | ExpandibleNavItem> = [
   {
     label: "Blockchain",
     icon: <Squares2X2Icon />,
