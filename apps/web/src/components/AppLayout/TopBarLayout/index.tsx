@@ -3,7 +3,7 @@ import React from "react";
 import { ThemeModeButton } from "~/components/ThemeModeButton";
 import { useIsHomepage } from "~/hooks/useIsHomePage";
 import { ExplorerDetails } from "../../ExplorerDetails";
-import { NavMenusSection } from "../../NavMenusSection";
+import { NavMenusSection } from "../../NavMenus";
 import { CompactTopBar } from "./CompactTopBar";
 import { TopBar } from "./TopBar";
 

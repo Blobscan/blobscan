@@ -6,10 +6,10 @@ import { Bars3Icon } from "@heroicons/react/24/solid";
 import { BlobscanLogo } from "../BlobscanLogo";
 import { Button } from "../Button";
 import { Collapsable } from "../Collapsable";
-import type { ExpandibleMenuItem, MenuItem } from "../NavMenusSection/data";
-import { MENU_DATA } from "../NavMenusSection/data";
 import { Rotable } from "../Rotable";
 import { ThemeModeButton } from "../ThemeModeButton";
+import type { ExpandibleMenuItem, MenuItem } from "../content";
+import { MENU_DATA } from "../content";
 import { SidePanel } from "./SidePanel";
 
 export function SidebarMenu() {

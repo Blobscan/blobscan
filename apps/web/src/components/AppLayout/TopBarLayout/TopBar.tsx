@@ -1,6 +1,6 @@
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { ExplorerDetails } from "../../ExplorerDetails";
-import { NavMenusSection } from "../../NavMenusSection";
+import { NavMenusSection } from "../../NavMenus";
 import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";

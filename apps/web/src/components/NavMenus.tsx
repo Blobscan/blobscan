@@ -1,6 +1,6 @@
-import { NavItem } from "../Menu";
-import { SidebarMenu } from "../SidebarMenu/SidebarMenu";
-import { MENU_DATA } from "./data";
+import { NavItem } from "./Menu";
+import { SidebarMenu } from "./SidebarMenu/SidebarMenu";
+import { MENU_DATA } from "./content";
 
 export const NavMenusSection: React.FC = () => {
   return (
