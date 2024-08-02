@@ -26,22 +26,14 @@ _is_sourced() {
 		&& [ "${FUNCNAME[1]}" = 'source' ]
 }
 
-_apply_prisma_migrations() {
-	cd /app/prisma
-
-	npx prisma migrate deploy --schema schema.prisma
-
-	cd ../..
-}
-
 _main() {
 	if [ "$1" = 'web' ]; then
-		_apply_prisma_migrations
-
+		cd /app
+		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 		node /app/apps/web/server.js
 	elif [ "$1" = 'api' ]; then
-		_apply_prisma_migrations
-
+		cd /app
+		npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
 		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
