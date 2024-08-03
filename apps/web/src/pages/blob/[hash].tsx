@@ -174,17 +174,20 @@ const Blob: NextPage = function () {
           <div className="flex items-center justify-between">
             <div>Blob Data</div>
             {blob && (
-              <div className="flex items-center gap-2">
-                <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
-                  View as:
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
+                    View as:
+                  </div>
+                  <Dropdown
+                    items={blobViewModes}
+                    selected={selectedBlobViewMode}
+                    onChange={(newViewMode) =>
+                      setSelectedBlobViewMode(newViewMode as BlobViewMode)
+                    }
+                  />
                 </div>
-                <Dropdown
-                  items={blobViewModes}
-                  selected={selectedBlobViewMode}
-                  onChange={(newViewMode) =>
-                    setSelectedBlobViewMode(newViewMode as BlobViewMode)
-                  }
-                />
+                <CopyToClipboard label="Copy blob data" value={blob.data} />
               </div>
             )}
           </div>
