@@ -10,12 +10,14 @@ import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUni
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrows } from "~/components/NavArrow";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   BLOB_GAS_LIMIT_PER_BLOCK,
   buildBlockExternalUrl,
+  buildBlockRoute,
   buildSlotExternalUrl,
   deserializeFullBlock,
   formatBytes,
@@ -47,6 +49,7 @@ const Block: NextPage = function () {
 
     return deserializeFullBlock(rawBlockData);
   }, [rawBlockData]);
+  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
 
   if (error) {
     return (
@@ -77,7 +80,24 @@ const Block: NextPage = function () {
     );
 
     detailsFields = [
-      { name: "Block Height", value: blockData.number },
+      {
+        name: "Block Height",
+        value: (
+          <div className="flex items-center justify-start gap-4">
+            {blockData.number}
+            {latestBlock && (
+              <NavArrows
+                prev={buildBlockRoute(blockData.number - 1)}
+                next={
+                  latestBlock.number > blockData.number
+                    ? buildBlockRoute(blockData.number + 1)
+                    : undefined
+                }
+              />
+            )}
+          </div>
+        ),
+      },
       { name: "Hash", value: blockData.hash },
       {
         name: "Timestamp",
