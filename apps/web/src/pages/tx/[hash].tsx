@@ -106,11 +106,21 @@ const Tx: NextPage = () => {
       },
       {
         name: "From",
-        value: <Link href={buildAddressRoute(from)}>{from}</Link>,
+        value: (
+          <div className="flex items-center gap-2">
+            <Link href={buildAddressRoute(from)}>{from}</Link>
+            <CopyToClipboard value={from} label="Copy from address" />
+          </div>
+        ),
       },
       {
         name: "To",
-        value: <Link href={buildAddressRoute(to)}>{to}</Link>,
+        value: (
+          <div className="flex items-center gap-2">
+            <Link href={buildAddressRoute(to)}>{to}</Link>,
+            <CopyToClipboard value={to} label="Copy to address" />
+          </div>
+        ),
       },
     ];
 
