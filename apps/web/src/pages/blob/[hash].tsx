@@ -145,7 +145,10 @@ const Blob: NextPage = function () {
                 <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
                   Tx{" "}
                 </div>
-                <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+                <div className="flex items-center gap-2">
+                  {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
+                  <CopyToClipboard value={txHash} label="Copy tx hash" />
+                </div>
               </div>
               <div className="flex gap-1">
                 <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
