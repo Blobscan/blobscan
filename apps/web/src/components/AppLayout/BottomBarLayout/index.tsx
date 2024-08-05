@@ -34,7 +34,7 @@ export const BottomBarLayout = () => {
         <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
             <Link key={href} href={href} isExternal hideExternalIcon>
-              <Button variant="icon" icon={icon} size="md" />
+              <Button variant="icon">{icon}</Button>
             </Link>
           ))}
         </div>

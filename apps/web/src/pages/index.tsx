@@ -195,9 +195,10 @@ const Home: NextPage = () => {
                 <div>Latest Blocks</div>
                 <Button
                   variant="outline"
-                  label="View All Blocks"
                   onClick={() => void router.push(buildBlocksRoute())}
-                />
+                >
+                  View All Blocks
+                </Button>
               </div>
             }
             emptyState="No blocks"
@@ -233,10 +234,11 @@ const Home: NextPage = () => {
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
-                  label="View All Txs"
                   onClick={() => void router.push(buildTransactionsRoute())}
                   className="h-full"
-                />
+                >
+                  View All Txs
+                </Button>
               </div>
             }
             emptyState="No transactions"
@@ -284,9 +286,10 @@ const Home: NextPage = () => {
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"
-                  label="View All Blobs"
                   onClick={() => void router.push(buildBlobsRoute())}
-                />
+                >
+                  View All Blobs
+                </Button>
               </div>
             }
             emptyState="No blobs"
