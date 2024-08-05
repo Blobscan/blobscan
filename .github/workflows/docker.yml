@@ -30,6 +30,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set tag prefix
+        id: prefix
+        run: |
+          if [[ ${{ github.ref_name }} == 'master' ]]; then
+            echo "::set-output name=TAG_SUFFIX::stable"
+          elif [[ ${{ github.ref_name }} == 'next' ]]; then
+            echo "::set-output name=TAG_SUFFIX::latest"
+          fi
+
       - name: Set Github ENV variables
         shell: bash
         run: |
@@ -41,7 +50,7 @@ jobs:
         with:
           context: .
           target: api
-          tags: blossomlabs/blobscan-api:${{ github.ref_name }}
+          tags: blossomlabs/blobscan-api:${{ steps.prefix.outputs.TAG_SUFFIX }}
           push: true
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
@@ -52,7 +61,7 @@ jobs:
         with:
           context: .
           target: web
-          tags: blossomlabs/blobscan-web:${{ github.ref_name }}
+          tags: blossomlabs/blobscan-web:${{ steps.prefix.outputs.TAG_SUFFIX }}
           push: true
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
