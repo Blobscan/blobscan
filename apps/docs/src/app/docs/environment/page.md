@@ -33,9 +33,9 @@ nextjs:
 | ------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------- |
 | `CHAIN_ID`                           | EVM chain id                                                                                       | Yes                             | `1`                        |
 | `DATABASE_URL`                       | Postgresql database URI                                                                            | Yes                             | (empty)                    |
-| `NETWORK_NAME`                       | Network's name (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`)   | No                              | `mainnet`                  |
 | `REDIS_URI`                          | Redis host                                                                                         | Yes                             | `redis://localhost:6379/1` |
 | `SECRET_KEY`                         | Shared key used for JWT authentication with the indexer                                            | Yes                             | (empty)                    |
+| `NETWORK_NAME`                       | Network's name (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`)   | No                              | `mainnet`                  |
 | `BLOBSCAN_API_BASE_URL`              | API domain                                                                                         | No                              | `https://api.blobscan.com` |
 | `BLOBSCAN_API_PORT`                  | API port                                                                                           | No                              | `3001`                     |
 | `DENCUN_FORK_SLOT`                   | Custom slot when blobs are activated (use when `NETWORK_NAME=devnet`)                              | No                              | (empty)                    |
@@ -69,9 +69,9 @@ nextjs:
 | `BEACON_NODE_ENDPOINT`    | Beacon node RPC endpoint                                                                                                                      | Yes      | (empty)             |
 | `BLOBSCAN_API_ENDPOINT`   | Blobscan API endpoint                                                                                                                         | Yes      | (empty)             |
 | `EXECUTION_NODE_ENDPOINT` | Execution node RPC endpoint                                                                                                                   | Yes      | (empty)             |
+| `SECRET_KEY`              | Shared key used for JWT authentication with API                                                                                               | Yes      | (empty)             |
 | `NETWORK_NAME`            | Automatically start from the slot when blobs were activated (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`) | No       | `mainnet`           |
 | `DENCUN_FORK_SLOT`        | Custom slot when blobs are activated (use when `NETWORK_NAME=devnet`)                                                                         | No       | (empty)             |
-| `SECRET_KEY`              | Shared key used for JWT authentication with API                                                                                               | Yes      | (empty)             |
 | `RUST_LOG`                | Configure logger                                                                                                                              | No       | `blob-indexer=INFO` |
 | `SENTRY_DSN`              | Sentry DSN                                                                                                                                    | No       | (empty)             |
 
