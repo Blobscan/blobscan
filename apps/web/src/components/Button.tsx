@@ -56,8 +56,7 @@ const buttonVariants = cva(
         `,
         icon: `
         rounded-full p-2
-        
-        shadow-sm transition-colors
+        shadow-sm
         focus-visible:outline
         focus-visible:outline-2
         focus-visible:outline-offset-2
