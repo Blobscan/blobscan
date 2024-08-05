@@ -34,9 +34,9 @@ jobs:
         id: prefix
         run: |
           if [[ ${{ github.ref_name }} == 'master' ]]; then
-            echo "::set-output name=TAG_SUFFIX::stable"
+            echo "TAG_SUFFIX=stable" >> $GITHUB_OUTPUT
           elif [[ ${{ github.ref_name }} == 'next' ]]; then
-            echo "::set-output name=TAG_SUFFIX::latest"
+            echo "TAG_SUFFIX=next" >> $GITHUB_OUTPUT
           fi
 
       - name: Set Github ENV variables
