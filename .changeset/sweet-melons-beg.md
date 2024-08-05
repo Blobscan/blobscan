@@ -2,4 +2,4 @@
 "@blobscan/web": minor
 ---
 
-feat: Add NavArrows component
+feat: Added navigation arrow buttons to navigate to previous and next block
