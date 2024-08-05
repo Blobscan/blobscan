@@ -38,6 +38,7 @@ export const NavMenusSection: React.FC = () => {
             : ""
         }`}
         variant="icon"
+        size="md-icon"
         aria-expanded={isMobileMenuOpen}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >

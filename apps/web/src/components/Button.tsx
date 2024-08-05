@@ -8,7 +8,6 @@ const buttonVariants = cva(
   rounded
   text-sm
   font-semibold
-  shadow-sm
   transition-colors
   active:scale-[0.99]
   disabled:pointer-events-none
@@ -18,6 +17,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: `
+        shadow-sm
         bg-accent-light
         dark:bg-primary-500
         text-accentContent-light
@@ -26,7 +26,7 @@ const buttonVariants = cva(
         dark:hover:bg-accentHighlight-dark
         active:bg-accent-light
         dark:active:bg-accent-dark
-      
+
         disabled:text-warmGray-400
         dark:disabled:text-coolGray-400
         disabled:bg-warmGray-500
@@ -35,6 +35,7 @@ const buttonVariants = cva(
         dark:disabled:border-coolGray-300
         `,
         outline: `
+        shadow-sm
         bg-transparent
         dark:bg-transparent
         border-accent-light
@@ -55,7 +56,6 @@ const buttonVariants = cva(
         dark:disabled:border-accentDisabled-dark
         `,
         icon: `
-        rounded-full p-2
         focus-visible:outline
         focus-visible:outline-2
         focus-visible:outline-offset-2
@@ -75,6 +75,7 @@ const buttonVariants = cva(
         sm: "px-2 py-1 h-7",
         md: "px-4 py-2 h-9",
         lg: "px-4 py-3 h-11",
+        "md-icon": "w-9 h-9 flex items-center justify-center",
       },
     },
     defaultVariants: {

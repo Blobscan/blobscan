@@ -10,16 +10,13 @@ export function ThemeModeButton() {
   const isMounted = useIsMounted();
 
   if (!isMounted) {
-    return (
-      <Button variant="icon">
-        <div className="h-5 w-5" />
-      </Button>
-    );
+    return <Button variant="icon" size="md-icon" />;
   }
 
   return (
     <Button
       variant="icon"
+      size="md-icon"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       {resolvedTheme === "dark" ? (

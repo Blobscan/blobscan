@@ -196,7 +196,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 rotated={opened}
                 onClick={() => setOpened((prevOpened) => !prevOpened)}
               >
-                <Button variant="icon">
+                <Button variant="icon" size="md-icon">
                   <ChevronDownIcon className="h-5 w-5" />
                 </Button>
               </Rotable>
