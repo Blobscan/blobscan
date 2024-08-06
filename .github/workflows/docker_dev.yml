@@ -1,4 +1,4 @@
-name: Docker main
+name: Docker dev
 
 on:
   workflow_run:
