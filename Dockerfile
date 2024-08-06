@@ -69,8 +69,8 @@ USER nextjs
 EXPOSE 3000
 ENV PORT 3000
 
-ENTRYPOINT ["/docker-entrypoint.sh", "web"]
-CMD ["--help"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["web"]
 
 # stage: api-builder
 FROM deps AS api-builder
@@ -104,5 +104,5 @@ EXPOSE 3001
 ENV PORT 3001
 
 ADD docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh", "api"]
-CMD ["--help"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["api"]

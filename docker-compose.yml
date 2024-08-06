@@ -4,7 +4,6 @@ version: "3.7"
 services:
   web:
     image: blossomlabs/blobscan-web:${BLOBSCAN_WEB_TAG}
-    command: web
     restart: always
     ports:
       - ${EXTERNAL_WEB_PORT}:3000
@@ -13,7 +12,6 @@ services:
 
   api:
     image: blossomlabs/blobscan-api:${BLOBSCAN_API_TAG}
-    command: api
     restart: always
     ports:
       - ${EXTERNAL_API_PORT}:3001
