@@ -153,8 +153,11 @@ const Blob: NextPage = function () {
                 </div>
                 <Dropdown
                   options={blobViewModesOptions}
-                  selected={selectedBlobViewMode}
-                  onChange={(newViewMode) =>
+                  selected={{
+                    value: selectedBlobViewMode,
+                    label: selectedBlobViewMode,
+                  }}
+                  onChange={({ value: newViewMode }) =>
                     setSelectedBlobViewMode(newViewMode as BlobViewMode)
                   }
                 />

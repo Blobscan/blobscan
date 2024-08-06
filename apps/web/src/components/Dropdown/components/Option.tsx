@@ -2,7 +2,7 @@ import { ListboxOption } from "@headlessui/react";
 
 import type { Option as OptionProps } from "../Dropdown";
 
-export const Option: React.FC<OptionProps> = function ({ label, value }) {
+export const Option: React.FC<OptionProps> = function (props) {
   return (
     <ListboxOption
       className={({ focus }) =>
@@ -12,14 +12,14 @@ export const Option: React.FC<OptionProps> = function ({ label, value }) {
             : "text-contentSecondary-light dark:text-contentSecondary-dark"
         }`
       }
-      value={value}
+      value={props}
     >
       {({ selected }) => (
         <div className="flex items-center">
           <span
             className={`block truncate text-sm ${selected ? "font-bold" : ""}`}
           >
-            {label}
+            {props.label}
           </span>
         </div>
       )}

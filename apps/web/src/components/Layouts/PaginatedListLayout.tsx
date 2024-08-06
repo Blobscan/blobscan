@@ -47,7 +47,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   const hasItems = !items || items.length;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (newPageSize: number) =>
+    ({ value: newPageSize }) =>
       void router.push({
         pathname: router.pathname,
         query: {
@@ -56,7 +56,10 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
            * Update the selected page to a lower value if we require less pages to show the
            * new amount of elements per page.
            */
-          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
+          p: Math.min(
+            Math.ceil(totalItems ?? 0 / (newPageSize as number)),
+            page
+          ),
           ps: newPageSize,
         },
       }),
@@ -116,7 +119,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
                 Displayed items:
                 <Dropdown
                   options={PAGE_SIZES_OPTIONS}
-                  selected={pageSize}
+                  selected={{ value: pageSize, label: pageSize.toString() }}
                   width="w-full"
                   onChange={handlePageSizeSelection}
                 />
