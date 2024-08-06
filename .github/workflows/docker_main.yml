@@ -1,9 +1,9 @@
-name: Docker
+name: Docker main
 
 on:
   workflow_run:
     workflows: ["CI"]
-    tags: ["v*"]
+    branches: ["main"]
     types:
       - completed
 
@@ -39,9 +39,7 @@ jobs:
         with:
           images: blossomlabs/blobscan-api
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=ref,event=branch
 
       - name: Build and push (api)
         uses: docker/build-push-action@v6.5.0
@@ -61,9 +59,7 @@ jobs:
         with:
           images: blossomlabs/blobscan-web
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=ref,event=branch
 
       - name: Build and push (web)
         uses: docker/build-push-action@v6.5.0
