@@ -2,8 +2,8 @@ name: Deploy production
 
 on:
   workflow_run:
-    workflows: ["CI"]
-    branches: ["master"]
+    workflows: ["Docker"]
+    tags: ["v*"]
     types:
       - completed
 

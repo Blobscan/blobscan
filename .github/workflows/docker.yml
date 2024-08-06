@@ -3,13 +3,9 @@ name: Docker
 on:
   workflow_run:
     workflows: ["CI"]
-    branches: ["master", "next"]
+    tags: ["v*"]
     types:
       - completed
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 env:
   FORCE_COLOR: 3
@@ -18,6 +14,7 @@ env:
 
 jobs:
   release_docker:
+    name: Build docker images (API, Web)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,19 +22,10 @@ jobs:
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set tag prefix
-        id: prefix
-        run: |
-          if [[ ${{ github.ref_name }} == 'master' ]]; then
-            echo "TAG_SUFFIX=stable" >> $GITHUB_OUTPUT
-          elif [[ ${{ github.ref_name }} == 'next' ]]; then
-            echo "TAG_SUFFIX=next" >> $GITHUB_OUTPUT
-          fi
 
       - name: Set Github ENV variables
         shell: bash
@@ -45,24 +33,46 @@ jobs:
           echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
+      - name: Extract metadata (tags, labels) for Docker (API)
+        id: meta_api
+        uses: docker/metadata-action@v5
+        with:
+          images: blossomlabs/blobscan-api
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
       - name: Build and push (api)
         uses: docker/build-push-action@v6.5.0
         with:
           context: .
-          target: api
-          tags: blossomlabs/blobscan-api:${{ steps.prefix.outputs.TAG_SUFFIX }}
           push: true
+          target: api
+          tags: ${{ steps.meta_api.outputs.tags }}
+          labels: ${{ steps.meta_api.outputs.labels }}
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
+
+      - name: Extract metadata (tags, labels) for Docker (Web)
+        id: meta_web
+        uses: docker/metadata-action@v5
+        with:
+          images: blossomlabs/blobscan-web
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
       - name: Build and push (web)
         uses: docker/build-push-action@v6.5.0
         with:
           context: .
-          target: web
-          tags: blossomlabs/blobscan-web:${{ steps.prefix.outputs.TAG_SUFFIX }}
           push: true
+          target: web
+          tags: ${{ steps.meta_web.outputs.tags }}
+          labels: ${{ steps.meta_web.outputs.labels }}
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
