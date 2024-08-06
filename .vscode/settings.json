@@ -13,6 +13,9 @@
     { "pattern": "tooling/*/" }
   ],
   "tailwindCSS.experimental.configFile": "./tooling/tailwind/index.ts",
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib"
 }

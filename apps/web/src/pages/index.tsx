@@ -191,13 +191,14 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
             header={
-              <div className="flex items-center justify-between gap-5">
+              <div className=" flex flex-wrap items-center justify-between gap-5">
                 <div>Latest Blocks</div>
                 <Button
                   variant="outline"
-                  label="View All Blocks"
                   onClick={() => void router.push(buildBlocksRoute())}
-                />
+                >
+                  View All Blocks
+                </Button>
               </div>
             }
             emptyState="No blocks"
@@ -229,14 +230,15 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex items-center justify-between gap-5">
+              <div className="flex-warp flex items-center justify-between gap-5">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
-                  label="View All Txs"
                   onClick={() => void router.push(buildTransactionsRoute())}
                   className="h-full"
-                />
+                >
+                  View All Txs
+                </Button>
               </div>
             }
             emptyState="No transactions"
@@ -284,9 +286,10 @@ const Home: NextPage = () => {
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"
-                  label="View All Blobs"
                   onClick={() => void router.push(buildBlobsRoute())}
-                />
+                >
+                  View All Blobs
+                </Button>
               </div>
             }
             emptyState="No blobs"

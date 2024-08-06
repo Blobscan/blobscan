@@ -29,12 +29,13 @@ const FirstButton: FC<NavigationButton> = function ({ disabled, onChange }) {
       disabled={disabled}
       variant="outline"
       size="sm"
-      label="First"
       className="w-full"
       onClick={() => {
         onChange(1);
       }}
-    />
+    >
+      First
+    </Button>
   );
 };
 
@@ -49,9 +50,10 @@ const LastButton: FC<NavigationButton & { lastPage: number }> = function ({
       disabled={disabled}
       variant="outline"
       size="sm"
-      label="Last"
       onClick={() => onChange(lastPage)}
-    />
+    >
+      Last
+    </Button>
   );
 };
 
@@ -101,14 +103,11 @@ export const Pagination: FC<PaginationProps> = function ({
             disabled={disableFirst}
             variant="outline"
             size="sm"
-            icon={
-              <div>
-                <span className="sr-only">Previous</span>
-                <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-              </div>
-            }
             onClick={() => onChange(Math.max(1, selected - 1))}
-          />
+          >
+            <span className="sr-only">Previous</span>
+            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+          </Button>
           <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
             <div className="w-20 font-light">
               <Input
@@ -138,16 +137,13 @@ export const Pagination: FC<PaginationProps> = function ({
             disabled={disableLast}
             variant="outline"
             size="sm"
-            icon={
-              <div>
-                <span className="sr-only">Next</span>
-                <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-              </div>
-            }
             onClick={
               pages ? () => onChange(Math.min(pages, selected + 1)) : NOOP
             }
-          />
+          >
+            <span className="sr-only">Next</span>
+            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+          </Button>
           <div className="hidden sm:block">
             <LastButton
               disabled={disableLast}

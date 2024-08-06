@@ -38,10 +38,12 @@ export const NavMenusSection: React.FC = () => {
             : ""
         }`}
         variant="icon"
-        icon={isMobileMenuOpen ? <XMarkIcon /> : <Bars3Icon />}
+        size="md-icon"
         aria-expanded={isMobileMenuOpen}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      />
+      >
+        {isMobileMenuOpen ? <XMarkIcon /> : <Bars3Icon />}
+      </Button>
       <div
         className={`fixed inset-x-0 top-0 z-50 mt-14 transform ${
           isMobileMenuOpen ? "block" : "hidden"

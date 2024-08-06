@@ -95,10 +95,11 @@ export default function Search({ term }: SearchProps) {
         <div className="mt-12">
           <Button
             variant="primary"
-            label="Go back home"
             className="w-full max-w-md"
             onClick={() => void router.push("/")}
-          />
+          >
+            Go back home
+          </Button>
         </div>
       </div>
     </div>

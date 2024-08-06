@@ -10,20 +10,20 @@ export function ThemeModeButton() {
   const isMounted = useIsMounted();
 
   if (!isMounted) {
-    return <Button variant="icon" icon={<div className="h-5 w-5" />} />;
+    return <Button variant="icon" size="md-icon" />;
   }
 
   return (
     <Button
       variant="icon"
-      icon={
-        resolvedTheme === "dark" ? (
-          <SunIcon aria-hidden="true" className="h-5 w-5" />
-        ) : (
-          <MoonIcon aria-hidden="true" className="h-5 w-5" />
-        )
-      }
+      size="md-icon"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-    />
+    >
+      {resolvedTheme === "dark" ? (
+        <SunIcon aria-hidden="true" className="h-5 w-5" />
+      ) : (
+        <MoonIcon aria-hidden="true" className="h-5 w-5" />
+      )}
+    </Button>
   );
 }
