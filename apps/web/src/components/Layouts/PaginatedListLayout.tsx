@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
-import { Dropdown } from "../Dropdown";
-import type { DropdownProps } from "../Dropdown";
+import { Dropdown } from "../Dropdown/Dropdown";
+import type { DropdownProps } from "../Dropdown/Dropdown";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
 
@@ -20,7 +20,12 @@ export type PaginatedListLayoutProps = {
   emptyState?: ReactNode;
 };
 
-const PAGE_SIZES = [10, 25, 50, 100];
+const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+  { value: 10, label: "10" },
+  { value: 25, label: "25" },
+  { value: 50, label: "50" },
+  { value: 100, label: "100" },
+];
 
 export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   header,
@@ -110,7 +115,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               <div className="flex items-center justify-start gap-2">
                 Displayed items:
                 <Dropdown
-                  items={PAGE_SIZES}
+                  options={PAGE_SIZES_OPTIONS}
                   selected={pageSize}
                   width="w-full"
                   onChange={handlePageSizeSelection}

@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
-import { Dropdown } from "~/components/Dropdown";
-import type { DropdownProps } from "~/components/Dropdown";
+import { Dropdown } from "~/components/Dropdown/Dropdown";
+import type { DropdownProps } from "~/components/Dropdown/Dropdown";
 import { Header } from "~/components/Header";
 import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
@@ -13,7 +13,12 @@ import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
-const PAGE_SIZES = [10, 25, 50, 100];
+const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+  { value: 10, label: "10" },
+  { value: 25, label: "25" },
+  { value: 50, label: "50" },
+  { value: 100, label: "100" },
+];
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 type PaginationData = {
@@ -130,7 +135,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
             <div className="flex items-center justify-start gap-2">
               Displayed items:
               <Dropdown
-                items={PAGE_SIZES}
+                options={PAGE_SIZES_OPTIONS}
                 selected={pageSize}
                 width="w-full"
                 onChange={handlePageSizeSelection}

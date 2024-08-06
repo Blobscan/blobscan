@@ -11,7 +11,8 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
-import { Dropdown } from "~/components/Dropdown";
+import type { DropdownProps } from "~/components/Dropdown/Dropdown";
+import { Dropdown } from "~/components/Dropdown/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -49,6 +50,9 @@ const Blob: NextPage = function () {
     ...(blob && decoder ? ["Decoded" as BlobViewMode] : []),
     ...DEFAULT_BLOB_VIEW_MODES,
   ];
+  const blobViewModesOptions: DropdownProps["options"] = blobViewModes.map(
+    (blobViewMode) => ({ label: blobViewMode, value: blobViewMode })
+  );
 
   useEffect(() => {
     if (!decoder) {
@@ -148,7 +152,7 @@ const Blob: NextPage = function () {
                   View as:
                 </div>
                 <Dropdown
-                  items={blobViewModes}
+                  options={blobViewModesOptions}
                   selected={selectedBlobViewMode}
                   onChange={(newViewMode) =>
                     setSelectedBlobViewMode(newViewMode as BlobViewMode)
