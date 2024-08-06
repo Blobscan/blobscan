@@ -1,5 +1,26 @@
 # @blobscan/web
 
+## 0.14.0
+
+### Minor Changes
+
+- [#456](https://github.com/Blobscan/blobscan/pull/456) [`fbace2f`](https://github.com/Blobscan/blobscan/commit/fbace2f0c9f2dee4787b653511cc7ff8e0fd5026) Thanks [@xFJA](https://github.com/xFJA)! - Replaced list of BlobCards by new PaginatedTable on the blobs view
+
+- [#470](https://github.com/Blobscan/blobscan/pull/470) [`4bc7884`](https://github.com/Blobscan/blobscan/commit/4bc78848b57d2c2cfe6053a34ec2bc3e85cacfcf) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added blob gas price to the ExplorerDetails component
+
+- [#457](https://github.com/Blobscan/blobscan/pull/457) [`88c94df`](https://github.com/Blobscan/blobscan/commit/88c94df96f784063cea56e3d5f3a052d17a9ad20) Thanks [@xFJA](https://github.com/xFJA)! - Replaced list of BlockCards by new PaginatedTable on the blocks view
+
+- [#458](https://github.com/Blobscan/blobscan/pull/458) [`ff075a9`](https://github.com/Blobscan/blobscan/commit/ff075a9f558ee018b54666b7a24ae91931a84eca) Thanks [@xFJA](https://github.com/xFJA)! - Replaced list of TransactionCards by new PaginatedTable on the transactions view
+
+- [#464](https://github.com/Blobscan/blobscan/pull/464) [`dbe414b`](https://github.com/Blobscan/blobscan/commit/dbe414bd8bbe201eb50f614a6c1dbcb6e6abdab2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a loading spinner and a not-found window to the SearchInput component
+
+### Patch Changes
+
+- [#446](https://github.com/Blobscan/blobscan/pull/446) [`c6dba39`](https://github.com/Blobscan/blobscan/commit/c6dba39665ce1df135d1f4b6ae2a324a936370b3) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated blob storage badges to use blob data reference url
+
+- Updated dependencies [[`c6dba39`](https://github.com/Blobscan/blobscan/commit/c6dba39665ce1df135d1f4b6ae2a324a936370b3), [`4bc7884`](https://github.com/Blobscan/blobscan/commit/4bc78848b57d2c2cfe6053a34ec2bc3e85cacfcf), [`a84b544`](https://github.com/Blobscan/blobscan/commit/a84b5443b32e5a5cea76cedb2ba50c11742f24a7)]:
+  - @blobscan/api@0.13.0
+
 ## 0.13.1
 
 ### Patch Changes
