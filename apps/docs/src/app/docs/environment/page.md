@@ -49,7 +49,7 @@ nextjs:
 | `GOOGLE_STORAGE_BUCKET_NAME`         | Google Cloud Storage bucket name                                                                   | No                              | (empty)                    |
 | `GOOGLE_STORAGE_PROJECT_ID`          | Google Cloud project ID                                                                            | No                              | (empty)                    |
 | `POSTGRES_STORAGE_ENABLED`           | Store blobs in postgres database (default storage)                                                 | No                              | `false`                    |
-| `SWARM_DEFERRED_UPLOAD`              | Determines if the uploaded data should be sent to the network immediately or in a deferred fashion | No                              | false                      |
+| `SWARM_DEFERRED_UPLOAD`              | Determines if the uploaded data should be sent to the network immediately or in a deferred fashion | No                              | `true`                     |
 | `SWARM_STORAGE_ENABLED`              | Store blobs in Ethereum Swarm                                                                      | No                              | `false`                    |
 | `SWARM_BATCH_ID`                     | Batch ID of the Ethereum Swarm stamp                                                               | If `SWARM_STORAGE_ENABLED=true` | (empty)                    |
 | `BEE_ENDPOINT`                       | Bee endpoint                                                                                       | No                              | (empty)                    |

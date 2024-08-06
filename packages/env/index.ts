@@ -78,7 +78,7 @@ export const env = createEnv({
       SECRET_KEY: z.string(),
       SENTRY_DSN_API: z.string().optional(),
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
-      SWARM_DEFERRED_UPLOAD: booleanSchema.default("false"),
+      SWARM_DEFERRED_UPLOAD: booleanSchema.default("true"),
       SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
       SWARM_BATCH_ID: z.string().optional(),
       TEST: booleanSchema.optional(),
