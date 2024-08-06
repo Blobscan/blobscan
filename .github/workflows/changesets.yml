@@ -3,7 +3,7 @@ name: Changesets
 on:
   workflow_run:
     workflows: ["CI"]
-    branches: ["next"]
+    branches: ["main"]
     types:
       - completed
 
