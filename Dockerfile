@@ -33,6 +33,7 @@ FROM deps AS web-builder
 WORKDIR /app
 
 ENV NEXT_BUILD_OUTPUT standalone
+ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --from=deps /prepare/web/json .
 COPY --from=deps /prepare/web/pnpm-lock.yaml .
@@ -54,7 +55,6 @@ WORKDIR /app
 ENV HOSTNAME 0.0.0.0
 ENV PORT 3000
 ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
