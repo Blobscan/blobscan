@@ -1,5 +1,15 @@
 # @blobscan/api
 
+## 0.13.0
+
+### Minor Changes
+
+- [#446](https://github.com/Blobscan/blobscan/pull/446) [`c6dba39`](https://github.com/Blobscan/blobscan/commit/c6dba39665ce1df135d1f4b6ae2a324a936370b3) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the references to now return a URL instead of a URI.
+
+- [#470](https://github.com/Blobscan/blobscan/pull/470) [`4bc7884`](https://github.com/Blobscan/blobscan/commit/4bc78848b57d2c2cfe6053a34ec2bc3e85cacfcf) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added procedure to get the latest block
+
+- [#447](https://github.com/Blobscan/blobscan/pull/447) [`a84b544`](https://github.com/Blobscan/blobscan/commit/a84b5443b32e5a5cea76cedb2ba50c11742f24a7) Thanks [@PJColombo](https://github.com/PJColombo)! - Added `getBlobDataByBlobId` procedure
+
 ## 0.12.0
 
 ### Minor Changes
