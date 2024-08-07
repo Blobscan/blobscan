@@ -2,4 +2,4 @@
 "@blobscan/web": patch
 ---
 
-fix(web): Correct formatWei precision for large decimal values
+Corrected formatWei precision for large decimal values
