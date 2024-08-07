@@ -1,5 +1,11 @@
 # @blobscan/docs
 
+## 0.1.0
+
+### Minor Changes
+
+- [#425](https://github.com/Blobscan/blobscan/pull/425) [`1cfb587`](https://github.com/Blobscan/blobscan/commit/1cfb587cf60503f202684f8fd30eddeb9179e48c) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added sections with tutorials for running blobscan with kurtosis, kind and locally
+
 ## 0.0.3
 
 ### Patch Changes
