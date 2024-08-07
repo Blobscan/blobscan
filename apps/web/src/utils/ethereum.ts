@@ -96,10 +96,20 @@ export function formatWei(
       ? Math.floor(weiAmount).toString()
       : weiAmount.toString();
   let formattedAmount = convertWei(weiAmountStr, toUnit);
-  const fractionDigits = formattedAmount.split(".")[1];
+
+  const digits = compact ? 5 : 18;
+  const unit = displayUnit ? ` ${toUnit}` : "";
+
+  const parts = formattedAmount.split(".");
+  const integerPart = parts[0];
+  const decimalPart = parts[1];
+
+  if (integerPart === "0" && decimalPart) {
+    return `0.${decimalPart.slice(0, digits)}${unit}`;
+  }
 
   // Use exponential notation for large fractional digits
-  if (compact && fractionDigits && fractionDigits.length > 3) {
+  if (compact && decimalPart && decimalPart.length > 3) {
     formattedAmount = Number(formattedAmount).toExponential();
   }
 
@@ -107,11 +117,11 @@ export function formatWei(
     formattedAmount,
     compact ? "compact" : "standard",
     {
-      maximumFractionDigits: compact ? 5 : 18,
+      maximumFractionDigits: digits,
     }
   );
 
-  return `${formattedAmount}${displayUnit ? ` ${toUnit}` : ""}`;
+  return `${formattedAmount}${unit}`;
 }
 
 export function shortenAddress(address: string, length = 4): string {
