@@ -51,6 +51,8 @@ FROM base AS web
 RUN apk add bash
 WORKDIR /app
 
+ENV HOSTNAME 0.0.0.0
+ENV PORT 3000
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -67,7 +69,6 @@ COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/pu
 USER nextjs
 
 EXPOSE 3000
-ENV PORT 3000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["web"]
