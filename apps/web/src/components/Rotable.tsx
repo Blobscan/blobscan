@@ -5,7 +5,7 @@ export type RotableProps = {
   children: ReactNode;
   rotated: boolean;
   angle: number;
-  onClick(): void;
+  onClick?: () => void;
 };
 
 export const Rotable: FC<RotableProps> = function ({
