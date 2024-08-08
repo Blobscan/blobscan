@@ -52,7 +52,9 @@ export function ExplorerDetails() {
       icon: <Gas className="h-4 w-4" />,
       value: latestBlock && (
         <EtherUnitDisplay
-          wei={BigInt(Math.round(Number(latestBlock.blobGasPrice.toString())))}
+          amount={BigInt(
+            Math.round(Number(latestBlock.blobGasPrice.toString()))
+          )}
           toUnit="Gwei"
         />
       ),

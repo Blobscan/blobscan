@@ -142,7 +142,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       name={<div title="Blob Base Fee">B. Base Fee</div>}
                       value={
                         <div className="truncate">
-                          <EtherUnitDisplay wei={blobGasBaseFee} />
+                          <EtherUnitDisplay amount={blobGasBaseFee} />
                         </div>
                       }
                     />
@@ -150,7 +150,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       name={<div title="Blob Max Fee">B.Max Fee</div>}
                       value={
                         <div className="truncate">
-                          <EtherUnitDisplay wei={blobGasMaxFee} />
+                          <EtherUnitDisplay amount={blobGasMaxFee} />
                         </div>
                       }
                     />
