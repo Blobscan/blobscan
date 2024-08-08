@@ -230,24 +230,21 @@ const Txs: NextPage = function () {
               {
                 item: (
                   <div className="truncate">
-                    <EtherUnitDisplay amount={blobGasBaseFee} toUnit="Gwei" />
+                    <EtherUnitDisplay wei={blobGasBaseFee} toUnit="Gwei" />
                   </div>
                 ),
               },
               {
                 item: (
                   <div className="truncate">
-                    <EtherUnitDisplay amount={blobGasMaxFee} toUnit="Gwei" />
+                    <EtherUnitDisplay wei={blobGasMaxFee} toUnit="Gwei" />
                   </div>
                 ),
               },
               {
                 item: (
                   <div className="truncate">
-                    <EtherUnitDisplay
-                      amount={block.blobGasPrice}
-                      toUnit="Gwei"
-                    />
+                    <EtherUnitDisplay wei={block.blobGasPrice} toUnit="Gwei" />
                   </div>
                 ),
               },

@@ -124,7 +124,7 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={block?.blobGasPrice} />,
+        value: <StandardEtherUnitDisplay wei={block.blobGasPrice} />,
       },
       {
         name: "Blob Fee",
@@ -135,14 +135,14 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <StandardEtherUnitDisplay amount={blobGasBaseFee} />
+                <StandardEtherUnitDisplay wei={blobGasBaseFee} />
               </div>
             ) : null}
             <div className=" flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <StandardEtherUnitDisplay amount={blobGasMaxFee} />
+              <StandardEtherUnitDisplay wei={blobGasMaxFee} />
             </div>
           </div>
         ),
@@ -176,7 +176,7 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<StandardEtherUnitDisplay amount={blobAsCalldataGasFee} />}
+            {<StandardEtherUnitDisplay wei={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               |{" "}
               <strong>

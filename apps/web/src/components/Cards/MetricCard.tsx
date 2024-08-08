@@ -5,7 +5,9 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { formatBytes, formatNumber, formatWei } from "~/utils";
+import { convertWei } from "@blobscan/eth-units";
+
+import { formatBytes, formatNumber } from "~/utils";
 import { Card } from "./Card";
 
 export type MetricType = "standard" | "bytes" | "ethereum" | "percentage";
@@ -64,7 +66,12 @@ function formatMetric(
       formattedValue = formatBytes(value);
       break;
     case "ethereum":
-      formattedValue = formatWei(value, { compact: true });
+      if (typeof value == "number") {
+        value = BigInt(Math.round(value));
+      }
+
+      const gwei = convertWei(value, "Gwei");
+      formattedValue = formatNumber(gwei, "compact") + " Gwei";
       break;
     case "percentage":
       formattedValue = `${formatNumber(value, mode, {

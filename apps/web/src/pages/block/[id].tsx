@@ -109,7 +109,7 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={blockData.blobGasPrice} />,
+        value: <StandardEtherUnitDisplay wei={blockData.blobGasPrice} />,
       },
       {
         name: "Blob Gas Used",
