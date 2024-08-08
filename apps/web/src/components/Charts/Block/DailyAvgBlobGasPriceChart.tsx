@@ -2,9 +2,11 @@ import type { FC } from "react";
 import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
+import { convertWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
-import { buildTimeSeriesOptions, convertWei, formatNumber } from "~/utils";
+import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyAvgBlobGasPriceChartProps = {
   days: DailyBlockStats["days"];
@@ -15,7 +17,7 @@ export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
   const formattedAvgBlobGasPrices = useMemo(
-    () => avgBlobGasPrices?.map((price) => convertWei(price)),
+    () => avgBlobGasPrices?.map((price) => convertWei(BigInt(price))),
     [avgBlobGasPrices]
   );
 
