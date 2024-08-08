@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -6,6 +6,7 @@ import { getPaginationParams } from "~/utils/pagination";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Link } from "~/components/Link";
+import type { PaginatedTableQueryFilters } from "~/components/PaginatedTable/PaginatedTable";
 import { PaginatedTable } from "~/components/PaginatedTable/PaginatedTable";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
@@ -56,13 +57,19 @@ export const BLOCKS_TABLE_HEADERS = [
 ];
 
 const Blocks: NextPage = function () {
+  const [filters, setFilters] = useState<PaginatedTableQueryFilters>();
+
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
   const {
     data: rawBlocksData,
     isLoading,
     error,
-  } = api.block.getAll.useQuery({ p, ps });
+  } = api.block.getAll.useQuery({
+    p,
+    ps,
+    ...filters,
+  });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {
       return {};
@@ -201,6 +208,10 @@ const Blocks: NextPage = function () {
     );
   }
 
+  const handleFilter = (filters: PaginatedTableQueryFilters) => {
+    setFilters(filters);
+  };
+
   return (
     <PaginatedTable
       title={`Blocks ${totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}`}
@@ -211,6 +222,7 @@ const Blocks: NextPage = function () {
       paginationData={{ pageSize: ps, page: p }}
       isExpandable
       rowSkeletonHeight={44}
+      onFilter={handleFilter}
     />
   );
 };

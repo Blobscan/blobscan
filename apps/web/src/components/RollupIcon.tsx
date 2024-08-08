@@ -103,5 +103,9 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
   }
 
-  return <div title={rollupLabel}>{rollupIcon}</div>;
+  return (
+    <div title={rollupLabel}>
+      {rollupIcon === null ? <div className={commonStyles}></div> : rollupIcon}
+    </div>
+  );
 };
