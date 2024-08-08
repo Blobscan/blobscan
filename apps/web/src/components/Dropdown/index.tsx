@@ -12,12 +12,14 @@ import { Option } from "./Option";
 export interface Option {
   value: string | number;
   label?: ReactNode;
+  prefix?: React.ReactNode;
 }
 
 export interface DropdownProps {
   options: Option[];
-  selected: Option;
+  selected: Option | null;
   width?: string;
+  placeholder?: string;
   onChange(newOption: Option): void;
 }
 
@@ -28,6 +30,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
   selected,
   width,
   onChange,
+  placeholder = "Select",
 }) {
   return (
     <Listbox value={selected} onChange={onChange}>
@@ -38,7 +41,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
           } cursor-pointer rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
           <span className="block truncate align-middle font-normal">
-            {selected.label}
+            {selected ? selected.label : placeholder}
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronUpDownIcon
