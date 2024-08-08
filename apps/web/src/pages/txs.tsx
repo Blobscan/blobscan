@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
 import { getPaginationParams } from "~/utils/pagination";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Link } from "~/components/Link";
+import type { PaginatedTableQueryFilters } from "~/components/PaginatedTable/PaginatedTable";
 import { PaginatedTable } from "~/components/PaginatedTable/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Table } from "~/components/Table";
@@ -84,6 +85,7 @@ type Transaction = Pick<
 > & { blobsLength?: number };
 
 const Txs: NextPage = function () {
+  const [filters, setFilters] = useState<PaginatedTableQueryFilters>();
   const router = useRouter();
   const { p, ps } = getPaginationParams(
     router.query,
@@ -101,6 +103,7 @@ const Txs: NextPage = function () {
     p,
     ps,
     expand: "block,blob",
+    ...filters,
   });
   const txsData = useMemo(() => {
     if (!rawTxsData) {
@@ -267,6 +270,10 @@ const Txs: NextPage = function () {
     );
   }
 
+  const handleFilter = (filters: PaginatedTableQueryFilters) => {
+    setFilters(filters);
+  };
+
   return (
     <PaginatedTable
       title={`Blob Transactions ${
@@ -278,6 +285,7 @@ const Txs: NextPage = function () {
       totalItems={totalTransactions}
       paginationData={{ pageSize: ps, page: p }}
       isExpandable
+      onFilter={handleFilter}
     />
   );
 };
