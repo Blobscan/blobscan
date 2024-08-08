@@ -39,6 +39,7 @@
     "@blobscan/tailwind-config": "workspace:^0.0.1",
     "@blobscan/test": "workspace:^0.0.1",
     "@blobscan/tsconfig": "workspace:^0.0.1",
+    "@blobscan/eth-units": "workspace:^0.0.1",
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.1",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
