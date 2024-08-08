@@ -3,7 +3,7 @@ const ETH_UNITS = { wei: 0, Gwei: 9, ether: 18 };
 export type EtherUnit = keyof typeof ETH_UNITS;
 
 /**
- * This function converts `wei` to the unit specified by `toUnit`
+ * This function converts `wei` to the unit specified by `toUnit`,
  * adds commas to the integer part of the converted value,
  * and appends the unit.
  *
