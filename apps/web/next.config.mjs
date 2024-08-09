@@ -31,6 +31,7 @@ const config = {
     "@blobscan/api",
     "@blobscan/auth",
     "@blobscan/db",
+    "@mui/x-charts",
     "echarts",
     "zrender",
   ],

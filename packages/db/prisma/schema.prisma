@@ -259,6 +259,19 @@ model BlobDailyStats {
   @@map("blob_daily_stats")
 }
 
+model ValidatorIncome {
+  id                 Int      @id @default(autoincrement())
+  epochIdx           BigInt   @map("epoch_idx")
+  incomeWei          BigInt   @map("income_wei")
+  validatorPublicKey String   @map("validator_public_key") @db.Char(100)
+  validatorIdx       Int      @map("validator_idx")
+  insertedAt         DateTime @map("inserted_at") @default(now())
+  updatedAt          DateTime @map("updated_at") @default(now())
+
+  @@map("validator_income")
+  @@index(fields: [validatorPublicKey, epochIdx(sort: Asc)], name: "idx_validator_epoch_income")
+}
+
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
 // uncomment the @db.Text annotations below
