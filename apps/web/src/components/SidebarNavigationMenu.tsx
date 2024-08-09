@@ -3,16 +3,16 @@ import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 
-import { BlobscanLogo } from "../BlobscanLogo";
-import { Button } from "../Button";
-import { Collapsable } from "../Collapsable";
-import { Rotable } from "../Rotable";
-import { ThemeModeButton } from "../ThemeModeButton";
-import type { ExpandibleNavItem, NavItem, ExpandibleSubItem } from "../content";
-import { isExpandible, MENU_ITEMS } from "../content";
+import { BlobscanLogo } from "./BlobscanLogo";
+import { Button } from "./Button";
+import { Collapsable } from "./Collapsable";
+import { Rotable } from "./Rotable";
 import { SidePanel } from "./SidePanel";
+import { ThemeModeButton } from "./ThemeModeButton";
+import type { ExpandibleNavigationItem, NavigationItem } from "./content";
+import { isExpandibleNavigationItem, NAVIGATION_ITEMS } from "./content";
 
-export function SidebarMenu({ className }: { className?: string }) {
+export function SidebarNavigationMenu({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,28 +26,25 @@ export function SidebarMenu({ className }: { className?: string }) {
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
-            {MENU_ITEMS.map((item, i) =>
-              isExpandible(item) ? (
-                <ExpandibleItem {...item} key={`mobile-${i}`} />
+            {NAVIGATION_ITEMS.map((item, i) =>
+              isExpandibleNavigationItem(item) ? (
+                <ExpandableNavigationLinks {...item} key={`mobile-${i}`} />
               ) : (
-                <SingleItem {...item} key={`mobile-${i}`} />
+                <NavigationLink {...item} key={`mobile-${i}`} />
               )
             )}
           </div>
         </div>
+
+        <div className={`fixed bottom-4 left-4 z-[60]`}>
+          <ThemeModeButton />
+        </div>
       </SidePanel>
-      <div
-        className={`fixed bottom-4 left-4 z-[60] rounded-full border border-[#888] border-opacity-10 bg-background-light duration-500 dark:bg-background-dark ${
-          open ? "translate-x-0" : "translate-x-[-200px]"
-        }`}
-      >
-        <ThemeModeButton />
-      </div>
     </div>
   );
 }
 
-function SingleItem({ label, href, icon }: NavItem) {
+function NavigationLink({ label, href, icon }: NavigationItem) {
   return (
     <a
       className="flex cursor-pointer items-center gap-1 p-2 duration-200 hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
@@ -59,7 +56,11 @@ function SingleItem({ label, href, icon }: NavItem) {
   );
 }
 
-function ExpandibleItem({ label, icon, items }: ExpandibleNavItem) {
+function ExpandableNavigationLinks({
+  label,
+  icon,
+  items,
+}: ExpandibleNavigationItem) {
   const pathname = usePathname();
   const [open, setOpen] = useState(items.some((x) => x.href === pathname));
 
@@ -83,28 +84,21 @@ function ExpandibleItem({ label, icon, items }: ExpandibleNavItem) {
       </button>
       <Collapsable opened={open}>
         <div className="flex flex-col gap-2 pb-4 pl-10 pt-2">
-          {items.map((subItem, index) => (
-            <SubItem {...subItem} key={`${label}-${index}-mobile`} />
+          {items.map(({ href, label }, index) => (
+            <a
+              key={index}
+              href={href}
+              className={`text-sm duration-200 ${
+                href === pathname
+                  ? "text-iconHighlight-light dark:text-iconHighlight-dark"
+                  : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
+              }`}
+            >
+              {label}
+            </a>
           ))}
         </div>
       </Collapsable>
     </div>
-  );
-}
-
-function SubItem({ label, href }: ExpandibleSubItem) {
-  const pathname = usePathname();
-
-  return (
-    <a
-      href={href}
-      className={`text-sm duration-200 ${
-        href === pathname
-          ? "text-iconHighlight-light dark:text-iconHighlight-dark"
-          : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
-      }`}
-    >
-      {label}
-    </a>
   );
 }

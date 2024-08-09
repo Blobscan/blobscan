@@ -25,30 +25,32 @@ function resolveApiUrl(): string {
   return `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
 }
 
-export type NavItem = {
+export type NavigationItem = {
   label: string;
   href: string;
   icon: ReactNode;
 };
 
-export type ExpandibleNavItem = {
+export type ExpandibleNavigationItem = {
   label: string;
   icon: ReactNode;
-  items: ExpandibleSubItem[];
+  items: ExpandibleNavigationSubItem[];
 };
 
-export type ExpandibleSubItem = {
+export type ExpandibleNavigationSubItem = {
   label: string;
   href: string;
 };
 
-export function isExpandible(
-  item: ExpandibleNavItem | NavItem
-): item is ExpandibleNavItem {
-  return (item as ExpandibleNavItem).items !== undefined;
+export function isExpandibleNavigationItem(
+  item: unknown
+): item is ExpandibleNavigationItem {
+  return typeof item === "object" && item !== null && "items" in item;
 }
 
-export const MENU_ITEMS: Array<NavItem | ExpandibleNavItem> = [
+export const NAVIGATION_ITEMS: Array<
+  NavigationItem | ExpandibleNavigationItem
+> = [
   {
     label: "Blockchain",
     icon: <Squares2X2Icon />,

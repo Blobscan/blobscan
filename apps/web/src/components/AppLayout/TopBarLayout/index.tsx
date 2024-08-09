@@ -1,9 +1,10 @@
 import React from "react";
 
+import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { ThemeModeButton } from "~/components/ThemeModeButton";
 import { useIsHomepage } from "~/hooks/useIsHomePage";
 import { ExplorerDetails } from "../../ExplorerDetails";
-import { NavMenusSection } from "../../NavMenus";
+import { NavigationMenus } from "../../NavigationMenus";
 import { CompactTopBar } from "./CompactTopBar";
 import { TopBar } from "./TopBar";
 
@@ -17,8 +18,13 @@ export const TopBarLayout: React.FC = () => {
           <ExplorerDetails />
         </div>
         <div className="flex items-center gap-3">
-          <NavMenusSection />
-          <div className="relative hidden md:block">
+          <div className=" xl:hidden">
+            <SidebarNavigationMenu />
+          </div>
+          <div className="hidden xl:flex">
+            <NavigationMenus />
+          </div>
+          <div className="relative hidden xl:block">
             <ThemeModeButton />
           </div>
         </div>

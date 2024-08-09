@@ -1,6 +1,7 @@
+import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { ExplorerDetails } from "../../ExplorerDetails";
-import { NavMenusSection } from "../../NavMenus";
+import { NavigationMenus } from "../../NavigationMenus";
 import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
@@ -14,12 +15,17 @@ export const TopBar: React.FC = () => {
             <BlobscanLogo className="w-40" />
           </div>
           <div className="flex grow-[3] items-center justify-end gap-5">
-            <NavMenusSection />
+            <div className="hidden xl:block">
+              <NavigationMenus />
+            </div>
             <div className="w-full sm:max-w-xl">
               <SearchInput />
             </div>
             <div className="hidden xl:block">
               <ThemeModeButton />
+            </div>
+            <div className="block xl:hidden">
+              <SidebarNavigationMenu />
             </div>
           </div>
         </div>
