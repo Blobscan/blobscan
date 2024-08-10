@@ -19,16 +19,19 @@ export interface DropdownProps {
   options: Option[];
   selected: Option | null;
   width?: string;
+  height?: string;
   placeholder?: string;
   onChange(newOption: Option): void;
 }
 
 const DEFAULT_WIDTH = "w-32";
+const DEFAULT_HEIGHT = "h-9";
 
 export const Dropdown: React.FC<DropdownProps> = function ({
   options,
   selected,
   width,
+  height,
   onChange,
   placeholder = "Select",
 }) {
@@ -36,7 +39,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
     <Listbox value={selected} onChange={onChange}>
       <div className="relative">
         <ListboxButton
-          className={`relative h-9 ${
+          className={`relative ${height ?? DEFAULT_HEIGHT} ${
             width ?? DEFAULT_WIDTH
           } cursor-pointer rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
