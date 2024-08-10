@@ -7,11 +7,14 @@ import { api } from "~/api-client";
 import { capitalize } from "~/utils";
 import { Skeleton } from "../Skeleton";
 
-type RollupFilterProps = Pick<DropdownProps, "onChange" | "selected">;
+type RollupFilterProps = Pick<DropdownProps, "onChange" | "selected"> & {
+  fullWidth?: boolean;
+};
 
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
   selected,
+  fullWidth = false,
 }) {
   const { data: rollups } = api.getRollups.useQuery();
 
@@ -29,7 +32,8 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
           }))}
           onChange={onChange}
           placeholder="Rollup"
-          width="w-40"
+          width={fullWidth ? "w-full" : "w-40"}
+          height="h-[42px]"
         />
       )}
     </>

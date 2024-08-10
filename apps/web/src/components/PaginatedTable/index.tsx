@@ -25,6 +25,8 @@ const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 export interface PaginatedTableQueryFilters {
   rollup: Rollup;
+  startDate: Date;
+  endDate: Date;
 }
 
 type PaginationData = {
@@ -126,9 +128,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         emptyState={DEFAULT_TABLE_EMPTY_STATE}
       >
         <div className="flex flex-col gap-6">
-          <div className="w-1/2">
-            <Filters />
-          </div>
+          <Filters />
           <Table
             fixedColumnsWidth={true}
             expandableRowsMode={isExpandable}

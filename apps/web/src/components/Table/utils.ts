@@ -38,7 +38,7 @@ export const alignmentStyles = (alignment: Alignment) =>
 
 export const stickyStyles = (isSticky: boolean) =>
   cn({
-    "sticky top-0 z-10": isSticky,
+    "sticky top-0 z-9": isSticky,
   });
 
 export const colSpan = (isFullColSpan: boolean, colSpan?: number) =>
