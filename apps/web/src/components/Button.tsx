@@ -23,6 +23,7 @@ type ButtonProps = {
   size?: Size;
   icon?: ReactElement<{ className?: string }>;
   label?: React.ReactNode;
+  fullWidth?: boolean;
   onClick?: DOMAttributes<HTMLButtonElement>["onClick"];
 };
 
@@ -85,6 +86,7 @@ export const Button: FC<ButtonProps> = function ({
   onClick,
   size = "md",
   variant,
+  fullWidth = false,
 }: ButtonProps) {
   return (
     <button
@@ -122,6 +124,7 @@ export const Button: FC<ButtonProps> = function ({
         "h-11": size === "lg",
         "h-13": size === "xl",
       })}
+      ${fullWidth && "w-full"}
       cursor-pointer
       rounded
       text-sm
@@ -135,7 +138,7 @@ export const Button: FC<ButtonProps> = function ({
       `}
       onClick={onClick}
     >
-      <div className="flex h-full items-center gap-1">
+      <div className="flex h-full items-center justify-center gap-1">
         {icon && <div className="h-full">{icon}</div>}
         {label}
       </div>
