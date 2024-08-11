@@ -16,8 +16,8 @@ export function CopyToClipboard({
 }: CopyToClipboardProps) {
   const [isCopied, setCopied] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const isHover = useHover(buttonRef);
-  useEffect(() => setCopied(false), [isHover]);
+  const isHovered = useHover(buttonRef);
+  useEffect(() => setCopied(false), [isHovered]);
 
   return (
     // TODO: Use Button component
@@ -34,7 +34,7 @@ export function CopyToClipboard({
       ) : (
         <Copy className="h-5 w-5" />
       )}
-      <Tooltip show={isHover}>
+      <Tooltip show={isHovered}>
         <div className="whitespace-nowrap">{isCopied ? "Copied!" : label}</div>
       </Tooltip>
     </button>
