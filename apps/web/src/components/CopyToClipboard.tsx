@@ -38,3 +38,12 @@ export function CopyToClipboard({
     </button>
   );
 }
+
+export function Copyable({ label, value }: { label?: string; value: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      {value}
+      <CopyToClipboard value={value} label={label} />
+    </div>
+  );
+}

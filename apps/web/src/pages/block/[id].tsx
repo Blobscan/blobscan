@@ -5,7 +5,7 @@ import type { NextRouter } from "next/router";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
-import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable } from "~/components/CopyToClipboard";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -81,12 +81,7 @@ const Block: NextPage = function () {
       { name: "Block Height", value: blockData.number },
       {
         name: "Hash",
-        value: (
-          <div className="flex items-center gap-2">
-            {blockData.hash}
-            <CopyToClipboard value={blockData.hash} label="Copy Hash" />
-          </div>
-        ),
+        value: <Copyable value={blockData.hash} label="Copy Hash" />,
       },
       {
         name: "Timestamp",

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
-import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
@@ -81,12 +81,7 @@ const Tx: NextPage = () => {
     detailsFields = [
       {
         name: "Hash",
-        value: (
-          <div className="flex items-center gap-2">
-            {hash}
-            <CopyToClipboard value={hash} label="Copy Hash" />
-          </div>
-        ),
+        value: <Copyable value={hash} label="Copy Hash" />,
       },
       {
         name: "Block",

@@ -11,7 +11,7 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
-import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
 import { Dropdown } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -90,30 +90,15 @@ const Blob: NextPage = function () {
     detailsFields.push(
       {
         name: "Versioned Hash",
-        value: (
-          <div className="flex items-center gap-2">
-            {blob.versionedHash}
-            <CopyToClipboard value={blob.versionedHash} />
-          </div>
-        ),
+        value: <Copyable value={blob.versionedHash} />,
       },
       {
         name: "Commitment",
-        value: (
-          <div className="flex items-center gap-2">
-            {blob.commitment}
-            <CopyToClipboard value={blob.commitment} label="Copy commitment" />
-          </div>
-        ),
+        value: <Copyable value={blob.commitment} label="Copy commitment" />,
       },
       {
         name: "Proof",
-        value: (
-          <div className="flex items-center gap-2">
-            {blob.proof}
-            <CopyToClipboard value={blob.proof} label="Copy proof" />
-          </div>
-        ),
+        value: <Copyable value={blob.proof} label="Copy proof" />,
       }
     );
 
