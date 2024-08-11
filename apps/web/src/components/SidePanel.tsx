@@ -1,5 +1,12 @@
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { animated, useSpring } from "@react-spring/web";
+
+type SidePanelContextValues = {
+  status: "opened" | "closed" | "opening" | "closing";
+};
+
+const SidePanelContext = createContext<SidePanelContextValues | null>(null);
 
 export function SidePanel({
   open,
@@ -10,14 +17,19 @@ export function SidePanel({
   onClose: () => void;
   children: ReactNode;
 }) {
-  // Hides the scrollbar when the side panel is open
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [open]);
+  const [status, setStatus] = useState<SidePanelContextValues["status"]>(
+    open ? "opened" : "closed"
+  );
+  const props = useSpring({
+    from: { left: "-100%" },
+    left: open ? "0" : "-100%",
+    onStart() {
+      setStatus(open ? "opening" : "closing");
+    },
+    onRest() {
+      setStatus(open ? "opened" : "closed");
+    },
+  });
 
   // Closes the side panel when the "Escape" key is pressed
   useEffect(() => {
@@ -37,15 +49,29 @@ export function SidePanel({
   return (
     <>
       <Overlay show={open} onClose={onClose} />
-      <div
-        className={`fixed left-0 top-0 z-50 h-full w-[80%] max-w-[400px] overflow-y-auto border-r border-black border-opacity-20 bg-background-light duration-300 dark:bg-background-dark ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+
+      <animated.div
+        className={`fixed top-0 z-50 h-full w-[80%] max-w-[400px] overflow-y-auto border-r border-black border-opacity-20 bg-background-light dark:bg-background-dark`}
+        style={{
+          left: props.left,
+        }}
       >
-        {children}
-      </div>
+        <SidePanelContext.Provider value={{ status }}>
+          {children}
+        </SidePanelContext.Provider>
+      </animated.div>
     </>
   );
+}
+
+export function useSidePanel() {
+  const value = useContext(SidePanelContext);
+
+  if (!value) {
+    throw new Error("useSidePanel() must be used within a SidePanel component");
+  }
+
+  return value;
 }
 
 function Overlay({ show, onClose }: { show: boolean; onClose: () => void }) {
