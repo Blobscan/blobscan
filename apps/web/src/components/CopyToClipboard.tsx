@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
+import { useHover } from "~/hooks/useHover";
 import Copy from "~/icons/copy.svg";
 import { Tooltip } from "./Tooltip";
 
@@ -12,16 +13,14 @@ export function CopyToClipboard({
   value: string;
 }) {
   const [isCopied, setCopied] = useState(false);
-  const [isHover, setIsHover] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const isHover = useHover(buttonRef);
+  useEffect(() => setCopied(false), [isHover]);
 
   return (
     <button
+      ref={buttonRef}
       className="relative cursor-pointer text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => {
-        setIsHover(false);
-        setCopied(false);
-      }}
       onClick={() => {
         navigator.clipboard.writeText(value);
         setCopied(true);
