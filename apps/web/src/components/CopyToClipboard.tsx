@@ -5,13 +5,15 @@ import { useHover } from "~/hooks/useHover";
 import Copy from "~/icons/copy.svg";
 import { Tooltip } from "./Tooltip";
 
+type CopyToClipboardProps = {
+  label?: string;
+  value: string;
+};
+
 export function CopyToClipboard({
   label = "Copy to clipboard",
   value,
-}: {
-  label?: string;
-  value: string;
-}) {
+}: CopyToClipboardProps) {
   const [isCopied, setCopied] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isHover = useHover(buttonRef);
@@ -39,7 +41,7 @@ export function CopyToClipboard({
   );
 }
 
-export function Copyable({ label, value }: { label?: string; value: string }) {
+export function Copyable({ label, value }: CopyToClipboardProps) {
   return (
     <div className="flex items-center gap-2">
       {value}
