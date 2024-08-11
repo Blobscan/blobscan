@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 
-export function Tooltip({
-  show,
-  children,
-}: {
+type TooltipProps = {
   show: boolean;
   children: ReactNode;
-}) {
+};
+
+export function Tooltip({ show, children }: TooltipProps) {
   return (
     <div
       className={`pointer-events-none absolute -top-2 left-[50%] z-10 -translate-x-[50%] translate-y-[-100%] ${
