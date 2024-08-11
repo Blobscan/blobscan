@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
@@ -7,7 +7,7 @@ import { BlobscanLogo } from "./BlobscanLogo";
 import { Button } from "./Button";
 import { Collapsable } from "./Collapsable";
 import { Rotable } from "./Rotable";
-import { SidePanel } from "./SidePanel";
+import { SidePanel, useSidePanel } from "./SidePanel";
 import { ThemeModeButton } from "./ThemeModeButton";
 import type { ExpandibleNavigationItem, NavigationItem } from "./content";
 import { isExpandibleNavigationItem, NAVIGATION_ITEMS } from "./content";
@@ -28,15 +28,18 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
           <div className="flex flex-col justify-center gap-2 opacity-80">
             {NAVIGATION_ITEMS.map((item, i) =>
               isExpandibleNavigationItem(item) ? (
-                <ExpandableNavigationLinks {...item} key={`mobile-${i}`} />
+                <ExpandableNavigationLinks
+                  key={`${item.label}-${i}`}
+                  {...item}
+                />
               ) : (
-                <NavigationLink {...item} key={`mobile-${i}`} />
+                <NavigationLink key={`${item.label}-${i}`} {...item} />
               )
             )}
           </div>
         </div>
 
-        <div className={`fixed bottom-4 left-4 z-[60]`}>
+        <div className="absolute bottom-4 left-4">
           <ThemeModeButton />
         </div>
       </SidePanel>
@@ -61,8 +64,15 @@ function ExpandableNavigationLinks({
   icon,
   items,
 }: ExpandibleNavigationItem) {
+  const { status } = useSidePanel();
   const pathname = usePathname();
   const [open, setOpen] = useState(items.some((x) => x.href === pathname));
+
+  useEffect(() => {
+    if (status === "closed") {
+      setOpen(items.some((x) => x.href === pathname));
+    }
+  }, [items, pathname, status]);
 
   return (
     <div>
