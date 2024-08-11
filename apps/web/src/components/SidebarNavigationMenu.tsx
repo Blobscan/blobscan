@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
@@ -16,14 +17,14 @@ import { isExpandibleNavigationItem, NAVIGATION_ITEMS } from "./content";
 export function SidebarNavigationMenu({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
 
+  const openSidebar = useCallback(() => setOpen(true), []);
+
+  const closeSidebar = useCallback(() => setOpen(false), []);
+
   return (
     <div className={className}>
-      <Button
-        variant="icon"
-        onClick={() => setOpen(true)}
-        icon={<Bars3Icon />}
-      />
-      <SidePanel open={open} onClose={() => setOpen(false)}>
+      <Button variant="icon" onClick={openSidebar} icon={<Bars3Icon />} />
+      <SidePanel open={open} onClose={closeSidebar}>
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
@@ -32,9 +33,14 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
                 <ExpandableNavigationLinks
                   key={`${item.label}-${i}`}
                   {...item}
+                  onClick={closeSidebar}
                 />
               ) : (
-                <NavigationLink key={`${item.label}-${i}`} {...item} />
+                <NavigationLink
+                  key={`${item.label}-${i}`}
+                  {...item}
+                  onClick={closeSidebar}
+                />
               )
             )}
           </div>
@@ -48,12 +54,21 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
   );
 }
 
-function NavigationLink({ label, href, icon }: NavigationItem) {
+type NavigationLinkProps = NavigationItem & { onClick?: () => void };
+
+function NavigationLink({
+  label,
+  href,
+  icon,
+  onClick = () => {
+    // Do nothing
+  },
+}: NavigationLinkProps) {
   const pathname = usePathname();
   const isSelected = href === pathname;
 
   return (
-    <a
+    <Link
       className={cn(
         "flex cursor-pointer items-center gap-1 p-2 duration-200 hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark",
         {
@@ -62,18 +77,26 @@ function NavigationLink({ label, href, icon }: NavigationItem) {
         }
       )}
       href={href}
+      onClick={onClick}
     >
       <div className="h-5 w-5">{icon}</div>
       {label}
-    </a>
+    </Link>
   );
 }
+
+type ExpandableNavigationLinksProps = ExpandibleNavigationItem & {
+  onClick?: () => void;
+};
 
 function ExpandableNavigationLinks({
   label,
   icon,
   items,
-}: ExpandibleNavigationItem) {
+  onClick = () => {
+    // Do nothing
+  },
+}: ExpandableNavigationLinksProps) {
   const { status } = useSidePanel();
   const pathname = usePathname();
   const [open, setOpen] = useState(items.some((x) => x.href === pathname));
@@ -105,17 +128,18 @@ function ExpandableNavigationLinks({
       <Collapsable opened={open}>
         <div className="flex flex-col gap-2 pb-4 pl-10 pt-2">
           {items.map(({ href, label }, index) => (
-            <a
+            <Link
               key={index}
               href={href}
-              className={`text-sm duration-200 ${
+              className={`text-sm ${
                 href === pathname
                   ? "text-iconHighlight-light dark:text-iconHighlight-dark"
                   : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
               }`}
+              onClick={onClick}
             >
               {label}
-            </a>
+            </Link>
           ))}
         </div>
       </Collapsable>
