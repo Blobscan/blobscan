@@ -93,10 +93,7 @@ const Blob: NextPage = function () {
         value: (
           <div className="flex items-center gap-2">
             {blob.versionedHash}
-            <CopyToClipboard
-              value={blob.versionedHash}
-              label="Copy versioned hash"
-            />
+            <CopyToClipboard value={blob.versionedHash} />
           </div>
         ),
       },

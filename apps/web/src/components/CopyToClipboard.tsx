@@ -5,10 +5,10 @@ import Copy from "~/icons/copy.svg";
 import { Tooltip } from "./Tooltip";
 
 export function CopyToClipboard({
-  label,
+  label = "Copy to clipboard",
   value,
 }: {
-  label: string;
+  label?: string;
   value: string;
 }) {
   const [isCopied, setCopied] = useState(false);
