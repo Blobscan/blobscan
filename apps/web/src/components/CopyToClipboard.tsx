@@ -18,6 +18,7 @@ export function CopyToClipboard({
   useEffect(() => setCopied(false), [isHover]);
 
   return (
+    // TODO: Use Button component
     <button
       ref={buttonRef}
       className="relative cursor-pointer text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
