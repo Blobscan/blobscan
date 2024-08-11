@@ -23,6 +23,10 @@ import {
   deserializeFullTransaction,
 } from "~/utils";
 
+import InputDataDecoder from 'ethereum-input-data-decoder';
+import abi from './deposit_abi.json';
+const decoder = new InputDataDecoder(abi);
+
 const Tx: NextPage = () => {
   const router = useRouter();
   const hash = (router.query.hash as string | undefined) ?? "";
@@ -82,6 +86,8 @@ const Tx: NextPage = () => {
 
     const gasPrice = transactionDetail?.data? BigInt(transactionDetail.data.gasPrice) : BigInt(0);
     const gasUsed = transactionDetail?.data? BigInt(transactionDetail.data.gas) : BigInt(0);
+    const input = transactionDetail?.data? transactionDetail.data.input : "";
+
     const transactionFee = gasPrice * gasUsed;
     detailsFields = [
       {
@@ -135,6 +141,53 @@ const Tx: NextPage = () => {
         name: "Rollup",
         value: <RollupBadge rollup={rollup} />,
       });
+    }
+
+    if (input && input != "0x") {
+      detailsFields.push({
+        name: "Raw input",
+        value: (
+          <div className="border border-gray-300 p-2 rounded" style={{ overflowX: "auto" }}>
+            {transactionDetail?.data ? input : "refresh to load."}
+          </div>
+        ),
+      });
+
+      if ( to == "0x4242424242424242424242424242424242424242") {
+        const result = decoder.decodeData(input);
+        console.log(result);
+
+        // Add decoded input data
+        detailsFields.push({
+          name: "Decoded Input Data",
+          value: `method: ${result.method}`,
+        });
+
+        // Add a title row followed by aligned data rows
+        const divElements = [
+            <div key="title" className="border border-gray-300 p-2 rounded" style={{ overflowX: "auto" }}>
+            <div className="font-bold flex">
+              <div style={{ width: "20%" }}>Name</div>
+              <div style={{ width: "10%" }}>Type</div>
+              <div style={{ width: "70%" }}>Data</div>
+            </div>
+          </div>,
+          ...result.names.map((name, i) => (
+            <div key={i} className="border border-gray-300 p-2 rounded" style={{ overflowX: "auto" }}>
+              <div className="flex">
+                <div style={{ width: "20%" }}>{name}</div>
+                <div style={{ width: "10%" }}>{result.types[i]}</div>
+                <div style={{  width: "70%", whiteSpace: "nowrap" }}>{result.inputs[i]}</div>
+              </div>
+            </div>
+          )),
+        ];
+
+        detailsFields.push({
+          name: "",
+          value: <div className="border border-gray-300 p-2 rounded" style={{ overflowX: "auto" }}>{divElements}</div>
+        });
+      }
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
