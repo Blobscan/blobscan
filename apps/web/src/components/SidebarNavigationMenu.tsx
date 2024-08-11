@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
+import cn from "classnames";
 
 import { BlobscanLogo } from "./BlobscanLogo";
 import { Button } from "./Button";
@@ -48,9 +49,18 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
 }
 
 function NavigationLink({ label, href, icon }: NavigationItem) {
+  const pathname = usePathname();
+  const isSelected = href === pathname;
+
   return (
     <a
-      className="flex cursor-pointer items-center gap-1 p-2 duration-200 hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
+      className={cn(
+        "flex cursor-pointer items-center gap-1 p-2 duration-200 hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark",
+        {
+          "border bg-iconHighlight-dark bg-opacity-10 text-iconHighlight-light dark:text-iconHighlight-dark":
+            isSelected,
+        }
+      )}
       href={href}
     >
       <div className="h-5 w-5">{icon}</div>
