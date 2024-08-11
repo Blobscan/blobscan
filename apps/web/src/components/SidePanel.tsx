@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
+import cn from "classnames";
 
 type SidePanelContextValues = {
   status: "opened" | "closed" | "opening" | "closing";
@@ -75,11 +76,19 @@ export function useSidePanel() {
 }
 
 function Overlay({ show, onClose }: { show: boolean; onClose: () => void }) {
+  const props = useSpring({
+    from: { showProgress: 0 },
+    to: { showProgress: Number(show) },
+  });
+
   return (
-    <div
-      className={`fixed left-0 top-0 z-10 h-full w-full bg-black ${
-        show ? "opacity-80" : "pointer-events-none opacity-0"
-      }`}
+    <animated.div
+      className={cn("fixed left-0 top-0 z-10 h-full w-full bg-black", {
+        "pointer-events-none": !show,
+      })}
+      style={{
+        opacity: props.showProgress.to((value) => value * 0.8),
+      }}
       onClick={onClose}
       tabIndex={0}
       role="button"
