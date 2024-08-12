@@ -50,6 +50,8 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
     const searchResults = searchQuery.data;
 
+    setTerm("");
+
     if (!searchResults || !Object.keys(searchResults).length) {
       void router.push(`/search?q=${term}`);
       return;
@@ -75,6 +77,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
   const handleResultClick = useCallback<SearchResultsProps["onResultClick"]>(
     (category, id) => {
+      setTerm("");
       void router.push(getRouteBySearchCategory(category, id));
     },
     [router]
@@ -150,7 +153,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
           icon={
-            searchQuery.isFetching || debouncing ? (
+            (searchQuery.isFetching || debouncing) && term ? (
               <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
             ) : (
               <MagnifyingGlassIcon
