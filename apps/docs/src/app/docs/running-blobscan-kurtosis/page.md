@@ -1,21 +1,21 @@
 ---
-title: Kurtosis
+title: Spin up Blobscan using Kurtosis
 nextjs:
   metadata:
-    title: Kurtosis
+    title: Spin up Blobscan using Kurtosis
     description: Run Blobscan using Kurtosis
 ---
 
 [Kurtosis](https://www.kurtosis.com/) is a tool for packaging and launching environments of containerized services where you want them and with one liners.
 
-There is also a [Kurtosis' ethereum-package](https://github.com/ethpandaops/ethereum-package) maintained by ethpandaops, which makes it really easy to
+There is also a [Kurtosis' ethereum-package](https://github.com/ethpandaops/ethereum-package) maintained by ethPandaOps, which makes it really easy to
 spin up up a local PoS Ethereum testnet with blobscan as an additional service, so you can explore blobs sent in your local network.
 
 ```bash
 kurtosis clean -a && kurtosis run github.com/ethpandaops/ethereum-package --image-download always '{"additional_services": ["blobscan"]}'
 ```
 
-{% figure src="/blobscan-kurtosis.png" appendCurrentTheme=true /%}
+{% figure src="/blobscan-kurtosis.png" /%}
 
 The screenshot above displays all the services that are running now and their port redirects:
 
@@ -37,6 +37,7 @@ kurtosis clean -a && kurtosis run . --image-download always '{"additional_servic
 
 This time we also included **goomy_blob**, a blob spammer.
 
-{% callout title="Kurtosis" %}
-[Installation guide](https://docs.kurtosis.com/install/)
+{% callout title="More about Kurtosis" %}
+* [Installation guide](https://docs.kurtosis.com/install/)
+* [Kurtosis: A Deep Dive to Local Devnets](https://ethpandaops.io/posts/kurtosis-deep-dive/) by ethPandaOps
 {% /callout %}
