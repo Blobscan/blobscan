@@ -6,6 +6,8 @@ nextjs:
     description: Run Blobscan using Kurtosis
 ---
 
+## About Kurtosis
+
 [Kurtosis](https://www.kurtosis.com/) is a tool for packaging and launching environments of containerized services where you want them and with one liners.
 
 There is also a [Kurtosis' ethereum-package](https://github.com/ethpandaops/ethereum-package) maintained by ethPandaOps, which makes it really easy to

@@ -6,7 +6,7 @@ nextjs:
     description: How to configure your Blobscan instance
 ---
 
-# Blobscan Web
+## Blobscan Web
 
 | Variable                                 | Description                                                                                 | Required | Default value                                                                                                                                                                |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -26,7 +26,7 @@ nextjs:
 | `TRACES_ENABLED`                         | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                                                                                                                                                                      |
 | `BLOB_PROPAGATOR_ENABLED`                | Enable uploading blobs to multiple storages in parallel                                     | No       | `false`                                                                                                                                                                      |
 
-# Blobscan API
+## Blobscan API
 
 | Variable                             | Description                                                                                        | Required                        | Default value              |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------- |
@@ -61,7 +61,7 @@ nextjs:
 | `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE` | Remove completed jobs after the specified number of seconds (default: 1 day)                       | No                              | `86400`                    |
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`    | Remove completed jobs after the specified number of seconds (default: 7 days)                      | No                              | `604800`                   |
 
-# Blobscan indexer
+## Blobscan indexer
 
 | Variable                  | Description                                                                                                                                   | Required | Default value       |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------- |
@@ -74,7 +74,7 @@ nextjs:
 | `RUST_LOG`                | Configure logger                                                                                                                              | No       | `blob-indexer=INFO` |
 | `SENTRY_DSN`              | Sentry DSN                                                                                                                                    | No       | (empty)             |
 
-# Docker
+## Docker
 
 These variables are used in the docker compose files we provide.
 

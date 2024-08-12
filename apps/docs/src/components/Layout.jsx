@@ -19,6 +19,7 @@ export const navigation = [
       { title: 'Features', href: '/docs/features' },
       { title: 'Installation', href: '/docs/installation' },
       { title: 'Environment variables', href: '/docs/environment' },
+      { title: 'Background jobs', href: '/docs/background-jobs' },
     ],
   },
   {

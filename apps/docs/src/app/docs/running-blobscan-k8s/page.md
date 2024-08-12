@@ -17,7 +17,7 @@ kind create cluster
 kubectl cluster-info --context kind-kind
 ```
 
-## Installing blobscan
+## Installing helm chart
 
 First you will need to add a new repository:
 
@@ -34,7 +34,7 @@ helm install blobscan blobscan-helm-charts/blobscan
 
 The easiest way is installing `blobscan`, which is an umbrella chart which will install `blobscan-api`, `blobscan-web` and `blobscan-indexer`.
 
-## List of Helm charts available
+## List of helm charts available
 
 ```bash
 helm search repo blobscan-helm-charts
