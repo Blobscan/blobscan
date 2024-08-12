@@ -4,13 +4,13 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 export function NavArrows({ next, prev }: { next?: string; prev?: string }) {
   return (
     <div className="flex items-center justify-center gap-1">
-      <NavArrow type="Prev" href={prev} />
-      <NavArrow type="Next" href={next} />
+      <NavArrow type="prev" href={prev} />
+      <NavArrow type="next" href={next} />
     </div>
   );
 }
 
-function NavArrow({ type, href }: { type: "Next" | "Prev"; href?: string }) {
+function NavArrow({ type, href }: { type: "next" | "prev"; href?: string }) {
   const router = useRouter();
 
   return (
@@ -33,7 +33,7 @@ function NavArrow({ type, href }: { type: "Next" | "Prev"; href?: string }) {
             ${href ? "" : "cursor-default opacity-50"}
         `}
     >
-      {type === "Next" ? (
+      {type === "next" ? (
         <ChevronRightIcon className="h-4 w-4" />
       ) : (
         <ChevronLeftIcon className="h-4 w-4" />
