@@ -11,6 +11,7 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
+import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
 import { Dropdown } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -87,9 +88,18 @@ const Blob: NextPage = function () {
       });
     }
     detailsFields.push(
-      { name: "Versioned Hash", value: blob.versionedHash },
-      { name: "Commitment", value: blob.commitment },
-      { name: "Proof", value: blob.proof }
+      {
+        name: "Versioned Hash",
+        value: <Copyable value={blob.versionedHash} />,
+      },
+      {
+        name: "Commitment",
+        value: <Copyable value={blob.commitment} label="Copy commitment" />,
+      },
+      {
+        name: "Proof",
+        value: <Copyable value={blob.proof} label="Copy proof" />,
+      }
     );
 
     detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
@@ -117,7 +127,10 @@ const Blob: NextPage = function () {
                 <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
                   Tx{" "}
                 </div>
-                <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+                <div className="flex items-center gap-2">
+                  {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
+                  <CopyToClipboard value={txHash} label="Copy tx hash" />
+                </div>
               </div>
               <div className="flex gap-1">
                 <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -143,17 +156,20 @@ const Blob: NextPage = function () {
           <div className="flex items-center justify-between">
             <div>Blob Data</div>
             {blob && (
-              <div className="flex items-center gap-2">
-                <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
-                  View as:
+              <div className="flex items-center gap-4">
+                <CopyToClipboard label="Copy blob data" value={blob.data} />
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
+                    View as:
+                  </div>
+                  <Dropdown
+                    items={blobViewModes}
+                    selected={selectedBlobViewMode}
+                    onChange={(newViewMode) =>
+                      setSelectedBlobViewMode(newViewMode as BlobViewMode)
+                    }
+                  />
                 </div>
-                <Dropdown
-                  items={blobViewModes}
-                  selected={selectedBlobViewMode}
-                  onChange={(newViewMode) =>
-                    setSelectedBlobViewMode(newViewMode as BlobViewMode)
-                  }
-                />
               </div>
             )}
           </div>
