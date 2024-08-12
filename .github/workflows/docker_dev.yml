@@ -1,9 +1,9 @@
-name: Docker
+name: Docker dev
 
 on:
   workflow_run:
     workflows: ["CI"]
-    tags: ["v*"]
+    branches: ["main"]
     types:
       - completed
 
@@ -33,37 +33,16 @@ jobs:
           echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
-      - name: Extract metadata (tags, labels) for Docker (API)
-        id: meta_api
-        uses: docker/metadata-action@v5
-        with:
-          images: blossomlabs/blobscan-api
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-
       - name: Build and push (api)
         uses: docker/build-push-action@v6.5.0
         with:
           context: .
           push: true
           target: api
-          tags: ${{ steps.meta_api.outputs.tags }}
-          labels: ${{ steps.meta_api.outputs.labels }}
+          tags: blossomlabs/blobscan-api:development
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
-
-      - name: Extract metadata (tags, labels) for Docker (Web)
-        id: meta_web
-        uses: docker/metadata-action@v5
-        with:
-          images: blossomlabs/blobscan-web
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
 
       - name: Build and push (web)
         uses: docker/build-push-action@v6.5.0
@@ -71,8 +50,7 @@ jobs:
           context: .
           push: true
           target: web
-          tags: ${{ steps.meta_web.outputs.tags }}
-          labels: ${{ steps.meta_web.outputs.labels }}
+          tags: blossomlabs/blobscan-web:development
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}

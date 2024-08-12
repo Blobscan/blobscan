@@ -4,12 +4,9 @@ version: "3.7"
 services:
   api:
     image: blossomlabs/blobscan-api:${BLOBSCAN_API_TAG}
-    command: api
     restart: always
     ports:
       - ${EXTERNAL_API_PORT}:3001
-    volumes:
-      - /tmp/blobscan-blobs:/tmp/blobscan-blobs
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/healthcheck"]
       interval: 30s

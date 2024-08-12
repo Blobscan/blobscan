@@ -6,95 +6,82 @@ nextjs:
     description: How to configure your Blobscan instance
 ---
 
-Below you can find a list of supported variables.
-These are listed by category:
+# Blobscan Web
 
-- [General](#general)
-- [Network](#network)
-- [Blob storages](#blob-storages)
-- [Blob propagator](#blob-propagator)
-- [Indexer](#indexer)
-- [Telemetry](#telemetry)
+| Variable                                 | Description                                                                                 | Required | Default value                                                                                                                                                                |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                           | Postgresql database URI                                                                     | Yes      | (empty)                                                                                                                                                                      |
+| `BLOBSCAN_API_PORT`                      | Port where Blobscan API is listening                                                        | No       | `3001`                                                                                                                                                                       |
+| `FEEDBACK_WEBHOOK_URL`                   | Discord webhook URL for feedback                                                            | No       | (empty)                                                                                                                                                                      |
+| `NEXT_PUBLIC_NETWORK_NAME`               | Network name                                                                                | No       | mainnet                                                                                                                                                                      |
+| `NEXT_PUBLIC_EXPLORER_BASE_URL`          | Block explorer URL                                                                          | No       | `https://etherscan.io`                                                                                                                                                       |
+| `NEXT_PUBLIC_BEACON_BASE_URL`            | Beacon explorer URL                                                                         | No       | `https://beaconcha.in/`                                                                                                                                                      |
+| `NEXT_PUBLIC_VERSION`                    | Blobscan version                                                                            | No       | (empty)                                                                                                                                                                      |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS`         | Link to other pages from the Network menu                                                   | No       | `[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED`   | Enable Vercel analytics                                                                     | No       | `false`                                                                                                                                                                      |
+| `NEXT_PUBLIC_SENTRY_DSN_WEB`             | Sentry DSN                                                                                  | No       | (empty)                                                                                                                                                                      |
+| `NODE_ENV`                               | Used in Node.js applications to specify the environment in which the application is running | No       | (empty)                                                                                                                                                                      |
+| `SENTRY_PROJECT`                         | Sentry project name                                                                         | No       | (empty)                                                                                                                                                                      |
+| `SENTRY_ORG`                             | Sentry organization                                                                         | No       | (empty)                                                                                                                                                                      |
+| `METRICS_ENABLED`                        | Expose the /metrics endpoint                                                                | No       | `false`                                                                                                                                                                      |
+| `TRACES_ENABLED`                         | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                                                                                                                                                                      |
+| `BLOB_PROPAGATOR_ENABLED`                | Enable uploading blobs to multiple storages in parallel                                     | No       | `false`                                                                                                                                                                      |
 
-## General
+# Blobscan API
 
-| Variable               | Description                           | Required | Default value |
-| ---------------------- | ------------------------------------- | -------- | ------------- |
-| `DATABASE_URL`         | Postgresql database URI               | Yes      | (empty)       |
-| `SECRET_KEY`           | Shared key used for JWT               | Yes      | (empty)       |
-| `BLOBSCAN_API_PORT`    | Blobscan API will listen on this port | No       | `3001`        |
-| `FEEDBACK_WEBHOOK_URL` | Feedback webhook URL                  | No       | (empty)       |
+| Variable                             | Description                                                                                        | Required                        | Default value              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------- |
+| `CHAIN_ID`                           | EVM chain id                                                                                       | Yes                             | `1`                        |
+| `DATABASE_URL`                       | Postgresql database URI                                                                            | Yes                             | (empty)                    |
+| `REDIS_URI`                          | Redis host                                                                                         | Yes                             | `redis://localhost:6379/1` |
+| `SECRET_KEY`                         | Shared key used for JWT authentication with the indexer                                            | Yes                             | (empty)                    |
+| `NETWORK_NAME`                       | Network's name (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`)   | No                              | `mainnet`                  |
+| `BLOBSCAN_API_BASE_URL`              | API domain                                                                                         | No                              | `https://api.blobscan.com` |
+| `BLOBSCAN_API_PORT`                  | API port                                                                                           | No                              | `3001`                     |
+| `DENCUN_FORK_SLOT`                   | Custom slot when blobs are activated (use when `NETWORK_NAME=devnet`)                              | No                              | (empty)                    |
+| `METRICS_ENABLED`                    | Expose the /metrics endpoint                                                                       | No                              | `false`                    |
+| `TRACES_ENABLED`                     | Enable instrumentation of functions and sending traces to a collector                              | No                              | `false`                    |
+| `NODE_ENV`                           | Used in Node.js applications to specify the environment in which the application is running        | No                              | (empty)                    |
+| `SENTRY_DSN_API`                     | Sentry DSN                                                                                         | No                              | (empty)                    |
+| `GOOGLE_SERVICE_KEY`                 | Google Cloud service key                                                                           | No                              | (empty)                    |
+| `GOOGLE_STORAGE_ENABLED`             | Store blobs in Google Cloud Storage                                                                | No                              | `false`                    |
+| `GOOGLE_STORAGE_API_ENDPOINT`        | Google Cloud API endpoint (for development)                                                        | No                              | (empty)                    |
+| `GOOGLE_STORAGE_BUCKET_NAME`         | Google Cloud Storage bucket name                                                                   | No                              | (empty)                    |
+| `GOOGLE_STORAGE_PROJECT_ID`          | Google Cloud project ID                                                                            | No                              | (empty)                    |
+| `POSTGRES_STORAGE_ENABLED`           | Store blobs in postgres database (default storage)                                                 | No                              | `false`                    |
+| `SWARM_DEFERRED_UPLOAD`              | Determines if the uploaded data should be sent to the network immediately or in a deferred fashion | No                              | `true`                     |
+| `SWARM_STORAGE_ENABLED`              | Store blobs in Ethereum Swarm                                                                      | No                              | `false`                    |
+| `SWARM_BATCH_ID`                     | Batch ID of the Ethereum Swarm stamp                                                               | If `SWARM_STORAGE_ENABLED=true` | (empty)                    |
+| `BEE_ENDPOINT`                       | Bee endpoint                                                                                       | No                              | (empty)                    |
+| `FILE_SYSTEM_STORAGE_ENABLED`        | Store blobs in filesystem                                                                          | No                              | `false`                    |
+| `FILE_SYSTEM_STORAGE_PATH`           | Store blobs in this path                                                                           | No                              | `/tmp/blobscan-blobs`      |
+| `STATS_SYNCER_DAILY_CRON_PATTERN`    | Cron pattern for the daily stats job                                                               | No                              | `30 0 * * * *`             |
+| `STATS_SYNCER_OVERALL_CRON_PATTERN`  | Cron pattern for the overall stats job                                                             | No                              | `*/15 * * * *`             |
+| `SWARM_STAMP_CRON_PATTERN`           | Cron pattern for swarm job                                                                         | No                              | `*/15 * * * *`             |
+| `BLOB_PROPAGATOR_ENABLED`            | Enable parallel uploading of blobs to multiple storage locations                                   | No                              | `false`                    |
+| `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE` | Remove completed jobs after the specified number of seconds (default: 1 day)                       | No                              | `86400`                    |
+| `BLOB_PROPAGATOR_FAILED_JOBS_AGE`    | Remove completed jobs after the specified number of seconds (default: 7 days)                      | No                              | `604800`                   |
 
-## Network
+# Blobscan indexer
 
-| Variable                         | Description                               | Required | Default value                                                                                                                                                                |
-| -------------------------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BEACON_NODE_ENDPOINT`           | Beacon node endpoint                      | Yes      | (empty)                                                                                                                                                                      |
-| `EXECUTION_NODE_ENDPOINT`        | Execution node endpoint                   | Yes      | (empty)                                                                                                                                                                      |
-| `CHAIN_ID`                       | EVM chain id                              | Yes      | `1`                                                                                                                                                                          |
-| `NETWORK_NAME`                   | Network's name                            | Yes      | `ethereum`                                                                                                                                                                   |
-| `NEXT_PUBLIC_SUPPORTED_NETWORKS` | Link to other pages from the Network menu | No       | `[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
-| `NEXT_PUBLIC_BEACON_BASE_URL`    | Beacon explorer URL                       | Yes      | `https://beaconcha.in/`                                                                                                                                                      |
-| `NEXT_PUBLIC_EXPLORER_BASE_URL`  | Block explorer URL                        | Yes      | `https://etherscan.io`                                                                                                                                                       |
+| Variable                  | Description                                                                                                                                   | Required | Default value       |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------- |
+| `BEACON_NODE_ENDPOINT`    | Beacon node RPC endpoint                                                                                                                      | Yes      | (empty)             |
+| `BLOBSCAN_API_ENDPOINT`   | Blobscan API endpoint                                                                                                                         | Yes      | (empty)             |
+| `EXECUTION_NODE_ENDPOINT` | Execution node RPC endpoint                                                                                                                   | Yes      | (empty)             |
+| `SECRET_KEY`              | Shared key used for JWT authentication with API                                                                                               | Yes      | (empty)             |
+| `NETWORK_NAME`            | Automatically start from the slot when blobs were activated (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`) | No       | `mainnet`           |
+| `DENCUN_FORK_SLOT`        | Custom slot when blobs are activated (use when `NETWORK_NAME=devnet`)                                                                         | No       | (empty)             |
+| `RUST_LOG`                | Configure logger                                                                                                                              | No       | `blob-indexer=INFO` |
+| `SENTRY_DSN`              | Sentry DSN                                                                                                                                    | No       | (empty)             |
 
-## Blob storages
+# Docker
 
-Blobscan can be configured to use any of the following blob storages:
+These variables are used in the docker compose files we provide.
 
-- Postgres
-- Google Cloud Storage
-- Ethereum Swarm
-
-At the moment Postgres is the default storage and Blobscan won't be able to run if you disable it. Other storages are optional.
-
-**Postgres**
-
-| Variable                   | Description                                        | Required | Default value |
-| -------------------------- | -------------------------------------------------- | -------- | ------------- |
-| `POSTGRES_STORAGE_ENABLED` | Store blobs in postgres database (default storage) | No       | `true`        |
-
-**Google Cloud Storage**
-
-| Variable                      | Description                                 | Required | Default value |
-| ----------------------------- | ------------------------------------------- | -------- | ------------- |
-| `GOOGLE_STORAGE_ENABLED`      | Store blobs in GCS                          | No       | `false`       |
-| `GOOGLE_STORAGE_BUCKET_NAME`  | GCS bucket name                             | No       | (empty)       |
-| `GOOGLE_STORAGE_PROJECT_ID`   | GCS project ID                              | No       | (empty)       |
-| `GOOGLE_SERVICE_KEY`          | Google Cloud service key                    | No       | (empty)       |
-| `GOOGLE_STORAGE_API_ENDPOINT` | Google Cloud API endpoint (for development) | No       | (empty)       |
-
-**Ethereum Swarm**
-
-| Variable                   | Description                | Required                        | Default value  |
-| -------------------------- | -------------------------- | ------------------------------- | -------------- |
-| `SWARM_STORAGE_ENABLED`    | Store blobs in Swarm       | No                              | `false`        |
-| `SWARM_BATCH_ID`           | Swarm address of the stamp | If `SWARM_STORAGE_ENABLED=true` | (empty)        |
-| `SWARM_STAMP_CRON_PATTERN` | Cron pattern for swarm job | No                              | `*/15 * * * *` |
-| `BEE_ENDPOINT`             | Bee endpoint               | No                              | (empty)        |
-| `BEE_DEBUG_ENDPOINT`       | Bee debug endpoint         | No                              | (empty)        |
-
-## Blob propagator
-
-| Variable                  | Description             | Required | Default value              |
-| ------------------------- | ----------------------- | -------- | -------------------------- |
-| `BLOB_PROPAGATOR_ENABLED` | Enable blob propagation | No       | `false`                    |
-| `REDIS_URI`               | Redis host              | No       | `redis://localhost:6379/1` |
-
-## Indexer
-
-| Variable                | Description           | Required | Default value       |
-| ----------------------- | --------------------- | -------- | ------------------- |
-| `BLOBSCAN_API_ENDPOINT` | Blobscan API endpoint | Yes      | (empty)             |
-| `RUST_LOG`              | Configure logger      | No       | `blob-indexer=INFO` |
-| `SENTRY_DSN_INDEXER`    | Sentry SDN            | No       | (empty)             |
-
-## Telemetry
-
-| Variable                      | Description                                                                     | Required | Default value |
-| ----------------------------- | ------------------------------------------------------------------------------- | -------- | ------------- |
-| `METRICS_ENABLED`             | Expose the /metrics endpoint                                                    | No       | `false`       |
-| `TRACES_ENABLED`              | Enable instrumentation of functions and sending traces to a collector           | No       | `false`       |
-| `OTLP_AUTH_USERNAME`          | Username for basic authentication. E.g. Grafana Cloud ID                        | No       | (empty)       |
-| `OTLP_AUTH_PASSWORD`          | Password for basic authentication. E.g. Grafana Cloud Token                     | No       | (empty)       |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP transport protocol to be used for all telemetry data.                      | No       | (empty)       |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | Base endpoint URL for any signal type, with an optionally-specified port number | No       | (empty)       |
+| Variable            | Description                                   | Required | Default value |
+| ------------------- | --------------------------------------------- | -------- | ------------- |
+| `EXTERNAL_API_PORT` | Blobscan API will be exposed on this port     | Yes      | (empty)       |
+| `EXTERNAL_WEB_PORT` | Blobscan website will be exposed on this port | Yes      | (empty)       |
+| `BLOBSCAN_TAG`      | Blobscan docker image tag                     | Yes      | (empty)       |
+| `INDEXER_TAG`       | Blobscan-indexer docker image tag             | Yes      | (empty)       |
