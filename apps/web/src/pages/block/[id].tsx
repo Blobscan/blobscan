@@ -11,7 +11,7 @@ import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUni
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import { NavArrows } from "~/components/NavArrow";
+import { NavArrows } from "~/components/NavArrows";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
