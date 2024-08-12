@@ -3,15 +3,14 @@ name: CI
 on:
   pull_request_target:
     branches:
-      - next
-      - master
+      - main
   push:
-    branches: ["master", "next"]
+    branches: ["main"]
   merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   FORCE_COLOR: 3

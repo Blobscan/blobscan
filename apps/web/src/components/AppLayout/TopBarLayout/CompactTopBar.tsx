@@ -1,16 +1,16 @@
+import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
-import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const CompactTopBar = function () {
   return (
     <>
-      <div className="z-10 sm:hidden">
+      <div className="z-50 sm:hidden">
         <TopBarSurface>
           <div className="flex w-full items-center justify-between">
             <BlobscanLogo className="w-40" />
-            <ThemeModeButton />
+            <SidebarNavigationMenu className="xl:hidden" />
           </div>
         </TopBarSurface>
       </div>
