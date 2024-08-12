@@ -14,10 +14,10 @@ export function CopyToClipboard({
   label = "Copy to clipboard",
   value,
 }: CopyToClipboardProps) {
-  const [isCopied, setCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isHovered = useHover(buttonRef);
-  useEffect(() => setCopied(false), [isHovered]);
+  useEffect(() => setIsCopied(false), [isHovered]);
 
   return (
     // TODO: Use Button component
@@ -26,7 +26,7 @@ export function CopyToClipboard({
       className="relative cursor-pointer text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
       onClick={() => {
         navigator.clipboard.writeText(value);
-        setCopied(true);
+        setIsCopied(true);
       }}
     >
       {isCopied ? (
