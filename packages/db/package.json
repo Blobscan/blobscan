@@ -29,7 +29,7 @@
     "@blobscan/logger": "workspace:^0.1.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
     "@prisma/client": "^5.5.2",
-    "prisma": "5.5.2"
+    "prisma": "5.17.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",

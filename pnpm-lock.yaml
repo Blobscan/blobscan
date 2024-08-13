@@ -563,10 +563,10 @@ importers:
         version: link:../open-telemetry
       '@prisma/client':
         specifier: ^5.5.2
-        version: 5.17.0(prisma@5.5.2)
+        version: 5.17.0(prisma@5.17.0)
       prisma:
-        specifier: 5.5.2
-        version: 5.5.2
+        specifier: 5.17.0
+        version: 5.17.0
     devDependencies:
       '@faker-js/faker':
         specifier: ^8.0.2
@@ -2449,9 +2449,6 @@ packages:
 
   '@prisma/engines@5.17.0':
     resolution: {integrity: sha512-+r+Nf+JP210Jur+/X8SIPLtz+uW9YA4QO5IXA+KcSOBe/shT47bCcRMTYCbOESw3FFYFTwe7vU6KTWHKPiwvtg==}
-
-  '@prisma/engines@5.5.2':
-    resolution: {integrity: sha512-Be5hoNF8k+lkB3uEMiCHbhbfF6aj1GnrTBnn5iYFT7GEr3TsOEp1soviEcBR0tYCgHbxjcIxJMhdbvxALJhAqg==}
 
   '@prisma/fetch-engine@5.17.0':
     resolution: {integrity: sha512-ESxiOaHuC488ilLPnrv/tM2KrPhQB5TRris/IeIV4ZvUuKeaicCl4Xj/JCQeG9IlxqOgf1cCg5h5vAzlewN91Q==}
@@ -5855,11 +5852,6 @@ packages:
     engines: {node: '>=16.13'}
     hasBin: true
 
-  prisma@5.5.2:
-    resolution: {integrity: sha512-WQtG6fevOL053yoPl6dbHV+IWgKo25IRN4/pwAGqcWmg7CrtoCzvbDbN9fXUc7QS2KK0LimHIqLsaCOX/vHl8w==}
-    engines: {node: '>=16.13'}
-    hasBin: true
-
   process@0.10.1:
     resolution: {integrity: sha512-dyIett8dgGIZ/TXKUzeYExt7WA6ldDzys9vTDU/cCA9L17Ypme+KzS+NjQCjpn9xsvi/shbMC+yP/BcFMBz0NA==}
     engines: {node: '>= 0.6.0'}
@@ -9071,15 +9063,9 @@ snapshots:
     optionalDependencies:
       prisma: 5.17.0
 
-  '@prisma/client@5.17.0(prisma@5.5.2)':
-    optionalDependencies:
-      prisma: 5.5.2
+  '@prisma/debug@5.17.0': {}
 
-  '@prisma/debug@5.17.0':
-    optional: true
-
-  '@prisma/engines-version@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053':
-    optional: true
+  '@prisma/engines-version@5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053': {}
 
   '@prisma/engines@5.17.0':
     dependencies:
@@ -9087,21 +9073,16 @@ snapshots:
       '@prisma/engines-version': 5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053
       '@prisma/fetch-engine': 5.17.0
       '@prisma/get-platform': 5.17.0
-    optional: true
-
-  '@prisma/engines@5.5.2': {}
 
   '@prisma/fetch-engine@5.17.0':
     dependencies:
       '@prisma/debug': 5.17.0
       '@prisma/engines-version': 5.17.0-31.393aa359c9ad4a4bb28630fb5613f9c281cde053
       '@prisma/get-platform': 5.17.0
-    optional: true
 
   '@prisma/get-platform@5.17.0':
     dependencies:
       '@prisma/debug': 5.17.0
-    optional: true
 
   '@prisma/instrumentation@5.17.0':
     dependencies:
@@ -12989,11 +12970,6 @@ snapshots:
   prisma@5.17.0:
     dependencies:
       '@prisma/engines': 5.17.0
-    optional: true
-
-  prisma@5.5.2:
-    dependencies:
-      '@prisma/engines': 5.5.2
 
   process@0.10.1: {}
 
