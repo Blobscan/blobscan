@@ -7,7 +7,7 @@ import Skeleton from "react-loading-skeleton";
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
 import Gas from "~/icons/gas.svg";
-import { capitalize, formatNumber, formatTtl } from "~/utils";
+import { capitalize, formatNumber, secondsToTimeString } from "~/utils";
 import { EtherUnitDisplay } from "./Displays/EtherUnitDisplay";
 
 type ExplorerDetailsItemProps = {
@@ -62,7 +62,7 @@ export function ExplorerDetails() {
   if (blobStoragesState && blobStoragesState.swarmDataTTL) {
     explorerDetailsItems.push({
       name: "Swarm blob data expiry",
-      value: formatTtl(blobStoragesState.swarmDataTTL),
+      value: secondsToTimeString(blobStoragesState.swarmDataTTL),
       icon: <ClockIcon className="h-4 w-4" />,
     });
   }
