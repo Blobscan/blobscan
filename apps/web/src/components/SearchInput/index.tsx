@@ -153,7 +153,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
         >
-          {searchQuery.isFetching || debouncing ? (
+          {(searchQuery.isFetching || debouncing) && term ? (
             <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
           ) : (
             <MagnifyingGlassIcon
