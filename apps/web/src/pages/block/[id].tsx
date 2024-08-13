@@ -50,7 +50,17 @@ const Block: NextPage = function () {
 
     return deserializeFullBlock(rawBlockData);
   }, [rawBlockData]);
-  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
+
+  const blockNumber = blockData ? blockData.number : 0;
+
+  const { data: neighbors } = api.block.getBlockNeighbors.useQuery(
+    {
+      blockNumber,
+    },
+    {
+      enabled: Boolean(blockData),
+    }
+  );
 
   if (error) {
     return (
@@ -86,12 +96,16 @@ const Block: NextPage = function () {
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
-            {latestBlock && (
+            {neighbors && (
               <NavArrows
-                prev={buildBlockRoute(blockData.number - 1)}
+                prev={
+                  neighbors.previousBlock
+                    ? buildBlockRoute(neighbors.previousBlock.number)
+                    : undefined
+                }
                 next={
-                  latestBlock.number > blockData.number
-                    ? buildBlockRoute(blockData.number + 1)
+                  neighbors.nextBlock
+                    ? buildBlockRoute(neighbors.nextBlock.number)
                     : undefined
                 }
               />
