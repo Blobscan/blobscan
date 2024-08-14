@@ -5,7 +5,7 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { convertWei } from "@blobscan/eth-units";
+import { findBestUnit, prettyFormatWei } from "@blobscan/eth-units";
 
 import { formatBytes, formatNumber } from "~/utils";
 import { Card } from "./Card";
@@ -70,8 +70,7 @@ function formatMetric(
         value = BigInt(Math.round(value));
       }
 
-      const gwei = convertWei(value, "Gwei");
-      formattedValue = formatNumber(gwei, "compact") + " Gwei";
+      formattedValue = prettyFormatWei(value, findBestUnit(value));
       break;
     case "percentage":
       formattedValue = `${formatNumber(value, mode, {
