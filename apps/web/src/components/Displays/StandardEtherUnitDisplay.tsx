@@ -1,9 +1,14 @@
+import { formatWei } from "@blobscan/eth-units";
+
 import { EtherUnitDisplay } from "./EtherUnitDisplay";
 
-export const StandardEtherUnitDisplay: React.FC<{
-  amount: bigint | number;
-}> = function ({ amount }) {
+export const StandardEtherUnitDisplay = ({ amount }: { amount: bigint }) => {
   return (
-    <EtherUnitDisplay amount={amount} toUnit="ether" alternateUnit="Gwei" />
+    <div className="flex items-center justify-start gap-1">
+      <EtherUnitDisplay amount={amount} toUnit="ether" />
+      <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+        ({formatWei(amount, "Gwei")})
+      </span>
+    </div>
   );
 };

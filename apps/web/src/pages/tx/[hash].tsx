@@ -135,7 +135,7 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={block?.blobGasPrice} />,
+        value: <StandardEtherUnitDisplay amount={block.blobGasPrice} />,
       },
       {
         name: "Blob Fee",
