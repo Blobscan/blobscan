@@ -82,7 +82,7 @@ function insertCommas(value: string): string {
   const parts = value.split(".");
 
   let integer = parts[0] || "0";
-  let decimal = parts[1];
+  const decimal = parts[1];
 
   // Add commas to the integer part of the number.
   integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
