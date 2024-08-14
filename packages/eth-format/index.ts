@@ -2,6 +2,11 @@ const ETH_UNITS = { wei: 0, Gwei: 9, ether: 18 };
 
 export type EtherUnit = keyof typeof ETH_UNITS;
 
+const compactFormatter = Intl.NumberFormat("en-US", {
+  notation: "compact",
+  maximumFractionDigits: 2,
+});
+
 /**
  * This function converts `wei` to the unit specified by `toUnit`,
  * adds commas to the integer part of the converted value,
@@ -13,6 +18,18 @@ export type EtherUnit = keyof typeof ETH_UNITS;
 export function formatWei(wei: bigint, toUnit: EtherUnit = "Gwei"): string {
   const converted = convertWei(wei, toUnit);
   const formatted = insertCommas(converted);
+  return `${formatted} ${toUnit}`;
+}
+
+/**
+ * The difference between this function and `formatWei` is that
+ * this function does not ensure that the full precision of the input
+ * is preserved. Instead, this function provides a more human-readable
+ * representation of the value.
+ */
+export function prettyFormatWei(wei: bigint, toUnit: EtherUnit = "Gwei") {
+  const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
+  const formatted = compactFormatter.format(converted);
   return `${formatted} ${toUnit}`;
 }
 
