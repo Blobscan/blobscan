@@ -2,4 +2,4 @@
 "@blobscan/web": minor
 ---
 
-Optimized blob gas price components to use most appropriate unit
+Updated latest blob gas price metric to display the most suitable unit, replacing the previously  fixed `Gwei` format
