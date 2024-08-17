@@ -32,7 +32,7 @@ export function formatDate(
   return date;
 }
 
-export function secondsToTimeString(seconds: number) {
+export function formatTtl(seconds: number) {
   let unit = seconds;
 
   if (unit < 120) {
