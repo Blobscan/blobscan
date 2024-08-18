@@ -28,8 +28,6 @@ import {
 const LATEST_ITEMS_LENGTH = 5;
 const DAILY_STATS_TIMEFRAME = "15d";
 
-const CARD_HEIGHT = "sm:h-28";
-
 const Home: NextPage = () => {
   const router = useRouter();
   const {
@@ -208,20 +206,14 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlockCard />
-                      </div>
+                      <BlockCard key={i} />
                     ))}
                 </div>
               ) : (
                 <SlidableList
                   items={blocks?.map((b) => ({
                     id: b.hash,
-                    element: (
-                      <div className={CARD_HEIGHT} key={b.hash}>
-                        <BlockCard block={b} />
-                      </div>
-                    ),
+                    element: <BlockCard block={b} key={b.hash} />,
                   }))}
                 />
               )}
@@ -247,9 +239,7 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
+                      <BlobTransactionCard compact key={i} />
                     ))}
                 </div>
               ) : (
@@ -257,21 +247,20 @@ const Home: NextPage = () => {
                   items={transactions.map((tx) => ({
                     id: tx.hash,
                     element: (
-                      <div className={CARD_HEIGHT} key={tx.hash}>
-                        <BlobTransactionCard
-                          transaction={{
-                            from: tx.from,
-                            to: tx.to,
-                            hash: tx.hash,
-                            rollup: tx.rollup,
-                            blockTimestamp: tx.blockTimestamp,
-                            blobGasBaseFee: tx.blobGasBaseFee,
-                            blobGasMaxFee: tx.blobGasMaxFee,
-                          }}
-                          blobs={tx.blobs}
-                          compact
-                        />
-                      </div>
+                      <BlobTransactionCard
+                        key={tx.hash}
+                        transaction={{
+                          from: tx.from,
+                          to: tx.to,
+                          hash: tx.hash,
+                          rollup: tx.rollup,
+                          blockTimestamp: tx.blockTimestamp,
+                          blobGasBaseFee: tx.blobGasBaseFee,
+                          blobGasMaxFee: tx.blobGasMaxFee,
+                        }}
+                        blobs={tx.blobs}
+                        compact
+                      />
                     ),
                   }))}
                 />
@@ -297,9 +286,7 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
+                      <BlobTransactionCard compact key={i} />
                     ))}
                 </div>
               ) : (
@@ -307,9 +294,12 @@ const Home: NextPage = () => {
                   items={blobs.map((b) => ({
                     id: b.versionedHash,
                     element: (
-                      <div className={CARD_HEIGHT} key={b.versionedHash}>
-                        <BlobCard blob={b} transactions={[b.tx]} compact />
-                      </div>
+                      <BlobCard
+                        blob={b}
+                        transactions={[b.tx]}
+                        compact
+                        key={b.versionedHash}
+                      />
                     ),
                   }))}
                 />
