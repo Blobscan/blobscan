@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
-import { Dropdown } from "~/components/Dropdown/Dropdown";
-import type { DropdownProps } from "~/components/Dropdown/Dropdown";
+import { Dropdown } from "~/components/Dropdown";
+import type { DropdownProps } from "~/components/Dropdown";
 import { RollupIcon } from "~/components/RollupIcon";
 import type { Rollup } from "~/types";
 

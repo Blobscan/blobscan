@@ -3,8 +3,8 @@ import type { FC } from "react";
 
 import { Button } from "~/components/Button";
 import type { Rollup } from "~/types";
-import type { Option } from "../../Dropdown/Dropdown";
-import type { PaginatedTableQueryFilters } from "../PaginatedTable";
+import type { PaginatedTableQueryFilters } from "..";
+import type { Option } from "../../Dropdown";
 import { RollupFilter } from "./RollupFilter";
 
 interface FilterPanelState {

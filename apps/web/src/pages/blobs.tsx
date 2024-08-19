@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 
 import { getPaginationParams } from "~/utils/pagination";
 import { Link } from "~/components/Link";
-import type { PaginatedTableQueryFilters } from "~/components/PaginatedTable/PaginatedTable";
-import { PaginatedTable } from "~/components/PaginatedTable/PaginatedTable";
+import type { PaginatedTableQueryFilters } from "~/components/PaginatedTable";
+import { PaginatedTable } from "~/components/PaginatedTable";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
 import {
