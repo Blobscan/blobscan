@@ -32,6 +32,7 @@ export function formatDate(
   return date;
 }
 
+// Adapted from: https://github.com/ethersphere/bee-dashboard/blob/master/src/utils/index.ts#L175
 export function formatTtl(seconds: number) {
   let unit = seconds;
 
