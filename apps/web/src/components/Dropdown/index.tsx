@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
-import { Option } from "./components/Option";
+import { Option } from "./Option";
 
 export interface Option {
   value: string | number;

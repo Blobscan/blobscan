@@ -1,6 +1,6 @@
 import { ListboxOption } from "@headlessui/react";
 
-import type { Option as OptionProps } from "..";
+import type { Option as OptionProps } from ".";
 
 export const Option: React.FC<OptionProps> = function (props) {
   return (
