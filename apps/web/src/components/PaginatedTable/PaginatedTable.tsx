@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
-import { Dropdown } from "~/components/Dropdown/Dropdown";
-import type { DropdownProps } from "~/components/Dropdown/Dropdown";
+import { Dropdown } from "~/components/Dropdown";
+import type { DropdownProps } from "~/components/Dropdown";
 import { Header } from "~/components/Header";
 import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";

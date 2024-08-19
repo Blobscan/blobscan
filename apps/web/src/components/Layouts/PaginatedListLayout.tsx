@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
-import { Dropdown } from "../Dropdown/Dropdown";
-import type { DropdownProps } from "../Dropdown/Dropdown";
+import { Dropdown } from "../Dropdown";
+import type { DropdownProps } from "../Dropdown";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
 
