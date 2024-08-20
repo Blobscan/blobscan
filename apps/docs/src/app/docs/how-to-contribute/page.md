@@ -20,7 +20,7 @@ All contributors are expected to follow our [Code of Conduct](/docs/code-of-cond
 
 ## Making Changes
 
-- Begin by [setting up Blobscan locally](/docs/running-locally).
+- Begin by [setting up Blobscan locally](/docs/running-blobscan-locally).
 - Proceed to make your changes.
 - Ensure you've tested your changes comprehensively. Refer to our [Testing Guide](/docs/testing) for details on our testing setup.
 - Once done, push your changes to your GitHub fork.
