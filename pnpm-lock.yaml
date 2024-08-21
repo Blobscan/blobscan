@@ -664,8 +664,8 @@ importers:
   packages/test:
     devDependencies:
       '@prisma/client':
-        specifier: ^5.5.2
-        version: 5.17.0(prisma@5.18.0)
+        specifier: ^5.18.0
+        version: 5.18.0(prisma@5.18.0)
 
   packages/zod:
     dependencies:
@@ -2440,15 +2440,6 @@ packages:
   '@polka/url@1.0.0-next.25':
     resolution: {integrity: sha512-j7P6Rgr3mmtdkeDGTe0E/aYyWEWVtc5yFXtHCRHs28/jptDEWfaVOc5T7cblqy1XKPPfCxJc/8DwQ5YgLOZOVQ==}
 
-  '@prisma/client@5.17.0':
-    resolution: {integrity: sha512-N2tnyKayT0Zf7mHjwEyE8iG7FwTmXDHFZ1GnNhQp0pJUObsuel4ZZ1XwfuAYkq5mRIiC/Kot0kt0tGCfLJ70Jw==}
-    engines: {node: '>=16.13'}
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-
   '@prisma/client@5.18.0':
     resolution: {integrity: sha512-BWivkLh+af1kqC89zCJYkHsRcyWsM8/JHpsDMM76DjP3ZdEquJhXa4IeX+HkWPnwJ5FanxEJFZZDTWiDs/Kvyw==}
     engines: {node: '>=16.13'}
@@ -2979,9 +2970,6 @@ packages:
 
   '@types/eslint@8.56.10':
     resolution: {integrity: sha512-Shavhk87gCtY2fhXDctcfS3e6FdxWkCx1iUZ9eEUbh7rTqlZT0/IzOkCOVt0fCjcFuZ9FPYfuezTBImfHCDBGQ==}
-
-  '@types/eslint@9.6.0':
-    resolution: {integrity: sha512-gi6WQJ7cHRgZxtkQEoyHMppPjq9Kxo5Tjn2prSKDSmZrCz8TZ3jSRCeTJm+WoM+oB0WG37bRqLzaaU3q7JypGg==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -9101,10 +9089,6 @@ snapshots:
 
   '@polka/url@1.0.0-next.25': {}
 
-  '@prisma/client@5.17.0(prisma@5.18.0)':
-    optionalDependencies:
-      prisma: 5.18.0
-
   '@prisma/client@5.18.0(prisma@5.18.0)':
     optionalDependencies:
       prisma: 5.18.0
@@ -9672,7 +9656,7 @@ snapshots:
 
   '@types/eslint-scope@3.7.7':
     dependencies:
-      '@types/eslint': 9.6.0
+      '@types/eslint': 8.56.10
       '@types/estree': 1.0.5
     optional: true
 
@@ -9680,12 +9664,6 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.5
       '@types/json-schema': 7.0.15
-
-  '@types/eslint@9.6.0':
-    dependencies:
-      '@types/estree': 1.0.5
-      '@types/json-schema': 7.0.15
-    optional: true
 
   '@types/estree@1.0.5': {}
 
