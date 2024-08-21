@@ -14,7 +14,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
   selected,
 }) {
   const { data: rollups } = api.getRollups.useQuery();
-  console.log(rollups);
+
   return (
     <>
       {!rollups ? (
