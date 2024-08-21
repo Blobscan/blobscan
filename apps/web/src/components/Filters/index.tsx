@@ -1,29 +1,33 @@
 import { useState } from "react";
 import type { FC } from "react";
+import { useRouter } from "next/router";
 
 import { Button } from "~/components/Button";
-import type { Rollup } from "~/types";
-import type { PaginatedTableQueryFilters } from "..";
-import type { Option } from "../../Dropdown";
+import type { Option } from "../Dropdown";
 import { RollupFilter } from "./RollupFilter";
 
-interface FilterPanelState {
+interface FiltersState {
   rollup: Option | null;
 }
 
-interface FilterPanelProps {
-  onFilter: (queryFilters: PaginatedTableQueryFilters) => void;
-}
-
-export const FilterPanel: FC<FilterPanelProps> = function ({ onFilter }) {
-  const [formData, setFormData] = useState<FilterPanelState>({
+export const Filters: FC = function () {
+  const [formData, setFormData] = useState<FiltersState>({
     rollup: null,
   });
+  const router = useRouter();
 
   const allowToFilter = !!formData.rollup;
 
   const handleSubmit = () => {
-    !!formData.rollup && onFilter({ rollup: formData.rollup.value as Rollup });
+    if (formData.rollup) {
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          rollup: formData.rollup.value,
+        },
+      });
+    }
   };
 
   const handleRollupFilterChange = (newRollup: Option) => {
@@ -32,7 +36,7 @@ export const FilterPanel: FC<FilterPanelProps> = function ({ onFilter }) {
 
   return (
     <form
-      className="flex justify-between rounded-lg bg-slate-50 p-2 dark:bg-primary-900"
+      className="flex flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
       onSubmit={handleSubmit}
     >
       <RollupFilter

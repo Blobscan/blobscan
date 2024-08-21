@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 import { useRouter } from "next/router";
 
+import { getFilterParams } from "~/utils/filter";
 import { getPaginationParams } from "~/utils/pagination";
 import { Link } from "~/components/Link";
-import type { PaginatedTableQueryFilters } from "~/components/PaginatedTable";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
@@ -52,17 +52,17 @@ const BLOBS_TABLE_HEADERS = [
 ];
 
 const Blobs: NextPage = function () {
-  const [filters, setFilters] = useState<PaginatedTableQueryFilters>();
   const router = useRouter();
   const { p, ps } = getPaginationParams(
     router.query,
     BLOBS_TABLE_DEFAULT_PAGE_SIZE
   );
+  const { rollup } = getFilterParams(router.query);
 
   const { data, error, isLoading } = api.blob.getAll.useQuery({
     p,
     ps,
-    ...filters,
+    rollup,
   });
   const { blobs, totalBlobs } = data || {};
 
@@ -144,10 +144,6 @@ const Blobs: NextPage = function () {
     );
   }
 
-  const handleFilter = (filters: PaginatedTableQueryFilters) => {
-    setFilters(filters);
-  };
-
   return (
     <PaginatedTable
       title={`Blobs ${totalBlobs ? `(${formatNumber(totalBlobs)})` : ""}`}
@@ -156,7 +152,6 @@ const Blobs: NextPage = function () {
       rows={blobRows}
       totalItems={totalBlobs}
       paginationData={{ pageSize: ps, page: p }}
-      onFilter={handleFilter}
     />
   );
 };
