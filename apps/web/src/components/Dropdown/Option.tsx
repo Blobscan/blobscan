@@ -6,7 +6,7 @@ export const Option: React.FC<OptionProps> = function (props) {
   return (
     <ListboxOption
       className={({ focus }) =>
-        `relative cursor-pointer select-none py-2 pl-4 pr-4 font-normal ${
+        `relative cursor-pointer select-none px-4 py-2 ${
           focus
             ? "bg-controlActive-light dark:bg-controlActive-dark dark:text-content-dark"
             : "text-contentSecondary-light dark:text-contentSecondary-dark"
@@ -19,7 +19,7 @@ export const Option: React.FC<OptionProps> = function (props) {
           <span
             className={`block truncate text-sm ${selected ? "font-bold" : ""}`}
           >
-            {props.label}
+            {props.label ? props.label : props.value}
           </span>
         </div>
       )}

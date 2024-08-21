@@ -11,7 +11,7 @@ import { Option } from "./Option";
 
 export interface Option {
   value: string | number;
-  label: ReactNode;
+  label?: ReactNode;
 }
 
 export interface DropdownProps {
