@@ -331,3 +331,31 @@ test("can format negative ether", () => {
     "-1,234.567890123456789012 ether"
   );
 });
+
+test("can shift string values", () => {
+  expect(shiftDecimal("1", 0)).toBe("1");
+  expect(shiftDecimal("10", 1)).toBe("1");
+  expect(shiftDecimal("100", 2)).toBe("1");
+
+  expect(shiftDecimal("100", 3)).toBe("0.1");
+  expect(shiftDecimal("100", 4)).toBe("0.01");
+
+  expect(shiftDecimal("11", 1)).toBe("1.1");
+  expect(shiftDecimal("1000000000000000000", 18)).toBe("1");
+});
+
+test("can shift decimal string values", () => {
+  expect(shiftDecimal("1.1", 0)).toBe("1.1");
+  expect(shiftDecimal("1.1", 2)).toBe("0.011");
+
+  expect(shiftDecimal("123.123", 1)).toBe("12.3123");
+  expect(shiftDecimal("123.123", 2)).toBe("1.23123");
+});
+
+test("can shift negative decimal string values", () => {
+  expect(shiftDecimal("-1.1", 0)).toBe("-1.1");
+  expect(shiftDecimal("-1.1", 2)).toBe("-0.011");
+
+  expect(shiftDecimal("-123.123", 1)).toBe("-12.3123");
+  expect(shiftDecimal("-123.123", 2)).toBe("-1.23123");
+});
