@@ -17,8 +17,7 @@ export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
   const formattedAvgBlobGasPrices = useMemo(
-    () =>
-      avgBlobGasPrices?.map((price) => convertWei(BigInt(Math.round(price)))),
+    () => avgBlobGasPrices?.map((price) => convertWei(price)),
     [avgBlobGasPrices]
   );
 
