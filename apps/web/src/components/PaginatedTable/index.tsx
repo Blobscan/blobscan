@@ -72,7 +72,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
     totalItems !== undefined
       ? totalItems === 0
         ? 1
-        : Math.ceil(totalItems / 10)
+        : Math.ceil(totalItems / pageSize)
       : undefined;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
