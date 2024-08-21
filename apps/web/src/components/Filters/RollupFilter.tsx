@@ -21,7 +21,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
   return (
     <>
       {!rollups ? (
-        <Skeleton width="160px" height="36px" />
+        <Skeleton width="160px" height="42px" />
       ) : (
         <Dropdown
           selected={selected}
@@ -33,7 +33,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
           onChange={onChange}
           placeholder="Rollup"
           width={fullWidth ? "w-full" : "w-40"}
-          height="h-[42px]"
+          height={`h-[42px]`}
         />
       )}
     </>

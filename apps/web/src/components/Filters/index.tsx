@@ -39,8 +39,8 @@ export const Filters: FC = function () {
         query: {
           ...router.query,
           rollup: formData.rollup.value,
-          startDate: formData.timestampRange.startDate as string,
-          endDate: formData.timestampRange.endDate as string,
+          ["start-date"]: formData.timestampRange.startDate as string,
+          ["end-date"]: formData.timestampRange.endDate as string,
         },
       });
     }
