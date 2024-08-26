@@ -1,8 +1,8 @@
 import type { ReactElement } from "react";
 import React from "react";
 
-import { Button } from "~/components/Button";
 import { ExplorerDetails } from "~/components/ExplorerDetails";
+import { IconButton } from "~/components/IconButton";
 import { Link } from "~/components/Link";
 import { env } from "~/env.mjs";
 import DiscordIcon from "~/icons/discord.svg";
@@ -34,9 +34,7 @@ export const BottomBarLayout = () => {
         <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
             <Link key={href} href={href} isExternal hideExternalIcon>
-              <Button variant="icon" size="md-icon">
-                {icon}
-              </Button>
+              <IconButton>{icon}</IconButton>
             </Link>
           ))}
         </div>

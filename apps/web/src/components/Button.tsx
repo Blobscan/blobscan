@@ -55,27 +55,11 @@ const buttonVariants = cva(
         dark:disabled:text-contentDisabled-dark
         dark:disabled:border-accentDisabled-dark
         `,
-        icon: `
-        focus-visible:outline
-        focus-visible:outline-2
-        focus-visible:outline-offset-2
-        focus-visible:outline-iconHighlight-dark
-
-        fill-icon-light
-        text-icon-light
-        hover:fill-iconHighlight-light
-        hover:text-iconHighlight-light
-        dark:fill-icon-dark
-        dark:text-icon-dark
-        hover:dark:fill-iconHighlight-dark
-        hover:dark:text-iconHighlight-dark
-        `,
       },
       size: {
         sm: "px-2 py-1 h-7",
         md: "px-4 py-2 h-9",
         lg: "px-4 py-3 h-11",
-        "md-icon": "w-9 h-9 flex items-center justify-center",
       },
     },
     defaultVariants: {
