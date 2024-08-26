@@ -33,6 +33,7 @@ FROM deps AS web-builder
 WORKDIR /app
 
 ENV NEXT_BUILD_OUTPUT standalone
+ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --from=deps /prepare/web/json .
 COPY --from=deps /prepare/web/pnpm-lock.yaml .
@@ -51,8 +52,9 @@ FROM base AS web
 RUN apk add bash
 WORKDIR /app
 
+ENV HOSTNAME 0.0.0.0
+ENV PORT 3000
 ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -67,10 +69,9 @@ COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/pu
 USER nextjs
 
 EXPOSE 3000
-ENV PORT 3000
 
-ENTRYPOINT ["/docker-entrypoint.sh", "web"]
-CMD ["--help"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["web"]
 
 # stage: api-builder
 FROM deps AS api-builder
@@ -104,5 +105,5 @@ EXPOSE 3001
 ENV PORT 3001
 
 ADD docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh", "api"]
-CMD ["--help"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["api"]

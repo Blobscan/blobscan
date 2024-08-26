@@ -1,10 +1,10 @@
 import type { ParsedUrlQuery } from "querystring";
 
-const DEFAULT_PAGE_SIZE = 25;
+const DEFAULT_INITIAL_PAGE_SIZE = 25;
 
 export function getPaginationParams(
   query: ParsedUrlQuery,
-  customPageSize?: number
+  initialPageSize = DEFAULT_INITIAL_PAGE_SIZE
 ): {
   ps: number;
   p: number;
@@ -12,7 +12,7 @@ export function getPaginationParams(
   const page_ = parseInt(query.p as string);
   const pageSize_ = parseInt(query.ps as string);
   const page = isNaN(page_) ? 1 : page_;
-  const pageSize = isNaN(pageSize_) ? DEFAULT_PAGE_SIZE : pageSize_;
+  const pageSize = isNaN(pageSize_) ? initialPageSize : pageSize_;
 
-  return { ps: customPageSize ? customPageSize : pageSize, p: page };
+  return { ps: pageSize, p: page };
 }

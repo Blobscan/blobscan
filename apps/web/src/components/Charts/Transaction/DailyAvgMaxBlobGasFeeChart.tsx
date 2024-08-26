@@ -1,9 +1,11 @@
 import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
+import { formatWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyTransactionStats } from "~/types";
-import { buildTimeSeriesOptions, formatWei } from "~/utils";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgMaxBlobGasFeeChartProps = {
   days: DailyTransactionStats["days"];

@@ -136,7 +136,7 @@ export const Button: FC<ButtonProps> = function ({
       onClick={onClick}
     >
       <div className="flex h-full items-center gap-1">
-        {icon && <div className="h-full">{icon}</div>}
+        {icon && <div className="h-full w-full">{icon}</div>}
         {label}
       </div>
     </button>
