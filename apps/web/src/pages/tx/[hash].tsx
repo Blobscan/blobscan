@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
+import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
@@ -80,7 +81,7 @@ const Tx: NextPage = () => {
     detailsFields = [
       {
         name: "Hash",
-        value: hash,
+        value: <Copyable value={hash} label="Copy Hash" />,
       },
       {
         name: "Block",
@@ -100,11 +101,21 @@ const Tx: NextPage = () => {
       },
       {
         name: "From",
-        value: <Link href={buildAddressRoute(from)}>{from}</Link>,
+        value: (
+          <div className="flex items-center gap-2">
+            <Link href={buildAddressRoute(from)}>{from}</Link>
+            <CopyToClipboard value={from} label="Copy from address" />
+          </div>
+        ),
       },
       {
         name: "To",
-        value: <Link href={buildAddressRoute(to)}>{to}</Link>,
+        value: (
+          <div className="flex items-center gap-2">
+            <Link href={buildAddressRoute(to)}>{to}</Link>
+            <CopyToClipboard value={to} label="Copy to address" />
+          </div>
+        ),
       },
     ];
 
@@ -124,7 +135,7 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={block?.blobGasPrice} />,
+        value: <StandardEtherUnitDisplay amount={block.blobGasPrice} />,
       },
       {
         name: "Blob Fee",
