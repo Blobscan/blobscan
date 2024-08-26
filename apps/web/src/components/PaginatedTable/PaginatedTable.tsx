@@ -13,7 +13,12 @@ import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
-const PAGE_SIZES = [10, 25, 50, 100];
+const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+  { value: 10 },
+  { value: 25 },
+  { value: 50 },
+  { value: 100 },
+];
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 type PaginationData = {
@@ -65,7 +70,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
       : undefined;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (newPageSize: number) =>
+    ({ value: newPageSize }) =>
       void router.push({
         pathname: router.pathname,
         query: {
@@ -74,7 +79,10 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
            * Update the selected page to a lower value if we require less pages to show the
            * new amount of elements per page.
            */
-          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
+          p: Math.min(
+            Math.ceil(totalItems ?? 0 / (newPageSize as number)),
+            page
+          ),
           ps: newPageSize,
         },
       }),
@@ -130,8 +138,8 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
             <div className="flex items-center justify-start gap-2">
               Displayed items:
               <Dropdown
-                items={PAGE_SIZES}
-                selected={pageSize}
+                options={PAGE_SIZES_OPTIONS}
+                selected={{ value: pageSize }}
                 width="w-full"
                 onChange={handlePageSizeSelection}
               />
