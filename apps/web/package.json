@@ -19,6 +19,7 @@
     "@blobscan/blob-decoder": "workspace:^0.1.1",
     "@blobscan/dayjs": "workspace:^0.0.2",
     "@blobscan/env": "workspace:^0.0.1",
+    "@blobscan/eth-units": "workspace:^0.0.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",

@@ -2,9 +2,11 @@ import type { FC } from "react";
 import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
+import { convertWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
-import { convertWei, formatNumber } from "~/utils";
+import { formatNumber } from "~/utils";
 import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgBlobFeeChartProps = {
@@ -15,7 +17,7 @@ export type DailyAvgBlobFeeChartProps = {
 export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
   function ({ days, avgBlobFees }) {
     const formattedAvgBlobFees = useMemo(
-      () => avgBlobFees?.map((fee) => convertWei(fee)),
+      () => avgBlobFees?.map((fee) => convertWei(BigInt(fee))),
       [avgBlobFees]
     );
 
