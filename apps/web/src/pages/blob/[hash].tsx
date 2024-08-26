@@ -52,7 +52,7 @@ const Blob: NextPage = function () {
     ...DEFAULT_BLOB_VIEW_MODES,
   ];
   const blobViewModesOptions: DropdownProps["options"] = blobViewModes.map(
-    (blobViewMode) => ({ label: blobViewMode, value: blobViewMode })
+    (blobViewMode) => ({ value: blobViewMode })
   );
 
   useEffect(() => {

@@ -14,10 +14,10 @@ import { Table } from "~/components/Table";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
-  { value: 10, label: "10" },
-  { value: 25, label: "25" },
-  { value: 50, label: "50" },
-  { value: 100, label: "100" },
+  { value: 10 },
+  { value: 25 },
+  { value: 50 },
+  { value: 100 },
 ];
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
@@ -139,7 +139,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
               Displayed items:
               <Dropdown
                 options={PAGE_SIZES_OPTIONS}
-                selected={{ value: pageSize, label: pageSize.toString() }}
+                selected={{ value: pageSize }}
                 width="w-full"
                 onChange={handlePageSizeSelection}
               />
