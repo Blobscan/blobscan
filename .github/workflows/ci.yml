@@ -17,6 +17,29 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
+services:
+  postgres:
+    image: postgres:16
+    env:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    options: >-
+      --health-cmd pg_isready
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    options: >-
+      --health-cmd "redis-cli ping"
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -30,18 +53,6 @@ jobs:
         run: pnpm lint
 
   typecheck:
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,18 +64,6 @@ jobs:
         run: pnpm type-check
 
   build:
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -76,30 +75,6 @@ jobs:
         run: pnpm build
 
   test:
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      redis:
-        # Docker Hub image
-        image: redis
-        # Set health checks to wait until redis has started
-        ports:
-          # Maps port 6379 on service container to the host
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
