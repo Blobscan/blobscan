@@ -35,7 +35,7 @@ export const ExpandableTableRow: FC<ExpandableTableRowProps> = function ({
               onClick={() => setExpandOpened((prevOpened) => !prevOpened)}
             >
               <IconButton>
-                <ChevronRightIcon className="h-4 w-4" />
+                <ChevronRightIcon />
               </IconButton>
             </Rotable>
           </TableCell>
