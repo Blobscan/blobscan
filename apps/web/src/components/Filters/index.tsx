@@ -28,22 +28,25 @@ export const Filters: FC = function () {
   const fullWidth = breakpoint === "sm" || breakpoint === "default";
 
   const allowToFilter =
-    !!formData.rollup &&
-    !!formData.timestampRange?.startDate &&
+    !!formData.rollup ||
+    !!formData.timestampRange?.startDate ||
     !!formData.timestampRange?.endDate;
 
   const handleSubmit = () => {
-    if (formData.rollup && !!formData.timestampRange) {
-      router.push({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          rollup: formData.rollup.value,
-          ["start-date"]: formData.timestampRange.startDate as string,
-          ["end-date"]: formData.timestampRange.endDate as string,
-        },
-      });
-    }
+    const { rollup, timestampRange } = formData;
+    router.push({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+        ...(rollup?.value && { rollup: rollup.value }),
+        ...(timestampRange?.startDate && {
+          ["start-date"]: timestampRange.startDate as string,
+        }),
+        ...(timestampRange?.endDate && {
+          ["end-date"]: timestampRange.endDate as string,
+        }),
+      },
+    });
   };
 
   const handleRollupFilterChange = (newRollup: Option) => {
