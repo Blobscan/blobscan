@@ -6,6 +6,10 @@ generator client {
   previewFeatures = ["tracing", "metrics"]
 }
 
+generator enum {
+  provider = "ts-node --transpile-only ./prisma/enum-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
