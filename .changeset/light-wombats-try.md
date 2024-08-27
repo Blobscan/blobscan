@@ -2,4 +2,4 @@
 "@blobscan/web": patch
 ---
 
-Update DailyAvgBlobGasPriceChart to round average gas prices
+Updates the convertWei function to handle decimal values
