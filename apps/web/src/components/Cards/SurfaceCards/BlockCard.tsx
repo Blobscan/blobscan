@@ -13,6 +13,7 @@ import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlockCardProps = {
+  className?: string;
   block: {
     hash: string;
     number: number;
@@ -28,6 +29,7 @@ type BlockCardProps = {
 
 const BlockCard: FC<Partial<BlockCardProps>> = function ({
   block: { blobGasPrice, blobGasUsed, number, timestamp, transactions } = {},
+  className,
 }) {
   const hasOneTx = transactions?.length === 1;
   const blobCount = useMemo(
@@ -40,7 +42,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
   const hasOneBlob = blobCount === 1;
 
   return (
-    <SurfaceCardBase>
+    <SurfaceCardBase className={className}>
       <div className="flex  justify-between gap-2 text-sm">
         <div className="flex gap-2 md:flex-row">
           {number ? (

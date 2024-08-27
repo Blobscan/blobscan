@@ -16,7 +16,6 @@ export const SurfaceCardBase: FC<SurfaceCardBaseProps> = function ({
       className={`
     dark:bg-neutral-850
     ${truncateText ? "truncate" : ""}
-    h-28
     rounded-md
     border
     border-border-light

@@ -27,6 +27,7 @@ import {
 
 const LATEST_ITEMS_LENGTH = 5;
 const DAILY_STATS_TIMEFRAME = "15d";
+const CARD_HEIGHT = "h-28";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -207,14 +208,20 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <BlockCard key={i} />
+                      <BlockCard className={CARD_HEIGHT} key={i} />
                     ))}
                 </div>
               ) : (
                 <SlidableList
                   items={blocks?.map((b) => ({
                     id: b.hash,
-                    element: <BlockCard block={b} key={b.hash} />,
+                    element: (
+                      <BlockCard
+                        className={CARD_HEIGHT}
+                        block={b}
+                        key={b.hash}
+                      />
+                    ),
                   }))}
                 />
               )}
@@ -241,7 +248,11 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <BlobTransactionCard compact key={i} />
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        compact
+                        key={i}
+                      />
                     ))}
                 </div>
               ) : (
@@ -250,6 +261,7 @@ const Home: NextPage = () => {
                     id: tx.hash,
                     element: (
                       <BlobTransactionCard
+                        className={CARD_HEIGHT}
                         key={tx.hash}
                         transaction={{
                           from: tx.from,
@@ -289,7 +301,11 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <BlobTransactionCard compact key={i} />
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        compact
+                        key={i}
+                      />
                     ))}
                 </div>
               ) : (
@@ -302,6 +318,7 @@ const Home: NextPage = () => {
                         transactions={[b.tx]}
                         compact
                         key={b.versionedHash}
+                        className={CARD_HEIGHT}
                       />
                     ),
                   }))}
