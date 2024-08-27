@@ -1,4 +1,4 @@
-import { BlobStorage, Rollup } from "@blobscan/db";
+import { BlobStorage, Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
 const zodBlobStorageEnums = [

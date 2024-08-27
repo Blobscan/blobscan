@@ -5,7 +5,8 @@ import type {
   Transaction,
   WithoutTimestampFields,
 } from "@blobscan/db";
-import { Prisma, Rollup } from "@blobscan/db";
+import { Prisma } from "@blobscan/db";
+import { Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 
 import type { IndexDataFormattedInput } from "./indexData";

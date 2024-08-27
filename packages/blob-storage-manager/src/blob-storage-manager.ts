@@ -1,10 +1,10 @@
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import type { Environment } from "@blobscan/env";
 
 import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManager } from "./BlobStorageManager";
-import type { BlobStorageName } from "./types";
-import { BLOB_STORAGE_NAMES, createStorageFromEnv } from "./utils";
+import { createStorageFromEnv } from "./utils";
 
 let blobStorageManager: BlobStorageManager | undefined;
 
@@ -18,7 +18,7 @@ function isBlobStorageEnabled(storageName: BlobStorageName) {
 
 async function createBlobStorageManager() {
   const blobStorages = await Promise.all(
-    Object.values(BLOB_STORAGE_NAMES).map(async (storageName) => {
+    Object.values(BlobStorageName).map(async (storageName) => {
       if (isBlobStorageEnabled(storageName)) {
         const storage = await createStorageFromEnv(storageName);
 
