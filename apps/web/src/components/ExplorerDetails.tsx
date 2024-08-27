@@ -4,10 +4,12 @@ import { ClockIcon } from "@heroicons/react/24/solid";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
+import { formatTtl } from "@blobscan/dates";
+
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
 import Gas from "~/icons/gas.svg";
-import { capitalize, formatNumber, formatTtl } from "~/utils";
+import { capitalize, formatNumber } from "~/utils";
 import { EtherUnitDisplay } from "./Displays/EtherUnitDisplay";
 
 type ExplorerDetailsItemProps = {
