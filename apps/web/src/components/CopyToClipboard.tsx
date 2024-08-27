@@ -15,7 +15,6 @@ export function CopyToClipboard({
 }: CopyToClipboardProps) {
   const [isCopied, setIsCopied] = useState(false);
 
-  // TODO: Use Button component
   return (
     <Tooltip
       onChange={(open) => {
