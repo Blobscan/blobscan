@@ -80,7 +80,7 @@ function formatMetric(
       break;
     default:
       formattedValue = formatNumber(value, mode, {
-        maximumSignificantDigits: 9,
+        maximumSignificantDigits: 2,
         ...numberFormatOpts,
       });
       break;
