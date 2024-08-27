@@ -59,7 +59,7 @@ export const BLOCKS_TABLE_HEADERS = [
 const Blocks: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const { rollup, startDate, endDate } = getFilterParams(router.query);
+  const filters = getFilterParams(router.query);
   const {
     data: rawBlocksData,
     isLoading,
@@ -67,9 +67,7 @@ const Blocks: NextPage = function () {
   } = api.block.getAll.useQuery({
     p,
     ps,
-    rollup,
-    startDate,
-    endDate,
+    ...filters,
   });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {

@@ -6,20 +6,24 @@ import type { DateValueType } from "react-tailwindcss-datepicker";
 import { Button } from "~/components/Button";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Option } from "../Dropdown";
+import type { NumberRange } from "../RangeInput";
+import { BlockNumberFilter } from "./BlockNumberFilter";
 import { RollupFilter } from "./RollupFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
-const INIT_STATE = {
+const INIT_STATE: FiltersState = {
   rollup: null,
   timestampRange: {
     startDate: null,
     endDate: null,
   },
+  blockNumberRange: [undefined, undefined],
 };
 
 interface FiltersState {
   rollup: Option | null;
   timestampRange: DateValueType;
+  blockNumberRange: NumberRange;
 }
 
 export const Filters: FC = function () {
@@ -32,14 +36,17 @@ export const Filters: FC = function () {
   const allowToFilter =
     !!formData.rollup ||
     !!formData.timestampRange?.startDate ||
-    !!formData.timestampRange?.endDate;
+    !!formData.timestampRange?.endDate ||
+    !!formData.blockNumberRange[0] ||
+    !!formData.blockNumberRange[1];
 
   if (!allowToFilter && Object.keys(router.query).length > 0) {
     router.replace(router.query, undefined, { shallow: true });
   }
 
   const handleSubmit = () => {
-    const { rollup, timestampRange } = formData;
+    const { rollup, timestampRange, blockNumberRange } = formData;
+    const [startBlock, endBlock] = blockNumberRange;
     router.push({
       pathname: router.pathname,
       query: {
@@ -51,6 +58,12 @@ export const Filters: FC = function () {
         ...(timestampRange?.endDate && {
           ["end-date"]: timestampRange.endDate as string,
         }),
+        ...(startBlock && {
+          ["start-block"]: startBlock.toString(),
+        }),
+        ...(endBlock && {
+          ["end-block"]: endBlock.toString(),
+        }),
       },
     });
   };
@@ -61,6 +74,10 @@ export const Filters: FC = function () {
 
   const handleTimestampRangeFilterChange = (newRange: DateValueType) => {
     setFormData((prevState) => ({ ...prevState, timestampRange: newRange }));
+  };
+
+  const handleBlockNumberRangeFilterChange = (newRange: NumberRange) => {
+    setFormData((prevState) => ({ ...prevState, blockNumberRange: newRange }));
   };
 
   return (
@@ -78,6 +95,10 @@ export const Filters: FC = function () {
           <TimestampFilter
             value={formData.timestampRange}
             onChange={handleTimestampRangeFilterChange}
+          />
+          <BlockNumberFilter
+            value={formData.blockNumberRange}
+            onChange={handleBlockNumberRangeFilterChange}
           />
         </div>
         <Button

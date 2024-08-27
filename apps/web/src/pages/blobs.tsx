@@ -57,14 +57,12 @@ const Blobs: NextPage = function () {
     router.query,
     BLOBS_TABLE_DEFAULT_PAGE_SIZE
   );
-  const { rollup, startDate, endDate } = getFilterParams(router.query);
+  const filters = getFilterParams(router.query);
 
   const { data, error, isLoading } = api.blob.getAll.useQuery({
     p,
     ps,
-    rollup,
-    startDate,
-    endDate,
+    ...filters,
   });
   const { blobs, totalBlobs } = data || {};
 

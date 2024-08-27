@@ -9,7 +9,7 @@ export const TimestampFilter: FC<RollupFilterProps> = function ({
   onChange,
 }) {
   return (
-    <div className="min-w-72 rounded-lg shadow-md">
+    <div className="h-[42px] min-w-72 rounded-lg shadow-md">
       <Datepicker
         primaryColor="purple"
         value={value}

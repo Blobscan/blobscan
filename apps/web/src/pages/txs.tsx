@@ -90,7 +90,7 @@ const Txs: NextPage = function () {
     router.query,
     TRANSACTIONS_TABLE_DEFAULT_PAGE_SIZE
   );
-  const { rollup, startDate, endDate } = getFilterParams(router.query);
+  const filters = getFilterParams(router.query);
 
   const {
     data: rawTxsData,
@@ -103,9 +103,7 @@ const Txs: NextPage = function () {
     p,
     ps,
     expand: "block,blob",
-    rollup,
-    startDate,
-    endDate,
+    ...filters,
   });
   const txsData = useMemo(() => {
     if (!rawTxsData) {
