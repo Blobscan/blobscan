@@ -9,19 +9,21 @@ import type { Option } from "../Dropdown";
 import { RollupFilter } from "./RollupFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
+const INIT_STATE = {
+  rollup: null,
+  timestampRange: {
+    startDate: null,
+    endDate: null,
+  },
+};
+
 interface FiltersState {
   rollup: Option | null;
   timestampRange: DateValueType;
 }
 
 export const Filters: FC = function () {
-  const [formData, setFormData] = useState<FiltersState>({
-    rollup: null,
-    timestampRange: {
-      startDate: null,
-      endDate: null,
-    },
-  });
+  const [formData, setFormData] = useState<FiltersState>(INIT_STATE);
   const router = useRouter();
 
   const breakpoint = useBreakpoint();
@@ -31,6 +33,10 @@ export const Filters: FC = function () {
     !!formData.rollup ||
     !!formData.timestampRange?.startDate ||
     !!formData.timestampRange?.endDate;
+
+  if (!allowToFilter && Object.keys(router.query).length > 0) {
+    router.replace(router.query, undefined, { shallow: true });
+  }
 
   const handleSubmit = () => {
     const { rollup, timestampRange } = formData;
