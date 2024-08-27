@@ -58,13 +58,16 @@ export const Filters: FC = function () {
     router.replace(router.query, undefined, { shallow: true });
   }
 
+  if (!allowToFilter && Object.keys(router.query).length > 0) {
+    router.replace(router.query, undefined, { shallow: true });
+  }
+
   const handleSubmit = () => {
     const { rollup, timestampRange, blockNumberRange } = formData;
     const [startBlock, endBlock] = blockNumberRange;
     router.push({
       pathname: router.pathname,
       query: {
-        ...router.query,
         ...(rollup?.value && { rollup: rollup.value }),
         ...(timestampRange?.startDate && {
           ["start-date"]: timestampRange.startDate as string,
