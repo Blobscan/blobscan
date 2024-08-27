@@ -28,8 +28,8 @@
     "@blobscan/dayjs": "workspace:^0.0.2",
     "@blobscan/logger": "workspace:^0.1.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
-    "@prisma/client": "^5.5.2",
-    "prisma": "5.5.2"
+    "@prisma/client": "^5.18.0",
+    "prisma": "^5.18.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",

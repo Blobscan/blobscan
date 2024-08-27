@@ -7,7 +7,7 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/CopyToClipboard";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
+import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -113,7 +113,7 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={blockData.blobGasPrice} />,
+        value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
       },
       {
         name: "Blob Gas Used",

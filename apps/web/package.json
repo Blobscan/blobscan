@@ -38,6 +38,7 @@
     "@upstash/ratelimit": "^0.4.4",
     "@vercel/analytics": "^1.0.2",
     "@vercel/kv": "^0.2.3",
+    "class-variance-authority": "^0.7.0",
     "classnames": "^2.3.2",
     "echarts": "^5.4.2",
     "echarts-for-react": "^3.0.2",
@@ -49,6 +50,7 @@
     "react-dom": "18.2.0",
     "react-loading-skeleton": "^3.3.1",
     "superjson": "1.9.1",
+    "tailwind-merge": "^2.4.0",
     "viem": "^2.17.4",
     "zod": "^3.21.4"
   },

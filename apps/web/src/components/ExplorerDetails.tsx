@@ -55,7 +55,6 @@ export function ExplorerDetails() {
           amount={BigInt(
             Math.round(Number(latestBlock.blobGasPrice.toString()))
           )}
-          toUnit="Gwei"
         />
       ),
     },

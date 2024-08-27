@@ -13,6 +13,7 @@ import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
 import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
 import { Dropdown } from "~/components/Dropdown";
+import type { DropdownProps } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -50,6 +51,9 @@ const Blob: NextPage = function () {
     ...(blob && decoder ? ["Decoded" as BlobViewMode] : []),
     ...DEFAULT_BLOB_VIEW_MODES,
   ];
+  const blobViewModesOptions: DropdownProps["options"] = blobViewModes.map(
+    (blobViewMode) => ({ value: blobViewMode })
+  );
 
   useEffect(() => {
     if (!decoder) {
@@ -163,9 +167,12 @@ const Blob: NextPage = function () {
                     View as:
                   </div>
                   <Dropdown
-                    items={blobViewModes}
-                    selected={selectedBlobViewMode}
-                    onChange={(newViewMode) =>
+                    options={blobViewModesOptions}
+                    selected={{
+                      value: selectedBlobViewMode,
+                      label: selectedBlobViewMode,
+                    }}
+                    onChange={({ value: newViewMode }) =>
                       setSelectedBlobViewMode(newViewMode as BlobViewMode)
                     }
                   />
