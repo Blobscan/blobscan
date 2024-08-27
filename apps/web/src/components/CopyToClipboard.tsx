@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
-import { useHover } from "~/hooks/useHover";
 import Copy from "~/icons/copy.svg";
-import { Tooltip } from "./Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
 type CopyToClipboardProps = {
   label?: string;
@@ -15,29 +14,31 @@ export function CopyToClipboard({
   value,
 }: CopyToClipboardProps) {
   const [isCopied, setIsCopied] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const isHovered = useHover(buttonRef);
-  useEffect(() => setIsCopied(false), [isHovered]);
 
+  // TODO: Use Button component
   return (
-    // TODO: Use Button component
-    <button
-      ref={buttonRef}
-      className="relative cursor-pointer text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
-      onClick={() => {
-        navigator.clipboard.writeText(value);
-        setIsCopied(true);
+    <Tooltip
+      onChange={(open) => {
+        if (!open) {
+          setIsCopied(false);
+        }
       }}
     >
-      {isCopied ? (
-        <CheckIcon className="h-5 w-5" />
-      ) : (
-        <Copy className="h-5 w-5" />
-      )}
-      <Tooltip show={isHovered}>
-        <div className="whitespace-nowrap">{isCopied ? "Copied!" : label}</div>
-      </Tooltip>
-    </button>
+      <TooltipContent>{isCopied ? "Copied!" : label}</TooltipContent>
+      <TooltipTrigger
+        className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
+        onClick={() => {
+          navigator.clipboard.writeText(value);
+          setIsCopied(true);
+        }}
+      >
+        {isCopied ? (
+          <CheckIcon className="h-5 w-5" />
+        ) : (
+          <Copy className="h-5 w-5" />
+        )}
+      </TooltipTrigger>
+    </Tooltip>
   );
 }
 
