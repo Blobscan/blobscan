@@ -84,12 +84,13 @@ export const Filters: FC = function () {
             onChange={handleTimestampRangeFilterChange}
           />
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex w-full flex-row gap-2">
           <Button
             label="Clear"
             variant="outline"
             onClick={handleClear}
             disabled={!allowToFilter}
+            fullWidth={fullWidth}
           />
           <Button
             label="Filter"
