@@ -7,7 +7,7 @@ type SlotFilterProps = RangeInputProps & Pick<RangeInputProps, "value">;
 
 export const SlotFilter: FC<SlotFilterProps> = function (props) {
   return (
-    <div className="w-full md:w-[240px]">
+    <div className="w-full lg:w-[240px]">
       <RangeInput
         {...props}
         startPlaceholder="Start slot"

@@ -51,7 +51,8 @@ export const Filters: FC<FiltersProps> = function ({ enableSlotFilter }) {
   const router = useRouter();
 
   const breakpoint = useBreakpoint();
-  const fullWidth = breakpoint === "sm" || breakpoint === "default";
+  const fullWidth =
+    breakpoint === "md" || breakpoint === "sm" || breakpoint === "default";
 
   const hasErrors = !!errors.blockNumberRange;
   const atLeastOneFilled =
@@ -150,8 +151,8 @@ export const Filters: FC<FiltersProps> = function ({ enableSlotFilter }) {
       className="flex flex-col justify-between gap-3 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
       onSubmit={handleSubmit}
     >
-      <div className="flex w-full flex-col items-center justify-between gap-2 md:flex-row">
-        <div className="flex w-full flex-col justify-start gap-2 md:flex-row">
+      <div className="flex w-full flex-col items-center justify-between gap-8 md:flex-row lg:gap-2">
+        <div className="flex w-full flex-col justify-start gap-2 lg:flex-row">
           <RollupFilter
             selected={formData.rollup}
             onChange={handleRollupFilterChange}
