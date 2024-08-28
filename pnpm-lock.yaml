@@ -250,6 +250,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
+      '@blobscan/rollups':
+        specifier: workspace:^0.2.1
+        version: link:../../packages/rollups
       '@fontsource/inter':
         specifier: ^4.5.15
         version: 4.5.15
@@ -440,6 +443,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
         version: link:../open-telemetry
+      '@blobscan/rollups':
+        specifier: workspace:^0.2.1
+        version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../zod

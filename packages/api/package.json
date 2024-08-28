@@ -22,6 +22,7 @@
     "@blobscan/env": "workspace:^0.0.1",
     "@blobscan/logger": "workspace:^0.1.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
+    "@blobscan/rollups": "workspace:^0.2.1",
     "@blobscan/zod": "workspace:^0.1.0",
     "@trpc/server": "^10.43.2",
     "jsonwebtoken": "^9.0.0",
