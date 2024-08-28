@@ -1,3 +1,4 @@
+// Taken from this gist: https://gist.github.com/juliusmarminge/b06a3e421117a56ba1fea54e2a4c0fcb
 import { generatorHandler } from "@prisma/generator-helper";
 import fs from "node:fs/promises";
 import path from "node:path";
