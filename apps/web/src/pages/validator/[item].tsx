@@ -21,7 +21,7 @@ const Validator: NextPage = function () {
     {
       item: "only to meet the parameter requirements of tRPC",
       validatorKey: keyOrIdx,
-      validatorIdx: isStr ? 0 : Number(keyOrIdx),
+      validatorIdx: isStr ? BigInt(0) : BigInt(keyOrIdx),
       validatorIsStr: isStr,
       listLimit: validatorEpochIncomeListLimit,
     },

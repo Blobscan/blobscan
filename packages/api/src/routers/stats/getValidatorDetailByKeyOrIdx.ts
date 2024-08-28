@@ -7,7 +7,7 @@ import { publicProcedure } from "../../procedures";
 const inputSchema = z.object({
   item: z.string(),
   validatorKey: z.string(),
-  validatorIdx: z.number(),
+  validatorIdx: z.bigint(),
   validatorIsStr: z.boolean(),
   listLimit: z.number(),
 });
@@ -16,7 +16,7 @@ const outputSchema = z.object({
   epochIdx: z.array(z.bigint()),
   incomeWei: z.array(z.bigint()),
   validatorPublicKey: z.string(),
-  validatorIdx: z.number(),
+  validatorIdx: z.bigint(),
 });
 
 export const getValidatorDetailByKeyOrIdx = publicProcedure
@@ -30,46 +30,48 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
   })
   .input(inputSchema)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma }, input: { validatorKey, validatorIdx, validatorIsStr, listLimit } }) =>
-    prisma.validatorIncome
-      .findMany({
-        select: {
-          epochIdx: true,
-          incomeWei: true,
-          validatorPublicKey: true,
-          validatorIdx: true,
-        },
-        where: {
-          OR: [
-            {
-              validatorPublicKey: validatorIsStr
-                ? validatorKey
-                : undefined,
-            },
-            {
-              validatorIdx: validatorIsStr ? undefined : validatorIdx,
-            },
-          ],
-        },
-        orderBy: [{ epochIdx: "asc" }],
-        take: listLimit,
-      })
-      .then((income) =>
-        income.reduce<z.infer<typeof outputSchema>>(
-          (transformedIncome, currIncome) => {
-            transformedIncome.epochIdx.push(currIncome.epochIdx);
-            transformedIncome.incomeWei.push(currIncome.incomeWei);
-            transformedIncome.validatorPublicKey=currIncome.validatorPublicKey;
-            transformedIncome.validatorIdx=currIncome.validatorIdx;
-
-            return transformedIncome;
+  .query(
+    async ({
+      ctx: { prisma },
+      input: { validatorKey, validatorIdx, validatorIsStr, listLimit },
+    }) =>
+      prisma.validatorIncome
+        .findMany({
+          select: {
+            epochIdx: true,
+            incomeWei: true,
+            validatorPublicKey: true,
+            validatorIdx: true,
           },
-          {
-            epochIdx: [],
-            incomeWei: [],
-            validatorPublicKey: "",
-            validatorIdx: 0,
-          }
+          where: {
+            OR: [
+              {
+                validatorPublicKey: validatorIsStr ? validatorKey : undefined,
+              },
+              {
+                validatorIdx: validatorIsStr ? undefined : validatorIdx,
+              },
+            ],
+          },
+          orderBy: [{ epochIdx: "asc" }],
+          take: listLimit,
+        })
+        .then((income) =>
+          income.reduce<z.infer<typeof outputSchema>>(
+            (transformedIncome, currIncome) => {
+              transformedIncome.epochIdx.push(currIncome.epochIdx);
+              transformedIncome.incomeWei.push(currIncome.incomeWei);
+              transformedIncome.validatorPublicKey = currIncome.validatorPublicKey;
+              transformedIncome.validatorIdx = currIncome.validatorIdx;
+
+              return transformedIncome;
+            },
+            {
+              epochIdx: [],
+              incomeWei: [],
+              validatorPublicKey: "",
+              validatorIdx: BigInt(0),
+            }
+          )
         )
-      )
   );
