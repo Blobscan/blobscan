@@ -28,16 +28,16 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
   let storageIcon;
 
   switch (storage) {
-    case "FILE_SYSTEM":
+    case "file_system":
       storageIcon = <ArchiveBoxIcon className={commonStyles} />;
       break;
-    case "GOOGLE":
+    case "google":
       storageIcon = <GoogleIcon className={commonStyles} />;
       break;
-    case "SWARM":
+    case "swarm":
       storageIcon = <SwarmIcon className={commonStyles} />;
       break;
-    case "POSTGRES":
+    case "postgres":
       storageIcon = <PostgresIcon className={commonStyles} />;
       break;
   }
