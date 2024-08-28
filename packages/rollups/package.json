@@ -1,7 +1,7 @@
 {
   "name": "@blobscan/rollups",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.0.1",
   "main": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
