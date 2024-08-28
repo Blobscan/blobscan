@@ -7,7 +7,7 @@ import type {
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
-import { resolveRollup } from "@blobscan/rollups";
+import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
 
@@ -90,7 +90,7 @@ export function createDBTransactions({
       );
 
       const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
-      const rollup = resolveRollup(to, env.CHAIN_ID);
+      const rollup = getRollupByAddress(to, env.CHAIN_ID);
 
       return {
         blockHash: block.hash,
