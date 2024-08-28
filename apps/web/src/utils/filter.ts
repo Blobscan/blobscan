@@ -8,6 +8,8 @@ export function getFilterParams(query: ParsedUrlQuery): {
   endDate: Date | undefined;
   startBlock: number | undefined;
   endBlock: number | undefined;
+  startSlot: number | undefined;
+  endSlot: number | undefined;
 } {
   const rollup = query.rollup as Rollup;
 
@@ -19,6 +21,18 @@ export function getFilterParams(query: ParsedUrlQuery): {
   const endBlock_ = query["end-block"];
   const startBlock = startBlock_ ? Number(startBlock_) : undefined;
   const endBlock = endBlock_ ? Number(endBlock_) : undefined;
+  const startSlot_ = query["start-slot"];
+  const endSlot_ = query["end-slot"];
+  const startSlot = startSlot_ ? Number(startSlot_) : undefined;
+  const endSlot = endSlot_ ? Number(endSlot_) : undefined;
 
-  return { rollup, startDate, endDate, startBlock, endBlock };
+  return {
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
+  };
 }

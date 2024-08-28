@@ -5,12 +5,16 @@ export type NumberRange = [bigint | undefined, bigint | undefined];
 export type RangeInputProps = {
   value: NumberRange;
   error?: string;
+  startPlaceholder?: string;
+  endPlaceholder?: string;
   onChange: (range: NumberRange) => void;
 };
 
 export const RangeInput: React.FC<RangeInputProps> = ({
   value,
   error,
+  startPlaceholder,
+  endPlaceholder,
   onChange,
 }) => {
   const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,14 +33,14 @@ export const RangeInput: React.FC<RangeInputProps> = ({
     <div className="flex flex-col">
       <div className="range-input flex flex-row">
         <Input
-          placeholder="Start block"
+          placeholder={startPlaceholder}
           className="h-[42px]"
           value={value[0]?.toString()}
           type="number"
           onChange={handleStartChange}
         />
         <Input
-          placeholder="End block"
+          placeholder={endPlaceholder}
           className="h-[42px]"
           value={value[1]?.toString()}
           type="number"

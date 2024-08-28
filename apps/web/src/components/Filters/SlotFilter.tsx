@@ -3,15 +3,15 @@ import type { FC } from "react";
 import type { RangeInputProps } from "../RangeInput";
 import { RangeInput } from "../RangeInput";
 
-type BlockNumberFilterProps = RangeInputProps & Pick<RangeInputProps, "value">;
+type SlotFilterProps = RangeInputProps & Pick<RangeInputProps, "value">;
 
-export const BlockNumberFilter: FC<BlockNumberFilterProps> = function (props) {
+export const SlotFilter: FC<SlotFilterProps> = function (props) {
   return (
     <div className="w-full md:w-[240px]">
       <RangeInput
         {...props}
-        startPlaceholder="Start block"
-        endPlaceholder="End block"
+        startPlaceholder="Start slot"
+        endPlaceholder="End slot"
       />
     </div>
   );

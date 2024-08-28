@@ -10,6 +10,7 @@ import type { Option } from "../Dropdown";
 import type { NumberRange } from "../RangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { RollupFilter } from "./RollupFilter";
+import { SlotFilter } from "./SlotFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
 const DEFAULT_MIN_VALUE = BigInt(0);
@@ -22,19 +23,26 @@ const INIT_STATE: FiltersState = {
     endDate: null,
   },
   blockNumberRange: [undefined, undefined],
+  slotRange: [undefined, undefined],
 };
 
 interface FiltersErrorsState {
   blockNumberRange?: string;
+  slotRange?: string;
 }
 
 interface FiltersState {
   rollup: Option | null;
   timestampRange: DateValueType;
   blockNumberRange: NumberRange;
+  slotRange: NumberRange;
 }
 
-export const Filters: FC = function () {
+interface FiltersProps {
+  enableSlotFilter?: boolean;
+}
+
+export const Filters: FC<FiltersProps> = function ({ enableSlotFilter }) {
   const [formData, setFormData] = useState<FiltersState>(INIT_STATE);
   const [errors, setErrors] = useState<FiltersErrorsState>({
     blockNumberRange: undefined,
@@ -51,7 +59,9 @@ export const Filters: FC = function () {
     !!formData.timestampRange?.startDate ||
     !!formData.timestampRange?.endDate ||
     !!formData.blockNumberRange[0] ||
-    !!formData.blockNumberRange[1];
+    !!formData.blockNumberRange[1] ||
+    !!formData.slotRange[0] ||
+    !!formData.slotRange[1];
   const allowToFilter = !hasErrors && atLeastOneFilled;
 
   if (!allowToFilter && Object.keys(router.query).length > 0) {
@@ -63,8 +73,10 @@ export const Filters: FC = function () {
   }
 
   const handleSubmit = () => {
-    const { rollup, timestampRange, blockNumberRange } = formData;
+    const { rollup, timestampRange, blockNumberRange, slotRange } = formData;
     const [startBlock, endBlock] = blockNumberRange;
+    const [startSlot, endSlot] = slotRange;
+
     router.push({
       pathname: router.pathname,
       query: {
@@ -80,6 +92,12 @@ export const Filters: FC = function () {
         }),
         ...(endBlock && {
           ["end-block"]: endBlock.toString(),
+        }),
+        ...(startSlot && {
+          ["start-slot"]: startSlot.toString(),
+        }),
+        ...(endSlot && {
+          ["end-slot"]: endSlot.toString(),
         }),
       },
     });
@@ -113,6 +131,20 @@ export const Filters: FC = function () {
     setFormData((prevState) => ({ ...prevState, blockNumberRange: newRange }));
   };
 
+  const handleSlotRangeFilterChange = (newRange: NumberRange) => {
+    const validatorMessage = validateRange(
+      newRange,
+      DEFAULT_MIN_VALUE,
+      DEFAULT_MAX_VALUE
+    );
+
+    setErrors({
+      slotRange: validatorMessage.length > 0 ? validatorMessage : undefined,
+    });
+
+    setFormData((prevState) => ({ ...prevState, slotRange: newRange }));
+  };
+
   return (
     <form
       className="flex flex-col justify-between gap-3 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
@@ -134,6 +166,13 @@ export const Filters: FC = function () {
             onChange={handleBlockNumberRangeFilterChange}
             error={errors.blockNumberRange}
           />
+          {enableSlotFilter && (
+            <SlotFilter
+              value={formData.slotRange}
+              onChange={handleSlotRangeFilterChange}
+              error={errors.slotRange}
+            />
+          )}
         </div>
         <div className="flex w-full flex-row gap-2 md:w-auto">
           <Button

@@ -218,7 +218,7 @@ const Blocks: NextPage = function () {
       paginationData={{ pageSize: ps, page: p }}
       isExpandable
       rowSkeletonHeight={44}
-      tableTopSlot={<Filters />}
+      tableTopSlot={<Filters enableSlotFilter />}
     />
   );
 };
