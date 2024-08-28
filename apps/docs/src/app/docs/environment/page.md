@@ -6,18 +6,17 @@ nextjs:
     description: How to configure your Blobscan instance
 ---
 
-# Blobscan Web
+## Blobscan Web
 
 | Variable                                 | Description                                                                                 | Required | Default value                                                                                                                                                                |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL`                           | Postgresql database URI                                                                     | Yes      | (empty)                                                                                                                                                                      |
-| `BLOBSCAN_API_PORT`                      | Port where Blobscan API is listening                                                        | No       | `3001`                                                                                                                                                                       |
 | `FEEDBACK_WEBHOOK_URL`                   | Discord webhook URL for feedback                                                            | No       | (empty)                                                                                                                                                                      |
 | `NEXT_PUBLIC_NETWORK_NAME`               | Network name                                                                                | No       | mainnet                                                                                                                                                                      |
 | `NEXT_PUBLIC_EXPLORER_BASE_URL`          | Block explorer URL                                                                          | No       | `https://etherscan.io`                                                                                                                                                       |
 | `NEXT_PUBLIC_BEACON_BASE_URL`            | Beacon explorer URL                                                                         | No       | `https://beaconcha.in/`                                                                                                                                                      |
 | `NEXT_PUBLIC_VERSION`                    | Blobscan version                                                                            | No       | (empty)                                                                                                                                                                      |
-| `NEXT_PUBLIC_SUPPORTED_NETWORKS`         | Link to other pages from the Network menu                                                   | No       | `[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]` |
+| `NEXT_PUBLIC_SUPPORTED_NETWORKS`         | Link to other pages from the Network menu                                                   | No       | `[{"label":"Ethereum Mainnet","href":"https://blobscan.com/"},{"label":"Gnosis","href":"https://gnosis.blobscan.com/"},{"label":"Holesky Testnet","href":"https://holesky.blobscan.com/"},{"label":"Sepolia Testnet","href":"https://sepolia.blobscan.com/"}]` |
 | `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED`   | Enable Vercel analytics                                                                     | No       | `false`                                                                                                                                                                      |
 | `NEXT_PUBLIC_SENTRY_DSN_WEB`             | Sentry DSN                                                                                  | No       | (empty)                                                                                                                                                                      |
 | `NODE_ENV`                               | Used in Node.js applications to specify the environment in which the application is running | No       | (empty)                                                                                                                                                                      |
@@ -27,7 +26,7 @@ nextjs:
 | `TRACES_ENABLED`                         | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                                                                                                                                                                      |
 | `BLOB_PROPAGATOR_ENABLED`                | Enable uploading blobs to multiple storages in parallel                                     | No       | `false`                                                                                                                                                                      |
 
-# Blobscan API
+## Blobscan API
 
 | Variable                             | Description                                                                                        | Required                        | Default value              |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------- |
@@ -36,7 +35,7 @@ nextjs:
 | `REDIS_URI`                          | Redis host                                                                                         | Yes                             | `redis://localhost:6379/1` |
 | `SECRET_KEY`                         | Shared key used for JWT authentication with the indexer                                            | Yes                             | (empty)                    |
 | `NETWORK_NAME`                       | Network's name (valid values are: `mainnet`, `holesky`, `sepolia`, `gnosis`, `chiado`, `devnet`)   | No                              | `mainnet`                  |
-| `BLOBSCAN_API_BASE_URL`              | API domain                                                                                         | No                              | `https://api.blobscan.com` |
+| `BLOBSCAN_API_BASE_URL`              | API domain                                                                                         | No                              | `http://localhost:3001`    |
 | `BLOBSCAN_API_PORT`                  | API port                                                                                           | No                              | `3001`                     |
 | `DENCUN_FORK_SLOT`                   | Custom slot when blobs are activated (use when `NETWORK_NAME=devnet`)                              | No                              | (empty)                    |
 | `METRICS_ENABLED`                    | Expose the /metrics endpoint                                                                       | No                              | `false`                    |
@@ -62,7 +61,7 @@ nextjs:
 | `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE` | Remove completed jobs after the specified number of seconds (default: 1 day)                       | No                              | `86400`                    |
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`    | Remove completed jobs after the specified number of seconds (default: 7 days)                      | No                              | `604800`                   |
 
-# Blobscan indexer
+## Blobscan indexer
 
 | Variable                  | Description                                                                                                                                   | Required | Default value       |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------- |
@@ -75,7 +74,7 @@ nextjs:
 | `RUST_LOG`                | Configure logger                                                                                                                              | No       | `blob-indexer=INFO` |
 | `SENTRY_DSN`              | Sentry DSN                                                                                                                                    | No       | (empty)             |
 
-# Docker
+## Docker
 
 These variables are used in the docker compose files we provide.
 

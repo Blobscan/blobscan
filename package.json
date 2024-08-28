@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@blobscan/eslint-config": "workspace:^0.0.1",
+    "@blobscan/eth-units": "workspace:^0.0.1",
     "@blobscan/svgo-config": "workspace:^0.0.1",
     "@blobscan/tailwind-config": "workspace:^0.0.1",
     "@blobscan/test": "workspace:^0.0.1",

@@ -2,10 +2,12 @@ import type { FC } from "react";
 import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
+import { convertWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
 import { formatNumber } from "~/utils";
-import { buildTimeSeriesOptions, convertWei } from "~/utils";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyBlobFeeChartProps = {
   days: DailyBlockStats["days"];
@@ -15,7 +17,7 @@ export type DailyBlobFeeChartProps = {
 export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
   function ({ days, blobFees }) {
     const formattedBlobFees = useMemo(
-      () => blobFees?.map((fee) => convertWei(fee)),
+      () => blobFees?.map((fee) => convertWei(BigInt(fee))),
       [blobFees]
     );
     const options: EChartOption<EChartOption.SeriesBar> = {

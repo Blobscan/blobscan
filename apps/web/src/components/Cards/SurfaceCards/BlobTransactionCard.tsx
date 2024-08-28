@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import type { FC } from "react";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
-import { Button } from "~/components/Button";
 import { Collapsable } from "~/components/Collapsable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { IconButton } from "~/components/IconButton";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Rotable } from "~/components/Rotable";
 import { Skeleton } from "~/components/Skeleton";
@@ -196,11 +196,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 rotated={opened}
                 onClick={() => setOpened((prevOpened) => !prevOpened)}
               >
-                <Button
-                  variant="icon"
-                  icon={<ChevronDownIcon className="h-5 w-5" />}
-                  size="md"
-                />
+                <IconButton>
+                  <ChevronDownIcon />
+                </IconButton>
               </Rotable>
             </div>
           )}
