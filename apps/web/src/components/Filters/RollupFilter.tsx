@@ -1,11 +1,11 @@
 import type { FC } from "react";
 
-import { Rollup } from "@blobscan/api/enums";
+import { Rollup as Rollups } from "@blobscan/api/enums";
 
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps } from "~/components/Dropdown";
 import { RollupIcon } from "~/components/RollupIcon";
-import type { Rollup as RollupType } from "~/types";
+import type { Rollup } from "~/types";
 import { capitalize } from "~/utils";
 
 type RollupFilterProps = Pick<DropdownProps, "onChange" | "selected">;
@@ -18,10 +18,10 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
     <>
       <Dropdown
         selected={selected}
-        options={Object.values(Rollup).map((rollup) => ({
-          value: rollup,
+        options={Object.values(Rollups).map((rollup) => ({
+          value: rollup.toLowerCase(),
           label: capitalize(rollup),
-          prefix: <RollupIcon rollup={rollup.toLowerCase() as RollupType} />,
+          prefix: <RollupIcon rollup={rollup.toLowerCase() as Rollup} />,
         }))}
         onChange={onChange}
         placeholder="Rollup"
