@@ -49,7 +49,11 @@ export function convertWei(
 /**
  * This function finds the best unit to display the value of `wei`.
  */
-export function findBestUnit(wei: bigint): EtherUnit {
+export function findBestUnit(wei: bigint | string | number): EtherUnit {
+  if (typeof wei === "number") {
+    wei = Math.round(wei);
+  }
+
   const length = wei.toString().length;
 
   if (length >= ETH_UNITS.ether) {
