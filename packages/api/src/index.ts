@@ -2,6 +2,8 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 import type { AppRouter } from "./app-router";
 
+export * from "@trpc/server/adapters/express";
+
 export { appRouter, type AppRouter } from "./app-router";
 export { createTRPCContext, createTRPCInnerContext } from "./context";
 export type {
@@ -9,19 +11,8 @@ export type {
   TRPCContext,
 } from "./context";
 
-export * from "@trpc/server/adapters/express";
-
 export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
-export type {
-  BlobStorage,
-  Rollup,
-  Metric,
-  MetricHistogram,
-  MetricHistogramBucket,
-  Metrics,
-  MetricsClient,
-} from "@blobscan/db";
 
 export { searchByTerm } from "./routers/search/byTerm";
 
