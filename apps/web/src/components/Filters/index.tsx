@@ -84,7 +84,7 @@ export const Filters: FC = function () {
             onChange={handleTimestampRangeFilterChange}
           />
         </div>
-        <div className="flex w-full flex-row gap-2">
+        <div className="flex w-full flex-row gap-2 md:w-auto">
           <Button
             label="Clear"
             variant="outline"
