@@ -85,6 +85,11 @@ export const Filters: FC = function () {
     });
   };
 
+  const handleClear = () => {
+    router.push({ pathname: router.pathname, query: undefined });
+    setFormData(INIT_STATE);
+  };
+
   const handleRollupFilterChange = (newRollup: Option) => {
     setFormData((prevState) => ({ ...prevState, rollup: newRollup }));
   };
@@ -130,12 +135,20 @@ export const Filters: FC = function () {
             error={errors.blockNumberRange}
           />
         </div>
-        <Button
-          label="Filter"
-          onClick={handleSubmit}
-          disabled={!allowToFilter}
-          fullWidth={fullWidth}
-        />
+        <div className="flex flex-row gap-2">
+          <Button
+            label="Clear"
+            variant="outline"
+            onClick={handleClear}
+            disabled={!allowToFilter}
+          />
+          <Button
+            label="Filter"
+            onClick={handleSubmit}
+            disabled={!allowToFilter}
+            fullWidth={fullWidth}
+          />
+        </div>
       </div>
     </form>
   );
