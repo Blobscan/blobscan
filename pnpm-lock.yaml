@@ -640,6 +640,12 @@ importers:
         specifier: ^14.2.0
         version: 14.2.0
 
+  packages/rollups:
+    dependencies:
+      '@blobscan/db':
+        specifier: workspace:^0.9.0
+        version: link:../db
+
   packages/syncers:
     dependencies:
       '@blobscan/dayjs':
