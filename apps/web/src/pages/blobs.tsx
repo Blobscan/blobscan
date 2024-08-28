@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import { getFilterParams } from "~/utils/filter";
 import { getPaginationParams } from "~/utils/pagination";
+import { Filters } from "~/components/Filters";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { StorageIcon } from "~/components/StorageIcon";
@@ -152,6 +153,7 @@ const Blobs: NextPage = function () {
       rows={blobRows}
       totalItems={totalBlobs}
       paginationData={{ pageSize: ps, page: p }}
+      tableTopSlot={<Filters />}
     />
   );
 };

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { getFilterParams } from "~/utils/filter";
 import { getPaginationParams } from "~/utils/pagination";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { Filters } from "~/components/Filters";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
@@ -281,6 +282,7 @@ const Txs: NextPage = function () {
       totalItems={totalTransactions}
       paginationData={{ pageSize: ps, page: p }}
       isExpandable
+      tableTopSlot={<Filters />}
     />
   );
 };
