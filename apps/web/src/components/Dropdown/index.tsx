@@ -48,7 +48,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
             {clearable && selected ? (
               <>
                 <XMarkIcon
-                  className="h-4.5 w-4 text-contentTertiary-light opacity-60 hover:text-iconHighlight-light hover:opacity-100 dark:text-contentTertiary-dark dark:hover:text-iconHighlight-dark"
+                  className="h-4 w-4 text-contentTertiary-light opacity-60 hover:text-iconHighlight-light hover:opacity-100 dark:text-contentTertiary-dark dark:hover:text-iconHighlight-dark"
                   onClick={(e) => {
                     e.stopPropagation();
                     onChange(null);
