@@ -76,7 +76,13 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
       : undefined;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    ({ value: newPageSize }) =>
+    (option) => {
+      if (!option) {
+        return;
+      }
+
+      const newPageSize = option.value as number;
+
       void router.push({
         pathname: router.pathname,
         query: {
@@ -91,7 +97,8 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
           ),
           ps: newPageSize,
         },
-      }),
+      });
+    },
     [page, totalItems, router]
   );
 
