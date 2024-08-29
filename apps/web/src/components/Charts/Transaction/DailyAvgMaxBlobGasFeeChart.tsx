@@ -3,7 +3,11 @@ import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyTransactionStats } from "~/types";
-import { buildTimeSeriesOptions, useArrayBestUnit } from "~/utils";
+import {
+  buildTimeSeriesOptions,
+  formatNumber,
+  useArrayBestUnit,
+} from "~/utils";
 
 export type DailyAvgMaxBlobGasFeeChartProps = {
   days: DailyTransactionStats["days"];
@@ -22,8 +26,7 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => `${value} ${unit}`,
-        yAxisLabel: (value) => `${value} ${unit}`,
+        yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
       },
     }),
     series: [
