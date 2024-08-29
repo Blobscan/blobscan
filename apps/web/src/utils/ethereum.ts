@@ -16,19 +16,29 @@ export type FormatWeiOptions = {
 };
 
 function formatWithDecimal(str: string, positionFromEnd: number): string {
+  if (str === '0') {
+    return '0';
+  }
+
+  let isNegative = false;
+  if (str.startsWith('-')) {
+    isNegative = true;
+    str = str.slice(1); // Remove the negative sign for processing
+  }
+
   const [integerPart = "", decimalPart = ""] = str.split(".");
 
   if (integerPart.length <= positionFromEnd) {
     const zeroes = "0".repeat(positionFromEnd - integerPart.length);
     const result = "0." + zeroes + integerPart + decimalPart;
-    return stripTrailingZeroes(result);
+    return (isNegative ? '-' : '') + stripTrailingZeroes(result);
   }
 
   const newIntegerPart = integerPart.slice(0, -positionFromEnd);
   const newDecimalPart = integerPart.slice(-positionFromEnd);
   const result = `${newIntegerPart}.${newDecimalPart}${decimalPart}`;
 
-  return stripTrailingZeroes(result);
+  return (isNegative ? '-' : '') + stripTrailingZeroes(result);
 }
 
 function stripTrailingZeroes(str: string): string {
@@ -40,6 +50,7 @@ function stripTrailingZeroes(str: string): string {
       str = str.slice(0, -1);
     }
   }
+
   return str;
 }
 

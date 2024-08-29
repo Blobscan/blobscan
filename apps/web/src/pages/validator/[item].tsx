@@ -21,7 +21,7 @@ const Validator: NextPage = function () {
     {
       item: "only to meet the parameter requirements of tRPC",
       validatorKey: keyOrIdx,
-      validatorIdx: isStr ? BigInt(0) : BigInt(keyOrIdx),
+      validatorIdx: isStr ? String(0) : String(keyOrIdx),
       validatorIsStr: isStr,
       listLimit: validatorEpochIncomeListLimit,
     },
@@ -49,6 +49,21 @@ const Validator: NextPage = function () {
     incomeData === undefined || epochGenesis === undefined) {
 
     return <div>not found validator rewards data</div>;
+  }
+
+  for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
+    const diff = (incomeData.epochIdx[idx + 1] as bigint) - (incomeData.epochIdx[idx] as bigint);
+
+    if (diff > BigInt(1)) {
+      incomeData.epochIdx.splice(idx + 1, 0, ...Array.from({ length: Number(diff) - 1 }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(1) + BigInt(index)));
+      incomeData.incomeWei.splice(idx + 1, 0, ...Array(Number(diff) - 1).fill(BigInt(0)));
+
+      idx++;
+    }
+
+    if (idx + 1 >= incomeData.epochIdx.length - 1) {
+      break;
+    }
   }
 
   return (

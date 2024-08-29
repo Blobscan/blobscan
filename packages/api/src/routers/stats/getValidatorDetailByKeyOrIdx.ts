@@ -7,7 +7,9 @@ import { publicProcedure } from "../../procedures";
 const inputSchema = z.object({
   item: z.string(),
   validatorKey: z.string(),
-  validatorIdx: z.bigint(),
+  // BigInt cannot be used in Prisma as it may result in type errors.
+  // More Info: https://github.com/prisma/prisma/discussions/9793
+  validatorIdx: z.string(),
   validatorIsStr: z.boolean(),
   listLimit: z.number(),
 });
@@ -49,7 +51,7 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
                 validatorPublicKey: validatorIsStr ? validatorKey : undefined,
               },
               {
-                validatorIdx: validatorIsStr ? undefined : validatorIdx,
+                validatorIdx: validatorIsStr ? undefined : BigInt(validatorIdx),
               },
             ],
           },
