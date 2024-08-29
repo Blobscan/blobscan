@@ -15,18 +15,20 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
   selected,
 }) {
   return (
-    <>
-      <Dropdown
-        selected={selected}
-        options={Object.values(Rollups).map((rollup) => ({
-          value: rollup.toLowerCase(),
-          label: capitalize(rollup),
-          prefix: <RollupIcon rollup={rollup.toLowerCase() as Rollup} />,
-        }))}
-        onChange={onChange}
-        placeholder="Rollup"
-        width="w-40"
-      />
-    </>
+    <Dropdown
+      selected={selected}
+      options={Object.values(Rollups).map((rollup) => ({
+        value: rollup.toLowerCase(),
+        label: (
+          <div className="flex items-center gap-2">
+            <RollupIcon rollup={rollup.toLowerCase() as Rollup} />
+            {capitalize(rollup)}
+          </div>
+        ),
+      }))}
+      onChange={onChange}
+      placeholder="Rollup"
+      width="w-40"
+    />
   );
 };
