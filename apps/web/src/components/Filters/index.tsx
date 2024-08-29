@@ -10,7 +10,7 @@ import { RollupFilter } from "./RollupFilter";
 export const Filters: FC = function () {
   const router = useRouter();
   const [selectedRollup, setSelectedRollup] = useState<Option | null>(null);
-  const disableFilter = !selectedRollup;
+  const disableClear = !selectedRollup;
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
@@ -26,7 +26,6 @@ export const Filters: FC = function () {
   };
 
   const handleClear = () => {
-    router.push({ pathname: router.pathname, query: undefined });
     setSelectedRollup(null);
   };
 
@@ -39,16 +38,10 @@ export const Filters: FC = function () {
         }}
       />
       <div className="flex flex-row gap-2">
-        <Button
-          variant="outline"
-          onClick={handleClear}
-          disabled={disableFilter}
-        >
+        <Button variant="outline" onClick={handleClear} disabled={disableClear}>
           Clear
         </Button>
-        <Button onClick={handleFilter} disabled={disableFilter}>
-          Filter
-        </Button>
+        <Button onClick={handleFilter}>Filter</Button>
       </div>
     </div>
   );

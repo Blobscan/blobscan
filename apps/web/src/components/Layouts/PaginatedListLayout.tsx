@@ -67,15 +67,16 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) =>
-      void router.push({
+    (newPage) => {
+      router.push({
         pathname: router.pathname,
         query: {
           ...router.query,
           p: newPage,
           ps: pageSize,
         },
-      }),
+      });
+    },
     [pageSize, router]
   );
 
