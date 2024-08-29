@@ -20,7 +20,7 @@ The architecture of Blobscan has the following components:
 
 {% quick-link title="Installation" icon="installation" href="/docs/installation" description="Step-by-step guides to configuring and running Blobscan." /%}
 
-{% quick-link title="Running locally" icon="plugins" href="/docs/running-locally" description="Set up your local environment and run Blobscan." /%}
+{% quick-link title="Running locally" icon="plugins" href="/docs/running-blobscan-locally" description="Set up your local environment and run Blobscan." /%}
 
 {% quick-link title="Codebase" icon="presets" href="/docs/codebase-overview" description="Learn how the internals work and contribute." /%}
 

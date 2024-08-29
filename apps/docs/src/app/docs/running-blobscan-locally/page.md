@@ -10,6 +10,7 @@ nextjs:
 
 - [Node.js 18+](https://nodejs.org/)
 - [pnpm](https://pnpm.io/)
+- [docker compose](https://docs.docker.com/compose/)
 
 ## Installing dependencies
 
@@ -64,21 +65,23 @@ Lastly, create the database schema:
 pnpm db:generate
 ```
 
-## Other commands
+## Metrics aggregation
 
-Metrics are recalculated every 15 minutes if you are running the cron job.
+Metrics are recalculated every 15 minutes by a background process.
 
 During development, you may want to force backfilling all the data, which can
 be achieved using the following commands:
 
 ```shell
 # Aggregates all blob data since the beginning
-pnpm job:overall
+cd clis/stats-aggregation-cli
+pnpm start overall
 ```
 
 ```shell
 # Aggregates all blob data for yesterday
-pnpm job:daily
+cd clis/stats-aggregation-cli
+pnpm start daily
 ```
 
 In case you need to delete aggregated metrics, you can use the stats aggregation cli:

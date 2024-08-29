@@ -15,7 +15,10 @@ const compactFormatter = Intl.NumberFormat("en-US", {
  * This function never converts the provided value to a Number
  * ensuring that the full precision of the input is preserved.
  */
-export function formatWei(wei: bigint, toUnit: EtherUnit = "Gwei"): string {
+export function formatWei(
+  wei: string | number | bigint,
+  toUnit: EtherUnit = "Gwei"
+): string {
   const converted = convertWei(wei, toUnit);
   const formatted = insertCommas(converted);
   return `${formatted} ${toUnit}`;
@@ -36,7 +39,10 @@ export function prettyFormatWei(wei: bigint, toUnit: EtherUnit = "Gwei") {
 /**
  * This function converts `wei` to the unit specified by `toUnit`.
  */
-export function convertWei(wei: bigint, toUnit: EtherUnit = "Gwei"): string {
+export function convertWei(
+  wei: string | number | bigint,
+  toUnit: EtherUnit = "Gwei"
+): string {
   return shiftDecimal(wei, ETH_UNITS[toUnit]);
 }
 
@@ -60,20 +66,25 @@ export function findBestUnit(wei: bigint): EtherUnit {
 /**
  * This function moves the decimal point to the left by `decimals` places.
  */
-export function shiftDecimal(value: bigint, decimals: number): string {
-  const negative = value < 0;
+export function shiftDecimal(
+  value: string | number | bigint,
+  decimals: number
+): string {
+  value = value.toString();
+
+  const negative = value.startsWith("-");
 
   if (negative) {
-    value = -value;
+    value = value.slice(1);
   }
 
-  const str = value.toString().padStart(decimals, "0");
+  let [integer = "", decimal = ""] = value.split(".");
 
-  const sign = negative ? "-" : "";
-  const integer = str.slice(0, str.length - decimals) || "0";
-  const decimal = str.slice(str.length - decimals);
+  const padded = integer.padStart(decimals, "0");
+  integer = padded.slice(0, padded.length - decimals) || "0";
+  decimal = padded.slice(padded.length - decimals) + decimal;
 
-  return removeExtraZeros(`${sign}${integer}.${decimal}`);
+  return removeExtraZeros(`${negative ? "-" : ""}${integer}.${decimal}`);
 }
 
 /**
