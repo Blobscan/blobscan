@@ -71,17 +71,10 @@ export function findBestUnit(wei: bigint | string | number): EtherUnit {
  * This function converts an array of `wei` values to the best unit
  * and returns the converted values and the best unit.
  */
-export function arrayBestUnit(arr?: number[]): {
+export function arrayBestUnit(arr: number[]): {
   unit: EtherUnit;
   converted: string[];
 } {
-  if (!arr) {
-    return {
-      unit: "wei",
-      converted: [],
-    };
-  }
-
   const maxVal = Math.max(...arr);
   const unit = findBestUnit(maxVal);
 

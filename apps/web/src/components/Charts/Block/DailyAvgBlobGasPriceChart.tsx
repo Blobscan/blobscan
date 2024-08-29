@@ -1,12 +1,13 @@
 import type { FC } from "react";
-import { useMemo } from "react";
 import type { EChartOption } from "echarts";
-
-import { arrayBestUnit } from "@blobscan/eth-units";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
-import { buildTimeSeriesOptions, formatNumber } from "~/utils";
+import {
+  buildTimeSeriesOptions,
+  formatNumber,
+  useArrayBestUnit,
+} from "~/utils";
 
 export type DailyAvgBlobGasPriceChartProps = {
   days: DailyBlockStats["days"];
@@ -16,10 +17,7 @@ export type DailyAvgBlobGasPriceChartProps = {
 export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
-  const { converted, unit } = useMemo(
-    () => arrayBestUnit(avgBlobGasPrices),
-    [avgBlobGasPrices]
-  );
+  const { converted, unit } = useArrayBestUnit(avgBlobGasPrices);
 
   const options: EChartOption<EChartOption.SeriesBar> = {
     ...buildTimeSeriesOptions({

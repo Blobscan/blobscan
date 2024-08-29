@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
 import dayjs from "@blobscan/dayjs";
+import { arrayBestUnit } from "@blobscan/eth-units";
 
 import { getHumanDate as humanDateFormatter } from "./date";
 import { abbreviateNumber as abbreviateNumberFormatter } from "./number";
@@ -104,4 +106,17 @@ export function buildTimeSeriesOptions({
     tooltip: createTooltip(xAxisTooltip, yAxisTooltip),
     grid: yUnit ? YUINT_TO_GRID[yUnit] : undefined,
   };
+}
+
+export function useArrayBestUnit(arr?: number[]) {
+  return useMemo(() => {
+    if (!arr) {
+      return {
+        unit: "",
+        converted: undefined,
+      };
+    }
+
+    return arrayBestUnit(arr);
+  }, [arr]);
 }
