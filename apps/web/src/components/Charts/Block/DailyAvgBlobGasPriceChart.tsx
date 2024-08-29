@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
-import { convertWei } from "@blobscan/eth-units";
+import { arrayBestUnit } from "@blobscan/eth-units";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyBlockStats } from "~/types";
@@ -16,8 +16,8 @@ export type DailyAvgBlobGasPriceChartProps = {
 export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
-  const formattedAvgBlobGasPrices = useMemo(
-    () => avgBlobGasPrices?.map((price) => convertWei(price)),
+  const { converted, unit } = useMemo(
+    () => arrayBestUnit(avgBlobGasPrices),
     [avgBlobGasPrices]
   );
 
@@ -25,14 +25,14 @@ export const DailyAvgBlobGasPriceChart: FC<
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => `${formatNumber(value)} Gwei`,
+        yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
       },
       yUnit: "ethereum",
     }),
     series: [
       {
         name: "Avg. Blob Gas Prices",
-        data: formattedAvgBlobGasPrices,
+        data: converted,
         type: "bar",
       },
     ],

@@ -30,7 +30,10 @@ export function formatWei(
  * is preserved. Instead, this function provides a more human-readable
  * representation of the value.
  */
-export function prettyFormatWei(wei: bigint, toUnit: EtherUnit = "Gwei") {
+export function prettyFormatWei(
+  wei: string | number | bigint,
+  toUnit: EtherUnit = "Gwei"
+) {
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
   const formatted = compactFormatter.format(converted);
   return `${formatted} ${toUnit}`;
@@ -49,7 +52,11 @@ export function convertWei(
 /**
  * This function finds the best unit to display the value of `wei`.
  */
-export function findBestUnit(wei: bigint): EtherUnit {
+export function findBestUnit(wei: bigint | string | number): EtherUnit {
+  if (typeof wei === "number") {
+    wei = Math.round(wei);
+  }
+
   const length = wei.toString().length;
 
   if (length >= ETH_UNITS.ether) {
@@ -61,6 +68,30 @@ export function findBestUnit(wei: bigint): EtherUnit {
   }
 
   return "wei";
+}
+
+/**
+ * This function converts an array of `wei` values to the best unit
+ * and returns the converted values and the best unit.
+ */
+export function arrayBestUnit(arr?: number[]): {
+  unit: EtherUnit;
+  converted: string[];
+} {
+  if (!arr) {
+    return {
+      unit: "wei",
+      converted: [],
+    };
+  }
+
+  const maxVal = Math.max(...arr);
+  const unit = findBestUnit(maxVal);
+
+  return {
+    converted: arr.map((value) => convertWei(value, unit)),
+    unit,
+  };
 }
 
 /**
