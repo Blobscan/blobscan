@@ -1,66 +1,55 @@
 import { useState } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
+import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
 import type { Option } from "../Dropdown";
 import { RollupFilter } from "./RollupFilter";
 
-interface FiltersState {
-  rollup: Option | null;
-}
-
 export const Filters: FC = function () {
-  const [formData, setFormData] = useState<FiltersState>({
-    rollup: null,
-  });
   const router = useRouter();
+  const [selectedRollup, setSelectedRollup] = useState<Option | null>(null);
+  const disableFilter = !selectedRollup;
 
-  const allowToFilter = !!formData.rollup;
+  const handleFilter = () => {
+    const query: UrlObject["query"] = {};
 
-  const handleSubmit = () => {
-    if (formData.rollup) {
-      router.push({
-        pathname: router.pathname,
-        query: {
-          ...router.query,
-          rollup: formData.rollup.value,
-        },
-      });
+    if (selectedRollup) {
+      query.rollup = selectedRollup.value;
     }
+
+    router.push({
+      pathname: router.pathname,
+      query,
+    });
   };
 
   const handleClear = () => {
     router.push({ pathname: router.pathname, query: undefined });
-    setFormData({ rollup: null });
-  };
-
-  const handleRollupFilterChange = (newRollup: Option) => {
-    setFormData((prevState) => ({ ...prevState, rollup: newRollup }));
+    setSelectedRollup(null);
   };
 
   return (
-    <form
-      className="flex flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
-      onSubmit={handleSubmit}
-    >
+    <div className="flex flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row">
       <RollupFilter
-        selected={formData.rollup}
-        onChange={handleRollupFilterChange}
+        selected={selectedRollup}
+        onChange={(newRollup) => {
+          setSelectedRollup(newRollup);
+        }}
       />
       <div className="flex flex-row gap-2">
         <Button
-          label="Clear"
           variant="outline"
           onClick={handleClear}
-          disabled={!allowToFilter}
-        />
-        <Button
-          label="Filter"
-          onClick={handleSubmit}
-          disabled={!allowToFilter}
-        />
+          disabled={disableFilter}
+        >
+          Clear
+        </Button>
+        <Button onClick={handleFilter} disabled={disableFilter}>
+          Filter
+        </Button>
       </div>
-    </form>
+    </div>
   );
 };
