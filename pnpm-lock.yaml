@@ -443,6 +443,9 @@ importers:
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../zod
+      '@floating-ui/react':
+        specifier: '*'
+        version: 0.26.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@trpc/server':
         specifier: ^10.43.2
         version: 10.45.2
