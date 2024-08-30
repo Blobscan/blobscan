@@ -63,14 +63,14 @@ export const ROLLUP_TO_ADDRESS_MAPPINGS = new Map(
   )
 );
 
-export function getChainRollups(chainId: number): Rollup[] {
+export function getChainRollups(chainId: number): [string, Rollup][] {
   const addressToRollupMapping = ADDRESS_TO_ROLLUP_MAPPINGS.get(chainId);
 
   if (!addressToRollupMapping) {
     return [];
   }
 
-  return Array.from(addressToRollupMapping.values());
+  return Array.from(addressToRollupMapping.entries());
 }
 
 export function getRollupByAddress(
