@@ -1,15 +1,13 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 
-import { getFilterParams } from "~/utils/filter";
-import { getPaginationParams } from "~/utils/pagination";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { DeserializedBlob, DeserializedFullTransaction } from "~/utils";
@@ -24,6 +22,20 @@ import {
   deserializeFullTransaction,
   buildBlobRoute,
 } from "~/utils";
+
+type Transaction = Pick<
+  DeserializedFullTransaction,
+  | "hash"
+  | "from"
+  | "to"
+  | "blobs"
+  | "rollup"
+  | "blockNumber"
+  | "blobGasBaseFee"
+  | "blobGasMaxFee"
+  | "block"
+  | "blockTimestamp"
+> & { blobsLength?: number };
 
 export const TRANSACTIONS_TABLE_HEADERS = [
   {
@@ -68,29 +80,8 @@ export const TRANSACTIONS_TABLE_HEADERS = [
   },
 ];
 
-const TRANSACTIONS_TABLE_DEFAULT_PAGE_SIZE = 50;
-
-type Transaction = Pick<
-  DeserializedFullTransaction,
-  | "hash"
-  | "from"
-  | "to"
-  | "blobs"
-  | "rollup"
-  | "blockNumber"
-  | "blobGasBaseFee"
-  | "blobGasMaxFee"
-  | "block"
-  | "blockTimestamp"
-> & { blobsLength?: number };
-
 const Txs: NextPage = function () {
-  const router = useRouter();
-  const { p, ps } = getPaginationParams(
-    router.query,
-    TRANSACTIONS_TABLE_DEFAULT_PAGE_SIZE
-  );
-  const { rollup } = getFilterParams(router.query);
+  const { p, ps, rollup } = useQueryParams();
 
   const {
     data: rawTxsData,

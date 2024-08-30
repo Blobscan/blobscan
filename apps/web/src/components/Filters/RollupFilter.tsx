@@ -12,7 +12,7 @@ type RollupFilterProps = Pick<DropdownProps, "selected"> & {
   onChange(newRollup: Option | null): void;
 };
 
-const ROLLUP_OPTIONS: Option[] = [
+export const ROLLUP_OPTIONS: Option[] = [
   {
     value: "null",
     label: "None",
