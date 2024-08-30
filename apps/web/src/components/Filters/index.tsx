@@ -4,11 +4,13 @@ import { useRouter } from "next/router";
 import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import type { Option } from "../Dropdown";
-import { RollupFilter } from "./RollupFilter";
+import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 
 export const Filters: FC = function () {
   const router = useRouter();
+  const queryParams = useQueryParams();
   const [selectedRollup, setSelectedRollup] = useState<Option | null>(null);
   const disableClear = !selectedRollup;
 
@@ -28,6 +30,18 @@ export const Filters: FC = function () {
   const handleClear = () => {
     setSelectedRollup(null);
   };
+
+  useEffect(() => {
+    if (queryParams.rollup) {
+      const rollupOption = ROLLUP_OPTIONS.find(
+        (opt) => opt.value === queryParams.rollup
+      );
+
+      if (rollupOption) {
+        setSelectedRollup(rollupOption);
+      }
+    }
+  }, [queryParams]);
 
   return (
     <div className="flex flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row">
