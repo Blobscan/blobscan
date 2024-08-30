@@ -55,12 +55,13 @@ export const BLOCKS_TABLE_HEADERS = [
 ];
 
 const Blocks: NextPage = function () {
-  const { p, ps, rollup } = useQueryParams();
+  const { from, p, ps, rollup } = useQueryParams();
   const {
     data: rawBlocksData,
     isLoading,
     error,
   } = api.block.getAll.useQuery({
+    from,
     p,
     ps,
     rollup,

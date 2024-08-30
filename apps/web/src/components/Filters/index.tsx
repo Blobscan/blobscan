@@ -18,7 +18,11 @@ export const Filters: FC = function () {
     const query: UrlObject["query"] = {};
 
     if (selectedRollup) {
-      query.rollup = selectedRollup.value;
+      if (selectedRollup.value === "null") {
+        query.rollup = selectedRollup.value;
+      } else {
+        query.from = selectedRollup.value;
+      }
     }
 
     router.push({

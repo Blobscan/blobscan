@@ -81,7 +81,7 @@ export const TRANSACTIONS_TABLE_HEADERS = [
 ];
 
 const Txs: NextPage = function () {
-  const { p, ps, rollup } = useQueryParams();
+  const { from, p, ps, rollup } = useQueryParams();
 
   const {
     data: rawTxsData,
@@ -91,10 +91,11 @@ const Txs: NextPage = function () {
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>({
+    from,
     p,
     ps,
-    expand: "block,blob",
     rollup,
+    expand: "block,blob",
   });
   const txsData = useMemo(() => {
     if (!rawTxsData) {

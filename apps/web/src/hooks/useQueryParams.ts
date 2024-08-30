@@ -9,6 +9,7 @@ type QueryParams = {
   p: number;
   ps: number;
   rollup?: LowercaseRollup | "null";
+  from?: string;
 };
 
 const DEFAULT_INITIAL_PAGE_SIZE = 50;
@@ -26,9 +27,10 @@ export function useQueryParams() {
       return;
     }
 
-    const { p, ps, rollup } = router.query;
+    const { from, p, ps, rollup } = router.query;
 
     setQueryParams({
+      from: (from as string)?.toLowerCase(),
       p: parseInt(p as string) || DEFAULT_INITIAL_PAGE,
       ps: parseInt(ps as string) || DEFAULT_INITIAL_PAGE_SIZE,
       rollup: rollup
