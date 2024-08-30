@@ -36,9 +36,10 @@ export const Filters: FC = function () {
   };
 
   useEffect(() => {
-    if (queryParams.rollup) {
+    if (queryParams.rollup || queryParams.from) {
       const rollupOption = ROLLUP_OPTIONS.find(
-        (opt) => opt.value === queryParams.rollup
+        (opt) =>
+          opt.value === queryParams.rollup || opt.value === queryParams.from
       );
 
       if (rollupOption) {
