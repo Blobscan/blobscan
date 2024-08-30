@@ -158,7 +158,7 @@ export const TooltipContent = forwardRef<
         }}
         {...context.getFloatingProps(props)}
       >
-        <div className="p- bg-accent-light3 rounded-lg text-xs font-normal text-white dark:bg-primary-500">
+        <div className="bg-accent-light3 rounded-lg px-2 py-1 text-xs font-normal text-white dark:bg-primary-500">
           {children}
         </div>
 
