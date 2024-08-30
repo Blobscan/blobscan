@@ -7,7 +7,7 @@ import NextError from "~/pages/_error";
 import { ValidatorIncomeChart } from "~/components/Charts/Validator";
 import { ValidatorsIncomeLayout } from "~/components/Layouts/ValidatorsIncomeLayout";
 
-const validatorEpochIncomeListLimit = 60;
+const validatorEpochIncomeListLimit = 240;
 
 function isStr(value: string): boolean {
   const nonDigitPattern = /\D/;
@@ -68,6 +68,13 @@ const Validator: NextPage = function () {
     }
 
     if (idx + 1 >= incomeData.epochIdx.length - 1) {
+      if (incomeData.epochIdx.length > validatorEpochIncomeListLimit) {
+        const excessLength = incomeData.epochIdx.length - validatorEpochIncomeListLimit;
+
+        incomeData.epochIdx = incomeData.epochIdx.slice(excessLength);
+        incomeData.incomeGWei = incomeData.incomeGWei.slice(excessLength);
+      }
+
       break;
     }
   }
