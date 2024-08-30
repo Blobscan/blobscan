@@ -262,7 +262,7 @@ model BlobDailyStats {
 model ValidatorIncome {
   id                 BigInt   @id @default(autoincrement())
   epochIdx           BigInt   @map("epoch_idx")
-  incomeWei          BigInt   @map("income_wei")
+  incomeGWei         BigInt   @map("income_gwei")
   validatorPublicKey String   @map("validator_public_key") @db.Char(100)
   validatorIdx       BigInt   @map("validator_idx")
 

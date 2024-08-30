@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Card } from "~/components/Cards/Card";
 import { ChartBase } from "~/components/Charts/ChartBase";
 import { ChartSkeleton } from "~/components/ChartSkeleton";
-import { buildTimeSeriesOptions, formatWei, normalizeTimestamp } from "~/utils";
+import { buildTimeSeriesOptions, normalizeTimestamp } from "~/utils";
 
 function getSeriesDataState(series: EChartOption.Series[] | undefined) {
   return {
@@ -28,8 +28,15 @@ export type ChartCardWithSliderProps = {
   allData: bigint[];
   allAxle: number[];
   initCoordinateAxle: number[];
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   xAxisLabel?: (value: any) => unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  xAxisTooltip?: (value: any) => unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  yAxisLabel?: (value: any) => unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  yAxisTooltip?: (value: any) => unknown;
 
   minDistance: number;
   sliderStep?: number;
@@ -42,7 +49,11 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
   allData,
   allAxle,
   initCoordinateAxle,
+
   xAxisLabel = (value) => normalizeTimestamp(value).format("HH:mm:ss"),
+  xAxisTooltip = (value) => value,
+  yAxisLabel = (value) => value,
+  yAxisTooltip = (value) => value,
 
   minDistance,
   sliderStep = 1,
@@ -121,9 +132,10 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
     ...buildTimeSeriesOptions({
       dates: axleRange.map((time) => normalizeTimestamp(time).format("YYYY-MM-DD HH:mm:ss")),
       axisFormatters: {
-        yAxisTooltip: (value) => formatWei(value),
-        yAxisLabel: (value) => formatWei(value),
         xAxisLabel: xAxisLabel,
+        xAxisTooltip: xAxisTooltip,
+        yAxisLabel: yAxisLabel,
+        yAxisTooltip:yAxisTooltip,
       },
     }),
     // Improper configuration may result in incomplete display of the x/y axis.
@@ -131,7 +143,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
     grid: { top: 27, right: 25, bottom: "20%", left: 100 },
     series: [
       {
-        name: "Daily Income",
+        name: "Reward",
         data: dataRange.map(value => Number(value)),
         type: compact ? "line" : "bar",
         smooth: true,

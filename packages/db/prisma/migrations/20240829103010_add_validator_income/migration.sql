@@ -2,7 +2,7 @@
 CREATE TABLE "validator_income" (
     "id" BIGSERIAL NOT NULL,
     "epoch_idx" BIGINT NOT NULL,
-    "income_wei" BIGINT NOT NULL,
+    "income_gwei" BIGINT NOT NULL,
     "validator_public_key" CHAR(100) NOT NULL,
     "validator_idx" BIGINT NOT NULL,
     "attestation_source_reward" BIGINT NOT NULL,

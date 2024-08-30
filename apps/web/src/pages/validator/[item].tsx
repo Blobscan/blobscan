@@ -9,10 +9,16 @@ import { ValidatorsIncomeLayout } from "~/components/Layouts/ValidatorsIncomeLay
 
 const validatorEpochIncomeListLimit = 60;
 
+function isStr(value: string): boolean {
+  const nonDigitPattern = /\D/;
+
+  return nonDigitPattern.test(value);
+}
+
 const Validator: NextPage = function () {
   const router = useRouter();
   const keyOrIdx = router.query.item as string;
-  const isStr = !Number(keyOrIdx);
+  const keyIsStr = isStr(keyOrIdx);
   const {
     data: incomeData,
     error: validatorErr,
@@ -20,9 +26,9 @@ const Validator: NextPage = function () {
   } = api.stats.getValidatorDetailByKeyOrIdx.useQuery(
     {
       item: "only to meet the parameter requirements of tRPC",
-      validatorKey: keyOrIdx,
-      validatorIdx: isStr ? String(0) : String(keyOrIdx),
-      validatorIsStr: isStr,
+      validatorKey: String(keyOrIdx),
+      validatorIdx: keyIsStr ? String(0) : String(keyOrIdx),
+      validatorIsStr: keyIsStr,
       listLimit: validatorEpochIncomeListLimit,
     },
     {
@@ -56,7 +62,7 @@ const Validator: NextPage = function () {
 
     if (diff > BigInt(1)) {
       incomeData.epochIdx.splice(idx + 1, 0, ...Array.from({ length: Number(diff) - 1 }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(1) + BigInt(index)));
-      incomeData.incomeWei.splice(idx + 1, 0, ...Array(Number(diff) - 1).fill(BigInt(0)));
+      incomeData.incomeGWei.splice(idx + 1, 0, ...Array(Number(diff) - 1).fill(BigInt(0)));
 
       idx++;
     }
@@ -75,7 +81,7 @@ const Validator: NextPage = function () {
           <ValidatorIncomeChart
             key={0}
             epochIdx={incomeData.epochIdx}
-            incomeData={incomeData.incomeWei}
+            incomeData={incomeData.incomeGWei}
             epochGenesisTime={Number(epochGenesis.data.genesis_time) * 1000}
           />,
         ]}

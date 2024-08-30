@@ -16,7 +16,7 @@ const inputSchema = z.object({
 
 const outputSchema = z.object({
   epochIdx: z.array(z.bigint()),
-  incomeWei: z.array(z.bigint()),
+  incomeGWei: z.array(z.bigint()),
   validatorPublicKey: z.string(),
   validatorIdx: z.bigint(),
 });
@@ -41,7 +41,7 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
         .findMany({
           select: {
             epochIdx: true,
-            incomeWei: true,
+            incomeGWei: true,
             validatorPublicKey: true,
             validatorIdx: true,
           },
@@ -62,7 +62,7 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
           income.reduce<z.infer<typeof outputSchema>>(
             (transformedIncome, currIncome) => {
               transformedIncome.epochIdx.push(currIncome.epochIdx);
-              transformedIncome.incomeWei.push(currIncome.incomeWei);
+              transformedIncome.incomeGWei.push(currIncome.incomeGWei);
               transformedIncome.validatorPublicKey = currIncome.validatorPublicKey;
               transformedIncome.validatorIdx = currIncome.validatorIdx;
 
@@ -70,7 +70,7 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
             },
             {
               epochIdx: [],
-              incomeWei: [],
+              incomeGWei: [],
               validatorPublicKey: "",
               validatorIdx: BigInt(0),
             }
