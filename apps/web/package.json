@@ -15,6 +15,7 @@
     "with-env": "dotenv -e ../../.env  -v BLOB_PROPAGATOR_ENABLED=false --"
   },
   "dependencies": {
+    "@blobscan/db": "workspace:^0.9.0",
     "@blobscan/api": "workspace:^0.12.0",
     "@blobscan/blob-decoder": "workspace:^0.1.1",
     "@blobscan/dayjs": "workspace:^0.0.2",

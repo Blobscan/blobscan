@@ -18,7 +18,6 @@ import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   BLOB_GAS_LIMIT_PER_BLOCK,
   buildBlockExternalUrl,
-  buildBlockRoute,
   buildSlotExternalUrl,
   deserializeFullBlock,
   formatBytes,
@@ -51,16 +50,8 @@ const Block: NextPage = function () {
     return deserializeFullBlock(rawBlockData);
   }, [rawBlockData]);
 
-  const blockNumber = blockData ? blockData.number : 0;
-
-  const { data: neighbors } = api.block.getBlockNeighbors.useQuery(
-    {
-      blockNumber,
-    },
-    {
-      enabled: Boolean(blockData),
-    }
-  );
+  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
+  const blockNumber = blockData ? blockData.number : undefined;
 
   if (error) {
     return (
@@ -96,16 +87,12 @@ const Block: NextPage = function () {
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
-            {neighbors && (
+            {blockNumber !== undefined && (
               <NavArrows
-                prev={
-                  neighbors.previousBlock
-                    ? buildBlockRoute(neighbors.previousBlock.number)
-                    : undefined
-                }
+                prev={`/block_neighbor?blockNumber=${blockNumber}&direction=prev`}
                 next={
-                  neighbors.nextBlock
-                    ? buildBlockRoute(neighbors.nextBlock.number)
+                  latestBlock && blockNumber < latestBlock.number
+                    ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
                     : undefined
                 }
               />
