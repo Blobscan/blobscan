@@ -20,7 +20,7 @@ import type { Rollup, Size } from "~/types";
 import { capitalize } from "~/utils";
 
 export type RollupIconProps = {
-  rollup: Required<Rollup>;
+  rollup: Rollup;
   size?: Size;
 };
 
@@ -33,8 +33,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     "h-4 w-4": size === "md",
     "h-5 w-5": size === "lg",
   });
-  const rollupLabel = capitalize(rollup);
-  let rollupIcon;
+  let rollupIcon: JSX.Element | null = null;
 
   switch (rollup) {
     case "arbitrum":
@@ -104,7 +103,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
   }
 
   return (
-    <div title={rollupLabel}>
+    <div title={capitalize(rollup)}>
       {rollupIcon === null ? <div className={commonStyles}></div> : rollupIcon}
     </div>
   );

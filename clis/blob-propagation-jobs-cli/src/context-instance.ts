@@ -1,10 +1,9 @@
-import type { $Enums } from "@blobscan/db";
-import { BlobStorage } from "@blobscan/db";
+import { BlobStorage } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 
 import { Context } from "./Context";
 
-const availableStorages: $Enums.BlobStorage[] = [];
+const availableStorages: BlobStorage[] = [];
 
 if (env.GOOGLE_STORAGE_ENABLED) {
   availableStorages.push(BlobStorage.GOOGLE);

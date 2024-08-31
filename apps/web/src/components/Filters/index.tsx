@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
 import type { DateValueType } from "react-tailwindcss-datepicker";
+import type { UrlObject } from "url";
 
-import { validateRange } from "~/utils/validators";
 import { Button } from "~/components/Button";
-import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { useQueryParams } from "~/hooks/useQueryParams";
+import { getISODate } from "~/utils";
 import type { Option } from "../Dropdown";
 import type { NumberRange } from "../RangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
-import { RollupFilter } from "./RollupFilter";
+import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
-const DEFAULT_MIN_VALUE = BigInt(0);
-const DEFAULT_MAX_VALUE = BigInt(99999999);
+type FiltersState = {
+  rollup: Option | null;
+  timestampRange: DateValueType;
+  blockNumberRange: NumberRange;
+};
 
 const INIT_STATE: FiltersState = {
   rollup: null,
@@ -24,134 +28,128 @@ const INIT_STATE: FiltersState = {
   blockNumberRange: [undefined, undefined],
 };
 
-interface FiltersErrorsState {
-  blockNumberRange?: string;
-}
-
-interface FiltersState {
-  rollup: Option | null;
-  timestampRange: DateValueType;
-  blockNumberRange: NumberRange;
-}
-
 export const Filters: FC = function () {
-  const [formData, setFormData] = useState<FiltersState>(INIT_STATE);
-  const [errors, setErrors] = useState<FiltersErrorsState>({
-    blockNumberRange: undefined,
-  });
-
   const router = useRouter();
+  const queryParams = useQueryParams();
 
-  const breakpoint = useBreakpoint();
-  const fullWidth =
-    breakpoint === "md" || breakpoint === "sm" || breakpoint === "default";
+  const [filters, setFilters] = useState<FiltersState>(INIT_STATE);
+  const { blockNumberRange, rollup, timestampRange } = filters;
+  const disableClear =
+    !rollup &&
+    !timestampRange?.startDate &&
+    !timestampRange?.endDate &&
+    !blockNumberRange[0] &&
+    !blockNumberRange[1];
 
-  const hasErrors = !!errors.blockNumberRange;
-  const atLeastOneFilled =
-    !!formData.rollup ||
-    !!formData.timestampRange?.startDate ||
-    !!formData.timestampRange?.endDate ||
-    !!formData.blockNumberRange[0] ||
-    !!formData.blockNumberRange[1];
-  const allowToFilter = !hasErrors && atLeastOneFilled;
-
-  if (!allowToFilter && Object.keys(router.query).length > 0) {
-    router.replace(router.query, undefined, { shallow: true });
-  }
-
-  if (!allowToFilter && Object.keys(router.query).length > 0) {
-    router.replace(router.query, undefined, { shallow: true });
-  }
-
-  const handleSubmit = () => {
-    const { rollup, timestampRange, blockNumberRange } = formData;
+  const handleFilter = () => {
+    const query: UrlObject["query"] = {};
+    const { blockNumberRange, rollup, timestampRange } = filters;
+    const { endDate, startDate } = timestampRange || {};
     const [startBlock, endBlock] = blockNumberRange;
+
+    if (rollup) {
+      if (rollup.value === "null") {
+        query.rollup = rollup.value;
+      } else {
+        query.from = rollup.value;
+      }
+    }
+
+    if (startDate) {
+      query.startDate = getISODate(startDate);
+    }
+
+    if (endDate) {
+      query.endDate = getISODate(endDate);
+    }
+
+    if (startBlock) {
+      query.startBlock = startBlock.toString();
+    }
+
+    if (endBlock) {
+      query.endBlock = endBlock.toString();
+    }
+
     router.push({
       pathname: router.pathname,
-      query: {
-        ...(rollup?.value && { rollup: rollup.value }),
-        ...(timestampRange?.startDate && {
-          ["start-date"]: timestampRange.startDate as string,
-        }),
-        ...(timestampRange?.endDate && {
-          ["end-date"]: timestampRange.endDate as string,
-        }),
-        ...(startBlock && {
-          ["start-block"]: startBlock.toString(),
-        }),
-        ...(endBlock && {
-          ["end-block"]: endBlock.toString(),
-        }),
-      },
+      query,
     });
   };
 
   const handleClear = () => {
-    router.push({ pathname: router.pathname, query: undefined });
-    setFormData(INIT_STATE);
+    setFilters(INIT_STATE);
   };
 
   const handleRollupFilterChange = (newRollup: Option) => {
-    setFormData((prevState) => ({ ...prevState, rollup: newRollup }));
+    setFilters((prevState) => ({ ...prevState, rollup: newRollup }));
   };
 
   const handleTimestampRangeFilterChange = (newRange: DateValueType) => {
-    setFormData((prevState) => ({ ...prevState, timestampRange: newRange }));
+    setFilters((prevState) => ({ ...prevState, timestampRange: newRange }));
   };
 
   const handleBlockNumberRangeFilterChange = (newRange: NumberRange) => {
-    const validatorMessage = validateRange(
-      newRange,
-      DEFAULT_MIN_VALUE,
-      DEFAULT_MAX_VALUE
-    );
-
-    setErrors({
-      blockNumberRange:
-        validatorMessage.length > 0 ? validatorMessage : undefined,
-    });
-
-    setFormData((prevState) => ({ ...prevState, blockNumberRange: newRange }));
+    setFilters((prevState) => ({ ...prevState, blockNumberRange: newRange }));
   };
 
+  useEffect(() => {
+    const { rollup, from, startDate, endDate, startBlock, endBlock } =
+      queryParams;
+
+    if (rollup || from) {
+      const rollupOption = ROLLUP_OPTIONS.find(
+        (opt) => opt.value === rollup || opt.value === from
+      );
+
+      if (rollupOption) {
+        setFilters((prevFilters) => ({ ...prevFilters, rollup: rollupOption }));
+      }
+    }
+
+    if (startDate || endDate) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        timestampRange: {
+          startDate: startDate ? new Date(startDate) : null,
+          endDate: endDate ? new Date(endDate) : null,
+        },
+      }));
+    }
+
+    if (startBlock || endBlock) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        blockNumberRange: [
+          startBlock ? BigInt(startBlock) : undefined,
+          endBlock ? BigInt(endBlock) : undefined,
+        ],
+      }));
+    }
+  }, [queryParams]);
+
   return (
-    <form
-      className="flex flex-col justify-between gap-3 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
-      onSubmit={handleSubmit}
-    >
-      <div className="flex w-full flex-col items-center justify-between gap-2 md:flex-row">
-        <div className="flex w-full flex-col justify-start gap-2 lg:flex-row">
-          <RollupFilter
-            selected={formData.rollup}
-            onChange={handleRollupFilterChange}
-            fullWidth={fullWidth}
-          />
-          <TimestampFilter
-            value={formData.timestampRange}
-            onChange={handleTimestampRangeFilterChange}
-          />
-          <BlockNumberFilter
-            value={formData.blockNumberRange}
-            onChange={handleBlockNumberRangeFilterChange}
-            error={errors.blockNumberRange}
-          />
-        </div>
-        <div className="flex w-full flex-row gap-2 md:w-auto">
-          <Button
-            label="Clear"
-            variant="outline"
-            onClick={handleClear}
-            disabled={!allowToFilter}
-            fullWidth={fullWidth}
-          />
-          <Button
-            label="Filter"
-            onClick={handleSubmit}
-            disabled={!allowToFilter}
-            fullWidth={fullWidth}
-          />
-        </div>
+    <div className="flex w-full flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row">
+      <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+        <RollupFilter
+          selected={filters.rollup}
+          onChange={handleRollupFilterChange}
+        />
+        <TimestampFilter
+          value={filters.timestampRange}
+          onChange={handleTimestampRangeFilterChange}
+        />
+        <BlockNumberFilter
+          value={filters.blockNumberRange}
+          onChange={handleBlockNumberRangeFilterChange}
+        />
       </div>
-    </form>
+      <div className="flex flex-row gap-2">
+        <Button variant="outline" onClick={handleClear} disabled={disableClear}>
+          Clear
+        </Button>
+        <Button onClick={handleFilter}>Filter</Button>
+      </div>
+    </div>
   );
 };

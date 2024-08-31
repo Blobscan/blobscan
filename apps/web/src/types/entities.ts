@@ -1,9 +1,18 @@
+import type {
+  BlobStorage as BlobStorageEnum,
+  Rollup as RollupEnum,
+} from "@blobscan/api/enums";
+
 import type { MakeFieldRequired } from "./helpers";
 import type {
   GetByBlobIdOutput,
   GetByBlockIdOutput,
   GetTxByHashOutput,
 } from "./routers";
+
+export type BlobStorage = Lowercase<BlobStorageEnum>;
+
+export type Rollup = Lowercase<RollupEnum>;
 
 export type Blob = GetByBlobIdOutput;
 
@@ -42,8 +51,3 @@ export type BlockWithExpandedBlobsAndTransactions = Omit<
 > & {
   transactions: BlockExpandedTransactionWithExpandedBlobs[];
 };
-
-export type Rollup = NonNullable<Transaction["rollup"]>;
-
-export type BlobStorage =
-  GetByBlobIdOutput["dataStorageReferences"][number]["storage"];

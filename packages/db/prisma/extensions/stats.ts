@@ -1,8 +1,7 @@
 import { Prisma } from "@prisma/client";
 
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
-import type { BlockNumberRange } from "../types";
-import type { RawDatePeriod } from "../utils/dates";
+import type { BlockNumberRange, RawDatePeriod } from "../types";
 import { normalizeDailyDatePeriod } from "../utils/dates";
 import {
   buildAvgUpdateExpression,

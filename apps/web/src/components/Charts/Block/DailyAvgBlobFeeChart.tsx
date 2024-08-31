@@ -17,7 +17,7 @@ export type DailyAvgBlobFeeChartProps = {
 export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
   function ({ days, avgBlobFees }) {
     const formattedAvgBlobFees = useMemo(
-      () => avgBlobFees?.map((fee) => convertWei(BigInt(fee))),
+      () => avgBlobFees?.map((fee) => convertWei(fee)),
       [avgBlobFees]
     );
 

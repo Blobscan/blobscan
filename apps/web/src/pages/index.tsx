@@ -191,13 +191,14 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
             header={
-              <div className="flex items-center justify-between gap-5">
+              <div className=" flex flex-wrap items-center justify-between gap-5">
                 <div>Latest Blocks</div>
                 <Button
                   variant="outline"
-                  label="View All Blocks"
                   onClick={() => void router.push(buildBlocksRoute())}
-                />
+                >
+                  View All Blocks
+                </Button>
               </div>
             }
             emptyState="No blocks"
@@ -208,9 +209,7 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlockCard />
-                      </div>
+                      <BlockCard className={CARD_HEIGHT} key={i} />
                     ))}
                 </div>
               ) : (
@@ -218,9 +217,11 @@ const Home: NextPage = () => {
                   items={blocks?.map((b) => ({
                     id: b.hash,
                     element: (
-                      <div className={CARD_HEIGHT} key={b.hash}>
-                        <BlockCard block={b} />
-                      </div>
+                      <BlockCard
+                        className={CARD_HEIGHT}
+                        block={b}
+                        key={b.hash}
+                      />
                     ),
                   }))}
                 />
@@ -229,14 +230,15 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex items-center justify-between gap-5">
+              <div className="flex-warp flex items-center justify-between gap-5">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
-                  label="View All Txs"
                   onClick={() => void router.push(buildTransactionsRoute())}
                   className="h-full"
-                />
+                >
+                  View All Txs
+                </Button>
               </div>
             }
             emptyState="No transactions"
@@ -247,9 +249,11 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        compact
+                        key={i}
+                      />
                     ))}
                 </div>
               ) : (
@@ -257,21 +261,21 @@ const Home: NextPage = () => {
                   items={transactions.map((tx) => ({
                     id: tx.hash,
                     element: (
-                      <div className={CARD_HEIGHT} key={tx.hash}>
-                        <BlobTransactionCard
-                          transaction={{
-                            from: tx.from,
-                            to: tx.to,
-                            hash: tx.hash,
-                            rollup: tx.rollup,
-                            blockTimestamp: tx.blockTimestamp,
-                            blobGasBaseFee: tx.blobGasBaseFee,
-                            blobGasMaxFee: tx.blobGasMaxFee,
-                          }}
-                          blobs={tx.blobs}
-                          compact
-                        />
-                      </div>
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        key={tx.hash}
+                        transaction={{
+                          from: tx.from,
+                          to: tx.to,
+                          hash: tx.hash,
+                          rollup: tx.rollup,
+                          blockTimestamp: tx.blockTimestamp,
+                          blobGasBaseFee: tx.blobGasBaseFee,
+                          blobGasMaxFee: tx.blobGasMaxFee,
+                        }}
+                        blobs={tx.blobs}
+                        compact
+                      />
                     ),
                   }))}
                 />
@@ -284,9 +288,10 @@ const Home: NextPage = () => {
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"
-                  label="View All Blobs"
                   onClick={() => void router.push(buildBlobsRoute())}
-                />
+                >
+                  View All Blobs
+                </Button>
               </div>
             }
             emptyState="No blobs"
@@ -297,9 +302,11 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        compact
+                        key={i}
+                      />
                     ))}
                 </div>
               ) : (
@@ -307,9 +314,13 @@ const Home: NextPage = () => {
                   items={blobs.map((b) => ({
                     id: b.versionedHash,
                     element: (
-                      <div className={CARD_HEIGHT} key={b.versionedHash}>
-                        <BlobCard blob={b} transactions={[b.tx]} compact />
-                      </div>
+                      <BlobCard
+                        blob={b}
+                        transactions={[b.tx]}
+                        compact
+                        key={b.versionedHash}
+                        className={CARD_HEIGHT}
+                      />
                     ),
                   }))}
                 />

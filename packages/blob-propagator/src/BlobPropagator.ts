@@ -12,7 +12,8 @@ import type {
   BlobStorageError,
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
-import type { $Enums, BlobscanPrismaClient } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
+import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { createModuleLogger } from "@blobscan/logger";
 
 import {
@@ -27,7 +28,11 @@ import {
   ErrorException,
 } from "./errors";
 import { logger } from "./logger";
-import type { Blob, BlobPropagationWorker } from "./types";
+import type {
+  Blob,
+  BlobPropagationWorker,
+  BlobPropagationWorkerProcessor,
+} from "./types";
 import { createBlobPropagationFlowJob } from "./utils";
 import {
   fileSystemProcessor,
@@ -39,13 +44,16 @@ import {
 
 export type BlobPropagatorConfig = {
   blobStorageManager: BlobStorageManager;
-  tmpBlobStorage: $Enums.BlobStorage;
+  tmpBlobStorage: BlobStorageName;
   prisma: BlobscanPrismaClient;
   workerOptions: Partial<WorkerOptions>;
   jobOptions?: Partial<JobsOptions>;
 };
 
-export const STORAGE_WORKER_PROCESSORS = {
+export const STORAGE_WORKER_PROCESSORS: Record<
+  BlobStorageName,
+  BlobPropagationWorkerProcessor
+> = {
   GOOGLE: gcsProcessor,
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
@@ -87,13 +95,18 @@ export class BlobPropagator {
       throw new BlobPropagatorCreationError("Temporary blob storage not found");
     }
 
-    this.storageWorkers = availableStorageNames.map((storageName) => {
-      return this.#createWorker(
-        STORAGE_WORKER_NAMES[storageName],
-        STORAGE_WORKER_PROCESSORS[storageName]({ prisma, blobStorageManager }),
-        workerOptions_
-      );
-    });
+    this.storageWorkers = availableStorageNames.map(
+      (storageName: BlobStorageName) => {
+        return this.#createWorker(
+          STORAGE_WORKER_NAMES[storageName],
+          STORAGE_WORKER_PROCESSORS[storageName]({
+            prisma,
+            blobStorageManager,
+          }),
+          workerOptions_
+        );
+      }
+    );
 
     this.finalizerWorker = this.#createWorker(
       FINALIZER_WORKER_NAME,

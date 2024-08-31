@@ -2,7 +2,11 @@ import dayjs from "@blobscan/dayjs";
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { prisma } from "../../prisma";
-import type { BlockNumberRange, DatePeriod, RawDatePeriod } from "../../prisma";
+import type {
+  BlockNumberRange,
+  DatePeriod,
+  RawDatePeriod,
+} from "../../prisma/types";
 import { NEW_DATA } from "./stats-extension.test.fixtures";
 
 function hasDailyStatsExtensionFns(model: unknown): model is {
