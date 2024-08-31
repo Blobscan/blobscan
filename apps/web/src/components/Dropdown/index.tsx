@@ -44,25 +44,23 @@ export const Dropdown: React.FC<DropdownProps> = function ({
           <div className="truncate align-middle">
             {selected ? selected.label ?? selected.value : placeholder}
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-2">
+          <div className="absolute inset-y-0 right-0 flex items-center pr-2">
             {clearable && selected ? (
               <>
                 <XMarkIcon
-                  className="h-4 w-4 text-contentTertiary-light opacity-60 hover:text-iconHighlight-light hover:opacity-100 dark:text-contentTertiary-dark dark:hover:text-iconHighlight-dark"
+                  className="h-5 w-5 text-contentTertiary-light opacity-60 hover:text-iconHighlight-light hover:opacity-100 dark:text-contentTertiary-dark dark:hover:text-iconHighlight-dark"
                   onClick={(e) => {
                     e.stopPropagation();
                     onChange(null);
                   }}
                 />
               </>
-            ) : null}
-            <div className="text-contentTertiary-light opacity-30 dark:text-contentTertiary-dark">
-              |
-            </div>
-            <ChevronUpDownIcon
-              className="pointer-events-none h-5 w-5 text-icon-light dark:text-icon-dark"
-              aria-hidden="true"
-            />
+            ) : (
+              <ChevronUpDownIcon
+                className="pointer-events-none h-5 w-5 text-icon-light dark:text-icon-dark"
+                aria-hidden="true"
+              />
+            )}
           </div>
         </ListboxButton>
         <Transition
