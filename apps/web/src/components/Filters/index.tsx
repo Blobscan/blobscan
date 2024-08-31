@@ -6,6 +6,7 @@ import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
 import { useQueryParams } from "~/hooks/useQueryParams";
+import { getISODate } from "~/utils";
 import type { Option } from "../Dropdown";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { TimestampFilter } from "./TimestampFilter";
@@ -35,22 +36,23 @@ export const Filters: FC = function () {
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const rollupFilter = filters.rollup;
+    const { rollup, timestampRange } = filters;
+    const { endDate, startDate } = timestampRange || {};
 
-    if (rollupFilter) {
-      if (rollupFilter.value === "null") {
-        query.rollup = rollupFilter.value;
+    if (rollup) {
+      if (rollup.value === "null") {
+        query.rollup = rollup.value;
       } else {
-        query.from = rollupFilter.value;
+        query.from = rollup.value;
       }
     }
 
-    if (filters.timestampRange?.startDate) {
-      query.startDate = filters.timestampRange.startDate.toString();
+    if (startDate) {
+      query.startDate = getISODate(startDate);
     }
 
-    if (filters.timestampRange?.endDate) {
-      query.endDate = filters.timestampRange.endDate.toString();
+    if (endDate) {
+      query.endDate = getISODate(endDate);
     }
 
     router.push({
@@ -60,8 +62,6 @@ export const Filters: FC = function () {
   };
 
   const handleClear = () => {
-    router.push({ pathname: router.pathname, query: undefined });
-
     setFilters(INIT_STATE);
   };
 
@@ -74,27 +74,26 @@ export const Filters: FC = function () {
   };
 
   useEffect(() => {
-    if (queryParams.rollup || queryParams.from) {
+    const { rollup, from, startDate, endDate } = queryParams;
+
+    if (rollup || from) {
       const rollupOption = ROLLUP_OPTIONS.find(
-        (opt) =>
-          opt.value === queryParams.rollup || opt.value === queryParams.from
+        (opt) => opt.value === rollup || opt.value === from
       );
 
       if (rollupOption) {
         setFilters((prevFilters) => ({ ...prevFilters, rollup: rollupOption }));
       }
+    }
 
-      if (queryParams.startDate || queryParams.endDate) {
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          timestampRange: {
-            startDate: queryParams.startDate
-              ? new Date(queryParams.startDate)
-              : null,
-            endDate: queryParams.endDate ? new Date(queryParams.endDate) : null,
-          },
-        }));
-      }
+    if (startDate || endDate) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        timestampRange: {
+          startDate: startDate ? new Date(startDate) : null,
+          endDate: endDate ? new Date(endDate) : null,
+        },
+      }));
     }
   }, [queryParams]);
 

@@ -6,6 +6,14 @@ export function normalizeTimestamp(timestamp: number | Date | string) {
     : dayjs(timestamp);
 }
 
+export function getISODate(date: dayjs.Dayjs | Date | string) {
+  if (dayjs.isDayjs(date)) {
+    return date.format("YYYY-MM-DD");
+  }
+
+  return new Date(date).toISOString().split("T")[0];
+}
+
 export function formatTimestamp(
   timestamp: number | Date | string | dayjs.Dayjs,
   compact = false
