@@ -5,6 +5,7 @@
     "scripts/**/*.ts",
     "test/**/*.ts",
     "vitest.config.ts",
+    "enums.ts",
     "setup.ts"
   ]
 }

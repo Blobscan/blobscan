@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
-import { useRouter } from "next/router";
 
-import { getPaginationParams } from "~/utils/pagination";
 import { Link } from "~/components/Link";
-import { PaginatedTable } from "~/components/PaginatedTable/PaginatedTable";
+import { PaginatedTable } from "~/components/PaginatedTable";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import {
   buildBlobRoute,
   buildBlockRoute,
@@ -18,7 +17,6 @@ import {
   shortenAddress,
 } from "~/utils";
 
-const BLOBS_TABLE_DEFAULT_PAGE_SIZE = 50;
 const BLOBS_TABLE_HEADERS = [
   {
     cells: [
@@ -51,13 +49,13 @@ const BLOBS_TABLE_HEADERS = [
 ];
 
 const Blobs: NextPage = function () {
-  const router = useRouter();
-  const { p, ps } = getPaginationParams(
-    router.query,
-    BLOBS_TABLE_DEFAULT_PAGE_SIZE
-  );
-
-  const { data, error, isLoading } = api.blob.getAll.useQuery({ p, ps });
+  const { from, p, ps, rollup } = useQueryParams();
+  const { data, error, isLoading } = api.blob.getAll.useQuery({
+    p,
+    ps,
+    from,
+    rollup,
+  });
   const { blobs, totalBlobs } = data || {};
 
   const blobRows = useMemo(() => {

@@ -47,9 +47,9 @@ const BlobCard: FC<BlobCardProps> = ({
             </div>
             {transactions
               ?.filter((tx) => !!tx.rollup)
-              .map(({ rollup }) => (
-                <RollupIcon key={rollup} rollup={rollup as Rollup} />
-              ))}
+              .map(({ rollup }) =>
+                rollup ? <RollupIcon key={rollup} rollup={rollup} /> : null
+              )}
           </div>
         ) : (
           <Skeleton width={isCompact ? undefined : 630} />

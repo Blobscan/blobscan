@@ -1,15 +1,5 @@
-export * from "@prisma/client";
-export {
-  PrismaClientKnownRequestError,
-  PrismaClientUnknownRequestError,
-  PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
-export type {
-  Metric,
-  MetricHistogram,
-  MetricHistogramBucket,
-  Metrics,
-  MetricsClient,
-} from "@prisma/client/runtime/library";
-
 export * from "./prisma";
+export * from "./prisma/client";
+export * from "./prisma/errors";
+export * from "./prisma/types";
+export * from "./prisma/utils/dates";

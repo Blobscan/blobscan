@@ -1,4 +1,4 @@
-import type { BlobStorage } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
 import { api } from "@blobscan/open-telemetry";
 
 const scopeName = "blobscan_blob_storage_manager";

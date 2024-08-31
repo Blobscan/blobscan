@@ -11,6 +11,8 @@ import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
+import type { Rollup } from "~/types";
+import { Filters } from "../Filters";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
@@ -20,6 +22,10 @@ const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
   { value: 100 },
 ];
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
+
+export interface PaginatedTableQueryFilters {
+  rollup: Rollup;
+}
 
 type PaginationData = {
   page: number;
@@ -66,11 +72,17 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
     totalItems !== undefined
       ? totalItems === 0
         ? 1
-        : Math.ceil(totalItems / 10)
+        : Math.ceil(totalItems / pageSize)
       : undefined;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    ({ value: newPageSize }) =>
+    (option) => {
+      if (!option) {
+        return;
+      }
+
+      const newPageSize = option.value as number;
+
       void router.push({
         pathname: router.pathname,
         query: {
@@ -85,7 +97,8 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
           ),
           ps: newPageSize,
         },
-      }),
+      });
+    },
     [page, totalItems, router]
   );
 
@@ -120,6 +133,9 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         emptyState={DEFAULT_TABLE_EMPTY_STATE}
       >
         <div className="flex flex-col gap-6">
+          <div className="w-1/2">
+            <Filters />
+          </div>
           <Table
             fixedColumnsWidth={true}
             expandableRowsMode={isExpandable}

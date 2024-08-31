@@ -1,14 +1,13 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 
-import { getPaginationParams } from "~/utils/pagination";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Link } from "~/components/Link";
-import { PaginatedTable } from "~/components/PaginatedTable/PaginatedTable";
+import { PaginatedTable } from "~/components/PaginatedTable";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { DeserializedBlock } from "~/utils";
 import {
@@ -56,13 +55,17 @@ export const BLOCKS_TABLE_HEADERS = [
 ];
 
 const Blocks: NextPage = function () {
-  const router = useRouter();
-  const { p, ps } = getPaginationParams(router.query);
+  const { from, p, ps, rollup } = useQueryParams();
   const {
     data: rawBlocksData,
     isLoading,
     error,
-  } = api.block.getAll.useQuery({ p, ps });
+  } = api.block.getAll.useQuery({
+    from,
+    p,
+    ps,
+    rollup,
+  });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {
       return {};

@@ -1,11 +1,12 @@
 import fs from "fs";
 import path from "path";
 
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+
 import { BlobStorage } from "../BlobStorage";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import {
-  BLOB_STORAGE_NAMES,
   createFullPermissionDirectory,
   createFullPermissionFile,
 } from "../utils";
@@ -18,7 +19,7 @@ export class FileSystemStorage extends BlobStorage {
   blobDirPath: string;
 
   protected constructor({ blobDirPath, chainId }: FileSystemStorageConfig) {
-    super(BLOB_STORAGE_NAMES.FILE_SYSTEM, chainId);
+    super(BlobStorageName.FILE_SYSTEM, chainId);
 
     this.blobDirPath = blobDirPath;
 
