@@ -76,6 +76,7 @@ Using environment variables
 
 ```bash
 docker run --rm \
+  -e SECRET_KEY=supersecret \
   -e BLOBSCAN_API_ENDPOINT=http://blobscan-api:3001 \
   -e BEACON_NODE_ENDPOINT=http://beacon:3500 \
   -e EXECUTION_NODE_ENDPOINT=http://execution:8545 \

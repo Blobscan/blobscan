@@ -8,16 +8,16 @@ import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "@blobscan/blob-propagator";
-import type { $Enums } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
-export type QueueHumanName = "FINALIZER" | $Enums.BlobStorage;
+export type QueueHumanName = "FINALIZER" | BlobStorage;
 
 export class Context {
   #storageQueues: BlobPropagationQueue[];
   #finalizerQueue: BlobPropagationQueue;
   #propagatorFlowProducer: FlowProducer;
 
-  constructor(storages: $Enums.BlobStorage[], redisUri: string) {
+  constructor(storages: BlobStorage[], redisUri: string) {
     const uniqueStorageNames = [...new Set(storages)];
     const connection = new IORedis(redisUri, { maxRetriesPerRequest: null });
 

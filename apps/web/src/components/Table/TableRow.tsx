@@ -3,8 +3,8 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 import { Rotable } from "~/components/Rotable";
-import { Button } from "../Button";
 import { Collapsable } from "../Collapsable";
+import { IconButton } from "../IconButton";
 import { TableCell } from "./TableCell";
 
 export type TableRowProps = HTMLAttributes<HTMLTableRowElement>;
@@ -34,11 +34,9 @@ export const ExpandableTableRow: FC<ExpandableTableRowProps> = function ({
               rotated={expandOpened}
               onClick={() => setExpandOpened((prevOpened) => !prevOpened)}
             >
-              <Button
-                variant="icon"
-                icon={<ChevronRightIcon className="h-4 w-4" />}
-                size="md"
-              />
+              <IconButton>
+                <ChevronRightIcon />
+              </IconButton>
             </Rotable>
           </TableCell>
         )}

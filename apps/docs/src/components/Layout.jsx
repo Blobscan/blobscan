@@ -19,7 +19,7 @@ export const navigation = [
       { title: 'Features', href: '/docs/features' },
       { title: 'Installation', href: '/docs/installation' },
       { title: 'Environment variables', href: '/docs/environment' },
-      { title: 'Cron jobs', href: '/docs/cron-jobs' },
+      { title: 'Background jobs', href: '/docs/background-jobs' },
     ],
   },
   {
@@ -36,7 +36,6 @@ export const navigation = [
     links: [
       { title: 'Codebase overview', href: '/docs/codebase-overview' },
       { title: 'Indexer', href: '/docs/indexer' },
-      { title: 'Clis', href: '/docs/clis' },
       { title: 'Testing', href: '/docs/testing' },
       { title: 'FAQ / Troubleshooting', href: '/docs/troubleshooting' },
     ],
@@ -44,16 +43,21 @@ export const navigation = [
   {
     title: 'Run your Blobscan instance',
     links: [
-      { title: 'Running Blobscan locally', href: '/docs/running-blobscan-locally' },
-      { title: 'Running Blobscan in Kind', href: '/docs/running-blobscan-kind' },
-      { title: 'Running Blobscan in Kurtosis', href: '/docs/running-blobscan-kurtosis' },
+      { title: 'Local', href: '/docs/running-blobscan-locally' },
+      { title: 'Kubernetes', href: '/docs/running-blobscan-k8s' },
+      {
+        title: 'Kurtosis',
+        href: '/docs/running-blobscan-kurtosis',
+      },
     ],
   },
   {
     title: 'Reference',
     links: [
       { title: 'API', href: '/docs/api' },
+      { title: 'CLI', href: '/docs/clis' },
       { title: 'Metrics', href: '/docs/metrics' },
+      { title: 'Supported storages', href: '/docs/storages' },
     ],
   },
   {

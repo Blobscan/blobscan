@@ -47,7 +47,13 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   const hasItems = !items || items.length;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    ({ value: newPageSize }) =>
+    (option) => {
+      if (!option) {
+        return;
+      }
+
+      const newPageSize = option.value as number;
+
       void router.push({
         pathname: router.pathname,
         query: {
@@ -62,12 +68,13 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
           ),
           ps: newPageSize,
         },
-      }),
+      });
+    },
     [page, totalItems, router]
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) =>
+    (newPage) => {
       void router.push({
         pathname: router.pathname,
         query: {
@@ -75,7 +82,8 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
           p: newPage,
           ps: pageSize,
         },
-      }),
+      });
+    },
     [pageSize, router]
   );
 
@@ -119,7 +127,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
                 Displayed items:
                 <Dropdown
                   options={PAGE_SIZES_OPTIONS}
-                  selected={{ value: pageSize, label: pageSize.toString() }}
+                  selected={{ value: pageSize }}
                   width="w-full"
                   onChange={handlePageSizeSelection}
                 />

@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
 import type { DateValueType } from "react-tailwindcss-datepicker";
+import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
-import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import type { Option } from "../Dropdown";
-import { RollupFilter } from "./RollupFilter";
+import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
-const INIT_STATE = {
+type FiltersState = {
+  rollup: Option | null;
+  timestampRange: DateValueType | null;
+};
+
+const INIT_STATE: FiltersState = {
   rollup: null,
   timestampRange: {
     startDate: null,
@@ -17,89 +23,99 @@ const INIT_STATE = {
   },
 };
 
-interface FiltersState {
-  rollup: Option | null;
-  timestampRange: DateValueType;
-}
-
 export const Filters: FC = function () {
-  const [formData, setFormData] = useState<FiltersState>(INIT_STATE);
   const router = useRouter();
+  const queryParams = useQueryParams();
 
-  const breakpoint = useBreakpoint();
-  const fullWidth = breakpoint === "sm" || breakpoint === "default";
+  const [filters, setFilters] = useState<FiltersState>(INIT_STATE);
+  const disableClear =
+    !filters.rollup &&
+    !filters.timestampRange?.startDate &&
+    !filters.timestampRange?.endDate;
 
-  const allowToFilter =
-    !!formData.rollup ||
-    !!formData.timestampRange?.startDate ||
-    !!formData.timestampRange?.endDate;
+  const handleFilter = () => {
+    const query: UrlObject["query"] = {};
+    const rollupFilter = filters.rollup;
 
-  if (!allowToFilter && Object.keys(router.query).length > 0) {
-    router.replace(router.query, undefined, { shallow: true });
-  }
+    if (rollupFilter) {
+      if (rollupFilter.value === "null") {
+        query.rollup = rollupFilter.value;
+      } else {
+        query.from = rollupFilter.value;
+      }
+    }
 
-  const handleSubmit = () => {
-    const { rollup, timestampRange } = formData;
+    if (filters.timestampRange?.startDate) {
+      query.startDate = filters.timestampRange.startDate.toString();
+    }
+
+    if (filters.timestampRange?.endDate) {
+      query.endDate = filters.timestampRange.endDate.toString();
+    }
+
     router.push({
       pathname: router.pathname,
-      query: {
-        ...(rollup?.value && { rollup: rollup.value }),
-        ...(timestampRange?.startDate && {
-          ["start-date"]: timestampRange.startDate as string,
-        }),
-        ...(timestampRange?.endDate && {
-          ["end-date"]: timestampRange.endDate as string,
-        }),
-      },
+      query,
     });
   };
 
   const handleClear = () => {
     router.push({ pathname: router.pathname, query: undefined });
-    setFormData(INIT_STATE);
+
+    setFilters(INIT_STATE);
   };
 
   const handleRollupFilterChange = (newRollup: Option) => {
-    setFormData((prevState) => ({ ...prevState, rollup: newRollup }));
+    setFilters((prevState) => ({ ...prevState, rollup: newRollup }));
   };
 
   const handleTimestampRangeFilterChange = (newRange: DateValueType) => {
-    setFormData((prevState) => ({ ...prevState, timestampRange: newRange }));
+    setFilters((prevState) => ({ ...prevState, timestampRange: newRange }));
   };
 
+  useEffect(() => {
+    if (queryParams.rollup || queryParams.from) {
+      const rollupOption = ROLLUP_OPTIONS.find(
+        (opt) =>
+          opt.value === queryParams.rollup || opt.value === queryParams.from
+      );
+
+      if (rollupOption) {
+        setFilters((prevFilters) => ({ ...prevFilters, rollup: rollupOption }));
+      }
+
+      if (queryParams.startDate || queryParams.endDate) {
+        setFilters((prevFilters) => ({
+          ...prevFilters,
+          timestampRange: {
+            startDate: queryParams.startDate
+              ? new Date(queryParams.startDate)
+              : null,
+            endDate: queryParams.endDate ? new Date(queryParams.endDate) : null,
+          },
+        }));
+      }
+    }
+  }, [queryParams]);
+
   return (
-    <form
-      className="flex flex-col justify-between gap-3 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
-      onSubmit={handleSubmit}
-    >
-      <div className="flex w-full flex-col items-center justify-between gap-2 md:flex-row">
-        <div className="flex w-full flex-col justify-start gap-2 md:flex-row">
-          <RollupFilter
-            selected={formData.rollup}
-            onChange={handleRollupFilterChange}
-            fullWidth={fullWidth}
-          />
-          <TimestampFilter
-            value={formData.timestampRange}
-            onChange={handleTimestampRangeFilterChange}
-          />
-        </div>
-        <div className="flex w-full flex-row gap-2 md:w-auto">
-          <Button
-            label="Clear"
-            variant="outline"
-            onClick={handleClear}
-            disabled={!allowToFilter}
-            fullWidth={fullWidth}
-          />
-          <Button
-            label="Filter"
-            onClick={handleSubmit}
-            disabled={!allowToFilter}
-            fullWidth={fullWidth}
-          />
-        </div>
+    <div className="flex w-full flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row">
+      <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+        <RollupFilter
+          selected={filters.rollup}
+          onChange={handleRollupFilterChange}
+        />
+        <TimestampFilter
+          value={filters.timestampRange}
+          onChange={handleTimestampRangeFilterChange}
+        />
       </div>
-    </form>
+      <div className="flex flex-row gap-2">
+        <Button variant="outline" onClick={handleClear} disabled={disableClear}>
+          Clear
+        </Button>
+        <Button onClick={handleFilter}>Filter</Button>
+      </div>
+    </div>
   );
 };

@@ -72,10 +72,11 @@ export const getAll = publicProcedure
         ],
         ...ctx.pagination,
       }),
-      filters.transactionRollup
+      filters.transactionRollup !== undefined || filters.transactionAddresses
         ? ctx.prisma.transaction.count({
             where: {
               rollup: filters.transactionRollup,
+              OR: filters.transactionAddresses,
             },
           })
         : ctx.prisma.transactionOverallStats.findFirst({

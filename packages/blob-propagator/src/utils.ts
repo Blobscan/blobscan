@@ -1,7 +1,7 @@
 import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import type { $Enums } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
 import { DEFAULT_JOB_OPTIONS } from "./constants";
 import type {
@@ -65,7 +65,7 @@ export function createBlobStorageJob(
 
 export async function propagateBlob(
   { versionedHash }: BlobPropagationJobData,
-  targetStorageName: $Enums.BlobStorage,
+  targetStorageName: BlobStorage,
   { blobStorageManager, prisma }: BlobPropagationWorkerParams
 ) {
   let blobData: string;
