@@ -8,7 +8,7 @@ import { Button } from "~/components/Button";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
 import type { Option } from "../Dropdown";
-import type { NumberRange } from "../RangeInput";
+import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { TimestampFilter } from "./TimestampFilter";
@@ -25,7 +25,10 @@ const INIT_STATE: FiltersState = {
     startDate: null,
     endDate: null,
   },
-  blockNumberRange: [undefined, undefined],
+  blockNumberRange: {
+    end: undefined,
+    start: undefined,
+  },
 };
 
 export const Filters: FC = function () {
@@ -34,18 +37,13 @@ export const Filters: FC = function () {
 
   const [filters, setFilters] = useState<FiltersState>(INIT_STATE);
   const { blockNumberRange, rollup, timestampRange } = filters;
+  const { startDate, endDate } = timestampRange || {};
+  const { start: startBlock, end: endBlock } = blockNumberRange;
   const disableClear =
-    !rollup &&
-    !timestampRange?.startDate &&
-    !timestampRange?.endDate &&
-    !blockNumberRange[0] &&
-    !blockNumberRange[1];
+    !rollup && !startDate && !endDate && !startBlock && !endBlock;
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { blockNumberRange, rollup, timestampRange } = filters;
-    const { endDate, startDate } = timestampRange || {};
-    const [startBlock, endBlock] = blockNumberRange;
 
     if (rollup) {
       if (rollup.value === "null") {
@@ -64,11 +62,11 @@ export const Filters: FC = function () {
     }
 
     if (startBlock) {
-      query.startBlock = startBlock.toString();
+      query.startBlock = startBlock;
     }
 
     if (endBlock) {
-      query.endBlock = endBlock.toString();
+      query.endBlock = endBlock;
     }
 
     router.push({
@@ -120,10 +118,10 @@ export const Filters: FC = function () {
     if (startBlock || endBlock) {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        blockNumberRange: [
-          startBlock ? BigInt(startBlock) : undefined,
-          endBlock ? BigInt(endBlock) : undefined,
-        ],
+        blockNumberRange: {
+          end: endBlock,
+          start: startBlock,
+        },
       }));
     }
   }, [queryParams]);
@@ -140,7 +138,7 @@ export const Filters: FC = function () {
           onChange={handleTimestampRangeFilterChange}
         />
         <BlockNumberFilter
-          value={filters.blockNumberRange}
+          range={filters.blockNumberRange}
           onChange={handleBlockNumberRangeFilterChange}
         />
       </div>
