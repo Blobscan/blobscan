@@ -39,16 +39,22 @@ export const Dropdown: React.FC<DropdownProps> = function ({
         <ListboxButton
           className={`relative h-9 ${
             width ?? DEFAULT_WIDTH
-          } flex cursor-pointer items-center justify-between rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-12 text-left text-sm shadow-md hover:border hover:border-controlBackground-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
+          } flex cursor-pointer items-center justify-between rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-12 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
           <div className="truncate align-middle">
-            {selected ? selected.label ?? selected.value : placeholder}
+            {selected ? (
+              selected.label ?? selected.value
+            ) : (
+              <div className="text-hint-light dark:text-hint-dark">
+                {placeholder}
+              </div>
+            )}
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2">
             {clearable && selected ? (
               <>
                 <XMarkIcon
-                  className="h-5 w-5 text-contentTertiary-light opacity-60 hover:text-iconHighlight-light hover:opacity-100 dark:text-contentTertiary-dark dark:hover:text-iconHighlight-dark"
+                  className="h-5 w-5 text-icon-light hover:text-iconHighlight-light dark:text-contentTertiary-dark dark:hover:text-iconHighlight-dark"
                   onClick={(e) => {
                     e.stopPropagation();
                     onChange(null);
