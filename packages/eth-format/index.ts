@@ -50,11 +50,7 @@ export function convertWei(
  * This function finds the best unit to display the value of `wei`.
  */
 export function findBestUnit(wei: bigint | string | number): EtherUnit {
-  if (typeof wei === "number") {
-    wei = Math.round(wei);
-  }
-
-  const length = wei.toString().length;
+  const length = countIntegerDigits(wei);
 
   if (length >= ETH_UNITS.ether) {
     return "ether";
@@ -65,6 +61,27 @@ export function findBestUnit(wei: bigint | string | number): EtherUnit {
   }
 
   return "wei";
+}
+
+/**
+ * Returns the number of integer digits in the value.
+ */
+export function countIntegerDigits(value: string | number | bigint): number {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    return 0; // Return 0 for Infinity, -Infinity, and NaN
+  }
+
+  value = value.toString();
+
+  const negative = value.startsWith("-");
+
+  if (negative) {
+    value = value.slice(1);
+  }
+
+  const [integer = ""] = value.split(".");
+
+  return integer.length;
 }
 
 /**
