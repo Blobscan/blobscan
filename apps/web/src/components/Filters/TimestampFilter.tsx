@@ -3,9 +3,9 @@ import cn from "classnames";
 import type { DatepickerType } from "react-tailwindcss-datepicker";
 import Datepicker from "react-tailwindcss-datepicker";
 
-type RollupFilterProps = Pick<DatepickerType, "value" | "onChange">;
+type TimestampFilterProps = Pick<DatepickerType, "value" | "onChange">;
 
-export const TimestampFilter: FC<RollupFilterProps> = function ({
+export const TimestampFilter: FC<TimestampFilterProps> = function ({
   value,
   onChange,
 }) {
@@ -22,10 +22,11 @@ export const TimestampFilter: FC<RollupFilterProps> = function ({
         "cursor-pointer",
         "rounded-lg border border-transparent shadow-md",
         "dark:placeholder:text-hint-dark placeholder:text-hint-light hover:border hover:border-controlBackground-light dark:hover:border-controlBorderHighlight-dark",
-        "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white",
+        "focus:outline-none focus-visible:border-indigo-500  focus:border-controlBorderHighlight-dark",
         "ui-open:border-controlActive-light dark:ui-open:border-controlActive-dark",
         "bg-controlBackground-light dark:bg-controlBackground-dark",
-        "active:border-controlBorderHighlight-dark"
+        "active:border-controlBorderHighlight-dark",
+        "focus:dark:border-controlBorderHighlight-dark  focus:ring-transparent"
       )}
       toggleClassName={(defaultToggleClassName) =>
         cn(defaultToggleClassName, "text-icon-light  dark:text-icon-dark", {
@@ -33,7 +34,10 @@ export const TimestampFilter: FC<RollupFilterProps> = function ({
             isValueSet,
         })
       }
-      containerClassName="relative"
+      containerClassName={cn(
+        "relative",
+        "[&>div>div]:dark:bg-controlBackground-dark [&>div>div]:border-controlBorder-light [&>div>div]:dark:border-transparent"
+      )}
       placeholder="Start date - End date"
     />
   );

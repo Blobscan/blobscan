@@ -45,6 +45,8 @@ export const Filters: FC = function () {
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
+    const { rollup, timestampRange } = filters;
+    const { endDate, startDate } = timestampRange || {};
 
     if (rollup) {
       if (rollup.value === "null") {
