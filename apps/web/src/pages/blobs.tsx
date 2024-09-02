@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 
+import { Filters } from "~/components/Filters";
+import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { StorageIcon } from "~/components/StorageIcon";
@@ -142,15 +144,17 @@ const Blobs: NextPage = function () {
   }
 
   return (
-    <PaginatedTable
-      title={`Blobs ${totalBlobs ? `(${formatNumber(totalBlobs)})` : ""}`}
-      isLoading={isLoading}
-      headers={BLOBS_TABLE_HEADERS}
-      rows={blobRows}
-      totalItems={totalBlobs}
-      paginationData={{ pageSize: ps, page: p }}
-      tableTopSlot={<Filters />}
-    />
+    <>
+      <Header>Blobs {totalBlobs ? `(${formatNumber(totalBlobs)})` : ""}</Header>
+      <Filters />
+      <PaginatedTable
+        isLoading={isLoading}
+        headers={BLOBS_TABLE_HEADERS}
+        rows={blobRows}
+        totalItems={totalBlobs}
+        paginationData={{ pageSize: ps, page: p }}
+      />
+    </>
   );
 };
 

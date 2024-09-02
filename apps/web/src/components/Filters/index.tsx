@@ -7,6 +7,7 @@ import type { UrlObject } from "url";
 import { Button } from "~/components/Button";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
+import { Card } from "../Cards/Card";
 import type { Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
@@ -127,27 +128,33 @@ export const Filters: FC = function () {
   }, [queryParams]);
 
   return (
-    <div className="flex w-full flex-col justify-between gap-2 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row">
-      <div className="flex w-full flex-col items-center gap-2 md:flex-row">
-        <RollupFilter
-          selected={filters.rollup}
-          onChange={handleRollupFilterChange}
-        />
-        <TimestampFilter
-          value={filters.timestampRange}
-          onChange={handleTimestampRangeFilterChange}
-        />
-        <BlockNumberFilter
-          range={filters.blockNumberRange}
-          onChange={handleBlockNumberRangeFilterChange}
-        />
+    <Card>
+      <div className="flex justify-between">
+        <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+          <RollupFilter
+            selected={filters.rollup}
+            onChange={handleRollupFilterChange}
+          />
+          <TimestampFilter
+            value={filters.timestampRange}
+            onChange={handleTimestampRangeFilterChange}
+          />
+          <BlockNumberFilter
+            range={filters.blockNumberRange}
+            onChange={handleBlockNumberRangeFilterChange}
+          />
+        </div>
+        <div className="flex flex-row gap-2">
+          <Button
+            variant="outline"
+            onClick={handleClear}
+            disabled={disableClear}
+          >
+            Clear
+          </Button>
+          <Button onClick={handleFilter}>Filter</Button>
+        </div>
       </div>
-      <div className="flex flex-row gap-2">
-        <Button variant="outline" onClick={handleClear} disabled={disableClear}>
-          Clear
-        </Button>
-        <Button onClick={handleFilter}>Filter</Button>
-      </div>
-    </div>
+    </Card>
   );
 };
