@@ -129,30 +129,39 @@ export const Filters: FC = function () {
 
   return (
     <Card>
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
         <div className="flex w-full flex-col items-center gap-2 md:flex-row">
-          <RollupFilter
-            selected={filters.rollup}
-            onChange={handleRollupFilterChange}
-          />
-          <TimestampFilter
-            value={filters.timestampRange}
-            onChange={handleTimestampRangeFilterChange}
-          />
-          <BlockNumberFilter
-            range={filters.blockNumberRange}
-            onChange={handleBlockNumberRangeFilterChange}
-          />
+          <div className="w-full md:w-40">
+            <RollupFilter
+              selected={filters.rollup}
+              onChange={handleRollupFilterChange}
+            />
+          </div>
+          <div className="w-full md:w-64">
+            <TimestampFilter
+              value={filters.timestampRange}
+              onChange={handleTimestampRangeFilterChange}
+            />
+          </div>
+          <div className="w-full md:w-52">
+            <BlockNumberFilter
+              range={filters.blockNumberRange}
+              onChange={handleBlockNumberRangeFilterChange}
+            />
+          </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-col gap-2 md:flex-row">
           <Button
+            className="w-full lg:w-auto"
             variant="outline"
             onClick={handleClear}
             disabled={disableClear}
           >
             Clear
           </Button>
-          <Button onClick={handleFilter}>Filter</Button>
+          <Button className="w-full lg:w-auto" onClick={handleFilter}>
+            Filter
+          </Button>
         </div>
       </div>
     </Card>

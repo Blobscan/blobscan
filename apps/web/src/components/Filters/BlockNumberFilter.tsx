@@ -8,7 +8,7 @@ type BlockNumberFilterProps = Pick<NumberRangeInputProps, "range" | "onChange">;
 export const BlockNumberFilter: FC<BlockNumberFilterProps> = function (props) {
   return (
     <NumberRangeInput
-      className="w-28"
+      className="w-full"
       type="uint"
       inputStartProps={{ placeholder: "Start Block" }}
       inputEndProps={{ placeholder: "End Block" }}
