@@ -30,7 +30,10 @@ export function formatWei(
  * is preserved. Instead, this function provides a more human-readable
  * representation of the value.
  */
-export function prettyFormatWei(wei: bigint, toUnit: EtherUnit = "Gwei") {
+export function prettyFormatWei(
+  wei: string | number | bigint,
+  toUnit: EtherUnit = "Gwei"
+) {
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
   const formatted = compactFormatter.format(converted);
   return `${formatted} ${toUnit}`;
