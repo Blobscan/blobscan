@@ -78,13 +78,14 @@ export const getAll = publicProcedure
         ...ctx.pagination,
       }),
       // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      filters.transactionRollup
+      filters.transactionRollup !== undefined || filters.transactionAddresses
         ? ctx.prisma.blob.count({
             where: {
               transactions: {
                 some: {
                   transaction: {
                     rollup: filters.transactionRollup,
+                    OR: filters.transactionAddresses,
                   },
                 },
               },

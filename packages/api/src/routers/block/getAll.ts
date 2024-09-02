@@ -69,13 +69,24 @@ export const getAll = publicProcedure
         orderBy: { number: filters.sort },
         ...pagination,
       }),
-      prisma.blockOverallStats
-        .findFirst({
-          select: {
-            totalBlocks: true,
-          },
-        })
-        .then((stats) => stats?.totalBlocks ?? 0),
+      filters.transactionRollup !== undefined || filters.transactionAddresses
+        ? prisma.block.count({
+            where: {
+              transactions: {
+                some: {
+                  rollup: filters.transactionRollup,
+                  OR: filters.transactionAddresses,
+                },
+              },
+            },
+          })
+        : prisma.blockOverallStats
+            .findFirst({
+              select: {
+                totalBlocks: true,
+              },
+            })
+            .then((stats) => stats?.totalBlocks ?? 0),
     ]);
 
     let blocks: QueriedBlock[] = queriedBlocks;

@@ -6,10 +6,12 @@ import { Rollup } from "@blobscan/api/enums";
 import type { Rollup as LowercaseRollup } from "~/types";
 
 type QueryParams = {
+  from?: string;
   p: number;
   ps: number;
   rollup?: LowercaseRollup | "null";
-  from?: string;
+  startDate?: Date;
+  endDate?: Date;
 };
 
 const DEFAULT_INITIAL_PAGE_SIZE = 50;
@@ -27,7 +29,7 @@ export function useQueryParams() {
       return;
     }
 
-    const { from, p, ps, rollup } = router.query;
+    const { from, p, ps, rollup, startDate, endDate } = router.query;
 
     setQueryParams({
       from: (from as string)?.toLowerCase(),
@@ -40,6 +42,8 @@ export function useQueryParams() {
               (rollup as string).toUpperCase() as keyof typeof Rollup
             ]?.toLowerCase() as LowercaseRollup)
         : undefined,
+      startDate: startDate ? new Date(startDate as string) : undefined,
+      endDate: endDate ? new Date(endDate as string) : undefined,
     });
   }, [router]);
 

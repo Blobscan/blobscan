@@ -31,9 +31,9 @@ export const TableHeader: FC<TableHeaderProps> = function ({
         ${alignmentStyles(alignment)}
         ${variantStyles}
         ${stickyStyles(sticky)}
+        z-9
         sticky
         top-0
-        z-10
         border-b
         border-border-light
         text-sm

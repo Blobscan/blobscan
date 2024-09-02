@@ -49,12 +49,14 @@ const BLOBS_TABLE_HEADERS = [
 ];
 
 const Blobs: NextPage = function () {
-  const { from, p, ps, rollup } = useQueryParams();
+  const { from, p, ps, rollup, startDate, endDate } = useQueryParams();
   const { data, error, isLoading } = api.blob.getAll.useQuery({
     p,
     ps,
     from,
     rollup,
+    startDate,
+    endDate,
   });
   const { blobs, totalBlobs } = data || {};
 
