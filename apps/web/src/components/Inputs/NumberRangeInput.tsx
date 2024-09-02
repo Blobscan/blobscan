@@ -4,6 +4,8 @@ import type { InputProps } from "./Input";
 import type { NumberInputType } from "./NumberInput";
 import { NumericInput } from "./NumberInput";
 
+type SingleInput = Omit<InputProps, "value" | "onChange" | "type">;
+
 export type NumberRange = {
   start?: number;
   end?: number;
@@ -14,8 +16,8 @@ export type NumberRangeInputProps = {
   range: NumberRange;
   type: NumberInputType;
   onChange: (range: NumberRange) => void;
-  inputStartProps?: Omit<InputProps, "value" | "onChange" | "type">;
-  inputEndProps?: Omit<InputProps, "value" | "onChange" | "type">;
+  inputStartProps?: SingleInput;
+  inputEndProps?: SingleInput;
 };
 
 export const NumberRangeInput: React.FC<NumberRangeInputProps> = ({
