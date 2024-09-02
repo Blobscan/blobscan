@@ -3,9 +3,9 @@ import cn from "classnames";
 import type { DatepickerType } from "react-tailwindcss-datepicker";
 import Datepicker from "react-tailwindcss-datepicker";
 
-type RollupFilterProps = Pick<DatepickerType, "value" | "onChange">;
+type TimestampFilterProps = Pick<DatepickerType, "value" | "onChange">;
 
-export const TimestampFilter: FC<RollupFilterProps> = function ({
+export const TimestampFilter: FC<TimestampFilterProps> = function ({
   value,
   onChange,
 }) {

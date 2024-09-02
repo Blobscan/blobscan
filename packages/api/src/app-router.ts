@@ -1,6 +1,5 @@
 import { z } from "@blobscan/zod";
 
-import { getRollups } from "./getRollups";
 import { publicProcedure } from "./procedures";
 import { blobRouter } from "./routers/blob";
 import { blobStoragesStateRouter } from "./routers/blob-storages-state";
@@ -33,7 +32,6 @@ export const appRouter = t.router({
     .input(z.void())
     .output(z.string())
     .query(() => "yay!"),
-  getRollups,
 });
 
 // export type definition of API
