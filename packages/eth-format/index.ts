@@ -1,5 +1,6 @@
 const ETH_UNITS = { wei: 0, Gwei: 9, ether: 18 };
 
+export type EthAmount = string | number | bigint;
 export type EtherUnit = keyof typeof ETH_UNITS;
 
 const compactFormatter = Intl.NumberFormat("en-US", {
@@ -15,10 +16,7 @@ const compactFormatter = Intl.NumberFormat("en-US", {
  * This function never converts the provided value to a Number
  * ensuring that the full precision of the input is preserved.
  */
-export function formatWei(
-  wei: string | number | bigint,
-  toUnit: EtherUnit = "Gwei"
-): string {
+export function formatWei(wei: EthAmount, toUnit: EtherUnit = "Gwei"): string {
   const converted = convertWei(wei, toUnit);
   const formatted = insertCommas(converted);
   return `${formatted} ${toUnit}`;
@@ -39,17 +37,14 @@ export function prettyFormatWei(wei: bigint, toUnit: EtherUnit = "Gwei") {
 /**
  * This function converts `wei` to the unit specified by `toUnit`.
  */
-export function convertWei(
-  wei: string | number | bigint,
-  toUnit: EtherUnit = "Gwei"
-): string {
+export function convertWei(wei: EthAmount, toUnit: EtherUnit = "Gwei"): string {
   return shiftDecimal(wei, ETH_UNITS[toUnit]);
 }
 
 /**
  * This function finds the best unit to display the value of `wei`.
  */
-export function findBestUnit(wei: bigint | string | number): EtherUnit {
+export function findBestUnit(wei: EthAmount): EtherUnit {
   if (typeof wei === "number") {
     wei = Math.round(wei);
   }
@@ -87,10 +82,7 @@ export function arrayBestUnit(arr: number[]): {
 /**
  * This function moves the decimal point to the left by `decimals` places.
  */
-export function shiftDecimal(
-  value: string | number | bigint,
-  decimals: number
-): string {
+export function shiftDecimal(value: EthAmount, decimals: number): string {
   value = value.toString();
 
   const negative = value.startsWith("-");
