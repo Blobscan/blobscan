@@ -26,4 +26,4 @@ CREATE TABLE "validator_income" (
 );
 
 -- CreateIndex
-CREATE INDEX "idx_validator_epoch_income" ON "validator_income"("validator_public_key", "epoch_idx" ASC);
+CREATE UNIQUE INDEX "uni_validaotr_epoch_income" ON "validator_income"("validator_idx", "epoch_idx");

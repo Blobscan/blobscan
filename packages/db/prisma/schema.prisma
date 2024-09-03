@@ -285,7 +285,7 @@ model ValidatorIncome {
   updatedAt          DateTime @map("updated_at") @default(now())
 
   @@map("validator_income")
-  @@index(fields: [validatorPublicKey, epochIdx(sort: Asc)], name: "idx_validator_epoch_income")
+  @@unique([validatorIdx, epochIdx], name: "uni_validaotr_epoch_income", map: "uni_validaotr_epoch_income")
 }
 
 // NextAuth.js Models

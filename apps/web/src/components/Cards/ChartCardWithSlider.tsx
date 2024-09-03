@@ -140,7 +140,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
     }),
     // Improper configuration may result in incomplete display of the x/y axis.
     // More Info: https://echarts.apache.org/en/option.html#title
-    grid: { top: 27, right: 25, bottom: "20%", left: 100 },
+    grid: { top: 27, right: 10, bottom: "20%", left: 100 },
     series: [
       {
         name: "Reward",
