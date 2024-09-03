@@ -13,7 +13,7 @@ export type NumberRange = {
 
 export type NumberRangeInputProps = {
   className?: InputHTMLAttributes<HTMLInputElement>["className"];
-  range: NumberRange;
+  range: NumberRange | null;
   type: NumberInputType;
   onChange: (range: NumberRange) => void;
   inputStartProps?: SingleInput;
@@ -38,10 +38,10 @@ export const NumberRangeInput: React.FC<NumberRangeInputProps> = ({
         onChange={(newStartValue) =>
           onChange({
             start: newStartValue,
-            end: range.end,
+            end: range?.end,
           })
         }
-        value={range.start}
+        value={range?.start}
         {...inputStartProps}
       />
       <NumericInput
@@ -51,11 +51,11 @@ export const NumberRangeInput: React.FC<NumberRangeInputProps> = ({
         className={`rounded-l-none rounded-r-lg text-sm ${className}`}
         onChange={(newEndValue) =>
           onChange({
-            start: range.start,
+            start: range?.start,
             end: newEndValue,
           })
         }
-        value={range.end}
+        value={range?.end}
         {...inputEndProps}
       />
     </div>

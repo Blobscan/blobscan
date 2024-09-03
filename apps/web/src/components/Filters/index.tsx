@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
-import type { DateValueType } from "react-tailwindcss-datepicker";
+import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
@@ -16,37 +16,63 @@ import { TimestampFilter } from "./TimestampFilter";
 
 type FiltersState = {
   rollup: Option | null;
-  timestampRange: DateValueType;
-  blockNumberRange: NumberRange;
+  timestampRange: DateRangeType | null;
+  blockNumberRange: NumberRange | null;
 };
+
+type ClearAction<V extends keyof FiltersState> = {
+  type: "CLEAR";
+  payload?: { field: V };
+};
+
+type UpdateAction = {
+  type: "UPDATE";
+  payload: Partial<FiltersState>;
+};
+
+type FiltersAction<V extends keyof FiltersState> =
+  | ClearAction<V>
+  | UpdateAction;
 
 const INIT_STATE: FiltersState = {
   rollup: null,
   timestampRange: {
-    startDate: null,
     endDate: null,
+    startDate: null,
   },
-  blockNumberRange: {
-    end: undefined,
-    start: undefined,
-  },
+  blockNumberRange: null,
 };
+
+function reducer<V extends keyof FiltersState>(
+  prevState: FiltersState,
+  { type, payload }: FiltersAction<V>
+): FiltersState {
+  switch (type) {
+    case "CLEAR":
+      return payload
+        ? {
+            ...prevState,
+            [payload.field]: null,
+          }
+        : { ...INIT_STATE };
+    case "UPDATE":
+      return {
+        ...prevState,
+        ...payload,
+      };
+  }
+}
 
 export const Filters: FC = function () {
   const router = useRouter();
   const queryParams = useQueryParams();
-
-  const [filters, setFilters] = useState<FiltersState>(INIT_STATE);
-  const { blockNumberRange, rollup, timestampRange } = filters;
-  const { startDate, endDate } = timestampRange || {};
-  const { start: startBlock, end: endBlock } = blockNumberRange;
+  const [filters, dispatch] = useReducer(reducer, INIT_STATE);
   const disableClear =
-    !rollup && !startDate && !endDate && !startBlock && !endBlock;
+    !filters.rollup && !filters.timestampRange && !filters.blockNumberRange;
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { rollup, timestampRange } = filters;
-    const { endDate, startDate } = timestampRange || {};
+    const { rollup, timestampRange, blockNumberRange } = filters;
 
     if (rollup) {
       if (rollup.value === "null") {
@@ -56,20 +82,28 @@ export const Filters: FC = function () {
       }
     }
 
-    if (startDate) {
-      query.startDate = getISODate(startDate);
+    if (timestampRange) {
+      const { startDate, endDate } = timestampRange;
+
+      if (startDate) {
+        query.startDate = getISODate(startDate);
+      }
+
+      if (endDate) {
+        query.endDate = getISODate(endDate);
+      }
     }
 
-    if (endDate) {
-      query.endDate = getISODate(endDate);
-    }
+    if (blockNumberRange) {
+      const { start, end } = blockNumberRange;
 
-    if (startBlock) {
-      query.startBlock = startBlock;
-    }
+      if (start) {
+        query.startBlock = start;
+      }
 
-    if (endBlock) {
-      query.endBlock = endBlock;
+      if (end) {
+        query.endBlock = end;
+      }
     }
 
     router.push({
@@ -78,25 +112,10 @@ export const Filters: FC = function () {
     });
   };
 
-  const handleClear = () => {
-    setFilters(INIT_STATE);
-  };
-
-  const handleRollupFilterChange = (newRollup: Option) => {
-    setFilters((prevState) => ({ ...prevState, rollup: newRollup }));
-  };
-
-  const handleTimestampRangeFilterChange = (newRange: DateValueType) => {
-    setFilters((prevState) => ({ ...prevState, timestampRange: newRange }));
-  };
-
-  const handleBlockNumberRangeFilterChange = (newRange: NumberRange) => {
-    setFilters((prevState) => ({ ...prevState, blockNumberRange: newRange }));
-  };
-
   useEffect(() => {
     const { rollup, from, startDate, endDate, startBlock, endBlock } =
       queryParams;
+    const newFilters: Partial<FiltersState> = {};
 
     if (rollup || from) {
       const rollupOption = ROLLUP_OPTIONS.find(
@@ -104,29 +123,25 @@ export const Filters: FC = function () {
       );
 
       if (rollupOption) {
-        setFilters((prevFilters) => ({ ...prevFilters, rollup: rollupOption }));
+        newFilters.rollup = rollupOption;
       }
     }
 
     if (startDate || endDate) {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        timestampRange: {
-          startDate: startDate ? new Date(startDate) : null,
-          endDate: endDate ? new Date(endDate) : null,
-        },
-      }));
+      newFilters.timestampRange = {
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+      };
     }
 
     if (startBlock || endBlock) {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        blockNumberRange: {
-          end: endBlock,
-          start: startBlock,
-        },
-      }));
+      newFilters.blockNumberRange = {
+        start: startBlock,
+        end: endBlock,
+      };
     }
+
+    dispatch({ type: "UPDATE", payload: newFilters });
   }, [queryParams]);
 
   return (
@@ -136,19 +151,31 @@ export const Filters: FC = function () {
           <div className="w-full md:w-40">
             <RollupFilter
               selected={filters.rollup}
-              onChange={handleRollupFilterChange}
+              onChange={(newRollup) =>
+                dispatch({ type: "UPDATE", payload: { rollup: newRollup } })
+              }
             />
           </div>
           <div className="w-full md:w-64">
             <TimestampFilter
               value={filters.timestampRange}
-              onChange={handleTimestampRangeFilterChange}
+              onChange={(newTimestampRange) =>
+                dispatch({
+                  type: "UPDATE",
+                  payload: { timestampRange: newTimestampRange },
+                })
+              }
             />
           </div>
           <div className="w-full md:w-52">
             <BlockNumberFilter
               range={filters.blockNumberRange}
-              onChange={handleBlockNumberRangeFilterChange}
+              onChange={(newBlockNumberRange) =>
+                dispatch({
+                  type: "UPDATE",
+                  payload: { blockNumberRange: newBlockNumberRange },
+                })
+              }
             />
           </div>
         </div>
@@ -156,7 +183,7 @@ export const Filters: FC = function () {
           <Button
             className="w-full lg:w-auto"
             variant="outline"
-            onClick={handleClear}
+            onClick={() => dispatch({ type: "CLEAR" })}
             disabled={disableClear}
           >
             Clear
