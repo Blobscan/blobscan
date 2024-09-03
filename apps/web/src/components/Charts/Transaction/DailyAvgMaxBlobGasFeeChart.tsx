@@ -27,6 +27,9 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
         yAxisLabel: (value) => `${formatNumber(value)} ${unit}`,
       },
     }),
+    grid: {
+      containLabel: true,
+    },
     series: [
       {
         name: "Avg. Max Blob Gas Fees",
