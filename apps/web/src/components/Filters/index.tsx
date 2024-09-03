@@ -201,27 +201,29 @@ export const Filters: FC = function () {
               }
             />
           </div>
-          <div className="w-full md:w-52">
-            <BlockNumberFilter
-              range={filters.blockNumberRange}
-              onChange={(newBlockNumberRange) =>
-                dispatch({
-                  type: "UPDATE",
-                  payload: { blockNumberRange: newBlockNumberRange },
-                })
-              }
-            />
-          </div>
-          <div className="w-full md:w-52">
-            <SlotFilter
-              range={filters.slotRange}
-              onChange={(newSlotRange) =>
-                dispatch({
-                  type: "UPDATE",
-                  payload: { slotRange: newSlotRange },
-                })
-              }
-            />
+          <div className="flex gap-2">
+            <div className="w-full md:w-52">
+              <BlockNumberFilter
+                range={filters.blockNumberRange}
+                onChange={(newBlockNumberRange) =>
+                  dispatch({
+                    type: "UPDATE",
+                    payload: { blockNumberRange: newBlockNumberRange },
+                  })
+                }
+              />
+            </div>
+            <div className="w-full md:w-52">
+              <SlotFilter
+                range={filters.slotRange}
+                onChange={(newSlotRange) =>
+                  dispatch({
+                    type: "UPDATE",
+                    payload: { slotRange: newSlotRange },
+                  })
+                }
+              />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 md:flex-row">
