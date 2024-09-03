@@ -11,6 +11,7 @@ import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
@@ -79,6 +80,7 @@ const Block: NextPage = function () {
 
     detailsFields = [
       { name: "Block Height", value: blockData.number },
+      { name: "Status", value: <BlockStatus blockNumber={blockData.number} /> },
       {
         name: "Hash",
         value: <Copyable value={blockData.hash} label="Copy Hash" />,
