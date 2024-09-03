@@ -2,4 +2,4 @@
 "@blobscan/web": patch
 ---
 
-The Tooltip component now includes extra logic to prevent it from overflowing.
+Added additional logic to the `Tooltip` component to prevent overflow.
