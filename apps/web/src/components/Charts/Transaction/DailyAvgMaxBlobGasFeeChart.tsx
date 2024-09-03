@@ -1,13 +1,11 @@
 import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
+import { prettyFormatWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { DailyTransactionStats } from "~/types";
-import {
-  buildTimeSeriesOptions,
-  formatNumber,
-  useArrayBestUnit,
-} from "~/utils";
+import { buildTimeSeriesOptions, useArrayBestUnit } from "~/utils";
 
 export type DailyAvgMaxBlobGasFeeChartProps = {
   days: DailyTransactionStats["days"];
@@ -26,7 +24,8 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
+        yAxisTooltip: (value) => prettyFormatWei(value, unit),
+        yAxisLabel: (value) => prettyFormatWei(value, unit),
       },
     }),
     series: [

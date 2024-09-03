@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { EChartOption } from "echarts";
 
 import dayjs from "@blobscan/dayjs";
+import type { EtherUnit } from "@blobscan/eth-units";
 import { arrayBestUnit } from "@blobscan/eth-units";
 
 import { getHumanDate as humanDateFormatter } from "./date";
@@ -112,7 +113,7 @@ export function useArrayBestUnit(arr?: number[]) {
   return useMemo(() => {
     if (!arr) {
       return {
-        unit: "",
+        unit: "wei" as EtherUnit,
         converted: undefined,
       };
     }
