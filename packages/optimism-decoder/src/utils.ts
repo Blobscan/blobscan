@@ -72,6 +72,17 @@ function processChannelData(datas: Uint8Array[]): string {
     data = data.slice(1); // Strip prefix byte
 
     while (data.length > 0) {
+      if (
+        data[16] === undefined ||
+        data[17] === undefined ||
+        data[18] === undefined ||
+        data[19] === undefined ||
+        data[20] === undefined ||
+        data[21] === undefined
+      ) {
+        throw new Error("Assertion failed: data must have at least 22 bytes");
+      }
+
       console.log(`remaining data bytes: ${data.length}`);
 
       const channelIdBytes = data.slice(0, 16);
@@ -128,6 +139,11 @@ function readBitlist(
 
   while (length > 0 && currentOffset < buffer.length) {
     const byte = buffer[currentOffset++];
+
+    if (byte === undefined) {
+      throw new Error("Assertion failed: byte must be defined");
+    }
+
     const tempBits: boolean[] = [];
 
     for (let i = 0; i < Math.min(8, length); i++) {
@@ -157,6 +173,11 @@ function readVarint(
 
   while (currentOffset < buffer.length) {
     const byte = buffer[currentOffset++];
+
+    if (byte === undefined) {
+      throw new Error("Assertion failed: byte must be defined");
+    }
+
     result |= (byte & 0b01111111) << shift;
     if ((byte & 0b10000000) === 0) {
       break; // Stop if the most significant bit is 0
@@ -207,6 +228,15 @@ export async function processFile(filename: string): Promise<void> {
       const byteB = chunk[32 * 1];
       const byteC = chunk[32 * 2];
       const byteD = chunk[32 * 3];
+
+      if (
+        byteA === undefined ||
+        byteB === undefined ||
+        byteC === undefined ||
+        byteD === undefined
+      ) {
+        throw new Error("Assertion failed: bytes must be defined");
+      }
 
       if ((byteA | byteB | byteC | byteD) & 0b1100_0000) {
         throw new Error("Assertion failed: bytes must meet specific criteria");
