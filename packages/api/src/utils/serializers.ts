@@ -1,5 +1,8 @@
-import type { $Enums, Prisma } from "@blobscan/db";
-import type { BlobDataStorageReference as DBBlobDataStorageReference } from "@blobscan/db";
+import type {
+  Prisma,
+  BlobDataStorageReference as DBBlobDataStorageReference,
+} from "@blobscan/db/prisma/client";
+import type { BlobStorage, Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
 
@@ -14,20 +17,18 @@ export function serializeDate(date: Date): string {
   return date.toISOString();
 }
 
-export function serializeRollup(
-  rollup?: $Enums.Rollup | null
-): ZodRollupEnum | null {
+export function serializeRollup(rollup?: Rollup | null): ZodRollupEnum | null {
   return rollup ? (rollup.toLowerCase() as ZodRollupEnum) : null;
 }
 
 export function serializeBlobStorage(
-  blobStorage: $Enums.BlobStorage
+  blobStorage: BlobStorage
 ): ZodBlobStorageEnum {
   return blobStorage.toLowerCase() as ZodBlobStorageEnum;
 }
 
 export function buildBlobDataUrl(
-  blobStorage: $Enums.BlobStorage,
+  blobStorage: BlobStorage,
   blobDataUri: string
 ) {
   switch (blobStorage) {

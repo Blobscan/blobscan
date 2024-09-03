@@ -12,7 +12,7 @@ import Loading from "~/icons/loading.svg";
 import NextError from "~/pages/_error";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
-import { Input } from "../Input";
+import { Input } from "../Inputs/Input";
 import { SearchResults } from "./SearchResults";
 import type { SearchResultsProps } from "./SearchResults";
 
@@ -116,6 +116,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       >
         <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <Input
+            variant="outline"
             type="text"
             name="search"
             id="search"
@@ -152,18 +153,16 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-1
           ring-inset
           `}
-          icon={
-            (searchQuery.isFetching || debouncing) && term ? (
-              <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
-            ) : (
-              <MagnifyingGlassIcon
-                className="-ml-0.5 h-5 w-5"
-                aria-hidden="true"
-              />
-            )
-          }
-          size="md"
-        />
+        >
+          {(searchQuery.isFetching || debouncing) && term ? (
+            <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
+          ) : (
+            <MagnifyingGlassIcon
+              className="-ml-0.5 h-5 w-5"
+              aria-hidden="true"
+            />
+          )}
+        </Button>
       </div>
     </form>
   );

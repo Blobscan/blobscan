@@ -1,196 +1,243 @@
-import { useState } from "react";
+import { useEffect, useReducer } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
-import type { DateValueType } from "react-tailwindcss-datepicker";
+import type { DateRangeType } from "react-tailwindcss-datepicker";
+import type { UrlObject } from "url";
 
-import { validateRange } from "~/utils/validators";
 import { Button } from "~/components/Button";
-import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { useQueryParams } from "~/hooks/useQueryParams";
+import { getISODate } from "~/utils";
+import { Card } from "../Cards/Card";
 import type { Option } from "../Dropdown";
-import type { NumberRange } from "../RangeInput";
+import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
-import { RollupFilter } from "./RollupFilter";
+import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
-const DEFAULT_MIN_VALUE = BigInt(0);
-const DEFAULT_MAX_VALUE = BigInt(99999999);
+type FiltersState = {
+  rollup: Option | null;
+  timestampRange: DateRangeType | null;
+  blockNumberRange: NumberRange | null;
+  slotRange: NumberRange | null;
+};
+
+type ClearAction<V extends keyof FiltersState> = {
+  type: "CLEAR";
+  payload?: { field: V };
+};
+
+type UpdateAction = {
+  type: "UPDATE";
+  payload: Partial<FiltersState>;
+};
+
+type FiltersAction<V extends keyof FiltersState> =
+  | ClearAction<V>
+  | UpdateAction;
 
 const INIT_STATE: FiltersState = {
   rollup: null,
   timestampRange: {
-    startDate: null,
     endDate: null,
+    startDate: null,
   },
-  blockNumberRange: [undefined, undefined],
-  slotRange: [undefined, undefined],
+  blockNumberRange: null,
+  slotRange: null,
 };
 
-interface FiltersErrorsState {
-  blockNumberRange?: string;
-  slotRange?: string;
+function reducer<V extends keyof FiltersState>(
+  prevState: FiltersState,
+  { type, payload }: FiltersAction<V>
+): FiltersState {
+  switch (type) {
+    case "CLEAR":
+      return payload
+        ? {
+            ...prevState,
+            [payload.field]: null,
+          }
+        : { ...INIT_STATE };
+    case "UPDATE":
+      return {
+        ...prevState,
+        ...payload,
+      };
+  }
 }
 
-interface FiltersState {
-  rollup: Option | null;
-  timestampRange: DateValueType;
-  blockNumberRange: NumberRange;
-  slotRange: NumberRange;
-}
-
-interface FiltersProps {
-  enableSlotFilter?: boolean;
-}
-
-export const Filters: FC<FiltersProps> = function ({ enableSlotFilter }) {
-  const [formData, setFormData] = useState<FiltersState>(INIT_STATE);
-  const [errors, setErrors] = useState<FiltersErrorsState>({
-    blockNumberRange: undefined,
-  });
-
+export const Filters: FC = function () {
   const router = useRouter();
+  const queryParams = useQueryParams();
+  const [filters, dispatch] = useReducer(reducer, INIT_STATE);
+  const disableClear =
+    !filters.rollup &&
+    !filters.timestampRange?.endDate &&
+    !filters.timestampRange?.startDate &&
+    !filters.blockNumberRange &&
+    !filters.slotRange;
 
-  const breakpoint = useBreakpoint();
-  const fullWidth =
-    breakpoint === "md" || breakpoint === "sm" || breakpoint === "default";
+  const handleFilter = () => {
+    const query: UrlObject["query"] = {};
+    const { rollup, timestampRange, blockNumberRange, slotRange } = filters;
 
-  const hasErrors = !!errors.blockNumberRange;
-  const atLeastOneFilled =
-    !!formData.rollup ||
-    !!formData.timestampRange?.startDate ||
-    !!formData.timestampRange?.endDate ||
-    !!formData.blockNumberRange[0] ||
-    !!formData.blockNumberRange[1] ||
-    !!formData.slotRange[0] ||
-    !!formData.slotRange[1];
-  const allowToFilter = !hasErrors && atLeastOneFilled;
+    if (rollup) {
+      if (rollup.value === "null") {
+        query.rollup = rollup.value;
+      } else {
+        query.from = rollup.value;
+      }
+    }
 
-  if (!allowToFilter && Object.keys(router.query).length > 0) {
-    router.replace(router.query, undefined, { shallow: true });
-  }
+    if (timestampRange) {
+      const { startDate, endDate } = timestampRange;
 
-  if (!allowToFilter && Object.keys(router.query).length > 0) {
-    router.replace(router.query, undefined, { shallow: true });
-  }
+      if (startDate) {
+        query.startDate = getISODate(startDate);
+      }
 
-  const handleSubmit = () => {
-    const { rollup, timestampRange, blockNumberRange, slotRange } = formData;
-    const [startBlock, endBlock] = blockNumberRange;
-    const [startSlot, endSlot] = slotRange;
+      if (endDate) {
+        query.endDate = getISODate(endDate);
+      }
+    }
+
+    if (blockNumberRange) {
+      const { start, end } = blockNumberRange;
+
+      if (start) {
+        query.startBlock = start;
+      }
+
+      if (end) {
+        query.endBlock = end;
+      }
+    }
+
+    if (slotRange) {
+      const { start, end } = slotRange;
+
+      if (start) {
+        query.startSlot = start;
+      }
+
+      if (end) {
+        query.endSlot = end;
+      }
+    }
 
     router.push({
       pathname: router.pathname,
-      query: {
-        ...(rollup?.value && { rollup: rollup.value }),
-        ...(timestampRange?.startDate && {
-          ["start-date"]: timestampRange.startDate as string,
-        }),
-        ...(timestampRange?.endDate && {
-          ["end-date"]: timestampRange.endDate as string,
-        }),
-        ...(startBlock && {
-          ["start-block"]: startBlock.toString(),
-        }),
-        ...(endBlock && {
-          ["end-block"]: endBlock.toString(),
-        }),
-        ...(startSlot && {
-          ["start-slot"]: startSlot.toString(),
-        }),
-        ...(endSlot && {
-          ["end-slot"]: endSlot.toString(),
-        }),
-      },
+      query,
     });
   };
 
-  const handleClear = () => {
-    router.push({ pathname: router.pathname, query: undefined });
-    setFormData(INIT_STATE);
-  };
+  useEffect(() => {
+    const {
+      rollup,
+      from,
+      startDate,
+      endDate,
+      startBlock,
+      endBlock,
+      startSlot,
+      endSlot,
+    } = queryParams;
+    const newFilters: Partial<FiltersState> = {};
 
-  const handleRollupFilterChange = (newRollup: Option) => {
-    setFormData((prevState) => ({ ...prevState, rollup: newRollup }));
-  };
+    if (rollup || from) {
+      const rollupOption = ROLLUP_OPTIONS.find(
+        (opt) => opt.value === rollup || opt.value === from
+      );
 
-  const handleTimestampRangeFilterChange = (newRange: DateValueType) => {
-    setFormData((prevState) => ({ ...prevState, timestampRange: newRange }));
-  };
+      if (rollupOption) {
+        newFilters.rollup = rollupOption;
+      }
+    }
 
-  const handleBlockNumberRangeFilterChange = (newRange: NumberRange) => {
-    const validatorMessage = validateRange(
-      newRange,
-      DEFAULT_MIN_VALUE,
-      DEFAULT_MAX_VALUE
-    );
+    if (startDate || endDate) {
+      newFilters.timestampRange = {
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+      };
+    }
 
-    setErrors({
-      blockNumberRange:
-        validatorMessage.length > 0 ? validatorMessage : undefined,
-    });
+    if (startBlock || endBlock) {
+      newFilters.blockNumberRange = {
+        start: startBlock,
+        end: endBlock,
+      };
+    }
 
-    setFormData((prevState) => ({ ...prevState, blockNumberRange: newRange }));
-  };
+    if (startSlot || endSlot) {
+      newFilters.slotRange = {
+        start: startSlot,
+        end: endSlot,
+      };
+    }
 
-  const handleSlotRangeFilterChange = (newRange: NumberRange) => {
-    const validatorMessage = validateRange(
-      newRange,
-      DEFAULT_MIN_VALUE,
-      DEFAULT_MAX_VALUE
-    );
-
-    setErrors({
-      slotRange: validatorMessage.length > 0 ? validatorMessage : undefined,
-    });
-
-    setFormData((prevState) => ({ ...prevState, slotRange: newRange }));
-  };
+    dispatch({ type: "UPDATE", payload: newFilters });
+  }, [queryParams]);
 
   return (
-    <form
-      className="flex flex-col justify-between gap-3 rounded-lg bg-slate-50 p-2 dark:bg-primary-900 sm:flex-row"
-      onSubmit={handleSubmit}
-    >
-      <div className="flex w-full flex-col items-center justify-between gap-8 md:flex-row lg:gap-2">
-        <div className="flex w-full flex-col justify-start gap-2 lg:flex-row">
-          <RollupFilter
-            selected={formData.rollup}
-            onChange={handleRollupFilterChange}
-            fullWidth={fullWidth}
-          />
-          <TimestampFilter
-            value={formData.timestampRange}
-            onChange={handleTimestampRangeFilterChange}
-          />
-          <BlockNumberFilter
-            value={formData.blockNumberRange}
-            onChange={handleBlockNumberRangeFilterChange}
-            error={errors.blockNumberRange}
-          />
-          {enableSlotFilter && (
-            <SlotFilter
-              value={formData.slotRange}
-              onChange={handleSlotRangeFilterChange}
-              error={errors.slotRange}
+    <Card>
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
+        <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+          <div className="w-full md:w-40">
+            <RollupFilter
+              selected={filters.rollup}
+              onChange={(newRollup) =>
+                dispatch({ type: "UPDATE", payload: { rollup: newRollup } })
+              }
             />
-          )}
+          </div>
+          <div className="w-full md:w-64">
+            <TimestampFilter
+              value={filters.timestampRange}
+              onChange={(newTimestampRange) =>
+                dispatch({
+                  type: "UPDATE",
+                  payload: { timestampRange: newTimestampRange },
+                })
+              }
+            />
+          </div>
+          <div className="w-full md:w-52">
+            <BlockNumberFilter
+              range={filters.blockNumberRange}
+              onChange={(newBlockNumberRange) =>
+                dispatch({
+                  type: "UPDATE",
+                  payload: { blockNumberRange: newBlockNumberRange },
+                })
+              }
+            />
+          </div>
+          <div className="w-full md:w-52">
+            <SlotFilter
+              range={filters.slotRange}
+              onChange={(newSlotRange) =>
+                dispatch({
+                  type: "UPDATE",
+                  payload: { slotRange: newSlotRange },
+                })
+              }
+            />
+          </div>
         </div>
-        <div className="flex w-full flex-row gap-2 md:w-auto">
+        <div className="flex flex-col gap-2 md:flex-row">
           <Button
-            label="Clear"
+            className="w-full lg:w-auto"
             variant="outline"
-            onClick={handleClear}
-            disabled={!allowToFilter}
-            fullWidth={fullWidth}
-          />
-          <Button
-            label="Filter"
-            onClick={handleSubmit}
-            disabled={!allowToFilter}
-            fullWidth={fullWidth}
-          />
+            onClick={() => dispatch({ type: "CLEAR" })}
+            disabled={disableClear}
+          >
+            Clear
+          </Button>
+          <Button className="w-full lg:w-auto" onClick={handleFilter}>
+            Filter
+          </Button>
         </div>
       </div>
-    </form>
+    </Card>
   );
 };

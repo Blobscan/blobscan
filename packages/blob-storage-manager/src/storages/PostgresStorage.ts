@@ -1,10 +1,10 @@
-import { PrismaClient } from "@blobscan/db";
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import { PrismaClient } from "@blobscan/db";
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
-import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface PostgresStorageConfig extends BlobStorageConfig {
   prisma?: PrismaClient | BlobscanPrismaClient;
@@ -14,7 +14,7 @@ export class PostgresStorage extends BlobStorage {
   protected client: PrismaClient | BlobscanPrismaClient;
 
   protected constructor({ chainId, prisma }: PostgresStorageConfig) {
-    super(BLOB_STORAGE_NAMES.POSTGRES, chainId);
+    super(BlobStorageName.POSTGRES, chainId);
 
     this.client = prisma ?? new PrismaClient();
   }

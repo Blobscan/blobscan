@@ -1,16 +1,15 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 
-import { getFilterParams } from "~/utils/filter";
-import { getPaginationParams } from "~/utils/pagination";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
+import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import type { DeserializedBlob, DeserializedFullTransaction } from "~/utils";
@@ -25,6 +24,20 @@ import {
   deserializeFullTransaction,
   buildBlobRoute,
 } from "~/utils";
+
+type Transaction = Pick<
+  DeserializedFullTransaction,
+  | "hash"
+  | "from"
+  | "to"
+  | "blobs"
+  | "rollup"
+  | "blockNumber"
+  | "blobGasBaseFee"
+  | "blobGasMaxFee"
+  | "block"
+  | "blockTimestamp"
+> & { blobsLength?: number };
 
 export const TRANSACTIONS_TABLE_HEADERS = [
   {
@@ -69,29 +82,19 @@ export const TRANSACTIONS_TABLE_HEADERS = [
   },
 ];
 
-const TRANSACTIONS_TABLE_DEFAULT_PAGE_SIZE = 50;
-
-type Transaction = Pick<
-  DeserializedFullTransaction,
-  | "hash"
-  | "from"
-  | "to"
-  | "blobs"
-  | "rollup"
-  | "blockNumber"
-  | "blobGasBaseFee"
-  | "blobGasMaxFee"
-  | "block"
-  | "blockTimestamp"
-> & { blobsLength?: number };
-
 const Txs: NextPage = function () {
-  const router = useRouter();
-  const { p, ps } = getPaginationParams(
-    router.query,
-    TRANSACTIONS_TABLE_DEFAULT_PAGE_SIZE
-  );
-  const filters = getFilterParams(router.query);
+  const {
+    from,
+    p,
+    ps,
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
+  } = useQueryParams();
 
   const {
     data: rawTxsData,
@@ -101,10 +104,17 @@ const Txs: NextPage = function () {
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>({
+    from,
     p,
     ps,
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
     expand: "block,blob",
-    ...filters,
   });
   const txsData = useMemo(() => {
     if (!rawTxsData) {
@@ -272,18 +282,21 @@ const Txs: NextPage = function () {
   }
 
   return (
-    <PaginatedTable
-      title={`Blob Transactions ${
-        totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
-      }`}
-      isLoading={isLoading}
-      headers={TRANSACTIONS_TABLE_HEADERS}
-      rows={transactionRows}
-      totalItems={totalTransactions}
-      paginationData={{ pageSize: ps, page: p }}
-      isExpandable
-      tableTopSlot={<Filters />}
-    />
+    <>
+      <Header>
+        Blob Transactions{" "}
+        {totalTransactions ? `(${formatNumber(totalTransactions)})` : ""}
+      </Header>
+      <Filters />
+      <PaginatedTable
+        isLoading={isLoading}
+        headers={TRANSACTIONS_TABLE_HEADERS}
+        rows={transactionRows}
+        totalItems={totalTransactions}
+        paginationData={{ pageSize: ps, page: p }}
+        isExpandable
+      />
+    </>
   );
 };
 

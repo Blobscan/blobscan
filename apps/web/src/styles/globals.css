@@ -9,32 +9,3 @@
     margin: 0;
   }
 }
-
-@layer utilities {
-  .tailwind-datepicker > div > div {
-    @apply dark:bg-controlBackground-dark;
-  }
-
-  .tailwind-datepicker > input {
-    @apply focus:border-controlBorderHighlight-dark focus:shadow-none focus:ring-transparent dark:bg-controlBackground-dark;
-
-    &::placeholder {
-      @apply text-base;
-      color: red !important;
-    }
-  }
-
-  .tailwind-datepicker > input::placeholder {
-    @apply text-base  font-normal text-hint-light dark:text-hint-dark;
-  }
-
-  .range-input > input:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .range-input > input:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-}

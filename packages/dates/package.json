@@ -1,0 +1,16 @@
+{
+  "name": "@blobscan/dates",
+  "version": "0.0.1",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "test": "pnpm vitest --reporter=verbose"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

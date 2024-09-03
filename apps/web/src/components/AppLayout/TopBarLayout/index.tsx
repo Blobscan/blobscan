@@ -24,7 +24,7 @@ export const TopBarLayout: React.FC = () => {
           <div className="hidden xl:flex">
             <NavigationMenus />
           </div>
-          <div className="relative hidden xl:block">
+          <div className="relative ml-2 hidden xl:block">
             <ThemeModeButton />
           </div>
         </div>

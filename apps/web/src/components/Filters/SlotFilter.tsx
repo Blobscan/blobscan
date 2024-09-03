@@ -1,18 +1,18 @@
 import type { FC } from "react";
 
-import type { RangeInputProps } from "../RangeInput";
-import { RangeInput } from "../RangeInput";
+import type { NumberRangeInputProps } from "../Inputs/NumberRangeInput";
+import { NumberRangeInput } from "../Inputs/NumberRangeInput";
 
-type SlotFilterProps = RangeInputProps & Pick<RangeInputProps, "value">;
+type SlotFilterProps = Pick<NumberRangeInputProps, "range" | "onChange">;
 
 export const SlotFilter: FC<SlotFilterProps> = function (props) {
   return (
-    <div className="w-full lg:w-[240px]">
-      <RangeInput
-        {...props}
-        startPlaceholder="Start slot"
-        endPlaceholder="End slot"
-      />
-    </div>
+    <NumberRangeInput
+      className="w-full"
+      type="uint"
+      inputStartProps={{ placeholder: "Start Slot" }}
+      inputEndProps={{ placeholder: "End Slot" }}
+      {...props}
+    />
   );
 };

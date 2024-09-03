@@ -76,7 +76,7 @@ Check out the [blobscan-helm-charts](https://github.com/Blobscan/blobscan-helm-c
 
 ### Local environment
 
-Check out [Running locally](/docs/running-locally).
+Check out [Running locally](/docs/running-blobscan-locally).
 
 ### Background jobs
 

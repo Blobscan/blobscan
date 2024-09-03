@@ -1,5 +1,6 @@
+import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+
 import { BlobStorageError } from "./errors";
-import type { BlobStorageName } from "./types";
 
 export interface BlobStorageConfig {
   chainId: number;

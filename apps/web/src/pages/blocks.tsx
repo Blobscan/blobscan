@@ -1,16 +1,15 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 
-import { getFilterParams } from "~/utils/filter";
-import { getPaginationParams } from "~/utils/pagination";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
+import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { DeserializedBlock } from "~/utils";
 import {
@@ -58,17 +57,33 @@ export const BLOCKS_TABLE_HEADERS = [
 ];
 
 const Blocks: NextPage = function () {
-  const router = useRouter();
-  const { p, ps } = getPaginationParams(router.query);
-  const filters = getFilterParams(router.query);
+  const {
+    from,
+    p,
+    ps,
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
+  } = useQueryParams();
   const {
     data: rawBlocksData,
     isLoading,
     error,
   } = api.block.getAll.useQuery({
+    from,
     p,
     ps,
-    ...filters,
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
   });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {
@@ -209,17 +224,21 @@ const Blocks: NextPage = function () {
   }
 
   return (
-    <PaginatedTable
-      title={`Blocks ${totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}`}
-      isLoading={isLoading}
-      headers={BLOCKS_TABLE_HEADERS}
-      rows={blocksRows}
-      totalItems={totalBlocks}
-      paginationData={{ pageSize: ps, page: p }}
-      isExpandable
-      rowSkeletonHeight={44}
-      tableTopSlot={<Filters enableSlotFilter />}
-    />
+    <>
+      <Header>
+        Blocks {totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}
+      </Header>
+      <Filters />
+      <PaginatedTable
+        isLoading={isLoading}
+        headers={BLOCKS_TABLE_HEADERS}
+        rows={blocksRows}
+        totalItems={totalBlocks}
+        paginationData={{ pageSize: ps, page: p }}
+        isExpandable
+        rowSkeletonHeight={44}
+      />
+    </>
   );
 };
 
