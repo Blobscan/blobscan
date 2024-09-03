@@ -5,7 +5,7 @@ import { convertWei, findBestUnit } from "@blobscan/eth-units";
 
 type ScaledWeiAmounts = {
   unit: EtherUnit;
-  scaledValues: string[] | undefined;
+  scaledValues?: string[];
 };
 
 export function useScaledWeiAmounts(arr?: number[], toUnit?: EtherUnit) {
@@ -13,11 +13,10 @@ export function useScaledWeiAmounts(arr?: number[], toUnit?: EtherUnit) {
     if (!arr) {
       return {
         unit: "wei",
-        scaledValues: undefined,
       };
     }
 
-    const unit = toUnit ? toUnit : findBestUnit(Math.max(...arr));
+    const unit = toUnit ?? findBestUnit(Math.max(...arr));
 
     return {
       unit,
