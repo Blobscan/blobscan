@@ -55,7 +55,10 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
               },
             ],
           },
-          orderBy: [{ epochIdx: "asc" }],
+          orderBy: [
+            { id: 'desc' },
+            { epochIdx: "asc" }
+          ],
           take: listLimit,
         })
         .then((income) =>

@@ -57,6 +57,8 @@ const Validator: NextPage = function () {
     return <div>not found validator rewards data</div>;
   }
 
+  incomeData.epochIdx.reverse();
+  incomeData.incomeGWei.reverse();
   for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
     const diff = (incomeData.epochIdx[idx + 1] as bigint) - (incomeData.epochIdx[idx] as bigint);
 

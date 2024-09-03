@@ -65,7 +65,7 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
         const date = normalizeTimestamp(value);
 
         return `
-        ${date.format("YYYY/HH/DD HH:mm:ss")}
+        ${date.format("YYYY/MM/DD HH:mm:ss")}
         (Epoch ${epochIdx[axleTimestamp.indexOf(date.unix())]})
         `;
       }}
