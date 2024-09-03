@@ -4,8 +4,9 @@ import type { EChartOption } from "echarts";
 import { prettyFormatWei } from "@blobscan/eth-units";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
+import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyTransactionStats } from "~/types";
-import { buildTimeSeriesOptions, useArrayBestUnit } from "~/utils";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgMaxBlobGasFeeChartProps = {
   days: DailyTransactionStats["days"];
@@ -16,7 +17,7 @@ export type DailyAvgMaxBlobGasFeeChartProps = {
 export const DailyAvgMaxBlobGasFeeChart: FC<
   Partial<DailyAvgMaxBlobGasFeeChartProps>
 > = function ({ days, avgMaxBlobGasFees, compact = false }) {
-  const { converted, unit } = useArrayBestUnit(avgMaxBlobGasFees);
+  const { scaledValues, unit } = useScaledWeiAmounts(avgMaxBlobGasFees);
 
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
@@ -31,7 +32,7 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
     series: [
       {
         name: "Avg. Max Blob Gas Fees",
-        data: converted,
+        data: scaledValues,
         type: compact ? "line" : "bar",
         smooth: true,
       },

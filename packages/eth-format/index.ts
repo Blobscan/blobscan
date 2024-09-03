@@ -63,23 +63,6 @@ export function findBestUnit(wei: EthAmount): EtherUnit {
 }
 
 /**
- * This function converts an array of `wei` values to the best unit
- * and returns the converted values and the best unit.
- */
-export function arrayBestUnit(arr: number[]): {
-  unit: EtherUnit;
-  converted: string[];
-} {
-  const maxVal = Math.max(...arr);
-  const unit = findBestUnit(maxVal);
-
-  return {
-    converted: arr.map((value) => convertWei(value, unit)),
-    unit,
-  };
-}
-
-/**
  * This function moves the decimal point to the left by `decimals` places.
  */
 export function shiftDecimal(value: EthAmount, decimals: number): string {

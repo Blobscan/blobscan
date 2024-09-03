@@ -2,12 +2,9 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
+import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyBlockStats } from "~/types";
-import {
-  buildTimeSeriesOptions,
-  formatNumber,
-  useArrayBestUnit,
-} from "~/utils";
+import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyAvgBlobGasPriceChartProps = {
   days: DailyBlockStats["days"];
@@ -17,7 +14,7 @@ export type DailyAvgBlobGasPriceChartProps = {
 export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
 > = function ({ days, avgBlobGasPrices }) {
-  const { converted, unit } = useArrayBestUnit(avgBlobGasPrices);
+  const { scaledValues, unit } = useScaledWeiAmounts(avgBlobGasPrices);
 
   const options: EChartOption<EChartOption.SeriesBar> = {
     ...buildTimeSeriesOptions({
@@ -30,7 +27,7 @@ export const DailyAvgBlobGasPriceChart: FC<
     series: [
       {
         name: "Avg. Blob Gas Prices",
-        data: converted,
+        data: scaledValues,
         type: "bar",
       },
     ],
