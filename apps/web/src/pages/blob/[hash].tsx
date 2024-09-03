@@ -17,6 +17,7 @@ import type { DropdownProps } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import type { Rollup } from "~/types";
 import {
@@ -92,6 +93,12 @@ const Blob: NextPage = function () {
       });
     }
     detailsFields.push(
+      {
+        name: "Status",
+        value: blob.transactions[0] && (
+          <BlockStatus blockNumber={blob.transactions[0].blockNumber} />
+        ),
+      },
       {
         name: "Versioned Hash",
         value: <Copyable value={blob.versionedHash} />,
