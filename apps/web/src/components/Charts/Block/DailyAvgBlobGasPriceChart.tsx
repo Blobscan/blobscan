@@ -21,6 +21,7 @@ export const DailyAvgBlobGasPriceChart: FC<
       dates: days,
       axisFormatters: {
         yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
+        yAxisLabel: (value) => `${formatNumber(value)} ${unit}`,
       },
       yUnit: "ethereum",
     }),
