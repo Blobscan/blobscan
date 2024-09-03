@@ -26,9 +26,13 @@ export function CopyToClipboard({
       <TooltipContent>{isCopied ? "Copied!" : label}</TooltipContent>
       <TooltipTrigger
         className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
-        onClick={() => {
-          navigator.clipboard.writeText(value);
-          setIsCopied(true);
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(value);
+            setIsCopied(true);
+          } catch (error) {
+            console.error("Failed to copy to clipboard", error);
+          }
         }}
       >
         {isCopied ? (
