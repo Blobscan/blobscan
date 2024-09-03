@@ -9,13 +9,3 @@
     margin: 0;
   }
 }
-
-@layer utilities {
-  .tailwind-datepicker > div > div {
-    @apply dark:bg-controlBackground-dark;
-  }
-
-  .tailwind-datepicker > input {
-    @apply focus:border-controlBorderHighlight-dark focus:shadow-none focus:ring-transparent dark:bg-controlBackground-dark;
-  }
-}

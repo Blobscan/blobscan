@@ -12,6 +12,8 @@ type QueryParams = {
   rollup?: LowercaseRollup | "null";
   startDate?: Date;
   endDate?: Date;
+  startBlock?: number;
+  endBlock?: number;
 };
 
 const DEFAULT_INITIAL_PAGE_SIZE = 50;
@@ -29,7 +31,8 @@ export function useQueryParams() {
       return;
     }
 
-    const { from, p, ps, rollup, startDate, endDate } = router.query;
+    const { from, p, ps, rollup, startDate, endDate, startBlock, endBlock } =
+      router.query;
 
     setQueryParams({
       from: (from as string)?.toLowerCase(),
@@ -44,6 +47,8 @@ export function useQueryParams() {
         : undefined,
       startDate: startDate ? new Date(startDate as string) : undefined,
       endDate: endDate ? new Date(endDate as string) : undefined,
+      startBlock: parseInt(startBlock as string) || undefined,
+      endBlock: parseInt(endBlock as string) || undefined,
     });
   }, [router]);
 

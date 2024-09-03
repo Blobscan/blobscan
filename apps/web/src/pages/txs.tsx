@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { Filters } from "~/components/Filters";
+import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
@@ -81,7 +83,8 @@ export const TRANSACTIONS_TABLE_HEADERS = [
 ];
 
 const Txs: NextPage = function () {
-  const { from, p, ps, rollup, startDate, endDate } = useQueryParams();
+  const { from, p, ps, rollup, startDate, endDate, startBlock, endBlock } =
+    useQueryParams();
 
   const {
     data: rawTxsData,
@@ -97,6 +100,8 @@ const Txs: NextPage = function () {
     rollup,
     startDate,
     endDate,
+    startBlock,
+    endBlock,
     expand: "block,blob",
   });
   const txsData = useMemo(() => {
@@ -265,17 +270,21 @@ const Txs: NextPage = function () {
   }
 
   return (
-    <PaginatedTable
-      title={`Blob Transactions ${
-        totalTransactions ? `(${formatNumber(totalTransactions)})` : ""
-      }`}
-      isLoading={isLoading}
-      headers={TRANSACTIONS_TABLE_HEADERS}
-      rows={transactionRows}
-      totalItems={totalTransactions}
-      paginationData={{ pageSize: ps, page: p }}
-      isExpandable
-    />
+    <>
+      <Header>
+        Blob Transactions{" "}
+        {totalTransactions ? `(${formatNumber(totalTransactions)})` : ""}
+      </Header>
+      <Filters />
+      <PaginatedTable
+        isLoading={isLoading}
+        headers={TRANSACTIONS_TABLE_HEADERS}
+        rows={transactionRows}
+        totalItems={totalTransactions}
+        paginationData={{ pageSize: ps, page: p }}
+        isExpandable
+      />
+    </>
   );
 };
 
