@@ -30,7 +30,10 @@ export function formatWei(
  * is preserved. Instead, this function provides a more human-readable
  * representation of the value.
  */
-export function prettyFormatWei(wei: bigint, toUnit: EtherUnit = "Gwei") {
+export function prettyFormatWei(
+  wei: string | number | bigint,
+  toUnit: EtherUnit = "Gwei"
+) {
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
   const formatted = compactFormatter.format(converted);
   return `${formatted} ${toUnit}`;
@@ -49,8 +52,8 @@ export function convertWei(
 /**
  * This function finds the best unit to display the value of `wei`.
  */
-export function findBestUnit(wei: bigint): EtherUnit {
-  const length = wei.toString().length;
+export function findBestUnit(wei: bigint | string | number): EtherUnit {
+  const length = countIntegerDigits(wei);
 
   if (length >= ETH_UNITS.ether) {
     return "ether";
@@ -61,6 +64,27 @@ export function findBestUnit(wei: bigint): EtherUnit {
   }
 
   return "wei";
+}
+
+/**
+ * Returns the number of integer digits in the value.
+ */
+export function countIntegerDigits(value: string | number | bigint): number {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    return 0; // Return 0 for Infinity, -Infinity, and NaN
+  }
+
+  value = value.toString();
+
+  const negative = value.startsWith("-");
+
+  if (negative) {
+    value = value.slice(1);
+  }
+
+  const [integer = ""] = value.split(".");
+
+  return integer.length;
 }
 
 /**

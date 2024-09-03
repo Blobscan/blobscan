@@ -4,7 +4,7 @@ import { formatWei, findBestUnit } from "@blobscan/eth-units";
 import type { EtherUnit } from "@blobscan/eth-units";
 
 type Props = {
-  amount: bigint;
+  amount: bigint | number | string;
   toUnit?: EtherUnit;
 };
 
