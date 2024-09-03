@@ -66,10 +66,6 @@ function formatMetric(
       formattedValue = formatBytes(value);
       break;
     case "ethereum":
-      if (typeof value == "number") {
-        value = BigInt(Math.round(value));
-      }
-
       formattedValue = prettyFormatWei(value, "Gwei");
       break;
     case "percentage":

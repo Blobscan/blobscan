@@ -53,11 +53,7 @@ export function ExplorerDetails() {
       name: "Blob gas price",
       icon: <Gas className="h-4 w-4" />,
       value: latestBlock && (
-        <EtherUnitDisplay
-          amount={BigInt(
-            Math.round(Number(latestBlock.blobGasPrice.toString()))
-          )}
-        />
+        <EtherUnitDisplay amount={latestBlock.blobGasPrice.toString()} />
       ),
     },
   ];
