@@ -27,8 +27,7 @@
     "jsonwebtoken": "^9.0.0",
     "superjson": "1.9.1",
     "trpc-openapi": "^1.2.0",
-    "viem": "^2.17.4",
-    "@floating-ui/react": "*"
+    "viem": "^2.17.4"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2"
