@@ -12,7 +12,7 @@ import Loading from "~/icons/loading.svg";
 import NextError from "~/pages/_error";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
-import { Input } from "../Input";
+import { Input } from "../Inputs/Input";
 import { SearchResults } from "./SearchResults";
 import type { SearchResultsProps } from "./SearchResults";
 
@@ -116,6 +116,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       >
         <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <Input
+            variant="outline"
             type="text"
             name="search"
             id="search"

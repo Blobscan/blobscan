@@ -1,9 +1,9 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { prisma } from "@blobscan/db";
 import type { BlobscanPrismaClient, PrismaClient } from "@blobscan/db";
-import { testValidError } from "@blobscan/test";
+import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
+import { testValidError } from "@blobscan/test";
 
 import { PostgresStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";

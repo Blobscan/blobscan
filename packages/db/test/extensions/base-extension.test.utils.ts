@@ -2,8 +2,8 @@ import type { Address as AddressEntity } from "@prisma/client";
 
 import { omitDBTimestampFields } from "@blobscan/test";
 
-import type { WithoutTimestampFields } from "../../prisma";
 import { prisma } from "../../prisma";
+import type { WithoutTimestampFields } from "../../prisma/types";
 
 export type UpsertAddrFromTxsInput = Parameters<
   typeof prisma.address.upsertAddressesFromTransactions

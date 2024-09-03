@@ -6,7 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { Button } from "./Button";
-import { Input } from "./Input";
+import { Input } from "./Inputs/Input";
 
 type NavigationButton = {
   disabled?: boolean;
@@ -111,6 +111,7 @@ export const Pagination: FC<PaginationProps> = function ({
           <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
             <div className="w-20 font-light">
               <Input
+                variant="outline"
                 disabled={isUndefined}
                 className="text-sm"
                 type="number"

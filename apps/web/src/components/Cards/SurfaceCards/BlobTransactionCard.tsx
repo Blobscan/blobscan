@@ -42,6 +42,7 @@ type BlobTransactionCardProps = Partial<{
     "versionedHash" | "index" | "size"
   >[];
   compact?: boolean;
+  className?: string;
 }>;
 
 const TableCol: FC<{ children: React.ReactNode }> = function ({ children }) {
@@ -69,6 +70,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   } = {},
   blobs: blobsOnTx,
   compact,
+  className,
 }) {
   const [opened, setOpened] = useState(false);
   const breakpoint = useBreakpoint();
@@ -83,7 +85,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   return (
     <div>
       <SurfaceCardBase
-        className={compact ? "rounded" : "rounded-none rounded-t-md"}
+        className={`${className} ${
+          compact ? "rounded" : "rounded-none rounded-t-md"
+        }`}
       >
         <div className="flex flex-col text-sm">
           {hash ? (

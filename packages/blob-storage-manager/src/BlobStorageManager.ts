@@ -1,16 +1,11 @@
+import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { api, SemanticAttributes } from "@blobscan/open-telemetry";
 
 import type { BlobStorage } from "./BlobStorage";
 import { BlobStorageManagerError } from "./errors";
 import type { BlobStorageError } from "./errors";
 import { tracer, updateBlobStorageMetrics } from "./instrumentation";
-import type {
-  Blob,
-  BlobReference,
-  BlobStorageName,
-  StorageOf,
-  StoreOptions,
-} from "./types";
+import type { Blob, BlobReference, StorageOf, StoreOptions } from "./types";
 import { calculateBlobBytes, removeDuplicatedStorages } from "./utils";
 
 type GetBlobOperation = [BlobStorageName, () => Promise<string>];

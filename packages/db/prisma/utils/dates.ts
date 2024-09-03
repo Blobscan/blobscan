@@ -1,16 +1,6 @@
 import dayjs from "@blobscan/dayjs";
 
-export type RawDate = string | Date | dayjs.Dayjs;
-
-export type RawDatePeriod = {
-  from?: RawDate;
-  to?: RawDate;
-};
-
-export type DatePeriod = {
-  from?: string;
-  to?: string;
-};
+import type { DatePeriod, RawDatePeriod } from "../types";
 
 export function normalizeDate(date: string | Date | dayjs.Dayjs) {
   let date_: dayjs.Dayjs;

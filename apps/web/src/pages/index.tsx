@@ -209,9 +209,7 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlockCard />
-                      </div>
+                      <BlockCard className={CARD_HEIGHT} key={i} />
                     ))}
                 </div>
               ) : (
@@ -219,9 +217,11 @@ const Home: NextPage = () => {
                   items={blocks?.map((b) => ({
                     id: b.hash,
                     element: (
-                      <div className={CARD_HEIGHT} key={b.hash}>
-                        <BlockCard block={b} />
-                      </div>
+                      <BlockCard
+                        className={CARD_HEIGHT}
+                        block={b}
+                        key={b.hash}
+                      />
                     ),
                   }))}
                 />
@@ -249,9 +249,11 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        compact
+                        key={i}
+                      />
                     ))}
                 </div>
               ) : (
@@ -259,21 +261,21 @@ const Home: NextPage = () => {
                   items={transactions.map((tx) => ({
                     id: tx.hash,
                     element: (
-                      <div className={CARD_HEIGHT} key={tx.hash}>
-                        <BlobTransactionCard
-                          transaction={{
-                            from: tx.from,
-                            to: tx.to,
-                            hash: tx.hash,
-                            rollup: tx.rollup,
-                            blockTimestamp: tx.blockTimestamp,
-                            blobGasBaseFee: tx.blobGasBaseFee,
-                            blobGasMaxFee: tx.blobGasMaxFee,
-                          }}
-                          blobs={tx.blobs}
-                          compact
-                        />
-                      </div>
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        key={tx.hash}
+                        transaction={{
+                          from: tx.from,
+                          to: tx.to,
+                          hash: tx.hash,
+                          rollup: tx.rollup,
+                          blockTimestamp: tx.blockTimestamp,
+                          blobGasBaseFee: tx.blobGasBaseFee,
+                          blobGasMaxFee: tx.blobGasMaxFee,
+                        }}
+                        blobs={tx.blobs}
+                        compact
+                      />
                     ),
                   }))}
                 />
@@ -300,9 +302,11 @@ const Home: NextPage = () => {
                   {Array(LATEST_ITEMS_LENGTH)
                     .fill(0)
                     .map((_, i) => (
-                      <div className={CARD_HEIGHT} key={i}>
-                        <BlobTransactionCard compact />
-                      </div>
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        compact
+                        key={i}
+                      />
                     ))}
                 </div>
               ) : (
@@ -310,9 +314,13 @@ const Home: NextPage = () => {
                   items={blobs.map((b) => ({
                     id: b.versionedHash,
                     element: (
-                      <div className={CARD_HEIGHT} key={b.versionedHash}>
-                        <BlobCard blob={b} transactions={[b.tx]} compact />
-                      </div>
+                      <BlobCard
+                        blob={b}
+                        transactions={[b.tx]}
+                        compact
+                        key={b.versionedHash}
+                        className={CARD_HEIGHT}
+                      />
                     ),
                   }))}
                 />

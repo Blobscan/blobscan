@@ -172,8 +172,10 @@ const Blob: NextPage = function () {
                       value: selectedBlobViewMode,
                       label: selectedBlobViewMode,
                     }}
-                    onChange={({ value: newViewMode }) =>
-                      setSelectedBlobViewMode(newViewMode as BlobViewMode)
+                    onChange={(option) =>
+                      option
+                        ? setSelectedBlobViewMode(option.value as BlobViewMode)
+                        : undefined
                     }
                   />
                 </div>
