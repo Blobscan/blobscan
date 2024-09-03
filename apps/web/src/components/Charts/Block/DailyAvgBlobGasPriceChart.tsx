@@ -25,6 +25,9 @@ export const DailyAvgBlobGasPriceChart: FC<
       },
       yUnit: "ethereum",
     }),
+    grid: {
+      containLabel: true,
+    },
     series: [
       {
         name: "Avg. Blob Gas Prices",

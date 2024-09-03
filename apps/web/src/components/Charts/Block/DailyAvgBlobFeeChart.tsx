@@ -25,6 +25,9 @@ export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
         },
         yUnit: "ethereum",
       }),
+      grid: {
+        containLabel: true,
+      },
       series: [
         {
           name: "Avg. Blob Fees",

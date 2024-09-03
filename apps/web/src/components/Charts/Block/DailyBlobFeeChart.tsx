@@ -27,6 +27,9 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
         },
         yUnit: "ethereum",
       }),
+      grid: {
+        containLabel: true,
+      },
       series: [
         {
           name: "Blob Fees",
