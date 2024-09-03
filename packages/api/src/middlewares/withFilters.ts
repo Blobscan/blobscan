@@ -1,4 +1,5 @@
-import type { $Enums, Prisma } from "@blobscan/db";
+import type { Prisma } from "@blobscan/db";
+import type { Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -142,9 +143,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
 
     filters.transactionRollup =
-      rollup === "null"
-        ? null
-        : (rollup?.toUpperCase() as $Enums.Rollup | undefined);
+      rollup === "null" ? null : (rollup?.toUpperCase() as Rollup | undefined);
     filters.sort = sort;
   }
 

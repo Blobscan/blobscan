@@ -153,7 +153,7 @@ export const semanticColors = {
     dark: primary[400],
   },
   hint: {
-    light: warmGray[300],
+    light: warmGray[400],
     dark: coolGray[400],
   },
   icon: {

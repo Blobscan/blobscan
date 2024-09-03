@@ -17,5 +17,11 @@ export const Skeleton: FC<SkeletonProps> = function ({
 }) {
   const height_ = height ?? (size === "xs" ? 12 : size === "sm" ? 14 : 18);
 
-  return <ReactLoadingSkeleton height={height_} {...props} />;
+  return (
+    <ReactLoadingSkeleton
+      height={height_}
+      {...props}
+      style={{ lineHeight: "unset" }}
+    />
+  );
 };

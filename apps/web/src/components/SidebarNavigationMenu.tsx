@@ -6,8 +6,8 @@ import { Bars3Icon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 
 import { BlobscanLogo } from "./BlobscanLogo";
-import { Button } from "./Button";
 import { Collapsable } from "./Collapsable";
+import { IconButton } from "./IconButton";
 import { Rotable } from "./Rotable";
 import { SidePanel, useSidePanel } from "./SidePanel";
 import { ThemeModeButton } from "./ThemeModeButton";
@@ -23,7 +23,9 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <Button variant="icon" onClick={openSidebar} icon={<Bars3Icon />} />
+      <IconButton onClick={openSidebar}>
+        <Bars3Icon />
+      </IconButton>
       <SidePanel open={open} onClose={closeSidebar}>
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />

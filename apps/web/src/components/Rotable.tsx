@@ -22,9 +22,7 @@ export const Rotable: FC<RotableProps> = function ({
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className="-p cursor-pointer" onClick={onClick}>
-      <animated.div style={props} className="-mb-2">
-        {children}
-      </animated.div>
+      <animated.div style={props}>{children}</animated.div>
     </div>
   );
 };

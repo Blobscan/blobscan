@@ -20,7 +20,12 @@ export type PaginatedListLayoutProps = {
   emptyState?: ReactNode;
 };
 
-const PAGE_SIZES = [10, 25, 50, 100];
+const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+  { value: 10 },
+  { value: 25 },
+  { value: 50 },
+  { value: 100 },
+];
 
 export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   header,
@@ -42,7 +47,13 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   const hasItems = !items || items.length;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (newPageSize: number) =>
+    (option) => {
+      if (!option) {
+        return;
+      }
+
+      const newPageSize = option.value as number;
+
       void router.push({
         pathname: router.pathname,
         query: {
@@ -51,15 +62,19 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
            * Update the selected page to a lower value if we require less pages to show the
            * new amount of elements per page.
            */
-          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
+          p: Math.min(
+            Math.ceil(totalItems ?? 0 / (newPageSize as number)),
+            page
+          ),
           ps: newPageSize,
         },
-      }),
+      });
+    },
     [page, totalItems, router]
   );
 
   const handlePageSelection = useCallback<PaginationProps["onChange"]>(
-    (newPage) =>
+    (newPage) => {
       void router.push({
         pathname: router.pathname,
         query: {
@@ -67,7 +82,8 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
           p: newPage,
           ps: pageSize,
         },
-      }),
+      });
+    },
     [pageSize, router]
   );
 
@@ -110,8 +126,8 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               <div className="flex items-center justify-start gap-2">
                 Displayed items:
                 <Dropdown
-                  items={PAGE_SIZES}
-                  selected={pageSize}
+                  options={PAGE_SIZES_OPTIONS}
+                  selected={{ value: pageSize }}
                   width="w-full"
                   onChange={handlePageSizeSelection}
                 />
