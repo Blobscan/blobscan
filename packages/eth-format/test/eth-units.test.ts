@@ -1,6 +1,11 @@
-import { expect, test } from "vitest";
+import { expect, describe, test } from "vitest";
 
-import { convertWei, shiftDecimal, formatWei } from "../index";
+import {
+  convertWei,
+  shiftDecimal,
+  formatWei,
+  countIntegerDigits,
+} from "../index";
 
 test("converts wei", () => {
   expect(convertWei(BigInt("1"), "wei")).toBe("1");
@@ -358,4 +363,54 @@ test("can shift negative decimal string values", () => {
 
   expect(shiftDecimal("-123.123", 1)).toBe("-12.3123");
   expect(shiftDecimal("-123.123", 2)).toBe("-1.23123");
+});
+
+describe("countIntegerDigits", () => {
+  test("handles positive integers", () => {
+    expect(countIntegerDigits(123)).toBe(3);
+    expect(countIntegerDigits(1)).toBe(1);
+    expect(countIntegerDigits(1000)).toBe(4);
+  });
+
+  test("handles negative integers", () => {
+    expect(countIntegerDigits(-123)).toBe(3);
+    expect(countIntegerDigits(-1)).toBe(1);
+    expect(countIntegerDigits(-1000)).toBe(4);
+  });
+
+  test("handles zero", () => {
+    expect(countIntegerDigits(0)).toBe(1);
+  });
+
+  test("handles decimal numbers", () => {
+    expect(countIntegerDigits(123.45)).toBe(3);
+    expect(countIntegerDigits(-123.45)).toBe(3);
+    expect(countIntegerDigits(0.123)).toBe(1);
+    expect(countIntegerDigits(-0.123)).toBe(1);
+  });
+
+  test("handles string input", () => {
+    expect(countIntegerDigits("123")).toBe(3);
+    expect(countIntegerDigits("-123")).toBe(3);
+    expect(countIntegerDigits("123.45")).toBe(3);
+    expect(countIntegerDigits("-123.45")).toBe(3);
+  });
+
+  test("handles bigint input", () => {
+    expect(countIntegerDigits(BigInt("12345678901234567890"))).toBe(20);
+    expect(countIntegerDigits(BigInt("-12345678901234567890"))).toBe(20);
+  });
+
+  test("handles special number values", () => {
+    expect(countIntegerDigits(Infinity)).toBe(0);
+    expect(countIntegerDigits(-Infinity)).toBe(0);
+    expect(countIntegerDigits(NaN)).toBe(0);
+  });
+
+  test("handles edge cases", () => {
+    expect(countIntegerDigits("0.0")).toBe(1);
+    expect(countIntegerDigits("-0.0")).toBe(1);
+    expect(countIntegerDigits(".123")).toBe(0);
+    expect(countIntegerDigits("-.123")).toBe(0);
+  });
 });
