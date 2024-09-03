@@ -8,6 +8,10 @@ const compactFormatter = Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
+const fullwideFormatter = Intl.NumberFormat("fullwide", {
+  useGrouping: false,
+});
+
 /**
  * This function converts `wei` to the unit specified by `toUnit`,
  * adds commas to the integer part of the converted value,
@@ -69,7 +73,7 @@ export function countIntegerDigits(value: string | number | bigint): number {
     return 0; // Return 0 for Infinity, -Infinity, and NaN
   }
 
-  value = value.toString();
+  value = fullwideFormatter.format(value as Intl.StringNumericLiteral);
 
   const negative = value.startsWith("-");
 
