@@ -74,86 +74,77 @@ export const Pagination: FC<PaginationProps> = function ({
   }, [selected]);
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onChange(pageInput);
-      }}
+    <nav
+      className={`flex gap-2 ${
+        inverseCompact ? "flex-col-reverse" : "flex-col"
+      }`}
     >
-      <nav
-        className={`flex gap-2 ${
-          inverseCompact ? "flex-col-reverse" : "flex-col"
-        }`}
-      >
-        <div className="block sm:hidden">
-          <div className="flex justify-between gap-2">
-            <FirstButton disabled={disableFirst} onChange={onChange} />
-            <LastButton
-              disabled={disableLast}
-              lastPage={pages ?? 0}
-              onChange={onChange}
-            />
-          </div>
-        </div>
-        <div className="flex w-full justify-between gap-2 align-middle">
-          <div className="hidden sm:block">
-            <FirstButton disabled={disableFirst} onChange={onChange} />
-          </div>
-          <Button
-            disabled={disableFirst}
-            variant="outline"
-            size="sm"
-            onClick={() => onChange(Math.max(1, selected - 1))}
-          >
-            <span className="sr-only">Previous</span>
-            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-          </Button>
-          <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
-            <div className="w-20 font-light">
-              <Input
-                variant="outline"
-                disabled={isUndefined}
-                className="text-sm"
-                type="number"
-                min={1}
-                max={pages}
-                step={1}
-                value={pageInput}
-                onChange={(e) => setPageInput(Number(e.target.value))}
-              />
-            </div>
-            <div className="self-center font-normal">
-              {" "}
-              of{" "}
-              {isUndefined ? (
-                <span>
-                  <Skeleton width={33} />
-                </span>
-              ) : (
-                pages
-              )}
-            </div>
-          </div>
-          <Button
+      <div className="block sm:hidden">
+        <div className="flex justify-between gap-2">
+          <FirstButton disabled={disableFirst} onChange={onChange} />
+          <LastButton
             disabled={disableLast}
-            variant="outline"
-            size="sm"
-            onClick={
-              pages ? () => onChange(Math.min(pages, selected + 1)) : NOOP
-            }
-          >
-            <span className="sr-only">Next</span>
-            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-          </Button>
-          <div className="hidden sm:block">
-            <LastButton
-              disabled={disableLast}
-              lastPage={pages ?? 0}
-              onChange={onChange}
+            lastPage={pages ?? 0}
+            onChange={onChange}
+          />
+        </div>
+      </div>
+      <div className="flex w-full justify-between gap-2 align-middle">
+        <div className="hidden sm:block">
+          <FirstButton disabled={disableFirst} onChange={onChange} />
+        </div>
+        <Button
+          disabled={disableFirst}
+          variant="outline"
+          size="sm"
+          onClick={() => onChange(Math.max(1, selected - 1))}
+        >
+          <span className="sr-only">Previous</span>
+          <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+        </Button>
+        <div className="flex items-center gap-2 text-sm text-contentSecondary-light dark:text-contentSecondary-dark">
+          <div className="w-20 font-light">
+            <Input
+              variant="outline"
+              disabled={isUndefined}
+              className="text-sm"
+              type="number"
+              min={1}
+              max={pages}
+              step={1}
+              value={pageInput}
+              onChange={(e) => setPageInput(Number(e.target.value))}
             />
           </div>
+          <div className="self-center font-normal">
+            {" "}
+            of{" "}
+            {isUndefined ? (
+              <span>
+                <Skeleton width={33} />
+              </span>
+            ) : (
+              pages
+            )}
+          </div>
         </div>
-      </nav>
-    </form>
+        <Button
+          disabled={disableLast}
+          variant="outline"
+          size="sm"
+          onClick={pages ? () => onChange(Math.min(pages, selected + 1)) : NOOP}
+        >
+          <span className="sr-only">Next</span>
+          <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+        </Button>
+        <div className="hidden sm:block">
+          <LastButton
+            disabled={disableLast}
+            lastPage={pages ?? 0}
+            onChange={onChange}
+          />
+        </div>
+      </div>
+    </nav>
   );
 };
