@@ -79,7 +79,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
             cells: [
               {
                 item: (
-                  <span>
+                  <span className="text-base">
                     Class Declarations ({decodedBlob.classDeclarations.length})
                   </span>
                 ),
@@ -119,7 +119,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
             cells: [
               {
                 item: (
-                  <div className="relative w-full">
+                  <div className="relative w-full text-base">
                     State Updates ({decodedBlob.stateUpdatesSize}){" "}
                     <div className="absolute right-10 top-1">
                       <div className="flex items-center justify-center gap-2">
@@ -174,42 +174,31 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
               },
             ],
             expandItem: storageUpdates.length ? (
-              <div className="mb-4  w-full rounded-lg bg-primary-50 px-8 dark:bg-primary-800">
+              <div className="mb-4 w-full bg-primary-50 px-3 dark:bg-primary-800">
                 <Table
-                  className="mb-4 mt-2 max-h-[420px]"
+                  className="mb-4 mt-2 max-h-[420px] w-full"
                   size="xs"
                   alignment="center"
-                  variant="simple"
                   headers={[
                     {
                       cells: [
                         {
-                          item: `Storage Updades (${storageUpdates.length})`,
-                          className:
-                            "dark:border-border-dark/20 bg-primary-50 px-8 dark:bg-primary-800",
+                          item: `Storage Updades`,
                           spanFullRow: true,
                         },
                       ],
-                      className:
-                        "border-none bg-primary-50 px-8 dark:bg-primary-800",
                     },
                     {
                       cells: [
                         {
                           item: "Key",
                           alignment: "left",
-                          className:
-                            "dark:border-border-dark/20 bg-primary-50 px-8 dark:bg-primary-800",
                         },
                         {
                           item: "Value",
                           alignment: "left",
-                          className:
-                            "dark:border-border-dark/20 bg-primary-50 px-8 dark:bg-primary-800",
                         },
                       ],
-                      className:
-                        "dark:border-border-dark/20 bg-primary-50 px-8 dark:bg-primary-800",
                     },
                   ]}
                   rows={storageUpdates.map(({ key, value }) => ({
@@ -226,9 +215,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
                   }))}
                 />
               </div>
-            ) : (
-              <div />
-            ),
+            ) : undefined,
           })
         )}
       />

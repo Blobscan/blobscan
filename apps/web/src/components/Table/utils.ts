@@ -1,4 +1,8 @@
-import type { DetailedHTMLProps, ThHTMLAttributes } from "react";
+import type {
+  DetailedHTMLProps,
+  TableHTMLAttributes,
+  ThHTMLAttributes,
+} from "react";
 import cn from "classnames";
 
 import type { Size } from "~/types";
@@ -8,7 +12,7 @@ export type Alignment = "left" | "center" | "right";
 export type Variant = "simple" | "normal" | "transparent";
 
 export interface TableElementProps {
-  className?: string;
+  className?: TableHTMLAttributes<HTMLTableCellElement>["className"];
   alignment?: Alignment;
   size?: Size;
   variant?: Variant;

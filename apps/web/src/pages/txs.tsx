@@ -196,7 +196,6 @@ const Txs: NextPage = function () {
                 className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
                 size="xs"
                 alignment="left"
-                variant="transparent"
                 headers={headers}
                 rows={rows}
               />

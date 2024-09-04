@@ -1,6 +1,9 @@
 import { Fragment } from "react";
 import type { FC, ReactNode } from "react";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import cn from "classnames";
+import { twMerge } from "tailwind-merge";
 
 import type { Size } from "~/types";
 import { TableCell } from "./TableCell";
@@ -8,7 +11,20 @@ import type { TableCellProps } from "./TableCell";
 import { TableHeader } from "./TableHeader";
 import type { TableHeaderProps } from "./TableHeader";
 import { ExpandableTableRow, TableRow } from "./TableRow";
-import type { Alignment, Variant } from "./utils";
+import type { Alignment } from "./utils";
+
+const tableVariants = cva("px-4 sm:px-6 lg:px-8", {
+  variants: {
+    variant: {
+      outline: `
+          border
+          border-border-light
+          dark:border-border-dark
+          rounded-lg
+        `,
+    },
+  },
+});
 
 type HeaderCell = {
   item: ReactNode;
@@ -40,14 +56,13 @@ export type TableProps = {
   className?: string;
   size?: Size;
   alignment?: Alignment;
-  variant?: Variant;
   fixedColumnsWidth?: boolean;
-};
+} & VariantProps<typeof tableVariants>;
 
 export const Table: FC<TableProps> = function ({
+  variant,
   alignment = "left",
   size = "md",
-  variant = "normal",
   className,
   expandableRowsMode,
   headers,
@@ -55,7 +70,7 @@ export const Table: FC<TableProps> = function ({
   fixedColumnsWidth = false,
 }) {
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className={twMerge(tableVariants({ variant }))}>
       <div className="flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div
@@ -94,7 +109,7 @@ export const Table: FC<TableProps> = function ({
                                 size={size}
                                 spanFullRow={spanFullRow}
                                 sticky={sticky}
-                                variant={variant}
+                                // variant={variant}
                                 {...props}
                               >
                                 {item}
@@ -119,11 +134,15 @@ export const Table: FC<TableProps> = function ({
                           key={i}
                           alignment={alignment}
                           size={size}
-                          variant={variant}
+                          // variant={variant}
                           spanFullRow={spanFullRow}
                           sticky={sticky}
                           className={`${generalRowClassName} ${
-                            expandableRowsMode ? "border-none" : ""
+                            expandableRowsMode
+                              ? expandItem
+                                ? "border-none"
+                                : "border-b dark:border-border-dark/40"
+                              : ""
                           } truncate`}
                           {...props}
                         >
