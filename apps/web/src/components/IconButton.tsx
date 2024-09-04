@@ -36,6 +36,7 @@ const iconVariants = cva(
         `,
       },
       size: {
+        sm: "[&>*]:h-4 [&>*]:w-4",
         md: "[&>*]:h-5 [&>*]:w-5",
       },
     },
