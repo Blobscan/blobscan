@@ -3,16 +3,25 @@ import type { FC } from "react";
 
 import type { DecodedStarknetBlob } from "@blobscan/blob-decoder";
 
+import { Link } from "~/components/Link";
 import { Table } from "~/components/Table";
 import { Toggle } from "~/components/Toggle";
+import { hexToBigInt } from "~/utils";
 import { ErrorMessage } from "../ErrorMessage";
 import type { BlobViewProps } from "../index";
 
 export type StarknetBlobViewProps = BlobViewProps<DecodedStarknetBlob>;
 
-function hexToBigInt(hex: string): string {
-  return BigInt(hex).toString(10);
+const STARKNET_BASE_URL = "https://starkscan.co";
+
+function buildContractUrl(contractAddress: string) {
+  return `${STARKNET_BASE_URL}/contract/${contractAddress}`;
 }
+
+function buildClassUrl(classHash: string) {
+  return `${STARKNET_BASE_URL}/class/${classHash}`;
+}
+
 export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
   data: decodedBlobProps,
 }) {
@@ -103,7 +112,15 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
           ({ classHash, compiledClassHash }) => ({
             cells: [
               {
-                item: classHash,
+                item: (
+                  <Link
+                    href={buildClassUrl(classHash)}
+                    isExternal
+                    hideExternalIcon
+                  >
+                    {classHash}
+                  </Link>
+                ),
               },
               {
                 item: compiledClassHash,
@@ -146,7 +163,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
                 item: "Contract Address",
               },
               {
-                item: "S. Updates",
+                item: "Updates",
               },
               {
                 item: "Nonce",
@@ -161,7 +178,15 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
           ({ contractAddress, newClassHash, nonce, storageUpdates }) => ({
             cells: [
               {
-                item: contractAddress,
+                item: (
+                  <Link
+                    href={buildContractUrl(contractAddress)}
+                    isExternal
+                    hideExternalIcon
+                  >
+                    {contractAddress}
+                  </Link>
+                ),
               },
               {
                 item: storageUpdates.length,
@@ -170,7 +195,15 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
                 item: nonce,
               },
               {
-                item: newClassHash,
+                item: newClassHash ? (
+                  <Link
+                    href={buildClassUrl(newClassHash)}
+                    isExternal
+                    hideExternalIcon
+                  >
+                    {newClassHash}
+                  </Link>
+                ) : null,
               },
             ],
             expandItem: storageUpdates.length ? (
