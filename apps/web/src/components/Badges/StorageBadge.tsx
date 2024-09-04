@@ -2,9 +2,10 @@ import type { FC, HTMLAttributes, ReactNode } from "react";
 import React from "react";
 import NextLink from "next/link";
 
-import type { BlobStorage, Size } from "~/types";
+import type { BlobStorage } from "~/types";
 import { capitalize } from "~/utils";
 import { StorageIcon } from "../StorageIcon";
+import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
 
 type StorageConfig = {
@@ -37,23 +38,24 @@ const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
   },
 };
 
-type StorageBadgeProps = {
-  size?: Size;
+type StorageBadgeProps = BadgeProps & {
   storage: BlobStorage;
   url: string;
 };
 
-export const StorageBadge: FC<StorageBadgeProps> = ({ size, storage, url }) => {
+export const StorageBadge: FC<StorageBadgeProps> = ({
+  storage,
+  url,
+  ...props
+}) => {
   const { icon, name, style } = STORAGE_CONFIGS[storage];
 
   return (
     <NextLink href={url} target={url !== "#" ? "_blank" : "_self"}>
-      <Badge
-        className={style}
-        icon={icon}
-        label={name ?? capitalize(storage)}
-        size={size}
-      />
+      <Badge className={style} {...props}>
+        {icon}
+        {name ?? capitalize(storage)}
+      </Badge>
     </NextLink>
   );
 };

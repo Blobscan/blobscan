@@ -1,58 +1,46 @@
-import type { ReactNode } from "react";
 import React from "react";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
 
-import type { Size } from "~/types";
+const badgeVariants = cva(
+  `
+    w-fit
+    flex
+    items-center
+    gap-1.5
+    rounded-full
+    px-2.5
+    py-0.5
+    transition-colors
+  `,
+  {
+    variants: {
+      size: {
+        xs: "text-xs",
+        sm: "text-sm",
+        md: "text-md",
+        lg: "text-lg",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  }
+);
 
-type BadgeProps = {
-  className?: string;
-  label?: ReactNode;
-  icon?: ReactNode;
-  size?: Size;
-};
-
-const BADGE_STYLES: Record<
-  Size,
-  { labelStyles: string; containerStyles?: string }
-> = {
-  xs: {
-    labelStyles: "text-xs",
-    containerStyles: "py-0.5",
-  },
-  sm: {
-    labelStyles: "text-sm",
-  },
-  md: {
-    labelStyles: "text-md",
-  },
-  lg: {
-    labelStyles: "text-lg",
-  },
-  xl: {
-    labelStyles: "text-lg",
-  },
-  "2xl": {
-    labelStyles: "text-lg",
-  },
-};
+export type BadgeProps = React.HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof badgeVariants>;
 
 export const Badge: React.FC<BadgeProps> = ({
-  className = "",
-  label,
-  icon,
-  size = "md",
+  className,
+  size,
+  children,
+  ...props
 }) => {
-  const { labelStyles, containerStyles } = BADGE_STYLES[size];
-
   return (
-    <div
-      className={`flex w-fit items-center gap-1.5 rounded-full px-2.5 transition-colors ${
-        containerStyles ?? "py-0.5"
-      } ${className}`}
-    >
-      {icon && (
-        <div className="text-content-light dark:text-content-dark">{icon}</div>
-      )}
-      <div className={labelStyles}>{label}</div>
+    <div className={twMerge(badgeVariants({ size }), className)} {...props}>
+      {children}
     </div>
   );
 };

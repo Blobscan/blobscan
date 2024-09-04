@@ -3,20 +3,17 @@ import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
-const variants = cva(
+import { Badge } from "./Badge";
+import type { BadgeProps } from "./Badge";
+
+const statusBadgeVariants = cva(
   `
-      rounded-lg
-      text-xs
-      font-medium
-      p-1.5
-      inline-block
-  
-      bg-opacity-10
-      dark:bg-opacity-10
-  
-      border
-      border-opacity-30
-      dark:border-opacity-30
+    bg-opacity-10
+    dark:bg-opacity-10
+
+    border
+    border-opacity-30
+    dark:border-opacity-30
   `,
   {
     variants: {
@@ -47,11 +44,17 @@ const variants = cva(
   }
 );
 
-type Props = React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof variants>;
+type StatusBadgeProps = BadgeProps & VariantProps<typeof statusBadgeVariants>;
 
-export const Indicator: FC<Props> = ({ className, variant, ...props }) => {
+export const StatusBadge: FC<StatusBadgeProps> = ({
+  className,
+  variant,
+  ...props
+}) => {
   return (
-    <div className={twMerge(variants({ variant }), className)} {...props} />
+    <Badge
+      className={twMerge(statusBadgeVariants({ variant }), className)}
+      {...props}
+    />
   );
 };
