@@ -5,7 +5,7 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { prettyFormatWei } from "@blobscan/eth-units";
+import { findBestUnit, prettyFormatWei } from "@blobscan/eth-units";
 
 import { formatBytes, formatNumber } from "~/utils";
 import { Card } from "./Card";
@@ -66,7 +66,7 @@ function formatMetric(
       formattedValue = formatBytes(value);
       break;
     case "ethereum":
-      formattedValue = prettyFormatWei(value, "Gwei");
+      formattedValue = prettyFormatWei(value, findBestUnit(value));
       break;
     case "percentage":
       formattedValue = `${formatNumber(value, mode, {
