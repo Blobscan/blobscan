@@ -23,6 +23,7 @@
     "@blobscan/env": "workspace:^0.0.1",
     "@blobscan/eth-units": "workspace:^0.0.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
+    "@floating-ui/react": "^0.26.23",
     "@blobscan/rollups": "workspace:^0.0.1",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",
