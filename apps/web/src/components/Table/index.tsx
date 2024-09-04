@@ -104,12 +104,14 @@ export const Table: FC<TableProps> = function ({
                                 <TableHeader className="sr-only w-12" />
                               )}
                               <TableHeader
-                                className={`${generalHeaderStyles} ${specificHeaderStyles} truncate`}
+                                className={twMerge(
+                                  generalHeaderStyles,
+                                  specificHeaderStyles
+                                )}
                                 alignment={alignment}
                                 size={size}
                                 spanFullRow={spanFullRow}
                                 sticky={sticky}
-                                // variant={variant}
                                 {...props}
                               >
                                 {item}
@@ -129,15 +131,23 @@ export const Table: FC<TableProps> = function ({
                     i
                   ) => {
                     const tableCells = cells.map(
-                      ({ item, spanFullRow, sticky, ...props }, i) => (
+                      (
+                        {
+                          item,
+                          spanFullRow,
+                          sticky,
+                          className: specificClassName,
+                          ...props
+                        },
+                        i
+                      ) => (
                         <TableCell
                           key={i}
                           alignment={alignment}
                           size={size}
-                          // variant={variant}
                           spanFullRow={spanFullRow}
                           sticky={sticky}
-                          className={`${generalRowClassName} ${
+                          className={`${generalRowClassName} ${specificClassName} ${
                             expandableRowsMode
                               ? expandItem
                                 ? "border-none"
