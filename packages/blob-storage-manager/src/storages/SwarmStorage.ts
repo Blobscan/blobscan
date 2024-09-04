@@ -1,12 +1,12 @@
 import { Bee } from "@ethersphere/bee-js";
-import { env } from "@blobscan/env";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+import { env } from "@blobscan/env";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
-import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
   batchId: string;
@@ -40,12 +40,8 @@ export class SwarmStorage extends BlobStorage {
   _beeClient: Bee;
   batchId: string;
 
-  protected constructor({
-    batchId,
-    beeEndpoint,
-    chainId,
-  }: SwarmStorageConfig) {
-    super(BLOB_STORAGE_NAMES.SWARM, chainId);
+  protected constructor({ batchId, beeEndpoint, chainId }: SwarmStorageConfig) {
+    super(BlobStorageName.SWARM, chainId);
 
     this.batchId = batchId;
     try {

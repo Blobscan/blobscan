@@ -1,4 +1,5 @@
-import { $Enums, prisma } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 
 import type { BlobStorage } from "../BlobStorage";
@@ -8,9 +9,6 @@ import {
   PostgresStorage,
   SwarmStorage,
 } from "../storages";
-import type { BlobStorageName } from "../types";
-
-export const BLOB_STORAGE_NAMES = $Enums.BlobStorage;
 
 export function removeDuplicatedStorages(
   blobStorages: BlobStorage[]
@@ -27,7 +25,7 @@ export async function createStorageFromEnv(
   const chainId = env.CHAIN_ID;
 
   switch (storageName) {
-    case BLOB_STORAGE_NAMES.GOOGLE: {
+    case BlobStorageName.GOOGLE: {
       if (
         !env.GOOGLE_STORAGE_BUCKET_NAME ||
         (!env.GOOGLE_SERVICE_KEY && !env.GOOGLE_STORAGE_API_ENDPOINT)
@@ -47,12 +45,12 @@ export async function createStorageFromEnv(
 
       return googleStorage;
     }
-    case BLOB_STORAGE_NAMES.POSTGRES: {
+    case BlobStorageName.POSTGRES: {
       const postgresStorage = await PostgresStorage.create({ chainId });
 
       return postgresStorage;
     }
-    case BLOB_STORAGE_NAMES.SWARM: {
+    case BlobStorageName.SWARM: {
       if (!env.BEE_ENDPOINT) {
         throw new Error(
           "Missing required env variable for SwarmStorage: BEE_ENDPOINT"
@@ -67,7 +65,7 @@ export async function createStorageFromEnv(
 
       return swarmStorage;
     }
-    case BLOB_STORAGE_NAMES.FILE_SYSTEM: {
+    case BlobStorageName.FILE_SYSTEM: {
       const fileSystemStorage = await FileSystemStorage.create({
         chainId,
         blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,

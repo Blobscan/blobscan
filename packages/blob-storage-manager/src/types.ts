@@ -1,4 +1,4 @@
-import type { $Enums } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
 import type { BlobStorageError } from "./errors";
 import type {
@@ -8,9 +8,7 @@ import type {
   SwarmStorage,
 } from "./storages";
 
-export type BlobStorageName = $Enums.BlobStorage;
-
-export type StorageOf<N extends BlobStorageName> = N extends "GOOGLE"
+export type StorageOf<N extends BlobStorage> = N extends "GOOGLE"
   ? GoogleStorage
   : N extends "SWARM"
   ? SwarmStorage
@@ -20,12 +18,12 @@ export type StorageOf<N extends BlobStorageName> = N extends "GOOGLE"
   ? FileSystemStorage
   : never;
 
-export type BlobReference<N extends BlobStorageName = BlobStorageName> = {
+export type BlobReference<N extends BlobStorage = BlobStorage> = {
   reference: string;
   storage: N;
 };
 
-export type StorageError<N extends BlobStorageName = BlobStorageName> = {
+export type StorageError<N extends BlobStorage = BlobStorage> = {
   storage: N;
   error: BlobStorageError;
 };
@@ -36,5 +34,5 @@ export type Blob = {
 };
 
 export type StoreOptions = {
-  selectedStorages: $Enums.BlobStorage[];
+  selectedStorages: BlobStorage[];
 };

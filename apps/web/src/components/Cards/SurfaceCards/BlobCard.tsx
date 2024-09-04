@@ -18,12 +18,14 @@ type BlobCardProps = Partial<{
   >;
   transactions: { rollup: Rollup | null }[];
   compact?: boolean;
+  className?: string;
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
   blob: { versionedHash, commitment, size, dataStorageReferences, proof } = {},
   transactions,
   compact,
+  className,
 }) => {
   const breakpoint = useBreakpoint();
   const isCompact =
@@ -33,7 +35,7 @@ const BlobCard: FC<BlobCardProps> = ({
     breakpoint === "default";
 
   return (
-    <SurfaceCardBase>
+    <SurfaceCardBase className={className}>
       <div className="flex flex-col gap-1 text-sm">
         {versionedHash ? (
           <div className="flex justify-between gap-2">
@@ -45,9 +47,9 @@ const BlobCard: FC<BlobCardProps> = ({
             </div>
             {transactions
               ?.filter((tx) => !!tx.rollup)
-              .map(({ rollup }) => (
-                <RollupIcon key={rollup} rollup={rollup as Rollup} />
-              ))}
+              .map(({ rollup }) =>
+                rollup ? <RollupIcon key={rollup} rollup={rollup} /> : null
+              )}
           </div>
         ) : (
           <Skeleton width={isCompact ? undefined : 630} />

@@ -2,19 +2,19 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { getPaginationParams } from "~/utils/pagination";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { EthIdenticon } from "~/components/EthIdenticon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { PaginatedListLayout } from "~/components/Layouts/PaginatedListLayout";
 import { api } from "~/api-client";
+import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import { buildAddressExternalUrl, deserializeFullTransaction } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
-  const { p, ps } = getPaginationParams(router.query);
+  const { p, ps } = useQueryParams();
   const address = (router.query.address as string | undefined) ?? "";
 
   const { data: serializedAddressTxs, error } = api.tx.getAll.useQuery<{

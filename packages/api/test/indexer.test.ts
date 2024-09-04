@@ -13,6 +13,9 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
+import { Rollup } from "@blobscan/db/prisma/enums";
+import { env } from "@blobscan/env";
+import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
 import {
   fixtures,
   omitDBTimestampFields,
@@ -23,7 +26,11 @@ import { appRouter } from "../src/app-router";
 import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
-import { INPUT_WITH_DUPLICATED_BLOBS, INPUT } from "./indexer.test.fixtures";
+import {
+  INPUT_WITH_DUPLICATED_BLOBS,
+  INPUT,
+  ROLLUP_BLOB_TRANSACTION_INPUT,
+} from "./indexer.test.fixtures";
 
 describe("Indexer router", async () => {
   let nonAuthorizedCaller: ReturnType<typeof appRouter.createCaller>;
@@ -89,67 +96,114 @@ describe("Indexer router", async () => {
         `);
       });
 
-      it("should index transactions correctly", async () => {
-        const indexedTxs = await authorizedContext.prisma.transaction
-          .findMany({
-            where: {
-              blockHash: INPUT.block.hash,
-            },
-            orderBy: [
-              {
-                blockNumber: "asc",
-              },
-              {
-                index: "asc",
-              },
-            ],
-          })
-          .then((r) => r.map(omitDBTimestampFields));
-        // const expectedBlobAsCalldataGasUsed = INPUT.transactions.map((tx) =>
-        //   INPUT.blobs
-        //     .filter((b) => b.txHash === tx.hash)
-        //     .reduce((acc, b) => acc + getEIP2028CalldataGas(b.data), 0)
-        // );
-        // const blobAsCalldataGasUsed = indexedTxs.map(
-        //   (tx) => tx.blobAsCalldataGasUsed
-        // );
-        const remainingParams = indexedTxs.map(
-          ({ blobAsCalldataGasUsed: _, ...remainingParams }) => remainingParams
-        );
+      describe("when indexing transactions", () => {
+        const expectedRollup = Rollup.ARBITRUM;
 
-        // TODO: Fix this test
-        // expect(
-        //   blobAsCalldataGasUsed,
-        //   "Transactions' blob as calldata gas used mismatch"
-        // ).toEqual(expectedBlobAsCalldataGasUsed);
-        expect(remainingParams).toMatchInlineSnapshot(`
-          [
-            {
-              "blockHash": "blockHash2010",
-              "blockNumber": 2010,
-              "blockTimestamp": 2023-09-01T13:50:21.000Z,
-              "fromId": "address9",
-              "gasPrice": "10000",
-              "hash": "txHash999",
-              "index": 0,
-              "maxFeePerBlobGas": "1800",
-              "rollup": null,
-              "toId": "address10",
-            },
-            {
-              "blockHash": "blockHash2010",
-              "blockNumber": 2010,
-              "blockTimestamp": 2023-09-01T13:50:21.000Z,
-              "fromId": "address7",
-              "gasPrice": "3000000",
-              "hash": "txHash1000",
-              "index": 1,
-              "maxFeePerBlobGas": "20000",
-              "rollup": null,
-              "toId": "address2",
-            },
-          ]
-        `);
+        beforeAll(() => {
+          ADDRESS_TO_ROLLUP_MAPPINGS.set(
+            env.CHAIN_ID,
+            new Map([
+              ...ROLLUP_BLOB_TRANSACTION_INPUT.transactions.map(
+                (tx) => [tx.from, expectedRollup] as [string, Rollup]
+              ),
+            ])
+          );
+        });
+
+        afterAll(() => {
+          ADDRESS_TO_ROLLUP_MAPPINGS.delete(env.CHAIN_ID);
+        });
+
+        it("should index transactions correctly", async () => {
+          const indexedTxs = await authorizedContext.prisma.transaction
+            .findMany({
+              where: {
+                blockHash: INPUT.block.hash,
+              },
+              orderBy: [
+                {
+                  blockNumber: "asc",
+                },
+                {
+                  index: "asc",
+                },
+              ],
+            })
+            .then((r) => r.map(omitDBTimestampFields));
+          // const expectedBlobAsCalldataGasUsed = INPUT.transactions.map((tx) =>
+          //   INPUT.blobs
+          //     .filter((b) => b.txHash === tx.hash)
+          //     .reduce((acc, b) => acc + getEIP2028CalldataGas(b.data), 0)
+          // );
+          // const blobAsCalldataGasUsed = indexedTxs.map(
+          //   (tx) => tx.blobAsCalldataGasUsed
+          // );
+          const remainingParams = indexedTxs.map(
+            ({ blobAsCalldataGasUsed: _, ...remainingParams }) =>
+              remainingParams
+          );
+
+          // TODO: Fix this test
+          // expect(
+          //   blobAsCalldataGasUsed,
+          //   "Transactions' blob as calldata gas used mismatch"
+          // ).toEqual(expectedBlobAsCalldataGasUsed);
+          expect(remainingParams).toMatchInlineSnapshot(`
+            [
+              {
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
+                "fromId": "address9",
+                "gasPrice": "10000",
+                "hash": "txHash999",
+                "index": 0,
+                "maxFeePerBlobGas": "1800",
+                "rollup": null,
+                "toId": "address10",
+              },
+              {
+                "blockHash": "blockHash2010",
+                "blockNumber": 2010,
+                "blockTimestamp": 2023-09-01T13:50:21.000Z,
+                "fromId": "address7",
+                "gasPrice": "3000000",
+                "hash": "txHash1000",
+                "index": 1,
+                "maxFeePerBlobGas": "20000",
+                "rollup": null,
+                "toId": "address2",
+              },
+            ]
+          `);
+        });
+
+        it("should label rollup transactions correctly", async () => {
+          await authorizedCaller.indexer.indexData(
+            ROLLUP_BLOB_TRANSACTION_INPUT
+          );
+
+          console.log(ADDRESS_TO_ROLLUP_MAPPINGS);
+
+          const indexedTxHashesAndRollups =
+            await authorizedContext.prisma.transaction
+              .findMany({
+                where: {
+                  blockHash: ROLLUP_BLOB_TRANSACTION_INPUT.block.hash,
+                },
+              })
+              .then((r) =>
+                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.rollup])
+              );
+
+          const expectedTxHashesAndRollups =
+            ROLLUP_BLOB_TRANSACTION_INPUT.transactions.map(({ hash }) => [
+              hash,
+              expectedRollup,
+            ]);
+
+          expect(indexedTxHashesAndRollups).toEqual(expectedTxHashesAndRollups);
+        });
       });
 
       describe("when indexing blobs", () => {

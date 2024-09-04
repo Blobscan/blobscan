@@ -59,6 +59,8 @@ Here you can find all the shared packages used by the apps:
 |  [`@blobscan/open-telemetry`](https://github.com/Blobscan/blobscan/tree/next/packages/open-telemetry)            | [Otel](https://opentelemetry.io/) configuration and sdk setup.                                                                                                                                                               |
 | [`@blobscan/test`](https://github.com/Blobscan/blobscan/tree/next/packages/test)                                 |  Shared test utilities and fixtures.                                                                                                                                                                                         |
 |  [`@blobscan/zod`](https://github.com/Blobscan/blobscan/tree/next/packages/zod)                                  |  Shared [Zod](https://zod.dev) schemas and utilities.                                                                                                                                                                        |
+|  [`@blobscan/eth-format`](https://github.com/Blobscan/blobscan/tree/next/packages/eth-format)                    |  Provides utility functions for handling Ethereum value conversions and formatting.                                                                                                                                          |
+|  [`@blobscan/rollups`](https://github.com/Blobscan/blobscan/tree/next/packages/rollups)                          |  A utility that provides a comprehensive list of all rollups and their associated addresses supported by Blobscan, along with functions to retrieve them easily.                                                             |
 
 ### Tooling
 

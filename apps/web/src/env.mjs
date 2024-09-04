@@ -41,7 +41,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPPORTED_NETWORKS: z
       .string()
       .default(
-        '[{"label":"Mainnet","href":"https://blobscan.com/"},{"label":"Holesky","href":"https://holesky.blobscan.com/"},{"label":"Sepolia","href":"https://sepolia.blobscan.com/"}]'
+        '[{"label":"Ethereum Mainnet","href":"https://blobscan.com/"},{"label":"Gnosis","href":"https://gnosis.blobscan.com/"},{"label":"Holesky Testnet","href":"https://holesky.blobscan.com/"},{"label":"Sepolia Testnet","href":"https://sepolia.blobscan.com/"}]'
       ),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z
       .string()

@@ -24,7 +24,7 @@ pnpm start <command>
 
 ### Create Command
 
-Following is the usage guide for the create command:
+Following is the usage guide for the `create` command:
 
 ```bash
 Create Command
@@ -45,7 +45,7 @@ Options
 
 ### Remove Command
 
-Following is the usage guide for the remove command:
+Following is the usage guide for the `remove` command:
 
 ```bash
 Remove Command
@@ -64,7 +64,7 @@ Options
 
 ### Retry Command
 
-Following is the usage guide for the retry command:
+Following is the usage guide for the `retry` command:
 
 ```bash
 Retry Command
@@ -92,7 +92,7 @@ pnpm start <command>
 
 ### Daily Command
 
-Following is the usage guide for the daily command:
+Following is the usage guide for the `daily` command:
 
 ```bash
 Daily Command
@@ -112,7 +112,7 @@ Options
 
 ### Overall Command
 
-Following is the usage guide for the overall command:
+Following is the usage guide for the `overall` command:
 
 ```bash
 Overall Command

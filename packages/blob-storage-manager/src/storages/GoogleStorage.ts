@@ -1,10 +1,11 @@
 import type { StorageOptions } from "@google-cloud/storage";
 import { Storage } from "@google-cloud/storage";
 
+import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
+
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
-import { BLOB_STORAGE_NAMES } from "../utils";
 
 export interface GoogleStorageConfig extends BlobStorageConfig {
   serviceKey?: string;
@@ -29,7 +30,7 @@ export class GoogleStorage extends BlobStorage {
     serviceKey,
     apiEndpoint,
   }: GoogleStorageConfig) {
-    super(BLOB_STORAGE_NAMES.GOOGLE, chainId);
+    super(BlobStorageName.GOOGLE, chainId);
 
     try {
       const storageOptions: StorageOptions = {};

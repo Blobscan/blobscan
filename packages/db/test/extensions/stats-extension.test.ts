@@ -14,8 +14,8 @@ import { describe, it, expect } from "vitest";
 import dayjs from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
-import type { DatePeriod, RawDatePeriod } from "../../prisma";
 import { prisma } from "../../prisma";
+import type { DatePeriod, RawDatePeriod } from "../../prisma/types";
 import {
   indexBlock,
   dayToDatePeriod,

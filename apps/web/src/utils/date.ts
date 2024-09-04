@@ -6,6 +6,14 @@ export function normalizeTimestamp(timestamp: number | Date | string) {
     : dayjs(timestamp);
 }
 
+export function getISODate(date: dayjs.Dayjs | Date | string) {
+  if (dayjs.isDayjs(date)) {
+    return date.format("YYYY-MM-DD");
+  }
+
+  return new Date(date).toISOString().split("T")[0];
+}
+
 export function formatTimestamp(
   timestamp: number | Date | string | dayjs.Dayjs,
   compact = false
@@ -30,10 +38,6 @@ export function formatDate(
   }
 
   return date;
-}
-
-export function formatTtl(ttl: number) {
-  return dayjs().to(dayjs().add(ttl, "second"), true);
 }
 
 export function getHumanDate(date: string | Date) {

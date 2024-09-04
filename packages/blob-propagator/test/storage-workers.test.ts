@@ -16,11 +16,14 @@ import {
 import type {
   BlobStorage,
   BlobStorageManager,
-  BlobStorageName,
   SwarmStorage,
 } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
-import type { BlobscanPrismaClient, Blob as DBBlob } from "@blobscan/db";
+import type {
+  BlobscanPrismaClient,
+  Blob as DBBlob,
+  BlobStorage as BlobStorageName,
+} from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import { STORAGE_WORKER_PROCESSORS } from "../src/BlobPropagator";

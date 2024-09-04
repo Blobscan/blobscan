@@ -12,6 +12,9 @@ coverage
 **/prisma/db.sqlite
 **/prisma/db.sqlite-journal
 
+# Prisma generated files
+packages/db/prisma/enums
+
 # next.js
 .next/
 out/

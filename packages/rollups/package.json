@@ -1,0 +1,24 @@
+{
+  "name": "@blobscan/rollups",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit",
+    "with-env:test": "dotenv -e ../../.env.test --",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui"
+  },
+  "dependencies": {
+    "@blobscan/db": "workspace:^0.9.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

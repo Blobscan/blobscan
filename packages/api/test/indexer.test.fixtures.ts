@@ -104,3 +104,35 @@ export const INPUT_WITH_DUPLICATED_BLOBS: IndexDataInput = {
     },
   ],
 };
+
+export const ROLLUP_BLOB_TRANSACTION_INPUT: IndexDataInput = {
+  block: {
+    number: 9999,
+    hash: "blockHash9999",
+    timestamp: 1694586221,
+    slot: 170,
+    blobGasUsed: "10000",
+    excessBlobGas: "5000",
+  },
+  transactions: [
+    {
+      hash: "txHash2002",
+      from: "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
+      to: "address10",
+      blockNumber: 9999,
+      index: 0,
+      gasPrice: "10000",
+      maxFeePerBlobGas: "1800",
+    },
+  ],
+  blobs: [
+    {
+      versionedHash: "blobHash2000",
+      commitment: "commitment2000",
+      proof: "newProof2000",
+      data: "0x1234abcdeff123456789ab34223a4b2c2ed",
+      txHash: "txHash2002",
+      index: 0,
+    },
+  ],
+};

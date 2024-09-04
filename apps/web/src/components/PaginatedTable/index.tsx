@@ -6,14 +6,18 @@ import Skeleton from "react-loading-skeleton";
 import { Card } from "~/components/Cards/Card";
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps } from "~/components/Dropdown";
-import { Header } from "~/components/Header";
 import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
-const PAGE_SIZES = [10, 25, 50, 100];
+const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+  { value: 10 },
+  { value: 25 },
+  { value: 50 },
+  { value: 100 },
+];
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 type PaginationData = {
@@ -23,7 +27,6 @@ type PaginationData = {
 
 export type PaginatedTableProps = {
   isLoading: boolean;
-  title: string;
   totalItems?: number;
   isExpandable?: boolean;
   paginationData: PaginationData;
@@ -45,7 +48,6 @@ const getRowsSkeleton = (
 };
 
 export const PaginatedTable: FC<PaginatedTableProps> = function ({
-  title,
   isLoading,
   headers,
   rows,
@@ -61,11 +63,17 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
     totalItems !== undefined
       ? totalItems === 0
         ? 1
-        : Math.ceil(totalItems / 10)
+        : Math.ceil(totalItems / pageSize)
       : undefined;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (newPageSize: number) =>
+    (option) => {
+      if (!option) {
+        return;
+      }
+
+      const newPageSize = option.value as number;
+
       void router.push({
         pathname: router.pathname,
         query: {
@@ -74,10 +82,14 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
            * Update the selected page to a lower value if we require less pages to show the
            * new amount of elements per page.
            */
-          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
+          p: Math.min(
+            Math.ceil(totalItems ?? 0 / (newPageSize as number)),
+            page
+          ),
           ps: newPageSize,
         },
-      }),
+      });
+    },
     [page, totalItems, router]
   );
 
@@ -95,58 +107,55 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
   );
 
   return (
-    <>
-      <Header>{title}</Header>
-      <Card
-        header={
-          <div className={`flex flex-col justify-end md:flex-row`}>
-            <div className="w-full self-center sm:w-auto">
-              <Pagination
-                selected={page}
-                pages={pages}
-                onChange={handlePageSelection}
-              />
-            </div>
-          </div>
-        }
-        emptyState={DEFAULT_TABLE_EMPTY_STATE}
-      >
-        <div className="flex flex-col gap-6">
-          <Table
-            fixedColumnsWidth={true}
-            expandableRowsMode={isExpandable}
-            headers={headers}
-            rows={
-              isLoading
-                ? getRowsSkeleton(
-                    headers?.[0]?.cells.length,
-                    isExpandable,
-                    rowSkeletonHeight
-                  )
-                : rows
-            }
-          />
-          <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
-            <div className="flex items-center justify-start gap-2">
-              Displayed items:
-              <Dropdown
-                items={PAGE_SIZES}
-                selected={pageSize}
-                width="w-full"
-                onChange={handlePageSizeSelection}
-              />
-            </div>
-            <div className="w-full sm:w-auto">
-              <Pagination
-                selected={page}
-                pages={pages}
-                inverseCompact
-                onChange={handlePageSelection}
-              />
-            </div>
+    <Card
+      header={
+        <div className={`flex flex-col justify-end md:flex-row`}>
+          <div className="w-full self-center sm:w-auto">
+            <Pagination
+              selected={page}
+              pages={pages}
+              onChange={handlePageSelection}
+            />
           </div>
         </div>
-      </Card>
-    </>
+      }
+      emptyState={DEFAULT_TABLE_EMPTY_STATE}
+    >
+      <div className="flex flex-col gap-6">
+        <Table
+          fixedColumnsWidth={true}
+          expandableRowsMode={isExpandable}
+          headers={headers}
+          rows={
+            isLoading
+              ? getRowsSkeleton(
+                  headers?.[0]?.cells.length,
+                  isExpandable,
+                  rowSkeletonHeight
+                )
+              : rows
+          }
+        />
+        <div className="flex w-full flex-col items-center gap-3 text-sm md:flex-row md:justify-between">
+          <div className="flex items-center justify-start gap-2">
+            Displayed items:
+            <Dropdown
+              options={PAGE_SIZES_OPTIONS}
+              selected={{ value: pageSize }}
+              width="w-full"
+              onChange={handlePageSizeSelection}
+            />
+          </div>
+          <div className="w-full sm:w-auto">
+            <Pagination
+              selected={page}
+              pages={pages}
+              inverseCompact
+              onChange={handlePageSelection}
+            />
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 };

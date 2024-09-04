@@ -65,10 +65,9 @@ describe("SwarmStorage", () => {
   testValidError(
     "should throw a valid error if bee client is not healthy",
     async () => {
-      vi.spyOn(
-        storage.beeClient,
-        "checkConnection"
-      ).mockRejectedValueOnce(new Error("Bee is not healthy: not ok"));
+      vi.spyOn(storage.beeClient, "checkConnection").mockRejectedValueOnce(
+        new Error("Bee is not healthy: not ok")
+      );
 
       await storage.healthCheck();
     },
