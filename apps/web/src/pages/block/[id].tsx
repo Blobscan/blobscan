@@ -11,6 +11,8 @@ import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrows } from "~/components/NavArrows";
+import { getFirstBlobNumber } from "~/components/content";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
@@ -49,6 +51,9 @@ const Block: NextPage = function () {
     return deserializeFullBlock(rawBlockData);
   }, [rawBlockData]);
 
+  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
+  const blockNumber = blockData ? blockData.number : undefined;
+
   if (error) {
     return (
       <NextError
@@ -78,7 +83,28 @@ const Block: NextPage = function () {
     );
 
     detailsFields = [
-      { name: "Block Height", value: blockData.number },
+      {
+        name: "Block Height",
+        value: (
+          <div className="flex items-center justify-start gap-4">
+            {blockData.number}
+            {blockNumber !== undefined && (
+              <NavArrows
+                prev={
+                  getFirstBlobNumber() < blockNumber
+                    ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
+                    : undefined
+                }
+                next={
+                  latestBlock && blockNumber < latestBlock.number
+                    ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
+                    : undefined
+                }
+              />
+            )}
+          </div>
+        ),
+      },
       {
         name: "Hash",
         value: <Copyable value={blockData.hash} label="Copy Hash" />,

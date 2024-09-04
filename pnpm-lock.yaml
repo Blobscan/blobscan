@@ -244,6 +244,9 @@ importers:
       '@blobscan/dayjs':
         specifier: workspace:^0.0.2
         version: link:../../packages/dayjs
+      '@blobscan/db':
+        specifier: workspace:^0.9.0
+        version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../../packages/env
