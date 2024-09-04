@@ -42,8 +42,6 @@ const Validator: NextPage = function () {
     }
   );
 
-  console.log(validatorIsLoading);
-
   if (validatorErr || genesisErr) {
     const error = validatorErr ? validatorErr : genesisErr;
     return (
