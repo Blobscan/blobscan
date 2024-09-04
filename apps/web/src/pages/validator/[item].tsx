@@ -59,8 +59,12 @@ const Validator: NextPage = function () {
     );
   }
 
-  if (((!validatorIsLoading || !genesisIsLoading) && !incomeData) ||
-    incomeData === undefined || epochGenesis === undefined) {
+  if ((!validatorIsLoading || !genesisIsLoading) && !incomeData) {
+
+    return <div>Searching for validator reward relevant data</div>
+  }
+
+  if (incomeData === undefined || epochGenesis === undefined) {
 
     return <div>not found validator rewards data</div>;
   }
