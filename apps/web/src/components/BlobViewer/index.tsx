@@ -90,6 +90,7 @@ export const BlobViewer: FC<BlobViewerProps> = function ({
         return <ErrorMessage error={error_} />;
       }
 
+      console.log(decodedBlob);
       switch (decoder) {
         case "starknet":
           return <StarknetBlobView data={decodedBlob} />;
