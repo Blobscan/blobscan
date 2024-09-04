@@ -34,7 +34,7 @@ export const NumberRangeInput: React.FC<NumberRangeInputProps> = ({
         type={type}
         variant="filled"
         placeholder="Start"
-        className={`rounded-l-lg rounded-r-none border-r-controlBorder-light text-right text-sm dark:border-r-border-dark ${className}`}
+        className={`rounded-l-lg rounded-r-none border-r-controlBorder-light text-sm dark:border-r-border-dark ${className}`}
         onChange={(newStartValue) =>
           onChange({
             start: newStartValue,

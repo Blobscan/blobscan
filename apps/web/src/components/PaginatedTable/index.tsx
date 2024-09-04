@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
@@ -10,6 +10,7 @@ import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
 import { Table } from "~/components/Table";
+import type { Rollup } from "~/types";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
 const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
@@ -19,6 +20,12 @@ const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
   { value: 100 },
 ];
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
+
+export interface PaginatedTableQueryFilters {
+  rollup: Rollup;
+  startDate: Date;
+  endDate: Date;
+}
 
 type PaginationData = {
   page: number;
@@ -31,6 +38,7 @@ export type PaginatedTableProps = {
   isExpandable?: boolean;
   paginationData: PaginationData;
   rowSkeletonHeight?: string | number;
+  tableTopSlot?: ReactNode;
 } & Pick<TableProps, "headers" | "rows">;
 
 const getRowsSkeleton = (

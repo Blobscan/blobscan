@@ -15,6 +15,7 @@
     "with-env": "dotenv -e ../../.env  -v BLOB_PROPAGATOR_ENABLED=false --"
   },
   "dependencies": {
+    "@blobscan/db": "workspace:^0.9.0",
     "@blobscan/api": "workspace:^0.12.0",
     "@blobscan/blob-decoder": "workspace:^0.1.1",
     "@blobscan/dates": "workspace:*",
@@ -22,6 +23,7 @@
     "@blobscan/env": "workspace:^0.0.1",
     "@blobscan/eth-units": "workspace:^0.0.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
+    "@floating-ui/react": "^0.26.23",
     "@blobscan/rollups": "workspace:^0.0.1",
     "@fontsource/inter": "^4.5.15",
     "@fontsource/public-sans": "^4.5.12",

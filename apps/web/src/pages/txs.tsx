@@ -83,8 +83,18 @@ export const TRANSACTIONS_TABLE_HEADERS = [
 ];
 
 const Txs: NextPage = function () {
-  const { from, p, ps, rollup, startDate, endDate, startBlock, endBlock } =
-    useQueryParams();
+  const {
+    from,
+    p,
+    ps,
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
+  } = useQueryParams();
 
   const {
     data: rawTxsData,
@@ -102,6 +112,8 @@ const Txs: NextPage = function () {
     endDate,
     startBlock,
     endBlock,
+    startSlot,
+    endSlot,
     expand: "block,blob",
   });
   const txsData = useMemo(() => {

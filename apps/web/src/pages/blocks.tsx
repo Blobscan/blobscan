@@ -57,8 +57,18 @@ export const BLOCKS_TABLE_HEADERS = [
 ];
 
 const Blocks: NextPage = function () {
-  const { from, p, ps, rollup, startDate, endDate, startBlock, endBlock } =
-    useQueryParams();
+  const {
+    from,
+    p,
+    ps,
+    rollup,
+    startDate,
+    endDate,
+    startBlock,
+    endBlock,
+    startSlot,
+    endSlot,
+  } = useQueryParams();
   const {
     data: rawBlocksData,
     isLoading,
@@ -72,6 +82,8 @@ const Blocks: NextPage = function () {
     endDate,
     startBlock,
     endBlock,
+    startSlot,
+    endSlot,
   });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {

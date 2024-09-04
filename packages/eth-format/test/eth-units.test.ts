@@ -410,7 +410,35 @@ describe("countIntegerDigits", () => {
   test("handles edge cases", () => {
     expect(countIntegerDigits("0.0")).toBe(1);
     expect(countIntegerDigits("-0.0")).toBe(1);
-    expect(countIntegerDigits(".123")).toBe(0);
-    expect(countIntegerDigits("-.123")).toBe(0);
+    expect(countIntegerDigits(".123")).toBe(1);
+    expect(countIntegerDigits("-.123")).toBe(1);
+    expect(countIntegerDigits("0.123")).toBe(1);
+    expect(countIntegerDigits("-0.123")).toBe(1);
+  });
+
+  test("scientific notation", () => {
+    expect(countIntegerDigits("1e+0")).toBe(1);
+    expect(countIntegerDigits("1e+1")).toBe(2);
+    expect(countIntegerDigits("1e+2")).toBe(3);
+
+    expect(countIntegerDigits("1e-0")).toBe(1);
+    expect(countIntegerDigits("1e-1")).toBe(1);
+    expect(countIntegerDigits("1e-2")).toBe(1);
+
+    expect(countIntegerDigits("1.23e+0")).toBe(1);
+    expect(countIntegerDigits("1.23e+1")).toBe(2);
+    expect(countIntegerDigits("1.23e+2")).toBe(3);
+
+    expect(countIntegerDigits("1.23e-0")).toBe(1);
+    expect(countIntegerDigits("1.23e-1")).toBe(1);
+    expect(countIntegerDigits("1.23e-2")).toBe(1);
+
+    expect(countIntegerDigits("1.23123123123123123123123e+0")).toBe(1);
+    expect(countIntegerDigits("1.23123123123123123123123e+1")).toBe(2);
+    expect(countIntegerDigits("1.23123123123123123123123e+2")).toBe(3);
+
+    expect(countIntegerDigits("1.23123123123123123123123e+10")).toBe(11);
+    expect(countIntegerDigits("1.23123123123123123123123e+100")).toBe(101);
+    expect(countIntegerDigits("1.23123123123123123123123e+200")).toBe(201);
   });
 });

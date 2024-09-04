@@ -25,6 +25,21 @@ function resolveApiUrl(): string {
   return `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
 }
 
+type Network = typeof env.NEXT_PUBLIC_NETWORK_NAME;
+
+const NETWORKS_FIRST_BLOB_NUMBER: Record<Network, number> = {
+  mainnet: 19426589,
+  holesky: 894735,
+  sepolia: 5187052,
+  gnosis: 32880709,
+  chiado: 0,
+  devnet: 0,
+};
+
+export function getFirstBlobNumber(): number {
+  return NETWORKS_FIRST_BLOB_NUMBER[env.NEXT_PUBLIC_NETWORK_NAME];
+}
+
 export type NavigationItem = {
   label: string;
   href: string;

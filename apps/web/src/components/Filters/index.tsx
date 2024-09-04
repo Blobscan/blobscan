@@ -12,12 +12,14 @@ import type { Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
+import { SlotFilter } from "./SlotFilter";
 import { TimestampFilter } from "./TimestampFilter";
 
 type FiltersState = {
   rollup: Option | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
+  slotRange: NumberRange | null;
 };
 
 type ClearAction<V extends keyof FiltersState> = {
@@ -41,6 +43,7 @@ const INIT_STATE: FiltersState = {
     startDate: null,
   },
   blockNumberRange: null,
+  slotRange: null,
 };
 
 function reducer<V extends keyof FiltersState>(
@@ -68,11 +71,15 @@ export const Filters: FC = function () {
   const queryParams = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
   const disableClear =
-    !filters.rollup && !filters.timestampRange && !filters.blockNumberRange;
+    !filters.rollup &&
+    !filters.timestampRange?.endDate &&
+    !filters.timestampRange?.startDate &&
+    !filters.blockNumberRange &&
+    !filters.slotRange;
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { rollup, timestampRange, blockNumberRange } = filters;
+    const { rollup, timestampRange, blockNumberRange, slotRange } = filters;
 
     if (rollup) {
       if (rollup.value === "null") {
@@ -106,6 +113,18 @@ export const Filters: FC = function () {
       }
     }
 
+    if (slotRange) {
+      const { start, end } = slotRange;
+
+      if (start) {
+        query.startSlot = start;
+      }
+
+      if (end) {
+        query.endSlot = end;
+      }
+    }
+
     router.push({
       pathname: router.pathname,
       query,
@@ -113,8 +132,16 @@ export const Filters: FC = function () {
   };
 
   useEffect(() => {
-    const { rollup, from, startDate, endDate, startBlock, endBlock } =
-      queryParams;
+    const {
+      rollup,
+      from,
+      startDate,
+      endDate,
+      startBlock,
+      endBlock,
+      startSlot,
+      endSlot,
+    } = queryParams;
     const newFilters: Partial<FiltersState> = {};
 
     if (rollup || from) {
@@ -138,6 +165,13 @@ export const Filters: FC = function () {
       newFilters.blockNumberRange = {
         start: startBlock,
         end: endBlock,
+      };
+    }
+
+    if (startSlot || endSlot) {
+      newFilters.slotRange = {
+        start: startSlot,
+        end: endSlot,
       };
     }
 
@@ -167,16 +201,29 @@ export const Filters: FC = function () {
               }
             />
           </div>
-          <div className="w-full md:w-52">
-            <BlockNumberFilter
-              range={filters.blockNumberRange}
-              onChange={(newBlockNumberRange) =>
-                dispatch({
-                  type: "UPDATE",
-                  payload: { blockNumberRange: newBlockNumberRange },
-                })
-              }
-            />
+          <div className="flex gap-2">
+            <div className="w-full md:w-52">
+              <BlockNumberFilter
+                range={filters.blockNumberRange}
+                onChange={(newBlockNumberRange) =>
+                  dispatch({
+                    type: "UPDATE",
+                    payload: { blockNumberRange: newBlockNumberRange },
+                  })
+                }
+              />
+            </div>
+            <div className="w-full md:w-52">
+              <SlotFilter
+                range={filters.slotRange}
+                onChange={(newSlotRange) =>
+                  dispatch({
+                    type: "UPDATE",
+                    payload: { slotRange: newSlotRange },
+                  })
+                }
+              />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 md:flex-row">
