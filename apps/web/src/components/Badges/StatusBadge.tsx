@@ -8,6 +8,10 @@ import type { BadgeProps } from "./Badge";
 
 const statusBadgeVariants = cva(
   `
+    rounded-lg
+    font-medium
+    p-1.5
+
     bg-opacity-10
     dark:bg-opacity-10
 
