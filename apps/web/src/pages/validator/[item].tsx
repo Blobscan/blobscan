@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
@@ -19,6 +20,7 @@ const Validator: NextPage = function () {
   const router = useRouter();
   const keyOrIdx = router.query.item as string;
   const keyIsStr = isStr(keyOrIdx);
+  const [hasFetchData, setHasFetchData] = useState(false);
 
   const {
     data: epochGenesis,
@@ -38,9 +40,14 @@ const Validator: NextPage = function () {
       listLimit: validatorEpochIncomeListLimit,
     },
     {
-      enabled: router.isReady && genesisIsLoading,
+      enabled: router.isReady && !hasFetchData,
     }
   );
+  useEffect(() => {
+    if (incomeData) {
+      setHasFetchData(true);
+    }
+  }, [incomeData]);
 
   if (validatorErr || genesisErr) {
     const error = validatorErr ? validatorErr : genesisErr;
@@ -85,7 +92,7 @@ const Validator: NextPage = function () {
   return (
     <div>
       <ValidatorsIncomeLayout
-        header={`Validator ${incomeData.validatorIdx}`}
+        header={`Validator ${incomeData.validatorPublicKey === "" ? "-" : incomeData.validatorIdx}`}
         validatorKey={`${incomeData.validatorPublicKey}`}
         charts={[
           <ValidatorIncomeChart
