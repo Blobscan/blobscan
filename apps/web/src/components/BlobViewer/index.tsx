@@ -92,7 +92,11 @@ export const BlobViewer: FC<BlobViewerProps> = function ({
 
       switch (decoder) {
         case "starknet":
-          return <StarknetBlobView data={decodedBlob} />;
+          return (
+            <div className="mt-10">
+              <StarknetBlobView data={decodedBlob} />
+            </div>
+          );
       }
     }
   }

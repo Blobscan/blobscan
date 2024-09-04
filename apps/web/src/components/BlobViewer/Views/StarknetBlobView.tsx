@@ -82,6 +82,16 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
 
   return (
     <div className="flex flex-col gap-10">
+      <div className="-mb-6 self-end">
+        <div className="flex items-center justify-center gap-2">
+          <Toggle
+            onToggle={() => setOriginalDataToggle((prevToggle) => !prevToggle)}
+          />{" "}
+          <div className="text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
+            Original Data
+          </div>
+        </div>
+      </div>
       <Table
         headers={[
           {
@@ -112,7 +122,9 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
           ({ classHash, compiledClassHash }) => ({
             cells: [
               {
-                item: (
+                item: originalDataToggle ? (
+                  classHash
+                ) : (
                   <Link
                     href={buildClassUrl(classHash)}
                     isExternal
@@ -136,20 +148,8 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
             cells: [
               {
                 item: (
-                  <div className="relative w-full text-base">
-                    State Updates ({decodedBlob.stateUpdatesSize}){" "}
-                    <div className="absolute right-10 top-1">
-                      <div className="flex items-center justify-center gap-2">
-                        <Toggle
-                          onToggle={() =>
-                            setOriginalDataToggle((prevToggle) => !prevToggle)
-                          }
-                        />{" "}
-                        <div className="text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
-                          Original Data
-                        </div>
-                      </div>
-                    </div>
+                  <div className="text-base">
+                    State Updates ({decodedBlob.stateUpdatesSize})
                   </div>
                 ),
                 alignment: "center",
@@ -178,7 +178,9 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
           ({ contractAddress, newClassHash, nonce, storageUpdates }) => ({
             cells: [
               {
-                item: (
+                item: originalDataToggle ? (
+                  contractAddress
+                ) : (
                   <Link
                     href={buildContractUrl(contractAddress)}
                     isExternal
@@ -195,7 +197,9 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
                 item: nonce,
               },
               {
-                item: newClassHash ? (
+                item: originalDataToggle ? (
+                  newClassHash
+                ) : newClassHash ? (
                   <Link
                     href={buildClassUrl(newClassHash)}
                     isExternal
