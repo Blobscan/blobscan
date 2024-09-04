@@ -15,6 +15,7 @@ import {
   buildTransactionStatsRoute,
   buildTransactionsRoute,
   buildBlobsRoute,
+  buildAllStatsRoute,
 } from "~/utils";
 
 function resolveApiUrl(): string {
@@ -99,6 +100,10 @@ export const NAVIGATION_ITEMS: Array<
       {
         label: "Transaction Metrics",
         href: buildTransactionStatsRoute(),
+      },
+      {
+        label: "All Metrics",
+        href: buildAllStatsRoute(),
       },
     ],
   },
