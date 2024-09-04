@@ -76,7 +76,7 @@ function formatMetric(
       break;
     default:
       formattedValue = formatNumber(value, mode, {
-        maximumSignificantDigits: 9,
+        maximumSignificantDigits: 2,
         ...numberFormatOpts,
       });
       break;
@@ -103,7 +103,7 @@ function MetricLayout({
     <div
       className={cn(
         {
-          "text-lg sm:text-xl": compact,
+          "text-lg sm:text-xl lg:text-sm xl:text-xl": compact,
           "text-lg lg:text-2xl": !compact,
         },
         {
@@ -201,7 +201,8 @@ export const MetricCard: FC<MetricCardProps> = function ({
             "sm:gap-4": !compact,
             "sm:gap-1": compact,
           },
-          "flex flex-col justify-between gap-1"
+          "flex flex-col justify-between gap-1",
+          "relative overflow-hidden"
         )}
       >
         <div
