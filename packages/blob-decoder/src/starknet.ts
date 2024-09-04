@@ -1,7 +1,6 @@
 import { blob_recover } from "@blobscan/majin-blob-wasm";
 import { z } from "@blobscan/zod";
 
-import exampleJson from "./example.json";
 import type { BlobDecoderFn } from "./types";
 import { bigIntToHex, stripHexPrefix } from "./utils";
 
@@ -71,14 +70,22 @@ export const decodeStarknetBlob: BlobDecoderFn<DecodedStarknetBlob> = function (
   blobData
 ): DecodedStarknetBlob {
   const normalizedBlobData = stripHexPrefix(blobData);
-  // const recoveredBlob = blob_recover(normalizedBlobData);
-  // const rawDecodedBlob = JSON.parse(recoveredBlob);
-  const rawDecodedBlob = exampleJson;
+  let recoveredBlob = "";
+
+  try {
+    recoveredBlob = blob_recover(normalizedBlobData);
+  } catch (error) {
+    throw new Error("Failed to recover blob", {
+      cause: error,
+    });
+  }
+  const rawDecodedBlob = JSON.parse(recoveredBlob);
   const result = decodedStarknetBlobSchema.safeParse(rawDecodedBlob);
 
   if (!result.success) {
-    // console.log(result.error);
-    throw new Error(result.error.message);
+    throw new Error("Failed to parse decoded blob", {
+      cause: result.error.message,
+    });
   }
 
   return result.data;

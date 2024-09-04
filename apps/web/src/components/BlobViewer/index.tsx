@@ -4,7 +4,7 @@ import type { FC } from "react";
 import type { Decoder } from "@blobscan/blob-decoder";
 
 import { useBlobDecoderWorker } from "~/providers/BlobDecoderWorker";
-import { hexStringToUtf8 } from "~/utils";
+import { capitalize, hexStringToUtf8 } from "~/utils";
 import { Spinner } from "../Spinners/Spinner";
 import { ErrorMessage } from "./ErrorMessage";
 import { RawBlobView, StarknetBlobView } from "./Views";
@@ -80,7 +80,7 @@ export const BlobViewer: FC<BlobViewerProps> = function ({
         return (
           <div className="flex h-36 items-center justify-center">
             <div>
-              <Spinner label="Decoding Blob…" />
+              <Spinner label={`Decoding ${capitalize(decoder)} blob…`} />
             </div>
           </div>
         );
