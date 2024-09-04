@@ -12,6 +12,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
+import { BlockStatus } from "~/components/Status";
 import { getFirstBlobNumber } from "~/components/content";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
@@ -105,6 +106,7 @@ const Block: NextPage = function () {
           </div>
         ),
       },
+      { name: "Status", value: <BlockStatus blockNumber={blockData.number} /> },
       {
         name: "Hash",
         value: <Copyable value={blockData.hash} label="Copy Hash" />,
