@@ -12,7 +12,7 @@ import {
 
 type NumberRange = {
   gte?: number;
-  lt?: number;
+  lte?: number;
 };
 
 type DateRange = {
@@ -106,7 +106,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     if (blockRangeExists) {
       filters.blockNumber = {
-        lt: endBlock,
+        lte: endBlock,
         gte: startBlock,
       };
     }
@@ -120,7 +120,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     if (slotRangeExists) {
       filters.blockSlot = {
-        lt: endSlot,
+        lte: endSlot,
         gte: startSlot,
       };
     }
