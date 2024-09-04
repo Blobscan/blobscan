@@ -92,17 +92,22 @@ const Blob: NextPage = function () {
         )),
       });
     }
-    detailsFields.push(
-      {
+
+    detailsFields.push({
+      name: "Versioned Hash",
+      value: <Copyable value={blob.versionedHash} />,
+    });
+
+    if (blob.transactions[0]) {
+      detailsFields.push({
         name: "Status",
         value: blob.transactions[0] && (
           <BlockStatus blockNumber={blob.transactions[0].blockNumber} />
         ),
-      },
-      {
-        name: "Versioned Hash",
-        value: <Copyable value={blob.versionedHash} />,
-      },
+      });
+    }
+
+    detailsFields.push(
       {
         name: "Commitment",
         value: <Copyable value={blob.commitment} label="Copy commitment" />,
