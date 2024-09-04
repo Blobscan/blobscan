@@ -9,10 +9,12 @@ import { useQueryParams } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
 import type { Option } from "../Dropdown";
+import { Option as IconButtonGroupOption } from "../IconButtonGroup";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
+import { SORT_OPTIONS, SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
 type FiltersState = {
@@ -20,6 +22,7 @@ type FiltersState = {
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
+  sort: IconButtonGroupOption | null;
 };
 
 type ClearAction<V extends keyof FiltersState> = {
@@ -44,6 +47,7 @@ const INIT_STATE: FiltersState = {
   },
   blockNumberRange: null,
   slotRange: null,
+  sort: null,
 };
 
 function reducer<V extends keyof FiltersState>(
@@ -75,11 +79,13 @@ export const Filters: FC = function () {
     !filters.timestampRange?.endDate &&
     !filters.timestampRange?.startDate &&
     !filters.blockNumberRange &&
-    !filters.slotRange;
+    !filters.slotRange &&
+    !filters.sort;
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { rollup, timestampRange, blockNumberRange, slotRange } = filters;
+    const { rollup, timestampRange, blockNumberRange, slotRange, sort } =
+      filters;
 
     if (rollup) {
       if (rollup.value === "null") {
@@ -125,6 +131,10 @@ export const Filters: FC = function () {
       }
     }
 
+    if (sort) {
+      query.order = sort.value;
+    }
+
     router.push({
       pathname: router.pathname,
       query,
@@ -141,6 +151,7 @@ export const Filters: FC = function () {
       endBlock,
       startSlot,
       endSlot,
+      sort,
     } = queryParams;
     const newFilters: Partial<FiltersState> = {};
 
@@ -175,6 +186,12 @@ export const Filters: FC = function () {
       };
     }
 
+    if (sort) {
+      newFilters.sort = sort
+        ? SORT_OPTIONS.find((o) => o.value === sort)
+        : null;
+    }
+
     dispatch({ type: "UPDATE", payload: newFilters });
   }, [queryParams]);
 
@@ -182,6 +199,12 @@ export const Filters: FC = function () {
     <Card>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
         <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+          <SortToggle
+            selected={filters.sort}
+            onChange={(newOrder) => {
+              dispatch({ type: "UPDATE", payload: { sort: newOrder } });
+            }}
+          />
           <div className="w-full md:w-40">
             <RollupFilter
               selected={filters.rollup}

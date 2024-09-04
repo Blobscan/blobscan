@@ -62,6 +62,7 @@ const Blobs: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+    sort,
   } = useQueryParams();
   const { data, error, isLoading } = api.blob.getAll.useQuery({
     p,
@@ -74,6 +75,7 @@ const Blobs: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+    sort,
   });
   const { blobs, totalBlobs } = data || {};
 
