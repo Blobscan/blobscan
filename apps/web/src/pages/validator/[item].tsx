@@ -19,6 +19,12 @@ const Validator: NextPage = function () {
   const router = useRouter();
   const keyOrIdx = router.query.item as string;
   const keyIsStr = isStr(keyOrIdx);
+
+  const {
+    data: epochGenesis,
+    error: genesisErr,
+    isLoading: genesisIsLoading
+  } = api.stats.getGenesisTime.useQuery();
   const {
     data: incomeData,
     error: validatorErr,
@@ -32,14 +38,11 @@ const Validator: NextPage = function () {
       listLimit: validatorEpochIncomeListLimit,
     },
     {
-      enabled: router.isReady,
+      enabled: router.isReady && genesisIsLoading,
     }
   );
-  const {
-    data: epochGenesis,
-    error: genesisErr,
-    isLoading: genesisIsLoading
-  } = api.stats.getGenesisTime.useQuery();
+
+  console.log(validatorIsLoading);
 
   if (validatorErr || genesisErr) {
     const error = validatorErr ? validatorErr : genesisErr;
@@ -63,7 +66,7 @@ const Validator: NextPage = function () {
     const diff = (incomeData.epochIdx[idx + 1] as bigint) - (incomeData.epochIdx[idx] as bigint);
 
     if (diff > BigInt(1)) {
-      incomeData.epochIdx.splice(idx + 1, 0, ...Array.from({ length: Number(diff) - 1 }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(1) + BigInt(index)));
+      incomeData.epochIdx.splice(idx + 1, 0, ...Array.from({ length: Number(diff) - 1 }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(index + 1)));
       incomeData.incomeGWei.splice(idx + 1, 0, ...Array(Number(diff) - 1).fill(BigInt(0)));
 
       idx++;
