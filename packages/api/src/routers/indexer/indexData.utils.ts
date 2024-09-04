@@ -90,7 +90,7 @@ export function createDBTransactions({
       );
 
       const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
-      const rollup = getRollupByAddress(to, env.CHAIN_ID);
+      const rollup = getRollupByAddress(from, env.CHAIN_ID);
 
       return {
         blockHash: block.hash,
