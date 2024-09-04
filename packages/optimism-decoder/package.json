@@ -15,6 +15,7 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
+    "axios": "^1.7.2",
     "rlp": "^3.0.0"
   },
   "eslintConfig": {
