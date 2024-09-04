@@ -17,6 +17,7 @@ function NavArrow({ type, href }: { type: "next" | "prev"; href?: string }) {
 
   return (
     <IconButton
+      size="sm"
       onClick={() => {
         if (href) {
           router.push(href);
@@ -29,18 +30,14 @@ function NavArrow({ type, href }: { type: "next" | "prev"; href?: string }) {
           border
           border-border-light
           bg-white
-          p-1
+          p-[3px]
           dark:border-border-dark
           dark:bg-border-dark
           ${href ? "" : "cursor-default opacity-50"}
       `}
       disabled={!href}
     >
-      {type === "next" ? (
-        <ChevronRightIcon className="h-4 w-4" />
-      ) : (
-        <ChevronLeftIcon className="h-4 w-4" />
-      )}
+      {type === "next" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
     </IconButton>
   );
 }
