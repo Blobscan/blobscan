@@ -25,12 +25,13 @@ const Validator: NextPage = function () {
   const {
     data: epochGenesis,
     error: genesisErr,
-    isLoading: genesisIsLoading
+    isLoading: genesisIsLoading,
   } = api.stats.getGenesisTime.useQuery();
+
   const {
     data: incomeData,
     error: validatorErr,
-    isLoading: validatorIsLoading
+    isLoading: validatorIsLoading,
   } = api.stats.getValidatorDetailByKeyOrIdx.useQuery(
     {
       item: "only to meet the parameter requirements of tRPC",
@@ -43,11 +44,12 @@ const Validator: NextPage = function () {
       enabled: router.isReady && !hasFetchData,
     }
   );
+
   useEffect(() => {
-    if (incomeData) {
+    if (!validatorIsLoading && !genesisIsLoading) {
       setHasFetchData(true);
     }
-  }, [incomeData]);
+  }, [validatorIsLoading, genesisIsLoading]);
 
   if (validatorErr || genesisErr) {
     const error = validatorErr ? validatorErr : genesisErr;
@@ -61,24 +63,33 @@ const Validator: NextPage = function () {
 
   if ((!validatorIsLoading || !genesisIsLoading) && !incomeData) {
 
-    return <div>Searching for validator reward relevant data</div>
+    return <div>Searching for validator reward relevant data</div>;
   }
 
   if (incomeData === undefined || epochGenesis === undefined) {
 
-    return <div>not found validator rewards data</div>;
+    return <div>Not found validator rewards data</div>;
   }
 
   incomeData.epochIdx.reverse();
   incomeData.incomeGWei.reverse();
+
   for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
     const diff = (incomeData.epochIdx[idx + 1] as bigint) - (incomeData.epochIdx[idx] as bigint);
 
     if (diff > BigInt(1)) {
-      incomeData.epochIdx.splice(idx + 1, 0, ...Array.from({ length: Number(diff) - 1 }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(index + 1)));
-      incomeData.incomeGWei.splice(idx + 1, 0, ...Array(Number(diff) - 1).fill(BigInt(0)));
+      const newEntriesCount = Number(diff) - 1;
 
-      idx++;
+      if (newEntriesCount > 0 && newEntriesCount < validatorEpochIncomeListLimit) {
+        incomeData.epochIdx.splice(
+          idx + 1,
+          0,
+          ...Array.from({ length: newEntriesCount }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(index + 1))
+        );
+        incomeData.incomeGWei.splice(idx + 1, 0, ...Array(newEntriesCount).fill(BigInt(0)));
+      }
+
+      idx += newEntriesCount;
     }
 
     if (idx + 1 >= incomeData.epochIdx.length - 1) {
@@ -88,7 +99,6 @@ const Validator: NextPage = function () {
         incomeData.epochIdx = incomeData.epochIdx.slice(excessLength);
         incomeData.incomeGWei = incomeData.incomeGWei.slice(excessLength);
       }
-
       break;
     }
   }
@@ -109,6 +119,6 @@ const Validator: NextPage = function () {
       />
     </div>
   );
-}
+};
 
 export default Validator;
