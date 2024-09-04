@@ -10,6 +10,7 @@ const statusBadgeVariants = cva(
   `
     rounded-lg
     font-medium
+    text-xs
     p-1.5
 
     bg-opacity-10
