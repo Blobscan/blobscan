@@ -4,6 +4,18 @@ import * as path from "path";
 import { saveDecodedOptimismDataToDB } from "./db";
 import type { OptimismDecodedData } from "./decoder";
 
+const args = process.argv.slice(2);
+const basePath = args[0];
+
+if (!basePath) {
+  console.error("Error: Please provide a base path as a parameter.");
+  process.exit(1);
+}
+
+saveFilesToDB(basePath).then(() => {
+  console.log("All files saved to the database.");
+});
+
 /**
  * Save the decoded JSON data to the database.
  * @param basePath The base directory path to start searching.
