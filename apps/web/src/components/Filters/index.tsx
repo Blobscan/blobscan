@@ -5,6 +5,7 @@ import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
+import type { Sort } from "~/hooks/useQueryParams";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
@@ -13,6 +14,7 @@ import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
+import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
 type FiltersState = {
@@ -20,6 +22,7 @@ type FiltersState = {
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
+  sort: Sort;
 };
 
 type ClearAction<V extends keyof FiltersState> = {
@@ -44,6 +47,7 @@ const INIT_STATE: FiltersState = {
   },
   blockNumberRange: null,
   slotRange: null,
+  sort: "desc",
 };
 
 function reducer<V extends keyof FiltersState>(
@@ -75,11 +79,13 @@ export const Filters: FC = function () {
     !filters.timestampRange?.endDate &&
     !filters.timestampRange?.startDate &&
     !filters.blockNumberRange &&
-    !filters.slotRange;
+    !filters.slotRange &&
+    !filters.sort;
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { rollup, timestampRange, blockNumberRange, slotRange } = filters;
+    const { rollup, timestampRange, blockNumberRange, slotRange, sort } =
+      filters;
 
     if (rollup) {
       if (rollup.value === "null") {
@@ -125,6 +131,10 @@ export const Filters: FC = function () {
       }
     }
 
+    if (sort) {
+      query.sort = sort;
+    }
+
     router.push({
       pathname: router.pathname,
       query,
@@ -141,6 +151,7 @@ export const Filters: FC = function () {
       endBlock,
       startSlot,
       endSlot,
+      sort,
     } = queryParams;
     const newFilters: Partial<FiltersState> = {};
 
@@ -175,6 +186,10 @@ export const Filters: FC = function () {
       };
     }
 
+    if (sort) {
+      newFilters.sort = sort;
+    }
+
     dispatch({ type: "UPDATE", payload: newFilters });
   }, [queryParams]);
 
@@ -182,6 +197,12 @@ export const Filters: FC = function () {
     <Card>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
         <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+          <SortToggle
+            type={filters.sort}
+            onChange={(newSort) => {
+              dispatch({ type: "UPDATE", payload: { sort: newSort } });
+            }}
+          />
           <div className="w-full md:w-40">
             <RollupFilter
               selected={filters.rollup}

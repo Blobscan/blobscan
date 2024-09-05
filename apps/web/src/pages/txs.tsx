@@ -94,6 +94,7 @@ const Txs: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+    sort,
   } = useQueryParams();
 
   const {
@@ -115,6 +116,7 @@ const Txs: NextPage = function () {
     startSlot,
     endSlot,
     expand: "block,blob",
+    sort,
   });
   const txsData = useMemo(() => {
     if (!rawTxsData) {
