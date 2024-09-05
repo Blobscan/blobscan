@@ -236,11 +236,11 @@ const Tx: NextPage = () => {
             <NavArrows
               prev={{
                 href: neighbors?.prev ? `/tx/${neighbors.prev}` : undefined,
-                tooltip: "Previous Transaction by Sender",
+                tooltip: "Previous transaction from this sender",
               }}
               next={{
                 href: neighbors?.next ? `/tx/${neighbors.next}` : undefined,
-                tooltip: "Next Transaction by Sender",
+                tooltip: "Next transaction from this sender",
               }}
             />
           </div>
