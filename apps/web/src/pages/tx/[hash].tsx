@@ -10,6 +10,7 @@ import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUni
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
@@ -44,6 +45,23 @@ const Tx: NextPage = () => {
 
     return deserializeFullTransaction(rawTxData);
   }, [rawTxData]);
+
+  const { data: neighbors } = api.tx.getTxNeighbors.useQuery(
+    tx
+      ? {
+          senderAddress: tx.from,
+          blockNumber: tx.blockNumber,
+          index: tx.index,
+        }
+      : {
+          senderAddress: "",
+          blockNumber: 0,
+          index: 0,
+        },
+    {
+      enabled: Boolean(tx),
+    }
+  );
 
   if (error) {
     return (
@@ -212,7 +230,15 @@ const Tx: NextPage = () => {
   return (
     <>
       <DetailsLayout
-        header="Transaction Details"
+        header={
+          <div className="flex items-center justify-start gap-4">
+            Transaction Details
+            <NavArrows
+              prev={neighbors?.prev ? `/tx/${neighbors.prev}` : undefined}
+              next={neighbors?.next ? `/tx/${neighbors.next}` : undefined}
+            />
+          </div>
+        }
         externalLink={tx ? buildTransactionExternalUrl(tx.hash) : undefined}
         fields={detailsFields}
       />
