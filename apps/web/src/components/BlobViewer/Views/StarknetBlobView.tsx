@@ -88,7 +88,7 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
             onToggle={() => setOriginalDataToggle((prevToggle) => !prevToggle)}
           />{" "}
           <div className="text-xs text-contentSecondary-light dark:text-contentSecondary-dark">
-            Original Data
+            Raw Data
           </div>
         </div>
       </div>
@@ -216,29 +216,23 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
               },
             ],
             expandItem: storageUpdates.length ? (
-              <div className="mb-4 w-full bg-primary-50 px-3 dark:bg-primary-800">
+              <div className="mb-4 mt-2 rounded-lg bg-primary-50 p-2 dark:bg-primary-900">
                 <Table
-                  className="mb-4 mt-2 max-h-[420px] w-full"
+                  className="max-h-[420px]"
                   size="xs"
                   alignment="center"
                   headers={[
                     {
                       cells: [
                         {
-                          item: `Storage Updades`,
-                          spanFullRow: true,
-                        },
-                      ],
-                    },
-                    {
-                      cells: [
-                        {
                           item: "Key",
                           alignment: "left",
+                          className: "bg-primary-50 dark:bg-primary-900",
                         },
                         {
                           item: "Value",
                           alignment: "left",
+                          className: "bg-primary-50 dark:bg-primary-900",
                         },
                       ],
                     },

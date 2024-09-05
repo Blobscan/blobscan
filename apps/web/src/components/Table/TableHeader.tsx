@@ -29,11 +29,11 @@ export const TableHeader: FC<TableHeaderProps> = function ({
         top-0
         border-b
         border-border-light
-        bg-primary-200
         text-sm
-
-        font-semibold        
+        font-semibold
         text-content-light
+        first-of-type:rounded-tl-sm        
+        last-of-type:rounded-tr-sm
         dark:border-border-dark
         dark:bg-primary-800
         dark:text-content-dark
