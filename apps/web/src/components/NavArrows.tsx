@@ -2,12 +2,35 @@ import { useRouter } from "next/router";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 import { IconButton } from "./IconButton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
-export function NavArrows({ next, prev }: { next?: string; prev?: string }) {
+export function NavArrows({
+  next,
+  prev,
+}: {
+  next: {
+    href?: string;
+    tooltip?: string;
+  };
+  prev: {
+    href?: string;
+    tooltip?: string;
+  };
+}) {
   return (
     <div className="flex items-center justify-center gap-1">
-      <NavArrow type="prev" href={prev} />
-      <NavArrow type="next" href={next} />
+      <Tooltip>
+        <TooltipTrigger>
+          <NavArrow type="prev" href={prev.href} />
+        </TooltipTrigger>
+        <TooltipContent>{prev.tooltip || "Previous"}</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger>
+          <NavArrow type="next" href={next.href} />
+        </TooltipTrigger>
+        <TooltipContent>{next.tooltip || "Next"}</TooltipContent>
+      </Tooltip>
     </div>
   );
 }

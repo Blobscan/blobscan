@@ -91,16 +91,20 @@ const Block: NextPage = function () {
             {blockData.number}
             {blockNumber !== undefined && (
               <NavArrows
-                prev={
-                  getFirstBlobNumber() < blockNumber
-                    ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
-                    : undefined
-                }
-                next={
-                  latestBlock && blockNumber < latestBlock.number
-                    ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
-                    : undefined
-                }
+                prev={{
+                  tooltip: "Previous Block",
+                  href:
+                    getFirstBlobNumber() < blockNumber
+                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
+                      : undefined,
+                }}
+                next={{
+                  tooltip: "Next Block",
+                  href:
+                    latestBlock && blockNumber < latestBlock.number
+                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
+                      : undefined,
+                }}
               />
             )}
           </div>
