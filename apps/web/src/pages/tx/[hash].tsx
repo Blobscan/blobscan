@@ -249,6 +249,14 @@ const Tx: NextPage = () => {
         fields={detailsFields}
       />
 
+      {rawTxData && rawTxData.decodedFields && (
+        <Card header="Decoded transaction fields">
+          <pre>
+            {JSON.stringify(JSON.parse(rawTxData.decodedFields), null, 2)}
+          </pre>
+        </Card>
+      )}
+
       <Card header={`Blobs ${tx ? `(${tx.blobs.length})` : ""}`}>
         <div className="space-y-6">
           {isLoading || !tx || !tx.blobs
