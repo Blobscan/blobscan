@@ -128,7 +128,6 @@ export class DataGenerator {
             blockHash: block.hash,
             blockNumber: block.number,
             blockTimestamp: new Date(block.timestamp),
-            // category: tx.category,
           });
         }
 
