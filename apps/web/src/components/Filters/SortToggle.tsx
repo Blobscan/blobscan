@@ -1,18 +1,25 @@
-import React, { FC } from "react";
+import type { FC } from "react";
+import React from "react";
 import {
   BarsArrowDownIcon,
   BarsArrowUpIcon,
 } from "@heroicons/react/24/outline";
 
-import { IconButtonGroup, IconButtonGroupProps } from "../IconButtonGroup";
+import type { Sort } from "~/hooks/useQueryParams";
+import { IconButton } from "../IconButton";
 
-export const SORT_OPTIONS = [
-  { value: "desc", icon: <BarsArrowDownIcon /> },
-  { value: "asc", icon: <BarsArrowUpIcon /> },
-];
+type SortToggleProps = {
+  type: Sort;
+  onChange: (type: Sort) => void;
+};
 
-type SortToggleProps = Pick<IconButtonGroupProps, "selected" | "onChange">;
-
-export const SortToggle: FC<SortToggleProps> = function (props) {
-  return <IconButtonGroup options={SORT_OPTIONS} {...props} />;
+export const SortToggle: FC<SortToggleProps> = function ({ type, onChange }) {
+  return (
+    <IconButton
+      onClick={() => onChange(type === "asc" ? "desc" : "asc")}
+      className="bg-controlBackground-light p-2 shadow-md dark:bg-controlBackground-dark"
+    >
+      {type === "desc" ? <BarsArrowDownIcon /> : <BarsArrowUpIcon />}
+    </IconButton>
+  );
 };

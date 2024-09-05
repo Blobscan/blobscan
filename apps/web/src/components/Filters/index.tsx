@@ -5,16 +5,16 @@ import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
 import { Button } from "~/components/Button";
+import type { Sort } from "~/hooks/useQueryParams";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import { getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
 import type { Option } from "../Dropdown";
-import { Option as IconButtonGroupOption } from "../IconButtonGroup";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
-import { SORT_OPTIONS, SortToggle } from "./SortToggle";
+import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
 type FiltersState = {
@@ -22,7 +22,7 @@ type FiltersState = {
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
-  sort: IconButtonGroupOption | null;
+  sort: Sort;
 };
 
 type ClearAction<V extends keyof FiltersState> = {
@@ -47,7 +47,7 @@ const INIT_STATE: FiltersState = {
   },
   blockNumberRange: null,
   slotRange: null,
-  sort: null,
+  sort: "desc",
 };
 
 function reducer<V extends keyof FiltersState>(
@@ -132,7 +132,7 @@ export const Filters: FC = function () {
     }
 
     if (sort) {
-      query.order = sort.value;
+      query.sort = sort;
     }
 
     router.push({
@@ -187,9 +187,7 @@ export const Filters: FC = function () {
     }
 
     if (sort) {
-      newFilters.sort = sort
-        ? SORT_OPTIONS.find((o) => o.value === sort)
-        : null;
+      newFilters.sort = sort;
     }
 
     dispatch({ type: "UPDATE", payload: newFilters });
@@ -200,9 +198,9 @@ export const Filters: FC = function () {
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
         <div className="flex w-full flex-col items-center gap-2 md:flex-row">
           <SortToggle
-            selected={filters.sort}
-            onChange={(newOrder) => {
-              dispatch({ type: "UPDATE", payload: { sort: newOrder } });
+            type={filters.sort}
+            onChange={(newSort) => {
+              dispatch({ type: "UPDATE", payload: { sort: newSort } });
             }}
           />
           <div className="w-full md:w-40">
