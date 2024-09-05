@@ -9,9 +9,11 @@
 
 */
 -- AlterTable
-ALTER TABLE "blob_daily_stats" ADD COLUMN     "category" "category",
+ALTER TABLE "blob_daily_stats" DROP CONSTRAINT "blob_daily_stats_pkey",
+ADD COLUMN     "category" "category",
 ADD COLUMN     "id" SERIAL NOT NULL,
-ADD COLUMN     "rollup" "rollup";
+ADD COLUMN     "rollup" "rollup",
+ADD CONSTRAINT "blob_daily_stats_pkey" PRIMARY KEY ("id");
 
 -- AlterTable
 ALTER TABLE "blob_overall_stats" ADD COLUMN     "category" "category",

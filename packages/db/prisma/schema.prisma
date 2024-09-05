@@ -305,8 +305,8 @@ model BlobOverallStats {
 }
 
 model BlobDailyStats {
-  id               Int       @default(autoincrement())
-  day              DateTime  @id @db.Date
+  id               Int       @id @default(autoincrement())
+  day              DateTime  @db.Date
   category         Category?
   rollup           Rollup?
   totalBlobs       Int       @default(0) @map("total_blobs")
