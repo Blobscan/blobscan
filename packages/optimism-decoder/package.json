@@ -15,9 +15,9 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
+    "@blobscan/db": "workspace:*",
     "axios": "^1.7.2",
-    "rlp": "^3.0.0",
-    "@blobscan/db": "workspace:*"
+    "rlp": "^3.0.0"
   },
   "eslintConfig": {
     "root": true,

@@ -57,7 +57,7 @@
     "msw": "^2.3.1",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "turbo": "^1.10.7",
     "typescript": "^5.2.2",
