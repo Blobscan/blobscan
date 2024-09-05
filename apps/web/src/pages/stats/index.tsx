@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
 
+import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import { DailyBlobsChart, DailyBlobSizeChart } from "~/components/Charts/Blob";
 import {
@@ -197,41 +198,44 @@ const TIME_FRAMES: { label: string; value: TimeFrame }[] = [
 
 const SECTIONS: { label: string; value: Section }[] = [
   { label: "All", value: "All" },
-  { label: "Blob", value: "Blob" },
-  { label: "Block", value: "Block" },
-  { label: "Transaction", value: "Transaction" },
+  { label: "Blobs", value: "Blob" },
+  { label: "Blocks", value: "Block" },
+  { label: "Transactions", value: "Transaction" },
 ];
 
 type Section = "All" | "Blob" | "Block" | "Transaction";
 
 function Charts() {
   const [sectionFilter, setSectionFilter] = useState<Section>("All");
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>("30d");
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>("180d");
   const { data: daily } = api.stats.getAllDailyStats.useQuery({ timeFrame });
 
   return (
-    <>
-      <div className="flex flex-wrap items-center justify-start gap-4">
-        <Dropdown
-          options={SECTIONS}
-          selected={SECTIONS.find((option) => option.value === sectionFilter)}
-          onChange={(option) => {
-            if (!option) return;
-            setSectionFilter(option.value as Section);
-          }}
-        />
-        <Dropdown
-          options={TIME_FRAMES}
-          selected={TIME_FRAMES.find((option) => option.value === timeFrame)}
-          onChange={(option) => {
-            if (!option) return;
-            setTimeFrame(option.value as TimeFrame);
-          }}
-        />
-      </div>
+    <div className="flex flex-col gap-8">
+      <Card>
+        <div className="flex flex-wrap items-center justify-start gap-4">
+          <Dropdown
+            width="w-48"
+            options={SECTIONS}
+            selected={SECTIONS.find((option) => option.value === sectionFilter)}
+            onChange={(option) => {
+              if (!option) return;
+              setSectionFilter(option.value as Section);
+            }}
+          />
+          <Dropdown
+            options={TIME_FRAMES}
+            selected={TIME_FRAMES.find((option) => option.value === timeFrame)}
+            onChange={(option) => {
+              if (!option) return;
+              setTimeFrame(option.value as TimeFrame);
+            }}
+          />
+        </div>
+      </Card>
 
       <ChartSection
-        title="Blob Stats"
+        title="Blob"
         hide={sectionFilter !== "All" && sectionFilter !== "Blob"}
       >
         <DailyBlobsChart
@@ -246,7 +250,7 @@ function Charts() {
       </ChartSection>
 
       <ChartSection
-        title="Block Stats"
+        title="Block"
         hide={sectionFilter !== "All" && sectionFilter !== "Block"}
       >
         <DailyBlocksChart
@@ -277,7 +281,7 @@ function Charts() {
       </ChartSection>
 
       <ChartSection
-        title="Transaction Stats"
+        title="Transaction"
         hide={sectionFilter !== "All" && sectionFilter !== "Transaction"}
       >
         <DailyTransactionsChart
@@ -294,7 +298,7 @@ function Charts() {
           avgMaxBlobGasFees={daily?.transaction.avgMaxBlobGasFees}
         />
       </ChartSection>
-    </>
+    </div>
   );
 }
 
@@ -311,7 +315,7 @@ function ChartSection({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-lg font-medium">{title}</div>
+      <Header>{title}</Header>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 [&>div]:w-full">
         {children}
       </div>

@@ -76,7 +76,7 @@ function formatMetric(
       break;
     default:
       formattedValue = formatNumber(value, mode, {
-        maximumSignificantDigits: 2,
+        maximumSignificantDigits: compact ? 2 : undefined,
         ...numberFormatOpts,
       });
       break;
