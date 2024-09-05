@@ -171,6 +171,7 @@ model Transaction {
   @@index([blockNumber])
   @@index([blockNumber, index])
   @@index([blockTimestamp])
+  @@index([category])
   @@map("transaction")
 }
 
