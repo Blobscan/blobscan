@@ -139,6 +139,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -154,6 +155,7 @@
       "maxFeePerBlobGas": 110,
       "gasPrice": 11,
       "blobAsCalldataGasUsed": 1100,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -169,6 +171,7 @@
       "maxFeePerBlobGas": 120,
       "gasPrice": 12,
       "blobAsCalldataGasUsed": 1200,
+      "category": "ROLLUP",
       "rollup": "OPTIMISM",
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -184,6 +187,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "ROLLUP",
       "rollup": "BASE",
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
@@ -199,6 +203,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
@@ -214,6 +219,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
@@ -229,6 +235,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "ROLLUP",
       "rollup": "OPTIMISM",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
@@ -244,6 +251,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "ROLLUP",
       "rollup": "ARBITRUM",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
@@ -259,6 +267,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
@@ -274,6 +283,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
@@ -289,6 +299,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "ROLLUP",
       "rollup": "BASE",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
@@ -304,6 +315,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "ROLLUP",
       "rollup": "OPTIMISM",
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
@@ -319,6 +331,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
@@ -334,6 +347,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-31T12:10:00Z",
       "updatedAt": "2023-08-31T12:10:00Z"
@@ -349,6 +363,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "ROLLUP",
       "rollup": "OPTIMISM",
       "insertedAt": "2023-08-31T14:10:00Z",
       "updatedAt": "2023-08-31T14:10:00Z"
@@ -364,6 +379,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
+      "category": "OTHER",
       "rollup": null,
       "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
@@ -379,6 +395,7 @@
       "maxFeePerBlobGas": 566,
       "gasPrice": 120,
       "blobAsCalldataGasUsed": 15550,
+      "category": "ROLLUP",
       "rollup": "OPTIMISM",
       "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T15:50:00Z"

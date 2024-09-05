@@ -15,6 +15,8 @@ import {
   serializedDerivedTxBlobGasFieldsSchema,
   calculateDerivedTxBlobGasFields,
   serializeDate,
+  categorySchema,
+  serializeCategory,
 } from "../../../utils";
 import type { FullQueriedTransaction, BaseTransaction } from "./selects";
 
@@ -28,6 +30,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
   to: z.string(),
   maxFeePerBlobGas: z.string(),
   blobAsCalldataGasUsed: z.string(),
+  category: categorySchema,
   rollup: rollupSchema.nullable(),
   blobs: z.array(
     z
@@ -80,6 +83,7 @@ export function serializeBaseTransactionFields(
     index,
     fromId,
     toId,
+    category,
     rollup,
     blobs,
     block,
@@ -96,6 +100,7 @@ export function serializeBaseTransactionFields(
     from: fromId,
     blobAsCalldataGasUsed: serializeDecimal(txQuery.blobAsCalldataGasUsed),
     maxFeePerBlobGas: serializeDecimal(txQuery.maxFeePerBlobGas),
+    category: serializeCategory(category),
     rollup: serializeRollup(rollup),
     blobs: blobs.map(({ blob, blobHash, index }) => {
       return {

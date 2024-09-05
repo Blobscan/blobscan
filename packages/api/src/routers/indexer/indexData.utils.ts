@@ -6,6 +6,7 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
+import { Category } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { getRollupByAddress } from "@blobscan/rollups";
 
@@ -91,6 +92,7 @@ export function createDBTransactions({
 
       const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
       const rollup = getRollupByAddress(from, env.CHAIN_ID);
+      const category = rollup ? Category.ROLLUP : Category.OTHER;
 
       return {
         blockHash: block.hash,
@@ -105,6 +107,7 @@ export function createDBTransactions({
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
         blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
         rollup,
+        category,
       };
     }
   );

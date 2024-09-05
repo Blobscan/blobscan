@@ -1,4 +1,4 @@
-import { BlobStorage, Rollup } from "@blobscan/db/prisma/enums";
+import { BlobStorage, Category, Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
 const zodBlobStorageEnums = [
@@ -29,6 +29,8 @@ const zodRollupEnums = [
   "zora",
 ] as const;
 
+const zodCategoryEnum = ["other", "rollup"] as const;
+
 /**
  * This is a type-safe way to get the enum values as we can't use `Object.values`
  * on zod enums directly
@@ -43,6 +45,13 @@ const missingBlobStorageEnums = Object.values(BlobStorage).filter(
   (r) =>
     !zodBlobStorageEnums.includes(
       r.toLowerCase() as (typeof zodBlobStorageEnums)[number]
+    )
+);
+
+const missingCategoryEnums = Object.values(Category).filter(
+  (r) =>
+    !zodCategoryEnum.includes(
+      r.toLowerCase() as (typeof zodCategoryEnum)[number]
     )
 );
 
@@ -62,9 +71,19 @@ if (missingBlobStorageEnums.length) {
   );
 }
 
+if (missingCategoryEnums.length) {
+  throw new Error(
+    `Zod category enums is not in sync with Prisma category enums. Missing zod enums: ${missingCategoryEnums.join(
+      ", "
+    )}`
+  );
+}
+
 export type ZodRollupEnum = (typeof zodRollupEnums)[number];
 
 export type ZodBlobStorageEnum = (typeof zodBlobStorageEnums)[number];
+
+export type ZodCategoryEnum = (typeof zodCategoryEnum)[number];
 
 export const blobStorageSchema = z.enum(zodBlobStorageEnums);
 
@@ -75,6 +94,13 @@ export const rollupSchema = z
     return zodRollupEnums.includes(value as ZodRollupEnum);
   })
   .transform((value) => value as ZodRollupEnum);
+
+export const categorySchema = z
+  .string()
+  .refine((value) => {
+    return zodCategoryEnum.includes(value as ZodCategoryEnum);
+  })
+  .transform((value) => value as ZodCategoryEnum);
 
 export const nullableRollupSchema = z
   .string()
