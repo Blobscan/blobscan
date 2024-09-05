@@ -181,7 +181,6 @@ model BlobsOnTransactions {
   blockTimestamp DateTime @map("block_timestamp")
   txHash         String   @map("tx_hash")
   index          Int
-  category       Category @default(OTHER)
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
   block       Block       @relation(fields: [blockHash], references: [hash])
