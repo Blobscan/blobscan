@@ -92,55 +92,60 @@ export const StarknetBlobView: FC<StarknetBlobViewProps> = function ({
           </div>
         </div>
       </div>
-      <Table
-        headers={[
-          {
-            cells: [
-              {
-                item: (
-                  <span className="text-base">
-                    Class Declarations ({decodedBlob.classDeclarations.length})
-                  </span>
-                ),
-                alignment: "center",
-              },
-            ],
-            spanFullRow: true,
-          },
-          {
-            cells: [
-              {
-                item: "Class Hash",
-              },
-              {
-                item: "Compiled Class Hash",
-              },
-            ],
-          },
-        ]}
-        rows={decodedBlob.classDeclarations.map(
-          ({ classHash, compiledClassHash }) => ({
-            cells: [
-              {
-                item: originalDataToggle ? (
-                  classHash
-                ) : (
-                  <Link
-                    href={buildClassUrl(classHash)}
-                    isExternal
-                    hideExternalIcon
-                  >
-                    {classHash}
-                  </Link>
-                ),
-              },
-              {
-                item: compiledClassHash,
-              },
-            ],
-          })
-        )}
-      />
+
+      {decodedBlob.classDeclarationsSize > 0 && (
+        <Table
+          headers={[
+            {
+              cells: [
+                {
+                  item: (
+                    <span className="text-base">
+                      Class Declarations ({decodedBlob.classDeclarations.length}
+                      )
+                    </span>
+                  ),
+                  alignment: "center",
+                },
+              ],
+              spanFullRow: true,
+            },
+            {
+              cells: [
+                {
+                  item: "Class Hash",
+                },
+                {
+                  item: "Compiled Class Hash",
+                },
+              ],
+            },
+          ]}
+          rows={decodedBlob.classDeclarations.map(
+            ({ classHash, compiledClassHash }) => ({
+              cells: [
+                {
+                  item: originalDataToggle ? (
+                    classHash
+                  ) : (
+                    <Link
+                      href={buildClassUrl(classHash)}
+                      isExternal
+                      hideExternalIcon
+                    >
+                      {classHash}
+                    </Link>
+                  ),
+                },
+                {
+                  item: compiledClassHash,
+                },
+              ],
+            })
+          )}
+        />
+      )}
+
       <Table
         expandableRowsMode
         headers={[
