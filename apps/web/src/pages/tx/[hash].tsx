@@ -234,8 +234,14 @@ const Tx: NextPage = () => {
           <div className="flex items-center justify-start gap-4">
             Transaction Details
             <NavArrows
-              prev={neighbors?.prev ? `/tx/${neighbors.prev}` : undefined}
-              next={neighbors?.next ? `/tx/${neighbors.next}` : undefined}
+              prev={{
+                href: neighbors?.prev ? `/tx/${neighbors.prev}` : undefined,
+                tooltip: "Previous Transaction by Sender",
+              }}
+              next={{
+                href: neighbors?.next ? `/tx/${neighbors.next}` : undefined,
+                tooltip: "Next Transaction by Sender",
+              }}
             />
           </div>
         }
