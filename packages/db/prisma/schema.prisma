@@ -24,6 +24,13 @@ enum BlobStorage {
   @@map("blob_storage")
 }
 
+enum Category {
+  OTHER  @map("other")
+  ROLLUP @map("rollup")
+
+  @@map("category")
+}
+
 enum Rollup {
   ARBITRUM @map("arbitrum")
   BASE     @map("base")
@@ -148,6 +155,7 @@ model Transaction {
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  category              Category @default(OTHER)
   rollup                Rollup?
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
@@ -173,6 +181,7 @@ model BlobsOnTransactions {
   blockTimestamp DateTime @map("block_timestamp")
   txHash         String   @map("tx_hash")
   index          Int
+  category       Category @default(OTHER)
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
   block       Block       @relation(fields: [blockHash], references: [hash])

@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import type { Address, Blob, BlobsOnTransactions } from "@prisma/client";
+import type { Address, Blob } from "@prisma/client";
 import { $Enums, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
@@ -98,7 +98,7 @@ export class DataGenerator {
 
         blockBlobsRemaining -= txBlobs;
 
-        const blobsOnTxs: BlobsOnTransactions[] = [];
+        const blobsOnTxs: Prisma.BlobsOnTransactionsCreateManyInput[] = [];
 
         for (let i = 0; i < txBlobs; i++) {
           const blobIndex = faker.number.int({
@@ -128,6 +128,7 @@ export class DataGenerator {
             blockHash: block.hash,
             blockNumber: block.number,
             blockTimestamp: new Date(block.timestamp),
+            // category: tx.category,
           });
         }
 
@@ -251,7 +252,9 @@ export class DataGenerator {
           min: 0,
           max: this.#seedParams.maxFeePerBlobGas,
         });
-        const rollup = faker.helpers.enumValue($Enums.Rollup);
+        const rollup = [faker.helpers.enumValue($Enums.Rollup), null][
+          faker.number.int({ min: 0, max: 1 })
+        ];
 
         // Unreachable code, done only for type checking
         if (!from || !to) throw new Error("Address not found");
