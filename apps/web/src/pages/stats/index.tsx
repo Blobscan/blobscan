@@ -235,7 +235,7 @@ function Charts() {
       </Card>
 
       <ChartSection
-        title="Blob"
+        title="Blobs"
         hide={sectionFilter !== "All" && sectionFilter !== "Blob"}
       >
         <DailyBlobsChart
@@ -250,7 +250,7 @@ function Charts() {
       </ChartSection>
 
       <ChartSection
-        title="Block"
+        title="Blocks"
         hide={sectionFilter !== "All" && sectionFilter !== "Block"}
       >
         <DailyBlocksChart
@@ -281,7 +281,7 @@ function Charts() {
       </ChartSection>
 
       <ChartSection
-        title="Transaction"
+        title="Transactions"
         hide={sectionFilter !== "All" && sectionFilter !== "Transaction"}
       >
         <DailyTransactionsChart
