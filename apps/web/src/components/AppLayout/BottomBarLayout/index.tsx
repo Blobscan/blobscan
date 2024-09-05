@@ -5,6 +5,7 @@ import { ExplorerDetails } from "~/components/ExplorerDetails";
 import { IconButton } from "~/components/IconButton";
 import { Link } from "~/components/Link";
 import { env } from "~/env.mjs";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
 import DiscordIcon from "~/icons/discord.svg";
 import GithubIcon from "~/icons/github.svg";
 import XIcon from "~/icons/x.svg";
@@ -25,12 +26,15 @@ const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
 ];
 
 export const BottomBarLayout = () => {
+  const breakpoint = useBreakpoint();
+  const isSmallScreen = breakpoint === "default";
+
   return (
-    <div className=" flex flex-col items-center justify-center p-2">
-      <div className="sm:hidden">
-        <ExplorerDetails />
-      </div>
+    <div className="flex flex-col items-center justify-center p-2">
       <div className="mt-4 flex flex-col items-center gap-2 sm:mt-8">
+        <div className="mb-2">
+          <ExplorerDetails placement="footer" isSmallScreen={isSmallScreen} />
+        </div>
         <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
             <Link key={href} href={href} isExternal hideExternalIcon>

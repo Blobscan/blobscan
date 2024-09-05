@@ -32,7 +32,7 @@ export const TopBar: React.FC = () => {
       </TopBarSurface>
       <TopBarSurface>
         <div className="-my-1 flex items-center gap-2">
-          <ExplorerDetails />
+          <ExplorerDetails placement="top" />
         </div>
       </TopBarSurface>
     </div>

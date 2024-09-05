@@ -36,29 +36,48 @@ function ExplorerDetailsItem({
   );
 }
 
-export function ExplorerDetails() {
+type ExplorerDetailsProps = {
+  placement: "top" | "footer";
+  isSmallScreen?: boolean;
+};
+
+export function ExplorerDetails({
+  placement,
+  isSmallScreen = false,
+}: ExplorerDetailsProps) {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
 
-  const explorerDetailsItems: ExplorerDetailsItemProps[] = [
-    { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
-    {
+  const explorerDetailsItems: ExplorerDetailsItemProps[] = [];
+
+  if (placement === "top" || isSmallScreen) {
+    explorerDetailsItems.push(
+      { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
+      {
+        name: "Blob gas price",
+        icon: <Gas className="h-4 w-4" />,
+        value: latestBlock && (
+          <EtherUnitDisplay amount={latestBlock.blobGasPrice.toString()} />
+        ),
+      }
+    );
+  }
+
+  if (placement === "footer") {
+    explorerDetailsItems.push({
       name: "Last synced slot",
       value: syncStateData
         ? formatNumber(syncStateData.lastUpperSyncedSlot ?? 0)
         : undefined,
-    },
-    {
-      name: "Blob gas price",
-      icon: <Gas className="h-4 w-4" />,
-      value: latestBlock && (
-        <EtherUnitDisplay amount={latestBlock.blobGasPrice.toString()} />
-      ),
-    },
-  ];
+    });
+  }
 
-  if (blobStoragesState && blobStoragesState.swarmDataTTL) {
+  if (
+    placement === "footer" &&
+    blobStoragesState &&
+    blobStoragesState.swarmDataTTL
+  ) {
     explorerDetailsItems.push({
       name: "Swarm blob data expiry",
       value: formatTtl(blobStoragesState.swarmDataTTL),
@@ -67,7 +86,7 @@ export function ExplorerDetails() {
   }
 
   return (
-    <div className="sm:fle flex w-full flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:justify-start">
+    <div className="flex flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4">
       {explorerDetailsItems.map(({ name, value, icon }, i) => {
         return (
           <div key={name} className="flex items-center gap-2">

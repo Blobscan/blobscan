@@ -15,7 +15,7 @@ export const TopBarLayout: React.FC = () => {
     return (
       <nav className="z-10 flex h-16 w-full items-center justify-end px-4 md:justify-between">
         <div className="hidden w-full md:flex">
-          <ExplorerDetails />
+          <ExplorerDetails placement="top" />
         </div>
         <div className="flex items-center gap-3">
           <div className=" xl:hidden">
