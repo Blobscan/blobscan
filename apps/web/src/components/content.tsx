@@ -9,10 +9,7 @@ import {
 import { env } from "~/env.mjs";
 import EthereumIcon from "~/icons/ethereum.svg";
 import {
-  buildBlobStatsRoute,
-  buildBlockStatsRoute,
   buildBlocksRoute,
-  buildTransactionStatsRoute,
   buildTransactionsRoute,
   buildBlobsRoute,
   buildAllStatsRoute,
@@ -86,31 +83,14 @@ export const NAVIGATION_ITEMS: Array<
     ],
   },
   {
-    label: "Stats",
-    icon: <ChartBarIcon />,
-    items: [
-      {
-        label: "Blob Metrics",
-        href: buildBlobStatsRoute(),
-      },
-      {
-        label: "Block Metrics",
-        href: buildBlockStatsRoute(),
-      },
-      {
-        label: "Transaction Metrics",
-        href: buildTransactionStatsRoute(),
-      },
-      {
-        label: "All Metrics",
-        href: buildAllStatsRoute(),
-      },
-    ],
-  },
-  {
     label: "Networks",
     icon: <EthereumIcon />,
     items: JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"),
+  },
+  {
+    label: "Stats",
+    icon: <ChartBarIcon />,
+    href: buildAllStatsRoute(),
   },
   {
     label: "API",

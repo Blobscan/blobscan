@@ -26,18 +26,6 @@ export function buildTransactionsRoute() {
   return "/txs";
 }
 
-export function buildBlobStatsRoute() {
-  return "/stats/blob";
-}
-
-export function buildBlockStatsRoute() {
-  return "/stats/block";
-}
-
-export function buildTransactionStatsRoute() {
-  return "/stats/tx";
-}
-
 export function buildAllStatsRoute() {
-  return "/stats/all";
+  return "/stats/";
 }

@@ -16,7 +16,7 @@ export interface Option {
 }
 export interface DropdownProps {
   options: Option[];
-  selected: Option | null;
+  selected?: Option | null;
   width?: string;
   placeholder?: string;
   clearable?: boolean;

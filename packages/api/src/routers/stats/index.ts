@@ -1,4 +1,5 @@
 import { t } from "../../trpc-client";
+import { getAllDailyStats } from "./getAllDailyStats";
 import { getAllOverallStats } from "./getAllOverallStats";
 import { getBlobDailyStats } from "./getBlobDailyStats";
 import { getBlobOverallStats } from "./getBlobOverallStats";
@@ -9,6 +10,7 @@ import { getTransactionOverallStats } from "./getTransactionOverallStats";
 
 export const statsRouter = t.router({
   getAllOverallStats,
+  getAllDailyStats,
   getBlobDailyStats,
   getBlobOverallStats,
   getBlockDailyStats,

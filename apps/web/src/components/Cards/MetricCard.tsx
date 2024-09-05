@@ -198,7 +198,7 @@ export const MetricCard: FC<MetricCardProps> = function ({
       <div
         className={cn(
           {
-            "sm:gap-4": !compact,
+            "sm:gap-2": !compact,
             "sm:gap-1": compact,
           },
           "flex flex-col justify-between gap-1",

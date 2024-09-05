@@ -1,5 +1,7 @@
 import { z } from "@blobscan/zod";
 
+import type { TRPCContext } from "../../context";
+import type { TimeInterval } from "../../middlewares/withTimeFrame";
 import {
   withTimeFrame,
   withTimeFrameSchema,
@@ -9,7 +11,7 @@ import { BLOCK_BASE_PATH } from "./common";
 
 const inputSchema = withTimeFrameSchema;
 
-const outputSchema = z.object({
+export const outputSchema = z.object({
   days: z.array(z.string()),
   totalBlocks: z.array(z.number()),
   totalBlobGasUsed: z.array(z.string()),
@@ -35,60 +37,66 @@ export const getBlockDailyStats = publicProcedure
   .input(inputSchema)
   .use(withTimeFrame)
   .output(outputSchema)
-  .query(({ ctx: { prisma, timeFrame } }) =>
-    prisma.blockDailyStats
-      .findMany({
-        where: {
-          day: {
-            gte: timeFrame.initial.toDate(),
-            lte: timeFrame.final.toDate(),
-          },
-        },
-        orderBy: { day: "asc" },
-      })
-      .then((stats) =>
-        stats.reduce<OutputSchema>(
-          (
-            transformedStats,
-            {
-              day,
-              totalBlocks,
-              totalBlobGasUsed,
-              totalBlobAsCalldataGasUsed,
-              totalBlobFee,
-              totalBlobAsCalldataFee,
-              avgBlobFee,
-              avgBlobAsCalldataFee,
-              avgBlobGasPrice,
-            }
-          ) => {
-            transformedStats.days.push(day.toISOString());
-            transformedStats.totalBlocks.push(totalBlocks);
-            transformedStats.totalBlobGasUsed.push(totalBlobGasUsed.toFixed());
-            transformedStats.totalBlobAsCalldataGasUsed.push(
-              totalBlobAsCalldataGasUsed.toFixed()
-            );
-            transformedStats.totalBlobFees.push(totalBlobFee.toFixed());
-            transformedStats.totalBlobAsCalldataFees.push(
-              totalBlobAsCalldataFee.toFixed()
-            );
-            transformedStats.avgBlobFees.push(avgBlobFee);
-            transformedStats.avgBlobAsCalldataFees.push(avgBlobAsCalldataFee);
-            transformedStats.avgBlobGasPrices.push(avgBlobGasPrice);
+  .query(({ ctx }) => getBlockDailyStatsQuery(ctx));
 
-            return transformedStats;
-          },
-          {
-            days: [],
-            totalBlocks: [],
-            totalBlobGasUsed: [],
-            totalBlobAsCalldataGasUsed: [],
-            totalBlobFees: [],
-            totalBlobAsCalldataFees: [],
-            avgBlobFees: [],
-            avgBlobAsCalldataFees: [],
-            avgBlobGasPrices: [],
-          }
-        )
-      )
+export async function getBlockDailyStatsQuery({
+  timeFrame,
+  prisma,
+}: {
+  timeFrame: TimeInterval;
+  prisma: TRPCContext["prisma"];
+}): Promise<OutputSchema> {
+  const stats = await prisma.blockDailyStats.findMany({
+    where: {
+      day: {
+        gte: timeFrame.initial.toDate(),
+        lte: timeFrame.final.toDate(),
+      },
+    },
+    orderBy: { day: "asc" },
+  });
+
+  return stats.reduce<OutputSchema>(
+    (
+      transformedStats,
+      {
+        day,
+        totalBlocks,
+        totalBlobGasUsed,
+        totalBlobAsCalldataGasUsed,
+        totalBlobFee,
+        totalBlobAsCalldataFee,
+        avgBlobFee,
+        avgBlobAsCalldataFee,
+        avgBlobGasPrice,
+      }
+    ) => {
+      transformedStats.days.push(day.toISOString());
+      transformedStats.totalBlocks.push(totalBlocks);
+      transformedStats.totalBlobGasUsed.push(totalBlobGasUsed.toFixed());
+      transformedStats.totalBlobAsCalldataGasUsed.push(
+        totalBlobAsCalldataGasUsed.toFixed()
+      );
+      transformedStats.totalBlobFees.push(totalBlobFee.toFixed());
+      transformedStats.totalBlobAsCalldataFees.push(
+        totalBlobAsCalldataFee.toFixed()
+      );
+      transformedStats.avgBlobFees.push(avgBlobFee);
+      transformedStats.avgBlobAsCalldataFees.push(avgBlobAsCalldataFee);
+      transformedStats.avgBlobGasPrices.push(avgBlobGasPrice);
+
+      return transformedStats;
+    },
+    {
+      days: [],
+      totalBlocks: [],
+      totalBlobGasUsed: [],
+      totalBlobAsCalldataGasUsed: [],
+      totalBlobFees: [],
+      totalBlobAsCalldataFees: [],
+      avgBlobFees: [],
+      avgBlobAsCalldataFees: [],
+      avgBlobGasPrices: [],
+    }
   );
+}
