@@ -13,7 +13,7 @@ import {
 
 import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
-import { Rollup } from "@blobscan/db/prisma/enums";
+import { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
 import {
@@ -154,6 +154,7 @@ describe("Indexer router", async () => {
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
+                "category": "OTHER",
                 "fromId": "address9",
                 "gasPrice": "10000",
                 "hash": "txHash999",
@@ -166,6 +167,7 @@ describe("Indexer router", async () => {
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
+                "category": "OTHER",
                 "fromId": "address7",
                 "gasPrice": "3000000",
                 "hash": "txHash1000",
@@ -178,12 +180,10 @@ describe("Indexer router", async () => {
           `);
         });
 
-        it("should label rollup transactions correctly", async () => {
+        it("should identify rollup transactions correctly", async () => {
           await authorizedCaller.indexer.indexData(
             ROLLUP_BLOB_TRANSACTION_INPUT
           );
-
-          console.log(ADDRESS_TO_ROLLUP_MAPPINGS);
 
           const indexedTxHashesAndRollups =
             await authorizedContext.prisma.transaction
@@ -203,6 +203,60 @@ describe("Indexer router", async () => {
             ]);
 
           expect(indexedTxHashesAndRollups).toEqual(expectedTxHashesAndRollups);
+        });
+
+        it("should categorize a rollup transaction correctly", async () => {
+          await authorizedCaller.indexer.indexData(
+            ROLLUP_BLOB_TRANSACTION_INPUT
+          );
+
+          const indexedTxHashesAndCategories =
+            await authorizedContext.prisma.transaction
+              .findMany({
+                where: {
+                  blockHash: ROLLUP_BLOB_TRANSACTION_INPUT.block.hash,
+                },
+              })
+              .then((r) =>
+                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.category])
+              );
+
+          const expectedTxHashesAndCategories =
+            ROLLUP_BLOB_TRANSACTION_INPUT.transactions.map(
+              ({ hash }): [string, Category] => [hash, Category.ROLLUP]
+            );
+          expect(indexedTxHashesAndCategories).toEqual(
+            expectedTxHashesAndCategories
+          );
+        });
+
+        it("should categorize an unknown transaction correctly", async () => {
+          const indexedTxHashesAndCategories =
+            await authorizedContext.prisma.transaction
+              .findMany({
+                where: {
+                  blockHash: INPUT.block.hash,
+                },
+                orderBy: [
+                  {
+                    blockNumber: "asc",
+                  },
+                  {
+                    index: "asc",
+                  },
+                ],
+              })
+              .then((r) =>
+                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.category])
+              );
+
+          const expectedTxHashesAndCategories = INPUT.transactions.map(
+            ({ hash }): [string, Category] => [hash, Category.OTHER]
+          );
+
+          expect(indexedTxHashesAndCategories).toEqual(
+            expectedTxHashesAndCategories
+          );
         });
       });
 

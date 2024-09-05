@@ -144,6 +144,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "versionedHash": "blobHash001",
           },
         ],
+        "category": "other",
         "from": "address2",
         "hash": "txHash016",
         "index": 0,
@@ -221,6 +222,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "versionedHash": "blobHash004",
           },
         ],
+        "category": "rollup",
         "from": "address5",
         "hash": "txHash015",
         "index": 0,
@@ -256,6 +258,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "versionedHash": "blobHash001",
           },
         ],
+        "category": "other",
         "from": "address2",
         "hash": "txHash016",
         "index": 0,
@@ -291,6 +294,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "versionedHash": "blobHash004",
           },
         ],
+        "category": "rollup",
         "from": "address5",
         "hash": "txHash015",
         "index": 0,
@@ -464,6 +468,91 @@ exports[`Block router > getAll > when getting filtered block results > should on
           },
         ],
         "hash": "txHash002",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Block router > getAll > when getting filtered block results > should return results up to and including the specified slot 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": "2023-05-10T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash003",
+          },
+          {
+            "versionedHash": "blobHash004",
+          },
+          {
+            "versionedHash": "blobHash005",
+          },
+          {
+            "versionedHash": "blobHash006",
+          },
+        ],
+        "hash": "txHash004",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
       },
     ],
   },
@@ -793,6 +882,26 @@ exports[`Block router > getAll > when getting filtered block results > should re
 
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the block range specified  1`] = `
 [
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash006",
+    "number": 1006,
+    "slot": 106,
+    "timestamp": "2023-08-31T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
+          },
+        ],
+        "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      },
+    ],
+  },
   {
     "blobAsCalldataGasUsed": "250000",
     "blobGasPrice": "20",
@@ -1205,14 +1314,14 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results ending at the block specified without including it 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "2042780",
+    "blobAsCalldataGasUsed": "255000",
     "blobGasPrice": "22",
-    "blobGasUsed": "786432",
+    "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash001",
-    "number": 1001,
-    "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": "2023-05-10T12:00:00.000Z",
     "transactions": [
       {
         "blobs": [
@@ -1225,35 +1334,20 @@ exports[`Block router > getAll > when getting filtered block results > should re
           {
             "versionedHash": "blobHash003",
           },
-        ],
-        "hash": "txHash001",
-      },
-      {
-        "blobs": [
           {
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash002",
-      },
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
+            "versionedHash": "blobHash004",
           },
           {
-            "versionedHash": "blobHash002",
+            "versionedHash": "blobHash005",
+          },
+          {
+            "versionedHash": "blobHash006",
           },
         ],
-        "hash": "txHash003",
+        "hash": "txHash004",
       },
     ],
   },
-]
-`;
-
-exports[`Block router > getAll > when getting filtered block results > should return the results ending at the date specified without including it 1`] = `
-[
   {
     "blobAsCalldataGasUsed": "2042780",
     "blobGasPrice": "22",
@@ -1302,7 +1396,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
 ]
 `;
 
-exports[`Block router > getAll > when getting filtered block results > should return the results ending at the slot specified without including it 1`] = `
+exports[`Block router > getAll > when getting filtered block results > should return the results ending at the date specified without including it 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "2042780",
@@ -2121,6 +2215,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "versionedHash": "blobHash006",
         },
       ],
+      "category": "rollup",
       "from": "address1",
       "hash": "txHash004",
       "index": 0,
@@ -2169,6 +2264,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           "versionedHash": "blobHash006",
         },
       ],
+      "category": "rollup",
       "from": "address1",
       "hash": "txHash004",
       "index": 0,

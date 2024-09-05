@@ -2,12 +2,16 @@ import type {
   Prisma,
   BlobDataStorageReference as DBBlobDataStorageReference,
 } from "@blobscan/db/prisma/client";
-import type { BlobStorage, Rollup } from "@blobscan/db/prisma/enums";
+import type { BlobStorage, Category, Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
 
 import { blobStorageSchema } from "./schemas";
-import type { ZodBlobStorageEnum, ZodRollupEnum } from "./schemas";
+import type {
+  ZodBlobStorageEnum,
+  ZodCategoryEnum,
+  ZodRollupEnum,
+} from "./schemas";
 
 export function serializeDecimal(decimal: Prisma.Decimal): string {
   return decimal.toFixed();
@@ -25,6 +29,10 @@ export function serializeBlobStorage(
   blobStorage: BlobStorage
 ): ZodBlobStorageEnum {
   return blobStorage.toLowerCase() as ZodBlobStorageEnum;
+}
+
+export function serializeCategory(category: Category): ZodCategoryEnum {
+  return category.toLowerCase() as ZodCategoryEnum;
 }
 
 export function buildBlobDataUrl(
