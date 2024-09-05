@@ -38,20 +38,16 @@ function ExplorerDetailsItem({
 
 type ExplorerDetailsProps = {
   placement: "top" | "footer";
-  isSmallScreen?: boolean;
 };
 
-export function ExplorerDetails({
-  placement,
-  isSmallScreen = false,
-}: ExplorerDetailsProps) {
+export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
 
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [];
 
-  if (placement === "top" || isSmallScreen) {
+  if (placement === "top") {
     explorerDetailsItems.push(
       { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
       {
@@ -86,12 +82,14 @@ export function ExplorerDetails({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4">
+    <div className="flex flex-col flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:flex-row">
       {explorerDetailsItems.map(({ name, value, icon }, i) => {
         return (
           <div key={name} className="flex items-center gap-2">
             <ExplorerDetailsItem name={name} value={value} icon={icon} />
-            {i < explorerDetailsItems.length - 1 ? "･" : ""}
+            <span className="hidden sm:flex">
+              {i < explorerDetailsItems.length - 1 ? "･" : ""}
+            </span>
           </div>
         );
       })}
