@@ -15,11 +15,12 @@ export const TIME_FRAMES = z.enum([
 ]);
 
 export type TimeFrame = z.infer<typeof TIME_FRAMES>;
-
-function getTimeFrameIntervals(timeFrame: TimeFrame): {
+export type TimeInterval = {
   initial: dayjs.Dayjs;
   final: dayjs.Dayjs;
-} {
+};
+
+function getTimeFrameIntervals(timeFrame: TimeFrame): TimeInterval {
   switch (timeFrame) {
     case "1d":
     case "7d":
