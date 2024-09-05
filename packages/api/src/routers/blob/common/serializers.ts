@@ -22,7 +22,6 @@ import {
   serializeBlobDataStorageReferences,
   serializeDate,
   isEmptyObject,
-  serializeCategory,
 } from "../../../utils";
 
 type BaseBlob = Pick<
