@@ -213,7 +213,7 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
-    it("should return the results ending at the slot specified without including it", async () => {
+    it("should return results up to and including the specified slot", async () => {
       const result = await fetcher({
         endSlot: 102,
       });

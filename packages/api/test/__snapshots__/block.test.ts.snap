@@ -474,6 +474,91 @@ exports[`Block router > getAll > when getting filtered block results > should on
 ]
 `;
 
+exports[`Block router > getAll > when getting filtered block results > should return results up to and including the specified slot 1`] = `
+[
+  {
+    "blobAsCalldataGasUsed": "255000",
+    "blobGasPrice": "22",
+    "blobGasUsed": "5500000",
+    "excessBlobGas": "15000",
+    "hash": "blockHash002",
+    "number": 1002,
+    "slot": 102,
+    "timestamp": "2023-05-10T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash003",
+          },
+          {
+            "versionedHash": "blobHash004",
+          },
+          {
+            "versionedHash": "blobHash005",
+          },
+          {
+            "versionedHash": "blobHash006",
+          },
+        ],
+        "hash": "txHash004",
+      },
+    ],
+  },
+  {
+    "blobAsCalldataGasUsed": "2042780",
+    "blobGasPrice": "22",
+    "blobGasUsed": "786432",
+    "excessBlobGas": "15000",
+    "hash": "blockHash001",
+    "number": 1001,
+    "slot": 101,
+    "timestamp": "2022-10-16T12:00:00.000Z",
+    "transactions": [
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+          {
+            "versionedHash": "blobHash003",
+          },
+        ],
+        "hash": "txHash001",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+        ],
+        "hash": "txHash002",
+      },
+      {
+        "blobs": [
+          {
+            "versionedHash": "blobHash001",
+          },
+          {
+            "versionedHash": "blobHash002",
+          },
+        ],
+        "hash": "txHash003",
+      },
+    ],
+  },
+]
+`;
+
 exports[`Block router > getAll > when getting filtered block results > should return the latest results when no sort was specified 1`] = `
 [
   {
@@ -1313,91 +1398,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
 
 exports[`Block router > getAll > when getting filtered block results > should return the results ending at the date specified without including it 1`] = `
 [
-  {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
-    "hash": "blockHash001",
-    "number": 1001,
-    "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-          {
-            "versionedHash": "blobHash002",
-          },
-          {
-            "versionedHash": "blobHash003",
-          },
-        ],
-        "hash": "txHash001",
-      },
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash002",
-      },
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-          {
-            "versionedHash": "blobHash002",
-          },
-        ],
-        "hash": "txHash003",
-      },
-    ],
-  },
-]
-`;
-
-exports[`Block router > getAll > when getting filtered block results > should return the results ending at the slot specified without including it 1`] = `
-[
-  {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash002",
-    "number": 1002,
-    "slot": 102,
-    "timestamp": "2023-05-10T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-          {
-            "versionedHash": "blobHash002",
-          },
-          {
-            "versionedHash": "blobHash003",
-          },
-          {
-            "versionedHash": "blobHash004",
-          },
-          {
-            "versionedHash": "blobHash005",
-          },
-          {
-            "versionedHash": "blobHash006",
-          },
-        ],
-        "hash": "txHash004",
-      },
-    ],
-  },
   {
     "blobAsCalldataGasUsed": "2042780",
     "blobGasPrice": "22",
