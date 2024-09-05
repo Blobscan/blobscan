@@ -26,10 +26,7 @@ const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
 
 export const BottomBarLayout = () => {
   return (
-    <div className=" flex flex-col items-center justify-center p-2">
-      <div className="sm:hidden">
-        <ExplorerDetails />
-      </div>
+    <div className="flex flex-col items-center justify-center p-2">
       <div className="mt-4 flex flex-col items-center gap-2 sm:mt-8">
         <div className="flex items-center gap-2">
           {EXTERNAL_APPS.map(({ icon, href }) => (
@@ -45,6 +42,9 @@ export const BottomBarLayout = () => {
           </Link>{" "}
           shard blob transactions, providing the necessary infrastructure to
           scale Ethereum.
+        </div>
+        <div className="my-1">
+          <ExplorerDetails placement="footer" />
         </div>
         {env.NEXT_PUBLIC_VERSION && (
           <div className="flex items-center gap-1">
