@@ -68,6 +68,7 @@ const Blocks: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+    sort,
   } = useQueryParams();
   const {
     data: rawBlocksData,
@@ -84,6 +85,7 @@ const Blocks: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+    sort,
   });
   const blocksData = useMemo(() => {
     if (!rawBlocksData) {

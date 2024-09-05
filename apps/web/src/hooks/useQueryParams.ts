@@ -5,6 +5,8 @@ import { Rollup } from "@blobscan/api/enums";
 
 import type { Rollup as LowercaseRollup } from "~/types";
 
+export type Sort = "asc" | "desc";
+
 type QueryParams = {
   from?: string;
   p: number;
@@ -16,6 +18,7 @@ type QueryParams = {
   endBlock?: number;
   startSlot?: number;
   endSlot?: number;
+  sort?: Sort;
 };
 
 const DEFAULT_INITIAL_PAGE_SIZE = 50;
@@ -44,6 +47,7 @@ export function useQueryParams() {
       endBlock,
       startSlot,
       endSlot,
+      sort,
     } = router.query;
 
     setQueryParams({
@@ -63,6 +67,7 @@ export function useQueryParams() {
       endBlock: parseInt(endBlock as string) || undefined,
       startSlot: parseInt(startSlot as string) || undefined,
       endSlot: parseInt(endSlot as string) || undefined,
+      sort: sort ? (sort as Sort) : undefined,
     });
   }, [router]);
 

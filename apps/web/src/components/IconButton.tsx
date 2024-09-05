@@ -26,6 +26,10 @@ const iconVariants = cva(
         focus-visible:outline-iconHighlight-dark
 
         fill-icon-light
+        aria-pressed:fill-primary-700
+        aria-pressed:text-primary-700
+       dark:aria-pressed:fill-primary-100
+        dark:aria-pressed:text-primary-100
         text-icon-light
         hover:fill-iconHighlight-light
         hover:text-iconHighlight-light
@@ -36,6 +40,7 @@ const iconVariants = cva(
         `,
       },
       size: {
+        sm: "[&>*]:h-4 [&>*]:w-4",
         md: "[&>*]:h-5 [&>*]:w-5",
       },
     },
@@ -46,10 +51,15 @@ const iconVariants = cva(
   }
 );
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> &
+export type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof iconVariants>;
 
-const IconButton: FC<Props> = ({ className, variant, size, ...props }) => {
+const IconButton: FC<IconButtonProps> = ({
+  className,
+  variant,
+  size,
+  ...props
+}) => {
   return (
     <button
       className={twMerge(iconVariants({ variant, size }), className)}

@@ -10,6 +10,7 @@ import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUni
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
@@ -83,6 +84,7 @@ const Tx: NextPage = () => {
         name: "Hash",
         value: <Copyable value={hash} label="Copy Hash" />,
       },
+      { name: "Status", value: <BlockStatus blockNumber={blockNumber} /> },
       {
         name: "Block",
         value: <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>,

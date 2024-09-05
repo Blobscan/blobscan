@@ -1,8 +1,9 @@
 import React from "react";
 
-import type { Rollup, Size } from "~/types";
+import type { Rollup } from "~/types";
 import { capitalize } from "~/utils";
 import { RollupIcon } from "../RollupIcon";
+import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
 
 const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
@@ -67,20 +68,20 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
 };
 
-type RollupBadgeProps = {
+type RollupBadgeProps = BadgeProps & {
   rollup: Rollup;
-  size?: Size;
 };
 
-export const RollupBadge: React.FC<RollupBadgeProps> = ({ rollup, size }) => {
+export const RollupBadge: React.FC<RollupBadgeProps> = ({
+  rollup,
+  ...props
+}) => {
   const { style, label } = ROLLUP_CONFIG[rollup];
 
   return (
-    <Badge
-      className={style}
-      icon={<RollupIcon rollup={rollup} />}
-      label={label ?? capitalize(rollup)}
-      size={size}
-    />
+    <Badge className={style} {...props}>
+      <RollupIcon rollup={rollup} />
+      {label ?? capitalize(rollup)}
+    </Badge>
   );
 };
