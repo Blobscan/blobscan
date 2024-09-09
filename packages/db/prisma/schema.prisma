@@ -168,7 +168,6 @@ model Transaction {
 
   @@index([insertedAt])
   @@index([blockHash])
-  @@index([blockNumber])
   @@index([blockNumber, index])
   @@index([blockTimestamp])
   @@index([category])
