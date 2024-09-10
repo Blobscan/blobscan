@@ -169,8 +169,10 @@ model Transaction {
   @@index([insertedAt])
   @@index([blockHash])
   @@index([blockNumber, index])
-  @@index([blockTimestamp])
+  @@index([blockTimestamp, category, rollup, blockNumber, index])
   @@index([category, rollup, blockNumber, index])
+  @@index([fromId, blockNumber, index])
+  @@index([toId, blockNumber, index])
   @@map("transaction")
 }
 
