@@ -152,6 +152,7 @@ model Transaction {
   blockNumber           Int      @map("block_number")
   blockTimestamp        DateTime @map("block_timestamp")
   index                 Int?
+  blobGasUsed           Decimal? @map("blob_gas_used") @db.Decimal(100, 0)
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
