@@ -24,6 +24,7 @@ export const baseTransactionSelect =
     hash: true,
     fromId: true,
     toId: true,
+    blobGasUsed: true,
     blobAsCalldataGasUsed: true,
     gasPrice: true,
     maxFeePerBlobGas: true,

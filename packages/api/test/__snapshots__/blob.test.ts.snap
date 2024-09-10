@@ -93,6 +93,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1000,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
+      "blobGasUsed": "131072",
       "category": "other",
       "from": "address2",
       "index": 0,
@@ -129,6 +130,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1300,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
+      "blobGasUsed": "393216",
       "category": "rollup",
       "from": "address5",
       "index": 0,
@@ -164,6 +166,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1000,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
+      "blobGasUsed": "131072",
       "category": "other",
       "from": "address2",
       "index": 0,
@@ -193,6 +196,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1300,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
+      "blobGasUsed": "393216",
       "category": "rollup",
       "from": "address5",
       "index": 0,

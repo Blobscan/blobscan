@@ -151,6 +151,7 @@ describe("Indexer router", async () => {
           expect(remainingParams).toMatchInlineSnapshot(`
             [
               {
+                "blobGasUsed": "131072",
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
@@ -164,6 +165,7 @@ describe("Indexer router", async () => {
                 "toId": "address10",
               },
               {
+                "blobGasUsed": "262144",
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,

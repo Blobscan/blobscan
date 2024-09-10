@@ -739,6 +739,7 @@ describe("Base Extension", () => {
         blobAsCalldataGasUsed: new Prisma.Decimal(
           existingRawTx.blobAsCalldataGasUsed
         ),
+        blobGasUsed: new Prisma.Decimal(existingRawTx.blobGasUsed),
         maxFeePerBlobGas: new Prisma.Decimal(existingRawTx.maxFeePerBlobGas),
         gasPrice: new Prisma.Decimal(existingRawTx.gasPrice),
       };
@@ -756,6 +757,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(100),
             gasPrice: new Prisma.Decimal(10),
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
+            blobGasUsed: new Prisma.Decimal(1000),
             category: "ROLLUP",
             rollup: "OPTIMISM",
           },
@@ -770,6 +772,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(120),
             gasPrice: new Prisma.Decimal(5),
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
+            blobGasUsed: new Prisma.Decimal(500),
             category: "ROLLUP",
             rollup: "BASE",
           },
@@ -806,6 +809,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(1),
             gasPrice: new Prisma.Decimal(1),
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
+            blobGasUsed: new Prisma.Decimal(1),
             category: "ROLLUP",
             rollup: "ARBITRUM",
           },
@@ -820,6 +824,7 @@ describe("Base Extension", () => {
             maxFeePerBlobGas: new Prisma.Decimal(999),
             gasPrice: new Prisma.Decimal(999),
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
+            blobGasUsed: new Prisma.Decimal(999),
             category: "ROLLUP",
             rollup: "OPTIMISM",
           },

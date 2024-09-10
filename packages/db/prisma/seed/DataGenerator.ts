@@ -266,6 +266,7 @@ export class DataGenerator {
           blockNumber: block.number,
           blockTimestamp: block.timestamp,
           blobAsCalldataGasUsed: new Prisma.Decimal(0),
+          blobGasUsed: new Prisma.Decimal(0),
           gasPrice: bigintToDecimal(gasPrice),
           maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),
           rollup,

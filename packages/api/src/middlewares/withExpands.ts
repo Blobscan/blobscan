@@ -27,6 +27,7 @@ export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
 const expandedTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
   blobAsCalldataGasUsed: true,
+  blobGasUsed: true,
   fromId: true,
   toId: true,
   gasPrice: true,
@@ -121,6 +122,7 @@ export const serializedExpandedTransactionSchema = z
     to: z.string().optional(),
     maxFeePerBlobGas: z.string().optional(),
     blobAsCalldataGasUsed: z.string().optional(),
+    blobGasUsed: z.string().optional(),
     category: categorySchema.optional(),
     rollup: rollupSchema.nullable().optional(),
     index: z.number().nonnegative().optional(),
@@ -130,7 +132,6 @@ export const serializedExpandedTransactionSchema = z
       blobAsCalldataGasFee: z.string().optional(),
       blobGasBaseFee: z.string().optional(),
       blobGasMaxFee: z.string().optional(),
-      blobGasUsed: z.string().optional(),
     })
   );
 

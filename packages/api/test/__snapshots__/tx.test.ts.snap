@@ -1039,9 +1039,9 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   {
     "blobAsCalldataGasFee": "1866000",
     "blobAsCalldataGasUsed": "15550",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "74186752",
-    "blobGasUsed": "131072",
+    "blobGasBaseFee": "5767168",
+    "blobGasMaxFee": "148373504",
+    "blobGasUsed": "262144",
     "blobs": [
       {
         "index": 0,

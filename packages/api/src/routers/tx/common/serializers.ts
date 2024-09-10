@@ -29,6 +29,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
   from: z.string(),
   to: z.string(),
   maxFeePerBlobGas: z.string(),
+  blobGasUsed: z.string(),
   blobAsCalldataGasUsed: z.string(),
   category: categorySchema,
   rollup: rollupSchema.nullable(),
@@ -57,16 +58,21 @@ export type SerializedTransaction = z.infer<typeof serializedTransactionSchema>;
 export function addDerivedFieldsToTransaction(
   txQuery: BaseTransaction
 ): FullQueriedTransaction {
-  const { block, blobs, maxFeePerBlobGas, blobAsCalldataGasUsed, gasPrice } =
-    txQuery;
+  const {
+    blobAsCalldataGasUsed,
+    blobGasUsed,
+    block,
+    gasPrice,
+    maxFeePerBlobGas,
+  } = txQuery;
 
   return {
     ...txQuery,
     ...calculateDerivedTxBlobGasFields({
+      blobGasUsed,
       blobAsCalldataGasUsed,
       gasPrice,
       blobGasPrice: block.blobGasPrice,
-      txBlobsLength: blobs.length,
       maxFeePerBlobGas,
     }),
   };
@@ -99,6 +105,7 @@ export function serializeBaseTransactionFields(
     to: toId,
     from: fromId,
     blobAsCalldataGasUsed: serializeDecimal(txQuery.blobAsCalldataGasUsed),
+    blobGasUsed: serializeDecimal(txQuery.blobGasUsed),
     maxFeePerBlobGas: serializeDecimal(txQuery.maxFeePerBlobGas),
     category: serializeCategory(category),
     rollup: serializeRollup(rollup),
