@@ -4,10 +4,6 @@ import { z } from "@blobscan/zod";
 import { publicProcedure } from "../../procedures";
 
 const inputSchema = z.object({
-  txHash: z.string(),
-  transactionIndex: z.number(),
-  senderAddress: z.string(),
-  blockNumber: z.number(),
   commitment: z.string(),
 });
 
@@ -39,6 +35,14 @@ async function getBlobNeighbor(
     },
     select: {
       index: true,
+      blockNumber: true,
+      transaction: {
+        select: {
+          hash: true,
+          fromId: true,
+          index: true,
+        },
+      },
     },
   });
 
@@ -51,41 +55,60 @@ async function getBlobNeighbor(
       OR: [
         // Same transaction
         {
-          txHash: input.txHash,
+          txHash: blob.transaction.hash,
           index: direction === "next" ? { gt: blob.index } : { lt: blob.index },
         },
         // Next/prev transaction
         {
           transaction: {
-            fromId: input.senderAddress,
-            OR: [
-              {
-                blockNumber:
-                  direction === "next"
-                    ? { gt: input.blockNumber }
-                    : { lt: input.blockNumber },
-              },
-              {
-                blockNumber: input.blockNumber,
-                index:
-                  direction === "next"
-                    ? { gt: input.transactionIndex }
-                    : { lt: input.transactionIndex },
-              },
-            ],
+            fromId: blob.transaction.fromId,
+            OR:
+              blob.transaction.index !== null
+                ? [
+                    {
+                      blockNumber:
+                        direction === "next"
+                          ? { gt: blob.blockNumber }
+                          : { lt: blob.blockNumber },
+                    },
+                    {
+                      AND: [
+                        { blockNumber: blob.blockNumber },
+                        {
+                          index:
+                            direction === "next"
+                              ? { gt: blob.transaction.index }
+                              : { lt: blob.transaction.index },
+                        },
+                      ],
+                    },
+                  ]
+                : [
+                    {
+                      blockNumber:
+                        direction === "next"
+                          ? { gt: blob.blockNumber }
+                          : { lt: blob.blockNumber },
+                    },
+                  ],
           },
         },
       ],
+    },
+    select: {
+      blobHash: true,
     },
     orderBy:
       direction === "next"
         ? [
             { index: "asc" },
+            { blockNumber: "asc" },
             { transaction: { index: "asc" } },
             { transaction: { blockNumber: "asc" } },
           ]
         : [
             { index: "desc" },
+            { blockNumber: "desc" },
             { transaction: { index: "desc" } },
             { transaction: { blockNumber: "desc" } },
           ],
