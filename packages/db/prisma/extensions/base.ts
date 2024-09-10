@@ -270,6 +270,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 maxFeePerBlobGas,
                 gasPrice,
                 blobAsCalldataGasUsed,
+                blobGasUsed,
                 category,
                 rollup,
               }) => [
@@ -283,6 +284,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 maxFeePerBlobGas,
                 gasPrice,
                 blobAsCalldataGasUsed,
+                blobGasUsed,
                 Prisma.sql`${category.toLowerCase()}::category`,
                 rollup
                   ? Prisma.sql`${rollup.toLowerCase()}::rollup`
@@ -305,6 +307,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               max_fee_per_blob_gas,
               gas_price,
               blob_as_calldata_gas_used,
+              blob_gas_used,
               category,
               rollup,
               inserted_at,
@@ -320,6 +323,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               max_fee_per_blob_gas = EXCLUDED.max_fee_per_blob_gas,
               gas_price = EXCLUDED.gas_price,
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
+              blob_gas_used = EXCLUDED.blob_gas_used,
               category = EXCLUDED.category,
               rollup = EXCLUDED.rollup,
               updated_at = NOW()

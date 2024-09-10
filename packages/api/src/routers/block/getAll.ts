@@ -95,14 +95,21 @@ export const getAll = publicProcedure
       blocks = blocks.map((block) => ({
         ...block,
         transactions: block.transactions.map((tx) => {
+          const {
+            maxFeePerBlobGas,
+            blobAsCalldataGasUsed,
+            gasPrice,
+            blobGasUsed,
+          } = tx;
+
           const derivedTxFields =
-            tx.maxFeePerBlobGas && tx.blobAsCalldataGasUsed && tx.gasPrice
+            maxFeePerBlobGas && blobAsCalldataGasUsed && gasPrice && blobGasUsed
               ? calculateDerivedTxBlobGasFields({
-                  blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed,
-                  gasPrice: tx.gasPrice,
+                  blobAsCalldataGasUsed,
+                  blobGasUsed,
+                  gasPrice,
                   blobGasPrice: block.blobGasPrice,
-                  maxFeePerBlobGas: tx.maxFeePerBlobGas,
-                  txBlobsLength: tx.blobs.length,
+                  maxFeePerBlobGas,
                 })
               : {};
 

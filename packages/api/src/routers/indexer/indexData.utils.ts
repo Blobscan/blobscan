@@ -14,6 +14,7 @@ import type { IndexDataFormattedInput } from "./indexData";
 
 const MIN_BLOB_BASE_FEE = BigInt(1);
 const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
+const BLOB_GAS_PER_BLOB = BigInt(131_072);
 
 function bigIntToDecimal(bigint: bigint) {
   return new Prisma.Decimal(bigint.toString());
@@ -103,6 +104,9 @@ export function createDBTransactions({
         toId: to,
         index,
         gasPrice: bigIntToDecimal(gasPrice),
+        blobGasUsed: bigIntToDecimal(
+          BigInt(txBlobs.length) * BLOB_GAS_PER_BLOB
+        ),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
         blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
