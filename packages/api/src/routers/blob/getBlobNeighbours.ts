@@ -102,13 +102,11 @@ async function getBlobNeighbor(
       direction === "next"
         ? [
             { index: "asc" },
-            { blockNumber: "asc" },
             { transaction: { index: "asc" } },
             { transaction: { blockNumber: "asc" } },
           ]
         : [
             { index: "desc" },
-            { blockNumber: "desc" },
             { transaction: { index: "desc" } },
             { transaction: { blockNumber: "desc" } },
           ],
