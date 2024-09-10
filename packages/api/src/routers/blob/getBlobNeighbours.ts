@@ -4,6 +4,10 @@ import { z } from "@blobscan/zod";
 import { publicProcedure } from "../../procedures";
 
 const inputSchema = z.object({
+  txHash: z.string(),
+  transactionIndex: z.number(),
+  senderAddress: z.string(),
+  blockNumber: z.number(),
   commitment: z.string(),
 });
 
@@ -61,36 +65,22 @@ async function getBlobNeighbor(
         // Next/prev transaction
         {
           transaction: {
-            fromId: blob.transaction.fromId,
-            OR:
-              blob.transaction.index !== null
-                ? [
-                    {
-                      blockNumber:
-                        direction === "next"
-                          ? { gt: blob.blockNumber }
-                          : { lt: blob.blockNumber },
-                    },
-                    {
-                      AND: [
-                        { blockNumber: blob.blockNumber },
-                        {
-                          index:
-                            direction === "next"
-                              ? { gt: blob.transaction.index }
-                              : { lt: blob.transaction.index },
-                        },
-                      ],
-                    },
-                  ]
-                : [
-                    {
-                      blockNumber:
-                        direction === "next"
-                          ? { gt: blob.blockNumber }
-                          : { lt: blob.blockNumber },
-                    },
-                  ],
+            fromId: input.senderAddress,
+            OR: [
+              {
+                blockNumber:
+                  direction === "next"
+                    ? { gt: input.blockNumber }
+                    : { lt: input.blockNumber },
+              },
+              {
+                blockNumber: input.blockNumber,
+                index:
+                  direction === "next"
+                    ? { gt: input.transactionIndex }
+                    : { lt: input.transactionIndex },
+              },
+            ],
           },
         },
       ],

@@ -59,9 +59,24 @@ const Blob: NextPage = function () {
   );
 
   const { data: neighbors } = api.blob.getBlobNeighbours.useQuery(
-    {
-      commitment: blob ? blob.commitment : "",
-    },
+    blob &&
+      blob.transactions[0] &&
+      blob.transactions[0].from &&
+      blob.transactions[0].index !== undefined
+      ? {
+          txHash: blob.transactions[0].hash,
+          commitment: blob.commitment,
+          transactionIndex: blob.transactions[0].index,
+          senderAddress: blob.transactions[0].from,
+          blockNumber: blob.transactions[0].blockNumber,
+        }
+      : {
+          txHash: "",
+          commitment: "",
+          transactionIndex: 0,
+          senderAddress: "",
+          blockNumber: 0,
+        },
     {
       enabled: Boolean(router.isReady && blob && blob.transactions[0]),
     }
