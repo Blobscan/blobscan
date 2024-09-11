@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["tracing", "metrics"]
+  previewFeatures = ["tracing", "metrics", "typedSql"]
 }
 
 generator enum {
