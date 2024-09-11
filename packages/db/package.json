@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "db:generate": "pnpm with-env prisma generate",
+    "db:generate": "pnpm with-env prisma generate --sql",
     "db:push": "pnpm with-env prisma db push --skip-generate",
     "db:migrate": "pnpm with-env prisma migrate dev",
     "db:seed": "pnpm with-env prisma db seed",
@@ -28,9 +28,9 @@
     "@blobscan/dayjs": "workspace:^0.0.2",
     "@blobscan/logger": "workspace:^0.1.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
-    "@prisma/client": "^5.18.0",
-    "@prisma/generator-helper": "^5.18.0",
-    "prisma": "^5.18.0"
+    "@prisma/client": "^5.19.1",
+    "@prisma/generator-helper": "^5.19.1",
+    "prisma": "^5.19.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
