@@ -2,6 +2,7 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
+import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyBlockStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
@@ -12,17 +13,24 @@ export type DailyBlobGasUsedChartProps = Partial<{
 
 const BaseChart: FC<DailyBlobGasUsedChartProps & { title: string }> =
   function ({ days, blobGasUsed, title }) {
+    const { scaledValues, unit } = useScaledWeiAmounts(
+      blobGasUsed ? blobGasUsed.map((x) => Number(x)) : []
+    );
     const options: EChartOption<EChartOption.SeriesBar> = {
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => formatNumber(value),
+          yAxisTooltip: (value) => `${formatNumber(value, "compact")} ${unit}`,
+          yAxisLabel: (value) => `${formatNumber(value, "compact")} ${unit}`,
         },
       }),
+      grid: {
+        containLabel: true,
+      },
       series: [
         {
           name: "Blob Gas Used",
-          data: blobGasUsed,
+          data: scaledValues,
           stack: "gas",
           type: "bar",
         },

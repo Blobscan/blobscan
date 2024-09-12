@@ -4,6 +4,7 @@ import type { EChartOption } from "echarts";
 import { useTheme } from "next-themes";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
+import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyBlockStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
@@ -17,17 +18,25 @@ export type DailyBlobGasComparisonChartProps = Partial<{
 export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
   function ({ blobAsCalldataGasUsed, blobGasUsed, days, opts = {} }) {
     const { resolvedTheme } = useTheme();
+    const { scaledValues, unit } = useScaledWeiAmounts(
+      blobGasUsed ? blobGasUsed.map((x) => Number(x)) : []
+    );
+
     const options: EChartOption<EChartOption.Series> = {
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => formatNumber(value, "compact"),
+          yAxisTooltip: (value) => `${formatNumber(value, "compact")} ${unit}`,
+          yAxisLabel: (value) => `${formatNumber(value, "compact")} ${unit}`,
         },
       }),
+      grid: {
+        containLabel: true,
+      },
       series: [
         {
           name: "Blob Gas Used",
-          data: blobGasUsed,
+          data: scaledValues,
           stack: "gas",
           type: "bar",
 
