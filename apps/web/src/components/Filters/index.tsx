@@ -225,7 +225,7 @@ export const Filters: FC = function () {
             </div>
           </div>
           <div className="flex gap-2">
-            <div className="w-full md:w-52 lg:w-[12rem] xl:w-80">
+            <div className="w-full md:w-52 lg:max-xl:w-[12rem]">
               <BlockNumberFilter
                 range={filters.blockNumberRange}
                 onChange={(newBlockNumberRange) =>
@@ -236,7 +236,7 @@ export const Filters: FC = function () {
                 }
               />
             </div>
-            <div className="w-full md:w-52 lg:w-44 xl:w-full 2xl:w-80">
+            <div className="w-full md:w-52 lg:max-xl:w-44">
               <SlotFilter
                 range={filters.slotRange}
                 onChange={(newSlotRange) =>
