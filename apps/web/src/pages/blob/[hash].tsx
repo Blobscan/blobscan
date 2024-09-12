@@ -20,6 +20,7 @@ import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
+import Loading from "~/icons/loading.svg";
 import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
@@ -177,16 +178,20 @@ const Blob: NextPage = function () {
         header={
           <div className="flex items-center justify-start gap-4">
             Blob Details
-            <NavArrows
-              prev={{
-                href: neighbors?.prev ? `/blob/${neighbors.prev}` : undefined,
-                tooltip: "Previous blob from this sender",
-              }}
-              next={{
-                href: neighbors?.next ? `/blob/${neighbors.next}` : undefined,
-                tooltip: "Next blob from this sender",
-              }}
-            />
+            {neighbors ? (
+              <NavArrows
+                prev={{
+                  href: neighbors?.prev ? `/blob/${neighbors.prev}` : undefined,
+                  tooltip: "Previous blob from this sender",
+                }}
+                next={{
+                  href: neighbors?.next ? `/blob/${neighbors.next}` : undefined,
+                  tooltip: "Next blob from this sender",
+                }}
+              />
+            ) : (
+              <Loading className="h-5 w-5 animate-spin" />
+            )}
           </div>
         }
         fields={blob ? detailsFields : undefined}
