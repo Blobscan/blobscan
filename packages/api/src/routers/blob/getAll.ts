@@ -1,3 +1,4 @@
+import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -45,25 +46,26 @@ export const getAll = publicProcedure
   .query(async ({ ctx }) => {
     const filters = ctx.filters;
 
-    const [txsBlobs, blobCountOrStats] = await Promise.all([
+    const where: Prisma.BlobsOnTransactionsWhereInput = {
+      blockNumber: filters.blockNumber,
+      blockTimestamp: filters.blockTimestamp,
+      block: {
+        slot: filters.blockSlot,
+        transactionForks: filters.blockType,
+      },
+      transaction:
+        filters.transactionRollup !== undefined || filters.transactionAddresses
+          ? {
+              rollup: filters.transactionRollup,
+              OR: filters.transactionAddresses,
+            }
+          : undefined,
+    };
+
+    const [txsBlobs, totalBlobs] = await Promise.all([
       ctx.prisma.blobsOnTransactions.findMany({
         select: createBlobsOnTransactionsSelect(ctx.expands),
-        where: {
-          blockNumber: filters.blockNumber,
-          blockTimestamp: filters.blockTimestamp,
-          block: {
-            slot: filters.blockSlot,
-            transactionForks: filters.blockType,
-          },
-          transaction:
-            filters.transactionRollup !== undefined ||
-            filters.transactionAddresses
-              ? {
-                  rollup: filters.transactionRollup,
-                  OR: filters.transactionAddresses,
-                }
-              : undefined,
-        },
+        where,
         orderBy: [
           { blockNumber: filters.sort },
           {
@@ -77,32 +79,13 @@ export const getAll = publicProcedure
         ],
         ...ctx.pagination,
       }),
-      // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      filters.transactionRollup !== undefined || filters.transactionAddresses
-        ? ctx.prisma.blob.count({
-            where: {
-              transactions: {
-                some: {
-                  transaction: {
-                    rollup: filters.transactionRollup,
-                    OR: filters.transactionAddresses,
-                  },
-                },
-              },
-            },
-          })
-        : ctx.prisma.blobOverallStats.findFirst({
-            select: {
-              totalBlobs: true,
-            },
-          }),
+      ctx.prisma.blobsOnTransactions.count({
+        where,
+      }),
     ]);
 
     return {
       blobs: txsBlobs.map(serializeBlobOnTransaction),
-      totalBlobs:
-        typeof blobCountOrStats === "number"
-          ? blobCountOrStats
-          : blobCountOrStats?.totalBlobs ?? 0,
+      totalBlobs,
     };
   });
