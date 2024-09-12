@@ -136,14 +136,17 @@ const Blob: NextPage = function () {
     detailsFields.push({
       name: "Transactions and Blocks",
       value: (
-        <div className="grid w-full grid-cols-3 gap-y-3 md:grid-cols-3">
+        <div className="grid w-full grid-cols-3 gap-x-6 gap-y-3">
           {blob.transactions.map(({ hash: txHash, blockNumber }) => (
             <Fragment key={`${txHash}-${blockNumber}`}>
-              <div className="col-span-2 flex gap-1 md:col-span-2">
+              <div className="col-span-2 flex gap-1">
                 <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
                   Tx{" "}
                 </div>
-                <div className="flex items-center gap-2">
+                <div
+                  className="flex items-center gap-2 truncate"
+                  title={txHash}
+                >
                   {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
                   <CopyToClipboard value={txHash} label="Copy tx hash" />
                 </div>
