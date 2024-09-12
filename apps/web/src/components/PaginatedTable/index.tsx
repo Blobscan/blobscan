@@ -128,6 +128,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         </div>
       }
       emptyState={DEFAULT_TABLE_EMPTY_STATE}
+      compact
     >
       <div className="flex flex-col gap-6">
         <Table

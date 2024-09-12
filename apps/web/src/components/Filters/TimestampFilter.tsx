@@ -3,6 +3,8 @@ import cn from "classnames";
 import type { DatepickerType } from "react-tailwindcss-datepicker";
 import Datepicker from "react-tailwindcss-datepicker";
 
+import { useBreakpoint } from "~/hooks/useBreakpoint";
+
 type TimestampFilterProps = Pick<DatepickerType, "value" | "onChange">;
 
 export const TimestampFilter: FC<TimestampFilterProps> = function ({
@@ -10,6 +12,8 @@ export const TimestampFilter: FC<TimestampFilterProps> = function ({
   onChange,
 }) {
   const isValueSet = value?.startDate || value?.endDate;
+  const breakpoint = useBreakpoint();
+  const shouldShowPlaceholder = breakpoint !== "md";
 
   return (
     <Datepicker
@@ -17,7 +21,7 @@ export const TimestampFilter: FC<TimestampFilterProps> = function ({
       value={value}
       onChange={onChange}
       inputClassName={cn(
-        "h-9 w-full pl-2 pr-12",
+        "h-9 w-full xl:w-[222px] md:max-lg:w-[44px] pl-2 pr-8",
         "text-left text-sm placeholder:text-sm",
         "cursor-pointer",
         "rounded-lg border border-transparent shadow-md",
@@ -38,7 +42,7 @@ export const TimestampFilter: FC<TimestampFilterProps> = function ({
         "relative",
         "[&>div>div]:dark:bg-controlBackground-dark [&>div>div]:border-controlBorder-light [&>div>div]:dark:border-transparent"
       )}
-      placeholder="Start date - End date"
+      placeholder={shouldShowPlaceholder ? "Start date - End date" : ""}
     />
   );
 };

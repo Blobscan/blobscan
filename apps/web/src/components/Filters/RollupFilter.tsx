@@ -42,7 +42,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
       options={ROLLUP_OPTIONS}
       onChange={onChange}
       placeholder="Rollup"
-      width="w-full"
+      width="sm:w-[130px] w-full md:max-lg:w-full"
       clearable
     />
   );
