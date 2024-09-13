@@ -62,9 +62,12 @@ export const Table: FC<TableProps> = function ({
             className={`inline-block min-w-full py-2 align-middle ${className}`}
           >
             <table
-              className={cn("w-full border-separate border-spacing-0 rounded", {
-                "table-fixed": fixedColumnsWidth,
-              })}
+              className={cn(
+                " w-full border-separate border-spacing-0 overflow-x-auto rounded",
+                {
+                  "table-fixed": fixedColumnsWidth,
+                }
+              )}
             >
               {headers && (
                 <thead>
