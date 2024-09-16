@@ -18,9 +18,12 @@ export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => formatNumber(value),
+        yAxisTooltip: (value) => formatNumber(value, "compact"),
       },
     }),
+    grid: {
+      containLabel: true,
+    },
     series: [
       {
         name: "Total Blocks",

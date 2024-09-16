@@ -48,7 +48,7 @@ export function CopyToClipboard({
 export function Copyable({ label, value }: CopyToClipboardProps) {
   return (
     <div className="flex items-center gap-2">
-      {value}
+      <div className="truncate">{value}</div>
       <CopyToClipboard value={value} label={label} />
     </div>
   );

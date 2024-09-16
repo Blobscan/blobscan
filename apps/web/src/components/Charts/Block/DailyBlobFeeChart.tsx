@@ -22,8 +22,8 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
-          yAxisLabel: (value) => `${formatNumber(value)} ${unit}`,
+          yAxisTooltip: (value) => `${formatNumber(value, "compact")} ${unit}`,
+          yAxisLabel: (value) => `${formatNumber(value, "compact")} ${unit}`,
         },
         yUnit: "ethereum",
       }),

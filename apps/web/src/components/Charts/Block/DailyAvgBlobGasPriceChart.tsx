@@ -16,12 +16,12 @@ export const DailyAvgBlobGasPriceChart: FC<
 > = function ({ days, avgBlobGasPrices }) {
   const { scaledValues, unit } = useScaledWeiAmounts(avgBlobGasPrices);
 
-  const options: EChartOption<EChartOption.SeriesBar> = {
+  const options: EChartOption<EChartOption.Series> = {
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
-        yAxisLabel: (value) => `${formatNumber(value)} ${unit}`,
+        yAxisTooltip: (value) => `${formatNumber(value, "compact")} ${unit}`,
+        yAxisLabel: (value) => `${formatNumber(value, "compact")} ${unit}`,
       },
       yUnit: "ethereum",
     }),
@@ -32,7 +32,7 @@ export const DailyAvgBlobGasPriceChart: FC<
       {
         name: "Avg. Blob Gas Prices",
         data: scaledValues,
-        type: "bar",
+        type: "line",
       },
     ],
     animationEasing: "cubicOut",
