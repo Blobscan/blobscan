@@ -31,13 +31,13 @@ ALTER TABLE "transaction_overall_stats" ADD COLUMN     "category" "category",
 ADD COLUMN     "rollup" "rollup";
 
 -- CreateIndex
-CREATE UNIQUE INDEX "blob_daily_stats_day_category_rollup_key" ON "blob_daily_stats"("day", "category", "rollup");
+CREATE UNIQUE INDEX "blob_daily_stats_day_category_rollup_key" ON "blob_daily_stats"("day", "category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "blob_overall_stats_category_rollup_key" ON "blob_overall_stats"("category", "rollup");
+CREATE UNIQUE INDEX "blob_overall_stats_category_rollup_key" ON "blob_overall_stats"("category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "transaction_daily_stats_day_category_rollup_key" ON "transaction_daily_stats"("day", "category", "rollup");
+CREATE UNIQUE INDEX "transaction_daily_stats_day_category_rollup_key" ON "transaction_daily_stats"("day", "category", "rollup") NULLS NOT DISTINCT;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "transaction_overall_stats_category_rollup_key" ON "transaction_overall_stats"("category", "rollup");
+CREATE UNIQUE INDEX "transaction_overall_stats_category_rollup_key" ON "transaction_overall_stats"("category", "rollup")  NULLS NOT DISTINCT;
