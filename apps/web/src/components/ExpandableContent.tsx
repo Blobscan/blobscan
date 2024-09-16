@@ -46,11 +46,14 @@ export const ExpandableContent: FC<ExpandableElementProps> = function ({
               className="flex cursor-pointer items-center gap-1 text-primary-400 transition-colors hover:text-primary-300 "
               onClick={() => setOpened((opened) => !opened)}
             >
-              Show More{" "}
               {opened ? (
-                <ChevronUpIcon className="h-5 w-5" />
+                <>
+                  Show More <ChevronUpIcon className="h-5 w-5" />
+                </>
               ) : (
-                <ChevronDownIcon className="h-5 w-5" />
+                <>
+                  Show Less <ChevronDownIcon className="h-5 w-5" />
+                </>
               )}
             </div>
           </div>
