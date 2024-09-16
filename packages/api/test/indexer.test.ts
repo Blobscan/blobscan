@@ -523,12 +523,12 @@ describe("Indexer router", async () => {
         `);
       });
 
-      it("should indexed addresses correctly", async () => {
+      it("should update the indexed addresses history correctly", async () => {
         // Remove duplicates
         const addressesSet = new Set(
           INPUT.transactions.flatMap((tx) => [tx.from, tx.to])
         );
-        const indexedAddresses = await authorizedContext.prisma.address
+        const indexedAddresses = await authorizedContext.prisma.addressHistory
           .findMany({
             where: {
               address: {
@@ -547,21 +547,31 @@ describe("Indexer router", async () => {
           [
             {
               "address": "address10",
+              "category": "OTHER",
               "firstBlockNumberAsReceiver": 2010,
               "firstBlockNumberAsSender": null,
             },
             {
               "address": "address2",
+              "category": "ROLLUP",
+              "firstBlockNumberAsReceiver": 1004,
+              "firstBlockNumberAsSender": null,
+            },
+            {
+              "address": "address2",
+              "category": "OTHER",
               "firstBlockNumberAsReceiver": 1001,
-              "firstBlockNumberAsSender": 1002,
+              "firstBlockNumberAsSender": 1003,
             },
             {
               "address": "address7",
+              "category": "OTHER",
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },
             {
               "address": "address9",
+              "category": "OTHER",
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },

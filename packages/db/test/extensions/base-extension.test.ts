@@ -1,5 +1,6 @@
 import type {
   Address as AddressEntity,
+  AddressHistory,
   Blob,
   BlobDataStorageReference,
   BlobsOnTransactions,
@@ -13,9 +14,7 @@ import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { prisma } from "../../prisma";
 import type { WithoutTimestampFields } from "../../prisma/types";
-import type { UpsertAddrFromTxsInput } from "./base-extension.test.utils";
 import { upsertAndRetrieveManyAddresses } from "./base-extension.test.utils";
-import { upsertAndretrieveAddressesFromTxs } from "./base-extension.test.utils";
 
 describe("Base Extension", () => {
   const expectedEmptyInputRes = [
@@ -25,264 +24,67 @@ describe("Base Extension", () => {
   ];
 
   describe("Address model", () => {
-    describe("upsertAddressesFromTransactions()", () => {
-      let input: UpsertAddrFromTxsInput;
+    let input: WithoutTimestampFields<AddressEntity>[];
 
-      describe("when inserting addresses from transactions", () => {
-        const newAddress = "newAddress";
-        const expectedFirstBlockNumberAsSender = 1001;
-        const expectedFirstBlockNumberAsReceiver = 1002;
+    it("should insert multiple addresses correctly", async () => {
+      input = [
+        {
+          address: "address90",
+        },
+        {
+          address: "address91",
+        },
+        {
+          address: "address92",
+        },
+      ];
 
-        it("should insert an address correctly", async () => {
-          input = [
-            {
-              from: newAddress,
-              to: "address2",
-              blockNumber: expectedFirstBlockNumberAsSender,
+      await prisma.address.upsertMany(input);
+
+      const insertedAddresses = await prisma.address
+        .findMany({
+          where: {
+            address: {
+              in: input.map((a) => a.address),
             },
-          ];
+          },
+          orderBy: {
+            address: "asc",
+          },
+        })
+        .then((addresses) => addresses.map((a) => omitDBTimestampFields(a)));
 
-          const { [newAddress]: addressEntity } =
-            await upsertAndretrieveAddressesFromTxs(input);
-
-          expect(addressEntity).toBeDefined();
-          expect(addressEntity?.address).toBe(newAddress);
-        });
-
-        it("should insert an address that is a sender correctly", async () => {
-          input = [
-            {
-              from: newAddress,
-              to: "address1",
-              blockNumber: expectedFirstBlockNumberAsSender,
-            },
-          ];
-
-          const { [newAddress]: addressEntity } =
-            await upsertAndretrieveAddressesFromTxs(input);
-
-          expect(addressEntity?.firstBlockNumberAsSender).toBe(
-            expectedFirstBlockNumberAsSender
-          );
-        });
-
-        it("should insert an address that is a receiver correctly", async () => {
-          input = [
-            {
-              from: "address1",
-              to: newAddress,
-              blockNumber: expectedFirstBlockNumberAsReceiver,
-            },
-          ];
-
-          const { [newAddress]: addressEntity } =
-            await upsertAndretrieveAddressesFromTxs(input);
-
-          expect(addressEntity?.firstBlockNumberAsReceiver).toBe(
-            expectedFirstBlockNumberAsReceiver
-          );
-        });
-
-        it("should insert an address that is both a sender and a receiver correctly", async () => {
-          input = [
-            {
-              from: newAddress,
-              to: "address9999",
-              blockNumber: expectedFirstBlockNumberAsSender,
-            },
-            {
-              from: "anotherAddress",
-              to: newAddress,
-              blockNumber: expectedFirstBlockNumberAsReceiver,
-            },
-          ];
-
-          const { [newAddress]: addressEntity } =
-            await upsertAndretrieveAddressesFromTxs(input);
-
-          expect(
-            addressEntity?.firstBlockNumberAsSender,
-            "First block number as sender mismatch"
-          ).toBe(expectedFirstBlockNumberAsSender);
-          expect(
-            addressEntity?.firstBlockNumberAsReceiver,
-            "First block number as receiver mismatch"
-          ).toBe(expectedFirstBlockNumberAsReceiver);
-        });
-      });
-
-      describe("when updating addresses from transactions", () => {
-        describe("when updating an address that is a sender", () => {
-          const senderAddress = "address5";
-
-          it("should update it if new block number is lower than the current one", async () => {
-            const smallerBlockNumber = 1001;
-            input = [
-              {
-                from: senderAddress,
-                to: "address2",
-                blockNumber: smallerBlockNumber,
-              },
-            ];
-
-            const { [senderAddress]: addressEntity } =
-              await upsertAndretrieveAddressesFromTxs(input);
-
-            expect(addressEntity?.firstBlockNumberAsSender).toBe(
-              smallerBlockNumber
-            );
-          });
-
-          it("should not update it if new block number is higher than the current one", async () => {
-            const biggerBlockNumber = 1008;
-            input = [
-              {
-                from: senderAddress,
-                to: "address2",
-                blockNumber: biggerBlockNumber,
-              },
-            ];
-
-            const oldFirstBlockNumberAsSender = (
-              await prisma.address.findUnique({
-                where: {
-                  address: senderAddress,
-                },
-              })
-            )?.firstBlockNumberAsSender;
-
-            const { [senderAddress]: addressEntity } =
-              await upsertAndretrieveAddressesFromTxs(input);
-
-            expect(addressEntity?.firstBlockNumberAsSender).toBe(
-              oldFirstBlockNumberAsSender
-            );
-          });
-
-          it("should upsert a sender address that appears in multiple transactions correctly", async () => {
-            input = [
-              {
-                from: "address8",
-                to: "address1",
-                blockNumber: 1002,
-              },
-              {
-                from: "address8",
-                to: "address1",
-                blockNumber: 1003,
-              },
-            ];
-          });
-        });
-
-        describe("when updating an address that is a receiver", () => {
-          const receiverAddress = "address3";
-
-          it("should update it if new block number is lower than the current one", async () => {
-            const smallerBlockNumber = 1001;
-            input = [
-              {
-                from: "address1",
-                to: receiverAddress,
-                blockNumber: smallerBlockNumber,
-              },
-            ];
-
-            const { [receiverAddress]: addressEntity } =
-              await upsertAndretrieveAddressesFromTxs(input);
-
-            expect(addressEntity?.firstBlockNumberAsReceiver).toBe(
-              smallerBlockNumber
-            );
-          });
-
-          it("should not update it if new block number is higher than the current one", async () => {
-            input = [
-              {
-                from: "address1",
-                to: receiverAddress,
-                blockNumber: 99999,
-              },
-            ];
-
-            const oldFirstBlockNumberAsReceiver = (
-              await prisma.address.findUnique({
-                where: {
-                  address: receiverAddress,
-                },
-              })
-            )?.firstBlockNumberAsReceiver;
-
-            const { [receiverAddress]: addressEntity } =
-              await upsertAndretrieveAddressesFromTxs(input);
-
-            expect(addressEntity?.firstBlockNumberAsReceiver).toBe(
-              oldFirstBlockNumberAsReceiver
-            );
-          });
-        });
-
-        it("should upsert addresses from multiple transactions correctly", async () => {
-          input = [
-            {
-              from: "address8",
-              to: "address1",
-              blockNumber: 1002,
-            },
-            {
-              from: "address4",
-              to: "address8",
-              blockNumber: 1002,
-            },
-            {
-              from: "address3",
-              to: "address4",
-              blockNumber: 1006,
-            },
-            {
-              from: "address6",
-              to: "address3",
-              blockNumber: 1001,
-            },
-          ];
-
-          const addressToEntity = await upsertAndretrieveAddressesFromTxs(
-            input
-          );
-          const addressEntities = Object.values(addressToEntity);
-
-          expect(addressEntities).toMatchSnapshot();
-        });
-      });
-
-      it("should upsert an empty array correctly", async () => {
-        input = [];
-
-        const result = await prisma.address.upsertAddressesFromTransactions(
-          input
-        );
-
-        expect(result).toStrictEqual(expectedEmptyInputRes);
-      });
+      expect(insertedAddresses).toStrictEqual(input);
     });
 
+    it("should upsert an empty array correctly", async () => {
+      const result = await prisma.address.upsertMany([]);
+
+      expect(result).toStrictEqual(expectedEmptyInputRes);
+    });
+  });
+
+  describe("Address History model", () => {
     describe("upsertMany()", () => {
-      let input: WithoutTimestampFields<AddressEntity>[];
+      let input: AddressHistory[];
 
       it("should insert multiple addresses correctly", async () => {
         input = [
           {
             address: "address9",
+            category: "OTHER",
             firstBlockNumberAsSender: 1001,
             firstBlockNumberAsReceiver: 1002,
           },
           {
             address: "address10",
+            category: "OTHER",
             firstBlockNumberAsSender: 1001,
             firstBlockNumberAsReceiver: 1002,
           },
           {
             address: "address11",
+            category: "OTHER",
             firstBlockNumberAsSender: 1001,
             firstBlockNumberAsReceiver: 1002,
           },
@@ -299,16 +101,19 @@ describe("Base Extension", () => {
         input = [
           {
             address: "address5",
+            category: "OTHER",
             firstBlockNumberAsReceiver: 1001,
             firstBlockNumberAsSender: 1001,
           },
           {
             address: "address2",
+            category: "OTHER",
             firstBlockNumberAsReceiver: 1003,
             firstBlockNumberAsSender: 1005,
           },
           {
             address: "address6",
+            category: "OTHER",
             firstBlockNumberAsReceiver: 1001,
             firstBlockNumberAsSender: 1001,
           },

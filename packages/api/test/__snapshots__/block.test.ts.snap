@@ -223,7 +223,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "rollup",
-        "from": "address5",
+        "from": "optimismAddress",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
@@ -295,7 +295,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "rollup",
-        "from": "address5",
+        "from": "optimismAddress",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
@@ -1142,61 +1142,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash004",
-    "number": 1004,
-    "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "hash": "txHash007",
-      },
-    ],
-  },
-  {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash002",
-    "number": 1002,
-    "slot": 102,
-    "timestamp": "2023-05-10T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-          {
-            "versionedHash": "blobHash002",
-          },
-          {
-            "versionedHash": "blobHash003",
-          },
-          {
-            "versionedHash": "blobHash004",
-          },
-          {
-            "versionedHash": "blobHash005",
-          },
-          {
-            "versionedHash": "blobHash006",
-          },
-        ],
-        "hash": "txHash004",
-      },
-    ],
-  },
-  {
     "blobAsCalldataGasUsed": "2042780",
     "blobGasPrice": "22",
     "blobGasUsed": "786432",
@@ -1244,41 +1189,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
           },
         ],
         "hash": "txHash007",
-      },
-    ],
-  },
-  {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash002",
-    "number": 1002,
-    "slot": 102,
-    "timestamp": "2023-05-10T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-          {
-            "versionedHash": "blobHash002",
-          },
-          {
-            "versionedHash": "blobHash003",
-          },
-          {
-            "versionedHash": "blobHash004",
-          },
-          {
-            "versionedHash": "blobHash005",
-          },
-          {
-            "versionedHash": "blobHash006",
-          },
-        ],
-        "hash": "txHash004",
       },
     ],
   },
@@ -2216,7 +2126,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "category": "rollup",
-      "from": "address1",
+      "from": "baseAddress",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",
@@ -2265,7 +2175,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "category": "rollup",
-      "from": "address1",
+      "from": "baseAddress",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",

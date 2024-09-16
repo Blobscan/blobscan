@@ -6,6 +6,8 @@ import { toBigIntSchema, z } from "@blobscan/zod";
 import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {
+  createDBAddresses,
+  createDBAddressHistory,
   createDBBlobs,
   createDBBlobsOnTransactions,
   createDBBlock,
@@ -119,6 +121,8 @@ export const indexData = jwtAuthedProcedure
       const dbBlock = createDBBlock(input, dbTxs);
       const dbBlobs = createDBBlobs(input);
       const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
+      const dbAddress = createDBAddresses(input);
+      const dbAddressesHistory = createDBAddressHistory(dbTxs);
 
       operations.push(
         prisma.block.upsert({
@@ -132,13 +136,12 @@ export const indexData = jwtAuthedProcedure
             ...dbBlock,
             updatedAt: now,
           },
-        })
+        }),
+        prisma.address.upsertMany(dbAddress),
+        prisma.addressHistory.upsertMany(dbAddressesHistory),
+        prisma.transaction.upsertMany(dbTxs),
+        prisma.blob.upsertMany(dbBlobs)
       );
-      operations.push(
-        prisma.address.upsertAddressesFromTransactions(input.transactions)
-      );
-      operations.push(prisma.transaction.upsertMany(dbTxs));
-      operations.push(prisma.blob.upsertMany(dbBlobs));
 
       if (dbBlobStorageRefs?.length) {
         operations.push(

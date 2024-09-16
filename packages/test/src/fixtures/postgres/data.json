@@ -164,7 +164,7 @@
     },
     {
       "hash": "txHash003",
-      "fromId": "address5",
+      "fromId": "optimismAddress",
       "toId": "address6",
       "blockHash": "blockHash001",
       "blockNumber": 1001,
@@ -181,7 +181,7 @@
     },
     {
       "hash": "txHash004",
-      "fromId": "address1",
+      "fromId": "baseAddress",
       "toId": "address3",
       "blockHash": "blockHash002",
       "blockNumber": 1002,
@@ -232,7 +232,7 @@
     },
     {
       "hash": "txHash007",
-      "fromId": "address1",
+      "fromId": "optimismAddress",
       "toId": "address2",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -249,7 +249,7 @@
     },
     {
       "hash": "txHash008",
-      "fromId": "address5",
+      "fromId": "arbitrumAddress",
       "toId": "address6",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -300,7 +300,7 @@
     },
     {
       "hash": "txHash011",
-      "fromId": "address2",
+      "fromId": "baseAddress",
       "toId": "address4",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -317,7 +317,7 @@
     },
     {
       "hash": "txHash012",
-      "fromId": "address2",
+      "fromId": "optimismAddress",
       "toId": "address4",
       "blockHash": "blockHash005",
       "blockNumber": 1005,
@@ -368,7 +368,7 @@
     },
     {
       "hash": "txHash015",
-      "fromId": "address5",
+      "fromId": "optimismAddress",
       "toId": "address4",
       "blockHash": "blockHash007",
       "blockNumber": 1007,
@@ -402,7 +402,7 @@
     },
     {
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "fromId": "address6",
+      "fromId": "optimismAddress",
       "toId": "address1",
       "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
       "blockNumber": 1008,
@@ -493,50 +493,6 @@
       "commitment": "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce",
       "proof": "0x992c686396169cb1d4b19cbd77db2b9c8a4ad702419285b1e35288c496225c43c9d17abe669bd63b858832c40321e39e",
       "size": 128000
-    }
-  ],
-  "addresses": [
-    {
-      "address": "address1",
-      "firstBlockNumberAsSender": 1001,
-      "firstBlockNumberAsReceiver": null,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
-    },
-    {
-      "address": "address2",
-      "firstBlockNumberAsSender": 1002,
-      "firstBlockNumberAsReceiver": 1001,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
-    },
-    {
-      "address": "address3",
-      "firstBlockNumberAsSender": 1001,
-      "firstBlockNumberAsReceiver": 1002,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-26T12:10:00Z"
-    },
-    {
-      "address": "address4",
-      "firstBlockNumberAsSender": null,
-      "firstBlockNumberAsReceiver": 1001,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
-    },
-    {
-      "address": "address5",
-      "firstBlockNumberAsSender": 1004,
-      "firstBlockNumberAsReceiver": 1002,
-      "insertedAt": "2023-08-25T10:10:00Z",
-      "updatedAt": "2023-08-26T12:10:00Z"
-    },
-    {
-      "address": "address6",
-      "firstBlockNumberAsSender": null,
-      "firstBlockNumberAsReceiver": 1001,
-      "insertedAt": "2023-08-25T10:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
     }
   ],
   "blobDataStorageReferences": [

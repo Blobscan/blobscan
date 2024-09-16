@@ -1,4 +1,6 @@
 import type {
+  Address,
+  AddressHistory,
   Blob,
   BlobsOnTransactions,
   Block,
@@ -181,4 +183,60 @@ export function createDBBlobsOnTransactions({
     txHash: txHash,
     index,
   }));
+}
+
+export function createDBAddresses({
+  transactions,
+}: IndexDataFormattedInput): WithoutTimestampFields<Address>[] {
+  return Array.from(
+    new Set<string>(transactions.flatMap(({ from, to }) => [from, to]))
+  ).map((addr) => ({
+    address: addr,
+  }));
+}
+
+export function createDBAddressHistory(
+  dbTxs: WithoutTimestampFields<Transaction>[]
+): AddressHistory[] {
+  const dbAddresses: AddressHistory[] = [];
+
+  dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
+    const fromDBEntity = dbAddresses.find(
+      (a) => a.address === fromId && a.category === category
+    );
+    const toDBEntity = dbAddresses.find(
+      (a) => a.address === toId && a.category === category
+    );
+
+    if (!fromDBEntity) {
+      dbAddresses.push({
+        address: fromId,
+        category,
+        firstBlockNumberAsSender: blockNumber,
+        firstBlockNumberAsReceiver: null,
+      });
+    } else {
+      const currBlockNumber = fromDBEntity.firstBlockNumberAsSender;
+
+      fromDBEntity.firstBlockNumberAsSender = currBlockNumber
+        ? Math.min(currBlockNumber, blockNumber)
+        : blockNumber;
+    }
+
+    if (!toDBEntity) {
+      dbAddresses.push({
+        address: toId,
+        category,
+        firstBlockNumberAsReceiver: blockNumber,
+        firstBlockNumberAsSender: null,
+      });
+    } else {
+      const currBlockNumber = toDBEntity.firstBlockNumberAsReceiver;
+      toDBEntity.firstBlockNumberAsReceiver = currBlockNumber
+        ? Math.min(currBlockNumber, blockNumber)
+        : blockNumber;
+    }
+  });
+
+  return dbAddresses;
 }
