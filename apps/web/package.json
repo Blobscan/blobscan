@@ -45,6 +45,7 @@
     "classnames": "^2.3.2",
     "echarts": "^5.5.1",
     "echarts-for-react": "^3.0.2",
+    "ethereum-input-data-decoder": "^0.4.2",
     "ethers": "^5.7.2",
     "next": "^13.4.16",
     "next-themes": "^0.2.1",

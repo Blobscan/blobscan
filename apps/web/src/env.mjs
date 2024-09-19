@@ -44,7 +44,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPPORTED_NETWORKS: z
       .string()
       .default(
-        '[{"label":"Andes","href":"https://andes.dill.xyz/"}]'
+        //'[{"label":"Andes","href":"https://andes.dill.xyz/"}]'
+        '[{"label":"Alps","href":"https://alps.dill.xyz/"}]'
       ),
     NEXT_PUBLIC_EXPLORER_BASE_URL: z
       .string()
