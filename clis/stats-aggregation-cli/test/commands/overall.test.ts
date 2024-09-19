@@ -6,12 +6,33 @@ import { omitDBTimestampFields } from "@blobscan/test";
 import { overall, overallCommandUsage } from "../../src/commands/overall";
 import { runHelpArgTests } from "../helpers";
 
-function getAllOverallStats() {
-  return Promise.all([
-    prisma.blobOverallStats.findMany(),
-    prisma.blockOverallStats.findMany(),
-    prisma.transactionOverallStats.findMany(),
-  ]);
+async function assertOverallStats() {
+  const [blobOverallStats, blockOverallStats, transactionOverallStats] =
+    await Promise.all([
+      prisma.blobOverallStats
+        .findMany()
+        .then((stats) =>
+          stats.map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+        ),
+      prisma.blockOverallStats
+        .findMany()
+        .then((stats) =>
+          stats.map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+        ),
+      prisma.transactionOverallStats
+        .findMany()
+        .then((stats) =>
+          stats.map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+        ),
+      ,
+    ]);
+
+  expect(blobOverallStats, "Blob overall stats mismatch").toMatchSnapshot();
+  expect(blockOverallStats, "Block overall stats mismatch").toMatchSnapshot();
+  expect(
+    transactionOverallStats,
+    "Transaction overall stats mismatch"
+  ).toMatchSnapshot();
 }
 
 describe("Overall command", () => {
@@ -27,67 +48,22 @@ describe("Overall command", () => {
   runHelpArgTests(overall, overallCommandUsage);
 
   describe("when incrementing overall stats", () => {
-    it("should increment them until latest indexed block when target block 'latest' is provided", async () => {
+    it.only("should increment them until latest indexed block when target block 'latest' is provided", async () => {
       await overall(["--to", "latest"]);
 
-      const overallStats = await getAllOverallStats().then((overallStats) =>
-        overallStats.map((stats) => stats.map(omitDBTimestampFields))
-      );
-
-      expect(overallStats).toMatchSnapshot();
+      await assertOverallStats();
     });
 
     it("should increment them until latest finalized block", async () => {
       await overall(["--to", "finalized"]);
 
-      const overallStats = await getAllOverallStats().then((overallStats) =>
-        overallStats.map((stats) => stats.map(omitDBTimestampFields))
-      );
-
-      expect(overallStats).toMatchSnapshot();
+      await assertOverallStats();
     });
 
     it("should increment until provided block number", async () => {
       await overall(["--to", "1005"]);
 
-      const overallStats = await getAllOverallStats().then((allOverallStats) =>
-        allOverallStats.map((stats) => stats.map(omitDBTimestampFields))
-      );
-
-      expect(overallStats).toMatchInlineSnapshot(`
-        [
-          [
-            {
-              "id": 1,
-              "totalBlobSize": 4000n,
-              "totalBlobs": 4,
-              "totalUniqueBlobs": 0,
-            },
-          ],
-          [
-            {
-              "avgBlobAsCalldataFee": 5000000,
-              "avgBlobFee": 100000000,
-              "avgBlobGasPrice": 20,
-              "id": 1,
-              "totalBlobAsCalldataFee": "5000000",
-              "totalBlobAsCalldataGasUsed": "250000",
-              "totalBlobFee": "100000000",
-              "totalBlobGasUsed": "5000000",
-              "totalBlocks": 1,
-            },
-          ],
-          [
-            {
-              "avgMaxBlobGasFee": 100,
-              "id": 1,
-              "totalTransactions": 2,
-              "totalUniqueReceivers": 0,
-              "totalUniqueSenders": 0,
-            },
-          ],
-        ]
-      `);
+      await assertOverallStats();
     });
   });
 

@@ -535,13 +535,16 @@ describe("Indexer router", async () => {
                 in: Array.from(addressesSet),
               },
             },
+            orderBy: [
+              {
+                address: "asc",
+              },
+              {
+                category: "asc",
+              },
+            ],
           })
-          .then((r) =>
-            r
-              .map(omitDBTimestampFields)
-              // Prisma doesn't guarantee the order of the results
-              .sort((a, b) => a.address.localeCompare(b.address))
-          );
+          .then((r) => r.map(omitDBTimestampFields));
 
         expect(indexedAddresses).toMatchInlineSnapshot(`
           [
@@ -553,15 +556,15 @@ describe("Indexer router", async () => {
             },
             {
               "address": "address2",
-              "category": "ROLLUP",
-              "firstBlockNumberAsReceiver": 1004,
-              "firstBlockNumberAsSender": null,
-            },
-            {
-              "address": "address2",
               "category": "OTHER",
               "firstBlockNumberAsReceiver": 1001,
               "firstBlockNumberAsSender": 1003,
+            },
+            {
+              "address": "address2",
+              "category": "ROLLUP",
+              "firstBlockNumberAsReceiver": 1004,
+              "firstBlockNumberAsSender": null,
             },
             {
               "address": "address7",

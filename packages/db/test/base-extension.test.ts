@@ -12,8 +12,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
-import { prisma } from "../../prisma";
-import type { WithoutTimestampFields } from "../../prisma/types";
+import { prisma } from "../prisma";
+import type { WithoutTimestampFields } from "../prisma/types";
 import { upsertAndRetrieveManyAddresses } from "./base-extension.test.utils";
 
 describe("Base Extension", () => {

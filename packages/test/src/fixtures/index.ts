@@ -8,6 +8,7 @@ import type {
 } from "@prisma/client";
 
 import type { DatePeriodLike } from "@blobscan/dayjs";
+import dayjs, { toDailyDatePeriod } from "@blobscan/dayjs";
 
 import POSTGRES_DATA from "./postgres/data.json";
 
@@ -126,6 +127,98 @@ export const fixtures = {
       (fork) => fork.hash === bTx?.txHash
     );
   }),
+
+  getBlocks({ blockNumberRange, datePeriod }: GetOptions) {
+    if (!datePeriod && !blockNumberRange) return fixtures.canonicalBlocks;
+
+    const dailyDatePeriod = toDailyDatePeriod(datePeriod);
+    const fromBlock = blockNumberRange?.from ?? 0;
+    const toBlock = blockNumberRange?.to ?? Number.MAX_SAFE_INTEGER;
+
+    return fixtures.canonicalBlocks.filter((b) => {
+      const isInDateRange = dayjs(b.timestamp).isBetween(
+        dailyDatePeriod.from,
+        dailyDatePeriod.to
+      );
+      const isInBlockNumberRange = b.number >= fromBlock && b.number <= toBlock;
+
+      return isInDateRange && isInBlockNumberRange;
+    });
+  },
+
+  getTransactions(opts: GetOptions) {
+    const { category, rollup } = opts || {};
+
+    const dailyBlocks = this.getBlocks(opts);
+
+    return fixtures.txs
+      .filter((tx) => {
+        const isDailyBlockTx = dailyBlocks.find(
+          (block) => block.hash === tx.blockHash
+        );
+        const hasCategory = category ? tx.category === category : true;
+        const hasRollup = rollup ? tx.rollup === rollup : true;
+
+        return isDailyBlockTx && hasCategory && hasRollup;
+      })
+      .map((tx) => {
+        const block = dailyBlocks.find((b) => b.hash === tx.blockHash);
+        const fromHistory = fixtures.addressesHistory.find(
+          (a) => a.address === tx.fromId && a.category === tx.category
+        );
+        const toHistory = fixtures.addressesHistory.find(
+          (a) => a.address === tx.toId && a.category === tx.category
+        );
+
+        if (!block)
+          throw new Error(`Block with hash "${tx.blockHash}" not found`);
+        if (!fromHistory)
+          throw new Error(
+            `From Address history with id "${tx.fromId}-${tx.category}"  not found`
+          );
+        if (!toHistory)
+          throw new Error(
+            `To Address history with id "${tx.toId}-${tx.category}" not found`
+          );
+
+        return {
+          ...tx,
+          block,
+          fromHistory,
+          toHistory,
+        };
+      });
+  },
+
+  getBlobs(opts: GetOptions) {
+    const dailyBlockTxs = this.getTransactions(opts);
+
+    return fixtures.blobsOnTransactions
+      .filter((btx) => dailyBlockTxs.find((tx) => tx.hash === btx.txHash))
+      .map((btx) => {
+        const block = fixtures.canonicalBlocks.find(
+          (b) => b.hash === btx.blockHash
+        );
+        const transaction = fixtures.txs.find((tx) => tx.hash === btx.txHash);
+        const blob = fixtures.blobs.find(
+          (blob) => blob.versionedHash === btx.blobHash
+        );
+
+        if (!blob) throw new Error(`Blob with id ${btx.blobHash} not found`);
+        if (!block)
+          throw new Error(`Block with hash ${btx.blockHash} not found`);
+        if (!transaction)
+          throw new Error(`Transaction with hash ${btx.txHash} not found`);
+
+        return {
+          ...blob,
+          category: transaction.category,
+          rollup: transaction.rollup,
+          transaction,
+          block,
+        };
+      });
+  },
 
   async create(prisma: PrismaClient) {
     await prisma.$transaction([

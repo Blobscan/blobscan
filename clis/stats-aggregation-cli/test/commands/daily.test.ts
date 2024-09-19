@@ -24,9 +24,13 @@ function sortByDay(a: { day: string | Date }, b: { day: string | Date }) {
 
 function getAllDailyStats() {
   return Promise.all([
-    prisma.blobDailyStats.findMany(),
+    prisma.blobDailyStats
+      .findMany()
+      .then((stats) => stats.map(({ id: _, ...rest }) => rest)),
     prisma.blockDailyStats.findMany(),
-    prisma.transactionDailyStats.findMany(),
+    prisma.transactionDailyStats
+      .findMany()
+      .then((stats) => stats.map(({ id: _, ...rest }) => rest)),
   ]).then((allDailyStats) =>
     allDailyStats.map((stats) => stats.sort(sortByDay))
   );

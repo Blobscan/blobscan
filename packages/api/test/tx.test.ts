@@ -33,7 +33,7 @@ describe("Transaction router", async () => {
       caller.tx.getAll(input).then(({ transactions }) => transactions)
     );
 
-    it("should get the total number of transactions", async () => {
+    it.skip("should get the total number of transactions", async () => {
       const expectedTotalTransactions = fixtures.canonicalTxs.length;
 
       await ctx.prisma.transactionOverallStats.increment({

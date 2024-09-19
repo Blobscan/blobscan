@@ -44,10 +44,20 @@ export async function getTransactionDailyStatsQuery({
 }): Promise<OutputSchema> {
   const stats = await prisma.transactionDailyStats.findMany({
     where: {
-      day: {
-        gte: timeFrame.initial.toDate(),
-        lte: timeFrame.final.toDate(),
-      },
+      AND: [
+        {
+          day: {
+            gte: timeFrame.initial.toDate(),
+            lte: timeFrame.final.toDate(),
+          },
+        },
+        {
+          category: null,
+        },
+        {
+          rollup: null,
+        },
+      ],
     },
     orderBy: { day: "asc" },
   });

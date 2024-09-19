@@ -2,8 +2,8 @@ import type { Address as AddressEntity, AddressHistory } from "@prisma/client";
 
 import { omitDBTimestampFields } from "@blobscan/test";
 
-import { prisma } from "../../prisma";
-import type { WithoutTimestampFields } from "../../prisma/types";
+import { prisma } from "../prisma";
+import type { WithoutTimestampFields } from "../prisma/types";
 
 export async function upsertAndRetrieveManyAddresses(input: AddressHistory[]) {
   await prisma.address.upsertMany(

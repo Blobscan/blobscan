@@ -583,33 +583,21 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   {
     "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "17301504",
-    "blobGasMaxFee": "78643200",
-    "blobGasUsed": "786432",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
         "index": 1,
-        "versionedHash": "blobHash002",
+        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
         "index": 2,
-        "versionedHash": "blobHash003",
-      },
-      {
-        "index": 3,
-        "versionedHash": "blobHash004",
-      },
-      {
-        "index": 4,
-        "versionedHash": "blobHash005",
-      },
-      {
-        "index": 5,
-        "versionedHash": "blobHash006",
+        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
     "block": {
@@ -1663,33 +1651,21 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   {
     "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "17301504",
-    "blobGasMaxFee": "78643200",
-    "blobGasUsed": "786432",
+    "blobGasBaseFee": "8650752",
+    "blobGasMaxFee": "39321600",
+    "blobGasUsed": "393216",
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
         "index": 1,
-        "versionedHash": "blobHash002",
+        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
         "index": 2,
-        "versionedHash": "blobHash003",
-      },
-      {
-        "index": 3,
-        "versionedHash": "blobHash004",
-      },
-      {
-        "index": 4,
-        "versionedHash": "blobHash005",
-      },
-      {
-        "index": 5,
-        "versionedHash": "blobHash006",
+        "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
     "block": {

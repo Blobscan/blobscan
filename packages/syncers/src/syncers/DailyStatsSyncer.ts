@@ -1,23 +1,9 @@
-import { normalizeDailyDate, normalizeDate, prisma } from "@blobscan/db";
-import type { PrismaPromise, RawDatePeriod } from "@blobscan/db";
+import { normalizeDate, toDailyDate } from "@blobscan/dayjs";
+import { prisma } from "@blobscan/db";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
 import { formatDate } from "../utils";
-
-interface DailyStatsModel {
-  findFirst: (args: {
-    select: { day: boolean };
-    orderBy: { day: "desc" };
-  }) => PrismaPromise<{ day: Date } | null>;
-  populate: (datePeriod: RawDatePeriod) => PrismaPromise<number>;
-}
-
-const dailyStatsModels: Record<string, DailyStatsModel> = {
-  blob: prisma.blobDailyStats,
-  block: prisma.blockDailyStats,
-  transaction: prisma.transactionDailyStats,
-};
 
 export type DailyStatsSyncerConfig = CommonSyncerConfig;
 
@@ -30,22 +16,6 @@ export class DailyStatsSyncer extends BaseSyncer {
       redisUriOrConnection,
       cronPattern,
       syncerFn: async () => {
-        const findLatestArgs: {
-          select: {
-            day: boolean;
-          };
-          orderBy: {
-            day: "desc";
-          };
-        } = {
-          select: {
-            day: true,
-          },
-          orderBy: {
-            day: "desc",
-          },
-        };
-
         const lastIndexedBlock = await prisma.block.findLatest();
 
         if (!lastIndexedBlock) {
@@ -59,21 +29,34 @@ export class DailyStatsSyncer extends BaseSyncer {
           1,
           "day"
         );
-        const targetDay = normalizeDailyDate(targetDate);
+        const targetDay = toDailyDate(targetDate);
 
-        const lastDailyStatsDays = await Promise.all(
-          Object.values(dailyStatsModels).map((m) =>
-            m
-              .findFirst(findLatestArgs)
-              .then((stats) =>
-                stats?.day ? normalizeDate(stats.day) : undefined
-              )
-          )
-        );
+        const [lastBlobStatsDay, lastBlockStatsDay, lastTxStatsDay] =
+          await Promise.all([
+            prisma.blobDailyStats.findFirst({
+              select: { day: true },
+              where: { category: null, rollup: null },
+              orderBy: { day: "desc" },
+            }),
+            prisma.blockDailyStats.findFirst({
+              select: { day: true },
+              orderBy: { day: "desc" },
+            }),
+            prisma.transactionDailyStats.findFirst({
+              select: { day: true },
+              where: { category: null, rollup: null },
+              orderBy: { day: "desc" },
+            }),
+          ]).then((stats) =>
+            stats.map((stat) =>
+              stat?.day ? normalizeDate(stat.day) : undefined
+            )
+          );
 
         if (
-          lastDailyStatsDays.every((lastDay) =>
-            lastDay ? lastDay?.isSame(targetDay, "day") : false
+          [lastBlobStatsDay, lastBlockStatsDay, lastTxStatsDay].every(
+            (lastStatsDay) =>
+              lastStatsDay ? lastStatsDay?.isSame(targetDay, "day") : false
           )
         ) {
           this.logger.debug(`Skipping stats aggregation. Already up to date`);
@@ -81,21 +64,20 @@ export class DailyStatsSyncer extends BaseSyncer {
           return;
         }
 
-        const entityToPopulatedDays = await Promise.all(
-          Object.entries(dailyStatsModels).map(async ([entity, model], i) => {
-            const lastDailyStatsDay = lastDailyStatsDays[i];
-            const startDate = lastDailyStatsDay
-              ? lastDailyStatsDay.add(1, "day")
-              : undefined;
-
-            const populatedDays = await model.populate({
-              from: startDate,
-              to: targetDay,
-            });
-
-            return [entity, populatedDays];
-          })
-        );
+        const entityToPopulatedDays = await Promise.all([
+          prisma.blobDailyStats.populate({
+            from: lastBlobStatsDay?.add(1, "day"),
+            to: targetDay,
+          }),
+          prisma.blockDailyStats.populate({
+            from: lastBlockStatsDay?.add(1, "day"),
+            to: targetDay,
+          }),
+          prisma.transactionDailyStats.populate({
+            from: lastTxStatsDay?.add(1, "day"),
+            to: targetDay,
+          }),
+        ]);
 
         const results = entityToPopulatedDays
           .map(
