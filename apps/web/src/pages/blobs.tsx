@@ -65,6 +65,7 @@ const Blobs: NextPage = function () {
     sort,
   } = useQueryParams();
   const { data, error, isLoading } = api.blob.getAll.useQuery({
+    count: true,
     p,
     ps,
     from,

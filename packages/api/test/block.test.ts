@@ -1,6 +1,6 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
@@ -24,8 +24,18 @@ describe("Block router", async () => {
   });
 
   describe("getAll", () => {
+    beforeEach(async () => {
+      await ctx.prisma.blockOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
+    });
+
     runPaginationTestsSuite("block", (paginationInput) =>
-      caller.block.getAll(paginationInput).then(({ blocks }) => blocks)
+      caller.block.getAll(paginationInput).then(({ blocks, totalBlocks }) => ({
+        items: blocks,
+        totalItems: totalBlocks,
+      }))
     );
 
     runFiltersTestsSuite("block", (filterInput) =>
@@ -38,11 +48,6 @@ describe("Block router", async () => {
 
     it("should return the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.canonicalBlocks.length;
-
-      await ctx.prisma.blockOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
 
       const { totalBlocks } = await caller.block.getAll();
 
