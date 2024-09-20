@@ -1,10 +1,11 @@
 import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
+import { findBestUnit, formatWei, prettyFormatWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyBlockStats } from "~/types";
-import { formatNumber } from "~/utils";
 import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgBlobFeeChartProps = {
@@ -14,14 +15,14 @@ export type DailyAvgBlobFeeChartProps = {
 
 export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
   function ({ days, avgBlobFees }) {
-    const { scaledValues, unit } = useScaledWeiAmounts(avgBlobFees);
+    const { unit } = useScaledWeiAmounts(avgBlobFees);
 
     const options: EChartOption<EChartOption.Series> = {
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => `${formatNumber(value, "compact")} ${unit}`,
-          yAxisLabel: (value) => `${formatNumber(value, "compact")} ${unit}`,
+          yAxisTooltip: (value) => formatWei(value, findBestUnit(value)),
+          yAxisLabel: (value) => prettyFormatWei(value, unit),
         },
         yUnit: "ethereum",
       }),
@@ -31,7 +32,7 @@ export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
       series: [
         {
           name: "Avg. Blob Fees",
-          data: scaledValues,
+          data: avgBlobFees,
           type: "line",
         },
       ],
