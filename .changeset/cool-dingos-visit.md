@@ -2,4 +2,4 @@
 "@blobscan/web": patch
 ---
 
-Multiple charts have been updated so that the tooltip uses the most appropriate unit for each value
+Fixed an issue where the chart tooltip displayed zero for very low values. It now shows the most appropriate unit for each value.
