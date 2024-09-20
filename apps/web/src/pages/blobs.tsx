@@ -44,7 +44,7 @@ const BLOBS_TABLE_HEADERS = [
       },
       {
         item: "Storage",
-        className: "w-auto",
+        className: "w-[86px]",
       },
     ],
   },
