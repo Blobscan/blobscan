@@ -161,9 +161,11 @@ const Txs: NextPage = function () {
                 cells: [
                   {
                     item: "Blob Versioned Hash",
+                    className: "bg-primary-50 dark:bg-primary-900",
                   },
                   {
                     item: "Size",
+                    className: "bg-primary-50 dark:bg-primary-900",
                   },
                 ],
                 className: "dark:border-border-dark/20",
@@ -195,10 +197,9 @@ const Txs: NextPage = function () {
 
             return (
               <Table
-                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
+                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-900"
                 size="xs"
                 alignment="left"
-                variant="transparent"
                 headers={headers}
                 rows={rows}
               />

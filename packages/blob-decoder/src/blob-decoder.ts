@@ -24,9 +24,9 @@ export async function decodeBlob<D extends Decoder>(
         break;
     }
   } catch (err) {
-    console.error(err);
-
-    throw new Error(`Failed to decode ${decoder} blob`);
+    throw new Error(`Failed to decode ${decoder} blob`, {
+      cause: err,
+    });
   }
 
   return result as DecodedResultOf<D>;

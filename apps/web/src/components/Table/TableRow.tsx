@@ -10,7 +10,7 @@ import { TableCell } from "./TableCell";
 export type TableRowProps = HTMLAttributes<HTMLTableRowElement>;
 
 export interface ExpandableTableRowProps extends TableRowProps {
-  expandItem: ReactNode;
+  expandItem?: ReactNode;
 }
 
 export const TableRow: FC<TableRowProps> = function ({ children, ...props }) {
@@ -27,8 +27,8 @@ export const ExpandableTableRow: FC<ExpandableTableRowProps> = function ({
   return (
     <>
       <TableRow {...props}>
-        {expandItem && (
-          <TableCell className="border-none">
+        <TableCell className={expandItem ? `border-none` : "border-b"}>
+          {expandItem ? (
             <Rotable
               angle={90}
               rotated={expandOpened}
@@ -38,8 +38,12 @@ export const ExpandableTableRow: FC<ExpandableTableRowProps> = function ({
                 <ChevronRightIcon />
               </IconButton>
             </Rotable>
-          </TableCell>
-        )}
+          ) : (
+            <div>
+              <div className="sr-only w-12 " />
+            </div>
+          )}
+        </TableCell>
         {children}
       </TableRow>
       {expandItem && (
