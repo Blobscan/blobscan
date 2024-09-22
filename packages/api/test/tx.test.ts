@@ -11,7 +11,7 @@ import {
   runPaginationTestsSuite,
 } from "./helpers";
 
-describe.only("Transaction router", async () => {
+describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
   let ctx: TRPCContext;
 

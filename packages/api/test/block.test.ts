@@ -49,7 +49,7 @@ describe("Block router", async () => {
     it("should return the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.canonicalBlocks.length;
 
-      const { totalBlocks } = await caller.block.getAll();
+      const { totalBlocks } = await caller.block.getAll({ count: true });
 
       expect(totalBlocks).toBe(expectedTotalBlocks);
     });

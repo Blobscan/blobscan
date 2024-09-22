@@ -117,7 +117,7 @@ export function runPaginationTestsSuite(
       expect(items.length).toBe(input.ps);
     });
 
-    it.only("should return the total number of items when count is provided", async () => {
+    it("should return the total number of items when count is provided", async () => {
       input = {
         count: true,
       };
