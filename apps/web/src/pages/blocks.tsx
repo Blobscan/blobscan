@@ -7,6 +7,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
@@ -70,15 +71,8 @@ const Blocks: NextPage = function () {
     endSlot,
     sort,
   } = useQueryParams();
-  const {
-    data: rawBlocksData,
-    isLoading,
-    error,
-  } = api.block.getAll.useQuery({
-    count: true,
+  const filterParams = {
     from,
-    p,
-    ps,
     rollup,
     startDate,
     endDate,
@@ -86,19 +80,36 @@ const Blocks: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+  };
+  const {
+    data: serializedBlocksData,
+    isLoading: blocksIsLoading,
+    error: blocksError,
+  } = api.block.getAll.useQuery({
+    p,
+    ps,
     sort,
+    ...filterParams,
+  });
+  const {
+    data: countData,
+    error: countError,
+    isLoading: countIsLoading,
+  } = api.block.getCount.useQuery(filterParams, {
+    refetchOnWindowFocus: false,
   });
   const blocksData = useMemo(() => {
-    if (!rawBlocksData) {
+    if (!serializedBlocksData) {
       return {};
     }
 
     return {
-      totalBlocks: rawBlocksData.totalBlocks,
-      blocks: rawBlocksData.blocks.map(deserializeBlock),
+      blocks: serializedBlocksData.blocks.map(deserializeBlock),
     };
-  }, [rawBlocksData]);
-  const { blocks, totalBlocks } = blocksData;
+  }, [serializedBlocksData]);
+  const { blocks } = blocksData;
+  const { totalBlocks } = countData || {};
+  const error = blocksError || countError;
 
   const blocksRows = useMemo(() => {
     return blocks
@@ -228,14 +239,22 @@ const Blocks: NextPage = function () {
   return (
     <>
       <Header>
-        Blocks{" "}
-        {typeof totalBlocks !== "undefined"
-          ? `(${formatNumber(totalBlocks)})`
-          : ""}
+        <div className="flex items-center gap-2">
+          <div>Blocks</div>
+          <div>
+            {!countIsLoading && totalBlocks !== undefined ? (
+              `(${formatNumber(totalBlocks)})`
+            ) : (
+              <div className="relative left-0 top-1">
+                <Skeleton width={100} height={25} />
+              </div>
+            )}
+          </div>
+        </div>
       </Header>
       <Filters />
       <PaginatedTable
-        isLoading={isLoading}
+        isLoading={blocksIsLoading}
         headers={BLOCKS_TABLE_HEADERS}
         rows={blocksRows}
         totalItems={totalBlocks}

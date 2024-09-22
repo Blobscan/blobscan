@@ -79,10 +79,11 @@ export const withAllFiltersSchema = withSortFilterSchema
 export type FiltersSchema = z.input<typeof withAllFiltersSchema>;
 
 export function hasCustomFilters(filters: Filters) {
+  const { sort, blockType, ...restFilters } = filters;
   return (
-    Object.values(filters).some((value) => value !== undefined) ||
-    filters.sort !== "desc" ||
-    filters.blockType?.some !== undefined
+    Object.values(restFilters).some((value) => value !== undefined) ||
+    sort !== "desc" ||
+    blockType?.some !== undefined
   );
 }
 
