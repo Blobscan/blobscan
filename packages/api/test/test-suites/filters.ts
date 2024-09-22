@@ -1,6 +1,118 @@
 import { describe, it } from "vitest";
 
+import dayjs from "@blobscan/dayjs";
+import { fixtures } from "@blobscan/test";
+
 import type { FiltersSchema } from "../../src/middlewares/withFilters";
+
+function filterBlock(
+  b: (typeof fixtures.blocks)[number],
+  {
+    startBlock,
+    endBlock,
+    startDate,
+    endDate,
+    startSlot,
+    endSlot,
+    type,
+  }: FiltersSchema
+) {
+  const blockRangeFilter =
+    startBlock && endBlock
+      ? b.number >= startBlock && b.number <= endBlock
+      : true;
+  const startBlockFilter = startBlock ? b.number >= startBlock : true;
+  const endBlockFilter = endBlock ? b.number <= endBlock : true;
+  const dateRangeFilter =
+    startDate && endDate
+      ? dayjs(b.timestamp).isBetween(startDate, endDate)
+      : true;
+  const startDateFilter = startDate
+    ? dayjs(b.timestamp).isAfter(startDate)
+    : true;
+  const endDateFilter = endDate ? dayjs(b.timestamp).isBefore(endDate) : true;
+  const slotRangeFilter =
+    startSlot && endSlot ? b.slot >= startSlot && b.slot <= endSlot : true;
+  const startSlotFilter = startSlot ? b.slot >= startSlot : true;
+  const endSlotFilter = endSlot ? b.slot <= endSlot : true;
+  const blockTypeFilter = fixtures.txForks.find((txF) =>
+    type === "reorged" ? txF.blockHash === b.hash : txF.blockHash !== b.hash
+  );
+
+  return (
+    blockRangeFilter &&
+    startBlockFilter &&
+    endBlockFilter &&
+    dateRangeFilter &&
+    startDateFilter &&
+    endDateFilter &&
+    slotRangeFilter &&
+    startSlotFilter &&
+    endSlotFilter &&
+    blockTypeFilter
+  );
+}
+
+function filterTransaction(
+  tx: (typeof fixtures.txs)[number],
+  { from, to, rollup }: FiltersSchema
+) {
+  const senderFilter = from && !to ? tx.fromId === from : true;
+  const receiverFilter = to && !from ? tx.toId === to : true;
+  const senderOrReceiverFilter =
+    from && to ? tx.fromId === from || tx.toId === to : true;
+  const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
+
+  return (
+    senderFilter && receiverFilter && senderOrReceiverFilter && rollupFilter
+  );
+}
+
+export function getFilteredBlocks(filters: FiltersSchema) {
+  return fixtures.blocks.filter((b) => {
+    const blockTxs = fixtures.txs.filter((tx) => tx.blockHash === b.hash);
+
+    return (
+      filterBlock(b, filters) &&
+      blockTxs.some((tx) => filterTransaction(tx, filters))
+    );
+  });
+}
+
+export function getFilteredTransactions(filters: FiltersSchema) {
+  const { from, to, rollup } = filters;
+
+  return getFilteredBlocks(filters).flatMap((b) => {
+    const txs = fixtures.txs.filter((tx) => {
+      const isBlockTx = tx.blockHash === b.hash;
+      const senderFilter = from && !to ? tx.fromId === from : true;
+      const receiverFilter = to && !from ? tx.toId === to : true;
+      const senderOrReceiverFilter =
+        from && to ? tx.fromId === from || tx.toId === to : true;
+      const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
+
+      return (
+        isBlockTx &&
+        senderFilter &&
+        receiverFilter &&
+        senderOrReceiverFilter &&
+        rollupFilter
+      );
+    });
+
+    return txs;
+  });
+}
+
+export function getFilteredBlobs(filters: FiltersSchema) {
+  return getFilteredTransactions(filters).flatMap((tx) => {
+    const blobs = fixtures.blobsOnTransactions.filter(
+      (b) => b.txHash === tx.hash
+    );
+
+    return blobs;
+  });
+}
 
 export function runFilterTests(
   assertFilters: (filters: FiltersSchema) => Promise<void>
