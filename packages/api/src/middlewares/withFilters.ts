@@ -26,6 +26,7 @@ export type Filters = Partial<{
   blockSlot: NumberRange;
   blockType: Prisma.TransactionForkListRelationFilter;
   transactionAddresses: Prisma.TransactionWhereInput["OR"];
+  transactionCategory: Prisma.TransactionWhereInput["category"];
   transactionRollup: Prisma.TransactionWhereInput["rollup"];
 
   sort: Prisma.SortOrder;
@@ -75,7 +76,15 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withAddressFilterSchema)
   .merge(withTypeFilterSchema);
 
-export type FiltersSchema = z.infer<typeof withAllFiltersSchema>;
+export type FiltersSchema = z.input<typeof withAllFiltersSchema>;
+
+export function hasCustomFilters(filters: Filters) {
+  return (
+    Object.values(filters).some((value) => value !== undefined) ||
+    filters.sort !== "desc" ||
+    filters.blockType?.some !== undefined
+  );
+}
 
 export const withFilters = t.middleware(({ next, input = {} }) => {
   const filters: Filters = {
@@ -144,6 +153,11 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     filters.transactionRollup =
       rollup === "null" ? null : (rollup?.toUpperCase() as Rollup | undefined);
+
+    if (filters.transactionRollup !== undefined) {
+      filters.transactionCategory = "ROLLUP";
+    }
+
     filters.sort = sort;
   }
 
