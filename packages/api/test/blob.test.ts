@@ -1,6 +1,7 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import dayjs from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
 import type { AppRouter } from "../src/app-router";
@@ -12,6 +13,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { runFilterTests } from "./test-suites/filters";
 import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
@@ -126,6 +128,108 @@ describe("Blob router", async () => {
       await caller.blob.getBlobDataByBlobId({
         id: invalidBlobId,
       });
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total blobs stat when no filters are provided", async () => {
+      await ctx.prisma.blobOverallStats;
+      const stats = await caller.stats.getBlobOverallStats();
+      const { totalBlobs } = await caller.blob.getCount({});
+
+      expect(totalBlobs).toBe(fixtures.canonicalBlobs.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalBlobs } = await caller.blob.getCount(filters);
+      const expectedBlobsOnTxs = fixtures.blobsOnTransactions;
+      const expectedTxs = fixtures.txs;
+      const {
+        from,
+        to,
+        startBlock,
+        endBlock,
+        startDate,
+        endDate,
+        startSlot,
+        endSlot,
+        rollup,
+        type,
+      } = filters;
+
+      const expectedBlocks =
+        type === "reorged"
+          ? fixtures.blocks.filter((block) =>
+              fixtures.txForks.find((fork) => fork.blockHash === block.hash)
+            )
+          : fixtures.canonicalBlocks;
+
+      const filteredBlobs = expectedBlocks
+        .filter((b) => {
+          const blockRangeFilter =
+            startBlock && endBlock
+              ? b.number >= startBlock && b.number <= endBlock
+              : true;
+          const startBlockFilter = startBlock ? b.number >= startBlock : true;
+          const endBlockFilter = endBlock ? b.number <= endBlock : true;
+          const dateRangeFilter =
+            startDate && endDate
+              ? dayjs(b.timestamp).isBetween(startDate, endDate)
+              : true;
+          const startDateFilter = startDate
+            ? dayjs(b.timestamp).isAfter(startDate)
+            : true;
+          const endDateFilter = endDate
+            ? dayjs(b.timestamp).isBefore(endDate)
+            : true;
+          const slotRangeFilter =
+            startSlot && endSlot
+              ? b.slot >= startSlot && b.slot <= endSlot
+              : true;
+          const startSlotFilter = startSlot ? b.slot >= startSlot : true;
+          const endSlotFilter = endSlot ? b.slot <= endSlot : true;
+
+          return (
+            blockRangeFilter &&
+            startBlockFilter &&
+            endBlockFilter &&
+            dateRangeFilter &&
+            startDateFilter &&
+            endDateFilter &&
+            slotRangeFilter &&
+            startSlotFilter &&
+            endSlotFilter
+          );
+        })
+        .flatMap((b) => {
+          const txs = expectedTxs.filter((tx) => {
+            const isBlockTx = tx.blockHash === b.hash;
+            const senderFilter = from && !to ? tx.fromId === from : true;
+            const receiverFilter = to && !from ? tx.toId === to : true;
+            const senderOrReceiverFilter =
+              from && to ? tx.fromId === from || tx.toId === to : true;
+            const rollupFilter = rollup
+              ? tx.rollup === rollup.toUpperCase()
+              : true;
+
+            return (
+              isBlockTx &&
+              senderFilter &&
+              receiverFilter &&
+              senderOrReceiverFilter &&
+              rollupFilter
+            );
+          });
+
+          return txs;
+        })
+        .flatMap((tx) => {
+          const blobs = expectedBlobsOnTxs.filter((b) => b.txHash === tx.hash);
+
+          return blobs;
+        });
+
+      expect(totalBlobs).toBe(filteredBlobs.length);
     });
   });
 });
