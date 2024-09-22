@@ -6,6 +6,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
@@ -64,8 +65,11 @@ const Blobs: NextPage = function () {
     endSlot,
     sort,
   } = useQueryParams();
-  const { data, error, isLoading } = api.blob.getAll.useQuery({
-    count: true,
+  const {
+    data: blobsData,
+    error: blobsError,
+    isLoading,
+  } = api.blob.getAll.useQuery({
     p,
     ps,
     from,
@@ -78,7 +82,28 @@ const Blobs: NextPage = function () {
     endSlot,
     sort,
   });
-  const { blobs, totalBlobs } = data || {};
+  const {
+    data: countData,
+    error: countError,
+    isLoading: countIsLoading,
+  } = api.blob.getCount.useQuery(
+    {
+      from,
+      rollup,
+      startDate,
+      endDate,
+      startBlock,
+      endBlock,
+      startSlot,
+      endSlot,
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  const error = blobsError ?? countError;
+  const { blobs } = blobsData || {};
+  const { totalBlobs } = countData || {};
 
   const blobRows = useMemo(() => {
     return blobs
@@ -162,9 +187,11 @@ const Blobs: NextPage = function () {
     <>
       <Header>
         Blobs{" "}
-        {typeof totalBlobs !== "undefined"
-          ? `(${formatNumber(totalBlobs)})`
-          : ""}
+        {!countIsLoading && totalBlobs ? (
+          `(${formatNumber(totalBlobs)})`
+        ) : (
+          <Skeleton width={50} />
+        )}
       </Header>
       <Filters />
       <PaginatedTable
