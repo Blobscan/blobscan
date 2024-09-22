@@ -2,4 +2,4 @@
 "@blobscan/web": patch
 ---
 
-Resolved a performance issue on the Blobs page where the total blob count was recalculated on every request
+Improved performance on Blobs, Blocks and Txs pages by fetching the total amount of items only once and not on every request
