@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import cn from "classnames";
+import { twMerge } from "tailwind-merge";
 
 import type { BaseTableCellElementProps, TableElementProps } from "./utils";
 import { alignmentStyles, colSpan, sizeStyles, stickyStyles } from "./utils";
@@ -11,25 +11,18 @@ export const TableHeader: FC<TableHeaderProps> = function ({
   className,
   children,
   size = "md",
-  variant = "normal",
   spanFullRow = false,
   sticky = false,
   colSpan: colSpanProp,
   ...props
 }) {
-  const variantStyles = cn({
-    "dark:bg-transparent": variant === "transparent",
-    "dark:bg-primary-900": variant === "normal",
-    "dark:bg-surface-dark bg-surface-light": variant === "simple",
-  });
-
   return (
     <th
       scope="col"
-      className={`
+      className={twMerge(
+        `
         ${sizeStyles(size)}
         ${alignmentStyles(alignment)}
-        ${variantStyles}
         ${stickyStyles(sticky)}
         z-9
         sticky
@@ -37,14 +30,16 @@ export const TableHeader: FC<TableHeaderProps> = function ({
         border-b
         border-border-light
         text-sm
-
-        font-semibold        
+        font-semibold
         text-content-light
+        first-of-type:rounded-tl-sm        
+        last-of-type:rounded-tr-sm
         dark:border-border-dark
-        dark:bg-primary-900
+        dark:bg-primary-800
         dark:text-content-dark
-        ${className}
-        `}
+        `,
+        className
+      )}
       colSpan={colSpan(spanFullRow, colSpanProp)}
       {...props}
     >

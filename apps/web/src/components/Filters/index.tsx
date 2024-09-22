@@ -194,36 +194,38 @@ export const Filters: FC = function () {
   }, [queryParams]);
 
   return (
-    <Card>
+    <Card compact>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
-        <div className="flex w-full flex-col items-center gap-2 md:flex-row">
-          <SortToggle
-            type={filters.sort}
-            onChange={(newSort) => {
-              dispatch({ type: "UPDATE", payload: { sort: newSort } });
-            }}
-          />
-          <div className="w-full md:w-40">
-            <RollupFilter
-              selected={filters.rollup}
-              onChange={(newRollup) =>
-                dispatch({ type: "UPDATE", payload: { rollup: newRollup } })
-              }
+        <div className="flex w-full flex-col items-center gap-2 md:flex-row lg:max-xl:gap-1">
+          <div className="flex w-full flex-row gap-2 xl:w-auto">
+            <SortToggle
+              type={filters.sort}
+              onChange={(newSort) => {
+                dispatch({ type: "UPDATE", payload: { sort: newSort } });
+              }}
             />
-          </div>
-          <div className="w-full md:w-64">
-            <TimestampFilter
-              value={filters.timestampRange}
-              onChange={(newTimestampRange) =>
-                dispatch({
-                  type: "UPDATE",
-                  payload: { timestampRange: newTimestampRange },
-                })
-              }
-            />
+            <div className="w-full sm:w-[130px] md:max-lg:w-full">
+              <RollupFilter
+                selected={filters.rollup}
+                onChange={(newRollup) =>
+                  dispatch({ type: "UPDATE", payload: { rollup: newRollup } })
+                }
+              />
+            </div>
+            <div className="w-full md:max-lg:w-[44px] lg:w-[222px]">
+              <TimestampFilter
+                value={filters.timestampRange}
+                onChange={(newTimestampRange) =>
+                  dispatch({
+                    type: "UPDATE",
+                    payload: { timestampRange: newTimestampRange },
+                  })
+                }
+              />
+            </div>
           </div>
           <div className="flex gap-2">
-            <div className="w-full md:w-52">
+            <div className="w-full md:w-52 lg:max-xl:w-[12rem]">
               <BlockNumberFilter
                 range={filters.blockNumberRange}
                 onChange={(newBlockNumberRange) =>
@@ -234,7 +236,7 @@ export const Filters: FC = function () {
                 }
               />
             </div>
-            <div className="w-full md:w-52">
+            <div className="w-full md:w-52 lg:max-xl:w-44">
               <SlotFilter
                 range={filters.slotRange}
                 onChange={(newSlotRange) =>
@@ -247,16 +249,19 @@ export const Filters: FC = function () {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 md:flex-row">
+        <div className="flex flex-col gap-1 md:flex-row lg:ml-2">
           <Button
-            className="w-full lg:w-auto"
+            className="w-full lg:w-auto lg:px-3 xl:px-6"
             variant="outline"
             onClick={() => dispatch({ type: "CLEAR" })}
             disabled={disableClear}
           >
             Clear
           </Button>
-          <Button className="w-full lg:w-auto" onClick={handleFilter}>
+          <Button
+            className="w-full lg:w-auto lg:px-3 xl:px-6"
+            onClick={handleFilter}
+          >
             Filter
           </Button>
         </div>

@@ -1,10 +1,12 @@
 import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
+import { findBestUnit, formatWei, prettyFormatWei } from "@blobscan/eth-units";
+
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyTransactionStats } from "~/types";
-import { buildTimeSeriesOptions, formatNumber } from "~/utils";
+import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgMaxBlobGasFeeChartProps = {
   days: DailyTransactionStats["days"];
@@ -15,7 +17,7 @@ export type DailyAvgMaxBlobGasFeeChartProps = {
 export const DailyAvgMaxBlobGasFeeChart: FC<
   Partial<DailyAvgMaxBlobGasFeeChartProps>
 > = function ({ days, avgMaxBlobGasFees, compact = false }) {
-  const { scaledValues, unit } = useScaledWeiAmounts(avgMaxBlobGasFees);
+  const { unit } = useScaledWeiAmounts(avgMaxBlobGasFees);
 
   const options: EChartOption<
     EChartOption.SeriesBar | EChartOption.SeriesLine
@@ -23,8 +25,8 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: (value) => `${formatNumber(value)} ${unit}`,
-        yAxisLabel: (value) => `${formatNumber(value)} ${unit}`,
+        yAxisTooltip: (value) => formatWei(value, findBestUnit(value)),
+        yAxisLabel: (value) => prettyFormatWei(value, unit),
       },
     }),
     grid: {
@@ -33,7 +35,7 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
     series: [
       {
         name: "Avg. Max Blob Gas Fees",
-        data: scaledValues,
+        data: avgMaxBlobGasFees,
         type: compact ? "line" : "bar",
         smooth: true,
       },

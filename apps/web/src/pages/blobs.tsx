@@ -44,7 +44,7 @@ const BLOBS_TABLE_HEADERS = [
       },
       {
         item: "Storage",
-        className: "w-auto",
+        className: "w-[86px]",
       },
     ],
   },
@@ -159,7 +159,12 @@ const Blobs: NextPage = function () {
 
   return (
     <>
-      <Header>Blobs {totalBlobs ? `(${formatNumber(totalBlobs)})` : ""}</Header>
+      <Header>
+        Blobs{" "}
+        {typeof totalBlobs !== "undefined"
+          ? `(${formatNumber(totalBlobs)})`
+          : ""}
+      </Header>
       <Filters />
       <PaginatedTable
         isLoading={isLoading}

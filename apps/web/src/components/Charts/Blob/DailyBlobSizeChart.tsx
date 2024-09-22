@@ -27,6 +27,9 @@ export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({
       },
       yUnit: "bytes",
     }),
+    grid: {
+      containLabel: true,
+    },
     series: [
       {
         name: "Blob Size",
