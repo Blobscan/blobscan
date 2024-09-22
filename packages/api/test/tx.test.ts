@@ -10,6 +10,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { getFilteredTransactions, runFilterTests } from "./test-suites/filters";
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -92,6 +93,24 @@ describe("Transaction router", async () => {
       ).rejects.toMatchSnapshot(
         "[TRPCError: No transaction with hash 'nonExistingHash' found]"
       );
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total transactions stat when no filters are provided", async () => {
+      await ctx.prisma.transactionOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
+      const { totalTransactions } = await caller.tx.getCount({});
+
+      expect(totalTransactions).toBe(fixtures.canonicalTxs.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalTransactions } = await caller.tx.getCount(filters);
+
+      expect(totalTransactions).toBe(getFilteredTransactions(filters).length);
     });
   });
 });
