@@ -65,13 +65,7 @@ const Blobs: NextPage = function () {
     endSlot,
     sort,
   } = useQueryParams();
-  const {
-    data: blobsData,
-    error: blobsError,
-    isLoading,
-  } = api.blob.getAll.useQuery({
-    p,
-    ps,
+  const filterParams = {
     from,
     rollup,
     startDate,
@@ -80,27 +74,24 @@ const Blobs: NextPage = function () {
     endBlock,
     startSlot,
     endSlot,
+  };
+  const {
+    data: blobsData,
+    error: blobsError,
+    isLoading,
+  } = api.blob.getAll.useQuery({
+    p,
+    ps,
     sort,
+    ...filterParams,
   });
   const {
     data: countData,
     error: countError,
     isLoading: countIsLoading,
-  } = api.blob.getCount.useQuery(
-    {
-      from,
-      rollup,
-      startDate,
-      endDate,
-      startBlock,
-      endBlock,
-      startSlot,
-      endSlot,
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  } = api.blob.getCount.useQuery(filterParams, {
+    refetchOnWindowFocus: false,
+  });
   const error = blobsError ?? countError;
   const { blobs } = blobsData || {};
   const { totalBlobs } = countData || {};
@@ -186,12 +177,18 @@ const Blobs: NextPage = function () {
   return (
     <>
       <Header>
-        Blobs{" "}
-        {!countIsLoading && totalBlobs ? (
-          `(${formatNumber(totalBlobs)})`
-        ) : (
-          <Skeleton width={50} />
-        )}
+        <div className="flex items-center gap-2">
+          <div>Blobs</div>
+          <div>
+            {!countIsLoading && totalBlobs !== undefined ? (
+              `(${formatNumber(totalBlobs)})`
+            ) : (
+              <div className="relative left-0 top-1">
+                <Skeleton width={100} height={25} />
+              </div>
+            )}
+          </div>
+        </div>
       </Header>
       <Filters />
       <PaginatedTable
