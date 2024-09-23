@@ -4,6 +4,7 @@ import { CpuChipIcon, CubeIcon, DocumentIcon } from "@heroicons/react/24/solid";
 
 import type { RouterOutputs } from "~/api-client";
 import { capitalize } from "~/utils";
+import { Badge } from "../Badges/Badge";
 import { Card } from "../Cards/Card";
 
 type SearchOutput = RouterOutputs["search"]["byTerm"];
@@ -46,11 +47,12 @@ function getCategoryInfo(type: SearchCategory): CategoryInfo | undefined {
 }
 
 const SearchResultItem: React.FC<SearchResultItemProps> = function ({
-  result: { id },
+  result: { id, label, reorg },
   category,
   onClick,
 }) {
-  const { icon, label } = getCategoryInfo(category) || {};
+  const { icon, label: categoryLabel } = getCategoryInfo(category) || {};
+
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
     <div className="flex flex-col" onClick={() => onClick(category, id)}>
@@ -58,13 +60,18 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
         <div className="flex w-11/12 items-center gap-2">
           {icon}
           <span className="flex truncate">
-            {label && (
+            {categoryLabel && (
               <div className="mr-1 text-content-light dark:text-content-dark">
-                {label}
+                {categoryLabel}
               </div>
             )}
-            {id}
+            {label}
           </span>
+          {reorg && (
+            <Badge variant="primary" className="text-xs">
+              reorg
+            </Badge>
+          )}
         </div>
         <ChevronRightIcon className="inline-block h-4 w-4 text-icon-light dark:text-icon-dark" />
       </div>
