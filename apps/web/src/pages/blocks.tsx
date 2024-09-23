@@ -58,37 +58,13 @@ export const BLOCKS_TABLE_HEADERS = [
 ];
 
 const Blocks: NextPage = function () {
-  const {
-    from,
-    p,
-    ps,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-    sort,
-  } = useQueryParams();
-  const filterParams = {
-    from,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-  };
+  const { filterParams, paginationParams } = useQueryParams();
   const {
     data: serializedBlocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
   } = api.block.getAll.useQuery({
-    p,
-    ps,
-    sort,
+    ...paginationParams,
     ...filterParams,
   });
   const {
@@ -258,7 +234,10 @@ const Blocks: NextPage = function () {
         headers={BLOCKS_TABLE_HEADERS}
         rows={blocksRows}
         totalItems={totalBlocks}
-        paginationData={{ pageSize: ps, page: p }}
+        paginationData={{
+          pageSize: paginationParams.ps,
+          page: paginationParams.p,
+        }}
         isExpandable
         rowSkeletonHeight={44}
       />

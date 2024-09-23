@@ -84,29 +84,7 @@ export const TRANSACTIONS_TABLE_HEADERS = [
 ];
 
 const Txs: NextPage = function () {
-  const {
-    from,
-    p,
-    ps,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-    sort,
-  } = useQueryParams();
-  const filterParams = {
-    from,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-  };
+  const { filterParams, paginationParams } = useQueryParams();
   const {
     data: serializedTxs,
     isLoading: txsIsLoading,
@@ -115,11 +93,9 @@ const Txs: NextPage = function () {
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions?: number;
   }>({
-    p,
-    ps,
-    expand: "block,blob",
-    sort,
+    ...paginationParams,
     ...filterParams,
+    expand: "block,blob",
   });
   const {
     data: countData,
@@ -318,7 +294,10 @@ const Txs: NextPage = function () {
         headers={TRANSACTIONS_TABLE_HEADERS}
         rows={transactionRows}
         totalItems={totalTransactions}
-        paginationData={{ pageSize: ps, page: p }}
+        paginationData={{
+          pageSize: paginationParams.ps,
+          page: paginationParams.p,
+        }}
         isExpandable
       />
     </>

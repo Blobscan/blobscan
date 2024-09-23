@@ -52,37 +52,14 @@ const BLOBS_TABLE_HEADERS = [
 ];
 
 const Blobs: NextPage = function () {
-  const {
-    from,
-    p,
-    ps,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-    sort,
-  } = useQueryParams();
-  const filterParams = {
-    from,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-  };
+  const { paginationParams, filterParams } = useQueryParams();
+
   const {
     data: blobsData,
     error: blobsError,
     isLoading,
   } = api.blob.getAll.useQuery({
-    p,
-    ps,
-    sort,
+    ...paginationParams,
     ...filterParams,
   });
   const {
@@ -196,7 +173,10 @@ const Blobs: NextPage = function () {
         headers={BLOBS_TABLE_HEADERS}
         rows={blobRows}
         totalItems={totalBlobs}
-        paginationData={{ pageSize: ps, page: p }}
+        paginationData={{
+          pageSize: paginationParams.ps,
+          page: paginationParams.p,
+        }}
       />
     </>
   );

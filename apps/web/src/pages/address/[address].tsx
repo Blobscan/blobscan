@@ -14,14 +14,14 @@ import { buildAddressExternalUrl, deserializeFullTransaction } from "~/utils";
 
 const Address: NextPage = () => {
   const router = useRouter();
-  const { p, ps } = useQueryParams();
+  const { paginationParams } = useQueryParams();
   const address = (router.query.address as string | undefined) ?? "";
 
   const { data: serializedAddressTxs, error } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>(
-    { to: address, from: address, p, ps, expand: "block,blob" },
+    { ...paginationParams, to: address, from: address, expand: "block,blob" },
     { enabled: router.isReady }
   );
   const addressTxsData = useMemo(() => {
@@ -81,8 +81,8 @@ const Address: NextPage = () => {
           );
         })}
         totalItems={addressTxsData?.totalTransactions}
-        page={p}
-        pageSize={ps}
+        page={paginationParams.p}
+        pageSize={paginationParams.ps}
         itemSkeleton={<BlobTransactionCard />}
       />
     </>

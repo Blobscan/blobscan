@@ -142,6 +142,7 @@ export const Filters: FC = function () {
   };
 
   useEffect(() => {
+    const { sort } = queryParams.paginationParams;
     const {
       rollup,
       from,
@@ -151,8 +152,7 @@ export const Filters: FC = function () {
       endBlock,
       startSlot,
       endSlot,
-      sort,
-    } = queryParams;
+    } = queryParams.filterParams;
     const newFilters: Partial<FiltersState> = {};
 
     if (rollup || from) {
