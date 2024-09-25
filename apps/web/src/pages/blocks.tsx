@@ -75,6 +75,7 @@ const Blocks: NextPage = function () {
     isLoading,
     error,
   } = api.block.getAll.useQuery({
+    count: true,
     from,
     p,
     ps,
@@ -227,7 +228,10 @@ const Blocks: NextPage = function () {
   return (
     <>
       <Header>
-        Blocks {totalBlocks ? `(${formatNumber(totalBlocks)})` : ""}
+        Blocks{" "}
+        {typeof totalBlocks !== "undefined"
+          ? `(${formatNumber(totalBlocks)})`
+          : ""}
       </Header>
       <Filters />
       <PaginatedTable

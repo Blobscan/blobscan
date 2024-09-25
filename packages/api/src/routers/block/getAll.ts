@@ -28,7 +28,7 @@ const inputSchema = withAllFiltersSchema
 
 const outputSchema = z.object({
   blocks: serializedBlockSchema.array(),
-  totalBlocks: z.number(),
+  totalBlocks: z.number().optional(),
 });
 
 export const getAll = publicProcedure
@@ -45,31 +45,31 @@ export const getAll = publicProcedure
   .use(withExpands)
   .use(withPagination)
   .output(outputSchema)
-  .query(async ({ ctx: { expands, filters, pagination, prisma } }) => {
-    const [queriedBlocks, totalBlocks] = await Promise.all([
-      prisma.block.findMany({
-        select: createBlockSelect(expands, filters),
-        where: {
-          number: filters.blockNumber,
-          timestamp: filters.blockTimestamp,
-          slot: filters.blockSlot,
+  .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
+    const blocksOp = prisma.block.findMany({
+      select: createBlockSelect(expands, filters),
+      where: {
+        number: filters.blockNumber,
+        timestamp: filters.blockTimestamp,
+        slot: filters.blockSlot,
 
-          transactionForks: filters.blockType,
-          transactions:
-            filters.transactionRollup !== undefined ||
-            filters.transactionAddresses
-              ? {
-                  some: {
-                    rollup: filters.transactionRollup,
-                    OR: filters.transactionAddresses,
-                  },
-                }
-              : undefined,
-        },
-        orderBy: { number: filters.sort },
-        ...pagination,
-      }),
-      filters.transactionRollup !== undefined || filters.transactionAddresses
+        transactionForks: filters.blockType,
+        transactions:
+          filters.transactionRollup !== undefined ||
+          filters.transactionAddresses
+            ? {
+                some: {
+                  rollup: filters.transactionRollup,
+                  OR: filters.transactionAddresses,
+                },
+              }
+            : undefined,
+      },
+      orderBy: { number: filters.sort },
+      ...pagination,
+    });
+    const countOp = count
+      ? filters.transactionRollup !== undefined || filters.transactionAddresses
         ? prisma.block.count({
             where: {
               transactions: {
@@ -86,8 +86,10 @@ export const getAll = publicProcedure
                 totalBlocks: true,
               },
             })
-            .then((stats) => stats?.totalBlocks ?? 0),
-    ]);
+            .then((stats) => stats?.totalBlocks ?? 0)
+      : Promise.resolve(undefined);
+
+    const [queriedBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
 
     let blocks: QueriedBlock[] = queriedBlocks;
 
@@ -123,6 +125,6 @@ export const getAll = publicProcedure
 
     return {
       blocks: blocks.map(serializeBlock),
-      totalBlocks,
+      ...(count ? { totalBlocks } : {}),
     };
   });

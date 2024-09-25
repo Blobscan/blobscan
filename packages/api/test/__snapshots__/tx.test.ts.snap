@@ -2363,6 +2363,8 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 ]
 `;
 
+exports[`Transaction router > getAll > when getting paginated transaction results > should return the total number of items when count is provided 1`] = `16`;
+
 exports[`Transaction router > getByHash > should fail when providing a non-existent hash > [TRPCError: No transaction with hash 'nonExistingHash' found] 1`] = `[TRPCError: No transaction with hash 'nonExistingHash'.]`;
 
 exports[`Transaction router > getByHash > should get a transaction by hash correctly 1`] = `
