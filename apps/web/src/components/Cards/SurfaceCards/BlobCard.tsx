@@ -39,7 +39,7 @@ const BlobCard: FC<BlobCardProps> = ({
       <div className="flex flex-col gap-1 text-sm">
         {versionedHash ? (
           <div className="flex justify-between gap-2">
-            <div className={`flex  gap-2 ${isCompact ? "max-w-[92%]" : ""}`}>
+            <div className={`flex gap-1 ${isCompact ? "max-w-[92%]" : ""}`}>
               <span className="text-contentSecondary-light dark:text-surfaceContentSecondary-dark">
                 Blob
               </span>
