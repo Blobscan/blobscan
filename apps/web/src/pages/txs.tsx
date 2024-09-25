@@ -103,8 +103,9 @@ const Txs: NextPage = function () {
     error,
   } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
-    totalTransactions: number;
+    totalTransactions?: number;
   }>({
+    count: true,
     from,
     p,
     ps,
@@ -288,7 +289,9 @@ const Txs: NextPage = function () {
     <>
       <Header>
         Blob Transactions{" "}
-        {totalTransactions ? `(${formatNumber(totalTransactions)})` : ""}
+        {typeof totalTransactions !== "undefined"
+          ? `(${formatNumber(totalTransactions)})`
+          : ""}
       </Header>
       <Filters />
       <PaginatedTable

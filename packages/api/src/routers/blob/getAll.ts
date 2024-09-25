@@ -26,7 +26,7 @@ const inputSchema = withPaginationSchema
 
 const outputSchema = z.object({
   blobs: serializedBlobOnTransactionSchema.array(),
-  totalBlobs: z.number(),
+  totalBlobs: z.number().optional(),
 });
 
 export const getAll = publicProcedure
@@ -43,9 +43,7 @@ export const getAll = publicProcedure
   .use(withFilters)
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx }) => {
-    const filters = ctx.filters;
-
+  .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
     const where: Prisma.BlobsOnTransactionsWhereInput = {
       blockNumber: filters.blockNumber,
       blockTimestamp: filters.blockTimestamp,
@@ -61,31 +59,30 @@ export const getAll = publicProcedure
             }
           : undefined,
     };
-
-    const [txsBlobs, totalBlobs] = await Promise.all([
-      ctx.prisma.blobsOnTransactions.findMany({
-        select: createBlobsOnTransactionsSelect(ctx.expands),
-        where,
-        orderBy: [
-          { blockNumber: filters.sort },
-          {
-            transaction: {
-              index: filters.sort,
-            },
-          },
-          {
+    const txsBlobsOp = prisma.blobsOnTransactions.findMany({
+      select: createBlobsOnTransactionsSelect(expands),
+      where,
+      orderBy: [
+        { blockNumber: filters.sort },
+        {
+          transaction: {
             index: filters.sort,
           },
-        ],
-        ...ctx.pagination,
-      }),
-      ctx.prisma.blobsOnTransactions.count({
-        where,
-      }),
-    ]);
+        },
+        {
+          index: filters.sort,
+        },
+      ],
+      ...pagination,
+    });
+    const countOp = count
+      ? prisma.blobsOnTransactions.count({ where })
+      : undefined;
+
+    const [txsBlobs, totalBlobs] = await Promise.all([txsBlobsOp, countOp]);
 
     return {
       blobs: txsBlobs.map(serializeBlobOnTransaction),
-      totalBlobs,
+      ...(count ? { totalBlobs } : {}),
     };
   });

@@ -27,7 +27,7 @@ const inputSchema = withAllFiltersSchema
 
 const outputSchema = z.object({
   transactions: serializedTransactionSchema.array(),
-  totalTransactions: z.number(),
+  totalTransactions: z.number().optional(),
 });
 
 export const getAll = publicProcedure
@@ -44,55 +44,57 @@ export const getAll = publicProcedure
   .use(withExpands)
   .use(withPagination)
   .output(outputSchema)
-  .query(async ({ ctx }) => {
-    const filters = ctx.filters;
-
-    const [queriedTxs, txCountOrStats] = await Promise.all([
-      ctx.prisma.transaction.findMany({
-        select: createTransactionSelect(ctx.expands),
-        where: {
-          blockNumber: filters.blockNumber,
-          blockTimestamp: filters.blockTimestamp,
-          rollup: filters.transactionRollup,
-          OR: filters.transactionAddresses,
-          block: filters.blockSlot
-            ? {
-                slot: filters.blockSlot,
-              }
-            : undefined,
-          transactionForks: filters.blockType,
+  .query(async ({ ctx: { prisma, expands, filters, pagination, count } }) => {
+    const transactionsOp = prisma.transaction.findMany({
+      select: createTransactionSelect(expands),
+      where: {
+        blockNumber: filters.blockNumber,
+        blockTimestamp: filters.blockTimestamp,
+        rollup: filters.transactionRollup,
+        OR: filters.transactionAddresses,
+        block: filters.blockSlot
+          ? {
+              slot: filters.blockSlot,
+            }
+          : undefined,
+        transactionForks: filters.blockType,
+      },
+      orderBy: [
+        {
+          blockNumber: filters.sort,
         },
-        orderBy: [
-          {
-            blockNumber: filters.sort,
-          },
-          {
-            index: filters.sort,
-          },
-        ],
-        ...ctx.pagination,
-      }),
-      filters.transactionRollup !== undefined || filters.transactionAddresses
-        ? ctx.prisma.transaction.count({
+        {
+          index: filters.sort,
+        },
+      ],
+      ...pagination,
+    });
+    const countOp = count
+      ? filters.transactionRollup !== undefined || filters.transactionAddresses
+        ? prisma.transaction.count({
             where: {
               rollup: filters.transactionRollup,
               OR: filters.transactionAddresses,
             },
           })
-        : ctx.prisma.transactionOverallStats.findFirst({
-            select: {
-              totalTransactions: true,
-            },
-          }),
+        : prisma.transactionOverallStats
+            .findFirst({
+              select: {
+                totalTransactions: true,
+              },
+            })
+            .then((stats) => stats?.totalTransactions ?? 0)
+      : Promise.resolve(undefined);
+
+    const [queriedTxs, txCountOrStats] = await Promise.all([
+      transactionsOp,
+      countOp,
     ]);
 
     return {
       transactions: queriedTxs
         .map(addDerivedFieldsToTransaction)
         .map(serializeTransaction),
-      totalTransactions:
-        typeof txCountOrStats === "number"
-          ? txCountOrStats
-          : txCountOrStats?.totalTransactions ?? 0,
+      ...(count ? { totalTransactions: txCountOrStats } : {}),
     };
   });

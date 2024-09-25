@@ -1,5 +1,5 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
@@ -26,8 +26,18 @@ describe("Blob router", async () => {
   });
 
   describe("getAll", () => {
+    beforeEach(async () => {
+      await ctx.prisma.blobOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
+    });
+
     runPaginationTestsSuite("blob", (paginationInput) =>
-      caller.blob.getAll(paginationInput).then(({ blobs }) => blobs)
+      caller.blob.getAll(paginationInput).then(({ blobs, totalBlobs }) => ({
+        items: blobs,
+        totalItems: totalBlobs,
+      }))
     );
 
     runFiltersTestsSuite("blob", (baseGetAllInput) =>

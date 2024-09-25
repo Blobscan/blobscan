@@ -68,7 +68,9 @@ export async function createTestContext({
 
 export function runPaginationTestsSuite(
   entity: Entity,
-  fetcher: (paginationInput: WithPaginationSchema) => Promise<unknown[]>
+  fetcher: (
+    paginationInput: WithPaginationSchema
+  ) => Promise<{ items: unknown[]; totalItems?: number }>
 ) {
   return describe(`when getting paginated ${entity} results`, () => {
     let input: WithPaginationSchema;
@@ -78,9 +80,9 @@ export function runPaginationTestsSuite(
         ps: 2,
       };
 
-      const result = await fetcher(input);
+      const { items } = await fetcher(input);
 
-      expect(result).toMatchSnapshot();
+      expect(items).toMatchSnapshot();
     });
 
     it("should return the default amount of results when no limit was specified", async () => {
@@ -88,10 +90,10 @@ export function runPaginationTestsSuite(
         p: 1,
       };
 
-      const result = await fetcher(input);
-      const expectedResultsAmount = Math.min(DEFAULT_PAGE_LIMIT, result.length);
+      const { items } = await fetcher(input);
+      const expectedResultsAmount = Math.min(DEFAULT_PAGE_LIMIT, items.length);
 
-      expect(result.length).toBe(expectedResultsAmount);
+      expect(items.length).toBe(expectedResultsAmount);
     });
 
     it("should return the correct results when a specific page is requested", async () => {
@@ -100,9 +102,9 @@ export function runPaginationTestsSuite(
         ps: 2,
       };
 
-      const result = await fetcher(input);
+      const { items } = await fetcher(input);
 
-      expect(result).toMatchSnapshot();
+      expect(items).toMatchSnapshot();
     });
 
     it("should return the correct results when a specific page size is requested", async () => {
@@ -110,9 +112,19 @@ export function runPaginationTestsSuite(
         ps: 3,
       };
 
-      const result = await fetcher(input);
+      const { items } = await fetcher(input);
 
-      expect(result.length).toBe(input.ps);
+      expect(items.length).toBe(input.ps);
+    });
+
+    it("should return the total number of items when count is provided", async () => {
+      input = {
+        count: true,
+      };
+
+      const { totalItems } = await fetcher(input);
+
+      expect(totalItems).toMatchSnapshot();
     });
   });
 }
