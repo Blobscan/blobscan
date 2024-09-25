@@ -1,4 +1,4 @@
--- Mgirate data from the address table to the address_history table
+-- Migrate data from the address table to the address_history table
 INSERT INTO address_history (
   address,
   category,

@@ -174,7 +174,7 @@ export const fixtures = {
           throw new Error(`Block with hash "${tx.blockHash}" not found`);
         if (!fromHistory)
           throw new Error(
-            `From Address history with id "${tx.fromId}-${tx.category}"  not found`
+            `From Address history with id "${tx.fromId}-${tx.category}" not found`
           );
         if (!toHistory)
           throw new Error(
