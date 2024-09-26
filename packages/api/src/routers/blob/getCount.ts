@@ -24,9 +24,6 @@ export async function countBlobs(
       select: {
         totalBlobs: true,
       },
-      where: {
-        AND: [{ category: null }, { rollup: null }],
-      },
     });
 
     return overallStats?.totalBlobs ?? 0;

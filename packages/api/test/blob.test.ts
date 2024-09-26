@@ -129,7 +129,10 @@ describe("Blob router", async () => {
 
   describe("getCount", () => {
     it("should return the overall total blobs stat when no filters are provided", async () => {
-      await ctx.prisma.blobOverallStats.populate();
+      await ctx.prisma.blobOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
       const { totalBlobs } = await caller.blob.getCount({});
 
       expect(totalBlobs).toBe(fixtures.canonicalBlobs.length);

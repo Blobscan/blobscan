@@ -21,9 +21,6 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
       select: {
         totalTransactions: true,
       },
-      where: {
-        AND: [{ category: null }, { rollup: null }],
-      },
     });
 
     return overallStats?.totalTransactions ?? 0;
