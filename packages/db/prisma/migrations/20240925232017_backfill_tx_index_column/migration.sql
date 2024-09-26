@@ -7,19 +7,15 @@ BEGIN
     LOOP
         WITH candidate_rows AS (
             -- Select rows for update in batches of 1000, using NOWAIT to avoid locking conflicts
-            SELECT tx_hash
-            FROM blobs_on_transactions
-            WHERE tx_index IS NULL
+            SELECT blobs_on_transactions.tx_hash as tx_hash, transaction.index as new_index
+            FROM blobs_on_transactions JOIN transaction ON blobs_on_transactions.tx_hash = transaction.hash
+            WHERE blobs_on_transactions.tx_index IS NULL
             LIMIT batch_size
             FOR UPDATE NOWAIT
         ), update_rows AS (
             -- Perform the update for the selected rows
             UPDATE blobs_on_transactions
-            SET tx_index = (
-              SELECT index
-              FROM transaction
-              WHERE transaction.hash = blobs_on_transactions.tx_hash
-            )
+            SET tx_index = candidate_rows.new_index
             FROM candidate_rows
             WHERE candidate_rows.tx_hash = blobs_on_transactions.tx_hash
             RETURNING blobs_on_transactions.tx_hash
