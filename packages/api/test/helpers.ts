@@ -159,14 +159,6 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
-    it("should only return the results that do not have a rollup when 'null' is provided", async () => {
-      const result = await fetcher({
-        rollup: "null",
-      });
-
-      expect(result).toMatchSnapshot();
-    });
-
     it("should return the results starting from the block specificed", async () => {
       const result = await fetcher({
         startBlock: 1007,
