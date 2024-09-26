@@ -5,9 +5,13 @@ import { ChartCardWithSlider } from "~/components/Cards/ChartCardWithSlider";
 import { formatWei, normalizeTimestamp } from "~/utils";
 
 export type ValidatorIncomeChartProps = {
-  incomeData: ValidatorIncome["incomeGWei"];
   epochIdx: ValidatorIncome["epochIdx"];
+  incomeData: ValidatorIncome["incomeGWei"];
+  incomeGweiDayAvg: ValidatorIncome["incomeGweiDayAvg"],
+  incomeGweiDayAvgDate: number[],
   epochGenesisTime: number;
+
+  displayDay: boolean,
   minDistanceTimestamp: number;
   compact: boolean;
 }
@@ -19,9 +23,61 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
   epochIdx,
   incomeData,
   epochGenesisTime,
+  incomeGweiDayAvg,
+  incomeGweiDayAvgDate,
+  displayDay = false,
   minDistanceTimestamp = EpochTimestampUnit / MSConvertRatio,
   compact = false,
 }) {
+  if (displayDay) {
+    console.log("data: ", incomeGweiDayAvg)
+    console.log("time: ", incomeGweiDayAvgDate)
+
+    if (!Array.isArray(incomeGweiDayAvg) || incomeGweiDayAvg.length == 0 ||
+      incomeGweiDayAvg === undefined || incomeGweiDayAvgDate === undefined
+    ) {
+      return (
+        <ChartCardWithSlider
+          allData={[]}
+          allAxle={[]}
+          initCoordinateAxle={[]}
+          minDistance={minDistanceTimestamp}
+          title="Epoch Rewards(GWei)"
+          size="lg"
+          compact={compact}
+          sliderStep={minDistanceTimestamp}
+        />
+      )
+    }
+
+    return (
+      <ChartCardWithSlider
+        title="Epoch Rewards By Day Avg(DILL)"
+        size="lg"
+        compact={compact}
+        allData={incomeGweiDayAvg}
+        allAxle={incomeGweiDayAvgDate}
+        initCoordinateAxle={[incomeGweiDayAvgDate[0] as number, incomeGweiDayAvgDate[incomeGweiDayAvgDate.length - 1] as number]}
+
+        xAxisLabel={(value) => {
+          const date = normalizeTimestamp(value);
+
+          return `${date.format("YYYY/MM/DD")}`;
+        }}
+        xAxisTooltip={(value) => {
+          const date = normalizeTimestamp(value);
+
+          return `${date.format("YYYY/MM/DD")}`;
+        }}
+        yAxisLabel={(value) => formatWei(value * 1e9, { toUnit: "DILL", displayUnit: true, compact: false })}
+        yAxisTooltip={(value) => formatWei(value * 1e9, { toUnit: "DILL", displayUnit: true, compact: false })}
+
+        minDistance={minDistanceTimestamp}
+        sliderStep={minDistanceTimestamp}
+      />
+    )
+  }
+
   if (!Array.isArray(incomeData) || incomeData.length == 0 ||
     epochIdx === undefined || epochGenesisTime === undefined
   ) {
@@ -49,7 +105,7 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
       title="Epoch Rewards(DILL)"
       size="lg"
       compact={compact}
-      allData={incomeData}
+      allData={incomeData.map(value => Number(value))}
       allAxle={axleTimestamp}
       initCoordinateAxle={[axleTimestamp[0] as number, axleTimestamp[axleTimestamp.length - 1] as number]}
 
@@ -69,8 +125,8 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
         (Epoch ${epochIdx[axleTimestamp.indexOf(date.unix())]})
         `;
       }}
-      yAxisLabel={(value) => formatWei(value*1e9, {toUnit: "DILL", displayUnit: true, compact: false})}
-      yAxisTooltip={(value) => formatWei(value*1e9, {toUnit: "DILL", displayUnit: true, compact: false})}
+      yAxisLabel={(value) => formatWei(value * 1e9, { toUnit: "DILL", displayUnit: true, compact: false })}
+      yAxisTooltip={(value) => formatWei(value * 1e9, { toUnit: "DILL", displayUnit: true, compact: false })}
 
       minDistance={minDistanceTimestamp}
       sliderStep={EpochTimestampUnit / MSConvertRatio}

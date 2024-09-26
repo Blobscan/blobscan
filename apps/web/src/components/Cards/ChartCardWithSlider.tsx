@@ -25,7 +25,7 @@ export type ChartCardWithSliderProps = {
   title?: ReactNode;
   size?: "sm" | "md" | "lg";
   compact?: boolean;
-  allData: bigint[];
+  allData: number[];
   allAxle: number[];
   initCoordinateAxle: number[];
 
@@ -65,7 +65,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
       allAxle.indexOf(initAxle[1] as number) + 1,
     )
   );
-  const [dataRange, setDataRange] = useState<bigint[]>(
+  const [dataRange, setDataRange] = useState<number[]>(
     allData.slice(
       allAxle.indexOf(initAxle[0] as number),
       allAxle.indexOf(initAxle[1] as number) + 1,
@@ -135,7 +135,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
         xAxisLabel: xAxisLabel,
         xAxisTooltip: xAxisTooltip,
         yAxisLabel: yAxisLabel,
-        yAxisTooltip:yAxisTooltip,
+        yAxisTooltip: yAxisTooltip,
       },
     }),
     // Improper configuration may result in incomplete display of the x/y axis.
@@ -144,7 +144,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
     series: [
       {
         name: "Reward",
-        data: dataRange.map(value => Number(value)),
+        data: dataRange,
         type: compact ? "line" : "bar",
         smooth: true,
       },

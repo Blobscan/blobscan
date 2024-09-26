@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
+import { normalizeTimestamp } from "~/utils";
 import { ValidatorIncomeChart } from "~/components/Charts/Validator";
 import { ValidatorsIncomeLayout } from "~/components/Layouts/ValidatorsIncomeLayout";
 
-const validatorEpochIncomeListLimit = 240;
+const epochDisplayLimit = 225;
+const epochDayAggDisplayLimit = 30;
+const dayTimestampSecond = 86400;
 
 function isStr(value: string): boolean {
   const nonDigitPattern = /\D/;
@@ -38,7 +41,6 @@ const Validator: NextPage = function () {
       validatorKey: String(keyOrIdx),
       validatorIdx: keyIsStr ? String(0) : String(keyOrIdx),
       validatorIsStr: keyIsStr,
-      listLimit: validatorEpochIncomeListLimit,
     },
     {
       enabled: router.isReady && !hasFetchData,
@@ -73,36 +75,76 @@ const Validator: NextPage = function () {
 
   incomeData.epochIdx.reverse();
   incomeData.incomeGWei.reverse();
+  incomeData.incomeGweiDayAvg.reverse();
+  incomeData.incomeGweiDayAvgDate.reverse();
 
-  for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
-    const diff = (incomeData.epochIdx[idx + 1] as bigint) - (incomeData.epochIdx[idx] as bigint);
+  if (incomeData.epochIdx.length < epochDisplayLimit) {
+    for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
+      const diff = (incomeData.epochIdx[idx + 1] as bigint) - (incomeData.epochIdx[idx] as bigint);
+      if (diff > BigInt(1)) {
+        const newEntriesCount = Number(diff) - 1;
 
-    if (diff > BigInt(1)) {
-      const newEntriesCount = Number(diff) - 1;
+        if (newEntriesCount > 0) {
+          incomeData.epochIdx.splice(
+            idx + 1,
+            0,
+            ...Array.from({ length: newEntriesCount }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(index + 1))
+          );
+          incomeData.incomeGWei.splice(idx + 1, 0, ...Array(newEntriesCount).fill(BigInt(0)));
+        }
 
-      if (newEntriesCount > 0 && newEntriesCount < validatorEpochIncomeListLimit) {
-        incomeData.epochIdx.splice(
-          idx + 1,
-          0,
-          ...Array.from({ length: newEntriesCount }, (_, index) => (incomeData.epochIdx[idx] as bigint) + BigInt(index + 1))
-        );
-        incomeData.incomeGWei.splice(idx + 1, 0, ...Array(newEntriesCount).fill(BigInt(0)));
+        idx += newEntriesCount;
       }
 
-      idx += newEntriesCount;
-    }
+      // if (idx + 1 >= incomeData.epochIdx.length - 1) {
+      //   if (incomeData.epochIdx.length > epochDisplayLimit) {
+      //     const excessLength = incomeData.epochIdx.length - epochDisplayLimit;
 
-    if (idx + 1 >= incomeData.epochIdx.length - 1) {
-      if (incomeData.epochIdx.length > validatorEpochIncomeListLimit) {
-        const excessLength = incomeData.epochIdx.length - validatorEpochIncomeListLimit;
-
-        incomeData.epochIdx = incomeData.epochIdx.slice(excessLength);
-        incomeData.incomeGWei = incomeData.incomeGWei.slice(excessLength);
-      }
-      break;
+      //     incomeData.epochIdx = incomeData.epochIdx.slice(excessLength);
+      //     incomeData.incomeGWei = incomeData.incomeGWei.slice(excessLength);
+      //   }
+      //   break;
+      // }
     }
   }
 
+  const incomeGweiDayAvgDate = incomeData.incomeGweiDayAvgDate.map(
+    value => normalizeTimestamp(value).unix()
+  );
+  if (incomeGweiDayAvgDate !== undefined && incomeGweiDayAvgDate.length < epochDayAggDisplayLimit) {
+    for (let idx = 0; idx < incomeGweiDayAvgDate.length - 1; idx++) {
+      const diff = (incomeGweiDayAvgDate[idx + 1] as number) - (incomeGweiDayAvgDate[idx] as number);
+      console.log("time1: ", incomeGweiDayAvgDate[idx + 1])
+      console.log("time2: ", incomeGweiDayAvgDate[idx])
+      console.log("diff: ", diff)
+
+      if (diff > dayTimestampSecond) {
+        const newEntriesCount = Math.floor(diff / dayTimestampSecond) - 1;
+
+        if (newEntriesCount > 0) {
+          incomeGweiDayAvgDate.splice(
+            idx + 1,
+            0,
+            ...Array.from({ length: newEntriesCount }, (_, index) => (incomeGweiDayAvgDate[idx] as number) + index * dayTimestampSecond)
+          );
+          incomeData.incomeGweiDayAvg.splice(idx + 1, 0, ...Array(newEntriesCount).fill(0));
+        }
+        idx += newEntriesCount;
+      }
+
+      // if (idx + 1 >= incomeGweiDayAvgDate.length - 1) {
+      //   if (incomeGweiDayAvgDate.length > epochDayAggDisplayLimit) {
+      //     const excessLength = incomeGweiDayAvgDate.length - epochDayAggDisplayLimit;
+
+      //     incomeGweiDayAvgDate = incomeGweiDayAvgDate.slice(excessLength);
+      //     incomeData.incomeGweiDayAvg = incomeData.incomeGweiDayAvg.slice(excessLength);
+      //   }
+      //   break;
+      // }
+    }
+  }
+
+  // TODO: Using DateTimeRangePickerToolbar component instead of Select component is more in line with usage standards.
   return (
     <div>
       <ValidatorsIncomeLayout
@@ -111,9 +153,16 @@ const Validator: NextPage = function () {
         charts={[
           <ValidatorIncomeChart
             key={0}
-            epochIdx={incomeData.epochIdx}
-            incomeData={incomeData.incomeGWei}
+            epochIdx={incomeData.epochIdx.slice(-epochDisplayLimit)}
+            incomeData={incomeData.incomeGWei.slice(-epochDisplayLimit)}
             epochGenesisTime={Number(epochGenesis.data.genesis_time) * 1000}
+          />,
+          <ValidatorIncomeChart
+            key={1}
+            incomeGweiDayAvg={incomeData.incomeGweiDayAvg.slice(-epochDayAggDisplayLimit)}
+            incomeGweiDayAvgDate={incomeGweiDayAvgDate.slice(-epochDayAggDisplayLimit)}
+            minDistanceTimestamp={dayTimestampSecond}
+            displayDay={true}
           />,
         ]}
       />
