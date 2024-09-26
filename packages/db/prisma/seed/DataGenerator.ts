@@ -1,16 +1,32 @@
 import { faker } from "@faker-js/faker";
-import type { Address, Blob } from "@prisma/client";
-import { $Enums, Prisma } from "@prisma/client";
+import type {
+  Address,
+  Blob,
+  BlobDataStorageReference,
+  Block,
+  Transaction,
+  TransactionFork,
+} from "@prisma/client";
+import { Category, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
 
+import { BlobStorage } from "../enums";
 import type { SeedParams } from "./params";
+import {
+  BLOB_GAS_PER_BLOB,
+  calculateBlobGasPrice,
+  calculateExcessBlobGas,
+  COMMON_MAX_FEE_PER_BLOB_GAS,
+  ROLLUP_ADDRESSES,
+} from "./web3";
 
-function bigintToDecimal(bigint: bigint): Prisma.Decimal {
-  return new Prisma.Decimal(bigint.toString());
-}
-
+export type FullBlock = Block & {
+  transactions: (Transaction & {
+    blobs: (Blob & { storageRefs: BlobDataStorageReference[] })[];
+  })[];
+};
 export class DataGenerator {
   #seedParams: SeedParams;
 
@@ -18,10 +34,12 @@ export class DataGenerator {
     this.#seedParams = seedParams;
   }
 
-  generateUniqueAddresses(): string[] {
-    return Array.from({ length: this.#seedParams.maxUniqueAddresses }).map(() =>
-      faker.finance.ethereumAddress()
-    );
+  generateAddresses(): string[] {
+    return Array.from({
+      length:
+        this.#seedParams.maxUniqueAddresses -
+        Object.keys(ROLLUP_ADDRESSES).length,
+    }).map(() => faker.finance.ethereumAddress());
   }
 
   generateDBAddresses(
@@ -45,250 +63,332 @@ export class DataGenerator {
     }));
   }
 
-  generateDBBlobs(): Blob[] {
+  generateDBAddress(tx: Transaction): Address[] {
     const now = new Date();
-    const blobs: Blob[] = [];
+    const addresses = [tx.fromId, tx.toId];
 
-    for (let i = 0; i < this.#seedParams.maxUniqueBlobs; i++) {
-      const commitment = faker.string.hexadecimal({
-        length: 96,
-      });
-      const proof = faker.string.hexadecimal({ length: 96 });
-      const versionedHash = `0x01${sha256(commitment).slice(2)}`;
-      const dataLength = faker.number.int({
-        min: this.#seedParams.maxBlobBytesSize,
-        max: this.#seedParams.maxBlobBytesSize * 2,
-      });
-      const size = dataLength % 2 === 0 ? dataLength : dataLength + 1;
-
-      blobs.push({
-        commitment,
-        proof,
-        size,
-        versionedHash,
-        firstBlockNumber: Infinity,
-        insertedAt: now,
-        updatedAt: now,
-      });
-    }
-
-    return blobs;
-  }
-
-  generateBlobData(sizes: number[]): string[] {
-    return sizes.map((s) => faker.string.hexadecimal({ length: s }));
-  }
-
-  generateDBBlobOnTxs(
-    blocks: Prisma.BlockCreateManyInput[],
-    blocksTxs: Prisma.TransactionCreateManyInput[][],
-    uniqueBlobs: Blob[]
-  ) {
-    return blocksTxs.flatMap((blockTxs) => {
-      let blockBlobsRemaining = faker.number.int({
-        min: 1,
-        max: this.#seedParams.maxBlobsPerBlock,
-      });
-      return blockTxs.flatMap((tx, i) => {
-        const remainingTxs = blockTxs.length - i + 1;
-        const txBlobs = faker.number.int({
-          min: 1,
-          max: Math.max(1, blockBlobsRemaining - remainingTxs),
-        });
-
-        blockBlobsRemaining -= txBlobs;
-
-        const blobsOnTxs: Prisma.BlobsOnTransactionsCreateManyInput[] = [];
-
-        for (let i = 0; i < txBlobs; i++) {
-          const blobIndex = faker.number.int({
-            min: 0,
-            max: uniqueBlobs.length - 1,
-          });
-
-          const blob =
-            uniqueBlobs.find((b) => b.firstBlockNumber === Infinity) ??
-            uniqueBlobs[blobIndex];
-
-          if (!blob) {
-            throw new Error("Blob not found");
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const block = blocks.find((b) => b.hash === tx.blockHash)!;
-          blob.firstBlockNumber = Math.min(
-            blob.firstBlockNumber ?? Infinity,
-            block.number ?? Infinity
-          );
-
-          blobsOnTxs.push({
-            blobHash: blob.versionedHash,
-            index: i,
-            txHash: tx.hash,
-            blockHash: block.hash,
-            blockNumber: block.number,
-            blockTimestamp: new Date(block.timestamp),
-          });
-        }
-
-        return blobsOnTxs;
-      });
-    });
-  }
-
-  generateDBBlocks() {
-    const now = new Date();
-    const timestamps = this.#generateUniqueTimestamps(
-      this.#seedParams.totalDays,
-      this.#seedParams.minBlocksPerDay,
-      this.#seedParams.maxBlocksPerDay
-    );
-
-    let prevBlockNumber = 0;
-    let prevSlot = 0;
-
-    return timestamps.map<Prisma.BlockCreateManyInput>((timestamp) => {
-      const number = prevBlockNumber + faker.number.int({ min: 1, max: 20 });
-      const slot = prevSlot + faker.number.int({ min: 1, max: 10 });
-      const txsCount = faker.number.int({
-        min: 1,
-        max: this.#seedParams.maxBlobsPerBlock,
-      });
-      const blobGasUsed = faker.number.int({
-        min: this.#seedParams.gasPerBlob * txsCount,
-      });
-      const blobGasPrice = faker.number.bigInt({
-        min: this.#seedParams.minBlobGasPrice,
-        max: this.#seedParams.maxBlobGasPrice,
-      });
-      const excessBlobGas = faker.number.int({
-        min: 15_000_000,
-        max: 20_000_000,
-      });
-
-      prevBlockNumber = number;
-      prevSlot = slot;
-
+    return addresses.map((address) => {
       return {
-        hash: faker.string.hexadecimal({ length: 64 }),
-        number,
-        timestamp,
-        slot,
-        blobAsCalldataGasUsed: 0,
-        blobGasUsed: new Prisma.Decimal(blobGasUsed),
-        blobGasPrice: bigintToDecimal(blobGasPrice),
-        excessBlobGas: new Prisma.Decimal(excessBlobGas),
+        address,
+        firstBlockNumberAsReceiver: tx.blockNumber,
+        firstBlockNumberAsSender: tx.blockNumber,
         insertedAt: now,
         updatedAt: now,
       };
     });
   }
 
-  #generateUniqueTimestamps(
-    days: number,
-    minTimestamps: number,
-    maxTimestamps: number
-  ) {
-    const uniqueTimestamps: Date[] = [];
+  generateBlob(): Blob {
+    const now = new Date();
+    const commitment = faker.string.hexadecimal({
+      length: 96,
+    });
+    const proof = faker.string.hexadecimal({ length: 96 });
+    const versionedHash = `0x01${sha256(commitment).slice(2)}`;
+    const size = Number(BLOB_GAS_PER_BLOB);
 
-    let startDay = dayjs().subtract(days, "day");
+    return {
+      commitment,
+      proof,
+      size,
+      versionedHash,
+      firstBlockNumber: Infinity,
+      insertedAt: now,
+      updatedAt: now,
+    };
+  }
 
-    Array.from({ length: days }).forEach(() => {
-      const dayTimestamps = faker.number.int({
-        min: minTimestamps,
-        max: maxTimestamps,
-      });
-      const timestamps = new Set<Date>();
+  generateBlobDataStorageRef(blob: Blob): BlobDataStorageReference[] {
+    return [BlobStorage.GOOGLE, BlobStorage.POSTGRES].map((blobStorage) => ({
+      blobHash: blob.versionedHash,
+      blobStorage,
+      dataReference: blob.versionedHash,
+    }));
+  }
 
-      let previousTimestamp: dayjs.Dayjs = startDay;
+  generateBlock({
+    parentBlock,
+    blockInterval,
+  }: {
+    parentBlock: Pick<
+      Block,
+      "number" | "slot" | "blobGasUsed" | "excessBlobGas" | "timestamp"
+    >;
+    blockInterval: number;
+  }): Block {
+    const now = new Date();
 
-      Array.from({ length: dayTimestamps }).forEach(() => {
-        const blocksUntilNextTimestamp = faker.number.int({ min: 1, max: 3 });
-        const blockValidationTime = faker.number.int({ min: 10, max: 15 });
-        const timestamp = previousTimestamp.add(
-          blocksUntilNextTimestamp * blockValidationTime,
-          "second"
-        );
+    const number = parentBlock.number + faker.number.int({ min: 1, max: 4 });
+    const timestamp = dayjs(parentBlock.timestamp.toISOString()).add(
+      blockInterval,
+      "second"
+    );
+    const slot = parentBlock.slot + faker.number.int({ min: 1, max: 5 });
+    const txsCount = faker.number.int({
+      min: 1,
+      max: 6,
+    });
+    const blobGasUsed = BLOB_GAS_PER_BLOB * BigInt(txsCount);
+    const excessBlobGas = calculateExcessBlobGas(
+      BigInt(parentBlock.excessBlobGas.toString()),
+      BigInt(
+        number - parentBlock.number === 1
+          ? parentBlock.blobGasUsed.toString()
+          : 0
+      )
+    ).toString();
+    const blobGasPrice = calculateBlobGasPrice(
+      BigInt(excessBlobGas)
+    ).toString();
 
-        timestamps.add(timestamp.toDate());
+    return {
+      hash: faker.string.hexadecimal({ length: 64 }),
+      number,
+      timestamp: timestamp.toDate(),
+      slot,
+      blobAsCalldataGasUsed: new Prisma.Decimal(0),
+      blobGasUsed: new Prisma.Decimal(blobGasUsed.toString()),
+      blobGasPrice: new Prisma.Decimal(blobGasPrice),
+      excessBlobGas: new Prisma.Decimal(excessBlobGas),
+      insertedAt: now,
+      updatedAt: now,
+    };
+  }
 
-        previousTimestamp = timestamp;
-      });
+  generateBlockTransactions(
+    block: Block,
+    uniqueAddresses: string[]
+  ): Transaction[] {
+    const now = new Date();
+    const maxBlobs = Number(block.blobGasUsed) / Number(BLOB_GAS_PER_BLOB);
 
-      uniqueTimestamps.push(...Array.from(timestamps).sort());
-
-      startDay = startDay.add(1, "day");
+    const txCount = faker.number.int({
+      min: 1,
+      max: maxBlobs,
     });
 
-    return uniqueTimestamps;
+    let remainingBlobs = 6 - txCount;
+
+    return Array.from({
+      length: txCount,
+    }).map((_, i) => {
+      const txHash = faker.string.hexadecimal({ length: 64 });
+      const category = faker.helpers.weightedArrayElement(
+        this.#seedParams.categoryWeights
+      );
+      const rollup =
+        category === Category.ROLLUP
+          ? faker.helpers.weightedArrayElement(this.#seedParams.rollupWeights)
+          : null;
+
+      let fromId: string;
+
+      if (rollup) {
+        fromId = ROLLUP_ADDRESSES[rollup];
+      } else {
+        fromId = faker.helpers.arrayElement(uniqueAddresses);
+      }
+
+      let toId = faker.helpers.arrayElement(uniqueAddresses);
+
+      while (toId === fromId) {
+        toId = faker.helpers.arrayElement(uniqueAddresses);
+      }
+
+      const gasPrice = faker.number
+        .bigInt({
+          min: 1770074991,
+          max: 6323447039,
+        })
+        .toString();
+      const maxFeePerBlobGas = faker.helpers
+        .arrayElement(COMMON_MAX_FEE_PER_BLOB_GAS)
+        .toString();
+      const extraBlobs = faker.number.int({ min: 0, max: remainingBlobs });
+      const blobGasUsed = (
+        BigInt(1 + extraBlobs) * BLOB_GAS_PER_BLOB
+      ).toString();
+
+      remainingBlobs -= extraBlobs;
+
+      return {
+        hash: txHash,
+        index: i,
+        fromId,
+        toId,
+        blockHash: block.hash,
+        blockNumber: block.number,
+        blockTimestamp: block.timestamp,
+        blobAsCalldataGasUsed: new Prisma.Decimal(0),
+        blobGasUsed: new Prisma.Decimal(blobGasUsed),
+        gasPrice: new Prisma.Decimal(gasPrice),
+        maxFeePerBlobGas: new Prisma.Decimal(maxFeePerBlobGas),
+        category,
+        rollup,
+        insertedAt: now,
+        updatedAt: now,
+      };
+    });
+  }
+
+  generateTransactionBlobs(tx: Transaction, prevBlobs: Blob[]): Blob[] {
+    return Array.from({
+      length: Number(tx.blobGasUsed) / Number(BLOB_GAS_PER_BLOB),
+    }).map(() => {
+      const isUnique = tx.rollup
+        ? true
+        : faker.datatype.boolean({
+            probability: this.#seedParams.uniqueBlobsRatio,
+          });
+
+      if (isUnique || !prevBlobs.length) {
+        return this.generateBlob();
+      } else {
+        return faker.helpers.arrayElement(prevBlobs);
+      }
+    });
+  }
+
+  generateBlobData(sizes: number[]): string[] {
+    return sizes.map((s) => faker.string.hexadecimal({ length: s }));
+  }
+
+  generateDBFullBlocks({
+    initialBlock,
+    uniqueAddresses,
+    prevBlobs,
+  }: {
+    initialBlock?: Block;
+    uniqueAddresses: string[];
+    prevBlobs: Blob[];
+  }): FullBlock[] {
+    const totalBlocks = faker.number.int({
+      min: this.#seedParams.minBlocksPerDay,
+      max: this.#seedParams.maxBlocksPerDay,
+    });
+    const blockInterval = 86400 / totalBlocks;
+
+    const prevDay = initialBlock
+      ? dayjs(initialBlock.timestamp)
+      : dayjs().subtract(this.#seedParams.totalDays, "day");
+    const nextDay = prevDay.add(1, "day");
+    const initialTimestamp = nextDay.startOf("day");
+
+    let parentBlock: Pick<
+      Block,
+      "number" | "slot" | "excessBlobGas" | "blobGasUsed" | "timestamp"
+    > = initialBlock
+      ? {
+          number: initialBlock.number,
+          slot: initialBlock.slot,
+          excessBlobGas: initialBlock.excessBlobGas,
+          blobGasUsed: initialBlock.blobGasUsed,
+          timestamp: initialBlock.timestamp,
+        }
+      : {
+          number: 0,
+          slot: 0,
+          excessBlobGas: new Prisma.Decimal(0),
+          blobGasUsed: new Prisma.Decimal(0),
+          timestamp: initialTimestamp.toDate(),
+        };
+
+    return Array.from({ length: totalBlocks }).map((_, __) => {
+      const block = this.generateBlock({
+        parentBlock,
+        blockInterval,
+      });
+
+      parentBlock = block;
+
+      return {
+        ...block,
+        transactions: this.generateBlockTransactions(
+          block,
+          uniqueAddresses
+        ).map((tx) => {
+          const blobs = this.generateTransactionBlobs(tx, prevBlobs);
+
+          prevBlobs.push(...blobs);
+
+          return {
+            ...tx,
+
+            blobs: blobs.map((b) => ({
+              ...b,
+              storageRefs: this.generateBlobDataStorageRef(b),
+            })),
+          };
+        }),
+      };
+    });
   }
 
   generateDBBlockTransactions(
-    blocks: Prisma.BlockCreateManyInput[],
+    blocks: Block[],
     uniqueAddresses: string[]
-  ) {
-    const now = new Date();
-
+  ): Transaction[][] {
     return blocks.map((block) => {
-      const txCount = faker.number.int({
-        min: 1,
-        max: this.#seedParams.maxBlobsPerBlock,
-      });
-
-      return Array.from({
-        length: txCount,
-      }).map<Prisma.TransactionCreateManyInput>(() => {
-        const txHash = faker.string.hexadecimal({ length: 64 });
-        const from =
-          uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
-        const to =
-          uniqueAddresses[faker.number.int(uniqueAddresses.length - 1)];
-        const gasPrice = faker.number.bigInt({
-          min: this.#seedParams.minGasPrice,
-          max: this.#seedParams.maxGasPrice,
-        });
-        const maxFeePerBlobGas = faker.number.bigInt({
-          min: 0,
-          max: this.#seedParams.maxFeePerBlobGas,
-        });
-        const rollup = [faker.helpers.enumValue($Enums.Rollup), null][
-          faker.number.int({ min: 0, max: 1 })
-        ];
-
-        // Unreachable code, done only for type checking
-        if (!from || !to) throw new Error("Address not found");
-
-        return {
-          hash: txHash,
-          fromId: from,
-          toId: to,
-          blockHash: block.hash,
-          blockNumber: block.number,
-          blockTimestamp: block.timestamp,
-          blobAsCalldataGasUsed: new Prisma.Decimal(0),
-          blobGasUsed: new Prisma.Decimal(0),
-          gasPrice: bigintToDecimal(gasPrice),
-          maxFeePerBlobGas: bigintToDecimal(maxFeePerBlobGas),
-          rollup,
-          insertedAt: now,
-          updatedAt: now,
-        };
-      });
+      return this.generateBlockTransactions(block, uniqueAddresses);
     });
   }
 
-  calculateEIP2028GasCost(hexData: string): number {
-    const bytes = Buffer.from(hexData.slice(2), "hex");
-    let gasCost = 0;
+  generateDBTransactionForks(blocks: FullBlock[]): {
+    blocks: Block[];
+    txs: TransactionFork[];
+  } {
+    const dbForkTxs: TransactionFork[] = [];
+    const forkBlocks: Block[] = [];
 
-    for (const byte of bytes.entries()) {
-      if (byte[1] === 0) {
-        gasCost += 4;
-      } else {
-        gasCost += 16;
+    blocks.forEach((b, i) => {
+      const isReorg = faker.datatype.boolean({
+        probability: this.#seedParams.reorgRatio,
+      });
+      const parentBlock = blocks[i - 1];
+
+      if (!parentBlock) {
+        return;
       }
-    }
 
-    return gasCost;
+      const availableSlots = b.slot - parentBlock.slot > 1;
+
+      if (isReorg && availableSlots) {
+        const forkBlock = this.generateBlock({
+          parentBlock,
+          blockInterval: 2,
+        });
+        forkBlock.number = b.number;
+        forkBlock.slot = faker.number.int({
+          min: parentBlock.slot + 1,
+          max: b.slot - 1,
+        });
+
+        forkBlock.timestamp = faker.date.between({
+          from: dayjs(parentBlock.timestamp).add(1, "millisecond").toDate(),
+          to: dayjs(b.timestamp).subtract(1, "millisecond").toDate(),
+        });
+
+        const nextTxs = blocks.slice(i, i + 4).flatMap((b) => b.transactions);
+        const forkedTxsCount = faker.number.int({
+          min: 1,
+          max: 6,
+        });
+
+        const forkedTxs = faker.helpers
+          .arrayElements(nextTxs, forkedTxsCount)
+          .map<TransactionFork>((tx) => ({
+            blockHash: forkBlock.hash,
+            hash: tx.hash,
+            insertedAt: new Date(),
+            updatedAt: new Date(),
+          }));
+
+        forkBlocks.push(forkBlock);
+
+        dbForkTxs.push(...forkedTxs);
+      }
+    });
+
+    return { blocks: forkBlocks, txs: dbForkTxs };
   }
 }

@@ -20,6 +20,7 @@ export const CURRENT_DAY_DATA = {
       hash: "newTxHash001",
       fromId: "address1",
       toId: "address2",
+      index: 0,
       blockHash: "newBlockHash",
       blockNumber: 1009,
       blockTimestamp: "2023-09-01T17:00:00Z",
@@ -34,6 +35,7 @@ export const CURRENT_DAY_DATA = {
       hash: "newTxHash002",
       fromId: "address5",
       toId: "address2",
+      index: 1,
       blockHash: "newBlockHash",
       blockNumber: 1009,
       blockTimestamp: "2023-09-01T17:00:00Z",
@@ -52,6 +54,7 @@ export const CURRENT_DAY_DATA = {
       blockHash: "newBlockHash",
       blockNumber: 1009,
       blockTimestamp: "2023-09-01T17:00:00Z",
+      txIndex: 0,
       index: 0,
     },
     {
@@ -60,6 +63,7 @@ export const CURRENT_DAY_DATA = {
       blockHash: "newBlockHash",
       blockNumber: 1009,
       blockTimestamp: "2023-09-01T17:00:00Z",
+      txIndex: 0,
       index: 1,
     },
     {
@@ -68,6 +72,7 @@ export const CURRENT_DAY_DATA = {
       blockHash: "newBlockHash",
       blockNumber: 1009,
       blockTimestamp: "2023-09-01T17:00:00Z",
+      txIndex: 1,
       index: 0,
     },
     {
@@ -76,6 +81,7 @@ export const CURRENT_DAY_DATA = {
       blockHash: "newBlockHash",
       blockNumber: 1009,
       blockTimestamp: "2023-09-01T17:00:00Z",
+      txIndex: 1,
       index: 1,
     },
   ],

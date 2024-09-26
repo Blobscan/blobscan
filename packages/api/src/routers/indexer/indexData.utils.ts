@@ -171,14 +171,24 @@ export function createDBBlobs({
 
 export function createDBBlobsOnTransactions({
   block,
+  transactions,
   blobs,
 }: IndexDataFormattedInput): BlobsOnTransactions[] {
-  return blobs.map(({ versionedHash, txHash, index }) => ({
-    blobHash: versionedHash,
-    blockHash: block.hash,
-    blockNumber: block.number,
-    blockTimestamp: timestampToDate(block.timestamp),
-    txHash: txHash,
-    index,
-  }));
+  return blobs.map(({ versionedHash, txHash, index }) => {
+    const tx = transactions.find((t) => t.hash === txHash);
+
+    if (!tx) {
+      throw new Error(`Transaction ${txHash} not found`);
+    }
+
+    return {
+      blobHash: versionedHash,
+      blockHash: block.hash,
+      blockNumber: block.number,
+      blockTimestamp: timestampToDate(block.timestamp),
+      txHash: txHash,
+      txIndex: tx.index,
+      index,
+    };
+  });
 }
