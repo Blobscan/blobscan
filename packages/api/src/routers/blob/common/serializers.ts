@@ -87,6 +87,7 @@ export const serializedBlobSchema = serializedBaseBlobSchema.merge(
       z
         .object({
           hash: z.string(),
+          txIndex: z.number().nonnegative(),
           index: blobIndexSchema,
           blockHash: z.string(),
           blockNumber: z.number().nonnegative(),
@@ -170,6 +171,7 @@ export function serializeBlob(blob: QueriedBlob): SerializedBlob {
           blockHash,
           blockNumber,
           blockTimestamp,
+          txIndex,
           index,
           txHash,
           block,
@@ -177,6 +179,7 @@ export function serializeBlob(blob: QueriedBlob): SerializedBlob {
         }) => {
           return {
             index,
+            txIndex,
             hash: txHash,
             blockHash,
             blockNumber,

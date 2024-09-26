@@ -2821,6 +2821,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash004",
       "index": 3,
       "rollup": "base",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2830,6 +2831,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash015",
       "index": 0,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2839,6 +2841,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash015",
       "index": 1,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2848,6 +2851,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash015",
       "index": 2,
       "rollup": "optimism",
+      "txIndex": 0,
     },
   ],
   "versionedHash": "blobHash004",
@@ -2879,6 +2883,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash004",
       "index": 3,
       "rollup": "base",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2888,6 +2893,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash015",
       "index": 0,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2897,6 +2903,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash015",
       "index": 1,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2906,6 +2913,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash015",
       "index": 2,
       "rollup": "optimism",
+      "txIndex": 0,
     },
   ],
   "versionedHash": "blobHash004",

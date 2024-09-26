@@ -23,6 +23,7 @@ export function createBlobSelect(expands: Expands) {
         blockTimestamp: true,
         index: true,
         txHash: true,
+        txIndex: true,
         transaction: {
           select: {
             rollup: true,
