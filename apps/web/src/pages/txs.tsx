@@ -7,6 +7,7 @@ import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
+import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
@@ -83,53 +84,39 @@ export const TRANSACTIONS_TABLE_HEADERS = [
 ];
 
 const Txs: NextPage = function () {
+  const { filterParams, paginationParams } = useQueryParams();
   const {
-    from,
-    p,
-    ps,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-    sort,
-  } = useQueryParams();
-
-  const {
-    data: rawTxsData,
-    isLoading,
-    error,
+    data: serializedTxs,
+    isLoading: txsIsLoading,
+    error: txsError,
   } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions?: number;
   }>({
-    count: true,
-    from,
-    p,
-    ps,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
+    ...paginationParams,
+    ...filterParams,
     expand: "block,blob",
-    sort,
+  });
+  const {
+    data: countData,
+    error: countError,
+    isLoading: countIsLoading,
+  } = api.tx.getCount.useQuery(filterParams, {
+    refetchOnWindowFocus: false,
   });
   const txsData = useMemo(() => {
-    if (!rawTxsData) {
+    if (!serializedTxs) {
       return;
     }
 
     return {
-      totalTransactions: rawTxsData.totalTransactions,
-      transactions: rawTxsData.transactions.map(deserializeFullTransaction),
+      totalTransactions: serializedTxs.totalTransactions,
+      transactions: serializedTxs.transactions.map(deserializeFullTransaction),
     };
-  }, [rawTxsData]);
-  const { transactions, totalTransactions } = txsData || {};
+  }, [serializedTxs]);
+  const { transactions } = txsData || {};
+  const { totalTransactions } = countData || {};
+  const error = txsError ?? countError;
 
   const transactionRows = useMemo(() => {
     return transactions
@@ -288,18 +275,29 @@ const Txs: NextPage = function () {
   return (
     <>
       <Header>
-        Blob Transactions{" "}
-        {typeof totalTransactions !== "undefined"
-          ? `(${formatNumber(totalTransactions)})`
-          : ""}
+        <div className="flex items-center gap-2">
+          <div>Blob Transactions</div>
+          <div>
+            {!countIsLoading && totalTransactions !== undefined ? (
+              `(${formatNumber(totalTransactions)})`
+            ) : (
+              <div className="relative left-0 top-1">
+                <Skeleton width={100} height={25} />
+              </div>
+            )}
+          </div>
+        </div>
       </Header>
       <Filters />
       <PaginatedTable
-        isLoading={isLoading}
+        isLoading={txsIsLoading}
         headers={TRANSACTIONS_TABLE_HEADERS}
         rows={transactionRows}
         totalItems={totalTransactions}
-        paginationData={{ pageSize: ps, page: p }}
+        paginationData={{
+          pageSize: paginationParams.ps,
+          page: paginationParams.p,
+        }}
         isExpandable
       />
     </>

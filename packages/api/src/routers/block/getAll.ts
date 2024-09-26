@@ -20,6 +20,7 @@ import {
   serializedBlockSchema,
 } from "./common";
 import type { QueriedBlock } from "./common";
+import { countBlocks } from "./getCount";
 
 const inputSchema = withAllFiltersSchema
   .merge(createExpandsSchema(["transaction", "blob"]))
@@ -69,24 +70,7 @@ export const getAll = publicProcedure
       ...pagination,
     });
     const countOp = count
-      ? filters.transactionRollup !== undefined || filters.transactionAddresses
-        ? prisma.block.count({
-            where: {
-              transactions: {
-                some: {
-                  rollup: filters.transactionRollup,
-                  OR: filters.transactionAddresses,
-                },
-              },
-            },
-          })
-        : prisma.blockOverallStats
-            .findFirst({
-              select: {
-                totalBlocks: true,
-              },
-            })
-            .then((stats) => stats?.totalBlocks ?? 0)
+      ? countBlocks(prisma, filters)
       : Promise.resolve(undefined);
 
     const [queriedBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);

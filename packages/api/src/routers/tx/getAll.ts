@@ -19,6 +19,7 @@ import {
   serializeTransaction,
   serializedTransactionSchema,
 } from "./common";
+import { countTxs } from "./getCount";
 
 const inputSchema = withAllFiltersSchema
   .merge(createExpandsSchema(["block", "blob"]))
@@ -70,20 +71,7 @@ export const getAll = publicProcedure
       ...pagination,
     });
     const countOp = count
-      ? filters.transactionRollup !== undefined || filters.transactionAddresses
-        ? prisma.transaction.count({
-            where: {
-              rollup: filters.transactionRollup,
-              OR: filters.transactionAddresses,
-            },
-          })
-        : prisma.transactionOverallStats
-            .findFirst({
-              select: {
-                totalTransactions: true,
-              },
-            })
-            .then((stats) => stats?.totalTransactions ?? 0)
+      ? countTxs(prisma, filters)
       : Promise.resolve(undefined);
 
     const [queriedTxs, txCountOrStats] = await Promise.all([
