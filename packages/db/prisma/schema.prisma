@@ -183,6 +183,7 @@ model BlobsOnTransactions {
   blockNumber    Int      @map("block_number")
   blockTimestamp DateTime @map("block_timestamp")
   txHash         String   @map("tx_hash")
+  txIndex        Int?     @map("tx_index")
   index          Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
