@@ -99,6 +99,7 @@ describe("Transaction router", async () => {
         from: 0,
         to: 9999,
       });
+
       const { totalTransactions } = await caller.tx.getCount({});
 
       expect(totalTransactions).toBe(fixtures.canonicalTxs.length);

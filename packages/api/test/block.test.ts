@@ -138,6 +138,7 @@ describe("Block router", async () => {
         from: 0,
         to: 9999,
       });
+
       const { totalBlocks } = await caller.block.getCount({});
 
       expect(totalBlocks).toBe(fixtures.canonicalBlocks.length);
