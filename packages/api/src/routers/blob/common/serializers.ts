@@ -67,6 +67,7 @@ export const serializedBlobOnTransactionSchema = serializedBaseBlobSchema.merge(
   z.object({
     index: blobIndexSchema,
     txHash: z.string(),
+    txIndex: z.number().nonnegative(),
     blockHash: z.string(),
     blockNumber: blockNumberSchema,
     blockTimestamp: z.string(),
@@ -127,6 +128,7 @@ export function serializeBlobOnTransaction(
     blockTimestamp,
     index,
     txHash,
+    txIndex,
     block,
     transaction,
   } = blobOnTransaction;
@@ -136,6 +138,7 @@ export function serializeBlobOnTransaction(
     blockNumber,
     blockTimestamp: serializeDate(blockTimestamp),
     txHash,
+    txIndex,
     index,
   };
 

@@ -25,7 +25,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
   blockNumber: z.number(),
   blockTimestamp: z.string(),
   blockHash: z.string(),
-  index: z.number().nullable(),
+  index: z.number().nonnegative(),
   from: z.string(),
   to: z.string(),
   maxFeePerBlobGas: z.string(),

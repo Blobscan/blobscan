@@ -48,6 +48,7 @@ export function createBlobsOnTransactionsSelect(expands: Expands) {
     blockNumber: true,
     blockTimestamp: true,
     txHash: true,
+    txIndex: true,
     blob: {
       select: baseBlobSelect,
     },

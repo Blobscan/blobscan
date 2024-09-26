@@ -183,7 +183,7 @@ model BlobsOnTransactions {
   blockNumber    Int      @map("block_number")
   blockTimestamp DateTime @map("block_timestamp")
   txHash         String   @map("tx_hash")
-  txIndex        Int?     @map("tx_index")
+  txIndex        Int      @map("tx_index")
   index          Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
@@ -191,10 +191,10 @@ model BlobsOnTransactions {
   transaction Transaction @relation(fields: [txHash], references: [hash])
 
   @@id([txHash, index])
+  @@index([blockTimestamp, txIndex, index])
+  @@index([blockNumber, txIndex, index])
   @@index([blobHash])
   @@index([blockHash])
-  @@index([blockNumber])
-  @@index([blockTimestamp])
   @@index([txHash])
   @@map("blobs_on_transactions")
 }

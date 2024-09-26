@@ -72,6 +72,7 @@ async function main() {
             blockTimestamp: tx.blockTimestamp,
             index: i,
             txHash: tx.hash,
+            txIndex: tx.index as number,
           });
           storageRefs.forEach((storageRef) => {
             dbBlobDataStorageRefs.push(storageRef);

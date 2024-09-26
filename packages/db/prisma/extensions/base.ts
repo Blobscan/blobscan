@@ -177,6 +177,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 blockTimestamp,
                 index,
                 txHash,
+                txIndex,
               }) =>
                 Prisma.join([
                   blobHash,
@@ -185,6 +186,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                   Prisma.sql`${blockTimestamp}::timestamp`,
                   index,
                   txHash,
+                  txIndex,
                 ])
             )
             .map((rowColumnsSql) => Prisma.sql`(${rowColumnsSql})`);
@@ -196,12 +198,14 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               block_number,
               block_timestamp,
               index,
-              tx_hash
+              tx_hash,
+              tx_index
             ) VALUES ${Prisma.join(sqlValues)}
             ON CONFLICT (tx_hash, index) DO UPDATE SET
               block_hash = EXCLUDED.block_hash,
               block_number = EXCLUDED.block_number,
               block_timestamp = EXCLUDED.block_timestamp,
+              tx_index = EXCLUDED.tx_index,
               index = EXCLUDED.index
           `;
         },
