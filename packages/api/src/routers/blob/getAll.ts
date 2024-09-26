@@ -44,17 +44,6 @@ export const getAll = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
-    let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
-      {
-        blockTimestamp: filters.sort,
-      };
-
-    if (filters.blockNumber) {
-      leadingOrderColumn = {
-        blockNumber: filters.sort,
-      };
-    }
-
     const blockFiltersExists = filters.blockSlot || filters.blockType;
     const txFiltersExists =
       filters.transactionRollup !== undefined ||
