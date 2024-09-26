@@ -30,8 +30,6 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
   compact = false,
 }) {
   if (displayDay) {
-    console.log("data: ", incomeGweiDayAvg)
-    console.log("time: ", incomeGweiDayAvgDate)
 
     if (!Array.isArray(incomeGweiDayAvg) || incomeGweiDayAvg.length == 0 ||
       incomeGweiDayAvg === undefined || incomeGweiDayAvgDate === undefined

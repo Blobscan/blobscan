@@ -95,16 +95,6 @@ const Validator: NextPage = function () {
 
         idx += newEntriesCount;
       }
-
-      // if (idx + 1 >= incomeData.epochIdx.length - 1) {
-      //   if (incomeData.epochIdx.length > epochDisplayLimit) {
-      //     const excessLength = incomeData.epochIdx.length - epochDisplayLimit;
-
-      //     incomeData.epochIdx = incomeData.epochIdx.slice(excessLength);
-      //     incomeData.incomeGWei = incomeData.incomeGWei.slice(excessLength);
-      //   }
-      //   break;
-      // }
     }
   }
 
@@ -114,9 +104,6 @@ const Validator: NextPage = function () {
   if (incomeGweiDayAvgDate !== undefined && incomeGweiDayAvgDate.length < epochDayAggDisplayLimit) {
     for (let idx = 0; idx < incomeGweiDayAvgDate.length - 1; idx++) {
       const diff = (incomeGweiDayAvgDate[idx + 1] as number) - (incomeGweiDayAvgDate[idx] as number);
-      console.log("time1: ", incomeGweiDayAvgDate[idx + 1])
-      console.log("time2: ", incomeGweiDayAvgDate[idx])
-      console.log("diff: ", diff)
 
       if (diff > dayTimestampSecond) {
         const newEntriesCount = Math.floor(diff / dayTimestampSecond) - 1;
@@ -131,16 +118,6 @@ const Validator: NextPage = function () {
         }
         idx += newEntriesCount;
       }
-
-      // if (idx + 1 >= incomeGweiDayAvgDate.length - 1) {
-      //   if (incomeGweiDayAvgDate.length > epochDayAggDisplayLimit) {
-      //     const excessLength = incomeGweiDayAvgDate.length - epochDayAggDisplayLimit;
-
-      //     incomeGweiDayAvgDate = incomeGweiDayAvgDate.slice(excessLength);
-      //     incomeData.incomeGweiDayAvg = incomeData.incomeGweiDayAvg.slice(excessLength);
-      //   }
-      //   break;
-      // }
     }
   }
 
