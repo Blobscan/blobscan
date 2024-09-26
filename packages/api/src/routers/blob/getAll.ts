@@ -70,12 +70,8 @@ export const getAll = publicProcedure
           : undefined,
       },
       orderBy: [
-        { blockNumber: filters.sort },
-        {
-          transaction: {
-            index: filters.sort,
-          },
-        },
+        { blockTimestamp: filters.sort },
+        { txIndex: filters.sort },
         {
           index: filters.sort,
         },
