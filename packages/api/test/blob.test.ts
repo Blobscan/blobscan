@@ -12,6 +12,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { getFilteredBlobs, runFilterTests } from "./test-suites/filters";
 import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
@@ -126,6 +127,24 @@ describe("Blob router", async () => {
       await caller.blob.getBlobDataByBlobId({
         id: invalidBlobId,
       });
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total blobs stat when no filters are provided", async () => {
+      await ctx.prisma.blobOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
+      const { totalBlobs } = await caller.blob.getCount({});
+
+      expect(totalBlobs).toBe(fixtures.canonicalBlobs.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalBlobs } = await caller.blob.getCount(filters);
+
+      expect(totalBlobs).toBe(getFilteredBlobs(filters).length);
     });
   });
 });

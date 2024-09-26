@@ -1,4 +1,3 @@
-import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -19,6 +18,7 @@ import {
   serializeBlobOnTransaction,
   serializedBlobOnTransactionSchema,
 } from "./common/serializers";
+import { countBlobs } from "./getCount";
 
 const inputSchema = withPaginationSchema
   .merge(withAllFiltersSchema)
@@ -44,24 +44,31 @@ export const getAll = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
-    const where: Prisma.BlobsOnTransactionsWhereInput = {
-      blockNumber: filters.blockNumber,
-      blockTimestamp: filters.blockTimestamp,
-      block: {
-        slot: filters.blockSlot,
-        transactionForks: filters.blockType,
-      },
-      transaction:
-        filters.transactionRollup !== undefined || filters.transactionAddresses
+    const blockFiltersExists = filters.blockSlot || filters.blockType;
+    const txFiltersExists =
+      filters.transactionRollup !== undefined ||
+      filters.transactionAddresses ||
+      filters.transactionCategory !== undefined;
+
+    const txsBlobsOp = prisma.blobsOnTransactions.findMany({
+      select: createBlobsOnTransactionsSelect(expands),
+      where: {
+        blockNumber: filters.blockNumber,
+        blockTimestamp: filters.blockTimestamp,
+        block: blockFiltersExists
           ? {
+              slot: filters.blockSlot,
+              transactionForks: filters.blockType,
+            }
+          : undefined,
+        transaction: txFiltersExists
+          ? {
+              category: filters.transactionCategory,
               rollup: filters.transactionRollup,
               OR: filters.transactionAddresses,
             }
           : undefined,
-    };
-    const txsBlobsOp = prisma.blobsOnTransactions.findMany({
-      select: createBlobsOnTransactionsSelect(expands),
-      where,
+      },
       orderBy: [
         { blockNumber: filters.sort },
         {
@@ -75,9 +82,7 @@ export const getAll = publicProcedure
       ],
       ...pagination,
     });
-    const countOp = count
-      ? prisma.blobsOnTransactions.count({ where })
-      : undefined;
+    const countOp = count ? countBlobs(prisma, filters) : undefined;
 
     const [txsBlobs, totalBlobs] = await Promise.all([txsBlobsOp, countOp]);
 

@@ -13,6 +13,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { getFilteredBlocks, runFilterTests } from "./test-suites/filters";
 
 describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -131,6 +132,24 @@ describe("Block router", async () => {
           message: `No block with id '9999'.`,
         })
       );
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total blocks stat when no filters are provided", async () => {
+      await ctx.prisma.blockOverallStats.increment({
+        from: 0,
+        to: 9999,
+      });
+      const { totalBlocks } = await caller.block.getCount({});
+
+      expect(totalBlocks).toBe(fixtures.canonicalBlocks.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalBlocks } = await caller.block.getCount(filters);
+
+      expect(totalBlocks).toBe(getFilteredBlocks(filters).length);
     });
   });
 });

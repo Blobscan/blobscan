@@ -7,28 +7,41 @@ import type { Rollup as LowercaseRollup } from "~/types";
 
 export type Sort = "asc" | "desc";
 
-type QueryParams = {
-  from?: string;
+type FilterQueryParams = Partial<{
+  from: string;
+  rollup: LowercaseRollup | "null";
+  startDate: Date;
+  endDate: Date;
+  startBlock: number;
+  endBlock: number;
+  startSlot: number;
+  endSlot: number;
+}>;
+
+type PaginationQueryParams = {
   p: number;
   ps: number;
-  rollup?: LowercaseRollup | "null";
-  startDate?: Date;
-  endDate?: Date;
-  startBlock?: number;
-  endBlock?: number;
-  startSlot?: number;
-  endSlot?: number;
-  sort?: Sort;
+  sort: Sort;
+};
+
+type QueryParams = {
+  filterParams: FilterQueryParams;
+  paginationParams: PaginationQueryParams;
 };
 
 const DEFAULT_INITIAL_PAGE_SIZE = 50;
 const DEFAULT_INITIAL_PAGE = 1;
+const DEFAULT_SORT = "desc";
 
 export function useQueryParams() {
   const router = useRouter();
   const [queryParams, setQueryParams] = useState<QueryParams>({
-    p: DEFAULT_INITIAL_PAGE,
-    ps: DEFAULT_INITIAL_PAGE_SIZE,
+    paginationParams: {
+      p: DEFAULT_INITIAL_PAGE,
+      ps: DEFAULT_INITIAL_PAGE_SIZE,
+      sort: DEFAULT_SORT,
+    },
+    filterParams: {},
   });
 
   useEffect(() => {
@@ -37,37 +50,54 @@ export function useQueryParams() {
     }
 
     const {
-      from,
-      p,
-      ps,
-      rollup,
-      startDate,
-      endDate,
-      startBlock,
-      endBlock,
-      startSlot,
-      endSlot,
-      sort,
+      from: from_,
+      p: p_,
+      ps: ps_,
+      rollup: rollup_,
+      startDate: startDate_,
+      endDate: endDate_,
+      startBlock: startBlock_,
+      endBlock: endBlock_,
+      startSlot: startSlot_,
+      endSlot: endSlot_,
+      sort: sort_,
     } = router.query;
 
+    const from = (from_ as string)?.toLowerCase();
+    const p = parseInt(p_ as string) || DEFAULT_INITIAL_PAGE;
+    const ps = parseInt(ps_ as string) || DEFAULT_INITIAL_PAGE_SIZE;
+    const sort = sort_ ? (sort_ as Sort) : DEFAULT_SORT;
+
+    const rollup = rollup_
+      ? rollup_ === "null"
+        ? rollup_
+        : (Rollup[
+            (rollup_ as string).toUpperCase() as keyof typeof Rollup
+          ]?.toLowerCase() as LowercaseRollup)
+      : undefined;
+    const startDate = startDate_ ? new Date(startDate_ as string) : undefined;
+    const endDate = endDate_ ? new Date(endDate_ as string) : undefined;
+    const startBlock = parseInt(startBlock_ as string) || undefined;
+    const endBlock = parseInt(endBlock_ as string) || undefined;
+    const startSlot = parseInt(startSlot_ as string) || undefined;
+    const endSlot = parseInt(endSlot_ as string) || undefined;
+
     setQueryParams({
-      from: (from as string)?.toLowerCase(),
-      p: parseInt(p as string) || DEFAULT_INITIAL_PAGE,
-      ps: parseInt(ps as string) || DEFAULT_INITIAL_PAGE_SIZE,
-      rollup: rollup
-        ? rollup === "null"
-          ? rollup
-          : (Rollup[
-              (rollup as string).toUpperCase() as keyof typeof Rollup
-            ]?.toLowerCase() as LowercaseRollup)
-        : undefined,
-      startDate: startDate ? new Date(startDate as string) : undefined,
-      endDate: endDate ? new Date(endDate as string) : undefined,
-      startBlock: parseInt(startBlock as string) || undefined,
-      endBlock: parseInt(endBlock as string) || undefined,
-      startSlot: parseInt(startSlot as string) || undefined,
-      endSlot: parseInt(endSlot as string) || undefined,
-      sort: sort ? (sort as Sort) : undefined,
+      filterParams: {
+        from,
+        rollup,
+        startDate,
+        endDate,
+        startBlock,
+        endBlock,
+        startSlot,
+        endSlot,
+      },
+      paginationParams: {
+        p,
+        ps,
+        sort,
+      },
     });
   }, [router]);
 
