@@ -208,7 +208,7 @@ model TransactionFork {
   block       Block       @relation(fields: [blockHash], references: [hash])
   transaction Transaction @relation(fields: [hash], references: [hash])
 
-  @@id([hash, blockHash])
+  @@id([blockHash, hash])
   @@map("transaction_fork")
 }
 
