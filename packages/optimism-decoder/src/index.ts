@@ -8,7 +8,7 @@ const filename = args[0];
 if (!filename) {
   console.error("Error: Please provide a filename as a parameter.");
   console.error(
-    "Usage: npm run op:decode packages/optimism-decoder/opstack_blobs_19538908.bin"
+    "Usage: npm run op:decode ./opstack_blobs_19538908.bin"
   );
   process.exit(1);
 }

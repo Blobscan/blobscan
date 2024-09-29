@@ -31,9 +31,7 @@
     "svg:format": "turbo svg:format",
     "validate": "turbo lint type-check && manypkg check && pnpm test",
     "with-env": "dotenv -e .env --",
-    "with-env:test": "dotenv -e .env.test --",
-    "op:decode": "npx dotenv -e .env npx ts-node ./packages/optimism-decoder/src/index.ts",
-    "op:save-files-to-db": "npx dotenv -e .env npx ts-node ./packages/optimism-decoder/src/save-files-to-db.ts ./packages/optimism-decoder/src/blobs/tx"
+    "with-env:test": "dotenv -e .env.test --"
   },
   "dependencies": {
     "@blobscan/eslint-config": "workspace:^0.0.1",
