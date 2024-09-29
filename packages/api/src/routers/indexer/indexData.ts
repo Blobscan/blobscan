@@ -120,13 +120,6 @@ export const indexData = jwtAuthedProcedure
       const dbBlobs = createDBBlobs(input);
       const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
 
-      /*
-      TODO: Once we support Optimism Fjord network upgrade
-      if (rollup optimism in any tx in dbTxs) {
-        launch background task to decode blobs
-      }
-      */
-
       operations.push(
         prisma.block.upsert({
           where: { hash: input.block.hash },

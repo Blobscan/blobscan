@@ -21,7 +21,8 @@ export type OptimismDecodedData = {
   changedByL1Origin: number; // how many were changed by L1 origin
   totalTxs: number;
   contractCreationTxsNumber: number;
-  // TODO: add the following values
+  // TODO: add support for the following values
+  // https://github.com/Blobscan/blobscan/issues/255
   // legacyTxsNumber: number;
   // totalGasLimit: number;
   // protectedLegacyTxsNumber: number;
@@ -166,7 +167,7 @@ export async function decodeOptimismFile(
     // Read y parity bits
     const yParityBitsResult = readBitlist(totalTxs, decoded, currentOffset)
     currentOffset = yParityBitsResult.newOffset
-  
+
     // Read transaction signatures, to addresses, and other fields
     const txSigs = []
     const txTos = []
@@ -174,22 +175,22 @@ export async function decodeOptimismFile(
       const sigResult = readBytesAsHex(decoded, currentOffset, 64)
       txSigs.push(sigResult.hex)
       currentOffset = sigResult.newOffset
-  
+
       const toResult = readBytesAsHex(decoded, currentOffset, 20)
       txTos.push(toResult.hex)
       currentOffset = toResult.newOffset
     }
-  
+
     // Verify contract creation addresses
     const contractCreationCount = txTos.filter((to) => parseInt(to, 16) === 0).length
     console.assert(contractCreationCount === contractCreationTxsNumber, 'Contract creation transaction number mismatch')
-  
+
     // Remaining data processing
     const remainingData = decoded.slice(currentOffset)
     let p = 0
     let legacyTxsNumber = 0
     const txDatas = []
-  
+
     for (let i = 0; i < totalTxs; i++) {
       if (remainingData[p] === 1 || remainingData[p] === 2) {
         p++
@@ -198,13 +199,13 @@ export async function decodeOptimismFile(
       }
       const txData = rlp.decode(remainingData.slice(p)) as any
       txDatas.push(txData)
-  
+
       const consumedLength = rlp.codec.consumeLengthPrefix(remainingData.slice(p), 0)[2] as number
       p += consumedLength
     }
-  
+
     console.log('legacy txs number:', legacyTxsNumber)
-  
+
     // Calculate nonce values
     const txNonces = []
     for (let i = 0; i < totalTxs; i++) {
@@ -212,7 +213,7 @@ export async function decodeOptimismFile(
       txNonces.push(nonceResult.value)
       currentOffset = nonceResult.newOffset
     }
-  
+
     // Calculate total gas
     let totalGasLimit = 0
     for (let i = 0; i < totalTxs; i++) {
@@ -220,9 +221,9 @@ export async function decodeOptimismFile(
       totalGasLimit += gasLimitResult.value
       currentOffset = gasLimitResult.newOffset
     }
-  
+
     console.log('total gas limit in txs:', totalGasLimit)
-  
+
     // Calculate protected legacy transactions
     const protectedLegacyTxsResult = readBitlist(legacyTxsNumber, decoded, currentOffset)
     const protectedLegacyTxsCount = protectedLegacyTxsResult.bits.filter((bit) => bit).length
@@ -236,7 +237,7 @@ export async function decodeOptimismTransaction(
   /*
     const tx = await ctx.prisma.transaction.filter(
         where: {
-            id: transactionId    
+            id: transactionId
         }
     )
   */
