@@ -65,7 +65,7 @@ const Validator: NextPage = function () {
 
   if ((!validatorIsLoading || !genesisIsLoading) && !incomeData) {
 
-    return <div>Searching for validator reward relevant data</div>;
+    return <div>Loading validator reward relevant data...</div>;
   }
 
   if (incomeData === undefined || epochGenesis === undefined) {
@@ -112,7 +112,7 @@ const Validator: NextPage = function () {
           incomeGweiDaySumDate.splice(
             idx + 1,
             0,
-            ...Array.from({ length: newEntriesCount }, (_, index) => (incomeGweiDaySumDate[idx] as number) + index * dayTimestampSecond)
+            ...Array.from({ length: newEntriesCount }, (_, index) => (incomeGweiDaySumDate[idx] as number) + (index+1) * dayTimestampSecond)
           );
           incomeData.incomeGweiDaySum.splice(idx + 1, 0, ...Array(newEntriesCount).fill(0));
         }

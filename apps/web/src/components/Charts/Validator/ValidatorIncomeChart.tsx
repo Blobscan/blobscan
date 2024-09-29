@@ -30,7 +30,6 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
   compact = false,
 }) {
   if (displayDay) {
-
     if (!Array.isArray(incomeGweiDaySum) || incomeGweiDaySum.length === 0 ||
       incomeGweiDaySumDate === undefined) {
 
