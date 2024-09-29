@@ -24,69 +24,9 @@ const outputSchema = z.object({
   epochIdx: z.array(z.bigint()),
   incomeGWei: z.array(z.bigint()),
 
-  incomeGweiDayAvg: z.array(z.number()),
-  incomeGweiDayAvgDate: z.array(z.string()),
+  incomeGweiDaySum: z.array(z.number()),
+  incomeGweiDaySumDate: z.array(z.string()),
 });
-
-// export const getValidatorDetailByKeyOrIdx = publicProcedure
-//   .meta({
-//     openapi: {
-//       method: "GET",
-//       path: `/validator/{item}`,
-//       tags: ["stats"],
-//       summary: "Get validator rewards detail.",
-//     },
-//   })
-//   .input(inputSchema)
-//   .output(outputSchema)
-//   .query(
-//     async ({
-//       ctx: { prisma },
-//       input: { validatorKey, validatorIdx, validatorIsStr },
-//     }) =>
-//       prisma.validatorIncome
-//         .findMany({
-//           select: {
-//             epochIdx: true,
-//             incomeGWei: true,
-//             validatorPublicKey: true,
-//             validatorIdx: true,
-//           },
-//           where: {
-//             OR: [
-//               {
-//                 validatorPublicKey: validatorIsStr ? validatorKey : undefined,
-//               },
-//               {
-//                 validatorIdx: validatorIsStr ? undefined : BigInt(validatorIdx),
-//               },
-//             ],
-//           },
-//           orderBy: [{ id: "desc" }, { epochIdx: "asc" }],
-//           take: QueryListLimit,
-//         })
-//         .then((income) =>
-//           income.reduce<z.infer<typeof outputSchema>>(
-//             (transformedIncome, currIncome) => {
-//               transformedIncome.validatorIdx = currIncome.validatorIdx;
-//               transformedIncome.validatorPublicKey =
-//                 currIncome.validatorPublicKey;
-
-//               return transformedIncome;
-//             },
-//             {
-//               validatorIdx: BigInt(0),
-//               validatorPublicKey: "",
-
-//               epochIdx: [],
-//               epochIdxDayAvg: [],
-
-//               incomeGWei: [],
-//               incomeGweiDayAvg: [],
-//             }
-//           )
-//         )
-//   );
 
 export const getValidatorDetailByKeyOrIdx = publicProcedure
   .meta({
@@ -138,7 +78,7 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
 
       const dailyData = new Map<
         string,
-        { totalIncome: bigint; count: number }
+        { totalIncome: bigint }
       >();
       income.forEach(({ incomeGWei, insertedAt }) => {
         const dateKey = new Date(insertedAt)
@@ -146,21 +86,19 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
           .split("T")[0] as string;
 
         if (!dailyData.has(dateKey)) {
-          dailyData.set(dateKey, { totalIncome: BigInt(0), count: 0 });
+          dailyData.set(dateKey, { totalIncome: BigInt(0) });
         }
         const entry = dailyData.get(dateKey) as {
           totalIncome: bigint;
-          count: number;
         };
         entry.totalIncome += incomeGWei;
-        entry.count += 1;
       });
 
-      const incomeGweiDate: string[] = [];
-      const incomeGweiDayAvg: number[] = [];
-      dailyData.forEach(({ totalIncome, count }, dateKey) => {
-        incomeGweiDate.push(dateKey);
-        incomeGweiDayAvg.push(Number(totalIncome) / count);
+      const incomeGweiDaySum: number[] = [];
+      const incomeGweiDaySumDate: string[] = [];
+      dailyData.forEach(({ totalIncome }, dateKey) => {
+        incomeGweiDaySumDate.push(dateKey);
+        incomeGweiDaySum.push(Number(totalIncome));
       });
 
       return {
@@ -169,14 +107,14 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
         epochIdx: epochIdx,
         incomeGWei: incomeGWei,
 
-        incomeGweiDayAvg:
-          incomeGweiDayAvg.length > epochDayAggLimit
-            ? incomeGweiDayAvg.slice(0, epochDayAggLimit)
-            : incomeGweiDayAvg,
-        incomeGweiDayAvgDate:
-          incomeGweiDate.length > epochDayAggLimit
-            ? incomeGweiDate.slice(0, epochDayAggLimit)
-            : incomeGweiDate,
+        incomeGweiDaySum:
+          incomeGweiDaySum.length > epochDayAggLimit
+            ? incomeGweiDaySum.slice(0, epochDayAggLimit)
+            : incomeGweiDaySum,
+        incomeGweiDaySumDate:
+          incomeGweiDaySumDate.length > epochDayAggLimit
+            ? incomeGweiDaySumDate.slice(0, epochDayAggLimit)
+            : incomeGweiDaySumDate,
       };
     }
   );

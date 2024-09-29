@@ -75,8 +75,8 @@ const Validator: NextPage = function () {
 
   incomeData.epochIdx.reverse();
   incomeData.incomeGWei.reverse();
-  incomeData.incomeGweiDayAvg.reverse();
-  incomeData.incomeGweiDayAvgDate.reverse();
+  incomeData.incomeGweiDaySum.reverse();
+  incomeData.incomeGweiDaySumDate.reverse();
 
   if (incomeData.epochIdx.length < epochDisplayLimit) {
     for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
@@ -98,23 +98,23 @@ const Validator: NextPage = function () {
     }
   }
 
-  const incomeGweiDayAvgDate = incomeData.incomeGweiDayAvgDate.map(
+  const incomeGweiDaySumDate = incomeData.incomeGweiDaySumDate.map(
     value => normalizeTimestamp(value).unix()
   );
-  if (incomeGweiDayAvgDate !== undefined && incomeGweiDayAvgDate.length < epochDayAggDisplayLimit) {
-    for (let idx = 0; idx < incomeGweiDayAvgDate.length - 1; idx++) {
-      const diff = (incomeGweiDayAvgDate[idx + 1] as number) - (incomeGweiDayAvgDate[idx] as number);
+  if (incomeGweiDaySumDate !== undefined && incomeGweiDaySumDate.length < epochDayAggDisplayLimit) {
+    for (let idx = 0; idx < incomeGweiDaySumDate.length - 1; idx++) {
+      const diff = (incomeGweiDaySumDate[idx + 1] as number) - (incomeGweiDaySumDate[idx] as number);
 
       if (diff > dayTimestampSecond) {
         const newEntriesCount = Math.floor(diff / dayTimestampSecond) - 1;
 
         if (newEntriesCount > 0) {
-          incomeGweiDayAvgDate.splice(
+          incomeGweiDaySumDate.splice(
             idx + 1,
             0,
-            ...Array.from({ length: newEntriesCount }, (_, index) => (incomeGweiDayAvgDate[idx] as number) + index * dayTimestampSecond)
+            ...Array.from({ length: newEntriesCount }, (_, index) => (incomeGweiDaySumDate[idx] as number) + index * dayTimestampSecond)
           );
-          incomeData.incomeGweiDayAvg.splice(idx + 1, 0, ...Array(newEntriesCount).fill(0));
+          incomeData.incomeGweiDaySum.splice(idx + 1, 0, ...Array(newEntriesCount).fill(0));
         }
         idx += newEntriesCount;
       }
@@ -136,8 +136,8 @@ const Validator: NextPage = function () {
           />,
           <ValidatorIncomeChart
             key={1}
-            incomeGweiDayAvg={incomeData.incomeGweiDayAvg.slice(-epochDayAggDisplayLimit)}
-            incomeGweiDayAvgDate={incomeGweiDayAvgDate.slice(-epochDayAggDisplayLimit)}
+            incomeGweiDaySum={incomeData.incomeGweiDaySum.slice(-epochDayAggDisplayLimit)}
+            incomeGweiDaySumDate={incomeGweiDaySumDate.slice(-epochDayAggDisplayLimit)}
             minDistanceTimestamp={dayTimestampSecond}
             displayDay={true}
           />,

@@ -7,8 +7,8 @@ import { formatWei, normalizeTimestamp } from "~/utils";
 export type ValidatorIncomeChartProps = {
   epochIdx: ValidatorIncome["epochIdx"];
   incomeData: ValidatorIncome["incomeGWei"];
-  incomeGweiDayAvg: ValidatorIncome["incomeGweiDayAvg"],
-  incomeGweiDayAvgDate: number[],
+  incomeGweiDaySum: ValidatorIncome["incomeGweiDaySum"],
+  incomeGweiDaySumDate: number[],
   epochGenesisTime: number;
 
   displayDay: boolean,
@@ -23,17 +23,17 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
   epochIdx,
   incomeData,
   epochGenesisTime,
-  incomeGweiDayAvg,
-  incomeGweiDayAvgDate,
+  incomeGweiDaySum,
+  incomeGweiDaySumDate,
   displayDay = false,
   minDistanceTimestamp = EpochTimestampUnit / MSConvertRatio,
   compact = false,
 }) {
   if (displayDay) {
 
-    if (!Array.isArray(incomeGweiDayAvg) || incomeGweiDayAvg.length == 0 ||
-      incomeGweiDayAvg === undefined || incomeGweiDayAvgDate === undefined
-    ) {
+    if (!Array.isArray(incomeGweiDaySum) || incomeGweiDaySum.length === 0 ||
+      incomeGweiDaySumDate === undefined) {
+
       return (
         <ChartCardWithSlider
           allData={[]}
@@ -50,12 +50,12 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> = func
 
     return (
       <ChartCardWithSlider
-        title="Epoch Rewards By Day Avg(DILL)"
+        title="Epoch Rewards Daily Rewards(DILL)"
         size="lg"
         compact={compact}
-        allData={incomeGweiDayAvg}
-        allAxle={incomeGweiDayAvgDate}
-        initCoordinateAxle={[incomeGweiDayAvgDate[0] as number, incomeGweiDayAvgDate[incomeGweiDayAvgDate.length - 1] as number]}
+        allData={incomeGweiDaySum}
+        allAxle={incomeGweiDaySumDate}
+        initCoordinateAxle={[incomeGweiDaySumDate[0] as number, incomeGweiDaySumDate[incomeGweiDaySumDate.length - 1] as number]}
 
         xAxisLabel={(value) => {
           const date = normalizeTimestamp(value);
