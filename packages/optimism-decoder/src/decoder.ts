@@ -40,7 +40,9 @@ export async function decodeOptimismFile(
   const datas: Uint8Array[] = [];
 
   for (const blob of chunks(blobs, 131072)) {
-    if (blob[1] !== 0) throw new Error("Assertion failed: blob[1] must be 0");
+    if (blob[1] !== 0) {
+         throw new Error("Assertion failed: blob[1] must be 0");
+    }
     const declaredLength = bytesToNumber(blob.slice(2, 5));
     let blobData = new Uint8Array();
 
