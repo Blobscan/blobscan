@@ -161,19 +161,21 @@ model Transaction {
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
 
-  blobs            BlobsOnTransactions[]
-  block            Block                 @relation(fields: [blockHash], references: [hash])
-  from             Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to               Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockHash], references: [hash])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+
   transactionForks TransactionFork[]
 
-  @@index([insertedAt])
   @@index([blockHash])
+  @@index([blockTimestamp, index])
   @@index([blockNumber, index])
-  @@index([blockTimestamp, category, rollup, blockNumber, index])
+  @@index([category, rollup, blockTimestamp, index])
   @@index([category, rollup, blockNumber, index])
-  @@index([fromId, blockNumber, index])
-  @@index([toId, blockNumber, index])
+  @@index([fromId, blockTimestamp, index])
+  @@index([toId, blockTimestamp, index])
+  @@index([insertedAt])
   @@map("transaction")
 }
 
@@ -208,7 +210,7 @@ model TransactionFork {
   block       Block       @relation(fields: [blockHash], references: [hash])
   transaction Transaction @relation(fields: [hash], references: [hash])
 
-  @@id([hash, blockHash])
+  @@id([blockHash, hash])
   @@map("transaction_fork")
 }
 

@@ -1,3 +1,4 @@
+import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -44,6 +45,16 @@ export const getAll = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
+    let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
+      {
+        blockTimestamp: filters.sort,
+      };
+
+    if (filters.blockNumber) {
+      leadingOrderColumn = {
+        blockNumber: filters.sort,
+      };
+    }
     const blockFiltersExists = filters.blockSlot || filters.blockType;
     const txFiltersExists =
       filters.transactionRollup !== undefined ||
@@ -70,7 +81,7 @@ export const getAll = publicProcedure
           : undefined,
       },
       orderBy: [
-        { blockTimestamp: filters.sort },
+        leadingOrderColumn,
         { txIndex: filters.sort },
         {
           index: filters.sort,
