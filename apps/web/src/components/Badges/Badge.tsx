@@ -16,6 +16,15 @@ const badgeVariants = cva(
   `,
   {
     variants: {
+      variant: {
+        none: "",
+        primary: `
+          bg-accent-light
+          text-accentContent-light
+          dark:bg-primary-500
+          dark:text-accentContent-dark"
+        `,
+      },
       size: {
         xs: "text-xs",
         sm: "text-sm",
@@ -24,6 +33,7 @@ const badgeVariants = cva(
       },
     },
     defaultVariants: {
+      variant: "none",
       size: "md",
     },
   }
@@ -35,11 +45,15 @@ export type BadgeProps = React.HTMLAttributes<HTMLDivElement> &
 export const Badge: React.FC<BadgeProps> = ({
   className,
   size,
+  variant,
   children,
   ...props
 }) => {
   return (
-    <div className={twMerge(badgeVariants({ size }), className)} {...props}>
+    <div
+      className={twMerge(badgeVariants({ size, variant }), className)}
+      {...props}
+    >
       {children}
     </div>
   );
