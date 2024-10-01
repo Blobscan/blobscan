@@ -187,8 +187,6 @@ model BlobsOnTransactions {
   txHash         String   @map("tx_hash")
   txIndex        Int      @map("tx_index")
   index          Int
-  category       Category @default(OTHER)
-  rollup         Rollup?
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
   block       Block       @relation(fields: [blockHash], references: [hash])
@@ -197,8 +195,6 @@ model BlobsOnTransactions {
   @@id([txHash, index])
   @@index([blockTimestamp, txIndex, index])
   @@index([blockNumber, txIndex, index])
-  @@index([category, rollup, blockTimestamp, txIndex, index])
-  @@index([category, rollup, blockNumber, txIndex, index])
   @@index([blobHash])
   @@index([blockHash])
   @@index([txHash])
