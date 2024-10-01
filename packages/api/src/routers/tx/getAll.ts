@@ -63,6 +63,7 @@ export const getAll = publicProcedure
       where: {
         blockNumber: filters.blockNumber,
         blockTimestamp: filters.blockTimestamp,
+        category: filters.transactionCategory,
         rollup: filters.transactionRollup,
         OR: filters.transactionAddresses,
         block: blockFiltersExists
