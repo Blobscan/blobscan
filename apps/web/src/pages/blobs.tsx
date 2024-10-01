@@ -6,6 +6,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
@@ -44,40 +45,33 @@ const BLOBS_TABLE_HEADERS = [
       },
       {
         item: "Storage",
-        className: "w-auto",
+        className: "w-[86px]",
       },
     ],
   },
 ];
 
 const Blobs: NextPage = function () {
+  const { paginationParams, filterParams } = useQueryParams();
+
   const {
-    from,
-    p,
-    ps,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-    sort,
-  } = useQueryParams();
-  const { data, error, isLoading } = api.blob.getAll.useQuery({
-    p,
-    ps,
-    from,
-    rollup,
-    startDate,
-    endDate,
-    startBlock,
-    endBlock,
-    startSlot,
-    endSlot,
-    sort,
+    data: blobsData,
+    error: blobsError,
+    isLoading,
+  } = api.blob.getAll.useQuery({
+    ...paginationParams,
+    ...filterParams,
   });
-  const { blobs, totalBlobs } = data || {};
+  const {
+    data: countData,
+    error: countError,
+    isLoading: countIsLoading,
+  } = api.blob.getCount.useQuery(filterParams, {
+    refetchOnWindowFocus: false,
+  });
+  const error = blobsError ?? countError;
+  const { blobs } = blobsData || {};
+  const { totalBlobs } = countData || {};
 
   const blobRows = useMemo(() => {
     return blobs
@@ -159,14 +153,30 @@ const Blobs: NextPage = function () {
 
   return (
     <>
-      <Header>Blobs {totalBlobs ? `(${formatNumber(totalBlobs)})` : ""}</Header>
+      <Header>
+        <div className="flex items-center gap-2">
+          <div>Blobs</div>
+          <div>
+            {!countIsLoading && totalBlobs !== undefined ? (
+              `(${formatNumber(totalBlobs)})`
+            ) : (
+              <div className="relative left-0 top-1">
+                <Skeleton width={100} height={25} />
+              </div>
+            )}
+          </div>
+        </div>
+      </Header>
       <Filters />
       <PaginatedTable
         isLoading={isLoading}
         headers={BLOBS_TABLE_HEADERS}
         rows={blobRows}
         totalItems={totalBlobs}
-        paginationData={{ pageSize: ps, page: p }}
+        paginationData={{
+          pageSize: paginationParams.ps,
+          page: paginationParams.p,
+        }}
       />
     </>
   );

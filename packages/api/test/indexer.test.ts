@@ -284,6 +284,7 @@ describe("Indexer router", async () => {
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash1000",
+                "txIndex": 1,
               },
               {
                 "blobHash": "blobHash1001",
@@ -292,6 +293,7 @@ describe("Indexer router", async () => {
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 1,
                 "txHash": "txHash1000",
+                "txIndex": 1,
               },
               {
                 "blobHash": "blobHash999",
@@ -300,6 +302,7 @@ describe("Indexer router", async () => {
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash999",
+                "txIndex": 0,
               },
             ]
           `);
@@ -502,6 +505,7 @@ describe("Indexer router", async () => {
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash1000",
+              "txIndex": 1,
             },
             {
               "blobHash": "blobHash1001",
@@ -510,6 +514,7 @@ describe("Indexer router", async () => {
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 1,
               "txHash": "txHash1000",
+              "txIndex": 1,
             },
             {
               "blobHash": "blobHash999",
@@ -518,6 +523,7 @@ describe("Indexer router", async () => {
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash999",
+              "txIndex": 0,
             },
           ]
         `);

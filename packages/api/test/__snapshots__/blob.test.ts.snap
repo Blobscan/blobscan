@@ -28,6 +28,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -59,6 +60,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
 ]
@@ -101,6 +103,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "to": "address4",
     },
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -139,6 +142,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "to": "address4",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
 ]
@@ -174,6 +178,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "to": "address4",
     },
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -205,315 +210,8 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "to": "address4",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
-  },
-]
-`;
-
-exports[`Blob router > getAll > when getting filtered blob results > should only return the results that do not have a rollup when 'null' is provided 1`] = `
-[
-  {
-    "blockHash": "blockHash008",
-    "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 0,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash016",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash006",
-    "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
-    "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
-    "dataStorageReferences": [
-      {
-        "storage": "postgres",
-        "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
-      },
-    ],
-    "index": 0,
-    "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
-    "size": 1500,
-    "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
-    "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
-  },
-  {
-    "blockHash": "blockHash005",
-    "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 0,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash013",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash004",
-    "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
-    "commitment": "commitment003",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
-      },
-    ],
-    "index": 0,
-    "proof": "proof003",
-    "size": 1200,
-    "txHash": "txHash010",
-    "versionedHash": "blobHash003",
-  },
-  {
-    "blockHash": "blockHash004",
-    "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
-    "commitment": "commitment003",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
-      },
-    ],
-    "index": 0,
-    "proof": "proof003",
-    "size": 1200,
-    "txHash": "txHash009",
-    "versionedHash": "blobHash003",
-  },
-  {
-    "blockHash": "blockHash003",
-    "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 2,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash006",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash003",
-    "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 1,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash006",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash003",
-    "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 0,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash006",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash003",
-    "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 2,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash005",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash003",
-    "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
-    "commitment": "commitment002",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
-      },
-    ],
-    "index": 1,
-    "proof": "proof002",
-    "size": 1100,
-    "txHash": "txHash005",
-    "versionedHash": "blobHash002",
-  },
-  {
-    "blockHash": "blockHash003",
-    "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
-    "commitment": "commitment002",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
-      },
-    ],
-    "index": 0,
-    "proof": "proof002",
-    "size": 1100,
-    "txHash": "txHash005",
-    "versionedHash": "blobHash002",
-  },
-  {
-    "blockHash": "blockHash001",
-    "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 0,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash002",
-    "versionedHash": "blobHash001",
-  },
-  {
-    "blockHash": "blockHash001",
-    "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
-    "commitment": "commitment003",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
-      },
-    ],
-    "index": 2,
-    "proof": "proof003",
-    "size": 1200,
-    "txHash": "txHash001",
-    "versionedHash": "blobHash003",
-  },
-  {
-    "blockHash": "blockHash001",
-    "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
-    "commitment": "commitment002",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
-      },
-    ],
-    "index": 1,
-    "proof": "proof002",
-    "size": 1100,
-    "txHash": "txHash001",
-    "versionedHash": "blobHash002",
-  },
-  {
-    "blockHash": "blockHash001",
-    "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
-    "index": 0,
-    "proof": "proof001",
-    "size": 1000,
-    "txHash": "txHash001",
-    "versionedHash": "blobHash001",
   },
 ]
 `;
@@ -538,6 +236,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash004",
+    "txIndex": 0,
     "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
   },
   {
@@ -558,6 +257,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash004",
+    "txIndex": 0,
     "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
   },
   {
@@ -578,6 +278,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash004",
+    "txIndex": 0,
     "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
@@ -598,6 +299,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash002",
   },
   {
@@ -622,6 +324,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash001",
   },
   {
@@ -643,6 +346,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash002",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -664,6 +368,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
   {
@@ -681,6 +386,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -702,6 +408,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -728,6 +435,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -752,6 +460,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -776,6 +485,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
 ]
@@ -802,6 +512,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -819,6 +530,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -840,6 +552,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
 ]
@@ -869,6 +582,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -893,6 +607,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -917,6 +632,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -941,6 +657,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash012",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -965,6 +682,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash012",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -989,6 +707,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash012",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1013,6 +732,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash007",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1033,6 +753,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash002",
   },
   {
@@ -1057,6 +778,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1082,6 +804,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
+    "txIndex": 0,
     "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
   },
 ]
@@ -1108,6 +831,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+    "txIndex": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
@@ -1129,6 +853,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash013",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -1153,6 +878,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash012",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1177,6 +903,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash012",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1201,6 +928,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash012",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1221,6 +949,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash011",
+    "txIndex": 4,
     "versionedHash": "blobHash005",
   },
   {
@@ -1242,6 +971,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash010",
+    "txIndex": 3,
     "versionedHash": "blobHash003",
   },
   {
@@ -1263,6 +993,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash009",
+    "txIndex": 2,
     "versionedHash": "blobHash003",
   },
   {
@@ -1283,6 +1014,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "arbitrum",
     },
     "txHash": "txHash008",
+    "txIndex": 1,
     "versionedHash": "blobHash002",
   },
   {
@@ -1307,6 +1039,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash007",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1332,6 +1065,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash011",
+    "txIndex": 4,
     "versionedHash": "blobHash005",
   },
   {
@@ -1353,6 +1087,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash010",
+    "txIndex": 3,
     "versionedHash": "blobHash003",
   },
   {
@@ -1374,6 +1109,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash009",
+    "txIndex": 2,
     "versionedHash": "blobHash003",
   },
   {
@@ -1394,6 +1130,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "arbitrum",
     },
     "txHash": "txHash008",
+    "txIndex": 1,
     "versionedHash": "blobHash002",
   },
   {
@@ -1418,6 +1155,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash007",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1439,6 +1177,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash006",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -1460,6 +1199,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash006",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -1481,6 +1221,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash006",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -1502,6 +1243,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash005",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1519,6 +1261,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash005",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -1536,6 +1279,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash005",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
 ]
@@ -1565,6 +1309,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash007",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1586,6 +1331,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
   {
@@ -1603,6 +1349,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -1624,6 +1371,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1650,6 +1398,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
   {
@@ -1667,6 +1416,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -1688,6 +1438,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1717,6 +1468,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash007",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -1738,6 +1490,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
   {
@@ -1755,6 +1508,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -1776,6 +1530,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1801,6 +1556,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash004",
+    "txIndex": 0,
     "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
   },
   {
@@ -1821,6 +1577,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash004",
+    "txIndex": 0,
     "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
   },
   {
@@ -1841,6 +1598,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "base",
     },
     "txHash": "txHash004",
+    "txIndex": 0,
     "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
@@ -1861,6 +1619,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash002",
   },
   {
@@ -1885,6 +1644,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash001",
   },
   {
@@ -1906,6 +1666,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash002",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -1927,6 +1688,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
   {
@@ -1944,6 +1706,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -1965,6 +1728,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1990,6 +1754,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash002",
   },
   {
@@ -2014,6 +1779,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash003",
+    "txIndex": 2,
     "versionedHash": "blobHash001",
   },
   {
@@ -2035,6 +1801,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash002",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
   {
@@ -2056,6 +1823,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof003",
     "size": 1200,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash003",
   },
   {
@@ -2073,6 +1841,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof002",
     "size": 1100,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash002",
   },
   {
@@ -2094,6 +1863,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash001",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
 ]
@@ -2120,6 +1890,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -2144,6 +1915,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2168,6 +1940,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2192,6 +1965,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2218,6 +1992,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -2242,6 +2017,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2266,6 +2042,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2290,6 +2067,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2311,6 +2089,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+    "txIndex": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
 ]
@@ -2337,6 +2116,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -2361,6 +2141,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2385,6 +2166,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
   {
@@ -2409,6 +2191,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2435,6 +2218,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash016",
+    "txIndex": 0,
     "versionedHash": "blobHash001",
   },
   {
@@ -2459,6 +2243,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
       "rollup": "optimism",
     },
     "txHash": "txHash015",
+    "txIndex": 0,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2485,6 +2270,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+    "txIndex": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
@@ -2506,10 +2292,13 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "proof": "proof001",
     "size": 1000,
     "txHash": "txHash013",
+    "txIndex": 1,
     "versionedHash": "blobHash001",
   },
 ]
 `;
+
+exports[`Blob router > getAll > when getting paginated blob results > should return the total number of items when count is provided 1`] = `29`;
 
 exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a hex string with invalid length 1`] = `
 "[
@@ -2581,6 +2370,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash015",
       "index": 0,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2590,6 +2380,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash015",
       "index": 1,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2599,6 +2390,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "hash": "txHash015",
       "index": 2,
       "rollup": "optimism",
+      "txIndex": 0,
     },
   ],
   "versionedHash": "blobHash004",
@@ -2630,6 +2422,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash015",
       "index": 0,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2639,6 +2432,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash015",
       "index": 1,
       "rollup": "optimism",
+      "txIndex": 0,
     },
     {
       "blockHash": "blockHash007",
@@ -2648,6 +2442,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "hash": "txHash015",
       "index": 2,
       "rollup": "optimism",
+      "txIndex": 0,
     },
   ],
   "versionedHash": "blobHash004",

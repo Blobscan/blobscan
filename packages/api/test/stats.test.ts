@@ -105,10 +105,7 @@ describe("Stats router", async () => {
 
   describe("getTransactionOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.transactionOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await prisma.transactionOverallStats.populate();
       const result = await caller.stats.getTransactionOverallStats();
 
       expect(omitDBTimestampFields(result)).toMatchInlineSnapshot(`

@@ -649,6 +649,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -657,6 +658,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -665,6 +667,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -673,6 +676,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -681,6 +685,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 2,
       "index": 0
     },
     {
@@ -689,6 +694,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 2,
       "index": 1
     },
     {
@@ -697,6 +703,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -705,6 +712,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -713,6 +721,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -721,6 +730,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -729,6 +739,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 1,
       "index": 1
     },
     {
@@ -737,6 +748,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 1,
       "index": 2
     },
     {
@@ -745,6 +757,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -753,6 +766,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -761,6 +775,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 2,
       "index": 0
     },
     {
@@ -769,6 +784,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 3,
       "index": 0
     },
     {
@@ -777,6 +793,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 4,
       "index": 0
     },
     {
@@ -785,6 +802,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -793,6 +811,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -801,6 +820,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -809,6 +829,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -817,6 +838,7 @@
       "blockHash": "blockHash006",
       "blockNumber": 1006,
       "blockTimestamp": "2023-08-31T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -825,6 +847,7 @@
       "blockHash": "blockHash007",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -833,6 +856,7 @@
       "blockHash": "blockHash007",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -841,6 +865,7 @@
       "blockHash": "blockHash007",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -849,6 +874,7 @@
       "blockHash": "blockHash008",
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T16:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -857,6 +883,7 @@
       "blockHash": "blockHash002",
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -865,6 +892,7 @@
       "blockHash": "blockHash002",
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -873,6 +901,7 @@
       "blockHash": "blockHash002",
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -881,6 +910,7 @@
       "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T15:50:00Z",
+      "txIndex": 0,
       "index": 0
     }
   ],

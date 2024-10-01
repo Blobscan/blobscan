@@ -19,22 +19,26 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
   const skeletonHeight = isCompact ? 15 : 15;
 
   return (
-    <div className="grid w-full gap-3 md:grid-cols-4">
+    <div className="grid w-full grid-cols-4 gap-3">
       {!fields
         ? Array.from({ length: skeletonsLength }).map((_, i) => (
             <Fragment key={i}>
-              <div>
+              <div className="col-span-4 md:col-span-1">
                 <Skeleton width={headerWidth} height={skeletonHeight} />
               </div>
-              <div className="col-span-3">
+              <div className="col-span-4 md:col-span-3">
                 <Skeleton width={valueWidth} height={skeletonHeight} />
               </div>
             </Fragment>
           ))
         : fields.map(({ name, value }, i) => (
             <Fragment key={i}>
-              <div className="font-semibold dark:text-coolGray-400">{name}</div>
-              <div className="col-span-3 break-words text-sm">{value}</div>
+              <div className="col-span-4 font-semibold dark:text-coolGray-400 md:col-span-1">
+                {name}
+              </div>
+              <div className="col-span-4 break-words text-sm md:col-span-3">
+                {value}
+              </div>
             </Fragment>
           ))}
     </div>

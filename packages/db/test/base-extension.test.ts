@@ -318,6 +318,7 @@ describe("Base Extension", () => {
             blockNumber: 1008,
             blockTimestamp: new Date("2023-08-31T16:00:00Z"),
             txHash: "txHash016",
+            txIndex: 0,
             index: 1,
           },
           {
@@ -326,6 +327,7 @@ describe("Base Extension", () => {
             blockNumber: 1008,
             blockTimestamp: new Date("2023-08-31T16:00:00Z"),
             txHash: "txHash016",
+            txIndex: 0,
             index: 2,
           },
         ];

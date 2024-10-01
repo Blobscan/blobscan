@@ -20,10 +20,12 @@ export const DailyBlobsChart: FC<Partial<DailyBlobsChartProps>> = function ({
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisTooltip: formatNumber,
+        yAxisTooltip: (value) => formatNumber(value, "compact"),
       },
     }),
-
+    grid: {
+      containLabel: true,
+    },
     series: [
       {
         name: "Total Blobs",

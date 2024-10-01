@@ -84,7 +84,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
           )}
         </div>
         {transactions ? (
-          <div className="mt-1 flex">
+          <div className="flex">
             <span>
               {transactions.length} Blob Tx{hasOneTx ? "" : "s"}
             </span>

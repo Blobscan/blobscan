@@ -1,3 +1,4 @@
+import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -18,6 +19,7 @@ import {
   serializeBlobOnTransaction,
   serializedBlobOnTransactionSchema,
 } from "./common/serializers";
+import { countBlobs } from "./getCount";
 
 const inputSchema = withPaginationSchema
   .merge(withAllFiltersSchema)
@@ -25,7 +27,7 @@ const inputSchema = withPaginationSchema
 
 const outputSchema = z.object({
   blobs: serializedBlobOnTransactionSchema.array(),
-  totalBlobs: z.number(),
+  totalBlobs: z.number().optional(),
 });
 
 export const getAll = publicProcedure
@@ -42,67 +44,57 @@ export const getAll = publicProcedure
   .use(withFilters)
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx }) => {
-    const filters = ctx.filters;
+  .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
+    let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
+      {
+        blockTimestamp: filters.sort,
+      };
 
-    const [txsBlobs, blobCountOrStats] = await Promise.all([
-      ctx.prisma.blobsOnTransactions.findMany({
-        select: createBlobsOnTransactionsSelect(ctx.expands),
-        where: {
-          blockNumber: filters.blockNumber,
-          blockTimestamp: filters.blockTimestamp,
-          block: {
-            slot: filters.blockSlot,
-            transactionForks: filters.blockType,
-          },
-          transaction:
-            filters.transactionRollup !== undefined ||
-            filters.transactionAddresses
-              ? {
-                  rollup: filters.transactionRollup,
-                  OR: filters.transactionAddresses,
-                }
-              : undefined,
+    if (filters.blockNumber) {
+      leadingOrderColumn = {
+        blockNumber: filters.sort,
+      };
+    }
+    const blockFiltersExists = filters.blockSlot || filters.blockType;
+    const txFiltersExists =
+      filters.transactionRollup !== undefined ||
+      filters.transactionAddresses ||
+      filters.transactionCategory !== undefined;
+
+    const txsBlobsOp = prisma.blobsOnTransactions.findMany({
+      select: createBlobsOnTransactionsSelect(expands),
+      where: {
+        blockNumber: filters.blockNumber,
+        blockTimestamp: filters.blockTimestamp,
+        block: blockFiltersExists
+          ? {
+              slot: filters.blockSlot,
+              transactionForks: filters.blockType,
+            }
+          : undefined,
+        transaction: txFiltersExists
+          ? {
+              category: filters.transactionCategory,
+              rollup: filters.transactionRollup,
+              OR: filters.transactionAddresses,
+            }
+          : undefined,
+      },
+      orderBy: [
+        leadingOrderColumn,
+        { txIndex: filters.sort },
+        {
+          index: filters.sort,
         },
-        orderBy: [
-          { blockNumber: filters.sort },
-          {
-            transaction: {
-              index: filters.sort,
-            },
-          },
-          {
-            index: filters.sort,
-          },
-        ],
-        ...ctx.pagination,
-      }),
-      // TODO: this is a workaround while we don't have proper rollup counts on the overall stats
-      filters.transactionRollup !== undefined || filters.transactionAddresses
-        ? ctx.prisma.blob.count({
-            where: {
-              transactions: {
-                some: {
-                  transaction: {
-                    rollup: filters.transactionRollup,
-                    OR: filters.transactionAddresses,
-                  },
-                },
-              },
-            },
-          })
-        : ctx.prisma.blobOverallStats.findFirst({
-            select: {
-              totalBlobs: true,
-            },
-          }),
-    ]);
+      ],
+      ...pagination,
+    });
+    const countOp = count ? countBlobs(prisma, filters) : undefined;
+
+    const [txsBlobs, totalBlobs] = await Promise.all([txsBlobsOp, countOp]);
 
     return {
       blobs: txsBlobs.map(serializeBlobOnTransaction),
-      totalBlobs:
-        typeof blobCountOrStats === "number"
-          ? blobCountOrStats
-          : blobCountOrStats?.totalBlobs ?? 0,
+      ...(count ? { totalBlobs } : {}),
     };
   });

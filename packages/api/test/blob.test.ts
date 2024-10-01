@@ -1,5 +1,5 @@
 import type { inferProcedureInput } from "@trpc/server";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
@@ -12,6 +12,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { getFilteredBlobs, runFilterTests } from "./test-suites/filters";
 import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
@@ -26,8 +27,15 @@ describe("Blob router", async () => {
   });
 
   describe("getAll", () => {
+    beforeEach(async () => {
+      await ctx.prisma.blobOverallStats.populate();
+    });
+
     runPaginationTestsSuite("blob", (paginationInput) =>
-      caller.blob.getAll(paginationInput).then(({ blobs }) => blobs)
+      caller.blob.getAll(paginationInput).then(({ blobs, totalBlobs }) => ({
+        items: blobs,
+        totalItems: totalBlobs,
+      }))
     );
 
     runFiltersTestsSuite("blob", (baseGetAllInput) =>
@@ -116,6 +124,21 @@ describe("Blob router", async () => {
       await caller.blob.getBlobDataByBlobId({
         id: invalidBlobId,
       });
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total blobs stat when no filters are provided", async () => {
+      await ctx.prisma.blobOverallStats.populate();
+      const { totalBlobs } = await caller.blob.getCount({});
+
+      expect(totalBlobs).toBe(fixtures.canonicalBlobs.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalBlobs } = await caller.blob.getCount(filters);
+
+      expect(totalBlobs).toBe(getFilteredBlobs(filters).length);
     });
   });
 });
