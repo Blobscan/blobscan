@@ -382,7 +382,7 @@ describe("Indexer router", async () => {
               `);
             });
 
-            it.skip("should create blob storage references correctly", async () => {
+            it("should create blob storage references correctly", async () => {
               const indexedBlobHashes = INPUT.blobs.map(
                 (blob) => blob.versionedHash
               );

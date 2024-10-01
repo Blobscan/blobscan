@@ -43,7 +43,7 @@ describe("Transaction router", async () => {
       caller.tx.getAll(input).then(({ transactions }) => transactions)
     );
 
-    it.skip("should get the total number of transactions", async () => {
+    it("should get the total number of transactions", async () => {
       const expectedTotalTransactions = fixtures.canonicalTxs.length;
 
       const { totalTransactions } = await caller.tx.getAll({ count: true });
