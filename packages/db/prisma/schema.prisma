@@ -197,6 +197,8 @@ model BlobsOnTransactions {
   @@id([txHash, index])
   @@index([blockTimestamp, txIndex, index])
   @@index([blockNumber, txIndex, index])
+  @@index([category, rollup, blockTimestamp, txIndex, index])
+  @@index([category, rollup, blockNumber, txIndex, index])
   @@index([blobHash])
   @@index([blockHash])
   @@index([txHash])
