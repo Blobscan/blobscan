@@ -178,6 +178,8 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 index,
                 txHash,
                 txIndex,
+                category,
+                rollup,
               }) =>
                 Prisma.join([
                   blobHash,
@@ -187,6 +189,10 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                   index,
                   txHash,
                   txIndex,
+                  Prisma.sql`${category.toLowerCase()}::category`,
+                  rollup
+                    ? Prisma.sql`${rollup.toLowerCase()}::rollup`
+                    : Prisma.sql`NULL`,
                 ])
             )
             .map((rowColumnsSql) => Prisma.sql`(${rowColumnsSql})`);
@@ -199,14 +205,18 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               block_timestamp,
               index,
               tx_hash,
-              tx_index
+              tx_index,
+              category,
+              rollup
             ) VALUES ${Prisma.join(sqlValues)}
             ON CONFLICT (tx_hash, index) DO UPDATE SET
               block_hash = EXCLUDED.block_hash,
               block_number = EXCLUDED.block_number,
               block_timestamp = EXCLUDED.block_timestamp,
               tx_index = EXCLUDED.tx_index,
-              index = EXCLUDED.index
+              index = EXCLUDED.index,
+              category = EXCLUDED.category,
+              rollup = EXCLUDED.rollup
           `;
         },
       },

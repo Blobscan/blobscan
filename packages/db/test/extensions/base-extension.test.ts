@@ -515,6 +515,8 @@ describe("Base Extension", () => {
             txHash: "txHash016",
             txIndex: 0,
             index: 1,
+            category: "ROLLUP",
+            rollup: "OPTIMISM",
           },
           {
             blobHash: "blobHash003",
@@ -524,6 +526,8 @@ describe("Base Extension", () => {
             txHash: "txHash016",
             txIndex: 0,
             index: 2,
+            category: "ROLLUP",
+            rollup: "OPTIMISM",
           },
         ];
       it("should insert multiple blobs on transactions correctly", async () => {

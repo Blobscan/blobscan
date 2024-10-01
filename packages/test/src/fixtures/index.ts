@@ -27,7 +27,11 @@ export const fixtures = {
     data: Buffer.from(rawData, "hex"),
   })),
 
-  blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions,
+  blobsOnTransactions: POSTGRES_DATA.blobsOnTransactions.map((btx) => ({
+    ...btx,
+    category: btx.category as Category,
+    rollup: btx.rollup as Rollup | null,
+  })),
   systemDate: POSTGRES_DATA.systemDate,
 
   canonicalBlocks: POSTGRES_DATA.blocks.filter(

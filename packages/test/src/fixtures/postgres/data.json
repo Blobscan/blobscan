@@ -640,7 +640,9 @@
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash002",
@@ -649,7 +651,9 @@
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
-      "index": 1
+      "index": 1,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash003",
@@ -658,7 +662,9 @@
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
-      "index": 2
+      "index": 2,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -667,7 +673,9 @@
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 1,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -676,7 +684,9 @@
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 2,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash002",
@@ -685,7 +695,9 @@
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 2,
-      "index": 1
+      "index": 1,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash001",
@@ -694,7 +706,9 @@
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash002",
@@ -703,7 +717,9 @@
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
       "txIndex": 0,
-      "index": 1
+      "index": 1,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash003",
@@ -712,7 +728,9 @@
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
       "txIndex": 0,
-      "index": 2
+      "index": 2,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash004",
@@ -721,7 +739,9 @@
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
       "txIndex": 0,
-      "index": 3
+      "index": 3,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash005",
@@ -730,7 +750,9 @@
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
       "txIndex": 0,
-      "index": 4
+      "index": 4,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash006",
@@ -739,7 +761,9 @@
       "blockNumber": 1002,
       "blockTimestamp": "2023-05-10T12:00:00Z",
       "txIndex": 0,
-      "index": 5
+      "index": 5,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash002",
@@ -748,7 +772,9 @@
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash002",
@@ -757,7 +783,9 @@
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
       "txIndex": 0,
-      "index": 1
+      "index": 1,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -766,7 +794,9 @@
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
       "txIndex": 0,
-      "index": 2
+      "index": 2,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -775,7 +805,9 @@
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
       "txIndex": 1,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -784,7 +816,9 @@
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
       "txIndex": 1,
-      "index": 1
+      "index": 1,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -793,7 +827,9 @@
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
       "txIndex": 1,
-      "index": 2
+      "index": 2,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash001",
@@ -802,7 +838,9 @@
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash002",
@@ -811,7 +849,9 @@
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
       "txIndex": 1,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "ARBITRUM"
     },
     {
       "blobHash": "blobHash003",
@@ -820,7 +860,9 @@
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
       "txIndex": 2,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash003",
@@ -829,7 +871,9 @@
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
       "txIndex": 3,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash005",
@@ -838,7 +882,9 @@
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
       "txIndex": 4,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "BASE"
     },
     {
       "blobHash": "blobHash001",
@@ -847,7 +893,9 @@
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash001",
@@ -856,7 +904,9 @@
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
       "txIndex": 0,
-      "index": 1
+      "index": 1,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash001",
@@ -865,7 +915,9 @@
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
       "txIndex": 0,
-      "index": 2
+      "index": 2,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash001",
@@ -874,7 +926,9 @@
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
       "txIndex": 1,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -883,7 +937,9 @@
       "blockNumber": 1006,
       "blockTimestamp": "2023-08-31T12:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "blobHash004",
@@ -892,7 +948,9 @@
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash004",
@@ -901,7 +959,9 @@
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "txIndex": 0,
-      "index": 1
+      "index": 1,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash004",
@@ -910,7 +970,9 @@
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "txIndex": 0,
-      "index": 2
+      "index": 2,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     },
     {
       "blobHash": "blobHash001",
@@ -919,7 +981,9 @@
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T16:00:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "OTHER",
+      "rollup": null
     },
     {
       "blobHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
@@ -928,7 +992,9 @@
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T15:50:00Z",
       "txIndex": 0,
-      "index": 0
+      "index": 0,
+      "category": "ROLLUP",
+      "rollup": "OPTIMISM"
     }
   ],
   "transactionForks": [
