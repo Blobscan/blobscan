@@ -13,6 +13,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -42,6 +43,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -55,10 +57,8 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -79,6 +79,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -117,6 +118,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -130,6 +132,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
@@ -154,6 +157,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -185,6 +189,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -198,6 +203,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
@@ -222,6 +228,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
@@ -231,10 +238,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 5,
     "proof": "proof006",
+    "rollup": "base",
     "size": 1500,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash006",
@@ -243,6 +248,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -252,10 +258,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 4,
     "proof": "proof005",
+    "rollup": "base",
     "size": 1400,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash005",
@@ -264,6 +268,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -277,10 +282,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 3,
     "proof": "proof004",
+    "rollup": "base",
     "size": 1300,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -289,6 +292,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -302,10 +306,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof003",
+    "rollup": "base",
     "size": 1200,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash003",
@@ -314,6 +316,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -323,10 +326,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "base",
     "size": 1100,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash002",
@@ -335,6 +336,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -348,10 +350,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "base",
     "size": 1000,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -360,6 +360,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -369,10 +370,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "optimism",
     "size": 1100,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash002",
@@ -381,6 +380,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -394,10 +394,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash001",
@@ -406,6 +404,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -428,6 +427,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -450,6 +450,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -468,6 +469,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -495,6 +497,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -517,6 +520,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -530,10 +534,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -542,6 +544,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -555,10 +558,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -572,6 +573,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -594,6 +596,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -612,6 +615,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -639,6 +643,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -652,10 +657,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -664,6 +667,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -677,10 +681,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -689,6 +691,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -702,10 +705,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -714,6 +715,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -727,10 +729,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash012",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -739,6 +739,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -752,10 +753,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash012",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -764,6 +763,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -777,10 +777,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash012",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -789,6 +787,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -802,10 +801,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash007",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -814,6 +811,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -823,10 +821,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "optimism",
     "size": 1100,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash002",
@@ -835,6 +831,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -848,10 +845,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash001",
@@ -865,6 +860,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T15:50:00.000Z",
+    "category": "rollup",
     "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
     "dataStorageReferences": [
       {
@@ -874,10 +870,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "0xaf8b65d906c672d670d3d9591ede355ac4dfc2f66f5690e836018fdb8582d3055474e3de6a069d3dfb4c15aa7c7f88a6",
+    "rollup": "optimism",
     "size": 128000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "txIndex": 0,
     "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
@@ -891,6 +885,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash006",
     "blockNumber": 1006,
     "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "category": "other",
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -913,6 +908,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -935,6 +931,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -948,10 +945,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash012",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -960,6 +955,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -973,10 +969,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash012",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -985,6 +979,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -998,10 +993,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash012",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1010,6 +1003,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1019,10 +1013,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof005",
+    "rollup": "base",
     "size": 1400,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash011",
     "txIndex": 4,
     "versionedHash": "blobHash005",
@@ -1031,6 +1023,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1053,6 +1046,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1075,6 +1069,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1084,10 +1079,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof002",
+    "rollup": "arbitrum",
     "size": 1100,
-    "transaction": {
-      "rollup": "arbitrum",
-    },
     "txHash": "txHash008",
     "txIndex": 1,
     "versionedHash": "blobHash002",
@@ -1096,6 +1089,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1109,10 +1103,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash007",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1126,6 +1118,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1135,10 +1128,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof005",
+    "rollup": "base",
     "size": 1400,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash011",
     "txIndex": 4,
     "versionedHash": "blobHash005",
@@ -1147,6 +1138,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1169,6 +1161,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1191,6 +1184,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1200,10 +1194,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof002",
+    "rollup": "arbitrum",
     "size": 1100,
-    "transaction": {
-      "rollup": "arbitrum",
-    },
     "txHash": "txHash008",
     "txIndex": 1,
     "versionedHash": "blobHash002",
@@ -1212,6 +1204,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1225,10 +1218,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash007",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1237,6 +1228,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash003",
     "blockNumber": 1003,
     "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1259,6 +1251,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash003",
     "blockNumber": 1003,
     "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1281,6 +1274,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash003",
     "blockNumber": 1003,
     "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1303,6 +1297,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash003",
     "blockNumber": 1003,
     "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1325,6 +1320,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash003",
     "blockNumber": 1003,
     "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1343,6 +1339,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash003",
     "blockNumber": 1003,
     "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1366,6 +1363,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1379,10 +1377,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash007",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1391,6 +1387,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1413,6 +1410,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1431,6 +1429,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1458,6 +1457,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1471,10 +1471,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash007",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1483,6 +1481,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
@@ -1492,10 +1491,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 5,
     "proof": "proof006",
+    "rollup": "base",
     "size": 1500,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash006",
@@ -1504,6 +1501,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1513,10 +1511,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 4,
     "proof": "proof005",
+    "rollup": "base",
     "size": 1400,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash005",
@@ -1525,6 +1521,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1538,10 +1535,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 3,
     "proof": "proof004",
+    "rollup": "base",
     "size": 1300,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -1550,6 +1545,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1563,10 +1559,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof003",
+    "rollup": "base",
     "size": 1200,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash003",
@@ -1575,6 +1569,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1584,10 +1579,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "base",
     "size": 1100,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash002",
@@ -1596,6 +1589,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1609,10 +1603,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "base",
     "size": 1000,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1621,6 +1613,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1643,6 +1636,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1661,6 +1655,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1688,6 +1683,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash004",
     "blockNumber": 1004,
     "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1701,10 +1697,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash007",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1713,6 +1707,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
@@ -1722,10 +1717,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 5,
     "proof": "proof006",
+    "rollup": "base",
     "size": 1500,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash006",
@@ -1734,6 +1727,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1743,10 +1737,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 4,
     "proof": "proof005",
+    "rollup": "base",
     "size": 1400,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash005",
@@ -1755,6 +1747,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1768,10 +1761,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 3,
     "proof": "proof004",
+    "rollup": "base",
     "size": 1300,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -1780,6 +1771,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1793,10 +1785,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof003",
+    "rollup": "base",
     "size": 1200,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash003",
@@ -1805,6 +1795,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1814,10 +1805,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "base",
     "size": 1100,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash002",
@@ -1826,6 +1815,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1839,10 +1829,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "base",
     "size": 1000,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -1851,6 +1839,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1873,6 +1862,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1891,6 +1881,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1918,6 +1909,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment006",
     "dataStorageReferences": [
       {
@@ -1927,10 +1919,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 5,
     "proof": "proof006",
+    "rollup": "base",
     "size": 1500,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash006",
@@ -1939,6 +1929,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -1948,10 +1939,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 4,
     "proof": "proof005",
+    "rollup": "base",
     "size": 1400,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash005",
@@ -1960,6 +1949,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1973,10 +1963,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 3,
     "proof": "proof004",
+    "rollup": "base",
     "size": 1300,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -1985,6 +1973,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1998,10 +1987,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof003",
+    "rollup": "base",
     "size": 1200,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash003",
@@ -2010,6 +1997,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -2019,10 +2007,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "base",
     "size": 1100,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash002",
@@ -2031,6 +2017,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash002",
     "blockNumber": 1002,
     "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2044,10 +2031,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "base",
     "size": 1000,
-    "transaction": {
-      "rollup": "base",
-    },
     "txHash": "txHash004",
     "txIndex": 0,
     "versionedHash": "blobHash001",
@@ -2056,6 +2041,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -2065,10 +2051,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "optimism",
     "size": 1100,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash002",
@@ -2077,6 +2061,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2090,10 +2075,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash001",
@@ -2102,6 +2085,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2124,6 +2108,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -2146,6 +2131,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -2164,6 +2150,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2191,6 +2178,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -2200,10 +2188,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof002",
+    "rollup": "optimism",
     "size": 1100,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash002",
@@ -2212,6 +2198,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2225,10 +2212,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof001",
+    "rollup": "optimism",
     "size": 1000,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash003",
     "txIndex": 2,
     "versionedHash": "blobHash001",
@@ -2237,6 +2222,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2259,6 +2245,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -2281,6 +2268,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -2299,6 +2287,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash001",
     "blockNumber": 1001,
     "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2326,6 +2315,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2348,6 +2338,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2361,10 +2352,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2373,6 +2362,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2386,10 +2376,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2398,6 +2386,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2411,10 +2400,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2428,6 +2415,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2450,6 +2438,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2463,10 +2452,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2475,6 +2462,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2488,10 +2476,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2500,6 +2486,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2513,10 +2500,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2525,6 +2510,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash006",
     "blockNumber": 1006,
     "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "category": "other",
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -2552,6 +2538,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2574,6 +2561,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2587,10 +2575,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2599,6 +2585,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2612,10 +2599,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 1,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2624,6 +2609,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2637,10 +2623,8 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     ],
     "index": 0,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2654,6 +2638,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "blockHash": "blockHash008",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2676,6 +2661,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "blockHash": "blockHash007",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "category": "rollup",
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2689,10 +2675,8 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     ],
     "index": 2,
     "proof": "proof004",
+    "rollup": "optimism",
     "size": 1300,
-    "transaction": {
-      "rollup": "optimism",
-    },
     "txHash": "txHash015",
     "txIndex": 0,
     "versionedHash": "blobHash004",
@@ -2706,6 +2690,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "blockHash": "blockHash006",
     "blockNumber": 1006,
     "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "category": "other",
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -2728,6 +2713,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "blockHash": "blockHash005",
     "blockNumber": 1005,
     "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "category": "other",
     "commitment": "commitment001",
     "dataStorageReferences": [
       {

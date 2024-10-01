@@ -56,16 +56,15 @@ export const getAll = publicProcedure
       };
     }
     const blockFiltersExists = filters.blockSlot || filters.blockType;
-    const txFiltersExists =
-      filters.transactionRollup !== undefined ||
-      filters.transactionAddresses ||
-      filters.transactionCategory !== undefined;
+    const txFiltersExists = !!filters.transactionAddresses?.length;
 
     const txsBlobsOp = prisma.blobsOnTransactions.findMany({
       select: createBlobsOnTransactionsSelect(expands),
       where: {
         blockNumber: filters.blockNumber,
         blockTimestamp: filters.blockTimestamp,
+        category: filters.transactionCategory,
+        rollup: filters.transactionRollup,
         block: blockFiltersExists
           ? {
               slot: filters.blockSlot,
@@ -74,8 +73,6 @@ export const getAll = publicProcedure
           : undefined,
         transaction: txFiltersExists
           ? {
-              category: filters.transactionCategory,
-              rollup: filters.transactionRollup,
               OR: filters.transactionAddresses,
             }
           : undefined,

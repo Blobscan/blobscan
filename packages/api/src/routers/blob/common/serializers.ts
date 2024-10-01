@@ -22,6 +22,10 @@ import {
   serializeBlobDataStorageReferences,
   serializeDate,
   isEmptyObject,
+  serializeRollup,
+  serializeCategory,
+  categorySchema,
+  rollupSchema,
 } from "../../../utils";
 
 type BaseBlob = Pick<
@@ -71,6 +75,8 @@ export const serializedBlobOnTransactionSchema = serializedBaseBlobSchema.merge(
     blockHash: z.string(),
     blockNumber: blockNumberSchema,
     blockTimestamp: z.string(),
+    category: categorySchema,
+    rollup: rollupSchema.nullable().optional(),
     block: serializedExpandedBlockSchema.optional(),
     transaction: serializedExpandedTransactionSchema.optional(),
   })
@@ -130,6 +136,8 @@ export function serializeBlobOnTransaction(
     index,
     txHash,
     txIndex,
+    category,
+    rollup,
     block,
     transaction,
   } = blobOnTransaction;
@@ -141,7 +149,12 @@ export function serializeBlobOnTransaction(
     txHash,
     txIndex,
     index,
+    category: serializeCategory(category),
   };
+
+  if (rollup) {
+    serializedBlob.rollup = serializeRollup(rollup);
+  }
 
   if (block) {
     serializedBlob.block = serializeExpandedBlock(block);
@@ -174,6 +187,8 @@ export function serializeBlob(blob: QueriedBlob): SerializedBlob {
           txIndex,
           index,
           txHash,
+          category,
+          rollup,
           block,
           transaction,
         }) => {
@@ -184,6 +199,8 @@ export function serializeBlob(blob: QueriedBlob): SerializedBlob {
             blockHash,
             blockNumber,
             blockTimestamp,
+            category: serializeCategory(category),
+            ...(rollup ? { rollup: serializeRollup(rollup) } : {}),
             ...(transaction ? serializeExpandedTransaction(transaction) : {}),
             ...(block ? { block: serializeExpandedBlock(block) } : {}),
           };

@@ -181,6 +181,9 @@ export function createDBBlobsOnTransactions({
       throw new Error(`Transaction ${txHash} not found`);
     }
 
+    const rollup = getRollupByAddress(tx.from, env.CHAIN_ID);
+    const category = rollup ? Category.ROLLUP : Category.OTHER;
+
     return {
       blobHash: versionedHash,
       blockHash: block.hash,
@@ -189,6 +192,8 @@ export function createDBBlobsOnTransactions({
       txHash: txHash,
       txIndex: tx.index,
       index,
+      category,
+      rollup,
     };
   });
 }
