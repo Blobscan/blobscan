@@ -534,23 +534,24 @@ describe("Indexer router", async () => {
         const addressesSet = new Set(
           INPUT.transactions.flatMap((tx) => [tx.from, tx.to])
         );
-        const indexedAddresses = await authorizedContext.prisma.addressHistory
-          .findMany({
-            where: {
-              address: {
-                in: Array.from(addressesSet),
+        const indexedAddresses =
+          await authorizedContext.prisma.addressCategoryInfo
+            .findMany({
+              where: {
+                address: {
+                  in: Array.from(addressesSet),
+                },
               },
-            },
-            orderBy: [
-              {
-                address: "asc",
-              },
-              {
-                category: "asc",
-              },
-            ],
-          })
-          .then((r) => r.map(omitDBTimestampFields));
+              orderBy: [
+                {
+                  address: "asc",
+                },
+                {
+                  category: "asc",
+                },
+              ],
+            })
+            .then((r) => r.map(omitDBTimestampFields));
 
         expect(indexedAddresses).toMatchInlineSnapshot(`
           [

@@ -1,19 +1,24 @@
-import type { Address as AddressEntity, AddressHistory } from "@prisma/client";
+import type {
+  Address as AddressEntity,
+  AddressCategoryInfo,
+} from "@prisma/client";
 
 import { omitDBTimestampFields } from "@blobscan/test";
 
 import { prisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
 
-export async function upsertAndRetrieveManyAddresses(input: AddressHistory[]) {
+export async function upsertAndRetrieveManyAddresses(
+  input: AddressCategoryInfo[]
+) {
   await prisma.address.upsertMany(
     input.map((addr) => ({ address: addr.address }))
   );
-  await prisma.addressHistory.upsertMany(input);
+  await prisma.addressCategoryInfo.upsertMany(input);
 
   const addresses = new Set(input.map((addr) => addr.address));
 
-  const addressEntities = await prisma.addressHistory.findMany({
+  const addressEntities = await prisma.addressCategoryInfo.findMany({
     where: {
       address: {
         in: Array.from(addresses),

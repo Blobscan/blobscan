@@ -1,4 +1,4 @@
-import type { AddressHistory, Blob, Block, Prisma } from "@prisma/client";
+import type { AddressCategoryInfo, Blob, Block, Prisma } from "@prisma/client";
 
 import dayjs from "@blobscan/dayjs";
 
@@ -20,7 +20,7 @@ async function main() {
     });
     const { blocks: forkBlocks, txs: forkTxs } =
       dataGenerator.generateDBTransactionForks(fullBlocks);
-    const addressToAddressHistory: Record<string, AddressHistory> = {};
+    const addressToCategoryInfo: Record<string, AddressCategoryInfo> = {};
     const dbBlockInsertions: Prisma.BlockCreateManyInput[] = [];
     const dbTxInsertions: Prisma.TransactionCreateManyInput[] = [];
     const dbBlobInsertions: Blob[] = [];
@@ -33,15 +33,15 @@ async function main() {
       dbBlockInsertions.push(block);
       transactions.forEach(({ blobs, ...tx }) => {
         dbTxInsertions.push(tx);
-        const from = addressToAddressHistory[tx.fromId];
-        const to = addressToAddressHistory[tx.toId];
+        const from = addressToCategoryInfo[tx.fromId];
+        const to = addressToCategoryInfo[tx.toId];
         if (from) {
           from.firstBlockNumberAsSender = Math.min(
             from.firstBlockNumberAsSender ?? tx.blockNumber,
             tx.blockNumber
           );
         } else {
-          addressToAddressHistory[tx.fromId] = {
+          addressToCategoryInfo[tx.fromId] = {
             address: tx.fromId,
             firstBlockNumberAsReceiver: null,
             firstBlockNumberAsSender: tx.blockNumber,
@@ -54,7 +54,7 @@ async function main() {
             tx.blockNumber
           );
         } else {
-          addressToAddressHistory[tx.toId] = {
+          addressToCategoryInfo[tx.toId] = {
             address: tx.toId,
             firstBlockNumberAsReceiver: tx.blockNumber,
             firstBlockNumberAsSender: null,
@@ -83,7 +83,7 @@ async function main() {
         fullBlocks.length
       }, txs: ${dbTxInsertions.length}, blobs: ${
         dbBlobInsertions.length
-      }, addresses: ${Object.keys(addressToAddressHistory).length})`
+      }, addresses: ${Object.keys(addressToCategoryInfo).length})`
     );
     // await performPrismaOpInBatches(dbBlockInsertions, prisma.block.createMany);
     const blockPerformance = performance.now();
@@ -93,19 +93,19 @@ async function main() {
     const blockPerformanceEnd = performance.now();
     const addressPerformance = performance.now();
     await performPrismaUpsertManyInBatches(
-      Object.values(addressToAddressHistory).map((addressHistory) => ({
-        address: addressHistory.address,
+      Object.values(addressToCategoryInfo).map((addressCategoryInfo) => ({
+        address: addressCategoryInfo.address,
       })),
       prisma.address.upsertMany
     );
     const addressPerformanceEnd = performance.now();
 
-    const addressHistoryPerformance = performance.now();
+    const addressCategoryInfoPerformanceStart = performance.now();
     await performPrismaUpsertManyInBatches(
-      Object.values(addressToAddressHistory),
-      prisma.addressHistory.upsertMany
+      Object.values(addressToCategoryInfo),
+      prisma.addressCategoryInfo.upsertMany
     );
-    const addressHistoryPerformanceEnd = performance.now();
+    const addressCategoryInfoPerformanceEnd = performance.now();
 
     const txPerformance = performance.now();
     await prisma.transaction.createMany({
@@ -150,8 +150,10 @@ async function main() {
       }, addresses: ${
         (addressPerformanceEnd - addressPerformance) / 1000
       }, txs: ${(txPerformanceEnd - txPerformance) / 1000},
-      addressHistory: ${
-        (addressHistoryPerformanceEnd - addressHistoryPerformance) / 1000
+      addressCategoryInfo: ${
+        (addressCategoryInfoPerformanceEnd -
+          addressCategoryInfoPerformanceStart) /
+        1000
       },
       blobs: ${(blobsPerformanceEnd - blobsPerformance) / 1000}, blobsOnTxs: ${
         (blobsOnTxsPerformanceEnd - blobsOnTxsPerformance) / 1000

@@ -57,8 +57,8 @@ SELECT
   NOW() AS updated_at
 FROM transaction tx
   JOIN block b ON b.hash = tx.block_hash
-  JOIN address_history a_from ON a_from.address = tx.from_id AND a_from.category = tx.category
-  JOIN address_history a_to ON a_to.address = tx.to_id AND a_to.category = tx.category
+  JOIN address_category_info a_from ON a_from.address = tx.from_id AND a_from.category = tx.category
+  JOIN address_category_info a_to ON a_to.address = tx.to_id AND a_to.category = tx.category
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = b.hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND b.number BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (

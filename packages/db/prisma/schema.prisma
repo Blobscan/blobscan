@@ -74,7 +74,7 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
-model AddressHistory {
+model AddressCategoryInfo {
   address                    String
   category                   Category @default(OTHER)
   firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
@@ -83,7 +83,7 @@ model AddressHistory {
   addressEntity Address @relation(fields: [address], references: [address])
 
   @@id([address, category])
-  @@map("address_history")
+  @@map("address_category_info")
 }
 
 model Address {
@@ -91,9 +91,9 @@ model Address {
   insertedAt DateTime @default(now()) @map("inserted_at")
   updatedAt  DateTime @default(now()) @map("updated_at")
 
-  transactionsAsSender   Transaction[]    @relation("senderAddressRelation")
-  transactionsAsReceiver Transaction[]    @relation("receiverAddressRelation")
-  addressHistory         AddressHistory[]
+  transactionsAsSender   Transaction[]         @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[]         @relation("receiverAddressRelation")
+  addressCategoryInfo    AddressCategoryInfo[]
 
   @@index([insertedAt])
   @@map("address")

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   Address,
-  AddressHistory,
+  AddressCategoryInfo,
   Blob,
   BlobDataStorageReference,
   BlobsOnTransactions,
@@ -61,8 +61,8 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           `;
         },
       },
-      addressHistory: {
-        upsertMany(addressEntries: AddressHistory[]) {
+      addressCategoryInfo: {
+        upsertMany(addressEntries: AddressCategoryInfo[]) {
           if (!addressEntries.length) {
             return (
               Prisma.getExtensionContext(this) as any
@@ -86,7 +86,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             .map((rowColumns) => Prisma.join(rowColumns, ",", "(", ")"));
 
           return prisma.$executeRaw`
-            INSERT INTO address_history AS curr (
+            INSERT INTO address_category_info AS curr (
               address,
               category,
               first_block_number_as_receiver,

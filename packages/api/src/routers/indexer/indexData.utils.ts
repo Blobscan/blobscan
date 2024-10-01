@@ -1,6 +1,6 @@
 import type {
   Address,
-  AddressHistory,
+  AddressCategoryInfo,
   Blob,
   BlobsOnTransactions,
   Block,
@@ -205,10 +205,10 @@ export function createDBAddresses({
   }));
 }
 
-export function createDBAddressHistory(
+export function createDBAddressCategoryInfo(
   dbTxs: WithoutTimestampFields<Transaction>[]
-): AddressHistory[] {
-  const dbAddresses: AddressHistory[] = [];
+): AddressCategoryInfo[] {
+  const dbAddresses: AddressCategoryInfo[] = [];
 
   dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
     const fromDBEntity = dbAddresses.find(

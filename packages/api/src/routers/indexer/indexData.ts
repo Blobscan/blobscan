@@ -7,7 +7,7 @@ import { jwtAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {
   createDBAddresses,
-  createDBAddressHistory,
+  createDBAddressCategoryInfo,
   createDBBlobs,
   createDBBlobsOnTransactions,
   createDBBlock,
@@ -122,7 +122,7 @@ export const indexData = jwtAuthedProcedure
       const dbBlobs = createDBBlobs(input);
       const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
       const dbAddress = createDBAddresses(input);
-      const dbAddressesHistory = createDBAddressHistory(dbTxs);
+      const dbAddressCategoryInfos = createDBAddressCategoryInfo(dbTxs);
 
       operations.push(
         prisma.block.upsert({
@@ -138,7 +138,7 @@ export const indexData = jwtAuthedProcedure
           },
         }),
         prisma.address.upsertMany(dbAddress),
-        prisma.addressHistory.upsertMany(dbAddressesHistory),
+        prisma.addressCategoryInfo.upsertMany(dbAddressCategoryInfos),
         prisma.transaction.upsertMany(dbTxs),
         prisma.blob.upsertMany(dbBlobs)
       );

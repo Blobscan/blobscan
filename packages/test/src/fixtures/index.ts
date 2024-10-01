@@ -4,7 +4,7 @@ import type {
   BlobDataStorageReference,
   Category,
   Rollup,
-  AddressHistory,
+  AddressCategoryInfo,
 } from "@prisma/client";
 
 import type { DatePeriodLike } from "@blobscan/dayjs";
@@ -28,7 +28,7 @@ function getDBAddresses(txs: typeof POSTGRES_DATA.txs) {
 }
 
 function getDBAddressesHistory(txs: typeof POSTGRES_DATA.txs) {
-  const dbAddresses: AddressHistory[] = [];
+  const dbAddresses: AddressCategoryInfo[] = [];
 
   txs.forEach((tx) => {
     const from = dbAddresses.find(
@@ -230,7 +230,7 @@ export const fixtures = {
       prisma.blob.deleteMany(),
       prisma.transactionFork.deleteMany(),
       prisma.transaction.deleteMany(),
-      prisma.addressHistory.deleteMany(),
+      prisma.addressCategoryInfo.deleteMany(),
       prisma.address.deleteMany(),
       prisma.block.deleteMany(),
       prisma.blockDailyStats.deleteMany(),
@@ -248,7 +248,9 @@ export const fixtures = {
       }),
       prisma.block.createMany({ data: fixtures.blocks }),
       prisma.address.createMany({ data: fixtures.addresses }),
-      prisma.addressHistory.createMany({ data: fixtures.addressesHistory }),
+      prisma.addressCategoryInfo.createMany({
+        data: fixtures.addressesHistory,
+      }),
       prisma.transaction.createMany({ data: fixtures.txs }),
       prisma.blob.createMany({ data: fixtures.blobs }),
       prisma.blobDataStorageReference.createMany({

@@ -1,6 +1,6 @@
 import type {
   Address as AddressEntity,
-  AddressHistory,
+  AddressCategoryInfo,
   Blob,
   BlobDataStorageReference,
   BlobsOnTransactions,
@@ -66,7 +66,7 @@ describe("Base Extension", () => {
 
   describe("Address History model", () => {
     describe("upsertMany()", () => {
-      let input: AddressHistory[];
+      let input: AddressCategoryInfo[];
 
       it("should insert multiple addresses correctly", async () => {
         input = [
