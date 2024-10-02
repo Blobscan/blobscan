@@ -205,47 +205,86 @@ export function createDBAddresses({
   }));
 }
 
+function updateDbCategoryInfo({
+  address,
+  category,
+  dbAddressesCategoryInfo,
+  type,
+  blockNumber,
+}: {
+  address: string;
+  category: Category | null;
+  dbAddressesCategoryInfo: Omit<AddressCategoryInfo, "id">[];
+  type: "sender" | "receiver";
+  blockNumber: number;
+}) {
+  const dbAddressCategoryInfo = dbAddressesCategoryInfo.find(
+    (a) => a.address === address && a.category === category
+  );
+
+  const isSender = type === "sender";
+
+  if (!dbAddressCategoryInfo) {
+    dbAddressesCategoryInfo.push({
+      address,
+      category,
+      firstBlockNumberAsReceiver: isSender ? null : blockNumber,
+      firstBlockNumberAsSender: isSender ? blockNumber : null,
+    });
+
+    return;
+  }
+
+  const currBlockNumber = isSender
+    ? dbAddressCategoryInfo.firstBlockNumberAsSender
+    : dbAddressCategoryInfo.firstBlockNumberAsReceiver;
+
+  if (currBlockNumber) {
+    dbAddressCategoryInfo[
+      isSender ? "firstBlockNumberAsSender" : "firstBlockNumberAsReceiver"
+    ] = Math.min(currBlockNumber, blockNumber);
+  }
+
+  return dbAddressCategoryInfo;
+}
+
 export function createDBAddressCategoryInfo(
   dbTxs: WithoutTimestampFields<Transaction>[]
 ): Omit<AddressCategoryInfo, "id">[] {
   const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
 
   dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
-    const fromDBEntity = dbAddresses.find(
-      (a) => a.address === fromId && a.category === category
-    );
-    const toDBEntity = dbAddresses.find(
-      (a) => a.address === toId && a.category === category
-    );
+    updateDbCategoryInfo({
+      address: fromId,
+      category,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "sender",
+      blockNumber,
+    });
 
-    if (!fromDBEntity) {
-      dbAddresses.push({
-        address: fromId,
-        category,
-        firstBlockNumberAsSender: blockNumber,
-        firstBlockNumberAsReceiver: null,
-      });
-    } else {
-      const currBlockNumber = fromDBEntity.firstBlockNumberAsSender;
+    updateDbCategoryInfo({
+      address: fromId,
+      category: null,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "sender",
+      blockNumber,
+    });
 
-      fromDBEntity.firstBlockNumberAsSender = currBlockNumber
-        ? Math.min(currBlockNumber, blockNumber)
-        : blockNumber;
-    }
+    updateDbCategoryInfo({
+      address: toId,
+      category: null,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "receiver",
+      blockNumber,
+    });
 
-    if (!toDBEntity) {
-      dbAddresses.push({
-        address: toId,
-        category,
-        firstBlockNumberAsReceiver: blockNumber,
-        firstBlockNumberAsSender: null,
-      });
-    } else {
-      const currBlockNumber = toDBEntity.firstBlockNumberAsReceiver;
-      toDBEntity.firstBlockNumberAsReceiver = currBlockNumber
-        ? Math.min(currBlockNumber, blockNumber)
-        : blockNumber;
-    }
+    updateDbCategoryInfo({
+      address: toId,
+      category,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "receiver",
+      blockNumber,
+    });
   });
 
   return dbAddresses;

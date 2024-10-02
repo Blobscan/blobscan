@@ -48,7 +48,7 @@ describe("Overall command", () => {
   runHelpArgTests(overall, overallCommandUsage);
 
   describe("when incrementing overall stats", () => {
-    it.only("should increment them until latest indexed block when target block 'latest' is provided", async () => {
+    it("should increment them until latest indexed block when target block 'latest' is provided", async () => {
       await overall(["--to", "latest"]);
 
       await assertOverallStats();

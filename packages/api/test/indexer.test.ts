@@ -529,7 +529,7 @@ describe("Indexer router", async () => {
         `);
       });
 
-      it("should update the indexed addresses history correctly", async () => {
+      it("should update the indexed addresses category info correctly", async () => {
         // Remove duplicates
         const addressesSet = new Set(
           INPUT.transactions.flatMap((tx) => [tx.from, tx.to])
@@ -562,6 +562,12 @@ describe("Indexer router", async () => {
               "firstBlockNumberAsSender": null,
             },
             {
+              "address": "address10",
+              "category": null,
+              "firstBlockNumberAsReceiver": 2010,
+              "firstBlockNumberAsSender": null,
+            },
+            {
               "address": "address2",
               "category": "OTHER",
               "firstBlockNumberAsReceiver": 1001,
@@ -574,14 +580,32 @@ describe("Indexer router", async () => {
               "firstBlockNumberAsSender": null,
             },
             {
+              "address": "address2",
+              "category": null,
+              "firstBlockNumberAsReceiver": 1001,
+              "firstBlockNumberAsSender": 1003,
+            },
+            {
               "address": "address7",
               "category": "OTHER",
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },
             {
+              "address": "address7",
+              "category": null,
+              "firstBlockNumberAsReceiver": null,
+              "firstBlockNumberAsSender": 2010,
+            },
+            {
               "address": "address9",
               "category": "OTHER",
+              "firstBlockNumberAsReceiver": null,
+              "firstBlockNumberAsSender": 2010,
+            },
+            {
+              "address": "address9",
+              "category": null,
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },

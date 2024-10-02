@@ -37,6 +37,40 @@ function getDBAddressesHistory(txs: typeof POSTGRES_DATA.txs) {
     const to = dbAddresses.find(
       (a) => a.address === tx.toId && a.category === tx.category
     );
+    const fromAllTime = dbAddresses.find(
+      (a) => a.address === tx.fromId && a.category === null
+    );
+    const toAllTime = dbAddresses.find(
+      (a) => a.address === tx.toId && a.category === null
+    );
+
+    if (!fromAllTime) {
+      dbAddresses.push({
+        address: tx.fromId,
+        category: null,
+        firstBlockNumberAsSender: tx.blockNumber,
+        firstBlockNumberAsReceiver: null,
+      });
+    } else {
+      fromAllTime.firstBlockNumberAsSender =
+        fromAllTime.firstBlockNumberAsSender
+          ? Math.min(fromAllTime.firstBlockNumberAsSender, tx.blockNumber)
+          : tx.blockNumber;
+    }
+
+    if (!toAllTime) {
+      dbAddresses.push({
+        address: tx.toId,
+        category: null,
+        firstBlockNumberAsSender: null,
+        firstBlockNumberAsReceiver: tx.blockNumber,
+      });
+    } else {
+      toAllTime.firstBlockNumberAsReceiver =
+        toAllTime.firstBlockNumberAsReceiver
+          ? Math.min(toAllTime.firstBlockNumberAsReceiver, tx.blockNumber)
+          : tx.blockNumber;
+    }
 
     if (!from) {
       dbAddresses.push({

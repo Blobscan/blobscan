@@ -1,10 +1,6 @@
-import type {
-  Address as AddressEntity,
-  AddressCategoryInfo,
-} from "@prisma/client";
+import type { AddressCategoryInfo } from "@prisma/client";
 
 import { prisma } from "../prisma";
-import type { WithoutTimestampFields } from "../prisma/types";
 
 export async function upsertAndRetrieveManyAddresses(
   input: Omit<AddressCategoryInfo, "id">[]
@@ -27,13 +23,5 @@ export async function upsertAndRetrieveManyAddresses(
     },
   });
 
-  return addressEntities.reduce<
-    Record<string, WithoutTimestampFields<AddressEntity>>
-  >(
-    (addressToEntity, { id: _, ...addressEntity }) => ({
-      ...addressToEntity,
-      [addressEntity.address]: addressEntity,
-    }),
-    {} as Record<string, AddressEntity>
-  );
+  return addressEntities.map(({ id: _, ...addressEntity }) => addressEntity);
 }

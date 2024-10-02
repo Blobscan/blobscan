@@ -64,7 +64,7 @@ describe("Base Extension", () => {
     });
   });
 
-  describe("Address History model", () => {
+  describe("Address Category Info model", () => {
     describe("upsertMany()", () => {
       let input: Omit<AddressCategoryInfo, "id">[];
 
