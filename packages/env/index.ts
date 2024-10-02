@@ -28,8 +28,8 @@ export const env = createEnv({
   envOptions: {
     server: {
       // PostHog
-      POSTHOG_KEY: z.string(),
-      POSTHOG_HOST: z.string(),
+      POSTHOG_KEY: z.string().optional(),
+      POSTHOG_HOST: z.string().optional(),
 
       BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
       BLOBSCAN_API_BASE_URL: z

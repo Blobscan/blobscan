@@ -76,26 +76,28 @@ export function createTRPCContext(
         apiClient,
       });
 
-      let ip =
-        opts.req.headers["x-forwarded-for"] ?? opts.req.socket.remoteAddress;
+      if (posthog) {
+        let ip =
+          opts.req.headers["x-forwarded-for"] ?? opts.req.socket.remoteAddress;
 
-      if (Array.isArray(ip)) {
-        ip = ip.join(", ");
+        if (Array.isArray(ip)) {
+          ip = ip.join(", ");
+        }
+
+        posthog.capture({
+          distinctId: ip ?? "unknown",
+          event: "trpc_request",
+          properties: {
+            ip,
+            scope,
+            url: opts.req.url,
+            method: opts.req.method,
+            headers: opts.req.headers,
+            body: opts.req.body,
+            query: opts.req.query,
+          },
+        });
       }
-
-      posthog.capture({
-        distinctId: ip ?? "unknown",
-        event: "trpc_request",
-        properties: {
-          ip,
-          scope,
-          url: opts.req.url,
-          method: opts.req.method,
-          headers: opts.req.headers,
-          body: opts.req.body,
-          query: opts.req.query,
-        },
-      });
 
       return {
         ...innerContext,
