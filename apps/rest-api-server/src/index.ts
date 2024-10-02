@@ -21,7 +21,6 @@ import { printBanner } from "./banner";
 import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
-import { posthog } from "./posthog";
 import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
@@ -45,22 +44,6 @@ app.get("/", swaggerUi.setup(openApiDocument));
 // Handle incoming OpenAPI requests
 app.use(
   "/",
-  (req, _, next) => {
-    posthog.capture({
-      distinctId: req.ip ?? "unknown",
-      event: "api_request",
-      properties: {
-        method: req.method,
-        url: req.url,
-        ip: req.ip,
-        headers: req.headers,
-        body: req.body,
-        query: req.query,
-      },
-    });
-
-    next();
-  },
   createOpenApiExpressMiddleware({
     router: appRouter,
     createContext: createTRPCContext({

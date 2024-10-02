@@ -13,6 +13,8 @@ import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
+import { posthog } from "./posthog";
+
 export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
   | CreateNextContextOptions;
@@ -72,6 +74,27 @@ export function createTRPCContext(
 
       const innerContext = await createTRPCInnerContext({
         apiClient,
+      });
+
+      let ip =
+        opts.req.headers["x-forwarded-for"] ?? opts.req.socket.remoteAddress;
+
+      if (Array.isArray(ip)) {
+        ip = ip.join(", ");
+      }
+
+      posthog.capture({
+        distinctId: ip ?? "unknown",
+        event: "trpc_request",
+        properties: {
+          ip,
+          scope,
+          url: opts.req.url,
+          method: opts.req.method,
+          headers: opts.req.headers,
+          body: opts.req.body,
+          query: opts.req.query,
+        },
       });
 
       return {
