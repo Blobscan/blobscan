@@ -6,6 +6,7 @@ import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
+import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
 import { getBlobPropagator } from "@blobscan/blob-propagator";
@@ -77,24 +78,36 @@ export function createTRPCContext(
       });
 
       if (posthog) {
+        const cookies = cookie.parse(opts.req.headers.cookie ?? "");
+
+        let distinctId = cookies["distinctId"];
+
+        if (!distinctId) {
+          distinctId = crypto.randomUUID();
+
+          opts.res.setHeader(
+            "Set-Cookie",
+            cookie.serialize("distinctId", distinctId, {
+              maxAge: 60 * 60 * 24 * 365,
+            })
+          );
+        }
+
         let ip =
           opts.req.headers["x-forwarded-for"] ?? opts.req.socket.remoteAddress;
 
         if (Array.isArray(ip)) {
-          ip = ip.join(", ");
+          ip = ip[0];
         }
 
         posthog.capture({
-          distinctId: ip ?? "unknown",
+          distinctId,
           event: "trpc_request",
           properties: {
-            ip,
+            $ip: ip,
             scope,
-            url: opts.req.url,
+            $current_url: opts.req.url,
             method: opts.req.method,
-            headers: opts.req.headers,
-            body: opts.req.body,
-            query: opts.req.query,
           },
         });
       }
