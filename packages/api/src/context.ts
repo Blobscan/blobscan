@@ -1,3 +1,4 @@
+import type { NextApiRequest } from "next/types";
 import { TRPCError } from "@trpc/server";
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
@@ -62,6 +63,16 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   };
 }
 
+function getIP(req: NodeHTTPRequest | NextApiRequest): string | undefined {
+  const ip = req.headers["x-forwarded-for"] ?? req.socket.remoteAddress;
+
+  if (Array.isArray(ip)) {
+    return ip[0];
+  }
+
+  return ip;
+}
+
 export function createTRPCContext(
   {
     scope,
@@ -93,18 +104,11 @@ export function createTRPCContext(
           );
         }
 
-        let ip =
-          opts.req.headers["x-forwarded-for"] ?? opts.req.socket.remoteAddress;
-
-        if (Array.isArray(ip)) {
-          ip = ip[0];
-        }
-
         posthog.capture({
           distinctId,
           event: "trpc_request",
           properties: {
-            $ip: ip,
+            $ip: getIP(opts.req),
             scope,
             $current_url: opts.req.url,
             method: opts.req.method,
