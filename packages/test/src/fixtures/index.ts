@@ -28,7 +28,7 @@ function getDBAddresses(txs: typeof POSTGRES_DATA.txs) {
 }
 
 function getDBAddressesHistory(txs: typeof POSTGRES_DATA.txs) {
-  const dbAddresses: AddressCategoryInfo[] = [];
+  const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
 
   txs.forEach((tx) => {
     const from = dbAddresses.find(

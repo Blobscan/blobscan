@@ -207,8 +207,8 @@ export function createDBAddresses({
 
 export function createDBAddressCategoryInfo(
   dbTxs: WithoutTimestampFields<Transaction>[]
-): AddressCategoryInfo[] {
-  const dbAddresses: AddressCategoryInfo[] = [];
+): Omit<AddressCategoryInfo, "id">[] {
+  const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
 
   dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
     const fromDBEntity = dbAddresses.find(

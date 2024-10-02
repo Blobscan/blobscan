@@ -551,7 +551,7 @@ describe("Indexer router", async () => {
                 },
               ],
             })
-            .then((r) => r.map(omitDBTimestampFields));
+            .then((r) => r.map(({ id: _, ...rest }) => rest));
 
         expect(indexedAddresses).toMatchInlineSnapshot(`
           [

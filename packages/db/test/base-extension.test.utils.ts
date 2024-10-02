@@ -3,13 +3,11 @@ import type {
   AddressCategoryInfo,
 } from "@prisma/client";
 
-import { omitDBTimestampFields } from "@blobscan/test";
-
 import { prisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
 
 export async function upsertAndRetrieveManyAddresses(
-  input: AddressCategoryInfo[]
+  input: Omit<AddressCategoryInfo, "id">[]
 ) {
   await prisma.address.upsertMany(
     input.map((addr) => ({ address: addr.address }))
@@ -32,9 +30,9 @@ export async function upsertAndRetrieveManyAddresses(
   return addressEntities.reduce<
     Record<string, WithoutTimestampFields<AddressEntity>>
   >(
-    (addressToEntity, addressEntity) => ({
+    (addressToEntity, { id: _, ...addressEntity }) => ({
       ...addressToEntity,
-      [addressEntity.address]: omitDBTimestampFields(addressEntity),
+      [addressEntity.address]: addressEntity,
     }),
     {} as Record<string, AddressEntity>
   );

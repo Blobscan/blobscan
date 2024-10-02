@@ -20,7 +20,10 @@ async function main() {
     });
     const { blocks: forkBlocks, txs: forkTxs } =
       dataGenerator.generateDBTransactionForks(fullBlocks);
-    const addressToCategoryInfo: Record<string, AddressCategoryInfo> = {};
+    const addressToCategoryInfo: Record<
+      string,
+      Omit<AddressCategoryInfo, "id">
+    > = {};
     const dbBlockInsertions: Prisma.BlockCreateManyInput[] = [];
     const dbTxInsertions: Prisma.TransactionCreateManyInput[] = [];
     const dbBlobInsertions: Blob[] = [];

@@ -75,14 +75,15 @@ model BlobStoragesState {
 }
 
 model AddressCategoryInfo {
+  id                         Int       @id @default(autoincrement())
   address                    String
-  category                   Category @default(OTHER)
-  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
-  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  category                   Category?
+  firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
+  firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
 
   addressEntity Address @relation(fields: [address], references: [address])
 
-  @@id([address, category])
+  @@unique([address, category])
   @@map("address_category_info")
 }
 

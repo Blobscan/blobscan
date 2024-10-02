@@ -62,7 +62,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       addressCategoryInfo: {
-        upsertMany(addressEntries: AddressCategoryInfo[]) {
+        upsertMany(addressEntries: Omit<AddressCategoryInfo, "id">[]) {
           if (!addressEntries.length) {
             return (
               Prisma.getExtensionContext(this) as any
@@ -78,7 +78,9 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 firstBlockNumberAsSender,
               }) => [
                 address,
-                Prisma.sql`${category.toLowerCase()}::category`,
+                category
+                  ? Prisma.sql`${category.toLowerCase()}::category`
+                  : Prisma.sql`NULL`,
                 firstBlockNumberAsReceiver,
                 firstBlockNumberAsSender,
               ]
