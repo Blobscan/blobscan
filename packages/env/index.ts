@@ -28,7 +28,7 @@ export const env = createEnv({
   envOptions: {
     server: {
       // PostHog
-      POSTHOG_KEY: z.string().optional(),
+      POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().optional(),
 
       BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
