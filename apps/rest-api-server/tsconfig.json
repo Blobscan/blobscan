@@ -10,5 +10,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["src", "scripts", "../../packages/api/src/posthog.ts"]
+  "include": ["src", "scripts"]
 }
