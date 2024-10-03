@@ -23,11 +23,13 @@ export const navigation = [
     ],
   },
   {
-    title: 'Gratitude Corner',
+    title: 'Run your Blobscan instance',
     links: [
+      { title: 'Local', href: '/docs/running-blobscan-locally' },
+      { title: 'Kubernetes', href: '/docs/running-blobscan-k8s' },
       {
-        title: 'Funding',
-        href: '/docs/funding',
+        title: 'Kurtosis',
+        href: '/docs/running-blobscan-kurtosis',
       },
     ],
   },
@@ -41,23 +43,21 @@ export const navigation = [
     ],
   },
   {
-    title: 'Run your Blobscan instance',
-    links: [
-      { title: 'Local', href: '/docs/running-blobscan-locally' },
-      { title: 'Kubernetes', href: '/docs/running-blobscan-k8s' },
-      {
-        title: 'Kurtosis',
-        href: '/docs/running-blobscan-kurtosis',
-      },
-    ],
-  },
-  {
     title: 'Reference',
     links: [
       { title: 'API', href: '/docs/api' },
       { title: 'CLI', href: '/docs/clis' },
       { title: 'Metrics', href: '/docs/metrics' },
       { title: 'Supported storages', href: '/docs/storages' },
+    ],
+  },
+  {
+    title: 'Gratitude Corner',
+    links: [
+      {
+        title: 'Funding',
+        href: '/docs/funding',
+      },
     ],
   },
   {
