@@ -12,8 +12,8 @@ if (!basePath) {
   process.exit(1);
 }
 
-saveFilesToDB(basePath).then(() => {
-  console.log("All files saved to the database.");
+saveDecodedDataToDB(basePath).then(() => {
+  console.log("All data saved to the database.");
 });
 
 /**
@@ -22,9 +22,8 @@ saveFilesToDB(basePath).then(() => {
  * @returns A promise that resolves when all the data has been saved to the database.
  * @example saveFilesToDB("/path/to/decoded-json-files");
  */
-export async function saveFilesToDB(basePath: string) {
+export async function saveDecodedDataToDB(basePath: string) {
   const decodedData = await getDecodedJSONFiles(basePath);
-
   for (const { hash, data } of decodedData) {
     try {
       await saveDecodedOptimismDataToDB({
@@ -32,8 +31,7 @@ export async function saveFilesToDB(basePath: string) {
         data,
       });
     } catch (err) {
-      console.error(`Error saving decoded data to DB for hash ${hash}:`, err);
-      console.error("Data:", data);
+      console.error(`${err}`);
     }
   }
 }
@@ -59,7 +57,7 @@ async function getDecodedJSONFiles(
         results.push({ hash, data });
       }
     } catch (err) {
-      console.error(`Error reading decoded.json file for ${item.name}:`, err);
+      console.error(`${err}`);
     }
   }
 

@@ -12,7 +12,7 @@ export function saveDecodedOptimismDataToDB({
   return prisma.transaction.update({
     where: {
       hash,
-      rollup: "OPTIMISM",
+      //rollup: "OPTIMISM",
     },
     data: {
       decodedFields: data,

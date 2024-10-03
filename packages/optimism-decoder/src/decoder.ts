@@ -42,7 +42,7 @@ export async function decodeOptimismFile(
 
   for (const blob of chunks(blobs, 131072)) {
     if (blob[1] !== 0) {
-         throw new Error("Assertion failed: blob[1] must be 0");
+      throw new Error("Assertion failed: blob[1] must be 0");
     }
     const declaredLength = bytesToNumber(blob.slice(2, 5));
     let blobData = new Uint8Array();
@@ -234,14 +234,6 @@ export async function decodeOptimismFile(
 export async function decodeOptimismTransaction(
   transactionId: string
 ): Promise<OptimismDecodedData | null> {
-  /*
-    const tx = await ctx.prisma.transaction.filter(
-        where: {
-            id: transactionId
-        }
-    )
-  */
-  // TODO: assert fromAddress belongs to Optimism rollup
   const { versionedHashes, blockNumber } = await fetchAndExtractVersionedHashes(
     transactionId
   );

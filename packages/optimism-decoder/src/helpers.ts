@@ -139,9 +139,9 @@ function combineFiles(
 }
 
 /**
- * Function to save OptimismDecodedData to a JSON file.
+ * Function to save OptimismDecodedData to a JSON file (decoded.json).
  * @param data - The OptimismDecodedData object to save.
- * @param blockNumber - The block number to include in the filename.
+ * @param transactionId - The transaction id to include in the filename.
  */
 export function saveOptimismDecodedData(
   data: OptimismDecodedData,
