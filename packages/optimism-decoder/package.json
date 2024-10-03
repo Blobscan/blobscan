@@ -10,10 +10,10 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "op:decode": "npx dotenv -e .env npx ts-node ./src/index.ts",
+    "op:decode": "npx dotenv -e ../../.env npx ts-node ./src/index.ts",
     "op:generate_ecotone_txt": "docker run -ti --rm postgres:16 psql $POSTGRES_URI -c \"SELECT hash FROM transaction WHERE from_id = '0x6887246668a3b87f54deb3b94ba47a6f63f32985' AND block_number BETWEEN 19429617 AND 20277188 ORDER BY block_number;\" > optimism_ecotone.txt",
-    "op:download": "npx dotenv -e .env npx ts-node ./src/download.ts optimism_ecotone.txt",
-    "op:save-files-to-db": "npx dotenv -e .env npx ts-node ./src/save-files-to-db.ts ./src/blobs/tx",
+    "op:download": "npx dotenv -e ../../.env npx ts-node ./src/download.ts optimism_ecotone.txt",
+    "op:save-files-to-db": "npx dotenv -e ../../.env npx ts-node ./src/save-files-to-db.ts ./src/blobs/tx",
     "with-env:test": "dotenv -e ../../.env.test --",
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui"
