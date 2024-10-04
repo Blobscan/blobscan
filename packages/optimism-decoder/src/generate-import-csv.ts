@@ -9,14 +9,23 @@ const csvWriter = createObjectCsvWriter({
     { id: "hash", title: "hash" },
     { id: "decoded_fields", title: "decoded_fields" },
   ],
-  //append: true,
 });
 
-const writeRecordToCsv = async (hash: string, decodedContent: string) => {
-  await csvWriter.writeRecords([{ hash, decoded_fields: decodedContent }]);
-};
+const args = process.argv.slice(2);
+const basePath = args[0];
 
-const generateCsv = async (directory: string) => {
+if (!basePath) {
+  console.error("Error: Please provide a base path as a parameter.");
+  process.exit(1);
+}
+
+generateCsv(basePath).catch((err) => console.error(`Error: ${err}`));
+
+export async function writeRecordToCsv(hash: string, decodedContent: string) {
+  await csvWriter.writeRecords([{ hash, decoded_fields: decodedContent }]);
+}
+
+export async function generateCsv(directory: string) {
   let errors = 0;
   const subdirectories = fs
     .readdirSync(directory, { withFileTypes: true })
@@ -48,14 +57,4 @@ const generateCsv = async (directory: string) => {
     );
   }
   console.log("*****************************");
-};
-
-const args = process.argv.slice(2);
-const basePath = args[0];
-
-if (!basePath) {
-  console.error("Error: Please provide a base path as a parameter.");
-  process.exit(1);
 }
-
-generateCsv(basePath).catch((err) => console.error(`Error: ${err}`));

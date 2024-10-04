@@ -6,15 +6,14 @@ import type { OptimismDecodedData } from "./decoder";
 
 const args = process.argv.slice(2);
 const basePath = args[0];
+let errors = 0;
 
 if (!basePath) {
   console.error("Error: Please provide a base path as a parameter.");
   process.exit(1);
 }
 
-saveDecodedDataToDB(basePath).then(() => {
-  console.log("All data saved to the database.");
-});
+saveDecodedDataToDB(basePath).catch((err) => console.error(`Error: ${err}`));
 
 /**
  * Save the decoded JSON data to the database.
@@ -24,16 +23,28 @@ saveDecodedDataToDB(basePath).then(() => {
  */
 export async function saveDecodedDataToDB(basePath: string) {
   const decodedData = await getDecodedJSONFiles(basePath);
+  let good = 0;
   for (const { hash, data } of decodedData) {
     try {
       await saveDecodedOptimismDataToDB({
         hash,
         data,
       });
+      good += 1;
     } catch (err) {
+      errors += 1;
       console.error(`${err}`);
     }
   }
+
+  console.log("\n*****************************");
+  console.log(`Saved decoded fields for ${good} transactions.`);
+  if (errors > 0) {
+    console.error(
+      `Note: ${errors} errors found during the process. Review the logs!`
+    );
+  }
+  console.log("*****************************");
 }
 
 /**
@@ -57,6 +68,7 @@ async function getDecodedJSONFiles(
         results.push({ hash, data });
       }
     } catch (err) {
+      errors += 1;
       console.error(`${err}`);
     }
   }
