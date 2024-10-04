@@ -135,6 +135,7 @@ async function performDailyStatsOperation(
   }
 
   try {
+    // The daily stats operation returns the number of affected rows
     const result = await dailyStatsFn(operationParam);
 
     if (typeof result === "number") {
