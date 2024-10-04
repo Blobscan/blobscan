@@ -28,10 +28,7 @@ describe("Blob router", async () => {
 
   describe("getAll", () => {
     beforeEach(async () => {
-      await ctx.prisma.blobOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await ctx.prisma.blobOverallStats.populate();
     });
 
     runPaginationTestsSuite("blob", (paginationInput) =>
@@ -132,10 +129,7 @@ describe("Blob router", async () => {
 
   describe("getCount", () => {
     it("should return the overall total blobs stat when no filters are provided", async () => {
-      await ctx.prisma.blobOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await ctx.prisma.blobOverallStats.populate();
       const { totalBlobs } = await caller.blob.getCount({});
 
       expect(totalBlobs).toBe(fixtures.canonicalBlobs.length);

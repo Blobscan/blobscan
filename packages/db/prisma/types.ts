@@ -9,14 +9,14 @@ export type TimestampFields = "insertedAt" | "updatedAt";
 
 export type WithoutTimestampFields<T> = Omit<T, TimestampFields>;
 
-export type RawDate = string | Date | dayjs.Dayjs;
+export type DateLike = string | Date | dayjs.Dayjs;
 
-export type RawDatePeriod = {
-  from?: RawDate;
-  to?: RawDate;
+export type DatePeriodLike = {
+  from?: DateLike;
+  to?: DateLike;
 };
 
 export type DatePeriod = {
-  from?: string;
-  to?: string;
+  from?: Date;
+  to?: Date;
 };

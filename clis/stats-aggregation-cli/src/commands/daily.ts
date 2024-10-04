@@ -1,9 +1,10 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import dayjs from "@blobscan/dayjs";
-import type { DatePeriod, RawDatePeriod } from "@blobscan/db";
-import { normalizeDailyDatePeriod, prisma } from "@blobscan/db";
+import type { DatePeriodLike } from "@blobscan/dayjs";
+import dayjs, { toDailyDatePeriod } from "@blobscan/dayjs";
+import type { DatePeriod } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 
 import { CommandError } from "../error";
 import type { Command, Entity } from "../types";
@@ -101,7 +102,7 @@ async function performDailyStatsOperation(
   entity: Entity,
   operation: Operation,
   datePeriod?: DatePeriod
-) {
+): Promise<number> {
   let dailyStatsFn;
   const { from, to } = datePeriod || {};
   const isDateProvided = from || to;
@@ -133,12 +134,17 @@ async function performDailyStatsOperation(
       break;
   }
 
-  let result;
-
   try {
-    result = await dailyStatsFn(operationParam).then((res) => {
-      return typeof res === "number" ? res : res.count;
-    });
+    // The daily stats operation returns the number of affected rows
+    const result = await dailyStatsFn(operationParam);
+
+    if (typeof result === "number") {
+      return result;
+    } else if ("count" in result) {
+      result.count;
+    } else {
+      return result.length;
+    }
   } catch (err) {
     const err_ = err as Error;
 
@@ -148,7 +154,7 @@ async function performDailyStatsOperation(
     );
   }
 
-  return result;
+  return -1;
 }
 
 const daily: Command = async function daily(argv) {
@@ -176,10 +182,10 @@ const daily: Command = async function daily(argv) {
   }
 
   const operation: Operation = delete_ ? "deleteMany" : "populate";
-  const rawDatePeriod: RawDatePeriod = { from: rawFrom, to: rawTo };
+  const rawDatePeriod: DatePeriodLike = { from: rawFrom, to: rawTo };
   let datePeriod: DatePeriod;
   try {
-    datePeriod = normalizeDailyDatePeriod(rawDatePeriod);
+    datePeriod = toDailyDatePeriod(rawDatePeriod);
   } catch (err) {
     const err_ = err as Error;
 

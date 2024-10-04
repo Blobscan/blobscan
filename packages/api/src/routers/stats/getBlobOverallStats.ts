@@ -13,24 +13,31 @@ export const outputSchema = z.object({
   updatedAt: z.date(),
 });
 
-export function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
-  return prisma.blobOverallStats
-    .findUnique({
-      where: { id: 1 },
-    })
-    .then((stats) =>
-      stats
-        ? {
-            ...stats,
-            totalBlobSize: stats.totalBlobSize.toString(),
-          }
-        : {
-            totalBlobs: 0,
-            totalBlobSize: "0",
-            totalUniqueBlobs: 0,
-            updatedAt: new Date(),
-          }
-    );
+export async function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
+  const stats = await prisma.blobOverallStats.findMany({
+    where: {
+      category: null,
+      rollup: null,
+    },
+  });
+
+  const allStats = stats[0];
+
+  if (!allStats) {
+    return {
+      totalBlobs: 0,
+      totalUniqueBlobs: 0,
+      totalBlobSize: "0",
+      updatedAt: new Date(),
+    };
+  }
+
+  return {
+    totalBlobs: allStats.totalBlobs,
+    totalUniqueBlobs: allStats.totalUniqueBlobs,
+    totalBlobSize: allStats.totalBlobSize.toString(),
+    updatedAt: allStats.updatedAt,
+  };
 }
 
 export const getBlobOverallStats = publicProcedure

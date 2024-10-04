@@ -1,71 +1,77 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Base Extension > Address model > upsertAddressesFromTransactions() > when updating addresses from transactions > should upsert addresses from multiple transactions correctly 1`] = `
-[
-  {
-    "address": "address1",
-    "firstBlockNumberAsReceiver": 1002,
-    "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address3",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address4",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1002,
-  },
-  {
-    "address": "address6",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address8",
-    "firstBlockNumberAsReceiver": 1002,
-    "firstBlockNumberAsSender": 1002,
-  },
-]
-`;
-
-exports[`Base Extension > Address model > upsertMany() > should insert multiple addresses correctly 1`] = `
+exports[`Base Extension > Address Category Info model > upsertMany() > should insert multiple addresses correctly 1`] = `
 [
   {
     "address": "address10",
+    "category": "OTHER",
     "firstBlockNumberAsReceiver": 1002,
     "firstBlockNumberAsSender": 1001,
   },
   {
     "address": "address11",
+    "category": "OTHER",
     "firstBlockNumberAsReceiver": 1002,
     "firstBlockNumberAsSender": 1001,
   },
   {
     "address": "address9",
+    "category": "OTHER",
     "firstBlockNumberAsReceiver": 1002,
     "firstBlockNumberAsSender": 1001,
   },
 ]
 `;
 
-exports[`Base Extension > Address model > upsertMany() > update multiple addresses correctly 1`] = `
+exports[`Base Extension > Address Category Info model > upsertMany() > update multiple addresses correctly 1`] = `
 [
   {
     "address": "address2",
+    "category": "ROLLUP",
+    "firstBlockNumberAsReceiver": 1004,
+    "firstBlockNumberAsSender": null,
+  },
+  {
+    "address": "address2",
+    "category": "OTHER",
     "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1002,
+    "firstBlockNumberAsSender": 1003,
+  },
+  {
+    "address": "address2",
+    "category": null,
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": 1003,
   },
   {
     "address": "address5",
+    "category": null,
+    "firstBlockNumberAsReceiver": null,
+    "firstBlockNumberAsSender": 1004,
+  },
+  {
+    "address": "address5",
+    "category": "OTHER",
     "firstBlockNumberAsReceiver": 1001,
     "firstBlockNumberAsSender": 1001,
   },
   {
     "address": "address6",
+    "category": "OTHER",
     "firstBlockNumberAsReceiver": 1001,
     "firstBlockNumberAsSender": 1001,
+  },
+  {
+    "address": "address6",
+    "category": null,
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": null,
+  },
+  {
+    "address": "address6",
+    "category": "ROLLUP",
+    "firstBlockNumberAsReceiver": 1001,
+    "firstBlockNumberAsSender": null,
   },
 ]
 `;
