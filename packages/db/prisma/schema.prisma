@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["tracing", "metrics"]
+  previewFeatures = ["tracing", "metrics", "typedSql"]
 }
 
 generator enum {
@@ -74,15 +74,27 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
-model Address {
-  address                    String   @id
-  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
-  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
-  insertedAt                 DateTime @default(now()) @map("inserted_at")
-  updatedAt                  DateTime @default(now()) @map("updated_at")
+model AddressCategoryInfo {
+  id                         Int       @id @default(autoincrement())
+  address                    String
+  category                   Category?
+  firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
+  firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
 
-  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
-  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
+  addressEntity Address @relation(fields: [address], references: [address])
+
+  @@unique([address, category])
+  @@map("address_category_info")
+}
+
+model Address {
+  address    String   @id
+  insertedAt DateTime @default(now()) @map("inserted_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  transactionsAsSender   Transaction[]         @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[]         @relation("receiverAddressRelation")
+  addressCategoryInfo    AddressCategoryInfo[]
 
   @@index([insertedAt])
   @@map("address")
@@ -217,14 +229,15 @@ model TransactionFork {
 // Block Metrics
 model BlockOverallStats {
   id                         Int     @id @default(autoincrement())
-  totalBlocks                Int     @map("total_blocks")
-  totalBlobGasUsed           Decimal @map("total_blob_gas_used") @db.Decimal(100, 0)
-  totalBlobAsCalldataGasUsed Decimal @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
-  totalBlobFee               Decimal @map("total_blob_fee") @db.Decimal(100, 0)
-  totalBlobAsCalldataFee     Decimal @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
-  avgBlobFee                 Float   @map("avg_blob_fee")
-  avgBlobAsCalldataFee       Float   @map("avg_blob_as_calldata_fee")
-  avgBlobGasPrice            Float   @map("avg_blob_gas_price")
+  totalBlocks                Int     @default(0) @map("total_blocks")
+  totalBlobGasUsed           Decimal @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  totalBlobGasPrice          Decimal @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  avgBlobFee                 Float   @default(0) @map("avg_blob_fee")
+  avgBlobAsCalldataFee       Float   @default(0) @map("avg_blob_as_calldata_fee")
+  avgBlobGasPrice            Float   @default(0) @map("avg_blob_gas_price")
 
   updatedAt DateTime @map("updated_at")
 
@@ -233,14 +246,14 @@ model BlockOverallStats {
 
 model BlockDailyStats {
   day                        DateTime @id @db.Date
-  totalBlocks                Int      @map("total_blocks")
-  totalBlobGasUsed           Decimal  @map("total_blob_gas_used") @db.Decimal(100, 0)
-  totalBlobAsCalldataGasUsed Decimal  @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
-  totalBlobFee               Decimal  @map("total_blob_fee") @db.Decimal(100, 0)
-  totalBlobAsCalldataFee     Decimal  @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
-  avgBlobFee                 Float    @map("avg_blob_fee")
-  avgBlobAsCalldataFee       Float    @map("avg_blob_as_calldata_fee")
-  avgBlobGasPrice            Float    @map("avg_blob_gas_price")
+  totalBlocks                Int      @default(0) @map("total_blocks")
+  totalBlobGasUsed           Decimal  @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal  @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal  @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal  @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  avgBlobFee                 Float    @default(0) @map("avg_blob_fee")
+  avgBlobAsCalldataFee       Float    @default(0) @map("avg_blob_as_calldata_fee")
+  avgBlobGasPrice            Float    @default(0) @map("avg_blob_gas_price")
 
   @@unique([day])
   @@index([day])
@@ -250,45 +263,82 @@ model BlockDailyStats {
 // Transaction metrics
 
 model TransactionOverallStats {
-  id                   Int   @id @default(autoincrement())
-  totalTransactions    Int   @map("total_transactions")
-  totalUniqueReceivers Int   @map("total_unique_receivers")
-  totalUniqueSenders   Int   @map("total_unique_senders")
-  avgMaxBlobGasFee     Float @map("avg_max_blob_gas_fee")
+  id                         Int       @id @default(autoincrement())
+  category                   Category?
+  rollup                     Rollup?
+  totalTransactions          Int       @default(0) @map("total_transactions")
+  totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
+  totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  updatedAt                  DateTime  @map("updated_at")
 
-  updatedAt DateTime @map("updated_at")
-
+  @@unique([category, rollup])
   @@map("transaction_overall_stats")
 }
 
 model TransactionDailyStats {
-  day                  DateTime @id @db.Date
-  totalTransactions    Int      @map("total_transactions")
-  totalUniqueSenders   Int      @map("total_unique_senders")
-  totalUniqueReceivers Int      @map("total_unique_receivers")
-  avgMaxBlobGasFee     Float    @map("avg_max_blob_gas_fee")
+  id                         Int       @id @default(autoincrement())
+  day                        DateTime  @db.Date
+  category                   Category?
+  rollup                     Rollup?
+  totalTransactions          Int       @default(0) @map("total_transactions")
+  totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
+  totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
 
+  @@unique([day, category, rollup])
   @@map("transaction_daily_stats")
 }
 
 // Blob metrics
 model BlobOverallStats {
-  id               Int    @id @default(autoincrement())
-  totalBlobs       Int    @map("total_blobs")
-  totalUniqueBlobs Int    @map("total_unique_blobs")
-  totalBlobSize    BigInt @map("total_blob_size")
+  id               Int       @id @default(autoincrement())
+  category         Category?
+  rollup           Rollup?
+  totalBlobs       Int       @default(0) @map("total_blobs")
+  totalUniqueBlobs Int       @default(0) @map("total_unique_blobs")
+  totalBlobSize    BigInt    @default(0) @map("total_blob_size")
 
   updatedAt DateTime @map("updated_at")
 
+  @@unique([category, rollup])
   @@map("blob_overall_stats")
 }
 
 model BlobDailyStats {
-  day              DateTime @id @db.Date
-  totalBlobs       Int      @map("total_blobs")
-  totalUniqueBlobs Int      @map("total_unique_blobs")
-  totalBlobSize    BigInt   @map("total_blob_size")
+  id               Int       @id @default(autoincrement())
+  day              DateTime  @db.Date
+  category         Category?
+  rollup           Rollup?
+  totalBlobs       Int       @default(0) @map("total_blobs")
+  totalUniqueBlobs Int       @default(0) @map("total_unique_blobs")
+  totalBlobSize    BigInt    @default(0) @map("total_blob_size")
 
+  @@unique([day, category, rollup])
   @@map("blob_daily_stats")
 }
 

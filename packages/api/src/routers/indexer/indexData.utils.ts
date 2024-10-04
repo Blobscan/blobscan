@@ -1,4 +1,6 @@
 import type {
+  Address,
+  AddressCategoryInfo,
   Blob,
   BlobsOnTransactions,
   Block,
@@ -191,4 +193,99 @@ export function createDBBlobsOnTransactions({
       index,
     };
   });
+}
+
+export function createDBAddresses({
+  transactions,
+}: IndexDataFormattedInput): WithoutTimestampFields<Address>[] {
+  return Array.from(
+    new Set<string>(transactions.flatMap(({ from, to }) => [from, to]))
+  ).map((addr) => ({
+    address: addr,
+  }));
+}
+
+function updateDbCategoryInfo({
+  address,
+  category,
+  dbAddressesCategoryInfo,
+  type,
+  blockNumber,
+}: {
+  address: string;
+  category: Category | null;
+  dbAddressesCategoryInfo: Omit<AddressCategoryInfo, "id">[];
+  type: "sender" | "receiver";
+  blockNumber: number;
+}) {
+  const dbAddressCategoryInfo = dbAddressesCategoryInfo.find(
+    (a) => a.address === address && a.category === category
+  );
+
+  const isSender = type === "sender";
+
+  if (!dbAddressCategoryInfo) {
+    dbAddressesCategoryInfo.push({
+      address,
+      category,
+      firstBlockNumberAsReceiver: isSender ? null : blockNumber,
+      firstBlockNumberAsSender: isSender ? blockNumber : null,
+    });
+
+    return;
+  }
+
+  const currBlockNumber = isSender
+    ? dbAddressCategoryInfo.firstBlockNumberAsSender
+    : dbAddressCategoryInfo.firstBlockNumberAsReceiver;
+
+  if (currBlockNumber) {
+    dbAddressCategoryInfo[
+      isSender ? "firstBlockNumberAsSender" : "firstBlockNumberAsReceiver"
+    ] = Math.min(currBlockNumber, blockNumber);
+  }
+
+  return dbAddressCategoryInfo;
+}
+
+export function createDBAddressCategoryInfo(
+  dbTxs: WithoutTimestampFields<Transaction>[]
+): Omit<AddressCategoryInfo, "id">[] {
+  const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
+
+  dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
+    updateDbCategoryInfo({
+      address: fromId,
+      category,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "sender",
+      blockNumber,
+    });
+
+    updateDbCategoryInfo({
+      address: fromId,
+      category: null,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "sender",
+      blockNumber,
+    });
+
+    updateDbCategoryInfo({
+      address: toId,
+      category: null,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "receiver",
+      blockNumber,
+    });
+
+    updateDbCategoryInfo({
+      address: toId,
+      category,
+      dbAddressesCategoryInfo: dbAddresses,
+      type: "receiver",
+      blockNumber,
+    });
+  });
+
+  return dbAddresses;
 }

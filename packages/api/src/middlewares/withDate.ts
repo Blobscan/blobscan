@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { normalizeDailyDatePeriod } from "@blobscan/db";
+import { toDailyDatePeriod } from "@blobscan/dayjs";
 import type { DatePeriod } from "@blobscan/db";
 
 import { t } from "../trpc-client";
@@ -21,7 +21,7 @@ export const withDatePeriod = t.middleware(({ next, input }) => {
   const hasAtLeastOneDate = Boolean(from || to);
 
   const datePeriod = hasAtLeastOneDate
-    ? normalizeDailyDatePeriod({
+    ? toDailyDatePeriod({
         from,
         to,
       })
@@ -36,7 +36,7 @@ export const withDatePeriod = t.middleware(({ next, input }) => {
 
 export const withDate = t.middleware(({ next, input }) => {
   const { day } = dateSchema.parse(input);
-  const datePeriod: DatePeriod = normalizeDailyDatePeriod({
+  const datePeriod: DatePeriod = toDailyDatePeriod({
     to: day,
     from: day,
   });
