@@ -50,6 +50,8 @@ jobs:
         uses: ./tooling/github/setup
 
       - name: Typecheck
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
         run: pnpm type-check
 
   build:
@@ -120,14 +122,11 @@ jobs:
 
       - name: Test migrations
         run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
 
       - name: Test
         run: pnpm coverage
         env:
           POSTGRES_STORAGE_ENABLED: true
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
