@@ -26,7 +26,7 @@ nextjs:
 | `TRACES_ENABLED`                       | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                                                                                                                                                                                                                                                        |
 | `BLOB_PROPAGATOR_ENABLED`              | Enable uploading blobs to multiple storages in parallel                                     | No       | `false`                                                                                                                                                                                                                                                        |
 | `NEXT_PUBLIC_POSTHOG_ID`               | PostHog project API key used for tracking events and analytics                              | No       | (empty)                                                                                                                                                                                                                                                        |
-| `NEXT_PUBLIC_POSTHOG_HOST`             | Host URL for the PostHog instance used for analytics tracking                               | No       | (empty)                                                                                                                                                                                                                                                        |
+| `NEXT_PUBLIC_POSTHOG_HOST`             | Host URL for the PostHog instance used for analytics tracking                               | No       | `https://us.i.posthog.com`                                                                                                                                                                                                                                     |
 
 ## Blobscan API
 
@@ -63,7 +63,7 @@ nextjs:
 | `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE` | Remove completed jobs after the specified number of seconds (default: 1 day)                       | No                              | `86400`                    |
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`    | Remove completed jobs after the specified number of seconds (default: 7 days)                      | No                              | `604800`                   |
 | `POSTHOG_ID`                         | PostHog project API key used for tracking events and analytics                                     | No                              | (empty)                    |
-| `POSTHOG_HOST`                       | Host URL for the PostHog instance used for analytics tracking                                      | No                              | (empty)                    |
+| `POSTHOG_HOST`                       | Host URL for the PostHog instance used for analytics tracking                                      | No                              | `https://us.i.posthog.com` |
 
 ## Blobscan indexer
 
