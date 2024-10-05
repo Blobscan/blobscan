@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
 import { omitDBTimestampFields } from "@blobscan/test";
@@ -9,21 +9,23 @@ import { createTestContext } from "./helpers";
 
 const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
 
-function runTimeFrameTests(
-  name: string,
-  statsFiller: () => Promise<unknown>,
-  statsFetcher: (timeFrame: TimeFrame) => Promise<unknown>
-) {
-  return describe(name, () => {
-    describe("when getting stats for a specific timeframe", () => {
-      TIME_FRAMES.forEach((timeFrame) => {
-        it(`should get daily stats for ${timeFrame}`, async () => {
-          await statsFiller();
+function runTimeFrameTests({
+  statsFiller,
+  statsFetcher,
+}: {
+  statsFiller: () => Promise<unknown>;
+  statsFetcher: (timeFrame: TimeFrame) => Promise<unknown>;
+}) {
+  return describe("when getting stats for a specific timeframe", () => {
+    beforeEach(async () => {
+      await statsFiller();
+    });
 
-          const result = await statsFetcher(timeFrame);
+    TIME_FRAMES.forEach((timeFrame) => {
+      it(`should get daily stats for ${timeFrame}`, async () => {
+        const result = await statsFetcher(timeFrame);
 
-          expect(result).toMatchSnapshot();
-        });
+        expect(result).toMatchSnapshot();
       });
     });
   });
@@ -44,40 +46,34 @@ describe("Stats router", async () => {
 
   describe("getBlobOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blobOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await prisma.blobOverallStats.populate();
 
       const blobOverallStats = await caller.stats.getBlobOverallStats();
 
       expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
         {
-          "totalBlobSize": "36400",
-          "totalBlobs": 32,
-          "totalUniqueBlobs": 7,
+          "totalBlobSize": "422116",
+          "totalBlobs": 29,
+          "totalUniqueBlobs": 9,
         }
       `);
     });
   });
 
-  runTimeFrameTests(
-    "getBlobDailyStats",
-    async () => {
-      await prisma.blobDailyStats.populate({
-        to,
-      });
-    },
-
-    (timeFrame) => caller.stats.getBlobDailyStats({ timeFrame })
-  );
+  describe("getBlobDailyStats", () => {
+    runTimeFrameTests({
+      statsFiller() {
+        return prisma.blobDailyStats.populate({ to });
+      },
+      statsFetcher(timeFrame) {
+        return caller.stats.getBlobDailyStats({ timeFrame });
+      },
+    });
+  });
 
   describe("getBlockOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blockOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await prisma.blockOverallStats.populate();
 
       const blockOverallStats = await caller.stats.getBlockOverallStats();
 
@@ -96,21 +92,20 @@ describe("Stats router", async () => {
     });
   });
 
-  runTimeFrameTests(
-    "getBlockDailyStats",
-    () =>
-      prisma.blockDailyStats.populate({
-        to,
-      }),
-    (timeFrame) => caller.stats.getBlockDailyStats({ timeFrame })
-  );
+  describe("getBlockDailyStats", () => {
+    runTimeFrameTests({
+      statsFiller() {
+        return prisma.blockDailyStats.populate({ to });
+      },
+      statsFetcher(timeFrame) {
+        return caller.stats.getBlockDailyStats({ timeFrame });
+      },
+    });
+  });
 
   describe("getTransactionOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.transactionOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await prisma.transactionOverallStats.populate();
       const result = await caller.stats.getTransactionOverallStats();
 
       expect(omitDBTimestampFields(result)).toMatchInlineSnapshot(`
@@ -118,15 +113,20 @@ describe("Stats router", async () => {
           "avgMaxBlobGasFee": 101.875,
           "totalTransactions": 16,
           "totalUniqueReceivers": 4,
-          "totalUniqueSenders": 4,
+          "totalUniqueSenders": 7,
         }
       `);
     });
   });
 
-  runTimeFrameTests(
-    "getTransactionDailyStats",
-    () => prisma.transactionDailyStats.populate({ to }),
-    (timeFrame) => caller.stats.getTransactionDailyStats({ timeFrame })
-  );
+  describe("getTransactionDailyStats", () => {
+    runTimeFrameTests({
+      statsFiller() {
+        return prisma.transactionDailyStats.populate({ to });
+      },
+      statsFetcher(timeFrame) {
+        return caller.stats.getTransactionDailyStats({ timeFrame });
+      },
+    });
+  });
 });

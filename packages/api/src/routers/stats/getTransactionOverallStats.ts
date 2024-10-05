@@ -14,21 +14,35 @@ export const outputSchema = z.object({
   updatedAt: z.date(),
 });
 
-export function getTransactionOverallStatsQuery(prisma: TRPCContext["prisma"]) {
-  return prisma.transactionOverallStats
-    .findUnique({
-      where: { id: 1 },
-    })
-    .then(
-      (overallStats) =>
-        overallStats ?? {
-          totalTransactions: 0,
-          totalUniqueReceivers: 0,
-          totalUniqueSenders: 0,
-          avgMaxBlobGasFee: 0,
-          updatedAt: new Date(),
-        }
-    );
+export async function getTransactionOverallStatsQuery(
+  prisma: TRPCContext["prisma"]
+) {
+  const stats = await prisma.transactionOverallStats.findMany({
+    where: {
+      category: null,
+      rollup: null,
+    },
+  });
+
+  const allStats = stats[0];
+
+  if (!allStats) {
+    return {
+      totalTransactions: 0,
+      totalUniqueReceivers: 0,
+      totalUniqueSenders: 0,
+      avgMaxBlobGasFee: 0,
+      updatedAt: new Date(),
+    };
+  }
+
+  return {
+    totalTransactions: allStats.totalTransactions,
+    totalUniqueReceivers: allStats.totalUniqueReceivers,
+    totalUniqueSenders: allStats.totalUniqueSenders,
+    avgMaxBlobGasFee: allStats.avgMaxBlobGasFee,
+    updatedAt: allStats.updatedAt,
+  };
 }
 
 export const getTransactionOverallStats = publicProcedure

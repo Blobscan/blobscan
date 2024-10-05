@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
@@ -10,6 +10,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { getFilteredTransactions, runFilterTests } from "./test-suites/filters";
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -21,8 +22,17 @@ describe("Transaction router", async () => {
   });
 
   describe("getAll", () => {
+    beforeEach(async () => {
+      await ctx.prisma.transactionOverallStats.populate();
+    });
+
     runPaginationTestsSuite("transaction", (paginationInput) =>
-      caller.tx.getAll(paginationInput).then(({ transactions }) => transactions)
+      caller.tx
+        .getAll(paginationInput)
+        .then(({ transactions, totalTransactions }) => ({
+          items: transactions,
+          totalItems: totalTransactions,
+        }))
     );
 
     runFiltersTestsSuite("transaction", (filterInput) =>
@@ -36,12 +46,7 @@ describe("Transaction router", async () => {
     it("should get the total number of transactions", async () => {
       const expectedTotalTransactions = fixtures.canonicalTxs.length;
 
-      await ctx.prisma.transactionOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
-
-      const { totalTransactions } = await caller.tx.getAll();
+      const { totalTransactions } = await caller.tx.getAll({ count: true });
 
       expect(totalTransactions).toBe(expectedTotalTransactions);
     });
@@ -54,6 +59,7 @@ describe("Transaction router", async () => {
       });
 
       const { totalTransactions } = await caller.tx.getAll({
+        count: true,
         rollup: "base",
       });
 
@@ -84,6 +90,22 @@ describe("Transaction router", async () => {
       ).rejects.toMatchSnapshot(
         "[TRPCError: No transaction with hash 'nonExistingHash' found]"
       );
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total transactions stat when no filters are provided", async () => {
+      await ctx.prisma.transactionOverallStats.populate();
+      console.log(await ctx.prisma.transactionOverallStats.findMany());
+      const { totalTransactions } = await caller.tx.getCount({});
+
+      expect(totalTransactions).toBe(fixtures.canonicalTxs.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalTransactions } = await caller.tx.getCount(filters);
+
+      expect(totalTransactions).toBe(getFilteredTransactions(filters).length);
     });
   });
 });

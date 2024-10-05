@@ -1,6 +1,6 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { fixtures } from "@blobscan/test";
 
@@ -13,6 +13,7 @@ import {
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
+import { getFilteredBlocks, runFilterTests } from "./test-suites/filters";
 
 describe("Block router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -24,8 +25,15 @@ describe("Block router", async () => {
   });
 
   describe("getAll", () => {
+    beforeEach(async () => {
+      await ctx.prisma.blockOverallStats.populate();
+    });
+
     runPaginationTestsSuite("block", (paginationInput) =>
-      caller.block.getAll(paginationInput).then(({ blocks }) => blocks)
+      caller.block.getAll(paginationInput).then(({ blocks, totalBlocks }) => ({
+        items: blocks,
+        totalItems: totalBlocks,
+      }))
     );
 
     runFiltersTestsSuite("block", (filterInput) =>
@@ -39,12 +47,7 @@ describe("Block router", async () => {
     it("should return the total number of blocks correctly", async () => {
       const expectedTotalBlocks = fixtures.canonicalBlocks.length;
 
-      await ctx.prisma.blockOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
-
-      const { totalBlocks } = await caller.block.getAll();
+      const { totalBlocks } = await caller.block.getAll({ count: true });
 
       expect(totalBlocks).toBe(expectedTotalBlocks);
     });
@@ -126,6 +129,21 @@ describe("Block router", async () => {
           message: `No block with id '9999'.`,
         })
       );
+    });
+  });
+
+  describe("getCount", () => {
+    it("should return the overall total blocks stat when no filters are provided", async () => {
+      await ctx.prisma.blockOverallStats.populate();
+      const { totalBlocks } = await caller.block.getCount({});
+
+      expect(totalBlocks).toBe(fixtures.canonicalBlocks.length);
+    });
+
+    runFilterTests(async (filters) => {
+      const { totalBlocks } = await caller.block.getCount(filters);
+
+      expect(totalBlocks).toBe(getFilteredBlocks(filters).length);
     });
   });
 });

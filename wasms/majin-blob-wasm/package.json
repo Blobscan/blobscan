@@ -1,16 +1,23 @@
 {
   "name": "@blobscan/majin-blob-wasm",
-  "private": true,
   "collaborators": [
     "Abdelhamid Bakhta <@AbdelStark>"
   ],
-  "version": "0.0.1",
+  "description": "Majin Blob wasm bindings",
+  "version": "0.1.3",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbdelStark/majin-blob"
+  },
   "files": [
-    "browser/*",
-    "node/*"
+    "majin_blob_wasm_bg.wasm",
+    "majin_blob_wasm.js",
+    "majin_blob_wasm_bg.js",
+    "majin_blob_wasm.d.ts"
   ],
+  "module": "majin_blob_wasm.js",
   "types": "majin_blob_wasm.d.ts",
-  "main": "./majin_blob_wasm.js",
   "sideEffects": [
     "./majin_blob_wasm.js",
     "./snippets/*"

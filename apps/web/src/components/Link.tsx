@@ -17,22 +17,18 @@ export const Link: React.FC<LinkProps> = function ({
   hideExternalIcon = false,
 }) {
   return (
-    <span className="truncate">
-      <NextLink
-        href={href}
-        target={isExternal ? "_blank" : "_self"}
-        className="relative z-0 inline-flex max-w-full items-center align-middle text-link-light hover:underline dark:text-link-dark"
-      >
-        <div className="flex w-full items-center">
-          <span className="truncate">{children}</span>
-          {Boolean(isExternal && !hideExternalIcon) && (
-            <ArrowTopRightOnSquareIcon
-              className="relative bottom-[2.5px] ml-1 h-3 w-3"
-              aria-hidden="true"
-            />
-          )}
-        </div>
-      </NextLink>
-    </span>
+    <NextLink
+      href={href}
+      target={isExternal ? "_blank" : "_self"}
+      className="inline-flex max-w-full items-center truncate text-link-light hover:underline dark:text-link-dark"
+    >
+      <div className="truncate">{children}</div>
+      {Boolean(isExternal && !hideExternalIcon) && (
+        <ArrowTopRightOnSquareIcon
+          className="relative bottom-[2.5px] ml-1 h-3 w-3"
+          aria-hidden="true"
+        />
+      )}
+    </NextLink>
   );
 };

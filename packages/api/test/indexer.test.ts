@@ -284,6 +284,7 @@ describe("Indexer router", async () => {
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash1000",
+                "txIndex": 1,
               },
               {
                 "blobHash": "blobHash1001",
@@ -292,6 +293,7 @@ describe("Indexer router", async () => {
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 1,
                 "txHash": "txHash1000",
+                "txIndex": 1,
               },
               {
                 "blobHash": "blobHash999",
@@ -300,6 +302,7 @@ describe("Indexer router", async () => {
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
                 "index": 0,
                 "txHash": "txHash999",
+                "txIndex": 0,
               },
             ]
           `);
@@ -379,7 +382,7 @@ describe("Indexer router", async () => {
               `);
             });
 
-            it.skip("should create blob storage references correctly", async () => {
+            it("should create blob storage references correctly", async () => {
               const indexedBlobHashes = INPUT.blobs.map(
                 (blob) => blob.versionedHash
               );
@@ -502,6 +505,7 @@ describe("Indexer router", async () => {
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash1000",
+              "txIndex": 1,
             },
             {
               "blobHash": "blobHash1001",
@@ -510,6 +514,7 @@ describe("Indexer router", async () => {
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 1,
               "txHash": "txHash1000",
+              "txIndex": 1,
             },
             {
               "blobHash": "blobHash999",
@@ -518,50 +523,89 @@ describe("Indexer router", async () => {
               "blockTimestamp": 2023-09-01T13:50:21.000Z,
               "index": 0,
               "txHash": "txHash999",
+              "txIndex": 0,
             },
           ]
         `);
       });
 
-      it("should indexed addresses correctly", async () => {
+      it("should update the indexed addresses category info correctly", async () => {
         // Remove duplicates
         const addressesSet = new Set(
           INPUT.transactions.flatMap((tx) => [tx.from, tx.to])
         );
-        const indexedAddresses = await authorizedContext.prisma.address
-          .findMany({
-            where: {
-              address: {
-                in: Array.from(addressesSet),
+        const indexedAddresses =
+          await authorizedContext.prisma.addressCategoryInfo
+            .findMany({
+              where: {
+                address: {
+                  in: Array.from(addressesSet),
+                },
               },
-            },
-          })
-          .then((r) =>
-            r
-              .map(omitDBTimestampFields)
-              // Prisma doesn't guarantee the order of the results
-              .sort((a, b) => a.address.localeCompare(b.address))
-          );
+              orderBy: [
+                {
+                  address: "asc",
+                },
+                {
+                  category: "asc",
+                },
+              ],
+            })
+            .then((r) => r.map(({ id: _, ...rest }) => rest));
 
         expect(indexedAddresses).toMatchInlineSnapshot(`
           [
             {
               "address": "address10",
+              "category": "OTHER",
+              "firstBlockNumberAsReceiver": 2010,
+              "firstBlockNumberAsSender": null,
+            },
+            {
+              "address": "address10",
+              "category": null,
               "firstBlockNumberAsReceiver": 2010,
               "firstBlockNumberAsSender": null,
             },
             {
               "address": "address2",
+              "category": "OTHER",
               "firstBlockNumberAsReceiver": 1001,
-              "firstBlockNumberAsSender": 1002,
+              "firstBlockNumberAsSender": 1003,
+            },
+            {
+              "address": "address2",
+              "category": "ROLLUP",
+              "firstBlockNumberAsReceiver": 1004,
+              "firstBlockNumberAsSender": null,
+            },
+            {
+              "address": "address2",
+              "category": null,
+              "firstBlockNumberAsReceiver": 1001,
+              "firstBlockNumberAsSender": 1003,
             },
             {
               "address": "address7",
+              "category": "OTHER",
+              "firstBlockNumberAsReceiver": null,
+              "firstBlockNumberAsSender": 2010,
+            },
+            {
+              "address": "address7",
+              "category": null,
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },
             {
               "address": "address9",
+              "category": "OTHER",
+              "firstBlockNumberAsReceiver": null,
+              "firstBlockNumberAsSender": 2010,
+            },
+            {
+              "address": "address9",
+              "category": null,
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },

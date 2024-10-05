@@ -1,13 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { getDateFromISODateTime, toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
-import { fixtures } from "@blobscan/test";
 
 import { DailyStatsSyncer } from "../src/syncers/";
-import { formatDate } from "../src/utils";
 import { CURRENT_DAY_DATA } from "./DailyStatsSyncer.test.fixtures";
 import {
-  expectDailyStatsDatesToBeEqual,
   getAllDailyStatsDates,
   indexNewBlock,
 } from "./DailyStatsSyncer.test.utils";
@@ -31,10 +29,6 @@ class DailyStatsSyncerMock extends DailyStatsSyncer {
 }
 
 describe("DailyStatsSyncer", () => {
-  const allExpectedDates = Array.from(
-    new Set(fixtures.blocks.map((block) => formatDate(block.timestamp)))
-  ).sort((a, b) => (a < b ? -1 : 1));
-
   let dailyStatsSyncer: DailyStatsSyncerMock;
 
   beforeEach(() => {
@@ -50,14 +44,12 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const allDailyStatsDates = await getAllDailyStatsDates();
+    const { blobDailyStats, blockDailyStats, txDailyStats } =
+      await getAllDailyStatsDates();
 
-    const expectedAllDatesButLastOne = allExpectedDates.slice(0, -1);
-
-    expectDailyStatsDatesToBeEqual(
-      allDailyStatsDates,
-      expectedAllDatesButLastOne
-    );
+    expect(blobDailyStats, "Blob daily stats mismatch").toMatchSnapshot();
+    expect(blockDailyStats, "Block daily stats mismatch").toMatchSnapshot();
+    expect(txDailyStats, "Transaction daily stats mismatch").toMatchSnapshot();
   });
 
   it("should skip aggregation if not all blocks have been indexed for the last day", async () => {
@@ -67,11 +59,25 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const allDailyStatsDates = await getAllDailyStatsDates();
+    const { blobDailyStats, blockDailyStats, txDailyStats } =
+      await getAllDailyStatsDates();
 
-    const expectedDates = [...allExpectedDates];
+    const currentDay = getDateFromISODateTime(
+      toDailyDate(CURRENT_DAY_DATA.block.timestamp)
+    );
 
-    expectDailyStatsDatesToBeEqual(allDailyStatsDates, expectedDates);
+    expect(
+      blobDailyStats.find(([day]) => day === currentDay),
+      "Blob daily stats should not include the current day"
+    ).toBeUndefined();
+    expect(
+      blockDailyStats.find((day) => day === currentDay),
+      "Block daily stats should not include the current day"
+    ).toBeUndefined();
+    expect(
+      txDailyStats.find(([day]) => day === currentDay),
+      "Transaction daily stats should not include the current day"
+    ).toBeUndefined();
   });
 
   it("should skip aggregation if no blocks have been indexed yet", async () => {
@@ -83,10 +89,13 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const allDailyStatsDates = await getAllDailyStatsDates();
+    const { blobDailyStats, blockDailyStats, txDailyStats } =
+      await getAllDailyStatsDates();
 
     expect(findLatestSpy, "findLatest should be called").toHaveBeenCalled();
-    expectDailyStatsDatesToBeEqual(allDailyStatsDates, []);
+    expect(blobDailyStats, "Blob daily stats should be empty").toEqual([]);
+    expect(blockDailyStats, "Block daily stats should be empty").toEqual([]);
+    expect(txDailyStats, "Transaction daily stats should be empty").toEqual([]);
   });
 
   it("should skip aggregation if already up to date", async () => {

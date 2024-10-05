@@ -6,25 +6,28 @@ type BlobDecoderEvent = {
 };
 
 addEventListener("message", (event: MessageEvent<BlobDecoderEvent>) => {
-  try {
-    const { decoder, blobData } = event.data;
+  (async () => {
+    try {
+      const { decoder, blobData } = event.data;
 
-    if (!decoder) {
-      throw new Error("No decoder provided");
-    }
+      if (!decoder) {
+        throw new Error("No decoder provided");
+      }
 
-    if (!blobData) {
-      throw new Error("No blob data provided");
-    }
+      if (!blobData) {
+        throw new Error("No blob data provided");
+      }
 
-    if (isValidDecoder(decoder)) {
-      decodeBlob(blobData, decoder).then((result) => {
-        postMessage({ decodedBlob: result });
-      });
-    } else {
-      throw new Error(`${decoder} decoder is not supported`);
+      if (!isValidDecoder(decoder)) {
+        throw new Error(`${decoder} decoder is not supported`);
+      }
+
+      const decodedBlob = await decodeBlob(blobData, decoder);
+
+      postMessage({ decodedBlob });
+    } catch (err) {
+      console.error(err);
+      postMessage({ error: (err as Error).message });
     }
-  } catch (err) {
-    postMessage({ error: (err as Error).message });
-  }
+  })();
 });

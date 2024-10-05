@@ -164,7 +164,7 @@
     },
     {
       "hash": "txHash003",
-      "fromId": "address5",
+      "fromId": "optimismAddress",
       "toId": "address6",
       "blockHash": "blockHash001",
       "blockNumber": 1001,
@@ -181,7 +181,7 @@
     },
     {
       "hash": "txHash004",
-      "fromId": "address1",
+      "fromId": "baseAddress",
       "toId": "address3",
       "blockHash": "blockHash002",
       "blockNumber": 1002,
@@ -190,7 +190,7 @@
       "maxFeePerBlobGas": 100,
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
-      "blobGasUsed": 786432,
+      "blobGasUsed": 393216,
       "category": "ROLLUP",
       "rollup": "BASE",
       "insertedAt": "2023-05-10T12:10:00Z",
@@ -232,7 +232,7 @@
     },
     {
       "hash": "txHash007",
-      "fromId": "address1",
+      "fromId": "optimismAddress",
       "toId": "address2",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -249,7 +249,7 @@
     },
     {
       "hash": "txHash008",
-      "fromId": "address5",
+      "fromId": "arbitrumAddress",
       "toId": "address6",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -300,7 +300,7 @@
     },
     {
       "hash": "txHash011",
-      "fromId": "address2",
+      "fromId": "baseAddress",
       "toId": "address4",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -317,7 +317,7 @@
     },
     {
       "hash": "txHash012",
-      "fromId": "address2",
+      "fromId": "optimismAddress",
       "toId": "address4",
       "blockHash": "blockHash005",
       "blockNumber": 1005,
@@ -368,7 +368,7 @@
     },
     {
       "hash": "txHash015",
-      "fromId": "address5",
+      "fromId": "optimismAddress",
       "toId": "address4",
       "blockHash": "blockHash007",
       "blockNumber": 1007,
@@ -402,7 +402,7 @@
     },
     {
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "fromId": "address6",
+      "fromId": "optimismAddress",
       "toId": "address1",
       "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
       "blockNumber": 1008,
@@ -474,6 +474,33 @@
       "updatedAt": "2023-05-10T12:10:00Z"
     },
     {
+      "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
+      "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
+      "size": 131072,
+      "firstBlockNumber": 1002,
+      "insertedAt": "2023-05-10T12:10:00Z",
+      "updatedAt": "2023-05-10T12:10:00Z"
+    },
+    {
+      "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
+      "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
+      "size": 131072,
+      "firstBlockNumber": 1002,
+      "insertedAt": "2023-05-10T12:10:00Z",
+      "updatedAt": "2023-05-10T12:10:00Z"
+    },
+    {
+      "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
+      "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
+      "size": 131072,
+      "firstBlockNumber": 1002,
+      "insertedAt": "2023-05-10T12:10:00Z",
+      "updatedAt": "2023-05-10T12:10:00Z"
+    },
+    {
       "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
       "proof": "89cf91c4c8be6f2a390d4262425f79dffb74c174fb15a210182184543bf7394e5a7970a774ee8e0dabc315424c22df0f",
@@ -493,50 +520,6 @@
       "commitment": "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce",
       "proof": "0x992c686396169cb1d4b19cbd77db2b9c8a4ad702419285b1e35288c496225c43c9d17abe669bd63b858832c40321e39e",
       "size": 128000
-    }
-  ],
-  "addresses": [
-    {
-      "address": "address1",
-      "firstBlockNumberAsSender": 1001,
-      "firstBlockNumberAsReceiver": null,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
-    },
-    {
-      "address": "address2",
-      "firstBlockNumberAsSender": 1002,
-      "firstBlockNumberAsReceiver": 1001,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
-    },
-    {
-      "address": "address3",
-      "firstBlockNumberAsSender": 1001,
-      "firstBlockNumberAsReceiver": 1002,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-26T12:10:00Z"
-    },
-    {
-      "address": "address4",
-      "firstBlockNumberAsSender": null,
-      "firstBlockNumberAsReceiver": 1001,
-      "insertedAt": "2022-10-16T12:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
-    },
-    {
-      "address": "address5",
-      "firstBlockNumberAsSender": 1004,
-      "firstBlockNumberAsReceiver": 1002,
-      "insertedAt": "2023-08-25T10:10:00Z",
-      "updatedAt": "2023-08-26T12:10:00Z"
-    },
-    {
-      "address": "address6",
-      "firstBlockNumberAsSender": null,
-      "firstBlockNumberAsReceiver": 1001,
-      "insertedAt": "2023-08-25T10:10:00Z",
-      "updatedAt": "2023-08-25T10:10:00Z"
     }
   ],
   "blobDataStorageReferences": [
@@ -586,6 +569,21 @@
       "dataReference": "blobHash006"
     },
     {
+      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "blobStorage": "POSTGRES",
+      "dataReference": "0x000000000000000000000000000000000000000000000000000000000000b1"
+    },
+    {
+      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "blobStorage": "POSTGRES",
+      "dataReference": "0x000000000000000000000000000000000000000000000000000000000000b2"
+    },
+    {
+      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "blobStorage": "POSTGRES",
+      "dataReference": "0x000000000000000000000000000000000000000000000000000000000000b3"
+    },
+    {
       "blobHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       "blobStorage": "SWARM",
       "dataReference": "bzz://some-hash-for-blobHash006"
@@ -630,6 +628,18 @@
     {
       "id": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
       "data": "cc4d7802def45b483ffedd310430bacf929d0160261691dd9cdecfdb6d920586991bd058e7d25020"
+    },
+    {
+      "id": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "data": "f9530408b74b2803432879b5e7fb5fdcbbcf7e71660f2f6a7cbd182eb9db7a026e0d0b"
+    },
+    {
+      "id": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "data": "682a4f046bbcf3a56762c7e719b030ff9c7c0df9181015daffe724296c59d6bb8dfd5c"
+    },
+    {
+      "id": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "data": "6eff1a27d044dc0d6f1d072c75ce47ccc63b5305b424eb4bafd250ad1de4985cd69fbc"
     }
   ],
   "blobsOnTransactions": [
@@ -639,6 +649,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -647,6 +658,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -655,6 +667,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -663,6 +676,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -671,6 +685,7 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 2,
       "index": 0
     },
     {
@@ -679,55 +694,8 @@
       "blockHash": "blockHash001",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
+      "txIndex": 2,
       "index": 1
-    },
-    {
-      "blobHash": "blobHash001",
-      "txHash": "txHash004",
-      "blockHash": "blockHash002",
-      "blockNumber": 1002,
-      "blockTimestamp": "2023-05-10T12:00:00Z",
-      "index": 0
-    },
-    {
-      "blobHash": "blobHash002",
-      "txHash": "txHash004",
-      "blockHash": "blockHash002",
-      "blockNumber": 1002,
-      "blockTimestamp": "2023-05-10T12:00:00Z",
-      "index": 1
-    },
-    {
-      "blobHash": "blobHash003",
-      "txHash": "txHash004",
-      "blockHash": "blockHash002",
-      "blockNumber": 1002,
-      "blockTimestamp": "2023-05-10T12:00:00Z",
-      "index": 2
-    },
-    {
-      "blobHash": "blobHash004",
-      "txHash": "txHash004",
-      "blockHash": "blockHash002",
-      "blockNumber": 1002,
-      "blockTimestamp": "2023-05-10T12:00:00Z",
-      "index": 3
-    },
-    {
-      "blobHash": "blobHash005",
-      "txHash": "txHash004",
-      "blockHash": "blockHash002",
-      "blockNumber": 1002,
-      "blockTimestamp": "2023-05-10T12:00:00Z",
-      "index": 4
-    },
-    {
-      "blobHash": "blobHash006",
-      "txHash": "txHash004",
-      "blockHash": "blockHash002",
-      "blockNumber": 1002,
-      "blockTimestamp": "2023-05-10T12:00:00Z",
-      "index": 5
     },
     {
       "blobHash": "blobHash002",
@@ -735,6 +703,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -743,6 +712,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -751,6 +721,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -759,6 +730,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -767,6 +739,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 1,
       "index": 1
     },
     {
@@ -775,6 +748,7 @@
       "blockHash": "blockHash003",
       "blockNumber": 1003,
       "blockTimestamp": "2023-08-03T12:00:00Z",
+      "txIndex": 1,
       "index": 2
     },
     {
@@ -783,6 +757,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -791,6 +766,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -799,6 +775,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 2,
       "index": 0
     },
     {
@@ -807,6 +784,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 3,
       "index": 0
     },
     {
@@ -815,6 +793,7 @@
       "blockHash": "blockHash004",
       "blockNumber": 1004,
       "blockTimestamp": "2023-08-20T12:00:00Z",
+      "txIndex": 4,
       "index": 0
     },
     {
@@ -823,6 +802,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -831,6 +811,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -839,6 +820,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -847,6 +829,7 @@
       "blockHash": "blockHash005",
       "blockNumber": 1005,
       "blockTimestamp": "2023-08-28T10:00:00Z",
+      "txIndex": 1,
       "index": 0
     },
     {
@@ -855,6 +838,7 @@
       "blockHash": "blockHash006",
       "blockNumber": 1006,
       "blockTimestamp": "2023-08-31T12:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -863,6 +847,7 @@
       "blockHash": "blockHash007",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
+      "txIndex": 0,
       "index": 0
     },
     {
@@ -871,6 +856,7 @@
       "blockHash": "blockHash007",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
+      "txIndex": 0,
       "index": 1
     },
     {
@@ -879,6 +865,7 @@
       "blockHash": "blockHash007",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
+      "txIndex": 0,
       "index": 2
     },
     {
@@ -887,7 +874,35 @@
       "blockHash": "blockHash008",
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T16:00:00Z",
+      "txIndex": 0,
       "index": 0
+    },
+    {
+      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
+      "txHash": "txHash004",
+      "blockHash": "blockHash002",
+      "blockNumber": 1002,
+      "blockTimestamp": "2023-05-10T12:00:00Z",
+      "txIndex": 0,
+      "index": 0
+    },
+    {
+      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
+      "txHash": "txHash004",
+      "blockHash": "blockHash002",
+      "blockNumber": 1002,
+      "blockTimestamp": "2023-05-10T12:00:00Z",
+      "txIndex": 0,
+      "index": 1
+    },
+    {
+      "blobHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
+      "txHash": "txHash004",
+      "blockHash": "blockHash002",
+      "blockNumber": 1002,
+      "blockTimestamp": "2023-05-10T12:00:00Z",
+      "txIndex": 0,
+      "index": 2
     },
     {
       "blobHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
@@ -895,6 +910,7 @@
       "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T15:50:00Z",
+      "txIndex": 0,
       "index": 0
     }
   ],

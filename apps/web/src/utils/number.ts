@@ -98,3 +98,7 @@ export function cumulativeSum(arr: number[] | bigint[]): number[] | bigint[] {
     );
   }
 }
+
+export function hexToBigInt(hex: string): string {
+  return BigInt(hex).toString(10);
+}

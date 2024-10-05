@@ -43,7 +43,7 @@ SKIP_ENV_VALIDATION=true npm run build
 You need to have access to a database.
 {% /callout %}
 
-You can use the provided docker-compose file to spin up a PostgreSQL service:
+You can use the provided docker-compose file to spin up the required databases (Postgres and Redis):
 
 ```shell
 docker compose -f docker-compose.local.yml up -d postgres redis

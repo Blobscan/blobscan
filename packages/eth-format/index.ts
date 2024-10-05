@@ -92,6 +92,9 @@ export function countIntegerDigits(value: string | number | bigint): number {
 export function shiftDecimal(value: EthAmount, decimals: number): string {
   value = value.toString();
 
+  // Convert scientific notation to standard decimal notation
+  value = fullwideFormatter.format(value as Intl.StringNumericLiteral);
+
   const negative = value.startsWith("-");
 
   if (negative) {
