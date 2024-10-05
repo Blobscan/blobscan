@@ -101,7 +101,7 @@ describe("Base Extension", () => {
         expect(insertedAddresses.sort(sortByCategoryRollup)).toMatchSnapshot();
       });
 
-      it.only("update multiple addresses correctly", async () => {
+      it("update multiple addresses correctly", async () => {
         const addressesToUpdate = ["address2", "address5", "address6"];
 
         input = [
