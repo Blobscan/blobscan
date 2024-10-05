@@ -34,7 +34,9 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: blobscan_dev
+          POSTGRES_USER: blobscan
+          POSTGRES_PASSWORD: s3cr3t
         ports:
           - 5432:5432
         options: >-
@@ -49,9 +51,10 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
+      - name: Setup DB
+        uses: ./tooling/github/setup-db
+
       - name: Typecheck
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/blobscan_ci?schema=public
         run: pnpm type-check
 
   build:
@@ -59,7 +62,9 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: blobscan_dev
+          POSTGRES_USER: blobscan
+          POSTGRES_PASSWORD: s3cr3t
         ports:
           - 5432:5432
         options: >-
@@ -73,6 +78,9 @@ jobs:
 
       - name: Setup
         uses: ./tooling/github/setup
+
+      - name: Setup DB
+        uses: ./tooling/github/setup-db
 
       - name: Build
         run: pnpm build
@@ -82,7 +90,9 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: blobscan_dev
+          POSTGRES_USER: blobscan
+          POSTGRES_PASSWORD: s3cr3t
         ports:
           - 5432:5432
         options: >-
@@ -109,6 +119,9 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
+      - name: Setup DB
+        uses: ./tooling/github/setup-db
+
       - name: Setup GCS emulator
         uses: fsouza/fake-gcs-action@v0.4.1
         with:
@@ -120,13 +133,8 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm db:generate
 
-      - name: Test migrations
-        run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
-
       - name: Test
         run: pnpm coverage
-        env:
-          POSTGRES_STORAGE_ENABLED: true
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
