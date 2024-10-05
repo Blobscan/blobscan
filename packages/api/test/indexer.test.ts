@@ -400,6 +400,9 @@ describe("Indexer router", async () => {
                   }
                 );
 
+              console.log(env.FILE_SYSTEM_STORAGE_ENABLED);
+              console.log("process env");
+              console.log(process.env.FILE_SYSTEM_STORAGE_ENABLED);
               expect(blobStorageRefs).toMatchInlineSnapshot(`
                 [
                   {
