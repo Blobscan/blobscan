@@ -92,7 +92,7 @@ COPY --from=deps /prepare/api/full .
 
 # Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build DATABASE_URL=${DATABASE_URL} --filter=@blobscan/rest-api-server
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} pnpm build --filter=@blobscan/rest-api-server
 
 # stage: api
 FROM base as api
