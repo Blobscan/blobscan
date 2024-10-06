@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { prisma } from "@blobscan/db";
-import { omitDBTimestampFields } from "@blobscan/test";
+import { omitDBTimestampFields, sortByCategoryRollup } from "@blobscan/test";
 
 import { overall, overallCommandUsage } from "../../src/commands/overall";
 import { runHelpArgTests } from "../helpers";
@@ -12,7 +12,9 @@ async function assertOverallStats() {
       prisma.blobOverallStats
         .findMany()
         .then((stats) =>
-          stats.map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+          stats
+            .map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+            .sort(sortByCategoryRollup)
         ),
       prisma.blockOverallStats
         .findMany()
@@ -22,7 +24,9 @@ async function assertOverallStats() {
       prisma.transactionOverallStats
         .findMany()
         .then((stats) =>
-          stats.map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+          stats
+            .map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+            .sort(sortByCategoryRollup)
         ),
       ,
     ]);

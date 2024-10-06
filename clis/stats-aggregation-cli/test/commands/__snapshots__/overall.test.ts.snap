@@ -3,6 +3,13 @@
 exports[`Overall command > when incrementing overall stats > should increment them until latest finalized block 1`] = `
 [
   {
+    "category": null,
+    "rollup": null,
+    "totalBlobSize": 9400n,
+    "totalBlobs": 8,
+    "totalUniqueBlobs": 1,
+  },
+  {
     "category": "OTHER",
     "rollup": null,
     "totalBlobSize": 2500n,
@@ -15,13 +22,6 @@ exports[`Overall command > when incrementing overall stats > should increment th
     "totalBlobSize": 6900n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 0,
-  },
-  {
-    "category": null,
-    "rollup": null,
-    "totalBlobSize": 9400n,
-    "totalBlobs": 8,
-    "totalUniqueBlobs": 1,
   },
   {
     "category": null,
@@ -51,6 +51,27 @@ exports[`Overall command > when incrementing overall stats > should increment th
 
 exports[`Overall command > when incrementing overall stats > should increment them until latest finalized block 3`] = `
 [
+  {
+    "avgBlobAsCalldataFee": 21000,
+    "avgBlobAsCalldataMaxFee": 100000,
+    "avgBlobFee": 5505024,
+    "avgBlobGasPrice": 21,
+    "avgBlobMaxFee": 26214400,
+    "avgMaxBlobGasFee": 100,
+    "category": null,
+    "rollup": null,
+    "totalBlobAsCalldataFee": "84000",
+    "totalBlobAsCalldataGasUsed": "4000",
+    "totalBlobAsCalldataMaxFees": "400000",
+    "totalBlobFee": "22020096",
+    "totalBlobGasPrice": "84",
+    "totalBlobGasUsed": "1048576",
+    "totalBlobMaxFees": "104857600",
+    "totalBlobMaxGasFees": "400",
+    "totalTransactions": 4,
+    "totalUniqueReceivers": 0,
+    "totalUniqueSenders": 0,
+  },
   {
     "avgBlobAsCalldataFee": 21000,
     "avgBlobAsCalldataMaxFee": 100000,
@@ -96,27 +117,6 @@ exports[`Overall command > when incrementing overall stats > should increment th
   {
     "avgBlobAsCalldataFee": 21000,
     "avgBlobAsCalldataMaxFee": 100000,
-    "avgBlobFee": 5505024,
-    "avgBlobGasPrice": 21,
-    "avgBlobMaxFee": 26214400,
-    "avgMaxBlobGasFee": 100,
-    "category": null,
-    "rollup": null,
-    "totalBlobAsCalldataFee": "84000",
-    "totalBlobAsCalldataGasUsed": "4000",
-    "totalBlobAsCalldataMaxFees": "400000",
-    "totalBlobFee": "22020096",
-    "totalBlobGasPrice": "84",
-    "totalBlobGasUsed": "1048576",
-    "totalBlobMaxFees": "104857600",
-    "totalBlobMaxGasFees": "400",
-    "totalTransactions": 4,
-    "totalUniqueReceivers": 0,
-    "totalUniqueSenders": 0,
-  },
-  {
-    "avgBlobAsCalldataFee": 21000,
-    "avgBlobAsCalldataMaxFee": 100000,
     "avgBlobFee": 8257536,
     "avgBlobGasPrice": 21,
     "avgBlobMaxFee": 39321600,
@@ -141,6 +141,13 @@ exports[`Overall command > when incrementing overall stats > should increment th
 exports[`Overall command > when incrementing overall stats > should increment them until latest indexed block when target block 'latest' is provided 1`] = `
 [
   {
+    "category": null,
+    "rollup": null,
+    "totalBlobSize": 10400n,
+    "totalBlobs": 9,
+    "totalUniqueBlobs": 1,
+  },
+  {
     "category": "OTHER",
     "rollup": null,
     "totalBlobSize": 3500n,
@@ -153,13 +160,6 @@ exports[`Overall command > when incrementing overall stats > should increment th
     "totalBlobSize": 6900n,
     "totalBlobs": 6,
     "totalUniqueBlobs": 0,
-  },
-  {
-    "category": null,
-    "rollup": null,
-    "totalBlobSize": 10400n,
-    "totalBlobs": 9,
-    "totalUniqueBlobs": 1,
   },
   {
     "category": null,
@@ -189,6 +189,27 @@ exports[`Overall command > when incrementing overall stats > should increment th
 
 exports[`Overall command > when incrementing overall stats > should increment them until latest indexed block when target block 'latest' is provided 3`] = `
 [
+  {
+    "avgBlobAsCalldataFee": 21200,
+    "avgBlobAsCalldataMaxFee": 100000,
+    "avgBlobFee": 4980736,
+    "avgBlobGasPrice": 21.2,
+    "avgBlobMaxFee": 23592960,
+    "avgMaxBlobGasFee": 100,
+    "category": null,
+    "rollup": null,
+    "totalBlobAsCalldataFee": "106000",
+    "totalBlobAsCalldataGasUsed": "5000",
+    "totalBlobAsCalldataMaxFees": "500000",
+    "totalBlobFee": "24903680",
+    "totalBlobGasPrice": "106",
+    "totalBlobGasUsed": "1179648",
+    "totalBlobMaxFees": "117964800",
+    "totalBlobMaxGasFees": "500",
+    "totalTransactions": 5,
+    "totalUniqueReceivers": 0,
+    "totalUniqueSenders": 0,
+  },
   {
     "avgBlobAsCalldataFee": 21333.33333333333,
     "avgBlobAsCalldataMaxFee": 100000,
@@ -232,27 +253,6 @@ exports[`Overall command > when incrementing overall stats > should increment th
     "totalUniqueSenders": 0,
   },
   {
-    "avgBlobAsCalldataFee": 21200,
-    "avgBlobAsCalldataMaxFee": 100000,
-    "avgBlobFee": 4980736,
-    "avgBlobGasPrice": 21.2,
-    "avgBlobMaxFee": 23592960,
-    "avgMaxBlobGasFee": 100,
-    "category": null,
-    "rollup": null,
-    "totalBlobAsCalldataFee": "106000",
-    "totalBlobAsCalldataGasUsed": "5000",
-    "totalBlobAsCalldataMaxFees": "500000",
-    "totalBlobFee": "24903680",
-    "totalBlobGasPrice": "106",
-    "totalBlobGasUsed": "1179648",
-    "totalBlobMaxFees": "117964800",
-    "totalBlobMaxGasFees": "500",
-    "totalTransactions": 5,
-    "totalUniqueReceivers": 0,
-    "totalUniqueSenders": 0,
-  },
-  {
     "avgBlobAsCalldataFee": 21000,
     "avgBlobAsCalldataMaxFee": 100000,
     "avgBlobFee": 8257536,
@@ -279,6 +279,13 @@ exports[`Overall command > when incrementing overall stats > should increment th
 exports[`Overall command > when incrementing overall stats > should increment until provided block number 1`] = `
 [
   {
+    "category": null,
+    "rollup": null,
+    "totalBlobSize": 4000n,
+    "totalBlobs": 4,
+    "totalUniqueBlobs": 0,
+  },
+  {
     "category": "OTHER",
     "rollup": null,
     "totalBlobSize": 1000n,
@@ -290,13 +297,6 @@ exports[`Overall command > when incrementing overall stats > should increment un
     "rollup": null,
     "totalBlobSize": 3000n,
     "totalBlobs": 3,
-    "totalUniqueBlobs": 0,
-  },
-  {
-    "category": null,
-    "rollup": null,
-    "totalBlobSize": 4000n,
-    "totalBlobs": 4,
     "totalUniqueBlobs": 0,
   },
   {
@@ -327,6 +327,27 @@ exports[`Overall command > when incrementing overall stats > should increment un
 
 exports[`Overall command > when incrementing overall stats > should increment until provided block number 3`] = `
 [
+  {
+    "avgBlobAsCalldataFee": 20000,
+    "avgBlobAsCalldataMaxFee": 100000,
+    "avgBlobFee": 5242880,
+    "avgBlobGasPrice": 20,
+    "avgBlobMaxFee": 26214400,
+    "avgMaxBlobGasFee": 100,
+    "category": null,
+    "rollup": null,
+    "totalBlobAsCalldataFee": "40000",
+    "totalBlobAsCalldataGasUsed": "2000",
+    "totalBlobAsCalldataMaxFees": "200000",
+    "totalBlobFee": "10485760",
+    "totalBlobGasPrice": "40",
+    "totalBlobGasUsed": "524288",
+    "totalBlobMaxFees": "52428800",
+    "totalBlobMaxGasFees": "200",
+    "totalTransactions": 2,
+    "totalUniqueReceivers": 0,
+    "totalUniqueSenders": 0,
+  },
   {
     "avgBlobAsCalldataFee": 20000,
     "avgBlobAsCalldataMaxFee": 100000,
@@ -366,27 +387,6 @@ exports[`Overall command > when incrementing overall stats > should increment un
     "totalBlobMaxFees": "39321600",
     "totalBlobMaxGasFees": "100",
     "totalTransactions": 1,
-    "totalUniqueReceivers": 0,
-    "totalUniqueSenders": 0,
-  },
-  {
-    "avgBlobAsCalldataFee": 20000,
-    "avgBlobAsCalldataMaxFee": 100000,
-    "avgBlobFee": 5242880,
-    "avgBlobGasPrice": 20,
-    "avgBlobMaxFee": 26214400,
-    "avgMaxBlobGasFee": 100,
-    "category": null,
-    "rollup": null,
-    "totalBlobAsCalldataFee": "40000",
-    "totalBlobAsCalldataGasUsed": "2000",
-    "totalBlobAsCalldataMaxFees": "200000",
-    "totalBlobFee": "10485760",
-    "totalBlobGasPrice": "40",
-    "totalBlobGasUsed": "524288",
-    "totalBlobMaxFees": "52428800",
-    "totalBlobMaxGasFees": "200",
-    "totalTransactions": 2,
     "totalUniqueReceivers": 0,
     "totalUniqueSenders": 0,
   },

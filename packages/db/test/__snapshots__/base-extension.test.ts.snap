@@ -27,27 +27,9 @@ exports[`Base Extension > Address Category Info model > upsertMany() > update mu
 [
   {
     "address": "address2",
-    "category": "ROLLUP",
-    "firstBlockNumberAsReceiver": 1004,
-    "firstBlockNumberAsSender": null,
-  },
-  {
-    "address": "address2",
     "category": "OTHER",
     "firstBlockNumberAsReceiver": 1001,
     "firstBlockNumberAsSender": 1003,
-  },
-  {
-    "address": "address2",
-    "category": null,
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1003,
-  },
-  {
-    "address": "address5",
-    "category": null,
-    "firstBlockNumberAsReceiver": null,
-    "firstBlockNumberAsSender": 1004,
   },
   {
     "address": "address5",
@@ -60,18 +42,6 @@ exports[`Base Extension > Address Category Info model > upsertMany() > update mu
     "category": "OTHER",
     "firstBlockNumberAsReceiver": 1001,
     "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address6",
-    "category": null,
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": null,
-  },
-  {
-    "address": "address6",
-    "category": "ROLLUP",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": null,
   },
 ]
 `;

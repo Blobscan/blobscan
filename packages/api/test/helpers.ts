@@ -7,10 +7,13 @@ import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
 import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
+import { createBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { prisma } from "@blobscan/db";
 import type { Rollup } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import { createTRPCContext } from "../src/context";
+import type { createTRPCContext } from "../src/context";
+import { getJWTFromRequest } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
@@ -47,20 +50,21 @@ export async function createTestContext({
     statusCode: 200,
   } as NodeHTTPResponse;
 
-  const ctx = await createTRPCContext({
+  const ctx: Awaited<TRPCContext> = {
     scope: "rest-api",
-  })({
     req,
     res,
-  });
+    apiClient: getJWTFromRequest(req),
+    blobStorageManager: await createBlobStorageManager(),
+    prisma,
+    blobPropagator: undefined,
+  };
 
   if (withBlobPropagator) {
     ctx.blobPropagator = await createBlobPropagator(
       ctx.blobStorageManager,
       ctx.prisma
     );
-  } else {
-    ctx.blobPropagator = undefined;
   }
 
   return ctx;
