@@ -514,7 +514,7 @@ importers:
         specifier: workspace:^0.1.1
         version: link:../logger
       '@blobscan/majin-blob-wasm':
-        specifier: workspace:^0.0.1
+        specifier: workspace:^0.1.3
         version: link:../../wasms/majin-blob-wasm
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
