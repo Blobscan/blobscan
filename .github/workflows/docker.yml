@@ -34,6 +34,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup
+        uses: ./tooling/github/setup
+
       - name: Setup DB
         uses: ./tooling/github/setup-db
 
