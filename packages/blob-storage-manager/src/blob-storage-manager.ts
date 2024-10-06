@@ -16,7 +16,7 @@ function isBlobStorageEnabled(storageName: BlobStorageName) {
   return storageEnabled === true || storageEnabled === "true";
 }
 
-async function createBlobStorageManager() {
+export async function createBlobStorageManager() {
   const blobStorages = await Promise.all(
     Object.values(BlobStorageName).map(async (storageName) => {
       if (isBlobStorageEnabled(storageName)) {

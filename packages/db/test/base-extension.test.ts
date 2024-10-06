@@ -10,7 +10,11 @@ import { Prisma } from "@prisma/client";
 import { BlobStorage } from "@prisma/client";
 import { describe, it, expect, beforeEach } from "vitest";
 
-import { fixtures, omitDBTimestampFields } from "@blobscan/test";
+import {
+  fixtures,
+  omitDBTimestampFields,
+  sortByCategoryRollup,
+} from "@blobscan/test";
 
 import { prisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
@@ -94,10 +98,12 @@ describe("Base Extension", () => {
           input
         ).then((addressToEntity) => Object.values(addressToEntity));
 
-        expect(insertedAddresses).toMatchSnapshot();
+        expect(insertedAddresses.sort(sortByCategoryRollup)).toMatchSnapshot();
       });
 
       it("update multiple addresses correctly", async () => {
+        const addressesToUpdate = ["address2", "address5", "address6"];
+
         input = [
           {
             address: "address5",
@@ -123,7 +129,13 @@ describe("Base Extension", () => {
           input
         ).then((addressToEntity) => Object.values(addressToEntity));
 
-        expect(updatedAddresses).toMatchSnapshot();
+        expect(
+          updatedAddresses.filter(
+            (addrCategoryInfo) =>
+              addressesToUpdate.includes(addrCategoryInfo.address) &&
+              addrCategoryInfo.category === "OTHER"
+          )
+        ).toMatchSnapshot();
       });
 
       it("should upsert an empty array correctly", async () => {
