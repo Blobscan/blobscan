@@ -32,6 +32,8 @@ FROM deps AS web-builder
 
 WORKDIR /app
 
+ARG DATABASE_URL
+
 ENV NEXT_BUILD_OUTPUT standalone
 ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -45,7 +47,7 @@ COPY --from=deps /prepare/web/full .
 
 # Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/web
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} pnpm build --filter=@blobscan/web
 
 # stage: web
 FROM base AS web
@@ -77,6 +79,9 @@ CMD ["web"]
 FROM deps AS api-builder
 
 WORKDIR /app
+
+ARG DATABASE_URL
+
 COPY --from=deps /prepare/api/json .
 COPY --from=deps /prepare/api/pnpm-lock.yaml .
 
@@ -87,7 +92,7 @@ COPY --from=deps /prepare/api/full .
 
 # Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/rest-api-server
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build DATABASE_URL=${DATABASE_URL} --filter=@blobscan/rest-api-server
 
 # stage: api
 FROM base as api

@@ -15,10 +15,27 @@ env:
 jobs:
   release_docker:
     name: Build docker images (API, Web)
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: blobscan_dev
+          POSTGRES_USER: blobscan
+          POSTGRES_PASSWORD: s3cr3t
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup DB
+        uses: ./tooling/github/setup-db
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -32,6 +49,7 @@ jobs:
         run: |
           echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker (API)
         id: meta_api
@@ -54,6 +72,7 @@ jobs:
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
 
       - name: Extract metadata (tags, labels) for Docker (Web)
         id: meta_web
@@ -76,3 +95,4 @@ jobs:
           build-args: |
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
