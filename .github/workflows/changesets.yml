@@ -42,6 +42,9 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
+      - name: Setup DB
+        uses: ./tooling/github/setup-db
+
       - name: Create version pull request
         id: changesets
         uses: changesets/action@v1
