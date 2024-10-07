@@ -7,7 +7,6 @@ env:
 on:
   workflow_run:
     workflows: ["Docker"]
-    tags: ["v*"]
     types:
       - completed
 
