@@ -1,5 +1,98 @@
 # @blobscan/web
 
+## 0.14.0
+
+### Minor Changes
+
+- [#537](https://github.com/Blobscan/blobscan/pull/537) [`a6795aa`](https://github.com/Blobscan/blobscan/commit/a6795aadc2590fc05b95f7a908d1990be4b09670) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated StarkNet’s Majin blob decoder to the latest version and adjusted the decoded blob UI to reflect the recent changes.
+
+- [#497](https://github.com/Blobscan/blobscan/pull/497) [`a59d7cd`](https://github.com/Blobscan/blobscan/commit/a59d7cd4564cf10b28ed60a0a9a2de3e41b0501a) Thanks [@xFJA](https://github.com/xFJA)! - Added Timestamp filter to PaginatedTable filter panel
+
+- [#456](https://github.com/Blobscan/blobscan/pull/456) [`fbace2f`](https://github.com/Blobscan/blobscan/commit/fbace2f0c9f2dee4787b653511cc7ff8e0fd5026) Thanks [@xFJA](https://github.com/xFJA)! - Replaced list of BlobCards by new PaginatedTable on the blobs view
+
+- [#486](https://github.com/Blobscan/blobscan/pull/486) [`be191ba`](https://github.com/Blobscan/blobscan/commit/be191ba86e1c5759e84da0ba01d04ab47e7b609a) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved button component props, variants and sizing logic
+
+- [#496](https://github.com/Blobscan/blobscan/pull/496) [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f) Thanks [@xFJA](https://github.com/xFJA)! - Enhanced dropdowns with clearable option support
+
+- [#553](https://github.com/Blobscan/blobscan/pull/553) [`c57d7fe`](https://github.com/Blobscan/blobscan/commit/c57d7fe2c7f01ba0cf24c199bbedbe3515a89872) Thanks [@xFJA](https://github.com/xFJA)! - Moved less important items from ExplorerDetails to footer
+
+- [#470](https://github.com/Blobscan/blobscan/pull/470) [`4bc7884`](https://github.com/Blobscan/blobscan/commit/4bc78848b57d2c2cfe6053a34ec2bc3e85cacfcf) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added blob gas price to the ExplorerDetails component
+
+- [#525](https://github.com/Blobscan/blobscan/pull/525) [`9ba363e`](https://github.com/Blobscan/blobscan/commit/9ba363e5fc278bfa7c2daf70f241e31f2400d694) Thanks [@xFJA](https://github.com/xFJA)! - Added slot range filter to blocks view
+
+- [#457](https://github.com/Blobscan/blobscan/pull/457) [`88c94df`](https://github.com/Blobscan/blobscan/commit/88c94df96f784063cea56e3d5f3a052d17a9ad20) Thanks [@xFJA](https://github.com/xFJA)! - Replaced list of BlockCards by new PaginatedTable on the blocks view
+
+- [#522](https://github.com/Blobscan/blobscan/pull/522) [`9c56d5b`](https://github.com/Blobscan/blobscan/commit/9c56d5b9572b1b963ae38747fa7235da3ccd42df) Thanks [@xFJA](https://github.com/xFJA)! - Added BlockNumber filter to PaginatedTable filter panel
+
+- [#469](https://github.com/Blobscan/blobscan/pull/469) [`e8bb0e5`](https://github.com/Blobscan/blobscan/commit/e8bb0e59a67e28fca16985e532b3e29412e56b45) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a sidebar navigation menu for smaller screens
+
+- [#543](https://github.com/Blobscan/blobscan/pull/543) [`958c234`](https://github.com/Blobscan/blobscan/commit/958c23464397657c4d2e5613fa80eb6c095340da) Thanks [@xFJA](https://github.com/xFJA)! - Added sort input in the Filters
+
+- [#496](https://github.com/Blobscan/blobscan/pull/496) [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f) Thanks [@xFJA](https://github.com/xFJA)! - Added rollup filter to blobs, blocks and transactions views
+
+- [#493](https://github.com/Blobscan/blobscan/pull/493) [`43f626b`](https://github.com/Blobscan/blobscan/commit/43f626b0f764ecc475072190da362a15791c01de) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Corrected formatWei precision for large decimal values
+
+- [#479](https://github.com/Blobscan/blobscan/pull/479) [`2ded4f9`](https://github.com/Blobscan/blobscan/commit/2ded4f99259b2d46ebc6b0d66f50bdd1b1275559) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added navigation arrow buttons to navigate to previous and next block
+
+- [#458](https://github.com/Blobscan/blobscan/pull/458) [`ff075a9`](https://github.com/Blobscan/blobscan/commit/ff075a9f558ee018b54666b7a24ae91931a84eca) Thanks [@xFJA](https://github.com/xFJA)! - Replaced list of TransactionCards by new PaginatedTable on the transactions view
+
+- [#464](https://github.com/Blobscan/blobscan/pull/464) [`dbe414b`](https://github.com/Blobscan/blobscan/commit/dbe414bd8bbe201eb50f614a6c1dbcb6e6abdab2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a loading spinner and a not-found window to the SearchInput component
+
+- [#478](https://github.com/Blobscan/blobscan/pull/478) [`85afe5b`](https://github.com/Blobscan/blobscan/commit/85afe5b36a3222428d78b7fa5f38019174aea258) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added CopyToClipboard component
+
+### Patch Changes
+
+- [#527](https://github.com/Blobscan/blobscan/pull/527) [`c9a6ada`](https://github.com/Blobscan/blobscan/commit/c9a6ada1c1bac79f43a2f183baf2d936113e1199) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Updated `DailyAvgBlobFeeChart` and `DailyAvgBlobGasPriceChart` to use the best unit for values
+
+- [#581](https://github.com/Blobscan/blobscan/pull/581) [`bd8a4cb`](https://github.com/Blobscan/blobscan/commit/bd8a4cbb0840780b95c48fbdcaa68c711242558d) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved performance on Blobs, Blocks and Txs pages by fetching the total amount of items only once and not on every request
+
+- [#575](https://github.com/Blobscan/blobscan/pull/575) [`53acaf1`](https://github.com/Blobscan/blobscan/commit/53acaf11b3e9f3525b6038bb4f7a41e5640f4b4a) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed an issue where the chart tooltip displayed zero for very low values. It now shows the most appropriate unit for each value.
+
+- [#563](https://github.com/Blobscan/blobscan/pull/563) [`76d8cf9`](https://github.com/Blobscan/blobscan/commit/76d8cf9213f8af1af3d4341fc3a4ea8c0854a03a) Thanks [@xFJA](https://github.com/xFJA)! - Fixed top explorer details not horizontally aligned in small screens.
+
+- [#534](https://github.com/Blobscan/blobscan/pull/534) [`d829a51`](https://github.com/Blobscan/blobscan/commit/d829a519d022c0179f21d1b0cc56b77c1c451a25) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where pagination buttons failed to redirect upon click.
+
+- [#503](https://github.com/Blobscan/blobscan/pull/503) [`d0b07e1`](https://github.com/Blobscan/blobscan/commit/d0b07e1fda620b83bd7805a1792a697b92becfd6) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Enhanced Swarm data expiry formatting
+
+- [#568](https://github.com/Blobscan/blobscan/pull/568) [`cd6176b`](https://github.com/Blobscan/blobscan/commit/cd6176b79627c57288a708aec5948ecc24ebd25f) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed the issue where the "Show more" message was displayed incorrectly when the blob data container was opened and closed. The message now properly toggles between "Show more" when the container is closed and "Show less" when the container is open.
+
+- [#504](https://github.com/Blobscan/blobscan/pull/504) [`7de9681`](https://github.com/Blobscan/blobscan/commit/7de9681e33e71519db68184f740ffb1eb19a78db) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Updated latest blob gas price metric to display the most suitable unit, replacing the previously fixed `Gwei` format
+
+- [#446](https://github.com/Blobscan/blobscan/pull/446) [`c6dba39`](https://github.com/Blobscan/blobscan/commit/c6dba39665ce1df135d1f4b6ae2a324a936370b3) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated blob storage badges to use blob data reference url
+
+- [#515](https://github.com/Blobscan/blobscan/pull/515) [`b23e7d7`](https://github.com/Blobscan/blobscan/commit/b23e7d7b5aa538269863e9df32d2c10d7ddb396b) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Updates the convertWei function to handle decimal values
+
+- [#544](https://github.com/Blobscan/blobscan/pull/544) [`1bbf650`](https://github.com/Blobscan/blobscan/commit/1bbf650f1c987fb706862fa99329302c9cd25cfd) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a page with all the stats from the blobs, blocks and transactions
+
+- [#491](https://github.com/Blobscan/blobscan/pull/491) [`a36786f`](https://github.com/Blobscan/blobscan/commit/a36786f924e6bab125ee6d567dea3230a453f049) Thanks [@xFJA](https://github.com/xFJA)! - Refactored Dropdown options using a new type to allow add new elements to the Option display
+
+- [#561](https://github.com/Blobscan/blobscan/pull/561) [`9b6847f`](https://github.com/Blobscan/blobscan/commit/9b6847f333f31b8f417c88137eb3ef9b36633e3c) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed the transaction hash overlap in the blob page
+
+- [#564](https://github.com/Blobscan/blobscan/pull/564) [`79b4f58`](https://github.com/Blobscan/blobscan/commit/79b4f58f887c40b1f5d444b6ffe93189900a5a8f) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed copyable values overflow viewport on small screens
+
+- [#488](https://github.com/Blobscan/blobscan/pull/488) [`7e49c8b`](https://github.com/Blobscan/blobscan/commit/7e49c8be8d6e2fc3df5bbd054f39f7c7df12dc8a) Thanks [@xFJA](https://github.com/xFJA)! - Fixed 'Displayed Items' dropdown in PaginedTable
+
+- [#496](https://github.com/Blobscan/blobscan/pull/496) [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f) Thanks [@xFJA](https://github.com/xFJA)! - Added support for clearing dropdown
+
+- [#531](https://github.com/Blobscan/blobscan/pull/531) [`308db72`](https://github.com/Blobscan/blobscan/commit/308db72ec9651cd81fd3f9df1a445eeabdcf88b2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added finalized status field to block, tx and blob views
+
+- [#566](https://github.com/Blobscan/blobscan/pull/566) [`e6d78aa`](https://github.com/Blobscan/blobscan/commit/e6d78aaba3ec1ea3f7400a9ed5e8d3b1099e6878) Thanks [@xFJA](https://github.com/xFJA)! - Fixed overflow style and responsiveness issues in Filters.
+
+- [#552](https://github.com/Blobscan/blobscan/pull/552) [`253f293`](https://github.com/Blobscan/blobscan/commit/253f2937de2e0f35fc3f06b7616c31cdc040a7c3) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added navigation arrows to the transaction page
+
+- [#506](https://github.com/Blobscan/blobscan/pull/506) [`04ae214`](https://github.com/Blobscan/blobscan/commit/04ae214f635b2b3e90e9d98873316362bb9d2255) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed inconsistent column spacing on the homepage
+
+- [#507](https://github.com/Blobscan/blobscan/pull/507) [`7cd9a73`](https://github.com/Blobscan/blobscan/commit/7cd9a73a1ee279d2840ae8d8e536578b81b11026) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added additional logic to the `Tooltip` component to prevent overflow.
+
+- [#509](https://github.com/Blobscan/blobscan/pull/509) [`399c98c`](https://github.com/Blobscan/blobscan/commit/399c98c162a36f59a9e79558fb934c65de15144b) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Resolved homepage metrics display overflow issue
+
+- Updated dependencies [[`7240bba`](https://github.com/Blobscan/blobscan/commit/7240bba44dfa65d208cd027d723d9fb7a2f988f7), [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026), [`c6dba39`](https://github.com/Blobscan/blobscan/commit/c6dba39665ce1df135d1f4b6ae2a324a936370b3), [`dc3afe7`](https://github.com/Blobscan/blobscan/commit/dc3afe795cebba83d7637f4c2866aafbcf009309), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`a6795aa`](https://github.com/Blobscan/blobscan/commit/a6795aadc2590fc05b95f7a908d1990be4b09670), [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026), [`4bc7884`](https://github.com/Blobscan/blobscan/commit/4bc78848b57d2c2cfe6053a34ec2bc3e85cacfcf), [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`bbf5111`](https://github.com/Blobscan/blobscan/commit/bbf5111afe84d70ada171de191f7095d2af518da), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`6eb69e8`](https://github.com/Blobscan/blobscan/commit/6eb69e8c6ba1450519b13c12255749fd36c62bee), [`a84b544`](https://github.com/Blobscan/blobscan/commit/a84b5443b32e5a5cea76cedb2ba50c11742f24a7), [`bd8a4cb`](https://github.com/Blobscan/blobscan/commit/bd8a4cbb0840780b95c48fbdcaa68c711242558d), [`03fb6b0`](https://github.com/Blobscan/blobscan/commit/03fb6b0d3291a85e80cbdab6cb497b782b17e7e8), [`3507a88`](https://github.com/Blobscan/blobscan/commit/3507a88edc5a9648664fba59f78481ecdc4ca77b), [`6eb69e8`](https://github.com/Blobscan/blobscan/commit/6eb69e8c6ba1450519b13c12255749fd36c62bee)]:
+  - @blobscan/api@0.13.0
+  - @blobscan/db@0.10.0
+  - @blobscan/rollups@0.1.0
+  - @blobscan/blob-decoder@0.2.0
+  - @blobscan/dayjs@0.1.0
+
 ## 0.13.1
 
 ### Patch Changes

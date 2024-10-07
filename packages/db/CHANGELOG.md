@@ -1,5 +1,26 @@
 # @blobscan/db
 
+## 0.10.0
+
+### Minor Changes
+
+- [#551](https://github.com/Blobscan/blobscan/pull/551) [`7240bba`](https://github.com/Blobscan/blobscan/commit/7240bba44dfa65d208cd027d723d9fb7a2f988f7) Thanks [@PJColombo](https://github.com/PJColombo)! - Added `category` column to `Transaction` model
+
+- [#576](https://github.com/Blobscan/blobscan/pull/576) [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026) Thanks [@PJColombo](https://github.com/PJColombo)! - Added aggregation columns to track transaction total and average blob max fees
+
+- [#576](https://github.com/Blobscan/blobscan/pull/576) [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for category and rollup aggregations
+
+- [#496](https://github.com/Blobscan/blobscan/pull/496) [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f) Thanks [@xFJA](https://github.com/xFJA)! - Exposed Prisma enums from a separated file
+
+- [#584](https://github.com/Blobscan/blobscan/pull/584) [`6eb69e8`](https://github.com/Blobscan/blobscan/commit/6eb69e8c6ba1450519b13c12255749fd36c62bee) Thanks [@PJColombo](https://github.com/PJColombo)! - Added tx index to `BlobsOnTransactions` model
+
+- [#559](https://github.com/Blobscan/blobscan/pull/559) [`3507a88`](https://github.com/Blobscan/blobscan/commit/3507a88edc5a9648664fba59f78481ecdc4ca77b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob gas used to `Transaction` model
+
+### Patch Changes
+
+- Updated dependencies [[`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026)]:
+  - @blobscan/dayjs@0.1.0
+
 ## 0.9.0
 
 ### Minor Changes

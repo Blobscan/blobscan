@@ -1,5 +1,11 @@
 # @blobscan/blob-decoder
 
+## 0.2.0
+
+### Minor Changes
+
+- [#537](https://github.com/Blobscan/blobscan/pull/537) [`a6795aa`](https://github.com/Blobscan/blobscan/commit/a6795aadc2590fc05b95f7a908d1990be4b09670) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated StarkNet’s Majin blob decoder to the latest version and adjusted the decoded blob UI to reflect the recent changes.
+
 ## 0.1.1
 
 ### Patch Changes

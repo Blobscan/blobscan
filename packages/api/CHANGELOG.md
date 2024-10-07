@@ -1,5 +1,40 @@
 # @blobscan/api
 
+## 0.13.0
+
+### Minor Changes
+
+- [#551](https://github.com/Blobscan/blobscan/pull/551) [`7240bba`](https://github.com/Blobscan/blobscan/commit/7240bba44dfa65d208cd027d723d9fb7a2f988f7) Thanks [@PJColombo](https://github.com/PJColombo)! - Added `category` column to `Transaction` model
+
+- [#446](https://github.com/Blobscan/blobscan/pull/446) [`c6dba39`](https://github.com/Blobscan/blobscan/commit/c6dba39665ce1df135d1f4b6ae2a324a936370b3) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated the references to now return a URL instead of a URI.
+
+- [#577](https://github.com/Blobscan/blobscan/pull/577) [`dc3afe7`](https://github.com/Blobscan/blobscan/commit/dc3afe795cebba83d7637f4c2866aafbcf009309) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced a new query parameter, count, that allows consumers to enable item counting in all procedures for retrieving blobs, blocks, and transactions.
+
+- [#470](https://github.com/Blobscan/blobscan/pull/470) [`4bc7884`](https://github.com/Blobscan/blobscan/commit/4bc78848b57d2c2cfe6053a34ec2bc3e85cacfcf) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added procedure to get the latest block
+
+- [#576](https://github.com/Blobscan/blobscan/pull/576) [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for category and rollup aggregations
+
+- [#447](https://github.com/Blobscan/blobscan/pull/447) [`a84b544`](https://github.com/Blobscan/blobscan/commit/a84b5443b32e5a5cea76cedb2ba50c11742f24a7) Thanks [@PJColombo](https://github.com/PJColombo)! - Added `getBlobDataByBlobId` procedure
+
+- [#581](https://github.com/Blobscan/blobscan/pull/581) [`bd8a4cb`](https://github.com/Blobscan/blobscan/commit/bd8a4cbb0840780b95c48fbdcaa68c711242558d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added procedures to count total amount of blobs, blocks or txs given a set of filters
+
+### Patch Changes
+
+- [#567](https://github.com/Blobscan/blobscan/pull/567) [`bbf5111`](https://github.com/Blobscan/blobscan/commit/bbf5111afe84d70ada171de191f7095d2af518da) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed pagination count for blob search
+
+- [#532](https://github.com/Blobscan/blobscan/pull/532) [`03fb6b0`](https://github.com/Blobscan/blobscan/commit/03fb6b0d3291a85e80cbdab6cb497b782b17e7e8) Thanks [@PJColombo](https://github.com/PJColombo)! - Corrected the transaction indexing process to resolve the transaction sender instead of the receiver when looking for rollup transactions.
+
+- [#559](https://github.com/Blobscan/blobscan/pull/559) [`3507a88`](https://github.com/Blobscan/blobscan/commit/3507a88edc5a9648664fba59f78481ecdc4ca77b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob gas used to `Transaction` model
+
+- [#584](https://github.com/Blobscan/blobscan/pull/584) [`6eb69e8`](https://github.com/Blobscan/blobscan/commit/6eb69e8c6ba1450519b13c12255749fd36c62bee) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced blob fetching performance by adding sorting based on block timestamps and transaction index
+
+- Updated dependencies [[`7240bba`](https://github.com/Blobscan/blobscan/commit/7240bba44dfa65d208cd027d723d9fb7a2f988f7), [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026), [`04565b2`](https://github.com/Blobscan/blobscan/commit/04565b28b4dd27dae6800f059959cc7d0d3e1026), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`16870e4`](https://github.com/Blobscan/blobscan/commit/16870e45df3d633e1dfae125704d7a33868c733f), [`6eb69e8`](https://github.com/Blobscan/blobscan/commit/6eb69e8c6ba1450519b13c12255749fd36c62bee), [`3507a88`](https://github.com/Blobscan/blobscan/commit/3507a88edc5a9648664fba59f78481ecdc4ca77b)]:
+  - @blobscan/db@0.10.0
+  - @blobscan/rollups@0.1.0
+  - @blobscan/dayjs@0.1.0
+  - @blobscan/blob-propagator@0.2.5
+  - @blobscan/blob-storage-manager@0.3.5
+
 ## 0.12.0
 
 ### Minor Changes
