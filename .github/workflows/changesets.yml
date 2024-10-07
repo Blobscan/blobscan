@@ -14,11 +14,30 @@ env:
 
 jobs:
   changesets:
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: blobscan_dev
+          POSTGRES_USER: blobscan
+          POSTGRES_PASSWORD: s3cr3t
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Create pull request
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
 
       - name: Setup
         uses: ./tooling/github/setup
