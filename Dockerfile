@@ -1,11 +1,11 @@
-#FROM node:20-alpine as builder
+#FROM node:20-alpine AS builder
 # Pinned due to https://github.com/nodejs/docker-node/issues/2009
-FROM node:20-alpine3.18 as base
+FROM node:20-alpine3.18 AS base
 
 ADD docker-entrypoint.sh /
 
 # stage: deps
-FROM base as deps
+FROM base AS deps
 
 ARG BUILD_TIMESTAMP
 ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
@@ -95,7 +95,7 @@ COPY --from=deps /prepare/turbo.json .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} pnpm build --filter=@blobscan/rest-api-server
 
 # stage: api
-FROM base as api
+FROM base AS api
 RUN apk add bash
 WORKDIR /app
 
