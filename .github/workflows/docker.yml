@@ -3,7 +3,6 @@ name: Docker
 on:
   workflow_run:
     workflows: ["CI"]
-    tags: ["v*"]
     types:
       - completed
 
