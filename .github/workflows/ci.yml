@@ -6,7 +6,6 @@ on:
       - main
   push:
     branches: ["main"]
-    tags: ["v*"]
   merge_group:
 
 concurrency:
