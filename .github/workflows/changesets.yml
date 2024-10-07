@@ -9,6 +9,9 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+  DATABASE_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+
 jobs:
   changesets:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
