@@ -169,7 +169,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.12.0
+        specifier: workspace:^0.13.0
         version: link:../../packages/api
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -181,7 +181,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@blobscan/syncers':
-        specifier: workspace:^0.2.1
+        specifier: workspace:^0.3.0
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -233,19 +233,19 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.12.0
+        specifier: workspace:^0.13.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
-        specifier: workspace:^0.1.1
+        specifier: workspace:^0.2.0
         version: link:../../packages/blob-decoder
       '@blobscan/dates':
         specifier: workspace:*
         version: link:../../packages/dates
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -257,7 +257,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.0.1
+        specifier: workspace:^0.1.0
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -396,13 +396,13 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.4
+        specifier: workspace:^0.2.5
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -423,10 +423,10 @@ importers:
   clis/stats-aggregation-cli:
     dependencies:
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../../packages/db
       '@blobscan/logger':
         specifier: workspace:^0.1.1
@@ -441,16 +441,16 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.4
+        specifier: workspace:^0.2.5
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.3.4
+        specifier: workspace:^0.3.5
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -462,7 +462,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.0.1
+        specifier: workspace:^0.1.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -490,7 +490,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -526,10 +526,10 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.3.4
+        specifier: workspace:^0.3.5
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -553,7 +553,7 @@ importers:
   packages/blob-storage-manager:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -585,7 +585,7 @@ importers:
   packages/db:
     dependencies:
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/logger':
         specifier: workspace:^0.1.1
@@ -669,16 +669,16 @@ importers:
   packages/rollups:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../db
 
   packages/syncers:
     dependencies:
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.9.0
+        specifier: workspace:^0.10.0
         version: link:../db
       '@blobscan/logger':
         specifier: workspace:^0.1.1
@@ -699,7 +699,7 @@ importers:
   packages/test:
     devDependencies:
       '@blobscan/dayjs':
-        specifier: workspace:^0.0.2
+        specifier: workspace:^0.1.0
         version: link:../dayjs
       '@prisma/client':
         specifier: ^5.19.1
@@ -4362,6 +4362,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
