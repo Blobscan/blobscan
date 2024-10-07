@@ -11,6 +11,7 @@ env:
   FORCE_COLOR: 3
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public"
 
 jobs:
   release_docker:
@@ -52,7 +53,6 @@ jobs:
         run: |
           echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo "DATABASE_URL=postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker (API)
         id: meta_api

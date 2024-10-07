@@ -6,7 +6,7 @@ runs:
     - name: "Create .env file with db connection"
       uses: "SpicyPizza/create-envfile@v2.0"
       with:
-        envkey_DATABASE_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+        envkey_DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public"
     - name: "Apply Prisma migrations to db"
       shell: bash
       run: pnpm prisma migrate deploy --schema packages/db/prisma/schema.prisma
