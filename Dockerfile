@@ -34,8 +34,8 @@ WORKDIR /app
 
 ARG DATABASE_URL
 
-ENV NEXT_BUILD_OUTPUT standalone
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_BUILD_OUTPUT=standalone
+ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=deps /prepare/web/json .
 COPY --from=deps /prepare/web/pnpm-lock.yaml .
@@ -54,9 +54,9 @@ FROM base AS web
 RUN apk add bash
 WORKDIR /app
 
-ENV HOSTNAME 0.0.0.0
-ENV PORT 3000
-ENV NODE_ENV production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -99,7 +99,7 @@ FROM base as api
 RUN apk add bash
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY --from=api-builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=api-builder /app/node_modules/@prisma ./node_modules/@prisma
@@ -107,7 +107,7 @@ COPY --from=api-builder /app/apps/rest-api-server/dist ./
 COPY --from=api-builder /prepare/api/full/packages/db/prisma/migrations ./migrations
 
 EXPOSE 3001
-ENV PORT 3001
+ENV PORT=3001
 
 ADD docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
