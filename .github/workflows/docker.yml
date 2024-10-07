@@ -11,7 +11,7 @@ env:
   FORCE_COLOR: 3
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-  DATABASE_URL: "postgresql://blobscan:s3cr3t@postgres:5432/blobscan_dev?schema=public"
+  DATABASE_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
 
 jobs:
   release_docker:
@@ -34,6 +34,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
 
       - name: Setup
         uses: ./tooling/github/setup
