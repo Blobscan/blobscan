@@ -34,6 +34,7 @@ export const baseTransactionSelect =
     blockNumber: true,
     blockTimestamp: true,
     index: true,
+    decodedFields: true,
   });
 
 export function createTransactionSelect(expands: Expands) {
