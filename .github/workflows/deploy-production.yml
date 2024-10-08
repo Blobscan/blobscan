@@ -7,7 +7,6 @@ env:
 on:
   workflow_run:
     workflows: ["Docker"]
-    tags: ["v*"]
     types:
       - completed
 
@@ -27,8 +26,10 @@ jobs:
           username: deploy
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
+          script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./tooling/github/setup
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -52,8 +53,10 @@ jobs:
           username: deploy
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
+          script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./tooling/github/setup
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -77,8 +80,10 @@ jobs:
           username: deploy
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
+          script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./tooling/github/setup
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -102,8 +107,10 @@ jobs:
           username: deploy
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          script: ./deploy-blobscan.sh
+          script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./tooling/github/setup
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information

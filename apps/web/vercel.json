@@ -1,5 +1,10 @@
 {
-  "buildCommand": "cd ../../packages/db && prisma generate && prisma migrate deploy && cd ../../ && turbo run build --filter=web",
+  "buildCommand": "cd ../../packages/db && prisma generate && cd ../../ && turbo run build --filter=web",
   "installCommand": "pnpm install --store=node_modules/.pnpm-store",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  }
 }

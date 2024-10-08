@@ -1,4 +1,4 @@
-import type { Address, Blob, Block, Prisma } from "@prisma/client";
+import type { AddressCategoryInfo, Blob, Block, Prisma } from "@prisma/client";
 
 import dayjs from "@blobscan/dayjs";
 
@@ -20,7 +20,10 @@ async function main() {
     });
     const { blocks: forkBlocks, txs: forkTxs } =
       dataGenerator.generateDBTransactionForks(fullBlocks);
-    const dbAddresses: Record<string, Address> = {};
+    const addressToCategoryInfo: Record<
+      string,
+      Omit<AddressCategoryInfo, "id">
+    > = {};
     const dbBlockInsertions: Prisma.BlockCreateManyInput[] = [];
     const dbTxInsertions: Prisma.TransactionCreateManyInput[] = [];
     const dbBlobInsertions: Blob[] = [];
@@ -33,20 +36,19 @@ async function main() {
       dbBlockInsertions.push(block);
       transactions.forEach(({ blobs, ...tx }) => {
         dbTxInsertions.push(tx);
-        const from = dbAddresses[tx.fromId];
-        const to = dbAddresses[tx.toId];
+        const from = addressToCategoryInfo[tx.fromId];
+        const to = addressToCategoryInfo[tx.toId];
         if (from) {
           from.firstBlockNumberAsSender = Math.min(
             from.firstBlockNumberAsSender ?? tx.blockNumber,
             tx.blockNumber
           );
         } else {
-          dbAddresses[tx.fromId] = {
+          addressToCategoryInfo[tx.fromId] = {
             address: tx.fromId,
             firstBlockNumberAsReceiver: null,
             firstBlockNumberAsSender: tx.blockNumber,
-            insertedAt: new Date(),
-            updatedAt: new Date(),
+            category: tx.category,
           };
         }
         if (to) {
@@ -55,12 +57,11 @@ async function main() {
             tx.blockNumber
           );
         } else {
-          dbAddresses[tx.toId] = {
+          addressToCategoryInfo[tx.toId] = {
             address: tx.toId,
             firstBlockNumberAsReceiver: tx.blockNumber,
             firstBlockNumberAsSender: null,
-            insertedAt: new Date(),
-            updatedAt: new Date(),
+            category: tx.category,
           };
         }
         blobs.forEach(({ storageRefs, ...blob }, i) => {
@@ -85,7 +86,7 @@ async function main() {
         fullBlocks.length
       }, txs: ${dbTxInsertions.length}, blobs: ${
         dbBlobInsertions.length
-      }, addresses: ${Object.keys(dbAddresses).length})`
+      }, addresses: ${Object.keys(addressToCategoryInfo).length})`
     );
     // await performPrismaOpInBatches(dbBlockInsertions, prisma.block.createMany);
     const blockPerformance = performance.now();
@@ -95,10 +96,20 @@ async function main() {
     const blockPerformanceEnd = performance.now();
     const addressPerformance = performance.now();
     await performPrismaUpsertManyInBatches(
-      Object.values(dbAddresses),
+      Object.values(addressToCategoryInfo).map((addressCategoryInfo) => ({
+        address: addressCategoryInfo.address,
+      })),
       prisma.address.upsertMany
     );
     const addressPerformanceEnd = performance.now();
+
+    const addressCategoryInfoPerformanceStart = performance.now();
+    await performPrismaUpsertManyInBatches(
+      Object.values(addressToCategoryInfo),
+      prisma.addressCategoryInfo.upsertMany
+    );
+    const addressCategoryInfoPerformanceEnd = performance.now();
+
     const txPerformance = performance.now();
     await prisma.transaction.createMany({
       data: dbTxInsertions,
@@ -141,9 +152,13 @@ async function main() {
         (blockPerformanceEnd - blockPerformance) / 1000
       }, addresses: ${
         (addressPerformanceEnd - addressPerformance) / 1000
-      }, txs: ${(txPerformanceEnd - txPerformance) / 1000}, blobs: ${
-        (blobsPerformanceEnd - blobsPerformance) / 1000
-      }, blobsOnTxs: ${
+      }, txs: ${(txPerformanceEnd - txPerformance) / 1000},
+      addressCategoryInfo: ${
+        (addressCategoryInfoPerformanceEnd -
+          addressCategoryInfoPerformanceStart) /
+        1000
+      },
+      blobs: ${(blobsPerformanceEnd - blobsPerformance) / 1000}, blobsOnTxs: ${
         (blobsOnTxsPerformanceEnd - blobsOnTxsPerformance) / 1000
       }, blobStorage: ${
         (blobStoragePerformanceEnd - blobStoragePerformance) / 1000

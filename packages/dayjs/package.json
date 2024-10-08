@@ -2,8 +2,9 @@
   "name": "@blobscan/dayjs",
   "description": "Blobscan's Day.js shared library",
   "private": true,
-  "version": "0.0.2",
-  "main": "./index.ts",
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",

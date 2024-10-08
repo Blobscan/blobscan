@@ -102,21 +102,21 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    7500,
+    393216,
     6200,
     5900,
     4000,
     6400,
   ],
   "totalBlobs": [
-    6,
+    3,
     6,
     5,
     4,
     5,
   ],
   "totalUniqueBlobs": [
-    6,
+    3,
     2,
     4,
     1,
@@ -137,7 +137,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   ],
   "totalBlobSizes": [
     6400,
-    7500,
+    393216,
     6200,
     5900,
     4000,
@@ -145,7 +145,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   ],
   "totalBlobs": [
     6,
-    6,
+    3,
     6,
     5,
     4,
@@ -153,7 +153,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   ],
   "totalUniqueBlobs": [
     3,
-    6,
+    3,
     2,
     4,
     1,
@@ -504,7 +504,7 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     2,
   ],
   "totalUniqueSenders": [
-    2,
+    3,
   ],
 }
 `;
@@ -529,7 +529,7 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
   ],
   "totalUniqueSenders": [
     2,
-    2,
+    3,
   ],
 }
 `;
@@ -557,9 +557,9 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     2,
   ],
   "totalUniqueSenders": [
-    4,
+    5,
     2,
-    2,
+    3,
   ],
 }
 `;
@@ -592,9 +592,9 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
   ],
   "totalUniqueSenders": [
     1,
-    4,
+    5,
     2,
-    2,
+    3,
   ],
 }
 `;
@@ -632,9 +632,9 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
   "totalUniqueSenders": [
     1,
     1,
-    4,
+    5,
     2,
-    2,
+    3,
   ],
 }
 `;
@@ -677,9 +677,9 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     3,
     1,
     1,
-    4,
+    5,
     2,
-    2,
+    3,
   ],
 }
 `;

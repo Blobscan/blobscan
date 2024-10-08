@@ -17,9 +17,7 @@ export const outputSchema = z.object({
   updatedAt: z.date(),
 });
 
-export const getBlockOverallStatsQuery = function (
-  prisma: TRPCContext["prisma"]
-) {
+export async function getBlockOverallStatsQuery(prisma: TRPCContext["prisma"]) {
   return prisma.blockOverallStats
     .findUnique({
       where: { id: 1 },
@@ -46,7 +44,7 @@ export const getBlockOverallStatsQuery = function (
             updatedAt: new Date(),
           }
     );
-};
+}
 
 export const getBlockOverallStats = publicProcedure
   .meta({

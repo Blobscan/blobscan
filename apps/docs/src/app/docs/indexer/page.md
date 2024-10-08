@@ -12,7 +12,11 @@ Check out the repository [here](https://github.com/Blobscan/blobscan-indexer.rs)
 
 ## How it works?
 
-The indexer traverses the Ethereum blockchain, retrieving data from both the Execution and Consensus layer clients. It examines each slot's execution payload in the Consensus Layer to identify blocks with blob versioned hashes. Afterward, it retrieves the blob data from the Consensus Layer, the remaining block and tx data from the Execution Layer client, and forwards it to the Blobscan API. The data is then stored in a PostgreSQL database, while the blobs are persisted in alternative storage solutions.
+The indexer traverses the Ethereum blockchain, retrieving data from both the Execution and Consensus layer clients.
+It examines each slot's execution payload in the Consensus Layer to identify blocks with blob versioned hashes.
+Afterward, it retrieves the blob data from the Consensus Layer, the remaining block and transaction data from the Execution Layer client,
+and forwards it to the Blobscan API. The metadata is stored in the PostgreSQL database, while the workers will receive the task of persisting
+the blobs to the configured storages.
 
 ## How to run locally?
 

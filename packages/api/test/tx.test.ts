@@ -23,10 +23,7 @@ describe("Transaction router", async () => {
 
   describe("getAll", () => {
     beforeEach(async () => {
-      await ctx.prisma.transactionOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await ctx.prisma.transactionOverallStats.populate();
     });
 
     runPaginationTestsSuite("transaction", (paginationInput) =>
@@ -98,10 +95,8 @@ describe("Transaction router", async () => {
 
   describe("getCount", () => {
     it("should return the overall total transactions stat when no filters are provided", async () => {
-      await ctx.prisma.transactionOverallStats.increment({
-        from: 0,
-        to: 9999,
-      });
+      await ctx.prisma.transactionOverallStats.populate();
+
       const { totalTransactions } = await caller.tx.getCount({});
 
       expect(totalTransactions).toBe(fixtures.canonicalTxs.length);

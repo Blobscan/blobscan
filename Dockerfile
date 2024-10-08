@@ -1,11 +1,11 @@
-#FROM node:20-alpine as builder
+#FROM node:20-alpine AS builder
 # Pinned due to https://github.com/nodejs/docker-node/issues/2009
-FROM node:20-alpine3.18 as base
+FROM node:20-alpine3.18 AS base
 
 ADD docker-entrypoint.sh /
 
 # stage: deps
-FROM base as deps
+FROM base AS deps
 
 ARG BUILD_TIMESTAMP
 ENV BUILD_TIMESTAMP=$BUILD_TIMESTAMP
@@ -32,8 +32,10 @@ FROM deps AS web-builder
 
 WORKDIR /app
 
-ENV NEXT_BUILD_OUTPUT standalone
-ENV NEXT_TELEMETRY_DISABLED 1
+ARG DATABASE_URL
+
+ENV NEXT_BUILD_OUTPUT=standalone
+ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=deps /prepare/web/json .
 COPY --from=deps /prepare/web/pnpm-lock.yaml .
@@ -45,16 +47,16 @@ COPY --from=deps /prepare/web/full .
 
 # Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/web
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} pnpm build --filter=@blobscan/web
 
 # stage: web
 FROM base AS web
 RUN apk add bash
 WORKDIR /app
 
-ENV HOSTNAME 0.0.0.0
-ENV PORT 3000
-ENV NODE_ENV production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -77,6 +79,9 @@ CMD ["web"]
 FROM deps AS api-builder
 
 WORKDIR /app
+
+ARG DATABASE_URL
+
 COPY --from=deps /prepare/api/json .
 COPY --from=deps /prepare/api/pnpm-lock.yaml .
 
@@ -87,14 +92,14 @@ COPY --from=deps /prepare/api/full .
 
 # Copy original which includes pipelines
 COPY --from=deps /prepare/turbo.json .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/rest-api-server
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} pnpm build --filter=@blobscan/rest-api-server
 
 # stage: api
-FROM base as api
+FROM base AS api
 RUN apk add bash
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY --from=api-builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=api-builder /app/node_modules/@prisma ./node_modules/@prisma
@@ -102,7 +107,7 @@ COPY --from=api-builder /app/apps/rest-api-server/dist ./
 COPY --from=api-builder /prepare/api/full/packages/db/prisma/migrations ./migrations
 
 EXPOSE 3001
-ENV PORT 3001
+ENV PORT=3001
 
 ADD docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
