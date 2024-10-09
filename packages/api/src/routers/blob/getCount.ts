@@ -3,11 +3,11 @@ import { z } from "@blobscan/zod";
 
 import type { Filters } from "../../middlewares/withFilters";
 import {
-  hasCustomFilters,
   withAllFiltersSchema,
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
+import { buildCountStatsFilters, hasToPerformCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
@@ -19,20 +19,9 @@ export async function countBlobs(
   prisma: BlobscanPrismaClient,
   filters: Filters
 ) {
-  if (!hasCustomFilters(filters)) {
-    const overallStats = await prisma.blobOverallStats.findFirst({
-      select: {
-        totalBlobs: true,
-      },
-      where: {
-        AND: [{ category: null }, { rollup: null }],
-      },
-    });
-
-    return overallStats?.totalBlobs ?? 0;
-  }
-
   const {
+    blockNumber,
+    blockTimestamp,
     transactionAddresses,
     transactionCategory,
     transactionRollup,
@@ -40,31 +29,64 @@ export async function countBlobs(
     blockType,
   } = filters;
 
-  const txFiltersExists =
-    transactionRollup !== undefined ||
-    transactionAddresses ||
-    transactionCategory;
-  const blockFiltersExists = blockSlot || blockType;
+  if (hasToPerformCount(filters)) {
+    const transactionFiltersEnabled =
+      transactionCategory || transactionRollup || transactionAddresses;
 
-  return prisma.blobsOnTransactions.count({
+    return prisma.blobsOnTransactions.count({
+      where: {
+        blockNumber,
+        blockTimestamp,
+        block: {
+          slot: blockSlot,
+          transactionForks: blockType,
+        },
+        transaction: transactionFiltersEnabled
+          ? {
+              category: transactionCategory,
+              rollup: transactionRollup,
+              OR: transactionAddresses,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  const { fromDay, toDay, category, rollup } = buildCountStatsFilters(filters);
+
+  if (fromDay || toDay) {
+    const dailyStats = await prisma.blobDailyStats.findMany({
+      select: {
+        day: true,
+        totalBlobs: true,
+      },
+      where: {
+        AND: [
+          { category },
+          { rollup },
+          {
+            day: {
+              gte: fromDay,
+              lt: toDay,
+            },
+          },
+        ],
+      },
+    });
+
+    return dailyStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
+  }
+
+  const overallStats = await prisma.blobOverallStats.findFirst({
+    select: {
+      totalBlobs: true,
+    },
     where: {
-      blockNumber: filters.blockNumber,
-      blockTimestamp: filters.blockTimestamp,
-      block: blockFiltersExists
-        ? {
-            slot: filters.blockSlot,
-            transactionForks: filters.blockType,
-          }
-        : undefined,
-      transaction: txFiltersExists
-        ? {
-            category: filters.transactionCategory,
-            rollup: filters.transactionRollup,
-            OR: filters.transactionAddresses,
-          }
-        : undefined,
+      AND: [{ category }, { rollup }],
     },
   });
+
+  return overallStats?.totalBlobs ?? 0;
 }
 
 export const getCount = publicProcedure

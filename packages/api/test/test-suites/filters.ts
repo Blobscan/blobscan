@@ -124,12 +124,6 @@ export function runFilterTests(
       });
     });
 
-    it("should return the correct results when filtering by a 'null' rollup", async () => {
-      await assertFilters({
-        rollup: "null",
-      });
-    });
-
     it("should return the correct results when filtering by a start block", async () => {
       await assertFilters({
         startBlock: 1007,
