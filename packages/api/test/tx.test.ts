@@ -52,6 +52,8 @@ describe("Transaction router", async () => {
     });
 
     it("should get the total number of transactions for a rollup", async () => {
+      await ctx.prisma.transactionOverallStats.populate();
+
       const expectedTotalTransactions = await ctx.prisma.transaction.count({
         where: {
           rollup: "BASE",
@@ -94,8 +96,9 @@ describe("Transaction router", async () => {
   });
 
   describe("getCount", () => {
-    it("should return the overall total transactions stat when no filters are provided", async () => {
+    it("should return the correct count when no filters are provided", async () => {
       await ctx.prisma.transactionOverallStats.populate();
+      await ctx.prisma.transactionDailyStats.populate();
 
       const { totalTransactions } = await caller.tx.getCount({});
 
@@ -103,6 +106,8 @@ describe("Transaction router", async () => {
     });
 
     runFilterTests(async (filters) => {
+      await ctx.prisma.transactionOverallStats.populate();
+      await ctx.prisma.transactionDailyStats.populate();
       const { totalTransactions } = await caller.tx.getCount(filters);
 
       expect(totalTransactions).toBe(getFilteredTransactions(filters).length);
