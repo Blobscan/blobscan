@@ -94,7 +94,7 @@ describe("Transaction router", async () => {
   });
 
   describe("getCount", () => {
-    it("should return the overall total transactions stat when no filters are provided", async () => {
+    it("should return the correct count when no filters are provided", async () => {
       await ctx.prisma.transactionOverallStats.populate();
 
       const { totalTransactions } = await caller.tx.getCount({});

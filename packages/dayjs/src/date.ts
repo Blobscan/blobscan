@@ -51,17 +51,22 @@ export function toDailyDate(
   return date_[startOfOrEndOfDay]("day");
 }
 
-export function toDailyDatePeriod(
-  datePeriodLike?: DatePeriodLike
-): Required<DatePeriod> {
-  const { from, to } = datePeriodLike || {};
+export function toDailyDatePeriod(datePeriodLike: DatePeriodLike): DatePeriod {
+  const { from, to } = datePeriodLike;
 
   if (from && to && dayjs(to).isBefore(from)) {
     throw new Error(`Invalid date period. Start date is after end date`);
   }
 
-  return {
-    from: from ? toDailyDate(from, "startOf").toDate() : MIN_DATE,
-    to: to ? toDailyDate(to, "endOf").toDate() : new Date(),
-  };
+  const datePeriod: DatePeriod = {};
+
+  if (from) {
+    datePeriod.from = toDailyDate(from, "startOf").toDate();
+  }
+
+  if (to) {
+    datePeriod.to = toDailyDate(to, "endOf").toDate();
+  }
+
+  return datePeriod;
 }

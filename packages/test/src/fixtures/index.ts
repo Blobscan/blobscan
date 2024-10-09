@@ -8,7 +8,7 @@ import type {
 } from "@prisma/client";
 
 import type { DatePeriodLike } from "@blobscan/dayjs";
-import dayjs, { toDailyDatePeriod } from "@blobscan/dayjs";
+import dayjs, { MIN_DATE, toDailyDatePeriod } from "@blobscan/dayjs";
 
 import POSTGRES_DATA from "./postgres/data.json";
 
@@ -165,15 +165,14 @@ export const fixtures = {
   getBlocks({ blockNumberRange, datePeriod }: GetOptions) {
     if (!datePeriod && !blockNumberRange) return fixtures.canonicalBlocks;
 
-    const dailyDatePeriod = toDailyDatePeriod(datePeriod);
+    const { from = MIN_DATE, to = new Date() } = datePeriod
+      ? toDailyDatePeriod(datePeriod)
+      : {};
     const fromBlock = blockNumberRange?.from ?? 0;
     const toBlock = blockNumberRange?.to ?? Number.MAX_SAFE_INTEGER;
 
     return fixtures.canonicalBlocks.filter((b) => {
-      const isInDateRange = dayjs(b.timestamp).isBetween(
-        dailyDatePeriod.from,
-        dailyDatePeriod.to
-      );
+      const isInDateRange = dayjs(b.timestamp).isBetween(from, to);
       const isInBlockNumberRange = b.number >= fromBlock && b.number <= toBlock;
 
       return isInDateRange && isInBlockNumberRange;
