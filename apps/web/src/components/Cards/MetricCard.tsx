@@ -7,7 +7,12 @@ import Skeleton from "react-loading-skeleton";
 
 import { findBestUnit, prettyFormatWei } from "@blobscan/eth-units";
 
-import { formatBytes, formatNumber } from "~/utils";
+import {
+  formatBytes,
+  formatNumber,
+  parseDecimalNumber,
+  parseSuffixedNumber,
+} from "~/utils";
 import { Card } from "./Card";
 
 export type MetricType = "standard" | "bytes" | "ethereum" | "percentage";
@@ -24,10 +29,6 @@ export type MetricCardProps = Partial<{
   secondaryMetric?: MetricProp;
 }>;
 
-function isInteger(value: bigint | number) {
-  return Number.isInteger(value) || typeof value === "bigint";
-}
-
 /**
  *  Creates a placeholder string that takes up the maximum amount of space the input could take with
  *  that amount of characters
@@ -41,7 +42,7 @@ function createPlaceholder(input: string): string {
   return replacedString;
 }
 
-function formatMetric(
+function parseMetricValue(
   value: number | bigint,
   {
     type,
@@ -83,9 +84,17 @@ function formatMetric(
   }
 
   const [value_ = "0", unit = ""] = formattedValue.split(" ");
+  const [numericPart, suffix] = parseSuffixedNumber(value_);
+  const [integerPart, decimalPart] = parseDecimalNumber(
+    numericPart ? numericPart.toString() : ""
+  );
 
   return {
     value: value_,
+    numericPart,
+    integerPart,
+    decimalPart,
+    suffix,
     unit,
   };
 }
@@ -124,16 +133,18 @@ function Metric({
   compact,
   isSecondary = false,
 }: MetricProp & { compact?: boolean; isSecondary?: boolean }) {
-  const isValueInteger = value && isInteger(value);
+  const parsedMetric = parseMetricValue(value ?? 0, {
+    type,
+    compact,
+    numberFormatOpts,
+  });
+
   const valueProps = useSpring({
-    value: Number(value),
+    value: parsedMetric.numericPart,
     from: { value: 0 },
     cancel: !value,
   });
   const isValueSet = value !== undefined;
-  const formattedMetric = isValueSet
-    ? formatMetric(value, { type, compact, numberFormatOpts })
-    : undefined;
 
   return (
     <div>
@@ -142,15 +153,13 @@ function Metric({
           <MetricLayout compact={compact} isSecondary={isSecondary}>
             {isValueSet ? (
               <animated.div>
-                {valueProps.value.to((x) => {
-                  const x_ = isValueInteger ? Math.trunc(x) : x;
-                  const { value: formattedX } = formatMetric(x_, {
-                    type,
-                    compact,
-                    numberFormatOpts,
-                  });
+                {valueProps.value.to((v) => {
+                  const formattedValue = formatNumber(
+                    v.toFixed(parsedMetric.decimalPart?.length ?? 0)
+                  );
+                  const suffix = parsedMetric.suffix ?? "";
 
-                  return formattedX;
+                  return `${formattedValue}${suffix}`;
                 })}
               </animated.div>
             ) : (
@@ -164,7 +173,7 @@ function Metric({
             */}
             <div className="invisible">
               <MetricLayout compact={compact} isSecondary={isSecondary}>
-                {createPlaceholder(formattedMetric?.value ?? "")}
+                {createPlaceholder(parsedMetric.value ?? "")}
               </MetricLayout>
             </div>
             <div
@@ -176,7 +185,7 @@ function Metric({
                 { "bottom-0.5 text-xs": isSecondary }
               )}
             >
-              {formattedMetric?.unit}
+              {parsedMetric?.unit}
             </div>
           </div>
         </div>
