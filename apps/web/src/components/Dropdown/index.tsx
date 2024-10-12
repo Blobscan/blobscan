@@ -64,7 +64,11 @@ export const Dropdown: React.FC<DropdownProps> = function ({
               Array.isArray(selected) ? (
                 <div className="flex flex-row items-center gap-1">
                   {selected.map((s) => {
-                    return <Fragment key={s.value}>{s.inputDisplay}</Fragment>;
+                    return (
+                      <Fragment key={s.value}>
+                        {s.inputDisplay ? s.inputDisplay : s.label}
+                      </Fragment>
+                    );
                   })}
                 </div>
               ) : (
