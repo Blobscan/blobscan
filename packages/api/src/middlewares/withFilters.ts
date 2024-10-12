@@ -155,7 +155,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
       filters.transactionAddresses = [];
       if (from) {
         filters.transactionAddresses.push({
-          fromId: from,
+          fromId: { in: from.split(",") },
         });
       }
 
