@@ -56,6 +56,7 @@
     "react-loading-skeleton": "^3.3.1",
     "react-tailwindcss-datepicker": "^1.6.6",
     "superjson": "1.9.1",
+    "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^2.4.0",
     "viem": "^2.17.4",
     "zod": "^3.21.4"

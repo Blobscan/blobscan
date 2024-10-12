@@ -355,6 +355,9 @@ importers:
       superjson:
         specifier: 1.9.1
         version: 1.9.1
+      tailwind-gradient-mask-image:
+        specifier: ^1.2.0
+        version: 1.2.0
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
@@ -6526,6 +6529,9 @@ packages:
   table-layout@4.1.0:
     resolution: {integrity: sha512-AfbFMOsAZDoaQq2sDF/F7PSTxnTBexr4cuArFW1bMl07tFbB+HBwKpnw99To3ffcjRFe12dEoyckiNz1+qCSng==}
     engines: {node: '>=12.17'}
+
+  tailwind-gradient-mask-image@1.2.0:
+    resolution: {integrity: sha512-tUJaGhvqbJFiVKJu6EU5n//KvGdVvY3L3VOFNqjztk13+ifAk00pcSNHBTgHfUiBGOEzDn0gFRbSmsftUV1lXA==}
 
   tailwind-merge@2.4.0:
     resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
@@ -13816,6 +13822,8 @@ snapshots:
       '@75lb/deep-merge': 1.1.1
       array-back: 6.2.2
       wordwrapjs: 5.1.0
+
+  tailwind-gradient-mask-image@1.2.0: {}
 
   tailwind-merge@2.4.0: {}
 
