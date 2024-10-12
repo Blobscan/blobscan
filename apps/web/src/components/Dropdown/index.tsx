@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import type { ReactNode } from "react";
 import {
   Listbox,
@@ -7,7 +7,9 @@ import {
   Transition,
 } from "@headlessui/react";
 import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import cn from "classnames";
 
+import useOverflow from "~/hooks/useOverflow";
 import { Option } from "./Option";
 
 export interface Option {
@@ -51,6 +53,10 @@ export const Dropdown: React.FC<DropdownProps> = function ({
 }) {
   const hasValue = Array.isArray(selected) ? selected.length > 0 : selected;
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
+  const isOverflowing = useOverflow(containerRef, innerRef);
+
   return (
     <Listbox value={selected} onChange={onChange} multiple={multiple}>
       <div className="relative">
@@ -59,10 +65,18 @@ export const Dropdown: React.FC<DropdownProps> = function ({
             width ?? DEFAULT_WIDTH
           } flex cursor-pointer items-center justify-between rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
-          <div className="truncate align-middle">
+          <div
+            className={cn("truncate align-middle", {
+              "gradient-mask-r-90": isOverflowing,
+            })}
+            ref={containerRef}
+          >
             {hasValue ? (
               Array.isArray(selected) ? (
-                <div className="flex flex-row items-center gap-1">
+                <div
+                  className="flex flex-row items-center gap-1"
+                  ref={innerRef}
+                >
                   {selected.map((s) => {
                     return (
                       <Fragment key={s.value}>
