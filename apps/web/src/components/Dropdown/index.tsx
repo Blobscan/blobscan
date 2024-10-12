@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { ReactNode } from "react";
 import {
   Listbox,
@@ -13,28 +14,45 @@ export interface Option {
   value: string | number;
   label?: ReactNode;
   prefix?: ReactNode;
+  inputDisplay?: ReactNode;
 }
-export interface DropdownProps {
+
+type BaseDropdownProps = {
   options: Option[];
-  selected?: Option | null;
   width?: string;
   placeholder?: string;
   clearable?: boolean;
+};
+
+interface SingleDropdownProps extends BaseDropdownProps {
+  selected?: Option | null;
+  multiple?: false;
   onChange(newOption: Option | null): void;
 }
+
+export interface MultiDropdownProps extends BaseDropdownProps {
+  selected?: Option[] | null;
+  multiple: true;
+  onChange(newOptions: Option[]): void;
+}
+
+export type DropdownProps = SingleDropdownProps | MultiDropdownProps;
 
 const DEFAULT_WIDTH = "w-32";
 
 export const Dropdown: React.FC<DropdownProps> = function ({
   options,
   selected,
+  multiple,
   width,
   onChange,
   clearable = false,
   placeholder = "Select an item",
 }) {
+  const hasValue = Array.isArray(selected) ? selected.length > 0 : selected;
+
   return (
-    <Listbox value={selected} onChange={onChange}>
+    <Listbox value={selected} onChange={onChange} multiple={multiple}>
       <div className="relative">
         <ListboxButton
           className={`relative h-9 ${
@@ -42,8 +60,16 @@ export const Dropdown: React.FC<DropdownProps> = function ({
           } flex cursor-pointer items-center justify-between rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
           <div className="truncate align-middle">
-            {selected ? (
-              selected.label ?? selected.value
+            {hasValue ? (
+              Array.isArray(selected) ? (
+                <div className="flex flex-row items-center gap-1">
+                  {selected.map((s) => {
+                    return <Fragment key={s.value}>{s.inputDisplay}</Fragment>;
+                  })}
+                </div>
+              ) : (
+                selected?.label
+              )
             ) : (
               <div className="text-hint-light dark:text-hint-dark">
                 {placeholder}
@@ -51,12 +77,12 @@ export const Dropdown: React.FC<DropdownProps> = function ({
             )}
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-            {clearable && selected ? (
+            {clearable && hasValue ? (
               <XMarkIcon
                 className="h-5 w-5 text-icon-light hover:text-iconHighlight-light dark:text-icon-dark dark:hover:text-iconHighlight-dark"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onChange(null);
+                  multiple ? onChange([]) : onChange(null);
                 }}
               />
             ) : (
@@ -74,7 +100,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
         >
           <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-controlBackground-light py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-controlBackground-dark sm:text-sm">
             {options.map((option, id) => (
-              <Option {...option} key={id} />
+              <Option key={id} option={option} />
             ))}
           </ListboxOptions>
         </Transition>
