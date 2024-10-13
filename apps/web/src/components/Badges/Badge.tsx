@@ -17,7 +17,6 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        none: "",
         primary: `
           bg-accent-light
           text-accentContent-light
@@ -33,7 +32,6 @@ const badgeVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "none",
       size: "md",
     },
   }
