@@ -69,7 +69,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
           </span>
           {reorg && (
             <Badge variant="primary" className="text-xs">
-              reorg
+              Reorg
             </Badge>
           )}
         </div>
