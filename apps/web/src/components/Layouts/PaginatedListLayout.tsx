@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
 import { Dropdown } from "../Dropdown";
-import type { DropdownProps } from "../Dropdown";
+import type { DropdownProps, Option } from "../Dropdown";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
 
@@ -47,7 +47,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   const hasItems = !items || items.length;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (option) => {
+    (option: Option) => {
       if (!option) {
         return;
       }
@@ -126,6 +126,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               <div className="flex items-center justify-start gap-2">
                 Displayed items:
                 <Dropdown
+                  multiple={false}
                   options={PAGE_SIZES_OPTIONS}
                   selected={{ value: pageSize }}
                   width="w-full"
