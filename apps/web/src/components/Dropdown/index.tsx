@@ -19,26 +19,15 @@ export interface Option {
   inputDisplay?: ReactNode;
 }
 
-type BaseDropdownProps = {
+export interface DropdownProps {
   options: Option[];
   width?: string;
   placeholder?: string;
   clearable?: boolean;
-};
-
-interface SingleDropdownProps extends BaseDropdownProps {
-  selected?: Option | null;
-  multiple?: false;
-  onChange(newOption: Option | null): void;
+  selected?: Option | Option[] | null;
+  multiple?: boolean;
+  onChange(newOption: Option | Option[] | null): void;
 }
-
-export interface MultiDropdownProps extends BaseDropdownProps {
-  selected?: Option[] | null;
-  multiple: true;
-  onChange(newOptions: Option[]): void;
-}
-
-export type DropdownProps = SingleDropdownProps | MultiDropdownProps;
 
 const DEFAULT_WIDTH = "w-32";
 
@@ -85,8 +74,10 @@ export const Dropdown: React.FC<DropdownProps> = function ({
                     );
                   })}
                 </div>
+              ) : selected?.label ? (
+                selected.label
               ) : (
-                selected?.label
+                selected?.value
               )
             ) : (
               <div className="text-hint-light dark:text-hint-dark">

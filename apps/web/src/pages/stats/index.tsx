@@ -19,6 +19,7 @@ import {
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
 } from "~/components/Charts/Transaction";
+import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
 import { Header } from "~/components/Header";
 import { api } from "~/api-client";
@@ -218,7 +219,7 @@ function Charts() {
             width="w-48"
             options={SECTIONS}
             selected={SECTIONS.find((option) => option.value === sectionFilter)}
-            onChange={(option) => {
+            onChange={(option: Option) => {
               if (!option) return;
               setSectionFilter(option.value as Section);
             }}
@@ -226,7 +227,7 @@ function Charts() {
           <Dropdown
             options={TIME_FRAMES}
             selected={TIME_FRAMES.find((option) => option.value === timeFrame)}
-            onChange={(option) => {
+            onChange={(option: Option) => {
               if (!option) return;
               setTimeFrame(option.value as TimeFrame);
             }}

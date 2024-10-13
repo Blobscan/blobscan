@@ -70,10 +70,10 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
       selected={selected}
       options={ROLLUP_OPTIONS}
       onChange={handleOnChange}
-      multiple={true}
       placeholder="Rollup"
       width="sm:w-[130px] w-full xl:w-[240px] md:max-lg:w-full"
       clearable
+      multiple
     />
   );
 };
