@@ -23,13 +23,12 @@ import { env } from "~/env.mjs";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
 
-if (typeof window !== "undefined") {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_ID ?? "", {
-    api_host:
-      process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+if (typeof window !== "undefined" && env.NEXT_PUBLIC_POSTHOG_ID) {
+  posthog.init(env.NEXT_PUBLIC_POSTHOG_ID, {
+    api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
     person_profiles: "identified_only",
     loaded: (posthog) => {
-      if (process.env.NODE_ENV === "development") {
+      if (env.NODE_ENV === "development") {
         posthog.debug();
       }
     },
