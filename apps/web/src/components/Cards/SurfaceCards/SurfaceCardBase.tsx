@@ -1,30 +1,23 @@
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
+import { twMerge } from "tailwind-merge";
 
-type SurfaceCardBaseProps = {
-  children: ReactNode;
-  className?: string;
-  truncateText?: boolean;
-};
-
-export const SurfaceCardBase: FC<SurfaceCardBaseProps> = function ({
-  children,
+export const SurfaceCardBase: FC<React.HTMLAttributes<HTMLDivElement>> = ({
   className,
-  truncateText = true,
-}) {
-  return (
-    <div
-      className={`
+  ...props
+}) => (
+  <div
+    className={twMerge(
+      `
     dark:bg-neutral-850
-    ${truncateText ? "truncate" : ""}
+    truncate
     rounded-md
     border
     border-border-light
     p-4
     dark:border-border-dark
-    ${className}
-    `}
-    >
-      {children}
-    </div>
-  );
-};
+    `,
+      className
+    )}
+    {...props}
+  />
+);
