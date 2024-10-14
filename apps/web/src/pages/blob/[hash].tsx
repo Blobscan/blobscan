@@ -17,8 +17,10 @@ import type { DropdownProps } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
+import Loading from "~/icons/loading.svg";
 import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
@@ -54,6 +56,30 @@ const Blob: NextPage = function () {
   ];
   const blobViewModesOptions: DropdownProps["options"] = blobViewModes.map(
     (blobViewMode) => ({ value: blobViewMode })
+  );
+
+  const { data: neighbors } = api.blob.getBlobNeighbours.useQuery(
+    blob &&
+      blob.transactions[0] &&
+      blob.transactions[0].from &&
+      blob.transactions[0].index !== undefined
+      ? {
+          txHash: blob.transactions[0].hash,
+          commitment: blob.commitment,
+          transactionIndex: blob.transactions[0].index,
+          senderAddress: blob.transactions[0].from,
+          blockNumber: blob.transactions[0].blockNumber,
+        }
+      : {
+          txHash: "",
+          commitment: "",
+          transactionIndex: 0,
+          senderAddress: "",
+          blockNumber: 0,
+        },
+    {
+      enabled: Boolean(router.isReady && blob && blob.transactions[0]),
+    }
   );
 
   useEffect(() => {
@@ -167,7 +193,25 @@ const Blob: NextPage = function () {
   return (
     <>
       <DetailsLayout
-        header="Blob Details"
+        header={
+          <div className="flex items-center justify-start gap-4">
+            Blob Details
+            {neighbors ? (
+              <NavArrows
+                prev={{
+                  href: neighbors?.prev ? `/blob/${neighbors.prev}` : undefined,
+                  tooltip: "Previous blob from this sender",
+                }}
+                next={{
+                  href: neighbors?.next ? `/blob/${neighbors.next}` : undefined,
+                  tooltip: "Next blob from this sender",
+                }}
+              />
+            ) : (
+              <Loading className="h-5 w-5 animate-spin" />
+            )}
+          </div>
+        }
         fields={blob ? detailsFields : undefined}
       />
       <Card
