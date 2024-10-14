@@ -8,7 +8,11 @@ import { isAddress, isCommitment, isHash } from "./byTerm.utils";
 type SearchCategory = "address" | "blob" | "block" | "slot" | "transaction";
 
 type SearchOutput = {
-  [K in SearchCategory]?: { id: string }[];
+  [K in SearchCategory]?: {
+    id: string;
+    label?: string;
+    reorg?: boolean;
+  }[];
 };
 
 export const byTerm = publicProcedure
@@ -71,21 +75,30 @@ export async function searchByTerm(term: string): Promise<SearchOutput> {
   }
 
   if (isBlockNumber(term)) {
-    const term_ = Number(term);
+    const blockNumber = Number(term);
 
     const blocks = await prisma.block.findMany({
-      select: { number: true },
+      select: {
+        number: true,
+        transactionForks: true,
+        hash: true,
+      },
       where: {
-        OR: [{ number: term_ }, { slot: term_ }],
+        OR: [{ number: blockNumber }, { slot: blockNumber }],
       },
     });
 
     return blocks.reduce<SearchOutput>((output, block) => {
       const category: SearchCategory =
-        block.number === term_ ? "block" : "slot";
+        block.number === blockNumber ? "block" : "slot";
+
       output[category] = [
         ...(output[category] || []),
-        { id: block.number.toString() },
+        {
+          id: block.hash,
+          reorg: block.transactionForks.length > 0,
+          label: block.number.toString(),
+        },
       ];
 
       return output;
