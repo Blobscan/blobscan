@@ -17,12 +17,8 @@ const BaseChart: FC<DailyBlobGasUsedChartProps & { title: string }> =
         dates: days,
         axisFormatters: {
           yAxisTooltip: (value) => formatNumber(value, "standard"),
-          yAxisLabel: (value) => formatNumber(value, "compact"),
         },
       }),
-      grid: {
-        containLabel: true,
-      },
       series: [
         {
           name: "Blob Gas Used",

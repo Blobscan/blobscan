@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
-import { findBestUnit, formatWei, prettyFormatWei } from "@blobscan/eth-units";
+import { formatWei, prettyFormatWei } from "@blobscan/eth-units";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
@@ -22,14 +22,11 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => formatWei(value, findBestUnit(value)),
+          yAxisTooltip: (value) =>
+            formatWei(value, unit, { displayUnit: true }),
           yAxisLabel: (value) => prettyFormatWei(value, unit),
         },
-        yUnit: "ethereum",
       }),
-      grid: {
-        containLabel: true,
-      },
       series: [
         {
           name: "Blob Fees",
@@ -40,5 +37,11 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
       animationEasing: "cubicOut",
     };
 
-    return <ChartCard title="Daily Blob Fees" size="sm" options={options} />;
+    return (
+      <ChartCard
+        title={`Daily Blob Fees (in ${unit.toLowerCase()})`}
+        size="sm"
+        options={options}
+      />
+    );
   };
