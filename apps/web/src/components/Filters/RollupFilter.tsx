@@ -23,13 +23,13 @@ const rollups = chainId ? getChainRollups(chainId) : [];
 export const ROLLUP_OPTIONS: Option[] = [
   {
     value: "null",
-    inputDisplay: <Badge size="sm">None</Badge>,
+    selectedLabel: <Badge size="sm">None</Badge>,
     label: "None",
   },
   ...rollups.map(([rollupAddress, rollupName]) => {
     return {
       value: rollupAddress,
-      inputDisplay: (
+      selectedLabel: (
         <RollupBadge rollup={rollupName.toLowerCase() as Rollup} size="sm" />
       ),
       prefix: <RollupIcon rollup={rollupName.toLowerCase() as Rollup} />,

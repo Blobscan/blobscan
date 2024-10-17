@@ -16,7 +16,7 @@ export interface Option {
   value: string | number;
   label?: ReactNode;
   prefix?: ReactNode;
-  inputDisplay?: ReactNode;
+  selectedLabel?: ReactNode;
 }
 
 export interface DropdownProps {
@@ -70,7 +70,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
                     {selected.map((s) => {
                       return (
                         <Fragment key={s.value}>
-                          {s.inputDisplay ? s.inputDisplay : s.label}
+                          {s.selectedLabel ? s.selectedLabel : s.label}
                         </Fragment>
                       );
                     })}
