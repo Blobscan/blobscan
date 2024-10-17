@@ -48,6 +48,7 @@
     }
   },
   "globalEnv": [
+    "NEXT_PUBLIC_BLOBSCAN_RELEASE",
     "NEXT_PUBLIC_POSTHOG_ID",
     "NEXT_PUBLIC_POSTHOG_HOST",
     "AUTH0_CLIENT_ID",

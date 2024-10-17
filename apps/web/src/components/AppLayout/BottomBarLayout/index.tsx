@@ -46,23 +46,36 @@ export const BottomBarLayout = () => {
         <div className="my-1">
           <ExplorerDetails placement="footer" />
         </div>
-        {env.NEXT_PUBLIC_VERSION && (
-          <div className="flex items-center gap-1">
-            <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-              Version:
-            </div>
-            <div className="relative">
+        <div className="flex items-center gap-1">
+          <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+            Version:
+          </div>
+          <div className="relative">
+            {env.NEXT_PUBLIC_BLOBSCAN_RELEASE ? (
               <Link
-                href={`https://github.com/Blobscan/blobscan/releases/tag/v${env.NEXT_PUBLIC_VERSION}`}
+                href={`https://github.com/Blobscan/blobscan/releases/tag/${env.NEXT_PUBLIC_BLOBSCAN_RELEASE}`}
                 isExternal
               >
                 <div className="relative -top-0.5 text-xs">
-                  {env.NEXT_PUBLIC_VERSION}
+                  {env.NEXT_PUBLIC_BLOBSCAN_RELEASE}
                 </div>
               </Link>
-            </div>
+            ) : env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ? (
+              <Link
+                href={`https://github.com/Blobscan/blobscan/commit/${env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
+                isExternal
+              >
+                <div className="relative -top-0.5 text-xs">
+                  {env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
+                </div>
+              </Link>
+            ) : (
+              <Link href={`https://github.com/Blobscan/blobscan/`} isExternal>
+                <div className="relative -top-0.5 text-xs">Development</div>
+              </Link>
+            )}
           </div>
-        )}
+        </div>
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
             Blobscan © 2024
