@@ -5,6 +5,17 @@ import { fixtures } from "@blobscan/test";
 
 import type { FiltersSchema } from "../../src/middlewares/withFilters";
 
+const splitAndCleanCommaSeparatedString = (values?: string) => {
+  if (!values) return undefined;
+
+  const parts = values
+    .split(",")
+    .map((v) => v.trim())
+    .filter((v) => v !== "");
+
+  return parts.length > 0 ? parts : undefined;
+};
+
 function filterBlock(
   b: (typeof fixtures.blocks)[number],
   {
@@ -57,10 +68,12 @@ function filterTransaction(
   tx: (typeof fixtures.txs)[number],
   { from, to, rollup }: FiltersSchema
 ) {
-  const senderFilter = from && !to ? tx.fromId === from : true;
-  const receiverFilter = to && !from ? tx.toId === to : true;
+  const fromSplit = splitAndCleanCommaSeparatedString(from);
+
+  const senderFilter = fromSplit && !to ? fromSplit.includes(tx.fromId) : true;
+  const receiverFilter = to && !fromSplit ? tx.toId === to : true;
   const senderOrReceiverFilter =
-    from && to ? tx.fromId === from || tx.toId === to : true;
+    fromSplit && to ? fromSplit.includes(tx.fromId) || tx.toId === to : true;
   const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
 
   return (
@@ -71,7 +84,6 @@ function filterTransaction(
 export function getFilteredBlocks(filters: FiltersSchema) {
   return fixtures.blocks.filter((b) => {
     const blockTxs = fixtures.txs.filter((tx) => tx.blockHash === b.hash);
-
     return (
       filterBlock(b, filters) &&
       blockTxs.some((tx) => filterTransaction(tx, filters))
@@ -84,11 +96,15 @@ export function getFilteredTransactions(filters: FiltersSchema) {
 
   return getFilteredBlocks(filters).flatMap((b) => {
     const txs = fixtures.txs.filter((tx) => {
+      const fromSplit = splitAndCleanCommaSeparatedString(from);
       const isBlockTx = tx.blockHash === b.hash;
-      const senderFilter = from && !to ? tx.fromId === from : true;
-      const receiverFilter = to && !from ? tx.toId === to : true;
+      const senderFilter =
+        fromSplit && !to ? fromSplit.includes(tx.fromId) : true;
+      const receiverFilter = to && !fromSplit ? tx.toId === to : true;
       const senderOrReceiverFilter =
-        from && to ? tx.fromId === from || tx.toId === to : true;
+        fromSplit && to
+          ? fromSplit?.includes(tx.fromId) || tx.toId === to
+          : true;
       const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
 
       return (
@@ -177,6 +193,24 @@ export function runFilterTests(
     it("should return the correct results when filtering by a sender", async () => {
       await assertFilters({
         from: "address1",
+      });
+    });
+
+    it("should return the correct results when filtering by multiple senders", async () => {
+      await assertFilters({
+        from: "address1,address3",
+      });
+    });
+
+    it("should return the correct results when filtering by multiple empty senders", async () => {
+      await assertFilters({
+        from: ",,,,,",
+      });
+    });
+
+    it("should return the correct results when filtering by some empty senders", async () => {
+      await assertFilters({
+        from: ",address1,,address3,,",
       });
     });
 
