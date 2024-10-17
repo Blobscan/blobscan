@@ -233,7 +233,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.13.1
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.0
@@ -257,7 +257,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.2.0
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -465,7 +465,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.2.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
