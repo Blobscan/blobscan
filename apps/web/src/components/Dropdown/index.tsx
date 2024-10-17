@@ -55,35 +55,37 @@ export const Dropdown: React.FC<DropdownProps> = function ({
           } flex cursor-pointer items-center justify-between rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
         >
           <div
-            className={cn("truncate align-middle", {
-              "gradient-mask-r-90": isOverflowing,
-            })}
+            className={cn(
+              {
+                "gradient-mask-r-90": isOverflowing,
+              },
+              "flex h-full items-center overflow-auto align-middle"
+            )}
             ref={containerRef}
           >
-            {hasValue ? (
-              Array.isArray(selected) ? (
-                <div
-                  className="flex flex-row items-center gap-1"
-                  ref={innerRef}
-                >
-                  {selected.map((s) => {
-                    return (
-                      <Fragment key={s.value}>
-                        {s.inputDisplay ? s.inputDisplay : s.label}
-                      </Fragment>
-                    );
-                  })}
-                </div>
-              ) : selected?.label ? (
-                selected.label
+            <div className="h-fit w-fit" ref={innerRef}>
+              {hasValue ? (
+                Array.isArray(selected) ? (
+                  <div className="flex flex-row items-center gap-1">
+                    {selected.map((s) => {
+                      return (
+                        <Fragment key={s.value}>
+                          {s.inputDisplay ? s.inputDisplay : s.label}
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                ) : selected?.label ? (
+                  selected.label
+                ) : (
+                  selected?.value
+                )
               ) : (
-                selected?.value
-              )
-            ) : (
-              <div className="text-hint-light dark:text-hint-dark">
-                {placeholder}
-              </div>
-            )}
+                <div className="text-hint-light dark:text-hint-dark">
+                  {placeholder}
+                </div>
+              )}
+            </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2">
             {clearable && hasValue ? (
