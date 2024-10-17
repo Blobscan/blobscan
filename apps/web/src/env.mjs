@@ -53,6 +53,8 @@ export const env = createEnv({
       .default("https://beaconcha.in/"),
     NEXT_PUBLIC_VERSION: z.string().optional(),
     NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
+    NEXT_PUBLIC_POSTHOG_ID: z.string().optional(),
+    NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com")
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
