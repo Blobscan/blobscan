@@ -126,7 +126,6 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
               <div className="flex items-center justify-start gap-2">
                 Displayed items:
                 <Dropdown
-                  multiple={false}
                   options={PAGE_SIZES_OPTIONS}
                   selected={{ value: pageSize }}
                   width="w-full"
