@@ -125,10 +125,19 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
       to,
     } = filtersResult.data;
 
+    const fromAddresses = from
+      ? from
+          .split(",")
+          .map((f) => f.trim())
+          .filter((f) => f !== "")
+      : undefined;
+
     const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
     const dateRangeExists = startDate !== undefined || endDate !== undefined;
     const slotRangeExists = startSlot !== undefined || endSlot !== undefined;
-    const addressExists = from !== undefined || to !== undefined;
+    const fromAddressesExist =
+      fromAddresses !== undefined && fromAddresses.length > 0;
+    const addressExists = fromAddressesExist || to !== undefined;
 
     if (blockRangeExists) {
       filters.blockNumber = {
@@ -153,9 +162,9 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     if (addressExists) {
       filters.transactionAddresses = [];
-      if (from) {
+      if (fromAddressesExist) {
         filters.transactionAddresses.push({
-          fromId: { in: from.split(",") },
+          fromId: { in: fromAddresses },
         });
       }
 
