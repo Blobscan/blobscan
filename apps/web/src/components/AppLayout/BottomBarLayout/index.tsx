@@ -53,7 +53,7 @@ export const BottomBarLayout = () => {
             </div>
             <div className="relative">
               <Link
-                href={`https://github.com/Blobscan/blobscan/tree/%40blobscan/web%40${env.NEXT_PUBLIC_VERSION}`}
+                href={`https://github.com/Blobscan/blobscan/releases/tag/v${env.NEXT_PUBLIC_VERSION}`}
                 isExternal
               >
                 <div className="relative -top-0.5 text-xs">

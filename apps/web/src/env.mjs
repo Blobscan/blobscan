@@ -1,7 +1,7 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-import packageJson from "../package.json" assert { type: "json" }
+import packageJson from "../../../package.json" assert { type: "json" }
 
 // See booleanSchema from packages/zod/src/schemas.ts
 // We need to redefine it because we can't import ts files from here
@@ -32,7 +32,7 @@ export const env = createEnv({
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
   },
   /**
-   * Specify your client-side environment variables schema here.ç
+   * Specify your client-side environment variables schema here.
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
