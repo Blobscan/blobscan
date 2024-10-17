@@ -1,8 +1,6 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-import packageJson from "../../../package.json" assert { type: "json" }
-
 // See booleanSchema from packages/zod/src/schemas.ts
 // We need to redefine it because we can't import ts files from here
 const booleanSchema = z
@@ -51,16 +49,19 @@ export const env = createEnv({
       .string()
       .url()
       .default("https://beaconcha.in/"),
-    NEXT_PUBLIC_VERSION: z.string().optional(),
+    NEXT_PUBLIC_BLOBSCAN_RELEASE: z.string().optional(),
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
     NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
     NEXT_PUBLIC_POSTHOG_ID: z.string().optional(),
-    NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com")
+    NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
    */
   runtimeEnv: {
+    NEXT_PUBLIC_POSTHOG_ID: process.env.NEXT_PUBLIC_POSTHOG_ID,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    NEXT_PUBLIC_BLOBSCAN_RELEASE: process.env.NEXT_PUBLIC_BLOBSCAN_RELEASE,
     DATABASE_URL: process.env.DATABASE_URL,
     FEEDBACK_WEBHOOK_URL: process.env.FEEDBACK_WEBHOOK_URL,
     NODE_ENV: process.env.NODE_ENV,
@@ -70,7 +71,6 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPPORTED_NETWORKS: process.env.NEXT_PUBLIC_SUPPORTED_NETWORKS,
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
-    NEXT_PUBLIC_VERSION: packageJson.version,
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA:
       process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
     NEXT_PUBLIC_SENTRY_DSN_WEB: process.env.NEXT_PUBLIC_SENTRY_DSN_WEB,
