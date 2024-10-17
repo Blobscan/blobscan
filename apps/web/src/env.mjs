@@ -52,6 +52,7 @@ export const env = createEnv({
       .url()
       .default("https://beaconcha.in/"),
     NEXT_PUBLIC_VERSION: z.string().optional(),
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
     NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
     NEXT_PUBLIC_POSTHOG_ID: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com")
@@ -70,6 +71,8 @@ export const env = createEnv({
     NEXT_PUBLIC_EXPLORER_BASE_URL: process.env.NEXT_PUBLIC_EXPLORER_BASE_URL,
     NEXT_PUBLIC_BEACON_BASE_URL: process.env.NEXT_PUBLIC_BEACON_BASE_URL,
     NEXT_PUBLIC_VERSION: packageJson.version,
+    NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA:
+      process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
     NEXT_PUBLIC_SENTRY_DSN_WEB: process.env.NEXT_PUBLIC_SENTRY_DSN_WEB,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
