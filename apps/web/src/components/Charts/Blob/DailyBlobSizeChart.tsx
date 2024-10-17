@@ -23,13 +23,9 @@ export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({
       axisFormatters: {
         yAxisLabel: (value: number) =>
           formatBytes(value, { maximumFractionDigits: 0 }),
-        yAxisTooltip: (value: number) => formatBytes(value),
+        yAxisTooltip: (value: number) => formatBytes(value, { space: false }),
       },
-      yUnit: "bytes",
     }),
-    grid: {
-      containLabel: true,
-    },
     series: [
       {
         name: "Blob Size",
