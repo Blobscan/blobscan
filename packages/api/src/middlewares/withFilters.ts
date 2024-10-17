@@ -1,5 +1,7 @@
 import type { Prisma } from "@blobscan/db";
-import type { Rollup } from "@blobscan/db/prisma/enums";
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
+import { env } from "@blobscan/env";
+import { getRollupByAddress } from "@blobscan/rollups";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -26,8 +28,8 @@ export type Filters = Partial<{
   blockSlot: NumberRange;
   blockType: Prisma.TransactionForkListRelationFilter;
   transactionAddresses: Prisma.TransactionWhereInput["OR"];
-  transactionCategory: Prisma.TransactionWhereInput["category"];
-  transactionRollup: Prisma.TransactionWhereInput["rollup"];
+  transactionCategory: Category;
+  transactionRollup: Rollup | null;
 
   sort: Prisma.SortOrder;
 }>;
@@ -85,6 +87,20 @@ export function hasCustomFilters(filters: Filters) {
     sort !== "desc" ||
     blockType?.some !== undefined
   );
+}
+
+export function getRollupFromAddressFilter(
+  addressesFilter: Filters["transactionAddresses"]
+) {
+  if (!addressesFilter) {
+    return;
+  }
+
+  const fromAddress = addressesFilter.find(({ fromId }) => !!fromId)?.fromId;
+
+  if (!fromAddress || typeof fromAddress !== "string") return;
+
+  return getRollupByAddress(fromAddress, env.CHAIN_ID);
 }
 
 export const withFilters = t.middleware(({ next, input = {} }) => {

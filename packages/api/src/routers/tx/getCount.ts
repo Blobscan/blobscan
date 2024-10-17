@@ -3,11 +3,11 @@ import { z } from "@blobscan/zod";
 
 import type { Filters } from "../../middlewares/withFilters";
 import {
-  hasCustomFilters,
   withAllFiltersSchema,
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
+import { buildCountStatsFilters, hasToPerformCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
@@ -16,19 +16,6 @@ const outputSchema = z.object({
 });
 
 export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
-  if (!hasCustomFilters(filters)) {
-    const overallStats = await prisma.transactionOverallStats.findFirst({
-      select: {
-        totalTransactions: true,
-      },
-      where: {
-        AND: [{ category: null }, { rollup: null }],
-      },
-    });
-
-    return overallStats?.totalTransactions ?? 0;
-  }
-
   const {
     blockNumber,
     blockTimestamp,
@@ -39,23 +26,50 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
     blockType,
   } = filters;
 
-  const blockFiltersExists = blockSlot || blockType;
+  if (hasToPerformCount(filters)) {
+    return prisma.transaction.count({
+      where: {
+        blockNumber: blockNumber,
+        blockTimestamp: blockTimestamp,
+        category: transactionCategory,
+        rollup: transactionRollup,
+        OR: transactionAddresses,
+        block: {
+          slot: blockSlot,
+          transactionForks: blockType,
+        },
+      },
+    });
+  }
 
-  return prisma.transaction.count({
+  const { category, rollup, fromDay, toDay } = buildCountStatsFilters(filters);
+
+  if (fromDay || toDay) {
+    const dailyStats = await prisma.transactionDailyStats.findMany({
+      select: {
+        totalTransactions: true,
+      },
+      where: {
+        AND: [{ category }, { rollup }, { day: { gte: fromDay, lt: toDay } }],
+      },
+    });
+
+    return dailyStats.reduce(
+      (acc, { totalTransactions }) => acc + totalTransactions,
+      0
+    );
+  }
+
+  const overallStats = await prisma.transactionOverallStats.findFirst({
+    select: {
+      totalTransactions: true,
+    },
     where: {
-      blockNumber: blockNumber,
-      blockTimestamp: blockTimestamp,
-      category: transactionCategory,
-      rollup: transactionRollup,
-      OR: transactionAddresses,
-      block: blockFiltersExists
-        ? {
-            slot: blockSlot,
-            transactionForks: blockType,
-          }
-        : undefined,
+      AND: [{ category }, { rollup }],
     },
   });
+
+  return overallStats?.totalTransactions ?? 0;
 }
 
 export const getCount = publicProcedure

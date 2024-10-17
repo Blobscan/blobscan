@@ -46,7 +46,8 @@ function getExpectedAggregatedDays(
   model: DailyStatsModel,
   datePeriodLike: DatePeriodLike
 ) {
-  const { from, to } = toDailyDatePeriod(datePeriodLike);
+  const { from: from = MIN_DATE, to: to = new Date() } =
+    toDailyDatePeriod(datePeriodLike);
   let elementTimestamps: string[];
 
   switch (model) {
