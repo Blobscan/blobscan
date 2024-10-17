@@ -1,28 +1,33 @@
 import { ListboxOption } from "@headlessui/react";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
-import type { Option as OptionProps } from ".";
+import type { Option as OptionType } from ".";
+
+interface OptionProps {
+  option: OptionType;
+}
 
 export const Option: React.FC<OptionProps> = function (props) {
-  const { prefix, label, value } = props;
+  const { prefix, label, value } = props.option;
   return (
     <ListboxOption
-      className={({ focus }) =>
-        `relative cursor-pointer select-none px-4 py-2 ${
-          focus
-            ? "bg-controlActive-light dark:bg-controlActive-dark dark:text-content-dark"
-            : "text-contentSecondary-light dark:text-contentSecondary-dark"
-        }`
-      }
-      value={props}
+      className={`relative cursor-pointer select-none px-4 py-2 text-contentSecondary-light data-[selected]:bg-controlActive-light dark:text-contentSecondary-dark data-[selected]:dark:bg-controlActive-dark data-[selected]:dark:text-content-dark`}
+      value={props.option}
     >
       {({ selected }) => (
-        <div className="flex items-center gap-3">
-          {prefix && prefix}
-          <span
-            className={`block truncate text-sm ${selected ? "font-bold" : ""}`}
-          >
-            {label ? label : value}
-          </span>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-row items-center gap-2">
+            {prefix && prefix}
+            <span className="block truncate text-sm">
+              {label ? label : value}
+            </span>
+          </div>
+          {selected && (
+            <CheckIcon
+              className="group pointer-events-none absolute right-2.5 top-2.5 size-4"
+              aria-hidden="true"
+            />
+          )}
         </div>
       )}
     </ListboxOption>

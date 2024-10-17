@@ -17,5 +17,9 @@ export default {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms"), require("@headlessui/tailwindcss")],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@headlessui/tailwindcss"),
+    require("tailwind-gradient-mask-image"),
+  ],
 } satisfies Config;

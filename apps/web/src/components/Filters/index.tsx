@@ -17,8 +17,10 @@ import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
+const FROM_ADDRESSES_FORMAT_SEPARATOR = ",";
+
 type FiltersState = {
-  rollup: Option | null;
+  rollups: Option[] | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
@@ -40,7 +42,7 @@ type FiltersAction<V extends keyof FiltersState> =
   | UpdateAction;
 
 const INIT_STATE: FiltersState = {
-  rollup: null,
+  rollups: [],
   timestampRange: {
     endDate: null,
     startDate: null,
@@ -75,7 +77,7 @@ export const Filters: FC = function () {
   const queryParams = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
   const disableClear =
-    !filters.rollup &&
+    !filters.rollups &&
     !filters.timestampRange?.endDate &&
     !filters.timestampRange?.startDate &&
     !filters.blockNumberRange &&
@@ -84,14 +86,16 @@ export const Filters: FC = function () {
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { rollup, timestampRange, blockNumberRange, slotRange, sort } =
+    const { rollups, timestampRange, blockNumberRange, slotRange, sort } =
       filters;
 
-    if (rollup) {
-      if (rollup.value === "null") {
-        query.rollup = rollup.value;
+    if (rollups && rollups.length > 0) {
+      if (rollups.length === 1 && rollups[0]?.value === "null") {
+        query.rollup = rollups[0]?.value;
       } else {
-        query.from = rollup.value;
+        query.from = rollups
+          .map((r) => r.value)
+          .join(FROM_ADDRESSES_FORMAT_SEPARATOR);
       }
     }
 
@@ -156,12 +160,15 @@ export const Filters: FC = function () {
     const newFilters: Partial<FiltersState> = {};
 
     if (rollup || from) {
-      const rollupOption = ROLLUP_OPTIONS.find(
-        (opt) => opt.value === rollup || opt.value === from
-      );
+      const rollupOptions = ROLLUP_OPTIONS.filter((opt) => {
+        const fromAddresses = from?.split(FROM_ADDRESSES_FORMAT_SEPARATOR);
+        return (
+          opt.value === rollup || fromAddresses?.includes(opt.value as string)
+        );
+      });
 
-      if (rollupOption) {
-        newFilters.rollup = rollupOption;
+      if (rollupOptions) {
+        newFilters.rollups = rollupOptions;
       }
     }
 
@@ -204,11 +211,11 @@ export const Filters: FC = function () {
                 dispatch({ type: "UPDATE", payload: { sort: newSort } });
               }}
             />
-            <div className="w-full sm:w-[130px] md:max-lg:w-full">
+            <div className="w-full sm:w-[130px] md:max-lg:w-full xl:w-[240px]">
               <RollupFilter
-                selected={filters.rollup}
-                onChange={(newRollup) =>
-                  dispatch({ type: "UPDATE", payload: { rollup: newRollup } })
+                selected={filters.rollups}
+                onChange={(newRollups) =>
+                  dispatch({ type: "UPDATE", payload: { rollups: newRollups } })
                 }
               />
             </div>

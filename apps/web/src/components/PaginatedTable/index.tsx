@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
 import { Dropdown } from "~/components/Dropdown";
-import type { DropdownProps } from "~/components/Dropdown";
+import type { DropdownProps, Option } from "~/components/Dropdown";
 import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
@@ -75,7 +75,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
       : undefined;
 
   const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (option) => {
+    (option: Option) => {
       if (!option) {
         return;
       }
