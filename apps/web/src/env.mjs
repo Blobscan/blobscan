@@ -73,6 +73,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SENTRY_DSN_WEB: process.env.NEXT_PUBLIC_SENTRY_DSN_WEB,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
+    NEXT_PUBLIC_POSTHOG_ID: process.env.NEXT_PUBLIC_POSTHOG_ID,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST
   },
   skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,
 });
