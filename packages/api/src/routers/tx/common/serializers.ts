@@ -42,6 +42,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
       .merge(serializedExpandedBlobDataSchema)
   ),
   block: serializedExpandedBlockSchema.optional(),
+  decodedFields: z.string().optional(),
 });
 
 export const serializedTransactionSchema =
@@ -129,5 +130,6 @@ export function serializeTransaction(
   return {
     ...serializedBaseTx,
     ...serializedAdditionalTx,
+    decodedFields: JSON.stringify(txQuery.decodedFields),
   };
 }
