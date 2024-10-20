@@ -277,19 +277,41 @@ const Tx: NextPage = () => {
                   {
                     name: "Parent L2 block hash",
                     value: (
-                      <Copyable
-                        value={"0x" + decodedData.parentL2BlockHash}
-                        label="Copy parent L2 block hash"
-                      />
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={
+                            "https://etherscan.io/block/" +
+                            "0x" +
+                            decodedData.parentL2BlockHash
+                          }
+                        >
+                          {"0x" + decodedData.parentL2BlockHash}
+                        </Link>
+                        <CopyToClipboard
+                          value={"0x" + decodedData.parentL2BlockHash}
+                          label="Copy parent L2 block hash"
+                        />
+                      </div>
                     ),
                   },
                   {
                     name: "L1 origin block hash",
                     value: (
-                      <Copyable
-                        value={"0x" + decodedData.l1OriginBlockHash}
-                        label="Copy L1 origin block hash"
-                      />
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={
+                            "https://etherscan.io/block/" +
+                            "0x" +
+                            decodedData.l1OriginBlockHash
+                          }
+                        >
+                          {"0x" + decodedData.l1OriginBlockHash}
+                        </Link>
+                        <CopyToClipboard
+                          value={"0x" + decodedData.l1OriginBlockHash}
+                          label="Copy L1 origin block hash"
+                        />
+                      </div>
                     ),
                   },
                   {
