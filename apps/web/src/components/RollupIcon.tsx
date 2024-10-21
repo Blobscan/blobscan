@@ -63,14 +63,16 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <KromaIcon className={commonStyles} />;
       break;
     case "linea":
-      rollupIcon = <LineaIcon className={"h-3.5 w-3.5"} />;
+      rollupIcon = <LineaIcon className={commonStyles} />;
       break;
     case "metal":
       rollupIcon = <MetalIcon className={commonStyles} />;
       break;
     case "mode":
       rollupIcon = (
-        <ModeIcon className="h-5 w-5 text-[#ceb245] dark:text-[#ffd940]" />
+        <ModeIcon
+          className={`${commonStyles} text-[#ceb245] dark:text-[#ffd940]`}
+        />
       );
       break;
     case "optimism":
