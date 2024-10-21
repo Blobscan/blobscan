@@ -4,6 +4,7 @@ import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
 import BlastIcon from "~/icons/blast.svg";
 import BobaIcon from "~/icons/boba.svg";
+import CampIcon from "~/icons/camp.svg";
 import KromaIcon from "~/icons/kroma.svg";
 import LineaIcon from "~/icons/linea.svg";
 import MetalIcon from "~/icons/metal.svg";
@@ -57,7 +58,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <BobaIcon className={commonStyles} />;
       break;
     case "camp":
-      rollupIcon = null;
+      rollupIcon = <CampIcon className={commonStyles} />;
       break;
     case "kroma":
       rollupIcon = <KromaIcon className={commonStyles} />;
