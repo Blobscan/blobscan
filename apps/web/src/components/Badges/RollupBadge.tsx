@@ -14,7 +14,8 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
     style: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
   },
   blast: {
-    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
+    style:
+      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-50",
   },
   boba: {
     style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
@@ -24,7 +25,7 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
       "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-50",
   },
   kroma: {
-    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
+    style: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-50",
   },
   linea: {
     style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
@@ -37,10 +38,10 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
   optimism: {
     style:
-      "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+      "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100",
   },
   optopia: {
-    style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
+    style: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
   },
   paradex: {
     style:
@@ -58,14 +59,15 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
     style: "bg-amber-100 text-slate-950 dark:bg-slate-900 dark:text-slate-50",
   },
   taiko: {
-    style: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300",
+    style: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100",
   },
   zksync: {
     style: "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300",
     label: "zkSync",
   },
   zora: {
-    style: "bg-zinc-400 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300",
+    style:
+      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
   },
 };
 
