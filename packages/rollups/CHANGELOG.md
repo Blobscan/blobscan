@@ -1,5 +1,11 @@
 # @blobscan/rollups
 
+## 0.2.0
+
+### Minor Changes
+
+- [#591](https://github.com/Blobscan/blobscan/pull/591) [`c3cfd46`](https://github.com/Blobscan/blobscan/commit/c3cfd46cfe65c35ef2bfa0464951cdd78c1a51b8) Thanks [@PJColombo](https://github.com/PJColombo)! - Added missing Sepolia sequencer addresses for the following rollups: ARBITRUM, BASE, LINEA and OPTIMISM
+
 ## 0.1.0
 
 ### Minor Changes
