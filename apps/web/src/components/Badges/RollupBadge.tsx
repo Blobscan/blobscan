@@ -45,7 +45,7 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
   paradex: {
     style:
-      "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      "bg-purple-200 text-purple-900 dark:bg-purple-900 dark:text-purple-300",
   },
   pgn: {
     style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",

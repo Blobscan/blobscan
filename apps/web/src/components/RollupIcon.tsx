@@ -11,6 +11,7 @@ import MetalIcon from "~/icons/metal.svg";
 import ModeIcon from "~/icons/mode.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import OptopiaIcon from "~/icons/optopia.svg";
+import ParadexIcon from "~/icons/paradex.svg";
 import PGNIcon from "~/icons/pgn.svg";
 import ScrollIcon from "~/icons/scroll.svg";
 import StarknetIcon from "~/icons/starknet.svg";
@@ -83,7 +84,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <OptopiaIcon className={commonStyles} />;
       break;
     case "paradex":
-      rollupIcon = null;
+      rollupIcon = <ParadexIcon className={commonStyles} />;
       break;
     case "pgn":
       rollupIcon = <PGNIcon className={commonStyles} />;
