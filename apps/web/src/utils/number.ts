@@ -61,6 +61,34 @@ export function formatNumber(
   );
 }
 
+export function removeCommas(formattedNumber: string): string {
+  return formattedNumber.replace(/,/g, "");
+}
+
+export function parseSuffixedNumber(value: string): [number, string?] {
+  // Remove any leading/trailing whitespace
+  value = removeCommas(value.trim());
+
+  // Regular expression to match the numerical part and optional suffix
+  const regex = /^(-?\d+(?:\.\d+)?)([a-zA-Z]+)?$/;
+  const match = value.match(regex);
+
+  if (!match || !match[1]) {
+    return [parseFloat(value)];
+  }
+
+  const numberPart = parseFloat(match[1]);
+  const suffixPart = match[2] ? match[2].toUpperCase() : undefined;
+
+  return [numberPart, suffixPart];
+}
+
+export function parseDecimalNumber(value: string) {
+  value = removeCommas(value.trim());
+
+  return value.split(".");
+}
+
 export function calculatePercentage(
   numerator: bigint,
   denominator: bigint,
