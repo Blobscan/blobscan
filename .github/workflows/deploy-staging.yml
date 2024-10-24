@@ -30,6 +30,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Setup
         uses: ./tooling/github/setup
+      - name: Set environment variables
+        run: |
+          TAG=$(git describe --tags)
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG"
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG" >> $GITHUB_ENV
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
