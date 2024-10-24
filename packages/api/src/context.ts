@@ -1,4 +1,3 @@
-import type { NextApiRequest } from "next";
 import { TRPCError } from "@trpc/server";
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
@@ -17,6 +16,8 @@ import { env } from "@blobscan/env";
 
 import { posthog } from "./posthog";
 
+type NextHTTPRequest = CreateNextContextOptions["req"];
+
 export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
   | CreateNextContextOptions;
@@ -25,9 +26,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient: string | null;
 };
 
-export function getJWTFromRequest(
-  req: NodeHTTPRequest | CreateNextContextOptions["req"]
-) {
+export function getJWTFromRequest(req: NodeHTTPRequest | NextHTTPRequest) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return null;
@@ -63,7 +62,7 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   };
 }
 
-function getIP(req: NodeHTTPRequest | NextApiRequest): string | undefined {
+function getIP(req: NodeHTTPRequest | NextHTTPRequest): string | undefined {
   const ip = req.headers["x-forwarded-for"] ?? req.socket.remoteAddress;
 
   if (Array.isArray(ip)) {
