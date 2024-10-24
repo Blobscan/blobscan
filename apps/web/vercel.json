@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../../packages/db && prisma generate && cd ../../ && turbo run build --filter=@blobscan/web",
+  "buildCommand": "cd ../../packages/db && prisma generate && cd ../../ && turbo run build --filter=web",
   "installCommand": "pnpm install --store=node_modules/.pnpm-store",
   "framework": "nextjs",
   "git": {
