@@ -72,7 +72,7 @@ importers:
         specifier: ^0.2.8
         version: 0.2.8(@ianvs/prettier-plugin-sort-imports@3.7.2(prettier@2.8.8))(prettier@2.8.8)
       ts-node:
-        specifier: ^10.9.1
+        specifier: ^10.9.2
         version: 10.9.2(@types/node@18.19.41)(typescript@5.5.3)
       ts-node-dev:
         specifier: ^2.0.0
@@ -671,6 +671,21 @@ importers:
       prom-client:
         specifier: ^14.2.0
         version: 14.2.0
+
+  packages/optimism-decoder:
+    dependencies:
+      '@blobscan/db':
+        specifier: workspace:*
+        version: link:../db
+      axios:
+        specifier: ^1.7.2
+        version: 1.7.2
+      csv-writer:
+        specifier: ^1.6.0
+        version: 1.6.0
+      rlp:
+        specifier: ^3.0.0
+        version: 3.0.0
 
   packages/rollups:
     dependencies:
@@ -3940,6 +3955,9 @@ packages:
   csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
 
+  csv-writer@1.6.0:
+    resolution: {integrity: sha512-NOx7YDFWEsM/fTRAJjRpPp8t+MKRVvniAg9wQlUKx20MFrPs73WLJhFf5iteqrxNYnsy924K3Iroh3yNHeYd2g==}
+
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
 
@@ -6188,6 +6206,10 @@ packages:
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
+    hasBin: true
+
+  rlp@3.0.0:
+    resolution: {integrity: sha512-PD6U2PGk6Vq2spfgiWZdomLvRGDreBLxi5jv5M8EpRo3pU6VEm31KO+HFxE18Q3vgqfDrQ9pZA3FP95rkijNKw==}
     hasBin: true
 
   rollup@2.78.0:
@@ -10891,6 +10913,8 @@ snapshots:
 
   csstype@3.1.2: {}
 
+  csv-writer@1.6.0: {}
+
   damerau-levenshtein@1.0.8: {}
 
   data-view-buffer@1.0.1:
@@ -13419,6 +13443,8 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
+
+  rlp@3.0.0: {}
 
   rollup@2.78.0:
     optionalDependencies:

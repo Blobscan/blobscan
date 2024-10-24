@@ -225,6 +225,7 @@ export class DataGenerator {
         maxFeePerBlobGas: new Prisma.Decimal(maxFeePerBlobGas),
         category,
         rollup,
+        decodedFields: {},
         insertedAt: now,
         updatedAt: now,
       };
