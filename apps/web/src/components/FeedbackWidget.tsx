@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import UpstashFeedbackWidget from "@upstash/feedback";
-import { useTheme } from "next-themes";
+
+import Chat from "~/icons/chat.svg";
+import Close from "~/icons/close.svg";
+import { Button } from "./Button";
+import { IconButton } from "./IconButton";
+import { Link } from "./Link";
 
 export const FeedbackWidget: React.FC = function () {
-  const { pathname, query } = useRouter();
-  const { resolvedTheme } = useTheme();
+  const [open, setOpen] = useState(false);
   const [display, setDisplay] = useState(false);
 
   useEffect(() => {
@@ -24,22 +27,173 @@ export const FeedbackWidget: React.FC = function () {
   }
 
   return (
-    <div className="text-content-light">
-      <UpstashFeedbackWidget
-        type="full"
-        // We need to specify the api path to be absolute to
-        // solve: https://github.com/upstash/feedback/issues/5
-        apiPath="/api/feedback"
-        themeColor={resolvedTheme === "dark" ? "#9A71F2" : "#5D25D4"}
-        textColor="#FFF"
-        title="Hi 👋"
-        description="Have feedback? We'd love to hear it"
-        user="anon"
-        metadata={{
-          pathname: pathname,
-          query: query,
-        }}
-      />
-    </div>
+    <>
+      <div className="z-100 fixed bottom-8 right-8">
+        <Button
+          className="flex items-center justify-center gap-2"
+          onClick={() => setOpen((prev) => !prev)}
+        >
+          Feedback <Chat className="h-5 w-5" />
+        </Button>
+      </div>
+      <FeedbackCard open={open} close={() => setOpen(false)} />
+    </>
   );
 };
+
+function FeedbackCard({ open, close }: { open: boolean; close: () => void }) {
+  const { pathname, query } = useRouter();
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
+  const [emoji, setEmoji] = useState("");
+
+  async function sendFeedback() {
+    const message = textAreaRef.current?.value;
+
+    if (!message) {
+      return;
+    }
+
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        rate: emoji,
+        metadata: {
+          pathname,
+          query,
+        },
+      }),
+    });
+
+    textAreaRef.current.value = "";
+    setEmoji("");
+    close();
+  }
+
+  return (
+    <div
+      className={`z-100 fixed bottom-20 right-8 ${open ? "block" : "hidden"}`}
+    >
+      <div
+        className="
+          max-w-[400px]
+          rounded-md  
+          border
+          border-border-light
+          bg-surface-light
+          p-8
+          text-contentSecondary-light
+          shadow-xl
+          dark:border-border-dark
+          dark:bg-surface-dark
+          dark:text-contentSecondary-dark
+          "
+      >
+        <IconButton className="absolute right-3 top-3" onClick={close}>
+          <Close />
+        </IconButton>
+        <p className="text-xl">Hi 👋</p>
+        <p>Have feedback? We&#39;d love to hear it.</p>
+        <textarea
+          className="
+          mt-4
+          h-28
+          w-full
+          resize-none
+          rounded-md
+          border
+          border-border-light
+          bg-transparent
+          p-2
+          placeholder-current
+          dark:border-border-dark
+          "
+          ref={textAreaRef}
+          placeholder="Type your feedback here..."
+        />
+        <div className="mt-4 flex items-center justify-center gap-4 text-3xl">
+          <Emoji
+            active={emoji === "🙁"}
+            onClick={() => {
+              if (emoji === "🙁") {
+                setEmoji("");
+              } else {
+                setEmoji("🙁");
+              }
+            }}
+          >
+            🙁
+          </Emoji>
+          <Emoji
+            active={emoji === "😐"}
+            onClick={() => {
+              if (emoji === "😐") {
+                setEmoji("");
+              } else {
+                setEmoji("😐");
+              }
+            }}
+          >
+            😐
+          </Emoji>
+          <Emoji
+            active={emoji === "🙂"}
+            onClick={() => {
+              if (emoji === "🙂") {
+                setEmoji("");
+              } else {
+                setEmoji("🙂");
+              }
+            }}
+          >
+            🙂
+          </Emoji>
+        </div>
+        <Button className="mt-4 w-full" onClick={sendFeedback}>
+          Submit
+        </Button>
+        <hr className="mt-4 border-border-light dark:border-border-dark" />
+        <p className="mt-4">
+          We also recommend that you open a new GitHub issue so it&#39;s easier
+          for you and us to keep track of the progress.
+        </p>
+        <div className="mt-4">
+          <Link href="https://github.com/Blobscan/blobscan/issues/new">
+            Open a new issue on GitHub
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Emoji({
+  children,
+  active,
+  onClick,
+}: {
+  children: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={
+        active
+          ? "scale-110"
+          : `
+          cursor-pointer
+          grayscale
+          duration-200
+          hover:scale-110
+          `
+      }
+    >
+      {children}
+    </button>
+  );
+}
