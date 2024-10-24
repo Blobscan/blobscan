@@ -129,8 +129,10 @@ function combineFiles(
       const fileBuffer = fs.readFileSync(filePath);
       fs.writeSync(fileDescriptor, fileBuffer);
     }
-  } catch (error: any) {
-    console.error("Error combining files:", error.message);
+  } catch (error) {
+    const error_ = error as Error;
+
+    console.error("Error combining files:", error_.message);
   } finally {
     fs.closeSync(fileDescriptor);
   }

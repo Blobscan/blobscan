@@ -45,10 +45,12 @@ async function main(transactionIds: string[]) {
         console.log(message);
         logInfo(message);
       }
-    } catch (error: any) {
-      console.log(error.message);
+    } catch (error) {
+      const error_ = error as Error;
+
+      console.log(error_.message);
       logInfo(`Failure: ${txId}`);
-      logInfo(error);
+      logInfo(error_.message);
     }
   }
 }
