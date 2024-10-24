@@ -1,4 +1,4 @@
-import type { NextApiRequest } from "next/types";
+import type { NextApiRequest } from "next";
 import { TRPCError } from "@trpc/server";
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
