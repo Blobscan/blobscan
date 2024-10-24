@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.15.0
+
+### Minor Changes
+
+- [#529](https://github.com/Blobscan/blobscan/pull/529) [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Displayed Optimism decoded blob data
+
+### Patch Changes
+
+- Updated dependencies [[`c3cfd46`](https://github.com/Blobscan/blobscan/commit/c3cfd46cfe65c35ef2bfa0464951cdd78c1a51b8), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc)]:
+  - @blobscan/rollups@0.2.0
+  - @blobscan/api@0.14.0
+  - @blobscan/db@0.11.0
+
 ## 0.14.0
 
 ### Minor Changes

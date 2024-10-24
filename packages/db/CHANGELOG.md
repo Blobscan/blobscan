@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.11.0
+
+### Minor Changes
+
+- [#529](https://github.com/Blobscan/blobscan/pull/529) [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added `decodedFields` JSON field for storing decoded-blob-related data
+
 ## 0.10.0
 
 ### Minor Changes
