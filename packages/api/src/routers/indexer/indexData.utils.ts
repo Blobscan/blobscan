@@ -114,6 +114,7 @@ export function createDBTransactions({
         blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
         rollup,
         category,
+        decodedFields: null,
       };
     }
   );

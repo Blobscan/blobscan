@@ -561,6 +561,7 @@ describe("Base Extension", () => {
         blobGasUsed: new Prisma.Decimal(existingRawTx.blobGasUsed),
         maxFeePerBlobGas: new Prisma.Decimal(existingRawTx.maxFeePerBlobGas),
         gasPrice: new Prisma.Decimal(existingRawTx.gasPrice),
+        decodedFields: null,
       };
 
       it("should insert multiple transactions correctly", async () => {
@@ -579,6 +580,7 @@ describe("Base Extension", () => {
             blobGasUsed: new Prisma.Decimal(1000),
             category: "ROLLUP",
             rollup: "OPTIMISM",
+            decodedFields: null,
           },
           {
             hash: "newTxHash2",
@@ -594,6 +596,7 @@ describe("Base Extension", () => {
             blobGasUsed: new Prisma.Decimal(500),
             category: "ROLLUP",
             rollup: "BASE",
+            decodedFields: null,
           },
         ];
 
@@ -631,6 +634,7 @@ describe("Base Extension", () => {
             blobGasUsed: new Prisma.Decimal(1),
             category: "ROLLUP",
             rollup: "ARBITRUM",
+            decodedFields: null,
           },
           {
             hash: "txHash002",
@@ -646,6 +650,7 @@ describe("Base Extension", () => {
             blobGasUsed: new Prisma.Decimal(999),
             category: "ROLLUP",
             rollup: "OPTIMISM",
+            decodedFields: null,
           },
         ];
 
