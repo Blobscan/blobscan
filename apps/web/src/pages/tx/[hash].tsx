@@ -257,7 +257,7 @@ const Tx: NextPage = () => {
       />
 
       {rawTxData && rawTxData.decodedFields && (
-        <Card header="Decoded transaction fields">
+        <Card header="Decoded Fields">
           {decodedData && (
             <div>
               <InfoGrid
