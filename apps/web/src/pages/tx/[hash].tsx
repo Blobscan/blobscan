@@ -258,82 +258,80 @@ const Tx: NextPage = () => {
 
       {decodedData && (
         <Card header="Decoded Fields">
-          {decodedData && (
-            <div>
-              <InfoGrid
-                fields={[
-                  {
-                    name: "Timestamp since L2 genesis",
-                    value: (
-                      <div className="whitespace-break-spaces">
-                        {formatTimestamp(decodedData.timestampSinceL2Genesis)}
-                      </div>
-                    ),
-                  },
-                  {
-                    name: "Last L1 origin number",
-                    value: decodedData.lastL1OriginNumber,
-                  },
-                  {
-                    name: "Parent L2 block hash",
-                    value: (
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={
-                            "https://etherscan.io/block/" +
-                            "0x" +
-                            decodedData.parentL2BlockHash
-                          }
-                        >
-                          {"0x" + decodedData.parentL2BlockHash}
-                        </Link>
-                        <CopyToClipboard
-                          value={"0x" + decodedData.parentL2BlockHash}
-                          label="Copy parent L2 block hash"
-                        />
-                      </div>
-                    ),
-                  },
-                  {
-                    name: "L1 origin block hash",
-                    value: (
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={
-                            "https://etherscan.io/block/" +
-                            "0x" +
-                            decodedData.l1OriginBlockHash
-                          }
-                        >
-                          {"0x" + decodedData.l1OriginBlockHash}
-                        </Link>
-                        <CopyToClipboard
-                          value={"0x" + decodedData.l1OriginBlockHash}
-                          label="Copy L1 origin block hash"
-                        />
-                      </div>
-                    ),
-                  },
-                  {
-                    name: "Number of L2 blocks",
-                    value: decodedData.numberOfL2Blocks,
-                  },
-                  {
-                    name: "Changed by L1 origin",
-                    value: decodedData.changedByL1Origin,
-                  },
-                  {
-                    name: "Total transactions",
-                    value: decodedData.totalTxs,
-                  },
-                  {
-                    name: "Contract creation transactions",
-                    value: decodedData.contractCreationTxsNumber,
-                  },
-                ]}
-              />
-            </div>
-          )}
+          <div>
+            <InfoGrid
+              fields={[
+                {
+                  name: "Timestamp since L2 genesis",
+                  value: (
+                    <div className="whitespace-break-spaces">
+                      {formatTimestamp(decodedData.timestampSinceL2Genesis)}
+                    </div>
+                  ),
+                },
+                {
+                  name: "Last L1 origin number",
+                  value: decodedData.lastL1OriginNumber,
+                },
+                {
+                  name: "Parent L2 block hash",
+                  value: (
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={
+                          "https://etherscan.io/block/" +
+                          "0x" +
+                          decodedData.parentL2BlockHash
+                        }
+                      >
+                        {"0x" + decodedData.parentL2BlockHash}
+                      </Link>
+                      <CopyToClipboard
+                        value={"0x" + decodedData.parentL2BlockHash}
+                        label="Copy parent L2 block hash"
+                      />
+                    </div>
+                  ),
+                },
+                {
+                  name: "L1 origin block hash",
+                  value: (
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={
+                          "https://etherscan.io/block/" +
+                          "0x" +
+                          decodedData.l1OriginBlockHash
+                        }
+                      >
+                        {"0x" + decodedData.l1OriginBlockHash}
+                      </Link>
+                      <CopyToClipboard
+                        value={"0x" + decodedData.l1OriginBlockHash}
+                        label="Copy L1 origin block hash"
+                      />
+                    </div>
+                  ),
+                },
+                {
+                  name: "Number of L2 blocks",
+                  value: decodedData.numberOfL2Blocks,
+                },
+                {
+                  name: "Changed by L1 origin",
+                  value: decodedData.changedByL1Origin,
+                },
+                {
+                  name: "Total transactions",
+                  value: decodedData.totalTxs,
+                },
+                {
+                  name: "Contract creation transactions",
+                  value: decodedData.contractCreationTxsNumber,
+                },
+              ]}
+            />
+          </div>
         </Card>
       )}
 
