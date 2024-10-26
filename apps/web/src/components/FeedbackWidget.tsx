@@ -36,12 +36,18 @@ export const FeedbackWidget: React.FC = function () {
           Feedback <Chat className="h-5 w-5" />
         </Button>
       </div>
-      <FeedbackCard open={open} close={() => setOpen(false)} />
+      <FeedbackCard open={open} onClose={() => setOpen(false)} />
     </>
   );
 };
 
-function FeedbackCard({ open, close }: { open: boolean; close: () => void }) {
+function FeedbackCard({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
   const { pathname, query } = useRouter();
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
   const [emoji, setEmoji] = useState("");
@@ -70,7 +76,7 @@ function FeedbackCard({ open, close }: { open: boolean; close: () => void }) {
 
     textAreaRef.current.value = "";
     setEmoji("");
-    close();
+    onClose();
   }
 
   return (
@@ -92,7 +98,7 @@ function FeedbackCard({ open, close }: { open: boolean; close: () => void }) {
           dark:text-contentSecondary-dark
           "
       >
-        <IconButton className="absolute right-3 top-3" onClick={close}>
+        <IconButton className="absolute right-3 top-3" onClick={onClose}>
           <Close />
         </IconButton>
         <p className="text-xl">Hi 👋</p>
