@@ -42,15 +42,17 @@ export const FeedbackWidget: React.FC = function () {
   );
 };
 
+const OPEN_ISSUE_LINK = "https://github.com/Blobscan/blobscan/issues/new";
+
 interface FeedbackCardProps {
   open: boolean;
   onClose: () => void;
 }
 
 const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
+  const [emoji, setEmoji] = useState("");
   const { pathname, query } = useRouter();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [emoji, setEmoji] = useState("");
 
   async function sendFeedback() {
     const message = textAreaRef.current?.value;
@@ -163,7 +165,7 @@ const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
         <p className="mt-4">
           Please{" "}
           <Link
-            href="https://github.com/Blobscan/blobscan/issues/new"
+            href={OPEN_ISSUE_LINK}
             className="text-link-light hover:underline dark:text-link-dark"
           >
             open a new issue
