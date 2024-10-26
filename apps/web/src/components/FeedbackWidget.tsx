@@ -29,7 +29,7 @@ export const FeedbackWidget: React.FC = function () {
 
   return (
     <>
-      <div className="z-100 fixed bottom-8 right-8">
+      <div className="fixed bottom-8 right-8">
         <Button
           className="flex items-center justify-center gap-2"
           onClick={() => setOpen((prev) => !prev)}
