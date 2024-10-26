@@ -1,46 +1,12 @@
 import type { FC } from "react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import Chat from "~/icons/chat.svg";
 import Close from "~/icons/close.svg";
-import { Button } from "./Button";
-import { IconButton } from "./IconButton";
-
-export const FeedbackWidget: React.FC = function () {
-  const [open, setOpen] = useState(false);
-  const [display, setDisplay] = useState(false);
-
-  useEffect(() => {
-    async function fetchFeedbackStatus() {
-      const res = await fetch("/api/feedback/status");
-      const { enabled } = (await res.json()) as { enabled: boolean };
-
-      setDisplay(enabled);
-    }
-
-    fetchFeedbackStatus();
-  }, []);
-
-  if (!display) {
-    return null;
-  }
-
-  return (
-    <>
-      <div className="fixed bottom-8 right-8">
-        <Button
-          className="flex items-center justify-center gap-2"
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          Feedback <Chat className="h-5 w-5" />
-        </Button>
-      </div>
-      <FeedbackCard open={open} onClose={() => setOpen(false)} />
-    </>
-  );
-};
+import { Button } from "../Button";
+import { IconButton } from "../IconButton";
+import { Emoji } from "./Emoji";
 
 const OPEN_ISSUE_LINK = "https://github.com/Blobscan/blobscan/issues/new";
 
@@ -49,7 +15,7 @@ interface FeedbackCardProps {
   onClose: () => void;
 }
 
-const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
+export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
   const [emoji, setEmoji] = useState("");
   const { pathname, query } = useRouter();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -141,41 +107,5 @@ const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
         </p>
       </div>
     </div>
-  );
-};
-
-interface EmojiProps {
-  emoji: string;
-  currentEmoji: string;
-  setEmoji: (emoji: string) => void;
-}
-
-const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, setEmoji }) => {
-  const active = emoji === currentEmoji;
-
-  function onClick() {
-    if (active) {
-      setEmoji("");
-    } else {
-      setEmoji(emoji);
-    }
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      className={
-        active
-          ? "scale-110"
-          : `
-          cursor-pointer
-          grayscale
-          duration-200
-          hover:scale-110
-          `
-      }
-    >
-      {emoji}
-    </button>
   );
 };
