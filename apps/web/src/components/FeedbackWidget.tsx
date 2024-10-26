@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 import Chat from "~/icons/chat.svg";
 import Close from "~/icons/close.svg";
 import { Button } from "./Button";
 import { IconButton } from "./IconButton";
-import { Link } from "./Link";
 
 export const FeedbackWidget: React.FC = function () {
   const [open, setOpen] = useState(false);
@@ -157,14 +157,15 @@ function FeedbackCard({ open, close }: { open: boolean; close: () => void }) {
         </Button>
         <hr className="mt-4 border-border-light dark:border-border-dark" />
         <p className="mt-4">
-          We also recommend that you open a new GitHub issue so it&#39;s easier
-          for you and us to keep track of the progress.
+          Please{" "}
+          <Link
+            href="https://github.com/Blobscan/blobscan/issues/new"
+            className="text-link-light hover:underline dark:text-link-dark"
+          >
+            open a new issue
+          </Link>{" "}
+          if you have a feature request or want to report a bug
         </p>
-        <div className="mt-4">
-          <Link href="https://github.com/Blobscan/blobscan/issues/new">
-            Open a new issue on GitHub
-          </Link>
-        </div>
       </div>
     </div>
   );
