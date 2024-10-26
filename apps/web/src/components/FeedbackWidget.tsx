@@ -121,42 +121,9 @@ const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
           placeholder="Type your feedback here..."
         />
         <div className="mt-4 flex items-center justify-center gap-4 text-3xl">
-          <Emoji
-            active={emoji === "🙁"}
-            onClick={() => {
-              if (emoji === "🙁") {
-                setEmoji("");
-              } else {
-                setEmoji("🙁");
-              }
-            }}
-          >
-            🙁
-          </Emoji>
-          <Emoji
-            active={emoji === "😐"}
-            onClick={() => {
-              if (emoji === "😐") {
-                setEmoji("");
-              } else {
-                setEmoji("😐");
-              }
-            }}
-          >
-            😐
-          </Emoji>
-          <Emoji
-            active={emoji === "🙂"}
-            onClick={() => {
-              if (emoji === "🙂") {
-                setEmoji("");
-              } else {
-                setEmoji("🙂");
-              }
-            }}
-          >
-            🙂
-          </Emoji>
+          <Emoji emoji="🙁" currentEmoji={emoji} setEmoji={setEmoji} />
+          <Emoji emoji="😐" currentEmoji={emoji} setEmoji={setEmoji} />
+          <Emoji emoji="🙂" currentEmoji={emoji} setEmoji={setEmoji} />
         </div>
         <Button className="mt-4 w-full" onClick={sendFeedback}>
           Submit
@@ -178,12 +145,22 @@ const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
 };
 
 interface EmojiProps {
-  children: string;
-  active: boolean;
-  onClick: () => void;
+  emoji: string;
+  currentEmoji: string;
+  setEmoji: (emoji: string) => void;
 }
 
-const Emoji: FC<EmojiProps> = ({ children, active, onClick }) => {
+const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, setEmoji }) => {
+  const active = emoji === currentEmoji;
+
+  function onClick() {
+    if (active) {
+      setEmoji("");
+    } else {
+      setEmoji(emoji);
+    }
+  }
+
   return (
     <button
       onClick={onClick}
@@ -198,7 +175,7 @@ const Emoji: FC<EmojiProps> = ({ children, active, onClick }) => {
           `
       }
     >
-      {children}
+      {emoji}
     </button>
   );
 };
