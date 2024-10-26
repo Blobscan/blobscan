@@ -175,15 +175,13 @@ const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
   );
 };
 
-function Emoji({
-  children,
-  active,
-  onClick,
-}: {
+interface EmojiProps {
   children: string;
   active: boolean;
   onClick: () => void;
-}) {
+}
+
+const Emoji: FC<EmojiProps> = ({ children, active, onClick }) => {
   return (
     <button
       onClick={onClick}
@@ -201,4 +199,4 @@ function Emoji({
       {children}
     </button>
   );
-}
+};
