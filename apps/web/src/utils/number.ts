@@ -1,6 +1,3 @@
-import type { Options } from "pretty-bytes";
-import prettyBytes from "pretty-bytes";
-
 type FormatMode = "compact" | "standard";
 
 export function numberToBigInt(value: number): bigint {
@@ -22,16 +19,6 @@ const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
     maximumFractionDigits: 3,
   },
 };
-
-export function formatBytes(bytes: number | bigint, opts: Options = {}) {
-  const bytes_ = typeof bytes === "bigint" ? Number(bytes) : bytes;
-
-  return prettyBytes(bytes_, {
-    maximumFractionDigits: 3,
-    binary: true,
-    ...opts,
-  });
-}
 
 export function abbreviateNumber(value: number | string): string {
   return Intl.NumberFormat("en-US", {
