@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type { FC } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -41,15 +42,14 @@ export const FeedbackWidget: React.FC = function () {
   );
 };
 
-function FeedbackCard({
-  open,
-  onClose,
-}: {
+interface FeedbackCardProps {
   open: boolean;
   onClose: () => void;
-}) {
+}
+
+const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
   const { pathname, query } = useRouter();
-  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [emoji, setEmoji] = useState("");
 
   async function sendFeedback() {
@@ -173,7 +173,7 @@ function FeedbackCard({
       </div>
     </div>
   );
-}
+};
 
 function Emoji({
   children,
