@@ -80,9 +80,7 @@ function FeedbackCard({
   }
 
   return (
-    <div
-      className={`z-100 fixed bottom-20 right-8 ${open ? "block" : "hidden"}`}
-    >
+    <div className={`fixed bottom-20 right-8 ${open ? "block" : "hidden"}`}>
       <div
         className="
           max-w-[400px]
