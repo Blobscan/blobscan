@@ -1,5 +1,7 @@
 import type { FC } from "react";
 
+import { IconButton } from "../IconButton";
+
 interface EmojiProps {
   emoji: string;
   currentEmoji: string;
@@ -18,21 +20,12 @@ export const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, setEmoji }) => {
   }
 
   return (
-    <button
+    <IconButton
       type="button"
       onClick={onClick}
-      className={
-        active
-          ? "scale-110"
-          : `
-            cursor-pointer
-            grayscale
-            duration-200
-            hover:scale-110
-            `
-      }
+      className={`text-2xl ${!active && "grayscale"}`}
     >
       {emoji}
-    </button>
+    </IconButton>
   );
 };
