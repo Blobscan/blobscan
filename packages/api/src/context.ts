@@ -14,7 +14,7 @@ import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import { posthog } from "./posthog";
+import { PostHogClient } from "./posthog";
 
 type NextHTTPRequest = CreateNextContextOptions["req"];
 
@@ -87,6 +87,8 @@ export function createTRPCContext(
         apiClient,
       });
 
+      const posthog = PostHogClient();
+
       if (posthog) {
         const cookies = cookie.parse(opts.req.headers.cookie ?? "");
 
@@ -113,6 +115,8 @@ export function createTRPCContext(
             method: opts.req.method,
           },
         });
+
+        await posthog.shutdown();
       }
 
       return {
