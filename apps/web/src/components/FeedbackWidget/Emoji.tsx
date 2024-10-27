@@ -19,6 +19,7 @@ export const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, setEmoji }) => {
 
   return (
     <button
+      type="button"
       onClick={onClick}
       className={
         active

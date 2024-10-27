@@ -1,5 +1,5 @@
-import type { FC } from "react";
-import React, { useState, useRef } from "react";
+import type { FC, FormEvent } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -10,6 +10,25 @@ import { Emoji } from "./Emoji";
 
 const OPEN_ISSUE_LINK = "https://github.com/Blobscan/blobscan/issues/new";
 
+type Feedback = {
+  message: string;
+  rate: string;
+  metadata: {
+    pathname: string;
+    query: unknown;
+  };
+};
+
+async function sendFeedback(feedback: Feedback) {
+  await fetch("/api/feedback", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(feedback),
+  });
+}
+
 interface FeedbackCardProps {
   open: boolean;
   onClose: () => void;
@@ -18,59 +37,59 @@ interface FeedbackCardProps {
 export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
   const [emoji, setEmoji] = useState("");
   const { pathname, query } = useRouter();
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  async function sendFeedback() {
-    const message = textAreaRef.current?.value;
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    if (!message) {
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const message = formData.get("feedback");
+
+    if (typeof message !== "string") {
       return;
     }
 
-    await fetch("/api/feedback", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    await sendFeedback({
+      message,
+      rate: emoji,
+      metadata: {
+        pathname,
+        query,
       },
-      body: JSON.stringify({
-        message,
-        rate: emoji,
-        metadata: {
-          pathname,
-          query,
-        },
-      }),
     });
 
-    textAreaRef.current.value = "";
+    form.reset();
     setEmoji("");
     onClose();
   }
 
   return (
-    <div className={`fixed bottom-20 right-8 ${open ? "block" : "hidden"}`}>
-      <div
+    <form
+      onSubmit={onSubmit}
+      className={`
+        fixed 
+        bottom-20 
+        right-8
+        max-w-[400px]
+        rounded-md  
+        border
+        border-border-light
+        bg-surface-light
+        p-8
+        text-contentSecondary-light
+        shadow-xl
+        dark:border-border-dark
+        dark:bg-surface-dark
+        dark:text-contentSecondary-dark
+        ${open ? "block" : "hidden"}`}
+    >
+      <IconButton className="absolute right-3 top-3" onClick={onClose}>
+        <Close />
+      </IconButton>
+      <p className="text-xl">Hi 👋</p>
+      <p>Have feedback? We&#39;d love to hear it.</p>
+      <textarea
         className="
-          max-w-[400px]
-          rounded-md  
-          border
-          border-border-light
-          bg-surface-light
-          p-8
-          text-contentSecondary-light
-          shadow-xl
-          dark:border-border-dark
-          dark:bg-surface-dark
-          dark:text-contentSecondary-dark
-          "
-      >
-        <IconButton className="absolute right-3 top-3" onClick={onClose}>
-          <Close />
-        </IconButton>
-        <p className="text-xl">Hi 👋</p>
-        <p>Have feedback? We&#39;d love to hear it.</p>
-        <textarea
-          className="
           mt-4
           h-28
           w-full
@@ -83,29 +102,28 @@ export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
           placeholder-current
           dark:border-border-dark
           "
-          ref={textAreaRef}
-          placeholder="Type your feedback here..."
-        />
-        <div className="mt-4 flex items-center justify-center gap-4 text-3xl">
-          <Emoji emoji="🙁" currentEmoji={emoji} setEmoji={setEmoji} />
-          <Emoji emoji="😐" currentEmoji={emoji} setEmoji={setEmoji} />
-          <Emoji emoji="🙂" currentEmoji={emoji} setEmoji={setEmoji} />
-        </div>
-        <Button className="mt-4 w-full" onClick={sendFeedback}>
-          Submit
-        </Button>
-        <hr className="mt-4 border-border-light dark:border-border-dark" />
-        <p className="mt-4">
-          Please{" "}
-          <Link
-            href={OPEN_ISSUE_LINK}
-            className="text-link-light hover:underline dark:text-link-dark"
-          >
-            open a new issue
-          </Link>{" "}
-          if you have a feature request or want to report a bug
-        </p>
+        name="feedback"
+        placeholder="Type your feedback here..."
+      />
+      <div className="mt-4 flex items-center justify-center gap-4 text-3xl">
+        <Emoji emoji="🙁" currentEmoji={emoji} setEmoji={setEmoji} />
+        <Emoji emoji="😐" currentEmoji={emoji} setEmoji={setEmoji} />
+        <Emoji emoji="🙂" currentEmoji={emoji} setEmoji={setEmoji} />
       </div>
-    </div>
+      <Button className="mt-4 w-full" type="submit">
+        Submit
+      </Button>
+      <hr className="mt-4 border-border-light dark:border-border-dark" />
+      <p className="mt-4">
+        Please{" "}
+        <Link
+          href={OPEN_ISSUE_LINK}
+          className="text-link-light hover:underline dark:text-link-dark"
+        >
+          open a new issue
+        </Link>{" "}
+        if you have a feature request or want to report a bug
+      </p>
+    </form>
   );
 };
