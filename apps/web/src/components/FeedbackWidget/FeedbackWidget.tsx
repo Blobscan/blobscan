@@ -5,22 +5,20 @@ import Chat from "~/icons/chat.svg";
 import { Button } from "../Button";
 import { FeedbackCard } from "./FeedbackCard";
 
+async function getEnabled(): Promise<boolean> {
+  const request = await fetch("/api/feedback/enabled");
+  return await request.json();
+}
+
 export const FeedbackWidget: FC = () => {
   const [open, setOpen] = useState(false);
-  const [display, setDisplay] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    async function fetchFeedbackStatus() {
-      const res = await fetch("/api/feedback/status");
-      const { enabled } = (await res.json()) as { enabled: boolean };
-
-      setDisplay(enabled);
-    }
-
-    fetchFeedbackStatus();
+    getEnabled().then(setEnabled);
   }, []);
 
-  if (!display) {
+  if (!enabled) {
     return null;
   }
 
