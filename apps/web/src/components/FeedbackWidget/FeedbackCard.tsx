@@ -106,9 +106,9 @@ export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
         placeholder="Type your feedback here..."
       />
       <div className="mt-4 flex items-center justify-center gap-4 text-3xl">
-        <Emoji emoji="🙁" currentEmoji={emoji} setEmoji={setEmoji} />
-        <Emoji emoji="😐" currentEmoji={emoji} setEmoji={setEmoji} />
-        <Emoji emoji="🙂" currentEmoji={emoji} setEmoji={setEmoji} />
+        <Emoji emoji="🙁" currentEmoji={emoji} onChange={setEmoji} />
+        <Emoji emoji="😐" currentEmoji={emoji} onChange={setEmoji} />
+        <Emoji emoji="🙂" currentEmoji={emoji} onChange={setEmoji} />
       </div>
       <Button className="mt-4 w-full" type="submit">
         Submit

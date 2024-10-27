@@ -5,17 +5,17 @@ import { IconButton } from "../IconButton";
 interface EmojiProps {
   emoji: string;
   currentEmoji: string;
-  setEmoji: (emoji: string) => void;
+  onChange: (emoji: string) => void;
 }
 
-export const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, setEmoji }) => {
+export const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, onChange }) => {
   const active = emoji === currentEmoji;
 
   function onClick() {
     if (active) {
-      setEmoji("");
+      onChange("");
     } else {
-      setEmoji(emoji);
+      onChange(emoji);
     }
   }
 
