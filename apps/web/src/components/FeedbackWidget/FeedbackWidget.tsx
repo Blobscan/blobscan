@@ -7,7 +7,7 @@ import { FeedbackCard } from "./FeedbackCard";
 
 async function getEnabled(): Promise<boolean> {
   const request = await fetch("/api/feedback/enabled");
-  return await request.json();
+  return (await request.json()).enabled;
 }
 
 export const FeedbackWidget: FC = () => {
