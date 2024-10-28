@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { parseDecodedData } from "~/utils/decoded-transaction";
+import { parseDecodedData } from "@blobscan/api/src/utils/decoded-transaction";
+
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
