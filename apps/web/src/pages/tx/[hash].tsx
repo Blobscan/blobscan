@@ -267,9 +267,12 @@ const Tx: NextPage = () => {
                   value: (
                     <div className="whitespace-break-spaces">
                       {tx
-                        ? tx.blockTimestamp
-                            .subtract(decodedData.timestampSinceL2Genesis, "ms")
-                            .fromNow()
+                        ? formatTimestamp(
+                            tx.blockTimestamp.subtract(
+                              decodedData.timestampSinceL2Genesis,
+                              "ms"
+                            )
+                          )
                         : ""}
                     </div>
                   ),
