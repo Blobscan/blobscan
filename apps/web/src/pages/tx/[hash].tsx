@@ -281,19 +281,7 @@ const Tx: NextPage = () => {
                   name: "Parent L2 block hash",
                   value: (
                     <div className="flex items-center gap-2">
-                      <Link
-                        href={
-                          "https://etherscan.io/block/" +
-                          "0x" +
-                          decodedData.parentL2BlockHash
-                        }
-                      >
-                        {"0x" + decodedData.parentL2BlockHash}
-                      </Link>
-                      <CopyToClipboard
-                        value={"0x" + decodedData.parentL2BlockHash}
-                        label="Copy parent L2 block hash"
-                      />
+                      {"0x" + decodedData.parentL2BlockHash + "..."}
                     </div>
                   ),
                 },
