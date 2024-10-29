@@ -1,6 +1,6 @@
 import { prisma } from "@blobscan/db";
 
-export async function getByPartialHash(hash: string): Promise<string | null> {
+export async function getFullBlockHash(partialHash: string): Promise<string | null> {
   const block = await prisma.block.findFirst({
     where: {
       hash: {
