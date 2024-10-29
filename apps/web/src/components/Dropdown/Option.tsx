@@ -11,7 +11,7 @@ export const Option: React.FC<OptionProps> = function (props) {
   const { prefix, label, value } = props.option;
   return (
     <ListboxOption
-      className={`relative cursor-pointer select-none px-4 py-2 text-contentSecondary-light data-[selected]:bg-controlActive-light dark:text-contentSecondary-dark data-[selected]:dark:bg-controlActive-dark data-[selected]:dark:text-content-dark`}
+      className={`relative cursor-pointer select-none px-4 py-2 text-contentSecondary-light hover:bg-controlActive-light data-[selected]:font-semibold data-[selected]:text-content-light dark:text-contentSecondary-dark  hover:dark:bg-controlActive-dark data-[selected]:dark:font-semibold data-[selected]:dark:text-content-dark`}
       value={props.option}
     >
       {({ selected }) => (

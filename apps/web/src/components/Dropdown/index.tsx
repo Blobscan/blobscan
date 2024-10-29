@@ -40,7 +40,9 @@ export const Dropdown: React.FC<DropdownProps> = function ({
   clearable = false,
   placeholder = "Select an item",
 }) {
-  const hasValue = Array.isArray(selected) ? selected.length > 0 : selected;
+  const hasSelectedValue = Array.isArray(selected)
+    ? selected.length > 0
+    : selected;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
@@ -64,7 +66,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
             ref={containerRef}
           >
             <div className="h-fit w-fit" ref={innerRef}>
-              {hasValue ? (
+              {hasSelectedValue ? (
                 Array.isArray(selected) ? (
                   <div className="flex flex-row items-center gap-1">
                     {selected.map((s) => {
@@ -88,7 +90,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-            {clearable && hasValue ? (
+            {clearable && hasSelectedValue ? (
               <XMarkIcon
                 className="h-5 w-5 text-icon-light hover:text-iconHighlight-light dark:text-icon-dark dark:hover:text-iconHighlight-dark"
                 onClick={(e) => {
