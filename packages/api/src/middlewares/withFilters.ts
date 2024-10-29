@@ -1,7 +1,5 @@
 import type { Prisma } from "@blobscan/db";
 import type { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { env } from "@blobscan/env";
-import { getRollupByAddress } from "@blobscan/rollups";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -87,20 +85,6 @@ export function hasCustomFilters(filters: Filters) {
     sort !== "desc" ||
     blockType?.some !== undefined
   );
-}
-
-export function getRollupFromAddressFilter(
-  addressesFilter: Filters["transactionAddresses"]
-) {
-  if (!addressesFilter) {
-    return;
-  }
-
-  const fromAddress = addressesFilter.find(({ fromId }) => !!fromId)?.fromId;
-
-  if (!fromAddress || typeof fromAddress !== "string") return;
-
-  return getRollupByAddress(fromAddress, env.CHAIN_ID);
 }
 
 export const withFilters = t.middleware(({ next, input = {} }) => {

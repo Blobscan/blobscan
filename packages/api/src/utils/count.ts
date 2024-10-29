@@ -1,7 +1,22 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
+import { env } from "@blobscan/env";
+import { getRollupByAddress } from "@blobscan/rollups";
 
-import { getRollupFromAddressFilter } from "../middlewares/withFilters";
 import type { Filters } from "../middlewares/withFilters";
+
+function getRollupFromAddressFilter(
+  addressesFilter: Filters["transactionAddresses"]
+) {
+  if (!addressesFilter) {
+    return;
+  }
+
+  const fromAddress = addressesFilter.find(({ fromId }) => !!fromId)?.fromId;
+
+  if (!fromAddress || typeof fromAddress !== "string") return;
+
+  return getRollupByAddress(fromAddress, env.CHAIN_ID);
+}
 
 /**
  * Determines if a direct count operation must be performed or the value can be obtained by using
@@ -22,17 +37,21 @@ export function requiresDirectCount({
   transactionAddresses,
   blockType,
 }: Filters) {
-  const addressFiltersCount = transactionAddresses?.length ?? 0;
-  const hasRollupAsAddress = !!getRollupFromAddressFilter(transactionAddresses);
+  const blockNumberRangeFilterEnabled = !!blockNumber;
   const reorgedFilterEnabled = !!blockType?.some;
+  const slotRangeFilterEnabled = !!blockSlot;
+  const addressFiltersCount = transactionAddresses?.length ?? 0;
+  const severalAddressesFilterEnabled = addressFiltersCount > 1;
+  const nonRollupAddressFilterEnabled =
+    addressFiltersCount === 1 &&
+    !getRollupFromAddressFilter(transactionAddresses);
 
-  // We
   return (
-    blockNumber ||
-    blockSlot ||
+    blockNumberRangeFilterEnabled ||
+    slotRangeFilterEnabled ||
     reorgedFilterEnabled ||
-    addressFiltersCount > 1 ||
-    (addressFiltersCount === 1 && !hasRollupAsAddress)
+    severalAddressesFilterEnabled ||
+    nonRollupAddressFilterEnabled
   );
 }
 
