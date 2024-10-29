@@ -101,6 +101,8 @@ export function createTRPCContext(
             "Set-Cookie",
             cookie.serialize("distinctId", distinctId, {
               maxAge: 60 * 60 * 24 * 365,
+              httpOnly: false,
+              path: "/",
             })
           );
         }
