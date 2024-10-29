@@ -7,7 +7,7 @@ import {
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
-import { buildCountStatsFilters, hasToPerformCount } from "../../utils/count";
+import { buildCountStatsFilters, requiresDirectCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
@@ -15,6 +15,16 @@ const outputSchema = z.object({
   totalTransactions: z.number(),
 });
 
+/**
+ * Counts transactions based on the provided filters.
+ *
+ * This function decides between counting transactions directly from the transaction table
+ * or using pre-calculated aggregated data from daily or overall transaction stats to
+ * improve performance.
+ *
+ * The choice depends on the specificity of the filters provided.
+ *
+ */
 export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
   const {
     blockNumber,
@@ -26,7 +36,7 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
     blockType,
   } = filters;
 
-  if (hasToPerformCount(filters)) {
+  if (requiresDirectCount(filters)) {
     return prisma.transaction.count({
       where: {
         blockNumber: blockNumber,
@@ -44,6 +54,7 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
 
   const { category, rollup, fromDay, toDay } = buildCountStatsFilters(filters);
 
+  // Get count by summing daily total transaction stats data if a date range is provided in filters
   if (fromDay || toDay) {
     const dailyStats = await prisma.transactionDailyStats.findMany({
       select: {
