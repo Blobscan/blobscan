@@ -28,6 +28,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+        with:
+          fetch-tags: true
       - name: Setup
         uses: ./tooling/github/setup
       - name: Set environment variables
