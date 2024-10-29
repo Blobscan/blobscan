@@ -9,7 +9,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
 import { parseDecodedData } from "../../utils/decoded-transaction";
-import { getByPartialHash } from "../block/getByPartialHash";
+import { getFullBlockHash } from "../../utils/getByPartialHash";
 import {
   addDerivedFieldsToTransaction,
   createTransactionSelect,
@@ -84,7 +84,7 @@ async function addFullBlockHash(decoded: string): Promise<string> {
     return decoded;
   }
 
-  const hash = await getByPartialHash(data.l1OriginBlockHash);
+  const hash = await getFullBlockHash(data.l1OriginBlockHash);
 
   if (!hash) {
     return decoded;
