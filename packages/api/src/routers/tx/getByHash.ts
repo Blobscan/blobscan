@@ -8,8 +8,6 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
-import { parseDecodedData } from "../../utils/decoded-transaction";
-import { getFullBlockHash } from "../../utils/getByPartialHash";
 import {
   addDerivedFieldsToTransaction,
   createTransactionSelect,
@@ -67,29 +65,6 @@ export const getByHash = publicProcedure
         );
       }
 
-      const tx = serializeTransaction(addDerivedFieldsToTransaction(queriedTx));
-
-      if (tx.decodedFields) {
-        tx.decodedFields = await addFullBlockHash(tx.decodedFields);
-      }
-
-      return tx;
+      return serializeTransaction(addDerivedFieldsToTransaction(queriedTx));
     }
   );
-
-async function addFullBlockHash(decoded: string): Promise<string> {
-  const data = parseDecodedData(decoded);
-
-  if (!data) {
-    return decoded;
-  }
-
-  const hash = await getFullBlockHash(data.l1OriginBlockHash);
-
-  if (!hash) {
-    return decoded;
-  }
-
-  data.l1OriginBlockHash = hash;
-  return JSON.stringify(data);
-}

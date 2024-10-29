@@ -2,8 +2,6 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { parseDecodedData } from "@blobscan/api/src/utils/decoded-transaction";
-
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
@@ -231,9 +229,9 @@ const Tx: NextPage = () => {
   }
 
   const decodedData =
-    rawTxData && rawTxData.decodedFields
-      ? parseDecodedData(rawTxData.decodedFields)
-      : null;
+    rawTxData?.decodedFields?.type === "optimism"
+      ? rawTxData.decodedFields.payload
+      : undefined;
 
   return (
     <>
