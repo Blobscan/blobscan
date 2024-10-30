@@ -28,9 +28,15 @@ jobs:
           script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
         with:
+          fetch-depth: 500
           fetch-tags: true
       - name: Setup
         uses: ./tooling/github/setup
+      - name: Set environment variables
+        run: |
+          TAG=$(git describe --tags --always)
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG"
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG" >> $GITHUB_ENV
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -56,8 +62,17 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 500
+          fetch-tags: true
       - name: Setup
         uses: ./tooling/github/setup
+      - name: Set environment variables
+        run: |
+          TAG=$(git describe --tags --always)
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG"
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG" >> $GITHUB_ENV
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -83,8 +98,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 500
+          fetch-tags: true
       - name: Setup
         uses: ./tooling/github/setup
+      - name: Set environment variables
+        run: |
+          TAG=$(git describe --tags --always)
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG"
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG" >> $GITHUB_ENV
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
@@ -110,8 +133,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: nohup ./deploy-blobscan.sh
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 500
+          fetch-tags: true
       - name: Setup
         uses: ./tooling/github/setup
+      - name: Set environment variables
+        run: |
+          TAG=$(git describe --tags --always)
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG"
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$TAG" >> $GITHUB_ENV
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
