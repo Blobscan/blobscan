@@ -7,7 +7,7 @@ import type {
 } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
-import type { Rollup } from "../enums";
+import type { Category, Rollup } from "../enums";
 import type { TRPCContext } from "../src";
 import { appRouter } from "../src/app-router";
 import {
@@ -193,8 +193,12 @@ describe("Transaction router", async () => {
     });
 
     runFilterTests(async (filters) => {
-      const filtersRollup = (filters.rollup?.toUpperCase() ??
-        null) as Rollup | null;
+      const categoryFilter: Category | null =
+        filters.rollup === "null" ? "ROLLUP" : null;
+      const rollupFilter: Rollup | null =
+        filters.rollup === "null"
+          ? null
+          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
       const directCountRequired = requiresDirectCount(filters);
       let expectedTotalTransactions = 0;
 
@@ -219,7 +223,8 @@ describe("Transaction router", async () => {
               createNewDailyStats({
                 day,
                 totalTransactions: count,
-                rollup: filtersRollup,
+                category: categoryFilter,
+                rollup: rollupFilter,
               })
             )
           );
@@ -228,8 +233,8 @@ describe("Transaction router", async () => {
 
           await createNewOverallStats({
             totalTransactions: expectedTotalTransactions,
-            category: null,
-            rollup: filtersRollup,
+            category: categoryFilter,
+            rollup: rollupFilter,
           });
         }
       }

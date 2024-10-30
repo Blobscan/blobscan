@@ -4,7 +4,7 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { BlobDailyStats, BlobOverallStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
-import type { Rollup } from "../enums";
+import type { Category, Rollup } from "../enums";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
@@ -191,8 +191,12 @@ describe("Blob router", async () => {
     });
 
     runFilterTests(async (filters) => {
-      const filtersRollup = (filters.rollup?.toUpperCase() ??
-        null) as Rollup | null;
+      const categoryFilter: Category | null =
+        filters.rollup === "null" ? "ROLLUP" : null;
+      const rollupFilter: Rollup | null =
+        filters.rollup === "null"
+          ? null
+          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
       const directCountRequired = requiresDirectCount(filters);
       let expectedTotalBlobs = 0;
 
@@ -216,8 +220,9 @@ describe("Blob router", async () => {
             dailyCounts.map(({ day, count }) =>
               createNewDailyStats({
                 day,
+                category: categoryFilter,
+                rollup: rollupFilter,
                 totalBlobs: count,
-                rollup: filtersRollup,
               })
             )
           );
@@ -225,8 +230,8 @@ describe("Blob router", async () => {
           expectedTotalBlobs = STATS_TOTAL_BLOBS;
 
           await createNewOverallStats({
-            category: null,
-            rollup: filtersRollup,
+            category: categoryFilter,
+            rollup: rollupFilter,
             totalBlobs: expectedTotalBlobs,
           });
         }
