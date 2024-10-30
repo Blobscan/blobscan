@@ -7,7 +7,7 @@ import {
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
-import { buildCountStatsFilters, requiresDirectCount } from "../../utils/count";
+import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
@@ -61,27 +61,16 @@ export async function countBlobs(
     });
   }
 
-  const { fromDay, toDay, category, rollup } = buildCountStatsFilters(filters);
+  const where = buildStatsWhereClause(filters);
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
-  if (fromDay || toDay) {
+  if (filters.blockTimestamp) {
     const dailyStats = await prisma.blobDailyStats.findMany({
       select: {
         day: true,
         totalBlobs: true,
       },
-      where: {
-        AND: [
-          { category },
-          { rollup },
-          {
-            day: {
-              gte: fromDay,
-              lt: toDay,
-            },
-          },
-        ],
-      },
+      where,
     });
 
     return dailyStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
@@ -91,9 +80,7 @@ export async function countBlobs(
     select: {
       totalBlobs: true,
     },
-    where: {
-      AND: [{ category }, { rollup }],
-    },
+    where,
   });
 
   return overallStats?.totalBlobs ?? 0;

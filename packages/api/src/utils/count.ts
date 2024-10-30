@@ -55,12 +55,13 @@ export function requiresDirectCount({
   );
 }
 
-export function buildCountStatsFilters({
+export function buildStatsWhereClause({
   blockTimestamp,
   transactionCategory,
   transactionRollup,
   transactionAddresses,
 }: Filters) {
+  const clauses = [];
   // We set 'category' or 'rollup' to null when there are no corresponding filters
   // because the db stores total statistics for each grouping in rows where
   // 'category' or 'rollup' is null.
@@ -68,16 +69,21 @@ export function buildCountStatsFilters({
     transactionRollup ??
     getRollupFromAddressFilter(transactionAddresses) ??
     null;
+
   const category = (rollup ? null : transactionCategory) ?? null;
-  const { from: fromDay, to: toDay } = toDailyDatePeriod({
+
+  clauses.push({ category }, { rollup });
+
+  const { from, to } = toDailyDatePeriod({
     from: blockTimestamp?.gte,
     to: blockTimestamp?.lt,
   });
 
+  if (from || to) {
+    clauses.push({ day: { gte: from, lt: to } });
+  }
+
   return {
-    category,
-    rollup,
-    fromDay,
-    toDay,
+    AND: clauses,
   };
 }
