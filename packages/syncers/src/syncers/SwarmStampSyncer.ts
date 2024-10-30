@@ -2,6 +2,7 @@ import type { AxiosResponse } from "axios";
 import { AxiosError } from "axios";
 import axios from "axios";
 
+import { formatTtl } from "@blobscan/dates";
 import { prisma } from "@blobscan/db";
 
 import { BaseSyncer } from "../BaseSyncer";
@@ -66,7 +67,11 @@ export class SwarmStampSyncer extends BaseSyncer {
           },
         });
 
-        this.logger.info(`Swarm stamp data with batch ID "${batchId}" updated`);
+        this.logger.info(
+          `Swarm batch ID "${batchId}" updated. New expiry date: ${formatTtl(
+            batchTTL
+          )}.`
+        );
       },
     });
   }
