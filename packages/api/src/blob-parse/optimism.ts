@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { logger } from "@blobscan/logger";
+
 import { getFullBlockHash } from "../utils/getFullBlockHash";
 
 export const OptimismDecodedDataSchema = z.object({
@@ -36,6 +38,10 @@ export async function parseOptimismDecodedData(
 
   if (hash) {
     decoded.data.l1OriginBlockHash = hash;
+  } else {
+    logger.warn(
+      `Failed to get full block hash for L1 origin block hash: ${decoded.data.l1OriginBlockHash}`
+    );
   }
 
   return decoded.data;
