@@ -1,5 +1,5 @@
 import type { Prisma } from "@blobscan/db";
-import type { Rollup } from "@blobscan/db/prisma/enums";
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -26,8 +26,8 @@ export type Filters = Partial<{
   blockSlot: NumberRange;
   blockType: Prisma.TransactionForkListRelationFilter;
   transactionAddresses: Prisma.TransactionWhereInput["OR"];
-  transactionCategory: Prisma.TransactionWhereInput["category"];
-  transactionRollup: Prisma.TransactionWhereInput["rollup"];
+  transactionCategory: Category;
+  transactionRollup: Rollup | null;
 
   sort: Prisma.SortOrder;
 }>;

@@ -3,11 +3,11 @@ import { z } from "@blobscan/zod";
 
 import type { Filters } from "../../middlewares/withFilters";
 import {
-  hasCustomFilters,
   withAllFiltersSchema,
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
+import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
@@ -15,20 +15,17 @@ const outputSchema = z.object({
   totalTransactions: z.number(),
 });
 
+/**
+ * Counts transactions based on the provided filters.
+ *
+ * This function decides between counting transactions directly from the transaction table
+ * or using pre-calculated aggregated data from daily or overall transaction stats to
+ * improve performance.
+ *
+ * The choice depends on the specificity of the filters provided.
+ *
+ */
 export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
-  if (!hasCustomFilters(filters)) {
-    const overallStats = await prisma.transactionOverallStats.findFirst({
-      select: {
-        totalTransactions: true,
-      },
-      where: {
-        AND: [{ category: null }, { rollup: null }],
-      },
-    });
-
-    return overallStats?.totalTransactions ?? 0;
-  }
-
   const {
     blockNumber,
     blockTimestamp,
@@ -39,23 +36,47 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
     blockType,
   } = filters;
 
-  const blockFiltersExists = blockSlot || blockType;
+  if (requiresDirectCount(filters)) {
+    return prisma.transaction.count({
+      where: {
+        blockNumber: blockNumber,
+        blockTimestamp: blockTimestamp,
+        category: transactionCategory,
+        rollup: transactionRollup,
+        OR: transactionAddresses,
+        block: {
+          slot: blockSlot,
+          transactionForks: blockType,
+        },
+      },
+    });
+  }
 
-  return prisma.transaction.count({
-    where: {
-      blockNumber: blockNumber,
-      blockTimestamp: blockTimestamp,
-      category: transactionCategory,
-      rollup: transactionRollup,
-      OR: transactionAddresses,
-      block: blockFiltersExists
-        ? {
-            slot: blockSlot,
-            transactionForks: blockType,
-          }
-        : undefined,
+  const where = buildStatsWhereClause(filters);
+
+  // Get count by summing daily total transaction stats data if a date range is provided in filters
+  if (filters.blockTimestamp) {
+    const dailyStats = await prisma.transactionDailyStats.findMany({
+      select: {
+        totalTransactions: true,
+      },
+      where,
+    });
+
+    return dailyStats.reduce(
+      (acc, { totalTransactions }) => acc + totalTransactions,
+      0
+    );
+  }
+
+  const overallStats = await prisma.transactionOverallStats.findFirst({
+    select: {
+      totalTransactions: true,
     },
+    where,
   });
+
+  return overallStats?.totalTransactions ?? 0;
 }
 
 export const getCount = publicProcedure
