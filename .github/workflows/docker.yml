@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "BUILD_TIMESTAMP=$(date '+%F %H:%M:%S')" >> $GITHUB_ENV
           echo "GIT_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_BLOBSCAN_RELEASE=$(git describe --tags)" >> $GITHUB_ENV
 
       - name: Extract metadata (tags, labels) for Docker (API)
         id: meta_api
