@@ -41,3 +41,7 @@ export function buildTransactionStatsRoute() {
 export function buildValidatorStatsRoute() {
   return "/validators";
 }
+
+export function buildValidatorRoute(item: string | number) {
+  return `/validator/${item}`;
+}

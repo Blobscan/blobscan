@@ -1,7 +1,8 @@
 {
   "extends": "@blobscan/tsconfig/base.production.json",
   "compilerOptions": {
-    "module": "esnext"
+    "module": "esnext",
+    "downlevelIteration": true
   },
   "ts-node": {
     // these options are overrides used only by ts-node
