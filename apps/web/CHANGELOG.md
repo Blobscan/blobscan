@@ -1,5 +1,28 @@
 # @blobscan/web
 
+## 0.15.0
+
+### Minor Changes
+
+- [#529](https://github.com/Blobscan/blobscan/pull/529) [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Displayed Optimism decoded blob data
+
+### Patch Changes
+
+- [#606](https://github.com/Blobscan/blobscan/pull/606) [`ba1d783`](https://github.com/Blobscan/blobscan/commit/ba1d78376100a65389cc4a9eac9e399ff2f3627d) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed "transaction" from decoded fields header
+
+- [#612](https://github.com/Blobscan/blobscan/pull/612) [`4b75e4a`](https://github.com/Blobscan/blobscan/commit/4b75e4a254a693ff6aabbdce69d0c48fb348b0d4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Gitcoin Round 22 banner
+
+- [#606](https://github.com/Blobscan/blobscan/pull/606) [`ba1d783`](https://github.com/Blobscan/blobscan/commit/ba1d78376100a65389cc4a9eac9e399ff2f3627d) Thanks [@PJColombo](https://github.com/PJColombo)! - Hid decoded fields section when there is no decoded data available
+
+- [#599](https://github.com/Blobscan/blobscan/pull/599) [`9dd0f3f`](https://github.com/Blobscan/blobscan/commit/9dd0f3f2c648899c71fc37b5271e313f778f994d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed an issue where the app version info in the footer was not displayed correctly, and ensured the link directs users to the correct release page
+
+- [#582](https://github.com/Blobscan/blobscan/pull/582) [`7f55095`](https://github.com/Blobscan/blobscan/commit/7f550957a0e1fc8c3c1033e836628b372f9ecac0) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a new label "reorg" to the reorged slots/blocks search results
+
+- Updated dependencies [[`c3cfd46`](https://github.com/Blobscan/blobscan/commit/c3cfd46cfe65c35ef2bfa0464951cdd78c1a51b8), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc), [`dd75d56`](https://github.com/Blobscan/blobscan/commit/dd75d56d8ce2ef881c55ac843d9e9937939d671b), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc)]:
+  - @blobscan/rollups@0.2.0
+  - @blobscan/api@0.14.0
+  - @blobscan/db@0.11.0
+
 ## 0.14.0
 
 ### Minor Changes
