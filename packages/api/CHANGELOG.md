@@ -1,5 +1,21 @@
 # @blobscan/api
 
+## 0.14.0
+
+### Minor Changes
+
+- [#529](https://github.com/Blobscan/blobscan/pull/529) [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Displayed Optimism decoded blob data
+
+### Patch Changes
+
+- [#590](https://github.com/Blobscan/blobscan/pull/590) [`dd75d56`](https://github.com/Blobscan/blobscan/commit/dd75d56d8ce2ef881c55ac843d9e9937939d671b) Thanks [@PJColombo](https://github.com/PJColombo)! - Optimized element count performance by retrieving pre-calculated values from the stats table when filtering by rollup, date, or with no filters applied
+
+- Updated dependencies [[`c3cfd46`](https://github.com/Blobscan/blobscan/commit/c3cfd46cfe65c35ef2bfa0464951cdd78c1a51b8), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc)]:
+  - @blobscan/rollups@0.2.0
+  - @blobscan/db@0.11.0
+  - @blobscan/blob-propagator@0.2.6
+  - @blobscan/blob-storage-manager@0.3.6
+
 ## 0.13.0
 
 ### Minor Changes
