@@ -39,7 +39,7 @@ export async function parseOptimismDecodedData(
   if (hash) {
     decoded.data.l1OriginBlockHash = hash;
   } else {
-    logger.warn(
+    logger.error(
       `Failed to get full block hash for L1 origin block hash: ${decoded.data.l1OriginBlockHash}`
     );
   }
