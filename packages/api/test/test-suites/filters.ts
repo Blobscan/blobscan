@@ -142,7 +142,7 @@ export function requiresDirectCount({
   const blockNumberRangeFilterEnabled = !!startBlock || !!endBlock;
   const reorgedFilterEnabled = type === "reorged";
   const slotRangeFilterEnabled = !!startSlot || !!endSlot;
-  const addressFilterEnabled = !!from || !!to;
+  const addressFilterEnabled = splitAndCleanCommaSeparatedString(from) || !!to;
 
   return (
     blockNumberRangeFilterEnabled ||
