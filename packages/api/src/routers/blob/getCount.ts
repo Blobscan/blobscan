@@ -7,7 +7,7 @@ import {
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
-import { buildCountStatsFilters, hasToPerformCount } from "../../utils/count";
+import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
@@ -15,6 +15,15 @@ const outputSchema = z.object({
   totalBlobs: z.number(),
 });
 
+/**
+ * Counts blobs based on the provided filters.
+ *
+ * This function decides between counting blobs directly from the blob table
+ * or using pre-calculated aggregated data from daily or overall blob stats
+ * to improve performance.
+ *
+ * The choice depends on the specificity of the filters provided.
+ */
 export async function countBlobs(
   prisma: BlobscanPrismaClient,
   filters: Filters
@@ -29,7 +38,7 @@ export async function countBlobs(
     blockType,
   } = filters;
 
-  if (hasToPerformCount(filters)) {
+  if (requiresDirectCount(filters)) {
     const transactionFiltersEnabled =
       transactionCategory || transactionRollup || transactionAddresses;
 
@@ -52,26 +61,16 @@ export async function countBlobs(
     });
   }
 
-  const { fromDay, toDay, category, rollup } = buildCountStatsFilters(filters);
+  const where = buildStatsWhereClause(filters);
 
-  if (fromDay || toDay) {
+  // Get count by summing daily total transaction stats data if a date range is provided in filters
+  if (filters.blockTimestamp) {
     const dailyStats = await prisma.blobDailyStats.findMany({
       select: {
         day: true,
         totalBlobs: true,
       },
-      where: {
-        AND: [
-          { category },
-          { rollup },
-          {
-            day: {
-              gte: fromDay,
-              lt: toDay,
-            },
-          },
-        ],
-      },
+      where,
     });
 
     return dailyStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
@@ -81,9 +80,7 @@ export async function countBlobs(
     select: {
       totalBlobs: true,
     },
-    where: {
-      AND: [{ category }, { rollup }],
-    },
+    where,
   });
 
   return overallStats?.totalBlobs ?? 0;

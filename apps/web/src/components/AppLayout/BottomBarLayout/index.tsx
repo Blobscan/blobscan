@@ -1,40 +1,15 @@
-import type { ReactElement } from "react";
 import React from "react";
 
+import { BlobscanSocialLinks } from "~/components/BlobscanSocialLinks";
+import { BlobscanVersionInfo } from "~/components/BlobscanVersionInfo";
 import { ExplorerDetails } from "~/components/ExplorerDetails";
-import { IconButton } from "~/components/IconButton";
 import { Link } from "~/components/Link";
-import { env } from "~/env.mjs";
-import DiscordIcon from "~/icons/discord.svg";
-import GithubIcon from "~/icons/github.svg";
-import XIcon from "~/icons/x.svg";
-
-const EXTERNAL_APPS: { href: string; icon: ReactElement }[] = [
-  {
-    icon: <GithubIcon className="h-5 w-5" />,
-    href: "https://github.com/Blobscan/blobscan",
-  },
-  {
-    icon: <DiscordIcon className="h-5 w-5" />,
-    href: "https://discord.gg/6KNZ2UVFRt",
-  },
-  {
-    icon: <XIcon className="h-5 w-5" />,
-    href: "https://twitter.com/blobscan",
-  },
-];
 
 export const BottomBarLayout = () => {
   return (
     <div className="flex flex-col items-center justify-center p-2">
       <div className="mt-4 flex flex-col items-center gap-2 sm:mt-8">
-        <div className="flex items-center gap-2">
-          {EXTERNAL_APPS.map(({ icon, href }) => (
-            <Link key={href} href={href} isExternal hideExternalIcon>
-              <IconButton>{icon}</IconButton>
-            </Link>
-          ))}
-        </div>
+        <BlobscanSocialLinks />
         <div className="max-w-lg text-center text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
           Blobscan is the first open-source block explorer for the{" "}
           <Link href="https://www.eip4844.com/" isExternal>
@@ -46,23 +21,7 @@ export const BottomBarLayout = () => {
         <div className="my-1">
           <ExplorerDetails placement="footer" />
         </div>
-        {env.NEXT_PUBLIC_VERSION && (
-          <div className="flex items-center gap-1">
-            <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-              Version:
-            </div>
-            <div className="relative">
-              <Link
-                href={`https://github.com/Blobscan/blobscan/tree/%40blobscan/web%40${env.NEXT_PUBLIC_VERSION}`}
-                isExternal
-              >
-                <div className="relative -top-0.5 text-xs">
-                  {env.NEXT_PUBLIC_VERSION}
-                </div>
-              </Link>
-            </div>
-          </div>
-        )}
+        <BlobscanVersionInfo />
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
             Blobscan © 2024

@@ -130,6 +130,28 @@ export function getFilteredBlobs(filters: FiltersSchema) {
   });
 }
 
+export function requiresDirectCount({
+  endBlock,
+  endSlot,
+  from,
+  to,
+  type,
+  startBlock,
+  startSlot,
+}: FiltersSchema) {
+  const blockNumberRangeFilterEnabled = !!startBlock || !!endBlock;
+  const reorgedFilterEnabled = type === "reorged";
+  const slotRangeFilterEnabled = !!startSlot || !!endSlot;
+  const addressFilterEnabled = !!from || !!to;
+
+  return (
+    blockNumberRangeFilterEnabled ||
+    reorgedFilterEnabled ||
+    slotRangeFilterEnabled ||
+    addressFilterEnabled
+  );
+}
+
 export function runFilterTests(
   assertFilters: (filters: FiltersSchema) => Promise<void>
 ) {
