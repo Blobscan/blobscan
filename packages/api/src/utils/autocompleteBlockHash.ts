@@ -1,6 +1,10 @@
 import { prisma } from "@blobscan/db";
 
-export async function getFullBlockHash(partialHash: string) {
+/* Autocomplete a block hash from a truncated version of it.
+   @param partialHash - The first bytes of a block hash.
+   @returns The block hash, if there is a single ocurrence, or null.
+ */
+export async function autocompleteBlockHash(partialHash: string) {
   const block = await prisma.block.findFirst({
     where: {
       hash: {
