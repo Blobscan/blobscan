@@ -9,7 +9,7 @@ nextjs:
 A set of Helm charts are provided to run multiple Blobscan components on Kubernetes.
 
 {% callout title="Tip" %}
-If you want to try the Helm Charts without setting up a whole Kubernetes clusters, you can create a localy [Kind](https://kind.sigs.k8s.io/) cluster.
+If you want to try the Helm Charts without setting up a whole Kubernetes clusters, you can create a local [Kind](https://kind.sigs.k8s.io/) cluster.
 {% /callout %}
 
 ```bash
@@ -25,7 +25,7 @@ First you will need to add a new repository:
 helm repo add blobscan-helm-charts https://blobscan.github.io/blobscan-helm-charts
 ```
 
-Then retrieve the packages in the repository an install:
+Then retrieve the packages in the repository and install:
 
 ```bash
 helm repo update
