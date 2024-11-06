@@ -140,6 +140,9 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             ...COMMON_OPTIONS.toolbox?.feature,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ...(options.toolbox?.feature || {}),
             mySwitchToCumulative: {
               show: true,
               iconStyle: {
