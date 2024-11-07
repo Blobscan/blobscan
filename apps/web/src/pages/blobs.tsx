@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 
+import { CopyableLink } from "~/components/CopyableLink";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -38,6 +39,10 @@ const BLOBS_TABLE_HEADERS = [
       {
         item: "Timestamp",
         className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
+      },
+      {
+        item: "Category",
+        className: "w-[60px]",
       },
       {
         item: "Size",
@@ -87,16 +92,24 @@ const Blobs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <Link href={buildBlobRoute(versionedHash)}>
+                  <CopyableLink
+                    href={buildBlobRoute(versionedHash)}
+                    value={versionedHash}
+                    tooltipText="Copy versioned hash"
+                  >
                     {shortenAddress(versionedHash, 8)}
-                  </Link>
+                  </CopyableLink>
                 ),
               },
               {
                 item: (
-                  <Link href={buildTransactionRoute(txHash)}>
+                  <CopyableLink
+                    href={buildTransactionRoute(txHash)}
+                    value={txHash}
+                    tooltipText="Copy transaction hash"
+                  >
                     {shortenAddress(txHash, 8)}
-                  </Link>
+                  </CopyableLink>
                 ),
               },
               {
@@ -114,6 +127,9 @@ const Blobs: NextPage = function () {
                     {formatTimestamp(blockTimestamp, true)}
                   </div>
                 ),
+              },
+              {
+                item: <span></span>,
               },
               {
                 item: (
