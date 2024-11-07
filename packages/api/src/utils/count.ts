@@ -1,22 +1,7 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
-import { env } from "@blobscan/env";
-import { getRollupByAddress } from "@blobscan/rollups";
 
+import { getRollupFromAddressFilter } from "../middlewares/withFilters";
 import type { Filters } from "../middlewares/withFilters";
-
-function getRollupFromAddressFilter(
-  addressesFilter: Filters["transactionAddresses"]
-) {
-  if (!addressesFilter) {
-    return;
-  }
-
-  const fromAddress = addressesFilter.find(({ fromId }) => !!fromId)?.fromId;
-
-  if (!fromAddress || typeof fromAddress !== "string") return;
-
-  return getRollupByAddress(fromAddress, env.CHAIN_ID);
-}
 
 /**
  * Determines if a direct count operation must be performed or the value can be obtained by using
