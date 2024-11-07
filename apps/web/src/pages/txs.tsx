@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
 
+import { CopyableLink } from "~/components/CopyableLink";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
@@ -198,9 +199,13 @@ const Txs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <Link href={buildTransactionRoute(hash)}>
+                  <CopyableLink
+                    href={buildTransactionRoute(hash)}
+                    value={hash}
+                    tooltipText="Copy hash"
+                  >
                     {shortenAddress(hash, 6)}
-                  </Link>
+                  </CopyableLink>
                 ),
               },
               {
@@ -217,16 +222,24 @@ const Txs: NextPage = function () {
               },
               {
                 item: (
-                  <Link href={buildAddressRoute(from)}>
+                  <CopyableLink
+                    href={buildAddressRoute(from)}
+                    value={from}
+                    tooltipText="Copy the origin address"
+                  >
                     {shortenAddress(from, 6)}
-                  </Link>
+                  </CopyableLink>
                 ),
               },
               {
                 item: (
-                  <Link href={buildAddressRoute(to)}>
+                  <CopyableLink
+                    href={buildAddressRoute(to)}
+                    value={to}
+                    tooltipText="Copy the destination address"
+                  >
                     {shortenAddress(to, 6)}
-                  </Link>
+                  </CopyableLink>
                 ),
               },
               {
