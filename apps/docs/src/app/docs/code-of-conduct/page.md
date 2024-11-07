@@ -6,7 +6,7 @@ nextjs:
     description: Code of conduct for Blobscan.
 ---
 
-We strive to create an inclusive, respectful, and transparent environment in our open source projects.
+We strive to create an inclusive, respectful, and transparent environment in our open-source projects.
 
 ## Commitment
 

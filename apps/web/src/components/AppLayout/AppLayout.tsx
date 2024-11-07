@@ -1,6 +1,8 @@
+import { useState } from "react";
 import cn from "classnames";
 
 import { useIsHomepage } from "~/hooks/useIsHomePage";
+import GitcoinBanner from "../GitcoinBanner";
 import { BottomBarLayout } from "./BottomBarLayout";
 import { TopBarLayout } from "./TopBarLayout";
 
@@ -11,9 +13,11 @@ interface LayoutProps {
 
 const AppLayout = ({ children }: LayoutProps) => {
   const isHomepage = useIsHomepage();
+  const [showBanner, setShowBanner] = useState(true);
 
   return (
     <div className="flex min-h-screen flex-col">
+      {showBanner && <GitcoinBanner onClose={() => setShowBanner(false)} />}
       <TopBarLayout />
       <main
         className={cn("container mx-auto grow", {

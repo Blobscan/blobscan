@@ -13,22 +13,24 @@ export const TopBarLayout: React.FC = () => {
 
   if (isHomepage) {
     return (
-      <nav className="z-10 flex h-16 w-full items-center justify-end px-4 md:justify-between">
-        <div className="ml-5 w-full md:ml-0 md:flex">
-          <ExplorerDetails placement="top" />
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="xl:hidden">
-            <SidebarNavigationMenu />
+      <>
+        <nav className="z-10 flex h-16 w-full items-center justify-end px-4 md:justify-between">
+          <div className="ml-5 w-full md:ml-0 md:flex">
+            <ExplorerDetails placement="top" />
           </div>
-          <div className="hidden xl:flex">
-            <NavigationMenus />
+          <div className="flex items-center gap-3">
+            <div className="xl:hidden">
+              <SidebarNavigationMenu />
+            </div>
+            <div className="hidden xl:flex">
+              <NavigationMenus />
+            </div>
+            <div className="relative ml-2 hidden xl:block">
+              <ThemeModeButton />
+            </div>
           </div>
-          <div className="relative ml-2 hidden xl:block">
-            <ThemeModeButton />
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </>
     );
   }
 

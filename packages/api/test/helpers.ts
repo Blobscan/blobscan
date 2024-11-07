@@ -8,6 +8,8 @@ import { describe, expect, it } from "vitest";
 
 import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
 import { createBlobStorageManager } from "@blobscan/blob-storage-manager";
+import type { DatePeriod } from "@blobscan/dayjs";
+import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 import type { Rollup } from "@blobscan/db";
 import { env } from "@blobscan/env";
@@ -321,4 +323,29 @@ export async function unauthorizedRPCCallTest(rpcCall: () => Promise<unknown>) {
       new TRPCError({ code: "UNAUTHORIZED" })
     );
   });
+}
+
+export function generateDailyCounts({ from, to }: DatePeriod, count: number) {
+  const dailyCounts: {
+    day: Date;
+    count: number;
+  }[] = [];
+  const maxDays = 10;
+  const startDate = from
+    ? dayjs(from)
+    : toDailyDate(dayjs(to).subtract(maxDays));
+  const endDate = to ? dayjs(to) : toDailyDate(dayjs(from).add(maxDays));
+
+  const days = endDate.diff(startDate, "days");
+
+  for (let i = 0; i < days; i++) {
+    const day = toDailyDate(startDate.add(i, "day")).toDate();
+
+    dailyCounts.push({
+      day,
+      count,
+    });
+  }
+
+  return dailyCounts;
 }

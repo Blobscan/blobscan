@@ -1,18 +1,25 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import type { BlobDailyStats, BlobOverallStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
+import type { Category, Rollup } from "../enums";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
 import {
   createTestContext,
+  generateDailyCounts,
   runExpandsTestsSuite,
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
-import { getFilteredBlobs, runFilterTests } from "./test-suites/filters";
+import {
+  getFilteredBlobs,
+  requiresDirectCount,
+  runFilterTests,
+} from "./test-suites/filters";
 import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
@@ -128,17 +135,111 @@ describe("Blob router", async () => {
   });
 
   describe("getCount", () => {
+    // To test that the procedure retrieves the count from the stats table rather than
+    // performing a direct database count, we stored an arbitrary total blobs value in the stats table
+    // in each test, intentionally different from the actual number of blobs in the database.
+    // This setup allows us to verify that the procedure correctly uses the stats table count
+    // instead of performing a direct database count.
+    const STATS_TOTAL_BLOBS = 999999;
+
+    async function createNewOverallStats(
+      overallStats: Partial<BlobOverallStats>
+    ) {
+      const data: Prisma.BlobOverallStatsCreateManyInput = {
+        category: null,
+        rollup: null,
+        updatedAt: new Date(),
+        totalBlobs: 0,
+        totalBlobSize: 0,
+        totalUniqueBlobs: 0,
+        ...overallStats,
+      };
+
+      await ctx.prisma.blobOverallStats.create({
+        data,
+      });
+    }
+
+    async function createNewDailyStats(dailyStats: Partial<BlobDailyStats>) {
+      const data: Prisma.BlobDailyStatsCreateInput = {
+        day: new Date(),
+        category: null,
+        rollup: null,
+        totalBlobs: 0,
+        totalBlobSize: 0,
+        totalUniqueBlobs: 0,
+        ...dailyStats,
+      };
+
+      await ctx.prisma.blobDailyStats.create({
+        data,
+      });
+    }
+
     it("should return the overall total blobs stat when no filters are provided", async () => {
-      await ctx.prisma.blobOverallStats.populate();
+      const expectedTotalBlobs = STATS_TOTAL_BLOBS;
+
+      await createNewOverallStats({
+        category: null,
+        rollup: null,
+        totalBlobs: expectedTotalBlobs,
+      });
+
       const { totalBlobs } = await caller.blob.getCount({});
 
-      expect(totalBlobs).toBe(fixtures.canonicalBlobs.length);
+      expect(totalBlobs).toBe(expectedTotalBlobs);
     });
 
     runFilterTests(async (filters) => {
+      const categoryFilter: Category | null =
+        filters.rollup === "null" ? "ROLLUP" : null;
+      const rollupFilter: Rollup | null =
+        filters.rollup === "null"
+          ? null
+          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
+      const directCountRequired = requiresDirectCount(filters);
+      let expectedTotalBlobs = 0;
+
+      if (directCountRequired) {
+        expectedTotalBlobs = getFilteredBlobs(filters).length;
+      } else {
+        const { startDate, endDate } = filters;
+        const dateFilterEnabled = startDate || endDate;
+
+        if (dateFilterEnabled) {
+          const dailyCounts = generateDailyCounts(
+            { from: startDate, to: endDate },
+            STATS_TOTAL_BLOBS
+          );
+          expectedTotalBlobs = dailyCounts.reduce(
+            (acc, { count }) => acc + count,
+            0
+          );
+
+          await Promise.all(
+            dailyCounts.map(({ day, count }) =>
+              createNewDailyStats({
+                day,
+                category: categoryFilter,
+                rollup: rollupFilter,
+                totalBlobs: count,
+              })
+            )
+          );
+        } else {
+          expectedTotalBlobs = STATS_TOTAL_BLOBS;
+
+          await createNewOverallStats({
+            category: categoryFilter,
+            rollup: rollupFilter,
+            totalBlobs: expectedTotalBlobs,
+          });
+        }
+      }
+
       const { totalBlobs } = await caller.blob.getCount(filters);
 
-      expect(totalBlobs).toBe(getFilteredBlobs(filters).length);
+      expect(totalBlobs).toBe(expectedTotalBlobs);
     });
   });
 });
