@@ -17,7 +17,7 @@ import { PostHogProvider } from "posthog-js/react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AppLayout from "~/components/AppLayout/AppLayout";
-import { FeedbackWidget } from "~/components/FeedbackWidget";
+import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
 import { api } from "~/api-client";
 import { env } from "~/env.mjs";
 import { useIsMounted } from "~/hooks/useIsMounted";
