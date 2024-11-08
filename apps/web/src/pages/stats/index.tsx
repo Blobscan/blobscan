@@ -69,7 +69,7 @@ function OverallStats() {
         <MetricCard
           name="Total Blocks"
           metric={{
-            value: overall?.block.totalBlocks,
+            value: overall ? overall.block.totalBlocks : undefined,
           }}
         />
 
@@ -77,7 +77,6 @@ function OverallStats() {
           name="Total Blob Gas Used"
           metric={{
             value: overall ? BigInt(overall.block.totalBlobGasUsed) : undefined,
-            type: "ethereum",
           }}
         />
 
@@ -137,7 +136,6 @@ function OverallStats() {
               ? BigInt(overall.block.totalBlobAsCalldataGasUsed) -
                 BigInt(overall.block.totalBlobGasUsed)
               : undefined,
-            type: "ethereum",
           }}
           // secondaryMetric={
           //   overallStats &&

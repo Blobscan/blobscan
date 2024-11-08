@@ -334,9 +334,6 @@ importers:
       posthog-js:
         specifier: ^1.166.1
         version: 1.166.1
-      pretty-bytes:
-        specifier: ^6.1.1
-        version: 6.1.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -5959,10 +5956,6 @@ packages:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-
-  pretty-bytes@6.1.1:
-    resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
-    engines: {node: ^14.13.1 || >=16.0.0}
 
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -13186,8 +13179,6 @@ snapshots:
       '@ianvs/prettier-plugin-sort-imports': 3.7.2(prettier@2.8.8)
 
   prettier@2.8.8: {}
-
-  pretty-bytes@6.1.1: {}
 
   pretty-format@29.7.0:
     dependencies:

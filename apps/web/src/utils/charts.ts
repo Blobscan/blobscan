@@ -53,8 +53,6 @@ export function createTooltip(
   };
 }
 
-type YUnit = "ethereum" | "bytes";
-
 export type TimeSeriesInput = Partial<{
   dates: string[];
   axisFormatters: Partial<{
@@ -63,22 +61,11 @@ export type TimeSeriesInput = Partial<{
     yAxisLabel: ValueFormatter;
     yAxisTooltip: ValueFormatter;
   }>;
-  yUnit: YUnit;
 }>;
-
-const YUINT_TO_GRID: Record<YUnit, EChartOption.Grid> = {
-  bytes: {
-    left: 55,
-  },
-  ethereum: {
-    left: 70,
-  },
-};
 
 export function buildTimeSeriesOptions({
   dates,
   axisFormatters,
-  yUnit,
 }: TimeSeriesInput): EChartOption {
   const {
     xAxisLabel = dateAxisFormatter,
@@ -88,7 +75,6 @@ export function buildTimeSeriesOptions({
   } = axisFormatters || {};
   return {
     xAxis: {
-      name: "Date",
       type: "category",
       data: dates,
       axisLabel: {
@@ -102,6 +88,5 @@ export function buildTimeSeriesOptions({
       },
     },
     tooltip: createTooltip(xAxisTooltip, yAxisTooltip),
-    grid: yUnit ? YUINT_TO_GRID[yUnit] : undefined,
   };
 }
