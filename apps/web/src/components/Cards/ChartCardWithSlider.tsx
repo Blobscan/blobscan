@@ -1,15 +1,15 @@
-import type { EChartOption } from "echarts";
 import type { FC, ReactNode } from "react";
-
+import Slider from "@mui/material/Slider";
 import cn from "classnames";
-import Slider from '@mui/material/Slider';
+import type { EChartOption } from "echarts";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
-import { useState } from "react";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useState, useEffect } from "react";
+
 import { Card } from "~/components/Cards/Card";
-import { ChartBase } from "~/components/Charts/ChartBase";
 import { ChartSkeleton } from "~/components/ChartSkeleton";
+import { ChartBase } from "~/components/Charts/ChartBase";
 import { buildTimeSeriesOptions, normalizeTimestamp } from "~/utils";
 
 function getSeriesDataState(series: EChartOption.Series[] | undefined) {
@@ -20,6 +20,46 @@ function getSeriesDataState(series: EChartOption.Series[] | undefined) {
     isEmpty: series ? series.some(({ data }) => data?.length === 0) : false,
   };
 }
+
+const getInitAxle = (initCoordinateAxle: number[]): number[] => {
+  return initCoordinateAxle;
+};
+
+const getAxleRange = (
+  allAxle: number[],
+  initCoordinateAxle: number[]
+): number[] => {
+  return allAxle.slice(
+    allAxle.indexOf(initCoordinateAxle[0] as number),
+    allAxle.indexOf(initCoordinateAxle[1] as number) + 1
+  );
+};
+
+const getDataRange = (
+  allData: number[],
+  allAxle: number[],
+  initCoordinateAxle: number[]
+): number[] => {
+  return allData.slice(
+    allAxle.indexOf(initCoordinateAxle[0] as number),
+    allAxle.indexOf(initCoordinateAxle[1] as number) + 1
+  );
+};
+
+// Helper function to find the closest index in allAxle for a given value
+const findClosestItem = (arr: number[], target: number): number => {
+  if (arr.indexOf(target) !== -1) return target;
+  const closestIndex = arr.reduce(
+    (closestIndex, currentValue, currentIndex) => {
+      return Math.abs(currentValue - target) <
+        Math.abs((arr[closestIndex] || 0) - target)
+        ? currentIndex
+        : closestIndex;
+    },
+    0
+  );
+  return arr[closestIndex]!;
+};
 
 export type ChartCardWithSliderProps = {
   title?: ReactNode;
@@ -40,7 +80,8 @@ export type ChartCardWithSliderProps = {
 
   minDistance: number;
   sliderStep?: number;
-}
+  showSlider?: boolean;
+};
 
 export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
   title,
@@ -57,72 +98,85 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
 
   minDistance,
   sliderStep = 1,
+  showSlider = true,
 }) {
-  const [initAxle, setInitAxle] = useState<number[]>(initCoordinateAxle);
+  const [initAxle, setInitAxle] = useState<number[]>(
+    getInitAxle(initCoordinateAxle)
+  );
   const [axleRange, setAxleRange] = useState<number[]>(
-    allAxle.slice(
-      allAxle.indexOf(initAxle[0] as number),
-      allAxle.indexOf(initAxle[1] as number) + 1,
-    )
+    getAxleRange(allAxle, initCoordinateAxle)
   );
   const [dataRange, setDataRange] = useState<number[]>(
-    allData.slice(
-      allAxle.indexOf(initAxle[0] as number),
-      allAxle.indexOf(initAxle[1] as number) + 1,
-    )
-  )
+    getDataRange(allData, allAxle, initCoordinateAxle)
+  );
+
+  // Update states based on changes in props
+  useEffect(() => {
+    setInitAxle(getInitAxle(initCoordinateAxle));
+  }, [initCoordinateAxle]);
+
+  useEffect(() => {
+    setAxleRange(getAxleRange(allAxle, initCoordinateAxle));
+  }, [allAxle, initCoordinateAxle]);
+
+  useEffect(() => {
+    setDataRange(getDataRange(allData, allAxle, initCoordinateAxle));
+  }, [allData, allAxle, initCoordinateAxle]);
 
   const handleRangeChange = (
     event: Event,
     newRange: number | number[],
-    activeThumb: number,
+    activeThumb: number
   ) => {
     if (!Array.isArray(newRange) || newRange.length < 2) {
       return;
     }
 
-    if (newRange[1] as number - (newRange[0] as number) < minDistance) {
+    let [startAxle = 0, endAxle = 0] = newRange;
+
+    startAxle = findClosestItem(allAxle, startAxle);
+    endAxle = findClosestItem(allAxle, endAxle);
+
+    if ((endAxle as number) - (startAxle as number) < minDistance) {
       if (activeThumb === 0) {
-        const start = Math.min(
-          newRange[0] as number,
+        let start = Math.min(
+          startAxle as number,
           (allAxle[allAxle.length - 1] as number) - minDistance
         );
-        const end = start + minDistance;
+        let end = start + minDistance;
+        start = findClosestItem(allAxle, start);
+        end = findClosestItem(allAxle, end);
         setInitAxle([start, end]);
-        setAxleRange(allAxle.slice(
-          allAxle.indexOf(start),
-          allAxle.indexOf(end) + 1,
-        ));
-        setDataRange(allData.slice(
-          allAxle.indexOf(start),
-          allAxle.indexOf(end) + 1,
-        ));
+        setAxleRange(
+          allAxle.slice(allAxle.indexOf(start), allAxle.indexOf(end) + 1)
+        );
+        setDataRange(
+          allData.slice(allAxle.indexOf(start), allAxle.indexOf(end) + 1)
+        );
       } else {
-        const end = Math.max(
-          newRange[1] as number,
+        let end = Math.max(
+          endAxle as number,
           (allAxle[0] as number) + minDistance
         );
-        const start = end - minDistance;
+        let start = end - minDistance;
+        start = findClosestItem(allAxle, start);
+        end = findClosestItem(allAxle, end);
         setInitAxle([start, end]);
-        setAxleRange(allAxle.slice(
-          allAxle.indexOf(start),
-          allAxle.indexOf(end) + 1,
-        ));
-        setDataRange(allData.slice(
-          allAxle.indexOf(start),
-          allAxle.indexOf(end) + 1,
-        ));
+        setAxleRange(
+          allAxle.slice(allAxle.indexOf(start), allAxle.indexOf(end) + 1)
+        );
+        setDataRange(
+          allData.slice(allAxle.indexOf(start), allAxle.indexOf(end) + 1)
+        );
       }
     } else {
-      setInitAxle(newRange);
-      setAxleRange(allAxle.slice(
-        allAxle.indexOf(newRange[0] as number),
-        allAxle.indexOf(newRange[1] as number) + 1,
-      ));
-      setDataRange(allData.slice(
-        allAxle.indexOf(newRange[0] as number),
-        allAxle.indexOf(newRange[1] as number) + 1,
-      ));
+      setInitAxle([startAxle, endAxle]);
+      setAxleRange(
+        allAxle.slice(allAxle.indexOf(startAxle), allAxle.indexOf(endAxle) + 1)
+      );
+      setDataRange(
+        allData.slice(allAxle.indexOf(startAxle), allAxle.indexOf(endAxle) + 1)
+      );
     }
   };
 
@@ -130,7 +184,9 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
     EChartOption.SeriesBar | EChartOption.SeriesLine
   > = {
     ...buildTimeSeriesOptions({
-      dates: axleRange.map((time) => normalizeTimestamp(time).format("YYYY-MM-DD HH:mm:ss")),
+      dates: axleRange.map((time) =>
+        normalizeTimestamp(time).format("YYYY-MM-DD HH:mm:ss")
+      ),
       axisFormatters: {
         xAxisLabel: xAxisLabel,
         xAxisTooltip: xAxisTooltip,
@@ -149,6 +205,14 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
         smooth: true,
       },
     ],
+    toolbox: {
+      show: true,
+      feature: {
+        magicType: { type: ["bar"] },
+        dataView: null,
+        saveAsImage: null,
+      },
+    },
   };
   const { isEmpty, isLoading } = getSeriesDataState(options.series);
 
@@ -162,7 +226,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
           className={cn({
             "h-48 md:h-60 lg:h-56": size === "sm",
             "h-48 md:h-64 lg:h-80": size === "md",
-            "h-80 md:h-96 lg:h-160": size === "lg",
+            "lg:h-160 h-80 md:h-96": size === "lg",
           })}
         >
           {isEmpty ? (
@@ -176,25 +240,29 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
               <ChartSkeleton itemsCount={6} />
             </div>
           ) : (
-            <div className="flex flex-col h-full w-full items-center">
+            <div className="flex h-full w-full flex-col items-center">
               <ChartBase options={options} />
-              <Slider
-                value={initAxle}
-                onChange={handleRangeChange}
-                min={allAxle[0]}
-                max={allAxle[allAxle.length - 1]}
-                step={sliderStep}
-                shiftStep={sliderStep}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(index: number) => normalizeTimestamp(index).format("YYYY-MM-DD HH:mm:ss")}
-                color="info"
-                disableSwap
-                marks
-              />
+              {showSlider ? (
+                <Slider
+                  value={initAxle}
+                  onChange={handleRangeChange}
+                  min={allAxle[0]}
+                  max={allAxle[allAxle.length - 1]}
+                  step={sliderStep}
+                  shiftStep={sliderStep}
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(index: number) =>
+                    normalizeTimestamp(index).format("YYYY-MM-DD HH:mm:ss")
+                  }
+                  color="info"
+                  disableSwap
+                  marks
+                />
+              ) : null}
             </div>
           )}
         </div>
       </div>
     </Card>
-  )
-}
+  );
+};
