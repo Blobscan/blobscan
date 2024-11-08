@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 
-import { CopyableLink } from "~/components/CopyableLink";
+import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -92,24 +92,24 @@ const Blobs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <CopyableLink
+                  <Copyable
                     href={buildBlobRoute(versionedHash)}
                     value={versionedHash}
                     tooltipText="Copy versioned hash"
                   >
                     {shortenAddress(versionedHash, 8)}
-                  </CopyableLink>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <CopyableLink
+                  <Copyable
                     href={buildTransactionRoute(txHash)}
                     value={txHash}
                     tooltipText="Copy transaction hash"
                   >
                     {shortenAddress(txHash, 8)}
-                  </CopyableLink>
+                  </Copyable>
                 ),
               },
               {

@@ -6,7 +6,8 @@ import { parseDecodedData } from "~/utils/decoded-transaction";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
-import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
+import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable } from "~/components/Copyable";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { InfoGrid } from "~/components/InfoGrid";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -102,7 +103,7 @@ const Tx: NextPage = () => {
     detailsFields = [
       {
         name: "Hash",
-        value: <Copyable value={hash} label="Copy Hash" />,
+        value: <Copyable value={hash} tooltipText="Copy Hash" />,
       },
       { name: "Status", value: <BlockStatus blockNumber={blockNumber} /> },
       {

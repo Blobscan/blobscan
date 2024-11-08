@@ -11,7 +11,8 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
-import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
+import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable } from "~/components/Copyable";
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
@@ -110,11 +111,13 @@ const Blob: NextPage = function () {
     detailsFields.push(
       {
         name: "Commitment",
-        value: <Copyable value={blob.commitment} label="Copy commitment" />,
+        value: (
+          <Copyable value={blob.commitment} tooltipText="Copy commitment" />
+        ),
       },
       {
         name: "Proof",
-        value: <Copyable value={blob.proof} label="Copy proof" />,
+        value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
       }
     );
 

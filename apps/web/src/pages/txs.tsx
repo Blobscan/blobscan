@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
 
-import { CopyableLink } from "~/components/CopyableLink";
+import { Copyable } from "~/components/Copyable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
@@ -167,9 +167,11 @@ const Txs: NextPage = function () {
                   cells: [
                     {
                       item: (
-                        <Link href={buildBlobRoute(b.versionedHash)}>
-                          {b.versionedHash}
-                        </Link>
+                        <Copyable
+                          href={buildBlobRoute(b.versionedHash)}
+                          value={b.versionedHash}
+                          tooltipText="Copy blob versioned hash"
+                        />
                       ),
                     },
                     {
@@ -199,13 +201,13 @@ const Txs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <CopyableLink
+                  <Copyable
                     href={buildTransactionRoute(hash)}
                     value={hash}
                     tooltipText="Copy hash"
                   >
                     {shortenAddress(hash, 6)}
-                  </CopyableLink>
+                  </Copyable>
                 ),
               },
               {
@@ -222,24 +224,24 @@ const Txs: NextPage = function () {
               },
               {
                 item: (
-                  <CopyableLink
+                  <Copyable
                     href={buildAddressRoute(from)}
                     value={from}
                     tooltipText="Copy the origin address"
                   >
                     {shortenAddress(from, 6)}
-                  </CopyableLink>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <CopyableLink
+                  <Copyable
                     href={buildAddressRoute(to)}
                     value={to}
                     tooltipText="Copy the destination address"
                   >
                     {shortenAddress(to, 6)}
-                  </CopyableLink>
+                  </Copyable>
                 ),
               },
               {

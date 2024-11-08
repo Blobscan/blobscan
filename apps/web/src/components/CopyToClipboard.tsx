@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { useState } from "react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
@@ -9,10 +10,7 @@ type CopyToClipboardProps = {
   value: string;
 };
 
-export function CopyToClipboard({
-  label = "Copy to clipboard",
-  value,
-}: CopyToClipboardProps) {
+export const CopyToClipboard: FC<CopyToClipboardProps> = ({ label, value }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   return (
@@ -43,13 +41,4 @@ export function CopyToClipboard({
       </TooltipTrigger>
     </Tooltip>
   );
-}
-
-export function Copyable({ label, value }: CopyToClipboardProps) {
-  return (
-    <div className="flex items-center gap-2">
-      <div className="truncate">{value}</div>
-      <CopyToClipboard value={value} label={label} />
-    </div>
-  );
-}
+};

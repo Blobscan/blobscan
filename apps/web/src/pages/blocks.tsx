@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
 
+import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
@@ -134,16 +135,20 @@ const Blocks: NextPage = function () {
                 cells: [
                   {
                     item: (
-                      <Link href={buildTransactionRoute(transactionHash)}>
-                        {transactionHash}
-                      </Link>
+                      <Copyable
+                        href={buildTransactionRoute(transactionHash)}
+                        value={transactionHash}
+                        tooltipText="Copy transaction hash"
+                      />
                     ),
                   },
                   {
                     item: (
-                      <Link href={buildBlobRoute(blobVersionedHash)}>
-                        {blobVersionedHash}
-                      </Link>
+                      <Copyable
+                        href={buildBlobRoute(blobVersionedHash)}
+                        value={blobVersionedHash}
+                        tooltipText="Copy blob versioned hash"
+                      />
                     ),
                   },
                 ],
