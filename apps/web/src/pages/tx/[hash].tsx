@@ -127,7 +127,7 @@ const Tx: NextPage = () => {
         value: (
           <div className="flex items-center gap-2">
             <Link href={buildAddressRoute(from)}>{from}</Link>
-            <CopyToClipboard value={from} label="Copy from address" />
+            <CopyToClipboard value={from} tooltipText="Copy from address" />
           </div>
         ),
       },
@@ -136,7 +136,7 @@ const Tx: NextPage = () => {
         value: (
           <div className="flex items-center gap-2">
             <Link href={buildAddressRoute(to)}>{to}</Link>
-            <CopyToClipboard value={to} label="Copy to address" />
+            <CopyToClipboard value={to} tooltipText="Copy to address" />
           </div>
         ),
       },
@@ -289,7 +289,7 @@ const Tx: NextPage = () => {
                       </Link>
                       <CopyToClipboard
                         value={"0x" + decodedData.parentL2BlockHash}
-                        label="Copy parent L2 block hash"
+                        tooltipText="Copy parent L2 block hash"
                       />
                     </div>
                   ),
@@ -309,7 +309,7 @@ const Tx: NextPage = () => {
                       </Link>
                       <CopyToClipboard
                         value={"0x" + decodedData.l1OriginBlockHash}
-                        label="Copy L1 origin block hash"
+                        tooltipText="Copy L1 origin block hash"
                       />
                     </div>
                   ),

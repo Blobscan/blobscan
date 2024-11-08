@@ -223,7 +223,6 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                     <Copyable
                       href={buildBlobRoute(versionedHash)}
                       value={versionedHash}
-                      tooltipText="Copy blob versiones hash"
                     />
                   </TableCol>
                   <TableCol>{formatBytes(size)}</TableCol>

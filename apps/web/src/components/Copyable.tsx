@@ -24,7 +24,7 @@ export const Copyable: FC<CopyableProps> = ({
       ) : (
         <div className="truncate">{children || value}</div>
       )}
-      <CopyToClipboard value={value} label={tooltipText} />
+      <CopyToClipboard value={value} tooltipText={tooltipText} />
     </div>
   );
 };

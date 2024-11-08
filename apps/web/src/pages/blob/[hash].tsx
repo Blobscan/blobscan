@@ -151,7 +151,7 @@ const Blob: NextPage = function () {
                   title={txHash}
                 >
                   {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
-                  <CopyToClipboard value={txHash} label="Copy tx hash" />
+                  <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
                 </div>
               </div>
               <div className="flex gap-1">
@@ -179,7 +179,10 @@ const Blob: NextPage = function () {
             <div>Blob Data</div>
             {blob && (
               <div className="flex items-center gap-4">
-                <CopyToClipboard label="Copy blob data" value={blob.data} />
+                <CopyToClipboard
+                  tooltipText="Copy blob data"
+                  value={blob.data}
+                />
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
                     View as:

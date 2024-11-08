@@ -6,11 +6,14 @@ import Copy from "~/icons/copy.svg";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
 type CopyToClipboardProps = {
-  label?: string;
+  tooltipText?: string;
   value: string;
 };
 
-export const CopyToClipboard: FC<CopyToClipboardProps> = ({ label, value }) => {
+export const CopyToClipboard: FC<CopyToClipboardProps> = ({
+  tooltipText,
+  value,
+}) => {
   const [isCopied, setIsCopied] = useState(false);
 
   return (
@@ -21,7 +24,9 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({ label, value }) => {
         }
       }}
     >
-      <TooltipContent>{isCopied ? "Copied!" : label}</TooltipContent>
+      {(tooltipText || isCopied) && (
+        <TooltipContent>{isCopied ? "Copied!" : tooltipText}</TooltipContent>
+      )}
       <TooltipTrigger
         className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
         onClick={async () => {
