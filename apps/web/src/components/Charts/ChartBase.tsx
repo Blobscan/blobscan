@@ -170,7 +170,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             ? {
                 axisLine: { show: false },
                 axisLabel: {
-                  interval: "auto",
+                  interval: 4,
                 },
               }
             : {}),
