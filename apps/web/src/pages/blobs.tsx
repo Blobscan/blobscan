@@ -14,6 +14,7 @@ import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
+  capitalize,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -38,6 +39,10 @@ const BLOBS_TABLE_HEADERS = [
       {
         item: "Timestamp",
         className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
+      },
+      {
+        item: "Category",
+        className: "w-[90px]",
       },
       {
         item: "Size",
@@ -83,6 +88,7 @@ const Blobs: NextPage = function () {
             txHash,
             blockTimestamp,
             blockNumber,
+            transaction,
           }) => ({
             cells: [
               {
@@ -113,6 +119,13 @@ const Blobs: NextPage = function () {
                   <div className="whitespace-break-spaces">
                     {formatTimestamp(blockTimestamp, true)}
                   </div>
+                ),
+              },
+              {
+                item: transaction?.category ? (
+                  <span>{capitalize(transaction.category)}</span>
+                ) : (
+                  <></>
                 ),
               },
               {

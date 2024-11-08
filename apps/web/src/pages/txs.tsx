@@ -24,6 +24,7 @@ import {
   shortenAddress,
   deserializeFullTransaction,
   buildBlobRoute,
+  capitalize,
 } from "~/utils";
 
 type Transaction = Pick<
@@ -38,6 +39,7 @@ type Transaction = Pick<
   | "blobGasMaxFee"
   | "block"
   | "blockTimestamp"
+  | "category"
 > & { blobsLength?: number };
 
 export const TRANSACTIONS_TABLE_HEADERS = [
@@ -62,6 +64,10 @@ export const TRANSACTIONS_TABLE_HEADERS = [
       {
         item: "To",
         className: "w-[148px]",
+      },
+      {
+        item: "Category",
+        className: "w-[90px]",
       },
       {
         item: "Rollup",
@@ -127,6 +133,7 @@ const Txs: NextPage = function () {
             to,
             blobs,
             rollup,
+            category,
             blockNumber,
             blobGasBaseFee,
             blobGasMaxFee,
@@ -228,6 +235,9 @@ const Txs: NextPage = function () {
                     {shortenAddress(to, 6)}
                   </Link>
                 ),
+              },
+              {
+                item: <span>{capitalize(category)}</span>,
               },
               {
                 item: rollup ? <RollupIcon rollup={rollup} /> : <></>,
