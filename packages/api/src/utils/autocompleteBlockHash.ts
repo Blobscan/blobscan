@@ -1,11 +1,12 @@
 import { prisma } from "@blobscan/db";
+import { logger } from "@blobscan/logger";
 
 /* Autocomplete a block hash from a truncated version of it.
    @param partialHash - The first bytes of a block hash.
    @returns The block hash, if there is a single ocurrence, or null.
  */
 export async function autocompleteBlockHash(partialHash: string) {
-  const block = await prisma.block.findFirst({
+  const blocks = await prisma.block.findMany({
     where: {
       hash: {
         startsWith: partialHash,
@@ -16,9 +17,13 @@ export async function autocompleteBlockHash(partialHash: string) {
     },
   });
 
-  if (!block) {
+  if (blocks[0] === undefined) {
     return null;
   }
 
-  return block.hash;
+  if (blocks.length > 1) {
+    logger.warn(`Multiple blocks found for hash ${partialHash}`);
+  }
+
+  return blocks[0].hash;
 }
