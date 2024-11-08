@@ -194,7 +194,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
     if (from?.length) {
       filters.transactionAddresses.push({
-        fromId: { in: from },
+        fromId: from.length === 1 ? (from[0] as string) : { in: from },
       });
     }
 
