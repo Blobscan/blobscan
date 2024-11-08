@@ -41,7 +41,7 @@ export const DailyAvgMaxBlobGasFeeChart: FC<
 
   return (
     <ChartCard
-      title={`Daily Avg. Max Blob Gas Fee (in ${unit.toLowerCase()})`}
+      title={`Daily Avg. Max Blob Gas Fee (in ${unit})`}
       size="sm"
       options={options}
     />

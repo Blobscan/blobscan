@@ -39,7 +39,7 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
 
     return (
       <ChartCard
-        title={`Daily Blob Fees (in ${unit.toLowerCase()})`}
+        title={`Daily Blob Fees (in ${unit})`}
         size="sm"
         options={options}
       />
