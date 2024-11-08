@@ -5,7 +5,7 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { findBestUnit, prettyFormatWei } from "@blobscan/eth-units";
+import { prettyFormatWei } from "@blobscan/eth-units";
 
 import {
   formatBytes,
@@ -67,7 +67,7 @@ function parseMetricValue(
       formattedValue = formatBytes(value);
       break;
     case "ethereum":
-      formattedValue = prettyFormatWei(value, findBestUnit(value), {
+      formattedValue = prettyFormatWei(value, {
         displayUnit: true,
       });
       break;

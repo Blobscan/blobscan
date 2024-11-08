@@ -4,6 +4,7 @@ export type EthAmount = string | number | bigint;
 export type EtherUnit = keyof typeof ETH_UNITS;
 export type FormatOptions = Partial<{
   displayUnit: boolean;
+  toUnit: EtherUnit;
 }>;
 
 const compactFormatter = Intl.NumberFormat("en-US", {
@@ -23,11 +24,8 @@ const fullwideFormatter = Intl.NumberFormat("fullwide", {
  * This function never converts the provided value to a Number
  * ensuring that the full precision of the input is preserved.
  */
-export function formatWei(
-  wei: EthAmount,
-  toUnit: EtherUnit = "Gwei",
-  opts?: FormatOptions
-): string {
+export function formatWei(wei: EthAmount, opts?: FormatOptions): string {
+  const toUnit = opts?.toUnit || findBestUnit(wei);
   const converted = convertWei(wei, toUnit);
   const formatted = insertCommas(converted);
 
@@ -44,11 +42,8 @@ export function formatWei(
  * is preserved. Instead, this function provides a more human-readable
  * representation of the value.
  */
-export function prettyFormatWei(
-  wei: EthAmount,
-  toUnit: EtherUnit = "Gwei",
-  opts?: FormatOptions
-) {
+export function prettyFormatWei(wei: EthAmount, opts?: FormatOptions) {
+  const toUnit = opts?.toUnit || findBestUnit(wei);
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
   const formatted = compactFormatter.format(converted);
 

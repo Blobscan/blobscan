@@ -22,8 +22,8 @@ export const DailyAvgBlobFeeChart: FC<Partial<DailyAvgBlobFeeChartProps>> =
         dates: days,
         axisFormatters: {
           yAxisTooltip: (value) =>
-            formatWei(value, unit, { displayUnit: true }),
-          yAxisLabel: (value) => prettyFormatWei(value, unit),
+            formatWei(value, { toUnit: unit, displayUnit: true }),
+          yAxisLabel: (value) => prettyFormatWei(value, { toUnit: unit }),
         },
       }),
       series: [

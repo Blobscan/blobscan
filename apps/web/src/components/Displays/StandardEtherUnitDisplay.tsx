@@ -17,7 +17,8 @@ export const StandardEtherUnitDisplay = ({
       <EtherUnitDisplay amount={amount} toUnit="ether" opts={opts} />
       <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
         (
-        {formatWei(amount, "Gwei", {
+        {formatWei(amount, {
+          toUnit: "Gwei",
           displayUnit: true,
           ...opts,
         })}
