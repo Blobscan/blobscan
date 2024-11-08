@@ -17,13 +17,13 @@ import { env } from "@blobscan/env";
 import type { createTRPCContext } from "../src/context";
 import { getJWTFromRequest } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
-import type { FiltersSchema } from "../src/middlewares/withFilters";
+import type { FiltersInputSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
-type FilterAndPagination = Omit<FiltersSchema, "rollup"> & {
+type FilterAndPagination = Omit<FiltersInputSchema, "rollup"> & {
   rollup?: Lowercase<Rollup> | "null";
 } & WithPaginationSchema;
 

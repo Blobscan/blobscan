@@ -76,14 +76,14 @@ export async function countBlobs(
     return dailyStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
   }
 
-  const overallStats = await prisma.blobOverallStats.findFirst({
+  const overallStats = await prisma.blobOverallStats.findMany({
     select: {
       totalBlobs: true,
     },
     where,
   });
 
-  return overallStats?.totalBlobs ?? 0;
+  return overallStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
 }
 
 export const getCount = publicProcedure

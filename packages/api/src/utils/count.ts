@@ -1,22 +1,11 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
-import { env } from "@blobscan/env";
-import { getRollupByAddress } from "@blobscan/rollups";
 
+import type { Rollup } from "../../enums";
+import {
+  extractAddressesFromFilter,
+  extractRollupsFromFilter,
+} from "../middlewares/withFilters";
 import type { Filters } from "../middlewares/withFilters";
-
-function getRollupFromAddressFilter(
-  addressesFilter: Filters["transactionAddresses"]
-) {
-  if (!addressesFilter) {
-    return;
-  }
-
-  const fromAddress = addressesFilter.find(({ fromId }) => !!fromId)?.fromId;
-
-  if (!fromAddress || typeof fromAddress !== "string") return;
-
-  return getRollupByAddress(fromAddress, env.CHAIN_ID);
-}
 
 /**
  * Determines if a direct count operation must be performed or the value can be obtained by using
@@ -25,7 +14,7 @@ function getRollupFromAddressFilter(
  * Aggregated stats are not available for certain filters, including:
  * - Reorged blocks (`blockType` filter)
  * - Specific `blockNumber` or `blockSlot` ranges
- * - Filters involving multiple addresses or non-rollup addresses
+ * - Filters involving non-rollup addresses
  *
  * This function checks for those cases and returns `true` if a direct count is needed.
  *
@@ -40,18 +29,15 @@ export function requiresDirectCount({
   const blockNumberRangeFilterEnabled = !!blockNumber;
   const reorgedFilterEnabled = !!blockType?.some;
   const slotRangeFilterEnabled = !!blockSlot;
-  const addressFiltersCount = transactionAddresses?.length ?? 0;
-  const severalAddressesFilterEnabled = addressFiltersCount > 1;
-  const nonRollupAddressFilterEnabled =
-    addressFiltersCount === 1 &&
-    !getRollupFromAddressFilter(transactionAddresses);
+  const addresses = extractAddressesFromFilter(transactionAddresses);
+  const rollups = extractRollupsFromFilter(transactionAddresses);
+  const nonRollupAddressesPresent = addresses.length !== rollups.length;
 
   return (
     blockNumberRangeFilterEnabled ||
     slotRangeFilterEnabled ||
     reorgedFilterEnabled ||
-    severalAddressesFilterEnabled ||
-    nonRollupAddressFilterEnabled
+    nonRollupAddressesPresent
   );
 }
 
@@ -62,15 +48,31 @@ export function buildStatsWhereClause({
   transactionAddresses,
 }: Filters) {
   const clauses = [];
-  // We set 'category' or 'rollup' to null when there are no corresponding filters
-  // because the db stores total statistics for each grouping in rows where
-  // 'category' or 'rollup' is null.
-  const rollup =
-    transactionRollup ??
-    getRollupFromAddressFilter(transactionAddresses) ??
-    null;
 
-  const category = (rollup ? null : transactionCategory) ?? null;
+  const filterRollups: Rollup[] = [];
+
+  if (transactionRollup) {
+    filterRollups.push(transactionRollup);
+  }
+
+  if (transactionAddresses) {
+    filterRollups.push(...extractRollupsFromFilter(transactionAddresses));
+  }
+
+  const rollupsFilterPresent = filterRollups.length > 0;
+  const singleRollupFilter = filterRollups.length === 1;
+
+  // Set 'category' or 'rollup' to null when there are no corresponding filters
+  // because the db stores total stats for each grouping in rows where
+  // 'category' or 'rollup' is null.
+  const rollup = rollupsFilterPresent
+    ? singleRollupFilter
+      ? filterRollups[0]
+      : { in: filterRollups }
+    : null;
+  // Set 'category' to null when the rollup filter is present as we store rollup stats
+  // in rows where 'category' is null.
+  const category = (rollupsFilterPresent ? null : transactionCategory) ?? null;
 
   clauses.push({ category }, { rollup });
 
