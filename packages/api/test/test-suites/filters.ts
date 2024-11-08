@@ -3,7 +3,7 @@ import { describe, it } from "vitest";
 import dayjs from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
-import type { FiltersSchema } from "../../src/middlewares/withFilters";
+import type { FiltersInputSchema } from "../../src/middlewares/withFilters";
 
 const splitAndCleanCommaSeparatedString = (values?: string) => {
   if (!values) return undefined;
@@ -26,7 +26,7 @@ function filterBlock(
     startSlot,
     endSlot,
     type,
-  }: FiltersSchema
+  }: FiltersInputSchema
 ) {
   const blockRangeFilter =
     startBlock && endBlock
@@ -66,7 +66,7 @@ function filterBlock(
 
 function filterTransaction(
   tx: (typeof fixtures.txs)[number],
-  { from, to, rollup }: FiltersSchema
+  { from, to, rollup }: FiltersInputSchema
 ) {
   const fromSplit = splitAndCleanCommaSeparatedString(from);
 
@@ -81,7 +81,7 @@ function filterTransaction(
   );
 }
 
-export function getFilteredBlocks(filters: FiltersSchema) {
+export function getFilteredBlocks(filters: FiltersInputSchema) {
   return fixtures.blocks.filter((b) => {
     const blockTxs = fixtures.txs.filter((tx) => tx.blockHash === b.hash);
     return (
@@ -91,7 +91,7 @@ export function getFilteredBlocks(filters: FiltersSchema) {
   });
 }
 
-export function getFilteredTransactions(filters: FiltersSchema) {
+export function getFilteredTransactions(filters: FiltersInputSchema) {
   const { from, to, rollup } = filters;
 
   return getFilteredBlocks(filters).flatMap((b) => {
@@ -120,7 +120,7 @@ export function getFilteredTransactions(filters: FiltersSchema) {
   });
 }
 
-export function getFilteredBlobs(filters: FiltersSchema) {
+export function getFilteredBlobs(filters: FiltersInputSchema) {
   return getFilteredTransactions(filters).flatMap((tx) => {
     const blobs = fixtures.blobsOnTransactions.filter(
       (b) => b.txHash === tx.hash
@@ -138,7 +138,7 @@ export function requiresDirectCount({
   type,
   startBlock,
   startSlot,
-}: FiltersSchema) {
+}: FiltersInputSchema) {
   const blockNumberRangeFilterEnabled = !!startBlock || !!endBlock;
   const reorgedFilterEnabled = type === "reorged";
   const slotRangeFilterEnabled = !!startSlot || !!endSlot;
@@ -153,7 +153,7 @@ export function requiresDirectCount({
 }
 
 export function runFilterTests(
-  assertFilters: (filters: FiltersSchema) => Promise<void>
+  assertFilters: (filters: FiltersInputSchema) => Promise<void>
 ) {
   describe("when using filters", () => {
     it("should return the correct results when filtering by a specific rollup", async () => {
