@@ -14,7 +14,6 @@ export const EtherUnitDisplay: FC<Props> = ({ amount, toUnit, opts = {} }) => {
     <div>
       {formatWei(amount, {
         toUnit,
-        displayUnit: true,
         ...opts,
       })}
     </div>

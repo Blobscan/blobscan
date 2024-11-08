@@ -22,9 +22,9 @@ export const DailyBlobFeeChart: FC<Partial<DailyBlobFeeChartProps>> =
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) =>
-            formatWei(value, { toUnit: unit, displayUnit: true }),
-          yAxisLabel: (value) => prettyFormatWei(value, { toUnit: unit }),
+          yAxisTooltip: (value) => formatWei(value, { toUnit: unit }),
+          yAxisLabel: (value) =>
+            prettyFormatWei(value, { toUnit: unit, hideUnit: true }),
         },
       }),
       series: [

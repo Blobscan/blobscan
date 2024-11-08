@@ -3,7 +3,7 @@ const ETH_UNITS = { wei: 0, Gwei: 9, ether: 18 };
 export type EthAmount = string | number | bigint;
 export type EtherUnit = keyof typeof ETH_UNITS;
 export type FormatOptions = Partial<{
-  displayUnit: boolean;
+  hideUnit: boolean;
   toUnit: EtherUnit;
 }>;
 
@@ -29,11 +29,11 @@ export function formatWei(wei: EthAmount, opts?: FormatOptions): string {
   const converted = convertWei(wei, toUnit);
   const formatted = insertCommas(converted);
 
-  if (opts?.displayUnit) {
-    return `${formatted} ${toUnit}`;
+  if (opts?.hideUnit) {
+    return formatted;
   }
 
-  return formatted;
+  return `${formatted} ${toUnit}`;
 }
 
 /**
@@ -47,11 +47,11 @@ export function prettyFormatWei(wei: EthAmount, opts?: FormatOptions) {
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
   const formatted = compactFormatter.format(converted);
 
-  if (opts?.displayUnit) {
-    return `${formatted} ${toUnit}`;
+  if (opts?.hideUnit) {
+    return formatted;
   }
 
-  return formatted;
+  return `${formatted} ${toUnit}`;
 }
 
 /**

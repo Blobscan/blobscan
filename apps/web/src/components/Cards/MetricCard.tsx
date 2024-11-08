@@ -67,9 +67,7 @@ function parseMetricValue(
       formattedValue = formatBytes(value);
       break;
     case "ethereum":
-      formattedValue = prettyFormatWei(value, {
-        displayUnit: true,
-      });
+      formattedValue = prettyFormatWei(value);
       break;
     case "percentage":
       formattedValue = `${formatNumber(value, mode, {

@@ -19,7 +19,6 @@ export const StandardEtherUnitDisplay = ({
         (
         {formatWei(amount, {
           toUnit: "Gwei",
-          displayUnit: true,
           ...opts,
         })}
         )

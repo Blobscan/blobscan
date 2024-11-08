@@ -399,10 +399,8 @@ test("can format negative ether", () => {
   ).toBe("-1,234.567890123456789012 ether");
 });
 
-test("can format wei without displaying unit", () => {
-  expect(formatWei(BigInt("1"), { toUnit: "wei", displayUnit: false })).toBe(
-    "1"
-  );
+test("can format wei and hide unit", () => {
+  expect(formatWei(BigInt("1"), { hideUnit: true })).toBe("1");
 });
 
 test("can shift string values", () => {
