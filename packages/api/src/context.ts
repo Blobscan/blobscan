@@ -6,12 +6,17 @@ import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
+import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
 import { getBlobPropagator } from "@blobscan/blob-propagator";
 import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
+
+import { PostHogClient } from "./posthog";
+
+type NextHTTPRequest = CreateNextContextOptions["req"];
 
 export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
@@ -21,9 +26,7 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient: string | null;
 };
 
-export function getJWTFromRequest(
-  req: NodeHTTPRequest | CreateNextContextOptions["req"]
-) {
+export function getJWTFromRequest(req: NodeHTTPRequest | NextHTTPRequest) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return null;
@@ -59,6 +62,16 @@ export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   };
 }
 
+function getIP(req: NodeHTTPRequest | NextHTTPRequest): string | undefined {
+  const ip = req.headers["x-forwarded-for"] ?? req.socket.remoteAddress;
+
+  if (Array.isArray(ip)) {
+    return ip[0];
+  }
+
+  return ip;
+}
+
 export function createTRPCContext(
   {
     scope,
@@ -73,6 +86,38 @@ export function createTRPCContext(
       const innerContext = await createTRPCInnerContext({
         apiClient,
       });
+
+      const posthog = PostHogClient();
+
+      if (posthog) {
+        const cookies = cookie.parse(opts.req.headers.cookie ?? "");
+
+        let distinctId = cookies["distinctId"];
+
+        if (!distinctId) {
+          distinctId = crypto.randomUUID();
+
+          opts.res.setHeader(
+            "Set-Cookie",
+            cookie.serialize("distinctId", distinctId, {
+              maxAge: 60 * 60 * 24 * 365,
+            })
+          );
+        }
+
+        posthog.capture({
+          distinctId,
+          event: "trpc_request",
+          properties: {
+            $ip: getIP(opts.req),
+            scope,
+            $current_url: opts.req.url,
+            method: opts.req.method,
+          },
+        });
+
+        await posthog.shutdown();
+      }
 
       return {
         ...innerContext,

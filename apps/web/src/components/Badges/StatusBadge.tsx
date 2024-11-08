@@ -49,7 +49,8 @@ const statusBadgeVariants = cva(
   }
 );
 
-type StatusBadgeProps = BadgeProps & VariantProps<typeof statusBadgeVariants>;
+type StatusBadgeProps = VariantProps<typeof statusBadgeVariants> &
+  Omit<BadgeProps, "variant">;
 
 export const StatusBadge: FC<StatusBadgeProps> = ({
   className,

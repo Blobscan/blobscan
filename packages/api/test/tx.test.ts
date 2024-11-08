@@ -1,16 +1,27 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import type {
+  Prisma,
+  TransactionDailyStats,
+  TransactionOverallStats,
+} from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
+import type { Category, Rollup } from "../enums";
 import type { TRPCContext } from "../src";
 import { appRouter } from "../src/app-router";
 import {
   createTestContext,
+  generateDailyCounts,
   runExpandsTestsSuite,
   runFiltersTestsSuite,
   runPaginationTestsSuite,
 } from "./helpers";
-import { getFilteredTransactions, runFilterTests } from "./test-suites/filters";
+import {
+  getFilteredTransactions,
+  requiresDirectCount,
+  runFilterTests,
+} from "./test-suites/filters";
 
 describe("Transaction router", async () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
@@ -18,6 +29,7 @@ describe("Transaction router", async () => {
 
   beforeAll(async () => {
     ctx = await createTestContext();
+
     caller = appRouter.createCaller(ctx);
   });
 
@@ -52,6 +64,8 @@ describe("Transaction router", async () => {
     });
 
     it("should get the total number of transactions for a rollup", async () => {
+      await ctx.prisma.transactionOverallStats.populate();
+
       const expectedTotalTransactions = await ctx.prisma.transaction.count({
         where: {
           rollup: "BASE",
@@ -94,18 +108,144 @@ describe("Transaction router", async () => {
   });
 
   describe("getCount", () => {
-    it("should return the overall total transactions stat when no filters are provided", async () => {
-      await ctx.prisma.transactionOverallStats.populate();
+    // To test that the procedure retrieves the count from the stats table rather than
+    // performing a direct database count, we stored an arbitrary total blobs value in the stats table
+    // in each test, intentionally different from the actual number of blobs in the database.
+    // This setup allows us to verify that the procedure correctly uses the stats table count
+    // instead of performing a direct database count.
+
+    const STATS_TOTAL_TRANSACTIONS = 999999;
+
+    async function createNewOverallStats(
+      overallStats: Partial<TransactionOverallStats>
+    ) {
+      const data: Prisma.TransactionOverallStatsCreateManyInput = {
+        category: null,
+        rollup: null,
+        totalTransactions: 0,
+        avgBlobFee: 0,
+        avgBlobGasPrice: 0,
+        avgBlobMaxFee: 0,
+        avgMaxBlobGasFee: 0,
+        totalBlobAsCalldataFee: 0,
+        totalBlobAsCalldataGasUsed: 0,
+        totalBlobAsCalldataMaxFees: 0,
+        totalBlobFee: 0,
+        totalBlobMaxFees: 0,
+        totalBlobGasPrice: 0,
+        totalBlobGasUsed: 0,
+        totalBlobMaxGasFees: 0,
+        totalUniqueReceivers: 0,
+        totalUniqueSenders: 0,
+        avgBlobAsCalldataFee: 0,
+        avgBlobAsCalldataMaxFee: 0,
+        updatedAt: new Date(),
+        ...overallStats,
+      };
+
+      await ctx.prisma.transactionOverallStats.create({
+        data,
+      });
+    }
+
+    async function createNewDailyStats(
+      dailyStats: Partial<TransactionDailyStats>
+    ) {
+      const data: Prisma.TransactionDailyStatsCreateManyInput = {
+        day: new Date(),
+        category: null,
+        rollup: null,
+        totalTransactions: 0,
+        avgBlobFee: 0,
+        avgBlobGasPrice: 0,
+        avgBlobMaxFee: 0,
+        avgMaxBlobGasFee: 0,
+        totalBlobAsCalldataFee: 0,
+        totalBlobAsCalldataGasUsed: 0,
+        totalBlobAsCalldataMaxFees: 0,
+        totalBlobFee: 0,
+        totalBlobMaxFees: 0,
+        totalBlobGasUsed: 0,
+        totalUniqueReceivers: 0,
+        totalUniqueSenders: 0,
+        avgBlobAsCalldataFee: 0,
+        avgBlobAsCalldataMaxFee: 0,
+        ...dailyStats,
+      };
+
+      await ctx.prisma.transactionDailyStats.create({
+        data,
+      });
+    }
+
+    it("should count txs correctly when no filters are provided", async () => {
+      const expectedTotalTransactions = STATS_TOTAL_TRANSACTIONS;
+
+      await createNewOverallStats({
+        category: null,
+        rollup: null,
+        totalTransactions: expectedTotalTransactions,
+      });
 
       const { totalTransactions } = await caller.tx.getCount({});
 
-      expect(totalTransactions).toBe(fixtures.canonicalTxs.length);
+      expect(totalTransactions).toBe(expectedTotalTransactions);
     });
 
     runFilterTests(async (filters) => {
+      const categoryFilter: Category | null =
+        filters.rollup === "null" ? "ROLLUP" : null;
+      const rollupFilter: Rollup | null =
+        filters.rollup === "null"
+          ? null
+          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
+      const directCountRequired = requiresDirectCount(filters);
+      let expectedTotalTransactions = 0;
+
+      if (directCountRequired) {
+        expectedTotalTransactions = getFilteredTransactions(filters).length;
+      } else {
+        const { startDate, endDate } = filters;
+        const dateFilterEnabled = startDate || endDate;
+
+        if (dateFilterEnabled) {
+          const dailyCounts = generateDailyCounts(
+            { from: startDate, to: endDate },
+            STATS_TOTAL_TRANSACTIONS
+          );
+          expectedTotalTransactions = dailyCounts.reduce(
+            (acc, { count }) => acc + count,
+            0
+          );
+
+          await Promise.all(
+            dailyCounts.map(({ day, count }) =>
+              createNewDailyStats({
+                day,
+                totalTransactions: count,
+                category: categoryFilter,
+                rollup: rollupFilter,
+              })
+            )
+          );
+        } else {
+          expectedTotalTransactions = STATS_TOTAL_TRANSACTIONS;
+
+          await createNewOverallStats({
+            totalTransactions: expectedTotalTransactions,
+            category: categoryFilter,
+            rollup: rollupFilter,
+          });
+        }
+      }
+
       const { totalTransactions } = await caller.tx.getCount(filters);
 
-      expect(totalTransactions).toBe(getFilteredTransactions(filters).length);
+      const expectMsg = directCountRequired
+        ? "Expect count to match direct count"
+        : "Expect count to match precomputed aggregated stats value";
+
+      expect(totalTransactions, expectMsg).toBe(expectedTotalTransactions);
     });
   });
 });

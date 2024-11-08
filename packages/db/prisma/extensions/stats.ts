@@ -8,7 +8,7 @@ import {
   aggregateTxOverallStats,
 } from "@prisma/client/sql";
 
-import { toDailyDatePeriod } from "@blobscan/dayjs";
+import { MIN_DATE, toDailyDatePeriod } from "@blobscan/dayjs";
 
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { BlockNumberRange, DatePeriodLike } from "../types";
@@ -32,7 +32,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           });
         },
         populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from, to } = toDailyDatePeriod(dailyDatePeriod);
+          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
+            ? toDailyDatePeriod(dailyDatePeriod)
+            : {};
 
           return prisma.$queryRawTyped(aggregateBlobDailyStats(from, to));
         },
@@ -56,7 +58,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           });
         },
         populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from, to } = toDailyDatePeriod(dailyDatePeriod);
+          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
+            ? toDailyDatePeriod(dailyDatePeriod)
+            : {};
 
           return prisma.$queryRawTyped(aggregateBlockDailyStats(from, to));
         },
@@ -82,7 +86,9 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           });
         },
         async populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from, to } = toDailyDatePeriod(dailyDatePeriod);
+          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
+            ? toDailyDatePeriod(dailyDatePeriod)
+            : {};
 
           return prisma.$queryRawTyped(aggregateTxDailyStats(from, to));
         },

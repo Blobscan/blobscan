@@ -35,7 +35,11 @@ async function main() {
     fullBlocks.forEach(({ transactions, ...block }) => {
       dbBlockInsertions.push(block);
       transactions.forEach(({ blobs, ...tx }) => {
-        dbTxInsertions.push(tx);
+        dbTxInsertions.push({
+          ...tx,
+          decodedFields: undefined,
+        });
+
         const from = addressToCategoryInfo[tx.fromId];
         const to = addressToCategoryInfo[tx.toId];
         if (from) {

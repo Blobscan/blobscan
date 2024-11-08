@@ -8,6 +8,16 @@ export const booleanSchema = z
   .refine((s) => s === "true" || s === "false")
   .transform((s) => s === "true");
 
+export const commaSeparatedValuesSchema = z
+  .string()
+  .optional()
+  .transform((values) =>
+    values
+      ?.split(",")
+      .map((v) => v.trim())
+      .filter((v) => !!v.length)
+  );
+
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
 
 export const nodeEnvSchema = z.enum(["development", "test", "production"]);
