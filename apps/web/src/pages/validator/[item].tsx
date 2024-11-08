@@ -180,7 +180,10 @@ const Validator: NextPage = function () {
     [validatorKey, incomeData.validatorIdx]
   );
 
-  const validatorPublicKey = useMemo(() => validatorKey || "-", [validatorKey]);
+  const validatorPublicKey = useMemo(
+    () => incomeData.validatorPublicKey || "-",
+    [incomeData.validatorPublicKey]
+  );
 
   // TODO: Using DateTimeRangePickerToolbar component instead of Select component is more in line with usage standards.
   return (
