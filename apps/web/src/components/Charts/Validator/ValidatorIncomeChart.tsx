@@ -151,7 +151,7 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> =
             const aggEpochLen = aggEpoch.length;
             if (aggEpochLen === 1) {
               return `
-              ${date.format("HH:mm:ss")}
+              ${date.format("YYYY/MM/DD HH:mm:ss")}
               Epoch ${epochIdx?.[axleTimestamp?.indexOf(date.unix()) || 0]}
               `;
             }
@@ -161,7 +161,7 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> =
               aggEpoch[0] || BigInt(0)
             );
             return `
-            ${normalizeTimestamp(minDate).format("HH:mm:ss")}
+            ${normalizeTimestamp(minDate).format("YYYY/MM/DD HH:mm:ss")}
             Epoch ${aggEpoch[0]}
             `;
           }}
@@ -208,6 +208,7 @@ export const ValidatorIncomeChart: FC<Partial<ValidatorIncomeChartProps>> =
           }
           minDistance={minDistanceTimestamp}
           sliderStep={sliderStep}
+          showSlider={false}
         />
       </>
     );

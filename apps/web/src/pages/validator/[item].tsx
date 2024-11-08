@@ -48,15 +48,11 @@ const Validator: NextPage = function () {
 
   const prevDateRange = usePrevious(dateRange);
 
-  const validatorIdx = useMemo(
-    () => (keyIsStr ? String(0) : String(keyOrIdx)),
-    [keyIsStr, keyOrIdx]
-  );
   const validatorKey = useMemo(() => String(keyOrIdx), [keyOrIdx]);
 
   const {
     data: incomeData = {
-      validatorIdx: 0,
+      validatorIdx: "-",
       validatorPublicKey: "",
       epochIdx: [],
       aggEpochIdx: [],
@@ -70,7 +66,7 @@ const Validator: NextPage = function () {
     {
       item: "only to meet the parameter requirements of tRPC",
       validatorKey: validatorKey,
-      validatorIdx: validatorIdx,
+      validatorIdx: keyIsStr ? String(0) : String(keyOrIdx),
       validatorIsStr: keyIsStr,
       ...(dateRange[0] && dateRange[1]
         ? {
@@ -95,13 +91,6 @@ const Validator: NextPage = function () {
       setIsFirstRequest(false);
     }
   }, [validatorIsLoading]);
-
-  incomeData.epochIdx.reverse();
-  incomeData.aggEpochIdx.reverse();
-  incomeData.aggEpochIdx.forEach((idx) => idx.sort());
-  incomeData.incomeGWei.reverse();
-  incomeData.incomeGweiDaySum.reverse();
-  incomeData.incomeGweiDaySumDate.reverse();
 
   // if (incomeData.epochIdx.length < epochDisplayLimit) {
   //   for (let idx = 0; idx < incomeData.epochIdx.length - 1; idx++) {
@@ -187,8 +176,8 @@ const Validator: NextPage = function () {
   );
 
   const header = useMemo(
-    () => `Validator ${validatorKey === "" ? "-" : validatorIdx}`,
-    [validatorKey, validatorIdx]
+    () => `Validator ${validatorKey === "" ? "-" : incomeData.validatorIdx}`,
+    [validatorKey, incomeData.validatorIdx]
   );
 
   const validatorPublicKey = useMemo(() => validatorKey || "-", [validatorKey]);

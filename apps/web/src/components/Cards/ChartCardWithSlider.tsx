@@ -80,6 +80,7 @@ export type ChartCardWithSliderProps = {
 
   minDistance: number;
   sliderStep?: number;
+  showSlider?: boolean;
 };
 
 export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
@@ -97,6 +98,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
 
   minDistance,
   sliderStep = 1,
+  showSlider = true,
 }) {
   const [initAxle, setInitAxle] = useState<number[]>(
     getInitAxle(initCoordinateAxle)
@@ -240,21 +242,23 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
           ) : (
             <div className="flex h-full w-full flex-col items-center">
               <ChartBase options={options} />
-              <Slider
-                value={initAxle}
-                onChange={handleRangeChange}
-                min={allAxle[0]}
-                max={allAxle[allAxle.length - 1]}
-                step={sliderStep}
-                shiftStep={sliderStep}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(index: number) =>
-                  normalizeTimestamp(index).format("YYYY-MM-DD HH:mm:ss")
-                }
-                color="info"
-                disableSwap
-                marks
-              />
+              {showSlider ? (
+                <Slider
+                  value={initAxle}
+                  onChange={handleRangeChange}
+                  min={allAxle[0]}
+                  max={allAxle[allAxle.length - 1]}
+                  step={sliderStep}
+                  shiftStep={sliderStep}
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(index: number) =>
+                    normalizeTimestamp(index).format("YYYY-MM-DD HH:mm:ss")
+                  }
+                  color="info"
+                  disableSwap
+                  marks
+                />
+              ) : null}
             </div>
           )}
         </div>

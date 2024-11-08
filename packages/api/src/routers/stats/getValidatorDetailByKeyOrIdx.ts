@@ -84,6 +84,8 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
         );
       }
 
+      income = income.sort((a, b) => (a.epochIdx < b.epochIdx) ? -1 : ((a.epochIdx > b.epochIdx) ? 1 : 0));
+
       for (let incomeIndex = 0; incomeIndex < income.length - 1; incomeIndex++) {
         const currentIncome = income[incomeIndex];
         const diff =

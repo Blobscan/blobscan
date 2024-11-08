@@ -79,11 +79,11 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
     let start = startDate;
     let end = endDate;
     if (newValue && startDate && newValue.isBefore(startDate)) {
-      end = null; // Reset start date if end date is before start date
-      setStartDate(end);
+      start = null; // Reset start date if end date is before start date
+      setStartDate(start);
     }
-    start = newValue;
-    setEndDate(start);
+    end = newValue;
+    setEndDate(end);
     if (shouldTriggerOnChange && onChange) {
       onChange([start, end]);
     }
@@ -147,10 +147,15 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
               <DateTimePicker
                 label="Start Date"
                 value={startDate}
-                onChange={(date) => handleStartDateChange(date, true)}
+                onAccept={(date) => handleStartDateChange(date, true)}
                 minDate={minDate}
                 maxDate={maxDate}
                 disabled={isDisabled}
+                slotProps={{
+                  field: {
+                    readOnly: true,
+                  },
+                }}
               />
             </div>
             <div className="ml-4 inline-block align-middle">--</div>
@@ -158,10 +163,15 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
               <DateTimePicker
                 label="End Date"
                 value={endDate}
-                onChange={(date) => handleEndDateChange(date, true)}
+                onAccept={(date) => handleEndDateChange(date, true)}
                 minDate={minDate}
                 maxDate={maxDate}
                 disabled={isDisabled}
+                slotProps={{
+                  field: {
+                    readOnly: true,
+                  },
+                }}
               />
             </div>
           </div>
