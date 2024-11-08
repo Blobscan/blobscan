@@ -9,10 +9,11 @@ import { IconButton } from "../IconButton";
 import { Emoji } from "./Emoji";
 
 const OPEN_ISSUE_LINK = "https://github.com/Blobscan/blobscan/issues/new";
+const RATE_EMOJIS = ["🙁", "😐", "🙂"];
 
 type Feedback = {
   message: string;
-  rate: string;
+  rate?: string;
   metadata: {
     pathname: string;
     query: unknown;
@@ -35,7 +36,7 @@ interface FeedbackCardProps {
 }
 
 export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
-  const [emoji, setEmoji] = useState("");
+  const [emoji, setEmoji] = useState<string | undefined>();
   const { pathname, query } = useRouter();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -59,7 +60,6 @@ export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
     });
 
     form.reset();
-    setEmoji("");
     onClose();
   }
 
@@ -106,9 +106,14 @@ export const FeedbackCard: FC<FeedbackCardProps> = ({ open, onClose }) => {
         placeholder="Type your feedback here..."
       />
       <div className="mt-4 flex items-center justify-center gap-4 text-3xl">
-        <Emoji emoji="🙁" currentEmoji={emoji} onChange={setEmoji} />
-        <Emoji emoji="😐" currentEmoji={emoji} onChange={setEmoji} />
-        <Emoji emoji="🙂" currentEmoji={emoji} onChange={setEmoji} />
+        {RATE_EMOJIS.map((e) => (
+          <Emoji
+            key={e}
+            emoji={e}
+            activated={emoji === e}
+            onChange={(activated) => setEmoji(activated ? e : undefined)}
+          />
+        ))}
       </div>
       <Button className="mt-4 w-full" type="submit">
         Submit

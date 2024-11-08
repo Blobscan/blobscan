@@ -4,26 +4,16 @@ import { IconButton } from "../IconButton";
 
 interface EmojiProps {
   emoji: string;
-  currentEmoji: string;
-  onChange: (emoji: string) => void;
+  activated: boolean;
+  onChange: (activated: boolean) => void;
 }
 
-export const Emoji: FC<EmojiProps> = ({ emoji, currentEmoji, onChange }) => {
-  const active = emoji === currentEmoji;
-
-  function onClick() {
-    if (active) {
-      onChange("");
-    } else {
-      onChange(emoji);
-    }
-  }
-
+export const Emoji: FC<EmojiProps> = ({ emoji, activated, onChange }) => {
   return (
     <IconButton
       type="button"
-      onClick={onClick}
-      className={`text-2xl ${!active && "grayscale"}`}
+      onClick={() => onChange(!activated)}
+      className={`text-2xl ${!activated && "grayscale"}`}
     >
       {emoji}
     </IconButton>
