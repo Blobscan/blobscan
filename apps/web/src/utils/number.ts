@@ -49,12 +49,12 @@ export function formatNumber(
 }
 
 export function removeCommas(formattedNumber: string): string {
-  return formattedNumber.replace(/,/g, "");
+  return formattedNumber.trim().replace(/,/g, "");
 }
 
 export function parseSuffixedNumber(value: string): [number, string?] {
   // Remove any leading/trailing whitespace
-  value = removeCommas(value.trim());
+  value = removeCommas(value);
 
   // Regular expression to match the numerical part and optional suffix
   const regex = /^(-?\d+(?:\.\d+)?)([a-zA-Z]+)?$/;
@@ -71,9 +71,7 @@ export function parseSuffixedNumber(value: string): [number, string?] {
 }
 
 export function parseDecimalNumber(value: string) {
-  value = removeCommas(value.trim());
-
-  return value.split(".");
+  return removeCommas(value).split(".");
 }
 
 export function calculatePercentage(
