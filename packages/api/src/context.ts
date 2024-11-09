@@ -14,7 +14,7 @@ import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import { PostHogClient } from "./posthog";
+import { PostHogClient, shouldIgnoreURL } from "./posthog";
 
 type NextHTTPRequest = CreateNextContextOptions["req"];
 
@@ -89,7 +89,7 @@ export function createTRPCContext(
 
       const posthog = PostHogClient();
 
-      if (posthog) {
+      if (posthog && !shouldIgnoreURL(opts.req.url)) {
         const cookies = cookie.parse(opts.req.headers.cookie ?? "");
 
         let distinctId = cookies["distinctId"];
