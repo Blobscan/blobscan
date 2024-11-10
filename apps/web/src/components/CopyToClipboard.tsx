@@ -39,9 +39,9 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
         }}
       >
         {isCopied ? (
-          <CheckIcon className="h-5 w-5" />
+          <CheckIcon className="h-4 w-4" />
         ) : (
-          <Copy className="h-5 w-5" />
+          <Copy className="h-4 w-4" />
         )}
       </TooltipTrigger>
     </Tooltip>
