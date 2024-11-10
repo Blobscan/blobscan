@@ -3,7 +3,18 @@ import { describe, it } from "vitest";
 import dayjs from "@blobscan/dayjs";
 import { fixtures } from "@blobscan/test";
 
-import type { FiltersSchema } from "../../src/middlewares/withFilters";
+import type { FiltersInputSchema } from "../../src/middlewares/withFilters";
+
+const splitAndCleanCommaSeparatedString = (values?: string) => {
+  if (!values) return undefined;
+
+  const parts = values
+    .split(",")
+    .map((v) => v.trim())
+    .filter((v) => v !== "");
+
+  return parts.length > 0 ? parts : undefined;
+};
 
 function filterBlock(
   b: (typeof fixtures.blocks)[number],
@@ -15,7 +26,7 @@ function filterBlock(
     startSlot,
     endSlot,
     type,
-  }: FiltersSchema
+  }: FiltersInputSchema
 ) {
   const blockRangeFilter =
     startBlock && endBlock
@@ -55,12 +66,14 @@ function filterBlock(
 
 function filterTransaction(
   tx: (typeof fixtures.txs)[number],
-  { from, to, rollup }: FiltersSchema
+  { from, to, rollup }: FiltersInputSchema
 ) {
-  const senderFilter = from && !to ? tx.fromId === from : true;
-  const receiverFilter = to && !from ? tx.toId === to : true;
+  const fromSplit = splitAndCleanCommaSeparatedString(from);
+
+  const senderFilter = fromSplit && !to ? fromSplit.includes(tx.fromId) : true;
+  const receiverFilter = to && !fromSplit ? tx.toId === to : true;
   const senderOrReceiverFilter =
-    from && to ? tx.fromId === from || tx.toId === to : true;
+    fromSplit && to ? fromSplit.includes(tx.fromId) || tx.toId === to : true;
   const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
 
   return (
@@ -68,10 +81,9 @@ function filterTransaction(
   );
 }
 
-export function getFilteredBlocks(filters: FiltersSchema) {
+export function getFilteredBlocks(filters: FiltersInputSchema) {
   return fixtures.blocks.filter((b) => {
     const blockTxs = fixtures.txs.filter((tx) => tx.blockHash === b.hash);
-
     return (
       filterBlock(b, filters) &&
       blockTxs.some((tx) => filterTransaction(tx, filters))
@@ -79,16 +91,20 @@ export function getFilteredBlocks(filters: FiltersSchema) {
   });
 }
 
-export function getFilteredTransactions(filters: FiltersSchema) {
+export function getFilteredTransactions(filters: FiltersInputSchema) {
   const { from, to, rollup } = filters;
 
   return getFilteredBlocks(filters).flatMap((b) => {
     const txs = fixtures.txs.filter((tx) => {
+      const fromSplit = splitAndCleanCommaSeparatedString(from);
       const isBlockTx = tx.blockHash === b.hash;
-      const senderFilter = from && !to ? tx.fromId === from : true;
-      const receiverFilter = to && !from ? tx.toId === to : true;
+      const senderFilter =
+        fromSplit && !to ? fromSplit.includes(tx.fromId) : true;
+      const receiverFilter = to && !fromSplit ? tx.toId === to : true;
       const senderOrReceiverFilter =
-        from && to ? tx.fromId === from || tx.toId === to : true;
+        fromSplit && to
+          ? fromSplit?.includes(tx.fromId) || tx.toId === to
+          : true;
       const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
 
       return (
@@ -104,7 +120,7 @@ export function getFilteredTransactions(filters: FiltersSchema) {
   });
 }
 
-export function getFilteredBlobs(filters: FiltersSchema) {
+export function getFilteredBlobs(filters: FiltersInputSchema) {
   return getFilteredTransactions(filters).flatMap((tx) => {
     const blobs = fixtures.blobsOnTransactions.filter(
       (b) => b.txHash === tx.hash
@@ -122,11 +138,11 @@ export function requiresDirectCount({
   type,
   startBlock,
   startSlot,
-}: FiltersSchema) {
+}: FiltersInputSchema) {
   const blockNumberRangeFilterEnabled = !!startBlock || !!endBlock;
   const reorgedFilterEnabled = type === "reorged";
   const slotRangeFilterEnabled = !!startSlot || !!endSlot;
-  const addressFilterEnabled = !!from || !!to;
+  const addressFilterEnabled = splitAndCleanCommaSeparatedString(from) || !!to;
 
   return (
     blockNumberRangeFilterEnabled ||
@@ -137,7 +153,7 @@ export function requiresDirectCount({
 }
 
 export function runFilterTests(
-  assertFilters: (filters: FiltersSchema) => Promise<void>
+  assertFilters: (filters: FiltersInputSchema) => Promise<void>
 ) {
   describe("when using filters", () => {
     it("should return the correct results when filtering by a specific rollup", async () => {
@@ -205,6 +221,24 @@ export function runFilterTests(
     it("should return the correct results when filtering by a sender", async () => {
       await assertFilters({
         from: "address1",
+      });
+    });
+
+    it("should return the correct results when filtering by multiple senders", async () => {
+      await assertFilters({
+        from: "address1,address3",
+      });
+    });
+
+    it("should return the correct results when filtering by multiple empty senders", async () => {
+      await assertFilters({
+        from: ",,,,,",
+      });
+    });
+
+    it("should return the correct results when filtering by some empty senders", async () => {
+      await assertFilters({
+        from: ",address1,,address3,,",
       });
     });
 

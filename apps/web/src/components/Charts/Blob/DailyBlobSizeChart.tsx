@@ -21,15 +21,15 @@ export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({
     ...buildTimeSeriesOptions({
       dates: days,
       axisFormatters: {
-        yAxisLabel: (value: number) =>
-          formatBytes(value, { maximumFractionDigits: 0 }),
-        yAxisTooltip: (value: number) => formatBytes(value),
+        yAxisLabel: (value) =>
+          formatBytes(Number(value), {
+            unit: "GiB",
+            hideUnit: true,
+          }),
+        yAxisTooltip: (value) =>
+          formatBytes(Number(value), { unit: "GiB", displayAllDecimals: true }),
       },
-      yUnit: "bytes",
     }),
-    grid: {
-      containLabel: true,
-    },
     series: [
       {
         name: "Blob Size",
@@ -40,5 +40,7 @@ export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({
     ],
   };
 
-  return <ChartCard title="Daily Blob Size" size="sm" options={options} />;
+  return (
+    <ChartCard title="Daily Blob Size (in GiB)" size="sm" options={options} />
+  );
 };

@@ -141,6 +141,7 @@ describe("Block router", async () => {
     });
 
     runFilterTests(async (filters) => {
+      await ctx.prisma.blockOverallStats.populate();
       const { totalBlocks } = await caller.block.getCount(filters);
 
       expect(totalBlocks).toBe(getFilteredBlocks(filters).length);

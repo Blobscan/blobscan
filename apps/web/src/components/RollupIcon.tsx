@@ -4,12 +4,14 @@ import ArbitrumIcon from "~/icons/arbitrum.svg";
 import BaseIcon from "~/icons/base.svg";
 import BlastIcon from "~/icons/blast.svg";
 import BobaIcon from "~/icons/boba.svg";
+import CampIcon from "~/icons/camp.svg";
 import KromaIcon from "~/icons/kroma.svg";
 import LineaIcon from "~/icons/linea.svg";
 import MetalIcon from "~/icons/metal.svg";
 import ModeIcon from "~/icons/mode.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import OptopiaIcon from "~/icons/optopia.svg";
+import ParadexIcon from "~/icons/paradex.svg";
 import PGNIcon from "~/icons/pgn.svg";
 import ScrollIcon from "~/icons/scroll.svg";
 import StarknetIcon from "~/icons/starknet.svg";
@@ -57,20 +59,22 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <BobaIcon className={commonStyles} />;
       break;
     case "camp":
-      rollupIcon = null;
+      rollupIcon = <CampIcon className={commonStyles} />;
       break;
     case "kroma":
       rollupIcon = <KromaIcon className={commonStyles} />;
       break;
     case "linea":
-      rollupIcon = <LineaIcon className={"h-3.5 w-3.5"} />;
+      rollupIcon = <LineaIcon className={commonStyles} />;
       break;
     case "metal":
       rollupIcon = <MetalIcon className={commonStyles} />;
       break;
     case "mode":
       rollupIcon = (
-        <ModeIcon className="h-5 w-5 text-[#ceb245] dark:text-[#ffd940]" />
+        <ModeIcon
+          className={`${commonStyles} text-[#ceb245] dark:text-[#ffd940]`}
+        />
       );
       break;
     case "optimism":
@@ -80,7 +84,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       rollupIcon = <OptopiaIcon className={commonStyles} />;
       break;
     case "paradex":
-      rollupIcon = null;
+      rollupIcon = <ParadexIcon className={commonStyles} />;
       break;
     case "pgn":
       rollupIcon = <PGNIcon className={commonStyles} />;

@@ -9,12 +9,6 @@ import {
 import { publicProcedure } from "../../procedures";
 import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 
-const inputSchema = withAllFiltersSchema;
-
-const outputSchema = z.object({
-  totalTransactions: z.number(),
-});
-
 /**
  * Counts transactions based on the provided filters.
  *
@@ -69,15 +63,24 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
     );
   }
 
-  const overallStats = await prisma.transactionOverallStats.findFirst({
+  const overallStats = await prisma.transactionOverallStats.findMany({
     select: {
       totalTransactions: true,
     },
     where,
   });
 
-  return overallStats?.totalTransactions ?? 0;
+  return overallStats.reduce(
+    (acc, { totalTransactions }) => acc + totalTransactions,
+    0
+  );
 }
+
+const inputSchema = withAllFiltersSchema;
+
+const outputSchema = z.object({
+  totalTransactions: z.number(),
+});
 
 export const getCount = publicProcedure
   .input(inputSchema)

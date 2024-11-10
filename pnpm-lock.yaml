@@ -334,9 +334,6 @@ importers:
       posthog-js:
         specifier: ^1.166.1
         version: 1.166.1
-      pretty-bytes:
-        specifier: ^6.1.1
-        version: 6.1.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -355,6 +352,9 @@ importers:
       superjson:
         specifier: 1.9.1
         version: 1.9.1
+      tailwind-gradient-mask-image:
+        specifier: ^1.2.0
+        version: 1.2.0
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
@@ -5957,10 +5957,6 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  pretty-bytes@6.1.1:
-    resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
-    engines: {node: ^14.13.1 || >=16.0.0}
-
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -6548,6 +6544,9 @@ packages:
   table-layout@4.1.0:
     resolution: {integrity: sha512-AfbFMOsAZDoaQq2sDF/F7PSTxnTBexr4cuArFW1bMl07tFbB+HBwKpnw99To3ffcjRFe12dEoyckiNz1+qCSng==}
     engines: {node: '>=12.17'}
+
+  tailwind-gradient-mask-image@1.2.0:
+    resolution: {integrity: sha512-tUJaGhvqbJFiVKJu6EU5n//KvGdVvY3L3VOFNqjztk13+ifAk00pcSNHBTgHfUiBGOEzDn0gFRbSmsftUV1lXA==}
 
   tailwind-merge@2.4.0:
     resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
@@ -13181,8 +13180,6 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  pretty-bytes@6.1.1: {}
-
   pretty-format@29.7.0:
     dependencies:
       '@jest/schemas': 29.6.3
@@ -13852,6 +13849,8 @@ snapshots:
       '@75lb/deep-merge': 1.1.1
       array-back: 6.2.2
       wordwrapjs: 5.1.0
+
+  tailwind-gradient-mask-image@1.2.0: {}
 
   tailwind-merge@2.4.0: {}
 
