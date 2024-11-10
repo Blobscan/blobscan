@@ -6,6 +6,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
@@ -123,7 +124,12 @@ const Blobs: NextPage = function () {
               },
               {
                 item: transaction?.category ? (
-                  <span>{capitalize(transaction.category)}</span>
+                  <div className="flex items-center gap-2">
+                    <span>{capitalize(transaction.category)}</span>
+                    {transaction.rollup && (
+                      <RollupIcon rollup={transaction.rollup} />
+                    )}
+                  </div>
                 ) : (
                   <></>
                 ),

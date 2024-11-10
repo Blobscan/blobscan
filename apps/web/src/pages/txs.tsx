@@ -70,10 +70,6 @@ export const TRANSACTIONS_TABLE_HEADERS = [
         className: "w-[90px]",
       },
       {
-        item: "Rollup",
-        className: "w-[72px]",
-      },
-      {
         item: "Blob Base Fee",
         className: "w-[172px]",
       },
@@ -237,10 +233,14 @@ const Txs: NextPage = function () {
                 ),
               },
               {
-                item: <span>{capitalize(category)}</span>,
-              },
-              {
-                item: rollup ? <RollupIcon rollup={rollup} /> : <></>,
+                item: category ? (
+                  <div className="flex items-center gap-2">
+                    <span>{capitalize(category)}</span>
+                    {rollup && <RollupIcon rollup={rollup} />}
+                  </div>
+                ) : (
+                  <></>
+                ),
               },
               {
                 item: (
