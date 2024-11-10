@@ -13,7 +13,7 @@ import useOverflow from "~/hooks/useOverflow";
 import { Option } from "./Option";
 
 export interface Option {
-  value: string | number;
+  value: string | number | string[] | number[];
   label?: ReactNode;
   prefix?: ReactNode;
   selectedLabel?: ReactNode;
@@ -69,10 +69,12 @@ export const Dropdown: React.FC<DropdownProps> = function ({
               {hasSelectedValue ? (
                 Array.isArray(selected) ? (
                   <div className="flex flex-row items-center gap-1">
-                    {selected.map((s) => {
+                    {selected.map(({ selectedLabel, label, value }) => {
                       return (
-                        <Fragment key={s.value}>
-                          {s.selectedLabel ? s.selectedLabel : s.label}
+                        <Fragment
+                          key={Array.isArray(value) ? value.join("-") : value}
+                        >
+                          {selectedLabel ? selectedLabel : label}
                         </Fragment>
                       );
                     })}

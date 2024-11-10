@@ -7,19 +7,21 @@ interface OptionProps {
   option: OptionType;
 }
 
-export const Option: React.FC<OptionProps> = function (props) {
-  const { prefix, label, value } = props.option;
+export const Option: React.FC<OptionProps> = function ({ option }) {
+  const { prefix, label, value } = option;
+  const formattedValue = Array.isArray(value) ? value.join(", ") : value;
+
   return (
     <ListboxOption
       className={`relative cursor-pointer select-none px-4 py-2 text-contentSecondary-light hover:bg-controlActive-light data-[selected]:font-semibold data-[selected]:text-content-light dark:text-contentSecondary-dark  hover:dark:bg-controlActive-dark data-[selected]:dark:font-semibold data-[selected]:dark:text-content-dark`}
-      value={props.option}
+      value={option}
     >
       {({ selected }) => (
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-row items-center gap-2">
             {prefix && prefix}
             <span className="block truncate text-sm">
-              {label ? label : value}
+              {label ? label : formattedValue}
             </span>
           </div>
           {selected && (
