@@ -8,7 +8,7 @@ interface OptionProps {
 }
 
 export const Option: React.FC<OptionProps> = function ({ option }) {
-  const { prefix, label, value } = option;
+  const { label, value } = option;
   const formattedValue = Array.isArray(value) ? value.join(", ") : value;
 
   return (
@@ -18,11 +18,8 @@ export const Option: React.FC<OptionProps> = function ({ option }) {
     >
       {({ selected }) => (
         <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-row items-center gap-2">
-            {prefix && prefix}
-            <span className="block truncate text-sm">
-              {label ? label : formattedValue}
-            </span>
+          <div className="truncate text-sm">
+            {label ? label : formattedValue}
           </div>
           {selected && (
             <CheckIcon

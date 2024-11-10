@@ -26,14 +26,18 @@ export const ROLLUP_OPTIONS: Option[] = [
     selectedLabel: <Badge size="sm">None</Badge>,
     label: "None",
   },
-  ...rollups.map(([name, addresses]) => {
+  ...rollups.map<Option>(([name, addresses]) => {
     return {
       value: addresses,
       selectedLabel: (
         <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
       ),
-      prefix: <RollupIcon rollup={name.toLowerCase() as Rollup} />,
-      label: capitalize(name),
+      label: (
+        <div className="flex flex-row items-center gap-2">
+          <RollupIcon rollup={name.toLowerCase() as Rollup} />
+          <div>{capitalize(name)}</div>
+        </div>
+      ),
     };
   }),
 ];

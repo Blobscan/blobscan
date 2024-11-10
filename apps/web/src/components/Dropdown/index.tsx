@@ -15,7 +15,6 @@ import { Option } from "./Option";
 export interface Option {
   value: string | number | string[] | number[];
   label?: ReactNode;
-  prefix?: ReactNode;
   selectedLabel?: ReactNode;
 }
 
