@@ -156,6 +156,7 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
                     readOnly: true,
                   },
                 }}
+                closeOnSelect={false}
               />
             </div>
             <div className="ml-4 inline-block align-middle">--</div>
@@ -172,6 +173,7 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
                     readOnly: true,
                   },
                 }}
+                closeOnSelect={false}
               />
             </div>
           </div>

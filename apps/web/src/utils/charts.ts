@@ -93,6 +93,7 @@ export function buildTimeSeriesOptions({
       data: dates,
       axisLabel: {
         formatter: xAxisLabel,
+        showMaxLabel: false
       },
     },
     yAxis: {

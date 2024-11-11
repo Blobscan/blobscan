@@ -208,7 +208,7 @@ export const ChartCardWithSlider: FC<ChartCardWithSliderProps> = function ({
     toolbox: {
       show: true,
       feature: {
-        magicType: { type: ["bar"] },
+        magicType: { show: false },
         dataView: null,
         saveAsImage: null,
       },

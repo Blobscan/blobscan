@@ -48,7 +48,10 @@ const Validator: NextPage = function () {
 
   const prevDateRange = usePrevious(dateRange);
 
-  const validatorKey = useMemo(() => String(keyOrIdx), [keyOrIdx]);
+  const validatorKey = useMemo(
+    () => (keyOrIdx ? "" + keyOrIdx : ""),
+    [keyOrIdx]
+  );
 
   const {
     data: incomeData = {
@@ -176,11 +179,14 @@ const Validator: NextPage = function () {
   );
 
   const header = useMemo(
-    () => `Validator ${validatorKey === "" ? "-" : incomeData.validatorIdx}`,
-    [validatorKey, incomeData.validatorIdx]
+    () => `Validator ${validatorKey === "" ? "-" : validatorKey}`,
+    [validatorKey]
   );
 
-  const validatorPublicKey = useMemo(() => validatorKey || "-", [validatorKey]);
+  const validatorPublicKey = useMemo(
+    () => incomeData.validatorPublicKey || "-",
+    [incomeData.validatorPublicKey]
+  );
 
   // TODO: Using DateTimeRangePickerToolbar component instead of Select component is more in line with usage standards.
   return (
