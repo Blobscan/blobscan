@@ -22,7 +22,7 @@ export const ValidatorsIncomeLayout: FC<ValidatorsIncomeProps> = function ({
   return (
     <>
       <Header>{header}</Header>
-      {/* <span className="text-sm text-gray-500">{validatorKey}</span> */}
+      <span className="text-sm text-gray-500">{validatorKey}</span>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {metrics ? (
           metrics.map((metric, i) => <MetricCard key={i} {...metric} />)
