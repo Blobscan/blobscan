@@ -13,6 +13,7 @@ export const OptimismDecodedDataSchema = z.object({
   changedByL1Origin: z.number(),
   totalTxs: z.number(),
   contractCreationTxsNumber: z.number(),
+  fullL1OriginBlockHash: z.string().optional(),
 });
 
 type OptimismDecodedData = z.infer<typeof OptimismDecodedDataSchema>;
@@ -37,7 +38,7 @@ export async function parseOptimismDecodedData(
   const hash = await autocompleteBlockHash(decoded.data.l1OriginBlockHash);
 
   if (hash) {
-    decoded.data.l1OriginBlockHash = hash;
+    decoded.data.fullL1OriginBlockHash = hash;
   } else {
     logger.error(
       `Failed to get full block hash for L1 origin block hash: ${decoded.data.l1OriginBlockHash}`
