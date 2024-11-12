@@ -7,7 +7,6 @@ import { fixtures } from "@blobscan/test";
 
 import { prisma } from "../prisma";
 import { runDailyStatsFunctionsTests } from "./helpers/suites/daily-stats";
-import { runOverallStatsFunctionsTests } from "./helpers/suites/overall-stats";
 
 const avgMetrics: (keyof BlockOverallStats)[] = [
   "avgBlobAsCalldataFee",
@@ -71,43 +70,6 @@ describe("Block Stats Extension", () => {
                 expectedStats[statName]
               );
             }
-          }
-        }
-      }
-    },
-  });
-
-  runOverallStatsFunctionsTests("blockOverallStats", {
-    async assertStats(blockNumberRange) {
-      const allOverallStats = await prisma.blockOverallStats.findMany();
-      const expectedBlocks = fixtures.getBlocks({
-        blockNumberRange,
-      });
-
-      expect(
-        allOverallStats,
-        "More or less than one overall stats record created"
-      ).toHaveLength(1);
-
-      const overallStats = allOverallStats[0];
-
-      if (overallStats) {
-        const expectedStats = calculateStats(expectedBlocks, blockNumberRange);
-
-        for (const statName_ in expectedStats) {
-          const statName = statName_ as keyof typeof expectedStats;
-          const isAvg = avgMetrics.includes(statName);
-
-          const errorMsg = `Overall stat "${statName}" mismatch`;
-
-          if (isAvg) {
-            expect(overallStats[statName], errorMsg).toBeCloseTo(
-              expectedStats[statName] as number
-            );
-          } else {
-            expect(overallStats[statName], errorMsg).toEqual(
-              expectedStats[statName]
-            );
           }
         }
       }

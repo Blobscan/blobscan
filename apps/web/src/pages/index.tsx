@@ -21,8 +21,8 @@ import {
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
-  deserializeBlockOverallStats,
   deserializeFullBlock,
+  deserializeOverallStats,
 } from "~/utils";
 
 const LATEST_ITEMS_LENGTH = 5;
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
     expand: "transaction,blob",
   });
   const { data: rawOverallStats, error: overallStatsErr } =
-    api.stats.getAllOverallStats.useQuery();
+    api.stats.getOverallStats.useQuery();
   const { data: dailyTxStats, error: dailyTxStatsErr } =
     api.stats.getTransactionDailyStats.useQuery({
       timeFrame: DAILY_STATS_TIMEFRAME,
@@ -78,16 +78,7 @@ const Home: NextPage = () => {
       blobs,
     };
   }, [rawBlocksData]);
-  const overallStats = useMemo(() => {
-    if (!rawOverallStats) {
-      return;
-    }
-
-    return {
-      ...rawOverallStats,
-      block: deserializeBlockOverallStats(rawOverallStats.block),
-    };
-  }, [rawOverallStats]);
+  const overallStats = useMemo(() => rawOverallStats ? deserializeOverallStats(rawOverallStats) : undefined, [rawOverallStats]);
 
   const error =
     latestBlocksError ||
@@ -104,7 +95,6 @@ const Home: NextPage = () => {
     );
   }
 
-  const totalBlobSize = overallStats?.blob?.totalBlobSize;
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
@@ -137,13 +127,8 @@ const Home: NextPage = () => {
               <MetricCard
                 name="Total Tx Fees Saved"
                 metric={{
-                  value:
-                    typeof overallStats?.block?.totalBlobAsCalldataFee !==
-                      "undefined" &&
-                    typeof overallStats?.block?.totalBlobFee !== "undefined"
-                      ? overallStats.block.totalBlobAsCalldataFee -
-                        overallStats.block.totalBlobFee
-                      : undefined,
+                  value: overallStats ?
+                  overallStats.totalBlobAsCalldataFee - overallStats.totalBlobFee : undefined,
                   type: "ethereum",
                 }}
                 compact
@@ -152,28 +137,28 @@ const Home: NextPage = () => {
             <MetricCard
               name="Total Blocks"
               metric={{
-                value: overallStats?.block?.totalBlocks,
+                value: overallStats?.totalBlocks,
               }}
               compact
             />
             <MetricCard
               name="Total Txs"
               metric={{
-                value: overallStats?.transaction?.totalTransactions,
+                value: overallStats?.totalTransactions,
               }}
               compact
             />
             <MetricCard
               name="Total Blobs"
               metric={{
-                value: overallStats?.blob?.totalBlobs,
+                value: overallStats?.totalBlobs,
               }}
               compact
             />
             <MetricCard
               name="Total Blob Size"
               metric={{
-                value: totalBlobSize ? BigInt(totalBlobSize) : undefined,
+                value: overallStats?.totalBlobSize,
                 type: "bytes",
               }}
               compact

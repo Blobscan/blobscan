@@ -1,11 +1,11 @@
 import type {
-  AllOverallStats,
   Blob,
   Block,
   BlockWithExpandedBlobsAndTransactions,
   TransactionWithExpandedBlockAndBlob,
   Transaction,
   TransactionWithExpandedBlock,
+  OverallStats,
 } from "~/types";
 import { normalizeTimestamp } from "./date";
 
@@ -129,21 +129,36 @@ export function deserializeFullBlock(
   };
 }
 
-export function deserializeBlockOverallStats(
-  blockOverallStats: AllOverallStats["block"]
-) {
+export function deserializeOverallStats(overallStats: OverallStats) {
   const {
-    totalBlobAsCalldataFee,
-    totalBlobFee,
+    avgMaxBlobGasFee,
+    avgBlobGasPrice,
+    totalBlobs,
+    totalTransactions,
+    totalBlobSize,
+    totalUniqueBlobs,
+    totalBlocks,
     totalBlobGasUsed,
+    totalBlobFee,
+    totalBlobAsCalldataFee,
     totalBlobAsCalldataGasUsed,
-  } = blockOverallStats;
+    totalUniqueSenders,
+    totalUniqueReceivers,
+  } = overallStats;
 
   return {
-    ...blockOverallStats,
-    totalBlobAsCalldataFee: BigInt(totalBlobAsCalldataFee),
-    totalBlobFee: BigInt(totalBlobFee),
+    avgMaxBlobGasFee,
+    avgBlobGasPrice,
+    totalBlobs,
+    totalTransactions,
+    totalBlocks,
+    totalUniqueSenders,
+    totalUniqueReceivers,
+    totalUniqueBlobs: totalUniqueBlobs,
+    totalBlobSize: BigInt(totalBlobSize),
     totalBlobGasUsed: BigInt(totalBlobGasUsed),
+    totalBlobFee: BigInt(totalBlobFee),
+    totalBlobAsCalldataFee: BigInt(totalBlobAsCalldataFee),
     totalBlobAsCalldataGasUsed: BigInt(totalBlobAsCalldataGasUsed),
   };
 }

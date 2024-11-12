@@ -12,7 +12,6 @@ import {
   groupElementsByDay,
 } from "./helpers/stats";
 import { runDailyStatsFunctionsTests } from "./helpers/suites/daily-stats";
-import { runOverallStatsFunctionsTests } from "./helpers/suites/overall-stats";
 
 const avgMetrics: (keyof TransactionOverallStats)[] = [
   "avgBlobAsCalldataFee",
@@ -80,56 +79,6 @@ describe("Transaction Stats Extension", () => {
                   expectedStats[statName]
                 );
               }
-            }
-          }
-        }
-      }
-    },
-  });
-
-  runOverallStatsFunctionsTests("transactionOverallStats", {
-    async assertStats(blockNumberRange) {
-      const allOverallStats = await prisma.transactionOverallStats.findMany();
-      const expectedTransactionsByAggregableType =
-        groupElementsByAggregableType(
-          fixtures.getTransactions({
-            blockNumberRange,
-          })
-        );
-
-      for (const [
-        aggregableType,
-        expectedTransactions,
-      ] of expectedTransactionsByAggregableType.entries()) {
-        const stats = getElementByAggregableType(
-          allOverallStats,
-          aggregableType
-        );
-
-        expect(
-          stats,
-          `${aggregableType} overall stats not created`
-        ).toBeDefined();
-
-        if (stats) {
-          const expectedStats = calculateStats(
-            expectedTransactions,
-            blockNumberRange
-          );
-
-          for (const statName_ in expectedStats) {
-            const statName = statName_ as keyof typeof expectedStats;
-            const errorMsg = `${aggregableType} overall stat "${statName}" mismatch`;
-            const isAvg = avgMetrics.includes(statName);
-
-            if (isAvg) {
-              expect(stats[statName], errorMsg).toBeCloseTo(
-                expectedStats[statName] as number
-              );
-            } else {
-              expect(stats[statName], errorMsg).toEqual(
-                expectedStats[statName]
-              );
             }
           }
         }

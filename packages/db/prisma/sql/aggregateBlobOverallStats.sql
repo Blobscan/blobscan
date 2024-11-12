@@ -1,6 +1,6 @@
 -- @param {Int} $1:from The block number from which to start aggregating the data.
 -- @param {Int} $2:to The block number until which to aggregate the data.
-INSERT INTO blob_overall_stats as curr_stats (
+INSERT INTO overall_stats as curr_stats (
   category,
   rollup,
   total_blobs,

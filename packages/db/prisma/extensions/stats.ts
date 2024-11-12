@@ -3,7 +3,6 @@ import {
   aggregateBlobDailyStats,
   aggregateBlobOverallStats,
   aggregateBlockDailyStats,
-  aggregateBlockOverallStats,
   aggregateTxDailyStats,
   aggregateTxOverallStats,
 } from "@prisma/client/sql";
@@ -15,16 +14,68 @@ import type { BlockNumberRange, DatePeriodLike } from "../types";
 
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("stats");
 
+const startOverallStatsModelFnSpan = startExtensionFnSpan("overallStats");
 const startBlobDailyStatsModelFnSpan = startExtensionFnSpan("blobDailyStats");
 const startBlockDailyStatsModelFnSpan = startExtensionFnSpan("blockDailyStats");
 const startTransactionDailyStatsModelFnSpan = startExtensionFnSpan(
   "transactionDailyStats"
 );
 
+const MAX_INT = 2147483647;
+
 export const statsExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
     name: "statsExtension",
     model: {
+      overallStats: {
+        erase() {
+          return startOverallStatsModelFnSpan("deleteAll", () => {
+            return prisma.$transaction([
+              prisma.$executeRawUnsafe("TRUNCATE TABLE overall_stats"),
+              prisma.blockchainSyncState.upsert({
+                create: {
+                  lastAggregatedBlock: 0,
+                },
+                update: {
+                  lastAggregatedBlock: 0,
+                },
+                where: {
+                  id: 1,
+                },
+              }),
+            ]);
+          });
+        },
+        async aggregate(
+          opts: Partial<{
+            blockRange: BlockNumberRange;
+            overwrite: boolean;
+          }> = {}
+        ) {
+          const { from = 0, to = MAX_INT } = opts.blockRange ?? {};
+          const overwrite = opts.overwrite;
+
+          if (overwrite) {
+            await Prisma.getExtensionContext(this).erase();
+          }
+
+          await prisma.$transaction([
+            prisma.$queryRawTyped(aggregateBlobOverallStats(from, to)),
+            prisma.$queryRawTyped(aggregateTxOverallStats(from, to)),
+            prisma.blockchainSyncState.upsert({
+              create: {
+                lastAggregatedBlock: to,
+              },
+              update: {
+                lastAggregatedBlock: to,
+              },
+              where: {
+                id: 1,
+              },
+            }),
+          ]);
+        },
+      },
       blobDailyStats: {
         deleteAll() {
           return startBlobDailyStatsModelFnSpan("deleteAll", () => {
@@ -37,18 +88,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             : {};
 
           return prisma.$queryRawTyped(aggregateBlobDailyStats(from, to));
-        },
-      },
-      blobOverallStats: {
-        async populate() {
-          await prisma.blobOverallStats.deleteMany();
-
-          return prisma.$queryRawTyped(
-            aggregateBlobOverallStats(0, Number.MAX_SAFE_INTEGER)
-          );
-        },
-        increment({ from, to }: BlockNumberRange) {
-          return prisma.$queryRawTyped(aggregateBlobOverallStats(from, to));
         },
       },
       blockDailyStats: {
@@ -65,18 +104,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           return prisma.$queryRawTyped(aggregateBlockDailyStats(from, to));
         },
       },
-      blockOverallStats: {
-        async populate() {
-          await prisma.blockOverallStats.deleteMany();
-
-          return prisma.$queryRawTyped(
-            aggregateBlockOverallStats(0, Number.MAX_SAFE_INTEGER)
-          );
-        },
-        increment({ from, to }: BlockNumberRange) {
-          return prisma.$queryRawTyped(aggregateBlockOverallStats(from, to));
-        },
-      },
       transactionDailyStats: {
         deleteAll() {
           return startTransactionDailyStatsModelFnSpan("deleteAll", () => {
@@ -91,18 +118,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             : {};
 
           return prisma.$queryRawTyped(aggregateTxDailyStats(from, to));
-        },
-      },
-      transactionOverallStats: {
-        async populate() {
-          await prisma.transactionOverallStats.deleteMany();
-
-          return prisma.$queryRawTyped(
-            aggregateTxOverallStats(0, Number.MAX_SAFE_INTEGER)
-          );
-        },
-        increment({ from, to }: BlockNumberRange) {
-          return prisma.$queryRawTyped(aggregateTxOverallStats(from, to));
         },
       },
     },

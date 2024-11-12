@@ -1,8 +1,9 @@
 -- @param {Int} $1:from The block number from which to start aggregating the data.
 -- @param {Int} $2:to The block number until which to aggregate the data.
-INSERT INTO transaction_overall_stats AS curr_stats (
+INSERT INTO overall_stats AS curr_stats (
   category,
   rollup,
+  total_blocks,
   total_transactions,
   total_unique_receivers,
   total_unique_senders,
@@ -25,6 +26,7 @@ INSERT INTO transaction_overall_stats AS curr_stats (
 SELECT
   tx.category,
   tx.rollup,
+  COUNT(DISTINCT tx.block_number)::INT AS total_blocks,
   COUNT(tx.hash)::INT AS total_transactions,
   COALESCE(
     COUNT(
@@ -72,6 +74,7 @@ HAVING NOT (
   tx.rollup IS NULL
 )
 ON CONFLICT (category, rollup) DO UPDATE SET
+  total_blocks = curr_stats.total_blocks + EXCLUDED.total_blocks,
   total_transactions = curr_stats.total_transactions + EXCLUDED.total_transactions,
   total_unique_receivers = curr_stats.total_unique_receivers + EXCLUDED.total_unique_receivers,
   total_unique_senders = curr_stats.total_unique_senders + EXCLUDED.total_unique_senders,

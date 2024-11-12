@@ -1,6 +1,5 @@
 import { z } from "@blobscan/zod";
 
-import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
 import { BLOB_BASE_PATH } from "./common";
 
@@ -13,33 +12,6 @@ export const outputSchema = z.object({
   updatedAt: z.date(),
 });
 
-export async function getBlobOverallStatsQuery(prisma: TRPCContext["prisma"]) {
-  const stats = await prisma.blobOverallStats.findMany({
-    where: {
-      category: null,
-      rollup: null,
-    },
-  });
-
-  const allStats = stats[0];
-
-  if (!allStats) {
-    return {
-      totalBlobs: 0,
-      totalUniqueBlobs: 0,
-      totalBlobSize: "0",
-      updatedAt: new Date(),
-    };
-  }
-
-  return {
-    totalBlobs: allStats.totalBlobs,
-    totalUniqueBlobs: allStats.totalUniqueBlobs,
-    totalBlobSize: allStats.totalBlobSize.toString(),
-    updatedAt: allStats.updatedAt,
-  };
-}
-
 export const getBlobOverallStats = publicProcedure
   .meta({
     openapi: {
@@ -51,4 +23,35 @@ export const getBlobOverallStats = publicProcedure
   })
   .input(inputSchema)
   .output(outputSchema)
-  .query(({ ctx }) => getBlobOverallStatsQuery(ctx.prisma));
+  .query(async ({ ctx: { prisma } }) => {
+    const stats = await prisma.overallStats.findMany({
+      select: {
+        totalBlobs: true,
+        totalUniqueBlobs: true,
+        totalBlobSize: true,
+        updatedAt: true,
+      },
+      where: {
+        category: null,
+        rollup: null,
+      },
+    });
+
+    const allStats = stats[0];
+
+    if (!allStats) {
+      return {
+        totalBlobs: 0,
+        totalUniqueBlobs: 0,
+        totalBlobSize: "0",
+        updatedAt: new Date(),
+      };
+    }
+
+    return {
+      totalBlobs: allStats.totalBlobs,
+      totalUniqueBlobs: allStats.totalUniqueBlobs,
+      totalBlobSize: allStats.totalBlobSize.toString(),
+      updatedAt: allStats.updatedAt,
+    };
+  });

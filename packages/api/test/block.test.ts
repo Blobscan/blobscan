@@ -26,7 +26,7 @@ describe("Block router", async () => {
 
   describe("getAll", () => {
     beforeEach(async () => {
-      await ctx.prisma.blockOverallStats.populate();
+      await ctx.prisma.overallStats.aggregate();
     });
 
     runPaginationTestsSuite("block", (paginationInput) =>
@@ -134,14 +134,14 @@ describe("Block router", async () => {
 
   describe("getCount", () => {
     it("should return the overall total blocks stat when no filters are provided", async () => {
-      await ctx.prisma.blockOverallStats.populate();
+      await ctx.prisma.overallStats.aggregate();
       const { totalBlocks } = await caller.block.getCount({});
 
       expect(totalBlocks).toBe(fixtures.canonicalBlocks.length);
     });
 
     runFilterTests(async (filters) => {
-      await ctx.prisma.blockOverallStats.populate();
+      await ctx.prisma.overallStats.aggregate();
       const { totalBlocks } = await caller.block.getCount(filters);
 
       expect(totalBlocks).toBe(getFilteredBlocks(filters).length);

@@ -202,6 +202,12 @@ export const fixtures = {
         const toHistory = fixtures.addressesHistory.find(
           (a) => a.address === tx.toId && a.category === tx.category
         );
+        const blobs = fixtures.blobsOnTransactions
+          .filter((btx) => btx.txHash === tx.hash)
+          .map((btx) =>
+            fixtures.blobs.find((b) => b.versionedHash === btx.blobHash)
+          )
+          .filter((b): b is (typeof fixtures)["blobs"][number] => !!b);
 
         if (!block)
           throw new Error(`Block with hash "${tx.blockHash}" not found`);
@@ -217,6 +223,7 @@ export const fixtures = {
         return {
           ...tx,
           block,
+          blobs,
           fromHistory,
           toHistory,
         };
@@ -269,9 +276,7 @@ export const fixtures = {
       prisma.block.deleteMany(),
       prisma.blockDailyStats.deleteMany(),
       prisma.transactionDailyStats.deleteMany(),
-      prisma.blobDailyStats.deleteMany(),
-      prisma.blockOverallStats.deleteMany(),
-      prisma.transactionOverallStats.deleteMany(),
+      prisma.overallStats.deleteMany(),
       prisma.blobOverallStats.deleteMany(),
 
       prisma.blobStoragesState.createMany({

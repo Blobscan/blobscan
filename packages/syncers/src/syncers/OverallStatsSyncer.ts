@@ -1,5 +1,5 @@
 import { prisma } from "@blobscan/db";
-import type { BlockNumberRange, Prisma } from "@blobscan/db";
+import type { BlockNumberRange } from "@blobscan/db";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
@@ -82,23 +82,8 @@ export class OverallStatsSyncer extends BaseSyncer {
             from: batchFrom,
             to: batchTo,
           };
-          const newBlockchainSyncState: Partial<Prisma.BlockchainSyncStateGroupByOutputType> =
-            {
-              lastAggregatedBlock: batchTo,
-            };
 
-          await prisma.$transaction([
-            prisma.blockOverallStats.increment(batchBlockRange),
-            prisma.transactionOverallStats.increment(batchBlockRange),
-            prisma.blobOverallStats.increment(batchBlockRange),
-            prisma.blockchainSyncState.upsert({
-              create: newBlockchainSyncState,
-              update: newBlockchainSyncState,
-              where: {
-                id: 1,
-              },
-            }),
-          ]);
+          await prisma.overallStats.aggregate({ blockRange: batchBlockRange });
 
           if (batches > 1) {
             const formattedFromBlock = batchBlockRange.from.toLocaleString();

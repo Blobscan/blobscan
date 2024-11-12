@@ -20,9 +20,13 @@ export async function countBlocks(
   filters: Filters
 ) {
   if (!hasCustomFilters(filters)) {
-    const overallStats = await prisma.blockOverallStats.findFirst({
+    const overallStats = await prisma.overallStats.findFirst({
       select: {
         totalBlocks: true,
+      },
+      where: {
+        category: null,
+        rollup: null,
       },
     });
 

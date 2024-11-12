@@ -1,7 +1,7 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import type { BlockNumberRange, Prisma } from "@blobscan/db";
+import type { BlockNumberRange } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 
 import { CommandError } from "../error";
@@ -78,26 +78,6 @@ async function resolveBlockId(blockId: BlockId): Promise<number> {
   }
 }
 
-async function deleteOverallStats() {
-  const newBlockchainSyncState: Partial<Prisma.BlockchainSyncStateGroupByOutputType> =
-    {
-      lastAggregatedBlock: null,
-    };
-
-  await prisma.$transaction([
-    prisma.blobOverallStats.deleteMany(),
-    prisma.blockOverallStats.deleteMany(),
-    prisma.transactionOverallStats.deleteMany(),
-    prisma.blockchainSyncState.upsert({
-      create: newBlockchainSyncState,
-      update: newBlockchainSyncState,
-      where: {
-        id: 1,
-      },
-    }),
-  ]);
-}
-
 async function incrementOverallStats(
   blockRange: BlockNumberRange,
   {
@@ -114,23 +94,15 @@ async function incrementOverallStats(
     const batchFrom = from + i * batchSize;
     const batchTo = Math.min(batchFrom + batchSize - 1, to);
     const blockRange: BlockNumberRange = { from: batchFrom, to: batchTo };
-    const newBlockchainSyncState: Partial<Prisma.BlockchainSyncStateGroupByOutputType> =
-      {
-        lastAggregatedBlock: batchTo,
-      };
 
-    await prisma.$transaction([
-      prisma.blockOverallStats.increment(blockRange),
-      prisma.transactionOverallStats.increment(blockRange),
-      prisma.blobOverallStats.increment(blockRange),
-      prisma.blockchainSyncState.upsert({
-        create: newBlockchainSyncState,
-        update: newBlockchainSyncState,
-        where: {
-          id: 1,
-        },
-      }),
-    ]);
+    commandLog(
+      "info",
+      "overall",
+      "increment",
+      `${blockRange.from}-${blockRange.to}`
+    );
+
+    await prisma.overallStats.aggregate({ blockRange });
 
     if (batches > 1) {
       const formattedBlockRange = `${blockRange.from.toLocaleString()}-${blockRange.to.toLocaleString()}`;
@@ -168,7 +140,7 @@ const overall: Command = async function (argv) {
   }
 
   if (delete_) {
-    await deleteOverallStats();
+    await prisma.overallStats.erase();
 
     commandLog(
       "info",

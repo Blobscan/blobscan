@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
 
@@ -23,6 +23,7 @@ import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
 import { Header } from "~/components/Header";
 import { api } from "~/api-client";
+import { deserializeOverallStats } from "~/utils";
 
 const Stats = function () {
   return (
@@ -34,7 +35,12 @@ const Stats = function () {
 };
 
 function OverallStats() {
-  const { data: overall } = api.stats.getAllOverallStats.useQuery();
+  const { data: rawOverallStats } = api.stats.getOverallStats.useQuery();
+  const overallStats = useMemo(
+    () =>
+      rawOverallStats ? deserializeOverallStats(rawOverallStats) : undefined,
+    [rawOverallStats]
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -45,14 +51,14 @@ function OverallStats() {
         <MetricCard
           name="Total Blobs"
           metric={{
-            value: overall?.blob.totalBlobs,
+            value: overallStats?.totalBlobs,
           }}
         />
 
         <MetricCard
           name="Total Blob Size"
           metric={{
-            value: overall ? BigInt(overall.blob.totalBlobSize) : undefined,
+            value: overallStats?.totalBlobSize,
             type: "bytes",
           }}
         />
@@ -60,7 +66,7 @@ function OverallStats() {
         <MetricCard
           name="Total Unique Blobs"
           metric={{
-            value: overall?.blob.totalUniqueBlobs,
+            value: overallStats?.totalUniqueBlobs,
           }}
         />
 
@@ -69,14 +75,14 @@ function OverallStats() {
         <MetricCard
           name="Total Blocks"
           metric={{
-            value: overall?.block.totalBlocks,
+            value: overallStats?.totalBlocks,
           }}
         />
 
         <MetricCard
           name="Total Blob Gas Used"
           metric={{
-            value: overall ? BigInt(overall.block.totalBlobGasUsed) : undefined,
+            value: overallStats?.totalBlobGasUsed,
             type: "ethereum",
           }}
         />
@@ -84,7 +90,7 @@ function OverallStats() {
         <MetricCard
           name="Total Blob Fees"
           metric={{
-            value: overall ? BigInt(overall.block.totalBlobFee) : undefined,
+            value: overallStats?.totalBlobFee,
             type: "ethereum",
           }}
         />
@@ -92,9 +98,9 @@ function OverallStats() {
         <MetricCard
           name="Avg. Blob Gas Price"
           metric={
-            overall
+            overallStats
               ? {
-                  value: overall.block.avgBlobGasPrice,
+                  value: overallStats.avgBlobGasPrice,
                   type: "ethereum",
                   numberFormatOpts: {
                     maximumFractionDigits: 9,
@@ -107,11 +113,11 @@ function OverallStats() {
         <MetricCard
           name="Total Tx Fees Saved"
           metric={
-            overall
+            overallStats
               ? {
                   value:
-                    BigInt(overall.block.totalBlobAsCalldataFee) -
-                    BigInt(overall.block.totalBlobFee),
+                    BigInt(overallStats.totalBlobAsCalldataFee) -
+                    BigInt(overallStats.totalBlobFee),
                   type: "ethereum",
                 }
               : undefined
@@ -133,9 +139,9 @@ function OverallStats() {
         <MetricCard
           name="Total Gas Saved"
           metric={{
-            value: overall
-              ? BigInt(overall.block.totalBlobAsCalldataGasUsed) -
-                BigInt(overall.block.totalBlobGasUsed)
+            value: overallStats
+              ? BigInt(overallStats.totalBlobAsCalldataGasUsed) -
+                BigInt(overallStats.totalBlobGasUsed)
               : undefined,
             type: "ethereum",
           }}
@@ -159,28 +165,28 @@ function OverallStats() {
         <MetricCard
           name="Total Transactions"
           metric={{
-            value: overall?.transaction.totalTransactions,
+            value: overallStats?.totalTransactions,
           }}
         />
 
         <MetricCard
           name="Total Unique Receivers"
           metric={{
-            value: overall?.transaction.totalUniqueReceivers,
+            value: overallStats?.totalUniqueReceivers,
           }}
         />
 
         <MetricCard
           name="Total Unique Senders"
           metric={{
-            value: overall?.transaction.totalUniqueSenders,
+            value: overallStats?.totalUniqueSenders,
           }}
         />
 
         <MetricCard
           name="Avg. Max Blob Gas Fee"
           metric={{
-            value: overall?.transaction.avgMaxBlobGasFee,
+            value: overallStats?.avgMaxBlobGasFee,
             type: "ethereum",
           }}
         />

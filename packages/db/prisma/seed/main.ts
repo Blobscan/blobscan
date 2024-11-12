@@ -174,20 +174,9 @@ async function main() {
   }
 
   const overallPerformance = performance.now();
-  await Promise.all([
-    prisma.blobOverallStats.increment({
-      from: 0,
-      to: Number.MAX_SAFE_INTEGER,
-    }),
-    prisma.blockOverallStats.increment({
-      from: 0,
-      to: Number.MAX_SAFE_INTEGER,
-    }),
-    prisma.transactionOverallStats.increment({
-      from: 0,
-      to: Number.MAX_SAFE_INTEGER,
-    }),
-  ]);
+
+  await prisma.overallStats.aggregate();
+
   const overallPerformanceEnd = performance.now();
   console.log(
     `Overall stats created. Time: ${

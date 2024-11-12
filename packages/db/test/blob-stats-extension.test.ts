@@ -11,7 +11,6 @@ import {
   groupElementsByDay,
 } from "./helpers/stats";
 import { runDailyStatsFunctionsTests } from "./helpers/suites/daily-stats";
-import { runOverallStatsFunctionsTests } from "./helpers/suites/overall-stats";
 
 describe("Blob Stats Extension", () => {
   runDailyStatsFunctionsTests("blobDailyStats", {
@@ -53,43 +52,6 @@ describe("Blob Stats Extension", () => {
                 `${aggregableType} daily stat "${statName}" for day ${formattedDay} mismatch`
               ).toEqual(expectedStats[statName]);
             }
-          }
-        }
-      }
-    },
-  });
-
-  runOverallStatsFunctionsTests("blobOverallStats", {
-    async assertStats(blockNumberRange) {
-      const allOverallStats = await prisma.blobOverallStats.findMany();
-      const expectedBlobsByAggregableType = groupElementsByAggregableType(
-        fixtures.getBlobs({ blockNumberRange })
-      );
-
-      for (const [
-        aggregableType,
-        expectedBlobs,
-      ] of expectedBlobsByAggregableType.entries()) {
-        const stats = getElementByAggregableType(
-          allOverallStats,
-          aggregableType
-        );
-
-        expect(
-          stats,
-          `${aggregableType} overall stats not created`
-        ).toBeDefined();
-
-        if (stats) {
-          const expectedStats = calculateStats(expectedBlobs, blockNumberRange);
-
-          for (const statName_ in expectedStats) {
-            const statName = statName_ as keyof typeof expectedStats;
-
-            expect(
-              stats[statName],
-              `${aggregableType} overall stat "${statName}" mismatch`
-            ).toEqual(expectedStats[statName]);
           }
         }
       }

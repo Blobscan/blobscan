@@ -63,7 +63,7 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
     );
   }
 
-  const overallStats = await prisma.transactionOverallStats.findMany({
+  const overallStats = await prisma.overallStats.findMany({
     select: {
       totalTransactions: true,
     },
