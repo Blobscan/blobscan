@@ -1,5 +1,20 @@
 # @blobscan/web
 
+## 0.16.0
+
+### Minor Changes
+
+- [#592](https://github.com/Blobscan/blobscan/pull/592) [`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17) Thanks [@xFJA](https://github.com/xFJA)! - Added multiple options to RollupFilter
+
+### Patch Changes
+
+- [#625](https://github.com/Blobscan/blobscan/pull/625) [`f93f96f`](https://github.com/Blobscan/blobscan/commit/f93f96fe023567f2354ce106454d8614da86ed43) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed Gitcoin Round 22 banner
+
+- [#592](https://github.com/Blobscan/blobscan/pull/592) [`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17) Thanks [@xFJA](https://github.com/xFJA)! - Added missing rollups icons and improved RollupBadges' styles
+
+- Updated dependencies [[`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17)]:
+  - @blobscan/api@0.15.0
+
 ## 0.15.0
 
 ### Minor Changes
