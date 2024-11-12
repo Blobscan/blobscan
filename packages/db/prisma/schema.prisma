@@ -4,7 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   // rhel-openssl-1.0.x is required by Vercel
-  binaryTargets = ["native", "rhel-openssl-1.0.x", "linux-musl-openssl-3.0.x"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x", "linux-musl-openssl-3.0.x"]
   previewFeatures = ["tracing", "metrics", "typedSql"]
 }
 
@@ -330,6 +330,37 @@ model BlobOverallStats {
 
   @@unique([category, rollup])
   @@map("blob_overall_stats")
+}
+
+model OverallStats {
+  id                         Int       @id @default(autoincrement())
+  category                   Category?
+  rollup                     Rollup?
+  avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  totalBlobs                 Int       @default(0) @map("total_blobs")
+  totalBlobSize              BigInt    @default(0) @map("total_blob_size")
+  totalBlocks                Int       @default(0) @map("total_blocks")
+  totalTransactions          Int       @default(0) @map("total_transactions")
+  totalUniqueBlobs           Int       @default(0) @map("total_unique_blobs")
+  totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
+  updatedAt                  DateTime  @default(now()) @map("updated_at")
+
+  @@unique([category, rollup])
+  @@map("overall_stats")
 }
 
 model BlobDailyStats {
