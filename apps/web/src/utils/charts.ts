@@ -10,7 +10,7 @@ type ExtendedFormat = EChartOption.Tooltip.Format & { name?: string };
 type ValueFormatter = (value: any) => unknown;
 
 function applyFormatter(value?: unknown, formatter?: ValueFormatter) {
-  return value ? (formatter ? formatter(value) : value) : "Unknown value";
+  return value != null ? (formatter ? formatter(value) : value) : "Unknown value";
 }
 
 function buildYAxisHtml(param: ExtendedFormat, formatter?: ValueFormatter) {
@@ -93,6 +93,7 @@ export function buildTimeSeriesOptions({
       data: dates,
       axisLabel: {
         formatter: xAxisLabel,
+        showMaxLabel: false
       },
     },
     yAxis: {

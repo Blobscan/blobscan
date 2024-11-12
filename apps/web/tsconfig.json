@@ -5,7 +5,8 @@
     "paths": {
       "~/*": ["./src/*"]
     },
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "downlevelIteration": true
   },
   "exclude": [],
   "include": [

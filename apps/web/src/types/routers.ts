@@ -29,3 +29,6 @@ export type OverallBlockStats = RouterOutputs["stats"]["getBlockOverallStats"];
 
 export type OverallTxStats =
   RouterOutputs["stats"]["getTransactionOverallStats"];
+
+export type ValidatorIncome =
+  RouterOutputs["stats"]["getValidatorDetailByKeyOrIdx"];

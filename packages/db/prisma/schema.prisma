@@ -259,6 +259,35 @@ model BlobDailyStats {
   @@map("blob_daily_stats")
 }
 
+model ValidatorIncome {
+  id                 BigInt   @id @default(autoincrement())
+  epochIdx           BigInt   @map("epoch_idx")
+  incomeGWei         BigInt   @map("income_gwei")
+  validatorPublicKey String   @map("validator_public_key") @db.Char(100)
+  validatorIdx       BigInt   @map("validator_idx")
+
+  attestationSourceReward            BigInt @map("attestation_source_reward")
+  attestationSourcePenalty           BigInt @map("attestation_source_penalty")
+  attestationTargetReward            BigInt @map("attestation_target_reward")
+  attestationTargetPenalty           BigInt @map("attestation_target_penalty")
+  attestationHeadReward              BigInt @map("attestation_head_reward")
+  proposerAttestationInclusionReward BigInt @map("proposer_attestation_inclusion_reward")
+  proposerSlashingInclusionReward    BigInt @map("proposer_slashing_inclusion_reward")
+  proposerSyncInclusionReward        BigInt @map("proposer_sync_inclusion_reward")
+  slashingReward                     BigInt @map("slashing_reward")
+  slashingPenalty                    BigInt @map("slashing_penalty")
+  syncCommitteeReward                BigInt @map("sync_committee_reward")
+  syncCommitteePenalty               BigInt @map("sync_committee_penalty")
+  finalityDelayPenalty               BigInt @map("finality_delay_penalty")
+  txFeeRewardWei                     BigInt @map("tx_fee_reward_wei")
+
+  insertedAt         DateTime @map("inserted_at") @default(now())
+  updatedAt          DateTime @map("updated_at") @default(now())
+
+  @@map("validator_income")
+  @@unique([validatorIdx, epochIdx], name: "uni_validaotr_epoch_income", map: "uni_validaotr_epoch_income")
+}
+
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
 // uncomment the @db.Text annotations below
