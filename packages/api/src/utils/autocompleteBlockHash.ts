@@ -22,7 +22,7 @@ export async function autocompleteBlockHash(partialHash: string) {
   }
 
   if (blocks.length > 1) {
-    logger.warn(`Multiple blocks found for hash ${partialHash}`);
+    logger.error(`Multiple blocks found for hash ${partialHash}`);
   }
 
   return blocks[0].hash;
