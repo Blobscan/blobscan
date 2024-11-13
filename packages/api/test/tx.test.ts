@@ -135,7 +135,7 @@ describe("Transaction router", async () => {
         ...dailyStats,
       };
 
-      await ctx.prisma.transactionDailyStats.create({
+      await ctx.prisma.dailyStats.create({
         data,
       });
     }

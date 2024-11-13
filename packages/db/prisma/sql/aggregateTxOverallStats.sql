@@ -26,8 +26,8 @@ INSERT INTO overall_stats AS curr_stats (
 SELECT
   tx.category,
   tx.rollup,
-  COUNT(DISTINCT tx.block_number)::INT AS total_blocks,
-  COUNT(tx.hash)::INT AS total_transactions,
+  COALESCE(COUNT(DISTINCT tx.block_number)::INT, 0) AS total_blocks,
+  COALESCE(COUNT(tx.hash)::INT, 0) AS total_transactions,
   COALESCE(
     COUNT(
       DISTINCT CASE

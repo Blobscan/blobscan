@@ -187,11 +187,9 @@ async function main() {
   const yesterdayPeriod = {
     to: dayjs().subtract(1, "day").startOf("day").toISOString(),
   };
-  await Promise.all([
-    prisma.blobDailyStats.populate(yesterdayPeriod),
-    prisma.blockDailyStats.populate(yesterdayPeriod),
-    prisma.transactionDailyStats.populate(yesterdayPeriod),
-  ]);
+
+  await prisma.dailyStats.aggregate(yesterdayPeriod);
+
   const dailyStatsPerformanceEnd = performance.now();
   console.log(
     `Daily stats created. Time: ${

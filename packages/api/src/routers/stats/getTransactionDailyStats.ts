@@ -1,7 +1,5 @@
 import { z } from "@blobscan/zod";
 
-import type { TRPCContext } from "../../context";
-import type { TimeInterval } from "../../middlewares/withTimeFrame";
 import {
   withTimeFrame,
   withTimeFrameSchema,
@@ -33,60 +31,52 @@ export const getTransactionDailyStats = publicProcedure
   .input(inputSchema)
   .use(withTimeFrame)
   .output(outputSchema)
-  .query(({ ctx }) => getTransactionDailyStatsQuery(ctx));
-
-export async function getTransactionDailyStatsQuery({
-  timeFrame,
-  prisma,
-}: {
-  timeFrame: TimeInterval;
-  prisma: TRPCContext["prisma"];
-}): Promise<OutputSchema> {
-  const stats = await prisma.transactionDailyStats.findMany({
-    where: {
-      AND: [
-        {
-          day: {
-            gte: timeFrame.initial.toDate(),
-            lte: timeFrame.final.toDate(),
+  .query(async ({ ctx: { prisma, timeFrame } }) => {
+    const stats = await prisma.dailyStats.findMany({
+      where: {
+        AND: [
+          {
+            day: {
+              gte: timeFrame.initial.toDate(),
+              lte: timeFrame.final.toDate(),
+            },
           },
-        },
-        {
-          category: null,
-        },
-        {
-          rollup: null,
-        },
-      ],
-    },
-    orderBy: { day: "asc" },
-  });
+          {
+            category: null,
+          },
+          {
+            rollup: null,
+          },
+        ],
+      },
+      orderBy: { day: "asc" },
+    });
 
-  return stats.reduce<OutputSchema>(
-    (
-      outputStats,
+    return stats.reduce<OutputSchema>(
+      (
+        outputStats,
+        {
+          avgMaxBlobGasFee,
+          day,
+          totalTransactions,
+          totalUniqueReceivers,
+          totalUniqueSenders,
+        }
+      ) => {
+        outputStats.days.push(day.toISOString());
+        outputStats.totalTransactions.push(totalTransactions);
+        outputStats.totalUniqueSenders.push(totalUniqueSenders);
+        outputStats.totalUniqueReceivers.push(totalUniqueReceivers);
+        outputStats.avgMaxBlobGasFees.push(avgMaxBlobGasFee);
+
+        return outputStats;
+      },
       {
-        avgMaxBlobGasFee,
-        day,
-        totalTransactions,
-        totalUniqueReceivers,
-        totalUniqueSenders,
+        avgMaxBlobGasFees: [],
+        days: [],
+        totalTransactions: [],
+        totalUniqueSenders: [],
+        totalUniqueReceivers: [],
       }
-    ) => {
-      outputStats.days.push(day.toISOString());
-      outputStats.totalTransactions.push(totalTransactions);
-      outputStats.totalUniqueSenders.push(totalUniqueSenders);
-      outputStats.totalUniqueReceivers.push(totalUniqueReceivers);
-      outputStats.avgMaxBlobGasFees.push(avgMaxBlobGasFee);
-
-      return outputStats;
-    },
-    {
-      avgMaxBlobGasFees: [],
-      days: [],
-      totalTransactions: [],
-      totalUniqueSenders: [],
-      totalUniqueReceivers: [],
-    }
-  );
-}
+    );
+  });

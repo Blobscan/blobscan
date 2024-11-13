@@ -7,7 +7,7 @@ import { appRouter } from "../src/app-router";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
 import { createTestContext } from "./helpers";
 
-const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
+const TIME_FRAMES = ["1d", "7d", "15d", "30d", "180d", "360d"] as const;
 
 function runTimeFrameTests({
   statsFiller,
@@ -93,7 +93,7 @@ describe("Stats router", async () => {
   describe("getBlobDailyStats", () => {
     runTimeFrameTests({
       statsFiller() {
-        return prisma.blobDailyStats.populate({ to });
+        return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
         return caller.stats.getBlobDailyStats({ timeFrame });
@@ -125,7 +125,7 @@ describe("Stats router", async () => {
   describe("getBlockDailyStats", () => {
     runTimeFrameTests({
       statsFiller() {
-        return prisma.blockDailyStats.populate({ to });
+        return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
         return caller.stats.getBlockDailyStats({ timeFrame });
@@ -153,7 +153,7 @@ describe("Stats router", async () => {
   describe("getTransactionDailyStats", () => {
     runTimeFrameTests({
       statsFiller() {
-        return prisma.transactionDailyStats.populate({ to });
+        return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
         return caller.stats.getTransactionDailyStats({ timeFrame });

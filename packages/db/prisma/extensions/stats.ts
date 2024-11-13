@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import {
   aggregateBlobDailyStats,
   aggregateBlobOverallStats,
-  aggregateBlockDailyStats,
   aggregateTxDailyStats,
   aggregateTxOverallStats,
 } from "@prisma/client/sql";
@@ -14,12 +13,8 @@ import type { BlockNumberRange, DatePeriodLike } from "../types";
 
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("stats");
 
+const startDailyStatsModelFnSpan = startExtensionFnSpan("dailyStats");
 const startOverallStatsModelFnSpan = startExtensionFnSpan("overallStats");
-const startBlobDailyStatsModelFnSpan = startExtensionFnSpan("blobDailyStats");
-const startBlockDailyStatsModelFnSpan = startExtensionFnSpan("blockDailyStats");
-const startTransactionDailyStatsModelFnSpan = startExtensionFnSpan(
-  "transactionDailyStats"
-);
 
 const MAX_INT = 2147483647;
 
@@ -27,9 +22,26 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
     name: "statsExtension",
     model: {
+      dailyStats: {
+        erase() {
+          return startDailyStatsModelFnSpan("erase", () => {
+            return prisma.$executeRawUnsafe("TRUNCATE TABLE daily_stats");
+          });
+        },
+        aggregate(dailyDatePeriod?: DatePeriodLike) {
+          const { from = MIN_DATE, to = new Date() } = dailyDatePeriod
+            ? toDailyDatePeriod(dailyDatePeriod)
+            : {};
+
+          return prisma.$transaction([
+            prisma.$queryRawTyped(aggregateBlobDailyStats(from, to)),
+            prisma.$queryRawTyped(aggregateTxDailyStats(from, to)),
+          ]);
+        },
+      },
       overallStats: {
         erase() {
-          return startOverallStatsModelFnSpan("deleteAll", () => {
+          return startOverallStatsModelFnSpan("erase", () => {
             return prisma.$transaction([
               prisma.$executeRawUnsafe("TRUNCATE TABLE overall_stats"),
               prisma.blockchainSyncState.upsert({
@@ -74,50 +86,6 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
               },
             }),
           ]);
-        },
-      },
-      blobDailyStats: {
-        deleteAll() {
-          return startBlobDailyStatsModelFnSpan("deleteAll", () => {
-            return prisma.$executeRawUnsafe("TRUNCATE TABLE blob_daily_stats");
-          });
-        },
-        populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
-            ? toDailyDatePeriod(dailyDatePeriod)
-            : {};
-
-          return prisma.$queryRawTyped(aggregateBlobDailyStats(from, to));
-        },
-      },
-      blockDailyStats: {
-        deleteAll() {
-          return startBlockDailyStatsModelFnSpan("deleteAll", () => {
-            return prisma.$executeRawUnsafe(`TRUNCATE TABLE block_daily_stats`);
-          });
-        },
-        populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
-            ? toDailyDatePeriod(dailyDatePeriod)
-            : {};
-
-          return prisma.$queryRawTyped(aggregateBlockDailyStats(from, to));
-        },
-      },
-      transactionDailyStats: {
-        deleteAll() {
-          return startTransactionDailyStatsModelFnSpan("deleteAll", () => {
-            return prisma.$executeRawUnsafe(
-              `TRUNCATE TABLE transaction_daily_stats`
-            );
-          });
-        },
-        async populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
-            ? toDailyDatePeriod(dailyDatePeriod)
-            : {};
-
-          return prisma.$queryRawTyped(aggregateTxDailyStats(from, to));
         },
       },
     },

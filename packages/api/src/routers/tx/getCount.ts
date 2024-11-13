@@ -50,7 +50,7 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
   if (filters.blockTimestamp) {
-    const dailyStats = await prisma.transactionDailyStats.findMany({
+    const dailyStats = await prisma.dailyStats.findMany({
       select: {
         totalTransactions: true,
       },

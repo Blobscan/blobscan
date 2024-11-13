@@ -14,11 +14,11 @@ export type AllBlobs = RouterOutputs["blob"]["getAll"];
 
 export type GetByBlobIdOutput = RouterOutputs["blob"]["getByBlobId"];
 
-export type DailyBlobStats = RouterOutputs["stats"]["getBlobDailyStats"];
-
 export type DailyBlockStats = RouterOutputs["stats"]["getBlockDailyStats"];
 
 export type DailyTransactionStats =
   RouterOutputs["stats"]["getTransactionDailyStats"];
+
+export type DailyStats = RouterOutputs["stats"]["getDailyStats"];
 
 export type OverallStats = RouterOutputs["stats"]["getOverallStats"];

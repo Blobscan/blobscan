@@ -2,9 +2,7 @@ import type commandLineUsage from "command-line-usage";
 
 import { logger } from "@blobscan/logger";
 
-import type { Entity, Operation } from "./types";
-
-export const ALL_ENTITIES: Entity[] = ["blob", "block", "tx"];
+import type { Operation } from "./types";
 
 export const helpOptionDef: commandLineUsage.OptionDefinition = {
   name: "help",

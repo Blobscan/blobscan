@@ -153,7 +153,7 @@ describe("Blob router", async () => {
         ...dailyStats,
       };
 
-      await ctx.prisma.blobDailyStats.create({
+      await ctx.prisma.dailyStats.create({
         data,
       });
     }

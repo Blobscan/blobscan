@@ -1,7 +1,5 @@
 import { z } from "@blobscan/zod";
 
-import type { TRPCContext } from "../../context";
-import type { TimeInterval } from "../../middlewares/withTimeFrame";
 import {
   withTimeFrame,
   withTimeFrameSchema,
@@ -32,49 +30,41 @@ export const getBlobDailyStats = publicProcedure
   .input(inputSchema)
   .use(withTimeFrame)
   .output(outputSchema)
-  .query(({ ctx }) => getBlobDailyStatsQuery(ctx));
-
-export async function getBlobDailyStatsQuery({
-  timeFrame,
-  prisma,
-}: {
-  timeFrame: TimeInterval;
-  prisma: TRPCContext["prisma"];
-}): Promise<OutputSchema> {
-  const stats = await prisma.blobDailyStats.findMany({
-    where: {
-      AND: [
-        {
-          day: {
-            gte: timeFrame.initial.toDate(),
-            lte: timeFrame.final.toDate(),
+  .query(async ({ ctx: { prisma, timeFrame } }) => {
+    const stats = await prisma.dailyStats.findMany({
+      where: {
+        AND: [
+          {
+            day: {
+              gte: timeFrame.initial.toDate(),
+              lte: timeFrame.final.toDate(),
+            },
           },
-        },
-        {
-          category: null,
-        },
-        {
-          rollup: null,
-        },
-      ],
-    },
-    orderBy: { day: "asc" },
+          {
+            category: null,
+          },
+          {
+            rollup: null,
+          },
+        ],
+      },
+      orderBy: { day: "asc" },
+    });
+
+    return stats.reduce<OutputSchema>(
+      (transformedStats, currStats) => {
+        transformedStats.days.push(currStats.day.toISOString());
+        transformedStats.totalBlobs.push(currStats.totalBlobs);
+        transformedStats.totalUniqueBlobs.push(currStats.totalUniqueBlobs);
+        transformedStats.totalBlobSizes.push(Number(currStats.totalBlobSize));
+
+        return transformedStats;
+      },
+      {
+        days: [],
+        totalBlobs: [],
+        totalUniqueBlobs: [],
+        totalBlobSizes: [],
+      }
+    );
   });
-
-  return stats.reduce<OutputSchema>(
-    (transformedStats, currStats) => {
-      transformedStats.days.push(currStats.day.toISOString());
-      transformedStats.totalBlobs.push(currStats.totalBlobs);
-      transformedStats.totalUniqueBlobs.push(currStats.totalUniqueBlobs);
-      transformedStats.totalBlobSizes.push(Number(currStats.totalBlobSize));
-
-      return transformedStats;
-    },
-    {
-      days: [],
-      totalBlobs: [],
-      totalUniqueBlobs: [],
-      totalBlobSizes: [],
-    }
-  );
-}

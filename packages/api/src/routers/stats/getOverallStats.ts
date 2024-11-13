@@ -3,44 +3,15 @@ import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
 import { serializeDecimal } from "../../utils";
-import { BASE_PATH } from "./common";
+import { BASE_PATH, statsSchema } from "./common";
 
 const inputSchema = z.void();
 
-const blobOverallStatsSchema = z.object({
-  totalBlobs: z.number(),
-  totalUniqueBlobs: z.number(),
-  totalBlobSize: z.string(),
-  updatedAt: z.date(),
-});
-
-const blockOverallStatsSchema = z.object({
-  totalBlocks: z.number(),
-});
-
-const transactionOverallStatsSchema = z.object({
-  avgBlobAsCalldataFee: z.number(),
-  avgBlobFee: z.number(),
-  avgBlobGasPrice: z.number(),
-  avgMaxBlobGasFee: z.number(),
-  totalBlobGasUsed: z.string(),
-  totalBlobAsCalldataGasUsed: z.string(),
-  totalBlobFee: z.string(),
-  totalBlobAsCalldataFee: z.string(),
-  totalTransactions: z.number(),
-  totalUniqueReceivers: z.number(),
-  totalUniqueSenders: z.number(),
-});
-
-const outputSchema = blobOverallStatsSchema
-  .merge(blobOverallStatsSchema)
-  .merge(blockOverallStatsSchema)
-  .merge(transactionOverallStatsSchema)
-  .merge(
-    z.object({
-      updatedAt: z.date(),
-    })
-  );
+const outputSchema = statsSchema.merge(
+  z.object({
+    updatedAt: z.string(),
+  })
+);
 
 export function serializeOverallStats({
   totalBlobSize,
@@ -48,6 +19,7 @@ export function serializeOverallStats({
   totalBlobAsCalldataGasUsed,
   totalBlobFee,
   totalBlobGasUsed,
+  updatedAt,
   ...restOverallStats
 }: OverallStats) {
   return {
@@ -57,6 +29,7 @@ export function serializeOverallStats({
     totalBlobAsCalldataGasUsed: serializeDecimal(totalBlobAsCalldataGasUsed),
     totalBlobFee: serializeDecimal(totalBlobFee),
     totalBlobGasUsed: serializeDecimal(totalBlobGasUsed),
+    updatedAt: updatedAt.toISOString(),
   };
 }
 export const getOverallStats = publicProcedure
@@ -97,7 +70,7 @@ export const getOverallStats = publicProcedure
         totalBlobAsCalldataGasUsed: "0",
         totalBlobFee: "0",
         totalBlobGasUsed: "0",
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       };
     }
 

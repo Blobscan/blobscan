@@ -56,7 +56,7 @@ function assertEmptyStats(
   expect(overallStats, "Overall stats should be empty").toEqual([]);
 }
 
-describe.only("OverallStatsUpdater", () => {
+describe("OverallStatsUpdater", () => {
   let overallStatsUpdater: OverallStatsUpdaterMock;
 
   beforeEach(() => {

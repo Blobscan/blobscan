@@ -274,10 +274,8 @@ export const fixtures = {
       prisma.address.deleteMany(),
       prisma.addressCategoryInfo.deleteMany(),
       prisma.block.deleteMany(),
-      prisma.blockDailyStats.deleteMany(),
-      prisma.transactionDailyStats.deleteMany(),
+      prisma.dailyStats.deleteMany(),
       prisma.overallStats.deleteMany(),
-      prisma.blobOverallStats.deleteMany(),
 
       prisma.blobStoragesState.createMany({
         data: fixtures.blobStoragesState,
