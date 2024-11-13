@@ -21,7 +21,7 @@ export async function autocompleteBlockHash(partialHash: string) {
     },
   });
 
-  if (blocks.length === 0) {
+  if (blocks[0] === undefined) {
     return null;
   }
 
