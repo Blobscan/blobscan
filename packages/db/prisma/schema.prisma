@@ -4,7 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   // rhel-openssl-1.0.x is required by Vercel
-  binaryTargets = ["native", "rhel-openssl-1.0.x", "linux-musl-openssl-3.0.x"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x", "linux-musl-openssl-3.0.x"]
   previewFeatures = ["tracing", "metrics", "typedSql"]
 }
 
@@ -83,7 +83,9 @@ model AddressCategoryInfo {
   firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
   firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
 
-  addressEntity Address @relation(fields: [address], references: [address])
+  addressEntity          Address       @relation(fields: [address], references: [address])
+  transactionsAsSender   Transaction[] @relation("senderAddressCategoryInfoRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressCategoryInfoRelation")
 
   @@unique([address, category])
   @@map("address_category_info")
@@ -176,10 +178,12 @@ model Transaction {
   updatedAt             DateTime @default(now()) @map("updated_at")
   decodedFields         Json     @default("{}") @map("decoded_fields")
 
-  blobs BlobsOnTransactions[]
-  block Block                 @relation(fields: [blockHash], references: [hash])
-  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  blobs                   BlobsOnTransactions[]
+  block                   Block                 @relation(fields: [blockHash], references: [hash])
+  from                    Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to                      Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+  fromAddressCategoryInfo AddressCategoryInfo   @relation("senderAddressCategoryInfoRelation", fields: [fromId, category], references: [address, category])
+  toAddressCategoryInfo   AddressCategoryInfo   @relation("receiverAddressCategoryInfoRelation", fields: [toId, category], references: [address, category])
 
   transactionForks TransactionFork[]
 
