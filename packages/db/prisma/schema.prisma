@@ -88,6 +88,8 @@ model AddressCategoryInfo {
   transactionsAsReceiver Transaction[] @relation("receiverAddressCategoryInfoRelation")
 
   @@unique([address, category])
+  @@index([firstBlockNumberAsReceiver])
+  @@index([firstBlockNumberAsSender])
   @@map("address_category_info")
 }
 
@@ -116,6 +118,7 @@ model Blob {
   dataStorageReferences BlobDataStorageReference[]
   transactions          BlobsOnTransactions[]
 
+  @@index([firstBlockNumber])
   @@index([proof])
   @@index([insertedAt])
   @@map("blob")
