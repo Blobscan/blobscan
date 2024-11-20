@@ -25,7 +25,7 @@ export const nodeEnvSchema = z.enum(["development", "test", "production"]);
 export const prismaBatchOperationsMaxSizeSchema = z.coerce
   .number()
   .positive()
-  .default(100_000);
+  .default(10_000);
 
 export const networkSchema = z.enum([
   "mainnet",

@@ -6,6 +6,7 @@ import type {
   BlobPropagationJob,
   BlobPropagationQueue,
 } from "@blobscan/blob-propagator";
+import type { BlockNumberRange } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
@@ -14,6 +15,7 @@ import { context } from "../context-instance";
 import type { Command } from "../types";
 import {
   blobHashOptionDef,
+  blockRangeOptionDefs,
   datePeriodOptionDefs,
   helpOptionDef,
   queuesOptionDef,
@@ -24,6 +26,20 @@ import {
 const PRISMA_BATCH_OPERATIONS_MAX_SIZE = parseInt(
   env.PRISMA_BATCH_OPERATIONS_MAX_SIZE.toString()
 );
+
+function getChainFirstBlockNumber(network: typeof env.NETWORK_NAME): number {
+  switch (network) {
+    case "sepolia":
+      return 5187052;
+    case "holesky":
+      return 894735;
+    default:
+      throw new Error(`Unsupported network: ${network}`);
+  }
+}
+
+const INITIAL_BLOCK_NUMBER = getChainFirstBlockNumber(env.NETWORK_NAME);
+
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
   {
@@ -41,6 +57,15 @@ const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   {
     ...datePeriodOptionDefs.to,
     description: "Date to which to retrieve blobs to create jobs for.",
+  },
+  {
+    ...blockRangeOptionDefs.from,
+    description:
+      "Block number from which to retrieve blobs to create jobs for.",
+  },
+  {
+    ...blockRangeOptionDefs.to,
+    description: "Block number to which to retrieve blobs to create jobs for.",
   },
 ];
 
@@ -72,20 +97,28 @@ function createBlobPropagationJobs(
 
 async function createBlobPropagationJobsInBatches(
   storageQueues: BlobPropagationQueue[],
-  blobHashesBatchFetcher: (cursorId?: string) => Promise<{
-    blobHashes: string[];
-    nextCursorId?: string;
-  }>
+  blobHashesBatchFetcher: (blockRange: BlockNumberRange) => Promise<string[]>,
+  blockRange?: Partial<BlockNumberRange>
 ) {
-  let cursorId: string | undefined;
+  let blockRange_: BlockNumberRange = {
+    from: blockRange?.from ?? INITIAL_BLOCK_NUMBER,
+    to:
+      (blockRange?.to ?? INITIAL_BLOCK_NUMBER) +
+      PRISMA_BATCH_OPERATIONS_MAX_SIZE,
+  };
+
+  let blobHashes = [];
 
   do {
-    const { blobHashes, nextCursorId } = await blobHashesBatchFetcher(cursorId);
+    blobHashes = await blobHashesBatchFetcher(blockRange_);
 
     await createBlobPropagationJobs(storageQueues, blobHashes);
 
-    cursorId = nextCursorId;
-  } while (cursorId);
+    blockRange_ = {
+      from: blockRange_.to,
+      to: blockRange_.to + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
+    };
+  } while (blobHashes.length);
 }
 
 export const create: Command = async function (argv) {
@@ -95,6 +128,8 @@ export const create: Command = async function (argv) {
     queue: queueNames,
     fromDate,
     toDate,
+    fromBlock,
+    toBlock,
   } = commandLineArgs(createCommandOptDefs, {
     argv,
   }) as {
@@ -103,6 +138,8 @@ export const create: Command = async function (argv) {
     queue?: QueueHumanName[];
     fromDate?: string;
     toDate?: string;
+    fromBlock?: number;
+    toBlock?: number;
   };
 
   if (help) {
@@ -140,73 +177,83 @@ export const create: Command = async function (argv) {
     }
 
     await createBlobPropagationJobs(storageQueues, blobHashes);
-  } else if (fromDate || toDate) {
+  } else if (fromBlock || toBlock) {
     await createBlobPropagationJobsInBatches(
       storageQueues,
-      async (cursorId) => {
-        const dbBlocks = await prisma.block.findMany({
-          take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-          skip: cursorId ? 1 : undefined,
-          cursor: cursorId
-            ? {
-                hash: cursorId,
-              }
-            : undefined,
+      async (blockRange) => {
+        const dbBlobs = await prisma.blobsOnTransactions.findMany({
           select: {
-            hash: true,
-            transactions: {
-              select: {
-                blobs: {
-                  select: {
-                    blobHash: true,
-                  },
-                },
-              },
-            },
+            blockNumber: true,
+            blobHash: true,
           },
           where: {
-            timestamp: {
-              gte: fromDate,
-              lte: toDate,
+            blockNumber: {
+              lt: blockRange.to,
+              gte: blockRange.from,
             },
+          },
+          orderBy: {
+            blockNumber: "asc",
           },
         });
 
-        const blobHashes = [
-          ...new Set(
-            dbBlocks
-              .map((b) =>
-                b.transactions.map((t) => t.blobs.map((bl) => bl.blobHash))
-              )
-              .flat(2)
-          ),
-        ];
+        const blobHashes = [...new Set(dbBlobs.map((b) => b.blobHash))];
 
-        return {
-          blobHashes,
-          nextCursorId: dbBlocks[dbBlocks.length - 1]?.hash,
-        };
+        return blobHashes;
+      },
+      {
+        from: fromBlock,
+        to: toBlock,
+      }
+    );
+  } else if (fromDate || toDate) {
+    await createBlobPropagationJobsInBatches(
+      storageQueues,
+      async (blockRange) => {
+        const dbBlobs = await prisma.blobsOnTransactions.findMany({
+          select: {
+            blockNumber: true,
+            blobHash: true,
+          },
+          where: {
+            blockNumber: {
+              lt: blockRange.to,
+              gte: blockRange.from,
+            },
+          },
+          orderBy: {
+            blockNumber: "asc",
+          },
+        });
+
+        const blobHashes = [...new Set(dbBlobs.map((b) => b.blobHash))];
+
+        return blobHashes;
       }
     );
   } else {
     await createBlobPropagationJobsInBatches(
       storageQueues,
-      async (cursorId) => {
-        const dbBlobs = await prisma.blob.findMany({
-          take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-          cursor: cursorId
-            ? {
-                commitment: cursorId,
-              }
-            : undefined,
-          skip: cursorId ? 1 : undefined,
+      async (blockRange) => {
+        const dbBlobs = await prisma.blobsOnTransactions.findMany({
+          select: {
+            blockNumber: true,
+            blobHash: true,
+          },
+          where: {
+            blockNumber: {
+              lt: blockRange.to,
+              gte: blockRange.from,
+            },
+          },
+          orderBy: {
+            blockNumber: "asc",
+          },
         });
-        const blobHashes = dbBlobs.map((b) => b.versionedHash);
 
-        return {
-          blobHashes,
-          nextCursorId: dbBlobs[dbBlobs.length - 1]?.commitment,
-        };
+        const blobHashes = [...new Set(dbBlobs.map((b) => b.blobHash))];
+
+        return blobHashes;
       }
     );
   }
