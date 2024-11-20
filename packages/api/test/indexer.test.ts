@@ -718,6 +718,55 @@ describe("Indexer router", async () => {
         expect(transactionForks).toEqual(expectedTransactionForks);
       });
 
+      it("should clean up references to the reorged blocks", async () => {
+        const reorgedBlocks = await authorizedContext.prisma.block.findMany({
+          where: {
+            slot: {
+              in: input.reorgedSlots,
+            },
+          },
+        });
+
+        const reorgedBlockNumbers = reorgedBlocks.map((block) => block.number);
+
+        await authorizedCaller.indexer.handleReorgedSlots(input);
+
+        const reorgedBlocksAddressCategoryInfos =
+          await authorizedContext.prisma.addressCategoryInfo.findMany({
+            where: {
+              OR: [
+                {
+                  firstBlockNumberAsSender: {
+                    in: reorgedBlockNumbers,
+                  },
+                },
+                {
+                  firstBlockNumberAsReceiver: {
+                    in: reorgedBlockNumbers,
+                  },
+                },
+              ],
+            },
+          });
+        const blobsWithReorgedBlocks =
+          await authorizedContext.prisma.blob.findMany({
+            where: {
+              firstBlockNumber: {
+                in: reorgedBlockNumbers,
+              },
+            },
+          });
+
+        expect(
+          reorgedBlocksAddressCategoryInfos,
+          "Reorged block references in address category records found"
+        ).toEqual([]);
+        expect(
+          blobsWithReorgedBlocks,
+          "Reorged block references in blob records found"
+        ).toEqual([]);
+      });
+
       it("should return the number of updated slots", async () => {
         const result = await authorizedCaller.indexer.handleReorgedSlots(input);
 
