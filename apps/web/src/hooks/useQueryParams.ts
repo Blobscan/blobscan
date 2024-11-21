@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { Rollup } from "@blobscan/api/enums";
-
 import type { Category, Rollup as LowercaseRollup } from "~/types";
 
 export type Sort = "asc" | "desc";
@@ -54,7 +52,6 @@ export function useQueryParams() {
       from: from_,
       p: p_,
       ps: ps_,
-      rollup: rollup_,
       category: category_,
       startDate: startDate_,
       endDate: endDate_,
@@ -70,13 +67,6 @@ export function useQueryParams() {
     const ps = parseInt(ps_ as string) || DEFAULT_INITIAL_PAGE_SIZE;
     const sort = sort_ ? (sort_ as Sort) : DEFAULT_SORT;
 
-    const rollup = rollup_
-      ? rollup_ === "null"
-        ? rollup_
-        : (Rollup[
-            (rollup_ as string).toUpperCase() as keyof typeof Rollup
-          ]?.toLowerCase() as LowercaseRollup)
-      : undefined;
     const category = category_ as Category;
     const startDate = startDate_ ? new Date(startDate_ as string) : undefined;
     const endDate = endDate_ ? new Date(endDate_ as string) : undefined;
@@ -88,7 +78,6 @@ export function useQueryParams() {
     setQueryParams({
       filterParams: {
         from,
-        rollup,
         category,
         startDate,
         endDate,

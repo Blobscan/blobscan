@@ -107,13 +107,9 @@ export const Filters: FC = function () {
     } = filters;
 
     if (rollups && rollups.length > 0) {
-      if (rollups.length === 1 && rollups[0]?.value === "null") {
-        query.rollup = rollups[0]?.value;
-      } else {
-        query.from = rollups
-          .map((r) => r.value)
-          .join(FROM_ADDRESSES_FORMAT_SEPARATOR);
-      }
+      query.from = rollups
+        .map((r) => r.value)
+        .join(FROM_ADDRESSES_FORMAT_SEPARATOR);
     }
 
     if (category) {

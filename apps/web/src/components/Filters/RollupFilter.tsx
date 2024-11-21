@@ -9,7 +9,6 @@ import { RollupIcon } from "~/components/RollupIcon";
 import { env } from "~/env.mjs";
 import type { Rollup } from "~/types";
 import { capitalize, getChainIdByName } from "~/utils";
-import { Badge } from "../Badges/Badge";
 import { RollupBadge } from "../Badges/RollupBadge";
 
 type RollupFilterProps = Pick<DropdownProps, "selected" | "isDisabled"> & {
@@ -20,13 +19,8 @@ type RollupFilterProps = Pick<DropdownProps, "selected" | "isDisabled"> & {
 const chainId = getChainIdByName(env.NEXT_PUBLIC_NETWORK_NAME);
 const rollups = chainId ? getChainRollups(chainId) : [];
 
-export const ROLLUP_OPTIONS: Option[] = [
-  {
-    value: "null",
-    selectedLabel: <Badge size="sm">None</Badge>,
-    label: "None",
-  },
-  ...rollups.map(([rollupAddress, rollupName]) => {
+export const ROLLUP_OPTIONS: Option[] = rollups.map(
+  ([rollupAddress, rollupName]) => {
     return {
       value: rollupAddress,
       selectedLabel: (
@@ -35,8 +29,8 @@ export const ROLLUP_OPTIONS: Option[] = [
       prefix: <RollupIcon rollup={rollupName.toLowerCase() as Rollup} />,
       label: capitalize(rollupName),
     };
-  }),
-];
+  }
+);
 
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
