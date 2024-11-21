@@ -109,6 +109,13 @@ export const nullableRollupSchema = z
   })
   .transform((value) => value as ZodRollupEnum | "null");
 
+export const nullableCategorySchema = z
+  .string()
+  .refine((value) => {
+    return zodCategoryEnum.includes(value as ZodCategoryEnum);
+  })
+  .transform((value) => value as ZodCategoryEnum);
+
 export const blockNumberSchema = z.number().nonnegative();
 
 export const slotSchema = z.number().nonnegative();
