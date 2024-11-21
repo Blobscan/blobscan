@@ -248,7 +248,7 @@ importers:
         specifier: workspace:^0.0.1
         version: link:../../packages/env
       '@blobscan/eth-format':
-        specifier: workspace:^0.0.1
+        specifier: workspace:^0.1.0
         version: link:../../packages/eth-format
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
