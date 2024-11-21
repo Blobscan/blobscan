@@ -135,20 +135,22 @@ const Blocks: NextPage = function () {
                 cells: [
                   {
                     item: (
-                      <Copyable
-                        href={buildTransactionRoute(transactionHash)}
-                        value={transactionHash}
-                        tooltipText="Copy transaction hash"
-                      />
+                      <Link href={buildTransactionRoute(transactionHash)}>
+                        <Copyable
+                          value={transactionHash}
+                          tooltipText="Copy transaction hash"
+                        />
+                      </Link>
                     ),
                   },
                   {
                     item: (
-                      <Copyable
-                        href={buildBlobRoute(blobVersionedHash)}
-                        value={blobVersionedHash}
-                        tooltipText="Copy blob versioned hash"
-                      />
+                      <Link href={buildBlobRoute(blobVersionedHash)}>
+                        <Copyable
+                          value={blobVersionedHash}
+                          tooltipText="Copy blob versioned hash"
+                        />
+                      </Link>
                     ),
                   },
                 ],

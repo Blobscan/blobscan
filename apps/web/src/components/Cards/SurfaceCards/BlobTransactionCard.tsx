@@ -220,10 +220,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 <React.Fragment key={`${versionedHash}-${index}`}>
                   <TableCol>{index}</TableCol>
                   <TableCol>
-                    <Copyable
-                      href={buildBlobRoute(versionedHash)}
-                      value={versionedHash}
-                    />
+                    <Link href={buildBlobRoute(versionedHash)}>
+                      <Copyable value={versionedHash} />
+                    </Link>
                   </TableCol>
                   <TableCol>{formatBytes(size)}</TableCol>
                 </React.Fragment>

@@ -16,6 +16,17 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
+  const handleClick = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+
+    try {
+      await navigator.clipboard.writeText(value);
+      setIsCopied(true);
+    } catch (error) {
+      console.error("Failed to copy to clipboard", error);
+    }
+  };
+
   return (
     <Tooltip
       onChange={(open) => {
@@ -29,14 +40,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
       )}
       <TooltipTrigger
         className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
-        onClick={async () => {
-          try {
-            await navigator.clipboard.writeText(value);
-            setIsCopied(true);
-          } catch (error) {
-            console.error("Failed to copy to clipboard", error);
-          }
-        }}
+        onClick={(e) => handleClick(e)}
       >
         {isCopied ? (
           <CheckIcon className="h-4 w-4" />
