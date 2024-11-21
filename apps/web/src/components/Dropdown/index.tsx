@@ -21,6 +21,7 @@ export interface Option {
 
 export interface DropdownProps {
   options: Option[];
+  isDisabled?: boolean;
   width?: string;
   placeholder?: string;
   clearable?: boolean;
@@ -38,6 +39,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
   width,
   onChange,
   clearable = false,
+  isDisabled = false,
   placeholder = "Select an item",
 }) {
   const hasSelectedValue = Array.isArray(selected)
@@ -49,12 +51,21 @@ export const Dropdown: React.FC<DropdownProps> = function ({
   const isOverflowing = useOverflow(containerRef, innerRef);
 
   return (
-    <Listbox value={selected} onChange={onChange} multiple={multiple}>
+    <Listbox
+      value={selected}
+      onChange={onChange}
+      multiple={multiple}
+      disabled={isDisabled}
+    >
       <div className="relative">
         <ListboxButton
-          className={`relative h-9 ${
+          className={`${
             width ?? DEFAULT_WIDTH
-          } flex cursor-pointer items-center justify-between rounded-lg border border-transparent bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:ui-open:border-controlActive-dark`}
+          } relative flex h-9 cursor-pointer items-center justify-between rounded-lg border border-transparent
+          bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light 
+            focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark
+            disabled:cursor-not-allowed disabled:bg-opacity-40 disabled:hover:border-transparent ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:disabled:bg-opacity-40
+            disabled:dark:hover:border-transparent dark:ui-open:border-controlActive-dark`}
         >
           <div
             className={cn(
@@ -83,7 +94,11 @@ export const Dropdown: React.FC<DropdownProps> = function ({
                   selected?.value
                 )
               ) : (
-                <div className="text-hint-light dark:text-hint-dark">
+                <div
+                  className={cn("text-hint-light dark:text-hint-dark", {
+                    "text-opacity-40 dark:text-opacity-40": isDisabled,
+                  })}
+                >
                   {placeholder}
                 </div>
               )}
@@ -100,7 +115,12 @@ export const Dropdown: React.FC<DropdownProps> = function ({
               />
             ) : (
               <ChevronUpDownIcon
-                className="pointer-events-none h-5 w-5 text-icon-light dark:text-icon-dark"
+                className={cn(
+                  "pointer-events-none h-5 w-5 text-icon-light dark:text-icon-dark",
+                  {
+                    "text-opacity-40 dark:text-opacity-40": isDisabled,
+                  }
+                )}
                 aria-hidden="true"
               />
             )}
