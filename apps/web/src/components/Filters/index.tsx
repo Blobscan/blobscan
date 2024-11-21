@@ -4,12 +4,15 @@ import { useRouter } from "next/router";
 import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
+import { Category } from "@blobscan/api/enums";
+
 import { Button } from "~/components/Button";
 import type { Sort } from "~/hooks/useQueryParams";
 import { useQueryParams } from "~/hooks/useQueryParams";
-import { getISODate } from "~/utils";
+import { capitalize, getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
-import type { Option } from "../Dropdown";
+import { Dropdown } from "../Dropdown";
+import type { DropdownProps, Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
@@ -21,6 +24,7 @@ const FROM_ADDRESSES_FORMAT_SEPARATOR = ",";
 
 type FiltersState = {
   rollups: Option[] | null;
+  category: Option | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
@@ -41,8 +45,14 @@ type FiltersAction<V extends keyof FiltersState> =
   | ClearAction<V>
   | UpdateAction;
 
+const CATEGORY_FILTER_OPTIONS: DropdownProps["options"] = [
+  { value: Category.OTHER.toLowerCase(), label: capitalize(Category.OTHER) },
+  { value: Category.ROLLUP.toLowerCase(), label: capitalize(Category.ROLLUP) },
+];
+
 const INIT_STATE: FiltersState = {
   rollups: [],
+  category: null,
   timestampRange: {
     endDate: null,
     startDate: null,
@@ -77,6 +87,7 @@ export const Filters: FC = function () {
   const queryParams = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
   const disableClear =
+    !filters.category &&
     !filters.rollups &&
     !filters.timestampRange?.endDate &&
     !filters.timestampRange?.startDate &&
@@ -86,8 +97,14 @@ export const Filters: FC = function () {
 
   const handleFilter = () => {
     const query: UrlObject["query"] = {};
-    const { rollups, timestampRange, blockNumberRange, slotRange, sort } =
-      filters;
+    const {
+      rollups,
+      timestampRange,
+      blockNumberRange,
+      slotRange,
+      sort,
+      category,
+    } = filters;
 
     if (rollups && rollups.length > 0) {
       if (rollups.length === 1 && rollups[0]?.value === "null") {
@@ -97,6 +114,10 @@ export const Filters: FC = function () {
           .map((r) => r.value)
           .join(FROM_ADDRESSES_FORMAT_SEPARATOR);
       }
+    }
+
+    if (category) {
+      query.category = category.value;
     }
 
     if (timestampRange) {
@@ -200,10 +221,21 @@ export const Filters: FC = function () {
     dispatch({ type: "UPDATE", payload: newFilters });
   }, [queryParams]);
 
+  const handleCategoryChange = (newCategory: Option) => {
+    dispatch({
+      type: "UPDATE",
+      payload: { category: newCategory },
+    });
+
+    if (newCategory?.value === Category.OTHER.toLowerCase()) {
+      filters.rollups = [];
+    }
+  };
+
   return (
     <Card compact>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
-        <div className="flex w-full flex-col items-center gap-2 md:flex-row lg:max-xl:gap-1">
+        <div className="flex w-full flex-col items-center gap-2 md:flex-row">
           <div className="flex w-full flex-row gap-2 xl:w-auto">
             <SortToggle
               type={filters.sort}
@@ -211,15 +243,29 @@ export const Filters: FC = function () {
                 dispatch({ type: "UPDATE", payload: { sort: newSort } });
               }}
             />
-            <div className="w-full sm:w-[130px] md:max-lg:w-full xl:w-[240px]">
+            <Dropdown
+              options={CATEGORY_FILTER_OPTIONS}
+              selected={filters.category}
+              width="w-[6.5rem]"
+              onChange={handleCategoryChange}
+              placeholder="Category"
+              clearable
+            />
+            <div className="w-full sm:w-full md:max-lg:w-full xl:w-[200px]">
               <RollupFilter
                 selected={filters.rollups}
+                isDisabled={
+                  filters.category
+                    ? filters.category.value.toString().toUpperCase() ===
+                      Category.OTHER
+                    : false
+                }
                 onChange={(newRollups) =>
                   dispatch({ type: "UPDATE", payload: { rollups: newRollups } })
                 }
               />
             </div>
-            <div className="w-full md:max-lg:w-[44px] lg:w-[222px]">
+            <div className="w-[42px] sm:w-[222px] md:max-xl:w-[42px] xl:w-[222px]">
               <TimestampFilter
                 value={filters.timestampRange}
                 onChange={(newTimestampRange) =>
@@ -232,7 +278,7 @@ export const Filters: FC = function () {
             </div>
           </div>
           <div className="flex gap-2">
-            <div className="w-full md:w-52 lg:max-xl:w-[12rem]">
+            <div className="w-full md:w-[11.5rem] lg:max-xl:w-[11.5rem] xl:w-[11.5rem]">
               <BlockNumberFilter
                 range={filters.blockNumberRange}
                 onChange={(newBlockNumberRange) =>
@@ -243,7 +289,7 @@ export const Filters: FC = function () {
                 }
               />
             </div>
-            <div className="w-full md:w-52 lg:max-xl:w-44">
+            <div className="w-full md:w-40 lg:max-xl:w-[10rem] xl:w-[10rem]">
               <SlotFilter
                 range={filters.slotRange}
                 onChange={(newSlotRange) =>
@@ -256,7 +302,7 @@ export const Filters: FC = function () {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-1 md:flex-row lg:ml-2">
+        <div className="flex flex-col gap-2 md:flex-row lg:ml-2">
           <Button
             className="w-full lg:w-auto lg:px-3 xl:px-6"
             variant="outline"

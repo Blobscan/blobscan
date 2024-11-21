@@ -4,7 +4,7 @@ import type { FC } from "react";
 import { getChainRollups } from "@blobscan/rollups";
 
 import { Dropdown } from "~/components/Dropdown";
-import type { Option } from "~/components/Dropdown";
+import type { DropdownProps, Option } from "~/components/Dropdown";
 import { RollupIcon } from "~/components/RollupIcon";
 import { env } from "~/env.mjs";
 import type { Rollup } from "~/types";
@@ -12,7 +12,7 @@ import { capitalize, getChainIdByName } from "~/utils";
 import { Badge } from "../Badges/Badge";
 import { RollupBadge } from "../Badges/RollupBadge";
 
-type RollupFilterProps = {
+type RollupFilterProps = Pick<DropdownProps, "selected" | "isDisabled"> & {
   onChange(newRollups: Option[]): void;
   selected: Option[] | null;
 };
@@ -41,6 +41,7 @@ export const ROLLUP_OPTIONS: Option[] = [
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
   selected,
+  isDisabled,
 }) {
   const noneIsSelected = useRef<boolean>(false);
 
@@ -71,7 +72,8 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
       options={ROLLUP_OPTIONS}
       onChange={handleOnChange}
       placeholder="Rollup"
-      width="sm:w-[130px] w-full xl:w-[240px] md:max-lg:w-full"
+      width="sm:w-full w-full xl:w-[200px] md:max-lg:w-full"
+      isDisabled={isDisabled}
       clearable
       multiple
     />

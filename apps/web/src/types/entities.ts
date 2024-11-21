@@ -1,6 +1,7 @@
 import type {
   BlobStorage as BlobStorageEnum,
   Rollup as RollupEnum,
+  Category as CategoryEnum,
 } from "@blobscan/api/enums";
 
 import type { MakeFieldRequired } from "./helpers";
@@ -13,6 +14,8 @@ import type {
 export type BlobStorage = Lowercase<BlobStorageEnum>;
 
 export type Rollup = Lowercase<RollupEnum>;
+
+export type Category = Lowercase<CategoryEnum>;
 
 export type Blob = GetByBlobIdOutput;
 

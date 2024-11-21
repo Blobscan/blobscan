@@ -3,13 +3,14 @@ import { useRouter } from "next/router";
 
 import { Rollup } from "@blobscan/api/enums";
 
-import type { Rollup as LowercaseRollup } from "~/types";
+import type { Category, Rollup as LowercaseRollup } from "~/types";
 
 export type Sort = "asc" | "desc";
 
 type FilterQueryParams = Partial<{
   from: string;
   rollup: LowercaseRollup | "null";
+  category: Category;
   startDate: Date;
   endDate: Date;
   startBlock: number;
@@ -54,6 +55,7 @@ export function useQueryParams() {
       p: p_,
       ps: ps_,
       rollup: rollup_,
+      category: category_,
       startDate: startDate_,
       endDate: endDate_,
       startBlock: startBlock_,
@@ -75,6 +77,7 @@ export function useQueryParams() {
             (rollup_ as string).toUpperCase() as keyof typeof Rollup
           ]?.toLowerCase() as LowercaseRollup)
       : undefined;
+    const category = category_ as Category;
     const startDate = startDate_ ? new Date(startDate_ as string) : undefined;
     const endDate = endDate_ ? new Date(endDate_ as string) : undefined;
     const startBlock = parseInt(startBlock_ as string) || undefined;
@@ -86,6 +89,7 @@ export function useQueryParams() {
       filterParams: {
         from,
         rollup,
+        category,
         startDate,
         endDate,
         startBlock,
