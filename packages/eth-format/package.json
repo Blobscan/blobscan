@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/eth-units",
+  "name": "@blobscan/eth-format",
   "version": "0.0.1",
   "main": "./index.ts",
   "types": "./index.ts",
