@@ -6,6 +6,8 @@ import type {
   BlobPropagationJob,
   BlobPropagationQueue,
 } from "@blobscan/blob-propagator";
+import dayjs from "@blobscan/dayjs";
+import type { Prisma } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
@@ -14,6 +16,7 @@ import { context } from "../context-instance";
 import type { Command } from "../types";
 import {
   blobHashOptionDef,
+  blockRangeOptionDefs,
   datePeriodOptionDefs,
   helpOptionDef,
   queuesOptionDef,
@@ -24,6 +27,7 @@ import {
 const PRISMA_BATCH_OPERATIONS_MAX_SIZE = parseInt(
   env.PRISMA_BATCH_OPERATIONS_MAX_SIZE.toString()
 );
+
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
   {
@@ -41,6 +45,15 @@ const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   {
     ...datePeriodOptionDefs.to,
     description: "Date to which to retrieve blobs to create jobs for.",
+  },
+  {
+    ...blockRangeOptionDefs.from,
+    description:
+      "Block number from which to retrieve blobs to create jobs for.",
+  },
+  {
+    ...blockRangeOptionDefs.to,
+    description: "Block number to which to retrieve blobs to create jobs for.",
   },
 ];
 
@@ -70,22 +83,70 @@ function createBlobPropagationJobs(
   );
 }
 
-async function createBlobPropagationJobsInBatches(
-  storageQueues: BlobPropagationQueue[],
-  blobHashesBatchFetcher: (cursorId?: string) => Promise<{
-    blobHashes: string[];
-    nextCursorId?: string;
-  }>
-) {
-  let cursorId: string | undefined;
+const blockSelect = {
+  number: true,
+} satisfies Prisma.BlockSelect;
 
-  do {
-    const { blobHashes, nextCursorId } = await blobHashesBatchFetcher(cursorId);
+type BlockPayload = Prisma.BlockGetPayload<{
+  select: typeof blockSelect;
+}>;
 
-    await createBlobPropagationJobs(storageQueues, blobHashes);
+async function findNearestBlock({
+  slotOrDate,
+  rangeLimit,
+}: {
+  slotOrDate?: string | number;
+  rangeLimit?: "lower" | "upper";
+} = {}) {
+  const slot = Number(slotOrDate);
 
-    cursorId = nextCursorId;
-  } while (cursorId);
+  let block: BlockPayload | null;
+  const isLower = rangeLimit === "lower";
+  const operator = rangeLimit ? (isLower ? "gte" : "lte") : "equals";
+  const sort = rangeLimit ? (isLower ? "asc" : "desc") : "asc";
+
+  if (typeof slotOrDate === "undefined") {
+    block = await prisma.block.findFirst({
+      select: blockSelect,
+      orderBy: {
+        number: sort,
+      },
+    });
+  } else if (!isNaN(slot)) {
+    block = await prisma.block.findFirst({
+      select: blockSelect,
+      where: {
+        slot: {
+          [operator]: slot,
+        },
+      },
+      orderBy: {
+        slot: sort,
+      },
+    });
+  } else {
+    const date = dayjs(slotOrDate).utc();
+
+    if (!date.isValid()) {
+      throw new Error(
+        `Invalid date "${slotOrDate}". Expected a ISO 8601 date.`
+      );
+    }
+
+    block = await prisma.block.findFirst({
+      select: blockSelect,
+      where: {
+        timestamp: {
+          [operator]: date.format(),
+        },
+      },
+      orderBy: {
+        timestamp: sort,
+      },
+    });
+  }
+
+  return block?.number;
 }
 
 export const create: Command = async function (argv) {
@@ -95,6 +156,8 @@ export const create: Command = async function (argv) {
     queue: queueNames,
     fromDate,
     toDate,
+    fromBlock: fromBlockArg,
+    toBlock: toBlockArg,
   } = commandLineArgs(createCommandOptDefs, {
     argv,
   }) as {
@@ -103,6 +166,8 @@ export const create: Command = async function (argv) {
     queue?: QueueHumanName[];
     fromDate?: string;
     toDate?: string;
+    fromBlock?: number;
+    toBlock?: number;
   };
 
   if (help) {
@@ -140,74 +205,96 @@ export const create: Command = async function (argv) {
     }
 
     await createBlobPropagationJobs(storageQueues, blobHashes);
-  } else if (fromDate || toDate) {
-    await createBlobPropagationJobsInBatches(
-      storageQueues,
-      async (cursorId) => {
-        const dbBlocks = await prisma.block.findMany({
-          take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-          skip: cursorId ? 1 : undefined,
-          cursor: cursorId
-            ? {
-                hash: cursorId,
-              }
-            : undefined,
-          select: {
-            hash: true,
-            transactions: {
-              select: {
-                blobs: {
-                  select: {
-                    blobHash: true,
-                  },
-                },
-              },
-            },
-          },
-          where: {
-            timestamp: {
-              gte: fromDate,
-              lte: toDate,
-            },
-          },
-        });
 
-        const blobHashes = [
-          ...new Set(
-            dbBlocks
-              .map((b) =>
-                b.transactions.map((t) => t.blobs.map((bl) => bl.blobHash))
-              )
-              .flat(2)
-          ),
-        ];
-
-        return {
-          blobHashes,
-          nextCursorId: dbBlocks[dbBlocks.length - 1]?.hash,
-        };
-      }
-    );
-  } else {
-    await createBlobPropagationJobsInBatches(
-      storageQueues,
-      async (cursorId) => {
-        const dbBlobs = await prisma.blob.findMany({
-          take: PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-          cursor: cursorId
-            ? {
-                commitment: cursorId,
-              }
-            : undefined,
-          skip: cursorId ? 1 : undefined,
-        });
-        const blobHashes = dbBlobs.map((b) => b.versionedHash);
-
-        return {
-          blobHashes,
-          nextCursorId: dbBlobs[dbBlobs.length - 1]?.commitment,
-        };
-      }
-    );
+    return;
   }
+
+  let fromBlock: number;
+  let toBlock: number;
+
+  if (fromBlockArg) {
+    fromBlock = fromBlockArg;
+  } else {
+    const nearestBlock = await findNearestBlock({
+      slotOrDate: fromDate,
+      rangeLimit: "lower",
+    });
+
+    if (!nearestBlock) {
+      console.log("Skipping as database has no blobs.");
+
+      return;
+    }
+
+    fromBlock = nearestBlock;
+  }
+
+  if (toBlockArg) {
+    toBlock = toBlockArg;
+  } else {
+    const nearestBlock = await findNearestBlock({
+      slotOrDate: toDate,
+      rangeLimit: "upper",
+    });
+
+    if (!nearestBlock) {
+      console.log("Skipping as database has no blobs.");
+
+      return;
+    }
+
+    toBlock = nearestBlock;
+  }
+
+  console.log(
+    `Creating propagation jobs for blobs between blocks ${fromBlock} and ${toBlock}…`
+  );
+
+  let batchFromBlock = fromBlock,
+    batchToBlock = Math.min(
+      fromBlock + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
+      toBlock + 1
+    );
+  let totalJobsCreated = 0;
+  let blobVersionedHashes = [];
+
+  do {
+    const dbBlobs = await prisma.blobsOnTransactions.findMany({
+      select: {
+        blockNumber: true,
+        blobHash: true,
+      },
+      where: {
+        blockNumber: {
+          lt: batchToBlock,
+          gte: batchFromBlock,
+        },
+      },
+      orderBy: {
+        blockNumber: "asc",
+      },
+    });
+
+    console.log(
+      `Blocks ${batchFromBlock} - ${batchToBlock}: fetched ${dbBlobs.length} blobs`
+    );
+
+    blobVersionedHashes = [...new Set(dbBlobs.map((b) => b.blobHash))];
+
+    await createBlobPropagationJobs(storageQueues, blobVersionedHashes);
+
+    console.log(
+      `Block ${batchFromBlock} - ${batchToBlock}: ${blobVersionedHashes.length} jobs created`
+    );
+
+    batchFromBlock = batchToBlock;
+    batchToBlock = Math.min(
+      batchToBlock + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
+      toBlock + 1
+    );
+
+    totalJobsCreated += blobVersionedHashes.length;
+  } while (blobVersionedHashes.length && batchToBlock <= toBlock + 1);
+
+  console.log(`Total jobs created: ${totalJobsCreated}`);
 };
