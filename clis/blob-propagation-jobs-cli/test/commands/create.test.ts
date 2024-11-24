@@ -8,38 +8,41 @@ import { create, createCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
 import { argHelpTest, assertCreatedJobs } from "../helpers";
 
-async function fetchBlobHashesByDatePeriod(from?: string, to?: string) {
-  const gte = from ? dayjs(from).utc().format() : undefined;
-  const lt = to ? dayjs(to).utc().format() : undefined;
+async function fetchBlobHashes({
+  fromBlockNumber,
+  fromDate,
+  toBlockNumber,
+  toDate,
+}: {
+  fromDate?: string;
+  toDate?: string;
+  fromBlockNumber?: number;
+  toBlockNumber?: number;
+}) {
+  let where;
+
+  if (fromDate || toDate) {
+    where = {
+      blockTimestamp: {
+        gte: fromDate ? dayjs(fromDate).utc().format() : undefined,
+        lt: toDate ? dayjs(toDate).utc().format() : undefined,
+      },
+    };
+  } else if (fromBlockNumber || toBlockNumber) {
+    where = {
+      blockNumber: {
+        gte: fromBlockNumber,
+        lte: toBlockNumber,
+      },
+    };
+  }
 
   const dbBlobs = await prisma.blobsOnTransactions.findMany({
     select: {
       blockTimestamp: true,
       blobHash: true,
     },
-    where: {
-      blockTimestamp: {
-        gte,
-        lt,
-      },
-    },
-  });
-
-  return [...new Set(dbBlobs.map((b) => b.blobHash))];
-}
-
-async function fetchBlobHashesByBlockNumber(from?: number, to?: number) {
-  const dbBlobs = await prisma.blobsOnTransactions.findMany({
-    select: {
-      blockNumber: true,
-      blobHash: true,
-    },
-    where: {
-      blockNumber: {
-        gte: from,
-        lte: to,
-      },
-    },
+    where,
   });
 
   return [...new Set(dbBlobs.map((b) => b.blobHash))];
@@ -55,6 +58,7 @@ describe("Create command", () => {
       consoleLogSpy.mockRestore();
     };
   });
+
   it("should create jobs for a set of given blob hashes correctly", async () => {
     const blobHashes = fixtures.blobs
       .slice(0, 2)
@@ -64,7 +68,7 @@ describe("Create command", () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await create(["-b", blobHashes[0]!, "-b", blobHashes[1]!]);
 
-    assertCreatedJobs(context, blobHashes);
+    await assertCreatedJobs(context, blobHashes);
   });
 
   it("should create jobs for all blobs correctly", async () => {
@@ -73,83 +77,78 @@ describe("Create command", () => {
 
     await create();
 
-    assertCreatedJobs(context, blobHashes);
+    await assertCreatedJobs(context, blobHashes);
   });
 
-  describe("when creating jobs for a provided date range", () => {
+  describe("when creating jobs given a date range", () => {
     it("should create jobs for blobs greater or equal than a given date correctly", async () => {
-      const from = "2023-08-25";
+      const fromDate = "2023-08-25";
 
-      await create(["--fromDate", from]);
+      await create(["--fromDate", fromDate]);
 
-      const expectedBlobHashes = await fetchBlobHashesByDatePeriod(from);
+      const expectedBlobHashes = await fetchBlobHashes({ fromDate });
 
-      assertCreatedJobs(context, expectedBlobHashes);
+      await assertCreatedJobs(context, expectedBlobHashes);
     });
 
     it("should create jobs for all blobs less than a given date correctly", async () => {
-      const to = "2022-12-20";
+      const toDate = "2022-12-20";
 
-      await create(["--toDate", to]);
+      await create(["--toDate", toDate]);
 
-      const expectedBlobHashes = await fetchBlobHashesByDatePeriod(
-        undefined,
-        to
-      );
+      const expectedBlobHashes = await fetchBlobHashes({ toDate });
 
-      assertCreatedJobs(context, expectedBlobHashes);
+      await assertCreatedJobs(context, expectedBlobHashes);
     });
 
-    it("should create jobs for all blobs between a given date range correctly", async () => {
-      const from = "2023-08-24";
-      const to = "2023-09-10";
+    it.only("should create jobs for all blobs between a given date range correctly", async () => {
+      const fromDate = "2023-08-24";
+      const toDate = "2023-09-10";
 
-      await create(["--fromDate", from, "--toDate", to]);
+      await create(["--fromDate", fromDate, "--toDate", toDate]);
 
-      const expectedBlobHashes = await fetchBlobHashesByDatePeriod(from, to);
+      const expectedBlobHashes = await fetchBlobHashes({ fromDate, toDate });
 
-      console.log(expectedBlobHashes);
-
-      assertCreatedJobs(context, expectedBlobHashes);
+      await assertCreatedJobs(context, expectedBlobHashes);
     });
   });
 
-  describe("when creating jobs for a provided block range", () => {
+  describe("when creating jobs given a block range", () => {
     it("should create jobs for blobs greater or equal than a given block number correctly", async () => {
-      const from = 1004;
+      const fromBlockNumber = 1004;
 
-      await create(["--fromBlock", from.toString()]);
+      await create(["--fromBlock", fromBlockNumber.toString()]);
 
-      const expectedBlobHashes = await fetchBlobHashesByBlockNumber(from);
+      const expectedBlobHashes = await fetchBlobHashes({ fromBlockNumber });
 
       await assertCreatedJobs(context, expectedBlobHashes);
     });
 
     it("should create jobs for blobs less than a given block number correctly", async () => {
-      const to = 1003;
+      const toBlockNumber = 1003;
 
-      await create(["--toBlock", to.toString()]);
+      await create(["--toBlock", toBlockNumber.toString()]);
 
-      const expectedBlobHashes = await fetchBlobHashesByBlockNumber(
-        undefined,
-        to
-      );
+      const expectedBlobHashes = await fetchBlobHashes({ toBlockNumber });
 
       await assertCreatedJobs(context, expectedBlobHashes);
     });
 
     it("should create jobs for blobs between a given block range correctly", async () => {
-      const from = 1002;
-      const to = 1004;
+      const fromBlockNumber = 1002;
+      const toBlockNumber = 1004;
 
       await create([
         "--fromBlock",
-        from.toString(),
+        fromBlockNumber.toString(),
         "--toBlock",
-        to.toString(),
+        toBlockNumber.toString(),
       ]);
 
-      const expectedBlobHashes = await fetchBlobHashesByBlockNumber(from, to);
+      const expectedBlobHashes = await fetchBlobHashes({
+        fromBlockNumber,
+        toBlockNumber,
+      });
 
       await assertCreatedJobs(context, expectedBlobHashes);
     });

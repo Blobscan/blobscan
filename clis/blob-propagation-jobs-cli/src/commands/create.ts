@@ -93,45 +93,31 @@ type BlockPayload = Prisma.BlockGetPayload<{
 
 async function findNearestBlock({
   slotOrDate,
-  rangeLimit,
+  limit,
 }: {
   slotOrDate?: string | number;
-  rangeLimit?: "lower" | "upper";
+  limit?: "lower" | "upper";
 } = {}) {
-  const slot = Number(slotOrDate);
+  let block: BlockPayload | null = null;
 
-  let block: BlockPayload | null;
-  const isLower = rangeLimit === "lower";
-  const operator = rangeLimit ? (isLower ? "gte" : "lte") : "equals";
-  const sort = rangeLimit ? (isLower ? "asc" : "desc") : "asc";
+  const isLower = limit === "lower";
+  const operator = limit ? (isLower ? "gte" : "lte") : "equals";
+  const sort = limit ? (isLower ? "asc" : "desc") : "asc";
 
-  if (typeof slotOrDate === "undefined") {
-    block = await prisma.block.findFirst({
-      select: blockSelect,
-      orderBy: {
-        number: sort,
-      },
-    });
-  } else if (!isNaN(slot)) {
+  if (!isNaN(Number(slotOrDate))) {
     block = await prisma.block.findFirst({
       select: blockSelect,
       where: {
         slot: {
-          [operator]: slot,
+          [operator]: Number(slotOrDate),
         },
       },
       orderBy: {
         slot: sort,
       },
     });
-  } else {
+  } else if (slotOrDate && dayjs(slotOrDate).utc().isValid()) {
     const date = dayjs(slotOrDate).utc();
-
-    if (!date.isValid()) {
-      throw new Error(
-        `Invalid date "${slotOrDate}". Expected a ISO 8601 date.`
-      );
-    }
 
     block = await prisma.block.findFirst({
       select: blockSelect,
@@ -146,6 +132,17 @@ async function findNearestBlock({
     });
   }
 
+  if (!block) {
+    const lowestUppestBlock = await prisma.block.findFirst({
+      select: blockSelect,
+      orderBy: {
+        number: sort,
+      },
+    });
+
+    block = lowestUppestBlock;
+  }
+
   return block?.number;
 }
 
@@ -154,8 +151,8 @@ export const create: Command = async function (argv) {
     blobHash: rawBlobHashes,
     help,
     queue: queueNames,
-    fromDate,
-    toDate,
+    fromDate: fromDateArg,
+    toDate: toDateArg,
     fromBlock: fromBlockArg,
     toBlock: toBlockArg,
   } = commandLineArgs(createCommandOptDefs, {
@@ -216,13 +213,12 @@ export const create: Command = async function (argv) {
     fromBlock = fromBlockArg;
   } else {
     const nearestBlock = await findNearestBlock({
-      slotOrDate: fromDate,
-      rangeLimit: "lower",
+      slotOrDate: fromDateArg,
+      limit: "lower",
     });
 
     if (!nearestBlock) {
-      console.log("Skipping as database has no blobs.");
-
+      console.log("Skipping job creation as database is empty.");
       return;
     }
 
@@ -233,13 +229,12 @@ export const create: Command = async function (argv) {
     toBlock = toBlockArg;
   } else {
     const nearestBlock = await findNearestBlock({
-      slotOrDate: toDate,
-      rangeLimit: "upper",
+      slotOrDate: toDateArg,
+      limit: "upper",
     });
 
     if (!nearestBlock) {
-      console.log("Skipping as database has no blobs.");
-
+      console.log("Skipping job creation as database is empty.");
       return;
     }
 
