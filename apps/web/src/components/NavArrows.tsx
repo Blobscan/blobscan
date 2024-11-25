@@ -29,7 +29,7 @@ export function NavArrows({
       </Tooltip>
       <Tooltip>
         <TooltipTrigger
-          className={prev.href ? "cursor-pointer" : "cursor-default"}
+          className={next.href ? "cursor-pointer" : "cursor-default"}
         >
           <NavArrow type="next" href={next.href} />
         </TooltipTrigger>
