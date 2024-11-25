@@ -1,5 +1,6 @@
 {
   "name": "@blobscan/majin-blob-wasm",
+  "private": true,
   "collaborators": [
     "Abdelhamid Bakhta <@AbdelStark>"
   ],
