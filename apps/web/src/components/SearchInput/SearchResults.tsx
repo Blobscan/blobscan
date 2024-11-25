@@ -65,7 +65,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
                 {categoryLabel}
               </div>
             )}
-            {label}
+            {label ? label : id}
           </span>
           {reorg && (
             <Badge variant="primary" className="text-xs">
