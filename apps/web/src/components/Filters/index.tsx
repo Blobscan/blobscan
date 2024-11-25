@@ -174,7 +174,6 @@ export const Filters: FC = function () {
         );
       });
 
-      console.log(rollupOptions);
       if (rollupOptions) {
         newFilters.rollups = rollupOptions;
       }
