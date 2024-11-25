@@ -191,7 +191,7 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
             header={
-              <div className="flex-warp flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
+              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blocks</div>
                 <Button
                   variant="outline"
@@ -224,7 +224,7 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex-warp flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
+              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
@@ -276,7 +276,7 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex-warp flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
+              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"
