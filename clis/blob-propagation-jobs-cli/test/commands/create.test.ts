@@ -101,7 +101,7 @@ describe("Create command", () => {
       await assertCreatedJobs(context, expectedBlobHashes);
     });
 
-    it.only("should create jobs for all blobs between a given date range correctly", async () => {
+    it("should create jobs for all blobs between a given date range correctly", async () => {
       const fromDate = "2023-08-24";
       const toDate = "2023-09-10";
 
