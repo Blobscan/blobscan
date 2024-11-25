@@ -11,9 +11,6 @@ importers:
       '@blobscan/eslint-config':
         specifier: workspace:^0.0.1
         version: link:tooling/eslint
-      '@blobscan/eth-units':
-        specifier: workspace:^0.0.1
-        version: link:packages/eth-format
       '@blobscan/svgo-config':
         specifier: workspace:^0.0.1
         version: link:tooling/svgo
@@ -72,7 +69,7 @@ importers:
         specifier: ^0.2.8
         version: 0.2.8(@ianvs/prettier-plugin-sort-imports@3.7.2(prettier@2.8.8))(prettier@2.8.8)
       ts-node:
-        specifier: ^10.9.1
+        specifier: ^10.9.2
         version: 10.9.2(@types/node@18.19.41)(typescript@5.5.3)
       ts-node-dev:
         specifier: ^2.0.0
@@ -112,7 +109,7 @@ importers:
         version: 0.5.13(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))
       autoprefixer:
         specifier: ^10.4.14
-        version: 10.4.19(postcss@8.4.39)
+        version: 10.4.19(postcss@8.4.38)
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -169,7 +166,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.15.0
         version: link:../../packages/api
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -181,7 +178,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@blobscan/syncers':
-        specifier: workspace:^0.3.0
+        specifier: workspace:^0.3.1
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -233,7 +230,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.15.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.0
@@ -245,19 +242,19 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../../packages/env
-      '@blobscan/eth-units':
-        specifier: workspace:^0.0.1
+      '@blobscan/eth-format':
+        specifier: workspace:^0.1.0
         version: link:../../packages/eth-format
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.2.0
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -334,9 +331,6 @@ importers:
       posthog-js:
         specifier: ^1.166.1
         version: 1.166.1
-      pretty-bytes:
-        specifier: ^6.1.1
-        version: 6.1.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -355,6 +349,9 @@ importers:
       superjson:
         specifier: 1.9.1
         version: 1.9.1
+      tailwind-gradient-mask-image:
+        specifier: ^1.2.0
+        version: 1.2.0
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
@@ -399,13 +396,13 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.5
+        specifier: workspace:^0.2.6
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -429,7 +426,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../../packages/db
       '@blobscan/logger':
         specifier: workspace:^0.1.1
@@ -444,16 +441,16 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.5
+        specifier: workspace:^0.2.6
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.3.5
+        specifier: workspace:^0.3.6
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -465,7 +462,7 @@ importers:
         specifier: workspace:^0.0.8
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.1.0
+        specifier: workspace:^0.2.0
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -496,7 +493,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -532,10 +529,10 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.3.5
+        specifier: workspace:^0.3.6
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -559,7 +556,7 @@ importers:
   packages/blob-storage-manager:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -672,19 +669,37 @@ importers:
         specifier: ^14.2.0
         version: 14.2.0
 
+  packages/optimism-decoder:
+    dependencies:
+      '@blobscan/db':
+        specifier: workspace:*
+        version: link:../db
+      axios:
+        specifier: ^1.7.2
+        version: 1.7.2
+      csv-writer:
+        specifier: ^1.6.0
+        version: 1.6.0
+      rlp:
+        specifier: ^3.0.0
+        version: 3.0.0
+
   packages/rollups:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../db
 
   packages/syncers:
     dependencies:
+      '@blobscan/dates':
+        specifier: workspace:*
+        version: link:../dates
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.10.0
+        specifier: workspace:^0.11.0
         version: link:../db
       '@blobscan/logger':
         specifier: workspace:^0.1.1
@@ -3349,6 +3364,7 @@ packages:
 
   acorn-import-assertions@1.9.0:
     resolution: {integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA==}
+    deprecated: package has been renamed to acorn-import-attributes
     peerDependencies:
       acorn: ^8
 
@@ -3939,6 +3955,9 @@ packages:
 
   csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
+
+  csv-writer@1.6.0:
+    resolution: {integrity: sha512-NOx7YDFWEsM/fTRAJjRpPp8t+MKRVvniAg9wQlUKx20MFrPs73WLJhFf5iteqrxNYnsy924K3Iroh3yNHeYd2g==}
 
   damerau-levenshtein@1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
@@ -5939,10 +5958,6 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  pretty-bytes@6.1.1:
-    resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
-    engines: {node: ^14.13.1 || >=16.0.0}
-
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -6188,6 +6203,10 @@ packages:
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
+    hasBin: true
+
+  rlp@3.0.0:
+    resolution: {integrity: sha512-PD6U2PGk6Vq2spfgiWZdomLvRGDreBLxi5jv5M8EpRo3pU6VEm31KO+HFxE18Q3vgqfDrQ9pZA3FP95rkijNKw==}
     hasBin: true
 
   rollup@2.78.0:
@@ -6526,6 +6545,9 @@ packages:
   table-layout@4.1.0:
     resolution: {integrity: sha512-AfbFMOsAZDoaQq2sDF/F7PSTxnTBexr4cuArFW1bMl07tFbB+HBwKpnw99To3ffcjRFe12dEoyckiNz1+qCSng==}
     engines: {node: '>=12.17'}
+
+  tailwind-gradient-mask-image@1.2.0:
+    resolution: {integrity: sha512-tUJaGhvqbJFiVKJu6EU5n//KvGdVvY3L3VOFNqjztk13+ifAk00pcSNHBTgHfUiBGOEzDn0gFRbSmsftUV1lXA==}
 
   tailwind-merge@2.4.0:
     resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
@@ -10395,6 +10417,16 @@ snapshots:
 
   asynckit@0.4.0: {}
 
+  autoprefixer@10.4.19(postcss@8.4.38):
+    dependencies:
+      browserslist: 4.23.0
+      caniuse-lite: 1.0.30001614
+      fraction.js: 4.3.7
+      normalize-range: 0.1.2
+      picocolors: 1.0.0
+      postcss: 8.4.38
+      postcss-value-parser: 4.2.0
+
   autoprefixer@10.4.19(postcss@8.4.39):
     dependencies:
       browserslist: 4.23.0
@@ -10890,6 +10922,8 @@ snapshots:
       css-tree: 2.2.1
 
   csstype@3.1.2: {}
+
+  csv-writer@1.6.0: {}
 
   damerau-levenshtein@1.0.8: {}
 
@@ -13147,8 +13181,6 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  pretty-bytes@6.1.1: {}
-
   pretty-format@29.7.0:
     dependencies:
       '@jest/schemas': 29.6.3
@@ -13419,6 +13451,8 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
+
+  rlp@3.0.0: {}
 
   rollup@2.78.0:
     optionalDependencies:
@@ -13816,6 +13850,8 @@ snapshots:
       '@75lb/deep-merge': 1.1.1
       array-back: 6.2.2
       wordwrapjs: 5.1.0
+
+  tailwind-gradient-mask-image@1.2.0: {}
 
   tailwind-merge@2.4.0: {}
 

@@ -12,12 +12,6 @@ const feedbackMessagesTotalCounter = api.metrics
     valueType: api.ValueType.INT,
   });
 
-const RATE_EMOJIS = new Map([
-  ["bad", "🙁"],
-  ["meh", "😐"],
-  ["nice", "🙂"],
-]);
-
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const { message, rate, metadata } = req.body;
   const method = req.method;
@@ -32,7 +26,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         const text = `New Feedback ✨
 
   Message: ${message ? message : "-"}
-  Rate: ${rate ? RATE_EMOJIS.get(rate) : "-"}
+  Rate: ${rate ? rate : "-"}
   Metadata: \`\`\`${JSON.stringify(metadata)}\`\`\``;
 
         await fetch(env.FEEDBACK_WEBHOOK_URL, {

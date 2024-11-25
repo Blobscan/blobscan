@@ -81,7 +81,9 @@ describe("Search route", async () => {
       expect(result).toMatchObject({
         block: [
           {
-            id: "1001",
+            label: "1001",
+            id: "blockHash001",
+            reorg: false,
           },
         ],
       });
@@ -96,7 +98,9 @@ describe("Search route", async () => {
       expect(result).toMatchObject({
         slot: [
           {
-            id: "1001",
+            id: "blockHash001",
+            label: "1001",
+            reorg: false,
           },
         ],
       });

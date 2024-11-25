@@ -6,7 +6,7 @@ nextjs:
     description: How to run your own instance of Blobscan
 ---
 
-Blobscan is open source and you can run your own instance either locally or publically exposed on the Internet.
+Blobscan is open source and you can run your own instance either locally or publicly exposed on the Internet.
 
 ---
 
@@ -26,7 +26,7 @@ Check out [eip4844-devnet](https://github.com/jimmygchen/eip4844-devnet) if you 
 
 Blobscan is configured using environment variables. You can define them using `export` or with an `.env` file.
 
-We provide a `.env.example` file as reference which you can use as starting point.
+We provide a `.env.example` file as a reference which you can use as starting point.
 
 ```shell
 cp .env.example .env

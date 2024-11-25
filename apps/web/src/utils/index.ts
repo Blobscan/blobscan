@@ -1,3 +1,4 @@
+export * from "./bytes";
 export * from "./charts";
 export * from "./blob-decoders";
 export * from "./deserializers";

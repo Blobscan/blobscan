@@ -13,7 +13,7 @@ type ChartBaseProps = {
 };
 
 const COMMON_OPTIONS: EChartOption = {
-  grid: { top: 27, right: 10, bottom: 22, left: 45 },
+  grid: { top: 27, right: 10, bottom: 22, left: 55 },
   toolbox: {
     show: true,
     feature: {
@@ -119,7 +119,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   return (
     <EChartsReact
       option={{
-        ...COMMON_OPTIONS,
         ...options,
         grid: {
           ...COMMON_OPTIONS.grid,

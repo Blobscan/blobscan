@@ -2,6 +2,10 @@ const ETH_UNITS = { wei: 0, Gwei: 9, ether: 18 };
 
 export type EthAmount = string | number | bigint;
 export type EtherUnit = keyof typeof ETH_UNITS;
+export type FormatOptions = Partial<{
+  hideUnit: boolean;
+  toUnit: EtherUnit;
+}>;
 
 const compactFormatter = Intl.NumberFormat("en-US", {
   notation: "compact",
@@ -20,9 +24,15 @@ const fullwideFormatter = Intl.NumberFormat("fullwide", {
  * This function never converts the provided value to a Number
  * ensuring that the full precision of the input is preserved.
  */
-export function formatWei(wei: EthAmount, toUnit: EtherUnit = "Gwei"): string {
+export function formatWei(wei: EthAmount, opts?: FormatOptions): string {
+  const toUnit = opts?.toUnit || findBestUnit(wei);
   const converted = convertWei(wei, toUnit);
   const formatted = insertCommas(converted);
+
+  if (opts?.hideUnit) {
+    return formatted;
+  }
+
   return `${formatted} ${toUnit}`;
 }
 
@@ -32,12 +42,15 @@ export function formatWei(wei: EthAmount, toUnit: EtherUnit = "Gwei"): string {
  * is preserved. Instead, this function provides a more human-readable
  * representation of the value.
  */
-export function prettyFormatWei(
-  wei: string | number | bigint,
-  toUnit: EtherUnit = "Gwei"
-) {
+export function prettyFormatWei(wei: EthAmount, opts?: FormatOptions) {
+  const toUnit = opts?.toUnit || findBestUnit(wei);
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
   const formatted = compactFormatter.format(converted);
+
+  if (opts?.hideUnit) {
+    return formatted;
+  }
+
   return `${formatted} ${toUnit}`;
 }
 
@@ -51,7 +64,7 @@ export function convertWei(wei: EthAmount, toUnit: EtherUnit = "Gwei"): string {
 /**
  * This function finds the best unit to display the value of `wei`.
  */
-export function findBestUnit(wei: bigint | string | number): EtherUnit {
+export function findBestUnit(wei: EthAmount): EtherUnit {
   const length = countIntegerDigits(wei);
 
   if (length >= ETH_UNITS.ether) {
@@ -68,7 +81,7 @@ export function findBestUnit(wei: bigint | string | number): EtherUnit {
 /**
  * Returns the number of integer digits in the value.
  */
-export function countIntegerDigits(value: string | number | bigint): number {
+export function countIntegerDigits(value: EthAmount): number {
   if (typeof value === "number" && !Number.isFinite(value)) {
     return 0; // Return 0 for Infinity, -Infinity, and NaN
   }

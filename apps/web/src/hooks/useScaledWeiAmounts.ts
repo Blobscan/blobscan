@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
-import type { EtherUnit } from "@blobscan/eth-units";
-import { convertWei, findBestUnit } from "@blobscan/eth-units";
+import type { EtherUnit } from "@blobscan/eth-format";
+import { convertWei, findBestUnit } from "@blobscan/eth-format";
 
 type ScaledWeiAmounts = {
   unit: EtherUnit;

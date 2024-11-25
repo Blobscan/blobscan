@@ -1,5 +1,62 @@
 # @blobscan/web
 
+## 0.17.0
+
+### Minor Changes
+
+- [#602](https://github.com/Blobscan/blobscan/pull/602) [`5272928`](https://github.com/Blobscan/blobscan/commit/52729282f0feefbb6cf268da73930c4f60462f21) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Enhanced feedback modal by allowing users to report issues on Github
+
+### Patch Changes
+
+- [#608](https://github.com/Blobscan/blobscan/pull/608) [`4226258`](https://github.com/Blobscan/blobscan/commit/422625886481de3ca737b6edfe0afb5fe4fe1427) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved decoding display for Optimism blobs; removed truncated Parent L2 block hash link, fixed L1 origin block redirection, and corrected timestamp.
+
+- [#598](https://github.com/Blobscan/blobscan/pull/598) [`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76) Thanks [@PJColombo](https://github.com/PJColombo)! - Standarized y-axis units and displayed full amounts on tooltips on charts
+
+- [#627](https://github.com/Blobscan/blobscan/pull/627) [`f21f6fc`](https://github.com/Blobscan/blobscan/commit/f21f6fcb752f6ce5f25339b426e1dcbb29d9d280) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed an issue where the search result wasn't being displayed properly
+
+- [#598](https://github.com/Blobscan/blobscan/pull/598) [`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed full amounts on chart tooltips
+
+- Updated dependencies [[`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76)]:
+  - @blobscan/eth-format@0.1.0
+
+## 0.16.0
+
+### Minor Changes
+
+- [#592](https://github.com/Blobscan/blobscan/pull/592) [`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17) Thanks [@xFJA](https://github.com/xFJA)! - Added multiple options to RollupFilter
+
+### Patch Changes
+
+- [#625](https://github.com/Blobscan/blobscan/pull/625) [`f93f96f`](https://github.com/Blobscan/blobscan/commit/f93f96fe023567f2354ce106454d8614da86ed43) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed Gitcoin Round 22 banner
+
+- [#592](https://github.com/Blobscan/blobscan/pull/592) [`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17) Thanks [@xFJA](https://github.com/xFJA)! - Added missing rollups icons and improved RollupBadges' styles
+
+- Updated dependencies [[`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17)]:
+  - @blobscan/api@0.15.0
+
+## 0.15.0
+
+### Minor Changes
+
+- [#529](https://github.com/Blobscan/blobscan/pull/529) [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Displayed Optimism decoded blob data
+
+### Patch Changes
+
+- [#606](https://github.com/Blobscan/blobscan/pull/606) [`ba1d783`](https://github.com/Blobscan/blobscan/commit/ba1d78376100a65389cc4a9eac9e399ff2f3627d) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed "transaction" from decoded fields header
+
+- [#612](https://github.com/Blobscan/blobscan/pull/612) [`4b75e4a`](https://github.com/Blobscan/blobscan/commit/4b75e4a254a693ff6aabbdce69d0c48fb348b0d4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Gitcoin Round 22 banner
+
+- [#606](https://github.com/Blobscan/blobscan/pull/606) [`ba1d783`](https://github.com/Blobscan/blobscan/commit/ba1d78376100a65389cc4a9eac9e399ff2f3627d) Thanks [@PJColombo](https://github.com/PJColombo)! - Hid decoded fields section when there is no decoded data available
+
+- [#599](https://github.com/Blobscan/blobscan/pull/599) [`9dd0f3f`](https://github.com/Blobscan/blobscan/commit/9dd0f3f2c648899c71fc37b5271e313f778f994d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Fixed an issue where the app version info in the footer was not displayed correctly, and ensured the link directs users to the correct release page
+
+- [#582](https://github.com/Blobscan/blobscan/pull/582) [`7f55095`](https://github.com/Blobscan/blobscan/commit/7f550957a0e1fc8c3c1033e836628b372f9ecac0) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a new label "reorg" to the reorged slots/blocks search results
+
+- Updated dependencies [[`c3cfd46`](https://github.com/Blobscan/blobscan/commit/c3cfd46cfe65c35ef2bfa0464951cdd78c1a51b8), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc), [`dd75d56`](https://github.com/Blobscan/blobscan/commit/dd75d56d8ce2ef881c55ac843d9e9937939d671b), [`78468dd`](https://github.com/Blobscan/blobscan/commit/78468ddcb6b30b889dfcd8cf87f8770202143efc)]:
+  - @blobscan/rollups@0.2.0
+  - @blobscan/api@0.14.0
+  - @blobscan/db@0.11.0
+
 ## 0.14.0
 
 ### Minor Changes
