@@ -11,9 +11,6 @@ importers:
       '@blobscan/eslint-config':
         specifier: workspace:^0.0.1
         version: link:tooling/eslint
-      '@blobscan/eth-units':
-        specifier: workspace:^0.0.1
-        version: link:packages/eth-format
       '@blobscan/svgo-config':
         specifier: workspace:^0.0.1
         version: link:tooling/svgo
@@ -169,7 +166,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.14.0
+        specifier: workspace:^0.15.0
         version: link:../../packages/api
       '@blobscan/env':
         specifier: workspace:^0.0.1
@@ -233,7 +230,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.14.0
+        specifier: workspace:^0.15.0
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.0
@@ -250,8 +247,8 @@ importers:
       '@blobscan/env':
         specifier: workspace:^0.0.1
         version: link:../../packages/env
-      '@blobscan/eth-units':
-        specifier: workspace:^0.0.1
+      '@blobscan/eth-format':
+        specifier: workspace:^0.1.0
         version: link:../../packages/eth-format
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.8
@@ -334,9 +331,6 @@ importers:
       posthog-js:
         specifier: ^1.166.1
         version: 1.166.1
-      pretty-bytes:
-        specifier: ^6.1.1
-        version: 6.1.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -698,6 +692,9 @@ importers:
 
   packages/syncers:
     dependencies:
+      '@blobscan/dates':
+        specifier: workspace:*
+        version: link:../dates
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../dayjs
@@ -3367,6 +3364,7 @@ packages:
 
   acorn-import-assertions@1.9.0:
     resolution: {integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA==}
+    deprecated: package has been renamed to acorn-import-attributes
     peerDependencies:
       acorn: ^8
 
@@ -5959,10 +5957,6 @@ packages:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-
-  pretty-bytes@6.1.1:
-    resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
-    engines: {node: ^14.13.1 || >=16.0.0}
 
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -13186,8 +13180,6 @@ snapshots:
       '@ianvs/prettier-plugin-sort-imports': 3.7.2(prettier@2.8.8)
 
   prettier@2.8.8: {}
-
-  pretty-bytes@6.1.1: {}
 
   pretty-format@29.7.0:
     dependencies:
