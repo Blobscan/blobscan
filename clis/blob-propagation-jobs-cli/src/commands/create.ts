@@ -98,6 +98,7 @@ async function findNearestBlock({
   slotOrDate?: string | number;
   limit?: "lower" | "upper";
 } = {}) {
+  console.log(`Finding nearest block for ${slotOrDate}…`);
   let block: BlockPayload | null = null;
 
   const isLower = limit === "lower";
@@ -248,7 +249,7 @@ export const create: Command = async function (argv) {
   let batchFromBlock = fromBlock,
     batchToBlock = Math.min(
       fromBlock + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-      toBlock + 1
+      toBlock
     );
   let totalJobsCreated = 0;
   let blobVersionedHashes = [];
@@ -261,7 +262,7 @@ export const create: Command = async function (argv) {
       },
       where: {
         blockNumber: {
-          lt: batchToBlock,
+          lte: batchToBlock,
           gte: batchFromBlock,
         },
       },
@@ -282,14 +283,14 @@ export const create: Command = async function (argv) {
       `Block ${batchFromBlock} - ${batchToBlock}: ${blobVersionedHashes.length} jobs created`
     );
 
-    batchFromBlock = batchToBlock;
+    batchFromBlock = batchToBlock + 1;
     batchToBlock = Math.min(
       batchToBlock + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-      toBlock + 1
+      toBlock
     );
 
     totalJobsCreated += blobVersionedHashes.length;
-  } while (blobVersionedHashes.length && batchToBlock <= toBlock + 1);
+  } while (blobVersionedHashes.length && batchFromBlock <= toBlock);
 
   console.log(`Total jobs created: ${totalJobsCreated}`);
 };
