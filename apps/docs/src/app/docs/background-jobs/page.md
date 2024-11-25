@@ -14,8 +14,4 @@ Blobscan requires [BullMQ](https://bullmq.io/) to run the following tasks in the
 
 For more information, check out the [@blobscan/syncers](https://github.com/Blobscan/blobscan/tree/next/packages/syncers/src/syncers) package.
 
-The BullMQ queue is also used to upload blobs in parallel to different Storages. Although this is not recommended, you can disable parallel uploads by setting:
-
-```shell
-BLOB_PROPAGATOR_ENABLED=false
-```
+The BullMQ queue is also used to upload blobs in parallel to different Storages.

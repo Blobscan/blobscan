@@ -37,7 +37,6 @@ export const env = createEnv({
         .url()
         .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
-      BLOB_PROPAGATOR_ENABLED: booleanSchema.default("false"),
       BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
         blobStorageSchema.default("FILE_SYSTEM"),
       BLOB_PROPAGATOR_COMPLETED_JOBS_AGE: z.coerce
@@ -95,9 +94,7 @@ export const env = createEnv({
     console.log(
       `API configuration: secretKey: ${maskSensitiveData(
         env.SECRET_KEY
-      )} Blob propagator configuration: enabled=${
-        env.BLOB_PROPAGATOR_ENABLED
-      } redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
+      )} redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
         env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
       } completedJobsAge=${
         env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE
