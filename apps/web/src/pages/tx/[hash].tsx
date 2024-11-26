@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -285,24 +286,11 @@ const Tx: NextPage = () => {
                 },
                 {
                   name: "L1 origin block hash",
-                  value: decodedData.fullL1OriginBlockHash ? (
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={
-                          "https://etherscan.io/block/" +
-                          "0x" +
-                          decodedData.fullL1OriginBlockHash
-                        }
-                      >
-                        {"0x" + decodedData.fullL1OriginBlockHash}
-                      </Link>
-                      <CopyToClipboard
-                        value={"0x" + decodedData.fullL1OriginBlockHash}
-                        label="Copy L1 origin block hash"
-                      />
-                    </div>
-                  ) : (
-                    "0x" + decodedData.l1OriginBlockHash + "..."
+                  value: (
+                    <BlockHash
+                      fullHash={decodedData.fullL1OriginBlockHash}
+                      partialHash={decodedData.l1OriginBlockHash}
+                    />
                   ),
                 },
                 {
@@ -335,6 +323,31 @@ const Tx: NextPage = () => {
         </div>
       </Card>
     </>
+  );
+};
+
+type BlockHashProps = {
+  partialHash: string;
+  fullHash: string | undefined;
+};
+
+const BlockHash: FC<BlockHashProps> = ({ fullHash, partialHash }) => {
+  if (fullHash === undefined) {
+    return "0x" + partialHash + "...";
+  }
+
+  const prefixedFullHash = "0x" + fullHash;
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link href={`https://blobscan.com/block/${prefixedFullHash}`}>
+        {prefixedFullHash}
+      </Link>
+      <CopyToClipboard
+        value={prefixedFullHash}
+        label="Copy L1 origin block hash"
+      />
+    </div>
   );
 };
 
