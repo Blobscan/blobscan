@@ -1,8 +1,7 @@
 import { z } from "zod";
 
+import { prisma } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
-
-import { autocompleteBlockHash } from "../utils/autocompleteBlockHash";
 
 export const OptimismDecodedDataSchema = z.object({
   timestampSinceL2Genesis: z.number(),
@@ -46,4 +45,31 @@ export async function parseOptimismDecodedData(
   }
 
   return decoded.data;
+}
+
+/* Autocomplete a block hash from a truncated version of it.
+   @param partialHash - The first bytes of a block hash.
+   @returns The block hash, if there is a single ocurrence, or null.
+ */
+export async function autocompleteBlockHash(partialHash: string) {
+  const blocks = await prisma.block.findMany({
+    where: {
+      hash: {
+        startsWith: "0x" + partialHash,
+      },
+    },
+    select: {
+      hash: true,
+    },
+  });
+
+  if (blocks[0] === undefined) {
+    return null;
+  }
+
+  if (blocks.length > 1) {
+    logger.error(`Multiple blocks found for hash ${partialHash}`);
+  }
+
+  return blocks[0].hash;
 }
