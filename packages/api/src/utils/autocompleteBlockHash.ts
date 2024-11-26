@@ -9,7 +9,7 @@ export async function autocompleteBlockHash(partialHash: string) {
   const blocks = await prisma.block.findMany({
     where: {
       hash: {
-        startsWith: partialHash,
+        startsWith: "0x" + partialHash,
       },
     },
     select: {
