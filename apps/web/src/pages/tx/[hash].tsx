@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { parseDecodedData } from "~/utils/decoded-transaction";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
@@ -229,9 +228,9 @@ const Tx: NextPage = () => {
   }
 
   const decodedData =
-    rawTxData && rawTxData.decodedFields
-      ? parseDecodedData(rawTxData.decodedFields)
-      : null;
+    rawTxData?.decodedFields?.type === "optimism"
+      ? rawTxData.decodedFields.payload
+      : undefined;
 
   return (
     <>
@@ -264,7 +263,14 @@ const Tx: NextPage = () => {
                   name: "Timestamp since L2 genesis",
                   value: (
                     <div className="whitespace-break-spaces">
-                      {formatTimestamp(decodedData.timestampSinceL2Genesis)}
+                      {tx
+                        ? formatTimestamp(
+                            tx.blockTimestamp.subtract(
+                              decodedData.timestampSinceL2Genesis,
+                              "ms"
+                            )
+                          )
+                        : ""}
                     </div>
                   ),
                 },
@@ -276,19 +282,7 @@ const Tx: NextPage = () => {
                   name: "Parent L2 block hash",
                   value: (
                     <div className="flex items-center gap-2">
-                      <Link
-                        href={
-                          "https://etherscan.io/block/" +
-                          "0x" +
-                          decodedData.parentL2BlockHash
-                        }
-                      >
-                        {"0x" + decodedData.parentL2BlockHash}
-                      </Link>
-                      <CopyToClipboard
-                        value={"0x" + decodedData.parentL2BlockHash}
-                        tooltipText="Copy parent L2 block hash"
-                      />
+                      {"0x" + decodedData.parentL2BlockHash + "..."}
                     </div>
                   ),
                 },
@@ -307,7 +301,7 @@ const Tx: NextPage = () => {
                       </Link>
                       <CopyToClipboard
                         value={"0x" + decodedData.l1OriginBlockHash}
-                        tooltipText="Copy L1 origin block hash"
+                        label="Copy L1 origin block hash"
                       />
                     </div>
                   ),

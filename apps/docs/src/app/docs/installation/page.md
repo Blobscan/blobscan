@@ -6,7 +6,7 @@ nextjs:
     description: How to run your own instance of Blobscan
 ---
 
-Blobscan is open source and you can run your own instance either locally or publically exposed on the Internet.
+Blobscan is open source and you can run your own instance either locally or publicly exposed on the Internet.
 
 ---
 

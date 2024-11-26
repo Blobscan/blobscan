@@ -1,6 +1,3 @@
-import type { Options } from "pretty-bytes";
-import prettyBytes from "pretty-bytes";
-
 type FormatMode = "compact" | "standard";
 
 export function numberToBigInt(value: number): bigint {
@@ -22,16 +19,6 @@ const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
     maximumFractionDigits: 3,
   },
 };
-
-export function formatBytes(bytes: number | bigint, opts: Options = {}) {
-  const bytes_ = typeof bytes === "bigint" ? Number(bytes) : bytes;
-
-  return prettyBytes(bytes_, {
-    maximumFractionDigits: 3,
-    binary: true,
-    ...opts,
-  });
-}
 
 export function abbreviateNumber(value: number | string): string {
   return Intl.NumberFormat("en-US", {
@@ -59,6 +46,32 @@ export function formatNumber(
   return Intl.NumberFormat("en-US", { ...NUMBER_FORMAT[mode], ...opts }).format(
     Number(x)
   );
+}
+
+export function removeCommas(formattedNumber: string): string {
+  return formattedNumber.trim().replace(/,/g, "");
+}
+
+export function parseSuffixedNumber(value: string): [number, string?] {
+  // Remove any leading/trailing whitespace
+  value = removeCommas(value);
+
+  // Regular expression to match the numerical part and optional suffix
+  const regex = /^(-?\d+(?:\.\d+)?)([a-zA-Z]+)?$/;
+  const match = value.match(regex);
+
+  if (!match || !match[1]) {
+    return [parseFloat(value)];
+  }
+
+  const numberPart = parseFloat(match[1]);
+  const suffixPart = match[2] ? match[2].toUpperCase() : undefined;
+
+  return [numberPart, suffixPart];
+}
+
+export function parseDecimalNumber(value: string) {
+  return removeCommas(value).split(".");
 }
 
 export function calculatePercentage(

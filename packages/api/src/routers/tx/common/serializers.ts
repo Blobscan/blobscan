@@ -1,6 +1,10 @@
 import { z } from "@blobscan/zod";
 
 import {
+  decodedFields,
+  parseDecodedFields,
+} from "../../../blob-parse/parse-decoded-fields";
+import {
   serializeExpandedBlobData,
   serializeExpandedBlock,
   serializedExpandedBlobDataSchema,
@@ -42,7 +46,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
       .merge(serializedExpandedBlobDataSchema)
   ),
   block: serializedExpandedBlockSchema.optional(),
-  decodedFields: z.string().optional(),
+  decodedFields: decodedFields.optional(),
 });
 
 export const serializedTransactionSchema =
@@ -121,15 +125,18 @@ export function serializeBaseTransactionFields(
   };
 }
 
-export function serializeTransaction(
+export async function serializeTransaction(
   txQuery: FullQueriedTransaction
-): SerializedTransaction {
-  const serializedBaseTx = serializeBaseTransactionFields(txQuery);
+): Promise<SerializedTransaction> {
+  const serializedBaseTx = await serializeBaseTransactionFields(txQuery);
   const serializedAdditionalTx = serializeDerivedTxBlobGasFields(txQuery);
+
+  const decodedFieldsString = JSON.stringify(txQuery.decodedFields);
+  const decodedFields = await parseDecodedFields(decodedFieldsString);
 
   return {
     ...serializedBaseTx,
     ...serializedAdditionalTx,
-    decodedFields: JSON.stringify(txQuery.decodedFields),
+    decodedFields,
   };
 }

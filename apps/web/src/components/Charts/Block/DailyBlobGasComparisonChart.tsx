@@ -3,12 +3,9 @@ import * as echarts from "echarts";
 import type { EChartOption } from "echarts";
 import { useTheme } from "next-themes";
 
-import { findBestUnit, formatWei, prettyFormatWei } from "@blobscan/eth-units";
-
 import { ChartCard } from "~/components/Cards/ChartCard";
-import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { DailyBlockStats } from "~/types";
-import { buildTimeSeriesOptions } from "~/utils";
+import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyBlobGasComparisonChartProps = Partial<{
   days: DailyBlockStats["days"];
@@ -20,24 +17,18 @@ export type DailyBlobGasComparisonChartProps = Partial<{
 export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
   function ({ blobAsCalldataGasUsed, blobGasUsed, days, opts = {} }) {
     const { resolvedTheme } = useTheme();
-    const data = blobGasUsed?.map((x) => Number(x));
-    const { unit } = useScaledWeiAmounts(data);
 
     const options: EChartOption<EChartOption.Series> = {
       ...buildTimeSeriesOptions({
         dates: days,
         axisFormatters: {
-          yAxisTooltip: (value) => formatWei(value, findBestUnit(value)),
-          yAxisLabel: (value) => prettyFormatWei(value, unit),
+          yAxisTooltip: (value) => formatNumber(value, "standard"),
         },
       }),
-      grid: {
-        containLabel: true,
-      },
       series: [
         {
           name: "Blob Gas Used",
-          data: data,
+          data: blobGasUsed,
           stack: "gas",
           type: "bar",
 

@@ -41,7 +41,7 @@ async function main(transactionIds: string[]) {
         console.log(`Skipped: ${txId}`);
       } else {
         console.log(jsonData);
-        const message = `Sucesss: ${txId}`;
+        const message = `Success: ${txId}`;
         console.log(message);
         logInfo(message);
       }
