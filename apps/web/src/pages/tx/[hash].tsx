@@ -301,7 +301,7 @@ const Tx: NextPage = () => {
                       </Link>
                       <CopyToClipboard
                         value={"0x" + decodedData.l1OriginBlockHash}
-                        label="Copy L1 origin block hash"
+                        tooltipText="Copy L1 origin block hash"
                       />
                     </div>
                   ),
