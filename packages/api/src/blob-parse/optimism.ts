@@ -51,7 +51,7 @@ export async function parseOptimismDecodedData(
    @param partialHash - The first bytes of a block hash.
    @returns The block hash, if there is a single ocurrence, or null.
  */
-export async function autocompleteBlockHash(partialHash: string) {
+async function autocompleteBlockHash(partialHash: string) {
   const blocks = await prisma.block.findMany({
     where: {
       hash: {
