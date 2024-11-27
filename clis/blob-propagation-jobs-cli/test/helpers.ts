@@ -8,7 +8,7 @@ import type {
   BlobPropagationWorker,
 } from "@blobscan/blob-propagator";
 
-import type { context } from "../src/context-instance";
+import type { Context } from "../src/Context";
 import type { Command } from "../src/types";
 
 export function setUpJobs(
@@ -49,21 +49,19 @@ export async function processJobsManually(
   }
 }
 
-export function assertCreatedJobs(
-  createdJobs: Awaited<ReturnType<typeof context.getJobs>>,
-  queues: ReturnType<typeof context.getAllQueues>,
+export async function assertCreatedJobs(
+  context: Context,
   blobHashes: string[]
-): void {
+): Promise<void> {
+  const queues = context.getAllStorageQueues();
+  const createdJobs = await context.getJobs();
+
   queues.forEach((q) => {
     const queueJobVersionedHashes = createdJobs
       .filter((j) => j.queueName === q.name)
       .map((j) => j.data.versionedHash)
       .sort((a, b) => a.localeCompare(b));
 
-    expect(
-      queueJobVersionedHashes.length,
-      `Created jobs length mismatch in ${q.name} queue`
-    ).toBe(blobHashes.length);
     expect(
       queueJobVersionedHashes,
       `Created jobs mismatch in ${q.name} queue`

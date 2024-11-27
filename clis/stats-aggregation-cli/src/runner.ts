@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { logger } from "@blobscan/logger";
 
 import { gracefulShutdown } from "./graceful-shutdown";
