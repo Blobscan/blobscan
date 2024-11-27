@@ -53,7 +53,7 @@ const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   },
   {
     ...blockRangeOptionDefs.to,
-    description: "Block number to which to retrieve blobs to create jobs for.",
+    description: "Block number to which to retrieve blobs for creating jobs.",
   },
 ];
 
