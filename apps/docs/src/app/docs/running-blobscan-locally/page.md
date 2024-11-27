@@ -59,10 +59,16 @@ Then run the development command:
 pnpm dev
 ```
 
-Lastly, create the database schema:
+Now apply all database migrations:
 
 ```shell
-pnpm db:generate
+pnpm db:migrate
+```
+
+Lastly, you can add some fixture data:
+
+```shell
+pnpm db:seed
 ```
 
 ## Metrics aggregation
