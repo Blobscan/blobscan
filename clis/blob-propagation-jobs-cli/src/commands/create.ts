@@ -78,7 +78,7 @@ function createBlobPropagationJobs(
         createBlobStorageJob(q.name, hash)
       );
 
-      q.addBulk(storageJobs as BlobPropagationJob[]);
+      return q.addBulk(storageJobs as BlobPropagationJob[]);
     })
   );
 }
@@ -202,7 +202,9 @@ export const create: Command = async function (argv) {
       );
     }
 
-    await createBlobPropagationJobs(storageQueues, blobHashes);
+    const jobs = await createBlobPropagationJobs(storageQueues, blobHashes);
+
+    console.log(`${jobs.length} jobs created`);
 
     return;
   }
@@ -277,10 +279,13 @@ export const create: Command = async function (argv) {
 
     blobVersionedHashes = [...new Set(dbBlobs.map((b) => b.blobHash))];
 
-    await createBlobPropagationJobs(storageQueues, blobVersionedHashes);
+    const jobs = await createBlobPropagationJobs(
+      storageQueues,
+      blobVersionedHashes
+    );
 
     console.log(
-      `Block ${batchFromBlock} - ${batchToBlock}: ${blobVersionedHashes.length} jobs created`
+      `Block ${batchFromBlock} - ${batchToBlock}: ${jobs.length} jobs created`
     );
 
     batchFromBlock = batchToBlock + 1;
