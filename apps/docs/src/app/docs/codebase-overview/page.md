@@ -30,9 +30,9 @@ Blobscan is composed of the following apps:
 
 | App                                                                                                 | Description                                 |
 | --------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-|  [`@blobscan/docs`](https://github.com/Blobscan/blobscan/tree/next/apps/docs)                       | Nextjs app that contains the documentation. |
-|  [`@blobscan/web`](https://github.com/Blobscan/blobscan/tree/next/apps/web)                         | Nextjs app that contains the web app.       |
-|  [`@blobscan/rest-api-server`](https://github.com/Blobscan/blobscan/tree/next/apps/rest-api-server) | Express app that contains the REST API.     |
+|  [`@blobscan/docs`](https://github.com/Blobscan/blobscan/tree/main/apps/docs)                       | Nextjs app that contains the documentation. |
+|  [`@blobscan/web`](https://github.com/Blobscan/blobscan/tree/main/apps/web)                         | Nextjs app that contains the web app.       |
+|  [`@blobscan/rest-api-server`](https://github.com/Blobscan/blobscan/tree/main/apps/rest-api-server) | Express app that contains the REST API.     |
 
 ### CLI
 
@@ -40,8 +40,8 @@ Blobscan has the following command line interfaces:
 
 | CLI                                                                                                                     | Description                            |
 | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-|  [`@blobscan/blob-propagation-jobs-cli`](https://github.com/Blobscan/blobscan/tree/next/clis/blob-propagation-jobs-cli) | CLI to run the blob propagation jobs.  |
-|  [`@blobscan/stats-aggregation-cli`](https://github.com/Blobscan/blobscan/tree/next/clis/stats-aggregation-cli)         | CLI to run the stats aggregation jobs. |
+|  [`@blobscan/blob-propagation-jobs-cli`](https://github.com/Blobscan/blobscan/tree/main/clis/blob-propagation-jobs-cli) | CLI to run the blob propagation jobs.  |
+|  [`@blobscan/stats-aggregation-cli`](https://github.com/Blobscan/blobscan/tree/main/clis/stats-aggregation-cli)         | CLI to run the stats aggregation jobs. |
 
 ### Packages
 
@@ -49,18 +49,18 @@ Here you can find all the shared packages used by the apps:
 
 | Package                                                                                                          | Description                                                                                                                                                                                                                  |
 | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@blobscan/api`](https://github.com/Blobscan/blobscan/tree/next/packages/api)                                   | tRPC routers and procedures used by the web app and the REST API                                                                                                                                                             |
-| [`@blobscan/@blobscan/blob-propagator`](https://github.com/Blobscan/blobscan/tree/next/packages/blob-propagator) | Mechanism for propagating blob data across various storage systems through [bullmq](https://docs.bullmq.io/) sandboxed workers.                                                                                              |
-| [`@blobscan/blob-storage-manager`](https://github.com/Blobscan/blobscan/tree/next/packages/blob-storage-manager) | Orchestrates the storage/retrieval of blobs in/from different storage providers. Currently it supports [Google Cloud Storage](https://cloud.google.com/storage), [Swarm](https://www.ethswarm.org), PostgreSQL database and filesystem. |
-| [`@blobscan/dayjs`](https://github.com/Blobscan/blobscan/tree/next/packages/dayjs)                               |  Extended [Day.js](https://day.js.org/) with plugins.                                                                                                                                                                        |
-| [`@blobscan/db`](https://github.com/Blobscan/blobscan/tree/next/packages/db)                                     | Prisma schema and a Prisma client with [extensions](https://www.prisma.io/docs/concepts/components/prisma-client/client-extensions) containing custom methods queries.                                                       |
-| [`@blobscan/logger`](https://github.com/Blobscan/blobscan/tree/next/packages/logger)                             | Shared logger utilities.                                                                                                                                                                                                     |
-| [`@blobscan/optimism-decoder`](https://github.com/Blobscan/blobscan/tree/next/packages/optimism-decoder)         | Optimism blobs decoder.                                                                                                                                                                                                      |
-| [`@blobscan/open-telemetry`](https://github.com/Blobscan/blobscan/tree/next/packages/open-telemetry)             | [Otel](https://opentelemetry.io/) configuration and sdk setup.                                                                                                                                                               |
-| [`@blobscan/test`](https://github.com/Blobscan/blobscan/tree/next/packages/test)                                 | Shared test utilities and fixtures.                                                                                                                                                                                          |
-| [`@blobscan/zod`](https://github.com/Blobscan/blobscan/tree/next/packages/zod)                                   | Shared [Zod](https://zod.dev) schemas and utilities.                                                                                                                                                                         |
-| [`@blobscan/eth-format`](https://github.com/Blobscan/blobscan/tree/next/packages/eth-format)                     | Provides utility functions for handling Ethereum value conversions and formatting.                                                                                                                                           |
-| [`@blobscan/rollups`](https://github.com/Blobscan/blobscan/tree/next/packages/rollups)                           | A utility that provides a comprehensive list of all rollups and their associated addresses supported by Blobscan, along with functions to retrieve them easily.                                                              |
+| [`@blobscan/api`](https://github.com/Blobscan/blobscan/tree/main/packages/api)                                   | tRPC routers and procedures used by the web app and the REST API                                                                                                                                                             |
+| [`@blobscan/@blobscan/blob-propagator`](https://github.com/Blobscan/blobscan/tree/main/packages/blob-propagator) | Mechanism for propagating blob data across various storage systems through [bullmq](https://docs.bullmq.io/) sandboxed workers.                                                                                              |
+| [`@blobscan/blob-storage-manager`](https://github.com/Blobscan/blobscan/tree/main/packages/blob-storage-manager) | Orchestrates the storage/retrieval of blobs in/from different storage providers. Currently it supports [Google Cloud Storage](https://cloud.google.com/storage), [Swarm](https://www.ethswarm.org), PostgreSQL database and filesystem. |
+| [`@blobscan/dayjs`](https://github.com/Blobscan/blobscan/tree/main/packages/dayjs)                               |  Extended [Day.js](https://day.js.org/) with plugins.                                                                                                                                                                        |
+| [`@blobscan/db`](https://github.com/Blobscan/blobscan/tree/main/packages/db)                                     | Prisma schema and a Prisma client with [extensions](https://www.prisma.io/docs/concepts/components/prisma-client/client-extensions) containing custom methods queries.                                                       |
+| [`@blobscan/logger`](https://github.com/Blobscan/blobscan/tree/main/packages/logger)                             | Shared logger utilities.                                                                                                                                                                                                     |
+| [`@blobscan/optimism-decoder`](https://github.com/Blobscan/blobscan/tree/main/packages/optimism-decoder)         | Optimism blobs decoder.                                                                                                                                                                                                      |
+| [`@blobscan/open-telemetry`](https://github.com/Blobscan/blobscan/tree/main/packages/open-telemetry)             | [Otel](https://opentelemetry.io/) configuration and sdk setup.                                                                                                                                                               |
+| [`@blobscan/test`](https://github.com/Blobscan/blobscan/tree/main/packages/test)                                 | Shared test utilities and fixtures.                                                                                                                                                                                          |
+| [`@blobscan/zod`](https://github.com/Blobscan/blobscan/tree/main/packages/zod)                                   | Shared [Zod](https://zod.dev) schemas and utilities.                                                                                                                                                                         |
+| [`@blobscan/eth-format`](https://github.com/Blobscan/blobscan/tree/main/packages/eth-format)                     | Provides utility functions for handling Ethereum value conversions and formatting.                                                                                                                                           |
+| [`@blobscan/rollups`](https://github.com/Blobscan/blobscan/tree/main/packages/rollups)                           | A utility that provides a comprehensive list of all rollups and their associated addresses supported by Blobscan, along with functions to retrieve them easily.                                                              |
 
 ### Tooling
 
@@ -68,8 +68,8 @@ Blobscan uses the following tools:
 
 | Tool                                                                                           | Description                                          |
 | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| [`@blobscan/eslint`](https://github.com/Blobscan/blobscan/tree/next/tooling/eslint)            | ESLint configuration shared across all packages.     |
-| [`@blobscan/github`](https://github.com/Blobscan/blobscan/tree/next/tooling/github)            | GitHub actions shared.                               |
-| [`@blobscan/svgo-config`](https://github.com/Blobscan/blobscan/tree/next/tooling/svgo)         | Svgo configuration.                                  |
-| [`@blobscan/tailwind-config`](https://github.com/Blobscan/blobscan/tree/next/tooling/tailwind) | Tailwind configuration shared across all packages.   |
-| [`@blobscan/typescript`](https://github.com/Blobscan/blobscan/tree/next/tooling/typescript)    | Typescript configuration shared across all packages. |
+| [`@blobscan/eslint`](https://github.com/Blobscan/blobscan/tree/main/tooling/eslint)            | ESLint configuration shared across all packages.     |
+| [`@blobscan/github`](https://github.com/Blobscan/blobscan/tree/main/tooling/github)            | GitHub actions shared.                               |
+| [`@blobscan/svgo-config`](https://github.com/Blobscan/blobscan/tree/main/tooling/svgo)         | Svgo configuration.                                  |
+| [`@blobscan/tailwind-config`](https://github.com/Blobscan/blobscan/tree/main/tooling/tailwind) | Tailwind configuration shared across all packages.   |
+| [`@blobscan/typescript`](https://github.com/Blobscan/blobscan/tree/main/tooling/typescript)    | Typescript configuration shared across all packages. |
