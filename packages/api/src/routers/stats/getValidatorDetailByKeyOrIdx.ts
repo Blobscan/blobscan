@@ -58,12 +58,12 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
         ],
       };
 
-      // if (startTime && endTime) {
-      //   whereCondition.insertedAt = {
-      //     gte: new Date(startTime),
-      //     lte: new Date(endTime),
-      //   };
-      // }
+      if (startTime && endTime) {
+        whereCondition.insertedAt = {
+          gte: new Date(startTime),
+          lte: new Date(endTime),
+        };
+      }
 
       let income = await prisma.validatorIncome.findMany({
         select: {
@@ -78,11 +78,16 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
         take: queryListLimit,
       });
 
-      if (startTime && endTime) {
-        income = income.filter(
-          (item) => item.insertedAt >= new Date(startTime) && item.insertedAt <= new Date(endTime)
-        );
-      }
+      // console.log(`Fetched ${income.length} records from the database.`);
+
+      // if (startTime && endTime) {
+      //   income = income.filter(
+      //     (item) => item.insertedAt >= new Date(startTime) && item.insertedAt <= new Date(endTime)
+      //   );
+      // }
+
+      // console.log(`Filter ${income.length} records from the database.`);
+
 
       income = income.sort((a, b) => (a.epochIdx < b.epochIdx) ? -1 : ((a.epochIdx > b.epochIdx) ? 1 : 0));
 
