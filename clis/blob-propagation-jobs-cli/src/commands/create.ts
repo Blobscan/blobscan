@@ -98,7 +98,9 @@ async function findNearestBlock({
   slotOrDate?: string | number;
   limit?: "lower" | "upper";
 } = {}) {
-  console.log(`Finding nearest block for ${slotOrDate}…`);
+  console.log(
+    `Finding nearest ${limit} block${slotOrDate ? ` for ${slotOrDate}` : ""}…`
+  );
   let block: BlockPayload | null = null;
 
   const isLower = limit === "lower";
@@ -177,6 +179,7 @@ export const create: Command = async function (argv) {
   const storageQueues = queueNames
     ? context.getQueuesOrThrow(queueNames)
     : context.getAllStorageQueues();
+  const storageQueueNames = storageQueues.map((q) => q.name).join(", ");
   let blobHashes: string[];
 
   if (rawBlobHashes?.length) {
@@ -201,6 +204,8 @@ export const create: Command = async function (argv) {
         )}`
       );
     }
+
+    console.log(`Creating jobs for storage queues: ${storageQueueNames}…`);
 
     const jobs = await createBlobPropagationJobs(storageQueues, blobHashes);
 
@@ -245,7 +250,7 @@ export const create: Command = async function (argv) {
   }
 
   console.log(
-    `Creating propagation jobs for blobs between blocks ${fromBlock} and ${toBlock}…`
+    `Creating propagation jobs for blobs between blocks ${fromBlock} and ${toBlock} for storage queues: ${storageQueueNames}…`
   );
 
   let batchFromBlock = fromBlock,
