@@ -74,7 +74,7 @@ export const getValidatorDetailByKeyOrIdx = publicProcedure
           insertedAt: true,
         },
         where: whereCondition,
-        orderBy: [{ id: "desc" }, { epochIdx: "asc" }],
+        orderBy: { epochIdx: "asc" },
         take: queryListLimit,
       });
 
