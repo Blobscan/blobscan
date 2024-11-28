@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import React from "react";
 
 import { CopyToClipboard } from "./CopyToClipboard";
@@ -6,7 +6,7 @@ import { CopyToClipboard } from "./CopyToClipboard";
 export interface CopyableProps {
   value: string;
   tooltipText?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export const Copyable: FC<CopyableProps> = ({

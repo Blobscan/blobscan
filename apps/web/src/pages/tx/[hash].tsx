@@ -124,17 +124,17 @@ const Tx: NextPage = () => {
       {
         name: "From",
         value: (
-          <Link href={buildAddressRoute(from)}>
-            <Copyable value={from} tooltipText="Copy from address" />
-          </Link>
+          <Copyable value={from} tooltipText="Copy from address">
+            <Link href={buildAddressRoute(from)}>{from}</Link>
+          </Copyable>
         ),
       },
       {
         name: "To",
         value: (
-          <Link href={buildAddressRoute(to)}>
-            <Copyable value={to} tooltipText="Copy to address" />
-          </Link>
+          <Copyable value={to} tooltipText="Copy to address">
+            <Link href={buildAddressRoute(to)}>{to}</Link>
+          </Copyable>
         ),
       },
     ];

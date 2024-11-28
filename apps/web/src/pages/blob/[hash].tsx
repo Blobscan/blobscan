@@ -96,7 +96,12 @@ const Blob: NextPage = function () {
 
     detailsFields.push({
       name: "Versioned Hash",
-      value: <Copyable value={blob.versionedHash} />,
+      value: (
+        <Copyable
+          value={blob.versionedHash}
+          tooltipText="Copy versioned hash"
+        />
+      ),
     });
 
     if (blob.transactions[0]) {

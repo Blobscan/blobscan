@@ -16,9 +16,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
-  const handleClick = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-
+  const handleClick = async () => {
     try {
       await navigator.clipboard.writeText(value);
       setIsCopied(true);
@@ -40,7 +38,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
       )}
       <TooltipTrigger
         className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
-        onClick={(e) => handleClick(e)}
+        onClick={handleClick}
       >
         {isCopied ? (
           <CheckIcon className="h-4 w-4" />

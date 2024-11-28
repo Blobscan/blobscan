@@ -167,12 +167,14 @@ const Txs: NextPage = function () {
                   cells: [
                     {
                       item: (
-                        <Link href={buildBlobRoute(b.versionedHash)}>
-                          <Copyable
-                            value={b.versionedHash}
-                            tooltipText="Copy blob versioned hash"
-                          />
-                        </Link>
+                        <Copyable
+                          value={b.versionedHash}
+                          tooltipText="Copy blob versioned hash"
+                        >
+                          <Link href={buildBlobRoute(b.versionedHash)}>
+                            {b.versionedHash}
+                          </Link>
+                        </Copyable>
                       ),
                     },
                     {
@@ -202,11 +204,11 @@ const Txs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <Link href={buildTransactionRoute(hash)}>
-                    <Copyable value={hash} tooltipText="Copy hash">
+                  <Copyable value={hash} tooltipText="Copy hash">
+                    <Link href={buildTransactionRoute(hash)}>
                       {shortenAddress(hash, 6)}
-                    </Copyable>
-                  </Link>
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
@@ -223,26 +225,23 @@ const Txs: NextPage = function () {
               },
               {
                 item: (
-                  <Link href={buildAddressRoute(from)}>
-                    <Copyable
-                      value={from}
-                      tooltipText="Copy the origin address"
-                    >
+                  <Copyable value={from} tooltipText="Copy the origin address">
+                    <Link href={buildAddressRoute(from)}>
                       {shortenAddress(from, 6)}
-                    </Copyable>
-                  </Link>
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <Link href={buildAddressRoute(to)}>
-                    <Copyable
-                      value={to}
-                      tooltipText="Copy the destination address"
-                    >
+                  <Copyable
+                    value={to}
+                    tooltipText="Copy the destination address"
+                  >
+                    <Link href={buildAddressRoute(to)}>
                       {shortenAddress(to, 6)}
-                    </Copyable>
-                  </Link>
+                    </Link>
+                  </Copyable>
                 ),
               },
               {

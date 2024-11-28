@@ -92,26 +92,23 @@ const Blobs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <Link href={buildBlobRoute(versionedHash)}>
-                    <Copyable
-                      value={versionedHash}
-                      tooltipText="Copy versioned hash"
-                    >
+                  <Copyable
+                    value={versionedHash}
+                    tooltipText="Copy versioned hash"
+                  >
+                    <Link href={buildBlobRoute(versionedHash)}>
                       {shortenAddress(versionedHash, 8)}
-                    </Copyable>
-                  </Link>
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <Link href={buildTransactionRoute(txHash)}>
-                    <Copyable
-                      value={txHash}
-                      tooltipText="Copy transaction hash"
-                    >
+                  <Copyable value={txHash} tooltipText="Copy transaction hash">
+                    <Link href={buildTransactionRoute(txHash)}>
                       {shortenAddress(txHash, 8)}
-                    </Copyable>
-                  </Link>
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
