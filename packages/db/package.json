@@ -22,7 +22,7 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed/main.ts"
+    "seed": "tsx prisma/seed/main.ts"
   },
   "dependencies": {
     "@blobscan/dayjs": "workspace:^0.1.0",
@@ -34,7 +34,9 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
-    "js-sha256": "^0.9.0"
+    "js-sha256": "^0.9.0",
+    "ora": "^8.1.1",
+    "tsx": "^4.19.2"
   },
   "eslintConfig": {
     "root": true,
