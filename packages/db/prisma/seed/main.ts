@@ -1,4 +1,10 @@
-import type { AddressCategoryInfo, Blob, Block, Prisma } from "@prisma/client";
+import type {
+  AddressCategoryInfo,
+  Blob,
+  BlobData,
+  Block,
+  Prisma,
+} from "@prisma/client";
 
 import dayjs from "@blobscan/dayjs";
 
@@ -22,7 +28,7 @@ async function main() {
       dataGenerator.generateDBTransactionForks(fullBlocks);
     const addressToCategoryInfo: Record<
       string,
-      Omit<AddressCategoryInfo, "id">
+      Omit<AddressCategoryInfo, "id">[]
     > = {};
     const dbBlockInsertions: Prisma.BlockCreateManyInput[] = [];
     const dbTxInsertions: Prisma.TransactionCreateManyInput[] = [];
@@ -40,34 +46,55 @@ async function main() {
           decodedFields: undefined,
         });
 
-        const from = addressToCategoryInfo[tx.fromId];
-        const to = addressToCategoryInfo[tx.toId];
-        if (from) {
-          from.firstBlockNumberAsSender = Math.min(
-            from.firstBlockNumberAsSender ?? tx.blockNumber,
+        const fromCategoryInfos = addressToCategoryInfo[tx.fromId];
+        const toCategoryInfos = addressToCategoryInfo[tx.toId];
+        const fromCategoryInfo = fromCategoryInfos?.find(
+          (aci) => aci.category === tx.category
+        );
+        const toCategoryInfo = toCategoryInfos?.find(
+          (aci) => aci.category === tx.category
+        );
+
+        if (fromCategoryInfo) {
+          fromCategoryInfo.firstBlockNumberAsSender = Math.min(
+            fromCategoryInfo.firstBlockNumberAsSender ?? tx.blockNumber,
             tx.blockNumber
           );
         } else {
-          addressToCategoryInfo[tx.fromId] = {
+          const newCategoryInfo = {
             address: tx.fromId,
             firstBlockNumberAsReceiver: null,
             firstBlockNumberAsSender: tx.blockNumber,
             category: tx.category,
           };
+
+          if (fromCategoryInfos) {
+            fromCategoryInfos.push(newCategoryInfo);
+          } else {
+            addressToCategoryInfo[tx.fromId] = [newCategoryInfo];
+          }
         }
-        if (to) {
-          to.firstBlockNumberAsReceiver = Math.min(
-            to.firstBlockNumberAsReceiver ?? tx.blockNumber,
+
+        if (toCategoryInfo) {
+          toCategoryInfo.firstBlockNumberAsReceiver = Math.min(
+            toCategoryInfo.firstBlockNumberAsReceiver ?? tx.blockNumber,
             tx.blockNumber
           );
         } else {
-          addressToCategoryInfo[tx.toId] = {
+          const newCategoryInfo = {
             address: tx.toId,
             firstBlockNumberAsReceiver: tx.blockNumber,
             firstBlockNumberAsSender: null,
             category: tx.category,
           };
+
+          if (toCategoryInfos) {
+            toCategoryInfos.push(newCategoryInfo);
+          } else {
+            addressToCategoryInfo[tx.toId] = [newCategoryInfo];
+          }
         }
+
         blobs.forEach(({ storageRefs, ...blob }, i) => {
           dbBlobInsertions.push(blob);
           dbBlobsOnTxsInsertions.push({
@@ -100,8 +127,8 @@ async function main() {
     const blockPerformanceEnd = performance.now();
     const addressPerformance = performance.now();
     await performPrismaUpsertManyInBatches(
-      Object.values(addressToCategoryInfo).map((addressCategoryInfo) => ({
-        address: addressCategoryInfo.address,
+      Object.keys(addressToCategoryInfo).map((address) => ({
+        address,
       })),
       prisma.address.upsertMany
     );
@@ -109,7 +136,9 @@ async function main() {
 
     const addressCategoryInfoPerformanceStart = performance.now();
     await performPrismaUpsertManyInBatches(
-      Object.values(addressToCategoryInfo),
+      Object.values(addressToCategoryInfo).flatMap(
+        (categoryInfos) => categoryInfos
+      ),
       prisma.addressCategoryInfo.upsertMany
     );
     const addressCategoryInfoPerformanceEnd = performance.now();
