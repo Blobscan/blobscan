@@ -37,6 +37,7 @@ async function main() {
       [];
     const dbBlobDataStorageRefs: Prisma.BlobDataStorageReferenceCreateManyInput[] =
       [];
+    const dbBlobData: BlobData[] = [];
 
     fullBlocks.forEach(({ transactions, ...block }) => {
       dbBlockInsertions.push(block);
@@ -109,6 +110,10 @@ async function main() {
           storageRefs.forEach((storageRef) => {
             dbBlobDataStorageRefs.push(storageRef);
           });
+          dbBlobData.push({
+            data: dataGenerator.generateBlobData(20),
+            id: blob.versionedHash,
+          });
         });
       });
     });
@@ -166,6 +171,11 @@ async function main() {
       skipDuplicates: true,
     });
     const blobStoragePerformanceEnd = performance.now();
+
+    await prisma.blobData.createMany({
+      data: dbBlobData,
+      skipDuplicates: true,
+    });
 
     // Generate forks
     await prisma.$transaction([
