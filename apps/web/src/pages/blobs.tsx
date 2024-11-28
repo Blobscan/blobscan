@@ -41,10 +41,6 @@ const BLOBS_TABLE_HEADERS = [
         className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
       },
       {
-        item: "Category",
-        className: "w-[60px]",
-      },
-      {
         item: "Size",
         className: "2xl:w-[178px] xl:w-[145px] lg:w-[101px] w-[66px]",
       },
@@ -114,9 +110,14 @@ const Blobs: NextPage = function () {
               {
                 item: (
                   <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                    <Link href={buildBlockRoute(blockNumber)}>
-                      {blockNumber}
-                    </Link>
+                    <Copyable
+                      value={blockNumber.toString()}
+                      tooltipText="Copy block number"
+                    >
+                      <Link href={buildBlockRoute(blockNumber)}>
+                        {blockNumber}
+                      </Link>
+                    </Copyable>
                   </div>
                 ),
               },
@@ -126,9 +127,6 @@ const Blobs: NextPage = function () {
                     {formatTimestamp(blockTimestamp, true)}
                   </div>
                 ),
-              },
-              {
-                item: <span></span>,
               },
               {
                 item: (

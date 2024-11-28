@@ -175,7 +175,14 @@ const Blocks: NextPage = function () {
           return {
             cells: [
               {
-                item: <Link href={buildBlockRoute(number)}>{number}</Link>,
+                item: (
+                  <Copyable
+                    value={number.toString()}
+                    tooltipText="Copy block number"
+                  >
+                    <Link href={buildBlockRoute(number)}>{number}</Link>
+                  </Copyable>
+                ),
               },
               {
                 item: timestamp.fromNow(),
