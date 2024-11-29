@@ -227,17 +227,6 @@ export const Filters: FC = function () {
     dispatch({ type: "UPDATE", payload: newFilters });
   }, [queryParams]);
 
-  const handleCategoryChange = (newCategory: Option) => {
-    dispatch({
-      type: "UPDATE",
-      payload: { category: newCategory },
-    });
-
-    if (newCategory?.value === Category.OTHER.toLowerCase()) {
-      filters.rollups = [];
-    }
-  };
-
   return (
     <Card compact>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
@@ -253,7 +242,16 @@ export const Filters: FC = function () {
               options={CATEGORY_FILTER_OPTIONS}
               selected={filters.category}
               width="w-[6.5rem]"
-              onChange={handleCategoryChange}
+              onChange={(newCategory: Option) => {
+                dispatch({
+                  type: "UPDATE",
+                  payload: { category: newCategory },
+                });
+
+                if (newCategory?.value === Category.OTHER.toLowerCase()) {
+                  dispatch({ type: "UPDATE", payload: { rollups: [] } });
+                }
+              }}
               placeholder="Category"
               clearable
             />
