@@ -260,7 +260,7 @@ export const Filters: FC = function () {
             <div className="w-full sm:w-full md:max-lg:w-full xl:w-[200px]">
               <RollupFilter
                 selected={filters.rollups}
-                isDisabled={
+                disabled={
                   filters.category
                     ? filters.category.value.toString().toUpperCase() ===
                       Category.OTHER

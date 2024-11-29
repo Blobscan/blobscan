@@ -11,7 +11,7 @@ import type { Rollup } from "~/types";
 import { capitalize, getChainIdByName } from "~/utils";
 import { RollupBadge } from "../Badges/RollupBadge";
 
-type RollupFilterProps = Pick<DropdownProps, "selected" | "isDisabled"> & {
+type RollupFilterProps = Pick<DropdownProps, "selected" | "disabled"> & {
   onChange(newRollups: Option[]): void;
   selected: Option[] | null;
 };
@@ -38,7 +38,7 @@ export const ROLLUP_OPTIONS = rollups.map(
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
   selected,
-  isDisabled,
+  disabled,
 }) {
   const noneIsSelected = useRef<boolean>(false);
 
@@ -70,7 +70,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
       onChange={handleOnChange}
       placeholder="Rollup"
       width="sm:w-full w-full xl:w-[200px] md:max-lg:w-full"
-      isDisabled={isDisabled}
+      disabled={disabled}
       clearable
       multiple
     />

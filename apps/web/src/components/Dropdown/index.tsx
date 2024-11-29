@@ -20,7 +20,7 @@ export interface Option {
 
 export interface DropdownProps {
   options: Option[];
-  isDisabled?: boolean;
+  disabled?: boolean;
   width?: string;
   placeholder?: string;
   clearable?: boolean;
@@ -38,7 +38,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
   width,
   onChange,
   clearable = false,
-  isDisabled = false,
+  disabled = false,
   placeholder = "Select an item",
 }) {
   const hasSelectedValue = Array.isArray(selected)
@@ -54,7 +54,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
       value={selected}
       onChange={onChange}
       multiple={multiple}
-      disabled={isDisabled}
+      disabled={disabled}
     >
       <div className="relative">
         <ListboxButton
@@ -97,7 +97,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
               ) : (
                 <div
                   className={cn("text-hint-light dark:text-hint-dark", {
-                    "text-opacity-40 dark:text-opacity-40": isDisabled,
+                    "text-opacity-40 dark:text-opacity-40": disabled,
                   })}
                 >
                   {placeholder}
@@ -119,7 +119,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
                 className={cn(
                   "pointer-events-none h-5 w-5 text-icon-light dark:text-icon-dark",
                   {
-                    "text-opacity-40 dark:text-opacity-40": isDisabled,
+                    "text-opacity-40 dark:text-opacity-40": disabled,
                   }
                 )}
                 aria-hidden="true"
