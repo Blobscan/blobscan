@@ -46,13 +46,13 @@ type FiltersAction<V extends keyof FiltersState> =
   | UpdateAction;
 
 const CATEGORY_FILTER_OPTIONS: DropdownProps["options"] = [
-  { value: Category.OTHER.toLowerCase(), label: capitalize(Category.OTHER) },
   { value: Category.ROLLUP.toLowerCase(), label: capitalize(Category.ROLLUP) },
+  { value: Category.OTHER.toLowerCase(), label: capitalize(Category.OTHER) },
 ];
 
 const INIT_STATE: FiltersState = {
   rollups: [],
-  category: null,
+  category: CATEGORY_FILTER_OPTIONS[0] || null,
   timestampRange: {
     endDate: null,
     startDate: null,
@@ -165,7 +165,6 @@ export const Filters: FC = function () {
   useEffect(() => {
     const { sort } = queryParams.paginationParams;
     const {
-      rollup,
       from,
       startDate,
       endDate,
@@ -173,10 +172,11 @@ export const Filters: FC = function () {
       endBlock,
       startSlot,
       endSlot,
+      category,
     } = queryParams.filterParams;
     const newFilters: Partial<FiltersState> = {};
 
-    if (rollup || from) {
+    if (from) {
       const rollupOptions = ROLLUP_OPTIONS.filter((opt) => {
         const fromAddresses = from?.split(FROM_ADDRESSES_FORMAT_SEPARATOR);
         const rollupOptionAddresses = Array.isArray(opt.value)
@@ -184,7 +184,6 @@ export const Filters: FC = function () {
           : [opt.value];
 
         return (
-          opt.value === rollup ||
           rollupOptionAddresses.filter((rollupAddress) =>
             fromAddresses?.includes(rollupAddress)
           ).length > 0
@@ -215,6 +214,10 @@ export const Filters: FC = function () {
         start: startSlot,
         end: endSlot,
       };
+    }
+
+    if (category) {
+      newFilters.category = { value: category, label: capitalize(category) };
     }
 
     if (sort) {
