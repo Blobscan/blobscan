@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import type { Category, Rollup as LowercaseRollup } from "~/types";
+import type { Category } from "~/types";
 
 export type Sort = "asc" | "desc";
 
 type FilterQueryParams = Partial<{
   from: string;
-  rollup: LowercaseRollup | "null";
   category: Category;
   startDate: Date;
   endDate: Date;
