@@ -3,6 +3,7 @@ import type { FC } from "react";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { Collapsable } from "~/components/Collapsable";
+import { Copyable } from "~/components/Copyable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { IconButton } from "~/components/IconButton";
 import { RollupIcon } from "~/components/RollupIcon";
@@ -219,9 +220,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 <React.Fragment key={`${versionedHash}-${index}`}>
                   <TableCol>{index}</TableCol>
                   <TableCol>
-                    <Link href={buildBlobRoute(versionedHash)}>
-                      {versionedHash}
-                    </Link>
+                    <Copyable
+                      value={versionedHash}
+                      tooltipText="Copy versioned hash"
+                    >
+                      <Link href={buildBlobRoute(versionedHash)}>
+                        {versionedHash}
+                      </Link>
+                    </Copyable>
                   </TableCol>
                   <TableCol>{formatBytes(size)}</TableCol>
                 </React.Fragment>

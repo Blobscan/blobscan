@@ -11,7 +11,8 @@ import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
 import { Card } from "~/components/Cards/Card";
-import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
+import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable } from "~/components/Copyable";
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps, Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
@@ -95,7 +96,12 @@ const Blob: NextPage = function () {
 
     detailsFields.push({
       name: "Versioned Hash",
-      value: <Copyable value={blob.versionedHash} />,
+      value: (
+        <Copyable
+          value={blob.versionedHash}
+          tooltipText="Copy versioned hash"
+        />
+      ),
     });
 
     if (blob.transactions[0]) {
@@ -110,11 +116,13 @@ const Blob: NextPage = function () {
     detailsFields.push(
       {
         name: "Commitment",
-        value: <Copyable value={blob.commitment} label="Copy commitment" />,
+        value: (
+          <Copyable value={blob.commitment} tooltipText="Copy commitment" />
+        ),
       },
       {
         name: "Proof",
-        value: <Copyable value={blob.proof} label="Copy proof" />,
+        value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
       }
     );
 
@@ -148,7 +156,7 @@ const Blob: NextPage = function () {
                   title={txHash}
                 >
                   {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
-                  <CopyToClipboard value={txHash} label="Copy tx hash" />
+                  <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
                 </div>
               </div>
               <div className="flex gap-1">
@@ -176,7 +184,10 @@ const Blob: NextPage = function () {
             <div>Blob Data</div>
             {blob && (
               <div className="flex items-center gap-4">
-                <CopyToClipboard label="Copy blob data" value={blob.data} />
+                <CopyToClipboard
+                  tooltipText="Copy blob data"
+                  value={blob.data}
+                />
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
                     View as:

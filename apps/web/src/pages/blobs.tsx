@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 
+import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -87,24 +88,36 @@ const Blobs: NextPage = function () {
             cells: [
               {
                 item: (
-                  <Link href={buildBlobRoute(versionedHash)}>
-                    {shortenAddress(versionedHash, 8)}
-                  </Link>
+                  <Copyable
+                    value={versionedHash}
+                    tooltipText="Copy versioned hash"
+                  >
+                    <Link href={buildBlobRoute(versionedHash)}>
+                      {shortenAddress(versionedHash, 8)}
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <Link href={buildTransactionRoute(txHash)}>
-                    {shortenAddress(txHash, 8)}
-                  </Link>
+                  <Copyable value={txHash} tooltipText="Copy transaction hash">
+                    <Link href={buildTransactionRoute(txHash)}>
+                      {shortenAddress(txHash, 8)}
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
                   <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                    <Link href={buildBlockRoute(blockNumber)}>
-                      {blockNumber}
-                    </Link>
+                    <Copyable
+                      value={blockNumber.toString()}
+                      tooltipText="Copy block number"
+                    >
+                      <Link href={buildBlockRoute(blockNumber)}>
+                        {blockNumber}
+                      </Link>
+                    </Copyable>
                   </div>
                 ),
               },

@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
-import { Copyable, CopyToClipboard } from "~/components/CopyToClipboard";
+import { CopyToClipboard } from "~/components/CopyToClipboard";
+import { Copyable } from "~/components/Copyable";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
 import { InfoGrid } from "~/components/InfoGrid";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -101,7 +102,7 @@ const Tx: NextPage = () => {
     detailsFields = [
       {
         name: "Hash",
-        value: <Copyable value={hash} label="Copy Hash" />,
+        value: <Copyable value={hash} tooltipText="Copy Hash" />,
       },
       { name: "Status", value: <BlockStatus blockNumber={blockNumber} /> },
       {
@@ -123,19 +124,17 @@ const Tx: NextPage = () => {
       {
         name: "From",
         value: (
-          <div className="flex items-center gap-2">
+          <Copyable value={from} tooltipText="Copy from address">
             <Link href={buildAddressRoute(from)}>{from}</Link>
-            <CopyToClipboard value={from} label="Copy from address" />
-          </div>
+          </Copyable>
         ),
       },
       {
         name: "To",
         value: (
-          <div className="flex items-center gap-2">
+          <Copyable value={to} tooltipText="Copy to address">
             <Link href={buildAddressRoute(to)}>{to}</Link>
-            <CopyToClipboard value={to} label="Copy to address" />
-          </div>
+          </Copyable>
         ),
       },
     ];
@@ -302,7 +301,7 @@ const Tx: NextPage = () => {
                       </Link>
                       <CopyToClipboard
                         value={"0x" + decodedData.l1OriginBlockHash}
-                        label="Copy L1 origin block hash"
+                        tooltipText="Copy L1 origin block hash"
                       />
                     </div>
                   ),
