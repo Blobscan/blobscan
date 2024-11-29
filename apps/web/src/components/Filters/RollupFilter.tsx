@@ -69,7 +69,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
       options={ROLLUP_OPTIONS}
       onChange={handleOnChange}
       placeholder="Rollup"
-      width="sm:w-full w-full xl:w-[200px] md:max-lg:w-full"
+      width="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]"
       disabled={disabled}
       clearable
       multiple

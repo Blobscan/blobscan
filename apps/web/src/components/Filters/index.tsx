@@ -231,31 +231,34 @@ export const Filters: FC = function () {
     <Card compact>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
         <div className="flex w-full flex-col items-center gap-2 md:flex-row">
-          <div className="flex w-full flex-row gap-2 xl:w-auto">
+          <div className="flex w-full flex-row gap-2">
             <SortToggle
               type={filters.sort}
               onChange={(newSort) => {
                 dispatch({ type: "UPDATE", payload: { sort: newSort } });
               }}
             />
-            <Dropdown
-              options={CATEGORY_FILTER_OPTIONS}
-              selected={filters.category}
-              width="w-[6.5rem]"
-              onChange={(newCategory: Option) => {
-                dispatch({
-                  type: "UPDATE",
-                  payload: { category: newCategory },
-                });
+            <div className="w-full min-w-[6.5rem]">
+              <Dropdown
+                options={CATEGORY_FILTER_OPTIONS}
+                selected={filters.category}
+                width="w-full"
+                onChange={(newCategory: Option) => {
+                  dispatch({
+                    type: "UPDATE",
+                    payload: { category: newCategory },
+                  });
 
-                if (newCategory?.value === Category.OTHER.toLowerCase()) {
-                  dispatch({ type: "UPDATE", payload: { rollups: [] } });
-                }
-              }}
-              placeholder="Category"
-              clearable
-            />
-            <div className="w-full sm:w-full md:max-lg:w-full xl:w-[200px]">
+                  if (newCategory?.value === Category.OTHER.toLowerCase()) {
+                    dispatch({ type: "UPDATE", payload: { rollups: [] } });
+                  }
+                }}
+                placeholder="Category"
+                clearable
+              />
+            </div>
+
+            <div className="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]">
               <RollupFilter
                 selected={filters.rollups}
                 disabled={
