@@ -8,7 +8,7 @@ import { t } from "../trpc-client";
 import {
   addressSchema,
   blockNumberSchema,
-  nullableCategorySchema,
+  categorySchema,
   nullableRollupSchema,
   slotSchema,
 } from "../utils";
@@ -62,7 +62,7 @@ export const withRollupFilterSchema = z.object({
 });
 
 export const withCategoryFilterSchema = z.object({
-  category: nullableCategorySchema.optional(),
+  category: categorySchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -221,10 +221,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     filters.transactionCategory = "ROLLUP";
   }
 
-  filters.transactionCategory =
-    category === "null"
-      ? undefined
-      : (category?.toUpperCase() as Category | undefined);
+  filters.transactionCategory = category?.toUpperCase() as Category | undefined;
 
   filters.sort = sort;
 
