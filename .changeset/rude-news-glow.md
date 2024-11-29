@@ -2,4 +2,4 @@
 "@blobscan/web": patch
 ---
 
-Removed Gitcoin Round 22 banner
+Improved the home lists spacing

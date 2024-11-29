@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
 
+import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
@@ -150,16 +151,26 @@ const Blocks: NextPage = function () {
                   },
                   {
                     item: (
-                      <Link href={buildTransactionRoute(transactionHash)}>
-                        {transactionHash}
-                      </Link>
+                      <Copyable
+                        value={transactionHash}
+                        tooltipText="Copy transaction hash"
+                      >
+                        <Link href={buildTransactionRoute(transactionHash)}>
+                          {transactionHash}
+                        </Link>
+                      </Copyable>
                     ),
                   },
                   {
                     item: (
-                      <Link href={buildBlobRoute(blobVersionedHash)}>
-                        {blobVersionedHash}
-                      </Link>
+                      <Copyable
+                        value={blobVersionedHash}
+                        tooltipText="Copy blob versioned hash"
+                      >
+                        <Link href={buildBlobRoute(blobVersionedHash)}>
+                          {blobVersionedHash}
+                        </Link>
+                      </Copyable>
                     ),
                   },
                 ],
@@ -198,7 +209,14 @@ const Blocks: NextPage = function () {
                 ),
               },
               {
-                item: <Link href={buildBlockRoute(number)}>{number}</Link>,
+                item: (
+                  <Copyable
+                    value={number.toString()}
+                    tooltipText="Copy block number"
+                  >
+                    <Link href={buildBlockRoute(number)}>{number}</Link>
+                  </Copyable>
+                ),
               },
               {
                 item: timestamp.fromNow(),

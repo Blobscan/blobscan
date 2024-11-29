@@ -77,8 +77,8 @@ export const ROLLUP_TO_ADDRESSES_MAPPINGS = new Map(
   )
 );
 
-export function getChainRollups(chainId: number): [string, Rollup][] {
-  const addressToRollupMapping = ADDRESS_TO_ROLLUP_MAPPINGS.get(chainId);
+export function getChainRollups(chainId: number): [Rollup, string[]][] {
+  const addressToRollupMapping = ROLLUP_TO_ADDRESSES_MAPPINGS.get(chainId);
 
   if (!addressToRollupMapping) {
     return [];

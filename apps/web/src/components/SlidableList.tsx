@@ -52,7 +52,7 @@ export const SlidableList: FC<SlidableListProps> = function ({
   }, [itemsProp]);
 
   return (
-    <div className="relative flex h-full w-full flex-col gap-3 overflow-hidden">
+    <div className="relative flex h-full w-full flex-col gap-3">
       {transitions((style, item) => (
         <animated.div
           style={{
