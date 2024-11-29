@@ -2,4 +2,4 @@
 "@blobscan/web": minor
 ---
 
-Added category column to blob and transaction tables.
+Added category column to blob, block and transaction tables.
