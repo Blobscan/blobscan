@@ -622,6 +622,32 @@ describe("Indexer router", async () => {
         ).resolves.toBeUndefined();
       });
 
+      it("should reindex a block previously marked as reorged correctly", async () => {
+        const blockHash = INPUT.block.hash;
+        const blockTxHashes = INPUT.transactions.map((tx) => tx.hash);
+
+        // Marked the block as reorged
+        await authorizedContext.prisma.transactionFork.createMany({
+          data: blockTxHashes.map((hash) => ({
+            hash,
+            blockHash,
+          })),
+        });
+
+        // Reindex the block
+        await authorizedCaller.indexer.indexData(INPUT);
+
+        const forkTxs = await authorizedContext.prisma.transactionFork.findMany(
+          {
+            where: {
+              blockHash,
+            },
+          }
+        );
+
+        expect(forkTxs, "Block still has forked transactions").toEqual([]);
+      });
+
       testValidError(
         "should fail when receiving an empty array of transactions",
         async () => {
@@ -690,6 +716,55 @@ describe("Indexer router", async () => {
           );
 
         expect(transactionForks).toEqual(expectedTransactionForks);
+      });
+
+      it("should clean up references to the reorged blocks", async () => {
+        const reorgedBlocks = await authorizedContext.prisma.block.findMany({
+          where: {
+            slot: {
+              in: input.reorgedSlots,
+            },
+          },
+        });
+
+        const reorgedBlockNumbers = reorgedBlocks.map((block) => block.number);
+
+        await authorizedCaller.indexer.handleReorgedSlots(input);
+
+        const reorgedBlocksAddressCategoryInfos =
+          await authorizedContext.prisma.addressCategoryInfo.findMany({
+            where: {
+              OR: [
+                {
+                  firstBlockNumberAsSender: {
+                    in: reorgedBlockNumbers,
+                  },
+                },
+                {
+                  firstBlockNumberAsReceiver: {
+                    in: reorgedBlockNumbers,
+                  },
+                },
+              ],
+            },
+          });
+        const blobsWithReorgedBlocks =
+          await authorizedContext.prisma.blob.findMany({
+            where: {
+              firstBlockNumber: {
+                in: reorgedBlockNumbers,
+              },
+            },
+          });
+
+        expect(
+          reorgedBlocksAddressCategoryInfos,
+          "Reorged block references in address category records found"
+        ).toEqual([]);
+        expect(
+          blobsWithReorgedBlocks,
+          "Reorged block references in blob records found"
+        ).toEqual([]);
       });
 
       it("should return the number of updated slots", async () => {

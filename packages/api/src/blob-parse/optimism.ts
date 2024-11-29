@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+import { logger } from "@blobscan/logger";
+
+import { autocompleteBlockHash } from "../utils/autocompleteBlockHash";
+
 export const OptimismDecodedDataSchema = z.object({
   timestampSinceL2Genesis: z.number(),
   lastL1OriginNumber: z.number(),
@@ -13,7 +17,9 @@ export const OptimismDecodedDataSchema = z.object({
 
 type OptimismDecodedData = z.infer<typeof OptimismDecodedDataSchema>;
 
-export function parseDecodedData(data: string): OptimismDecodedData | null {
+export async function parseOptimismDecodedData(
+  data: string
+): Promise<OptimismDecodedData | null> {
   let json;
 
   try {
@@ -26,6 +32,16 @@ export function parseDecodedData(data: string): OptimismDecodedData | null {
 
   if (!decoded.success) {
     return null;
+  }
+
+  const hash = await autocompleteBlockHash(decoded.data.l1OriginBlockHash);
+
+  if (hash) {
+    decoded.data.l1OriginBlockHash = hash;
+  } else {
+    logger.error(
+      `Failed to get full block hash for L1 origin block hash: ${decoded.data.l1OriginBlockHash}`
+    );
   }
 
   return decoded.data;

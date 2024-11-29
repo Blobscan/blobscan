@@ -90,10 +90,12 @@ export const getAll = publicProcedure
       countOp,
     ]);
 
+    const transactions = await Promise.all(
+      queriedTxs.map(addDerivedFieldsToTransaction).map(serializeTransaction)
+    );
+
     return {
-      transactions: queriedTxs
-        .map(addDerivedFieldsToTransaction)
-        .map(serializeTransaction),
+      transactions,
       ...(count ? { totalTransactions: txCountOrStats } : {}),
     };
   });

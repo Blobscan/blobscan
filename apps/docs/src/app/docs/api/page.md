@@ -13,5 +13,5 @@ are protected with a shared secret that is used for digitally signing JSON Web T
 This is what the `SECRET_KEY` environment variable is for.
 
 {% callout title="Swagger UI" %}
-[Explorer the API documentation.](https://api.blobscan.com/)
+[Explore the API documentation.](https://api.blobscan.com/)
 {% /callout %}

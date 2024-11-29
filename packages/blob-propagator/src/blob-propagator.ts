@@ -48,10 +48,6 @@ async function createBlobPropagator(
 let blobPropagator: BlobPropagator | undefined;
 
 async function getBlobPropagator() {
-  if (!env.BLOB_PROPAGATOR_ENABLED) {
-    return;
-  }
-
   if (!blobPropagator) {
     const blobStorageManager = await getBlobStorageManager();
 

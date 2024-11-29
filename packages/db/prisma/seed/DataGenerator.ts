@@ -250,8 +250,10 @@ export class DataGenerator {
     });
   }
 
-  generateBlobData(sizes: number[]): string[] {
-    return sizes.map((s) => faker.string.hexadecimal({ length: s }));
+  generateBlobData(bytesSize: number): Buffer {
+    const hex = faker.string.hexadecimal({ length: bytesSize * 2 });
+
+    return Buffer.from(hex.slice(2), "hex");
   }
 
   generateDBFullBlocks({

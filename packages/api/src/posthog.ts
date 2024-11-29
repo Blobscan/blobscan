@@ -13,3 +13,22 @@ export function PostHogClient(): PostHog | null {
     flushInterval: 0,
   });
 }
+
+const POSTHOG_IGNORED_ENDPOINTS = [
+  "/blockchain-sync-stat",
+  "/indexer",
+];
+
+export function shouldIgnoreURL(url: string | undefined) {
+  if (url === undefined) {
+    return false;
+  }
+
+  for (const endpoint of POSTHOG_IGNORED_ENDPOINTS) {
+    if (url.includes(endpoint)) {
+      return true;
+    }
+  }
+
+  return false;
+}

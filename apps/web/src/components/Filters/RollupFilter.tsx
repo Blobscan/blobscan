@@ -19,18 +19,21 @@ type RollupFilterProps = Pick<DropdownProps, "selected" | "isDisabled"> & {
 const chainId = getChainIdByName(env.NEXT_PUBLIC_NETWORK_NAME);
 const rollups = chainId ? getChainRollups(chainId) : [];
 
-export const ROLLUP_OPTIONS: Option[] = rollups.map(
-  ([rollupAddress, rollupName]) => {
-    return {
-      value: rollupAddress,
+export const ROLLUP_OPTIONS = rollups.map(
+  ([name, addresses]) =>
+    ({
+      value: addresses,
       selectedLabel: (
-        <RollupBadge rollup={rollupName.toLowerCase() as Rollup} size="sm" />
+        <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
       ),
-      prefix: <RollupIcon rollup={rollupName.toLowerCase() as Rollup} />,
-      label: capitalize(rollupName),
-    };
-  }
-);
+      label: (
+        <div className="flex flex-row items-center gap-2">
+          <RollupIcon rollup={name.toLowerCase() as Rollup} />
+          <div>{capitalize(name)}</div>
+        </div>
+      ),
+    } satisfies Option)
+) satisfies Option[];
 
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
