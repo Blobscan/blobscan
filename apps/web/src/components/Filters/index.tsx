@@ -52,7 +52,7 @@ const CATEGORY_FILTER_OPTIONS: DropdownProps["options"] = [
 
 const INIT_STATE: FiltersState = {
   rollups: [],
-  category: CATEGORY_FILTER_OPTIONS[0] || null,
+  category: null,
   timestampRange: {
     endDate: null,
     startDate: null,
