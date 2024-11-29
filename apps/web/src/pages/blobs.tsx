@@ -15,7 +15,6 @@ import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
-  capitalize,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -25,6 +24,10 @@ import {
 const BLOBS_TABLE_HEADERS = [
   {
     cells: [
+      {
+        item: "",
+        className: "w-[40px]",
+      },
       {
         item: "Versioned Hash",
         className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
@@ -40,10 +43,6 @@ const BLOBS_TABLE_HEADERS = [
       {
         item: "Timestamp",
         className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
-      },
-      {
-        item: "Category",
-        className: "w-[90px]",
       },
       {
         item: "Size",
@@ -93,6 +92,16 @@ const Blobs: NextPage = function () {
           }) => ({
             cells: [
               {
+                item:
+                  transaction?.category &&
+                  transaction.category === "rollup" &&
+                  transaction.rollup ? (
+                    <RollupIcon rollup={transaction.rollup} />
+                  ) : (
+                    <></>
+                  ),
+              },
+              {
                 item: (
                   <Link href={buildBlobRoute(versionedHash)}>
                     {shortenAddress(versionedHash, 8)}
@@ -120,18 +129,6 @@ const Blobs: NextPage = function () {
                   <div className="whitespace-break-spaces">
                     {formatTimestamp(blockTimestamp, true)}
                   </div>
-                ),
-              },
-              {
-                item: transaction?.category ? (
-                  <div className="flex items-center gap-2">
-                    <span>{capitalize(transaction.category)}</span>
-                    {transaction.rollup && (
-                      <RollupIcon rollup={transaction.rollup} />
-                    )}
-                  </div>
-                ) : (
-                  <></>
                 ),
               },
               {
