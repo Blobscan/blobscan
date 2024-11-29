@@ -262,10 +262,8 @@ export const Filters: FC = function () {
               <RollupFilter
                 selected={filters.rollups}
                 disabled={
-                  filters.category
-                    ? filters.category.value.toString().toUpperCase() ===
-                      Category.OTHER
-                    : false
+                  filters.category?.value.toString().toUpperCase() !==
+                  Category.ROLLUP
                 }
                 onChange={(newRollups) =>
                   dispatch({ type: "UPDATE", payload: { rollups: newRollups } })
