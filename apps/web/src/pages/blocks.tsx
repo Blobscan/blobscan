@@ -143,7 +143,7 @@ const Blocks: NextPage = function () {
                 cells: [
                   {
                     item:
-                      category && category === "rollup" && rollup ? (
+                      category === "rollup" && rollup ? (
                         <RollupIcon rollup={rollup} />
                       ) : (
                         <></>

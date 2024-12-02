@@ -94,9 +94,7 @@ const Blobs: NextPage = function () {
             cells: [
               {
                 item:
-                  transaction?.category &&
-                  transaction.category === "rollup" &&
-                  transaction.rollup ? (
+                  transaction?.category === "rollup" && transaction.rollup ? (
                     <RollupIcon rollup={transaction.rollup} />
                   ) : (
                     <></>
