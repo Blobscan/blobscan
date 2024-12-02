@@ -197,7 +197,7 @@ const Blocks: NextPage = function () {
                       return tx.rollup ? (
                         <div
                           key={i}
-                          className="-ml-1 -translate-y-1 scale-100 first-of-type:ml-0 hover:scale-125 "
+                          className="-ml-1 -translate-y-1 first-of-type:ml-0"
                         >
                           <RollupIcon rollup={tx.rollup} />
                         </div>
