@@ -243,15 +243,19 @@ export const Filters: FC = function () {
                 options={CATEGORY_FILTER_OPTIONS}
                 selected={filters.category}
                 width="w-full"
-                onChange={(newCategory: Option) => {
-                  dispatch({
-                    type: "UPDATE",
-                    payload: { category: newCategory },
-                  });
+                onChange={(newCategory: Option | null) => {
+                  const newFilters: Partial<FiltersState> = {
+                    category: newCategory,
+                  };
 
                   if (newCategory?.value === Category.OTHER.toLowerCase()) {
-                    dispatch({ type: "UPDATE", payload: { rollups: [] } });
+                    newFilters.rollups = [];
                   }
+
+                  dispatch({
+                    type: "UPDATE",
+                    payload: newFilters,
+                  });
                 }}
                 placeholder="Category"
                 clearable
