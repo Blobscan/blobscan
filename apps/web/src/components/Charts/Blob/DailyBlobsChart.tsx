@@ -2,13 +2,13 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { DailyBlobStats } from "~/types";
+import type { DailyStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyBlobsChartProps = {
-  days: DailyBlobStats["days"];
-  blobs: DailyBlobStats["totalBlobs"];
-  uniqueBlobs: DailyBlobStats["totalUniqueBlobs"];
+  days: DailyStats["day"][];
+  blobs: DailyStats["totalBlobs"][];
+  uniqueBlobs: DailyStats["totalUniqueBlobs"][];
 };
 
 export const DailyBlobsChart: FC<Partial<DailyBlobsChartProps>> = function ({

@@ -26,24 +26,23 @@ import { api } from "~/api-client";
 import type { DailyStats } from "~/types";
 import { deserializeOverallStats } from "~/utils";
 
-type SingleDailyStats = DailyStats[number];
 type ArrayfiedDailyStats = {
-  days: SingleDailyStats["day"][];
-  totalBlocks: SingleDailyStats["totalBlocks"][];
-  totalBlobGasUsed: SingleDailyStats["totalBlobGasUsed"][];
-  totalBlobAsCalldataGasUsed: SingleDailyStats["totalBlobAsCalldataGasUsed"][];
-  totalBlobFees: SingleDailyStats["totalBlobFee"][];
-  totalBlobAsCalldataFees: SingleDailyStats["totalBlobAsCalldataFee"][];
-  avgBlobFees: SingleDailyStats["avgBlobFee"][];
-  avgBlobAsCalldataFees: SingleDailyStats["avgBlobAsCalldataFee"][];
-  avgBlobGasPrices: SingleDailyStats["avgBlobGasPrice"][];
-  totalTransactions: SingleDailyStats["totalTransactions"][];
-  totalUniqueSenders: SingleDailyStats["totalUniqueSenders"][];
-  totalUniqueReceivers: SingleDailyStats["totalUniqueReceivers"][];
-  avgMaxBlobGasFees: SingleDailyStats["avgMaxBlobGasFee"][];
-  totalBlobs: SingleDailyStats["totalBlobs"][];
-  totalUniqueBlobs: SingleDailyStats["totalUniqueBlobs"][];
-  totalBlobSizes: SingleDailyStats["totalBlobSize"][];
+  days: DailyStats["day"][];
+  totalBlocks: DailyStats["totalBlocks"][];
+  totalBlobGasUsed: DailyStats["totalBlobGasUsed"][];
+  totalBlobAsCalldataGasUsed: DailyStats["totalBlobAsCalldataGasUsed"][];
+  totalBlobFees: DailyStats["totalBlobFee"][];
+  totalBlobAsCalldataFees: DailyStats["totalBlobAsCalldataFee"][];
+  avgBlobFees: DailyStats["avgBlobFee"][];
+  avgBlobAsCalldataFees: DailyStats["avgBlobAsCalldataFee"][];
+  avgBlobGasPrices: DailyStats["avgBlobGasPrice"][];
+  totalTransactions: DailyStats["totalTransactions"][];
+  totalUniqueSenders: DailyStats["totalUniqueSenders"][];
+  totalUniqueReceivers: DailyStats["totalUniqueReceivers"][];
+  avgMaxBlobGasFees: DailyStats["avgMaxBlobGasFee"][];
+  totalBlobs: DailyStats["totalBlobs"][];
+  totalUniqueBlobs: DailyStats["totalUniqueBlobs"][];
+  totalBlobSizes: DailyStats["totalBlobSize"][];
 };
 
 const Stats = function () {

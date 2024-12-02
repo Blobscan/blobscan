@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import type { Prisma, TransactionDailyStats } from "@blobscan/db";
+import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { Category, Rollup } from "../enums";
@@ -110,10 +110,8 @@ describe("Transaction router", async () => {
 
     const STATS_TOTAL_TRANSACTIONS = 999999;
 
-    async function createNewDailyStats(
-      dailyStats: Partial<TransactionDailyStats>
-    ) {
-      const data: Prisma.TransactionDailyStatsCreateManyInput = {
+    async function createNewDailyStats(dailyStats: Partial<DailyStats>) {
+      const data: Prisma.DailyStatsCreateManyInput = {
         day: new Date(),
         category: null,
         rollup: null,

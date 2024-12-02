@@ -148,20 +148,20 @@ describe("Daily command", () => {
 
         await daily(["--from", fromDate, "--to", toDate, "--delete"]);
 
-        const blobDailyStats = await getDailyStatsByDateRange({
+        const dailyStats = await getDailyStatsByDateRange({
           fromDate,
           toDate,
         });
 
-        expect(blobDailyStats).toEqual([]);
+        expect(dailyStats).toEqual([]);
       });
 
       it("should delete all data when no period is provided", async () => {
         await daily(["--delete"]);
 
-        const blobDailyStats = await prisma.blockDailyStats.findMany();
+        const dailyStats = await prisma.dailyStats.findMany();
 
-        expect(blobDailyStats, "Block daily stats should be empty").toEqual([]);
+        expect(dailyStats, "Block daily stats should be empty").toEqual([]);
       });
 
       it("should delete data until the latest date when no end date is provided", async () => {
@@ -169,11 +169,11 @@ describe("Daily command", () => {
 
         await daily(["--from", fromDate, "--delete"]);
 
-        const blockDailyStats = await getDailyStatsByDateRange({
+        const dailyStats = await getDailyStatsByDateRange({
           fromDate,
         });
 
-        expect(blockDailyStats).toEqual([]);
+        expect(dailyStats).toEqual([]);
       });
 
       it("should delete data from the earliest date when no start date is provided", async () => {
@@ -181,11 +181,11 @@ describe("Daily command", () => {
 
         await daily(["--to", toDate, "--delete"]);
 
-        const blockDailyStats = await getDailyStatsByDateRange({
+        const dailyStats = await getDailyStatsByDateRange({
           toDate,
         });
 
-        expect(blockDailyStats).toEqual([]);
+        expect(dailyStats).toEqual([]);
       });
 
       it("should fail when starting date is after ending date", async () => {

@@ -19,6 +19,6 @@ export type DailyBlockStats = RouterOutputs["stats"]["getBlockDailyStats"];
 export type DailyTransactionStats =
   RouterOutputs["stats"]["getTransactionDailyStats"];
 
-export type DailyStats = RouterOutputs["stats"]["getDailyStats"];
+export type DailyStats = RouterOutputs["stats"]["getDailyStats"][number];
 
 export type OverallStats = RouterOutputs["stats"]["getOverallStats"];

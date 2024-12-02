@@ -98,7 +98,7 @@ async function incrementOverallStats(
     commandLog(
       "info",
       "overall",
-      "increment",
+      "aggregate",
       `${blockRange.from}-${blockRange.to}`
     );
 
@@ -111,7 +111,7 @@ async function incrementOverallStats(
       commandLog(
         "debug",
         "overall",
-        "increment",
+        "aggregate",
         `stats calculated for block range ${formattedBlockRange} (${batch})`
       );
     }
@@ -181,7 +181,7 @@ const overall: Command = async function (argv) {
     commandLog(
       "info",
       "overall",
-      "increment",
+      "aggregate",
       "Skipping as there as no blocks have been indexed yet"
     );
 
@@ -199,7 +199,7 @@ const overall: Command = async function (argv) {
     commandLog(
       "info",
       "overall",
-      "increment",
+      "aggregate",
       `Skipping as there is no new finalized blocks (Last processed finalized block: ${lastSyncedFinalizedBlock.toLocaleString()})`
     );
 
@@ -214,7 +214,7 @@ const overall: Command = async function (argv) {
   commandLog(
     "info",
     "overall",
-    "increment",
+    "aggregate",
     `All stats incremented successfully from block ${fromBlockNumber.toLocaleString()} to ${targetBlockNumber.toLocaleString()}`
   );
 

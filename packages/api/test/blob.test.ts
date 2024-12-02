@@ -1,7 +1,7 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import type { BlobDailyStats, Prisma } from "@blobscan/db";
+import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { Category, Rollup } from "../enums";
@@ -142,8 +142,8 @@ describe("Blob router", async () => {
     // instead of performing a direct database count.
     const STATS_TOTAL_BLOBS = 999999;
 
-    async function createNewDailyStats(dailyStats: Partial<BlobDailyStats>) {
-      const data: Prisma.BlobDailyStatsCreateInput = {
+    async function createNewDailyStats(dailyStats: Partial<DailyStats>) {
+      const data: Prisma.DailyStatsCreateInput = {
         day: new Date(),
         category: null,
         rollup: null,
