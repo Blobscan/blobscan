@@ -1,5 +1,24 @@
 # @blobscan/web
 
+## 0.17.0
+
+### Minor Changes
+
+- [#602](https://github.com/Blobscan/blobscan/pull/602) [`5272928`](https://github.com/Blobscan/blobscan/commit/52729282f0feefbb6cf268da73930c4f60462f21) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Enhanced feedback modal by allowing users to report issues on Github
+
+### Patch Changes
+
+- [#608](https://github.com/Blobscan/blobscan/pull/608) [`4226258`](https://github.com/Blobscan/blobscan/commit/422625886481de3ca737b6edfe0afb5fe4fe1427) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved decoding display for Optimism blobs; removed truncated Parent L2 block hash link, fixed L1 origin block redirection, and corrected timestamp.
+
+- [#598](https://github.com/Blobscan/blobscan/pull/598) [`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76) Thanks [@PJColombo](https://github.com/PJColombo)! - Standarized y-axis units and displayed full amounts on tooltips on charts
+
+- [#627](https://github.com/Blobscan/blobscan/pull/627) [`f21f6fc`](https://github.com/Blobscan/blobscan/commit/f21f6fcb752f6ce5f25339b426e1dcbb29d9d280) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed an issue where the search result wasn't being displayed properly
+
+- [#598](https://github.com/Blobscan/blobscan/pull/598) [`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed full amounts on chart tooltips
+
+- Updated dependencies [[`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76)]:
+  - @blobscan/eth-format@0.1.0
+
 ## 0.16.0
 
 ### Minor Changes

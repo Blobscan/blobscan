@@ -1,5 +1,5 @@
-import type { FormatOptions } from "@blobscan/eth-units";
-import { formatWei } from "@blobscan/eth-units";
+import type { FormatOptions } from "@blobscan/eth-format";
+import { formatWei } from "@blobscan/eth-format";
 
 import { EtherUnitDisplay } from "./EtherUnitDisplay";
 

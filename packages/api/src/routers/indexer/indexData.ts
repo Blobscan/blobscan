@@ -125,6 +125,13 @@ export const indexData = jwtAuthedProcedure
       const dbAddressCategoryInfos = createDBAddressCategoryInfo(dbTxs);
 
       operations.push(
+        // We may be indexing a block that was marked as a reorg previously,
+        // so we delete any possible rows from the fork table
+        prisma.transactionFork.deleteMany({
+          where: {
+            blockHash: input.block.hash,
+          },
+        }),
         prisma.block.upsert({
           where: { hash: input.block.hash },
           create: {

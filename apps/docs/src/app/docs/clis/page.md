@@ -8,8 +8,8 @@ nextjs:
 
 Blobscan offers the following commands:
 
-- [`@blobscan/blob-propagation-jobs-cli`](https://github.com/Blobscan/blobscan/tree/next/clis/blob-propagation-jobs-cli): to run the blob propagation jobs.
-- [`@blobscan/stats-aggregation-cli`](https://github.com/Blobscan/blobscan/tree/next/clis/stats-aggregation-cli): to run the stats aggregation jobs.
+- [`@blobscan/blob-propagation-jobs-cli`](https://github.com/Blobscan/blobscan/tree/main/clis/blob-propagation-jobs-cli): to run the blob propagation jobs.
+- [`@blobscan/stats-aggregation-cli`](https://github.com/Blobscan/blobscan/tree/main/clis/stats-aggregation-cli): to run the stats aggregation jobs.
 
 ## Blob propagation
 

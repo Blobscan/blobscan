@@ -5,7 +5,7 @@ import cn from "classnames";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
-import { prettyFormatWei } from "@blobscan/eth-units";
+import { prettyFormatWei } from "@blobscan/eth-format";
 
 import {
   formatBytes,
