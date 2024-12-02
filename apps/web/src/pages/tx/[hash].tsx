@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -280,30 +281,15 @@ const Tx: NextPage = () => {
                 },
                 {
                   name: "Parent L2 block hash",
-                  value: (
-                    <div className="flex items-center gap-2">
-                      {"0x" + decodedData.parentL2BlockHash + "..."}
-                    </div>
-                  ),
+                  value: "0x" + decodedData.parentL2BlockHash + "...",
                 },
                 {
                   name: "L1 origin block hash",
                   value: (
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={
-                          "https://etherscan.io/block/" +
-                          "0x" +
-                          decodedData.l1OriginBlockHash
-                        }
-                      >
-                        {"0x" + decodedData.l1OriginBlockHash}
-                      </Link>
-                      <CopyToClipboard
-                        value={"0x" + decodedData.l1OriginBlockHash}
-                        tooltipText="Copy L1 origin block hash"
-                      />
-                    </div>
+                    <BlockHash
+                      fullHash={decodedData.fullL1OriginBlockHash}
+                      partialHash={decodedData.l1OriginBlockHash}
+                    />
                   ),
                 },
                 {
@@ -336,6 +322,31 @@ const Tx: NextPage = () => {
         </div>
       </Card>
     </>
+  );
+};
+
+type BlockHashProps = {
+  partialHash: string;
+  fullHash: string | undefined;
+};
+
+const BlockHash: FC<BlockHashProps> = ({ fullHash, partialHash }) => {
+  if (fullHash === undefined) {
+    return "0x" + partialHash + "...";
+  }
+
+  const prefixedFullHash = "0x" + fullHash;
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link href={`https://blobscan.com/block/${prefixedFullHash}`}>
+        {prefixedFullHash}
+      </Link>
+      <CopyToClipboard
+        value={prefixedFullHash}
+        tooltipText="Copy L1 origin block hash"
+      />
+    </div>
   );
 };
 
