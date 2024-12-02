@@ -195,10 +195,7 @@ const Blocks: NextPage = function () {
                   <div className="relative flex">
                     {transactions.map((tx, i) => {
                       return tx.rollup ? (
-                        <div
-                          key={i}
-                          className="-ml-1 -translate-y-1 first-of-type:ml-0"
-                        >
+                        <div key={i} className="-ml-1 first-of-type:ml-0">
                           <RollupIcon rollup={tx.rollup} />
                         </div>
                       ) : (
