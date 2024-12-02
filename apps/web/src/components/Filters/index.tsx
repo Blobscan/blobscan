@@ -230,7 +230,7 @@ export const Filters: FC = function () {
   return (
     <Card compact>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:gap-0">
-        <div className="flex w-full flex-col items-center gap-2 md:flex-row">
+        <div className="flex w-full flex-col items-center gap-2 md:w-auto md:flex-row">
           <div className="flex w-full flex-row gap-2">
             <SortToggle
               type={filters.sort}
@@ -238,7 +238,7 @@ export const Filters: FC = function () {
                 dispatch({ type: "UPDATE", payload: { sort: newSort } });
               }}
             />
-            <div className="w-full min-w-[6.5rem]">
+            <div className="w-full md:min-w-[6.5rem]">
               <Dropdown
                 options={CATEGORY_FILTER_OPTIONS}
                 selected={filters.category}
