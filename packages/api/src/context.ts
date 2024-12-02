@@ -9,12 +9,15 @@ import type {
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
-import { getBlobPropagator } from "@blobscan/blob-propagator";
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
+import { BlobPropagator, getBlobPropagator } from "@blobscan/blob-propagator";
+import {
+  BlobStorageManager,
+  getBlobStorageManager,
+} from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import { PostHogClient } from "./posthog";
+import { PostHogClient, shouldIgnoreURL } from "./posthog";
 
 type NextHTTPRequest = CreateNextContextOptions["req"];
 
@@ -50,7 +53,16 @@ export function getJWTFromRequest(req: NodeHTTPRequest | NextHTTPRequest) {
   }
 }
 
-export async function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
+export type TRPCInnerContext = {
+  prisma: typeof prisma;
+  blobStorageManager: BlobStorageManager;
+  blobPropagator: BlobPropagator | undefined;
+  apiClient: string | null | undefined;
+};
+
+export async function createTRPCInnerContext(
+  opts?: CreateInnerContextOptions
+): Promise<TRPCInnerContext> {
   const blobStorageManager = await getBlobStorageManager();
   const blobPropagator = await getBlobPropagator();
 
@@ -89,7 +101,7 @@ export function createTRPCContext(
 
       const posthog = PostHogClient();
 
-      if (posthog) {
+      if (posthog && !shouldIgnoreURL(opts.req.url)) {
         const cookies = cookie.parse(opts.req.headers.cookie ?? "");
 
         let distinctId = cookies["distinctId"];
@@ -101,6 +113,8 @@ export function createTRPCContext(
             "Set-Cookie",
             cookie.serialize("distinctId", distinctId, {
               maxAge: 60 * 60 * 24 * 365,
+              httpOnly: false,
+              path: "/",
             })
           );
         }
@@ -139,7 +153,4 @@ export function createTRPCContext(
 
 export type TRPCContext = inferAsyncReturnType<
   ReturnType<typeof createTRPCContext>
->;
-export type TRPCInnerContext = inferAsyncReturnType<
-  typeof createTRPCInnerContext
 >;

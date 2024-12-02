@@ -163,7 +163,6 @@ function OverallStats() {
               ? BigInt(overallStats.totalBlobAsCalldataGasUsed) -
                 BigInt(overallStats.totalBlobGasUsed)
               : undefined,
-            type: "ethereum",
           }}
           // secondaryMetric={
           //   overallStats &&

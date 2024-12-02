@@ -176,7 +176,7 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
             header={
-              <div className=" flex flex-wrap items-center justify-between gap-5">
+              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blocks</div>
                 <Button
                   variant="outline"
@@ -188,34 +188,28 @@ const Home: NextPage = () => {
             }
             emptyState="No blocks"
           >
-            <div className="h-[660px] sm:h-[630px]">
-              {latestBlocksLoading ? (
-                <div className="flex flex-col gap-4">
-                  {Array(LATEST_ITEMS_LENGTH)
-                    .fill(0)
-                    .map((_, i) => (
-                      <BlockCard className={CARD_HEIGHT} key={i} />
-                    ))}
-                </div>
-              ) : (
-                <SlidableList
-                  items={blocks?.map((b) => ({
-                    id: b.hash,
-                    element: (
-                      <BlockCard
-                        className={CARD_HEIGHT}
-                        block={b}
-                        key={b.hash}
-                      />
-                    ),
-                  }))}
-                />
-              )}
-            </div>
+            {latestBlocksLoading ? (
+              <div className="flex flex-col gap-4">
+                {Array(LATEST_ITEMS_LENGTH)
+                  .fill(0)
+                  .map((_, i) => (
+                    <BlockCard className={CARD_HEIGHT} key={i} />
+                  ))}
+              </div>
+            ) : (
+              <SlidableList
+                items={blocks?.map((b) => ({
+                  id: b.hash,
+                  element: (
+                    <BlockCard className={CARD_HEIGHT} block={b} key={b.hash} />
+                  ),
+                }))}
+              />
+            )}
           </Card>
           <Card
             header={
-              <div className="flex-warp flex items-center justify-between gap-5">
+              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
@@ -228,48 +222,46 @@ const Home: NextPage = () => {
             }
             emptyState="No transactions"
           >
-            <div className="h-[630px]">
-              {latestBlocksLoading ? (
-                <div className="flex flex-col gap-3">
-                  {Array(LATEST_ITEMS_LENGTH)
-                    .fill(0)
-                    .map((_, i) => (
-                      <BlobTransactionCard
-                        className={CARD_HEIGHT}
-                        compact
-                        key={i}
-                      />
-                    ))}
-                </div>
-              ) : (
-                <SlidableList
-                  items={transactions.map((tx) => ({
-                    id: tx.hash,
-                    element: (
-                      <BlobTransactionCard
-                        className={CARD_HEIGHT}
-                        key={tx.hash}
-                        transaction={{
-                          from: tx.from,
-                          to: tx.to,
-                          hash: tx.hash,
-                          rollup: tx.rollup,
-                          blockTimestamp: tx.blockTimestamp,
-                          blobGasBaseFee: tx.blobGasBaseFee,
-                          blobGasMaxFee: tx.blobGasMaxFee,
-                        }}
-                        blobs={tx.blobs}
-                        compact
-                      />
-                    ),
-                  }))}
-                />
-              )}
-            </div>
+            {latestBlocksLoading ? (
+              <div className="flex flex-col gap-3">
+                {Array(LATEST_ITEMS_LENGTH)
+                  .fill(0)
+                  .map((_, i) => (
+                    <BlobTransactionCard
+                      className={CARD_HEIGHT}
+                      compact
+                      key={i}
+                    />
+                  ))}
+              </div>
+            ) : (
+              <SlidableList
+                items={transactions.map((tx) => ({
+                  id: tx.hash,
+                  element: (
+                    <BlobTransactionCard
+                      className={CARD_HEIGHT}
+                      key={tx.hash}
+                      transaction={{
+                        from: tx.from,
+                        to: tx.to,
+                        hash: tx.hash,
+                        rollup: tx.rollup,
+                        blockTimestamp: tx.blockTimestamp,
+                        blobGasBaseFee: tx.blobGasBaseFee,
+                        blobGasMaxFee: tx.blobGasMaxFee,
+                      }}
+                      blobs={tx.blobs}
+                      compact
+                    />
+                  ),
+                }))}
+              />
+            )}
           </Card>
           <Card
             header={
-              <div className="flex items-center justify-between gap-5">
+              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"
@@ -281,36 +273,34 @@ const Home: NextPage = () => {
             }
             emptyState="No blobs"
           >
-            <div className="h-[650px] sm:h-[630px]">
-              {latestBlocksLoading ? (
-                <div className="flex flex-col gap-3">
-                  {Array(LATEST_ITEMS_LENGTH)
-                    .fill(0)
-                    .map((_, i) => (
-                      <BlobTransactionCard
-                        className={CARD_HEIGHT}
-                        compact
-                        key={i}
-                      />
-                    ))}
-                </div>
-              ) : (
-                <SlidableList
-                  items={blobs.map((b) => ({
-                    id: b.versionedHash,
-                    element: (
-                      <BlobCard
-                        blob={b}
-                        transactions={[b.tx]}
-                        compact
-                        key={b.versionedHash}
-                        className={CARD_HEIGHT}
-                      />
-                    ),
-                  }))}
-                />
-              )}
-            </div>
+            {latestBlocksLoading ? (
+              <div className="flex flex-col gap-3">
+                {Array(LATEST_ITEMS_LENGTH)
+                  .fill(0)
+                  .map((_, i) => (
+                    <BlobTransactionCard
+                      className={CARD_HEIGHT}
+                      compact
+                      key={i}
+                    />
+                  ))}
+              </div>
+            ) : (
+              <SlidableList
+                items={blobs.map((b) => ({
+                  id: b.versionedHash,
+                  element: (
+                    <BlobCard
+                      blob={b}
+                      transactions={[b.tx]}
+                      compact
+                      key={b.versionedHash}
+                      className={CARD_HEIGHT}
+                    />
+                  ),
+                }))}
+              />
+            )}
           </Card>
         </div>
       </div>

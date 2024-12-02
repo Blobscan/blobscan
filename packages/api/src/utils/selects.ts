@@ -25,4 +25,6 @@ export const blobsOnTransactionsReferencesSelect =
 export const transactionReferenceSelect =
   Prisma.validator<Prisma.TransactionSelect>()({
     hash: true,
+    rollup: true,
+    category: true,
   });

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { NextPage } from "next";
 
+import { Copyable } from "~/components/Copyable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
@@ -38,11 +39,13 @@ type Transaction = Pick<
   | "blobGasMaxFee"
   | "block"
   | "blockTimestamp"
+  | "category"
 > & { blobsLength?: number };
 
 export const TRANSACTIONS_TABLE_HEADERS = [
   {
     cells: [
+      { item: "", className: "w-[40px]" },
       {
         item: "Hash",
         className: "w-[150px]",
@@ -63,10 +66,7 @@ export const TRANSACTIONS_TABLE_HEADERS = [
         item: "To",
         className: "w-[148px]",
       },
-      {
-        item: "Rollup",
-        className: "w-[72px]",
-      },
+
       {
         item: "Blob Base Fee",
         className: "w-[172px]",
@@ -127,6 +127,7 @@ const Txs: NextPage = function () {
             to,
             blobs,
             rollup,
+            category,
             blockNumber,
             blobGasBaseFee,
             blobGasMaxFee,
@@ -166,9 +167,14 @@ const Txs: NextPage = function () {
                   cells: [
                     {
                       item: (
-                        <Link href={buildBlobRoute(b.versionedHash)}>
-                          {b.versionedHash}
-                        </Link>
+                        <Copyable
+                          value={b.versionedHash}
+                          tooltipText="Copy blob versioned hash"
+                        >
+                          <Link href={buildBlobRoute(b.versionedHash)}>
+                            {b.versionedHash}
+                          </Link>
+                        </Copyable>
                       ),
                     },
                     {
@@ -197,10 +203,20 @@ const Txs: NextPage = function () {
           return {
             cells: [
               {
+                item:
+                  category === "rollup" && rollup ? (
+                    <RollupIcon rollup={rollup} />
+                  ) : (
+                    <></>
+                  ),
+              },
+              {
                 item: (
-                  <Link href={buildTransactionRoute(hash)}>
-                    {shortenAddress(hash, 6)}
-                  </Link>
+                  <Copyable value={hash} tooltipText="Copy hash">
+                    <Link href={buildTransactionRoute(hash)}>
+                      {shortenAddress(hash, 6)}
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
@@ -217,20 +233,24 @@ const Txs: NextPage = function () {
               },
               {
                 item: (
-                  <Link href={buildAddressRoute(from)}>
-                    {shortenAddress(from, 6)}
-                  </Link>
+                  <Copyable value={from} tooltipText="Copy the origin address">
+                    <Link href={buildAddressRoute(from)}>
+                      {shortenAddress(from, 6)}
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <Link href={buildAddressRoute(to)}>
-                    {shortenAddress(to, 6)}
-                  </Link>
+                  <Copyable
+                    value={to}
+                    tooltipText="Copy the destination address"
+                  >
+                    <Link href={buildAddressRoute(to)}>
+                      {shortenAddress(to, 6)}
+                    </Link>
+                  </Copyable>
                 ),
-              },
-              {
-                item: rollup ? <RollupIcon rollup={rollup} /> : <></>,
               },
               {
                 item: (

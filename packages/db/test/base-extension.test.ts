@@ -600,6 +600,27 @@ describe("Base Extension", () => {
           },
         ];
 
+        await prisma.addressCategoryInfo.upsertMany([
+          {
+            address: "address1",
+            category: "ROLLUP",
+            firstBlockNumberAsSender: 1002,
+            firstBlockNumberAsReceiver: null,
+          },
+          {
+            address: "address3",
+            category: "ROLLUP",
+            firstBlockNumberAsSender: 1001,
+            firstBlockNumberAsReceiver: null,
+          },
+          {
+            address: "address5",
+            category: "ROLLUP",
+            firstBlockNumberAsReceiver: null,
+            firstBlockNumberAsSender: 1001,
+          },
+        ]);
+
         await prisma.transaction.upsertMany(input);
 
         const insertedTxs = await prisma.transaction
@@ -654,6 +675,20 @@ describe("Base Extension", () => {
           },
         ];
 
+        await prisma.addressCategoryInfo.upsertMany([
+          {
+            address: "address5",
+            category: "ROLLUP",
+            firstBlockNumberAsSender: 1006,
+            firstBlockNumberAsReceiver: 1006,
+          },
+          {
+            address: "address6",
+            category: "ROLLUP",
+            firstBlockNumberAsReceiver: 1006,
+            firstBlockNumberAsSender: 1006,
+          },
+        ]);
         await prisma.transaction.upsertMany(input);
 
         const updatedTxs = await prisma.transaction

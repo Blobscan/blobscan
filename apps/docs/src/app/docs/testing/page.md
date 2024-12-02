@@ -17,7 +17,7 @@ We rely on testing to ensure our solutions meet user expectations.
 - We maintain clarity about the requirements and expected outcomes.
 - The code remains flexible, allowing developers to refactor and optimize without constant test breakages.
 
-**Avoid Testing Internals:** We generally steer clear from testing private or internal functions directly. This aligns with our behavior-driven approach. However, complex internal logic may sometimes warrant its own set of tests.
+**Avoid Testing Internals:** We generally steer clear of testing private or internal functions directly. This aligns with our behavior-driven approach. However, complex internal logic may sometimes warrant its own set of tests.
 
 ## Testing Tools
 

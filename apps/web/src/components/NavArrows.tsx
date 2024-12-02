@@ -20,13 +20,17 @@ export function NavArrows({
   return (
     <div className="flex items-center justify-center gap-1">
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger
+          className={prev.href ? "cursor-pointer" : "cursor-default"}
+        >
           <NavArrow type="prev" href={prev.href} />
         </TooltipTrigger>
         <TooltipContent>{prev.tooltip || "Previous"}</TooltipContent>
       </Tooltip>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger
+          className={next.href ? "cursor-pointer" : "cursor-default"}
+        >
           <NavArrow type="next" href={next.href} />
         </TooltipTrigger>
         <TooltipContent>{next.tooltip || "Next"}</TooltipContent>

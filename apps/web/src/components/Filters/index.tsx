@@ -94,7 +94,7 @@ export const Filters: FC = function () {
         query.rollup = rollups[0]?.value;
       } else {
         query.from = rollups
-          .map((r) => r.value)
+          .flatMap((r) => r.value)
           .join(FROM_ADDRESSES_FORMAT_SEPARATOR);
       }
     }
@@ -162,8 +162,15 @@ export const Filters: FC = function () {
     if (rollup || from) {
       const rollupOptions = ROLLUP_OPTIONS.filter((opt) => {
         const fromAddresses = from?.split(FROM_ADDRESSES_FORMAT_SEPARATOR);
+        const rollupOptionAddresses = Array.isArray(opt.value)
+          ? opt.value
+          : [opt.value];
+
         return (
-          opt.value === rollup || fromAddresses?.includes(opt.value as string)
+          opt.value === rollup ||
+          rollupOptionAddresses.filter((rollupAddress) =>
+            fromAddresses?.includes(rollupAddress)
+          ).length > 0
         );
       });
 

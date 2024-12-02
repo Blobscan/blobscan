@@ -2,10 +2,12 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
 
+import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
@@ -23,6 +25,10 @@ import {
 const BLOBS_TABLE_HEADERS = [
   {
     cells: [
+      {
+        item: "",
+        className: "w-[40px]",
+      },
       {
         item: "Versioned Hash",
         className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
@@ -83,28 +89,49 @@ const Blobs: NextPage = function () {
             txHash,
             blockTimestamp,
             blockNumber,
+            transaction,
           }) => ({
             cells: [
               {
+                item:
+                  transaction?.category === "rollup" && transaction.rollup ? (
+                    <RollupIcon rollup={transaction.rollup} />
+                  ) : (
+                    <></>
+                  ),
+              },
+              {
                 item: (
-                  <Link href={buildBlobRoute(versionedHash)}>
-                    {shortenAddress(versionedHash, 8)}
-                  </Link>
+                  <Copyable
+                    value={versionedHash}
+                    tooltipText="Copy versioned hash"
+                  >
+                    <Link href={buildBlobRoute(versionedHash)}>
+                      {shortenAddress(versionedHash, 8)}
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
-                  <Link href={buildTransactionRoute(txHash)}>
-                    {shortenAddress(txHash, 8)}
-                  </Link>
+                  <Copyable value={txHash} tooltipText="Copy transaction hash">
+                    <Link href={buildTransactionRoute(txHash)}>
+                      {shortenAddress(txHash, 8)}
+                    </Link>
+                  </Copyable>
                 ),
               },
               {
                 item: (
                   <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                    <Link href={buildBlockRoute(blockNumber)}>
-                      {blockNumber}
-                    </Link>
+                    <Copyable
+                      value={blockNumber.toString()}
+                      tooltipText="Copy block number"
+                    >
+                      <Link href={buildBlockRoute(blockNumber)}>
+                        {blockNumber}
+                      </Link>
+                    </Copyable>
                   </div>
                 ),
               },
