@@ -53,16 +53,18 @@ Configure the [environment variables](/docs/environment) accordingly, including 
 
 ## Run
 
-Then run the development command:
+Run the development command:
 
 ```shell
 pnpm dev
 ```
 
-Lastly, create the database schema:
+Lastly, apply all database migrations and optionally, add some fixture data:
 
 ```shell
-pnpm db:generate
+cd packages/db
+pnpm db:migrate
+pnpm db:seed
 ```
 
 ## Metrics aggregation
