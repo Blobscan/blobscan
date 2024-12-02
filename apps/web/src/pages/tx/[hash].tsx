@@ -344,7 +344,7 @@ const BlockHash: FC<BlockHashProps> = ({ fullHash, partialHash }) => {
       </Link>
       <CopyToClipboard
         value={prefixedFullHash}
-        label="Copy L1 origin block hash"
+        tooltipText="Copy L1 origin block hash"
       />
     </div>
   );
