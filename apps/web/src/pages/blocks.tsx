@@ -8,6 +8,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import { api } from "~/api-client";
@@ -26,6 +27,10 @@ import {
 export const BLOCKS_TABLE_HEADERS = [
   {
     cells: [
+      {
+        item: "",
+        className: "w-[100px]",
+      },
       {
         item: "Block number",
         className: "2xl:w-[187px] lg:w-[158px] w-[118px]",
@@ -110,6 +115,7 @@ const Blocks: NextPage = function () {
             const headers = [
               {
                 cells: [
+                  { item: "" },
                   {
                     item: "Tx Hash",
                   },
@@ -127,12 +133,22 @@ const Blocks: NextPage = function () {
                 transaction.blobs.map((blob) => ({
                   transactionHash: transaction.hash,
                   blobVersionedHash: blob.versionedHash,
+                  category: transaction.category,
+                  rollup: transaction.rollup,
                 }))
             );
 
             const rows = transactionsCombinedWithInnerBlobs.map(
-              ({ transactionHash, blobVersionedHash }) => ({
+              ({ transactionHash, blobVersionedHash, rollup, category }) => ({
                 cells: [
+                  {
+                    item:
+                      category === "rollup" && rollup ? (
+                        <RollupIcon rollup={rollup} />
+                      ) : (
+                        <></>
+                      ),
+                  },
                   {
                     item: (
                       <Copyable
@@ -174,6 +190,21 @@ const Blocks: NextPage = function () {
 
           return {
             cells: [
+              {
+                item: (
+                  <div className="relative flex">
+                    {transactions.map((tx, i) => {
+                      return tx.rollup ? (
+                        <div key={i} className="-ml-1 first-of-type:ml-0">
+                          <RollupIcon rollup={tx.rollup} />
+                        </div>
+                      ) : (
+                        <></>
+                      );
+                    })}
+                  </div>
+                ),
+              },
               {
                 item: (
                   <Copyable

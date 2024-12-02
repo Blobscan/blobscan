@@ -7,6 +7,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { api } from "~/api-client";
@@ -24,6 +25,10 @@ import {
 const BLOBS_TABLE_HEADERS = [
   {
     cells: [
+      {
+        item: "",
+        className: "w-[40px]",
+      },
       {
         item: "Versioned Hash",
         className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
@@ -84,8 +89,17 @@ const Blobs: NextPage = function () {
             txHash,
             blockTimestamp,
             blockNumber,
+            transaction,
           }) => ({
             cells: [
+              {
+                item:
+                  transaction?.category === "rollup" && transaction.rollup ? (
+                    <RollupIcon rollup={transaction.rollup} />
+                  ) : (
+                    <></>
+                  ),
+              },
               {
                 item: (
                   <Copyable

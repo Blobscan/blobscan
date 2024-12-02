@@ -39,11 +39,13 @@ type Transaction = Pick<
   | "blobGasMaxFee"
   | "block"
   | "blockTimestamp"
+  | "category"
 > & { blobsLength?: number };
 
 export const TRANSACTIONS_TABLE_HEADERS = [
   {
     cells: [
+      { item: "", className: "w-[40px]" },
       {
         item: "Hash",
         className: "w-[150px]",
@@ -64,10 +66,7 @@ export const TRANSACTIONS_TABLE_HEADERS = [
         item: "To",
         className: "w-[148px]",
       },
-      {
-        item: "Rollup",
-        className: "w-[72px]",
-      },
+
       {
         item: "Blob Base Fee",
         className: "w-[172px]",
@@ -128,6 +127,7 @@ const Txs: NextPage = function () {
             to,
             blobs,
             rollup,
+            category,
             blockNumber,
             blobGasBaseFee,
             blobGasMaxFee,
@@ -203,6 +203,14 @@ const Txs: NextPage = function () {
           return {
             cells: [
               {
+                item:
+                  category === "rollup" && rollup ? (
+                    <RollupIcon rollup={rollup} />
+                  ) : (
+                    <></>
+                  ),
+              },
+              {
                 item: (
                   <Copyable value={hash} tooltipText="Copy hash">
                     <Link href={buildTransactionRoute(hash)}>
@@ -243,9 +251,6 @@ const Txs: NextPage = function () {
                     </Link>
                   </Copyable>
                 ),
-              },
-              {
-                item: rollup ? <RollupIcon rollup={rollup} /> : <></>,
               },
               {
                 item: (
