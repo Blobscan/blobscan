@@ -2,8 +2,6 @@ import { Prisma } from "@prisma/client";
 import {
   aggregateBlobDailyStats,
   aggregateBlobOverallStats,
-  aggregateBlockDailyStats,
-  aggregateBlockOverallStats,
   aggregateTxDailyStats,
   aggregateTxOverallStats,
 } from "@prisma/client/sql";
@@ -15,94 +13,79 @@ import type { BlockNumberRange, DatePeriodLike } from "../types";
 
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("stats");
 
-const startBlobDailyStatsModelFnSpan = startExtensionFnSpan("blobDailyStats");
-const startBlockDailyStatsModelFnSpan = startExtensionFnSpan("blockDailyStats");
-const startTransactionDailyStatsModelFnSpan = startExtensionFnSpan(
-  "transactionDailyStats"
-);
+const startDailyStatsModelFnSpan = startExtensionFnSpan("dailyStats");
+const startOverallStatsModelFnSpan = startExtensionFnSpan("overallStats");
+
+const MAX_INT = 2147483647;
 
 export const statsExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
     name: "statsExtension",
     model: {
-      blobDailyStats: {
-        deleteAll() {
-          return startBlobDailyStatsModelFnSpan("deleteAll", () => {
-            return prisma.$executeRawUnsafe("TRUNCATE TABLE blob_daily_stats");
+      dailyStats: {
+        erase() {
+          return startDailyStatsModelFnSpan("erase", () => {
+            return prisma.$executeRawUnsafe("TRUNCATE TABLE daily_stats");
           });
         },
-        populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
+        aggregate(dailyDatePeriod?: DatePeriodLike) {
+          const { from = MIN_DATE, to = new Date() } = dailyDatePeriod
             ? toDailyDatePeriod(dailyDatePeriod)
             : {};
 
-          return prisma.$queryRawTyped(aggregateBlobDailyStats(from, to));
+          return prisma.$transaction([
+            prisma.$queryRawTyped(aggregateBlobDailyStats(from, to)),
+            prisma.$queryRawTyped(aggregateTxDailyStats(from, to)),
+          ]);
         },
       },
-      blobOverallStats: {
-        async populate() {
-          await prisma.blobOverallStats.deleteMany();
-
-          return prisma.$queryRawTyped(
-            aggregateBlobOverallStats(0, Number.MAX_SAFE_INTEGER)
-          );
-        },
-        increment({ from, to }: BlockNumberRange) {
-          return prisma.$queryRawTyped(aggregateBlobOverallStats(from, to));
-        },
-      },
-      blockDailyStats: {
-        deleteAll() {
-          return startBlockDailyStatsModelFnSpan("deleteAll", () => {
-            return prisma.$executeRawUnsafe(`TRUNCATE TABLE block_daily_stats`);
+      overallStats: {
+        erase() {
+          return startOverallStatsModelFnSpan("erase", () => {
+            return prisma.$transaction([
+              prisma.$executeRawUnsafe("TRUNCATE TABLE overall_stats"),
+              prisma.blockchainSyncState.upsert({
+                create: {
+                  lastAggregatedBlock: 0,
+                },
+                update: {
+                  lastAggregatedBlock: 0,
+                },
+                where: {
+                  id: 1,
+                },
+              }),
+            ]);
           });
         },
-        populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
-            ? toDailyDatePeriod(dailyDatePeriod)
-            : {};
+        async aggregate(
+          opts: Partial<{
+            blockRange: BlockNumberRange;
+            overwrite: boolean;
+          }> = {}
+        ) {
+          const { from = 0, to = MAX_INT } = opts.blockRange ?? {};
+          const overwrite = opts.overwrite;
 
-          return prisma.$queryRawTyped(aggregateBlockDailyStats(from, to));
-        },
-      },
-      blockOverallStats: {
-        async populate() {
-          await prisma.blockOverallStats.deleteMany();
+          if (overwrite) {
+            await Prisma.getExtensionContext(this).erase();
+          }
 
-          return prisma.$queryRawTyped(
-            aggregateBlockOverallStats(0, Number.MAX_SAFE_INTEGER)
-          );
-        },
-        increment({ from, to }: BlockNumberRange) {
-          return prisma.$queryRawTyped(aggregateBlockOverallStats(from, to));
-        },
-      },
-      transactionDailyStats: {
-        deleteAll() {
-          return startTransactionDailyStatsModelFnSpan("deleteAll", () => {
-            return prisma.$executeRawUnsafe(
-              `TRUNCATE TABLE transaction_daily_stats`
-            );
-          });
-        },
-        async populate(dailyDatePeriod?: DatePeriodLike) {
-          const { from: from = MIN_DATE, to: to = new Date() } = dailyDatePeriod
-            ? toDailyDatePeriod(dailyDatePeriod)
-            : {};
-
-          return prisma.$queryRawTyped(aggregateTxDailyStats(from, to));
-        },
-      },
-      transactionOverallStats: {
-        async populate() {
-          await prisma.transactionOverallStats.deleteMany();
-
-          return prisma.$queryRawTyped(
-            aggregateTxOverallStats(0, Number.MAX_SAFE_INTEGER)
-          );
-        },
-        increment({ from, to }: BlockNumberRange) {
-          return prisma.$queryRawTyped(aggregateTxOverallStats(from, to));
+          await prisma.$transaction([
+            prisma.$queryRawTyped(aggregateBlobOverallStats(from, to)),
+            prisma.$queryRawTyped(aggregateTxOverallStats(from, to)),
+            prisma.blockchainSyncState.upsert({
+              create: {
+                lastAggregatedBlock: to,
+              },
+              update: {
+                lastAggregatedBlock: to,
+              },
+              where: {
+                id: 1,
+              },
+            }),
+          ]);
         },
       },
     },

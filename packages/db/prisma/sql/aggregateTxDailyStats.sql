@@ -1,9 +1,10 @@
 -- @param {DateTime} $1:from The date from which to start aggregating the data.
 -- @param {DateTime} $2:to The date until which to aggregate the data.
-INSERT INTO transaction_daily_stats (
+INSERT INTO daily_stats (
   day,
   category,
   rollup,
+  total_blocks,
   total_transactions,
   total_unique_receivers,
   total_unique_senders,
@@ -24,6 +25,7 @@ SELECT
   DATE_TRUNC('day', tx.block_timestamp) AS day,
   tx.category,
   tx.rollup,
+  COALESCE(COUNT(DISTINCT tx.block_number)::INT, 0) AS total_blocks,
   COALESCE(COUNT(tx.hash)::INT, 0) AS total_transactions,
   COALESCE(COUNT(DISTINCT tx.to_id)::INT, 0) AS total_unique_receivers,
   COALESCE(COUNT(DISTINCT tx.from_id)::INT, 0) AS total_unique_senders,
@@ -54,6 +56,7 @@ HAVING NOT (
   tx.rollup IS NULL
 )
 ON CONFLICT (day, category, rollup) DO UPDATE SET
+  total_blocks = EXCLUDED.total_blocks,
   total_transactions = EXCLUDED.total_transactions,
   total_unique_receivers = EXCLUDED.total_unique_receivers,
   total_unique_senders = EXCLUDED.total_unique_senders,

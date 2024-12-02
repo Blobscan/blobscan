@@ -18,9 +18,9 @@ export const outputSchema = z.object({
 });
 
 export async function getBlockOverallStatsQuery(prisma: TRPCContext["prisma"]) {
-  return prisma.blockOverallStats
-    .findUnique({
-      where: { id: 1 },
+  return prisma.overallStats
+    .findFirst({
+      where: { category: null, rollup: null },
     })
     .then((stats) =>
       stats

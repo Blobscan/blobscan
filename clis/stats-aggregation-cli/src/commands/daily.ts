@@ -7,17 +7,9 @@ import type { DatePeriod } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 
 import { CommandError } from "../error";
-import type { Command, Entity } from "../types";
-import {
-  ALL_ENTITIES,
-  commandLog,
-  deleteOptionDef,
-  helpOptionDef,
-} from "../utils";
+import type { Command, Operation } from "../types";
+import { commandLog, deleteOptionDef, helpOptionDef } from "../utils";
 
-type Operation = "populate" | "deleteMany" | "deleteAll";
-
-type OperationResult = { entity: Entity; affectedRows: number };
 class DailyCommandError extends CommandError {
   constructor(operation: Operation, error: Error | string) {
     const formattedOperation =
@@ -34,15 +26,6 @@ class DailyCommandError extends CommandError {
 const dailyCommandOptDefs: commandLineUsage.OptionDefinition[] = [
   deleteOptionDef,
   helpOptionDef,
-  {
-    name: "entity",
-    alias: "e",
-    typeLabel: "{underline type}",
-    description:
-      "Entity type to aggregate. Valid values are {italic blob}, {italic block} or {italic tx}.",
-    type: String,
-    multiple: true,
-  },
   {
     name: "from",
     alias: "f",
@@ -73,7 +56,7 @@ export const dailyCommandUsage = commandLineUsage([
 function buildCommandResultMsg(
   operation: Operation,
   datePeriod: DatePeriod,
-  opResults: OperationResult[]
+  affectedRows: number
 ) {
   const formattedOperation =
     operation === "deleteMany" ? "deleted" : "calculated";
@@ -90,26 +73,19 @@ function buildCommandResultMsg(
     period = `from ${formattedFrom} to ${formattedTo}`;
   }
 
-  const formattedResults =
-    opResults
-      ?.map((r) => `${r.entity} (${r.affectedRows} rows affected)`)
-      .join(", ") || "";
-
-  return `stats ${formattedOperation} successfully ${period} for entities: ${formattedResults}`;
+  return `stats ${formattedOperation} successfully aggregated for period ${period}. Affected rows: ${affectedRows}`;
 }
 
 async function performDailyStatsOperation(
-  entity: Entity,
   operation: Operation,
   datePeriod?: DatePeriod
 ): Promise<number> {
-  let dailyStatsFn;
   const { from, to } = datePeriod || {};
   const isDateProvided = from || to;
   const operation_: Operation =
-    operation === "deleteMany" && !isDateProvided ? "deleteAll" : operation;
+    operation === "deleteMany" && !isDateProvided ? "erase" : operation;
   const operationParam =
-    operation_ === "populate"
+    operation_ === "aggregate"
       ? datePeriod
       : isDateProvided
       ? {
@@ -122,21 +98,9 @@ async function performDailyStatsOperation(
         }
       : undefined;
 
-  switch (entity) {
-    case "blob":
-      dailyStatsFn = prisma.blobDailyStats[operation_];
-      break;
-    case "block":
-      dailyStatsFn = prisma.blockDailyStats[operation_];
-      break;
-    case "tx":
-      dailyStatsFn = prisma.transactionDailyStats[operation_];
-      break;
-  }
-
   try {
     // The daily stats operation returns the number of affected rows
-    const result = await dailyStatsFn(operationParam);
+    const result = await prisma.dailyStats[operation_](operationParam);
 
     if (typeof result === "number") {
       return result;
@@ -150,7 +114,7 @@ async function performDailyStatsOperation(
 
     throw new DailyCommandError(
       operation,
-      `Failed to perform operation for entity ${entity}: ${err_.message}`
+      `Failed to perform operation ${operation}: ${err_.message}`
     );
   }
 
@@ -161,7 +125,6 @@ const daily: Command = async function daily(argv) {
   const {
     from: rawFrom,
     to: rawTo,
-    entity: entities,
     // `delete` is a reserved keyword
     delete: delete_,
     help,
@@ -172,7 +135,6 @@ const daily: Command = async function daily(argv) {
     delete?: boolean;
     from?: string;
     to?: string;
-    entity?: Entity[];
   };
 
   if (help) {
@@ -181,7 +143,7 @@ const daily: Command = async function daily(argv) {
     return;
   }
 
-  const operation: Operation = delete_ ? "deleteMany" : "populate";
+  const operation: Operation = delete_ ? "deleteMany" : "aggregate";
   const rawDatePeriod: DatePeriodLike = { from: rawFrom, to: rawTo };
   let datePeriod: DatePeriod;
   try {
@@ -191,20 +153,11 @@ const daily: Command = async function daily(argv) {
 
     throw new DailyCommandError(operation, err_);
   }
-  const selectedEntities = entities?.length ? entities : ALL_ENTITIES;
 
-  const operationResults: OperationResult[] = await Promise.all(
-    selectedEntities.map((e) =>
-      performDailyStatsOperation(e, operation, datePeriod).then(
-        (affectedRows) => ({
-          entity: e,
-          affectedRows,
-        })
-      )
-    )
-  );
+  const affectedRows = await performDailyStatsOperation(operation, datePeriod);
 
-  const msg = buildCommandResultMsg(operation, datePeriod, operationResults);
+  const msg = buildCommandResultMsg(operation, datePeriod, affectedRows);
+
   commandLog("info", "daily", operation, msg);
 };
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
 
@@ -23,6 +23,27 @@ import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
 import { Header } from "~/components/Header";
 import { api } from "~/api-client";
+import type { DailyStats } from "~/types";
+import { deserializeOverallStats } from "~/utils";
+
+type ArrayfiedDailyStats = {
+  days: DailyStats["day"][];
+  totalBlocks: DailyStats["totalBlocks"][];
+  totalBlobGasUsed: DailyStats["totalBlobGasUsed"][];
+  totalBlobAsCalldataGasUsed: DailyStats["totalBlobAsCalldataGasUsed"][];
+  totalBlobFees: DailyStats["totalBlobFee"][];
+  totalBlobAsCalldataFees: DailyStats["totalBlobAsCalldataFee"][];
+  avgBlobFees: DailyStats["avgBlobFee"][];
+  avgBlobAsCalldataFees: DailyStats["avgBlobAsCalldataFee"][];
+  avgBlobGasPrices: DailyStats["avgBlobGasPrice"][];
+  totalTransactions: DailyStats["totalTransactions"][];
+  totalUniqueSenders: DailyStats["totalUniqueSenders"][];
+  totalUniqueReceivers: DailyStats["totalUniqueReceivers"][];
+  avgMaxBlobGasFees: DailyStats["avgMaxBlobGasFee"][];
+  totalBlobs: DailyStats["totalBlobs"][];
+  totalUniqueBlobs: DailyStats["totalUniqueBlobs"][];
+  totalBlobSizes: DailyStats["totalBlobSize"][];
+};
 
 const Stats = function () {
   return (
@@ -34,7 +55,12 @@ const Stats = function () {
 };
 
 function OverallStats() {
-  const { data: overall } = api.stats.getAllOverallStats.useQuery();
+  const { data: rawOverallStats } = api.stats.getOverallStats.useQuery();
+  const overallStats = useMemo(
+    () =>
+      rawOverallStats ? deserializeOverallStats(rawOverallStats) : undefined,
+    [rawOverallStats]
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -45,14 +71,14 @@ function OverallStats() {
         <MetricCard
           name="Total Blobs"
           metric={{
-            value: overall?.blob.totalBlobs,
+            value: overallStats?.totalBlobs,
           }}
         />
 
         <MetricCard
           name="Total Blob Size"
           metric={{
-            value: overall ? BigInt(overall.blob.totalBlobSize) : undefined,
+            value: overallStats?.totalBlobSize,
             type: "bytes",
           }}
         />
@@ -60,7 +86,7 @@ function OverallStats() {
         <MetricCard
           name="Total Unique Blobs"
           metric={{
-            value: overall?.blob.totalUniqueBlobs,
+            value: overallStats?.totalUniqueBlobs,
           }}
         />
 
@@ -69,21 +95,22 @@ function OverallStats() {
         <MetricCard
           name="Total Blocks"
           metric={{
-            value: overall ? overall.block.totalBlocks : undefined,
+            value: overallStats?.totalBlocks,
           }}
         />
 
         <MetricCard
           name="Total Blob Gas Used"
           metric={{
-            value: overall ? BigInt(overall.block.totalBlobGasUsed) : undefined,
+            value: overallStats?.totalBlobGasUsed,
+            type: "ethereum",
           }}
         />
 
         <MetricCard
           name="Total Blob Fees"
           metric={{
-            value: overall ? BigInt(overall.block.totalBlobFee) : undefined,
+            value: overallStats?.totalBlobFee,
             type: "ethereum",
           }}
         />
@@ -91,9 +118,9 @@ function OverallStats() {
         <MetricCard
           name="Avg. Blob Gas Price"
           metric={
-            overall
+            overallStats
               ? {
-                  value: overall.block.avgBlobGasPrice,
+                  value: overallStats.avgBlobGasPrice,
                   type: "ethereum",
                   numberFormatOpts: {
                     maximumFractionDigits: 9,
@@ -106,11 +133,11 @@ function OverallStats() {
         <MetricCard
           name="Total Tx Fees Saved"
           metric={
-            overall
+            overallStats
               ? {
                   value:
-                    BigInt(overall.block.totalBlobAsCalldataFee) -
-                    BigInt(overall.block.totalBlobFee),
+                    BigInt(overallStats.totalBlobAsCalldataFee) -
+                    BigInt(overallStats.totalBlobFee),
                   type: "ethereum",
                 }
               : undefined
@@ -132,9 +159,9 @@ function OverallStats() {
         <MetricCard
           name="Total Gas Saved"
           metric={{
-            value: overall
-              ? BigInt(overall.block.totalBlobAsCalldataGasUsed) -
-                BigInt(overall.block.totalBlobGasUsed)
+            value: overallStats
+              ? BigInt(overallStats.totalBlobAsCalldataGasUsed) -
+                BigInt(overallStats.totalBlobGasUsed)
               : undefined,
           }}
           // secondaryMetric={
@@ -157,28 +184,28 @@ function OverallStats() {
         <MetricCard
           name="Total Transactions"
           metric={{
-            value: overall?.transaction.totalTransactions,
+            value: overallStats?.totalTransactions,
           }}
         />
 
         <MetricCard
           name="Total Unique Receivers"
           metric={{
-            value: overall?.transaction.totalUniqueReceivers,
+            value: overallStats?.totalUniqueReceivers,
           }}
         />
 
         <MetricCard
           name="Total Unique Senders"
           metric={{
-            value: overall?.transaction.totalUniqueSenders,
+            value: overallStats?.totalUniqueSenders,
           }}
         />
 
         <MetricCard
           name="Avg. Max Blob Gas Fee"
           metric={{
-            value: overall?.transaction.avgMaxBlobGasFee,
+            value: overallStats?.avgMaxBlobGasFee,
             type: "ethereum",
           }}
         />
@@ -207,7 +234,59 @@ type Section = "All" | "Blob" | "Block" | "Transaction";
 function Charts() {
   const [sectionFilter, setSectionFilter] = useState<Section>("All");
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("180d");
-  const { data: daily } = api.stats.getAllDailyStats.useQuery({ timeFrame });
+  const { data: dailyStatsData } = api.stats.getDailyStats.useQuery({
+    timeFrame,
+  });
+  const dailyStats = useMemo(
+    () =>
+      dailyStatsData
+        ? dailyStatsData.reduce<ArrayfiedDailyStats>(
+            (stats, currStats) => {
+              stats.days.push(currStats.day);
+              stats.totalBlocks.push(currStats.totalBlocks);
+              stats.totalBlobGasUsed.push(currStats.totalBlobGasUsed);
+              stats.totalBlobAsCalldataGasUsed.push(
+                currStats.totalBlobAsCalldataGasUsed
+              );
+              stats.totalBlobFees.push(currStats.totalBlobFee);
+              stats.totalBlobAsCalldataFees.push(
+                currStats.totalBlobAsCalldataFee
+              );
+              stats.avgBlobFees.push(currStats.avgBlobFee);
+              stats.avgBlobAsCalldataFees.push(currStats.avgBlobAsCalldataFee);
+              stats.avgBlobGasPrices.push(currStats.avgBlobGasPrice);
+              stats.totalTransactions.push(currStats.totalTransactions);
+              stats.totalUniqueSenders.push(currStats.totalUniqueSenders);
+              stats.totalUniqueReceivers.push(currStats.totalUniqueReceivers);
+              stats.avgMaxBlobGasFees.push(currStats.avgMaxBlobGasFee);
+              stats.totalBlobs.push(currStats.totalBlobs);
+              stats.totalUniqueBlobs.push(currStats.totalUniqueBlobs);
+              stats.totalBlobSizes.push(currStats.totalBlobSize);
+
+              return stats;
+            },
+            {
+              days: [],
+              totalBlocks: [],
+              totalBlobGasUsed: [],
+              totalBlobAsCalldataGasUsed: [],
+              totalBlobFees: [],
+              totalBlobAsCalldataFees: [],
+              avgBlobFees: [],
+              avgBlobAsCalldataFees: [],
+              avgBlobGasPrices: [],
+              totalTransactions: [],
+              totalUniqueSenders: [],
+              totalUniqueReceivers: [],
+              avgMaxBlobGasFees: [],
+              totalBlobs: [],
+              totalUniqueBlobs: [],
+              totalBlobSizes: [],
+            }
+          )
+        : undefined,
+    [dailyStatsData]
+  );
 
   return (
     <div className="flex flex-col gap-8">
@@ -238,13 +317,13 @@ function Charts() {
         hide={sectionFilter !== "All" && sectionFilter !== "Blob"}
       >
         <DailyBlobsChart
-          days={daily?.blob.days}
-          blobs={daily?.blob.totalBlobs}
-          uniqueBlobs={daily?.blob.totalUniqueBlobs}
+          days={dailyStats?.days}
+          blobs={dailyStats?.totalBlobs}
+          uniqueBlobs={dailyStats?.totalUniqueBlobs}
         />
         <DailyBlobSizeChart
-          days={daily?.blob.days}
-          blobSizes={daily?.blob.totalBlobSizes}
+          days={dailyStats?.days}
+          blobSizes={dailyStats?.totalBlobSizes}
         />
       </ChartSection>
 
@@ -253,29 +332,29 @@ function Charts() {
         hide={sectionFilter !== "All" && sectionFilter !== "Block"}
       >
         <DailyBlocksChart
-          days={daily?.block.days}
-          blocks={daily?.block.totalBlocks}
+          days={dailyStats?.days}
+          blocks={dailyStats?.totalBlocks}
         />
         <DailyBlobGasUsedChart
-          days={daily?.block.days}
-          blobGasUsed={daily?.block.totalBlobGasUsed}
+          days={dailyStats?.days}
+          blobGasUsed={dailyStats?.totalBlobGasUsed}
         />
         <DailyBlobGasComparisonChart
-          days={daily?.block.days}
-          blobGasUsed={daily?.block.totalBlobGasUsed}
-          blobAsCalldataGasUsed={daily?.block.totalBlobAsCalldataGasUsed}
+          days={dailyStats?.days}
+          blobGasUsed={dailyStats?.totalBlobGasUsed}
+          blobAsCalldataGasUsed={dailyStats?.totalBlobAsCalldataGasUsed}
         />
         <DailyBlobFeeChart
-          days={daily?.block.days}
-          blobFees={daily?.block.totalBlobFees}
+          days={dailyStats?.days}
+          blobFees={dailyStats?.totalBlobFees}
         />
         <DailyAvgBlobFeeChart
-          days={daily?.block.days}
-          avgBlobFees={daily?.block.avgBlobFees}
+          days={dailyStats?.days}
+          avgBlobFees={dailyStats?.avgBlobFees}
         />
         <DailyAvgBlobGasPriceChart
-          days={daily?.block.days}
-          avgBlobGasPrices={daily?.block.avgBlobGasPrices}
+          days={dailyStats?.days}
+          avgBlobGasPrices={dailyStats?.avgBlobGasPrices}
         />
       </ChartSection>
 
@@ -284,17 +363,17 @@ function Charts() {
         hide={sectionFilter !== "All" && sectionFilter !== "Transaction"}
       >
         <DailyTransactionsChart
-          days={daily?.transaction.days}
-          transactions={daily?.transaction.totalTransactions}
+          days={dailyStats?.days}
+          transactions={dailyStats?.totalTransactions}
         />
         <DailyUniqueAddressesChart
-          days={daily?.transaction.days}
-          uniqueReceivers={daily?.transaction.totalUniqueReceivers}
-          uniqueSenders={daily?.transaction.totalUniqueSenders}
+          days={dailyStats?.days}
+          uniqueReceivers={dailyStats?.totalUniqueReceivers}
+          uniqueSenders={dailyStats?.totalUniqueSenders}
         />
         <DailyAvgMaxBlobGasFeeChart
-          days={daily?.transaction.days}
-          avgMaxBlobGasFees={daily?.transaction.avgMaxBlobGasFees}
+          days={dailyStats?.days}
+          avgMaxBlobGasFees={dailyStats?.avgMaxBlobGasFees}
         />
       </ChartSection>
     </div>

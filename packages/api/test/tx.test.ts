@@ -1,10 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import type {
-  Prisma,
-  TransactionDailyStats,
-  TransactionOverallStats,
-} from "@blobscan/db";
+import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { Category, Rollup } from "../enums";
@@ -35,7 +31,7 @@ describe("Transaction router", async () => {
 
   describe("getAll", () => {
     beforeEach(async () => {
-      await ctx.prisma.transactionOverallStats.populate();
+      await ctx.prisma.overallStats.aggregate();
     });
 
     runPaginationTestsSuite("transaction", (paginationInput) =>
@@ -64,8 +60,6 @@ describe("Transaction router", async () => {
     });
 
     it("should get the total number of transactions for a rollup", async () => {
-      await ctx.prisma.transactionOverallStats.populate();
-
       const expectedTotalTransactions = await ctx.prisma.transaction.count({
         where: {
           rollup: "BASE",
@@ -116,42 +110,8 @@ describe("Transaction router", async () => {
 
     const STATS_TOTAL_TRANSACTIONS = 999999;
 
-    async function createNewOverallStats(
-      overallStats: Partial<TransactionOverallStats>
-    ) {
-      const data: Prisma.TransactionOverallStatsCreateManyInput = {
-        category: null,
-        rollup: null,
-        totalTransactions: 0,
-        avgBlobFee: 0,
-        avgBlobGasPrice: 0,
-        avgBlobMaxFee: 0,
-        avgMaxBlobGasFee: 0,
-        totalBlobAsCalldataFee: 0,
-        totalBlobAsCalldataGasUsed: 0,
-        totalBlobAsCalldataMaxFees: 0,
-        totalBlobFee: 0,
-        totalBlobMaxFees: 0,
-        totalBlobGasPrice: 0,
-        totalBlobGasUsed: 0,
-        totalBlobMaxGasFees: 0,
-        totalUniqueReceivers: 0,
-        totalUniqueSenders: 0,
-        avgBlobAsCalldataFee: 0,
-        avgBlobAsCalldataMaxFee: 0,
-        updatedAt: new Date(),
-        ...overallStats,
-      };
-
-      await ctx.prisma.transactionOverallStats.create({
-        data,
-      });
-    }
-
-    async function createNewDailyStats(
-      dailyStats: Partial<TransactionDailyStats>
-    ) {
-      const data: Prisma.TransactionDailyStatsCreateManyInput = {
+    async function createNewDailyStats(dailyStats: Partial<DailyStats>) {
+      const data: Prisma.DailyStatsCreateManyInput = {
         day: new Date(),
         category: null,
         rollup: null,
@@ -173,7 +133,7 @@ describe("Transaction router", async () => {
         ...dailyStats,
       };
 
-      await ctx.prisma.transactionDailyStats.create({
+      await ctx.prisma.dailyStats.create({
         data,
       });
     }
@@ -181,10 +141,12 @@ describe("Transaction router", async () => {
     it("should count txs correctly when no filters are provided", async () => {
       const expectedTotalTransactions = STATS_TOTAL_TRANSACTIONS;
 
-      await createNewOverallStats({
-        category: null,
-        rollup: null,
-        totalTransactions: expectedTotalTransactions,
+      await ctx.prisma.overallStats.create({
+        data: {
+          category: null,
+          rollup: null,
+          totalTransactions: expectedTotalTransactions,
+        },
       });
 
       const { totalTransactions } = await caller.tx.getCount({});
@@ -231,10 +193,12 @@ describe("Transaction router", async () => {
         } else {
           expectedTotalTransactions = STATS_TOTAL_TRANSACTIONS;
 
-          await createNewOverallStats({
-            totalTransactions: expectedTotalTransactions,
-            category: categoryFilter,
-            rollup: rollupFilter,
+          await ctx.prisma.overallStats.create({
+            data: {
+              totalTransactions: expectedTotalTransactions,
+              category: categoryFilter,
+              rollup: rollupFilter,
+            },
           });
         }
       }

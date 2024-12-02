@@ -65,9 +65,8 @@ export async function countBlobs(
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
   if (filters.blockTimestamp) {
-    const dailyStats = await prisma.blobDailyStats.findMany({
+    const dailyStats = await prisma.dailyStats.findMany({
       select: {
-        day: true,
         totalBlobs: true,
       },
       where,
@@ -76,7 +75,7 @@ export async function countBlobs(
     return dailyStats.reduce((acc, { totalBlobs }) => acc + totalBlobs, 0);
   }
 
-  const overallStats = await prisma.blobOverallStats.findMany({
+  const overallStats = await prisma.overallStats.findMany({
     select: {
       totalBlobs: true,
     },

@@ -7,7 +7,7 @@ import { appRouter } from "../src/app-router";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
 import { createTestContext } from "./helpers";
 
-const TIME_FRAMES: TimeFrame[] = ["1d", "7d", "15d", "30d", "180d", "360d"];
+const TIME_FRAMES = ["1d", "7d", "15d", "30d", "180d", "360d"] as const;
 
 function runTimeFrameTests({
   statsFiller,
@@ -44,10 +44,40 @@ describe("Stats router", async () => {
     caller = appRouter.createCaller(ctx);
   });
 
+  beforeEach(async () => {
+    await prisma.overallStats.aggregate();
+  });
+
+  describe("getOverallStats", () => {
+    it("should return the correct overall stats", async () => {
+      const overallStats = await caller.stats
+        .getOverallStats()
+        .then(omitDBTimestampFields);
+
+      expect(overallStats).toMatchInlineSnapshot(`
+        {
+          "avgBlobAsCalldataFee": 22162.5,
+          "avgBlobFee": 5160960,
+          "avgBlobGasPrice": 21.75,
+          "avgMaxBlobGasFee": 101.875,
+          "totalBlobAsCalldataFee": "354600",
+          "totalBlobAsCalldataGasUsed": "16300",
+          "totalBlobFee": "82575360",
+          "totalBlobGasUsed": "3801088",
+          "totalBlobSize": "422116",
+          "totalBlobs": 29,
+          "totalBlocks": 8,
+          "totalTransactions": 16,
+          "totalUniqueBlobs": 9,
+          "totalUniqueReceivers": 4,
+          "totalUniqueSenders": 7,
+        }
+      `);
+    });
+  });
+
   describe("getBlobOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blobOverallStats.populate();
-
       const blobOverallStats = await caller.stats.getBlobOverallStats();
 
       expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
@@ -63,7 +93,7 @@ describe("Stats router", async () => {
   describe("getBlobDailyStats", () => {
     runTimeFrameTests({
       statsFiller() {
-        return prisma.blobDailyStats.populate({ to });
+        return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
         return caller.stats.getBlobDailyStats({ timeFrame });
@@ -73,19 +103,19 @@ describe("Stats router", async () => {
 
   describe("getBlockOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.blockOverallStats.populate();
+      const blockOverallStats = await caller.stats
+        .getBlockOverallStats()
+        .then(omitDBTimestampFields);
 
-      const blockOverallStats = await caller.stats.getBlockOverallStats();
-
-      expect(omitDBTimestampFields(blockOverallStats)).toMatchInlineSnapshot(`
+      expect(blockOverallStats).toMatchInlineSnapshot(`
         {
-          "avgBlobAsCalldataFee": 10450145,
-          "avgBlobFee": 105412688,
+          "avgBlobAsCalldataFee": 22162.5,
+          "avgBlobFee": 5160960,
           "avgBlobGasPrice": 21.75,
-          "totalBlobAsCalldataFee": "83601160",
-          "totalBlobAsCalldataGasUsed": "3822780",
-          "totalBlobFee": "843301504",
-          "totalBlobGasUsed": "38786432",
+          "totalBlobAsCalldataFee": "354600",
+          "totalBlobAsCalldataGasUsed": "16300",
+          "totalBlobFee": "82575360",
+          "totalBlobGasUsed": "3801088",
           "totalBlocks": 8,
         }
       `);
@@ -95,7 +125,7 @@ describe("Stats router", async () => {
   describe("getBlockDailyStats", () => {
     runTimeFrameTests({
       statsFiller() {
-        return prisma.blockDailyStats.populate({ to });
+        return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
         return caller.stats.getBlockDailyStats({ timeFrame });
@@ -105,8 +135,9 @@ describe("Stats router", async () => {
 
   describe("getTransactionOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      await prisma.transactionOverallStats.populate();
-      const result = await caller.stats.getTransactionOverallStats();
+      const result = await caller.stats
+        .getTransactionOverallStats()
+        .then(omitDBTimestampFields);
 
       expect(omitDBTimestampFields(result)).toMatchInlineSnapshot(`
         {
@@ -122,7 +153,7 @@ describe("Stats router", async () => {
   describe("getTransactionDailyStats", () => {
     runTimeFrameTests({
       statsFiller() {
-        return prisma.transactionDailyStats.populate({ to });
+        return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
         return caller.stats.getTransactionDailyStats({ timeFrame });

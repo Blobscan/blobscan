@@ -7,36 +7,15 @@ import { overall, overallCommandUsage } from "../../src/commands/overall";
 import { runHelpArgTests } from "../helpers";
 
 async function assertOverallStats() {
-  const [blobOverallStats, blockOverallStats, transactionOverallStats] =
-    await Promise.all([
-      prisma.blobOverallStats
-        .findMany()
-        .then((stats) =>
-          stats
-            .map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
-            .sort(sortByCategoryRollup)
-        ),
-      prisma.blockOverallStats
-        .findMany()
-        .then((stats) =>
-          stats.map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
-        ),
-      prisma.transactionOverallStats
-        .findMany()
-        .then((stats) =>
-          stats
-            .map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
-            .sort(sortByCategoryRollup)
-        ),
-      ,
-    ]);
+  const overallStats = await prisma.overallStats
+    .findMany()
+    .then((stats) =>
+      stats
+        .map(({ id: _, ...rest }) => omitDBTimestampFields(rest))
+        .sort(sortByCategoryRollup)
+    );
 
-  expect(blobOverallStats, "Blob overall stats mismatch").toMatchSnapshot();
-  expect(blockOverallStats, "Block overall stats mismatch").toMatchSnapshot();
-  expect(
-    transactionOverallStats,
-    "Transaction overall stats mismatch"
-  ).toMatchSnapshot();
+  expect(overallStats, "Overall stats mismatch").toMatchSnapshot();
 }
 
 describe("Overall command", () => {

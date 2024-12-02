@@ -1,6 +1,6 @@
 -- @param {DateTime} $1:from The date from which to start aggregating the data.
 -- @param {DateTime} $2:to The date until which to aggregate the data.
-INSERT INTO blob_daily_stats (
+INSERT INTO daily_stats (
   day,
   category,
   rollup,

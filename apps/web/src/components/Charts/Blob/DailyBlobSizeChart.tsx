@@ -2,12 +2,12 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { DailyBlobStats } from "~/types";
+import type { DailyStats } from "~/types";
 import { buildTimeSeriesOptions, formatBytes } from "~/utils";
 
 export type DailyBlobsSizeProps = {
-  days: DailyBlobStats["days"];
-  blobSizes: DailyBlobStats["totalBlobSizes"];
+  days: DailyStats["day"][];
+  blobSizes: DailyStats["totalBlobSize"][];
   compact: boolean;
 };
 export const DailyBlobSizeChart: FC<Partial<DailyBlobsSizeProps>> = function ({

@@ -17,16 +17,14 @@ export const outputSchema = z.object({
 export async function getTransactionOverallStatsQuery(
   prisma: TRPCContext["prisma"]
 ) {
-  const stats = await prisma.transactionOverallStats.findMany({
+  const overallStats = await prisma.overallStats.findFirst({
     where: {
       category: null,
       rollup: null,
     },
   });
 
-  const allStats = stats[0];
-
-  if (!allStats) {
+  if (!overallStats) {
     return {
       totalTransactions: 0,
       totalUniqueReceivers: 0,
@@ -36,12 +34,20 @@ export async function getTransactionOverallStatsQuery(
     };
   }
 
+  const {
+    totalTransactions,
+    totalUniqueReceivers,
+    totalUniqueSenders,
+    avgMaxBlobGasFee,
+    updatedAt,
+  } = overallStats;
+
   return {
-    totalTransactions: allStats.totalTransactions,
-    totalUniqueReceivers: allStats.totalUniqueReceivers,
-    totalUniqueSenders: allStats.totalUniqueSenders,
-    avgMaxBlobGasFee: allStats.avgMaxBlobGasFee,
-    updatedAt: allStats.updatedAt,
+    totalTransactions,
+    totalUniqueReceivers,
+    totalUniqueSenders,
+    avgMaxBlobGasFee,
+    updatedAt,
   };
 }
 
@@ -56,4 +62,37 @@ export const getTransactionOverallStats = publicProcedure
   })
   .input(inputSchema)
   .output(outputSchema)
-  .query(({ ctx }) => getTransactionOverallStatsQuery(ctx.prisma));
+  .query(async ({ ctx: { prisma } }) => {
+    const overallStats = await prisma.overallStats.findFirst({
+      where: {
+        category: null,
+        rollup: null,
+      },
+    });
+
+    if (!overallStats) {
+      return {
+        totalTransactions: 0,
+        totalUniqueReceivers: 0,
+        totalUniqueSenders: 0,
+        avgMaxBlobGasFee: 0,
+        updatedAt: new Date(),
+      };
+    }
+
+    const {
+      totalTransactions,
+      totalUniqueReceivers,
+      totalUniqueSenders,
+      avgMaxBlobGasFee,
+      updatedAt,
+    } = overallStats;
+
+    return {
+      totalTransactions,
+      totalUniqueReceivers,
+      totalUniqueSenders,
+      avgMaxBlobGasFee,
+      updatedAt,
+    };
+  });

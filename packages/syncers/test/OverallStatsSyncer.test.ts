@@ -31,9 +31,9 @@ class OverallStatsUpdaterMock extends OverallStatsSyncer {
   }
 }
 
-function getAllOverallStats() {
-  return Promise.all([
-    prisma.blobOverallStats.findMany({
+function getOverallStats() {
+  return prisma.overallStats
+    .findMany({
       orderBy: [
         {
           category: "asc",
@@ -42,35 +42,18 @@ function getAllOverallStats() {
           rollup: "asc",
         },
       ],
-    }),
-    prisma.blockOverallStats.findMany(),
-    prisma.transactionOverallStats.findMany({
-      orderBy: [
-        {
-          category: "asc",
-        },
-        {
-          rollup: "asc",
-        },
-      ],
-    }),
-  ]).then((allOverallStats) =>
-    allOverallStats.map((overallStats) =>
-      overallStats.map(({ id: _, updatedAt: __, ...rest }) => rest)
-    )
-  );
+    })
+    .then((multipleOverallStats) =>
+      multipleOverallStats.map(
+        ({ id: _, updatedAt: __, ...overallStats }) => overallStats
+      )
+    );
 }
 
-function assertEmptyStats([
-  blobOverallStats,
-  blockOverallStats,
-  txOverallStats,
-]: Awaited<ReturnType<typeof getAllOverallStats>>) {
-  expect(blobOverallStats, "Blob overall stats should be empty").toEqual([]);
-  expect(blockOverallStats, "Block overall stats should be empty").toEqual([]);
-  expect(txOverallStats, "Transaction overall stats should be empty").toEqual(
-    []
-  );
+function assertEmptyStats(
+  overallStats: Awaited<ReturnType<typeof getOverallStats>>
+) {
+  expect(overallStats, "Overall stats should be empty").toEqual([]);
 }
 
 describe("OverallStatsUpdater", () => {
@@ -84,73 +67,15 @@ describe("OverallStatsUpdater", () => {
     };
   });
 
-  it("should aggregate all overall stats correctly", async () => {
+  it("should aggregate overall stats correctly", async () => {
     const workerProcessor = overallStatsUpdater.getWorkerProcessor();
-
-    const incrementTransactionSpy = vi.spyOn(prisma, "$transaction");
 
     await workerProcessor();
 
-    const [blobOverallStats, blockOverallStats, transactionOverallStats] =
-      await getAllOverallStats();
+    const overallStats = await getOverallStats();
 
-    expect(
-      incrementTransactionSpy,
-      "Expect to aggregate overall stats within a transaction"
-    ).toHaveBeenCalledOnce();
-    expect(blobOverallStats, "Incorrect blob overall stats aggregation")
+    expect(overallStats, "Incorrect overall stats aggregation")
       .toMatchInlineSnapshot(`
-        [
-          {
-            "category": "OTHER",
-            "rollup": null,
-            "totalBlobSize": 2500n,
-            "totalBlobs": 2,
-            "totalUniqueBlobs": 1,
-          },
-          {
-            "category": "ROLLUP",
-            "rollup": null,
-            "totalBlobSize": 6900n,
-            "totalBlobs": 6,
-            "totalUniqueBlobs": 0,
-          },
-          {
-            "category": null,
-            "rollup": "OPTIMISM",
-            "totalBlobSize": 6900n,
-            "totalBlobs": 6,
-            "totalUniqueBlobs": 0,
-          },
-          {
-            "category": null,
-            "rollup": null,
-            "totalBlobSize": 9400n,
-            "totalBlobs": 8,
-            "totalUniqueBlobs": 1,
-          },
-        ]
-      `);
-    expect(blockOverallStats, "Incorrect block overall stats aggregation")
-      .toMatchInlineSnapshot(`
-        [
-          {
-            "avgBlobAsCalldataFee": 5406666.666666667,
-            "avgBlobFee": 114000000,
-            "avgBlobGasPrice": 21.33333333333333,
-            "totalBlobAsCalldataFee": "16220000",
-            "totalBlobAsCalldataGasUsed": "760000",
-            "totalBlobFee": "342000000",
-            "totalBlobGasPrice": "64",
-            "totalBlobGasUsed": "16000000",
-            "totalBlocks": 3,
-          },
-        ]
-      `);
-    expect(
-      transactionOverallStats,
-      "Incorrect transaction overall stats aggregation"
-    ).toMatchInlineSnapshot(`
       [
         {
           "avgBlobAsCalldataFee": 21000,
@@ -169,7 +94,11 @@ describe("OverallStatsUpdater", () => {
           "totalBlobGasUsed": "262144",
           "totalBlobMaxFees": "26214400",
           "totalBlobMaxGasFees": "200",
+          "totalBlobSize": 2500n,
+          "totalBlobs": 2,
+          "totalBlocks": 2,
           "totalTransactions": 2,
+          "totalUniqueBlobs": 1,
           "totalUniqueReceivers": 0,
           "totalUniqueSenders": 0,
         },
@@ -190,7 +119,11 @@ describe("OverallStatsUpdater", () => {
           "totalBlobGasUsed": "786432",
           "totalBlobMaxFees": "78643200",
           "totalBlobMaxGasFees": "200",
+          "totalBlobSize": 6900n,
+          "totalBlobs": 6,
+          "totalBlocks": 2,
           "totalTransactions": 2,
+          "totalUniqueBlobs": 0,
           "totalUniqueReceivers": 0,
           "totalUniqueSenders": 0,
         },
@@ -211,7 +144,11 @@ describe("OverallStatsUpdater", () => {
           "totalBlobGasUsed": "786432",
           "totalBlobMaxFees": "78643200",
           "totalBlobMaxGasFees": "200",
+          "totalBlobSize": 6900n,
+          "totalBlobs": 6,
+          "totalBlocks": 2,
           "totalTransactions": 2,
+          "totalUniqueBlobs": 0,
           "totalUniqueReceivers": 0,
           "totalUniqueSenders": 0,
         },
@@ -232,36 +169,16 @@ describe("OverallStatsUpdater", () => {
           "totalBlobGasUsed": "1048576",
           "totalBlobMaxFees": "104857600",
           "totalBlobMaxGasFees": "400",
+          "totalBlobSize": 9400n,
+          "totalBlobs": 8,
+          "totalBlocks": 3,
           "totalTransactions": 4,
+          "totalUniqueBlobs": 1,
           "totalUniqueReceivers": 0,
           "totalUniqueSenders": 0,
         },
       ]
     `);
-  });
-
-  it("should aggregate overall stats in batches correctly when there are too many blocks", async () => {
-    const batchSize = 2;
-    const workerProcessor = new OverallStatsUpdaterMock({
-      batchSize,
-    }).getWorkerProcessor();
-    const incrementTransactionSpy = vi.spyOn(prisma, "$transaction");
-    const blockchainSyncState = fixtures.blockchainSyncState[0];
-    const lastAggregatedBlock = blockchainSyncState
-      ? blockchainSyncState.lastAggregatedBlock + 1
-      : 0;
-    const lastFinalizedBlock =
-      fixtures.blockchainSyncState[0]?.lastFinalizedBlock ?? 0;
-    const batches = Math.ceil(
-      (lastFinalizedBlock - lastAggregatedBlock + 1) / batchSize
-    );
-
-    await workerProcessor();
-
-    expect(
-      incrementTransactionSpy,
-      "Incorrect number of stats aggregation calls"
-    ).toHaveBeenCalledTimes(batches);
   });
 
   it("should update last aggregated block to last finalized block after aggregation", async () => {
@@ -285,6 +202,30 @@ describe("OverallStatsUpdater", () => {
     expect(lastAggregatedBlock).toBe(expectedLastAggregatedBlock);
   });
 
+  it("should aggregate overall stats in batches correctly when there are too many blocks", async () => {
+    const batchSize = 2;
+    const workerProcessor = new OverallStatsUpdaterMock({
+      batchSize,
+    }).getWorkerProcessor();
+    const incrementTransactionSpy = vi.spyOn(prisma.overallStats, "aggregate");
+    const blockchainSyncState = fixtures.blockchainSyncState[0];
+    const lastAggregatedBlock = blockchainSyncState
+      ? blockchainSyncState.lastAggregatedBlock + 1
+      : 0;
+    const lastFinalizedBlock =
+      fixtures.blockchainSyncState[0]?.lastFinalizedBlock ?? 0;
+    const batches = Math.ceil(
+      (lastFinalizedBlock - lastAggregatedBlock + 1) / batchSize
+    );
+
+    await workerProcessor();
+
+    expect(
+      incrementTransactionSpy,
+      "Incorrect number of stats aggregation calls"
+    ).toHaveBeenCalledTimes(batches);
+  });
+
   it("should skip aggregation when no finalized block has been set", async () => {
     const workerProcessor = overallStatsUpdater.getWorkerProcessor();
 
@@ -299,7 +240,7 @@ describe("OverallStatsUpdater", () => {
 
     await workerProcessor();
 
-    const allOverallStats = await getAllOverallStats().then((allOverallStats) =>
+    const allOverallStats = await getOverallStats().then((allOverallStats) =>
       allOverallStats.filter((stats) => !!stats)
     );
 
@@ -313,7 +254,7 @@ describe("OverallStatsUpdater", () => {
 
     await workerProcessor();
 
-    const allOverallStats = await getAllOverallStats().then((allOverallStats) =>
+    const allOverallStats = await getOverallStats().then((allOverallStats) =>
       allOverallStats.filter((stats) => !!stats)
     );
 
@@ -327,7 +268,7 @@ describe("OverallStatsUpdater", () => {
 
     await workerProcessor();
 
-    const allOverallStats = await getAllOverallStats().then((allOverallStats) =>
+    const allOverallStats = await getOverallStats().then((allOverallStats) =>
       allOverallStats.filter((stats) => !!stats)
     );
 
@@ -339,11 +280,11 @@ describe("OverallStatsUpdater", () => {
 
     await workerProcessor();
 
-    const allOverallStats = await getAllOverallStats();
+    const allOverallStats = await getOverallStats();
 
     await workerProcessor();
 
-    const allOverallStatsAfter = await getAllOverallStats();
+    const allOverallStatsAfter = await getOverallStats();
 
     expect(allOverallStats).toEqual(allOverallStatsAfter);
   });

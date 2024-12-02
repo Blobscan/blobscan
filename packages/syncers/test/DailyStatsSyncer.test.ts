@@ -6,7 +6,7 @@ import { prisma } from "@blobscan/db";
 import { DailyStatsSyncer } from "../src/syncers/";
 import { CURRENT_DAY_DATA } from "./DailyStatsSyncer.test.fixtures";
 import {
-  getAllDailyStatsDates,
+  getDailyStatsDates,
   indexNewBlock,
 } from "./DailyStatsSyncer.test.utils";
 
@@ -44,12 +44,9 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const { blobDailyStats, blockDailyStats, txDailyStats } =
-      await getAllDailyStatsDates();
+    const dailyStatsDates = await getDailyStatsDates();
 
-    expect(blobDailyStats, "Blob daily stats mismatch").toMatchSnapshot();
-    expect(blockDailyStats, "Block daily stats mismatch").toMatchSnapshot();
-    expect(txDailyStats, "Transaction daily stats mismatch").toMatchSnapshot();
+    expect(dailyStatsDates).toMatchSnapshot();
   });
 
   it("should skip aggregation if not all blocks have been indexed for the last day", async () => {
@@ -59,24 +56,15 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const { blobDailyStats, blockDailyStats, txDailyStats } =
-      await getAllDailyStatsDates();
+    const dailyStatsDates = await getDailyStatsDates();
 
     const currentDay = getDateFromISODateTime(
       toDailyDate(CURRENT_DAY_DATA.block.timestamp)
     );
 
     expect(
-      blobDailyStats.find(([day]) => day === currentDay),
-      "Blob daily stats should not include the current day"
-    ).toBeUndefined();
-    expect(
-      blockDailyStats.find((day) => day === currentDay),
-      "Block daily stats should not include the current day"
-    ).toBeUndefined();
-    expect(
-      txDailyStats.find(([day]) => day === currentDay),
-      "Transaction daily stats should not include the current day"
+      dailyStatsDates.find(([day]) => day === currentDay),
+      "Daily stats should not include the current day"
     ).toBeUndefined();
   });
 
@@ -89,13 +77,10 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const { blobDailyStats, blockDailyStats, txDailyStats } =
-      await getAllDailyStatsDates();
+    const dailyStatsDates = await getDailyStatsDates();
 
     expect(findLatestSpy, "findLatest should be called").toHaveBeenCalled();
-    expect(blobDailyStats, "Blob daily stats should be empty").toEqual([]);
-    expect(blockDailyStats, "Block daily stats should be empty").toEqual([]);
-    expect(txDailyStats, "Transaction daily stats should be empty").toEqual([]);
+    expect(dailyStatsDates, "Daily stats should be empty").toEqual([]);
   });
 
   it("should skip aggregation if already up to date", async () => {
@@ -105,32 +90,15 @@ describe("DailyStatsSyncer", () => {
 
     await workerProcessor();
 
-    const blobPopulateSpy = vi.spyOn(prisma.blobDailyStats, "populate");
-
-    const blockPopulateSpy = vi.spyOn(prisma.blockDailyStats, "populate");
-
-    const transactionPopulateSpy = vi.spyOn(
-      prisma.transactionDailyStats,
-      "populate"
-    );
+    const dailyStatsSpy = vi.spyOn(prisma.dailyStats, "aggregate");
 
     await workerProcessor();
 
     expect(
-      blobPopulateSpy,
-      "Blob daily stats should not be populated"
-    ).not.toHaveBeenCalled();
-    expect(
-      blockPopulateSpy,
-      "Block daily stats should not be populated"
-    ).not.toHaveBeenCalled();
-    expect(
-      transactionPopulateSpy,
-      "Transaction daily stats should not be populated"
+      dailyStatsSpy,
+      "Daily stats should not be populated"
     ).not.toHaveBeenCalled();
 
-    blobPopulateSpy.mockRestore();
-    blockPopulateSpy.mockRestore();
-    transactionPopulateSpy.mockRestore();
+    dailyStatsSpy.mockRestore();
   });
 });

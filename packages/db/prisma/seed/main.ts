@@ -208,45 +208,23 @@ async function main() {
     `Data generated (${dbInsertionExecutionTime}s): ${totalBlocks} blocks, ${totalTxs} txs, ${totalBlobs} blobs, ${totalBlobsOnTxs} blobsOnTxs, ${totalForkTxs} fork txs`
   );
 
-  spinner = spinner.start(`Aggregating overall stats…`);
+  spinner = spinner.start(`Aggregating stats…`);
 
-  const overallStatsExecutionTime = await measureExecutionTime(async () => {
-    await Promise.all([
-      prisma.blobOverallStats.increment({
-        from: 0,
-        to: Number.MAX_SAFE_INTEGER,
-      }),
-      prisma.blockOverallStats.increment({
-        from: 0,
-        to: Number.MAX_SAFE_INTEGER,
-      }),
-      prisma.transactionOverallStats.increment({
-        from: 0,
-        to: Number.MAX_SAFE_INTEGER,
-      }),
-    ]);
-  });
-
-  spinner = spinner.info(
-    `Overall stats created (${overallStatsExecutionTime}s)`
-  );
-
-  const dailyStatsExecutionTime = await measureExecutionTime(async () => {
+  const statsExecutionTime = await measureExecutionTime(async () => {
     const yesterdayPeriod = {
       to: dayjs().subtract(1, "day").startOf("day").toISOString(),
     };
 
-    spinner = spinner.start(`Aggregating daily stats…`);
+    spinner = spinner.start(`Aggregating stats…`);
     await Promise.all([
-      prisma.blobDailyStats.populate(yesterdayPeriod),
-      prisma.blockDailyStats.populate(yesterdayPeriod),
-      prisma.transactionDailyStats.populate(yesterdayPeriod),
+      prisma.dailyStats.aggregate(yesterdayPeriod),
+      prisma.overallStats.aggregate({
+        blockRange: { from: 0, to: Number.MAX_SAFE_INTEGER },
+      }),
     ]);
   });
 
-  spinner = spinner.info(`Daily stats created (${dailyStatsExecutionTime}s)`);
-
-  spinner = spinner.info(`All stats created!`);
+  spinner = spinner.info(`Stats aggregated (${statsExecutionTime}s)`);
 
   spinner = spinner.succeed("Database seeded!");
 }

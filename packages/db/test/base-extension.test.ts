@@ -18,7 +18,7 @@ import {
 
 import { prisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
-import { upsertAndRetrieveManyAddresses } from "./base-extension.test.utils";
+import { upsertAndRetrieveManyAddresses } from "./base-extension.utils";
 
 describe("Base Extension", () => {
   const expectedEmptyInputRes = [

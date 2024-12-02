@@ -1,7 +1,7 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import type { BlobDailyStats, BlobOverallStats, Prisma } from "@blobscan/db";
+import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import type { Category, Rollup } from "../enums";
@@ -35,7 +35,7 @@ describe("Blob router", async () => {
 
   describe("getAll", () => {
     beforeEach(async () => {
-      await ctx.prisma.blobOverallStats.populate();
+      await ctx.prisma.overallStats.aggregate();
     });
 
     runPaginationTestsSuite("blob", (paginationInput) =>
@@ -142,26 +142,8 @@ describe("Blob router", async () => {
     // instead of performing a direct database count.
     const STATS_TOTAL_BLOBS = 999999;
 
-    async function createNewOverallStats(
-      overallStats: Partial<BlobOverallStats>
-    ) {
-      const data: Prisma.BlobOverallStatsCreateManyInput = {
-        category: null,
-        rollup: null,
-        updatedAt: new Date(),
-        totalBlobs: 0,
-        totalBlobSize: 0,
-        totalUniqueBlobs: 0,
-        ...overallStats,
-      };
-
-      await ctx.prisma.blobOverallStats.create({
-        data,
-      });
-    }
-
-    async function createNewDailyStats(dailyStats: Partial<BlobDailyStats>) {
-      const data: Prisma.BlobDailyStatsCreateInput = {
+    async function createNewDailyStats(dailyStats: Partial<DailyStats>) {
+      const data: Prisma.DailyStatsCreateInput = {
         day: new Date(),
         category: null,
         rollup: null,
@@ -171,7 +153,7 @@ describe("Blob router", async () => {
         ...dailyStats,
       };
 
-      await ctx.prisma.blobDailyStats.create({
+      await ctx.prisma.dailyStats.create({
         data,
       });
     }
@@ -179,12 +161,13 @@ describe("Blob router", async () => {
     it("should return the overall total blobs stat when no filters are provided", async () => {
       const expectedTotalBlobs = STATS_TOTAL_BLOBS;
 
-      await createNewOverallStats({
-        category: null,
-        rollup: null,
-        totalBlobs: expectedTotalBlobs,
+      await ctx.prisma.overallStats.create({
+        data: {
+          category: null,
+          rollup: null,
+          totalBlobs: expectedTotalBlobs,
+        },
       });
-
       const { totalBlobs } = await caller.blob.getCount({});
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
@@ -229,10 +212,12 @@ describe("Blob router", async () => {
         } else {
           expectedTotalBlobs = STATS_TOTAL_BLOBS;
 
-          await createNewOverallStats({
-            category: categoryFilter,
-            rollup: rollupFilter,
-            totalBlobs: expectedTotalBlobs,
+          await ctx.prisma.overallStats.create({
+            data: {
+              category: categoryFilter,
+              rollup: rollupFilter,
+              totalBlobs: expectedTotalBlobs,
+            },
           });
         }
       }

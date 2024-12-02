@@ -1,10 +1,9 @@
 import { toDailyDate } from "@blobscan/dayjs";
-import { omitDBTimestampFields } from "@blobscan/test";
 
-import { prisma } from "../../prisma";
-import { Category } from "../../prisma/enums";
-import type { Rollup } from "../../prisma/enums";
-import { NEW_DATA } from "./fixture";
+import { prisma } from "../prisma";
+import { Category } from "../prisma/enums";
+import type { Rollup } from "../prisma/enums";
+import { NEW_DATA } from "./stats-extension.fixtures";
 
 export type AggregableType = Category | Rollup | "TOTAL" | "ROLLUPS_TOTAL";
 
@@ -40,16 +39,7 @@ export function indexBlock({ indexAsReorged = false } = {}) {
   return prisma.$transaction(operations);
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export function getOverallStats(overallStatsModel: any) {
-  return (
-    overallStatsModel
-      .findFirst()
-      /* eslint-disable @typescript-eslint/no-explicit-any */
-      .then((res: any) => (res ? omitDBTimestampFields(res) : res))
-  );
-}
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getObjectFieldValue(obj: any, path: string) {
   return path.split(".").reduce((acc, key) => acc[key], obj);
 }

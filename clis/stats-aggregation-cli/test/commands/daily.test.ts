@@ -13,28 +13,11 @@ import { fixtures } from "@blobscan/test";
 
 import { daily, dailyCommandUsage } from "../../src/commands/daily";
 import {
+  getDailyStats,
   getDailyStatsByDateRange,
   runHelpArgTests,
   toDailyFormat,
 } from "../helpers";
-
-function sortByDay(a: { day: string | Date }, b: { day: string | Date }) {
-  return new Date(a.day).getTime() - new Date(b.day).getTime();
-}
-
-function getAllDailyStats() {
-  return Promise.all([
-    prisma.blobDailyStats
-      .findMany()
-      .then((stats) => stats.map(({ id: _, ...rest }) => rest)),
-    prisma.blockDailyStats.findMany(),
-    prisma.transactionDailyStats
-      .findMany()
-      .then((stats) => stats.map(({ id: _, ...rest }) => rest)),
-  ]).then((allDailyStats) =>
-    allDailyStats.map((stats) => stats.sort(sortByDay))
-  );
-}
 
 const DATE_SORTED_BLOCKS = fixtures.blocks.sort((a, b) => {
   return new Date(a.insertedAt).getTime() - new Date(b.insertedAt).getTime();
@@ -53,49 +36,26 @@ describe("Daily command", () => {
   });
 
   describe("when aggregating daily stats", () => {
-    it("should aggregate all entities' data when no entity is provided", async () => {
+    it("should aggregate all data correctly", async () => {
       await daily();
 
-      const [blobDailyStats, blockDailyStats, transactionDailyStats] =
-        await getAllDailyStats();
+      const dailyStats = await getDailyStats();
 
-      expect(blobDailyStats, "Blob daily stats mismatch").toMatchSnapshot();
-      expect(blockDailyStats, "Block daily stats mismatch").toMatchSnapshot();
-      expect(
-        transactionDailyStats,
-        "Transaction daily stats mismatch"
-      ).toMatchSnapshot();
+      expect(dailyStats).toMatchSnapshot();
     });
 
-    it("should aggregate blob data when the blob entity is provided", async () => {
-      await daily(["--entity", "blob"]);
-
-      const [blobDailyStats, blockDailyStats, transactionDailyStats] =
-        await getAllDailyStats();
-
-      expect(blobDailyStats, "Blob daily stats mismatch").toMatchSnapshot();
-      expect(blockDailyStats, "Block daily stats should be empty").toEqual([]);
-      expect(
-        transactionDailyStats,
-        "Transaction daily stats should be empty"
-      ).toEqual([]);
-    });
-
-    describe("when specifying a date period", () => {
+    describe("when providing a date period", () => {
       it("should aggregate data from the provided period", async () => {
         const fromDate = "2023-05-05";
         const toDate = "2023-08-30";
 
-        await daily(["--from", fromDate, "--to", toDate, "--entity", "blob"]);
+        await daily(["--from", fromDate, "--to", toDate]);
 
-        const statsOutsideRange = getDailyStatsByDateRange(
-          await prisma.blobDailyStats.findMany(),
-          {
-            fromDate,
-            toDate,
-            invertRange: true,
-          }
-        );
+        const statsOutsideRange = await getDailyStatsByDateRange({
+          fromDate,
+          toDate,
+          invertRange: true,
+        });
 
         expect(statsOutsideRange).toEqual([]);
       });
@@ -111,17 +71,17 @@ describe("Daily command", () => {
           ? toDailyFormat(expectedLatestDailyStat.insertedAt)
           : null;
 
-        await daily(["--entity", "block"]);
+        await daily();
 
-        const blobDailyStats = (await prisma.blockDailyStats.findMany()).sort(
+        const dailyStats = (await prisma.dailyStats.findMany()).sort(
           (a, b) => a.day.getTime() - b.day.getTime()
         );
 
-        const earliestDailyStat = blobDailyStats[0];
+        const earliestDailyStat = dailyStats[0];
         const earliestDate = earliestDailyStat
           ? toDailyFormat(earliestDailyStat.day)
           : null;
-        const latestDailyStat = blobDailyStats[blobDailyStats.length - 1];
+        const latestDailyStat = dailyStats[dailyStats.length - 1];
         const latestDate = latestDailyStat
           ? toDailyFormat(latestDailyStat.day)
           : null;
@@ -132,18 +92,15 @@ describe("Daily command", () => {
         expect(latestDate, "Latest date mismatch").toBe(expectedLatestDate);
       });
 
-      it("should aggregate data until the latest date when no end date is provided", async () => {
+      it("should aggregate data until the current date when no end date is provided", async () => {
         const fromDate = "2023-05-05";
 
-        await daily(["--from", fromDate, "--entity", "block"]);
+        await daily(["--from", fromDate]);
 
-        const statsOutsideRange = getDailyStatsByDateRange(
-          await prisma.blockDailyStats.findMany(),
-          {
-            fromDate,
-            invertRange: true,
-          }
-        );
+        const statsOutsideRange = await getDailyStatsByDateRange({
+          fromDate,
+          invertRange: true,
+        });
 
         expect(statsOutsideRange).toEqual([]);
       });
@@ -151,15 +108,12 @@ describe("Daily command", () => {
       it("should aggregate data from the earliest date when no start date is provided", async () => {
         const toDate = "2023-08-05";
 
-        await daily(["--to", toDate, "--entity", "block"]);
+        await daily(["--to", toDate]);
 
-        const statsOutsideRange = getDailyStatsByDateRange(
-          await prisma.blockDailyStats.findMany(),
-          {
-            toDate,
-            invertRange: true,
-          }
-        );
+        const statsOutsideRange = await getDailyStatsByDateRange({
+          toDate,
+          invertRange: true,
+        });
 
         expect(statsOutsideRange).toEqual([]);
       });
@@ -174,41 +128,17 @@ describe("Daily command", () => {
     });
   });
 
-  describe("when deleting daily stats", () => {
+  describe("when providing the delete flag", () => {
     beforeEach(async () => {
       await daily();
     });
 
-    it("should delete all daily stats when no entity is provided", async () => {
+    it("should delete all daily stats", async () => {
       await daily(["--delete"]);
 
-      const [blobDailyStats, blockDailyStats, transactionDailyStats] =
-        await getAllDailyStats();
+      const dailyStats = await getDailyStats();
 
-      expect(blobDailyStats, "Blob daily stats should be empty").toEqual([]);
-      expect(blockDailyStats, "Block daily stats should be empty").toEqual([]);
-      expect(
-        transactionDailyStats,
-        "Transaction daily stats should be empty"
-      ).toEqual([]);
-    });
-
-    it("should delete blob daily stats when the blob entity is provided", async () => {
-      const [_, beforeBlockDailyStats, beforeTransactionDailyStats] =
-        await getAllDailyStats();
-
-      await daily(["--delete", "--entity", "blob"]);
-
-      const [blobDailyStats, blockDailyStats, transactionDailyStats] =
-        await getAllDailyStats();
-
-      expect(blobDailyStats, "Blob daily stats should be empty").toEqual([]);
-      expect(blockDailyStats, "Block daily stats mismatch").toEqual(
-        beforeBlockDailyStats
-      );
-      expect(transactionDailyStats, "Transaction daily stats mismatch").toEqual(
-        beforeTransactionDailyStats
-      );
+      expect(dailyStats).toEqual([]);
     });
 
     describe("when specifying a date period", () => {
@@ -216,63 +146,46 @@ describe("Daily command", () => {
         const fromDate = "2023-05-05";
         const toDate = "2023-08-30";
 
-        await daily([
-          "--from",
+        await daily(["--from", fromDate, "--to", toDate, "--delete"]);
+
+        const dailyStats = await getDailyStatsByDateRange({
           fromDate,
-          "--to",
           toDate,
-          "--delete",
-          "--entity",
-          "blob",
-        ]);
+        });
 
-        const blobDailyStats = getDailyStatsByDateRange(
-          await prisma.blobDailyStats.findMany(),
-          {
-            fromDate,
-            toDate,
-          }
-        );
-
-        expect(blobDailyStats).toEqual([]);
+        expect(dailyStats).toEqual([]);
       });
 
       it("should delete all data when no period is provided", async () => {
-        await daily(["--delete", "--entity", "block"]);
+        await daily(["--delete"]);
 
-        const blobDailyStats = await prisma.blockDailyStats.findMany();
+        const dailyStats = await prisma.dailyStats.findMany();
 
-        expect(blobDailyStats, "Block daily stats should be empty").toEqual([]);
+        expect(dailyStats, "Block daily stats should be empty").toEqual([]);
       });
 
       it("should delete data until the latest date when no end date is provided", async () => {
         const fromDate = "2023-05-05";
 
-        await daily(["--from", fromDate, "--entity", "block", "--delete"]);
+        await daily(["--from", fromDate, "--delete"]);
 
-        const blockDailyStats = getDailyStatsByDateRange(
-          await prisma.blockDailyStats.findMany(),
-          {
-            fromDate,
-          }
-        );
+        const dailyStats = await getDailyStatsByDateRange({
+          fromDate,
+        });
 
-        expect(blockDailyStats).toEqual([]);
+        expect(dailyStats).toEqual([]);
       });
 
       it("should delete data from the earliest date when no start date is provided", async () => {
         const toDate = "2023-08-05";
 
-        await daily(["--to", toDate, "--entity", "block", "--delete"]);
+        await daily(["--to", toDate, "--delete"]);
 
-        const blockDailyStats = getDailyStatsByDateRange(
-          await prisma.blockDailyStats.findMany(),
-          {
-            toDate,
-          }
-        );
+        const dailyStats = await getDailyStatsByDateRange({
+          toDate,
+        });
 
-        expect(blockDailyStats).toEqual([]);
+        expect(dailyStats).toEqual([]);
       });
 
       it("should fail when starting date is after ending date", async () => {

@@ -1,6 +1,7 @@
 import { expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
+import { prisma } from "@blobscan/db";
 
 export function runHelpArgTests(
   command: (argv?: string[]) => unknown,
@@ -27,31 +28,42 @@ export function toDailyFormat(date: string | Date | dayjs.Dayjs) {
   return dayjs(date).toISOString().split("T")[0];
 }
 
-export function getDailyStatsByDateRange(
-  dailyStats: { day: Date }[],
-  {
-    fromDate,
-    toDate,
-    invertRange = false,
-  }: Partial<{
-    fromDate: string;
-    toDate: string;
-    invertRange: boolean;
-  }>
-) {
+function sortByDay(a: { day: string | Date }, b: { day: string | Date }) {
+  return new Date(a.day).getTime() - new Date(b.day).getTime();
+}
+
+export function getDailyStats() {
+  return prisma.dailyStats
+    .findMany()
+    .then((stats) => stats.map(({ id: _, ...rest }) => rest).sort(sortByDay));
+}
+
+export async function getDailyStatsByDateRange({
+  fromDate,
+  toDate,
+  invertRange = false,
+}: Partial<{
+  fromDate: string;
+  toDate: string;
+  invertRange: boolean;
+}>) {
   const from = fromDate ? dayjs(new Date(fromDate)).startOf("day") : undefined;
   const to = toDate ? dayjs(new Date(toDate)).endOf("day") : undefined;
 
-  return dailyStats.filter((b) => {
-    let isInRange;
-    if (!from) {
-      isInRange = dayjs(b.day).isBefore(to, "day");
-    } else if (!to) {
-      isInRange = dayjs(b.day).isAfter(from, "day");
-    } else {
-      isInRange = dayjs(b.day).isBetween(from, to, "day", "[]");
-    }
+  const dailyStats = await prisma.dailyStats.findMany();
 
-    return invertRange ? !isInRange : isInRange;
-  });
+  return dailyStats
+    .filter((b) => {
+      let isInRange;
+      if (!from) {
+        isInRange = dayjs(b.day).isBefore(to, "day");
+      } else if (!to) {
+        isInRange = dayjs(b.day).isAfter(from, "day");
+      } else {
+        isInRange = dayjs(b.day).isBetween(from, to, "day", "[]");
+      }
+
+      return invertRange ? !isInRange : isInRange;
+    })
+    .sort(sortByDay);
 }
