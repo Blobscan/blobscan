@@ -52,6 +52,10 @@ export async function parseOptimismDecodedData(
    @returns The block hash, if there is a single ocurrence, or null.
  */
 async function autocompleteBlockHash(partialHash: string) {
+  if (!partialHash) {
+    return null;
+  }
+
   const blocks = await prisma.block.findMany({
     where: {
       hash: {
@@ -68,7 +72,9 @@ async function autocompleteBlockHash(partialHash: string) {
   }
 
   if (blocks.length > 1) {
-    logger.error(`Multiple blocks found for hash ${partialHash}`);
+    logger.error(
+      `Found ${blocks.length} blocks while autocompleting block hash ${partialHash}`
+    );
   }
 
   return blocks[0].hash;
