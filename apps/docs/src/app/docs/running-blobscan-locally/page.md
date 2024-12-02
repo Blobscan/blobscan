@@ -53,21 +53,17 @@ Configure the [environment variables](/docs/environment) accordingly, including 
 
 ## Run
 
-Then run the development command:
+Run the development command:
 
 ```shell
 pnpm dev
 ```
 
-Now apply all database migrations:
+Lastly, apply all database migrations and optionally, add some fixture data:
 
 ```shell
+cd packages/db
 pnpm db:migrate
-```
-
-Lastly, you can add some fixture data:
-
-```shell
 pnpm db:seed
 ```
 
