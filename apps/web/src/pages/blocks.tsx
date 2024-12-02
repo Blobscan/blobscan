@@ -143,7 +143,7 @@ const Blocks: NextPage = function () {
                 cells: [
                   {
                     item:
-                      category && category === "rollup" && rollup ? (
+                      category === "rollup" && rollup ? (
                         <RollupIcon rollup={rollup} />
                       ) : (
                         <></>
@@ -195,10 +195,7 @@ const Blocks: NextPage = function () {
                   <div className="relative flex">
                     {transactions.map((tx, i) => {
                       return tx.rollup ? (
-                        <div
-                          key={i}
-                          className="-ml-1 scale-100 first-of-type:ml-0 hover:scale-125 "
-                        >
+                        <div key={i} className="-ml-1 first-of-type:ml-0">
                           <RollupIcon rollup={tx.rollup} />
                         </div>
                       ) : (
