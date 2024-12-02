@@ -3,6 +3,9 @@ import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
+import type { OptimismDecodedData } from "@blobscan/api/src/blob-parse/optimism";
+import type dayjs from "@blobscan/dayjs";
+
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
@@ -16,6 +19,7 @@ import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
+import Loading from "~/icons/loading.svg";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
@@ -256,62 +260,10 @@ const Tx: NextPage = () => {
       />
 
       {decodedData && (
-        <Card header="Decoded Fields">
-          <div>
-            <InfoGrid
-              fields={[
-                {
-                  name: "Timestamp since L2 genesis",
-                  value: (
-                    <div className="whitespace-break-spaces">
-                      {tx
-                        ? formatTimestamp(
-                            tx.blockTimestamp.subtract(
-                              decodedData.timestampSinceL2Genesis,
-                              "ms"
-                            )
-                          )
-                        : ""}
-                    </div>
-                  ),
-                },
-                {
-                  name: "Last L1 origin number",
-                  value: decodedData.lastL1OriginNumber,
-                },
-                {
-                  name: "Parent L2 block hash",
-                  value: "0x" + decodedData.parentL2BlockHash + "...",
-                },
-                {
-                  name: "L1 origin block hash",
-                  value: (
-                    <BlockHash
-                      fullHash={decodedData.fullL1OriginBlockHash}
-                      partialHash={decodedData.l1OriginBlockHash}
-                    />
-                  ),
-                },
-                {
-                  name: "Number of L2 blocks",
-                  value: decodedData.numberOfL2Blocks,
-                },
-                {
-                  name: "Changed by L1 origin",
-                  value: decodedData.changedByL1Origin,
-                },
-                {
-                  name: "Total transactions",
-                  value: decodedData.totalTxs,
-                },
-                {
-                  name: "Contract creation transactions",
-                  value: decodedData.contractCreationTxsNumber,
-                },
-              ]}
-            />
-          </div>
-        </Card>
+        <OptimismCard
+          decodedData={decodedData}
+          txTimestamp={tx ? tx.blockTimestamp : undefined}
+        />
       )}
 
       <Card header={`Blobs ${tx ? `(${tx.blobs.length})` : ""}`}>
@@ -325,28 +277,95 @@ const Tx: NextPage = () => {
   );
 };
 
-type BlockHashProps = {
-  partialHash: string;
-  fullHash: string | undefined;
+type OptimismCardProps = {
+  decodedData: OptimismDecodedData;
+  txTimestamp: dayjs.Dayjs | undefined;
 };
 
-const BlockHash: FC<BlockHashProps> = ({ fullHash, partialHash }) => {
-  if (fullHash === undefined) {
-    return "0x" + partialHash + "...";
+const OptimismCard: FC<OptimismCardProps> = ({ decodedData, txTimestamp }) => {
+  const { data: blockExists, isLoading } = api.block.checkBlockExists.useQuery({
+    blockNumber: decodedData.lastL1OriginNumber,
+  });
+
+  const blockLink = blockExists
+    ? `https://blobscan.com/block/${decodedData.lastL1OriginNumber}`
+    : `https://etherscan.io/block/${decodedData.lastL1OriginNumber}`;
+
+  const hash = `0x${decodedData.l1OriginBlockHash}...`;
+
+  const timestamp = txTimestamp
+    ? formatTimestamp(
+        txTimestamp.subtract(decodedData.timestampSinceL2Genesis, "ms")
+      )
+    : undefined;
+
+  if (isLoading) {
+    return (
+      <Card header="Loading Decoded Fields...">
+        <div className="flex h-32 items-center justify-center">
+          <Loading className="h-8 w-8 animate-spin" />
+        </div>
+      </Card>
+    );
   }
 
-  const prefixedFullHash = "0x" + fullHash;
-
   return (
-    <div className="flex items-center gap-2">
-      <Link href={`https://blobscan.com/block/${prefixedFullHash}`}>
-        {prefixedFullHash}
-      </Link>
-      <CopyToClipboard
-        value={prefixedFullHash}
-        tooltipText="Copy L1 origin block hash"
-      />
-    </div>
+    <Card header="Decoded Fields">
+      <div>
+        <InfoGrid
+          fields={[
+            {
+              name: "Timestamp since L2 genesis",
+              value: <div className="whitespace-break-spaces">{timestamp}</div>,
+            },
+            {
+              name: "Last L1 origin number",
+              value: (
+                <div className="flex items-center gap-2">
+                  <Link href={blockLink}>{decodedData.lastL1OriginNumber}</Link>
+                  <CopyToClipboard
+                    value={decodedData.lastL1OriginNumber.toString()}
+                    tooltipText="Copy Last L1 origin number"
+                  />
+                </div>
+              ),
+            },
+            {
+              name: "Parent L2 block hash",
+              value: "0x" + decodedData.parentL2BlockHash + "...",
+            },
+            {
+              name: "L1 origin block hash",
+              value: (
+                <div className="flex items-center gap-2">
+                  <Link href={blockLink}>{hash}</Link>
+                  <CopyToClipboard
+                    value={hash}
+                    tooltipText="Copy L1 origin block hash"
+                  />
+                </div>
+              ),
+            },
+            {
+              name: "Number of L2 blocks",
+              value: decodedData.numberOfL2Blocks,
+            },
+            {
+              name: "Changed by L1 origin",
+              value: decodedData.changedByL1Origin,
+            },
+            {
+              name: "Total transactions",
+              value: decodedData.totalTxs,
+            },
+            {
+              name: "Contract creation transactions",
+              value: decodedData.contractCreationTxsNumber,
+            },
+          ]}
+        />
+      </div>
+    </Card>
   );
 };
 
