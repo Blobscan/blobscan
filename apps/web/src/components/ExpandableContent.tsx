@@ -48,11 +48,11 @@ export const ExpandableContent: FC<ExpandableElementProps> = function ({
             >
               {opened ? (
                 <>
-                  Show More <ChevronUpIcon className="h-5 w-5" />
+                  Show Less <ChevronUpIcon className="h-5 w-5" />
                 </>
               ) : (
                 <>
-                  Show Less <ChevronDownIcon className="h-5 w-5" />
+                  Show More <ChevronDownIcon className="h-5 w-5" />
                 </>
               )}
             </div>
