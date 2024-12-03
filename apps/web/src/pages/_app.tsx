@@ -28,7 +28,7 @@ if (typeof window !== "undefined" && env.NEXT_PUBLIC_POSTHOG_ID) {
     api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
     person_profiles: "identified_only",
     loaded: (posthog) => {
-      if (env.NODE_ENV === "development") {
+      if (window.location.hostname.includes("localhost")) {
         posthog.debug();
       }
     },
