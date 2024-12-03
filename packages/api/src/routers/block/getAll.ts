@@ -56,11 +56,12 @@ export const getAll = publicProcedure
 
         transactionForks: filters.blockType,
         transactions:
-          filters.transactionRollup !== undefined ||
+          filters.transactionRollup !== undefined || filters.transactionCategory !== undefined ||
           filters.transactionAddresses
             ? {
                 some: {
                   rollup: filters.transactionRollup,
+                  category: filters.transactionCategory,
                   OR: filters.transactionAddresses,
                 },
               }

@@ -102,13 +102,6 @@ export const categorySchema = z
   })
   .transform((value) => value as ZodCategoryEnum);
 
-export const nullableRollupSchema = z
-  .string()
-  .refine((value) => {
-    return value === "null" || zodRollupEnums.includes(value as ZodRollupEnum);
-  })
-  .transform((value) => value as ZodRollupEnum | "null");
-
 export const blockNumberSchema = z.number().nonnegative();
 
 export const slotSchema = z.number().nonnegative();

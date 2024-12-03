@@ -21,7 +21,7 @@ export const TimestampFilter: FC<TimestampFilterProps> = function ({
       value={value}
       onChange={onChange}
       inputClassName={cn(
-        "h-9 w-full xl:w-[222px] md:max-lg:w-[44px] pl-2 pr-8",
+        "h-9 w-[42px] xl:w-[222px] sm:w-[222px] md:max-xl:w-[42px] pl-2 pr-8",
         "text-left text-sm placeholder:text-sm",
         "cursor-pointer",
         "rounded-lg border border-transparent shadow-md",

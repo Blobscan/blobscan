@@ -8,7 +8,8 @@ import { t } from "../trpc-client";
 import {
   addressSchema,
   blockNumberSchema,
-  nullableRollupSchema,
+  categorySchema,
+  rollupSchema,
   slotSchema,
 } from "../utils";
 
@@ -57,7 +58,11 @@ export const withSlotRangeFilterSchema = z.object({
 });
 
 export const withRollupFilterSchema = z.object({
-  rollup: nullableRollupSchema.optional(),
+  rollup: rollupSchema.optional(),
+});
+
+export const withCategoryFilterSchema = z.object({
+  category: categorySchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -85,6 +90,7 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withDateRangeFilterSchema)
   .merge(withSlotRangeFilterSchema)
   .merge(withRollupFilterSchema)
+  .merge(withCategoryFilterSchema)
   .merge(withAddressFilterSchema)
   .merge(withTypeFilterSchema);
 
@@ -156,6 +162,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     endBlock,
     endSlot,
     rollup,
+    category,
     startBlock,
     startSlot,
     startDate,
@@ -207,12 +214,13 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
 
   filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
 
-  filters.transactionRollup =
-    rollup === "null" ? null : (rollup?.toUpperCase() as Rollup | undefined);
+  filters.transactionRollup = rollup?.toUpperCase() as Rollup | undefined;
 
   if (filters.transactionRollup !== undefined) {
     filters.transactionCategory = "ROLLUP";
   }
+
+  filters.transactionCategory = category?.toUpperCase() as Category | undefined;
 
   filters.sort = sort;
 
