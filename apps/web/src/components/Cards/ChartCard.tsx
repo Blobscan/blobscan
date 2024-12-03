@@ -33,7 +33,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
   const { isEmpty, isLoading } = getSeriesDataState(options.series);
 
   return (
-    <Card className="overflow-visible" compact>
+    <Card className="h-full overflow-visible" compact>
       <div className="flex-start -mb-2 ml-2 flex font-semibold dark:text-warmGray-50">
         {title ?? <Skeleton width={150} />}
       </div>
