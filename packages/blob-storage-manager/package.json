@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-storage-manager",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,7 +15,7 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/db": "workspace:^0.11.0",
+    "@blobscan/db": "workspace:^0.12.0",
     "@blobscan/env": "workspace:^0.0.1",
     "@blobscan/logger": "workspace:^0.1.1",
     "@blobscan/open-telemetry": "workspace:^0.0.8",
