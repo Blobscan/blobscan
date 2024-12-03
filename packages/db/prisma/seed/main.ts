@@ -218,9 +218,7 @@ async function main() {
     spinner = spinner.start(`Aggregating stats…`);
     await Promise.all([
       prisma.dailyStats.aggregate(yesterdayPeriod),
-      prisma.overallStats.aggregate({
-        blockRange: { from: 0, to: Number.MAX_SAFE_INTEGER },
-      }),
+      prisma.overallStats.aggregate(),
     ]);
   });
 
