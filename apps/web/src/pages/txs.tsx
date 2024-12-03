@@ -1,5 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { NextPage } from "next";
+
+import dayjs from "@blobscan/dayjs";
 
 import { Copyable } from "~/components/Copyable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
@@ -10,6 +12,8 @@ import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
+import type { TimestampFormat } from "~/components/TimestampToggle";
+import { TimestampToggle } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
@@ -41,47 +45,6 @@ type Transaction = Pick<
   | "blockTimestamp"
   | "category"
 > & { blobsLength?: number };
-
-export const TRANSACTIONS_TABLE_HEADERS = [
-  {
-    cells: [
-      { item: "", className: "w-[40px]" },
-      {
-        item: "Hash",
-        className: "w-[150px]",
-      },
-      {
-        item: "Block number",
-        className: "w-[127px]",
-      },
-      {
-        item: "Timestamp",
-        className: "w-[160px]",
-      },
-      {
-        item: "From",
-        className: "w-[150px]",
-      },
-      {
-        item: "To",
-        className: "w-[148px]",
-      },
-
-      {
-        item: "Blob Base Fee",
-        className: "w-[172px]",
-      },
-      {
-        item: "Blob Max Fee",
-        className: "w-[162px]",
-      },
-      {
-        item: "Blob Gas Price",
-        className: "2xl:w-full w-[180px]",
-      },
-    ],
-  },
-];
 
 const Txs: NextPage = function () {
   const { filterParams, paginationParams } = useQueryParams();
@@ -117,6 +80,50 @@ const Txs: NextPage = function () {
   const { transactions } = txsData || {};
   const { totalTransactions } = countData || {};
   const error = txsError ?? countError;
+  const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
+
+  const TRANSACTIONS_TABLE_HEADERS = [
+    {
+      cells: [
+        { item: "", className: "w-[40px]" },
+        {
+          item: "Hash",
+          className: "w-[150px]",
+        },
+        {
+          item: "Block number",
+          className: "w-[127px]",
+        },
+        {
+          item: (
+            <TimestampToggle format={timeFormat} setFormat={setTimeFormat} />
+          ),
+          className: "w-[160px]",
+        },
+        {
+          item: "From",
+          className: "w-[150px]",
+        },
+        {
+          item: "To",
+          className: "w-[148px]",
+        },
+
+        {
+          item: "Blob Base Fee",
+          className: "w-[172px]",
+        },
+        {
+          item: "Blob Max Fee",
+          className: "w-[162px]",
+        },
+        {
+          item: "Blob Gas Price",
+          className: "2xl:w-full w-[180px]",
+        },
+      ],
+    },
+  ];
 
   const transactionRows = useMemo(() => {
     return transactions
@@ -227,7 +234,9 @@ const Txs: NextPage = function () {
               {
                 item: (
                   <div className="whitespace-break-spaces">
-                    {formatTimestamp(blockTimestamp, true)}
+                    {timeFormat === "relative"
+                      ? formatTimestamp(blockTimestamp, true)
+                      : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss")}
                   </div>
                 ),
               },
@@ -281,7 +290,7 @@ const Txs: NextPage = function () {
           };
         })
       : undefined;
-  }, [transactions]);
+  }, [transactions, timeFormat]);
 
   if (error) {
     return (
