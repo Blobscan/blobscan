@@ -13,9 +13,7 @@ export const TimestampToggle: FC<TimestampProps> = ({ format, setFormat }) => {
   return (
     <Tooltip>
       <TooltipContent>
-        {format === "relative"
-          ? "Click to show absolute timestamp"
-          : "Click to show relative timestamp"}
+       {`Click to show ${format} timestamp`}
       </TooltipContent>
       <TooltipTrigger
         className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
