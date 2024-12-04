@@ -8,6 +8,7 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
+import { InfoField } from "~/components/InfoField";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -85,7 +86,11 @@ const Block: NextPage = function () {
 
     detailsFields = [
       {
-        name: "Block Height",
+        name: (
+          <InfoField description="The block height is the number of blocks preceding the current block.">
+            Block Height
+          </InfoField>
+        ),
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
@@ -110,13 +115,28 @@ const Block: NextPage = function () {
           </div>
         ),
       },
-      { name: "Status", value: <BlockStatus blockNumber={blockData.number} /> },
       {
-        name: "Hash",
+        name: (
+          <InfoField description="The finality status of the block.">
+            Status
+          </InfoField>
+        ),
+        value: <BlockStatus blockNumber={blockData.number} />,
+      },
+      {
+        name: (
+          <InfoField description="The hash of the block header.">
+            Hash
+          </InfoField>
+        ),
         value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
       },
       {
-        name: "Timestamp",
+        name: (
+          <InfoField description="The time at which the block was created.">
+            Timestamp
+          </InfoField>
+        ),
         value: (
           <div className="whitespace-break-spaces">
             {formatTimestamp(blockData.timestamp)}
@@ -124,7 +144,11 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Slot",
+        name: (
+          <InfoField description="The slot number of the block.">
+            Slot
+          </InfoField>
+        ),
         value: (
           <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
             {blockData.slot}
@@ -132,7 +156,9 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Size",
+        name: (
+          <InfoField description="The size of the Blob.">Blob size</InfoField>
+        ),
         value: (
           <div>
             {formatBytes(totalBlockBlobSize)}
@@ -144,15 +170,27 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Gas Price",
+        name: (
+          <InfoField description="The gas price of the blob.">
+            Blob Gas Price
+          </InfoField>
+        ),
         value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
       },
       {
-        name: "Blob Gas Used",
+        name: (
+          <InfoField description="The gas used by the blob.">
+            Blob Gas Used
+          </InfoField>
+        ),
         value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
       },
       {
-        name: "Blob Gas Limit",
+        name: (
+          <InfoField description="The gas limit of the blob.">
+            Blob Gas Limit
+          </InfoField>
+        ),
         value: (
           <div>
             {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
@@ -164,7 +202,11 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob As Calldata Gas",
+        name: (
+          <InfoField description="The gas that the blob would have used if it was executed as calldata.">
+            Blob As Calldata Gas
+          </InfoField>
+        ),
         value: (
           <div>
             {formatNumber(blockData.blobAsCalldataGasUsed)}
