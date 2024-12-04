@@ -14,14 +14,14 @@ export const TimestampToggle: FC<TimestampProps> = ({ format, setFormat }) => {
     <Tooltip>
       <TooltipContent>Click to show {format} timestamp</TooltipContent>
       <TooltipTrigger
-        className="text-contentTertiary-light hover:text-link-light dark:text-contentTertiary-dark dark:hover:text-link-dark"
+        className="text-link-light dark:text-link-dark"
         onClick={() =>
           setFormat((format) =>
             format === "relative" ? "absolute" : "relative"
           )
         }
       >
-        <div className="text-link-light dark:text-link-dark">Timestamp</div>
+        Timestamp
       </TooltipTrigger>
     </Tooltip>
   );
