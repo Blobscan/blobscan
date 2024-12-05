@@ -383,14 +383,11 @@ describe("Stats Extension", () => {
       BigInt(0)
     );
     const totalUniqueBlobs = new Set(
-      txBlobs
-        .filter(({ firstBlockNumber }) =>
-          blockNumberRange && firstBlockNumber
-            ? firstBlockNumber >= blockNumberRange.from &&
-              firstBlockNumber <= blockNumberRange.to
-            : true
-        )
-        .map(({ versionedHash }) => versionedHash)
+      transactions.flatMap((tx) =>
+        tx.blobs
+          .filter((b) => b.firstBlockNumber === tx.blockNumber)
+          .map((b) => b.versionedHash)
+      )
     ).size;
     const totalBlocks = new Set(transactions.map((tx) => tx.blockNumber)).size;
     const totalTransactions = transactions.length;
