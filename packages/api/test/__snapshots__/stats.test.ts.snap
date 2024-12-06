@@ -152,7 +152,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     5,
   ],
   "totalUniqueBlobs": [
-    3,
+    6,
     3,
     3,
     0,
