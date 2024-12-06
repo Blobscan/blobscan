@@ -13,7 +13,11 @@ SELECT
   tx.category,
   tx.rollup,
   COUNT(bl_tx.blob_hash)::INT AS total_blobs,
-  COUNT(DISTINCT b.versioned_hash)::INT AS total_unique_blobs,
+  COUNT(
+    DISTINCT CASE
+      WHEN b.first_block_number = bl_tx.block_number THEN bl_tx.blob_hash
+    END
+  ) AS total_unique_blobs,
   SUM(b.size) AS total_blob_size
 FROM blob b
   JOIN blobs_on_transactions bl_tx ON bl_tx.blob_hash = b.versioned_hash
