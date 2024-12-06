@@ -382,13 +382,17 @@ describe("Stats Extension", () => {
       (acc, b) => acc + BigInt(b.size),
       BigInt(0)
     );
-    const totalUniqueBlobs = new Set(
-      transactions.flatMap((tx) =>
-        tx.blobs
-          .filter((b) => b.firstBlockNumber === tx.blockNumber)
-          .map((b) => b.versionedHash)
+    const totalUniqueBlobs = transactions
+      .flatMap(
+        (tx) =>
+          new Set(
+            tx.blobs
+              .filter((b) => b.firstBlockNumber === tx.blockNumber)
+              .map((b) => b.versionedHash)
+          )
       )
-    ).size;
+      .reduce((acc, currSet) => acc + currSet.size, 0);
+
     const totalBlocks = new Set(transactions.map((tx) => tx.blockNumber)).size;
     const totalTransactions = transactions.length;
     const totalUniqueReceivers = new Set(

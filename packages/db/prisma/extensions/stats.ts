@@ -1,10 +1,5 @@
 import { Prisma } from "@prisma/client";
-import {
-  aggregateBlobDailyStats,
-  aggregateBlobOverallStats,
-  aggregateTxDailyStats,
-  aggregateTxOverallStats,
-} from "@prisma/client/sql";
+import { aggregateDailyStats, aggregateOverallStats } from "@prisma/client/sql";
 
 import { MIN_DATE, toDailyDatePeriod } from "@blobscan/dayjs";
 
@@ -33,10 +28,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
             ? toDailyDatePeriod(dailyDatePeriod)
             : {};
 
-          return prisma.$transaction([
-            prisma.$queryRawTyped(aggregateBlobDailyStats(from, to)),
-            prisma.$queryRawTyped(aggregateTxDailyStats(from, to)),
-          ]);
+          return prisma.$queryRawTyped(aggregateDailyStats(from, to));
         },
       },
       overallStats: {
@@ -72,8 +64,7 @@ export const statsExtension = Prisma.defineExtension((prisma) =>
           }
 
           await prisma.$transaction([
-            prisma.$queryRawTyped(aggregateBlobOverallStats(from, to)),
-            prisma.$queryRawTyped(aggregateTxOverallStats(from, to)),
+            prisma.$queryRawTyped(aggregateOverallStats(from, to)),
             prisma.blockchainSyncState.upsert({
               create: {
                 lastAggregatedBlock: to,
