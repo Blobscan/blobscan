@@ -7,7 +7,7 @@ import dayjs from "@blobscan/dayjs";
 
 import { ValidatorIncomeChart } from "~/components/Charts/Validator";
 import { ValidatorsIncomeLayout } from "~/components/Layouts/ValidatorsIncomeLayout";
-import { DateRange } from "~/components/QuickSelectDateRangePicker";
+import type { DateRange } from "~/components/QuickSelectDateRangePicker";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import { normalizeTimestamp } from "~/utils";

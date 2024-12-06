@@ -5,6 +5,7 @@ import {
   Squares2X2Icon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
+
 import { env } from "~/env.mjs";
 import EthereumIcon from "~/icons/ethereum.svg";
 import {
@@ -19,7 +20,6 @@ import {
 import { Button } from "../Button";
 import { NavItem } from "./NavItem";
 
-
 export const NavMenusSection: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -32,7 +32,13 @@ export const NavMenusSection: React.FC = () => {
             : ""
         }`}
         variant="icon"
-        icon={isMobileMenuOpen ? <XMarkIcon /> : <Bars3Icon />}
+        icon={
+          isMobileMenuOpen ? (
+            <XMarkIcon className="h-full w-full" />
+          ) : (
+            <Bars3Icon className="h-full w-full" />
+          )
+        }
         aria-expanded={isMobileMenuOpen}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       />
