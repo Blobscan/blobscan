@@ -232,13 +232,10 @@ const Txs: NextPage = function () {
                 ),
               },
               {
-                item: (
-                  <div className="whitespace-break-spaces">
-                    {timeFormat === "relative"
-                      ? formatTimestamp(blockTimestamp, true)
-                      : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss")}
-                  </div>
-                ),
+                item:
+                  timeFormat === "relative"
+                    ? formatTimestamp(blockTimestamp, true)
+                    : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
               },
               {
                 item: (
