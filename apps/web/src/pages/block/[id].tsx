@@ -87,7 +87,7 @@ const Block: NextPage = function () {
     detailsFields = [
       {
         name: (
-          <InfoField description="The block height is the number of blocks preceding the current block.">
+          <InfoField description="Also referred to as Block Number, the block height represents the length of the blockchain and increases with each newly added block.">
             Block Height
           </InfoField>
         ),
