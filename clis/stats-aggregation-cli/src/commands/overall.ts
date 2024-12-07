@@ -10,14 +10,11 @@ import { commandLog, deleteOptionDef, helpOptionDef } from "../utils";
 
 type BlockId = number | "latest" | "finalized";
 
-const PRISMA_BLOCKS_BATCH_SIZE = 2_000_000;
+const PRISMA_BLOCKS_BATCH_SIZE = 100_000;
 
 class OverallCommandError extends CommandError {
-  constructor(operation: string, error: Error | string) {
-    super(error instanceof Error ? error.message : error, {
-      command: "overall",
-      operation,
-    });
+  constructor(message: string, cause?: Error) {
+    super("overall", message, cause);
   }
 }
 
@@ -72,9 +69,10 @@ async function resolveBlockId(blockId: BlockId): Promise<number> {
       return (await prisma.block.findLatest().then((b) => b?.number)) ?? 0;
     }
   } catch (err) {
-    const err_ = err as Error;
-
-    throw new OverallCommandError("aggregation", err_);
+    throw new OverallCommandError(
+      `Failed to resolve block id ${blockId}`,
+      err as Error
+    );
   }
 }
 
@@ -99,7 +97,7 @@ async function incrementOverallStats(
       "info",
       "overall",
       "aggregate",
-      `${blockRange.from}-${blockRange.to}`
+      `Aggregating blocks from ${blockRange.from} to ${blockRange.to}`
     );
 
     await prisma.overallStats.aggregate({ blockRange });
@@ -160,12 +158,11 @@ const overall: Command = async function (argv) {
     targetBlockId = to;
   } else {
     throw new OverallCommandError(
-      "aggregation",
-      `Invalid \`to\` flag value. Expected a block number, "latest" or "finalized" but got ${to}`
+      `Invalid \`to\` flag value. Expected a block number, "latest" or "finalized" but got "${to}"`
     );
   }
   let targetBlockNumber = await resolveBlockId(targetBlockId);
-  const [lastSyncedFinalizedBlock, latestIndexedBlock] = await Promise.all([
+  const [lastAggregatedBlock, latestIndexedBlock] = await Promise.all([
     prisma.blockchainSyncState
       .findUnique({
         where: {
@@ -175,9 +172,14 @@ const overall: Command = async function (argv) {
       .then((state) => state?.lastAggregatedBlock ?? 0),
     prisma.block.findLatest().then((b) => b?.number),
   ]);
+  const firstBlock = await prisma.block.findFirst({
+    orderBy: {
+      number: "asc",
+    },
+  });
 
   // If we haven't indexed any blocks yet, don't do anything
-  if (!latestIndexedBlock) {
+  if (!latestIndexedBlock || !firstBlock) {
     commandLog(
       "info",
       "overall",
@@ -188,7 +190,8 @@ const overall: Command = async function (argv) {
     return;
   }
 
-  const fromBlockNumber = lastSyncedFinalizedBlock + 1;
+  const fromBlockNumber =
+    Math.max(lastAggregatedBlock, firstBlock.number - 1) + 1;
 
   // Process only finalized blocks that were indexed
   if (targetBlockNumber > latestIndexedBlock) {
@@ -200,7 +203,7 @@ const overall: Command = async function (argv) {
       "info",
       "overall",
       "aggregate",
-      `Skipping as there is no new finalized blocks (Last processed finalized block: ${lastSyncedFinalizedBlock.toLocaleString()})`
+      `Skipping as there is no new finalized blocks (Last processed finalized block: ${lastAggregatedBlock.toLocaleString()})`
     );
 
     return;

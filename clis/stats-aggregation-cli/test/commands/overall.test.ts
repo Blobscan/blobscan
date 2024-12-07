@@ -54,7 +54,7 @@ describe("Overall command", () => {
     expect(
       overall(["--to", "invalid-block-height"])
     ).rejects.toMatchInlineSnapshot(
-      '[Error: Overall stats aggregation failed: Invalid `to` flag value. Expected a block number, "latest" or "finalized" but got invalid-block-height]'
+      '[Error: Overall command failed: Invalid `to` flag value. Expected a block number, "latest" or "finalized" but got "invalid-block-height"]'
     );
   });
 });
