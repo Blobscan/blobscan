@@ -157,7 +157,7 @@ const Block: NextPage = function () {
       },
       {
         name: (
-          <InfoField description="The size of the Blob.">Blob size</InfoField>
+          <InfoField description="Total amount of size used for blobs in this block.">Blob size</InfoField>
         ),
         value: (
           <div>
