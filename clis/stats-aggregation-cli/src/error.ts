@@ -5,9 +5,13 @@ export type CommandErrorOptions = {
   operation: string;
 };
 export class CommandError extends Error {
-  constructor(message: string, { command, operation }: CommandErrorOptions) {
+  constructor(command: string, message: string, cause?: Error) {
     const formattedCommand = capitalize(command);
 
-    super(`${formattedCommand} stats ${operation} failed: ${message}`);
+    const msg = `${formattedCommand} command failed: ${message}`;
+
+    super(msg, {
+      cause,
+    });
   }
 }
