@@ -171,7 +171,7 @@ const Block: NextPage = function () {
       },
       {
         name: (
-          <InfoField description="The gas price of the blob.">
+          <InfoField description="The cost per unit of blob gas used by the blobs in this block.">
             Blob Gas Price
           </InfoField>
         ),
