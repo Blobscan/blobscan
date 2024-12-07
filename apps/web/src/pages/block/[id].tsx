@@ -187,7 +187,7 @@ const Block: NextPage = function () {
       },
       {
         name: (
-          <InfoField description="The gas limit of the blob.">
+          <InfoField description="The maximum blob gas limit for this block.">
             Blob Gas Limit
           </InfoField>
         ),
