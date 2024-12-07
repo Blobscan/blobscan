@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from "react";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import Info from "~/icons/info.svg";
 
 type InfoFieldProps = {
   children: ReactNode;
@@ -14,7 +14,7 @@ export const InfoField: FC<InfoFieldProps> = ({ children, description }) => {
       <Tooltip>
         <TooltipContent className="max-w-[240px]">{description}</TooltipContent>
         <TooltipTrigger>
-          <Info className="h-4 w-4 opacity-80" />
+          <InformationCircleIcon className="h-4 w-4 opacity-80" />
         </TooltipTrigger>
       </Tooltip>
       {children}
