@@ -179,7 +179,7 @@ const Block: NextPage = function () {
       },
       {
         name: (
-          <InfoField description="The gas used by the blob.">
+          <InfoField description="The total blob gas used by the blobs in this block, along with its percentage relative to the total blob gas limit and the blob gas target (~0.375 MB).">
             Blob Gas Used
           </InfoField>
         ),
