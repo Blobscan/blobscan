@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 type InfoFieldProps = {
   children: ReactNode;
-  description: string;
+  description: ReactNode;
 };
 
 export const InfoField: FC<InfoFieldProps> = ({ children, description }) => {

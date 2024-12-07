@@ -8,7 +8,6 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
-import { InfoField } from "~/components/InfoField";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -86,11 +85,9 @@ const Block: NextPage = function () {
 
     detailsFields = [
       {
-        name: (
-          <InfoField description="Also referred to as Block Number, the block height represents the length of the blockchain and increases with each newly added block.">
-            Block Height
-          </InfoField>
-        ),
+        name: "Block Height",
+        helpText:
+          "Also referred to as Block Number, the block height represents the length of the blockchain and increases with each newly added block.",
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
@@ -116,27 +113,18 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: (
-          <InfoField description="The finality status of the block.">
-            Status
-          </InfoField>
-        ),
+        name: "Status",
+        helpText: "The finality status of the block.",
         value: <BlockStatus blockNumber={blockData.number} />,
       },
       {
-        name: (
-          <InfoField description="The hash of the block header.">
-            Hash
-          </InfoField>
-        ),
+        name: "Hash",
+        helpText: "The hash of the block header.",
         value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
       },
       {
-        name: (
-          <InfoField description="The time at which the block was created.">
-            Timestamp
-          </InfoField>
-        ),
+        name: "Timestamp",
+        helpText: "The time at which the block was created.",
         value: (
           <div className="whitespace-break-spaces">
             {formatTimestamp(blockData.timestamp)}
@@ -144,11 +132,8 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: (
-          <InfoField description="The slot number of the block.">
-            Slot
-          </InfoField>
-        ),
+        name: "Slot",
+        helpText: "The slot number of the block.",
         value: (
           <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
             {blockData.slot}
@@ -156,9 +141,8 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: (
-          <InfoField description="Total amount of size used for blobs in this block.">Blob size</InfoField>
-        ),
+        name: "Blob size",
+        helpText: "Total amount of size used for blobs in this block.",
         value: (
           <div>
             {formatBytes(totalBlockBlobSize)}
@@ -170,27 +154,20 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: (
-          <InfoField description="The cost per unit of blob gas used by the blobs in this block.">
-            Blob Gas Price
-          </InfoField>
-        ),
+        name: " Blob Gas Price",
+        helpText:
+          "The cost per unit of blob gas used by the blobs in this block.",
         value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
       },
       {
-        name: (
-          <InfoField description="The total blob gas used by the blobs in this block, along with its percentage relative to the total blob gas limit and the blob gas target (~0.375 MB).">
-            Blob Gas Used
-          </InfoField>
-        ),
+        name: "Blob Gas Used",
+        helpText:
+          "The total blob gas used by the blobs in this block, along with its percentage relative to the total blob gas limit and the blob gas target (~0.375 MB).",
         value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
       },
       {
-        name: (
-          <InfoField description="The maximum blob gas limit for this block.">
-            Blob Gas Limit
-          </InfoField>
-        ),
+        name: "Blob Gas Limit",
+        helpText: "The maximum blob gas limit for this block.",
         value: (
           <div>
             {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
@@ -202,11 +179,9 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: (
-          <InfoField description="The total gas that would have been used in this block if the blobs had been sent as calldata.">
-            Blob As Calldata Gas
-          </InfoField>
-        ),
+        name: "Blob As Calldata Gas",
+        helpText:
+          "The total gas that would have been used in this block if the blobs had been sent as calldata.",
         value: (
           <div>
             {formatNumber(blockData.blobAsCalldataGasUsed)}
