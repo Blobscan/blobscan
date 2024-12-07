@@ -203,7 +203,7 @@ const Block: NextPage = function () {
       },
       {
         name: (
-          <InfoField description="The gas that the blob would have used if it was executed as calldata.">
+          <InfoField description="The total gas that would have been used in this block if the blobs had been sent as calldata.">
             Blob As Calldata Gas
           </InfoField>
         ),
