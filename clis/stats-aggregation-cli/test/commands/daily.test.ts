@@ -122,7 +122,7 @@ describe("Daily command", () => {
         await expect(
           daily(["--from", "2021-01-02", "--to", "2021-01-01"])
         ).rejects.toThrowErrorMatchingInlineSnapshot(
-          '"Daily stats aggregation failed: Invalid date period. Start date is after end date"'
+          '"Daily command failed: Invalid date period. Start date is after end date"'
         );
       });
     });
@@ -192,7 +192,7 @@ describe("Daily command", () => {
         await expect(
           daily(["--from", "2021-01-02", "--to", "2021-01-01", "--delete"])
         ).rejects.toThrowErrorMatchingInlineSnapshot(
-          '"Daily stats deletion failed: Invalid date period. Start date is after end date"'
+          '"Daily command failed: Invalid date period. Start date is after end date"'
         );
       });
     });
