@@ -1,4 +1,4 @@
-import type { Dispatch, FC, SetStateAction } from "react";
+import type { FC } from "react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
@@ -6,19 +6,17 @@ export type TimestampFormat = "relative" | "absolute";
 
 type TimestampProps = {
   format: TimestampFormat;
-  setFormat: Dispatch<SetStateAction<TimestampFormat>>;
+  onChange: (timestampFormat: TimestampFormat) => void;
 };
 
-export const TimestampToggle: FC<TimestampProps> = ({ format, setFormat }) => {
+export const TimestampToggle: FC<TimestampProps> = ({ format, onChange }) => {
   return (
     <Tooltip>
       <TooltipContent>Click to show {format} timestamp</TooltipContent>
       <TooltipTrigger
         className="text-link-light dark:text-link-dark"
         onClick={() =>
-          setFormat((format) =>
-            format === "relative" ? "absolute" : "relative"
-          )
+          onChange(format === "relative" ? "absolute" : "relative")
         }
       >
         Timestamp

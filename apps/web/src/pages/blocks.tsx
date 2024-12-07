@@ -71,7 +71,7 @@ const Blocks: NextPage = function () {
         },
         {
           item: (
-            <TimestampToggle format={timeFormat} setFormat={setTimeFormat} />
+            <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
           className: "2xl:w-[237px] lg:w-[200px] w-[158px]",
         },
