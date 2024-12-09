@@ -1,5 +1,19 @@
 # @blobscan/blob-propagation-jobs-cli
 
+## 0.2.0
+
+### Minor Changes
+
+- [#642](https://github.com/Blobscan/blobscan/pull/642) [`6e947ba`](https://github.com/Blobscan/blobscan/commit/6e947ba1e2b2c9f15d6855e602382e513b2054a5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for creating jobs based on a specified block number range
+
+### Patch Changes
+
+- [#642](https://github.com/Blobscan/blobscan/pull/642) [`6e947ba`](https://github.com/Blobscan/blobscan/commit/6e947ba1e2b2c9f15d6855e602382e513b2054a5) Thanks [@PJColombo](https://github.com/PJColombo)! - It fixes an issue where the `create` command wasn't properly iterating over blobs within a given date range
+
+- Updated dependencies [[`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`6512745`](https://github.com/Blobscan/blobscan/commit/6512745dc20949837a37aa923766f8b7effd6816), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea), [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea)]:
+  - @blobscan/db@0.12.0
+  - @blobscan/blob-propagator@0.2.7
+
 ## 0.1.6
 
 ### Patch Changes
