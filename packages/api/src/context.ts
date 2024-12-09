@@ -9,11 +9,10 @@ import type {
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
-import { BlobPropagator, getBlobPropagator } from "@blobscan/blob-propagator";
-import {
-  BlobStorageManager,
-  getBlobStorageManager,
-} from "@blobscan/blob-storage-manager";
+import type { BlobPropagator } from "@blobscan/blob-propagator";
+import { getBlobPropagator } from "@blobscan/blob-propagator";
+import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
+import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
@@ -119,6 +118,15 @@ export function createTRPCContext(
           );
         }
 
+        let pathname: string | undefined;
+        let query: string | undefined;
+
+        if (opts.req.url) {
+          const url = new URL(opts.req.url, env.BLOBSCAN_API_BASE_URL);
+          pathname = url.pathname;
+          query = url.searchParams.toString();
+        }
+
         posthog.capture({
           distinctId,
           event: "trpc_request",
@@ -126,7 +134,9 @@ export function createTRPCContext(
             $ip: getIP(opts.req),
             scope,
             $current_url: opts.req.url,
-            method: opts.req.method,
+            network: env.NETWORK_NAME,
+            pathname,
+            query,
           },
         });
 
