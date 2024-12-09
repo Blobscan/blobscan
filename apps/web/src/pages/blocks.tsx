@@ -193,15 +193,17 @@ const Blocks: NextPage = function () {
               {
                 item: (
                   <div className="relative flex">
-                    {transactions.map((tx, i) => {
-                      return tx.rollup ? (
-                        <div key={i} className="-ml-1 first-of-type:ml-0">
-                          <RollupIcon rollup={tx.rollup} />
-                        </div>
-                      ) : (
-                        <></>
-                      );
-                    })}
+                    {[...new Set(transactions.map((tx) => tx.rollup))].map(
+                      (rollup, i) => {
+                        return rollup ? (
+                          <div key={i} className="-ml-1 first-of-type:ml-0">
+                            <RollupIcon rollup={rollup} />
+                          </div>
+                        ) : (
+                          <></>
+                        );
+                      }
+                    )}
                   </div>
                 ),
               },
