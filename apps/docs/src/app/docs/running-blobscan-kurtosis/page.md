@@ -8,7 +8,7 @@ nextjs:
 
 ## About Kurtosis
 
-[Kurtosis](https://www.kurtosis.com/) is a tool for packaging and launching environments of containerized services where you want them and with one liners.
+[Kurtosis](https://www.kurtosis.com/) is a tool for packaging and launching environments of containerized services where you want them and with one-liners.
 
 There is also a [Kurtosis' ethereum-package](https://github.com/ethpandaops/ethereum-package) maintained by ethPandaOps, which makes it really easy to
 spin up a local PoS Ethereum testnet with blobscan as an additional service, so you can explore blobs sent in your local network.
