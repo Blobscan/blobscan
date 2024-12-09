@@ -2,4 +2,4 @@
 "@blobscan/web": minor
 ---
 
-Simplified rollups list in blocks table by making them uniques.
+Improved the block row rollup icons column by removing duplicated icons.
