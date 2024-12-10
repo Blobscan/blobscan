@@ -83,7 +83,7 @@ export const Pagination: FC<PaginationProps> = function ({
           inverseCompact ? "flex-col-reverse" : "flex-col"
         }`}
       >
-        <div className="block sm:hidden">
+        <div className="block md:hidden">
           <div className="flex justify-between gap-2">
             <FirstButton disabled={disableFirst} onChange={onChange} />
             <LastButton
@@ -94,7 +94,7 @@ export const Pagination: FC<PaginationProps> = function ({
           </div>
         </div>
         <div className="flex w-full justify-between gap-2 align-middle">
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <FirstButton disabled={disableFirst} onChange={onChange} />
           </div>
           <Button
@@ -148,7 +148,7 @@ export const Pagination: FC<PaginationProps> = function ({
               pages ? () => onChange(Math.min(pages, selected + 1)) : NOOP
             }
           />
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <LastButton
               disabled={disableLast}
               lastPage={pages ?? 0}

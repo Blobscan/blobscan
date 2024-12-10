@@ -3,7 +3,7 @@ import { Select, MenuItem, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
 
 import dayjs from "@blobscan/dayjs";
 
@@ -112,37 +112,39 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
   );
 
   return (
-    <div className="flex items-center">
-      <div className="inline-block align-middle">
-        <Typography>Select a Date Range:</Typography>
+    <div className="flex flex-col lg:flex-row lg:items-center">
+      {/* 第一行：Select a Date Range 和 Quick Selection Dropdown */}
+      <div className="flex items-center">
+        <div className="inline-block align-middle">
+          <Typography>Select a Date Range:</Typography>
+        </div>
+
+        <div className="ml-4 inline-block align-middle">
+          <Select
+            value={selectedQuickOption}
+            onChange={(event) => {
+              const newOption = event.target.value as number;
+              setSelectedQuickOption(newOption);
+              if (newOption !== -1) {
+                const newRange = calculateDateRange(newOption);
+                setDateRange(newRange);
+                if (onChange) onChange(newRange);
+              }
+            }}
+          >
+            {quickOptions.map(({ value, label }) => (
+              <MenuItem value={value} key={value}>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
       </div>
 
-      {/* Quick Selection Dropdown */}
-      <div className="ml-4 inline-block align-middle">
-        <Select
-          value={selectedQuickOption}
-          onChange={(event) => {
-            const newOption = event.target.value as number;
-            setSelectedQuickOption(newOption);
-            if (newOption !== -1) {
-              const newRange = calculateDateRange(newOption);
-              setDateRange(newRange);
-              if (onChange) onChange(newRange);
-            }
-          }}
-        >
-          {quickOptions.map(({ value, label }) => (
-            <MenuItem value={value} key={value}>
-              {label}
-            </MenuItem>
-          ))}
-        </Select>
-      </div>
-
-      {/* Date Range Picker */}
-      <div className="ml-4 flex-1">
+      {/* 第二行：Date Range Picker */}
+      <div className="mt-4 flex-1 lg:ml-8 lg:mt-0">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div>
+          <div className="flex flex-wrap items-center">
             <div className="inline-block align-middle">
               <DateTimePicker
                 label="Start Date"

@@ -59,8 +59,8 @@ const Validators: NextPage = function () {
                     style={{
                       display: "flex",
                       justifyContent: "center",
-                      color: "#17a2b8",
                     }}
+                    className="text-accent-light dark:text-accent-dark"
                   >
                     <Link href={buildValidatorRoute(validator.index)}>
                       <Typography style={{ lineHeight: "40px" }}>
@@ -68,7 +68,7 @@ const Validators: NextPage = function () {
                       </Typography>
                     </Link>
                     <CopyToClipboard text={validator.validator.pubkey}>
-                      <IconButton style={{ color: "#17a2b8" }}>
+                      <IconButton style={{ color: "#6541EF" }}>
                         <FileCopyIcon fontSize="small" />
                       </IconButton>
                     </CopyToClipboard>
@@ -91,8 +91,8 @@ const Validators: NextPage = function () {
                     style={{
                       display: "flex",
                       justifyContent: "center",
-                      color: "#17a2b8",
                     }}
+                    className="text-accent-light dark:text-accent-dark"
                   >
                     <Link href={buildValidatorRoute(validator.index)}>
                       <Typography style={{ lineHeight: "40px" }}>
@@ -272,8 +272,8 @@ const Validators: NextPage = function () {
                     style={{
                       display: "flex",
                       justifyContent: "center",
-                      color: "#17a2b8",
                     }}
+                    className="text-accent-light dark:text-accent-dark"
                   >
                     <Link href={buildValidatorRoute(validator.index)}>
                       <Typography style={{ lineHeight: "40px" }}>
@@ -281,7 +281,7 @@ const Validators: NextPage = function () {
                       </Typography>
                     </Link>
                     <CopyToClipboard text={validator.validator.pubkey}>
-                      <IconButton style={{ color: "#17a2b8" }}>
+                      <IconButton style={{ color: "#6541EF" }}>
                         <FileCopyIcon fontSize="small" />
                       </IconButton>
                     </CopyToClipboard>
@@ -292,8 +292,8 @@ const Validators: NextPage = function () {
                     style={{
                       display: "flex",
                       justifyContent: "center",
-                      color: "#17a2b8",
                     }}
+                    className="text-accent-light dark:text-accent-dark"
                   >
                     <Link href={buildValidatorRoute(validator.index)}>
                       <Typography style={{ lineHeight: "40px" }}>
