@@ -1,5 +1,36 @@
 # @blobscan/web
 
+## 0.18.0
+
+### Minor Changes
+
+- [#623](https://github.com/Blobscan/blobscan/pull/623) [`025484b`](https://github.com/Blobscan/blobscan/commit/025484be6b12344cfa5a40cda963827aa60cb1e3) Thanks [@xFJA](https://github.com/xFJA)! - Added category column to blob, block and transaction tables.
+
+- [#661](https://github.com/Blobscan/blobscan/pull/661) [`9bceee3`](https://github.com/Blobscan/blobscan/commit/9bceee3d9b22d68c3c97bd380d5771c8a2763189) Thanks [@xFJA](https://github.com/xFJA)! - Improved the block row rollup icons column by removing duplicated icons.
+
+- [#622](https://github.com/Blobscan/blobscan/pull/622) [`d714683`](https://github.com/Blobscan/blobscan/commit/d71468364da0bbadc7b9c8b74071ebb4b810c252) Thanks [@xFJA](https://github.com/xFJA)! - Added copyable behavior to hashes and addresses in blob, block and transaction tables.
+
+- [#637](https://github.com/Blobscan/blobscan/pull/637) [`ca30a0f`](https://github.com/Blobscan/blobscan/commit/ca30a0f03c11dfc0c4a25d18fdde2365458b17ca) Thanks [@xFJA](https://github.com/xFJA)! - Added 'Category' filter for blobs, blocks and transactions.
+
+### Patch Changes
+
+- [#644](https://github.com/Blobscan/blobscan/pull/644) [`cc62af6`](https://github.com/Blobscan/blobscan/commit/cc62af6bcd59917136c27ce02d2d659c43d42f5e) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed an issue where the Rollup filter was not being set correctly from query parameters
+
+- [#662](https://github.com/Blobscan/blobscan/pull/662) [`0057df3`](https://github.com/Blobscan/blobscan/commit/0057df33b19b0cdf980393fa22a8227adf3a798f) Thanks [@xFJA](https://github.com/xFJA)! - Fixed misalignment for charts in home page.
+
+- [#657](https://github.com/Blobscan/blobscan/pull/657) [`9599958`](https://github.com/Blobscan/blobscan/commit/9599958f518beca46bd906f29352538328482aa2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed an issue on the blob details page where the 'Show More' and 'Show Less' labels were displayed incorrectly
+
+- [#656](https://github.com/Blobscan/blobscan/pull/656) [`759fc95`](https://github.com/Blobscan/blobscan/commit/759fc951c9397f9139a9941d1920b6d8716a8c09) Thanks [@xFJA](https://github.com/xFJA)! - Fixed Ether display overflow in Transaction details card for small screens.
+
+- [#631](https://github.com/Blobscan/blobscan/pull/631) [`d5ef1bc`](https://github.com/Blobscan/blobscan/commit/d5ef1bc91100131d5179ad0786a2a8c743ef03d9) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a link to the L1 origin block if the full hash is found using the optimism decoded fields.
+
+- [#632](https://github.com/Blobscan/blobscan/pull/632) [`b89af3a`](https://github.com/Blobscan/blobscan/commit/b89af3a52e07e1fe5786abed93b702ba6d1ac997) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved the home lists spacing
+
+- Updated dependencies [[`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`025484b`](https://github.com/Blobscan/blobscan/commit/025484be6b12344cfa5a40cda963827aa60cb1e3), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea), [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea), [`ca30a0f`](https://github.com/Blobscan/blobscan/commit/ca30a0f03c11dfc0c4a25d18fdde2365458b17ca), [`ca30a0f`](https://github.com/Blobscan/blobscan/commit/ca30a0f03c11dfc0c4a25d18fdde2365458b17ca)]:
+  - @blobscan/db@0.12.0
+  - @blobscan/api@0.16.0
+  - @blobscan/rollups@0.2.1
+
 ## 0.17.0
 
 ### Minor Changes
