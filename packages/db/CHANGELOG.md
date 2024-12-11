@@ -1,5 +1,19 @@
 # @blobscan/db
 
+## 0.12.0
+
+### Minor Changes
+
+- [#633](https://github.com/Blobscan/blobscan/pull/633) [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped blob, block and transaction overall and daily stats models
+
+- [#633](https://github.com/Blobscan/blobscan/pull/633) [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea) Thanks [@PJColombo](https://github.com/PJColombo)! - Added overall and daily stats models
+
+### Patch Changes
+
+- [#643](https://github.com/Blobscan/blobscan/pull/643) [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added address category info constraints to transaction model
+
+- [#643](https://github.com/Blobscan/blobscan/pull/643) [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5) Thanks [@PJColombo](https://github.com/PJColombo)! - Created indexes for block number fields
+
 ## 0.11.0
 
 ### Minor Changes

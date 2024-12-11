@@ -1,5 +1,15 @@
 # @blobscan/blob-propagator
 
+## 0.2.7
+
+### Patch Changes
+
+- [#628](https://github.com/Blobscan/blobscan/pull/628) [`6512745`](https://github.com/Blobscan/blobscan/commit/6512745dc20949837a37aa923766f8b7effd6816) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Removed `BLOB_PROPAGATOR_ENABLED` variable.
+
+- Updated dependencies [[`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea), [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea)]:
+  - @blobscan/db@0.12.0
+  - @blobscan/blob-storage-manager@0.3.7
+
 ## 0.2.6
 
 ### Patch Changes
