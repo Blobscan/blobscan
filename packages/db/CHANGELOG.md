@@ -207,7 +207,7 @@
 
 - [#247](https://github.com/Blobscan/blobscan/pull/247) [`2fb02b0`](https://github.com/Blobscan/blobscan/commit/2fb02b0268e1fcafc10abefb079d822845392d73) Thanks [@0xGabi](https://github.com/0xGabi)! - Set up changeset
 
-- [#271](https://github.com/Blobscan/blobscan/pull/271) [`acf8dff`](https://github.com/Blobscan/blobscan/commit/acf8dff07d62a33d5dfa3789fd1f4e2aa3e968a3) Thanks [@0xGabi](https://github.com/0xGabi)! - Updated blob kzg proof field to non unique
+- [#271](https://github.com/Blobscan/blobscan/pull/271) [`acf8dff`](https://github.com/Blobscan/blobscan/commit/acf8dff07d62a33d5dfa3789fd1f4e2aa3e968a3) Thanks [@0xGabi](https://github.com/0xGabi)! - Updated blob kzg proof field to non-unique
 
 - [#252](https://github.com/Blobscan/blobscan/pull/252) [`263d86f`](https://github.com/Blobscan/blobscan/commit/263d86ff5e35f7cf9d5bf18f6b745f8dd6249e62) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved date normalization error message
 

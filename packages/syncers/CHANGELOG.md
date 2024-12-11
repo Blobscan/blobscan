@@ -116,7 +116,7 @@
 
 ### Patch Changes
 
-- [#275](https://github.com/Blobscan/blobscan/pull/275) [`7e221cd`](https://github.com/Blobscan/blobscan/commit/7e221cd1226be84418658e3d6309dc0e396f671e) Thanks [@PJColombo](https://github.com/PJColombo)! - Patched daily stats updater to not to aggregate data for days where some blocks still need to get indexed
+- [#275](https://github.com/Blobscan/blobscan/pull/275) [`7e221cd`](https://github.com/Blobscan/blobscan/commit/7e221cd1226be84418658e3d6309dc0e396f671e) Thanks [@PJColombo](https://github.com/PJColombo)! - Patched daily stats updater to not aggregate data for days where some blocks still need to get indexed
 
 - Updated dependencies [[`411023b`](https://github.com/Blobscan/blobscan/commit/411023b92abe25f21e06e4084faca43cde0f41c3), [`0c937dc`](https://github.com/Blobscan/blobscan/commit/0c937dc29f1fec3e9390179f0ae37559ba5ce6c3), [`824ccc0`](https://github.com/Blobscan/blobscan/commit/824ccc01ef8c533dcf5ed8d9cd1b5f9ce30ed145)]:
   - @blobscan/db@0.1.1
