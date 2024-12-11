@@ -114,7 +114,7 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
   return (
     <div className="flex flex-col lg:flex-row lg:items-center">
       {/* 第一行：Select a Date Range 和 Quick Selection Dropdown */}
-      <div className="flex items-center">
+      <div className="flex items-center max-[768px]:justify-center">
         <div className="inline-block align-middle">
           <Typography>Select a Date Range:</Typography>
         </div>
@@ -144,7 +144,7 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
       {/* 第二行：Date Range Picker */}
       <div className="mt-4 flex-1 lg:ml-8 lg:mt-0">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div className="flex flex-wrap items-center">
+          <div className="flex flex-wrap items-center max-[768px]:flex-col">
             <div className="inline-block align-middle">
               <DateTimePicker
                 label="Start Date"
@@ -162,7 +162,7 @@ const QuickSelectDateRangePicker: React.FC<QuickSelectDateRangePickerProps> = ({
               />
             </div>
             <div className="ml-4 inline-block align-middle">--</div>
-            <div className="ml-4 inline-block align-middle">
+            <div className="ml-4 inline-block align-middle max-[768px]:ml-0">
               <DateTimePicker
                 label="End Date"
                 value={endDate}
