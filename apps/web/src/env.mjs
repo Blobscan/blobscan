@@ -45,7 +45,10 @@ export const env = createEnv({
       .default("https://etherscan.io/"),
     NEXT_PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
     NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
-    NEXT_PUBLIC_POSTHOG_ID: z.string().optional(),
+    NEXT_PUBLIC_POSTHOG_ID: z
+      .string()
+      .optional()
+      .default("phc_n7WONIedZmpeWUlvgQq2KW3p59g6Au8JDTRVciqpcWl"),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
     NEXT_PUBLIC_SUPPORTED_NETWORKS: z
       .string()
