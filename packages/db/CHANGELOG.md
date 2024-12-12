@@ -1,5 +1,13 @@
 # @blobscan/db
 
+## 0.12.1
+
+### Patch Changes
+
+- [#666](https://github.com/Blobscan/blobscan/pull/666) [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202) Thanks [@PJColombo](https://github.com/PJColombo)! - Corrected an issue in upsertMany operations where the firstBlockNumber column was not updated if it contained a null value
+
+- [#666](https://github.com/Blobscan/blobscan/pull/666) [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced the calculation of unique blob daily aggregations to account for the uniqueness of blobs relative to previously existing blobs, rather than only within the current aggregation scope.
+
 ## 0.12.0
 
 ### Minor Changes
