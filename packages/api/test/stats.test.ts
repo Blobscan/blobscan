@@ -68,7 +68,7 @@ describe("Stats router", async () => {
           "totalBlobs": 29,
           "totalBlocks": 8,
           "totalTransactions": 16,
-          "totalUniqueBlobs": 9,
+          "totalUniqueBlobs": 8,
           "totalUniqueReceivers": 4,
           "totalUniqueSenders": 7,
         }
@@ -84,7 +84,7 @@ describe("Stats router", async () => {
         {
           "totalBlobSize": "422116",
           "totalBlobs": 29,
-          "totalUniqueBlobs": 9,
+          "totalUniqueBlobs": 8,
         }
       `);
     });
