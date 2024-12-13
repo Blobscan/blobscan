@@ -9,5 +9,5 @@ export function createRedisConnection(uri: string) {
 }
 
 export function formatDate(date: Date | string | dayjs.Dayjs) {
-  return dayjs(date).format("YYYY-MM-DD");
+  return dayjs(date).utc().format("YYYY-MM-DD");
 }
