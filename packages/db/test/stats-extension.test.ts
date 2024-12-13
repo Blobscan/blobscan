@@ -272,7 +272,7 @@ describe("Stats Extension", () => {
         ).toBeDefined();
 
         if (stats) {
-          const expectedStats = calculateStats(expectedTxs, blockNumberRange);
+          const expectedStats = calculateStats(expectedTxs);
 
           for (const statName_ in expectedStats) {
             const statName = statName_ as keyof typeof expectedStats;
@@ -373,8 +373,7 @@ describe("Stats Extension", () => {
   });
 
   function calculateStats(
-    transactions: ReturnType<typeof fixtures.getTransactions>,
-    blockNumberRange?: { from: number; to: number }
+    transactions: ReturnType<typeof fixtures.getTransactions>
   ): Omit<OverallStats, "id" | "category" | "rollup" | "updatedAt"> {
     const txBlobs = transactions.flatMap((tx) => tx.blobs);
     const totalBlobs = txBlobs.length;
@@ -382,32 +381,32 @@ describe("Stats Extension", () => {
       (acc, b) => acc + BigInt(b.size),
       BigInt(0)
     );
-    const totalUniqueBlobs = new Set(
-      transactions.flatMap((tx) =>
-        tx.blobs
-          .filter((b) => b.firstBlockNumber === tx.blockNumber)
-          .map((b) => b.versionedHash)
+    const totalUniqueBlobs = transactions
+      .flatMap(
+        (tx) =>
+          new Set(
+            tx.blobs
+              .filter((b) => b.firstBlockNumber === tx.blockNumber)
+              .map((b) => b.versionedHash)
+          )
       )
-    ).size;
+      .reduce((acc, currSet) => acc + currSet.size, 0);
+
     const totalBlocks = new Set(transactions.map((tx) => tx.blockNumber)).size;
     const totalTransactions = transactions.length;
     const totalUniqueReceivers = new Set(
       transactions
-        .filter(({ toHistory: { firstBlockNumberAsReceiver } }) =>
-          blockNumberRange && firstBlockNumberAsReceiver
-            ? firstBlockNumberAsReceiver >= blockNumberRange.from &&
-              firstBlockNumberAsReceiver <= blockNumberRange.to
-            : true
+        .filter(
+          ({ blockNumber, toHistory: { firstBlockNumberAsReceiver } }) =>
+            blockNumber === firstBlockNumberAsReceiver
         )
         .map((tx) => tx.toId)
     ).size;
     const totalUniqueSenders = new Set(
       transactions
-        .filter(({ fromHistory: { firstBlockNumberAsSender } }) =>
-          blockNumberRange && firstBlockNumberAsSender
-            ? firstBlockNumberAsSender >= blockNumberRange.from &&
-              firstBlockNumberAsSender <= blockNumberRange.to
-            : true
+        .filter(
+          ({ blockNumber, fromHistory: { firstBlockNumberAsSender } }) =>
+            blockNumber === firstBlockNumberAsSender
         )
         .map((tx) => tx.fromId)
     ).size;

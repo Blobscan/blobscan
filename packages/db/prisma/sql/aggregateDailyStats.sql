@@ -49,14 +49,14 @@ SELECT
     COUNT(
       DISTINCT CASE
         WHEN a_to.first_block_number_as_receiver = tx.block_number THEN a_to.address END
-    ),
+    )::INT,
     0
-  ) AS total_unique_receiver,
+  ) AS total_unique_receivers,
   COALESCE(
     COUNT(
       DISTINCT CASE
         WHEN a_from.first_block_number_as_sender = tx.block_number THEN a_from.address END
-    ),
+    )::INT,
     0
   ) AS total_unique_senders,
   COALESCE(SUM(tx.blob_gas_used)::DECIMAL, 0) AS total_blob_gas_used,

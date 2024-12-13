@@ -152,7 +152,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     5,
   ],
   "totalUniqueBlobs": [
-    3,
+    6,
     3,
     0,
     1,
@@ -501,10 +501,10 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     3,
   ],
   "totalUniqueReceivers": [
-    2,
+    0,
   ],
   "totalUniqueSenders": [
-    3,
+    0,
   ],
 }
 `;
@@ -524,12 +524,12 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     3,
   ],
   "totalUniqueReceivers": [
-    1,
-    2,
+    0,
+    0,
   ],
   "totalUniqueSenders": [
-    2,
-    3,
+    0,
+    0,
   ],
 }
 `;
@@ -553,13 +553,13 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
   ],
   "totalUniqueReceivers": [
     3,
-    1,
-    2,
+    0,
+    0,
   ],
   "totalUniqueSenders": [
-    5,
     2,
-    3,
+    0,
+    0,
   ],
 }
 `;
@@ -585,16 +585,16 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     3,
   ],
   "totalUniqueReceivers": [
-    1,
+    0,
     3,
-    1,
-    2,
+    0,
+    0,
   ],
   "totalUniqueSenders": [
     1,
-    5,
     2,
-    3,
+    0,
+    0,
   ],
 }
 `;
@@ -624,17 +624,17 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
   ],
   "totalUniqueReceivers": [
     1,
-    1,
+    0,
     3,
-    1,
-    2,
+    0,
+    0,
   ],
   "totalUniqueSenders": [
     1,
     1,
-    5,
     2,
-    3,
+    0,
+    0,
   ],
 }
 `;
@@ -668,18 +668,18 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
   "totalUniqueReceivers": [
     3,
     1,
-    1,
+    0,
     3,
-    1,
-    2,
+    0,
+    0,
   ],
   "totalUniqueSenders": [
     3,
     1,
     1,
-    5,
     2,
-    3,
+    0,
+    0,
   ],
 }
 `;
