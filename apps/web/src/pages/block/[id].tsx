@@ -154,7 +154,7 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: " Blob Gas Price",
+        name: "Blob Gas Price",
         helpText:
           "The cost per unit of blob gas used by the blobs in this block.",
         value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
