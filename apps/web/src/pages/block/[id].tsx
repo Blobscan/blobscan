@@ -181,7 +181,7 @@ const Block: NextPage = function () {
       {
         name: "Blob As Calldata Gas",
         helpText:
-          "The total gas that would have been used in this block if the blobs had been sent as calldata.",
+          "The total gas that would have been used in this block if the blobs were sent as calldata.",
         value: (
           <div>
             {formatNumber(blockData.blobAsCalldataGasUsed)}
