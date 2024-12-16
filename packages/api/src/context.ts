@@ -132,6 +132,7 @@ export function createTRPCContext(
           event: "trpc_request",
           properties: {
             $ip: getIP(opts.req),
+            $host: env.BLOBSCAN_API_BASE_URL,
             scope,
             $current_url: opts.req.url,
             network: env.NETWORK_NAME,
