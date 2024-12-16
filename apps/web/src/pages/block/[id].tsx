@@ -29,6 +29,7 @@ import {
   MAX_BLOBS_PER_BLOCK,
   performDiv,
   pluralize,
+  TARGET_BLOB_GAS_PER_BLOCK,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -161,8 +162,9 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Gas Used",
-        helpText:
-          "The total blob gas used by the blobs in this block, along with its percentage relative to the total blob gas limit and the blob gas target (~0.375 MB).",
+        helpText: `The total blob gas used by the blobs in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${(
+          TARGET_BLOB_GAS_PER_BLOCK / 1024
+        ).toFixed(0)} KB).`,
         value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
       },
       {
