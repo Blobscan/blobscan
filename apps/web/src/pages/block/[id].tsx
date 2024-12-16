@@ -29,6 +29,7 @@ import {
   MAX_BLOBS_PER_BLOCK,
   performDiv,
   pluralize,
+  TARGET_BLOB_GAS_PER_BLOCK,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -86,6 +87,8 @@ const Block: NextPage = function () {
     detailsFields = [
       {
         name: "Block Height",
+        helpText:
+          "Also referred to as the Block Number, the block height represents the length of the blockchain and increases with each newly added block.",
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
@@ -110,13 +113,19 @@ const Block: NextPage = function () {
           </div>
         ),
       },
-      { name: "Status", value: <BlockStatus blockNumber={blockData.number} /> },
+      {
+        name: "Status",
+        helpText: "The finality status of the block.",
+        value: <BlockStatus blockNumber={blockData.number} />,
+      },
       {
         name: "Hash",
+        helpText: "The hash of the block header.",
         value: <Copyable value={blockData.hash} tooltipText="Copy Hash" />,
       },
       {
         name: "Timestamp",
+        helpText: "The time at which the block was created.",
         value: (
           <div className="whitespace-break-spaces">
             {formatTimestamp(blockData.timestamp)}
@@ -125,6 +134,7 @@ const Block: NextPage = function () {
       },
       {
         name: "Slot",
+        helpText: "The slot number of the block.",
         value: (
           <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
             {blockData.slot}
@@ -132,7 +142,8 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Size",
+        name: "Blob size",
+        helpText: "Total amount of space used for blobs in this block.",
         value: (
           <div>
             {formatBytes(totalBlockBlobSize)}
@@ -145,14 +156,20 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Gas Price",
+        helpText:
+          "The cost per unit of blob gas used by the blobs in this block.",
         value: <EtherUnitDisplay amount={blockData.blobGasPrice} />,
       },
       {
         name: "Blob Gas Used",
+        helpText: `The total blob gas used by the blobs in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${(
+          TARGET_BLOB_GAS_PER_BLOCK / 1024
+        ).toFixed(0)} KB).`,
         value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
       },
       {
         name: "Blob Gas Limit",
+        helpText: "The maximum blob gas limit for this block.",
         value: (
           <div>
             {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
@@ -165,6 +182,8 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob As Calldata Gas",
+        helpText:
+          "The total gas that would have been used in this block if the blobs were sent as calldata.",
         value: (
           <div>
             {formatNumber(blockData.blobAsCalldataGasUsed)}

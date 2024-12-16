@@ -5,9 +5,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { InfoField } from "./InfoField";
 
 export type InfoGridProps = {
-  fields?: { name: ReactNode; value: ReactNode }[];
+  fields?: {
+    name: ReactNode;
+    value: ReactNode;
+    helpText?: ReactNode;
+  }[];
 };
 
 export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
@@ -31,10 +36,14 @@ export const InfoGrid: React.FC<InfoGridProps> = function ({ fields }) {
               </div>
             </Fragment>
           ))
-        : fields.map(({ name, value }, i) => (
+        : fields.map(({ name, value, helpText }, i) => (
             <Fragment key={i}>
               <div className="col-span-4 font-semibold dark:text-coolGray-400 md:col-span-1">
-                {name}
+                {helpText ? (
+                  <InfoField description={helpText}>{name}</InfoField>
+                ) : (
+                  name
+                )}
               </div>
               <div className="col-span-4 break-words text-sm md:col-span-3">
                 {value}
