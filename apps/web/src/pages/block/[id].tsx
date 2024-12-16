@@ -142,7 +142,7 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob size",
-        helpText: "Total amount of size used for blobs in this block.",
+        helpText: "Total amount of space used for blobs in this block.",
         value: (
           <div>
             {formatBytes(totalBlockBlobSize)}
