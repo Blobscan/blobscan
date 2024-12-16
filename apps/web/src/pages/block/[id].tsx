@@ -87,7 +87,7 @@ const Block: NextPage = function () {
       {
         name: "Block Height",
         helpText:
-          "Also referred to as Block Number, the block height represents the length of the blockchain and increases with each newly added block.",
+          "Also referred to as the Block Number, the block height represents the length of the blockchain and increases with each newly added block.",
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
