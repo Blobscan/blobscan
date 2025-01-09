@@ -1,21 +1,26 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
 import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
 import { Category } from "@blobscan/api/enums";
+import { getChainRollups } from "@blobscan/rollups";
 
 import { Button } from "~/components/Button";
 import type { Sort } from "~/hooks/useQueryParams";
 import { useQueryParams } from "~/hooks/useQueryParams";
-import { capitalize, getISODate } from "~/utils";
+import { useEnv } from "~/providers/Env";
+import type { Rollup } from "~/types";
+import { capitalize, getChainIdByName, getISODate } from "~/utils";
+import { RollupBadge } from "../Badges/RollupBadge";
 import { Card } from "../Cards/Card";
 import { Dropdown } from "../Dropdown";
 import type { DropdownProps, Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
+import { RollupIcon } from "../RollupIcon";
 import { BlockNumberFilter } from "./BlockNumberFilter";
-import { ROLLUP_OPTIONS, RollupFilter } from "./RollupFilter";
+import { RollupFilter } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
@@ -86,6 +91,8 @@ export const Filters: FC = function () {
   const router = useRouter();
   const queryParams = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
+  const { env, isLoading: envLoading } = useEnv();
+
   const disableClear =
     !filters.category &&
     !filters.rollups &&
@@ -162,6 +169,28 @@ export const Filters: FC = function () {
     });
   };
 
+  const rollupOptions: DropdownProps["options"] = useMemo(() => {
+    const chainId =
+      !envLoading && getChainIdByName(env["PUBLIC_NETWORK_NAME"] as string);
+    const rollups = chainId ? getChainRollups(chainId) : [];
+
+    return rollups.map(
+      ([name, addresses]) =>
+        ({
+          value: addresses,
+          selectedLabel: (
+            <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
+          ),
+          label: (
+            <div className="flex flex-row items-center gap-2">
+              <RollupIcon rollup={name.toLowerCase() as Rollup} />
+              <div>{capitalize(name)}</div>
+            </div>
+          ),
+        } satisfies Option)
+    );
+  }, [env, envLoading]);
+
   useEffect(() => {
     const { sort } = queryParams.paginationParams;
     const {
@@ -177,7 +206,7 @@ export const Filters: FC = function () {
     const newFilters: Partial<FiltersState> = {};
 
     if (from) {
-      const rollupOptions = ROLLUP_OPTIONS.filter((opt) => {
+      const rollupOptions_ = rollupOptions.filter((opt) => {
         const fromAddresses = from?.split(FROM_ADDRESSES_FORMAT_SEPARATOR);
         const rollupOptionAddresses = Array.isArray(opt.value)
           ? opt.value
@@ -185,13 +214,13 @@ export const Filters: FC = function () {
 
         return (
           rollupOptionAddresses.filter((rollupAddress) =>
-            fromAddresses?.includes(rollupAddress)
+            fromAddresses?.includes(rollupAddress as string)
           ).length > 0
         );
       });
 
-      if (rollupOptions) {
-        newFilters.rollups = rollupOptions;
+      if (rollupOptions_) {
+        newFilters.rollups = rollupOptions_;
       }
     }
 
@@ -225,7 +254,7 @@ export const Filters: FC = function () {
     }
 
     dispatch({ type: "UPDATE", payload: newFilters });
-  }, [queryParams]);
+  }, [queryParams, rollupOptions]);
 
   return (
     <Card compact>
@@ -265,6 +294,7 @@ export const Filters: FC = function () {
             <div className="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]">
               <RollupFilter
                 selected={filters.rollups}
+                options={rollupOptions}
                 disabled={
                   filters.category?.value.toString().toUpperCase() !==
                   Category.ROLLUP

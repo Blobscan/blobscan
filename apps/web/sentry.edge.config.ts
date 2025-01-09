@@ -5,11 +5,18 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-import { env } from "./src/env.mjs";
+import { fetchEnv } from "~/utils/env";
 
-Sentry.init({
-  dsn: env.NEXT_PUBLIC_SENTRY_DSN_WEB,
-  environment: env.NEXT_PUBLIC_NETWORK_NAME,
-  tracesSampleRate: 1,
-  debug: false,
-});
+const initSentry = async () => {
+  const res = await fetchEnv();
+  const env = res?.result?.data?.json as Record<string, string>;
+
+  Sentry.init({
+    dsn: env["NEXT_PUBLIC_SENTRY_DSN_WEB"],
+    environment: env["NEXT_PUBLIC_NETWORK_NAME"],
+    tracesSampleRate: 1,
+    debug: false,
+  });
+};
+
+initSentry();

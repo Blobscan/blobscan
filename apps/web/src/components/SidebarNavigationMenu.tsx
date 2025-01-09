@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import cn from "classnames";
+import Skeleton from "react-loading-skeleton";
 
+import { useEnv } from "~/providers/Env";
 import { BlobscanLogo } from "./BlobscanLogo";
 import { Collapsable } from "./Collapsable";
 import { IconButton } from "./IconButton";
@@ -12,7 +14,7 @@ import { Rotable } from "./Rotable";
 import { SidePanel, useSidePanel } from "./SidePanel";
 import { ThemeModeButton } from "./ThemeModeButton";
 import type { ExpandibleNavigationItem, NavigationItem } from "./content";
-import { isExpandibleNavigationItem, NAVIGATION_ITEMS } from "./content";
+import { isExpandibleNavigationItem, getNavigationItems } from "./content";
 
 export function SidebarNavigationMenu({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
@@ -20,6 +22,16 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
   const openSidebar = useCallback(() => setOpen(true), []);
 
   const closeSidebar = useCallback(() => setOpen(false), []);
+
+  const { env, isLoading: envLoading } = useEnv();
+
+  const navigationItems = useMemo(() => {
+    const networkName = env["PUBLIC_NETWORK_NAME"] as string;
+    const publicSupportedNetworks = env["PUBLIC_SUPPORTED_NETWORKS"] as string;
+    return !envLoading
+      ? getNavigationItems(networkName, publicSupportedNetworks)
+      : undefined;
+  }, [envLoading, env]);
 
   return (
     <div className={className}>
@@ -30,20 +42,24 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
-            {NAVIGATION_ITEMS.map((item, i) =>
-              isExpandibleNavigationItem(item) ? (
-                <ExpandableNavigationLinks
-                  key={`${item.label}-${i}`}
-                  {...item}
-                  onClick={closeSidebar}
-                />
-              ) : (
-                <NavigationLink
-                  key={`${item.label}-${i}`}
-                  {...item}
-                  onClick={closeSidebar}
-                />
+            {navigationItems ? (
+              navigationItems.map((item, i) =>
+                isExpandibleNavigationItem(item) ? (
+                  <ExpandableNavigationLinks
+                    key={`${item.label}-${i}`}
+                    {...item}
+                    onClick={closeSidebar}
+                  />
+                ) : (
+                  <NavigationLink
+                    key={`${item.label}-${i}`}
+                    {...item}
+                    onClick={closeSidebar}
+                  />
+                )
               )
+            ) : (
+              <Skeleton width={24} height={34} />
             )}
           </div>
         </div>

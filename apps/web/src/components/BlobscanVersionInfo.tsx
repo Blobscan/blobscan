@@ -1,29 +1,21 @@
-import { env } from "~/env.mjs";
+import { useEnv } from "~/providers/Env";
 import { Link } from "./Link";
 
-function getVersionData(): { url: string; label: string } {
-  if (env.NEXT_PUBLIC_BLOBSCAN_RELEASE) {
-    return {
-      url: `https://github.com/Blobscan/blobscan/releases/tag/${env.NEXT_PUBLIC_BLOBSCAN_RELEASE}`,
-      label: env.NEXT_PUBLIC_BLOBSCAN_RELEASE,
-    };
-  }
-
-  if (env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA) {
-    return {
-      url: `https://github.com/Blobscan/blobscan/commit/${env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA}`,
-      label: env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7),
-    };
-  }
-
-  return {
-    url: "https://github.com/Blobscan/blobscan/",
-    label: "Development",
-  };
-}
-
 export const BlobscanVersionInfo: React.FC = () => {
-  const { url, label } = getVersionData();
+  const { env } = useEnv();
+
+  let url = "https://github.com/Blobscan/blobscan/";
+  let label = "Development";
+
+  if (env["PUBLIC_BLOBSCAN_RELEASE"]) {
+    url = `https://github.com/Blobscan/blobscan/releases/tag/${env["PUBLIC_BLOBSCAN_RELEASE"]}`;
+    label = env["PUBLIC_BLOBSCAN_RELEASE"] as string;
+  }
+
+  if (env["PUBLIC_VERCEL_GIT_COMMIT_SHA"]) {
+    url = `https://github.com/Blobscan/blobscan/commit/${env["PUBLIC_VERCEL_GIT_COMMIT_SHA"]}`;
+    label = (env["PUBLIC_VERCEL_GIT_COMMIT_SHA"] as string).slice(0, 7);
+  }
 
   return (
     <div className="flex items-center gap-1">

@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Popover,
@@ -8,15 +8,31 @@ import {
   Transition,
 } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Skeleton from "react-loading-skeleton";
 
 import { useHover } from "~/hooks/useHover";
+import { useEnv } from "~/providers/Env";
 import type { ExpandibleNavigationItem, NavigationItem } from "./content";
-import { NAVIGATION_ITEMS, isExpandibleNavigationItem } from "./content";
+import { getNavigationItems, isExpandibleNavigationItem } from "./content";
 
 export const NavigationMenus: FC = () => {
+  const { env, isLoading: envLoading } = useEnv();
+
+  const navigationItems = useMemo(() => {
+    const networkName = env["PUBLIC_NETWORK_NAME"] as string;
+    const publicSupportedNetworks = env["PUBLIC_SUPPORTED_NETWORKS"] as string;
+    return !envLoading
+      ? getNavigationItems(networkName, publicSupportedNetworks)
+      : undefined;
+  }, [envLoading, env]);
+
+  if (!navigationItems) {
+    return <Skeleton width={20} />;
+  }
+
   return (
     <div className="items-center gap-4 xl:flex">
-      {NAVIGATION_ITEMS.map((item) =>
+      {navigationItems.map((item) =>
         isExpandibleNavigationItem(item) ? (
           <NavigationLinksMenu key={item.label} {...item} />
         ) : (

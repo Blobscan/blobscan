@@ -87,6 +87,29 @@ export const env = createEnv({
       TEST: booleanSchema.optional(),
       TRACES_ENABLED: booleanSchema.default("false"),
     },
+    clientPrefix: "NEXT",
+    client: {
+      NEXT_PUBLIC_BEACON_BASE_URL: z
+        .string()
+        .url()
+        .default("https://beaconcha.in/"),
+      NEXT_PUBLIC_BLOBSCAN_RELEASE: z.string().optional(),
+      NEXT_PUBLIC_EXPLORER_BASE_URL: z
+        .string()
+        .url()
+        .default("https://etherscan.io/"),
+      NEXT_PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
+      NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
+      NEXT_PUBLIC_POSTHOG_ID: z.string().optional(),
+      NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
+      NEXT_PUBLIC_SUPPORTED_NETWORKS: z
+        .string()
+        .default(
+          '[{"label":"Ethereum Mainnet","href":"https://blobscan.com/"},{"label":"Gnosis","href":"https://gnosis.blobscan.com/"},{"label":"Holesky Testnet","href":"https://holesky.blobscan.com/"},{"label":"Sepolia Testnet","href":"https://sepolia.blobscan.com/"}]'
+        ),
+      NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
+      NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
+    },
 
     ...presetEnvOptions,
   },
