@@ -49,7 +49,7 @@ export async function parseOptimismDecodedData(
 
 /* Autocomplete a block hash from a truncated version of it.
    @param partialHash - The first bytes of a block hash.
-   @returns The block hash, if there is a single ocurrence, or null.
+   @returns The block hash, if there is a single occurrence, or null.
  */
 async function autocompleteBlockHash(partialHash: string) {
   if (!partialHash) {
