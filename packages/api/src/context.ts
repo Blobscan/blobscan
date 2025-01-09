@@ -118,12 +118,14 @@ export function createTRPCContext(
           );
         }
 
+        let current_url = opts.req.url;
         let pathname: string | undefined;
         let query: string | undefined;
 
         if (opts.req.url) {
           const url = new URL(opts.req.url, env.BLOBSCAN_API_BASE_URL);
           pathname = url.pathname;
+          current_url = url.toString();
           query = url.searchParams.toString();
         }
 
@@ -133,7 +135,7 @@ export function createTRPCContext(
           properties: {
             $ip: getIP(opts.req),
             scope,
-            $current_url: opts.req.url,
+            $current_url: current_url,
             network: env.NETWORK_NAME,
             pathname,
             query,
