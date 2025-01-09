@@ -6,6 +6,7 @@ const zodBlobStorageEnums = [
   "swarm",
   "postgres",
   "file_system",
+  "weavevm",
 ] as const;
 
 const zodRollupEnums = [
