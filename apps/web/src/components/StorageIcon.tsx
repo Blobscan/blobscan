@@ -5,6 +5,7 @@ import cn from "classnames";
 import GoogleIcon from "~/icons/google.svg";
 import PostgresIcon from "~/icons/postgres.svg";
 import SwarmIcon from "~/icons/swarm.svg";
+import WeavevmIcon from "~/icons/weavevm.svg";
 import type { BlobStorage, Size } from "~/types";
 import { capitalize } from "~/utils";
 
@@ -39,6 +40,9 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
       break;
     case "postgres":
       storageIcon = <PostgresIcon className={commonStyles} />;
+      break;
+    case "weavevm":
+      storageIcon = <WeavevmIcon className={commonStyles} />;
       break;
   }
 
