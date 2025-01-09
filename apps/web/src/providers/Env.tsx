@@ -32,7 +32,10 @@ const EnvContext = createContext<EnvContextType>({
 export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: fetchedEnv, isLoading } = api.getEnv.useQuery();
+  const { data: fetchedEnv, isLoading } = api.getEnv.useQuery(undefined, {
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
   const [env, setEnv] = useState<Record<string, string | boolean | undefined>>(
     () => {
       let storedEnv;
