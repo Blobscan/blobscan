@@ -7,7 +7,7 @@ This standard provides a new type of transaction that will help scaling Ethereum
 
 The architecture of Blobscan has the following components:
 
-- An [indexer](/docs/indexer) that communicates with consensus and execution layer clients, fetches blob information and stores it in our different storages.
+- An [indexer](/docs/indexer) that communicates with consensus and execution layer clients, fetches blob information and stores it in our different storage solutions.
 - A frontend that allows navigating the data, having specific pages for blocks, transactions, addresses, and blobs.
 - An API that the indexer can talk to and contains shared logic with the frontend.
 - A blob storage manager with support for different storage providers to keep blob data available.
