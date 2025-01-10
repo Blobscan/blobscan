@@ -55,6 +55,8 @@ nextjs:
 | `BEE_ENDPOINT`                       | Bee endpoint                                                                                       | No                              | (empty)                    |
 | `FILE_SYSTEM_STORAGE_ENABLED`        | Store blobs in filesystem                                                                          | No                              | `false`                    |
 | `FILE_SYSTEM_STORAGE_PATH`           | Store blobs in this path                                                                           | No                              | `/tmp/blobscan-blobs`      |
+| `WEAVEVM_STORAGE_ENABLED`            | Weavevm storage usage                                                                              | No                              | `false`                    |
+| `WEAVEVM_STORAGE_API_ENDPOINT`       | Weavevm API endpoint                                                                               | No                              | (empty)                    |
 | `STATS_SYNCER_DAILY_CRON_PATTERN`    | Cron pattern for the daily stats job                                                               | No                              | `30 0 * * * *`             |
 | `STATS_SYNCER_OVERALL_CRON_PATTERN`  | Cron pattern for the overall stats job                                                             | No                              | `*/15 * * * *`             |
 | `SWARM_STAMP_CRON_PATTERN`           | Cron pattern for swarm job                                                                         | No                              | `*/15 * * * *`             |
