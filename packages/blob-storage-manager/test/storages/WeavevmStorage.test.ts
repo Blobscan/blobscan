@@ -19,7 +19,7 @@ const MOCK_RESPONSES: Record<string, string> = {
 class WeavevmStorageMock extends WeavevmStorage {
   constructor() {
     super({
-      endpointBaseUrl: MOCK_BASE_URL,
+      apiEndpoint: MOCK_BASE_URL,
       chainId: env.CHAIN_ID,
     });
   }
@@ -87,11 +87,11 @@ describe("WeavevmStorage", () => {
   it("should create a storage", async () => {
     const storage_ = await WeavevmStorage.create({
       chainId: env.CHAIN_ID,
-      endpointBaseUrl: MOCK_BASE_URL,
+      apiEndpoint: MOCK_BASE_URL,
     });
 
     expect(storage_.chainId, "Chain ID mismatch").toBe(env.CHAIN_ID);
-    expect(storage_.endpointBaseUrl).toBe(MOCK_BASE_URL);
+    expect(storage_.apiEndpoint).toBe(MOCK_BASE_URL);
   });
 
   it("return the correct uri given a blob hash", () => {

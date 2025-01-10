@@ -8,6 +8,7 @@ import {
   GoogleStorage,
   PostgresStorage,
   SwarmStorage,
+  WeavevmStorage,
 } from "../storages";
 
 export function removeDuplicatedStorages(
@@ -74,12 +75,18 @@ export async function createStorageFromEnv(
       return fileSystemStorage;
     }
     case BlobStorageName.WEAVEVM: {
-      const fileSystemStorage = await FileSystemStorage.create({
+      if (!env.WEAVEVM_STORAGE_API_ENDPOINT) {
+        throw new Error(
+          "Missing required env variable for WeavevmStorage: WEAVEVM_STORAGE_API_ENDPOINT"
+        );
+      }
+
+      const weavevmStorage = await WeavevmStorage.create({
         chainId,
-        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
+        apiEndpoint: env.WEAVEVM_STORAGE_API_ENDPOINT,
       });
 
-      return fileSystemStorage;
+      return weavevmStorage;
     }
   }
 }

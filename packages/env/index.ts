@@ -58,6 +58,7 @@ export const env = createEnv({
       GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
       GOOGLE_SERVICE_KEY: z.string().optional(),
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
+      WEAVEVM_STORAGE_API_ENDPOINT: z.string().url().optional(),
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])
         .default("http"),

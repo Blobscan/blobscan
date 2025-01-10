@@ -9,24 +9,24 @@ const blobResponseSchema = z.object({
 });
 
 export interface WeavevmStorageConfig extends BlobStorageConfig {
-  endpointBaseUrl: string;
+  apiEndpoint: string;
 }
 
 export class WeavevmStorage extends BlobStorage {
-  endpointBaseUrl: string;
+  apiEndpoint: string;
 
-  protected constructor({ endpointBaseUrl, chainId }: WeavevmStorageConfig) {
+  protected constructor({ apiEndpoint, chainId }: WeavevmStorageConfig) {
     super(BlobStorageName.WEAVEVM, chainId);
 
-    this.endpointBaseUrl = endpointBaseUrl;
+    this.apiEndpoint = apiEndpoint;
   }
 
   protected async _healthCheck(): Promise<void> {
-    await fetch(`${this.endpointBaseUrl}/v1/stats`);
+    await fetch(`${this.apiEndpoint}/v1/stats`);
   }
 
   protected async _getBlob(uri: string): Promise<string> {
-    const response = await fetch(`${this.endpointBaseUrl}/v1/blob/${uri}`);
+    const response = await fetch(`${this.apiEndpoint}/v1/blob/${uri}`);
     const jsonRes = await response.json();
 
     const res = blobResponseSchema.safeParse(jsonRes);
