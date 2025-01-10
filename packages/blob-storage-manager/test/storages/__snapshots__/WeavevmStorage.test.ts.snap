@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WeavevmStorage > should fail when trying to parse an invalid blob retrieval response 1`] = `"WeavevmStorageMock failed: Failed to get blob with uri \\"invalidBlobHash\\""`;
+
+exports[`WeavevmStorage > should fail when trying to parse an invalid blob retrieval response 2`] = `[Error: Failed to parse blob response]`;
+
+exports[`WeavevmStorage > should fail when trying to remove a blob 1`] = `"WeavevmStorageMock failed: Failed to remove blob with uri \\"blobHash\\""`;
+
+exports[`WeavevmStorage > should fail when trying to remove a blob 2`] = `[Error: Blob removal operation is not allowed for Weavevm storage]`;
+
+exports[`WeavevmStorage > should fail when trying to store a blob 1`] = `"WeavevmStorageMock failed: Failed to store blob with hash \\"blobHash\\""`;
+
+exports[`WeavevmStorage > should fail when trying to store a blob 2`] = `[Error: Blob storage operation is not allowed for Weavevm storage]`;

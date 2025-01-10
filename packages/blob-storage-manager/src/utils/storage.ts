@@ -73,5 +73,13 @@ export async function createStorageFromEnv(
 
       return fileSystemStorage;
     }
+    case BlobStorageName.WEAVEVM: {
+      const fileSystemStorage = await FileSystemStorage.create({
+        chainId,
+        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
+      });
+
+      return fileSystemStorage;
+    }
   }
 }
