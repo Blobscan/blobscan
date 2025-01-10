@@ -52,12 +52,13 @@ export type BlobPropagatorConfig = {
 
 export const STORAGE_WORKER_PROCESSORS: Record<
   BlobStorageName,
-  BlobPropagationWorkerProcessor
+  BlobPropagationWorkerProcessor | undefined
 > = {
   GOOGLE: gcsProcessor,
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
   FILE_SYSTEM: fileSystemProcessor,
+  WEAVEVM: undefined,
 };
 
 export class BlobPropagator {
@@ -84,7 +85,18 @@ export class BlobPropagator {
     const availableStorageNames = blobStorageManager
       .getAllStorages()
       .map((s) => s.name)
-      .filter((name) => name !== tmpBlobStorage);
+      .filter((name) => name !== tmpBlobStorage)
+      .filter((name) => {
+        const hasWorkerProcessor = !!STORAGE_WORKER_PROCESSORS[name];
+
+        if (!hasWorkerProcessor) {
+          logger.warn(
+            `Worker processor not defined for storage "${name}"; skipping`
+          );
+        }
+
+        return hasWorkerProcessor;
+      });
     const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
 
     if (!availableStorageNames) {
@@ -97,9 +109,17 @@ export class BlobPropagator {
 
     this.storageWorkers = availableStorageNames.map(
       (storageName: BlobStorageName) => {
+        const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
+
+        if (!workerProcessor) {
+          throw new BlobPropagatorCreationError(
+            `Worker processor not defined for storage "${storageName}"`
+          );
+        }
+
         return this.#createWorker(
           STORAGE_WORKER_NAMES[storageName],
-          STORAGE_WORKER_PROCESSORS[storageName]({
+          workerProcessor({
             prisma,
             blobStorageManager,
           }),
