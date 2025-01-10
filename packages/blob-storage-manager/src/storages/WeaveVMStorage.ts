@@ -8,25 +8,25 @@ const blobResponseSchema = z.object({
   blob_data: z.string(),
 });
 
-export interface WeaveVMStorageConfig extends BlobStorageConfig {
-  apiBaseUrl: string;
+export interface WeavevmStorageConfig extends BlobStorageConfig {
+  endpointBaseUrl: string;
 }
 
-export class WeaveVMStorage extends BlobStorage {
-  apiBaseUrl: string;
+export class WeavevmStorage extends BlobStorage {
+  endpointBaseUrl: string;
 
-  protected constructor({ apiBaseUrl, chainId }: WeaveVMStorageConfig) {
+  protected constructor({ endpointBaseUrl, chainId }: WeavevmStorageConfig) {
     super(BlobStorageName.WEAVEVM, chainId);
 
-    this.apiBaseUrl = apiBaseUrl;
+    this.endpointBaseUrl = endpointBaseUrl;
   }
 
   protected async _healthCheck(): Promise<void> {
-    await fetch(`${this.apiBaseUrl}/v1/stats`);
+    await fetch(`${this.endpointBaseUrl}/v1/stats`);
   }
 
   protected async _getBlob(uri: string): Promise<string> {
-    const response = await fetch(`${this.apiBaseUrl}/v1/blob/${uri}`);
+    const response = await fetch(`${this.endpointBaseUrl}/v1/blob/${uri}`);
     const jsonRes = await response.json();
 
     const res = blobResponseSchema.safeParse(jsonRes);
@@ -42,13 +42,13 @@ export class WeaveVMStorage extends BlobStorage {
 
   protected async _storeBlob(_: string, __: string): Promise<string> {
     throw new Error(
-      "Blob storage operation is not allowed for WeaveVM storage"
+      "Blob storage operation is not allowed for Weavevm storage"
     );
   }
 
   protected async _removeBlob(_: string): Promise<void> {
     throw new Error(
-      "Blob removal operation is not allowed for WeaveVM storage"
+      "Blob removal operation is not allowed for Weavevm storage"
     );
   }
 
@@ -56,9 +56,9 @@ export class WeaveVMStorage extends BlobStorage {
     return hash;
   }
 
-  static async create(config: WeaveVMStorageConfig) {
+  static async create(config: WeavevmStorageConfig) {
     try {
-      const storage = new WeaveVMStorage(config);
+      const storage = new WeavevmStorage(config);
 
       await storage.healthCheck();
 
@@ -66,7 +66,7 @@ export class WeaveVMStorage extends BlobStorage {
     } catch (err) {
       const err_ = err as Error;
 
-      throw new Error("Failed to create WeaveVM storage", {
+      throw new Error("Failed to create Weavevm storage", {
         cause: err_,
       });
     }

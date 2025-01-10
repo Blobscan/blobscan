@@ -7,19 +7,19 @@ import { env } from "@blobscan/env";
 import { testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src/errors";
-import { WeaveVMStorage } from "../../src/storages/WeaveVMStorage";
+import { WeavevmStorage } from "../../src/storages/WeavevmStorage";
 
-const MOCK_API_BASE_URL = "https://blobscan.weavevm";
+const MOCK_BASE_URL = "https://blobscan.weavevm";
 
 const MOCK_RESPONSES: Record<string, string> = {
   "0x01b4b4b2b62f7a206efcb78e2ed6ef5bde9c1ac33d4d44eccfd43aa951ef1d22":
     "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
 };
 
-class WeaveVMStorageMock extends WeaveVMStorage {
+class WeavevmStorageMock extends WeavevmStorage {
   constructor() {
     super({
-      apiBaseUrl: MOCK_API_BASE_URL,
+      endpointBaseUrl: MOCK_BASE_URL,
       chainId: env.CHAIN_ID,
     });
   }
@@ -31,11 +31,11 @@ class WeaveVMStorageMock extends WeaveVMStorage {
 
 describe("WeavevmStorage", () => {
   let weavevmServer: SetupServerApi;
-  let storage: WeaveVMStorageMock;
+  let storage: WeavevmStorageMock;
 
   beforeAll(() => {
     weavevmServer = setupServer(
-      http.get(`${MOCK_API_BASE_URL}/v1/blob/:uri`, ({ request }) => {
+      http.get(`${MOCK_BASE_URL}/v1/blob/:uri`, ({ request }) => {
         const uri = request.url.split("/").pop();
 
         if (!uri) {
@@ -58,7 +58,7 @@ describe("WeavevmStorage", () => {
           blob_data: blobData,
         });
       }),
-      http.get(`${MOCK_API_BASE_URL}/v1/stats`, () => {
+      http.get(`${MOCK_BASE_URL}/v1/stats`, () => {
         return HttpResponse.json({
           blob_versioned_hash:
             "0x01b4b4b2b62f7a206efcb78e2ed6ef5bde9c1ac33d4d44eccfd43aa951ef1d22",
@@ -77,7 +77,7 @@ describe("WeavevmStorage", () => {
   });
 
   beforeEach(() => {
-    storage = new WeaveVMStorageMock();
+    storage = new WeavevmStorageMock();
   });
 
   afterEach(() => {
@@ -85,13 +85,13 @@ describe("WeavevmStorage", () => {
   });
 
   it("should create a storage", async () => {
-    const storage_ = await WeaveVMStorage.create({
+    const storage_ = await WeavevmStorage.create({
       chainId: env.CHAIN_ID,
-      apiBaseUrl: MOCK_API_BASE_URL,
+      endpointBaseUrl: MOCK_BASE_URL,
     });
 
     expect(storage_.chainId, "Chain ID mismatch").toBe(env.CHAIN_ID);
-    expect(storage_.apiBaseUrl).toBe(MOCK_API_BASE_URL);
+    expect(storage_.endpointBaseUrl).toBe(MOCK_BASE_URL);
   });
 
   it("return the correct uri given a blob hash", () => {
@@ -117,7 +117,7 @@ describe("WeavevmStorage", () => {
     "should fail when trying to parse an invalid blob retrieval response",
     async () => {
       weavevmServer.use(
-        http.get(`${MOCK_API_BASE_URL}/v1/blob/:uri`, () => {
+        http.get(`${MOCK_BASE_URL}/v1/blob/:uri`, () => {
           return HttpResponse.json({
             blob_data: 123,
           });
