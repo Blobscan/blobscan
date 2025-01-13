@@ -16,15 +16,20 @@ import type { ExpandibleNavigationItem, NavigationItem } from "./content";
 import { getNavigationItems, isExpandibleNavigationItem } from "./content";
 
 export const NavigationMenus: FC = () => {
-  const { env, isLoading: envLoading } = useEnv();
+  const { env } = useEnv();
 
   const navigationItems = useMemo(() => {
-    const networkName = env["PUBLIC_NETWORK_NAME"] as string;
-    const publicSupportedNetworks = env["PUBLIC_SUPPORTED_NETWORKS"] as string;
-    return !envLoading
+    const networkName = env
+      ? (env["PUBLIC_NETWORK_NAME"] as string)
+      : undefined;
+    const publicSupportedNetworks = env
+      ? (env["PUBLIC_SUPPORTED_NETWORKS"] as string)
+      : undefined;
+
+    return networkName && publicSupportedNetworks
       ? getNavigationItems(networkName, publicSupportedNetworks)
       : undefined;
-  }, [envLoading, env]);
+  }, [env]);
 
   if (!navigationItems) {
     return <Skeleton width={20} />;

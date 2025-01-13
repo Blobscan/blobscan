@@ -91,7 +91,7 @@ export const Filters: FC = function () {
   const router = useRouter();
   const queryParams = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
-  const { env, isLoading: envLoading } = useEnv();
+  const { env } = useEnv();
 
   const disableClear =
     !filters.category &&
@@ -171,7 +171,7 @@ export const Filters: FC = function () {
 
   const rollupOptions: DropdownProps["options"] = useMemo(() => {
     const chainId =
-      !envLoading && getChainIdByName(env["PUBLIC_NETWORK_NAME"] as string);
+      env && getChainIdByName(env["PUBLIC_NETWORK_NAME"] as string);
     const rollups = chainId ? getChainRollups(chainId) : [];
 
     return rollups.map(
@@ -189,7 +189,7 @@ export const Filters: FC = function () {
           ),
         } satisfies Option)
     );
-  }, [env, envLoading]);
+  }, [env]);
 
   useEffect(() => {
     const { sort } = queryParams.paginationParams;

@@ -56,8 +56,8 @@ const Block: NextPage = function () {
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
   const blockNumber = blockData ? blockData.number : undefined;
 
-  const { env, isLoading: envLoading } = useEnv();
-  const networkName = env["PUBLIC_NETWORK_NAME"] as string;
+  const { env } = useEnv();
+  const networkName = env ? (env["PUBLIC_NETWORK_NAME"] as string) : undefined;
 
   const detailsFields: DetailsLayoutProps["fields"] | undefined =
     useMemo(() => {
@@ -73,7 +73,7 @@ const Block: NextPage = function () {
           },
           0
         );
-        const firstBlobNumber = !envLoading
+        const firstBlobNumber = networkName
           ? getFirstBlobNumber(networkName)
           : undefined;
 
@@ -186,7 +186,7 @@ const Block: NextPage = function () {
           },
         ];
       }
-    }, [blockData, networkName, latestBlock, blockNumber, envLoading]);
+    }, [blockData, networkName, latestBlock, blockNumber]);
 
   if (error) {
     return (

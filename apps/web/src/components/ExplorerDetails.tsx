@@ -45,7 +45,7 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
 
-  const { env, isLoading: envLoading } = useEnv();
+  const { env } = useEnv();
 
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [];
 
@@ -53,10 +53,10 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
     explorerDetailsItems.push(
       {
         name: "Network",
-        value: envLoading ? (
-          <Skeleton height={14} width={48} />
-        ) : (
+        value: env ? (
           capitalize(env["PUBLIC_NETWORK_NAME"] as string)
+        ) : (
+          <Skeleton height={14} width={48} />
         ),
       },
       {

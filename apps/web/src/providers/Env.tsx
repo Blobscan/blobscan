@@ -1,29 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface EnvContextType {
-  env: Record<string, string | boolean | undefined>;
-  isLoading: boolean;
+  env?: Record<string, string | boolean | undefined>;
 }
 
-//TODO: discuss if we should have a default value
-const DEFAULT_ENV = {
-  PUBLIC_BEACON_BASE_URL: "https://beaconcha.in/",
-  PUBLIC_BLOBSCAN_RELEASE: undefined,
-  PUBLIC_EXPLORER_BASE_URL: "https://etherscan.io/",
-  PUBLIC_NETWORK_NAME: "mainnet",
-  PUBLIC_SENTRY_DSN_WEB: undefined,
-  PUBLIC_POSTHOG_ID: undefined,
-  PUBLIC_POSTHOG_HOST: "https://us.i.posthog.com",
-  PUBLIC_SUPPORTED_NETWORKS:
-    '[{"label":"Ethereum Mainnet","href":"https://blobscan.com/"},{"label":"Gnosis","href":"https://gnosis.blobscan.com/"},{"label":"Holesky Testnet","href":"https://holesky.blobscan.com/"},{"label":"Sepolia Testnet","href":"https://sepolia.blobscan.com/"}]',
-  PUBLIC_VERCEL_ANALYTICS_ENABLED: false,
-  PUBLIC_VERCEL_GIT_COMMIT_SHA: undefined,
-};
-
-const EnvContext = createContext<EnvContextType>({
-  env: DEFAULT_ENV,
-  isLoading: true,
-});
+const EnvContext = createContext<EnvContextType>({ env: undefined });
 
 export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -49,11 +30,7 @@ export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <EnvContext.Provider
-      value={{ env: env ? env : DEFAULT_ENV, isLoading: false }}
-    >
-      {children}
-    </EnvContext.Provider>
+    <EnvContext.Provider value={{ env: env }}>{children}</EnvContext.Provider>
   );
 };
 

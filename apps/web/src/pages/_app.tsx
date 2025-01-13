@@ -27,12 +27,12 @@ function App({ Component, pageProps }: NextAppProps) {
   const { resolvedTheme } = useTheme();
   const isMounted = useIsMounted();
   const router = useRouter();
-  const { env, isLoading: envLoading } = useEnv();
+  const { env } = useEnv();
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      !envLoading &&
+      env &&
       env["PUBLIC_POSTHOG_ID"] !== undefined
     ) {
       posthog.init(env["PUBLIC_POSTHOG_ID"] as string, {
@@ -45,7 +45,7 @@ function App({ Component, pageProps }: NextAppProps) {
         },
       });
     }
-  }, [env, envLoading]);
+  }, [env]);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -92,7 +92,7 @@ function App({ Component, pageProps }: NextAppProps) {
           <Component {...pageProps} />
         </AppLayout>
         <FeedbackWidget />
-        {!envLoading && env["PUBLIC_VERCEL_ANALYTICS_ENABLED"] && <Analytics />}
+        {env && env["PUBLIC_VERCEL_ANALYTICS_ENABLED"] && <Analytics />}
       </SkeletonTheme>
     </PostHogProvider>
   );
