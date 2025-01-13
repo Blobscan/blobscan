@@ -53,6 +53,24 @@ describe("Block router", async () => {
     });
   });
 
+  describe("checkBlockExists", () => {
+    it("should return true for an existing block", async () => {
+      const result = await caller.block.checkBlockExists({
+        blockNumber: 1002,
+      });
+
+      expect(result).toBe(true);
+    });
+
+    it("should return false for a non-existent block", async () => {
+      const result = await caller.block.checkBlockExists({
+        blockNumber: 99999999,
+      });
+
+      expect(result).toBe(false);
+    });
+  });
+
   describe("getByBlockId", () => {
     it("should get a block by hash", async () => {
       const result = await caller.block.getByBlockId({
