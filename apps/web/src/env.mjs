@@ -29,6 +29,10 @@ export const env = createEnv({
     METRICS_ENABLED: booleanSchema.default("false"),
     TRACES_ENABLED: booleanSchema.default("false"),
   },
+  client: {
+    NEXT_PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
+    NEXT_PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
+  },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
    */
@@ -38,6 +42,9 @@ export const env = createEnv({
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
+
+    NEXT_PUBLIC_NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME,
+    NEXT_PUBLIC_SENTRY_DSN_WEB: process.env.NEXT_PUBLIC_SENTRY_DSN_WEB,
   },
   skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,
 });
