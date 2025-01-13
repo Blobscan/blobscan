@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-import { api } from "~/api-client";
-
 interface EnvContextType {
   env: Record<string, string | boolean | undefined>;
   isLoading: boolean;
@@ -22,8 +20,6 @@ const DEFAULT_ENV = {
   PUBLIC_VERCEL_GIT_COMMIT_SHA: undefined,
 };
 
-const LOCAL_STORAGE_KEY = "env";
-
 const EnvContext = createContext<EnvContextType>({
   env: DEFAULT_ENV,
   isLoading: true,
@@ -32,32 +28,30 @@ const EnvContext = createContext<EnvContextType>({
 export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: fetchedEnv, isLoading } = api.getEnv.useQuery(undefined, {
-    staleTime: Infinity,
-    cacheTime: Infinity,
-  });
-  const [env, setEnv] = useState<Record<string, string | boolean | undefined>>(
-    () => {
-      let storedEnv;
-      if (global?.window !== undefined) localStorage.getItem(LOCAL_STORAGE_KEY);
-      return storedEnv ? JSON.parse(storedEnv) : DEFAULT_ENV;
-    }
-  );
+  const [env, setEnv] =
+    useState<Record<string, string | boolean | undefined>>();
 
   useEffect(() => {
-    if (
-      typeof window !== undefined &&
-      localStorage &&
-      fetchedEnv &&
-      !isLoading
-    ) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fetchedEnv));
-      setEnv(fetchedEnv);
-    }
-  }, [fetchedEnv, isLoading]);
+    const fetchEnv = async () => {
+      try {
+        const request = await fetch("/api/env", { method: "POST" });
+        const data = await request.json();
+        setEnv(data.data);
+      } catch (error) {
+        console.error(
+          "Error fetching environment variables from server side:",
+          error
+        );
+      }
+    };
+
+    fetchEnv();
+  }, []);
 
   return (
-    <EnvContext.Provider value={{ env, isLoading }}>
+    <EnvContext.Provider
+      value={{ env: env ? env : DEFAULT_ENV, isLoading: false }}
+    >
       {children}
     </EnvContext.Provider>
   );
