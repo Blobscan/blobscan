@@ -137,7 +137,10 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               commitment = EXCLUDED.commitment,
               proof = EXCLUDED.proof,
               size = EXCLUDED.size,
-              first_block_number = LEAST(b.first_block_number, EXCLUDED.first_block_number),
+              first_block_number = CASE 
+                WHEN b.first_block_number IS NULL THEN EXCLUDED.first_block_number
+                ELSE LEAST(b.first_block_number, EXCLUDED.first_block_number)
+              END,
               updated_at = NOW()
           `;
         },

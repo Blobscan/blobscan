@@ -13,7 +13,7 @@ export const StandardEtherUnitDisplay = ({
   opts = {},
 }: StandardEtherUnitDisplayProps) => {
   return (
-    <div className="flex items-center justify-start gap-1">
+    <div className="flex items-center justify-start gap-1 max-sm:flex-col max-sm:items-start max-sm:gap-0">
       <EtherUnitDisplay amount={amount} toUnit="ether" opts={opts} />
       <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
         (

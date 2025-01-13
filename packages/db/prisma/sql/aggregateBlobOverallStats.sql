@@ -13,7 +13,7 @@ SELECT
   tx.rollup,
   COALESCE(COUNT(bl_txs.blob_hash)::INT, 0) AS total_blobs,
   COALESCE(
-    COUNT(DISTINCT CASE WHEN bl.first_block_number BETWEEN $1 AND $2 THEN bl.versioned_hash END)::INT,
+    COUNT(DISTINCT CASE WHEN bl.first_block_number = bl_txs.block_number THEN bl.versioned_hash END)::INT,
     0
   ) AS total_unique_blobs,
   COALESCE(SUM(bl.size), 0) AS total_blob_size,

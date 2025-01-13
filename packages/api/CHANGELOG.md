@@ -1,10 +1,30 @@
 # @blobscan/api
 
+## 0.16.0
+
+### Minor Changes
+
+- [#623](https://github.com/Blobscan/blobscan/pull/623) [`025484b`](https://github.com/Blobscan/blobscan/commit/025484be6b12344cfa5a40cda963827aa60cb1e3) Thanks [@xFJA](https://github.com/xFJA)! - Added transaction category column to blob data.
+
+- [#637](https://github.com/Blobscan/blobscan/pull/637) [`ca30a0f`](https://github.com/Blobscan/blobscan/commit/ca30a0f03c11dfc0c4a25d18fdde2365458b17ca) Thanks [@xFJA](https://github.com/xFJA)! - Remove nullable rollup value on filters.
+
+- [#637](https://github.com/Blobscan/blobscan/pull/637) [`ca30a0f`](https://github.com/Blobscan/blobscan/commit/ca30a0f03c11dfc0c4a25d18fdde2365458b17ca) Thanks [@xFJA](https://github.com/xFJA)! - Added 'Category' filter for blobs, blocks and transactions.
+
+### Patch Changes
+
+- [#643](https://github.com/Blobscan/blobscan/pull/643) [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where blocks flagged as reorged remained marked as reorged after being reindexed
+
+- Updated dependencies [[`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`6512745`](https://github.com/Blobscan/blobscan/commit/6512745dc20949837a37aa923766f8b7effd6816), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea), [`0922d8b`](https://github.com/Blobscan/blobscan/commit/0922d8ba3af90b9d798db5a3e83d3b2203c00af5), [`c88e11f`](https://github.com/Blobscan/blobscan/commit/c88e11f223df7543ae28c0d7e998c8e20c5690ea)]:
+  - @blobscan/db@0.12.0
+  - @blobscan/blob-propagator@0.2.7
+  - @blobscan/blob-storage-manager@0.3.7
+  - @blobscan/rollups@0.2.1
+
 ## 0.15.0
 
 ### Minor Changes
 
-- [#592](https://github.com/Blobscan/blobscan/pull/592) [`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17) Thanks [@xFJA](https://github.com/xFJA)! - Added the posibility to filter by multiple `from` addresses
+- [#592](https://github.com/Blobscan/blobscan/pull/592) [`76bd799`](https://github.com/Blobscan/blobscan/commit/76bd7990ea36b2826924cdbec6ddc660e96b1a17) Thanks [@xFJA](https://github.com/xFJA)! - Added the possibility to filter by multiple `from` addresses
 
 ## 0.14.0
 

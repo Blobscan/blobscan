@@ -249,13 +249,23 @@ describe("Base Extension", () => {
           expect(updatedBlob?.firstBlockNumber).toBe(lowerBlockNumber);
         });
 
-        it("should not update a blob's first block number when new one is lower", async () => {
-          const higherBlockNumber = 1006;
+        it("should not update a blob's first block number when new one is higher", async () => {
+          const versionedHash =
+            "0x000000000000000000000000000000000000000000000000000000000000b2";
+
+          const blob = await prisma.blob.findUniqueOrThrow({
+            where: {
+              versionedHash,
+            },
+          });
 
           await prisma.blob.upsertMany([
             {
-              ...oldBlob,
-              firstBlockNumber: higherBlockNumber,
+              commitment: blob.commitment,
+              proof: blob.proof,
+              size: blob.size,
+              versionedHash: blob.versionedHash,
+              firstBlockNumber: (blob?.firstBlockNumber ?? 0) + 1,
             },
           ]);
 
