@@ -13,9 +13,9 @@ export const OptimismDecodedDataSchema = z.object({
 
 export type OptimismDecodedData = z.infer<typeof OptimismDecodedDataSchema>;
 
-export async function parseOptimismDecodedData(
+export function parseOptimismDecodedData(
   data: string
-): Promise<OptimismDecodedData | null> {
+): OptimismDecodedData | null {
   let json;
 
   try {
