@@ -2,7 +2,7 @@ import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import type { TRPCInnerContext } from "../../context";
-import { jwtAuthedProcedure } from "../../procedures";
+import { createAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 
 const inputSchema = z.object({
@@ -121,7 +121,7 @@ async function generateBlockCleanupOperations(
   return referenceRemovalOps;
 }
 
-export const handleReorgedSlots = jwtAuthedProcedure
+export const handleReorgedSlots = createAuthedProcedure("indexer")
   .meta({
     openapi: {
       method: "PUT",

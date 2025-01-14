@@ -15,11 +15,11 @@ import type { Rollup } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import type { createTRPCContext } from "../src/context";
-import { getJWTFromRequest } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
+import { retrieveAPIClient } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
@@ -56,7 +56,7 @@ export async function createTestContext({
     scope: "rest-api",
     req,
     res,
-    apiClient: getJWTFromRequest(req),
+    apiClient: retrieveAPIClient(req),
     blobStorageManager: await createBlobStorageManager(),
     prisma,
     blobPropagator: undefined,

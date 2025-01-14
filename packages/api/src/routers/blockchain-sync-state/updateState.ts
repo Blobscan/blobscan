@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 
 import { z } from "@blobscan/zod";
 
-import { jwtAuthedProcedure } from "../../procedures";
+import { createAuthedProcedure } from "../../procedures";
 import { BASE_PATH } from "./common";
 
 export const inputSchema = z.object({
@@ -13,7 +13,7 @@ export const inputSchema = z.object({
 
 export const outputSchema = z.void();
 
-export const updateState = jwtAuthedProcedure
+export const updateState = createAuthedProcedure("indexer")
   .meta({
     openapi: {
       method: "PUT",
