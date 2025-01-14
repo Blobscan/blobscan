@@ -9,7 +9,7 @@ type NextHTTPRequest = CreateNextContextOptions["req"];
 
 type HTTPRequest = NodeHTTPRequest | NextHTTPRequest;
 
-export type APIClientType = "indexer";
+export type APIClientType = "indexer" | "weavevm";
 
 export type APIClient = {
   type: APIClientType;
@@ -19,6 +19,10 @@ function verifyIndexerClient(token: string) {
   const decoded = jwt.verify(token, env.SECRET_KEY) as string;
 
   return decoded;
+}
+
+function verifyWeaveVMClient(token: string) {
+  return token === env.WEAVEVM_API_KEY;
 }
 
 export function retrieveAPIClient(req: HTTPRequest): APIClient | undefined {
@@ -35,6 +39,10 @@ export function retrieveAPIClient(req: HTTPRequest): APIClient | undefined {
   }
 
   try {
+    if (verifyWeaveVMClient(token)) {
+      return { type: "weavevm" };
+    }
+
     if (verifyIndexerClient(token)) {
       return { type: "indexer" };
     }

@@ -2623,3 +2623,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "versionedHash": "blobHash004",
 }
 `;
+
+exports[`Blob router > upsertWeaveVMReferences > when authorized > should fail when one or more provided blobs do not exist 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
+
+exports[`Blob router > upsertWeaveVMReferences > when authorized > should fail when one or more provided blobs do not exist 2`] = `undefined`;

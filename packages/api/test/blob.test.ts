@@ -1,9 +1,11 @@
+import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { DailyStats, Prisma } from "@blobscan/db";
-import { fixtures } from "@blobscan/test";
+import { fixtures, testValidError } from "@blobscan/test";
 
+import { BlobStorage } from "../enums";
 import type { Category, Rollup } from "../enums";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
@@ -14,6 +16,7 @@ import {
   runExpandsTestsSuite,
   runFiltersTestsSuite,
   runPaginationTestsSuite,
+  unauthorizedRPCCallTest,
 } from "./helpers";
 import {
   getFilteredBlobs,
@@ -24,12 +27,19 @@ import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
-describe("Blob router", async () => {
+describe("Blob router", () => {
+  let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
   let caller: ReturnType<typeof appRouter.createCaller>;
   let ctx: TRPCContext;
+  let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
+    authorizedContext = await createTestContext({
+      apiClient: { type: "weavevm" },
+    });
     ctx = await createTestContext();
+
+    authorizedCaller = appRouter.createCaller(authorizedContext);
     caller = appRouter.createCaller(ctx);
   });
 
@@ -225,6 +235,110 @@ describe("Blob router", async () => {
       const { totalBlobs } = await caller.blob.getCount(filters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
+    });
+  });
+
+  describe("upsertWeaveVMReferences", () => {
+    const blobHashes = ["blobHash001", "blobHash002", "blobHash003"];
+    const where = {
+      AND: [
+        {
+          blobHash: {
+            in: blobHashes,
+          },
+        },
+        {
+          blobStorage: BlobStorage.WEAVEVM,
+        },
+      ],
+    };
+
+    describe("when authorized", () => {
+      it("should insert references correctly", async () => {
+        const blobReferencesBefore =
+          await ctx.prisma.blobDataStorageReference.findMany({
+            where,
+          });
+
+        expect(
+          blobReferencesBefore,
+          "There should be no blob weavevm references initially"
+        ).toEqual([]);
+
+        await authorizedCaller.blob.upsertWeaveVMReferences({
+          blobHashes,
+        });
+
+        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
+          .findMany({
+            where,
+          })
+          .then((refs) =>
+            refs
+              .map(({ blobHash }) => blobHash)
+              .sort((a, b) => a.localeCompare(b))
+          );
+
+        expect(
+          blobReferencesAfter,
+          "References should have been inserted"
+        ).toEqual(blobHashes.sort((a, b) => a.localeCompare(b)));
+      });
+
+      it("should update references correctly", async () => {
+        await ctx.prisma.blobDataStorageReference.createMany({
+          data: blobHashes.map((blobHash) => ({
+            blobHash,
+            blobStorage: BlobStorage.WEAVEVM,
+            dataReference: blobHash,
+          })),
+        });
+
+        await authorizedCaller.blob.upsertWeaveVMReferences({
+          blobHashes,
+        });
+
+        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
+          .findMany({
+            where,
+          })
+          .then((refs) =>
+            refs
+              .map(({ blobHash }) => blobHash)
+              .sort((a, b) => a.localeCompare(b))
+          );
+
+        expect(blobReferencesAfter).toEqual(
+          blobHashes.sort((a, b) => a.localeCompare(b))
+        );
+      });
+
+      it("should be called with an empty blob hashes array correctly", async () => {
+        await expect(
+          authorizedCaller.blob.upsertWeaveVMReferences({
+            blobHashes: [],
+          })
+        ).resolves.toBeUndefined();
+      });
+
+      testValidError(
+        "should fail when one or more provided blobs do not exist",
+        async () => {
+          await authorizedCaller.blob.upsertWeaveVMReferences({
+            blobHashes: ["nonExistingBlobHash"],
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      unauthorizedRPCCallTest(() =>
+        caller.blob.upsertWeaveVMReferences({
+          blobHashes,
+        })
+      );
     });
   });
 });

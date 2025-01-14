@@ -59,6 +59,7 @@ export const env = createEnv({
       GOOGLE_SERVICE_KEY: z.string().optional(),
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
       WEAVEVM_STORAGE_API_BASE_URL: z.string().url().optional(),
+      WEAVEVM_API_KEY: z.string().optional(),
       LOG_LEVEL: z
         .enum(["debug", "http", "info", "warn", "error"])
         .default("http"),
