@@ -57,6 +57,7 @@ nextjs:
 | `FILE_SYSTEM_STORAGE_PATH`           | Store blobs in this path                                                                           | No                              | `/tmp/blobscan-blobs`      |
 | `WEAVEVM_STORAGE_ENABLED`            | Weavevm storage usage                                                                              | No                              | `false`                    |
 | `WEAVEVM_STORAGE_API_BASE_URL`       | Weavevm API base url                                                                               | No                              | (empty)                    |
+| `WEAVEVM_API_KEY`                    | API key required to authenticate requests to the WeaveVM blob storage reference updater endpoint   | No                              | (empty)                    |
 | `STATS_SYNCER_DAILY_CRON_PATTERN`    | Cron pattern for the daily stats job                                                               | No                              | `30 0 * * * *`             |
 | `STATS_SYNCER_OVERALL_CRON_PATTERN`  | Cron pattern for the overall stats job                                                             | No                              | `*/15 * * * *`             |
 | `SWARM_STAMP_CRON_PATTERN`           | Cron pattern for swarm job                                                                         | No                              | `*/15 * * * *`             |
