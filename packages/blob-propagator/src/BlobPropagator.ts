@@ -82,6 +82,12 @@ export class BlobPropagator {
       ...workerOptions,
     };
 
+    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
+
+    if (!temporaryBlobStorage) {
+      throw new BlobPropagatorCreationError("Temporary blob storage not found");
+    }
+
     const availableStorageNames = blobStorageManager
       .getAllStorages()
       .map((s) => s.name)
@@ -97,14 +103,11 @@ export class BlobPropagator {
 
         return hasWorkerProcessor;
       });
-    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
 
-    if (!availableStorageNames) {
-      throw new BlobPropagatorCreationError("No blob storages available");
-    }
-
-    if (!temporaryBlobStorage) {
-      throw new BlobPropagatorCreationError("Temporary blob storage not found");
+    if (!availableStorageNames.length) {
+      throw new BlobPropagatorCreationError(
+        "None of the available storages have worker processors defined"
+      );
     }
 
     this.storageWorkers = availableStorageNames.map(
