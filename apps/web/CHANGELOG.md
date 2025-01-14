@@ -41,7 +41,7 @@
 
 - [#608](https://github.com/Blobscan/blobscan/pull/608) [`4226258`](https://github.com/Blobscan/blobscan/commit/422625886481de3ca737b6edfe0afb5fe4fe1427) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved decoding display for Optimism blobs; removed truncated Parent L2 block hash link, fixed L1 origin block redirection, and corrected timestamp.
 
-- [#598](https://github.com/Blobscan/blobscan/pull/598) [`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76) Thanks [@PJColombo](https://github.com/PJColombo)! - Standarized y-axis units and displayed full amounts on tooltips on charts
+- [#598](https://github.com/Blobscan/blobscan/pull/598) [`05bdc1d`](https://github.com/Blobscan/blobscan/commit/05bdc1d0645bf510df211eb8c0d2bda63ffd1c76) Thanks [@PJColombo](https://github.com/PJColombo)! - Standardized y-axis units and displayed full amounts on tooltips on charts
 
 - [#627](https://github.com/Blobscan/blobscan/pull/627) [`f21f6fc`](https://github.com/Blobscan/blobscan/commit/f21f6fcb752f6ce5f25339b426e1dcbb29d9d280) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Fixed an issue where the search result wasn't being displayed properly
 
