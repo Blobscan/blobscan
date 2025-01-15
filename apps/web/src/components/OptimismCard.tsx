@@ -13,7 +13,7 @@ import { Card } from "./Cards/Card";
 
 type OptimismCardProps = {
   data: OptimismDecodedData;
-  txTimestamp: dayjs.Dayjs | undefined;
+  txTimestamp?: dayjs.Dayjs;
 };
 
 export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
