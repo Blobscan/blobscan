@@ -3,15 +3,15 @@ import type { JobsOptions, WorkerOptions } from "bullmq";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 
-export const STORAGE_WORKER_NAMES = Object.values(BlobStorageName).reduce<
-  Record<BlobStorageName, string>
->(
-  (names, storage) => ({
-    ...names,
-    [storage]: `${storage.toLowerCase()}-worker`,
-  }),
-  {} as Record<BlobStorageName, string>
-);
+export const STORAGE_WORKER_NAMES = Object.values(BlobStorageName)
+  .filter((blobStorageName) => blobStorageName !== "WEAVEVM")
+  .reduce<Record<BlobStorageName, string>>(
+    (names, storage) => ({
+      ...names,
+      [storage]: `${storage.toLowerCase()}-worker`,
+    }),
+    {} as Record<BlobStorageName, string>
+  );
 
 export const FINALIZER_WORKER_NAME = "finalizer-worker";
 

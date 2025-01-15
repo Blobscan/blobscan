@@ -22,6 +22,7 @@ enum BlobStorage {
   GOOGLE      @map("google")
   POSTGRES    @map("postgres")
   SWARM       @map("swarm")
+  WEAVEVM     @map("weavevm")
 
   @@map("blob_storage")
 }
