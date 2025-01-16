@@ -9,7 +9,7 @@ nextjs:
 A set of Helm charts are provided to run multiple Blobscan components on Kubernetes.
 
 {% callout title="Tip" %}
-If you want to try the Helm Charts without setting up a whole Kubernetes clusters, you can create a local [Kind](https://kind.sigs.k8s.io/) cluster.
+If you want to try the Helm Charts without setting up a whole Kubernetes cluster, you can create a local [Kind](https://kind.sigs.k8s.io/) cluster.
 {% /callout %}
 
 ```bash
