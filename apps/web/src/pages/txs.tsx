@@ -98,7 +98,7 @@ const Txs: NextPage = function () {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "w-[160px]",
+          className: "w-[170px]",
         },
         {
           item: "From",

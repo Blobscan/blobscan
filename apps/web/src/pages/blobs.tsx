@@ -73,7 +73,7 @@ const Blobs: NextPage = function () {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
+          className: "2xl:w-[185px] w-[170px]",
         },
         {
           item: "Size",
