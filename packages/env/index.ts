@@ -28,7 +28,7 @@ export const env = createEnv({
   envOptions: {
     server: {
       // Coingecko
-      COINGECKO_API_KEY: z.string(),
+      COINGECKO_API_KEY: z.string().optional(),
 
       // PostHog
       POSTHOG_ID: z.string().optional(),
