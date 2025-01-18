@@ -10,7 +10,7 @@ import { api } from "~/api-client";
 import { env } from "~/env.mjs";
 import Gas from "~/icons/gas.svg";
 import { capitalize, formatNumber } from "~/utils";
-import { EtherUnitDisplay } from "./Displays/EtherUnitDisplay";
+import { GasPrice } from "./GasPrice";
 
 type ExplorerDetailsItemProps = {
   name: string;
@@ -43,7 +43,6 @@ type ExplorerDetailsProps = {
 export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
-  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
 
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [];
 
@@ -53,9 +52,7 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
       {
         name: "Blob gas price",
         icon: <Gas className="h-4 w-4" />,
-        value: latestBlock && (
-          <EtherUnitDisplay amount={latestBlock.blobGasPrice.toString()} />
-        ),
+        value: <GasPrice />,
       }
     );
   }
