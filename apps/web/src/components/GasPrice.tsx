@@ -22,7 +22,6 @@ export function GasPrice() {
   return (
     <div className="flex items-center gap-2">
       <EtherUnitDisplay amount={latestBlock.blobGasPrice.toString()} />
-
       {priceData && (
         <div className="flex items-center gap-2 rounded-full border border-border-light bg-surface-light px-2 py-1 dark:border-border-dark dark:bg-surface-dark">
           {calculateUSDPrice(Number(latestBlock.blobGasPrice), priceData.usd)}{" "}
