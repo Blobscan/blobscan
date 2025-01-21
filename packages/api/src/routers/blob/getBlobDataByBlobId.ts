@@ -21,7 +21,7 @@ export const getBlobDataByBlobId = publicProcedure
       method: "GET",
       path: "/blobs/{id}/data",
       tags: ["blobs"],
-      summary: "Retrives blob data for given blob id.",
+      summary: "Retrieves blob data for given blob id.",
     },
   })
   .input(inputSchema)
