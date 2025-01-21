@@ -1,5 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Blob router > createWeaveVmReferences > when authorized > should fail when one or more provided blobs do not exist 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
+
+exports[`Blob router > createWeaveVmReferences > when authorized > should fail when one or more provided blobs do not exist 2`] = `undefined`;
+
 exports[`Blob router > getAll > when getting expanded blob results > should return the correct expanded block 1`] = `
 [
   {
@@ -2623,7 +2627,3 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "versionedHash": "blobHash004",
 }
 `;
-
-exports[`Blob router > upsertWeaveVMReferences > when authorized > should fail when one or more provided blobs do not exist 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
-
-exports[`Blob router > upsertWeaveVMReferences > when authorized > should fail when one or more provided blobs do not exist 2`] = `undefined`;

@@ -1,14 +1,14 @@
 import { t } from "../../trpc-client";
+import { createWeaveVMReferences } from "./createWeaveVMReferences";
 import { getAll } from "./getAll";
 import { getBlobDataByBlobId } from "./getBlobDataByBlobId";
 import { getByBlobId } from "./getByBlobId";
 import { getCount } from "./getCount";
-import { upsertWeaveVMReferences } from "./upsertWeaveVMReferences";
 
 export const blobRouter = t.router({
+  createWeaveVMReferences,
   getAll,
   getByBlobId,
   getBlobDataByBlobId,
   getCount,
-  upsertWeaveVMReferences,
 });

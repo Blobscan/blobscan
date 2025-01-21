@@ -43,6 +43,110 @@ describe("Blob router", () => {
     caller = appRouter.createCaller(ctx);
   });
 
+  describe("createWeaveVmReferences", () => {
+    const blobHashes = ["blobHash001", "blobHash002", "blobHash003"];
+    const where = {
+      AND: [
+        {
+          blobHash: {
+            in: blobHashes,
+          },
+        },
+        {
+          blobStorage: BlobStorage.WEAVEVM,
+        },
+      ],
+    };
+
+    describe("when authorized", () => {
+      it("should insert references correctly", async () => {
+        const blobReferencesBefore =
+          await ctx.prisma.blobDataStorageReference.findMany({
+            where,
+          });
+
+        expect(
+          blobReferencesBefore,
+          "There should be no blob weavevm references initially"
+        ).toEqual([]);
+
+        await authorizedCaller.blob.createWeaveVMReferences({
+          blobHashes,
+        });
+
+        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
+          .findMany({
+            where,
+          })
+          .then((refs) =>
+            refs
+              .map(({ blobHash }) => blobHash)
+              .sort((a, b) => a.localeCompare(b))
+          );
+
+        expect(
+          blobReferencesAfter,
+          "References should have been inserted"
+        ).toEqual(blobHashes.sort((a, b) => a.localeCompare(b)));
+      });
+
+      it("should skip already existing references correctly", async () => {
+        await ctx.prisma.blobDataStorageReference.createMany({
+          data: blobHashes.map((blobHash) => ({
+            blobHash,
+            blobStorage: BlobStorage.WEAVEVM,
+            dataReference: blobHash,
+          })),
+        });
+
+        await authorizedCaller.blob.createWeaveVMReferences({
+          blobHashes,
+        });
+
+        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
+          .findMany({
+            where,
+          })
+          .then((refs) =>
+            refs
+              .map(({ blobHash }) => blobHash)
+              .sort((a, b) => a.localeCompare(b))
+          );
+
+        expect(blobReferencesAfter).toEqual(
+          blobHashes.sort((a, b) => a.localeCompare(b))
+        );
+      });
+
+      it("should be called with an empty blob hashes array correctly", async () => {
+        await expect(
+          authorizedCaller.blob.createWeaveVMReferences({
+            blobHashes: [],
+          })
+        ).resolves.toBeUndefined();
+      });
+
+      testValidError(
+        "should fail when one or more provided blobs do not exist",
+        async () => {
+          await authorizedCaller.blob.createWeaveVMReferences({
+            blobHashes: ["nonExistingBlobHash"],
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      unauthorizedRPCCallTest(() =>
+        caller.blob.createWeaveVMReferences({
+          blobHashes,
+        })
+      );
+    });
+  });
+
   describe("getAll", () => {
     beforeEach(async () => {
       await ctx.prisma.overallStats.aggregate();
@@ -235,110 +339,6 @@ describe("Blob router", () => {
       const { totalBlobs } = await caller.blob.getCount(filters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
-    });
-  });
-
-  describe("upsertWeaveVMReferences", () => {
-    const blobHashes = ["blobHash001", "blobHash002", "blobHash003"];
-    const where = {
-      AND: [
-        {
-          blobHash: {
-            in: blobHashes,
-          },
-        },
-        {
-          blobStorage: BlobStorage.WEAVEVM,
-        },
-      ],
-    };
-
-    describe("when authorized", () => {
-      it("should insert references correctly", async () => {
-        const blobReferencesBefore =
-          await ctx.prisma.blobDataStorageReference.findMany({
-            where,
-          });
-
-        expect(
-          blobReferencesBefore,
-          "There should be no blob weavevm references initially"
-        ).toEqual([]);
-
-        await authorizedCaller.blob.upsertWeaveVMReferences({
-          blobHashes,
-        });
-
-        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
-          .findMany({
-            where,
-          })
-          .then((refs) =>
-            refs
-              .map(({ blobHash }) => blobHash)
-              .sort((a, b) => a.localeCompare(b))
-          );
-
-        expect(
-          blobReferencesAfter,
-          "References should have been inserted"
-        ).toEqual(blobHashes.sort((a, b) => a.localeCompare(b)));
-      });
-
-      it("should update references correctly", async () => {
-        await ctx.prisma.blobDataStorageReference.createMany({
-          data: blobHashes.map((blobHash) => ({
-            blobHash,
-            blobStorage: BlobStorage.WEAVEVM,
-            dataReference: blobHash,
-          })),
-        });
-
-        await authorizedCaller.blob.upsertWeaveVMReferences({
-          blobHashes,
-        });
-
-        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
-          .findMany({
-            where,
-          })
-          .then((refs) =>
-            refs
-              .map(({ blobHash }) => blobHash)
-              .sort((a, b) => a.localeCompare(b))
-          );
-
-        expect(blobReferencesAfter).toEqual(
-          blobHashes.sort((a, b) => a.localeCompare(b))
-        );
-      });
-
-      it("should be called with an empty blob hashes array correctly", async () => {
-        await expect(
-          authorizedCaller.blob.upsertWeaveVMReferences({
-            blobHashes: [],
-          })
-        ).resolves.toBeUndefined();
-      });
-
-      testValidError(
-        "should fail when one or more provided blobs do not exist",
-        async () => {
-          await authorizedCaller.blob.upsertWeaveVMReferences({
-            blobHashes: ["nonExistingBlobHash"],
-          });
-        },
-        TRPCError,
-        {
-          checkCause: true,
-        }
-      );
-
-      unauthorizedRPCCallTest(() =>
-        caller.blob.upsertWeaveVMReferences({
-          blobHashes,
-        })
-      );
     });
   });
 });

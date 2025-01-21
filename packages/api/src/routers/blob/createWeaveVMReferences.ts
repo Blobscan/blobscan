@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server";
 
-import type { BlobDataStorageReference } from "@blobscan/db";
 import { BlobStorage } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
@@ -10,13 +9,13 @@ const inputSchema = z.object({
   blobHashes: z.array(z.string()),
 });
 
-export const upsertWeaveVMReferences = createAuthedProcedure("weavevm")
+export const createWeaveVMReferences = createAuthedProcedure("weavevm")
   .meta({
     openapi: {
-      method: "PUT",
+      method: "POST",
       path: "/blobs/weavevm-references",
       tags: ["blobs"],
-      summary: "upserts weaveVM blob references.",
+      summary: "Creates WeaveVM references for a given set of blobs.",
     },
   })
   .input(inputSchema)
@@ -25,14 +24,6 @@ export const upsertWeaveVMReferences = createAuthedProcedure("weavevm")
     if (!blobHashes.length) {
       return;
     }
-
-    const blobDataStorageReferences = blobHashes.map<BlobDataStorageReference>(
-      (hash) => ({
-        blobHash: hash,
-        dataReference: hash,
-        blobStorage: BlobStorage.WEAVEVM,
-      })
-    );
 
     const dbVersionedHashes = await prisma.blob
       .findMany({
@@ -60,5 +51,12 @@ export const upsertWeaveVMReferences = createAuthedProcedure("weavevm")
       });
     }
 
-    await prisma.blobDataStorageReference.upsertMany(blobDataStorageReferences);
+    await prisma.blobDataStorageReference.createMany({
+      data: blobHashes.map((hash) => ({
+        blobHash: hash,
+        dataReference: hash,
+        blobStorage: BlobStorage.WEAVEVM,
+      })),
+      skipDuplicates: true,
+    });
   });
