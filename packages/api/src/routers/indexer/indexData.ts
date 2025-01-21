@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import type { BlobDataStorageReference } from "@blobscan/db";
 import { toBigIntSchema, z } from "@blobscan/zod";
 
-import { jwtAuthedProcedure } from "../../procedures";
+import { createAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {
   createDBAddresses,
@@ -58,7 +58,7 @@ export type IndexDataInput = z.input<typeof inputSchema>;
 
 export type IndexDataFormattedInput = z.output<typeof inputSchema>;
 
-export const indexData = jwtAuthedProcedure
+export const indexData = createAuthedProcedure("indexer")
   .meta({
     openapi: {
       method: "PUT",

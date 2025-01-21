@@ -1,2 +1,2 @@
-export * from "./jwt-authed";
+export * from "./authed";
 export * from "./public";

@@ -11,7 +11,9 @@ describe("Blockchain sync state route", async () => {
   beforeAll(async () => {
     const ctx = await createTestContext();
 
-    authorizedContext = await createTestContext({ withAuth: true });
+    authorizedContext = await createTestContext({
+      apiClient: { type: "indexer" },
+    });
 
     nonAuthorizedCaller = appRouter.createCaller(ctx);
     authorizedCaller = appRouter.createCaller(authorizedContext);
