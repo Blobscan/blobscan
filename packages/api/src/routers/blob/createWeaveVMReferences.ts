@@ -44,7 +44,7 @@ export const createWeaveVMReferences = createAuthedProcedure("weavevm")
 
     if (missingHashes.length > 0) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
+        code: "NOT_FOUND",
         message: `Couldn't found the following blobs: ${missingHashes.join(
           ", "
         )}`,
