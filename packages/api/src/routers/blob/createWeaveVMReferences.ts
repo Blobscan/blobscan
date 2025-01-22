@@ -16,6 +16,7 @@ export const createWeaveVMReferences = createAuthedProcedure("weavevm")
       path: "/blobs/weavevm-references",
       tags: ["blobs"],
       summary: "Creates WeaveVM references for a given set of blobs.",
+      protect: true,
     },
   })
   .input(inputSchema)
