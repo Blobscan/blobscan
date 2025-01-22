@@ -1,5 +1,24 @@
 # @blobscan/api
 
+## 0.17.0
+
+### Minor Changes
+
+- [#681](https://github.com/Blobscan/blobscan/pull/681) [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Weavevm blob storage support
+
+- [#683](https://github.com/Blobscan/blobscan/pull/683) [`6a06872`](https://github.com/Blobscan/blobscan/commit/6a06872d13de893f821200b3541567b413916c9a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a protected procedure to upsert weaveVM blob storage references
+
+### Patch Changes
+
+- Updated dependencies [[`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202), [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256), [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202)]:
+  - @blobscan/db@0.13.0
+  - @blobscan/blob-storage-manager@0.4.0
+  - @blobscan/env@0.1.0
+  - @blobscan/blob-propagator@0.2.8
+  - @blobscan/rollups@0.2.2
+  - @blobscan/logger@0.1.2
+  - @blobscan/open-telemetry@0.0.9
+
 ## 0.16.0
 
 ### Minor Changes

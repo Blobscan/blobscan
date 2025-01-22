@@ -1,5 +1,13 @@
 # @blobscan/open-telemetry
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256)]:
+  - @blobscan/env@0.1.0
+  - @blobscan/logger@0.1.2
+
 ## 0.0.8
 
 ### Patch Changes
