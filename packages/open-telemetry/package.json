@@ -1,7 +1,7 @@
 {
   "name": "@blobscan/open-telemetry",
   "description": "Blobscan's Open Telemetry shared library",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "main": "src/index.ts",
   "license": "MIT",
@@ -12,8 +12,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/env": "workspace:^0.0.1",
-    "@blobscan/logger": "workspace:^0.1.1",
+    "@blobscan/env": "workspace:^0.1.0",
+    "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/zod": "workspace:^0.1.0",
     "@opentelemetry/exporter-metrics-otlp-proto": "^0.41.1",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.41.1",
