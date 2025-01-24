@@ -6,7 +6,7 @@ nextjs:
     description: A breakdown of the Blobscan's codebase
 ---
 
-Below you can find a breakdown of the Blobscan's codebase.
+Below you can find a breakdown of Blobscan's codebase.
 
 ## Architecture
 
