@@ -15,9 +15,9 @@ export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const fetchEnv = async () => {
       try {
-        const request = await fetch("/api/env", { method: "POST" });
+        const request = await fetch("/api/env");
         const data = await request.json();
-        setEnv(data.data);
+        setEnv(data);
       } catch (error) {
         console.error(
           "Error fetching environment variables from server side:",

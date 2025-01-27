@@ -6,8 +6,8 @@ import * as Sentry from "@sentry/nextjs";
 
 const initSentry = async () => {
   try {
-    const request = await fetch("/api/env", { method: "POST" });
-    const env = (await request.json()).data;
+    const request = await fetch("/api/env");
+    const env = await request.json();
 
     const dns = env["PUBLIC_SENTRY_DSN_WEB"];
     const environment = env["PUBLIC_NETWORK_NAME"];
@@ -19,10 +19,7 @@ const initSentry = async () => {
       debug: false,
     });
   } catch (error) {
-    console.error(
-      "Error fetching environment variables from server side to init sentry client:",
-      error
-    );
+    console.error("Error during Sentry initialization", error);
   }
 };
 
