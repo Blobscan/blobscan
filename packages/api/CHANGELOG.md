@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.17.1
+
+### Patch Changes
+
+- [#689](https://github.com/Blobscan/blobscan/pull/689) [`a04245e`](https://github.com/Blobscan/blobscan/commit/a04245e23afe8e783ed8be81c34b98e6f5fc02b0) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for parameterizing the WeaveVm blob data storage reference base URL
+
 ## 0.17.0
 
 ### Minor Changes
