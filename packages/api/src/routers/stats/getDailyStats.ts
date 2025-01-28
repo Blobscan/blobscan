@@ -47,7 +47,7 @@ export const getDailyStats = publicProcedure
           },
         ],
       },
-      orderBy: [{ day: "desc" }, { category: "desc" }, { rollup: "desc" }],
+      orderBy: [{ day: "asc" }, { category: "desc" }, { rollup: "desc" }],
     });
 
     return dailyStats.map(
