@@ -43,60 +43,58 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
 
   return (
     <Card header="Decoded Fields">
-      <div>
-        <InfoGrid
-          fields={[
-            {
-              name: "Timestamp since L2 genesis",
-              value: <div className="whitespace-break-spaces">{timestamp}</div>,
-            },
-            {
-              name: "Last L1 origin number",
-              value: (
-                <div className="flex items-center gap-2">
-                  <Link href={blockLink}>{data.lastL1OriginNumber}</Link>
-                  <CopyToClipboard
-                    value={data.lastL1OriginNumber.toString()}
-                    tooltipText="Copy Last L1 origin number"
-                  />
-                </div>
-              ),
-            },
-            {
-              name: "Parent L2 block hash",
-              value: "0x" + data.parentL2BlockHash + "...",
-            },
-            {
-              name: "L1 origin block hash",
-              value: (
-                <div className="flex items-center gap-2">
-                  <Link href={blockLink}>{hash}</Link>
-                  <CopyToClipboard
-                    value={hash}
-                    tooltipText="Copy L1 origin block hash"
-                  />
-                </div>
-              ),
-            },
-            {
-              name: "Number of L2 blocks",
-              value: data.numberOfL2Blocks,
-            },
-            {
-              name: "Changed by L1 origin",
-              value: data.changedByL1Origin,
-            },
-            {
-              name: "Total transactions",
-              value: data.totalTxs,
-            },
-            {
-              name: "Contract creation transactions",
-              value: data.contractCreationTxsNumber,
-            },
-          ]}
-        />
-      </div>
+      <InfoGrid
+        fields={[
+          {
+            name: "Timestamp since L2 genesis",
+            value: <div className="whitespace-break-spaces">{timestamp}</div>,
+          },
+          {
+            name: "Last L1 origin number",
+            value: (
+              <div className="flex items-center gap-2">
+                <Link href={blockLink}>{data.lastL1OriginNumber}</Link>
+                <CopyToClipboard
+                  value={data.lastL1OriginNumber.toString()}
+                  tooltipText="Copy Last L1 origin number"
+                />
+              </div>
+            ),
+          },
+          {
+            name: "Parent L2 block hash",
+            value: "0x" + data.parentL2BlockHash + "...",
+          },
+          {
+            name: "L1 origin block hash",
+            value: (
+              <div className="flex items-center gap-2">
+                <Link href={blockLink}>{hash}</Link>
+                <CopyToClipboard
+                  value={hash}
+                  tooltipText="Copy L1 origin block hash"
+                />
+              </div>
+            ),
+          },
+          {
+            name: "Number of L2 blocks",
+            value: data.numberOfL2Blocks,
+          },
+          {
+            name: "Changed by L1 origin",
+            value: data.changedByL1Origin,
+          },
+          {
+            name: "Total transactions",
+            value: data.totalTxs,
+          },
+          {
+            name: "Contract creation transactions",
+            value: data.contractCreationTxsNumber,
+          },
+        ]}
+      />
     </Card>
   );
 };
