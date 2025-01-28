@@ -78,7 +78,11 @@ const Home: NextPage = () => {
       blobs,
     };
   }, [rawBlocksData]);
-  const overallStats = useMemo(() => rawOverallStats ? deserializeOverallStats(rawOverallStats) : undefined, [rawOverallStats]);
+  const overallStats = useMemo(
+    () =>
+      rawOverallStats ? deserializeOverallStats(rawOverallStats) : undefined,
+    [rawOverallStats]
+  );
 
   const error =
     latestBlocksError ||
@@ -94,7 +98,6 @@ const Home: NextPage = () => {
       />
     );
   }
-
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
@@ -127,8 +130,10 @@ const Home: NextPage = () => {
               <MetricCard
                 name="Total Tx Fees Saved"
                 metric={{
-                  value: overallStats ?
-                  overallStats.totalBlobAsCalldataFee - overallStats.totalBlobFee : undefined,
+                  value: overallStats
+                    ? overallStats.totalBlobAsCalldataFee -
+                      overallStats.totalBlobFee
+                    : undefined,
                   type: "ethereum",
                 }}
                 compact
@@ -176,7 +181,7 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
             header={
-              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
+              <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blocks</div>
                 <Button
                   variant="outline"
@@ -209,7 +214,7 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
+              <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blob Transactions</div>
                 <Button
                   variant="outline"
@@ -261,7 +266,7 @@ const Home: NextPage = () => {
           </Card>
           <Card
             header={
-              <div className="flex-wrap flex flex-col justify-between gap-3 2xl:flex-row 2xl:items-center">
+              <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blobs</div>
                 <Button
                   variant="outline"

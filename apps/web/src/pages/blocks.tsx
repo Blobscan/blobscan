@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import { Copyable } from "~/components/Copyable";
@@ -11,6 +11,8 @@ import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
+import type { TimestampFormat } from "~/components/TimestampToggle";
+import { TimestampToggle } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
@@ -23,45 +25,6 @@ import {
   deserializeBlock,
   formatNumber,
 } from "~/utils";
-
-export const BLOCKS_TABLE_HEADERS = [
-  {
-    cells: [
-      {
-        item: "",
-        className: "w-[100px]",
-      },
-      {
-        item: "Block number",
-        className: "2xl:w-[187px] lg:w-[158px] w-[118px]",
-      },
-      {
-        item: "Timestamp",
-        className: "2xl:w-[237px] lg:w-[200px] w-[158px]",
-      },
-      {
-        item: "Slot",
-        className: "2xl:w-[136px] lg:w-[115px] w-[96px]",
-      },
-      {
-        item: "Txs",
-        className: "2xl:w-[77px] w-[66px]",
-      },
-      {
-        item: "Blobs",
-        className: "2xl:w-[98px] w-[83px]",
-      },
-      {
-        item: "Blob Gas Price",
-        className: "2xl:w-[195px] w-[165px]",
-      },
-      {
-        item: "Blob Gas Used",
-        className: "2xl:w-full w-[240px]",
-      },
-    ],
-  },
-];
 
 const Blocks: NextPage = function () {
   const { filterParams, paginationParams } = useQueryParams();
@@ -92,6 +55,49 @@ const Blocks: NextPage = function () {
   const { blocks } = blocksData;
   const { totalBlocks } = countData || {};
   const error = blocksError || countError;
+
+  const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
+
+  const BLOCKS_TABLE_HEADERS = [
+    {
+      cells: [
+        {
+          item: "",
+          className: "w-[100px]",
+        },
+        {
+          item: "Block number",
+          className: "2xl:w-[187px] lg:w-[158px] w-[118px]",
+        },
+        {
+          item: (
+            <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
+          ),
+          className: "2xl:w-[237px] lg:w-[200px] w-[170px]",
+        },
+        {
+          item: "Slot",
+          className: "2xl:w-[136px] lg:w-[115px] w-[96px]",
+        },
+        {
+          item: "Txs",
+          className: "2xl:w-[77px] w-[66px]",
+        },
+        {
+          item: "Blobs",
+          className: "2xl:w-[98px] w-[83px]",
+        },
+        {
+          item: "Blob Gas Price",
+          className: "2xl:w-[195px] w-[165px]",
+        },
+        {
+          item: "Blob Gas Used",
+          className: "2xl:w-full w-[240px]",
+        },
+      ],
+    },
+  ];
 
   const blocksRows = useMemo(() => {
     return blocks
@@ -218,7 +224,10 @@ const Blocks: NextPage = function () {
                 ),
               },
               {
-                item: timestamp.fromNow(),
+                item:
+                  timeFormat === "relative"
+                    ? timestamp.fromNow()
+                    : timestamp.format("YYYY-MM-DD HH:mm:ss"),
               },
               {
                 item: (
@@ -252,7 +261,7 @@ const Blocks: NextPage = function () {
           };
         })
       : undefined;
-  }, [blocks]);
+  }, [blocks, timeFormat]);
 
   if (error) {
     return (

@@ -1,5 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`BlobPropagator > should throw a valid error when creating a blob propagator with blob storages without worker processors 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
+
+exports[`BlobPropagator > should throw a valid error when creating a blob propagator with blob storages without worker processors 2`] = `"Temporary blob storage not found"`;
+
 exports[`BlobPropagator > should throw a valid error when creating a blob propagator with no blob storages 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
 
 exports[`BlobPropagator > should throw a valid error when creating a blob propagator with no blob storages 2`] = `"Temporary blob storage not found"`;

@@ -7,7 +7,6 @@ import type {
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
 import cookie from "cookie";
-import jwt from "jsonwebtoken";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import { getBlobPropagator } from "@blobscan/blob-propagator";
@@ -17,6 +16,8 @@ import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import { PostHogClient, shouldIgnoreURL } from "./posthog";
+import type { APIClient } from "./utils";
+import { retrieveAPIClient } from "./utils";
 
 type NextHTTPRequest = CreateNextContextOptions["req"];
 
@@ -25,38 +26,14 @@ export type CreateContextOptions =
   | CreateNextContextOptions;
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
-  apiClient: string | null;
+  apiClient?: APIClient;
 };
-
-export function getJWTFromRequest(req: NodeHTTPRequest | NextHTTPRequest) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return null;
-  }
-
-  try {
-    const [type, token] = authHeader.split(" ");
-    if (type !== "Bearer" || !token) {
-      return null;
-    }
-
-    const decoded = jwt.verify(token, env.SECRET_KEY) as string;
-
-    return decoded;
-  } catch (err) {
-    if (err instanceof jwt.JsonWebTokenError) {
-      return null;
-    }
-
-    throw new TRPCError({ code: "BAD_REQUEST" });
-  }
-}
 
 export type TRPCInnerContext = {
   prisma: typeof prisma;
   blobStorageManager: BlobStorageManager;
-  blobPropagator: BlobPropagator | undefined;
-  apiClient: string | null | undefined;
+  blobPropagator?: BlobPropagator;
+  apiClient?: APIClient;
 };
 
 export async function createTRPCInnerContext(
@@ -92,7 +69,7 @@ export function createTRPCContext(
 ) {
   return async (opts: CreateContextOptions) => {
     try {
-      const apiClient = getJWTFromRequest(opts.req);
+      const apiClient = retrieveAPIClient(opts.req);
 
       const innerContext = await createTRPCInnerContext({
         apiClient,
@@ -118,12 +95,14 @@ export function createTRPCContext(
           );
         }
 
+        let currentUrl = opts.req.url;
         let pathname: string | undefined;
         let query: string | undefined;
 
         if (opts.req.url) {
           const url = new URL(opts.req.url, env.BLOBSCAN_API_BASE_URL);
           pathname = url.pathname;
+          currentUrl = url.toString();
           query = url.searchParams.toString();
         }
 
@@ -133,7 +112,7 @@ export function createTRPCContext(
           properties: {
             $ip: getIP(opts.req),
             scope,
-            $current_url: opts.req.url,
+            $current_url: currentUrl,
             network: env.NETWORK_NAME,
             pathname,
             query,

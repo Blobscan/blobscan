@@ -1,5 +1,21 @@
 # @blobscan/db
 
+## 0.13.0
+
+### Minor Changes
+
+- [#681](https://github.com/Blobscan/blobscan/pull/681) [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Weavevm blob storage support
+
+### Patch Changes
+
+- [#666](https://github.com/Blobscan/blobscan/pull/666) [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202) Thanks [@PJColombo](https://github.com/PJColombo)! - Corrected an issue in upsertMany operations where the firstBlockNumber column was not updated if it contained a null value
+
+- [#666](https://github.com/Blobscan/blobscan/pull/666) [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced the calculation of unique blob daily aggregations to account for the uniqueness of blobs relative to previously existing blobs, rather than only within the current aggregation scope.
+
+- Updated dependencies []:
+  - @blobscan/logger@0.1.2
+  - @blobscan/open-telemetry@0.0.9
+
 ## 0.12.0
 
 ### Minor Changes

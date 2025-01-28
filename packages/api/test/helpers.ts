@@ -15,11 +15,12 @@ import type { Rollup } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import type { createTRPCContext } from "../src/context";
-import { getJWTFromRequest } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
+import type { APIClient } from "../src/utils";
+import { retrieveAPIClient } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
@@ -30,10 +31,10 @@ type FilterAndPagination = Omit<FiltersInputSchema, "rollup"> & {
 type Entity = "address" | "block" | "transaction" | "blob";
 
 export async function createTestContext({
-  withAuth,
+  apiClient,
   withBlobPropagator = false,
 }: Partial<{
-  withAuth: boolean;
+  apiClient?: APIClient;
   withBlobPropagator: boolean;
 }> = {}): TRPCContext {
   const req = {
@@ -43,9 +44,15 @@ export async function createTestContext({
     url: "/api/trpc/test.testProcedure",
   } as NodeHTTPRequest;
 
-  if (withAuth) {
-    const token = jwt.sign("foobar", env.SECRET_KEY);
-    req.headers.authorization = `Bearer ${token}`;
+  if (apiClient) {
+    const type = apiClient.type;
+
+    if (type === "indexer") {
+      const token = jwt.sign("foobar", env.SECRET_KEY);
+      req.headers.authorization = `Bearer ${token}`;
+    } else if (type === "weavevm") {
+      req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
+    }
   }
 
   const res = {
@@ -56,7 +63,7 @@ export async function createTestContext({
     scope: "rest-api",
     req,
     res,
-    apiClient: getJWTFromRequest(req),
+    apiClient: retrieveAPIClient(req),
     blobStorageManager: await createBlobStorageManager(),
     prisma,
     blobPropagator: undefined,

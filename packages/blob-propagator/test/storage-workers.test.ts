@@ -54,7 +54,14 @@ function runWorkerTests(
 
       const storageWorker = STORAGE_WORKER_PROCESSORS[storageName];
 
+      if (!storageWorker) {
+        throw new Error(
+          `No worker processor found for the "${storageName}" storage`
+        );
+      }
+
       storageWorkerProcessor = storageWorker(workerParams);
+
       blobStorageManager = workerParams.blobStorageManager;
       prisma = workerParams.prisma;
     });

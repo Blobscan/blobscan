@@ -40,7 +40,9 @@ describe("Indexer router", async () => {
   beforeAll(async () => {
     const ctx = await createTestContext();
 
-    authorizedContext = await createTestContext({ withAuth: true });
+    authorizedContext = await createTestContext({
+      apiClient: { type: "indexer" },
+    });
 
     nonAuthorizedCaller = appRouter.createCaller(ctx);
     authorizedCaller = appRouter.createCaller(authorizedContext);
@@ -454,7 +456,7 @@ describe("Indexer router", async () => {
 
           beforeAll(async () => {
             ctxWithBlobPropagator = await createTestContext({
-              withAuth: true,
+              apiClient: { type: "indexer" },
               withBlobPropagator: true,
             });
 

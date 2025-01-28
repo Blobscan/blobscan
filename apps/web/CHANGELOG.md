@@ -1,5 +1,25 @@
 # @blobscan/web
 
+## 0.19.0
+
+### Minor Changes
+
+- [#681](https://github.com/Blobscan/blobscan/pull/681) [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Weavevm blob storage support
+
+- [#665](https://github.com/Blobscan/blobscan/pull/665) [`a0f594f`](https://github.com/Blobscan/blobscan/commit/a0f594fb31aa6c811b03c5d07c725d8bdc391813) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a help tooltip to each field in the block details page
+
+- [#664](https://github.com/Blobscan/blobscan/pull/664) [`bdda00f`](https://github.com/Blobscan/blobscan/commit/bdda00f7513328cb9fa6601c9007baf14af242dc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Allowed to toggle the timestamp column between relative time and date-time format in blobs, blocks and txs pages.
+
+### Patch Changes
+
+- Updated dependencies [[`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202), [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256), [`6a06872`](https://github.com/Blobscan/blobscan/commit/6a06872d13de893f821200b3541567b413916c9a), [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202)]:
+  - @blobscan/db@0.13.0
+  - @blobscan/api@0.17.0
+  - @blobscan/env@0.1.0
+  - @blobscan/rollups@0.2.2
+  - @blobscan/open-telemetry@0.0.9
+  - @blobscan/blob-decoder@0.2.1
+
 ## 0.18.0
 
 ### Minor Changes
