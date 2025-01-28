@@ -62,6 +62,6 @@
     "vitest-mock-extended": "^1.2.0"
   },
   "manypkg": {
-    "workspaceProtocool": "require"
+    "workspaceProtocol": "require"
   }
 }
