@@ -26,52 +26,55 @@ function requireIfEnvEnabled(envName: string) {
 export const env = createEnv({
   envOptions: {
     server: {
-      // PostHog
-      POSTHOG_ID: z.string().optional(),
-      POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
-
-      BEE_ENDPOINT: z
-        .string()
-        .url()
-        .optional()
-        .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
+      // General
+      BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
+      NODE_ENV: nodeEnvSchema.optional(),
+      SECRET_KEY: z.string(),
+      CHAIN_ID: z.coerce.number().positive().default(1),
+      DENCUN_FORK_SLOT: z.coerce.number().optional(),
+      NETWORK_NAME: networkSchema.default("mainnet"),
+      TEST: booleanSchema.optional(),
       BLOBSCAN_API_BASE_URL: z
         .string()
         .url()
         .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
-      BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
-      BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
-        blobStorageSchema.default("FILE_SYSTEM"),
+
+      // Logging
+      LOG_LEVEL: z
+        .enum(["debug", "http", "info", "warn", "error"])
+        .default("http"),
+      METRICS_ENABLED: booleanSchema.default("false"),
+      TRACES_ENABLED: booleanSchema.default("false"),
+
+      // Prisma
+      PRISMA_BATCH_OPERATIONS_MAX_SIZE: prismaBatchOperationsMaxSizeSchema,
+
+      // Redis
+      REDIS_URI: z.string().default("redis://localhost:6379"),
+
+      // Sentry
+      SENTRY_DSN_API: z.string().optional(),
+
+      // Stats syncer
+      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
+      STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
+
+      // Blob Propagator
       BLOB_PROPAGATOR_COMPLETED_JOBS_AGE: z.coerce
         .number()
         .default(24 * 60 * 60),
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
-      CHAIN_ID: z.coerce.number().positive().default(1),
-      DENCUN_FORK_SLOT: z.coerce.number().optional(),
-      FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-      FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
-      GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
-      GOOGLE_STORAGE_BUCKET_NAME: z
-        .string()
-        .optional()
-        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
-      GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
-      GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
-      GOOGLE_SERVICE_KEY: z.string().optional(),
-      WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
-      WEAVEVM_STORAGE_API_BASE_URL: z
-        .string()
-        .url()
-        .default("https://blobscan.wvm.network"),
-      WEAVEVM_API_KEY: z.string().optional(),
-      LOG_LEVEL: z
-        .enum(["debug", "http", "info", "warn", "error"])
-        .default("http"),
-      METRICS_ENABLED: booleanSchema.default("false"),
-      NETWORK_NAME: networkSchema.default("mainnet"),
-      NODE_ENV: nodeEnvSchema.optional(),
+
+      // PostHog
+      POSTHOG_ID: z.string().optional(),
+      POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
+
+      // OpenTelemetry
+      OTEL_DIAG_ENABLED: z.boolean().default(false),
+      OTLP_AUTH_USERNAME: z.coerce.string().optional(),
+      OTLP_AUTH_PASSWORD: z.string().optional(),
       OTEL_EXPORTER_OTLP_PROTOCOL: z
         .enum(["grpc", "http/protobuf", "http/json"])
         .default("http/protobuf"),
@@ -79,22 +82,65 @@ export const env = createEnv({
         .string()
         .url()
         .default("http://localhost:4318"),
-      OTEL_DIAG_ENABLED: z.boolean().default(false),
-      OTLP_AUTH_USERNAME: z.coerce.string().optional(),
-      OTLP_AUTH_PASSWORD: z.string().optional(),
+
+      /**
+       * =====================
+       *   STORAGE PROVIDERS
+       * =====================
+       */
+
+      // General storage settings
+      BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
+        blobStorageSchema.default("FILE_SYSTEM"),
+
+      // File system storage
+      FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
+      FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
+
+      // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
-      PRISMA_BATCH_OPERATIONS_MAX_SIZE: prismaBatchOperationsMaxSizeSchema,
-      REDIS_URI: z.string().default("redis://localhost:6379"),
-      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
-      STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
-      SECRET_KEY: z.string(),
-      SENTRY_DSN_API: z.string().optional(),
+
+      // Google Cloud Storage
+      GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
+      GOOGLE_STORAGE_PROJECT_ID: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
+      GOOGLE_STORAGE_API_ENDPOINT: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
+      GOOGLE_STORAGE_BUCKET_NAME: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
+      GOOGLE_SERVICE_KEY: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
+
+      // Swarm storage
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
       SWARM_DEFERRED_UPLOAD: booleanSchema.default("true"),
       SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
       SWARM_BATCH_ID: z.string().optional(),
-      TEST: booleanSchema.optional(),
-      TRACES_ENABLED: booleanSchema.default("false"),
+      BEE_ENDPOINT: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
+
+      // WeaveVM storage
+      WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
+      WEAVEVM_STORAGE_API_BASE_URL: z
+        .string()
+        .url()
+        .default("https://blobscan.wvm.network")
+        .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
+      WEAVEVM_API_KEY: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
     },
 
     ...presetEnvOptions,
