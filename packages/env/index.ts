@@ -1,8 +1,8 @@
+import type { RefinementCtx } from "@blobscan/zod";
 import {
   z,
   blobStorageSchema,
   booleanSchema,
-  conditionalRequiredSchema,
   createEnv,
   presetEnvOptions,
   nodeEnvSchema,
@@ -12,16 +12,15 @@ import {
   prismaBatchOperationsMaxSizeSchema,
 } from "@blobscan/zod";
 
-export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
-  storageName: "FILE_SYSTEM" | "GOOGLE" | "POSTGRES" | "SWARM",
-  schema: T
-) {
-  return conditionalRequiredSchema(
-    schema,
-    process.env[`${storageName}_STORAGE_ENABLED`],
-    "true",
-    `This configuration variable is required when ${storageName} storage is enabled.`
-  );
+function requireIfEnvEnabled(envName: string) {
+  return (value: unknown, ctx: RefinementCtx) => {
+    if (process.env[envName] === "true" && value === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `This field is required when ${envName} is set to "true"`,
+      });
+    }
+  };
 }
 
 export const env = createEnv({
@@ -31,7 +30,11 @@ export const env = createEnv({
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
 
-      BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
+      BEE_ENDPOINT: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
       BLOBSCAN_API_BASE_URL: z
         .string()
         .url()
@@ -50,10 +53,10 @@ export const env = createEnv({
       FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
       FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
       GOOGLE_STORAGE_API_ENDPOINT: z.string().optional(),
-      GOOGLE_STORAGE_BUCKET_NAME: requiredStorageConfigSchema(
-        "GOOGLE",
-        z.string()
-      ),
+      GOOGLE_STORAGE_BUCKET_NAME: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
       GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
       GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
       GOOGLE_SERVICE_KEY: z.string().optional(),
