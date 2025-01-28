@@ -60,13 +60,9 @@ function getIP(req: NodeHTTPRequest | NextHTTPRequest): string | undefined {
   return ip;
 }
 
-export function createTRPCContext(
-  {
-    scope,
-  }: {
-    scope: string;
-  } = { scope: "" }
-) {
+type ContextScope = "web" | "rest-api";
+
+export function createTRPCContext({ scope }: { scope: ContextScope }) {
   return async (opts: CreateContextOptions) => {
     try {
       const apiClient = retrieveAPIClient(opts.req);
