@@ -3,13 +3,13 @@ import type { FC } from "react";
 import type { OptimismDecodedData } from "@blobscan/api/src/blob-parse/optimism";
 import type dayjs from "@blobscan/dayjs";
 
-import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import Loading from "~/icons/loading.svg";
 import { formatTimestamp } from "~/utils";
 import { Card } from "./Cards/Card";
+import { Copyable } from "./Copyable";
 
 type OptimismCardProps = {
   data: OptimismDecodedData;
@@ -52,13 +52,12 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
           {
             name: "Last L1 origin number",
             value: (
-              <div className="flex items-center gap-2">
+              <Copyable
+                value={data.lastL1OriginNumber.toString()}
+                tooltipText="Copy Last L1 origin number"
+              >
                 <Link href={blockLink}>{data.lastL1OriginNumber}</Link>
-                <CopyToClipboard
-                  value={data.lastL1OriginNumber.toString()}
-                  tooltipText="Copy Last L1 origin number"
-                />
-              </div>
+              </Copyable>
             ),
           },
           {
@@ -68,13 +67,9 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
           {
             name: "L1 origin block hash",
             value: (
-              <div className="flex items-center gap-2">
+              <Copyable value={hash} tooltipText="Copy L1 origin block hash">
                 <Link href={blockLink}>{hash}</Link>
-                <CopyToClipboard
-                  value={hash}
-                  tooltipText="Copy L1 origin block hash"
-                />
-              </div>
+              </Copyable>
             ),
           },
           {
