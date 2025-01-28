@@ -19,11 +19,9 @@ export const NavigationMenus: FC = () => {
   const { env } = useEnv();
 
   const navigationItems = useMemo(() => {
-    const networkName = env
-      ? (env["PUBLIC_NETWORK_NAME"] as string)
-      : undefined;
+    const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
     const publicSupportedNetworks = env
-      ? (env["PUBLIC_SUPPORTED_NETWORKS"] as string)
+      ? env.PUBLIC_SUPPORTED_NETWORKS
       : undefined;
 
     return networkName && publicSupportedNetworks

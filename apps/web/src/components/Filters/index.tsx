@@ -170,8 +170,7 @@ export const Filters: FC = function () {
   };
 
   const rollupOptions: DropdownProps["options"] = useMemo(() => {
-    const chainId =
-      env && getChainIdByName(env["PUBLIC_NETWORK_NAME"] as string);
+    const chainId = env && getChainIdByName(env.PUBLIC_NETWORK_NAME);
     const rollups = chainId ? getChainRollups(chainId) : [];
 
     return rollups.map(

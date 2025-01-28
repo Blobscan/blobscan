@@ -7,14 +7,14 @@ export const BlobscanVersionInfo: React.FC = () => {
   let url = "https://github.com/Blobscan/blobscan/";
   let label = "Development";
 
-  if (env && env["PUBLIC_BLOBSCAN_RELEASE"]) {
-    url = `https://github.com/Blobscan/blobscan/releases/tag/${env["PUBLIC_BLOBSCAN_RELEASE"]}`;
-    label = env["PUBLIC_BLOBSCAN_RELEASE"] as string;
+  if (env && env.PUBLIC_BLOBSCAN_RELEASE) {
+    url = `https://github.com/Blobscan/blobscan/releases/tag/${env.PUBLIC_BLOBSCAN_RELEASE}`;
+    label = env.PUBLIC_BLOBSCAN_RELEASE;
   }
 
-  if (env && env["PUBLIC_VERCEL_GIT_COMMIT_SHA"]) {
-    url = `https://github.com/Blobscan/blobscan/commit/${env["PUBLIC_VERCEL_GIT_COMMIT_SHA"]}`;
-    label = (env["PUBLIC_VERCEL_GIT_COMMIT_SHA"] as string).slice(0, 7);
+  if (env && env.PUBLIC_VERCEL_GIT_COMMIT_SHA) {
+    url = `https://github.com/Blobscan/blobscan/commit/${env.PUBLIC_VERCEL_GIT_COMMIT_SHA}`;
+    label = env.PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7);
   }
 
   return (

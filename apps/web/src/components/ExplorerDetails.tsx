@@ -54,7 +54,7 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
       {
         name: "Network",
         value: env ? (
-          capitalize(env["PUBLIC_NETWORK_NAME"] as string)
+          capitalize(env.PUBLIC_NETWORK_NAME)
         ) : (
           <Skeleton height={14} width={48} />
         ),

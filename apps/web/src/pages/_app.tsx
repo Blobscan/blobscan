@@ -33,10 +33,10 @@ function App({ Component, pageProps }: NextAppProps) {
     if (
       typeof window !== "undefined" &&
       env &&
-      env["PUBLIC_POSTHOG_ID"] !== undefined
+      env.PUBLIC_POSTHOG_ID !== undefined
     ) {
-      posthog.init(env["PUBLIC_POSTHOG_ID"] as string, {
-        api_host: env["PUBLIC_POSTHOG_HOST"] as string,
+      posthog.init(env.PUBLIC_POSTHOG_ID, {
+        api_host: env.PUBLIC_POSTHOG_HOST,
         person_profiles: "identified_only",
         loaded: (posthog) => {
           if (window.location.hostname.includes("localhost")) {
@@ -92,7 +92,7 @@ function App({ Component, pageProps }: NextAppProps) {
           <Component {...pageProps} />
         </AppLayout>
         <FeedbackWidget />
-        {env && env["PUBLIC_VERCEL_ANALYTICS_ENABLED"] && <Analytics />}
+        {env && env.PUBLIC_VERCEL_ANALYTICS_ENABLED && <Analytics />}
       </SkeletonTheme>
     </PostHogProvider>
   );

@@ -58,7 +58,7 @@ const Block: NextPage = function () {
   const blockNumber = blockData ? blockData.number : undefined;
 
   const { env } = useEnv();
-  const networkName = env ? (env["PUBLIC_NETWORK_NAME"] as string) : undefined;
+  const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
 
   const detailsFields: DetailsLayoutProps["fields"] | undefined =
     useMemo(() => {

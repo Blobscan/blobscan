@@ -1,7 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import type { z } from "zod";
+
+import type { clientEnvVarsSchema } from "~/env.mjs";
+
+type ClientEnvVars = z.infer<typeof clientEnvVarsSchema>;
+
+type ClientEnv = {
+  [Key in keyof ClientEnvVars as Key extends `NEXT_${infer Rest}`
+    ? Rest
+    : never]: ClientEnvVars[Key];
+};
 
 interface EnvContextType {
-  env?: Record<string, string | boolean | undefined>;
+  env?: ClientEnv;
 }
 
 const EnvContext = createContext<EnvContextType>({ env: undefined });
@@ -9,8 +20,7 @@ const EnvContext = createContext<EnvContextType>({ env: undefined });
 export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [env, setEnv] =
-    useState<Record<string, string | boolean | undefined>>();
+  const [env, setEnv] = useState<ClientEnv>();
 
   useEffect(() => {
     const fetchEnv = async () => {
