@@ -102,10 +102,7 @@ export const env = createEnv({
 
       // Google Cloud Storage
       GOOGLE_STORAGE_ENABLED: booleanSchema.default("false"),
-      GOOGLE_STORAGE_PROJECT_ID: z
-        .string()
-        .optional()
-        .superRefine(requireIfEnvEnabled("GOOGLE_STORAGE_ENABLED")),
+      GOOGLE_STORAGE_PROJECT_ID: z.string().optional(),
       GOOGLE_STORAGE_API_ENDPOINT: z
         .string()
         .optional()
