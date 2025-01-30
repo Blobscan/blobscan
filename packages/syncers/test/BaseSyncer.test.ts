@@ -14,7 +14,9 @@ describe("BaseSyncer", () => {
       name: "test-updater",
       connection: createRedisConnection("redis://localhost:6379/1"),
       cronPattern: "* * * * *",
-      syncerFn: async () => {},
+      syncerFn: async () => {
+        return;
+      },
     });
 
     return async () => syncer.close();
