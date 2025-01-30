@@ -1,5 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`BaseSyncer > should throw a valid error when failing to close it 1`] = `"Syncer \\"test-updater-syncer\\" failed: An error occurred when performing closing operation"`;
+
+exports[`BaseSyncer > should throw a valid error when failing to close it 2`] = `[Error: Queue closing error]`;
+
+exports[`BaseSyncer > when running an updater > should throw a valid error when failing to run 1`] = `"Syncer \\"test-updater-syncer\\" failed: An error occurred when starting syncer"`;
+
+exports[`BaseSyncer > when running an updater > should throw a valid error when failing to run 2`] = `[Error: Queue error]`;
+
 exports[`PeriodicUpdater > should throw a valid error when failing to close it 1`] = `"Syncer \\"test-updater-syncer\\" failed: An error occurred when performing closing operation"`;
 
 exports[`PeriodicUpdater > should throw a valid error when failing to close it 2`] = `[Error: Queue closing error]`;
