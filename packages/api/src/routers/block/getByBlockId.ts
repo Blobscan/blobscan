@@ -1,11 +1,13 @@
 import { TRPCError } from "@trpc/server";
 
-import { z } from "@blobscan/zod";
+import type { Prisma } from "@blobscan/db";
+import { hashSchema, z } from "@blobscan/zod";
 
 import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
+import type { Filters } from "../../middlewares/withFilters";
 import {
   withFilters,
   withTypeFilterSchema,
@@ -19,36 +21,53 @@ import {
 } from "./common";
 import type { QueriedBlock } from "./common";
 
-const blockIdSchema = z
-  .string()
-  .refine(
-    (id) => {
-      const isHash = id.startsWith("0x") && id.length === 66;
-      const s_ = Number(id);
-      const isNumber = !isNaN(s_) && s_ > 0;
+const blockHashSchema = hashSchema.refine((value) => value.length === 66, {
+  message: "Block hashes must be 66 characters long",
+});
 
-      return isHash || isNumber;
-    },
-    {
-      message: "Invalid block id",
-    }
-  )
-  .transform((id) => {
-    if (id.startsWith("0x")) {
-      return id;
-    }
-
-    return Number(id);
-  });
+const blockNumberOrSlotSchema = z.union([
+  z
+    .string()
+    .refine((value) => !hashSchema.safeParse(value).success)
+    .pipe(z.coerce.number().positive().int()),
+  z.number().positive().int(),
+]);
+const blockIdSchema = z.union([blockHashSchema, blockNumberOrSlotSchema]);
 
 const inputSchema = z
   .object({
     id: blockIdSchema,
+    slot: z.boolean().optional(),
   })
   .merge(withTypeFilterSchema)
   .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
 
 const outputSchema = serializedBlockSchema;
+
+function buildBlockWhereClause(
+  { id, slot: isSlot }: z.output<typeof inputSchema>,
+  filters: Filters
+): Prisma.BlockWhereInput {
+  const blockNumberOrSlotRes = blockNumberOrSlotSchema.safeParse(id);
+
+  if (blockNumberOrSlotRes.success) {
+    return {
+      [isSlot ? "slot" : "number"]: blockNumberOrSlotRes.data,
+      transactionForks: filters.blockType,
+    };
+  }
+
+  const blockHashResult = blockHashSchema.safeParse(id);
+
+  if (blockHashResult.data) {
+    return { hash: blockHashResult.data };
+  }
+
+  throw new TRPCError({
+    code: "BAD_REQUEST",
+    message: `Invalid block id "${id}"`,
+  });
+}
 
 export const getByBlockId = publicProcedure
   .meta({
@@ -66,23 +85,19 @@ export const getByBlockId = publicProcedure
   .query(
     async ({
       ctx: { blobStorageManager, prisma, expands, filters },
-      input: { id },
+      input,
     }) => {
-      const isNumber = typeof id === "number";
+      const where = buildBlockWhereClause(input, filters);
 
       const queriedBlock = await prisma.block.findFirst({
         select: createBlockSelect(expands),
-        where: {
-          [isNumber ? "number" : "hash"]: id,
-          // Hash is unique, so we don't need to filter by transaction forks if we're querying by it
-          transactionForks: isNumber ? filters.blockType : undefined,
-        },
+        where,
       });
 
       if (!queriedBlock) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with id '${id}'.`,
+          message: `No block with id '${input.id}'.`,
         });
       }
 

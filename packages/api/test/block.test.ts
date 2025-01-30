@@ -69,6 +69,16 @@ describe("Block router", async () => {
       };
 
       const result = await caller.block.getByBlockId(input);
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should get a block by slot", async () => {
+      const result = await caller.block.getByBlockId({
+        id: "101",
+        slot: true,
+      });
+
       expect(result).toMatchSnapshot();
     });
 
