@@ -1,3 +1,6 @@
 export { BaseSyncer } from "./BaseSyncer";
-export * from "./syncers";
 export { createRedisConnection } from "./utils";
+
+export { syncSwarmStamp } from "./syncers/SwarmStampSyncer";
+export { aggregateDailyStats } from "./syncers/DailyStatsSyncer";
+export { aggregateOverallStats } from "./syncers/OverallStatsSyncer";

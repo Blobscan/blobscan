@@ -1,11 +1,11 @@
 import { env } from "@blobscan/env";
-import type { BaseSyncer } from "@blobscan/syncers";
+import { BaseSyncer } from "@blobscan/syncers";
+import { createRedisConnection } from "@blobscan/syncers";
 import {
-  DailyStatsSyncer,
-  OverallStatsSyncer,
-  SwarmStampSyncer,
-  createRedisConnection,
-} from "@blobscan/syncers";
+  syncSwarmStamp,
+  aggregateDailyStats,
+  aggregateOverallStats,
+} from "@blobscan/syncers/src/";
 
 import { logger } from "./logger";
 import { getNetworkDencunForkSlot } from "./utils";
@@ -15,37 +15,53 @@ export function setUpSyncers() {
   const syncers: BaseSyncer[] = [];
 
   if (env.SWARM_STORAGE_ENABLED) {
-    if (!env.SWARM_BATCH_ID) {
+    const { SWARM_BATCH_ID, BEE_ENDPOINT } = env;
+
+    if (SWARM_BATCH_ID === undefined) {
       logger.error(`Can't initialize Swarm stamp job: no batch ID provided`);
-    } else if (!env.BEE_ENDPOINT) {
+      return;
+    }
+
+    if (BEE_ENDPOINT === undefined) {
       logger.error(
         "Can't initialize Swarm stamp job: no Bee endpoint provided"
       );
-    } else {
-      syncers.push(
-        new SwarmStampSyncer({
-          cronPattern: env.SWARM_STAMP_CRON_PATTERN,
-          redisUriOrConnection: connection,
-          batchId: env.SWARM_BATCH_ID,
-          beeEndpoint: env.BEE_ENDPOINT,
-        })
-      );
+      return;
     }
+
+    const swarmStampSyncer = new BaseSyncer({
+      name: "swarm-stamp",
+      connection,
+      cronPattern: env.SWARM_STAMP_CRON_PATTERN,
+      syncerFn: () =>
+        syncSwarmStamp({
+          beeEndpoint: BEE_ENDPOINT,
+          batchId: SWARM_BATCH_ID,
+        }),
+    });
+
+    syncers.push(swarmStampSyncer);
   }
 
   syncers.push(
-    new DailyStatsSyncer({
+    new BaseSyncer({
+      name: "daily-stats",
+      connection,
       cronPattern: env.STATS_SYNCER_DAILY_CRON_PATTERN,
-      redisUriOrConnection: connection,
+      syncerFn: aggregateDailyStats,
     })
   );
 
   syncers.push(
-    new OverallStatsSyncer({
+    new BaseSyncer({
+      name: "overall-stats",
+      connection,
       cronPattern: env.STATS_SYNCER_OVERALL_CRON_PATTERN,
-      redisUriOrConnection: connection,
-      lowestSlot:
-        env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
+      syncerFn: () =>
+        aggregateOverallStats({
+          lowestSlot:
+            env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
+        }),
     })
   );
 
