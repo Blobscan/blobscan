@@ -11,13 +11,13 @@ import {
 } from "./DailyStatsSyncer.test.utils";
 
 describe("DailyStatsSyncer", () => {
-  // it("should aggregate data for all available days", async () => {
-  //   await aggregateDailyStats();
+  it("should aggregate data for all available days", async () => {
+    await aggregateDailyStats();
 
-  //   const dailyStatsDates = await getDailyStatsDates();
+    const dailyStatsDates = await getDailyStatsDates();
 
-  //   expect(dailyStatsDates).toMatchSnapshot();
-  // });
+    expect(dailyStatsDates).toMatchSnapshot();
+  });
 
   it("should skip aggregation if not all blocks have been indexed for the last day", async () => {
     await indexNewBlock(CURRENT_DAY_DATA);
