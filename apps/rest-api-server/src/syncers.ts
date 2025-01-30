@@ -19,28 +19,28 @@ export function setUpSyncers() {
 
     if (SWARM_BATCH_ID === undefined) {
       logger.error(`Can't initialize Swarm stamp job: no batch ID provided`);
-      return;
     }
 
     if (BEE_ENDPOINT === undefined) {
       logger.error(
         "Can't initialize Swarm stamp job: no Bee endpoint provided"
       );
-      return;
     }
 
-    const swarmStampSyncer = new BaseSyncer({
-      name: "swarm-stamp",
-      connection,
-      cronPattern: env.SWARM_STAMP_CRON_PATTERN,
-      syncerFn: () =>
-        syncSwarmStamp({
-          beeEndpoint: BEE_ENDPOINT,
-          batchId: SWARM_BATCH_ID,
-        }),
-    });
+    if (SWARM_BATCH_ID !== undefined && BEE_ENDPOINT !== undefined) {
+      const swarmStampSyncer = new BaseSyncer({
+        name: "swarm-stamp",
+        connection,
+        cronPattern: env.SWARM_STAMP_CRON_PATTERN,
+        syncerFn: () =>
+          syncSwarmStamp({
+            beeEndpoint: BEE_ENDPOINT,
+            batchId: SWARM_BATCH_ID,
+          }),
+      });
 
-    syncers.push(swarmStampSyncer);
+      syncers.push(swarmStampSyncer);
+    }
   }
 
   syncers.push(
