@@ -22,7 +22,7 @@ describe("getPriceByTimestamp", () => {
       const timestamp = nowSeconds - BigInt(i) * contractUpdatePeriod;
 
       const response = await getPriceByTimestamp({
-        address: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+        address: contractAddress,
         timestamp,
         tolerance: contractUpdatePeriod,
       });
