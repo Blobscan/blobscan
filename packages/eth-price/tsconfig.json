@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "extends": "@blobscan/tsconfig/base.production.json",
+  "include": ["src/**/*.ts"]
+}

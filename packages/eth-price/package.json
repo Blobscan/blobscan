@@ -1,0 +1,11 @@
+{
+  "name": "eth-price",
+  "main": "index.js",
+  "scripts": {
+    "test": "pnpm vitest --reporter=verbose"
+  },
+  "dependencies": {
+    "viem": "^2.22.17",
+    "@blobscan/logger": "workspace:^0.1.2"
+  }
+}
