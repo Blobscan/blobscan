@@ -318,7 +318,7 @@
 
 - [#296](https://github.com/Blobscan/blobscan/pull/296) [`56ebc7d`](https://github.com/Blobscan/blobscan/commit/56ebc7d0fa44ef5abdea4df4ab31fe697bcfde21) Thanks [@0xGabi](https://github.com/0xGabi)! - Fixed blob gas as calldata calculation
 
-- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Splited getByBlockId schema to handle openapi parse restrictions
+- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Split getByBlockId schema to handle openapi parse restrictions
 
 - [#294](https://github.com/Blobscan/blobscan/pull/294) [`3a9c304`](https://github.com/Blobscan/blobscan/commit/3a9c3045b35dd3efef29caa75b87cbf5549f7ee2) Thanks [@0xGabi](https://github.com/0xGabi)! - Resolved overall stats format
 
