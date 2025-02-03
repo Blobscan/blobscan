@@ -6,7 +6,6 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/24/solid";
 
-import { env } from "~/env.mjs";
 import EthereumIcon from "~/icons/ethereum.svg";
 import {
   buildBlocksRoute,
@@ -15,17 +14,15 @@ import {
   buildAllStatsRoute,
 } from "~/utils";
 
-function resolveApiUrl(): string {
-  if (env.NEXT_PUBLIC_NETWORK_NAME === "mainnet") {
+function resolveApiUrl(networkName: string): string {
+  if (networkName === "mainnet") {
     return "https://api.blobscan.com";
   }
 
-  return `https://api.${env.NEXT_PUBLIC_NETWORK_NAME}.blobscan.com`;
+  return `https://api.${networkName}.blobscan.com`;
 }
 
-type Network = typeof env.NEXT_PUBLIC_NETWORK_NAME;
-
-const NETWORKS_FIRST_BLOB_NUMBER: Record<Network, number> = {
+const NETWORKS_FIRST_BLOB_NUMBER: Record<string, number> = {
   mainnet: 19426589,
   holesky: 894735,
   sepolia: 5187052,
@@ -34,8 +31,8 @@ const NETWORKS_FIRST_BLOB_NUMBER: Record<Network, number> = {
   devnet: 0,
 };
 
-export function getFirstBlobNumber(): number {
-  return NETWORKS_FIRST_BLOB_NUMBER[env.NEXT_PUBLIC_NETWORK_NAME];
+export function getFirstBlobNumber(networkName: string): number | undefined {
+  return NETWORKS_FIRST_BLOB_NUMBER[networkName];
 }
 
 export type NavigationItem = {
@@ -61,45 +58,48 @@ export function isExpandibleNavigationItem(
   return typeof item === "object" && item !== null && "items" in item;
 }
 
-export const NAVIGATION_ITEMS: Array<
-  NavigationItem | ExpandibleNavigationItem
-> = [
-  {
-    label: "Blockchain",
-    icon: <Squares2X2Icon />,
-    items: [
-      {
-        label: "Blobs",
-        href: buildBlobsRoute(),
-      },
-      {
-        label: "Blocks",
-        href: buildBlocksRoute(),
-      },
-      {
-        label: "Transactions",
-        href: buildTransactionsRoute(),
-      },
-    ],
-  },
-  {
-    label: "Networks",
-    icon: <EthereumIcon />,
-    items: JSON.parse(env.NEXT_PUBLIC_SUPPORTED_NETWORKS || "[]"),
-  },
-  {
-    label: "Stats",
-    icon: <ChartBarIcon />,
-    href: buildAllStatsRoute(),
-  },
-  {
-    label: "API",
-    icon: <CommandLineIcon />,
-    href: resolveApiUrl(),
-  },
-  {
-    label: "Docs",
-    icon: <BookOpenIcon />,
-    href: "https://docs.blobscan.com",
-  },
-];
+export const getNavigationItems = (
+  networkName: string,
+  publicSupportedNetworks: string
+): Array<NavigationItem | ExpandibleNavigationItem> => {
+  return [
+    {
+      label: "Blockchain",
+      icon: <Squares2X2Icon />,
+      items: [
+        {
+          label: "Blobs",
+          href: buildBlobsRoute(),
+        },
+        {
+          label: "Blocks",
+          href: buildBlocksRoute(),
+        },
+        {
+          label: "Transactions",
+          href: buildTransactionsRoute(),
+        },
+      ],
+    },
+    {
+      label: "Networks",
+      icon: <EthereumIcon />,
+      items: JSON.parse(publicSupportedNetworks || "[]"),
+    },
+    {
+      label: "Stats",
+      icon: <ChartBarIcon />,
+      href: buildAllStatsRoute(),
+    },
+    {
+      label: "API",
+      icon: <CommandLineIcon />,
+      href: resolveApiUrl(networkName),
+    },
+    {
+      label: "Docs",
+      icon: <BookOpenIcon />,
+      href: "https://docs.blobscan.com",
+    },
+  ];
+};
