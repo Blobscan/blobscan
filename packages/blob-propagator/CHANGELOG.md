@@ -87,7 +87,7 @@
 
 - [#395](https://github.com/Blobscan/blobscan/pull/395) [`52804b1`](https://github.com/Blobscan/blobscan/commit/52804b1a71c645242719230b3d68240b6a30687a) Thanks [@PJColombo](https://github.com/PJColombo)! - Used custom logger
 
-- [#359](https://github.com/Blobscan/blobscan/pull/359) [`95fbf74`](https://github.com/Blobscan/blobscan/commit/95fbf7471f5e5cacec7513f0736a70a18f971ce1) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed to remove storage jobs from finalizer queue depedencies if they fail
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`95fbf74`](https://github.com/Blobscan/blobscan/commit/95fbf7471f5e5cacec7513f0736a70a18f971ce1) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed to remove storage jobs from finalizer queue dependencies if they fail
 
 - [#359](https://github.com/Blobscan/blobscan/pull/359) [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving blob data by hash in addition to by its references.
 
