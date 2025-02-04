@@ -19,8 +19,8 @@ export const decodedFields = z.union([OptimismSchema, UnknownSchema]);
 
 type DecodedFields = z.infer<typeof decodedFields>;
 
-export async function parseDecodedFields(data: string): Promise<DecodedFields> {
-  const optimismDecodedData = await parseOptimismDecodedData(data);
+export function parseDecodedFields(data: string): DecodedFields {
+  const optimismDecodedData = parseOptimismDecodedData(data);
 
   if (optimismDecodedData) {
     return {
