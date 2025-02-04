@@ -27,10 +27,6 @@ export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
 export const env = createEnv({
   envOptions: {
     server: {
-      // PostHog
-      POSTHOG_ID: z.string().optional(),
-      POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
-
       BEE_ENDPOINT: requiredStorageConfigSchema("SWARM", z.string().url()),
       BLOBSCAN_API_BASE_URL: z
         .string()
