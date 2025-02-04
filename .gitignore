@@ -52,3 +52,5 @@ yarn-error.log*
 .sentryclirc
 
 logs
+
+*.code-workspace

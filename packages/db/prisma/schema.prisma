@@ -280,6 +280,7 @@ model ValidatorIncome {
   syncCommitteePenalty               BigInt @map("sync_committee_penalty")
   finalityDelayPenalty               BigInt @map("finality_delay_penalty")
   txFeeRewardWei                     BigInt @map("tx_fee_reward_wei")
+  withdrawalAmount                   BigInt @map("withdrawal_amount")
 
   insertedAt         DateTime @map("inserted_at") @default(now())
   updatedAt          DateTime @map("updated_at") @default(now())
