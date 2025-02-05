@@ -12,7 +12,7 @@ import {
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import type { BlockIdField } from "./common";
-import { fetchBlock, serializeBlock } from "./common";
+import { fetchBlock, serializeBlock, serializedBlockSchema } from "./common";
 
 const inputSchema = z
   .object({
@@ -20,6 +20,8 @@ const inputSchema = z
   })
   .merge(withSortFilterSchema)
   .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
+
+const outputSchema = serializedBlockSchema;
 
 export const getBySlot = publicProcedure
   .meta({
@@ -31,6 +33,7 @@ export const getBySlot = publicProcedure
     },
   })
   .input(inputSchema)
+  .output(outputSchema)
   .use(withExpands)
   .use(withFilters)
   .query(
