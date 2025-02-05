@@ -4,72 +4,70 @@ import axios from "axios";
 
 import { formatTtl } from "@blobscan/dates";
 import { prisma } from "@blobscan/db";
+import { createModuleLogger } from "@blobscan/logger";
 
-import { BaseSyncer } from "../BaseSyncer";
-import type { CommonSyncerConfig } from "../BaseSyncer";
 import { SwarmNodeError } from "../errors";
+
+const logger = createModuleLogger("swarm-stamp-syncer");
+
+type SwarmStampSyncerConfig = {
+  beeEndpoint: string;
+  batchId: string;
+};
+
+export async function syncSwarmStamp({
+  beeEndpoint,
+  batchId,
+}: SwarmStampSyncerConfig) {
+  const { batchTTL } = await fetchBatchData(beeEndpoint, batchId);
+
+  await prisma.blobStoragesState.upsert({
+    create: {
+      swarmDataId: batchId,
+      swarmDataTTL: batchTTL,
+    },
+    update: {
+      swarmDataTTL: batchTTL,
+      updatedAt: new Date(),
+    },
+    where: {
+      id: 1,
+      swarmDataId: batchId,
+    },
+  });
+
+  const expiryDate = formatTtl(batchTTL);
+  logger.info(
+    `Swarm batch ID "${batchId}" updated. New expiry date: ${expiryDate}.`
+  );
+}
 
 type BatchData = {
   batchID: string;
   batchTTL: number;
 };
 
-export interface SwarmStampSyncerConfig extends CommonSyncerConfig {
-  beeEndpoint: string;
-  batchId: string;
-}
+async function fetchBatchData(
+  beeEndpoint: string,
+  batchId: string
+): Promise<BatchData> {
+  let response: AxiosResponse<BatchData>;
 
-export class SwarmStampSyncer extends BaseSyncer {
-  constructor({
-    cronPattern,
-    redisUriOrConnection,
-    batchId,
-    beeEndpoint,
-  }: SwarmStampSyncerConfig) {
-    const name = "swarm-stamp";
-    super({
-      name,
-      cronPattern,
-      redisUriOrConnection,
-      syncerFn: async () => {
-        let response: AxiosResponse<BatchData>;
+  try {
+    const url = `${beeEndpoint}/stamps/${batchId}`;
 
-        try {
-          const url = `${beeEndpoint}/stamps/${batchId}`;
+    response = await axios.get<BatchData>(url);
+  } catch (err) {
+    let cause = err;
 
-          response = await axios.get<BatchData>(url);
-        } catch (err) {
-          let cause = err;
+    if (err instanceof AxiosError) {
+      cause = new SwarmNodeError(err);
+    }
 
-          if (err instanceof AxiosError) {
-            cause = new SwarmNodeError(err);
-          }
-
-          throw new Error(`Failed to fetch stamp batch "${batchId}"`, {
-            cause,
-          });
-        }
-
-        const { batchTTL } = response.data;
-
-        await prisma.blobStoragesState.upsert({
-          create: {
-            swarmDataId: batchId,
-            swarmDataTTL: batchTTL,
-          },
-          update: {
-            swarmDataTTL: batchTTL,
-            updatedAt: new Date(),
-          },
-          where: {
-            id: 1,
-            swarmDataId: batchId,
-          },
-        });
-
-        const expiryDate = formatTtl(batchTTL);
-        this.logger.info(`Swarm batch ID "${batchId}" updated. New expiry date: ${expiryDate}.`);
-      },
+    throw new Error(`Failed to fetch stamp batch "${batchId}"`, {
+      cause,
     });
   }
+
+  return response.data;
 }
