@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.18.0
+
+### Minor Changes
+
+- [#700](https://github.com/Blobscan/blobscan/pull/700) [`b90971b`](https://github.com/Blobscan/blobscan/commit/b90971b1415e32c23c530feff1fc2dd1560d377d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for fetching blocks by slot
+
 ## 0.17.1
 
 ### Patch Changes
