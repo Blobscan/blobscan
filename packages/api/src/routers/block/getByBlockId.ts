@@ -20,6 +20,8 @@ const blockHashSchema = hashSchema.refine((value) => value.length === 66, {
 
 const blockNumberSchema = z.coerce.number().int().positive();
 
+// We use zod's string schema and then parse the value by applying block hash or block number
+// schemas as `trpc-opeanpi` doesn't support union types yet.
 const blockIdSchema = z.string().transform((value, ctx) => {
   const parsedHash = blockHashSchema.safeParse(value);
   const parsedBlockNumber = blockNumberSchema.safeParse(value);
