@@ -2023,7 +2023,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 ]
 `;
 
-exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the block specificed 1`] = `
+exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the block specified 1`] = `
 [
   {
     "blockHash": "blockHash008",
