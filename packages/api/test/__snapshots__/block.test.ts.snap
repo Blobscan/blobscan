@@ -1920,3 +1920,89 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
   ],
 }
 `;
+
+exports[`Block router > getBySlot > should fail when trying to get a block with a negative slot 1`] = `
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 0,
+    \\"type\\": \\"number\\",
+    \\"inclusive\\": false,
+    \\"exact\\": false,
+    \\"message\\": \\"Number must be greater than 0\\",
+    \\"path\\": [
+      \\"slot\\"
+    ]
+  }
+]"
+`;
+
+exports[`Block router > getBySlot > should fail when trying to get a block with a negative slot 2`] = `
+[ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": false,
+    "exact": false,
+    "message": "Number must be greater than 0",
+    "path": [
+      "slot"
+    ]
+  }
+]]
+`;
+
+exports[`Block router > getBySlot > should fail when trying to get a reorged block by slot 1`] = `"Block with slot 110 not found"`;
+
+exports[`Block router > getBySlot > should get a block by slot 1`] = `
+{
+  "blobAsCalldataGasUsed": "2042780",
+  "blobGasPrice": "22",
+  "blobGasUsed": "786432",
+  "excessBlobGas": "15000",
+  "hash": "blockHash001",
+  "number": 1001,
+  "slot": 101,
+  "timestamp": "2022-10-16T12:00:00.000Z",
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "versionedHash": "blobHash001",
+        },
+        {
+          "versionedHash": "blobHash002",
+        },
+        {
+          "versionedHash": "blobHash003",
+        },
+      ],
+      "category": "other",
+      "hash": "txHash001",
+    },
+    {
+      "blobs": [
+        {
+          "versionedHash": "blobHash001",
+        },
+      ],
+      "category": "other",
+      "hash": "txHash002",
+    },
+    {
+      "blobs": [
+        {
+          "versionedHash": "blobHash001",
+        },
+        {
+          "versionedHash": "blobHash002",
+        },
+      ],
+      "category": "rollup",
+      "hash": "txHash003",
+      "rollup": "optimism",
+    },
+  ],
+}
+`;

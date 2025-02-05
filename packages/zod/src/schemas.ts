@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const hashSchema = z
+  .string()
+  .regex(/^0x[a-fA-F0-9]+$/, "Invalid hex string");
+
 // We use this workaround instead of z.coerce.boolean.default(false)
 // because it considers as "true" any value different than "false"
 // (including the empty string).
