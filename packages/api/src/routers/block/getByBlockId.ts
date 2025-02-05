@@ -20,7 +20,23 @@ const blockHashSchema = hashSchema.refine((value) => value.length === 66, {
 
 const blockNumberSchema = z.coerce.number().int().positive();
 
-const blockIdSchema = z.union([blockHashSchema, blockNumberSchema]);
+const blockIdSchema = z.string().transform((value, ctx) => {
+  const parsedHash = blockHashSchema.safeParse(value);
+  const parsedBlockNumber = blockNumberSchema.safeParse(value);
+
+  if (parsedHash.success) {
+    return parsedHash.data;
+  }
+
+  if (parsedBlockNumber.success) {
+    return parsedBlockNumber.data;
+  }
+
+  ctx.addIssue({
+    code: z.ZodIssueCode.custom,
+    message: "Block id must be a valid block number or block hash",
+  });
+});
 
 const inputSchema = z
   .object({
