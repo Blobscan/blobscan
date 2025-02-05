@@ -143,6 +143,16 @@ describe("Block router", async () => {
     });
 
     testValidError(
+      "should fail when trying to get a reorged block by slot",
+      async () => {
+        await caller.block.getBySlot({
+          slot: 110,
+        });
+      },
+      TRPCError
+    );
+
+    testValidError(
       "should fail when trying to get a block with a negative slot",
       async () => {
         await caller.block.getBySlot({

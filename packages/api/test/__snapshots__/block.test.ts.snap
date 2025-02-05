@@ -1953,6 +1953,8 @@ exports[`Block router > getBySlot > should fail when trying to get a block with 
 ]]
 `;
 
+exports[`Block router > getBySlot > should fail when trying to get a reorged block by slot 1`] = `"Block with slot 110 not found"`;
+
 exports[`Block router > getBySlot > should get a block by slot 1`] = `
 {
   "blobAsCalldataGasUsed": "2042780",
