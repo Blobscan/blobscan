@@ -10,21 +10,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "commitment": "commitment001",
-        "dataStorageReferences": [
-          {
-            "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-          },
-          {
-            "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-          },
-        ],
+        "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "dataStorageReferences": [],
         "index": 0,
-        "proof": "proof001",
-        "size": 1000,
-        "versionedHash": "blobHash001",
+        "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "size": 1500,
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -136,7 +127,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -216,21 +207,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "commitment": "commitment001",
-        "dataStorageReferences": [
-          {
-            "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-          },
-          {
-            "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-          },
-        ],
+        "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "dataStorageReferences": [],
         "index": 0,
-        "proof": "proof001",
-        "size": 1000,
-        "versionedHash": "blobHash001",
+        "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "size": 1500,
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -495,7 +477,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -1810,7 +1792,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -1883,7 +1865,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -1986,7 +1968,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -2059,7 +2041,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {

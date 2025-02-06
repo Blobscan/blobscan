@@ -17,26 +17,17 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "block": {
@@ -87,20 +78,11 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "blobGasUsed": "131072",
@@ -112,7 +94,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "block": {
@@ -162,20 +144,11 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "blobGasUsed": "131072",
@@ -187,7 +160,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
@@ -445,26 +418,17 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
@@ -2029,26 +1993,17 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
@@ -2137,26 +2092,17 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
@@ -2270,26 +2216,17 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
@@ -2378,26 +2315,17 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",

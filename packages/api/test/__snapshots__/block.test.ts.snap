@@ -15,21 +15,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
       {
         "blobs": [
           {
-            "commitment": "commitment001",
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-              },
-            ],
+            "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "dataStorageReferences": [],
             "index": 0,
-            "proof": "proof001",
-            "size": 1000,
-            "versionedHash": "blobHash001",
+            "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "size": 1500,
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -130,21 +121,12 @@ exports[`Block router > getAll > when getting expanded block results > should re
         "blobGasUsed": "131072",
         "blobs": [
           {
-            "commitment": "commitment001",
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-              },
-            ],
+            "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "dataStorageReferences": [],
             "index": 0,
-            "proof": "proof001",
-            "size": 1000,
-            "versionedHash": "blobHash001",
+            "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "size": 1500,
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -258,7 +240,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
         "blobGasUsed": "131072",
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -407,7 +389,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -1247,7 +1229,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -1301,7 +1283,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -1376,7 +1358,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -1430,7 +1412,7 @@ exports[`Block router > getAll > when getting paginated block results > should d
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -1673,7 +1655,7 @@ exports[`Block router > getByBlockId > should get the canonical block when provi
     {
       "blobs": [
         {
-          "versionedHash": "blobHash001",
+          "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
         },
       ],
       "category": "other",
