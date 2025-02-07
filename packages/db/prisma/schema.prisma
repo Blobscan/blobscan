@@ -289,6 +289,19 @@ model ValidatorIncome {
   @@unique([validatorIdx, epochIdx], name: "uni_validaotr_epoch_income", map: "uni_validaotr_epoch_income")
 }
 
+model ValidatorWithdrawal {
+  validatorIdx       BigInt   @map("validator_idx")
+  epochIdxGathered   BigInt   @map("epoch_idx_gathered")
+  withdrawalAmount   BigInt   @map("withdrawal_amount")
+
+  insertedAt         DateTime @map("inserted_at") @default(now())
+  updatedAt          DateTime @map("updated_at") @default(now())
+
+  @@unique([validatorIdx])
+  @@index([validatorIdx])
+  @@map("validator_withdrawal")
+}
+
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver, 
 // uncomment the @db.Text annotations below
