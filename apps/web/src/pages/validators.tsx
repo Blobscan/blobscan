@@ -42,7 +42,7 @@ const Validators: NextPage = function () {
           <Card key={validator.index}>
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={2}>
+                <Grid item xs={1.8}>
                   <Typography
                     variant="h6"
                     style={{
@@ -74,7 +74,7 @@ const Validators: NextPage = function () {
                     </CopyToClipboard>
                   </div>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={0.7}>
                   <Typography
                     variant="h6"
                     style={{
@@ -123,6 +123,31 @@ const Validators: NextPage = function () {
                   >
                     {parseFloat(convertWei(validator.balance)).toFixed(4)} DILL
                     ({convertWei(validator.validator.effective_balance)} DILL)
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography
+                    variant="h6"
+                    style={{
+                      lineHeight: "60px",
+                      display: "flex",
+                      justifyContent: "center",
+                      color: "#143226",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Withdrawal
+                  </Typography>
+                  <Typography
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        lineHeight: "40px",
+                      }}
+                    >
+                      {validator.withdrawal_amount === "----"
+                      ? "----"
+                      : (parseFloat(convertWei(validator.withdrawal_amount))).toFixed(4) + " DILL"}
                   </Typography>
                 </Grid>
                 <Grid item xs={1.5}>
@@ -225,41 +250,6 @@ const Validators: NextPage = function () {
                     </Typography>
                   )}
                 </Grid>
-                <Grid item xs={1.5}>
-                  <Typography
-                    variant="h6"
-                    style={{
-                      lineHeight: "60px",
-                      display: "flex",
-                      justifyContent: "center",
-                      color: "#143226",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    W/able
-                  </Typography>
-                  {validator.validator.exit_epoch === "18446744073709551615" ? (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      ----
-                    </Typography>
-                  ) : (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      Epoch {validator.validator.withdrawable_epoch}
-                    </Typography>
-                  )}
-                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -267,7 +257,7 @@ const Validators: NextPage = function () {
           <Card key={validator.index}>
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={2}>
+                <Grid item xs={1.8}>
                   <div
                     style={{
                       display: "flex",
@@ -287,7 +277,7 @@ const Validators: NextPage = function () {
                     </CopyToClipboard>
                   </div>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={0.7}>
                   <div
                     style={{
                       display: "flex",
@@ -312,6 +302,19 @@ const Validators: NextPage = function () {
                   >
                     {parseFloat(convertWei(validator.balance)).toFixed(4)} DILL
                     ({convertWei(validator.validator.effective_balance)} DILL)
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        lineHeight: "40px",
+                      }}
+                    >
+                      {validator.withdrawal_amount === "----"
+                      ? "----"
+                      : (parseFloat(convertWei(validator.withdrawal_amount))).toFixed(4) + " DILL"}
                   </Typography>
                 </Grid>
                 <Grid item xs={1.5}>
@@ -375,29 +378,6 @@ const Validators: NextPage = function () {
                       }}
                     >
                       Epoch {validator.validator.exit_epoch}
-                    </Typography>
-                  )}
-                </Grid>
-                <Grid item xs={1.5}>
-                  {validator.validator.exit_epoch === "18446744073709551615" ? (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      ----
-                    </Typography>
-                  ) : (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      Epoch {validator.validator.withdrawable_epoch}
                     </Typography>
                   )}
                 </Grid>

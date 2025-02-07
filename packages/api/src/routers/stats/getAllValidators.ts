@@ -4,6 +4,23 @@ import { logger } from "@blobscan/logger"
 import { env } from "../../env"
 import { BASE_PATH } from "./common";
 import { publicProcedure } from "../../procedures";
+import { Pool } from "pg";
+//cd packages/api
+//pnpm add --save-dev @types/pg 
+
+const DATABASE_INFO = env.DATABASE_URL;
+
+const parsedUrl = new URL(DATABASE_INFO);
+
+const dbConfig = {
+  user: parsedUrl.username,    
+  password: parsedUrl.password, 
+  host: parsedUrl.hostname,     
+  port: parseInt(parsedUrl.port),  
+  database: parsedUrl.pathname.slice(1),  
+};
+
+const pool = new Pool(dbConfig);
 
 export const inputSchema = z.void();
 
@@ -22,6 +39,7 @@ export const outputSchema = z.object({
       exit_epoch: z.string(),
       withdrawable_epoch: z.string(),
     }),
+    withdrawal_amount: z.string(),
   }))
 });
 
@@ -39,6 +57,22 @@ async function getAllValidatorQuery() {
   }
 }
 
+async function getWithdrawalAmount(index: any) {
+  try {
+    const result = await pool.query(
+      "SELECT withdrawal_amount FROM validator_withdrawal WHERE validator_idx = $1", [index]
+    );
+    if (result.rows.length > 0) {
+      return result.rows[0].withdrawal_amount;
+    } else {
+      return "----";  
+    }
+  } catch (error) {
+    logger.error("Error fetching withdrawal amount:", error);
+    return "----";  
+  }
+}
+
 export const getAllValidators = publicProcedure
   .meta({
     openapi: {
@@ -52,5 +86,13 @@ export const getAllValidators = publicProcedure
   .output(outputSchema)
   .query(async () => {
     const data = await getAllValidatorQuery();
-    return { data:data };
+
+    const enrichedData = await Promise.all(data.map(async (validator: { index: any; }) => {
+      const withdrawalAmount = await getWithdrawalAmount(validator.index);  
+      return {
+        ...validator,
+        withdrawal_amount: withdrawalAmount, 
+      };
+    }));
+    return { data:enrichedData };
   });

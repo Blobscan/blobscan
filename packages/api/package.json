@@ -28,7 +28,8 @@
     "trpc-openapi": "^1.2.0"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.2"
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/pg": "^8.11.11"
   },
   "eslintConfig": {
     "root": true,
