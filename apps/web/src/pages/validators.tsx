@@ -42,7 +42,34 @@ const Validators: NextPage = function () {
           <Card key={validator.index}>
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={1.8}>
+                <Grid item xs={1}>
+                  <Typography
+                    variant="h6"
+                    style={{
+                      lineHeight: "60px",
+                      display: "flex",
+                      justifyContent: "center",
+                      color: "#143226",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Index
+                  </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    className="text-accent-light dark:text-accent-dark"
+                  >
+                    <Link href={buildValidatorRoute(validator.index)}>
+                      <Typography style={{ lineHeight: "40px" }}>
+                        {validator.index}
+                      </Typography>
+                    </Link>
+                  </div>
+                </Grid>
+                <Grid item xs={2}>
                   <Typography
                     variant="h6"
                     style={{
@@ -74,34 +101,7 @@ const Validators: NextPage = function () {
                     </CopyToClipboard>
                   </div>
                 </Grid>
-                <Grid item xs={0.7}>
-                  <Typography
-                    variant="h6"
-                    style={{
-                      lineHeight: "60px",
-                      display: "flex",
-                      justifyContent: "center",
-                      color: "#143226",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Index
-                  </Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    className="text-accent-light dark:text-accent-dark"
-                  >
-                    <Link href={buildValidatorRoute(validator.index)}>
-                      <Typography style={{ lineHeight: "40px" }}>
-                        {validator.index}
-                      </Typography>
-                    </Link>
-                  </div>
-                </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2.5}>
                   <Typography
                     variant="h6"
                     style={{
@@ -122,7 +122,6 @@ const Validators: NextPage = function () {
                     }}
                   >
                     {parseFloat(convertWei(validator.balance)).toFixed(4)} DILL
-                    ({convertWei(validator.validator.effective_balance)} DILL)
                   </Typography>
                 </Grid>
                 <Grid item xs={2}>
@@ -257,7 +256,22 @@ const Validators: NextPage = function () {
           <Card key={validator.index}>
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={1.8}>
+              <Grid item xs={1}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    className="text-accent-light dark:text-accent-dark"
+                  >
+                    <Link href={buildValidatorRoute(validator.index)}>
+                      <Typography style={{ lineHeight: "40px" }}>
+                        {validator.index}
+                      </Typography>
+                    </Link>
+                  </div>
+                </Grid>
+                <Grid item xs={2}>
                   <div
                     style={{
                       display: "flex",
@@ -277,22 +291,7 @@ const Validators: NextPage = function () {
                     </CopyToClipboard>
                   </div>
                 </Grid>
-                <Grid item xs={0.7}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    className="text-accent-light dark:text-accent-dark"
-                  >
-                    <Link href={buildValidatorRoute(validator.index)}>
-                      <Typography style={{ lineHeight: "40px" }}>
-                        {validator.index}
-                      </Typography>
-                    </Link>
-                  </div>
-                </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2.5}>
                   <Typography
                     style={{
                       display: "flex",
@@ -301,7 +300,6 @@ const Validators: NextPage = function () {
                     }}
                   >
                     {parseFloat(convertWei(validator.balance)).toFixed(4)} DILL
-                    ({convertWei(validator.validator.effective_balance)} DILL)
                   </Typography>
                 </Grid>
                 <Grid item xs={2}>
