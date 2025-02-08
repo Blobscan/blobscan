@@ -107,7 +107,7 @@ const inputSchema = z.object({
 export const handleReorg = createAuthedProcedure("indexer")
   .meta({
     openapi: {
-      method: "POST",
+      method: "PUT",
       path: `${INDEXER_PATH}/reorged-blocks`,
       tags: ["indexer"],
       summary:
