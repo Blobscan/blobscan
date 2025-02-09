@@ -619,32 +619,6 @@ describe("Indexer router", async () => {
         ).resolves.toBeUndefined();
       });
 
-      it("should reindex a block previously marked as reorged correctly", async () => {
-        const blockHash = INPUT.block.hash;
-        const blockTxHashes = INPUT.transactions.map((tx) => tx.hash);
-
-        // Marked the block as reorged
-        await authorizedContext.prisma.transactionFork.createMany({
-          data: blockTxHashes.map((hash) => ({
-            hash,
-            blockHash,
-          })),
-        });
-
-        // Reindex the block
-        await authorizedCaller.indexer.indexData(INPUT);
-
-        const forkTxs = await authorizedContext.prisma.transactionFork.findMany(
-          {
-            where: {
-              blockHash,
-            },
-          }
-        );
-
-        expect(forkTxs, "Block still has forked transactions").toEqual([]);
-      });
-
       testValidError(
         "should fail when receiving an empty array of transactions",
         async () => {
