@@ -10,27 +10,18 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "commitment": "commitment001",
-        "dataStorageReferences": [
-          {
-            "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-          },
-          {
-            "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-          },
-        ],
+        "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "dataStorageReferences": [],
         "index": 0,
-        "proof": "proof001",
-        "size": 1000,
-        "versionedHash": "blobHash001",
+        "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "size": 1500,
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -107,7 +98,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -136,7 +127,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -146,7 +137,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 108,
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -188,7 +179,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 107,
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -216,21 +207,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "commitment": "commitment001",
-        "dataStorageReferences": [
-          {
-            "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-          },
-          {
-            "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-          },
-        ],
+        "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "dataStorageReferences": [],
         "index": 0,
-        "proof": "proof001",
-        "size": 1000,
-        "versionedHash": "blobHash001",
+        "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "size": 1500,
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -240,7 +222,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 108,
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -321,7 +303,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 107,
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -495,13 +477,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -539,7 +521,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -719,7 +701,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -1810,13 +1792,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -1854,7 +1836,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -1883,13 +1865,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -1927,7 +1909,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -1986,13 +1968,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -2030,7 +2012,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -2059,13 +2041,13 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobs": [
       {
         "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -2103,7 +2085,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
