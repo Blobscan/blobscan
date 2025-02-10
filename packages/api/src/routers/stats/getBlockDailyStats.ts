@@ -1,13 +1,10 @@
 import { z } from "@blobscan/zod";
 
-import {
-  withTimeFrame,
-  withTimeFrameSchema,
-} from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
+import { timeSchema } from "../../utils/time-schema";
 import { BLOCK_BASE_PATH } from "./common";
 
-const inputSchema = withTimeFrameSchema;
+const inputSchema = timeSchema;
 
 export const outputSchema = z.object({
   days: z.array(z.string()),
@@ -33,16 +30,15 @@ export const getBlockDailyStats = publicProcedure
     },
   })
   .input(inputSchema)
-  .use(withTimeFrame)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma, timeFrame } }) => {
+  .query(async ({ ctx: { prisma }, input: { timeFrame } }) => {
     const stats = await prisma.dailyStats.findMany({
       where: {
         AND: [
           {
             day: {
-              gte: timeFrame.initial.toDate(),
-              lte: timeFrame.final.toDate(),
+              gte: timeFrame?.initial,
+              lte: timeFrame?.final,
             },
           },
           {

@@ -4,24 +4,23 @@ import dayjs from "@blobscan/dayjs";
 import { omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
-import type { TimeFrame } from "../src/middlewares/withTimeFrame";
+import { TIME } from "../src/utils/time-schema";
+import type { Time } from "../src/utils/time-schema";
 import { createTestContext } from "./helpers";
-
-const TIME_FRAMES = ["1d", "7d", "15d", "30d", "180d", "360d"] as const;
 
 function runTimeFrameTests({
   statsFiller,
   statsFetcher,
 }: {
   statsFiller: () => Promise<unknown>;
-  statsFetcher: (timeFrame: TimeFrame) => Promise<unknown>;
+  statsFetcher: (timeFrame: Time) => Promise<unknown>;
 }) {
   return describe("when getting stats for a specific timeframe", () => {
     beforeEach(async () => {
       await statsFiller();
     });
 
-    TIME_FRAMES.forEach((timeFrame) => {
+    TIME.forEach((timeFrame) => {
       it(`should get daily stats for ${timeFrame}`, async () => {
         const result = await statsFetcher(timeFrame);
 

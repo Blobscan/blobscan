@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 
-import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
+import type { Time } from "@blobscan/api/src/utils/time-schema";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
@@ -214,7 +214,7 @@ function OverallStats() {
   );
 }
 
-const TIME_FRAMES: { label: string; value: TimeFrame }[] = [
+const TIME_FRAMES: { label: string; value: Time }[] = [
   { label: "1 year", value: "360d" },
   { label: "6 months", value: "180d" },
   { label: "1 month", value: "30d" },
@@ -233,7 +233,7 @@ type Section = "All" | "Blob" | "Block" | "Transaction";
 
 function Charts() {
   const [sectionFilter, setSectionFilter] = useState<Section>("All");
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>("180d");
+  const [timeFrame, setTimeFrame] = useState<Time>("180d");
   const { data: dailyStatsData } = api.stats.getDailyStats.useQuery({
     timeFrame,
   });
@@ -306,7 +306,7 @@ function Charts() {
             selected={TIME_FRAMES.find((option) => option.value === timeFrame)}
             onChange={(option: Option) => {
               if (!option) return;
-              setTimeFrame(option.value as TimeFrame);
+              setTimeFrame(option.value as Time);
             }}
           />
         </div>
