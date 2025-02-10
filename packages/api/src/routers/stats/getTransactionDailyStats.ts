@@ -33,7 +33,8 @@ export const getTransactionDailyStats = publicProcedure
         AND: [
           {
             day: {
-              gte: timeFrame,
+              gte: timeFrame?.initial,
+              lte: timeFrame?.final,
             },
           },
           {

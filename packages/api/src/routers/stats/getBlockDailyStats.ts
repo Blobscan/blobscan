@@ -37,7 +37,8 @@ export const getBlockDailyStats = publicProcedure
         AND: [
           {
             day: {
-              gte: timeFrame,
+              gte: timeFrame?.initial,
+              lte: timeFrame?.final,
             },
           },
           {

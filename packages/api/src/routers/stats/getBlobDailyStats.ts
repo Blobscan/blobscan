@@ -32,7 +32,8 @@ export const getBlobDailyStats = publicProcedure
         AND: [
           {
             day: {
-              gte: timeFrame,
+              gte: timeFrame?.initial,
+              lte: timeFrame?.final,
             },
           },
           {
