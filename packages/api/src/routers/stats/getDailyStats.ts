@@ -1,9 +1,5 @@
 import { z } from "@blobscan/zod";
 
-import {
-  withTimeFrame,
-  withTimeFrameSchema,
-} from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
 import {
   categorySchema,
@@ -12,9 +8,10 @@ import {
   serializeDate,
   serializeRollup,
 } from "../../utils";
+import { timeSchema } from "../../utils/time-schema";
 import { statsSchema } from "./common";
 
-const inputSchema = withTimeFrameSchema;
+const inputSchema = timeSchema;
 const outputSchema = statsSchema
   .merge(
     z.object({
@@ -28,15 +25,13 @@ const outputSchema = statsSchema
 export const getDailyStats = publicProcedure
   .input(inputSchema)
   .output(outputSchema)
-  .use(withTimeFrame)
-  .query(async ({ ctx: { prisma, timeFrame } }) => {
+  .query(async ({ ctx: { prisma }, input: { timeFrame } }) => {
     const dailyStats = await prisma.dailyStats.findMany({
       where: {
         AND: [
           {
             day: {
-              gte: timeFrame.initial.toDate(),
-              lte: timeFrame.final.toDate(),
+              gte: timeFrame,
             },
           },
           {
