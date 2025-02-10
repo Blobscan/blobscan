@@ -10,8 +10,9 @@ const TimeEnum = z.enum(TIME).transform((time) => {
     return undefined;
   }
 
+  const today = Math.floor(Date.now() / ONE_DAY) * ONE_DAY;
   const days = parseInt(time.replace("d", ""));
-  return new Date(Date.now() - days * ONE_DAY);
+  return new Date(today - days * ONE_DAY);
 });
 
 export const timeSchema = z.object({
