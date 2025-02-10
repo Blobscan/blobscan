@@ -57,20 +57,39 @@ async function getAllValidatorQuery() {
   }
 }
 
-async function getWithdrawalAmount(index: any) {
+async function getWithdrawalAmounts(indices: string[]) {
   try {
     const result = await pool.query(
-      "SELECT withdrawal_amount FROM validator_withdrawal WHERE validator_idx = $1", [index]
+      "SELECT validator_idx, withdrawal_amount FROM validator_withdrawal WHERE validator_idx = ANY($1)",
+      [indices]
     );
-    if (result.rows.length > 0) {
-      return result.rows[0].withdrawal_amount;
-    } else {
-      return "----";  
-    }
+
+    return new Map(result.rows.map(row => [row.validator_idx, row.withdrawal_amount]));
   } catch (error) {
-    logger.error("Error fetching withdrawal amount:", error);
-    return "----";  
+    logger.error("Error fetching withdrawal amounts:", error);
+    return new Map();
   }
+}
+
+async function enrichValidators(data: any[]) {
+  const batchSize = 1000; 
+  let enrichedData: any[] = [];
+
+  for (let i = 0; i < data.length; i += batchSize) {
+    const batch = data.slice(i, i + batchSize);  
+    const validatorIndices = batch.map(v => v.index);
+    
+    const withdrawalAmounts = await getWithdrawalAmounts(validatorIndices);
+
+    const batchResult = batch.map(validator => ({
+      ...validator,
+      withdrawal_amount: withdrawalAmounts.get(validator.index) || "----"
+    }));
+
+    enrichedData = enrichedData.concat(batchResult);
+  }
+
+  return enrichedData;
 }
 
 export const getAllValidators = publicProcedure
@@ -86,13 +105,6 @@ export const getAllValidators = publicProcedure
   .output(outputSchema)
   .query(async () => {
     const data = await getAllValidatorQuery();
-
-    const enrichedData = await Promise.all(data.map(async (validator: { index: any; }) => {
-      const withdrawalAmount = await getWithdrawalAmount(validator.index);  
-      return {
-        ...validator,
-        withdrawal_amount: withdrawalAmount, 
-      };
-    }));
-    return { data:enrichedData };
+    const enrichedData = await enrichValidators(data);
+    return { data: enrichedData };
   });
