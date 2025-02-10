@@ -268,11 +268,11 @@ export class BlobStorageManager {
       uniqueInputStorageNames.length &&
       selectedAvailableStorages.length !== uniqueInputStorageNames.length
     ) {
-      const selectdAvailableStorageNames = selectedAvailableStorages.map(
+      const selectedAvailableStorageNames = selectedAvailableStorages.map(
         (s) => s.name
       );
       const missingStorageNames = uniqueInputStorageNames.filter(
-        (storageName) => !selectdAvailableStorageNames.includes(storageName)
+        (storageName) => !selectedAvailableStorageNames.includes(storageName)
       );
 
       throw new BlobStorageManagerError(

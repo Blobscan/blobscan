@@ -1,10 +1,13 @@
 import NextLink from "next/link";
 import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
+import { useTheme } from "next-themes";
 
 import GoogleIcon from "~/icons/google.svg";
 import PostgresIcon from "~/icons/postgres.svg";
 import SwarmIcon from "~/icons/swarm.svg";
+import WeaveVMDarkIcon from "~/icons/weavevm-dark.svg";
+import WeaveVMLightIcon from "~/icons/weavevm-light.svg";
 import type { BlobStorage, Size } from "~/types";
 import { capitalize } from "~/utils";
 
@@ -19,6 +22,7 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
   storage,
   url = "#",
 }) => {
+  const { resolvedTheme } = useTheme();
   const commonStyles = cn({
     "h-3 w-3": size === "sm",
     "h-4 w-4": size === "md",
@@ -39,6 +43,14 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
       break;
     case "postgres":
       storageIcon = <PostgresIcon className={commonStyles} />;
+      break;
+    case "weavevm":
+      storageIcon =
+        resolvedTheme === "light" ? (
+          <WeaveVMLightIcon className={commonStyles} />
+        ) : (
+          <WeaveVMDarkIcon className={commonStyles} />
+        );
       break;
   }
 

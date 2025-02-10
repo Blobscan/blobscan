@@ -1,5 +1,16 @@
 # @blobscan/blob-propagator
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [[`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202), [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256), [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202)]:
+  - @blobscan/db@0.13.0
+  - @blobscan/blob-storage-manager@0.4.0
+  - @blobscan/env@0.1.0
+  - @blobscan/logger@0.1.2
+  - @blobscan/open-telemetry@0.0.9
+
 ## 0.2.7
 
 ### Patch Changes
@@ -76,13 +87,13 @@
 
 - [#395](https://github.com/Blobscan/blobscan/pull/395) [`52804b1`](https://github.com/Blobscan/blobscan/commit/52804b1a71c645242719230b3d68240b6a30687a) Thanks [@PJColombo](https://github.com/PJColombo)! - Used custom logger
 
-- [#359](https://github.com/Blobscan/blobscan/pull/359) [`95fbf74`](https://github.com/Blobscan/blobscan/commit/95fbf7471f5e5cacec7513f0736a70a18f971ce1) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed to remove storage jobs from finalizer queue depedencies if they fail
+- [#359](https://github.com/Blobscan/blobscan/pull/359) [`95fbf74`](https://github.com/Blobscan/blobscan/commit/95fbf7471f5e5cacec7513f0736a70a18f971ce1) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed to remove storage jobs from finalizer queue dependencies if they fail
 
 - [#359](https://github.com/Blobscan/blobscan/pull/359) [`d7a760d`](https://github.com/Blobscan/blobscan/commit/d7a760da302ce01f1f6f1072d98a10cc100dc1f5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving blob data by hash in addition to by its references.
 
 - [#380](https://github.com/Blobscan/blobscan/pull/380) [`7e2d4d0`](https://github.com/Blobscan/blobscan/commit/7e2d4d0f601127c00ade2f01e4936579463230fd) Thanks [@PJColombo](https://github.com/PJColombo)! - Filtered out duplicated blobs when propagating multiple blobs
 
-- [#388](https://github.com/Blobscan/blobscan/pull/388) [`40824c2`](https://github.com/Blobscan/blobscan/commit/40824c26f6d8a360592c812bd1afe505d9fc4f6d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Decoupled blob storage creation from enviroment variables
+- [#388](https://github.com/Blobscan/blobscan/pull/388) [`40824c2`](https://github.com/Blobscan/blobscan/commit/40824c26f6d8a360592c812bd1afe505d9fc4f6d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Decoupled blob storage creation from environment variables
 
 - [`0570eee`](https://github.com/Blobscan/blobscan/commit/0570eee9a4d30f5c07cef177ba79cd1798992761) Thanks [@PJColombo](https://github.com/PJColombo)! - Allowed to configure blob propagation jobs lifetime
 

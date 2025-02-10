@@ -1,6 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import NextError from "next/error";
+
+import dayjs from "@blobscan/dayjs";
 
 import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
@@ -10,6 +12,8 @@ import { PaginatedTable } from "~/components/PaginatedTable";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
+import { TimestampToggle } from "~/components/TimestampToggle";
+import type { TimestampFormat } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import {
@@ -21,41 +25,6 @@ import {
   formatTimestamp,
   shortenAddress,
 } from "~/utils";
-
-const BLOBS_TABLE_HEADERS = [
-  {
-    cells: [
-      {
-        item: "",
-        className: "w-[40px]",
-      },
-      {
-        item: "Versioned Hash",
-        className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
-      },
-      {
-        item: "Transaction Hash",
-        className: "2xl:w-[318px] xl:w-[276px] lg:w-[218px] w-[172px]",
-      },
-      {
-        item: "Block Number",
-        className: "2xl:w-[221px] xl:w-[191px] lg:w-[152px] w-[120px]",
-      },
-      {
-        item: "Timestamp",
-        className: "2xl:w-[185px] xl:w-[160px] lg:w-[127px] w-[100px]",
-      },
-      {
-        item: "Size",
-        className: "2xl:w-[178px] xl:w-[145px] lg:w-[101px] w-[66px]",
-      },
-      {
-        item: "Storage",
-        className: "w-[86px]",
-      },
-    ],
-  },
-];
 
 const Blobs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
@@ -78,6 +47,45 @@ const Blobs: NextPage = function () {
   const error = blobsError ?? countError;
   const { blobs } = blobsData || {};
   const { totalBlobs } = countData || {};
+
+  const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
+
+  const BLOBS_TABLE_HEADERS = [
+    {
+      cells: [
+        {
+          item: "",
+          className: "w-[40px]",
+        },
+        {
+          item: "Versioned Hash",
+          className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
+        },
+        {
+          item: "Transaction Hash",
+          className: "2xl:w-[318px] xl:w-[276px] lg:w-[218px] w-[172px]",
+        },
+        {
+          item: "Block Number",
+          className: "2xl:w-[221px] xl:w-[191px] lg:w-[152px] w-[120px]",
+        },
+        {
+          item: (
+            <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
+          ),
+          className: "2xl:w-[185px] w-[170px]",
+        },
+        {
+          item: "Size",
+          className: "2xl:w-[178px] xl:w-[145px] lg:w-[101px] w-[66px]",
+        },
+        {
+          item: "Storage",
+          className: "w-[86px]",
+        },
+      ],
+    },
+  ];
 
   const blobRows = useMemo(() => {
     return blobs
@@ -136,11 +144,10 @@ const Blobs: NextPage = function () {
                 ),
               },
               {
-                item: (
-                  <div className="whitespace-break-spaces">
-                    {formatTimestamp(blockTimestamp, true)}
-                  </div>
-                ),
+                item:
+                  timeFormat === "relative"
+                    ? formatTimestamp(blockTimestamp, true)
+                    : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
               },
               {
                 item: (
@@ -167,7 +174,7 @@ const Blobs: NextPage = function () {
           })
         )
       : undefined;
-  }, [blobs]);
+  }, [blobs, timeFormat]);
 
   if (error) {
     return (

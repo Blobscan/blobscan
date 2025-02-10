@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   PostgresStorage,
+  WeaveVMStorage,
   createStorageFromEnv,
   getBlobStorageManager,
 } from "@blobscan/blob-storage-manager";
@@ -34,6 +35,15 @@ export class MockedBlobPropagator extends BlobPropagator {
 
   getTemporaryBlobStorage() {
     return this.temporaryBlobStorage;
+  }
+}
+
+class MockedWeaveVMStorage extends WeaveVMStorage {
+  constructor() {
+    super({
+      apiBaseUrl: "http://localhost:8000",
+      chainId: 1,
+    });
   }
 }
 
@@ -89,6 +99,28 @@ describe("BlobPropagator", () => {
 
       new MockedBlobPropagator({
         blobStorageManager: emptyBlobStorageManager,
+        prisma,
+        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        workerOptions: {
+          connection,
+        },
+      });
+    },
+    BlobPropagatorCreationError,
+    {
+      checkCause: true,
+    }
+  );
+
+  testValidError(
+    "should throw a valid error when creating a blob propagator with blob storages without worker processors",
+    () => {
+      const weavevmStorage = new MockedWeaveVMStorage();
+
+      const blobStorageManager = new BlobStorageManager([weavevmStorage]);
+
+      new MockedBlobPropagator({
+        blobStorageManager,
         prisma,
         tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
         workerOptions: {

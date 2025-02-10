@@ -50,6 +50,9 @@ export function buildBlobDataUrl(
     case "POSTGRES": {
       return `${env.BLOBSCAN_API_BASE_URL}/blobs/${blobDataUri}/data`;
     }
+    case "WEAVEVM": {
+      return `${env.WEAVEVM_STORAGE_API_BASE_URL}/v1/blob/${blobDataUri}`;
+    }
   }
 }
 

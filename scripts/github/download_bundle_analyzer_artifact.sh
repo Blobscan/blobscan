@@ -1,4 +1,4 @@
-# We use this instead of action-download-artifact. See discussion on
+# We use this instead of action download-artifact. See discussion on
 # https://github.com/dawidd6/action-download-artifact/issues/240
 set -xe
 ORG="Blobscan"
@@ -6,7 +6,7 @@ REPO="blobscan"
 WORKFLOW="nextjs-bundle-analysis.yml"
 ARTIFACT_NAME="bundle"
 DESTINATION="apps/web/.next/analyze/base"
-BASE_BRANCH="next"
+BASE_BRANCH="main"
 
 ARTIFACTS_URL=$(
   gh api \

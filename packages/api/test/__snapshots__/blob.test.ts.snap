@@ -1,5 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Blob router > createWeaveVmReferences > when authorized > should fail when one or more provided blobs do not exist 1`] = `"Couldn't found the following blobs: \\"nonExistingBlobHash\\""`;
+
+exports[`Blob router > createWeaveVmReferences > when authorized > should fail when one or more provided blobs do not exist 2`] = `undefined`;
+
 exports[`Blob router > getAll > when getting expanded blob results > should return the correct expanded block 1`] = `
 [
   {
@@ -10,29 +14,20 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "excessBlobGas": "15000",
       "slot": 108,
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "block": {
@@ -42,7 +37,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "excessBlobGas": "15000",
       "slot": 107,
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -80,23 +75,14 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "excessBlobGas": "15000",
       "slot": 108,
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "blobGasUsed": "131072",
@@ -108,7 +94,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
     "block": {
@@ -118,7 +104,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "excessBlobGas": "15000",
       "slot": 107,
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -155,23 +141,14 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
 exports[`Blob router > getAll > when getting expanded blob results > should return the correct expanded transaction 1`] = `
 [
   {
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "blobAsCalldataGasUsed": "1000",
       "blobGasUsed": "131072",
@@ -183,10 +160,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -438,32 +415,23 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the latest results when no sort was specified 1`] = `
 [
   {
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -489,7 +457,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -596,7 +564,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to a provided rollup 1`] = `
 [
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -622,7 +590,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -648,7 +616,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2022,32 +1990,23 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the block specificed 1`] = `
 [
   {
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2073,7 +2032,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2099,7 +2058,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2130,32 +2089,23 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the date specified 1`] = `
 [
   {
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2181,7 +2131,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2207,7 +2157,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2263,32 +2213,23 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the slot specified 1`] = `
 [
   {
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2314,7 +2255,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2340,7 +2281,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash004",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2371,32 +2312,23 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting paginated blob results > should default to the first page when no page was specified 1`] = `
 [
   {
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
-    "commitment": "commitment001",
-    "dataStorageReferences": [
-      {
-        "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-      },
-      {
-        "storage": "swarm",
-        "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-      },
-    ],
+    "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dataStorageReferences": [],
     "index": 0,
-    "proof": "proof001",
-    "size": 1000,
+    "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 1500,
     "transaction": {
       "category": "other",
     },
     "txHash": "txHash016",
     "txIndex": 0,
-    "versionedHash": "blobHash001",
+    "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "commitment": "commitment004",
@@ -2544,7 +2476,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
   "size": 1300,
   "transactions": [
     {
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
@@ -2553,7 +2485,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "txIndex": 0,
     },
     {
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
@@ -2562,7 +2494,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "txIndex": 0,
     },
     {
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
@@ -2593,7 +2525,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "size": 1300,
   "transactions": [
     {
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
@@ -2602,7 +2534,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "txIndex": 0,
     },
     {
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",
@@ -2611,7 +2543,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "txIndex": 0,
     },
     {
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
       "hash": "txHash015",

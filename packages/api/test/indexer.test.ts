@@ -16,14 +16,9 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
-import {
-  fixtures,
-  omitDBTimestampFields,
-  testValidError,
-} from "@blobscan/test";
+import { omitDBTimestampFields, testValidError } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
-import type { HandleReorgedSlotsInput } from "../src/routers/indexer/handleReorgedSlots";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import {
@@ -40,7 +35,9 @@ describe("Indexer router", async () => {
   beforeAll(async () => {
     const ctx = await createTestContext();
 
-    authorizedContext = await createTestContext({ withAuth: true });
+    authorizedContext = await createTestContext({
+      apiClient: { type: "indexer" },
+    });
 
     nonAuthorizedCaller = appRouter.createCaller(ctx);
     authorizedCaller = appRouter.createCaller(authorizedContext);
@@ -454,7 +451,7 @@ describe("Indexer router", async () => {
 
           beforeAll(async () => {
             ctxWithBlobPropagator = await createTestContext({
-              withAuth: true,
+              apiClient: { type: "indexer" },
               withBlobPropagator: true,
             });
 
@@ -622,32 +619,6 @@ describe("Indexer router", async () => {
         ).resolves.toBeUndefined();
       });
 
-      it("should reindex a block previously marked as reorged correctly", async () => {
-        const blockHash = INPUT.block.hash;
-        const blockTxHashes = INPUT.transactions.map((tx) => tx.hash);
-
-        // Marked the block as reorged
-        await authorizedContext.prisma.transactionFork.createMany({
-          data: blockTxHashes.map((hash) => ({
-            hash,
-            blockHash,
-          })),
-        });
-
-        // Reindex the block
-        await authorizedCaller.indexer.indexData(INPUT);
-
-        const forkTxs = await authorizedContext.prisma.transactionFork.findMany(
-          {
-            where: {
-              blockHash,
-            },
-          }
-        );
-
-        expect(forkTxs, "Block still has forked transactions").toEqual([]);
-      });
-
       testValidError(
         "should fail when receiving an empty array of transactions",
         async () => {
@@ -678,177 +649,400 @@ describe("Indexer router", async () => {
     });
   });
 
-  describe("handleReorgedSlots", () => {
+  describe("handleReorg", () => {
     describe("when authorized", () => {
-      const input: HandleReorgedSlotsInput = {
-        reorgedSlots: [106, 107, 108],
-      };
+      const rewindedBlockHashes = [
+        "0x8000000000000000000000000000000000000000000000000000000000000000",
+        "0x7000000000000000000000000000000000000000000000000000000000000000",
+      ];
+      const forwardedBlockHashes = [
+        "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
+      ];
 
-      it("should mark the transactions contained in the blocks with a slot greater than the new head slot as reorged", async () => {
-        const prevTransactionForks =
-          await authorizedContext.prisma.transactionFork.findMany();
-        const expectedTransactionForks = fixtures.txs
-          .filter(({ blockHash }) => {
-            const block = fixtures.blocks.find(
-              ({ hash }) => hash === blockHash
-            );
+      describe("when handling rewinded blocks", () => {
+        it("should mark them as reorged", async () => {
+          await authorizedCaller.indexer.handleReorg({
+            rewindedBlocks: rewindedBlockHashes,
+            forwardedBlocks: [],
+          });
 
-            return block?.slot && input.reorgedSlots.includes(block.slot);
-          })
-          .map(({ hash, blockHash }) => ({
-            hash,
-            blockHash,
-          }));
+          const dbRewindedBlockTxs =
+            await authorizedContext.prisma.transaction.findMany({
+              select: {
+                hash: true,
+              },
+              where: {
+                blockHash: {
+                  in: rewindedBlockHashes,
+                },
+              },
+              orderBy: {
+                hash: "asc",
+              },
+            });
+          const dbRewindedBlockForkTxs =
+            await authorizedContext.prisma.transactionFork.findMany({
+              select: {
+                hash: true,
+              },
+              where: {
+                blockHash: {
+                  in: rewindedBlockHashes,
+                },
+              },
+              orderBy: {
+                hash: "asc",
+              },
+            });
 
-        await authorizedCaller.indexer.handleReorgedSlots(input);
-
-        const transactionForks = await authorizedContext.prisma.transactionFork
-          .findMany()
-          .then((txForks) =>
-            txForks
-              .map((txFork) => omitDBTimestampFields(txFork))
-              .filter(
-                (txFork) =>
-                  !prevTransactionForks.find(
-                    (prevTxFork) => prevTxFork.hash === txFork.hash
-                  )
-              )
-          );
-
-        expect(transactionForks).toEqual(expectedTransactionForks);
-      });
-
-      it("should clean up references to the reorged blocks", async () => {
-        const reorgedBlocks = await authorizedContext.prisma.block.findMany({
-          where: {
-            slot: {
-              in: input.reorgedSlots,
-            },
-          },
+          expect(dbRewindedBlockTxs).toEqual(dbRewindedBlockForkTxs);
         });
 
-        const reorgedBlockNumbers = reorgedBlocks.map((block) => block.number);
-
-        await authorizedCaller.indexer.handleReorgedSlots(input);
-
-        const reorgedBlocksAddressCategoryInfos =
-          await authorizedContext.prisma.addressCategoryInfo.findMany({
-            where: {
-              OR: [
-                {
-                  firstBlockNumberAsSender: {
-                    in: reorgedBlockNumbers,
+        describe("when cleaing up block references", () => {
+          let rewindedBlockNumbers: number[];
+          beforeAll(async () => {
+            rewindedBlockNumbers = await authorizedContext.prisma.block
+              .findMany({
+                select: {
+                  number: true,
+                },
+                where: {
+                  hash: {
+                    in: rewindedBlockHashes,
                   },
                 },
-                {
-                  firstBlockNumberAsReceiver: {
-                    in: reorgedBlockNumbers,
-                  },
+                orderBy: {
+                  number: "asc",
                 },
-              ],
-            },
+              })
+              .then((blocks) => blocks.map((block) => block.number));
           });
-        const blobsWithReorgedBlocks =
-          await authorizedContext.prisma.blob.findMany({
+
+          it("should remove block references from addresses with their first transaction in those blocks", async () => {
+            const addressCategoryInfosWithRewindedBlockReferencesBefore =
+              await authorizedContext.prisma.addressCategoryInfo.findMany({
+                where: {
+                  OR: [
+                    {
+                      firstBlockNumberAsSender: {
+                        in: rewindedBlockNumbers,
+                      },
+                    },
+                    {
+                      firstBlockNumberAsReceiver: {
+                        in: rewindedBlockNumbers,
+                      },
+                    },
+                  ],
+                },
+              });
+
+            await authorizedCaller.indexer.handleReorg({
+              rewindedBlocks: rewindedBlockHashes,
+            });
+
+            const addressCategoryInfosWithRewindedBlockReferencesAfter =
+              await authorizedContext.prisma.addressCategoryInfo.findMany({
+                where: {
+                  OR: [
+                    {
+                      firstBlockNumberAsSender: {
+                        in: rewindedBlockNumbers,
+                      },
+                    },
+                    {
+                      firstBlockNumberAsReceiver: {
+                        in: rewindedBlockNumbers,
+                      },
+                    },
+                  ],
+                },
+              });
+
+            expect(
+              addressCategoryInfosWithRewindedBlockReferencesBefore.length,
+              "address category infos should have rewinded block references before handling reorg"
+            ).toBeGreaterThan(0);
+            expect(
+              addressCategoryInfosWithRewindedBlockReferencesAfter.length,
+              "address category info's rewinded block references should have been deleted"
+            ).toEqual(0);
+          });
+
+          it("should remove block number references from blobs", async () => {
+            const blobsWithRewindedBlockReferencesBefore =
+              await authorizedContext.prisma.blob.findMany({
+                where: {
+                  firstBlockNumber: {
+                    in: rewindedBlockNumbers,
+                  },
+                },
+              });
+
+            await authorizedCaller.indexer.handleReorg({
+              rewindedBlocks: rewindedBlockHashes,
+            });
+
+            const blobsWithRewindedBlockReferencesAfter =
+              await authorizedContext.prisma.blob.findMany({
+                where: {
+                  firstBlockNumber: {
+                    in: rewindedBlockNumbers,
+                  },
+                },
+              });
+
+            expect(
+              blobsWithRewindedBlockReferencesBefore.length,
+              "blobs should have rewinded block references before handling reorg"
+            ).toBeGreaterThan(0);
+            expect(
+              blobsWithRewindedBlockReferencesAfter.length,
+              "blob's rewinded block references should have been deleted"
+            ).toEqual(0);
+          });
+        });
+      });
+
+      it("should unmark the forwarded blocks as reorged", async () => {
+        const dbForwardedBlockTxsBefore =
+          await authorizedContext.prisma.transactionFork.findMany({
+            select: {
+              hash: true,
+            },
             where: {
-              firstBlockNumber: {
-                in: reorgedBlockNumbers,
+              blockHash: {
+                in: forwardedBlockHashes,
               },
             },
+            orderBy: {
+              hash: "asc",
+            },
+          });
+
+        await authorizedCaller.indexer.handleReorg({
+          forwardedBlocks: forwardedBlockHashes,
+        });
+
+        const dbForwardedBlockTxsAfter =
+          await authorizedContext.prisma.transactionFork.findMany({
+            select: {
+              hash: true,
+            },
+            where: {
+              blockHash: {
+                in: forwardedBlockHashes,
+              },
+            },
+            orderBy: {
+              hash: "asc",
+            },
           });
 
         expect(
-          reorgedBlocksAddressCategoryInfos,
-          "Reorged block references in address category records found"
-        ).toEqual([]);
+          dbForwardedBlockTxsBefore.length,
+          "block doesn't have fork transactions"
+        ).toBeGreaterThan(0);
         expect(
-          blobsWithReorgedBlocks,
-          "Reorged block references in blob records found"
-        ).toEqual([]);
-      });
-
-      it("should return the number of updated slots", async () => {
-        const result = await authorizedCaller.indexer.handleReorgedSlots(input);
-
-        expect(result).toEqual({
-          totalUpdatedSlots: input.reorgedSlots.length,
-        });
-      });
-
-      it("should ignore non-existent slots and mark the ones that exist as reorged", async () => {
-        const reorgedSlots = [106, 107, 99999];
-        const prevTransactionForks =
-          await authorizedContext.prisma.transactionFork.findMany();
-        const expectedTransactionForks = fixtures.txs
-          .filter(({ blockHash }) => {
-            const block = fixtures.blocks.find(
-              ({ hash }) => hash === blockHash
-            );
-
-            return block?.slot && reorgedSlots.includes(block.slot);
-          })
-          .map(({ hash, blockHash }) => ({
-            hash,
-            blockHash,
-          }));
-
-        const result = await authorizedCaller.indexer.handleReorgedSlots({
-          reorgedSlots: reorgedSlots as [number, ...number[]],
-        });
-
-        const transactionForks = await authorizedContext.prisma.transactionFork
-          .findMany()
-          .then((txForks) =>
-            txForks
-              .map((txFork) => omitDBTimestampFields(txFork))
-              .filter(
-                (txFork) =>
-                  !prevTransactionForks.find(
-                    (prevTxFork) => prevTxFork.hash === txFork.hash
-                  )
-              )
-          );
-
-        expect(transactionForks, "Fork transactions mismatch").toEqual(
-          expectedTransactionForks
-        );
-        expect(
-          result.totalUpdatedSlots,
-          "Total updated slots mismatch"
-        ).toEqual(2);
+          dbForwardedBlockTxsAfter.length,
+          "block fork txs should have been deleted"
+        ).toEqual(0);
       });
     });
 
-    it("should not mark any of the provided slots as reorged if all of them are non-existent", async () => {
-      const reorgedSlots = [99999, 99998, 99997];
-      const prevTransactionForks =
-        await authorizedContext.prisma.transactionFork.findMany();
-
-      const result = await authorizedCaller.indexer.handleReorgedSlots({
-        reorgedSlots: reorgedSlots as [number, ...number[]],
-      });
-
-      const transactionForks = await authorizedContext.prisma.transactionFork
-        .findMany()
-        .then((txForks) =>
-          txForks
-            .map((txFork) => omitDBTimestampFields(txFork))
-            .filter(
-              (txFork) =>
-                !prevTransactionForks.find(
-                  (prevTxFork) => prevTxFork.hash === txFork.hash
-                )
-            )
-        );
-
-      expect(transactionForks, " Fork transactions mismatch").toEqual([]);
-      expect(result.totalUpdatedSlots, "Total updated slots mismatch").toEqual(
-        0
-      );
+    it("should skip if receiving empty forwarded and rewinded block arrays", async () => {
+      await expect(
+        authorizedCaller.indexer.handleReorg({
+          rewindedBlocks: [],
+          forwardedBlocks: [],
+        })
+      ).resolves.toBeUndefined();
     });
 
-    unauthorizedRPCCallTest(() =>
-      nonAuthorizedCaller.indexer.handleReorgedSlots({ reorgedSlots: [1000] })
-    );
+    it("should skip non-existent rewinded blocks", async () => {
+      await expect(
+        authorizedCaller.indexer.handleReorg({
+          rewindedBlocks: [
+            "0x992372cef5b4b0f1eee8589218fcd29908f6b19a76d23d0ad4e497479125aa85",
+          ],
+        })
+      ).resolves.toBeUndefined();
+    });
+
+    unauthorizedRPCCallTest(() => nonAuthorizedCaller.indexer.handleReorg({}));
   });
+
+  // describe("handleReorgedSlots", () => {
+  //   describe("when authorized", () => {
+  //     const input: HandleReorgedSlotsInput = {
+  //       reorgedSlots: [106, 107, 108],
+  //     };
+
+  //     it("should mark the transactions contained in the blocks with a slot greater than the new head slot as reorged", async () => {
+  //       const prevTransactionForks =
+  //         await authorizedContext.prisma.transactionFork.findMany();
+  //       const expectedTransactionForks = fixtures.txs
+  //         .filter(({ blockHash }) => {
+  //           const block = fixtures.blocks.find(
+  //             ({ hash }) => hash === blockHash
+  //           );
+
+  //           return block?.slot && input.reorgedSlots.includes(block.slot);
+  //         })
+  //         .map(({ hash, blockHash }) => ({
+  //           hash,
+  //           blockHash,
+  //         }));
+
+  //       await authorizedCaller.indexer.handleReorgedSlots(input);
+
+  //       const transactionForks = await authorizedContext.prisma.transactionFork
+  //         .findMany()
+  //         .then((txForks) =>
+  //           txForks
+  //             .map((txFork) => omitDBTimestampFields(txFork))
+  //             .filter(
+  //               (txFork) =>
+  //                 !prevTransactionForks.find(
+  //                   (prevTxFork) => prevTxFork.hash === txFork.hash
+  //                 )
+  //             )
+  //         );
+
+  //       expect(transactionForks).toEqual(expectedTransactionForks);
+  //     });
+
+  //     it("should clean up references to the reorged blocks", async () => {
+  //       const reorgedBlocks = await authorizedContext.prisma.block.findMany({
+  //         where: {
+  //           slot: {
+  //             in: input.reorgedSlots,
+  //           },
+  //         },
+  //       });
+
+  //       const reorgedBlockNumbers = reorgedBlocks.map((block) => block.number);
+
+  //       await authorizedCaller.indexer.handleReorgedSlots(input);
+
+  //       const reorgedBlocksAddressCategoryInfos =
+  //         await authorizedContext.prisma.addressCategoryInfo.findMany({
+  //           where: {
+  //             OR: [
+  //               {
+  //                 firstBlockNumberAsSender: {
+  //                   in: reorgedBlockNumbers,
+  //                 },
+  //               },
+  //               {
+  //                 firstBlockNumberAsReceiver: {
+  //                   in: reorgedBlockNumbers,
+  //                 },
+  //               },
+  //             ],
+  //           },
+  //         });
+  //       const blobsWithReorgedBlocks =
+  //         await authorizedContext.prisma.blob.findMany({
+  //           where: {
+  //             firstBlockNumber: {
+  //               in: reorgedBlockNumbers,
+  //             },
+  //           },
+  //         });
+
+  //       expect(
+  //         reorgedBlocksAddressCategoryInfos,
+  //         "Reorged block references in address category records found"
+  //       ).toEqual([]);
+  //       expect(
+  //         blobsWithReorgedBlocks,
+  //         "Reorged block references in blob records found"
+  //       ).toEqual([]);
+  //     });
+
+  //     it("should return the number of updated slots", async () => {
+  //       const result = await authorizedCaller.indexer.handleReorgedSlots(input);
+
+  //       expect(result).toEqual({
+  //         totalUpdatedSlots: input.reorgedSlots.length,
+  //       });
+  //     });
+
+  //     it("should ignore non-existent slots and mark the ones that exist as reorged", async () => {
+  //       const reorgedSlots = [106, 107, 99999];
+  //       const prevTransactionForks =
+  //         await authorizedContext.prisma.transactionFork.findMany();
+  //       const expectedTransactionForks = fixtures.txs
+  //         .filter(({ blockHash }) => {
+  //           const block = fixtures.blocks.find(
+  //             ({ hash }) => hash === blockHash
+  //           );
+
+  //           return block?.slot && reorgedSlots.includes(block.slot);
+  //         })
+  //         .map(({ hash, blockHash }) => ({
+  //           hash,
+  //           blockHash,
+  //         }));
+
+  //       const result = await authorizedCaller.indexer.handleReorgedSlots({
+  //         reorgedSlots: reorgedSlots as [number, ...number[]],
+  //       });
+
+  //       const transactionForks = await authorizedContext.prisma.transactionFork
+  //         .findMany()
+  //         .then((txForks) =>
+  //           txForks
+  //             .map((txFork) => omitDBTimestampFields(txFork))
+  //             .filter(
+  //               (txFork) =>
+  //                 !prevTransactionForks.find(
+  //                   (prevTxFork) => prevTxFork.hash === txFork.hash
+  //                 )
+  //             )
+  //         );
+
+  //       expect(transactionForks, "Fork transactions mismatch").toEqual(
+  //         expectedTransactionForks
+  //       );
+  //       expect(
+  //         result.totalUpdatedSlots,
+  //         "Total updated slots mismatch"
+  //       ).toEqual(2);
+  //     });
+  //   });
+
+  //   it("should not mark any of the provided slots as reorged if all of them are non-existent", async () => {
+  //     const reorgedSlots = [99999, 99998, 99997];
+  //     const prevTransactionForks =
+  //       await authorizedContext.prisma.transactionFork.findMany();
+
+  //     const result = await authorizedCaller.indexer.handleReorgedSlots({
+  //       reorgedSlots: reorgedSlots as [number, ...number[]],
+  //     });
+
+  //     const transactionForks = await authorizedContext.prisma.transactionFork
+  //       .findMany()
+  //       .then((txForks) =>
+  //         txForks
+  //           .map((txFork) => omitDBTimestampFields(txFork))
+  //           .filter(
+  //             (txFork) =>
+  //               !prevTransactionForks.find(
+  //                 (prevTxFork) => prevTxFork.hash === txFork.hash
+  //               )
+  //           )
+  //       );
+
+  //     expect(transactionForks, " Fork transactions mismatch").toEqual([]);
+  //     expect(result.totalUpdatedSlots, "Total updated slots mismatch").toEqual(
+  //       0
+  //     );
+  //   });
+
+  //   unauthorizedRPCCallTest(() =>
+  //     nonAuthorizedCaller.indexer.handleReorgedSlots({ reorgedSlots: [1000] })
+  //   );
+  // });
 });

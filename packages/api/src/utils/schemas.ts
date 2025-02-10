@@ -6,6 +6,7 @@ const zodBlobStorageEnums = [
   "swarm",
   "postgres",
   "file_system",
+  "weavevm",
 ] as const;
 
 const zodRollupEnums = [
@@ -106,11 +107,18 @@ export const blockNumberSchema = z.number().nonnegative();
 
 export const slotSchema = z.number().nonnegative();
 
-export const blobIndexSchema = z.number().nonnegative();
-
 export const hexSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, {
   message: "Invalid hexadecimal string",
 });
+
+export const blockHashSchema = hexSchema.refine(
+  (value) => value.length === 66,
+  {
+    message: "Block hashes must be 66 characters long",
+  }
+);
+
+export const blobIndexSchema = z.number().nonnegative();
 
 export const addressSchema = z
   .string()

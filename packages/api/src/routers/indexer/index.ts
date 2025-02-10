@@ -1,8 +1,8 @@
 import { t } from "../../trpc-client";
-import { handleReorgedSlots } from "./handleReorgedSlots";
+import { handleReorg } from "./handleReorg";
 import { indexData } from "./indexData";
 
 export const indexerRouter = t.router({
-  handleReorgedSlots,
+  handleReorg,
   indexData,
 });
