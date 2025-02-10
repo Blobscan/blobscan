@@ -698,7 +698,7 @@ describe("Indexer router", async () => {
           expect(dbRewindedBlockTxs).toEqual(dbRewindedBlockForkTxs);
         });
 
-        describe("when cleaing up block references", () => {
+        describe("when cleaning up block references", () => {
           let rewindedBlockNumbers: number[];
           beforeAll(async () => {
             rewindedBlockNumbers = await authorizedContext.prisma.block
