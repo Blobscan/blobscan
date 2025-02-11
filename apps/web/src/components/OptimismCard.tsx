@@ -46,26 +46,26 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
       <InfoGrid
         fields={[
           {
-            name: "Timestamp since L2 genesis",
+            name: "Timestamp Since L2 Genesis",
             value: <div className="whitespace-break-spaces">{timestamp}</div>,
           },
           {
-            name: "Last L1 origin number",
+            name: "Last L1 Origin Number",
             value: (
               <Copyable
                 value={data.lastL1OriginNumber.toString()}
-                tooltipText="Copy Last L1 origin number"
+                tooltipText="Copy last L1 origin number"
               >
                 <Link href={blockLink}>{data.lastL1OriginNumber}</Link>
               </Copyable>
             ),
           },
           {
-            name: "Parent L2 block hash",
+            name: "Parent L2 Partial Block Hash",
             value: "0x" + data.parentL2BlockHash + "...",
           },
           {
-            name: "L1 origin block hash",
+            name: "L1 Origin Partial Block Hash",
             value: (
               <Copyable value={hash} tooltipText="Copy L1 origin block hash">
                 <Link href={blockLink}>{hash}</Link>
@@ -73,19 +73,19 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
             ),
           },
           {
-            name: "Number of L2 blocks",
+            name: "Number Of L2 Blocks",
             value: data.numberOfL2Blocks,
           },
           {
-            name: "Changed by L1 origin",
+            name: "Changed By L1 Origin",
             value: data.changedByL1Origin,
           },
           {
-            name: "Total transactions",
+            name: "Total Transactions",
             value: data.totalTxs,
           },
           {
-            name: "Contract creation transactions",
+            name: "Contract Creation Transactions",
             value: data.contractCreationTxsNumber,
           },
         ]}
