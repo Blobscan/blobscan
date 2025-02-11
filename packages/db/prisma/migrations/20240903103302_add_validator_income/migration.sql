@@ -19,6 +19,7 @@ CREATE TABLE "validator_income" (
     "sync_committee_penalty" BIGINT NOT NULL,
     "finality_delay_penalty" BIGINT NOT NULL,
     "tx_fee_reward_wei" BIGINT NOT NULL,
+    "withdrawal_amount" BIGINT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

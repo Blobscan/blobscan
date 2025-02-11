@@ -280,12 +280,26 @@ model ValidatorIncome {
   syncCommitteePenalty               BigInt @map("sync_committee_penalty")
   finalityDelayPenalty               BigInt @map("finality_delay_penalty")
   txFeeRewardWei                     BigInt @map("tx_fee_reward_wei")
+  withdrawalAmount                   BigInt @map("withdrawal_amount")
 
   insertedAt         DateTime @map("inserted_at") @default(now())
   updatedAt          DateTime @map("updated_at") @default(now())
 
   @@map("validator_income")
   @@unique([validatorIdx, epochIdx], name: "uni_validaotr_epoch_income", map: "uni_validaotr_epoch_income")
+}
+
+model ValidatorWithdrawal {
+  validatorIdx       BigInt   @map("validator_idx")
+  epochIdxGathered   BigInt   @map("epoch_idx_gathered")
+  withdrawalAmount   BigInt   @map("withdrawal_amount")
+
+  insertedAt         DateTime @map("inserted_at") @default(now())
+  updatedAt          DateTime @map("updated_at") @default(now())
+
+  @@unique([validatorIdx])
+  @@index([validatorIdx])
+  @@map("validator_withdrawal")
 }
 
 // NextAuth.js Models

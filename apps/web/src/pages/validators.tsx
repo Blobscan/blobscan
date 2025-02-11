@@ -42,6 +42,33 @@ const Validators: NextPage = function () {
           <Card key={validator.index}>
             <CardContent>
               <Grid container spacing={3}>
+                <Grid item xs={1}>
+                  <Typography
+                    variant="h6"
+                    style={{
+                      lineHeight: "60px",
+                      display: "flex",
+                      justifyContent: "center",
+                      color: "#143226",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Index
+                  </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    className="text-accent-light dark:text-accent-dark"
+                  >
+                    <Link href={buildValidatorRoute(validator.index)}>
+                      <Typography style={{ lineHeight: "40px" }}>
+                        {validator.index}
+                      </Typography>
+                    </Link>
+                  </div>
+                </Grid>
                 <Grid item xs={2}>
                   <Typography
                     variant="h6"
@@ -74,34 +101,7 @@ const Validators: NextPage = function () {
                     </CopyToClipboard>
                   </div>
                 </Grid>
-                <Grid item xs={1}>
-                  <Typography
-                    variant="h6"
-                    style={{
-                      lineHeight: "60px",
-                      display: "flex",
-                      justifyContent: "center",
-                      color: "#143226",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Index
-                  </Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    className="text-accent-light dark:text-accent-dark"
-                  >
-                    <Link href={buildValidatorRoute(validator.index)}>
-                      <Typography style={{ lineHeight: "40px" }}>
-                        {validator.index}
-                      </Typography>
-                    </Link>
-                  </div>
-                </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2.5}>
                   <Typography
                     variant="h6"
                     style={{
@@ -122,7 +122,31 @@ const Validators: NextPage = function () {
                     }}
                   >
                     {parseFloat(convertWei(validator.balance)).toFixed(4)} DILL
-                    ({convertWei(validator.validator.effective_balance)} DILL)
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography
+                    variant="h6"
+                    style={{
+                      lineHeight: "60px",
+                      display: "flex",
+                      justifyContent: "center",
+                      color: "#143226",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Withdrawal
+                  </Typography>
+                  <Typography
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        lineHeight: "40px",
+                      }}
+                    >
+                      {validator.withdrawal_amount === "----"
+                      ? "----"
+                      : (parseFloat(convertWei(validator.withdrawal_amount))).toFixed(4) + " DILL"}
                   </Typography>
                 </Grid>
                 <Grid item xs={1.5}>
@@ -225,41 +249,6 @@ const Validators: NextPage = function () {
                     </Typography>
                   )}
                 </Grid>
-                <Grid item xs={1.5}>
-                  <Typography
-                    variant="h6"
-                    style={{
-                      lineHeight: "60px",
-                      display: "flex",
-                      justifyContent: "center",
-                      color: "#143226",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    W/able
-                  </Typography>
-                  {validator.validator.exit_epoch === "18446744073709551615" ? (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      ----
-                    </Typography>
-                  ) : (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      Epoch {validator.validator.withdrawable_epoch}
-                    </Typography>
-                  )}
-                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -267,6 +256,21 @@ const Validators: NextPage = function () {
           <Card key={validator.index}>
             <CardContent>
               <Grid container spacing={3}>
+              <Grid item xs={1}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    className="text-accent-light dark:text-accent-dark"
+                  >
+                    <Link href={buildValidatorRoute(validator.index)}>
+                      <Typography style={{ lineHeight: "40px" }}>
+                        {validator.index}
+                      </Typography>
+                    </Link>
+                  </div>
+                </Grid>
                 <Grid item xs={2}>
                   <div
                     style={{
@@ -287,22 +291,7 @@ const Validators: NextPage = function () {
                     </CopyToClipboard>
                   </div>
                 </Grid>
-                <Grid item xs={1}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    className="text-accent-light dark:text-accent-dark"
-                  >
-                    <Link href={buildValidatorRoute(validator.index)}>
-                      <Typography style={{ lineHeight: "40px" }}>
-                        {validator.index}
-                      </Typography>
-                    </Link>
-                  </div>
-                </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2.5}>
                   <Typography
                     style={{
                       display: "flex",
@@ -311,7 +300,19 @@ const Validators: NextPage = function () {
                     }}
                   >
                     {parseFloat(convertWei(validator.balance)).toFixed(4)} DILL
-                    ({convertWei(validator.validator.effective_balance)} DILL)
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        lineHeight: "40px",
+                      }}
+                    >
+                      {validator.withdrawal_amount === "----"
+                      ? "----"
+                      : (parseFloat(convertWei(validator.withdrawal_amount))).toFixed(4) + " DILL"}
                   </Typography>
                 </Grid>
                 <Grid item xs={1.5}>
@@ -375,29 +376,6 @@ const Validators: NextPage = function () {
                       }}
                     >
                       Epoch {validator.validator.exit_epoch}
-                    </Typography>
-                  )}
-                </Grid>
-                <Grid item xs={1.5}>
-                  {validator.validator.exit_epoch === "18446744073709551615" ? (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      ----
-                    </Typography>
-                  ) : (
-                    <Typography
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        lineHeight: "40px",
-                      }}
-                    >
-                      Epoch {validator.validator.withdrawable_epoch}
                     </Typography>
                   )}
                 </Grid>

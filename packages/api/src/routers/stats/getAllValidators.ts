@@ -4,6 +4,23 @@ import { logger } from "@blobscan/logger"
 import { env } from "../../env"
 import { BASE_PATH } from "./common";
 import { publicProcedure } from "../../procedures";
+import { Pool } from "pg";
+//cd packages/api
+//pnpm add --save-dev @types/pg 
+
+const DATABASE_INFO = env.DATABASE_URL;
+
+const parsedUrl = new URL(DATABASE_INFO);
+
+const dbConfig = {
+  user: parsedUrl.username,    
+  password: parsedUrl.password, 
+  host: parsedUrl.hostname,     
+  port: parseInt(parsedUrl.port),  
+  database: parsedUrl.pathname.slice(1),  
+};
+
+const pool = new Pool(dbConfig);
 
 export const inputSchema = z.void();
 
@@ -22,6 +39,7 @@ export const outputSchema = z.object({
       exit_epoch: z.string(),
       withdrawable_epoch: z.string(),
     }),
+    withdrawal_amount: z.string(),
   }))
 });
 
@@ -39,6 +57,41 @@ async function getAllValidatorQuery() {
   }
 }
 
+async function getWithdrawalAmounts(indices: string[]) {
+  try {
+    const result = await pool.query(
+      "SELECT validator_idx, withdrawal_amount FROM validator_withdrawal WHERE validator_idx = ANY($1)",
+      [indices]
+    );
+
+    return new Map(result.rows.map(row => [row.validator_idx, row.withdrawal_amount]));
+  } catch (error) {
+    logger.error("Error fetching withdrawal amounts:", error);
+    return new Map();
+  }
+}
+
+async function enrichValidators(data: any[]) {
+  const batchSize = 1000; 
+  let enrichedData: any[] = [];
+
+  for (let i = 0; i < data.length; i += batchSize) {
+    const batch = data.slice(i, i + batchSize);  
+    const validatorIndices = batch.map(v => v.index);
+    
+    const withdrawalAmounts = await getWithdrawalAmounts(validatorIndices);
+
+    const batchResult = batch.map(validator => ({
+      ...validator,
+      withdrawal_amount: withdrawalAmounts.get(validator.index) || "----"
+    }));
+
+    enrichedData = enrichedData.concat(batchResult);
+  }
+
+  return enrichedData;
+}
+
 export const getAllValidators = publicProcedure
   .meta({
     openapi: {
@@ -52,5 +105,6 @@ export const getAllValidators = publicProcedure
   .output(outputSchema)
   .query(async () => {
     const data = await getAllValidatorQuery();
-    return { data:data };
+    const enrichedData = await enrichValidators(data);
+    return { data: enrichedData };
   });
