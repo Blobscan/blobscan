@@ -1,7 +1,9 @@
 import type { FC } from "react";
 import cn from "classnames";
 
-import { getEthereumParams } from "~/ethereum";
+import { getEthereumConfig } from "@blobscan/eth-config";
+
+import { env } from "~/env.mjs";
 import { calculatePercentage, formatNumber, performDiv } from "~/utils";
 import { PercentageBar } from "../PercentageBar";
 
@@ -31,12 +33,10 @@ function calculateBlobGasTarget(
 ) {
   const blobsInBlock = performDiv(blobGasUsed, gasPerBlob);
 
-  if (blobsInBlock < targetBlobsPerBlock) {
-    return calculatePercentage(blobsInBlock, targetBlobsPerBlock);
-  }
-
   return calculatePercentage(
-    blobsInBlock - targetBlobsPerBlock,
+    blobsInBlock < targetBlobsPerBlock
+      ? blobsInBlock
+      : blobsInBlock - targetBlobsPerBlock,
     targetBlobsPerBlock
   );
 }
@@ -51,7 +51,7 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
     blockBlobGasLimit: maxBlobGasPerBlock,
     targetBlobsPerBlock,
     targetBlobGasPerBlock,
-  } = getEthereumParams(slot);
+  } = getEthereumConfig(env.NEXT_PUBLIC_NETWORK_NAME, slot);
   const blobGasUsedPercentage = calculatePercentage(
     blobGasUsed,
     maxBlobGasPerBlock

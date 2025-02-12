@@ -20,6 +20,7 @@
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/db": "workspace:^0.13.0",
     "@blobscan/env": "workspace:^0.1.0",
+    "@blobscan/eth-config": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/open-telemetry": "workspace:^0.0.9",
     "@blobscan/rollups": "workspace:^0.2.2",

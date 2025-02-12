@@ -11,16 +11,18 @@ import { Category, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
+import { ETHEREUM_CONFIG } from "@blobscan/eth-config";
 
 import { BlobStorage } from "../enums";
 import type { SeedParams } from "./params";
 import {
-  BLOB_GAS_PER_BLOB,
   calculateBlobGasPrice,
   calculateExcessBlobGas,
   COMMON_MAX_FEE_PER_BLOB_GAS,
   ROLLUP_ADDRESSES,
 } from "./web3";
+
+const BLOB_GAS_PER_BLOB = ETHEREUM_CONFIG["dencun"].gasPerBlob;
 
 export type FullBlock = Block & {
   transactions: (Transaction & {

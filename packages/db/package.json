@@ -33,6 +33,7 @@
     "prisma": "^5.19.1"
   },
   "devDependencies": {
+    "@blobscan/eth-config": "workspace:^0.1.0",
     "@faker-js/faker": "^8.0.2",
     "js-sha256": "^0.9.0",
     "ora": "^8.1.1",

@@ -10,13 +10,10 @@ import type {
 import { Prisma } from "@blobscan/db";
 import { Category } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
+import { getEthereumConfig } from "@blobscan/eth-config";
 import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
-
-const MIN_BLOB_BASE_FEE = BigInt(1);
-const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
-const BLOB_GAS_PER_BLOB = BigInt(131_072);
 
 function bigIntToDecimal(bigint: bigint) {
   return new Prisma.Decimal(bigint.toString());
@@ -65,13 +62,17 @@ export function calculateBlobSize(blob: string): number {
   return blob.slice(2).length / 2;
 }
 
-export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
+export function calculateBlobGasPrice(
+  slot: number,
+  excessBlobGas: bigint
+): bigint {
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = getEthereumConfig(
+    env.CHAIN_ID,
+    slot
+  );
+
   return BigInt(
-    fakeExponential(
-      MIN_BLOB_BASE_FEE,
-      excessBlobGas,
-      BLOB_BASE_FEE_UPDATE_FRACTION
-    )
+    fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
   );
 }
 
@@ -93,7 +94,11 @@ export function createDBTransactions({
         BigInt(0)
       );
 
-      const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
+      const ethereumConfig = getEthereumConfig(env.CHAIN_ID, block.slot);
+      const blobGasPrice = calculateBlobGasPrice(
+        block.slot,
+        block.excessBlobGas
+      );
       const rollup = getRollupByAddress(from, env.CHAIN_ID);
       const category = rollup ? Category.ROLLUP : Category.OTHER;
 
@@ -107,7 +112,7 @@ export function createDBTransactions({
         index,
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasUsed: bigIntToDecimal(
-          BigInt(txBlobs.length) * BLOB_GAS_PER_BLOB
+          BigInt(txBlobs.length) * ethereumConfig.gasPerBlob
         ),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
@@ -130,10 +135,11 @@ export function createDBBlock(
     (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
     new Prisma.Decimal(0)
   );
+  const blobGasPrice = calculateBlobGasPrice(slot, excessBlobGas);
 
-  const blobGasPrice = calculateBlobGasPrice(excessBlobGas);
   return {
     number,
+
     hash,
     timestamp: timestampToDate(timestamp),
     slot,

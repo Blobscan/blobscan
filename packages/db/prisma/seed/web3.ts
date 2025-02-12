@@ -1,9 +1,6 @@
-import { Rollup } from "../enums";
+import { ETHEREUM_CONFIG } from "@blobscan/eth-config";
 
-const MIN_BLOB_BASE_FEE = BigInt(1);
-const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
-export const BLOB_GAS_PER_BLOB = BigInt(131_072);
-export const TARGET_BLOB_GAS_PER_BLOCK = BigInt(393216);
+import { Rollup } from "../enums";
 
 export const COMMON_MAX_FEE_PER_BLOB_GAS = [
   1000000000, 2, 150000000000, 10, 2000000000, 26000000000, 1, 4000000000, 4,
@@ -75,12 +72,11 @@ export function getEIP2028CalldataGas(hexData: string) {
 }
 
 export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } =
+    ETHEREUM_CONFIG["pectra"];
+
   return BigInt(
-    fakeExponential(
-      MIN_BLOB_BASE_FEE,
-      excessBlobGas,
-      BLOB_BASE_FEE_UPDATE_FRACTION
-    )
+    fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
   );
 }
 
@@ -88,12 +84,13 @@ export function calculateExcessBlobGas(
   parentExcessBlobGas: bigint,
   parentBlobGasUsed: bigint
 ) {
+  const targetBlobGasPerBlock = ETHEREUM_CONFIG["pectra"].targetBlobGasPerBlock;
   const excessBlobGas = BigInt(parentExcessBlobGas.toString());
   const blobGasUsed = BigInt(parentBlobGasUsed.toString());
 
-  if (excessBlobGas + blobGasUsed < TARGET_BLOB_GAS_PER_BLOCK) {
+  if (excessBlobGas + blobGasUsed < targetBlobGasPerBlock) {
     return BigInt(0);
   } else {
-    return excessBlobGas + blobGasUsed - TARGET_BLOB_GAS_PER_BLOCK;
+    return excessBlobGas + blobGasUsed - targetBlobGasPerBlock;
   }
 }

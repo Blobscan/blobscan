@@ -3,6 +3,8 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
+import { getEthereumConfig } from "@blobscan/eth-config";
+
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
@@ -15,7 +17,7 @@ import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
 import { getFirstBlobNumber } from "~/components/content";
 import { api } from "~/api-client";
-import { getEthereumParams } from "~/ethereum";
+import { env } from "~/env.mjs";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
@@ -74,7 +76,7 @@ const Block: NextPage = function () {
       blockBlobGasLimit,
       maxBlobsPerBlock,
       targetBlobGasPerBlock,
-    } = getEthereumParams(blockData.slot);
+    } = getEthereumConfig(env.NEXT_PUBLIC_NETWORK_NAME, blockData.slot);
 
     const totalBlockBlobSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
