@@ -1,6 +1,6 @@
 import { env } from "./env.mjs";
 
-export type EthereumUpgrade = "dencun";
+export type EthereumUpgrade = "dencun" | "pectra";
 
 export type EthereumParameters = {
   targetBlobsPerBlock: number;
@@ -25,10 +25,23 @@ export const ETHEREUM_PARAMETERS: Record<EthereumUpgrade, EthereumParameters> =
       targetBlobGasPerBlock: BigInt(393_216),
       blockBlobGasLimit: BigInt(786_432),
     },
+    pectra: {
+      ...COMMON_PARAMETERS,
+      targetBlobsPerBlock: 6,
+      maxBlobsPerBlock: 9,
+      targetBlobGasPerBlock: BigInt(786_432),
+      blockBlobGasLimit: BigInt(1_179_648),
+    },
   };
 
 export function getEthereumUpgrade(slot: number): EthereumUpgrade {
   switch (env.NEXT_PUBLIC_NETWORK_NAME) {
+    case "holesky": {
+      return slot >= 3710976 ? "pectra" : "dencun";
+    }
+    case "sepolia": {
+      return slot >= 7118848 ? "pectra" : "dencun";
+    }
     default:
       return "dencun";
   }
