@@ -1,40 +1,67 @@
 import type { FC } from "react";
 import cn from "classnames";
 
-import {
-  BLOB_GAS_LIMIT_PER_BLOCK,
-  TARGET_BLOB_GAS_PER_BLOCK,
-  calculateBlobGasTarget,
-  calculatePercentage,
-  formatNumber,
-} from "~/utils";
+import { getEthereumParams } from "~/ethereum";
+import { calculatePercentage, formatNumber, performDiv } from "~/utils";
 import { PercentageBar } from "../PercentageBar";
 
 type BlobGasUsageDisplayProps = {
   blobGasUsed: bigint;
+  slot: number;
   compact?: boolean;
 };
 
-function getTargetSign(blobGasUsed: bigint): "+" | "-" | undefined {
-  if (blobGasUsed < TARGET_BLOB_GAS_PER_BLOCK) {
+function getTargetSign(
+  blobGasUsed: bigint,
+  targetBlobGasPerBlock: bigint
+): "+" | "-" | undefined {
+  if (blobGasUsed < targetBlobGasPerBlock) {
     return "-";
-  } else if (blobGasUsed > TARGET_BLOB_GAS_PER_BLOCK) {
+  }
+
+  if (blobGasUsed > targetBlobGasPerBlock) {
     return "+";
-  } else {
-    return;
   }
 }
 
+function calculateBlobGasTarget(
+  blobGasUsed: bigint,
+  targetBlobsPerBlock: number,
+  gasPerBlob: bigint
+) {
+  const blobsInBlock = performDiv(blobGasUsed, gasPerBlob);
+
+  if (blobsInBlock < targetBlobsPerBlock) {
+    return calculatePercentage(blobsInBlock, targetBlobsPerBlock);
+  }
+
+  return calculatePercentage(
+    blobsInBlock - targetBlobsPerBlock,
+    targetBlobsPerBlock
+  );
+}
+
 export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
+  slot,
   blobGasUsed,
   compact = false,
 }) {
+  const {
+    gasPerBlob,
+    blockBlobGasLimit: maxBlobGasPerBlock,
+    targetBlobsPerBlock,
+    targetBlobGasPerBlock,
+  } = getEthereumParams(slot);
   const blobGasUsedPercentage = calculatePercentage(
     blobGasUsed,
-    BigInt(BLOB_GAS_LIMIT_PER_BLOCK)
+    maxBlobGasPerBlock
   );
-  const blobGasTarget = calculateBlobGasTarget(blobGasUsed);
-  const targetSign = getTargetSign(blobGasUsed);
+  const blobGasTarget = calculateBlobGasTarget(
+    blobGasUsed,
+    targetBlobsPerBlock,
+    gasPerBlob
+  );
+  const targetSign = getTargetSign(blobGasUsed, targetBlobGasPerBlock);
   const isPositive = targetSign === "+";
   const isNegative = targetSign === "-";
 

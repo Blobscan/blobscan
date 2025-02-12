@@ -254,7 +254,13 @@ const Blocks: NextPage = function () {
                 item: <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />,
               },
               {
-                item: <BlobGasUsageDisplay blobGasUsed={blobGasUsed} compact />,
+                item: (
+                  <BlobGasUsageDisplay
+                    slot={slot}
+                    blobGasUsed={blobGasUsed}
+                    compact
+                  />
+                ),
               },
             ],
             expandItem: getBlocksTableRowExpandItem(block),
