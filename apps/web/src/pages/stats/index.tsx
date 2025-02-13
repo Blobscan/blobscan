@@ -236,6 +236,7 @@ function Charts() {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("180d");
   const { data: dailyStatsData } = api.stats.getDailyStats.useQuery({
     timeFrame,
+    sort: "asc",
   });
   const dailyStats = useMemo(
     () =>
