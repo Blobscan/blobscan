@@ -1,18 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import type { z } from "zod";
 
-import type { clientEnvVarsSchema } from "~/env.mjs";
+import { clientEnvVarsSchema } from "~/env.mjs";
 
 type ClientEnvVars = z.infer<typeof clientEnvVarsSchema>;
 
-type ClientEnv = {
-  [Key in keyof ClientEnvVars as Key extends `NEXT_${infer Rest}`
-    ? Rest
-    : never]: ClientEnvVars[Key];
-};
-
 interface EnvContextType {
-  env?: ClientEnv;
+  env?: ClientEnvVars;
 }
 
 const EnvContext = createContext<EnvContextType>({ env: undefined });
@@ -20,14 +14,21 @@ const EnvContext = createContext<EnvContextType>({ env: undefined });
 export const EnvProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [env, setEnv] = useState<ClientEnv>();
+  const [env, setEnv] = useState<ClientEnvVars>();
 
   useEffect(() => {
     const fetchEnv = async () => {
       try {
         const request = await fetch("/api/env");
         const data = await request.json();
-        setEnv(data);
+
+        const envVars = clientEnvVarsSchema.safeParse(data);
+
+        if (!envVars.success) {
+          throw new Error(`Failed to parse env vars`, { cause: envVars.error });
+        }
+
+        setEnv(envVars.data);
       } catch (error) {
         console.error(
           "Error fetching environment variables from server side:",
