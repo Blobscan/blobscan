@@ -9,8 +9,8 @@ export const inputSchema = z.object({
   lastLowerSyncedSlot: z.number().optional(),
   lastUpperSyncedSlot: z.number().optional(),
   lastFinalizedBlock: z.number().optional(),
-  lastUpperSyncedBlockRoot: z.string().nullable(),
-  lastUpperSyncedBlockSlot: z.number().nullable(),
+  lastUpperSyncedBlockRoot: z.string().optional(),
+  lastUpperSyncedBlockSlot: z.number().optional(),
 });
 
 export const outputSchema = z.void();
