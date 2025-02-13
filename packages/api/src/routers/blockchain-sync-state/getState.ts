@@ -10,6 +10,8 @@ export const outputSchema = z.object({
   lastFinalizedBlock: z.number().nullable(),
   lastLowerSyncedSlot: z.number().nullable(),
   lastUpperSyncedSlot: z.number().nullable(),
+  lastUpperSyncedBlockRoot: z.string().nullable(),
+  lastUpperSyncedBlockSlot: z.number().nullable(),
 });
 
 export const getState = publicProcedure
@@ -30,6 +32,8 @@ export const getState = publicProcedure
         lastFinalizedBlock: true,
         lastLowerSyncedSlot: true,
         lastUpperSyncedSlot: true,
+        lastUpperSyncedBlockRoot: true,
+        lastUpperSyncedBlockSlot: true,
       },
       where: { id: 1 },
     });
@@ -40,6 +44,8 @@ export const getState = publicProcedure
         lastFinalizedBlock: null,
         lastLowerSyncedSlot: null,
         lastUpperSyncedSlot: null,
+        lastUpperSyncedBlockRoot: null,
+        lastUpperSyncedBlockSlot: null,
       }
     );
   });
