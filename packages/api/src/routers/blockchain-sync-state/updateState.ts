@@ -3,14 +3,15 @@ import { TRPCError } from "@trpc/server";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
+import { blockHashSchema, blockNumberSchema, slotSchema } from "../../utils";
 import { BASE_PATH } from "./common";
 
 export const inputSchema = z.object({
-  lastLowerSyncedSlot: z.number().optional(),
-  lastUpperSyncedSlot: z.number().optional(),
-  lastFinalizedBlock: z.number().optional(),
-  lastUpperSyncedBlockRoot: z.string().optional(),
-  lastUpperSyncedBlockSlot: z.number().optional(),
+  lastLowerSyncedSlot: slotSchema.optional(),
+  lastUpperSyncedSlot: slotSchema.optional(),
+  lastFinalizedBlock: blockNumberSchema.optional(),
+  lastUpperSyncedBlockRoot: blockHashSchema.optional(),
+  lastUpperSyncedBlockSlot: slotSchema.optional(),
 });
 
 export const outputSchema = z.void();

@@ -1,6 +1,7 @@
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
+import { blockHashSchema, slotSchema } from "../../utils";
 import { BASE_PATH } from "./common";
 
 export const inputSchema = z.void();
@@ -8,10 +9,10 @@ export const inputSchema = z.void();
 export const outputSchema = z.object({
   lastAggregatedBlock: z.number().nullable(),
   lastFinalizedBlock: z.number().nullable(),
-  lastLowerSyncedSlot: z.number().nullable(),
-  lastUpperSyncedSlot: z.number().nullable(),
-  lastUpperSyncedBlockRoot: z.string().nullable(),
-  lastUpperSyncedBlockSlot: z.number().nullable(),
+  lastLowerSyncedSlot: slotSchema.nullable(),
+  lastUpperSyncedSlot: slotSchema.nullable(),
+  lastUpperSyncedBlockRoot: blockHashSchema.nullable(),
+  lastUpperSyncedBlockSlot: slotSchema.nullable(),
 });
 
 export const getState = publicProcedure

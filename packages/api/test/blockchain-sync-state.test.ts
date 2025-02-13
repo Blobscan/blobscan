@@ -1,7 +1,8 @@
+import { TRPCError } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { BlockchainSyncState } from "@blobscan/db";
-import { fixtures } from "@blobscan/test";
+import { fixtures, testValidError } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
@@ -149,6 +150,71 @@ describe("Blockchain sync state route", async () => {
           );
         });
       });
+
+      testValidError(
+        "should fail when trying to update last finalized slot to an invalid slot",
+        async () => {
+          await authorizedCaller.syncState.updateState({
+            lastFinalizedBlock: -1,
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      testValidError(
+        "should fail when trying to update last lower synced slot to an invalid slot",
+        async () => {
+          await authorizedCaller.syncState.updateState({
+            lastLowerSyncedSlot: -1,
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      testValidError(
+        "should fail when trying to update last upper synced slot to an invalid slot",
+        async () => {
+          await authorizedCaller.syncState.updateState({
+            lastUpperSyncedSlot: -1,
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      testValidError(
+        "should fail when trying to update last upper synced block root to an invalid hash",
+        async () => {
+          await authorizedCaller.syncState.updateState({
+            lastUpperSyncedBlockRoot: "invalid hash",
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      testValidError(
+        "should fail when trying to update last upper synced block slot to an invalid slot",
+        async () => {
+          await authorizedCaller.syncState.updateState({
+            lastUpperSyncedBlockSlot: -1,
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
 
       it("should fail when trying to update last lower synced slot to a value greater than last upper synced slot", async () => {
         const newState = {
