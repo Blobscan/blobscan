@@ -18,8 +18,8 @@ const booleanSchema = z
   .transform((s) => s === "true");
 
 const clientEnvVars = {
-  PUBLIC_BEACON_BASE_URL: z.string().url().default("https://beaconcha.in/"),
-  PUBLIC_EXPLORER_BASE_URL: z.string().url().default("https://etherscan.io/"),
+  PUBLIC_BEACON_BASE_URL: z.string().url().default("https://beaconcha.in"),
+  PUBLIC_EXPLORER_BASE_URL: z.string().url().default("https://etherscan.io"),
   PUBLIC_NETWORK_NAME: networkSchema.default("mainnet"),
   PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
   PUBLIC_POSTHOG_ID: z.string().optional(),

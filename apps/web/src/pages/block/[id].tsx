@@ -20,8 +20,6 @@ import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   BLOB_GAS_LIMIT_PER_BLOCK,
-  buildBlockExternalUrl,
-  buildSlotExternalUrl,
   deserializeFullBlock,
   formatBytes,
   formatNumber,
@@ -133,7 +131,10 @@ const Block: NextPage = function () {
             name: "Slot",
             helpText: "The slot number of the block.",
             value: (
-              <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
+              <Link
+                href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${blockData.slot}`}
+                isExternal
+              >
                 {blockData.slot}
               </Link>
             ),
@@ -203,7 +204,7 @@ const Block: NextPage = function () {
           },
         ];
       }
-    }, [blockData, networkName, latestBlock, blockNumber]);
+    }, [blockData, networkName, latestBlock, blockNumber, env]);
 
   if (error) {
     return (
@@ -223,7 +224,9 @@ const Block: NextPage = function () {
       <DetailsLayout
         header="Block Details"
         externalLink={
-          blockData ? buildBlockExternalUrl(blockData.number) : undefined
+          blockData
+            ? `${env?.PUBLIC_EXPLORER_BASE_URL}/block/${blockData.number}`
+            : undefined
         }
         fields={detailsFields}
       />
