@@ -15,11 +15,11 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
+import { useEnv } from "~/providers/Env";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
   buildAddressRoute,
   buildBlockRoute,
-  buildTransactionExternalUrl,
   formatTimestamp,
   formatBytes,
   formatNumber,
@@ -28,6 +28,7 @@ import {
 } from "~/utils";
 
 const Tx: NextPage = () => {
+  const { env } = useEnv();
   const router = useRouter();
   const hash = (router.query.hash as string | undefined) ?? "";
 
@@ -249,7 +250,7 @@ const Tx: NextPage = () => {
             />
           </div>
         }
-        externalLink={tx ? buildTransactionExternalUrl(tx.hash) : undefined}
+        externalLink={tx ? `${env}` : undefined}
         fields={detailsFields}
       />
 
