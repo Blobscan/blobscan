@@ -11,14 +11,13 @@ export function printBanner() {
   console.log("Blobscan Web App (EIP-4844 blob explorer) - blobscan.com");
   console.log("=======================================================\n");
   console.log(
-    `Configuration: network=${process.env.NEXT_PUBLIC_NETWORK_NAME} explorer=${
-      process.env.NEXT_PUBLIC_EXPLORER_BASE_URL
+    `Configuration: network=${process.env.PUBLIC_NETWORK_NAME} explorer=${
+      process.env.PUBLIC_EXPLORER_BASE_URL
     } beaconExplorer=${
-      process.env.NEXT_PUBLIC_BEACON_BASE_URL
+      process.env.PUBLIC_BEACON_BASE_URL
     } feedbackEnabled=${!!process.env
       .FEEDBACK_WEBHOOK_URL} tracesEnabled=${!!process.env
-      .TRACES_ENABLED} sentryEnabled=${!!process.env
-      .NEXT_PUBLIC_SENTRY_DSN_WEB}`
+      .TRACES_ENABLED} sentryEnabled=${!!process.env.PUBLIC_SENTRY_DSN_WEB}`
   );
   console.log(
     `Blob storage manager configuration: chainId=${process.env.CHAIN_ID}, file_system=${process.env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${process.env.POSTGRES_STORAGE_ENABLED}, gcs=${process.env.GOOGLE_STORAGE_ENABLED}, swarm=${process.env.SWARM_STORAGE_ENABLED}`
@@ -35,9 +34,7 @@ export function printBanner() {
   }
 
   if (process.env.SWARM_STORAGE_ENABLED) {
-    console.log(
-      `Swarm configuration: beeEndpoint=${process.env.BEE_ENDPOINT}`
-    );
+    console.log(`Swarm configuration: beeEndpoint=${process.env.BEE_ENDPOINT}`);
   }
 
   if (process.env.FILE_SYSTEM_STORAGE_ENABLED) {

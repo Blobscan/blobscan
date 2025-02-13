@@ -30,11 +30,7 @@ function App({ Component, pageProps }: NextAppProps) {
   const { env } = useEnv();
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      env &&
-      env.PUBLIC_POSTHOG_ID !== undefined
-    ) {
+    if (typeof window !== "undefined" && !!env?.PUBLIC_POSTHOG_ID) {
       posthog.init(env.PUBLIC_POSTHOG_ID, {
         api_host: env.PUBLIC_POSTHOG_HOST,
         person_profiles: "identified_only",
