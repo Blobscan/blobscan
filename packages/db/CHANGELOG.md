@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.14.0
+
+### Minor Changes
+
+- [#721](https://github.com/Blobscan/blobscan/pull/721) [`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added last upper synced block root and block slot fields
+
 ## 0.13.0
 
 ### Minor Changes
