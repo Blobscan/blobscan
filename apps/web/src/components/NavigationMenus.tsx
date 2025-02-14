@@ -8,30 +8,22 @@ import {
   Transition,
 } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import Skeleton from "react-loading-skeleton";
 
 import { useHover } from "~/hooks/useHover";
 import { useEnv } from "~/providers/Env";
-import type { ExpandibleNavigationItem, NavigationItem } from "./content";
-import { getNavigationItems, isExpandibleNavigationItem } from "./content";
+import type { ExpandibleNavigationItem, NavigationItem } from "../content";
+import { getNavigationItems, isExpandibleNavigationItem } from "../content";
 
 export const NavigationMenus: FC = () => {
   const { env } = useEnv();
-
-  const navigationItems = useMemo(() => {
-    const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
-    const publicSupportedNetworks = env
-      ? env.PUBLIC_SUPPORTED_NETWORKS
-      : undefined;
-
-    return networkName && publicSupportedNetworks
-      ? getNavigationItems(networkName, publicSupportedNetworks)
-      : undefined;
-  }, [env]);
-
-  if (!navigationItems) {
-    return <Skeleton width={20} />;
-  }
+  const navigationItems = useMemo(
+    () =>
+      getNavigationItems({
+        networkName: env?.PUBLIC_NETWORK_NAME,
+        publicSupportedNetworks: env?.PUBLIC_SUPPORTED_NETWORKS,
+      }),
+    [env]
+  );
 
   return (
     <div className="items-center gap-4 xl:flex">
