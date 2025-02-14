@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.18.1
+
+### Patch Changes
+
+- [#722](https://github.com/Blobscan/blobscan/pull/722) [`1ab2c7f`](https://github.com/Blobscan/blobscan/commit/1ab2c7fddce9883b81387bce0e11ac8104c7d983) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed `sort` query param from `getBySlot` procedure
+
 ## 0.18.0
 
 ### Minor Changes
