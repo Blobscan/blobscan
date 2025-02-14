@@ -17,6 +17,11 @@ const booleanSchema = z
   .refine((s) => s === "true" || s === "false")
   .transform((s) => s === "true");
 
+const publicSupportedNetwork = z.object({
+  label: z.string(),
+  href: z.string().url(),
+});
+
 const clientEnvVars = {
   PUBLIC_BEACON_BASE_URL: z.string().url().default("https://beaconcha.in"),
   PUBLIC_EXPLORER_BASE_URL: z.string().url().default("https://etherscan.io"),
@@ -28,7 +33,19 @@ const clientEnvVars = {
     .string()
     .default(
       '[{"label":"Ethereum Mainnet","href":"https://blobscan.com/"},{"label":"Gnosis","href":"https://gnosis.blobscan.com/"},{"label":"Holesky Testnet","href":"https://holesky.blobscan.com/"},{"label":"Sepolia Testnet","href":"https://sepolia.blobscan.com/"}]'
-    ),
+    )
+    .transform((value) => JSON.parse(value))
+    .transform((value) => {
+      const res = z.array(publicSupportedNetwork).safeParse(value);
+
+      if (!res.success) {
+        throw new Error(`Failed to parse PUBLIC_SUPPORTED_NETWORKS`, {
+          cause: res.error,
+        });
+      }
+
+      return res.data;
+    }),
   PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
 };
 
