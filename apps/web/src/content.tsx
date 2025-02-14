@@ -58,10 +58,13 @@ export function isExpandibleNavigationItem(
   return typeof item === "object" && item !== null && "items" in item;
 }
 
-export const getNavigationItems = (
-  networkName: string,
-  publicSupportedNetworks: string
-): Array<NavigationItem | ExpandibleNavigationItem> => {
+export const getNavigationItems = ({
+  networkName,
+  publicSupportedNetworks,
+}: {
+  networkName?: string;
+  publicSupportedNetworks?: ExpandibleNavigationSubItem[];
+}): Array<NavigationItem | ExpandibleNavigationItem> => {
   return [
     {
       label: "Blockchain",
@@ -84,7 +87,7 @@ export const getNavigationItems = (
     {
       label: "Networks",
       icon: <EthereumIcon />,
-      items: JSON.parse(publicSupportedNetworks || "[]"),
+      items: publicSupportedNetworks ?? [],
     },
     {
       label: "Stats",
@@ -94,7 +97,7 @@ export const getNavigationItems = (
     {
       label: "API",
       icon: <CommandLineIcon />,
-      href: resolveApiUrl(networkName),
+      href: networkName ? resolveApiUrl(networkName) : "#",
     },
     {
       label: "Docs",

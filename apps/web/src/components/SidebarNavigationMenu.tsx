@@ -4,36 +4,32 @@ import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import cn from "classnames";
-import Skeleton from "react-loading-skeleton";
 
 import { useEnv } from "~/providers/Env";
+import type { ExpandibleNavigationItem, NavigationItem } from "../content";
+import { isExpandibleNavigationItem, getNavigationItems } from "../content";
 import { BlobscanLogo } from "./BlobscanLogo";
 import { Collapsable } from "./Collapsable";
 import { IconButton } from "./IconButton";
 import { Rotable } from "./Rotable";
 import { SidePanel, useSidePanel } from "./SidePanel";
 import { ThemeModeButton } from "./ThemeModeButton";
-import type { ExpandibleNavigationItem, NavigationItem } from "./content";
-import { isExpandibleNavigationItem, getNavigationItems } from "./content";
 
 export function SidebarNavigationMenu({ className }: { className?: string }) {
+  const { env } = useEnv();
   const [open, setOpen] = useState(false);
+  const navigationItems = useMemo(
+    () =>
+      getNavigationItems({
+        networkName: env?.PUBLIC_NETWORK_NAME,
+        publicSupportedNetworks: env?.PUBLIC_SUPPORTED_NETWORKS,
+      }),
+    [env]
+  );
 
   const openSidebar = useCallback(() => setOpen(true), []);
 
   const closeSidebar = useCallback(() => setOpen(false), []);
-
-  const { env } = useEnv();
-
-  const navigationItems = useMemo(() => {
-    const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
-    const publicSupportedNetworks = env
-      ? env.PUBLIC_SUPPORTED_NETWORKS
-      : undefined;
-    return networkName && publicSupportedNetworks
-      ? getNavigationItems(networkName, publicSupportedNetworks)
-      : undefined;
-  }, [env]);
 
   return (
     <div className={className}>
@@ -44,24 +40,20 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
-            {navigationItems ? (
-              navigationItems.map((item, i) =>
-                isExpandibleNavigationItem(item) ? (
-                  <ExpandableNavigationLinks
-                    key={`${item.label}-${i}`}
-                    {...item}
-                    onClick={closeSidebar}
-                  />
-                ) : (
-                  <NavigationLink
-                    key={`${item.label}-${i}`}
-                    {...item}
-                    onClick={closeSidebar}
-                  />
-                )
+            {navigationItems.map((item, i) =>
+              isExpandibleNavigationItem(item) ? (
+                <ExpandableNavigationLinks
+                  key={`${item.label}-${i}`}
+                  {...item}
+                  onClick={closeSidebar}
+                />
+              ) : (
+                <NavigationLink
+                  key={`${item.label}-${i}`}
+                  {...item}
+                  onClick={closeSidebar}
+                />
               )
-            ) : (
-              <Skeleton width={24} height={34} />
             )}
           </div>
         </div>
