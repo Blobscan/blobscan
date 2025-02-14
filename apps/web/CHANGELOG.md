@@ -1,5 +1,14 @@
 # @blobscan/web
 
+## 0.20.1
+
+### Patch Changes
+
+- [#724](https://github.com/Blobscan/blobscan/pull/724) [`baecae5`](https://github.com/Blobscan/blobscan/commit/baecae5f7bb30a1c3845fd241eaa25ecc83b4abc) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed skeleton display from navigation items component if the env vars are not set
+
+- Updated dependencies [[`1ab2c7f`](https://github.com/Blobscan/blobscan/commit/1ab2c7fddce9883b81387bce0e11ac8104c7d983)]:
+  - @blobscan/api@0.18.1
+
 ## 0.20.0
 
 ### Minor Changes
