@@ -1987,7 +1987,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 ]
 `;
 
-exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the block specificed 1`] = `
+exports[`Blob router > getAll > when getting filtered blob results > should return the results starting from the block specified 1`] = `
 [
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",

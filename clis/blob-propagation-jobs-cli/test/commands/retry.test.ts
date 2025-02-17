@@ -18,9 +18,9 @@ import {
 describe("Retry command", () => {
   let storageWorkers: BlobPropagationWorker[];
   const jobVersionedHashes = [
-    "versionesHash1",
-    "versionesHash2",
-    "versionesHash3",
+    "versionsHash1",
+    "versionsHash2",
+    "versionsHash3",
   ];
 
   beforeEach(async () => {
