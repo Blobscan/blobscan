@@ -11,7 +11,7 @@ import { Category, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
-import { ETHEREUM_CONFIG } from "@blobscan/eth-config";
+import { FORK_BLOB_CONFIGS } from "@blobscan/network-blob-config";
 
 import { BlobStorage } from "../enums";
 import type { SeedParams } from "./params";
@@ -22,7 +22,7 @@ import {
   ROLLUP_ADDRESSES,
 } from "./web3";
 
-const BLOB_GAS_PER_BLOB = ETHEREUM_CONFIG["dencun"].gasPerBlob;
+const BLOB_GAS_PER_BLOB = FORK_BLOB_CONFIGS["dencun"].gasPerBlob;
 
 export type FullBlock = Block & {
   transactions: (Transaction & {

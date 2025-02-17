@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
-import { getEthereumConfig } from "@blobscan/eth-config";
+import { getNetworkBlobConfig } from "@blobscan/network-blob-config";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
@@ -72,12 +72,12 @@ const Block: NextPage = function () {
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (blockData && env) {
-    const {
-      blobSize,
-      blockBlobGasLimit,
-      maxBlobsPerBlock,
-      targetBlobGasPerBlock,
-    } = getEthereumConfig(env.PUBLIC_NETWORK_NAME, blockData.slot);
+    const networkBlobConfig = getNetworkBlobConfig(
+      env.PUBLIC_NETWORK_NAME,
+      blockData.slot
+    );
+    const { blobSize, blobGasLimit, maxBlobsPerBlock, targetBlobGasPerBlock } =
+      networkBlobConfig;
 
     const totalBlockBlobSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
@@ -92,13 +92,13 @@ const Block: NextPage = function () {
     );
 
     const firstBlobNumber = networkName
-          ? getFirstBlobNumber(networkName)
-          : undefined;
+      ? getFirstBlobNumber(networkName)
+      : undefined;
 
-        const previousBlockHref =
-          firstBlobNumber && blockNumber && firstBlobNumber < blockNumber
-            ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
-            : undefined;
+    const previousBlockHref =
+      firstBlobNumber && blockNumber && firstBlobNumber < blockNumber
+        ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
+        : undefined;
 
     detailsFields = [
       {
@@ -109,20 +109,20 @@ const Block: NextPage = function () {
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
             {!!blockNumber && previousBlockHref && (
-                  <NavArrows
-                    prev={{
-                      tooltip: "Previous Block",
-                      href: previousBlockHref,
-                    }}
-                    next={{
-                      tooltip: "Next Block",
-                      href:
-                        latestBlock && blockNumber < latestBlock.number
-                          ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
-                          : undefined,
-                    }}
-                  />
-                )}
+              <NavArrows
+                prev={{
+                  tooltip: "Previous Block",
+                  href: previousBlockHref,
+                }}
+                next={{
+                  tooltip: "Next Block",
+                  href:
+                    latestBlock && blockNumber < latestBlock.number
+                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
+                      : undefined,
+                }}
+              />
+            )}
           </div>
         ),
       },
@@ -149,7 +149,10 @@ const Block: NextPage = function () {
         name: "Slot",
         helpText: "The slot number of the block.",
         value: (
-          <Link href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${blockData.slot}`} isExternal>
+          <Link
+            href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${blockData.slot}`}
+            isExternal
+          >
             {blockData.slot}
           </Link>
         ),
@@ -180,7 +183,7 @@ const Block: NextPage = function () {
         } KB).`,
         value: (
           <BlobGasUsageDisplay
-            slot={blockData.slot}
+            networkBlobConfig={networkBlobConfig}
             blobGasUsed={blockData.blobGasUsed}
           />
         ),
@@ -190,7 +193,7 @@ const Block: NextPage = function () {
         helpText: "The maximum blob gas limit for this block.",
         value: (
           <div>
-            {formatNumber(blockBlobGasLimit)}
+            {formatNumber(blobGasLimit)}
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
               ({formatNumber(maxBlobsPerBlock)}{" "}
               {pluralize("blob", maxBlobsPerBlock)} per block)

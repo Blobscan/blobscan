@@ -10,7 +10,7 @@ import type {
 import { Prisma } from "@blobscan/db";
 import { Category } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
-import { getEthereumConfig } from "@blobscan/eth-config";
+import { getNetworkBlobConfig } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
@@ -66,7 +66,7 @@ export function calculateBlobGasPrice(
   slot: number,
   excessBlobGas: bigint
 ): bigint {
-  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = getEthereumConfig(
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } = getNetworkBlobConfig(
     env.CHAIN_ID,
     slot
   );
@@ -94,7 +94,7 @@ export function createDBTransactions({
         BigInt(0)
       );
 
-      const ethereumConfig = getEthereumConfig(env.CHAIN_ID, block.slot);
+      const ethereumConfig = getNetworkBlobConfig(env.CHAIN_ID, block.slot);
       const blobGasPrice = calculateBlobGasPrice(
         block.slot,
         block.excessBlobGas

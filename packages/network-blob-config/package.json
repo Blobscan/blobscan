@@ -1,5 +1,5 @@
 {
-  "name": "@blobscan/eth-config",
+  "name": "@blobscan/network-blob-config",
   "version": "0.1.0",
   "private": true,
   "main": "./index.ts",

@@ -1,4 +1,4 @@
-import { ETHEREUM_CONFIG } from "@blobscan/eth-config";
+import { FORK_BLOB_CONFIGS } from "@blobscan/network-blob-config";
 
 import { Rollup } from "../enums";
 
@@ -73,7 +73,7 @@ export function getEIP2028CalldataGas(hexData: string) {
 
 export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
   const { minBlobBaseFee, blobBaseFeeUpdateFraction } =
-    ETHEREUM_CONFIG["pectra"];
+    FORK_BLOB_CONFIGS["pectra"];
 
   return BigInt(
     fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
@@ -84,7 +84,8 @@ export function calculateExcessBlobGas(
   parentExcessBlobGas: bigint,
   parentBlobGasUsed: bigint
 ) {
-  const targetBlobGasPerBlock = ETHEREUM_CONFIG["pectra"].targetBlobGasPerBlock;
+  const targetBlobGasPerBlock =
+    FORK_BLOB_CONFIGS["pectra"].targetBlobGasPerBlock;
   const excessBlobGas = BigInt(parentExcessBlobGas.toString());
   const blobGasUsed = BigInt(parentBlobGasUsed.toString());
 
