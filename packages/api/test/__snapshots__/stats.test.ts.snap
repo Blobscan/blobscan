@@ -6,13 +6,13 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    6400,
+    6900,
   ],
   "totalBlobs": [
     5,
   ],
   "totalUniqueBlobs": [
-    1,
+    2,
   ],
 }
 `;
@@ -25,7 +25,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   ],
   "totalBlobSizes": [
     4000,
-    6400,
+    6900,
   ],
   "totalBlobs": [
     4,
@@ -33,7 +33,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   ],
   "totalUniqueBlobs": [
     0,
-    1,
+    2,
   ],
 }
 `;
@@ -48,7 +48,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   "totalBlobSizes": [
     5900,
     4000,
-    6400,
+    6900,
   ],
   "totalBlobs": [
     5,
@@ -58,7 +58,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
   "totalUniqueBlobs": [
     1,
     0,
-    1,
+    2,
   ],
 }
 `;
@@ -75,7 +75,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     6200,
     5900,
     4000,
-    6400,
+    6900,
   ],
   "totalBlobs": [
     6,
@@ -87,7 +87,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     0,
     1,
     0,
-    1,
+    2,
   ],
 }
 `;
@@ -106,7 +106,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     6200,
     5900,
     4000,
-    6400,
+    6900,
   ],
   "totalBlobs": [
     3,
@@ -120,7 +120,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     0,
     1,
     0,
-    1,
+    2,
   ],
 }
 `;
@@ -141,7 +141,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     6200,
     5900,
     4000,
-    6400,
+    6900,
   ],
   "totalBlobs": [
     6,
@@ -157,7 +157,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     0,
     1,
     0,
-    1,
+    2,
   ],
 }
 `;

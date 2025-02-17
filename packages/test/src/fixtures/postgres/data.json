@@ -6,7 +6,9 @@
       "lastAggregatedBlock": 1004,
       "lastFinalizedBlock": 1007,
       "lastLowerSyncedSlot": 106,
-      "lastUpperSyncedSlot": 107
+      "lastUpperSyncedSlot": 107,
+      "lastUpperSyncedBlockSlot": 107,
+      "lastUpperSyncedBlockRoot": "0x77084437a3da0dd6f5aaf7a0be47b46209a9b4cd8b7d5c987f3d1b21482a117f"
     }
   ],
   "blobStoragesState": [
@@ -91,7 +93,7 @@
       "updatedAt": "2023-08-31T12:10:00Z"
     },
     {
-      "hash": "blockHash007",
+      "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "number": 1007,
       "timestamp": "2023-08-31T14:00:00Z",
       "slot": 107,
@@ -103,7 +105,7 @@
       "updatedAt": "2023-08-31T14:10:00Z"
     },
     {
-      "hash": "blockHash008",
+      "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
       "number": 1008,
       "timestamp": "2023-08-31T16:00:00Z",
       "slot": 108,
@@ -370,7 +372,7 @@
       "hash": "txHash015",
       "fromId": "optimismAddress",
       "toId": "address4",
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "index": 0,
@@ -387,7 +389,7 @@
       "hash": "txHash016",
       "fromId": "address2",
       "toId": "address4",
-      "blockHash": "blockHash008",
+      "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T16:00:00Z",
       "index": 0,
@@ -507,6 +509,15 @@
       "firstBlockNumber": 1002,
       "insertedAt": "2023-08-26T12:10:00Z",
       "updatedAt": "2023-08-26T12:10:00Z"
+    },
+    {
+      "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+      "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "size": 1500,
+      "firstBlockNumber": 1008,
+      "insertedAt": "2023-08-31T16:01:00Z",
+      "updatedAt": "2023-08-31T16:01:00Z"
     },
     {
       "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
@@ -843,7 +854,7 @@
     {
       "blobHash": "blobHash004",
       "txHash": "txHash015",
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "txIndex": 0,
@@ -852,7 +863,7 @@
     {
       "blobHash": "blobHash004",
       "txHash": "txHash015",
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "txIndex": 0,
@@ -861,16 +872,16 @@
     {
       "blobHash": "blobHash004",
       "txHash": "txHash015",
-      "blockHash": "blockHash007",
+      "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": "2023-08-31T14:00:00Z",
       "txIndex": 0,
       "index": 2
     },
     {
-      "blobHash": "blobHash001",
+      "blobHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       "txHash": "txHash016",
-      "blockHash": "blockHash008",
+      "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1008,
       "blockTimestamp": "2023-08-31T16:00:00Z",
       "txIndex": 0,

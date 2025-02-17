@@ -64,11 +64,11 @@ describe("Stats router", async () => {
           "totalBlobAsCalldataGasUsed": "16300",
           "totalBlobFee": "82575360",
           "totalBlobGasUsed": "3801088",
-          "totalBlobSize": "422116",
+          "totalBlobSize": "422616",
           "totalBlobs": 29,
           "totalBlocks": 8,
           "totalTransactions": 16,
-          "totalUniqueBlobs": 8,
+          "totalUniqueBlobs": 9,
           "totalUniqueReceivers": 4,
           "totalUniqueSenders": 7,
         }
@@ -82,9 +82,9 @@ describe("Stats router", async () => {
 
       expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
         {
-          "totalBlobSize": "422116",
+          "totalBlobSize": "422616",
           "totalBlobs": 29,
-          "totalUniqueBlobs": 8,
+          "totalUniqueBlobs": 9,
         }
       `);
     });

@@ -16,17 +16,18 @@ import { TimestampToggle } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
+import { useEnv } from "~/providers/Env";
 import type { DeserializedBlock } from "~/utils";
 import {
   buildBlobRoute,
   buildBlockRoute,
-  buildSlotExternalUrl,
   buildTransactionRoute,
   deserializeBlock,
   formatNumber,
 } from "~/utils";
 
 const Blocks: NextPage = function () {
+  const { env } = useEnv();
   const { filterParams, paginationParams } = useQueryParams();
   const {
     data: serializedBlocksData,
@@ -231,7 +232,10 @@ const Blocks: NextPage = function () {
               },
               {
                 item: (
-                  <Link href={buildSlotExternalUrl(slot)} isExternal>
+                  <Link
+                    href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${slot}`}
+                    isExternal
+                  >
                     {slot}
                   </Link>
                 ),
@@ -261,7 +265,7 @@ const Blocks: NextPage = function () {
           };
         })
       : undefined;
-  }, [blocks, timeFormat]);
+  }, [blocks, timeFormat, env]);
 
   if (error) {
     return (

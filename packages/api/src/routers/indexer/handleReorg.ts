@@ -3,29 +3,8 @@ import { z } from "@blobscan/zod";
 
 import type { TRPCInnerContext } from "../../context";
 import { createAuthedProcedure } from "../../procedures";
+import { blockHashSchema } from "../../utils";
 import { INDEXER_PATH } from "./common";
-
-const inputSchema = z.object({
-  reorgedSlots: z.array(z.coerce.number().positive()).nonempty(),
-});
-
-const outputSchema = z.object({
-  totalUpdatedSlots: z.number(),
-});
-
-export type HandleReorgedSlotsInput = z.infer<typeof inputSchema>;
-
-const blockSelect = {
-  hash: true,
-  number: true,
-  transactions: {
-    select: {
-      hash: true,
-    },
-  },
-} satisfies Prisma.BlockSelect;
-
-type BlockPayload = Prisma.BlockGetPayload<{ select: typeof blockSelect }>;
 
 /**
  * Generates a set of Prisma operations to remove references to reorged blocks from the db.
@@ -37,9 +16,8 @@ type BlockPayload = Prisma.BlockGetPayload<{ select: typeof blockSelect }>;
  */
 async function generateBlockCleanupOperations(
   prisma: TRPCInnerContext["prisma"],
-  reorgedBlocks: BlockPayload[]
+  reorgedBlockNumbers: number[]
 ) {
-  const reorgedBlockNumbers = reorgedBlocks.map((b) => b.number);
   const [addressCategoryInfos, blobs] = await Promise.all([
     prisma.addressCategoryInfo.findMany({
       where: {
@@ -121,46 +99,69 @@ async function generateBlockCleanupOperations(
   return referenceRemovalOps;
 }
 
-export const handleReorgedSlots = createAuthedProcedure("indexer")
+const inputSchema = z.object({
+  rewindedBlocks: z.array(blockHashSchema).optional(),
+  forwardedBlocks: z.array(blockHashSchema).optional(),
+});
+
+export const handleReorg = createAuthedProcedure("indexer")
   .meta({
     openapi: {
       method: "PUT",
-      path: `${INDEXER_PATH}/reorged-slots`,
+      path: `${INDEXER_PATH}/reorged-blocks`,
       tags: ["indexer"],
       summary:
-        "marks all blocks with slots matching the given reorged slots as reorged.",
+        "marks rewinded blocks as reorged and unmarks the forwarded ones.",
       protect: true,
     },
   })
   .input(inputSchema)
-  .output(outputSchema)
-  .mutation(async ({ ctx: { prisma }, input: { reorgedSlots } }) => {
-    const reorgedBlocks = await prisma.block.findMany({
-      select: blockSelect,
-      where: {
-        slot: {
-          in: reorgedSlots,
-        },
-      },
-    });
-    const reorgedBlockTxs = reorgedBlocks.flatMap((b) =>
-      b.transactions.map((tx) => ({
-        hash: tx.hash,
-        blockHash: b.hash,
-      }))
-    );
+  .output(z.void())
+  .mutation(
+    async ({ ctx: { prisma }, input: { rewindedBlocks, forwardedBlocks } }) => {
+      const operations = [];
 
-    const blockReferenceRemovalOps = await generateBlockCleanupOperations(
-      prisma,
-      reorgedBlocks
-    );
+      if (rewindedBlocks?.length) {
+        const blockTxs = await prisma.transaction.findMany({
+          select: {
+            hash: true,
+            blockHash: true,
+            blockNumber: true,
+          },
+          where: {
+            blockHash: {
+              in: rewindedBlocks,
+            },
+          },
+        });
 
-    await prisma.$transaction([
-      ...blockReferenceRemovalOps,
-      prisma.transactionFork.upsertMany(reorgedBlockTxs),
-    ]);
+        if (blockTxs.length) {
+          const reorgedBlockNumbers = Array.from(
+            new Set(Array.from(blockTxs.map((tx) => tx.blockNumber)))
+          );
 
-    return {
-      totalUpdatedSlots: reorgedBlocks.length,
-    };
-  });
+          const blockCleanupOperations = await generateBlockCleanupOperations(
+            prisma,
+            reorgedBlockNumbers
+          );
+
+          operations.push(...blockCleanupOperations);
+          operations.push(prisma.transactionFork.upsertMany(blockTxs));
+        }
+      }
+
+      if (forwardedBlocks?.length) {
+        operations.push(
+          prisma.transactionFork.deleteMany({
+            where: {
+              blockHash: {
+                in: forwardedBlocks,
+              },
+            },
+          })
+        );
+      }
+
+      await prisma.$transaction(operations);
+    }
+  );

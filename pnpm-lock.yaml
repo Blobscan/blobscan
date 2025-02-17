@@ -166,7 +166,7 @@ importers:
   apps/rest-api-server:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.17.0
+        specifier: workspace:^0.18.0
         version: link:../../packages/api
       '@blobscan/env':
         specifier: workspace:^0.1.0
@@ -178,7 +178,7 @@ importers:
         specifier: workspace:^0.0.9
         version: link:../../packages/open-telemetry
       '@blobscan/syncers':
-        specifier: workspace:^0.3.3
+        specifier: workspace:^0.3.4
         version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -230,7 +230,7 @@ importers:
   apps/web:
     dependencies:
       '@blobscan/api':
-        specifier: workspace:^0.17.0
+        specifier: workspace:^0.18.1
         version: link:../../packages/api
       '@blobscan/blob-decoder':
         specifier: workspace:^0.2.1
@@ -242,11 +242,8 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../../packages/db
-      '@blobscan/env':
-        specifier: workspace:^0.1.0
-        version: link:../../packages/env
       '@blobscan/eth-format':
         specifier: workspace:^0.1.0
         version: link:../../packages/eth-format
@@ -254,7 +251,7 @@ importers:
         specifier: workspace:^0.0.9
         version: link:../../packages/open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.2.2
+        specifier: workspace:^0.2.3
         version: link:../../packages/rollups
       '@floating-ui/react':
         specifier: ^0.26.23
@@ -396,13 +393,13 @@ importers:
   clis/blob-propagation-jobs-cli:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.8
+        specifier: workspace:^0.2.9
         version: link:../../packages/blob-propagator
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.1.0
@@ -426,7 +423,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../../packages/dayjs
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../../packages/db
       '@blobscan/logger':
         specifier: workspace:^0.1.2
@@ -441,16 +438,16 @@ importers:
   packages/api:
     dependencies:
       '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.8
+        specifier: workspace:^0.2.9
         version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.4.1
         version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.1.0
@@ -462,7 +459,7 @@ importers:
         specifier: workspace:^0.0.9
         version: link:../open-telemetry
       '@blobscan/rollups':
-        specifier: workspace:^0.2.2
+        specifier: workspace:^0.2.3
         version: link:../rollups
       '@blobscan/zod':
         specifier: workspace:^0.1.0
@@ -493,7 +490,7 @@ importers:
   packages/auth:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../db
       '@next-auth/prisma-adapter':
         specifier: ^1.0.5
@@ -529,10 +526,10 @@ importers:
   packages/blob-propagator:
     dependencies:
       '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.4.0
+        specifier: workspace:^0.4.1
         version: link:../blob-storage-manager
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.1.0
@@ -556,7 +553,7 @@ importers:
   packages/blob-storage-manager:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.1.0
@@ -693,7 +690,7 @@ importers:
   packages/rollups:
     dependencies:
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../db
 
   packages/syncers:
@@ -705,7 +702,7 @@ importers:
         specifier: workspace:^0.1.0
         version: link:../dayjs
       '@blobscan/db':
-        specifier: workspace:^0.13.0
+        specifier: workspace:^0.14.0
         version: link:../db
       '@blobscan/logger':
         specifier: workspace:^0.1.2
@@ -5392,6 +5389,7 @@ packages:
 
   lodash.clone@4.5.0:
     resolution: {integrity: sha512-GhrVeweiTD6uTmmn5hV/lzgCQhccwReIVRLHp7LT4SopOjqEZ5BbX8b5WWEtAKasjmy8hR7ZPwsYlxRCku5odg==}
+    deprecated: This package is deprecated. Use structuredClone instead.
 
   lodash.clonedeep@4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
@@ -5413,6 +5411,7 @@ packages:
 
   lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.isinteger@4.0.4:
     resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
