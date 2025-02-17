@@ -9,19 +9,21 @@ export type Network =
   | "devnet";
 
 export type NetworkBlobConfig = {
-  targetBlobsPerBlock: number;
   blobBaseFeeUpdateFraction: bigint;
-  blobSize: number;
   blobGasLimit: bigint;
+  bytesPerFieldElement: number;
+  fieldElementsPerBlob: number;
   gasPerBlob: bigint;
   maxBlobsPerBlock: number;
   minBlobBaseFee: bigint;
   targetBlobGasPerBlock: bigint;
+  targetBlobsPerBlock: number;
 };
 
 const COMMON_NETWORK_BLOB_CONFIG = {
+  bytesPerFieldElement: 32,
+  fieldElementsPerBlob: 4096,
   gasPerBlob: BigInt(131_072),
-  blobSize: 131_072,
   blobBaseFeeUpdateFraction: BigInt(3_338_477),
   minBlobBaseFee: BigInt(1),
 };

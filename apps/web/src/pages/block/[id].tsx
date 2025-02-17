@@ -76,8 +76,14 @@ const Block: NextPage = function () {
       env.PUBLIC_NETWORK_NAME,
       blockData.slot
     );
-    const { blobSize, blobGasLimit, maxBlobsPerBlock, targetBlobGasPerBlock } =
-      networkBlobConfig;
+    const {
+      bytesPerFieldElement,
+      fieldElementsPerBlob,
+      blobGasLimit,
+      maxBlobsPerBlock,
+      targetBlobGasPerBlock,
+    } = networkBlobConfig;
+    const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
 
     const totalBlockBlobSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
