@@ -1,5 +1,29 @@
 # @blobscan/web
 
+## 0.20.1
+
+### Patch Changes
+
+- [#724](https://github.com/Blobscan/blobscan/pull/724) [`baecae5`](https://github.com/Blobscan/blobscan/commit/baecae5f7bb30a1c3845fd241eaa25ecc83b4abc) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed skeleton display from navigation items component if the env vars are not set
+
+- Updated dependencies [[`1ab2c7f`](https://github.com/Blobscan/blobscan/commit/1ab2c7fddce9883b81387bce0e11ac8104c7d983)]:
+  - @blobscan/api@0.18.1
+
+## 0.20.0
+
+### Minor Changes
+
+- [#678](https://github.com/Blobscan/blobscan/pull/678) [`22ae59a`](https://github.com/Blobscan/blobscan/commit/22ae59a36fe8a35c0055b053bb288e7f071132a2) Thanks [@xFJA](https://github.com/xFJA)! - Get environment variables from API endpoint.
+
+### Patch Changes
+
+- [#658](https://github.com/Blobscan/blobscan/pull/658) [`95f8043`](https://github.com/Blobscan/blobscan/commit/95f8043f253e83d37e224ccfd63f4c61088af4c2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved Optimism tx decoded fields card
+
+- Updated dependencies [[`9f88066`](https://github.com/Blobscan/blobscan/commit/9f88066f7445d3bfddc9088fe7078a9d53d9828e), [`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a), [`b90971b`](https://github.com/Blobscan/blobscan/commit/b90971b1415e32c23c530feff1fc2dd1560d377d), [`95f8043`](https://github.com/Blobscan/blobscan/commit/95f8043f253e83d37e224ccfd63f4c61088af4c2), [`27cddc4`](https://github.com/Blobscan/blobscan/commit/27cddc45aeb593d1dd9a1c693d5bfe69b6569f9a)]:
+  - @blobscan/api@0.18.0
+  - @blobscan/db@0.14.0
+  - @blobscan/rollups@0.2.3
+
 ## 0.19.0
 
 ### Minor Changes

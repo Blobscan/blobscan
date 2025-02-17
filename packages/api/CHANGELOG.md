@@ -1,5 +1,33 @@
 # @blobscan/api
 
+## 0.18.1
+
+### Patch Changes
+
+- [#722](https://github.com/Blobscan/blobscan/pull/722) [`1ab2c7f`](https://github.com/Blobscan/blobscan/commit/1ab2c7fddce9883b81387bce0e11ac8104c7d983) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed `sort` query param from `getBySlot` procedure
+
+## 0.18.0
+
+### Minor Changes
+
+- [#721](https://github.com/Blobscan/blobscan/pull/721) [`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added last upper synced block root and block slot fields
+
+- [#700](https://github.com/Blobscan/blobscan/pull/700) [`b90971b`](https://github.com/Blobscan/blobscan/commit/b90971b1415e32c23c530feff1fc2dd1560d377d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for fetching blocks by slot
+
+- [#713](https://github.com/Blobscan/blobscan/pull/713) [`27cddc4`](https://github.com/Blobscan/blobscan/commit/27cddc45aeb593d1dd9a1c693d5bfe69b6569f9a) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed and modified handleReorgedSlots to handleReorg, which now receives a set of rewinded and forwarded block hashes.
+
+### Patch Changes
+
+- [#695](https://github.com/Blobscan/blobscan/pull/695) [`9f88066`](https://github.com/Blobscan/blobscan/commit/9f88066f7445d3bfddc9088fe7078a9d53d9828e) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added sorting option to the getDailyStats API endpoint
+
+- [#658](https://github.com/Blobscan/blobscan/pull/658) [`95f8043`](https://github.com/Blobscan/blobscan/commit/95f8043f253e83d37e224ccfd63f4c61088af4c2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Removed auto-completion logic for hashes in Optimism decoded fields retrieval
+
+- Updated dependencies [[`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a)]:
+  - @blobscan/db@0.14.0
+  - @blobscan/blob-propagator@0.2.9
+  - @blobscan/blob-storage-manager@0.4.1
+  - @blobscan/rollups@0.2.3
+
 ## 0.17.1
 
 ### Patch Changes

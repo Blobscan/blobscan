@@ -6,10 +6,7 @@ import {
   createExpandsSchema,
   withExpands,
 } from "../../middlewares/withExpands";
-import {
-  withFilters,
-  withSortFilterSchema,
-} from "../../middlewares/withFilters";
+import { withFilters } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import type { BlockIdField } from "./common";
 import { fetchBlock, serializeBlock, serializedBlockSchema } from "./common";
@@ -18,7 +15,6 @@ const inputSchema = z
   .object({
     slot: z.coerce.number().int().positive(),
   })
-  .merge(withSortFilterSchema)
   .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
 
 const outputSchema = serializedBlockSchema;

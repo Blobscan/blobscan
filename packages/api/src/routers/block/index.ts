@@ -1,4 +1,5 @@
 import { t } from "../../trpc-client";
+import { checkBlockExists } from "./checkBlobExists";
 import { getAll } from "./getAll";
 import { getByBlockId } from "./getByBlockId";
 import { getBySlot } from "./getBySlot";
@@ -11,4 +12,5 @@ export const blockRouter = t.router({
   getBySlot,
   getCount,
   getLatestBlock,
+  checkBlockExists,
 });

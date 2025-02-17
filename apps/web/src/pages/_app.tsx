@@ -19,26 +19,29 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import AppLayout from "~/components/AppLayout/AppLayout";
 import { FeedbackWidget } from "~/components/FeedbackWidget/FeedbackWidget";
 import { api } from "~/api-client";
-import { env } from "~/env.mjs";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { BlobDecoderWorkerProvider } from "~/providers/BlobDecoderWorker";
-
-if (typeof window !== "undefined" && env.NEXT_PUBLIC_POSTHOG_ID) {
-  posthog.init(env.NEXT_PUBLIC_POSTHOG_ID, {
-    api_host: env.NEXT_PUBLIC_POSTHOG_HOST,
-    person_profiles: "identified_only",
-    loaded: (posthog) => {
-      if (window.location.hostname.includes("localhost")) {
-        posthog.debug();
-      }
-    },
-  });
-}
+import { EnvProvider, useEnv } from "~/providers/Env";
 
 function App({ Component, pageProps }: NextAppProps) {
   const { resolvedTheme } = useTheme();
   const isMounted = useIsMounted();
   const router = useRouter();
+  const { env } = useEnv();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !!env?.PUBLIC_POSTHOG_ID) {
+      posthog.init(env.PUBLIC_POSTHOG_ID, {
+        api_host: env.PUBLIC_POSTHOG_HOST,
+        person_profiles: "identified_only",
+        loaded: (posthog) => {
+          if (window.location.hostname.includes("localhost")) {
+            posthog.debug();
+          }
+        },
+      });
+    }
+  }, [env]);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -85,7 +88,7 @@ function App({ Component, pageProps }: NextAppProps) {
           <Component {...pageProps} />
         </AppLayout>
         <FeedbackWidget />
-        {env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED && <Analytics />}
+        {env && env.PUBLIC_VERCEL_ANALYTICS_ENABLED && <Analytics />}
       </SkeletonTheme>
     </PostHogProvider>
   );
@@ -95,7 +98,9 @@ function AppWrapper(props: NextAppProps) {
   return (
     <ThemeProvider attribute="class">
       <BlobDecoderWorkerProvider>
-        <App {...props} />
+        <EnvProvider>
+          <App {...props} />
+        </EnvProvider>
       </BlobDecoderWorkerProvider>
     </ThemeProvider>
   );

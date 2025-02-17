@@ -15,14 +15,12 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
-import { getFirstBlobNumber } from "~/components/content";
 import { api } from "~/api-client";
-import { env } from "~/env.mjs";
+import { getFirstBlobNumber } from "~/content";
 import NextError from "~/pages/_error";
+import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
-  buildBlockExternalUrl,
-  buildSlotExternalUrl,
   deserializeFullBlock,
   formatBytes,
   formatNumber,
@@ -55,6 +53,9 @@ const Block: NextPage = function () {
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
   const blockNumber = blockData ? blockData.number : undefined;
 
+  const { env } = useEnv();
+  const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
+
   if (error) {
     return (
       <NextError
@@ -70,13 +71,13 @@ const Block: NextPage = function () {
 
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
-  if (blockData) {
+  if (blockData && env) {
     const {
       blobSize,
       blockBlobGasLimit,
       maxBlobsPerBlock,
       targetBlobGasPerBlock,
-    } = getEthereumConfig(env.NEXT_PUBLIC_NETWORK_NAME, blockData.slot);
+    } = getEthereumConfig(env.PUBLIC_NETWORK_NAME, blockData.slot);
 
     const totalBlockBlobSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
@@ -90,6 +91,15 @@ const Block: NextPage = function () {
       0
     );
 
+    const firstBlobNumber = networkName
+          ? getFirstBlobNumber(networkName)
+          : undefined;
+
+        const previousBlockHref =
+          firstBlobNumber && blockNumber && firstBlobNumber < blockNumber
+            ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
+            : undefined;
+
     detailsFields = [
       {
         name: "Block Height",
@@ -98,24 +108,21 @@ const Block: NextPage = function () {
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
-            {blockNumber !== undefined && (
-              <NavArrows
-                prev={{
-                  tooltip: "Previous Block",
-                  href:
-                    getFirstBlobNumber() < blockNumber
-                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
-                      : undefined,
-                }}
-                next={{
-                  tooltip: "Next Block",
-                  href:
-                    latestBlock && blockNumber < latestBlock.number
-                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
-                      : undefined,
-                }}
-              />
-            )}
+            {!!blockNumber && previousBlockHref && (
+                  <NavArrows
+                    prev={{
+                      tooltip: "Previous Block",
+                      href: previousBlockHref,
+                    }}
+                    next={{
+                      tooltip: "Next Block",
+                      href:
+                        latestBlock && blockNumber < latestBlock.number
+                          ? `/block_neighbor?blockNumber=${blockNumber}&direction=next`
+                          : undefined,
+                    }}
+                  />
+                )}
           </div>
         ),
       },
@@ -142,7 +149,7 @@ const Block: NextPage = function () {
         name: "Slot",
         helpText: "The slot number of the block.",
         value: (
-          <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
+          <Link href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${blockData.slot}`} isExternal>
             {blockData.slot}
           </Link>
         ),
@@ -223,7 +230,9 @@ const Block: NextPage = function () {
       <DetailsLayout
         header="Block Details"
         externalLink={
-          blockData ? buildBlockExternalUrl(blockData.number) : undefined
+          blockData
+            ? `${env?.PUBLIC_EXPLORER_BASE_URL}/block/${blockData.number}`
+            : undefined
         }
         fields={detailsFields}
       />

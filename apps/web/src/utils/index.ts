@@ -4,7 +4,6 @@ export * from "./blob-decoders";
 export * from "./deserializers";
 export * from "./web3";
 export * from "./date";
-export * from "./explorers";
 export * from "./routes";
 export * from "./search";
 export * from "./number";
