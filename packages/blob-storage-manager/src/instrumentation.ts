@@ -54,15 +54,15 @@ export function updateBlobStorageMetrics({
   direction: Direction;
   duration: number;
 }) {
-  const counterAttributtes: StorageMetricBaseAttributes = {
+  const counterAttributes: StorageMetricBaseAttributes = {
     storage,
     direction,
   };
 
-  bytesTransferredTotalCounter.add(blobSize, counterAttributtes);
+  bytesTransferredTotalCounter.add(blobSize, counterAttributes);
   filesTransferredTotalCounter.add(1, {
     direction,
     storage,
   });
-  transferDurationHistogram.record(duration, counterAttributtes);
+  transferDurationHistogram.record(duration, counterAttributes);
 }
