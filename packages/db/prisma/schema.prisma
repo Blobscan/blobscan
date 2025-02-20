@@ -72,11 +72,11 @@ enum Rollup {
   SWELLCHAIN  @map("swellchain")
   TAIKO       @map("taiko")
   UNICHAIN    @map("unichain")
-  ZKSYNC      @map("zksync")
   WORLD       @map("world")
   ZERONETWORK @map("zeronetwork")
   ZIRCUIT     @map("zircuit")
   ZORA        @map("zora")
+  ZKSYNC      @map("zksync")
 
   @@map("rollup")
 }

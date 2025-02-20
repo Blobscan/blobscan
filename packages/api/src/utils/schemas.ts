@@ -45,11 +45,11 @@ const zodRollupEnums = [
   "swellchain",
   "taiko",
   "unichain",
-  "zksync",
   "world",
   "zeronetwork",
   "zircuit",
   "zora",
+  "zksync",
 ] as const;
 
 const zodCategoryEnum = ["other", "rollup"] as const;
