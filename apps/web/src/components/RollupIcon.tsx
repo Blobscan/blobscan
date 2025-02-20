@@ -1,3 +1,4 @@
+import Image from "next/image";
 import classNames from "classnames";
 
 import AbstractIcon from "~/icons/abstract.svg";
@@ -15,6 +16,7 @@ import HashkeyIcon from "~/icons/hashkey.svg";
 import InkIcon from "~/icons/ink.svg";
 import KintoIcon from "~/icons/kinto.svg";
 import KromaIcon from "~/icons/kroma.svg";
+import lambdaIconSrc from "~/icons/lambda.png";
 import LineaIcon from "~/icons/linea.svg";
 import LiskIcon from "~/icons/lisk.svg";
 import MetalIcon from "~/icons/metal.svg";
@@ -28,14 +30,18 @@ import ParadexIcon from "~/icons/paradex.svg";
 import PGNIcon from "~/icons/pgn.svg";
 import PolynomialIcon from "~/icons/polynomial.svg";
 import RaceIcon from "~/icons/race.svg";
+import RiverIcon from "~/icons/river.svg";
 import ScrollIcon from "~/icons/scroll.svg";
 import ShapeIcon from "~/icons/shape.svg";
+import SnaxchainIcon from "~/icons/snaxchain.svg";
 import SoneiumIcon from "~/icons/soneium.svg";
 import StarknetIcon from "~/icons/starknet.svg";
 import SuperlumioIcon from "~/icons/superlumio.svg";
+import SuperSeedIcon from "~/icons/superseed.svg";
 import SwanchainIcon from "~/icons/swanchain.svg";
 import SwellchainIcon from "~/icons/swellchain.svg";
 import TaikoIcon from "~/icons/taiko.svg";
+import TheBinaryHoldingsIcon from "~/icons/thebinaryholdings.svg";
 import UnichainIcon from "~/icons/unichain.svg";
 import WorldIcon from "~/icons/world.svg";
 import ZeroNetworkIcon from "~/icons/zeronetwork.svg";
@@ -115,6 +121,11 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "kroma":
       rollupIcon = <KromaIcon className={commonStyles} />;
       break;
+    case "lambda":
+      rollupIcon = (
+        <Image alt="Lambda" src={lambdaIconSrc} className={commonStyles} />
+      );
+      break;
     case "linea":
       rollupIcon = <LineaIcon className={commonStyles} />;
       break;
@@ -164,11 +175,17 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "race":
       rollupIcon = <RaceIcon className={commonStyles} />;
       break;
+    case "river":
+      rollupIcon = <RiverIcon className={commonStyles} />;
+      break;
     case "scroll":
       rollupIcon = <ScrollIcon className={commonStyles} />;
       break;
     case "shape":
       rollupIcon = <ShapeIcon className={commonStyles} />;
+      break;
+    case "snaxchain":
+      rollupIcon = <SnaxchainIcon className={commonStyles} />;
       break;
     case "soneium":
       rollupIcon = <SoneiumIcon className={commonStyles} />;
@@ -179,6 +196,9 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "superlumio":
       rollupIcon = <SuperlumioIcon className={commonStyles} />;
       break;
+    case "superseed":
+      rollupIcon = <SuperSeedIcon className={commonStyles} />;
+      break;
     case "swanchain":
       rollupIcon = <SwanchainIcon className={commonStyles} />;
       break;
@@ -187,6 +207,17 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
     case "taiko":
       rollupIcon = <TaikoIcon className={commonStyles} />;
+      break;
+    case "thebinaryholdings":
+      rollupIcon = (
+        <TheBinaryHoldingsIcon
+          className={classNames({
+            "h-2 w-2": size === "sm",
+            "h-3 w-3": size === "md",
+            "h-4 w-4": size === "lg",
+          })}
+        />
+      );
       break;
     case "unichain":
       rollupIcon = <UnichainIcon className={commonStyles} />;
