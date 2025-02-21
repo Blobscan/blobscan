@@ -9,8 +9,8 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
+import { DailyBlobsPerRollupChart } from "~/components/Charts/Blob";
 import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
-import { DailyTransactionsChart } from "~/components/Charts/Transaction";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -26,7 +26,6 @@ import {
 } from "~/utils";
 
 const LATEST_ITEMS_LENGTH = 5;
-const DAILY_STATS_TIMEFRAME = "15d";
 
 const CARD_HEIGHT = "sm:h-28";
 
@@ -46,14 +45,15 @@ const Home: NextPage = () => {
   });
   const { data: rawOverallStats, error: overallStatsErr } =
     api.stats.getOverallStats.useQuery();
-  const { data: dailyTxStats, error: dailyTxStatsErr } =
-    api.stats.getTransactionDailyStats.useQuery({
-      timeFrame: DAILY_STATS_TIMEFRAME,
-    });
   const { data: dailyBlockStats, error: dailyBlockStatsErr } =
     api.stats.getBlockDailyStats.useQuery({
-      timeFrame: DAILY_STATS_TIMEFRAME,
+      timeFrame: "15d",
     });
+  const { data: dailyRollupStats, error: dailyRollupStatsErr } =
+    api.stats.getRollupDailyStats.useQuery({
+      timeFrame: "90d",
+    });
+
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!rawBlocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -87,8 +87,8 @@ const Home: NextPage = () => {
   const error =
     latestBlocksError ||
     overallStatsErr ||
-    dailyTxStatsErr ||
-    dailyBlockStatsErr;
+    dailyBlockStatsErr ||
+    dailyRollupStatsErr;
 
   if (error) {
     return (
@@ -170,12 +170,7 @@ const Home: NextPage = () => {
             />
           </div>
           <div className="col-span-2 sm:col-span-4">
-            <DailyTransactionsChart
-              days={dailyTxStats?.days}
-              transactions={dailyTxStats?.totalTransactions}
-              opts={{ toolbox: { show: false } }}
-              compact
-            />
+            <DailyBlobsPerRollupChart {...dailyRollupStats} />
           </div>
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
