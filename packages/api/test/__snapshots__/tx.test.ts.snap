@@ -1781,7 +1781,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 ]
 `;
 
-exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the block specificed 1`] = `
+exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the block specified 1`] = `
 [
   {
     "blobAsCalldataGasFee": "10000",
