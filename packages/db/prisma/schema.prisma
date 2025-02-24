@@ -299,6 +299,14 @@ model OverallStats {
   @@map("overall_stats")
 }
 
+model ETHPrice {
+  id        Int      @id @default(autoincrement())
+  price     Decimal
+  timestamp DateTime
+
+  @@map("eth_price")
+}
+
 // NextAuth.js Models
 // NOTE: When using postgresql, mysql or sqlserver,
 // uncomment the @db.Text annotations below
