@@ -244,9 +244,15 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.14.0
         version: link:../../packages/db
+      '@blobscan/env':
+        specifier: workspace:^0.1.0
+        version: link:../../packages/env
       '@blobscan/eth-format':
         specifier: workspace:^0.1.0
         version: link:../../packages/eth-format
+      '@blobscan/network-blob-config':
+        specifier: workspace:^0.1.0
+        version: link:../../packages/network-blob-config
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.9
         version: link:../../packages/open-telemetry
@@ -455,6 +461,9 @@ importers:
       '@blobscan/logger':
         specifier: workspace:^0.1.2
         version: link:../logger
+      '@blobscan/network-blob-config':
+        specifier: workspace:^0.1.0
+        version: link:../network-blob-config
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.9
         version: link:../open-telemetry
@@ -603,6 +612,9 @@ importers:
         specifier: ^5.19.1
         version: 5.19.1
     devDependencies:
+      '@blobscan/network-blob-config':
+        specifier: workspace:^0.1.0
+        version: link:../network-blob-config
       '@faker-js/faker':
         specifier: ^8.0.2
         version: 8.4.1
@@ -635,6 +647,8 @@ importers:
       winston:
         specifier: ^3.10.0
         version: 3.13.1
+
+  packages/network-blob-config: {}
 
   packages/open-telemetry:
     dependencies:
