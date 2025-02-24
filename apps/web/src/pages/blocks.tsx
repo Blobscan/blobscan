@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
-import { getNetworkBlobConfig } from "@blobscan/network-blob-config";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
@@ -265,7 +265,7 @@ const Blocks: NextPage = function () {
           {
             item: (
               <BlobGasUsageDisplay
-                networkBlobConfig={getNetworkBlobConfig(
+                networkBlobConfig={getNetworkBlobConfigBySlot(
                   env.PUBLIC_NETWORK_NAME,
                   slot
                 )}

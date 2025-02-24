@@ -45,7 +45,10 @@ export const FORK_BLOB_CONFIGS: Record<NetworkFork, NetworkBlobConfig> = {
   },
 };
 
-export function getNetworkFork(network: Network, slot: number): NetworkFork {
+export function getNetworkForkBySlot(
+  network: Network,
+  slot: number
+): NetworkFork {
   switch (network) {
     case "holesky": {
       return slot >= 3710976 ? "pectra" : "dencun";
@@ -72,7 +75,7 @@ function getNetworkNameById(networkId: number): Network {
       return "devnet";
   }
 }
-export function getNetworkBlobConfig(
+export function getNetworkBlobConfigBySlot(
   networkNameOrId: Network | number,
   slot: number
 ): NetworkBlobConfig {
@@ -80,7 +83,7 @@ export function getNetworkBlobConfig(
     typeof networkNameOrId === "number"
       ? getNetworkNameById(networkNameOrId)
       : networkNameOrId;
-  const upgrade = getNetworkFork(network, slot);
+  const upgrade = getNetworkForkBySlot(network, slot);
 
   return FORK_BLOB_CONFIGS[upgrade];
 }

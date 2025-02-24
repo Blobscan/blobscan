@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
-import { getNetworkBlobConfig } from "@blobscan/network-blob-config";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
@@ -72,7 +72,7 @@ const Block: NextPage = function () {
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (blockData && env) {
-    const networkBlobConfig = getNetworkBlobConfig(
+    const networkBlobConfig = getNetworkBlobConfigBySlot(
       env.PUBLIC_NETWORK_NAME,
       blockData.slot
     );
