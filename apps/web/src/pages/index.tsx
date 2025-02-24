@@ -47,7 +47,7 @@ const Home: NextPage = () => {
     api.stats.getOverallStats.useQuery();
   const { data: dailyBlockStats, error: dailyBlockStatsErr } =
     api.stats.getBlockDailyStats.useQuery({
-      timeFrame: "15d",
+      timeFrame: "30d",
     });
   const { data: dailyRollupStats, error: dailyRollupStatsErr } =
     api.stats.getRollupDailyStats.useQuery({
