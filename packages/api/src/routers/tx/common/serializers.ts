@@ -125,14 +125,14 @@ export function serializeBaseTransactionFields(
   };
 }
 
-export async function serializeTransaction(
+export function serializeTransaction(
   txQuery: FullQueriedTransaction
-): Promise<SerializedTransaction> {
-  const serializedBaseTx = await serializeBaseTransactionFields(txQuery);
+): SerializedTransaction {
+  const serializedBaseTx = serializeBaseTransactionFields(txQuery);
   const serializedAdditionalTx = serializeDerivedTxBlobGasFields(txQuery);
 
   const decodedFieldsString = JSON.stringify(txQuery.decodedFields);
-  const decodedFields = await parseDecodedFields(decodedFieldsString);
+  const decodedFields = parseDecodedFields(decodedFieldsString);
 
   return {
     ...serializedBaseTx,

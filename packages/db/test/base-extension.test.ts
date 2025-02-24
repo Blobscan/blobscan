@@ -345,7 +345,8 @@ describe("Base Extension", () => {
           },
           {
             blobHash: "blobHash003",
-            blockHash: "blockHash008",
+            blockHash:
+              "0x8000000000000000000000000000000000000000000000000000000000000000",
             blockNumber: 1008,
             blockTimestamp: new Date("2023-08-31T16:00:00Z"),
             txHash: "txHash016",
@@ -390,7 +391,8 @@ describe("Base Extension", () => {
         const updatedBlobsOnTransactions = newBlobsOnTransactions.map(
           (btx) => ({
             ...btx,
-            blockHash: "blockHash007",
+            blockHash:
+              "0x7000000000000000000000000000000000000000000000000000000000000000",
             blockNumber: 1007,
             blockTimestamp: new Date("2023-08-31T14:00:00Z"),
           })

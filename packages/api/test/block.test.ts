@@ -2,7 +2,7 @@ import type { inferProcedureInput } from "@trpc/server";
 import { TRPCError } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { fixtures } from "@blobscan/test";
+import { fixtures, testValidError } from "@blobscan/test";
 
 import type { TRPCContext } from "../src";
 import type { AppRouter } from "../src/app-router";
@@ -53,6 +53,24 @@ describe("Block router", async () => {
     });
   });
 
+  describe("checkBlockExists", () => {
+    it("should return true for an existing block", async () => {
+      const result = await caller.block.checkBlockExists({
+        blockNumber: 1002,
+      });
+
+      expect(result).toBe(true);
+    });
+
+    it("should return false for a non-existent block", async () => {
+      const result = await caller.block.checkBlockExists({
+        blockNumber: 99999999,
+      });
+
+      expect(result).toBe(false);
+    });
+  });
+
   describe("getByBlockId", () => {
     it("should get a block by hash", async () => {
       const result = await caller.block.getByBlockId({
@@ -69,6 +87,7 @@ describe("Block router", async () => {
       };
 
       const result = await caller.block.getByBlockId(input);
+
       expect(result).toMatchSnapshot();
     });
 
@@ -113,7 +132,7 @@ describe("Block router", async () => {
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with id '${invalidHash}'.`,
+          message: `Block with id "${invalidHash}" not found`,
         })
       );
     });
@@ -126,10 +145,43 @@ describe("Block router", async () => {
       ).rejects.toThrow(
         new TRPCError({
           code: "NOT_FOUND",
-          message: `No block with id '9999'.`,
+          message: 'Block with id "9999" not found',
         })
       );
     });
+  });
+
+  describe("getBySlot", () => {
+    it("should get a block by slot", async () => {
+      const result = await caller.block.getBySlot({
+        slot: 101,
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    testValidError(
+      "should fail when trying to get a reorged block by slot",
+      async () => {
+        await caller.block.getBySlot({
+          slot: 110,
+        });
+      },
+      TRPCError
+    );
+
+    testValidError(
+      "should fail when trying to get a block with a negative slot",
+      async () => {
+        await caller.block.getBySlot({
+          slot: -1,
+        });
+      },
+      TRPCError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("getCount", () => {

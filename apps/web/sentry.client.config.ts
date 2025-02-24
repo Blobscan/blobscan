@@ -3,12 +3,29 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import type { z } from "zod";
 
-import { env } from "./src/env.mjs";
+import type { clientEnvVarsSchema } from "~/env.mjs";
 
-Sentry.init({
-  dsn: env.NEXT_PUBLIC_SENTRY_DSN_WEB,
-  environment: env.NEXT_PUBLIC_NETWORK_NAME,
-  tracesSampleRate: 1,
-  debug: false,
-});
+type ClientEnvVars = z.output<typeof clientEnvVarsSchema>;
+
+const initSentry = async () => {
+  try {
+    const request = await fetch("/api/env");
+    const env = (await request.json()) as ClientEnvVars;
+
+    const dns = env.PUBLIC_SENTRY_DSN_WEB;
+    const environment = env.PUBLIC_NETWORK_NAME;
+
+    Sentry.init({
+      dsn: dns,
+      environment,
+      tracesSampleRate: 1,
+      debug: false,
+    });
+  } catch (error) {
+    console.error("Error during Sentry initialization", error);
+  }
+};
+
+initSentry();
