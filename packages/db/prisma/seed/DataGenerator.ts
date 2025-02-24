@@ -184,7 +184,8 @@ export class DataGenerator {
       let fromId: string;
 
       if (rollup) {
-        fromId = ROLLUP_ADDRESSES[rollup];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        fromId = ROLLUP_ADDRESSES[rollup]!;
       } else {
         fromId = faker.helpers.arrayElement(uniqueAddresses);
       }
