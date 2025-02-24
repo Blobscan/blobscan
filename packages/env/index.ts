@@ -84,6 +84,7 @@ export const env = createEnv({
       REDIS_URI: z.string().default("redis://localhost:6379"),
       STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
       STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
+      ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("0 * * * *"),
       SECRET_KEY: z.string(),
       SENTRY_DSN_API: z.string().optional(),
       SWARM_STORAGE_ENABLED: booleanSchema.default("false"),
