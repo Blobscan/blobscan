@@ -1214,7 +1214,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
 ]
 `;
 
-exports[`Block router > getAll > when getting filtered block results > should return the results starting from the block specificed 1`] = `
+exports[`Block router > getAll > when getting filtered block results > should return the results starting from the block specified 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",

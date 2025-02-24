@@ -23,7 +23,7 @@ We rely on testing to ensure our solutions meet user expectations.
 
 **Framework:** We utilize [Vitest](https://vitest.dev), which is set up with a [workspace configuration](https://vitest.dev/guide/workspace.html) tailored for our monorepo.
 
-**Integration Testing:** Our integration tests run with a local PostgreSQL database and a [fake GCS server](https://github.com/fsouza/fake-gcs-server), orchestrated via [Docker](https://www.docker.com). This ensures our tests mimic real-world scenarios. We employ a [specific script](https://github.com/Blobscan/blobscan/blob/next/scripts/run-integration.sh) to set up these services before initiating tests.
+**Integration Testing:** Our integration tests run with a local PostgreSQL database and a [fake GCS server](https://github.com/fsouza/fake-gcs-server), orchestrated via [Docker](https://www.docker.com). This ensures our tests mimic real-world scenarios. We employ a [specific script](https://github.com/Blobscan/blobscan/blob/main/scripts/run-integration.sh) to set up these services before initiating tests.
 
 ## Setting Up Your Environment
 

@@ -172,7 +172,7 @@ export function runFiltersTestsSuite(
       expect(result).toMatchSnapshot();
     });
 
-    it("should return the results starting from the block specificed", async () => {
+    it("should return the results starting from the block specified", async () => {
       const result = await fetcher({
         startBlock: 1007,
       });
