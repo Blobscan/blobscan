@@ -14,7 +14,7 @@ type Data = {
 /**
  * Get the price of an asset at a specific timestamp.
  * @param address The price feed contract Addresses (https://docs.chain.link/data-feeds/price-feeds/addresses).
- * @param timestamp The timestamp to get the price for.
+ * @param targetTimestamp The timestamp for which the price is requested in seconds.
  * @param tolerance The maximum difference between the target timestamp and the timestamp of the data.
  * @returns The price of the asset at the given timestamp.
  **/
