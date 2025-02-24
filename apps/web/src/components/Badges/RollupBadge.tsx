@@ -27,7 +27,7 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
     style: "bg-[#88a6ff] dark:bg-[#2242a1] dark:text-[#88a6ff] text-[#2242a1]",
   },
   blast: {
-    style: "bg-[#f2edc3] dark:bg-[#9d9245] dark:text-[#f2edc3] text-[#9d9245]",
+    style: "bg-[#e4d341] dark:bg-[#9d9245] dark:text-[#e4d341] text-[#9d9245]",
   },
   bob: {
     style: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-50",
@@ -185,7 +185,7 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
     style: "bg-[#c198ff] dark:bg-[#2f1364] dark:text-[#c198ff] text-[#2f1364]",
   },
   superseed: {
-    style: "bg-[#3b34c5] dark:bg-[#000000] dark:text-[#e6e6e6] text-[#000000]",
+    style: "bg-[#706ae0] dark:bg-[#000000] dark:text-[#e6e6e6] text-[#000000]",
     label: "SuperSeed",
   },
   swanchain: {
