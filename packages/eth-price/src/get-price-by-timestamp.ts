@@ -4,7 +4,7 @@ import { Aggregator } from "../abi/aggregator";
 import { client } from "./client";
 import { getClosestRoundData } from "./get-closest-round-data";
 
-type Data = {
+type PriceData = {
   phaseId: number;
   roundId: bigint;
   price: bigint;
@@ -26,7 +26,7 @@ export async function getPriceByTimestamp({
   address: Address;
   targetTimestamp: bigint;
   tolerance: bigint;
-}): Promise<Data> {
+}): Promise<PriceData> {
   const response = await getClosestRoundData({
     address,
     targetTimestamp,
