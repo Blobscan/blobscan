@@ -2,6 +2,8 @@ import Image from "next/image";
 import classNames from "classnames";
 
 import AbstractIcon from "~/icons/abstract.svg";
+import AevoIcon from "~/icons/aevo.svg";
+import Ancient8Icon from "~/icons/ancient8.svg";
 import ArbitrumIcon from "~/icons/arbitrum.svg";
 import ArenaZIcon from "~/icons/arenaz.svg";
 import BaseIcon from "~/icons/base.svg";
@@ -11,25 +13,42 @@ import BobaIcon from "~/icons/boba.svg";
 import CampIcon from "~/icons/camp.svg";
 import DebankIcon from "~/icons/debank.svg";
 import EthernityIcon from "~/icons/ethernity.svg";
+import FraxtalIcon from "~/icons/fraxtal.svg";
 import FuelIcon from "~/icons/fuel.svg";
 import HashkeyIcon from "~/icons/hashkey.svg";
+import HemiIcon from "~/icons/hemi.svg";
+import HyprIcon from "~/icons/hypr.svg";
+import infinaeonSrc from "~/icons/infinaeon.png";
 import InkIcon from "~/icons/ink.svg";
+import KarakIcon from "~/icons/karak.svg";
 import KintoIcon from "~/icons/kinto.svg";
 import KromaIcon from "~/icons/kroma.svg";
 import lambdaIconSrc from "~/icons/lambda.png";
 import LineaIcon from "~/icons/linea.svg";
 import LiskIcon from "~/icons/lisk.svg";
+import mantaSrc from "~/icons/manta.png";
+import MantleIcon from "~/icons/mantle.svg";
 import MetalIcon from "~/icons/metal.svg";
+import MetaMailIcon from "~/icons/metamail.svg";
+import MetisIcon from "~/icons/metis.svg";
 import MintIcon from "~/icons/mint.svg";
 import ModeIcon from "~/icons/mode.svg";
 import MorphIcon from "~/icons/morph.svg";
 import NalIcon from "~/icons/nal.svg";
+import NanonNetworkIcon from "~/icons/nanonnetwork.svg";
+import OpBNBIcon from "~/icons/opbnb.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import OptopiaIcon from "~/icons/optopia.svg";
+import orderlySrc from "~/icons/orderly.png";
+import pandaseaSrc from "~/icons/pandasea.png";
 import ParadexIcon from "~/icons/paradex.svg";
+import ParallelIcon from "~/icons/parallel.svg";
 import PGNIcon from "~/icons/pgn.svg";
+import PhalaIcon from "~/icons/phala.svg";
 import PolynomialIcon from "~/icons/polynomial.svg";
+import R0arIcon from "~/icons/r0ar.svg";
 import RaceIcon from "~/icons/race.svg";
+import RariIcon from "~/icons/rari.svg";
 import RiverIcon from "~/icons/river.svg";
 import ScrollIcon from "~/icons/scroll.svg";
 import ShapeIcon from "~/icons/shape.svg";
@@ -44,6 +63,7 @@ import TaikoIcon from "~/icons/taiko.svg";
 import TheBinaryHoldingsIcon from "~/icons/thebinaryholdings.svg";
 import UnichainIcon from "~/icons/unichain.svg";
 import WorldIcon from "~/icons/world.svg";
+import XGAIcon from "~/icons/xga.svg";
 import ZeroNetworkIcon from "~/icons/zeronetwork.svg";
 import ZircuitIcon from "~/icons/zircuit.svg";
 import ZkSyncIcon from "~/icons/zksync.svg";
@@ -70,6 +90,14 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
   switch (rollup) {
     case "abstract":
       rollupIcon = <AbstractIcon className={commonStyles} />;
+      break;
+    case "aevo":
+      rollupIcon = <AevoIcon className={commonStyles} />;
+      break;
+    case "ancient8":
+      rollupIcon = (
+        <Ancient8Icon className={`${commonStyles} rounded-lg bg-green-500`} />
+      );
       break;
     case "arbitrum":
       rollupIcon = (
@@ -106,14 +134,31 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "ethernity":
       rollupIcon = <EthernityIcon className={commonStyles} />;
       break;
+    case "fraxtal":
+      rollupIcon = <FraxtalIcon className={commonStyles} />;
+      break;
     case "fuel":
       rollupIcon = <FuelIcon className={commonStyles} />;
       break;
     case "hashkey":
       rollupIcon = <HashkeyIcon className={commonStyles} />;
       break;
+    case "hemi":
+      rollupIcon = <HemiIcon className={commonStyles} />;
+      break;
+    case "hypr":
+      rollupIcon = <HyprIcon className={commonStyles} />;
+      break;
+    case "infinaeon":
+      rollupIcon = (
+        <Image alt="Infinaeon" src={infinaeonSrc} className={commonStyles} />
+      );
+      break;
     case "ink":
       rollupIcon = <InkIcon className={commonStyles} />;
+      break;
+    case "karak":
+      rollupIcon = <KarakIcon className={commonStyles} />;
       break;
     case "kinto":
       rollupIcon = <KintoIcon className={commonStyles} />;
@@ -132,8 +177,22 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "lisk":
       rollupIcon = <LiskIcon className={commonStyles} />;
       break;
+    case "manta":
+      rollupIcon = (
+        <Image alt="Manta" src={mantaSrc} className={commonStyles} />
+      );
+      break;
+    case "mantle":
+      rollupIcon = <MantleIcon className={`${commonStyles} rounded-lg`} />;
+      break;
+    case "metamail":
+      rollupIcon = <MetaMailIcon className={`${commonStyles} text-blue-500`} />;
+      break;
     case "metal":
       rollupIcon = <MetalIcon className={commonStyles} />;
+      break;
+    case "metis":
+      rollupIcon = <MetisIcon className={commonStyles} />;
       break;
     case "mint":
       rollupIcon = <MintIcon className={commonStyles} />;
@@ -157,14 +216,38 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
         <NalIcon className={`${commonStyles}  text-black dark:text-white`} />
       );
       break;
+    case "nanonnetwork":
+      rollupIcon = (
+        <NanonNetworkIcon className={`${commonStyles} rounded-lg`} />
+      );
+      break;
+    case "opbnb":
+      rollupIcon = <OpBNBIcon className={commonStyles} />;
+      break;
     case "optimism":
       rollupIcon = <OptimismIcon className={commonStyles} />;
       break;
     case "optopia":
       rollupIcon = <OptopiaIcon className={commonStyles} />;
       break;
+    case "orderly":
+      rollupIcon = (
+        <Image alt="Orderly" src={orderlySrc} className={commonStyles} />
+      );
+      break;
+    case "pandasea":
+      rollupIcon = (
+        <Image alt="PandaSea" src={pandaseaSrc} className={commonStyles} />
+      );
+      break;
     case "paradex":
-      rollupIcon = <ParadexIcon className={commonStyles} />;
+      rollupIcon = <ParadexIcon className={`${commonStyles} rounded-lg`} />;
+      break;
+    case "parallel":
+      rollupIcon = <ParallelIcon className={commonStyles} />;
+      break;
+    case "phala":
+      rollupIcon = <PhalaIcon className={`${commonStyles} rounded-lg`} />;
       break;
     case "pgn":
       rollupIcon = <PGNIcon className={commonStyles} />;
@@ -172,8 +255,14 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "polynomial":
       rollupIcon = <PolynomialIcon className={commonStyles} />;
       break;
+    case "r0ar":
+      rollupIcon = <R0arIcon className={commonStyles} />;
+      break;
     case "race":
       rollupIcon = <RaceIcon className={commonStyles} />;
+      break;
+    case "rari":
+      rollupIcon = <RariIcon className={commonStyles} />;
       break;
     case "river":
       rollupIcon = <RiverIcon className={commonStyles} />;
@@ -227,6 +316,17 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
         <WorldIcon className={`${commonStyles} text-black dark:text-white`} />
       );
       break;
+    case "xga":
+      rollupIcon = (
+        <XGAIcon
+          className={`rounded-xl bg-gray-200 dark:bg-white ${classNames({
+            "h-4 w-4": size === "sm",
+            "h-[18px] w-[18px]": size === "md",
+            "h-5 w-5": size === "lg",
+          })}`}
+        />
+      );
+      break;
     case "zeronetwork":
       rollupIcon = <ZeroNetworkIcon className={commonStyles} />;
       break;
@@ -242,7 +342,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
   }
 
   return (
-    <div title={capitalize(rollup)}>
+    <div className={commonStyles} title={capitalize(rollup)}>
       {rollupIcon === null ? <div className={commonStyles}></div> : rollupIcon}
     </div>
   );
