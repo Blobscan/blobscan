@@ -716,6 +716,9 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.13.0
         version: link:../db
+      '@blobscan/eth-price':
+        specifier: workspace:*
+        version: link:../eth-price
       '@blobscan/logger':
         specifier: workspace:^0.1.2
         version: link:../logger

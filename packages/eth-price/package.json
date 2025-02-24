@@ -1,6 +1,7 @@
 {
-  "name": "eth-price",
-  "main": "index.js",
+  "name": "@blobscan/eth-price",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "test": "pnpm vitest --reporter=verbose"
   },
