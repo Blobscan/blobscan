@@ -2,7 +2,7 @@ export * from "./bytes";
 export * from "./charts";
 export * from "./blob-decoders";
 export * from "./deserializers";
-export * from "./ethereum";
+export * from "./web3";
 export * from "./date";
 export * from "./routes";
 export * from "./search";
