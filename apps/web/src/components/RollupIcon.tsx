@@ -18,15 +18,12 @@ import FuelIcon from "~/icons/fuel.svg";
 import HashkeyIcon from "~/icons/hashkey.svg";
 import HemiIcon from "~/icons/hemi.svg";
 import HyprIcon from "~/icons/hypr.svg";
-import infinaeonSrc from "~/icons/infinaeon.png";
 import InkIcon from "~/icons/ink.svg";
 import KarakIcon from "~/icons/karak.svg";
 import KintoIcon from "~/icons/kinto.svg";
 import KromaIcon from "~/icons/kroma.svg";
-import lambdaIconSrc from "~/icons/lambda.png";
 import LineaIcon from "~/icons/linea.svg";
 import LiskIcon from "~/icons/lisk.svg";
-import mantaSrc from "~/icons/manta.png";
 import MantleIcon from "~/icons/mantle.svg";
 import MetalIcon from "~/icons/metal.svg";
 import MetaMailIcon from "~/icons/metamail.svg";
@@ -39,8 +36,6 @@ import NanonNetworkIcon from "~/icons/nanonnetwork.svg";
 import OpBNBIcon from "~/icons/opbnb.svg";
 import OptimismIcon from "~/icons/optimism.svg";
 import OptopiaIcon from "~/icons/optopia.svg";
-import orderlySrc from "~/icons/orderly.png";
-import pandaseaSrc from "~/icons/pandasea.png";
 import ParadexIcon from "~/icons/paradex.svg";
 import ParallelIcon from "~/icons/parallel.svg";
 import PGNIcon from "~/icons/pgn.svg";
@@ -151,7 +146,13 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
     case "infinaeon":
       rollupIcon = (
-        <Image alt="Infinaeon" src={infinaeonSrc} className={commonStyles} />
+        <Image
+          alt="Infinaeon"
+          width={16}
+          height={16}
+          src="/rollups/infinaeon.png"
+          className={commonStyles}
+        />
       );
       break;
     case "ink":
@@ -168,7 +169,13 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
     case "lambda":
       rollupIcon = (
-        <Image alt="Lambda" src={lambdaIconSrc} className={commonStyles} />
+        <Image
+          alt="Lambda"
+          width={16}
+          height={16}
+          src={"/rollups/lambda.png"}
+          className={commonStyles}
+        />
       );
       break;
     case "linea":
@@ -179,7 +186,13 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
     case "manta":
       rollupIcon = (
-        <Image alt="Manta" src={mantaSrc} className={commonStyles} />
+        <Image
+          alt="Manta"
+          width={16}
+          height={16}
+          src="/rollups/manta.png"
+          className={commonStyles}
+        />
       );
       break;
     case "mantle":
@@ -194,6 +207,7 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
     case "metis":
       rollupIcon = <MetisIcon className={commonStyles} />;
       break;
+
     case "mint":
       rollupIcon = <MintIcon className={commonStyles} />;
       break;
@@ -232,12 +246,24 @@ export const RollupIcon: React.FC<RollupIconProps> = ({
       break;
     case "orderly":
       rollupIcon = (
-        <Image alt="Orderly" src={orderlySrc} className={commonStyles} />
+        <Image
+          alt="Orderly"
+          width={16}
+          height={16}
+          src="/rollups/orderly.png"
+          className={commonStyles}
+        />
       );
       break;
     case "pandasea":
       rollupIcon = (
-        <Image alt="PandaSea" src={pandaseaSrc} className={commonStyles} />
+        <Image
+          alt="PandaSea"
+          width={16}
+          height={16}
+          src="/rollups/pandasea.png"
+          className={commonStyles}
+        />
       );
       break;
     case "paradex":
