@@ -9,6 +9,7 @@ export const TIME_FRAMES = z.enum([
   "7d",
   "15d",
   "30d",
+  "90d",
   "180d",
   "360d",
   "All",
@@ -26,6 +27,8 @@ function getTimeFrameIntervals(timeFrame: TimeFrame): TimeInterval {
     case "7d":
     case "15d":
     case "30d":
+    case "90d":
+    case "180d":
     case "360d":
     default: {
       const day = parseInt(timeFrame.split("d")[0] ?? "1d");
