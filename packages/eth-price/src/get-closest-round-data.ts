@@ -11,11 +11,11 @@ type RoundData = {
 
 export async function getClosestRoundData({
   address,
-  timestamp,
+  targetTimestamp,
   tolerance,
 }: {
   address: Address;
-  timestamp: bigint;
+  targetTimestamp: bigint;
   tolerance: bigint;
 }): Promise<RoundData | null> {
   const phaseAggregators = await getPhaseAggregators(address);
@@ -24,7 +24,7 @@ export async function getClosestRoundData({
   for (const phaseAggregatorContract of phaseAggregators) {
     const roundId = await binarySearchRoundId({
       address: phaseAggregatorContract.address,
-      targetTimestamp: timestamp,
+      targetTimestamp,
       latestRoundId: phaseAggregatorContract.latestRoundId,
       tolerance,
     });

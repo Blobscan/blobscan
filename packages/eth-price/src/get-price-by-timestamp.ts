@@ -11,19 +11,30 @@ type Data = {
   timestamp: bigint;
 };
 
+/**
+ * Get the price of an asset at a specific timestamp.
+ * @param address The price feed contract Addresses (https://docs.chain.link/data-feeds/price-feeds/addresses).
+ * @param timestamp The timestamp to get the price for.
+ * @param tolerance The maximum difference between the target timestamp and the timestamp of the data.
+ * @returns The price of the asset at the given timestamp.
+ **/
 export async function getPriceByTimestamp({
   address,
-  timestamp,
+  targetTimestamp,
   tolerance,
 }: {
   address: Address;
-  timestamp: bigint;
+  targetTimestamp: bigint;
   tolerance: bigint;
 }): Promise<Data> {
-  const response = await getClosestRoundData({ address, timestamp, tolerance });
+  const response = await getClosestRoundData({
+    address,
+    targetTimestamp,
+    tolerance,
+  });
 
   if (response === null) {
-    throw new Error(`No data found for timestamp: ${timestamp}`);
+    throw new Error(`No data found for target timestamp: ${targetTimestamp}`);
   }
 
   const roundData = await client.readContract({

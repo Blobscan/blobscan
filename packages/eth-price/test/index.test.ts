@@ -10,7 +10,7 @@ describe("getPriceByTimestamp", () => {
   it("should return the price for a given timestamp", async () => {
     const response = await getPriceByTimestamp({
       address: contractAddress,
-      timestamp: nowSeconds,
+      targetTimestamp: nowSeconds,
       tolerance: contractUpdatePeriod,
     });
 
@@ -19,15 +19,17 @@ describe("getPriceByTimestamp", () => {
 
   it("the difference between the timestamp and the response timestamp should be less than the contract update period", async () => {
     for (let i = 0; i < 10; i++) {
-      const timestamp = nowSeconds - BigInt(i) * contractUpdatePeriod;
+      const targetTimestamp = nowSeconds - BigInt(i) * contractUpdatePeriod;
 
       const response = await getPriceByTimestamp({
         address: contractAddress,
-        timestamp,
+        targetTimestamp,
         tolerance: contractUpdatePeriod,
       });
 
-      expect(response.timestamp - timestamp).toBeLessThan(contractUpdatePeriod);
+      expect(response.timestamp - targetTimestamp).toBeLessThan(
+        contractUpdatePeriod
+      );
     }
   });
 
@@ -36,20 +38,20 @@ describe("getPriceByTimestamp", () => {
     const oneYearAgo = nowSeconds - BigInt(oneYearSeconds);
 
     for (let i = 0; i < 10; i++) {
-      const timestamp =
+      const targetTimestamp =
         oneYearAgo + BigInt(Math.floor(Math.random() * oneYearSeconds));
 
       const response = await getPriceByTimestamp({
         address: contractAddress,
-        timestamp,
+        targetTimestamp,
         tolerance: contractUpdatePeriod,
       });
 
-      const difference = response.timestamp - timestamp;
+      const difference = response.timestamp - targetTimestamp;
       if (difference >= contractUpdatePeriod) {
         throw new Error(`
 The difference between the timestamp and the response timestamp is greater than the contract update period: ${difference}
-Timestamp: ${timestamp}
+Timestamp: ${targetTimestamp}
 Data: ${JSON.stringify(
           {
             phaseId: response.phaseId,
