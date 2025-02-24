@@ -18,7 +18,7 @@ export const COMMON_MAX_FEE_PER_BLOB_GAS = [
   14200000000, 40000000000, 56649567354, 52371487834, 54468542552, 44760150790,
 ].map((x) => BigInt(x));
 
-export const ROLLUP_ADDRESSES: Partial<Record<Rollup, string>> = {
+export const ROLLUP_ADDRESSES = {
   [Rollup.ARBITRUM]: "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
   [Rollup.BASE]: "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
   [Rollup.BLAST]: "0x415c8893d514f9bc5211d36eeda4183226b84aa7",

@@ -181,14 +181,9 @@ export class DataGenerator {
           ? faker.helpers.weightedArrayElement(this.#seedParams.rollupWeights)
           : null;
 
-      let fromId: string;
-
-      if (rollup) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        fromId = ROLLUP_ADDRESSES[rollup]!;
-      } else {
-        fromId = faker.helpers.arrayElement(uniqueAddresses);
-      }
+      const fromId =
+        ROLLUP_ADDRESSES[rollup?.toString() as keyof typeof ROLLUP_ADDRESSES] ??
+        faker.helpers.arrayElement(uniqueAddresses);
 
       let toId = faker.helpers.arrayElement(uniqueAddresses);
 
