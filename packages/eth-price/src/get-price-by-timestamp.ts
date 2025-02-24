@@ -8,6 +8,7 @@ type PriceData = {
   phaseId: number;
   roundId: bigint;
   price: bigint;
+  // The timestamp of the data in seconds.
   timestamp: bigint;
 };
 

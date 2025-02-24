@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@blobscan/dates": "workspace:*",
+    "@blobscan/eth-price": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/db": "workspace:^0.13.0",
     "@blobscan/logger": "workspace:^0.1.2",

@@ -2,6 +2,7 @@ import { env } from "@blobscan/env";
 import type { BaseSyncer } from "@blobscan/syncers";
 import {
   DailyStatsSyncer,
+  ETHPriceSyncer,
   OverallStatsSyncer,
   SwarmStampSyncer,
   createRedisConnection,
@@ -46,6 +47,13 @@ export function setUpSyncers() {
       redisUriOrConnection: connection,
       lowestSlot:
         env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
+    })
+  );
+
+  syncers.push(
+    new ETHPriceSyncer({
+      cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
+      redisUriOrConnection: connection,
     })
   );
 
