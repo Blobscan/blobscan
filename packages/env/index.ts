@@ -83,6 +83,9 @@ export const env = createEnv({
         .url()
         .default("http://localhost:4318"),
 
+      // ETH Price
+      ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("0 * * * *"),
+
       /**
        * =====================
        *   STORAGE PROVIDERS
