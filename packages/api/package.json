@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/api",
-  "version": "0.18.1",
+  "version": "0.19.0",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,15 +15,15 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-propagator": "workspace:^0.2.9",
-    "@blobscan/blob-storage-manager": "workspace:^0.4.1",
+    "@blobscan/blob-propagator": "workspace:^0.2.10",
+    "@blobscan/blob-storage-manager": "workspace:^0.4.2",
     "@blobscan/dayjs": "workspace:^0.1.0",
-    "@blobscan/db": "workspace:^0.14.0",
+    "@blobscan/db": "workspace:^0.15.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/network-blob-config": "workspace:^0.1.0",
     "@blobscan/open-telemetry": "workspace:^0.0.9",
-    "@blobscan/rollups": "workspace:^0.2.3",
+    "@blobscan/rollups": "workspace:^0.3.0",
     "@blobscan/zod": "workspace:^0.1.0",
     "@trpc/server": "^10.43.2",
     "jsonwebtoken": "^9.0.0",
