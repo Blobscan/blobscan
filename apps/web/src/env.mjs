@@ -58,6 +58,7 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
+    DIRECT_URL: z.string().url(),
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     METRICS_ENABLED: booleanSchema.default("false"),
@@ -73,6 +74,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
+    DIRECT_URL: process.env.DIRECT_URL,
     FEEDBACK_WEBHOOK_URL: process.env.FEEDBACK_WEBHOOK_URL,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,
