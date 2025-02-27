@@ -75,7 +75,7 @@ async function gracefulShutdown(signal: string) {
     });
 }
 
-// Listen for TERM signal .e.g. kill
+// Listen for TERM signal e.g. kill
 process.on("SIGTERM", async () => {
   await gracefulShutdown("SIGTERM");
 });
