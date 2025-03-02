@@ -1,8 +1,3 @@
-📢 **IMPORTANT NOTICE** 📢
-
-1. Our primary branch is now `main`. The `next` branch will no longer receive updates.
-2. Docker images are now available at [blobscan-web](https://hub.docker.com/r/blossomlabs/blobscan-web) and [blobscan-api](https://hub.docker.com/r/blossomlabs/blobscan-api).
-
 # Blobscan <a href="#"><img align="right" src=".github/assets/logo.svg" height="80px" /></a>
 
 [![codecov](https://codecov.io/gh/Blobscan/blobscan/graph/badge.svg?token=KIPV5TH011)](https://codecov.io/gh/Blobscan/blobscan)
@@ -20,6 +15,7 @@ To learn more about Blobscan, please check out our [documentation website](https
 - **Rich analytics dashboard** - Gain insights into blobs, blocks and transactions. View diverse charts and metrics.
 - **Blob API** - Blobscan's API facilitates queries on blobs, their associated blocks and transactions, along with relevant statistics and metrics.
 - **Open source** - Blobscan is open-source and available to everyone. We welcome contributions too. Check out our issues to see how you can help.
+- **Docker images** - available at [blobscan-web](https://hub.docker.com/r/blossomlabs/blobscan-web) and [blobscan-api](https://hub.docker.com/r/blossomlabs/blobscan-api).
 
 # Installation
 

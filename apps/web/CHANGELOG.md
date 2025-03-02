@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.21.0
+
+### Minor Changes
+
+- [#719](https://github.com/Blobscan/blobscan/pull/719) [`9b403be`](https://github.com/Blobscan/blobscan/commit/9b403be258b2daa8b2b415180c1a2a415375ab63) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for calculating the blob gas target using Pectra update params
+
 ## 0.20.1
 
 ### Patch Changes

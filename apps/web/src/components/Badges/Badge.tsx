@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge";
 const badgeVariants = cva(
   `
     w-fit
+    whitespace-nowrap
     flex
     items-center
     gap-1.5

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 3373 2868">
+  <path fill="url(#parallel_svg__a)" d="M4.599 1741.04c-.57-.31-.57-.9 0-1.21l520.152-286.76c.435-.23 1.063-.23 1.497.01l1173.002 650.16c.43.25 1.07.25 1.5 0l1152.01-644.66c.43-.24 1.06-.25 1.49-.01l517.5 281.26c.57.32.58.9.02 1.22L1704.6 2680.3c-.44.24-1.07.24-1.51 0z"/>
+  <path fill="url(#parallel_svg__b)" d="M1.135 1127.92c-.581-.32-.567-.92.03-1.23L1699.62 250.069c.43-.22 1.02-.218 1.45.005L3368.22 1126.7c.58.3.6.89.03 1.22L1701.1 2067.16c-.44.24-1.07.24-1.51 0z"/>
+  <defs>
+    <linearGradient id="parallel_svg__a" x1="845.47" x2="2419.05" y1="1174.85" y2="2789.97" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DD75A6"/>
+      <stop offset="1" stop-color="#F2B05B"/>
+    </linearGradient>
+    <linearGradient id="parallel_svg__b" x1="845.47" x2="1882.19" y1="563.647" y2="2118.73" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6F73F6"/>
+      <stop offset="1" stop-color="#D975A9"/>
+    </linearGradient>
+  </defs>
+</svg>

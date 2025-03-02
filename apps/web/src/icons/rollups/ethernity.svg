@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 38 21">
+  <path fill="url(#ethernity_svg__a)" d="M27.683 0a10 10 0 0 0-7.092 2.938l-9.769 9.769h3.583l3.28-3.28 4.702-4.702A7.5 7.5 0 0 1 27.69 2.53c4.138 0 7.509 3.37 7.509 7.508s-3.371 7.508-7.509 7.508c-2.962 0-5.517-1.722-6.74-4.219l-1.87 1.869c1.755 2.922 4.946 4.889 8.602 4.889 5.542 0 10.038-4.497 10.038-10.039S33.233 0 27.683 0"/>
+  <path fill="url(#ethernity_svg__b)" d="M10.038 20.076a10 10 0 0 0 7.092-2.938L26.9 7.37h-3.584l-3.28 3.28-4.701 4.701a7.5 7.5 0 0 1-5.305 2.195c-4.138 0-7.508-3.37-7.508-7.508 0-4.137 3.379-7.508 7.516-7.508 2.963 0 5.517 1.722 6.741 4.22l1.87-1.87C16.884 1.96 13.693 0 10.038 0 4.496 0 0 4.497 0 10.038s4.497 10.038 10.038 10.038"/>
+  <defs>
+    <linearGradient id="ethernity_svg__a" x1="10.822" x2="37.586" y1="10.042" y2="11.945" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00E8C2"/>
+      <stop offset="1" stop-color="#6A2AFF"/>
+    </linearGradient>
+    <linearGradient id="ethernity_svg__b" x1="0" x2="26.764" y1="10.038" y2="11.941" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00E8C2"/>
+      <stop offset="1" stop-color="#6A2AFF"/>
+    </linearGradient>
+  </defs>
+</svg>
