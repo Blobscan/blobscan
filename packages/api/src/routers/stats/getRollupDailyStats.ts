@@ -44,28 +44,26 @@ export const getRollupDailyStats = publicProcedure
       },
     });
 
+    if (stats.length === 0) {
+      return { days: [], blobsPerRollup: [] };
+    }
+
     const uniqueDays = Array.from(
       new Set(stats.map((item) => item.day.toISOString()))
     );
 
     const formattedStats: OutputSchema = {
       days: uniqueDays,
-      blobsPerRollup: uniqueDays.map((day) => {
-        const blobsPerRollup: { [key: string]: number } = {};
-
-        stats
-          .filter((item) => item.day.toISOString() === day && item.rollup)
-          .forEach((item) => {
-            const lowercaseRollup = item.rollup?.toLowerCase() ?? "";
-            if (lowercaseRollup) {
-              blobsPerRollup[lowercaseRollup] =
-                (blobsPerRollup[lowercaseRollup] ?? 0) +
-                (item._sum.totalBlobs ?? 0);
-            }
-          });
-
-        return blobsPerRollup;
-      }),
+      blobsPerRollup: uniqueDays.map((day) =>
+        stats.reduce((acc, item) => {
+          if (item.day.toISOString() === day && item.rollup) {
+            const lowercaseRollup = item.rollup.toLowerCase();
+            acc[lowercaseRollup] =
+              (acc[lowercaseRollup] ?? 0) + (item._sum.totalBlobs ?? 0);
+          }
+          return acc;
+        }, {} as { [key: string]: number })
+      ),
     };
 
     return formattedStats;
