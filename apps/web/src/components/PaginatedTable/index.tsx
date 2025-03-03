@@ -87,7 +87,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         query: {
           ...router.query,
           /**
-           * Update the selected page to a lower value if we require less pages to show the
+           * Update the selected page to a lower value if we require fewer pages to show the
            * new amount of elements per page.
            */
           p: Math.min(
