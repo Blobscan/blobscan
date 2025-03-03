@@ -31,13 +31,13 @@ export const outputSchema = z.object({
     status: z.string(),
     validator: z.object({
       pubkey: z.string(),
-      withdrawal_credentials: z.string(),
-      effective_balance: z.string(),
-      slashed: z.boolean(),
-      activation_eligibility_epoch: z.string(),
+      // withdrawal_credentials: z.string(),
+      // effective_balance: z.string(),
+      // slashed: z.boolean(),
+      // activation_eligibility_epoch: z.string(),
       activation_epoch: z.string(),
       exit_epoch: z.string(),
-      withdrawable_epoch: z.string(),
+      // withdrawable_epoch: z.string(),
     }),
     withdrawal_amount: z.string(),
   }))
@@ -82,8 +82,16 @@ async function enrichValidators(data: any[]) {
     const withdrawalAmounts = await getWithdrawalAmounts(validatorIndices);
 
     const batchResult = batch.map(validator => ({
-      ...validator,
-      withdrawal_amount: withdrawalAmounts.get(validator.index) || "----"
+      //..validator,
+      index: validator.index,
+      balance: validator.balance,
+      status: validator.status,
+      validator: {
+      pubkey: validator.validator.pubkey,
+      activation_epoch: validator.validator.activation_epoch,
+      exit_epoch: validator.validator.exit_epoch
+      },
+      withdrawal_amount: withdrawalAmounts.get(validator.index) || "----",
     }));
 
     enrichedData = enrichedData.concat(batchResult);

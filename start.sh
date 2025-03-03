@@ -10,4 +10,5 @@ if [ ! -d "$logs_dir" ]; then
 fi
 
 export export NODE_ENV="development"
+export NODE_OPTIONS="--max-old-space-size=8192"
 nohup pnpm dev &>> $logs_dir/blobscan.log &
