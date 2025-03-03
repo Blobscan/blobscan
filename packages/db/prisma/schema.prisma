@@ -148,6 +148,7 @@ model AddressCategoryInfo {
 
 model Address {
   address    String   @id
+  rollup     Rollup?
   insertedAt DateTime @default(now()) @map("inserted_at")
   updatedAt  DateTime @default(now()) @map("updated_at")
 
@@ -155,6 +156,8 @@ model Address {
   transactionsAsReceiver Transaction[]         @relation("receiverAddressRelation")
   addressCategoryInfo    AddressCategoryInfo[]
 
+  @@index([address, rollup])
+  @@index([rollup])
   @@index([insertedAt])
   @@map("address")
 }
