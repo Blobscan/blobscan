@@ -68,9 +68,9 @@ export function serializeBaseTransactionFields(
     index,
     from: { address: fromAddress, rollup },
     toId,
-    category,
     block,
   } = dbTx;
+  const category = rollup ? "ROLLUP" : "OTHER";
   const expandedBlock = serializeExpandedBlock(block);
 
   return {

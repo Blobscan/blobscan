@@ -136,9 +136,7 @@ model AddressCategoryInfo {
   firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
   firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
 
-  addressEntity          Address       @relation(fields: [address], references: [address])
-  transactionsAsSender   Transaction[] @relation("senderAddressCategoryInfoRelation")
-  transactionsAsReceiver Transaction[] @relation("receiverAddressCategoryInfoRelation")
+  addressEntity Address @relation(fields: [address], references: [address])
 
   @@unique([address, category])
   @@index([firstBlockNumberAsReceiver])
@@ -231,17 +229,14 @@ model Transaction {
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
-  category              Category @default(OTHER)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
   decodedFields         Json     @default("{}") @map("decoded_fields")
 
-  blobs                   BlobsOnTransactions[]
-  block                   Block                 @relation(fields: [blockHash], references: [hash])
-  from                    Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to                      Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
-  fromAddressCategoryInfo AddressCategoryInfo   @relation("senderAddressCategoryInfoRelation", fields: [fromId, category], references: [address, category])
-  toAddressCategoryInfo   AddressCategoryInfo   @relation("receiverAddressCategoryInfoRelation", fields: [toId, category], references: [address, category])
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockHash], references: [hash])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   transactionForks TransactionFork[]
 

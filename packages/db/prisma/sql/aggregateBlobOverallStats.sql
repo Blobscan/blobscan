@@ -9,7 +9,7 @@ INSERT INTO overall_stats as curr_stats (
   updated_at
 )
 SELECT
-  tx.category,
+  CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
   f.rollup,
   COALESCE(COUNT(bl_txs.blob_hash)::INT, 0) AS total_blobs,
   COALESCE(
@@ -25,7 +25,7 @@ FROM blob bl
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = tx.block_hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND tx.block_number BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (
-  (tx.category),
+  (category),
   (f.rollup),
   ()
 )

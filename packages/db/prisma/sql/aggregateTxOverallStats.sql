@@ -24,7 +24,7 @@ INSERT INTO overall_stats AS curr_stats (
   updated_at
 )
 SELECT
-  tx.category,
+  CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS tx_category,
   f.rollup,
   COALESCE(COUNT(DISTINCT tx.block_number)::INT, 0) AS total_blocks,
   COALESCE(COUNT(tx.hash)::INT, 0) AS total_transactions,
@@ -60,12 +60,14 @@ SELECT
 FROM transaction tx
   JOIN block b ON b.hash = tx.block_hash
   JOIN address f ON f.address = tx.from_id
-  JOIN address_category_info a_from ON a_from.address = tx.from_id AND a_from.category = tx.category
-  JOIN address_category_info a_to ON a_to.address = tx.to_id AND a_to.category = tx.category
+  JOIN address_category_info a_from ON a_from.address = tx.from_id
+    AND a_from.category = CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END
+  JOIN address_category_info a_to ON a_to.address = tx.to_id
+    AND a_to.category = CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = b.hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND b.number BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (
-  (tx.category),
+  (tx_category),
   (f.rollup),
   ()
 )

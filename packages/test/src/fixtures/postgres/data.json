@@ -180,7 +180,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
-      "category": "OTHER",
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -196,7 +195,6 @@
       "gasPrice": 11,
       "blobAsCalldataGasUsed": 1100,
       "blobGasUsed": 131072,
-      "category": "OTHER",
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -212,7 +210,6 @@
       "gasPrice": 12,
       "blobAsCalldataGasUsed": 1200,
       "blobGasUsed": 262144,
-      "category": "ROLLUP",
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -228,7 +225,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
-      "category": "ROLLUP",
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
     },
@@ -244,7 +240,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
-      "category": "OTHER",
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -260,7 +255,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
-      "category": "OTHER",
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -276,7 +270,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "ROLLUP",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -292,7 +285,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "ROLLUP",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -308,7 +300,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "OTHER",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -324,7 +315,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "OTHER",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -340,7 +330,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "ROLLUP",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -356,7 +345,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
-      "category": "ROLLUP",
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -372,7 +360,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "OTHER",
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -388,7 +375,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "OTHER",
       "insertedAt": "2023-08-31T12:10:00Z",
       "updatedAt": "2023-08-31T12:10:00Z"
     },
@@ -404,7 +390,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
-      "category": "ROLLUP",
       "insertedAt": "2023-08-31T14:10:00Z",
       "updatedAt": "2023-08-31T14:10:00Z"
     },
@@ -420,7 +405,6 @@
       "gasPrice": 10,
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
-      "category": "OTHER",
       "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
     },
@@ -436,7 +420,6 @@
       "gasPrice": 120,
       "blobAsCalldataGasUsed": 15550,
       "blobGasUsed": 262144,
-      "category": "ROLLUP",
       "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T15:50:00Z"
     }

@@ -591,7 +591,6 @@ describe("Base Extension", () => {
             gasPrice: new Prisma.Decimal(10),
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
             blobGasUsed: new Prisma.Decimal(1000),
-            category: "ROLLUP",
             decodedFields: {},
           },
           {
@@ -606,7 +605,6 @@ describe("Base Extension", () => {
             gasPrice: new Prisma.Decimal(5),
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
             blobGasUsed: new Prisma.Decimal(500),
-            category: "ROLLUP",
             decodedFields: {},
           },
         ];
@@ -614,19 +612,19 @@ describe("Base Extension", () => {
         await prisma.addressCategoryInfo.upsertMany([
           {
             address: "address1",
-            category: "ROLLUP",
+            category: "OTHER",
             firstBlockNumberAsSender: 1002,
             firstBlockNumberAsReceiver: null,
           },
           {
             address: "address3",
-            category: "ROLLUP",
+            category: "OTHER",
             firstBlockNumberAsSender: 1001,
             firstBlockNumberAsReceiver: null,
           },
           {
             address: "address5",
-            category: "ROLLUP",
+            category: "OTHER",
             firstBlockNumberAsReceiver: null,
             firstBlockNumberAsSender: 1001,
           },
@@ -664,7 +662,6 @@ describe("Base Extension", () => {
             gasPrice: new Prisma.Decimal(1),
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
             blobGasUsed: new Prisma.Decimal(1),
-            category: "ROLLUP",
             decodedFields: {},
           },
           {
@@ -679,7 +676,6 @@ describe("Base Extension", () => {
             gasPrice: new Prisma.Decimal(999),
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
             blobGasUsed: new Prisma.Decimal(999),
-            category: "ROLLUP",
             decodedFields: {},
           },
         ];
@@ -687,13 +683,13 @@ describe("Base Extension", () => {
         await prisma.addressCategoryInfo.upsertMany([
           {
             address: "address5",
-            category: "ROLLUP",
+            category: "OTHER",
             firstBlockNumberAsSender: 1006,
             firstBlockNumberAsReceiver: 1006,
           },
           {
             address: "address6",
-            category: "ROLLUP",
+            category: "OTHER",
             firstBlockNumberAsReceiver: 1006,
             firstBlockNumberAsSender: 1006,
           },

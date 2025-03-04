@@ -10,7 +10,7 @@ import ora from "ora";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
-import type { Rollup } from "../enums";
+import type { Category, Rollup } from "../enums";
 import { DataGenerator } from "./DataGenerator";
 import { seedParams } from "./params";
 import { performPrismaUpsertManyInBatches } from "./utils";
@@ -70,6 +70,11 @@ async function main() {
       fullBlocks.forEach(({ transactions, ...block }) => {
         dbBlockInsertions.push(block);
         transactions.forEach(({ blobs, ...tx }) => {
+          const category: Category = Object.values(ROLLUP_ADDRESSES).find(
+            (rollupAddress) => rollupAddress === tx.fromId
+          )
+            ? "ROLLUP"
+            : "OTHER";
           dbTxInsertions.push({
             ...tx,
             decodedFields: undefined,
@@ -78,10 +83,10 @@ async function main() {
           const fromCategoryInfos = addressToCategoryInfo[tx.fromId];
           const toCategoryInfos = addressToCategoryInfo[tx.toId];
           const fromCategoryInfo = fromCategoryInfos?.find(
-            (aci) => aci.category === tx.category
+            (aci) => aci.category === category
           );
           const toCategoryInfo = toCategoryInfos?.find(
-            (aci) => aci.category === tx.category
+            (aci) => aci.category === category
           );
 
           if (fromCategoryInfo) {
@@ -94,7 +99,7 @@ async function main() {
               address: tx.fromId,
               firstBlockNumberAsReceiver: null,
               firstBlockNumberAsSender: tx.blockNumber,
-              category: tx.category,
+              category: category,
             };
 
             if (fromCategoryInfos) {
@@ -114,7 +119,7 @@ async function main() {
               address: tx.toId,
               firstBlockNumberAsReceiver: tx.blockNumber,
               firstBlockNumberAsSender: null,
-              category: tx.category,
+              category: category,
             };
 
             if (toCategoryInfos) {

@@ -269,7 +269,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 gasPrice,
                 blobAsCalldataGasUsed,
                 blobGasUsed,
-                category,
               }) => [
                 hash,
                 blockHash,
@@ -282,7 +281,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 gasPrice,
                 blobAsCalldataGasUsed,
                 blobGasUsed,
-                Prisma.sql`${category.toLowerCase()}::category`,
                 NOW_SQL,
                 NOW_SQL,
               ]
@@ -302,7 +300,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               gas_price,
               blob_as_calldata_gas_used,
               blob_gas_used,
-              category,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
@@ -317,7 +314,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               gas_price = EXCLUDED.gas_price,
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
               blob_gas_used = EXCLUDED.blob_gas_used,
-              category = EXCLUDED.category,
               updated_at = NOW()
           `;
         },

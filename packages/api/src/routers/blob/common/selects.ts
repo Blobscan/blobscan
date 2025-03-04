@@ -56,13 +56,18 @@ export type BlobOnTransaction = Prettify<
 >;
 
 export function createBlobSelect(expands: Expands) {
+  const blockExpand = expands.block ? { block: expands.block } : {};
+  const txExpand = expands.transaction
+    ? { transaction: expands.transaction }
+    : {};
+
   return {
     ...baseBlobSelect,
     transactions: {
       select: {
         ...baseBlobOnTransactionSelect,
-        transaction: expands.transaction,
-        block: expands.block,
+        ...blockExpand,
+        ...txExpand,
       },
     },
   } satisfies Prisma.BlobSelect;

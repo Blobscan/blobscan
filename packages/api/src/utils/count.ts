@@ -2,7 +2,7 @@ import { toDailyDatePeriod } from "@blobscan/dayjs";
 import { env } from "@blobscan/env";
 import { getRollupByAddress } from "@blobscan/rollups";
 
-import type { Rollup } from "../../enums";
+import type { Category, Rollup } from "../../enums";
 import type { Filters } from "../middlewares/withFilters";
 
 /**
@@ -44,38 +44,41 @@ export function buildStatsWhereClause({
   transactionFilters,
 }: Filters) {
   const clauses = [];
+  const fromAddressFilter = transactionFilters?.fromId?.in;
+  let rollupFilter = transactionFilters?.from?.rollup;
 
-  const filterRollups: Rollup[] = [];
-
-  const rollups = transactionFilters?.from?.rollup?.in;
-  const fromAddresses = transactionFilters?.fromId?.in;
-
-  if (rollups) {
-    filterRollups.push(...rollups);
-  }
-
-  if (fromAddresses) {
-    const fromRollups = fromAddresses
+  if (fromAddressFilter) {
+    const resolvedRollups = fromAddressFilter
       .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
       .filter((r): r is Rollup => !!r);
-    filterRollups.push(...fromRollups);
+
+    if (resolvedRollups.length) {
+      if (rollupFilter && "in" in rollupFilter) {
+        rollupFilter.in.push(...resolvedRollups);
+      } else {
+        rollupFilter = { in: resolvedRollups };
+      }
+    }
   }
 
-  const rollupsFilterEnabled = filterRollups.length > 0;
+  let categoryClause: Category | null = null;
+  let rollupClause: null | { in: Rollup[] } | { not: null } = null;
 
-  // Set 'category' or 'rollup' to null when there are no corresponding filters
-  // because the db stores total stats for each grouping in rows where
-  // 'category' or 'rollup' is null.
-  const rollup = rollupsFilterEnabled ? { in: filterRollups } : null;
-  // Set 'category' to null when the rollup filter is present as we store rollup stats
-  // in rows where 'category' is null.
-  const category =
-    (rollupsFilterEnabled ? null : transactionFilters?.category) ?? null;
+  if (rollupFilter === null) {
+    categoryClause = "OTHER";
+  } else if (rollupFilter !== undefined) {
+    // When "not" is present in the rollup filter, it means we are looking for rollup addresses only.
+    if ("not" in rollupFilter) {
+      categoryClause = "ROLLUP";
+    } else {
+      rollupClause = rollupFilter;
+    }
+  }
 
   clauses.push(
-    { category },
+    { category: categoryClause },
     {
-      rollup,
+      rollup: rollupClause,
     }
   );
 

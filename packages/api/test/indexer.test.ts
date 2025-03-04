@@ -153,7 +153,6 @@ describe("Indexer router", async () => {
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
-                "category": "OTHER",
                 "decodedFields": {},
                 "fromId": "address9",
                 "gasPrice": "10000",
@@ -167,7 +166,6 @@ describe("Indexer router", async () => {
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
-                "category": "OTHER",
                 "decodedFields": {},
                 "fromId": "address7",
                 "gasPrice": "3000000",
@@ -219,12 +217,20 @@ describe("Indexer router", async () => {
           const indexedTxHashesAndCategories =
             await authorizedContext.prisma.transaction
               .findMany({
+                select: {
+                  hash: true,
+                  from: {
+                    select: {
+                      rollup: true,
+                    },
+                  },
+                },
                 where: {
                   blockHash: ROLLUP_BLOB_TRANSACTION_INPUT.block.hash,
                 },
               })
               .then((r) =>
-                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.category])
+                r.map((tx) => [tx.hash, tx.from.rollup ? "ROLLUP" : "OTHER"])
               );
 
           const expectedTxHashesAndCategories =
@@ -240,6 +246,14 @@ describe("Indexer router", async () => {
           const indexedTxHashesAndCategories =
             await authorizedContext.prisma.transaction
               .findMany({
+                select: {
+                  hash: true,
+                  from: {
+                    select: {
+                      rollup: true,
+                    },
+                  },
+                },
                 where: {
                   blockHash: INPUT.block.hash,
                 },
@@ -253,7 +267,7 @@ describe("Indexer router", async () => {
                 ],
               })
               .then((r) =>
-                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.category])
+                r.map((tx) => [tx.hash, tx.from.rollup ? "ROLLUP" : "OTHER"])
               );
 
           const expectedTxHashesAndCategories = INPUT.transactions.map(

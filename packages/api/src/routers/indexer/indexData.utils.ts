@@ -8,7 +8,7 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import { Category } from "@blobscan/db/prisma/enums";
+import type { Category } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
@@ -100,8 +100,6 @@ export function createDBTransactions({
         block.slot,
         block.excessBlobGas
       );
-      const rollup = getRollupByAddress(from, env.CHAIN_ID);
-      const category = rollup ? Category.ROLLUP : Category.OTHER;
 
       return {
         blockHash: block.hash,
@@ -118,8 +116,6 @@ export function createDBTransactions({
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
         blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
-        rollup,
-        category,
         decodedFields: null,
       };
     }
@@ -262,7 +258,11 @@ export function createDBAddressCategoryInfo(
 ): Omit<AddressCategoryInfo, "id">[] {
   const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
 
-  dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
+  dbTxs.forEach(({ fromId, toId, blockNumber }) => {
+    const category: Category = getRollupByAddress(fromId, env.CHAIN_ID)
+      ? "ROLLUP"
+      : "OTHER";
+
     updateDbCategoryInfo({
       address: fromId,
       category,

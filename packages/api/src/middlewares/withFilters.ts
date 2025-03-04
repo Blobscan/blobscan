@@ -1,5 +1,5 @@
 import type { Prisma } from "@blobscan/db";
-import type { Category, Rollup } from "@blobscan/db/prisma/enums";
+import type { Rollup } from "@blobscan/db/prisma/enums";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -24,7 +24,7 @@ type DateRangeFilter = {
 export type FromAddressFilter = { in: string[] };
 
 export type RollupFilter = {
-  rollup: { in: Rollup[] };
+  rollup: { in: Rollup[] } | null | { not: null };
 };
 
 export type ToAddressFilter = {
@@ -32,14 +32,7 @@ export type ToAddressFilter = {
 };
 
 export type Filters = Partial<{
-  // blockNumber: NumberRangeFilter;
-  // blockTimestamp: DateRangeFilter;
-  // blockSlot: NumberRangeFilter;
   blockType: Prisma.TransactionForkListRelationFilter;
-  // fromAddresses: FromAddressFilter;
-  // toAddress: string;
-  // rollups: RollupFilter;
-  // transactionCategory: Category;
   blockFilters: Partial<{
     number: NumberRangeFilter;
     slot: NumberRangeFilter;
@@ -48,7 +41,6 @@ export type Filters = Partial<{
   transactionFilters: Partial<{
     fromId: FromAddressFilter;
     toId: string;
-    category: Category;
     from: RollupFilter;
   }>;
 
@@ -176,14 +168,14 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     transactionFilters.fromId = { in: from };
   }
 
-  if (rollups?.length) {
-    transactionFilters.from = { rollup: { in: rollups } };
-
-    transactionFilters.category = "ROLLUP";
+  if (category) {
+    transactionFilters.from = {
+      rollup: category === "rollup" ? { not: null } : null,
+    };
   }
 
-  if (category) {
-    transactionFilters.category = category.toUpperCase() as Category;
+  if (rollups?.length) {
+    transactionFilters.from = { rollup: { in: rollups } };
   }
 
   filters.blockType = type === "reorged" ? { some: {} } : { none: {} };

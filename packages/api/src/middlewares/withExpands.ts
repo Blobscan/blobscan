@@ -6,7 +6,6 @@ import {
   categorySchema,
   rollupSchema,
   serializeBlobDataStorageReferences,
-  serializeCategory,
   serializeDecimal,
   serializeRollup,
   serializedBlobDataStorageReferenceSchema,
@@ -30,7 +29,6 @@ const expandedTransactionSelect = {
   toId: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
-  category: true,
   index: true,
 } satisfies Prisma.TransactionSelect;
 
@@ -225,7 +223,6 @@ export function serializeExpandedTransaction(
     maxFeePerBlobGas,
     from,
     toId,
-    category,
     blobAsCalldataGasFee,
     blobGasBaseFee,
     blobGasMaxFee,
@@ -248,17 +245,18 @@ export function serializeExpandedTransaction(
     if (from.address) {
       expandedTransaction.from = from.address;
     }
+
     if (from.rollup) {
       expandedTransaction.rollup = serializeRollup(from.rollup);
+
+      expandedTransaction.category = "rollup";
+    } else {
+      expandedTransaction.category = "other";
     }
   }
 
   if (toId) {
     expandedTransaction.to = toId;
-  }
-
-  if (category) {
-    expandedTransaction.category = serializeCategory(category);
   }
 
   if (blobGasBaseFee) {

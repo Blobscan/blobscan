@@ -10,7 +10,7 @@ INSERT INTO daily_stats (
 )
 SELECT
   DATE_TRUNC('day', bck.timestamp) AS day,
-  tx.category,
+  CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
   f.rollup,
   COUNT(bl_tx.blob_hash)::INT AS total_blobs,
   COUNT(
@@ -27,7 +27,7 @@ FROM blob b
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = bck.hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND bck.timestamp BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (
-  (day, tx.category),
+  (day, category),
   (day, f.rollup),
   (day)
 )

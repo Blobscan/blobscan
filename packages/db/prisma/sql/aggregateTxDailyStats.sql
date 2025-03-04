@@ -23,7 +23,7 @@ INSERT INTO daily_stats (
 )
 SELECT
   DATE_TRUNC('day', tx.block_timestamp) AS day,
-  tx.category,
+  CASE WHEN f.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
   f.rollup,
   COALESCE(COUNT(DISTINCT tx.block_number)::INT, 0) AS total_blocks,
   COALESCE(COUNT(tx.hash)::INT, 0) AS total_transactions,
@@ -47,7 +47,7 @@ FROM transaction tx
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = tx.block_hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND tx.block_timestamp BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (
-  (day, tx.category),
+  (day, category),
   (day, f.rollup),
   (day)
 )
