@@ -50,21 +50,19 @@ export type SerializedBlobOnTransaction = z.infer<
 export const serializedBlobSchema = serializedBaseBlobSchema.merge(
   z.object({
     data: z.string(),
-    transactions: z
-      .array(
-        z
-          .object({
-            hash: z.string(),
-            txIndex: z.number().nonnegative(),
-            index: blobIndexSchema,
-            blockHash: z.string(),
-            blockNumber: z.number().nonnegative(),
-            blockTimestamp: z.date(),
-            block: serializedExpandedBlockSchema.optional(),
-          })
-          .merge(serializedExpandedTransactionSchema)
-      )
-      .optional(),
+    transactions: z.array(
+      z
+        .object({
+          hash: z.string(),
+          txIndex: z.number().nonnegative(),
+          index: blobIndexSchema,
+          blockHash: z.string(),
+          blockNumber: z.number().nonnegative(),
+          blockTimestamp: z.date(),
+          block: serializedExpandedBlockSchema.optional(),
+        })
+        .merge(serializedExpandedTransactionSchema)
+    ),
   })
 );
 
@@ -130,6 +128,7 @@ export function serializeBlob(blob: Blob): SerializedBlob {
   const serializedBlob: SerializedBlob = {
     ...serializeBaseBlob(baseBlob),
     data,
+    transactions: [],
   };
 
   if (transactions) {
@@ -157,36 +156,6 @@ export function serializeBlob(blob: Blob): SerializedBlob {
         })
       );
   }
-
-  // return {
-  //   ...serializeBaseBlob(baseBlob),
-  //   data: blob.data,
-  //   transactions: transactions
-  //     .sort((a, b) => a.txHash.localeCompare(b.txHash))
-  //     .map(
-  //       ({
-  //         blockHash,
-  //         blockNumber,
-  //         blockTimestamp,
-  //         txIndex,
-  //         index,
-  //         txHash,
-  //         block,
-  //         transaction,
-  //       }) => {
-  //         return {
-  //           index,
-  //           txIndex,
-  //           hash: txHash,
-  //           blockHash,
-  //           blockNumber,
-  //           blockTimestamp,
-  //           ...(transaction ? serializeExpandedTransaction(transaction) : {}),
-  //           ...(block ? { block: serializeExpandedBlock(block) } : {}),
-  //         };
-  //       }
-  //     ),
-  // };
 
   return serializedBlob;
 }
