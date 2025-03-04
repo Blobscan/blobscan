@@ -66,19 +66,24 @@ function filterBlock(
 
 function filterTransaction(
   tx: (typeof fixtures.txs)[number],
-  { from, to, rollup }: FiltersInputSchema
+  addresses: typeof fixtures.addresses,
+  { from, to, rollups }: FiltersInputSchema
 ) {
-  const fromSplit = splitAndCleanCommaSeparatedString(from);
+  const parsedFromAddresses = splitAndCleanCommaSeparatedString(from);
+  const parsedRollups = splitAndCleanCommaSeparatedString(rollups);
+  const txFrom = addresses.find((a) => a.address === tx.fromId);
 
-  const senderFilter = fromSplit && !to ? fromSplit.includes(tx.fromId) : true;
-  const receiverFilter = to && !fromSplit ? tx.toId === to : true;
-  const senderOrReceiverFilter =
-    fromSplit && to ? fromSplit.includes(tx.fromId) || tx.toId === to : true;
-  const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
+  const senderFilter = parsedFromAddresses
+    ? parsedFromAddresses.includes(tx.fromId)
+    : true;
+  const receiverFilter = to ? tx.toId === to : true;
+  const rollupsFilter = parsedRollups
+    ? txFrom?.rollup
+      ? parsedRollups.includes(txFrom.rollup.toLowerCase())
+      : false
+    : true;
 
-  return (
-    senderFilter && receiverFilter && senderOrReceiverFilter && rollupFilter
-  );
+  return senderFilter && receiverFilter && rollupsFilter;
 }
 
 export function getFilteredBlocks(filters: FiltersInputSchema) {
@@ -86,35 +91,20 @@ export function getFilteredBlocks(filters: FiltersInputSchema) {
     const blockTxs = fixtures.txs.filter((tx) => tx.blockHash === b.hash);
     return (
       filterBlock(b, filters) &&
-      blockTxs.some((tx) => filterTransaction(tx, filters))
+      blockTxs.some((tx) => filterTransaction(tx, fixtures.addresses, filters))
     );
   });
 }
 
 export function getFilteredTransactions(filters: FiltersInputSchema) {
-  const { from, to, rollup } = filters;
+  const { from, to, rollups } = filters;
 
   return getFilteredBlocks(filters).flatMap((b) => {
-    const txs = fixtures.txs.filter((tx) => {
-      const fromSplit = splitAndCleanCommaSeparatedString(from);
-      const isBlockTx = tx.blockHash === b.hash;
-      const senderFilter =
-        fromSplit && !to ? fromSplit.includes(tx.fromId) : true;
-      const receiverFilter = to && !fromSplit ? tx.toId === to : true;
-      const senderOrReceiverFilter =
-        fromSplit && to
-          ? fromSplit?.includes(tx.fromId) || tx.toId === to
-          : true;
-      const rollupFilter = rollup ? tx.rollup === rollup.toUpperCase() : true;
-
-      return (
-        isBlockTx &&
-        senderFilter &&
-        receiverFilter &&
-        senderOrReceiverFilter &&
-        rollupFilter
-      );
-    });
+    const txs = fixtures.txs.filter(
+      (tx) =>
+        b.hash === tx.blockHash &&
+        filterTransaction(tx, fixtures.addresses, { from, to, rollups })
+    );
 
     return txs;
   });
@@ -158,9 +148,15 @@ export function runFilterTests(
   describe("when using filters", () => {
     it("should return the correct results when filtering by a specific rollup", async () => {
       await assertFilters({
-        rollup: "optimism",
+        rollups: "optimism",
       });
     });
+
+    // it("should return the correct results when filtering by multiple rollups", async () => {
+    //   await assertFilters({
+    //     rollups: "optimism,base",
+    //   });
+    // })
 
     it("should return the correct results when filtering by a start block", async () => {
       await assertFilters({
@@ -242,7 +238,7 @@ export function runFilterTests(
       });
     });
 
-    it("should return the correct results when filtering by a sender or receiver", async () => {
+    it("should return the correct results when filtering by a sender and receiver", async () => {
       await assertFilters({
         from: "address1",
         to: "address2",

@@ -160,7 +160,6 @@ describe("Indexer router", async () => {
                 "hash": "txHash999",
                 "index": 0,
                 "maxFeePerBlobGas": "1800",
-                "rollup": null,
                 "toId": "address10",
               },
               {
@@ -175,7 +174,6 @@ describe("Indexer router", async () => {
                 "hash": "txHash1000",
                 "index": 1,
                 "maxFeePerBlobGas": "20000",
-                "rollup": null,
                 "toId": "address2",
               },
             ]
@@ -190,13 +188,19 @@ describe("Indexer router", async () => {
           const indexedTxHashesAndRollups =
             await authorizedContext.prisma.transaction
               .findMany({
+                select: {
+                  hash: true,
+                  from: {
+                    select: {
+                      rollup: true,
+                    },
+                  },
+                },
                 where: {
                   blockHash: ROLLUP_BLOB_TRANSACTION_INPUT.block.hash,
                 },
               })
-              .then((r) =>
-                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.rollup])
-              );
+              .then((r) => r.map((tx) => [tx.hash, tx.from.rollup]));
 
           const expectedTxHashesAndRollups =
             ROLLUP_BLOB_TRANSACTION_INPUT.transactions.map(({ hash }) => [

@@ -19,6 +19,7 @@ import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
+import type { BlockWithExpandedTransactions } from "~/types";
 import type { DeserializedBlock } from "~/utils";
 import {
   buildBlobRoute,
@@ -35,9 +36,10 @@ const Blocks: NextPage = function () {
     data: serializedBlocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
-  } = api.block.getAll.useQuery({
+  } = api.block.getAll.useQuery<{ blocks: BlockWithExpandedTransactions[] }>({
     ...paginationParams,
     ...filterParams,
+    expand: "transaction",
   });
   const {
     data: countData,
@@ -140,14 +142,13 @@ const Blocks: NextPage = function () {
           },
         ];
 
-        const transactionsCombinedWithInnerBlobs = transactions.flatMap(
-          (transaction) =>
-            transaction.blobs.map((blob) => ({
-              transactionHash: transaction.hash,
-              blobVersionedHash: blob.versionedHash,
-              category: transaction.category,
-              rollup: transaction.rollup,
-            }))
+        const transactionsCombinedWithInnerBlobs = transactions.flatMap((tx) =>
+          tx.blobs.map((blob) => ({
+            transactionHash: tx.hash,
+            blobVersionedHash: blob.versionedHash,
+            category: tx.category,
+            rollup: tx.rollup,
+          }))
         );
 
         const rows = transactionsCombinedWithInnerBlobs.map(

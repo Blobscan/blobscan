@@ -232,7 +232,6 @@ model Transaction {
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   category              Category @default(OTHER)
-  rollup                Rollup?
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
   decodedFields         Json     @default("{}") @map("decoded_fields")
@@ -249,8 +248,6 @@ model Transaction {
   @@index([blockHash])
   @@index([blockTimestamp, index])
   @@index([blockNumber, index])
-  @@index([category, rollup, blockTimestamp, index])
-  @@index([category, rollup, blockNumber, index])
   @@index([fromId, blockTimestamp, index])
   @@index([toId, blockTimestamp, index])
   @@index([insertedAt])

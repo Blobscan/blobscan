@@ -10,7 +10,7 @@ export type GetTxByHashOutput = RouterOutputs["tx"]["getByHash"];
 
 export type AllTransactions = RouterOutputs["tx"]["getAll"];
 
-export type AllBlobs = RouterOutputs["blob"]["getAll"];
+export type GetAllBlobsOutput = RouterOutputs["blob"]["getAll"];
 
 export type GetByBlobIdOutput = RouterOutputs["blob"]["getByBlobId"];
 

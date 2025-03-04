@@ -19,14 +19,6 @@ export type GetOptions = {
   rollup?: Rollup | null;
 };
 
-function getDBAddresses(txs: typeof POSTGRES_DATA.txs) {
-  return Array.from(
-    new Set<string>(txs.flatMap((tx) => [tx.fromId, tx.toId]))
-  ).map((addr) => ({
-    address: addr,
-  }));
-}
-
 function getDBAddressesHistory(txs: typeof POSTGRES_DATA.txs) {
   const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
 
@@ -106,12 +98,16 @@ export const fixtures = {
   blobStoragesState: POSTGRES_DATA.blobStoragesState,
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
   blocks: POSTGRES_DATA.blocks,
-  addresses: getDBAddresses(POSTGRES_DATA.txs),
+  addresses: POSTGRES_DATA.addresses.map((a) => ({
+    ...a,
+    rollup: a.rollup as Rollup | null,
+    insertedAt: "2022-10-16T12:10:00Z",
+    updatedAt: "2022-10-16T12:10:00Z",
+  })),
   addressesHistory: getDBAddressesHistory(POSTGRES_DATA.txs),
   txs: POSTGRES_DATA.txs.map((tx) => ({
     ...tx,
     category: tx.category as Category,
-    rollup: tx.rollup as Rollup | null,
   })),
   txForks: POSTGRES_DATA.transactionForks,
   blobs: POSTGRES_DATA.blobs,
@@ -186,16 +182,20 @@ export const fixtures = {
 
     return fixtures.txs
       .filter((tx) => {
+        const fromAddress = fixtures.addresses.find(
+          (a) => a.address === tx.fromId
+        );
         const isDailyBlockTx = dailyBlocks.find(
           (block) => block.hash === tx.blockHash
         );
         const hasCategory = category ? tx.category === category : true;
-        const hasRollup = rollup ? tx.rollup === rollup : true;
+        const hasRollup = rollup ? fromAddress?.rollup === rollup : true;
 
         return isDailyBlockTx && hasCategory && hasRollup;
       })
       .map((tx) => {
         const block = dailyBlocks.find((b) => b.hash === tx.blockHash);
+        const from = fixtures.addresses.find((a) => a.address === tx.fromId);
         const fromHistory = fixtures.addressesHistory.find(
           (a) => a.address === tx.fromId && a.category === tx.category
         );
@@ -222,6 +222,7 @@ export const fixtures = {
 
         return {
           ...tx,
+          rollup: from?.rollup,
           block,
           blobs,
           fromHistory,
@@ -240,6 +241,9 @@ export const fixtures = {
           (b) => b.hash === btx.blockHash
         );
         const transaction = fixtures.txs.find((tx) => tx.hash === btx.txHash);
+        const fromAddress = fixtures.addresses.find(
+          (a) => a.address === transaction?.fromId
+        );
         const blob = fixtures.blobs.find(
           (blob) => blob.versionedHash === btx.blobHash
         );
@@ -253,7 +257,7 @@ export const fixtures = {
         return {
           ...blob,
           category: transaction.category,
-          rollup: transaction.rollup,
+          rollup: fromAddress?.rollup,
           transaction,
           block,
         };

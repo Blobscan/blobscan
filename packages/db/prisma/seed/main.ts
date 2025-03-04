@@ -10,9 +10,11 @@ import ora from "ora";
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
+import type { Rollup } from "../enums";
 import { DataGenerator } from "./DataGenerator";
 import { seedParams } from "./params";
 import { performPrismaUpsertManyInBatches } from "./utils";
+import { ROLLUP_ADDRESSES } from "./web3";
 
 let spinner = ora("Seeding database…").start();
 
@@ -148,9 +150,17 @@ async function main() {
         data: dbBlockInsertions,
       });
       await performPrismaUpsertManyInBatches(
-        Object.keys(addressToCategoryInfo).map((address) => ({
-          address,
-        })),
+        Object.keys(addressToCategoryInfo).map((address) => {
+          const rollupEntry = Object.entries(ROLLUP_ADDRESSES).find(
+            ([_, rollupAddress]) => address === rollupAddress
+          );
+          const rollup = rollupEntry ? (rollupEntry[0] as Rollup) : null;
+
+          return {
+            address,
+            rollup,
+          };
+        }),
         prisma.address.upsertMany
       );
       await performPrismaUpsertManyInBatches(

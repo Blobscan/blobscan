@@ -1,8 +1,3 @@
-import type {
-  Blob as DBBlob,
-  BlobsOnTransactions as DBBlobsOnTransactions,
-  BlobDataStorageReference as DBBlobDataStorageReference,
-} from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -11,42 +6,14 @@ import {
   serializedExpandedBlockSchema,
   serializedExpandedTransactionSchema,
 } from "../../../middlewares/withExpands";
-import type {
-  ExpandedBlock,
-  ExpandedTransaction,
-} from "../../../middlewares/withExpands";
 import {
   blobIndexSchema,
   blockNumberSchema,
   serializedBlobDataStorageReferenceSchema,
   serializeBlobDataStorageReferences,
   serializeDate,
-  isEmptyObject,
 } from "../../../utils";
-
-type BaseBlob = Pick<
-  DBBlob,
-  "commitment" | "proof" | "size" | "versionedHash"
-> & {
-  dataStorageReferences: Pick<
-    DBBlobDataStorageReference,
-    "blobStorage" | "dataReference"
-  >[];
-};
-
-type QueriedBlob = BaseBlob & {
-  data: string;
-  transactions: (Omit<DBBlobsOnTransactions, "blobHash"> & {
-    block?: ExpandedBlock;
-    transaction?: ExpandedTransaction;
-  })[];
-};
-
-type QueriedBlobOnTransaction = DBBlobsOnTransactions & {
-  blob: BaseBlob;
-  block?: ExpandedBlock;
-  transaction: ExpandedTransaction;
-};
+import type { BaseBlob, Blob, BlobOnTransaction } from "./selects";
 
 export type SerializedBlobDataStorageReference = z.infer<
   typeof serializedBlobDataStorageReferenceSchema
@@ -83,19 +50,21 @@ export type SerializedBlobOnTransaction = z.infer<
 export const serializedBlobSchema = serializedBaseBlobSchema.merge(
   z.object({
     data: z.string(),
-    transactions: z.array(
-      z
-        .object({
-          hash: z.string(),
-          txIndex: z.number().nonnegative(),
-          index: blobIndexSchema,
-          blockHash: z.string(),
-          blockNumber: z.number().nonnegative(),
-          blockTimestamp: z.date(),
-          block: serializedExpandedBlockSchema.optional(),
-        })
-        .merge(serializedExpandedTransactionSchema)
-    ),
+    transactions: z
+      .array(
+        z
+          .object({
+            hash: z.string(),
+            txIndex: z.number().nonnegative(),
+            index: blobIndexSchema,
+            blockHash: z.string(),
+            blockNumber: z.number().nonnegative(),
+            blockTimestamp: z.date(),
+            block: serializedExpandedBlockSchema.optional(),
+          })
+          .merge(serializedExpandedTransactionSchema)
+      )
+      .optional(),
   })
 );
 
@@ -120,7 +89,7 @@ export function serializeBaseBlob({
 }
 
 export function serializeBlobOnTransaction(
-  blobOnTransaction: QueriedBlobOnTransaction
+  blobOnTransaction: BlobOnTransaction
 ): SerializedBlobOnTransaction {
   const {
     blob,
@@ -147,24 +116,24 @@ export function serializeBlobOnTransaction(
     serializedBlob.block = serializeExpandedBlock(block);
   }
 
-  if (transaction && !isEmptyObject(transaction)) {
+  if (transaction) {
     const expandedTransaction = serializeExpandedTransaction(transaction);
 
-    if (!isEmptyObject(expandedTransaction)) {
-      serializedBlob.transaction = expandedTransaction;
-    }
+    serializedBlob.transaction = expandedTransaction;
   }
 
   return serializedBlob;
 }
 
-export function serializeBlob(blob: QueriedBlob): SerializedBlob {
-  const { transactions, ...baseBlob } = blob;
-
-  return {
+export function serializeBlob(blob: Blob): SerializedBlob {
+  const { data, transactions, ...baseBlob } = blob;
+  const serializedBlob: SerializedBlob = {
     ...serializeBaseBlob(baseBlob),
-    data: blob.data,
-    transactions: transactions
+    data,
+  };
+
+  if (transactions) {
+    serializedBlob.transactions = transactions
       .sort((a, b) => a.txHash.localeCompare(b.txHash))
       .map(
         ({
@@ -176,18 +145,48 @@ export function serializeBlob(blob: QueriedBlob): SerializedBlob {
           txHash,
           block,
           transaction,
-        }) => {
-          return {
-            index,
-            txIndex,
-            hash: txHash,
-            blockHash,
-            blockNumber,
-            blockTimestamp,
-            ...(transaction ? serializeExpandedTransaction(transaction) : {}),
-            ...(block ? { block: serializeExpandedBlock(block) } : {}),
-          };
-        }
-      ),
-  };
+        }) => ({
+          index,
+          txIndex,
+          hash: txHash,
+          blockHash,
+          blockNumber,
+          blockTimestamp,
+          ...(transaction ? serializeExpandedTransaction(transaction) : {}),
+          ...(block ? { block: serializeExpandedBlock(block) } : {}),
+        })
+      );
+  }
+
+  // return {
+  //   ...serializeBaseBlob(baseBlob),
+  //   data: blob.data,
+  //   transactions: transactions
+  //     .sort((a, b) => a.txHash.localeCompare(b.txHash))
+  //     .map(
+  //       ({
+  //         blockHash,
+  //         blockNumber,
+  //         blockTimestamp,
+  //         txIndex,
+  //         index,
+  //         txHash,
+  //         block,
+  //         transaction,
+  //       }) => {
+  //         return {
+  //           index,
+  //           txIndex,
+  //           hash: txHash,
+  //           blockHash,
+  //           blockNumber,
+  //           blockTimestamp,
+  //           ...(transaction ? serializeExpandedTransaction(transaction) : {}),
+  //           ...(block ? { block: serializeExpandedBlock(block) } : {}),
+  //         };
+  //       }
+  //     ),
+  // };
+
+  return serializedBlob;
 }

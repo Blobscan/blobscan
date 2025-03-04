@@ -210,6 +210,7 @@ export function createDBAddresses({
     new Set<string>(transactions.flatMap(({ from, to }) => [from, to]))
   ).map((addr) => ({
     address: addr,
+    rollup: getRollupByAddress(addr, env.CHAIN_ID),
   }));
 }
 

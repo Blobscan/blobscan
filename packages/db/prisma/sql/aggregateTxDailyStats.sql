@@ -24,7 +24,7 @@ INSERT INTO daily_stats (
 SELECT
   DATE_TRUNC('day', tx.block_timestamp) AS day,
   tx.category,
-  tx.rollup,
+  f.rollup,
   COALESCE(COUNT(DISTINCT tx.block_number)::INT, 0) AS total_blocks,
   COALESCE(COUNT(tx.hash)::INT, 0) AS total_transactions,
   COALESCE(COUNT(DISTINCT tx.to_id)::INT, 0) AS total_unique_receivers,
@@ -43,17 +43,18 @@ SELECT
   COALESCE(AVG(b.blob_gas_price)::FLOAT, 0) AS avg_blob_gas_price
 FROM transaction tx
   JOIN block b ON b.hash = tx.block_hash
+  JOIN address f ON f.address = tx.from_id
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = tx.block_hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND tx.block_timestamp BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (
   (day, tx.category),
-  (day, tx.rollup),
+  (day, f.rollup),
   (day)
 )
 --  Exclude NULL rollup aggregates from the second grouping set, as they’re already included in the first when the category is OTHER
 HAVING NOT (
-  GROUPING(tx.rollup) = 0 AND
-  tx.rollup IS NULL
+  GROUPING(f.rollup) = 0 AND
+  f.rollup IS NULL
 )
 ON CONFLICT (day, category, rollup) DO UPDATE SET
   total_blocks = EXCLUDED.total_blocks,

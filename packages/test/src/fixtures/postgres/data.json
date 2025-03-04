@@ -129,6 +129,44 @@
       "updatedAt": "2023-08-31T15:50:00Z"
     }
   ],
+  "addresses": [
+    {
+      "address": "address1",
+      "rollup": null
+    },
+    {
+      "address": "address2",
+      "rollup": null
+    },
+    {
+      "address": "address3",
+      "rollup": null
+    },
+    {
+      "address": "address4",
+      "rollup": null
+    },
+    {
+      "address": "address5",
+      "rollup": null
+    },
+    {
+      "address": "address6",
+      "rollup": null
+    },
+    {
+      "address": "optimismAddress",
+      "rollup": "OPTIMISM"
+    },
+    {
+      "address": "arbitrumAddress",
+      "rollup": "ARBITRUM"
+    },
+    {
+      "address": "baseAddress",
+      "rollup": "BASE"
+    }
+  ],
   "txs": [
     {
       "hash": "txHash001",
@@ -143,7 +181,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -160,7 +197,6 @@
       "blobAsCalldataGasUsed": 1100,
       "blobGasUsed": 131072,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -177,7 +213,6 @@
       "blobAsCalldataGasUsed": 1200,
       "blobGasUsed": 262144,
       "category": "ROLLUP",
-      "rollup": "OPTIMISM",
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
     },
@@ -194,7 +229,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
       "category": "ROLLUP",
-      "rollup": "BASE",
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
     },
@@ -211,7 +245,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -228,7 +261,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-03T12:10:00Z",
       "updatedAt": "2023-08-03T12:10:00Z"
     },
@@ -245,7 +277,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "ROLLUP",
-      "rollup": "OPTIMISM",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -262,7 +293,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "ROLLUP",
-      "rollup": "ARBITRUM",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -279,7 +309,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -296,7 +325,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -313,7 +341,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "ROLLUP",
-      "rollup": "BASE",
       "insertedAt": "2023-08-20T12:10:00Z",
       "updatedAt": "2023-08-20T12:10:00Z"
     },
@@ -330,7 +357,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
       "category": "ROLLUP",
-      "rollup": "OPTIMISM",
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -347,7 +373,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-28T10:10:00Z",
       "updatedAt": "2023-08-28T10:10:00Z"
     },
@@ -364,7 +389,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-31T12:10:00Z",
       "updatedAt": "2023-08-31T12:10:00Z"
     },
@@ -381,7 +405,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 393216,
       "category": "ROLLUP",
-      "rollup": "OPTIMISM",
       "insertedAt": "2023-08-31T14:10:00Z",
       "updatedAt": "2023-08-31T14:10:00Z"
     },
@@ -398,7 +421,6 @@
       "blobAsCalldataGasUsed": 1000,
       "blobGasUsed": 131072,
       "category": "OTHER",
-      "rollup": null,
       "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T16:10:00Z"
     },
@@ -415,7 +437,6 @@
       "blobAsCalldataGasUsed": 15550,
       "blobGasUsed": 262144,
       "category": "ROLLUP",
-      "rollup": "OPTIMISM",
       "insertedAt": "2023-08-31T15:50:00Z",
       "updatedAt": "2023-08-31T15:50:00Z"
     }

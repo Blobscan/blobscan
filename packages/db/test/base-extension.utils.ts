@@ -6,7 +6,7 @@ export async function upsertAndRetrieveManyAddresses(
   input: Omit<AddressCategoryInfo, "id">[]
 ) {
   await prisma.address.upsertMany(
-    input.map((addr) => ({ address: addr.address }))
+    input.map((addr) => ({ address: addr.address, rollup: null }))
   );
   await prisma.addressCategoryInfo.upsertMany(input);
 

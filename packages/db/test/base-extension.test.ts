@@ -34,12 +34,15 @@ describe("Base Extension", () => {
       input = [
         {
           address: "address90",
+          rollup: null,
         },
         {
           address: "address91",
+          rollup: null,
         },
         {
           address: "address92",
+          rollup: null,
         },
       ];
 
@@ -139,9 +142,7 @@ describe("Base Extension", () => {
       });
 
       it("should upsert an empty array correctly", async () => {
-        input = [];
-
-        const result = await prisma.address.upsertMany(input);
+        const result = await prisma.address.upsertMany([]);
 
         expect(result).toStrictEqual(expectedEmptyInputRes);
       });
@@ -591,7 +592,6 @@ describe("Base Extension", () => {
             blobAsCalldataGasUsed: new Prisma.Decimal(1000),
             blobGasUsed: new Prisma.Decimal(1000),
             category: "ROLLUP",
-            rollup: "OPTIMISM",
             decodedFields: {},
           },
           {
@@ -607,7 +607,6 @@ describe("Base Extension", () => {
             blobAsCalldataGasUsed: new Prisma.Decimal(500),
             blobGasUsed: new Prisma.Decimal(500),
             category: "ROLLUP",
-            rollup: "BASE",
             decodedFields: {},
           },
         ];
@@ -666,7 +665,6 @@ describe("Base Extension", () => {
             blobAsCalldataGasUsed: new Prisma.Decimal(1),
             blobGasUsed: new Prisma.Decimal(1),
             category: "ROLLUP",
-            rollup: "ARBITRUM",
             decodedFields: {},
           },
           {
@@ -682,7 +680,6 @@ describe("Base Extension", () => {
             blobAsCalldataGasUsed: new Prisma.Decimal(999),
             blobGasUsed: new Prisma.Decimal(999),
             category: "ROLLUP",
-            rollup: "OPTIMISM",
             decodedFields: {},
           },
         ];

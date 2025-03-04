@@ -47,16 +47,25 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           }
 
           const formattedValues = addresses
-            .map(({ address }) => [address, NOW_SQL, NOW_SQL])
+            .map(({ address, rollup }) => [
+              address,
+              rollup
+                ? Prisma.sql`${rollup.toLowerCase()}::rollup`
+                : Prisma.sql`NULL`,
+              NOW_SQL,
+              NOW_SQL,
+            ])
             .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
           return prisma.$executeRaw`
             INSERT INTO address (
               address,
+              rollup,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT (address) DO UPDATE SET
+              rollup = EXCLUDED.rollup,
               updated_at = NOW()
           `;
         },
@@ -261,7 +270,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 blobAsCalldataGasUsed,
                 blobGasUsed,
                 category,
-                rollup,
               }) => [
                 hash,
                 blockHash,
@@ -275,9 +283,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
                 blobAsCalldataGasUsed,
                 blobGasUsed,
                 Prisma.sql`${category.toLowerCase()}::category`,
-                rollup
-                  ? Prisma.sql`${rollup.toLowerCase()}::rollup`
-                  : Prisma.sql`NULL`,
                 NOW_SQL,
                 NOW_SQL,
               ]
@@ -298,7 +303,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               blob_as_calldata_gas_used,
               blob_gas_used,
               category,
-              rollup,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
@@ -314,7 +318,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
               blob_as_calldata_gas_used = EXCLUDED.blob_as_calldata_gas_used,
               blob_gas_used = EXCLUDED.blob_gas_used,
               category = EXCLUDED.category,
-              rollup = EXCLUDED.rollup,
               updated_at = NOW()
           `;
         },

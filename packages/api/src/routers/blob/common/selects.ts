@@ -1,9 +1,14 @@
-import { Prisma } from "@blobscan/db";
+import type { Prisma } from "@blobscan/db";
 
-import type { Expands } from "../../../middlewares/withExpands";
+import type {
+  ExpandedBlock,
+  ExpandedTransaction,
+  Expands,
+} from "../../../middlewares/withExpands";
+import type { Prettify } from "../../../utils";
 import { dataStorageReferencesSelect } from "../../../utils";
 
-export const baseBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
+export const baseBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
@@ -11,54 +16,70 @@ export const baseBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
   dataStorageReferences: {
     select: dataStorageReferencesSelect,
   },
-});
+} satisfies Prisma.BlobSelect;
+
+export const baseBlobOnTransactionSelect = {
+  blobHash: true,
+  blockHash: true,
+  blockNumber: true,
+  blockTimestamp: true,
+  index: true,
+  txHash: true,
+  txIndex: true,
+} satisfies Prisma.BlobsOnTransactionsSelect;
+
+export type BaseBlob = Prisma.BlobGetPayload<{ select: typeof baseBlobSelect }>;
+export type BaseBlobOnTransaction = Prisma.BlobsOnTransactionsGetPayload<{
+  select: typeof baseBlobOnTransactionSelect;
+}>;
+
+type BlobTransactions = Prettify<
+  BaseBlobOnTransaction & {
+    block?: ExpandedBlock;
+    transaction?: ExpandedTransaction;
+  }
+>;
+
+export type Blob = Prettify<
+  BaseBlob & {
+    data: string;
+    transactions?: BlobTransactions[];
+  }
+>;
+
+export type BlobOnTransaction = Prettify<
+  BaseBlobOnTransaction & {
+    blob: BaseBlob;
+    block?: ExpandedBlock;
+    transaction?: ExpandedTransaction;
+  }
+>;
 
 export function createBlobSelect(expands: Expands) {
-  return Prisma.validator<Prisma.BlobSelect>()({
+  return {
     ...baseBlobSelect,
     transactions: {
       select: {
-        blockHash: true,
-        blockNumber: true,
-        blockTimestamp: true,
-        index: true,
-        txHash: true,
-        txIndex: true,
-        transaction: {
-          select: {
-            rollup: true,
-            ...(expands.transaction?.select ?? {}),
-          },
-        },
-        ...(expands.block
-          ? {
-              block: expands.block,
-            }
-          : {}),
+        ...baseBlobOnTransactionSelect,
+        transaction: expands.transaction,
+        block: expands.block,
       },
     },
-  });
+  } satisfies Prisma.BlobSelect;
 }
 
 export function createBlobsOnTransactionsSelect(expands: Expands) {
-  return Prisma.validator<Prisma.BlobsOnTransactionsSelect>()({
-    index: true,
-    blobHash: true,
-    blockHash: true,
-    blockNumber: true,
-    blockTimestamp: true,
-    txHash: true,
-    txIndex: true,
+  const blockExpand = expands.block ? { block: expands.block } : {};
+  const txExpand = expands.transaction
+    ? { transaction: expands.transaction }
+    : {};
+
+  return {
+    ...baseBlobOnTransactionSelect,
     blob: {
       select: baseBlobSelect,
     },
-    transaction: {
-      select: {
-        rollup: true,
-        category: true,
-        ...(expands.transaction?.select ?? {}),
-      },
-    },
-    ...(expands.block ? { block: expands.block } : {}),
-  });
+    ...txExpand,
+    ...blockExpand,
+  } satisfies Prisma.BlobsOnTransactionsSelect;
 }
