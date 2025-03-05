@@ -4,7 +4,6 @@ import type {
   BlobDataStorageReference,
   Category,
   Rollup,
-  AddressCategoryInfo,
 } from "@prisma/client";
 
 import type { DatePeriodLike } from "@blobscan/dayjs";
@@ -19,86 +18,6 @@ export type GetOptions = {
   rollup?: Rollup | null;
 };
 
-function getDBAddressesHistory(
-  txs: typeof POSTGRES_DATA.txs,
-  addresses: typeof POSTGRES_DATA.addresses
-) {
-  const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
-
-  txs.forEach((tx) => {
-    const fromAddress = addresses.find((a) => a.address === tx.fromId);
-    const category: Category = fromAddress?.rollup ? "ROLLUP" : "OTHER";
-    const from = dbAddresses.find(
-      (a) => a.address === tx.fromId && a.category === category
-    );
-    const to = dbAddresses.find(
-      (a) => a.address === tx.toId && a.category === category
-    );
-    const fromAllTime = dbAddresses.find(
-      (a) => a.address === tx.fromId && a.category === null
-    );
-    const toAllTime = dbAddresses.find(
-      (a) => a.address === tx.toId && a.category === null
-    );
-
-    if (!fromAllTime) {
-      dbAddresses.push({
-        address: tx.fromId,
-        category: null,
-        firstBlockNumberAsSender: tx.blockNumber,
-        firstBlockNumberAsReceiver: null,
-      });
-    } else {
-      fromAllTime.firstBlockNumberAsSender =
-        fromAllTime.firstBlockNumberAsSender
-          ? Math.min(fromAllTime.firstBlockNumberAsSender, tx.blockNumber)
-          : tx.blockNumber;
-    }
-
-    if (!toAllTime) {
-      dbAddresses.push({
-        address: tx.toId,
-        category: null,
-        firstBlockNumberAsSender: null,
-        firstBlockNumberAsReceiver: tx.blockNumber,
-      });
-    } else {
-      toAllTime.firstBlockNumberAsReceiver =
-        toAllTime.firstBlockNumberAsReceiver
-          ? Math.min(toAllTime.firstBlockNumberAsReceiver, tx.blockNumber)
-          : tx.blockNumber;
-    }
-
-    if (!from) {
-      dbAddresses.push({
-        address: tx.fromId,
-        category: category as Category,
-        firstBlockNumberAsSender: tx.blockNumber,
-        firstBlockNumberAsReceiver: null,
-      });
-    } else {
-      from.firstBlockNumberAsSender = from.firstBlockNumberAsSender
-        ? Math.min(from.firstBlockNumberAsSender, tx.blockNumber)
-        : tx.blockNumber;
-    }
-
-    if (!to) {
-      dbAddresses.push({
-        address: tx.toId,
-        category: category as Category,
-        firstBlockNumberAsSender: null,
-        firstBlockNumberAsReceiver: tx.blockNumber,
-      });
-    } else {
-      to.firstBlockNumberAsReceiver = to.firstBlockNumberAsReceiver
-        ? Math.min(to.firstBlockNumberAsReceiver, tx.blockNumber)
-        : tx.blockNumber;
-    }
-  });
-
-  return dbAddresses;
-}
-
 export const fixtures = {
   blobStoragesState: POSTGRES_DATA.blobStoragesState,
   blockchainSyncState: POSTGRES_DATA.blockchainSyncState,
@@ -109,10 +28,6 @@ export const fixtures = {
     insertedAt: "2022-10-16T12:10:00Z",
     updatedAt: "2022-10-16T12:10:00Z",
   })),
-  addressesHistory: getDBAddressesHistory(
-    POSTGRES_DATA.txs,
-    POSTGRES_DATA.addresses
-  ),
   txs: POSTGRES_DATA.txs,
   txForks: POSTGRES_DATA.transactionForks,
   blobs: POSTGRES_DATA.blobs,
@@ -203,12 +118,7 @@ export const fixtures = {
         const block = dailyBlocks.find((b) => b.hash === tx.blockHash);
         const from = fixtures.addresses.find((a) => a.address === tx.fromId);
         const category: Category = from?.rollup ? "ROLLUP" : "OTHER";
-        const fromHistory = fixtures.addressesHistory.find(
-          (a) => a.address === tx.fromId && a.category === category
-        );
-        const toHistory = fixtures.addressesHistory.find(
-          (a) => a.address === tx.toId && a.category === category
-        );
+        const to = fixtures.addresses.find((a) => a.address === tx.toId);
         const blobs = fixtures.blobsOnTransactions
           .filter((btx) => btx.txHash === tx.hash)
           .map((btx) =>
@@ -218,23 +128,23 @@ export const fixtures = {
 
         if (!block)
           throw new Error(`Block with hash "${tx.blockHash}" not found`);
-        if (!fromHistory)
+        if (!from)
           throw new Error(
             `From Address history with id "${tx.fromId}-${category}" not found`
           );
-        if (!toHistory)
+        if (!to)
           throw new Error(
             `To Address history with id "${tx.toId}-${category}" not found`
           );
 
         return {
           ...tx,
-          rollup: from?.rollup,
+          rollup: from.rollup,
           category,
           block,
           blobs,
-          fromHistory,
-          toHistory,
+          from,
+          to,
         };
       });
   },
@@ -283,9 +193,7 @@ export const fixtures = {
       prisma.blob.deleteMany(),
       prisma.transactionFork.deleteMany(),
       prisma.transaction.deleteMany(),
-      prisma.addressCategoryInfo.deleteMany(),
       prisma.address.deleteMany(),
-      prisma.addressCategoryInfo.deleteMany(),
       prisma.block.deleteMany(),
       prisma.dailyStats.deleteMany(),
       prisma.overallStats.deleteMany(),
@@ -298,9 +206,6 @@ export const fixtures = {
       }),
       prisma.block.createMany({ data: fixtures.blocks }),
       prisma.address.createMany({ data: fixtures.addresses }),
-      prisma.addressCategoryInfo.createMany({
-        data: fixtures.addressesHistory,
-      }),
       prisma.transaction.createMany({ data: fixtures.txs }),
       prisma.blob.createMany({ data: fixtures.blobs }),
       prisma.blobDataStorageReference.createMany({

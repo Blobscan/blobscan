@@ -73,4 +73,3 @@ ON CONFLICT (day, category, rollup) DO UPDATE SET
   avg_blob_as_calldata_max_fee = EXCLUDED.avg_blob_as_calldata_max_fee,
   avg_max_blob_gas_fee = EXCLUDED.avg_max_blob_gas_fee,
   avg_blob_gas_price = EXCLUDED.avg_blob_gas_price
-

@@ -43,7 +43,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
@@ -59,7 +59,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
@@ -75,7 +75,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
@@ -152,7 +152,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
@@ -168,7 +168,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
@@ -184,7 +184,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
@@ -197,7 +197,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "rollup",
-        "from": "optimismAddress",
+        "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
@@ -269,7 +269,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "rollup",
-        "from": "optimismAddress",
+        "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
@@ -1711,7 +1711,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "category": "rollup",
-      "from": "baseAddress",
+      "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",
@@ -1751,7 +1751,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "category": "rollup",
-      "from": "baseAddress",
+      "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",

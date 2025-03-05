@@ -18,8 +18,8 @@ async function generateBlockCleanupOperations(
   prisma: TRPCInnerContext["prisma"],
   reorgedBlockNumbers: number[]
 ) {
-  const [addressCategoryInfos, blobs] = await Promise.all([
-    prisma.addressCategoryInfo.findMany({
+  const [addresses, blobs] = await Promise.all([
+    prisma.address.findMany({
       where: {
         OR: [
           {
@@ -47,11 +47,11 @@ async function generateBlockCleanupOperations(
   const referenceRemovalOps = [];
 
   for (const {
-    id,
+    address,
     firstBlockNumberAsReceiver,
     firstBlockNumberAsSender,
-  } of addressCategoryInfos) {
-    const data: Prisma.AddressCategoryInfoUpdateInput = {};
+  } of addresses) {
+    const data: Prisma.AddressUpdateInput = {};
 
     if (
       firstBlockNumberAsSender &&
@@ -71,10 +71,10 @@ async function generateBlockCleanupOperations(
 
     if (hasBlockReferences) {
       referenceRemovalOps.push(
-        prisma.addressCategoryInfo.update({
+        prisma.address.update({
           data,
           where: {
-            id,
+            address,
           },
         })
       );

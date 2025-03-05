@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   Address,
-  AddressCategoryInfo,
   Blob,
   BlobDataStorageReference,
   BlobsOnTransactions,
@@ -47,65 +46,39 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           }
 
           const formattedValues = addresses
-            .map(({ address, rollup }) => [
-              address,
-              rollup
-                ? Prisma.sql`${rollup.toLowerCase()}::rollup`
-                : Prisma.sql`NULL`,
-              NOW_SQL,
-              NOW_SQL,
-            ])
+            .map(
+              ({
+                address,
+                firstBlockNumberAsReceiver,
+                firstBlockNumberAsSender,
+                rollup,
+              }) => [
+                address,
+                firstBlockNumberAsReceiver,
+                firstBlockNumberAsSender,
+                rollup
+                  ? Prisma.sql`${rollup.toLowerCase()}::rollup`
+                  : Prisma.sql`NULL`,
+                NOW_SQL,
+                NOW_SQL,
+              ]
+            )
             .map((rowColumns) => Prisma.sql`(${Prisma.join(rowColumns)})`);
 
           return prisma.$executeRaw`
             INSERT INTO address (
               address,
+              first_block_number_as_receiver,
+              first_block_number_as_sender,
               rollup,
               inserted_at,
               updated_at
             ) VALUES ${Prisma.join(formattedValues)}
             ON CONFLICT (address) DO UPDATE SET
+              first_block_number_as_receiver = LEAST(address.first_block_number_as_receiver, EXCLUDED.first_block_number_as_receiver),
+              first_block_number_as_sender = LEAST(address.first_block_number_as_sender, EXCLUDED.first_block_number_as_sender),
               rollup = EXCLUDED.rollup,
               updated_at = NOW()
-          `;
-        },
-      },
-      addressCategoryInfo: {
-        upsertMany(addressEntries: Omit<AddressCategoryInfo, "id">[]) {
-          if (!addressEntries.length) {
-            return (
-              Prisma.getExtensionContext(this) as any
-            ).zero() as PrismaPromise<ZeroOpResult>;
-          }
-
-          const formattedValues = addressEntries
-            .map(
-              ({
-                address,
-                category,
-                firstBlockNumberAsReceiver,
-                firstBlockNumberAsSender,
-              }) => [
-                address,
-                category
-                  ? Prisma.sql`${category.toLowerCase()}::category`
-                  : Prisma.sql`NULL`,
-                firstBlockNumberAsReceiver,
-                firstBlockNumberAsSender,
-              ]
-            )
-            .map((rowColumns) => Prisma.join(rowColumns, ",", "(", ")"));
-
-          return prisma.$executeRaw`
-            INSERT INTO address_category_info AS curr (
-              address,
-              category,
-              first_block_number_as_receiver,
-              first_block_number_as_sender
-            ) VALUES ${Prisma.join(formattedValues)}
-            ON CONFLICT (address, category) DO UPDATE SET
-              first_block_number_as_receiver = LEAST(curr.first_block_number_as_receiver, EXCLUDED.first_block_number_as_receiver),
-              first_block_number_as_sender = LEAST(curr.first_block_number_as_sender, EXCLUDED.first_block_number_as_sender)
           `;
         },
       },

@@ -7,7 +7,7 @@ exports[`BlobStorageManager > when getting a blob > when getting a blob by its h
 exports[`BlobStorageManager > when getting a blob > when getting a blob by its hash > should throw an error if the data for the provided blob hash is not found 2`] = `
 [
   [BlobStorageError: PostgresStorage failed: Failed to get blob with uri "0xa123bc3245cde"],
-  [BlobStorageError: GoogleStorage failed: Failed to get blob with uri "70118930558/a1/23/bc/a123bc3245cde.txt"],
+  [BlobStorageError: GoogleStorage failed: Failed to get blob with uri "1/a1/23/bc/a123bc3245cde.txt"],
 ]
 `;
 
@@ -31,7 +31,7 @@ exports[`BlobStorageManager > when storing a blob > should return errors for fai
   ],
   "references": [
     {
-      "reference": "70118930558/6d/6f/63/6d6f636b2d64617461.txt",
+      "reference": "1/6d/6f/63/6d6f636b2d64617461.txt",
       "storage": "GOOGLE",
     },
   ],
@@ -45,7 +45,7 @@ exports[`BlobStorageManager > when storing a blob > should store the blob in all
     "storage": "POSTGRES",
   },
   {
-    "reference": "70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt",
+    "reference": "1/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt",
     "storage": "GOOGLE",
   },
   {

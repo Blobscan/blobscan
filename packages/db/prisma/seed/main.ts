@@ -1,16 +1,11 @@
-import type {
-  AddressCategoryInfo,
-  Blob,
-  BlobData,
-  Block,
-  Prisma,
-} from "@prisma/client";
+import type { Address, Blob, BlobData, Block, Prisma } from "@prisma/client";
 import ora from "ora";
 
 import dayjs from "@blobscan/dayjs";
 
 import { prisma } from "..";
-import type { Category, Rollup } from "../enums";
+import type { Rollup } from "../enums";
+import type { WithoutTimestampFields } from "../types";
 import { DataGenerator } from "./DataGenerator";
 import { seedParams } from "./params";
 import { performPrismaUpsertManyInBatches } from "./utils";
@@ -52,9 +47,9 @@ async function main() {
       });
       const { blocks: forkBlocks, txs: forkTxs } =
         dataGenerator.generateDBTransactionForks(fullBlocks);
-      const addressToCategoryInfo: Record<
+      const addressToAddressEntity: Record<
         string,
-        Omit<AddressCategoryInfo, "id">[]
+        WithoutTimestampFields<Address>
       > = {};
       const dbBlockInsertions: Prisma.BlockCreateManyInput[] = [];
       const dbTxInsertions: Prisma.TransactionCreateManyInput[] = [];
@@ -70,64 +65,36 @@ async function main() {
       fullBlocks.forEach(({ transactions, ...block }) => {
         dbBlockInsertions.push(block);
         transactions.forEach(({ blobs, ...tx }) => {
-          const category: Category = Object.values(ROLLUP_ADDRESSES).find(
-            (rollupAddress) => rollupAddress === tx.fromId
-          )
-            ? "ROLLUP"
-            : "OTHER";
           dbTxInsertions.push({
             ...tx,
             decodedFields: undefined,
           });
 
-          const fromCategoryInfos = addressToCategoryInfo[tx.fromId];
-          const toCategoryInfos = addressToCategoryInfo[tx.toId];
-          const fromCategoryInfo = fromCategoryInfos?.find(
-            (aci) => aci.category === category
+          const fromAddress = addressToAddressEntity[tx.fromId] ?? {
+            address: tx.fromId,
+            rollup: (Object.entries(ROLLUP_ADDRESSES).find(
+              ([_, address]) => address === tx.fromId
+            )?.[0] ?? null) as Rollup | null,
+            firstBlockNumberAsSender: null,
+            firstBlockNumberAsReceiver: null,
+          };
+          const toAddress = addressToAddressEntity[tx.toId] ?? {
+            address: tx.toId,
+            rollup: (Object.entries(ROLLUP_ADDRESSES).find(
+              ([_, address]) => address === tx.toId
+            )?.[0] ?? null) as Rollup | null,
+            firstBlockNumberAsSender: null,
+            firstBlockNumberAsReceiver: null,
+          };
+
+          fromAddress.firstBlockNumberAsSender = Math.min(
+            fromAddress.firstBlockNumberAsSender ?? tx.blockNumber,
+            tx.blockNumber
           );
-          const toCategoryInfo = toCategoryInfos?.find(
-            (aci) => aci.category === category
+          toAddress.firstBlockNumberAsReceiver = Math.min(
+            toAddress.firstBlockNumberAsReceiver ?? tx.blockNumber,
+            tx.blockNumber
           );
-
-          if (fromCategoryInfo) {
-            fromCategoryInfo.firstBlockNumberAsSender = Math.min(
-              fromCategoryInfo.firstBlockNumberAsSender ?? tx.blockNumber,
-              tx.blockNumber
-            );
-          } else {
-            const newCategoryInfo = {
-              address: tx.fromId,
-              firstBlockNumberAsReceiver: null,
-              firstBlockNumberAsSender: tx.blockNumber,
-              category: category,
-            };
-
-            if (fromCategoryInfos) {
-              fromCategoryInfos.push(newCategoryInfo);
-            } else {
-              addressToCategoryInfo[tx.fromId] = [newCategoryInfo];
-            }
-          }
-
-          if (toCategoryInfo) {
-            toCategoryInfo.firstBlockNumberAsReceiver = Math.min(
-              toCategoryInfo.firstBlockNumberAsReceiver ?? tx.blockNumber,
-              tx.blockNumber
-            );
-          } else {
-            const newCategoryInfo = {
-              address: tx.toId,
-              firstBlockNumberAsReceiver: tx.blockNumber,
-              firstBlockNumberAsSender: null,
-              category: category,
-            };
-
-            if (toCategoryInfos) {
-              toCategoryInfos.push(newCategoryInfo);
-            } else {
-              addressToCategoryInfo[tx.toId] = [newCategoryInfo];
-            }
-          }
 
           blobs.forEach(({ storageRefs, ...blob }, i) => {
             dbBlobInsertions.push(blob);
@@ -155,24 +122,8 @@ async function main() {
         data: dbBlockInsertions,
       });
       await performPrismaUpsertManyInBatches(
-        Object.keys(addressToCategoryInfo).map((address) => {
-          const rollupEntry = Object.entries(ROLLUP_ADDRESSES).find(
-            ([_, rollupAddress]) => address === rollupAddress
-          );
-          const rollup = rollupEntry ? (rollupEntry[0] as Rollup) : null;
-
-          return {
-            address,
-            rollup,
-          };
-        }),
+        Object.values(addressToAddressEntity),
         prisma.address.upsertMany
-      );
-      await performPrismaUpsertManyInBatches(
-        Object.values(addressToCategoryInfo).flatMap(
-          (categoryInfos) => categoryInfos
-        ),
-        prisma.addressCategoryInfo.upsertMany
       );
       await prisma.transaction.createMany({
         data: dbTxInsertions,

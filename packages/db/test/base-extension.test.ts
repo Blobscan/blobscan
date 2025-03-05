@@ -1,5 +1,4 @@
 import type {
-  AddressCategoryInfo,
   Address as AddressEntity,
   Blob,
   BlobDataStorageReference,
@@ -10,15 +9,10 @@ import { Prisma } from "@prisma/client";
 import { BlobStorage } from "@prisma/client";
 import { describe, it, expect, beforeEach } from "vitest";
 
-import {
-  fixtures,
-  omitDBTimestampFields,
-  sortByCategoryRollup,
-} from "@blobscan/test";
+import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
 import { prisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
-import { upsertAndRetrieveManyAddresses } from "./base-extension.utils";
 
 describe("Base Extension", () => {
   const expectedEmptyInputRes = [
@@ -34,14 +28,20 @@ describe("Base Extension", () => {
       input = [
         {
           address: "address90",
+          firstBlockNumberAsSender: 1001,
+          firstBlockNumberAsReceiver: 1002,
           rollup: null,
         },
         {
           address: "address91",
+          firstBlockNumberAsSender: null,
+          firstBlockNumberAsReceiver: 1002,
           rollup: null,
         },
         {
           address: "address92",
+          firstBlockNumberAsSender: 1001,
+          firstBlockNumberAsReceiver: null,
           rollup: null,
         },
       ];
@@ -68,84 +68,6 @@ describe("Base Extension", () => {
       const result = await prisma.address.upsertMany([]);
 
       expect(result).toStrictEqual(expectedEmptyInputRes);
-    });
-  });
-
-  describe("Address Category Info model", () => {
-    describe("upsertMany()", () => {
-      let input: Omit<AddressCategoryInfo, "id">[];
-
-      it("should insert multiple addresses correctly", async () => {
-        input = [
-          {
-            address: "address9",
-            category: "OTHER",
-            firstBlockNumberAsSender: 1001,
-            firstBlockNumberAsReceiver: 1002,
-          },
-          {
-            address: "address10",
-            category: "OTHER",
-            firstBlockNumberAsSender: 1001,
-            firstBlockNumberAsReceiver: 1002,
-          },
-          {
-            address: "address11",
-            category: "OTHER",
-            firstBlockNumberAsSender: 1001,
-            firstBlockNumberAsReceiver: 1002,
-          },
-        ];
-
-        const insertedAddresses = await upsertAndRetrieveManyAddresses(
-          input
-        ).then((addressToEntity) => Object.values(addressToEntity));
-
-        expect(insertedAddresses.sort(sortByCategoryRollup)).toMatchSnapshot();
-      });
-
-      it("update multiple addresses correctly", async () => {
-        const addressesToUpdate = ["address2", "address5", "address6"];
-
-        input = [
-          {
-            address: "address5",
-            category: "OTHER",
-            firstBlockNumberAsReceiver: 1001,
-            firstBlockNumberAsSender: 1001,
-          },
-          {
-            address: "address2",
-            category: "OTHER",
-            firstBlockNumberAsReceiver: 1003,
-            firstBlockNumberAsSender: 1005,
-          },
-          {
-            address: "address6",
-            category: "OTHER",
-            firstBlockNumberAsReceiver: 1001,
-            firstBlockNumberAsSender: 1001,
-          },
-        ];
-
-        const updatedAddresses = await upsertAndRetrieveManyAddresses(
-          input
-        ).then((addressToEntity) => Object.values(addressToEntity));
-
-        expect(
-          updatedAddresses.filter(
-            (addrCategoryInfo) =>
-              addressesToUpdate.includes(addrCategoryInfo.address) &&
-              addrCategoryInfo.category === "OTHER"
-          )
-        ).toMatchSnapshot();
-      });
-
-      it("should upsert an empty array correctly", async () => {
-        const result = await prisma.address.upsertMany([]);
-
-        expect(result).toStrictEqual(expectedEmptyInputRes);
-      });
     });
   });
 
@@ -609,22 +531,22 @@ describe("Base Extension", () => {
           },
         ];
 
-        await prisma.addressCategoryInfo.upsertMany([
+        await prisma.address.upsertMany([
           {
             address: "address1",
-            category: "OTHER",
+            rollup: null,
             firstBlockNumberAsSender: 1002,
             firstBlockNumberAsReceiver: null,
           },
           {
             address: "address3",
-            category: "OTHER",
+            rollup: null,
             firstBlockNumberAsSender: 1001,
             firstBlockNumberAsReceiver: null,
           },
           {
             address: "address5",
-            category: "OTHER",
+            rollup: null,
             firstBlockNumberAsReceiver: null,
             firstBlockNumberAsSender: 1001,
           },
@@ -680,16 +602,16 @@ describe("Base Extension", () => {
           },
         ];
 
-        await prisma.addressCategoryInfo.upsertMany([
+        await prisma.address.upsertMany([
           {
             address: "address5",
-            category: "OTHER",
+            rollup: null,
             firstBlockNumberAsSender: 1006,
             firstBlockNumberAsReceiver: 1006,
           },
           {
             address: "address6",
-            category: "OTHER",
+            rollup: null,
             firstBlockNumberAsReceiver: 1006,
             firstBlockNumberAsSender: 1006,
           },

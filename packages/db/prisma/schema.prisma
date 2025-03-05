@@ -129,33 +129,21 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
-model AddressCategoryInfo {
-  id                         Int       @id @default(autoincrement())
-  address                    String
-  category                   Category?
-  firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
-  firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
-
-  addressEntity Address @relation(fields: [address], references: [address])
-
-  @@unique([address, category])
-  @@index([firstBlockNumberAsReceiver])
-  @@index([firstBlockNumberAsSender])
-  @@map("address_category_info")
-}
-
 model Address {
-  address    String   @id
-  rollup     Rollup?
-  insertedAt DateTime @default(now()) @map("inserted_at")
-  updatedAt  DateTime @default(now()) @map("updated_at")
+  address                    String   @id
+  rollup                     Rollup?
+  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  insertedAt                 DateTime @default(now()) @map("inserted_at")
+  updatedAt                  DateTime @default(now()) @map("updated_at")
 
-  transactionsAsSender   Transaction[]         @relation("senderAddressRelation")
-  transactionsAsReceiver Transaction[]         @relation("receiverAddressRelation")
-  addressCategoryInfo    AddressCategoryInfo[]
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
   @@index([address, rollup])
   @@index([rollup])
+  @@index([firstBlockNumberAsReceiver])
+  @@index([firstBlockNumberAsSender])
   @@index([insertedAt])
   @@map("address")
 }

@@ -132,39 +132,57 @@
   "addresses": [
     {
       "address": "address1",
-      "rollup": null
+      "rollup": null,
+      "firstBlockNumberAsReceiver": 1008,
+      "firstBlockNumberAsSender": 1001
     },
     {
       "address": "address2",
-      "rollup": null
+      "rollup": null,
+      "firstBlockNumberAsReceiver": 1001,
+      "firstBlockNumberAsSender": 1008
     },
     {
       "address": "address3",
-      "rollup": null
+      "rollup": null,
+      "firstBlockNumberAsReceiver": 1002,
+      "firstBlockNumberAsSender": 1001
     },
     {
       "address": "address4",
-      "rollup": null
+      "rollup": null,
+      "firstBlockNumberAsReceiver": 1001,
+      "firstBlockNumberAsSender": 1008
     },
     {
       "address": "address5",
-      "rollup": null
+      "rollup": null,
+      "firstBlockNumberAsReceiver": null,
+      "firstBlockNumberAsSender": 1004
     },
     {
       "address": "address6",
-      "rollup": null
+      "rollup": null,
+      "firstBlockNumberAsReceiver": 1001,
+      "firstBlockNumberAsSender": null
     },
     {
-      "address": "optimismAddress",
-      "rollup": "OPTIMISM"
+      "address": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
+      "rollup": "OPTIMISM",
+      "firstBlockNumberAsReceiver": null,
+      "firstBlockNumberAsSender": 1001
     },
     {
-      "address": "arbitrumAddress",
-      "rollup": "ARBITRUM"
+      "address": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
+      "rollup": "ARBITRUM",
+      "firstBlockNumberAsReceiver": null,
+      "firstBlockNumberAsSender": 1004
     },
     {
-      "address": "baseAddress",
-      "rollup": "BASE"
+      "address": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
+      "rollup": "BASE",
+      "firstBlockNumberAsReceiver": 1004,
+      "firstBlockNumberAsSender": 1002
     }
   ],
   "txs": [
@@ -200,7 +218,7 @@
     },
     {
       "hash": "txHash003",
-      "fromId": "optimismAddress",
+      "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address6",
       "blockHash": "blockHash001",
       "blockNumber": 1001,
@@ -215,7 +233,7 @@
     },
     {
       "hash": "txHash004",
-      "fromId": "baseAddress",
+      "fromId": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "toId": "address3",
       "blockHash": "blockHash002",
       "blockNumber": 1002,
@@ -260,7 +278,7 @@
     },
     {
       "hash": "txHash007",
-      "fromId": "optimismAddress",
+      "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address2",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -275,7 +293,7 @@
     },
     {
       "hash": "txHash008",
-      "fromId": "arbitrumAddress",
+      "fromId": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
       "toId": "address6",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -320,7 +338,7 @@
     },
     {
       "hash": "txHash011",
-      "fromId": "baseAddress",
+      "fromId": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "toId": "address4",
       "blockHash": "blockHash004",
       "blockNumber": 1004,
@@ -335,7 +353,7 @@
     },
     {
       "hash": "txHash012",
-      "fromId": "optimismAddress",
+      "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address4",
       "blockHash": "blockHash005",
       "blockNumber": 1005,
@@ -380,7 +398,7 @@
     },
     {
       "hash": "txHash015",
-      "fromId": "optimismAddress",
+      "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address4",
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
@@ -410,7 +428,7 @@
     },
     {
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "fromId": "optimismAddress",
+      "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address1",
       "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
       "blockNumber": 1008,
@@ -540,7 +558,7 @@
     {
       "blobHash": "blobHash001",
       "blobStorage": "GOOGLE",
-      "dataReference": "70118930558/ob/Ha/sh/obHash001.txt"
+      "dataReference": "1/ob/Ha/sh/obHash001.txt"
     },
     {
       "blobHash": "blobHash001",
@@ -550,7 +568,7 @@
     {
       "blobHash": "blobHash002",
       "blobStorage": "GOOGLE",
-      "dataReference": "70118930558/ob/Ha/sh/obHash002.txt"
+      "dataReference": "1/ob/Ha/sh/obHash002.txt"
     },
     {
       "blobHash": "blobHash003",
@@ -560,7 +578,7 @@
     {
       "blobHash": "blobHash003",
       "blobStorage": "GOOGLE",
-      "dataReference": "70118930558/ob/Ha/sh/obHash003.txt"
+      "dataReference": "1/ob/Ha/sh/obHash003.txt"
     },
     {
       "blobHash": "blobHash004",
@@ -570,7 +588,7 @@
     {
       "blobHash": "blobHash004",
       "blobStorage": "GOOGLE",
-      "dataReference": "70118930558/ob/Ha/sh/obHash004.txt"
+      "dataReference": "1/ob/Ha/sh/obHash004.txt"
     },
     {
       "blobHash": "blobHash005",

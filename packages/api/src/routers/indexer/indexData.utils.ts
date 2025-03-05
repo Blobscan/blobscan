@@ -1,6 +1,5 @@
 import type {
   Address,
-  AddressCategoryInfo,
   Blob,
   BlobsOnTransactions,
   Block,
@@ -8,7 +7,6 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import type { Category } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
@@ -202,99 +200,37 @@ export function createDBBlobsOnTransactions({
 export function createDBAddresses({
   transactions,
 }: IndexDataFormattedInput): WithoutTimestampFields<Address>[] {
-  return Array.from(
-    new Set<string>(transactions.flatMap(({ from, to }) => [from, to]))
-  ).map((addr) => ({
-    address: addr,
-    rollup: getRollupByAddress(addr, env.CHAIN_ID),
-  }));
-}
+  const addresses = transactions.reduce<
+    Record<string, WithoutTimestampFields<Address>>
+  >((addressToEntity, { from, to, blockNumber }) => {
+    const fromEntity: WithoutTimestampFields<Address> = addressToEntity[
+      from
+    ] ?? {
+      address: from,
+      firstBlockNumberAsReceiver: null,
+      firstBlockNumberAsSender: null,
+      rollup: getRollupByAddress(from, env.CHAIN_ID),
+    };
+    const toEntity: WithoutTimestampFields<Address> = addressToEntity[to] ?? {
+      address: to,
+      firstBlockNumberAsReceiver: null,
+      firstBlockNumberAsSender: null,
+      rollup: getRollupByAddress(to, env.CHAIN_ID),
+    };
 
-function updateDbCategoryInfo({
-  address,
-  category,
-  dbAddressesCategoryInfo,
-  type,
-  blockNumber,
-}: {
-  address: string;
-  category: Category | null;
-  dbAddressesCategoryInfo: Omit<AddressCategoryInfo, "id">[];
-  type: "sender" | "receiver";
-  blockNumber: number;
-}) {
-  const dbAddressCategoryInfo = dbAddressesCategoryInfo.find(
-    (a) => a.address === address && a.category === category
-  );
+    fromEntity.firstBlockNumberAsSender = fromEntity.firstBlockNumberAsSender
+      ? Math.min(fromEntity.firstBlockNumberAsSender, blockNumber)
+      : blockNumber;
+    toEntity.firstBlockNumberAsReceiver = toEntity.firstBlockNumberAsReceiver
+      ? Math.min(toEntity.firstBlockNumberAsReceiver, blockNumber)
+      : blockNumber;
 
-  const isSender = type === "sender";
+    return {
+      ...addressToEntity,
+      [from]: fromEntity,
+      [to]: toEntity,
+    };
+  }, {});
 
-  if (!dbAddressCategoryInfo) {
-    dbAddressesCategoryInfo.push({
-      address,
-      category,
-      firstBlockNumberAsReceiver: isSender ? null : blockNumber,
-      firstBlockNumberAsSender: isSender ? blockNumber : null,
-    });
-
-    return;
-  }
-
-  const currBlockNumber = isSender
-    ? dbAddressCategoryInfo.firstBlockNumberAsSender
-    : dbAddressCategoryInfo.firstBlockNumberAsReceiver;
-
-  if (currBlockNumber) {
-    dbAddressCategoryInfo[
-      isSender ? "firstBlockNumberAsSender" : "firstBlockNumberAsReceiver"
-    ] = Math.min(currBlockNumber, blockNumber);
-  }
-
-  return dbAddressCategoryInfo;
-}
-
-export function createDBAddressCategoryInfo(
-  dbTxs: WithoutTimestampFields<Transaction>[]
-): Omit<AddressCategoryInfo, "id">[] {
-  const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
-
-  dbTxs.forEach(({ fromId, toId, blockNumber }) => {
-    const category: Category = getRollupByAddress(fromId, env.CHAIN_ID)
-      ? "ROLLUP"
-      : "OTHER";
-
-    updateDbCategoryInfo({
-      address: fromId,
-      category,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "sender",
-      blockNumber,
-    });
-
-    updateDbCategoryInfo({
-      address: fromId,
-      category: null,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "sender",
-      blockNumber,
-    });
-
-    updateDbCategoryInfo({
-      address: toId,
-      category: null,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "receiver",
-      blockNumber,
-    });
-
-    updateDbCategoryInfo({
-      address: toId,
-      category,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "receiver",
-      blockNumber,
-    });
-  });
-
-  return dbAddresses;
+  return Object.values(addresses);
 }

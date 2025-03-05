@@ -45,34 +45,19 @@ export function buildStatsWhereClause({
 }: Filters) {
   const clauses = [];
   const fromAddressFilter = transactionFilters?.fromId?.in;
-  let rollupFilter = transactionFilters?.from?.rollup;
+  let categoryClause: Category | null = null;
+  let rollupClause: null | { in: Rollup[] } | { not: null } = null;
 
-  if (fromAddressFilter) {
+  if (transactionFilters?.from?.rollup !== undefined) {
+    // When "not" is present in the rollup filter, it means we are looking for rollup addresses only.
+    categoryClause =
+      transactionFilters.from.rollup === null ? "OTHER" : "ROLLUP";
+  } else if (fromAddressFilter?.length) {
     const resolvedRollups = fromAddressFilter
       .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
       .filter((r): r is Rollup => !!r);
 
-    if (resolvedRollups.length) {
-      if (rollupFilter && "in" in rollupFilter) {
-        rollupFilter.in.push(...resolvedRollups);
-      } else {
-        rollupFilter = { in: resolvedRollups };
-      }
-    }
-  }
-
-  let categoryClause: Category | null = null;
-  let rollupClause: null | { in: Rollup[] } | { not: null } = null;
-
-  if (rollupFilter === null) {
-    categoryClause = "OTHER";
-  } else if (rollupFilter !== undefined) {
-    // When "not" is present in the rollup filter, it means we are looking for rollup addresses only.
-    if ("not" in rollupFilter) {
-      categoryClause = "ROLLUP";
-    } else {
-      rollupClause = rollupFilter;
-    }
+    rollupClause = { in: Array.from(new Set(resolvedRollups)) };
   }
 
   clauses.push(

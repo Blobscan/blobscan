@@ -41,7 +41,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -104,7 +104,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -118,7 +118,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "blobAsCalldataGasUsed": "1000",
       "blobGasUsed": "393216",
       "category": "rollup",
-      "from": "optimismAddress",
+      "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "optimism",
@@ -163,7 +163,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -177,7 +177,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
       "blobAsCalldataGasUsed": "1000",
       "blobGasUsed": "393216",
       "category": "rollup",
-      "from": "optimismAddress",
+      "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "optimism",
@@ -254,7 +254,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -272,7 +272,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -294,7 +294,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -316,7 +316,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -338,7 +338,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -356,7 +356,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -396,7 +396,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -418,7 +418,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -445,7 +445,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -467,7 +467,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -485,7 +485,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -512,7 +512,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -534,7 +534,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -556,7 +556,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -578,7 +578,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -600,7 +600,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -622,7 +622,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -644,7 +644,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -666,7 +666,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -684,7 +684,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -756,7 +756,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -778,7 +778,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -800,7 +800,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -822,7 +822,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -862,7 +862,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -884,7 +884,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -906,7 +906,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -924,7 +924,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -969,7 +969,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -991,7 +991,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -1013,7 +1013,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -1031,7 +1031,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1053,7 +1053,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1075,7 +1075,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1097,7 +1097,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1119,7 +1119,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1141,7 +1141,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1159,7 +1159,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 0,
@@ -1182,7 +1182,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1204,7 +1204,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -1226,7 +1226,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1244,7 +1244,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1271,7 +1271,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -1293,7 +1293,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1311,7 +1311,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1338,7 +1338,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -1360,7 +1360,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1378,7 +1378,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1459,7 +1459,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1477,7 +1477,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1499,7 +1499,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1521,7 +1521,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -1543,7 +1543,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1561,7 +1561,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1588,7 +1588,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1606,7 +1606,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1628,7 +1628,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1650,7 +1650,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
       },
       {
         "storage": "swarm",
@@ -1672,7 +1672,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
       },
     ],
     "index": 1,
@@ -1690,7 +1690,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -1730,7 +1730,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1752,7 +1752,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1774,7 +1774,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1814,7 +1814,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1836,7 +1836,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1858,7 +1858,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1920,7 +1920,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1942,7 +1942,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -1964,7 +1964,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -2004,7 +2004,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
       },
       {
         "storage": "postgres",
@@ -2053,7 +2053,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "dataStorageReferences": [
       {
         "storage": "google",
-        "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+        "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
       },
       {
         "storage": "swarm",
@@ -2124,7 +2124,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
   "dataStorageReferences": [
     {
       "storage": "google",
-      "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+      "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
     },
     {
       "storage": "postgres",
@@ -2170,7 +2170,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
   "dataStorageReferences": [
     {
       "storage": "google",
-      "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+      "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
     },
     {
       "storage": "postgres",
