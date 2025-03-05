@@ -1,5 +1,7 @@
 import type { Prisma } from "@blobscan/db";
 import type { Rollup } from "@blobscan/db/prisma/enums";
+import { env } from "@blobscan/env";
+import { getAddressesByRollup } from "@blobscan/rollups";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -24,7 +26,7 @@ type DateRangeFilter = {
 export type FromAddressFilter = { in: string[] };
 
 export type RollupFilter = {
-  rollup: { in: Rollup[] } | null | { not: null };
+  rollup: null | { not: null };
 };
 
 export type ToAddressFilter = {
@@ -168,14 +170,16 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     transactionFilters.fromId = { in: from };
   }
 
-  if (category) {
+  if (rollups?.length) {
+    const resolvedAddresses = rollups
+      .flatMap((r) => getAddressesByRollup(r, env.CHAIN_ID))
+      .filter((r): r is string => !!r);
+
+    transactionFilters.fromId = { in: resolvedAddresses };
+  } else if (category) {
     transactionFilters.from = {
       rollup: category === "rollup" ? { not: null } : null,
     };
-  }
-
-  if (rollups?.length) {
-    transactionFilters.from = { rollup: { in: rollups } };
   }
 
   filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
