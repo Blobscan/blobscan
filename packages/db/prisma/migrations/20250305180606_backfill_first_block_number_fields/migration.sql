@@ -1,9 +1,9 @@
 UPDATE address SET first_block_number_as_receiver = (
-  SELECT MIN(block_number)
-  FROM transaction
-  WHERE to_id = address.address
+  SELECT first_block_number_as_receiver
+  FROM address_category_info
+  WHERE address_category_info.address = address.address AND category IS NULL
 ), first_block_number_as_sender = (
-  SELECT MIN(block_number)
-  FROM transaction
-  WHERE from_id = address.address
+  SELECT first_block_number_as_sender
+  FROM address_category_info
+  WHERE address_category_info.address = address.address AND category IS NULL
 ) WHERE first_block_number_as_receiver IS NULL OR first_block_number_as_sender IS NULL;
