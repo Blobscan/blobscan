@@ -581,7 +581,7 @@ describe("Indexer router", async () => {
             {
               "address": "address2",
               "firstBlockNumberAsReceiver": 1001,
-              "firstBlockNumberAsSender": 1008,
+              "firstBlockNumberAsSender": 1003,
             },
             {
               "address": "address7",

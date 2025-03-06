@@ -1,7 +1,10 @@
 import type { Prisma } from "@blobscan/db";
 import type { Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
-import { getAddressesByRollup } from "@blobscan/rollups";
+import {
+  getAddressesByRollup,
+  ROLLUP_TO_ADDRESSES_MAPPINGS,
+} from "@blobscan/rollups";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";

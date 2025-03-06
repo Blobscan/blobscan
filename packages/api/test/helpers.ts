@@ -166,6 +166,7 @@ export function runFiltersTestsSuite(
         rollups: "optimism",
       });
 
+      console.log(result);
       expect(result).toMatchSnapshot();
     });
 

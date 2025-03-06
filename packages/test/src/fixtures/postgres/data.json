@@ -140,7 +140,7 @@
       "address": "address2",
       "rollup": null,
       "firstBlockNumberAsReceiver": 1001,
-      "firstBlockNumberAsSender": 1008
+      "firstBlockNumberAsSender": 1003
     },
     {
       "address": "address3",
@@ -152,7 +152,7 @@
       "address": "address4",
       "rollup": null,
       "firstBlockNumberAsReceiver": 1001,
-      "firstBlockNumberAsSender": 1008
+      "firstBlockNumberAsSender": null
     },
     {
       "address": "address5",
@@ -181,7 +181,7 @@
     {
       "address": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "rollup": "BASE",
-      "firstBlockNumberAsReceiver": 1004,
+      "firstBlockNumberAsReceiver": null,
       "firstBlockNumberAsSender": 1002
     }
   ],
