@@ -13,6 +13,7 @@ import { sha256 } from "js-sha256";
 import dayjs from "@blobscan/dayjs";
 import { FORK_BLOB_CONFIGS } from "@blobscan/network-blob-config";
 
+import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
 import type { SeedParams } from "./params";
 import {
@@ -52,6 +53,10 @@ export class DataGenerator {
     const now = new Date();
     return addresses.map((address) => ({
       address,
+      rollup:
+        (ROLLUP_ADDRESSES[
+          address as keyof typeof ROLLUP_ADDRESSES
+        ] as Rollup) ?? null,
       firstBlockNumberAsReceiver:
         blocks.find(
           (b) => txs.find((tx) => tx.toId === address)?.blockHash === b.hash
@@ -69,15 +74,17 @@ export class DataGenerator {
     const now = new Date();
     const addresses = [tx.fromId, tx.toId];
 
-    return addresses.map((address) => {
-      return {
-        address,
-        firstBlockNumberAsReceiver: tx.blockNumber,
-        firstBlockNumberAsSender: tx.blockNumber,
-        insertedAt: now,
-        updatedAt: now,
-      };
-    });
+    return addresses.map((address) => ({
+      address,
+      firstBlockNumberAsReceiver: tx.blockNumber,
+      firstBlockNumberAsSender: tx.blockNumber,
+      rollup:
+        (ROLLUP_ADDRESSES[
+          address as keyof typeof ROLLUP_ADDRESSES
+        ] as Rollup) ?? null,
+      insertedAt: now,
+      updatedAt: now,
+    }));
   }
 
   generateBlob(): Blob {
@@ -232,7 +239,8 @@ export class DataGenerator {
     return Array.from({
       length: Number(tx.blobGasUsed) / Number(GAS_PER_BLOB),
     }).map(() => {
-      const isUnique = tx.rollup
+      const isRollupTx = Object.values(ROLLUP_ADDRESSES).includes(tx.fromId);
+      const isUnique = isRollupTx
         ? true
         : faker.datatype.boolean({
             probability: this.#seedParams.uniqueBlobsRatio,

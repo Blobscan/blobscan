@@ -16,6 +16,7 @@ import { TimestampToggle } from "~/components/TimestampToggle";
 import type { TimestampFormat } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
+import type { BlobWithExpandedTransaction } from "~/types";
 import {
   buildBlobRoute,
   buildBlockRoute,
@@ -33,9 +34,10 @@ const Blobs: NextPage = function () {
     data: blobsData,
     error: blobsError,
     isLoading,
-  } = api.blob.getAll.useQuery({
+  } = api.blob.getAll.useQuery<{ blobs: BlobWithExpandedTransaction[] }>({
     ...paginationParams,
     ...filterParams,
+    expand: "transaction",
   });
   const {
     data: countData,
@@ -101,12 +103,11 @@ const Blobs: NextPage = function () {
           }) => ({
             cells: [
               {
-                item:
-                  transaction?.category === "rollup" && transaction.rollup ? (
-                    <RollupIcon rollup={transaction.rollup} />
-                  ) : (
-                    <></>
-                  ),
+                item: transaction.rollup ? (
+                  <RollupIcon rollup={transaction.rollup} />
+                ) : (
+                  <></>
+                ),
               },
               {
                 item: (

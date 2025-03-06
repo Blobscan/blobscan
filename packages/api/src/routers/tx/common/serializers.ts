@@ -15,14 +15,13 @@ import {
   serializeDecimal,
   serializeRollup,
   isEmptyObject,
-  serializeDerivedTxBlobGasFields,
-  serializedDerivedTxBlobGasFieldsSchema,
-  calculateDerivedTxBlobGasFields,
+  serializeTxFeeFields,
+  serializedTxFeeFieldsSchema,
   serializeDate,
   categorySchema,
   serializeCategory,
 } from "../../../utils";
-import type { FullQueriedTransaction, BaseTransaction } from "./selects";
+import type { Transaction, IncompletedTransaction } from "./selects";
 
 const baseSerializedTransactionFieldsSchema = z.object({
   hash: z.string(),
@@ -50,9 +49,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
 });
 
 export const serializedTransactionSchema =
-  baseSerializedTransactionFieldsSchema.merge(
-    serializedDerivedTxBlobGasFieldsSchema
-  );
+  baseSerializedTransactionFieldsSchema.merge(serializedTxFeeFieldsSchema);
 
 type SerializedBaseTransactionFields = z.infer<
   typeof baseSerializedTransactionFieldsSchema
@@ -60,31 +57,8 @@ type SerializedBaseTransactionFields = z.infer<
 
 export type SerializedTransaction = z.infer<typeof serializedTransactionSchema>;
 
-export function addDerivedFieldsToTransaction(
-  txQuery: BaseTransaction
-): FullQueriedTransaction {
-  const {
-    blobAsCalldataGasUsed,
-    blobGasUsed,
-    block,
-    gasPrice,
-    maxFeePerBlobGas,
-  } = txQuery;
-
-  return {
-    ...txQuery,
-    ...calculateDerivedTxBlobGasFields({
-      blobGasUsed,
-      blobAsCalldataGasUsed,
-      gasPrice,
-      blobGasPrice: block.blobGasPrice,
-      maxFeePerBlobGas,
-    }),
-  };
-}
-
 export function serializeBaseTransactionFields(
-  txQuery: BaseTransaction
+  dbTx: IncompletedTransaction
 ): SerializedBaseTransactionFields {
   const {
     hash,
@@ -92,13 +66,11 @@ export function serializeBaseTransactionFields(
     blockNumber,
     blockTimestamp,
     index,
-    fromId,
+    from: { address: fromAddress, rollup },
     toId,
-    category,
-    rollup,
-    blobs,
     block,
-  } = txQuery;
+  } = dbTx;
+  const category = rollup ? "ROLLUP" : "OTHER";
   const expandedBlock = serializeExpandedBlock(block);
 
   return {
@@ -108,35 +80,36 @@ export function serializeBaseTransactionFields(
     blockHash,
     index,
     to: toId,
-    from: fromId,
-    blobAsCalldataGasUsed: serializeDecimal(txQuery.blobAsCalldataGasUsed),
-    blobGasUsed: serializeDecimal(txQuery.blobGasUsed),
-    maxFeePerBlobGas: serializeDecimal(txQuery.maxFeePerBlobGas),
+    from: fromAddress,
+    blobAsCalldataGasUsed: serializeDecimal(dbTx.blobAsCalldataGasUsed),
+    blobGasUsed: serializeDecimal(dbTx.blobGasUsed),
+    maxFeePerBlobGas: serializeDecimal(dbTx.maxFeePerBlobGas),
     category: serializeCategory(category),
     rollup: serializeRollup(rollup),
-    blobs: blobs.map(({ blob, blobHash, index }) => {
+    ...(isEmptyObject(expandedBlock) ? {} : { block: expandedBlock }),
+    blobs: dbTx.blobs.map(({ blob, blobHash }) => {
+      const serializedExpandedBlobFields = blob
+        ? serializeExpandedBlobData(blob)
+        : {};
+
       return {
         versionedHash: blobHash,
-        index: index,
-        ...serializeExpandedBlobData(blob),
+        ...serializedExpandedBlobFields,
       };
     }),
-    ...(isEmptyObject(expandedBlock) ? {} : { block: expandedBlock }),
   };
 }
 
-export function serializeTransaction(
-  txQuery: FullQueriedTransaction
-): SerializedTransaction {
-  const serializedBaseTx = serializeBaseTransactionFields(txQuery);
-  const serializedAdditionalTx = serializeDerivedTxBlobGasFields(txQuery);
+export function serializeTransaction(tx: Transaction): SerializedTransaction {
+  const serializedBaseTx = serializeBaseTransactionFields(tx);
+  const serializedTxFeeFields = serializeTxFeeFields(tx);
 
-  const decodedFieldsString = JSON.stringify(txQuery.decodedFields);
+  const decodedFieldsString = JSON.stringify(tx.decodedFields);
   const decodedFields = parseDecodedFields(decodedFieldsString);
 
   return {
     ...serializedBaseTx,
-    ...serializedAdditionalTx,
+    ...serializedTxFeeFields,
     decodedFields,
   };
 }

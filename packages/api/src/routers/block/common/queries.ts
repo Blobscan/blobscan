@@ -3,12 +3,9 @@ import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
 
 import type { Expands } from "../../../middlewares/withExpands";
 import type { Filters } from "../../../middlewares/withFilters";
-import {
-  calculateDerivedTxBlobGasFields,
-  retrieveBlobData,
-} from "../../../utils";
+import { calculateTxFeeFields, retrieveBlobData } from "../../../utils";
+import type { Block } from "./selects";
 import { createBlockSelect } from "./selects";
-import type { QueriedBlock } from "./serializers";
 
 export type BlockId = "hash" | "number" | "slot";
 export type BlockIdField =
@@ -49,24 +46,24 @@ export async function fetchBlock(
 ) {
   const where = buildBlockWhereClause(blockId, filters);
 
-  const queriedBlock = await prisma.block.findFirst({
+  const queriedBlock = (await prisma.block.findFirst({
     select: createBlockSelect(expands),
     where,
-  });
+  })) as unknown as Block;
 
   if (!queriedBlock) {
     return;
   }
 
-  const block: QueriedBlock = queriedBlock;
+  const block = queriedBlock;
 
   if (expands.transaction) {
     block.transactions = block.transactions.map((tx) => {
       const { blobAsCalldataGasUsed, blobGasUsed, gasPrice, maxFeePerBlobGas } =
         tx;
-      const derivedFields =
+      const feeFields =
         maxFeePerBlobGas && blobAsCalldataGasUsed && blobGasUsed && gasPrice
-          ? calculateDerivedTxBlobGasFields({
+          ? calculateTxFeeFields({
               blobAsCalldataGasUsed,
               blobGasUsed,
               gasPrice,
@@ -77,7 +74,7 @@ export async function fetchBlock(
 
       return {
         ...tx,
-        ...derivedFields,
+        ...feeFields,
       };
     });
   }
@@ -86,9 +83,13 @@ export async function fetchBlock(
     const txsBlobs = block.transactions.flatMap((tx) => tx.blobs);
 
     await Promise.all(
-      txsBlobs.map(async ({ blob }) => {
-        if (blob.dataStorageReferences?.length) {
-          const data = await retrieveBlobData(blobStorageManager, blob);
+      txsBlobs.map(async ({ blobHash, blob }) => {
+        const dataStorageReferences = blob?.dataStorageReferences;
+        if (dataStorageReferences) {
+          const data = await retrieveBlobData(blobStorageManager, {
+            dataStorageReferences,
+            versionedHash: blobHash,
+          });
 
           blob.data = data;
         }

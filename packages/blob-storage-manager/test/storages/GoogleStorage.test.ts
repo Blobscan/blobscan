@@ -1,8 +1,8 @@
 import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { testValidError } from "@blobscan/test";
 import { env } from "@blobscan/env";
+import { testValidError } from "@blobscan/test";
 
 import { GoogleStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
@@ -119,7 +119,7 @@ describe("GoogleStorage", () => {
     const file = await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
 
     expect(file).toMatchInlineSnapshot(
-      '"70118930558/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
+      '"1/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
     );
   });
 

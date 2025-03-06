@@ -11,7 +11,6 @@ import { createBlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
-import type { Rollup } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import type { createTRPCContext } from "../src/context";
@@ -24,9 +23,7 @@ import { retrieveAPIClient } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
-type FilterAndPagination = Omit<FiltersInputSchema, "rollup"> & {
-  rollup?: Lowercase<Rollup> | "null";
-} & WithPaginationSchema;
+type FilterAndPagination = FiltersInputSchema & WithPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
 
@@ -166,9 +163,10 @@ export function runFiltersTestsSuite(
 
     it("should return the results corresponding to a provided rollup", async () => {
       const result = await fetcher({
-        rollup: "optimism",
+        rollups: "optimism",
       });
 
+      console.log(result);
       expect(result).toMatchSnapshot();
     });
 

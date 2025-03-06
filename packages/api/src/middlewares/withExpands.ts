@@ -1,85 +1,73 @@
-import { Prisma } from "@blobscan/db";
-import type {
-  BlobDataStorageReference,
-  Blob as DBBlob,
-  Block as DBBlock,
-  Transaction as DBTransaction,
-} from "@blobscan/db";
+import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
 import {
   categorySchema,
-  dataStorageReferencesSelect,
   rollupSchema,
   serializeBlobDataStorageReferences,
-  serializeCategory,
   serializeDecimal,
   serializeRollup,
   serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../utils";
-import type { DerivedTxBlobGasFields, MakeFieldsMandatory } from "../utils";
+import type { TransactionFeeFields } from "../utils";
 
 const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
 
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
-const expandedTransactionSelect = Prisma.validator<Prisma.TransactionSelect>()({
+const expandedTransactionSelect = {
   blobAsCalldataGasUsed: true,
   blobGasUsed: true,
-  fromId: true,
+  from: {
+    select: {
+      address: true,
+      rollup: true,
+    },
+  },
   toId: true,
   gasPrice: true,
   maxFeePerBlobGas: true,
-  category: true,
-  rollup: true,
   index: true,
-});
+} satisfies Prisma.TransactionSelect;
 
-const expandedBlobSelect = Prisma.validator<Prisma.BlobSelect>()({
+export const expandedBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
   dataStorageReferences: {
-    select: dataStorageReferencesSelect,
+    select: {
+      blobStorage: true,
+      dataReference: true,
+    },
   },
-});
+} satisfies Prisma.BlobSelect;
 
-const expandedBlockSelect = Prisma.validator<Prisma.BlockSelect>()({
+const expandedBlockSelect = {
   blobAsCalldataGasUsed: true,
   blobGasPrice: true,
   blobGasUsed: true,
   excessBlobGas: true,
   slot: true,
-});
+} satisfies Prisma.BlockSelect;
 
-export type ExpandedBlock = Partial<DBBlock>;
+export type ExpandedBlock = Prisma.BlockGetPayload<{
+  select: typeof expandedBlockSelect;
+}>;
 
-export type ExpandedTransaction = Partial<DBTransaction> &
-  Partial<DerivedTxBlobGasFields>;
+export type ExpandedTransaction = Prisma.TransactionGetPayload<{
+  select: typeof expandedTransactionSelect;
+}> &
+  Partial<TransactionFeeFields>;
 
-export type ExpandedBlob = MakeFieldsMandatory<
-  DBBlob & {
-    dataStorageReferences: Pick<
-      BlobDataStorageReference,
-      "blobStorage" | "dataReference"
-    >[];
-    data?: string;
-  },
-  "versionedHash"
->;
+export type ExpandedBlob = Prisma.BlobGetPayload<{
+  select: typeof expandedBlobSelect;
+}> & {
+  data?: string;
+};
 
-export type ExpandedBlobData = MakeFieldsMandatory<
-  DBBlob & {
-    dataStorageReferences: Pick<
-      BlobDataStorageReference,
-      "blobStorage" | "dataReference"
-    >[];
-    data?: string;
-  },
-  "versionedHash"
->;
+export type ExpandedBlobWithData = ExpandedBlob & { data?: string };
 
 export type ZodExpand = (typeof zodExpandEnums)[number];
 
@@ -151,7 +139,7 @@ export type SerializedExpandedTransaction = z.infer<
 >;
 
 export function serializeExpandedBlob(
-  blob: ExpandedBlob
+  blob: Partial<ExpandedBlob>
 ): SerializedExpandedBlob {
   const { commitment, proof, size, dataStorageReferences } = blob;
   const expandedBlob: SerializedExpandedBlob = {};
@@ -177,7 +165,9 @@ export function serializeExpandedBlob(
   return expandedBlob;
 }
 
-export function serializeExpandedBlobData(blob: ExpandedBlobData) {
+export function serializeExpandedBlobData(
+  blob: Partial<ExpandedBlobWithData>
+): SerializedExpandedBlobData {
   const serializedBlob: SerializedExpandedBlobData =
     serializeExpandedBlob(blob);
 
@@ -189,7 +179,7 @@ export function serializeExpandedBlobData(blob: ExpandedBlobData) {
 }
 
 export function serializeExpandedBlock(
-  block: ExpandedBlock
+  block: Partial<ExpandedBlock>
 ): SerializedExpandedBlock {
   const {
     blobGasPrice,
@@ -226,15 +216,13 @@ export function serializeExpandedBlock(
 }
 
 export function serializeExpandedTransaction(
-  transaction: ExpandedTransaction
+  transaction: Partial<ExpandedTransaction>
 ): SerializedExpandedTransaction {
   const {
     blobAsCalldataGasUsed,
     maxFeePerBlobGas,
-    fromId,
+    from,
     toId,
-    category,
-    rollup,
     blobAsCalldataGasFee,
     blobGasBaseFee,
     blobGasMaxFee,
@@ -253,20 +241,22 @@ export function serializeExpandedTransaction(
     expandedTransaction.maxFeePerBlobGas = serializeDecimal(maxFeePerBlobGas);
   }
 
-  if (fromId) {
-    expandedTransaction.from = fromId;
+  if (from) {
+    if (from.address) {
+      expandedTransaction.from = from.address;
+    }
+
+    if (from.rollup) {
+      expandedTransaction.rollup = serializeRollup(from.rollup);
+
+      expandedTransaction.category = "rollup";
+    } else {
+      expandedTransaction.category = "other";
+    }
   }
 
   if (toId) {
     expandedTransaction.to = toId;
-  }
-
-  if (category) {
-    expandedTransaction.category = serializeCategory(category);
-  }
-
-  if (rollup) {
-    expandedTransaction.rollup = serializeRollup(rollup);
   }
 
   if (blobGasBaseFee) {

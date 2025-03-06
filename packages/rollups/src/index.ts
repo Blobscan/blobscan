@@ -152,10 +152,13 @@ export function getChainRollups(chainId: number): [Rollup, string[]][] {
 
 export function getRollupByAddress(
   address: string,
-  chainId: number
+  chainId: number | string
 ): Rollup | null {
+  const normalizedChainId =
+    typeof chainId === "string" ? parseInt(chainId) : chainId;
   const normalizedAddress = address.toLowerCase();
-  const addressToRollupMapping = ADDRESS_TO_ROLLUP_MAPPINGS.get(chainId);
+  const addressToRollupMapping =
+    ADDRESS_TO_ROLLUP_MAPPINGS.get(normalizedChainId);
 
   if (!addressToRollupMapping) {
     return null;
@@ -166,9 +169,11 @@ export function getRollupByAddress(
 
 export function getAddressesByRollup(
   rollup: Rollup,
-  chainId: number
+  chainId: number | string
 ): string[] | null {
-  const rollupMapping = ROLLUP_TO_ADDRESSES_MAPPINGS.get(chainId);
+  const normalizedChainId =
+    typeof chainId === "string" ? parseInt(chainId) : chainId;
+  const rollupMapping = ROLLUP_TO_ADDRESSES_MAPPINGS.get(normalizedChainId);
 
   if (!rollupMapping) {
     return null;

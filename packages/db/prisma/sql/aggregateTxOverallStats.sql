@@ -24,21 +24,21 @@ INSERT INTO overall_stats AS curr_stats (
   updated_at
 )
 SELECT
-  tx.category,
-  tx.rollup,
+  CASE WHEN from_addr.rollup IS NOT NULL THEN 'rollup'::category ELSE 'other'::category END AS category,
+  from_addr.rollup,
   COALESCE(COUNT(DISTINCT tx.block_number)::INT, 0) AS total_blocks,
   COALESCE(COUNT(tx.hash)::INT, 0) AS total_transactions,
   COALESCE(
     COUNT(
       DISTINCT CASE
-        WHEN a_to.first_block_number_as_receiver BETWEEN $1 AND $2 THEN a_to.address END
+        WHEN to_addr.first_block_number_as_receiver BETWEEN $1 AND $2 THEN to_addr.address END
     )::INT,
     0
   ) AS total_unique_receivers,
   COALESCE(
     COUNT(
       DISTINCT CASE
-        WHEN a_from.first_block_number_as_sender BETWEEN $1 AND $2 THEN a_from.address END
+        WHEN from_addr.first_block_number_as_sender BETWEEN $1 AND $2 THEN from_addr.address END
     )::INT,
     0
   ) AS total_unique_senders,
@@ -59,19 +59,19 @@ SELECT
   NOW() AS updated_at
 FROM transaction tx
   JOIN block b ON b.hash = tx.block_hash
-  JOIN address_category_info a_from ON a_from.address = tx.from_id AND a_from.category = tx.category
-  JOIN address_category_info a_to ON a_to.address = tx.to_id AND a_to.category = tx.category
+  JOIN address from_addr ON from_addr.address = tx.from_id
+  JOIN address to_addr ON to_addr.address = tx.to_id
   LEFT JOIN transaction_fork tx_f ON tx_f.block_hash = b.hash AND tx_f.hash = tx.hash
 WHERE tx_f.hash IS NULL AND b.number BETWEEN $1 AND $2
 GROUP BY GROUPING SETS (
-  (tx.category),
-  (tx.rollup),
+  (category),
+  (from_addr.rollup),
   ()
 )
 --  Exclude NULL rollup aggregates from the second grouping set, as they’re already included in the first when the category is OTHER
 HAVING NOT (
-  GROUPING(tx.rollup) = 0 AND
-  tx.rollup IS NULL
+  GROUPING(from_addr.rollup) = 0 AND
+  from_addr.rollup IS NULL
 )
 ON CONFLICT (category, rollup) DO UPDATE SET
   total_blocks = curr_stats.total_blocks + EXCLUDED.total_blocks,

@@ -1,10 +1,8 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
+import { env } from "@blobscan/env";
+import { getRollupByAddress } from "@blobscan/rollups";
 
-import type { Rollup } from "../../enums";
-import {
-  extractAddressesFromFilter,
-  extractRollupsFromFilter,
-} from "../middlewares/withFilters";
+import type { Category, Rollup } from "../../enums";
 import type { Filters } from "../middlewares/withFilters";
 
 /**
@@ -21,64 +19,57 @@ import type { Filters } from "../middlewares/withFilters";
  * @returns A boolean indicating if a direct count is required.
  */
 export function requiresDirectCount({
-  blockNumber,
-  blockSlot,
-  transactionAddresses,
+  blockFilters = {},
   blockType,
+  transactionFilters = {},
 }: Filters) {
-  const blockNumberRangeFilterEnabled = !!blockNumber;
+  const blockNumberRangeFilterEnabled = !!blockFilters?.number;
   const reorgedFilterEnabled = !!blockType?.some;
-  const slotRangeFilterEnabled = !!blockSlot;
-  const addresses = extractAddressesFromFilter(transactionAddresses);
-  const rollups = extractRollupsFromFilter(transactionAddresses);
-  const nonRollupAddressesPresent = addresses.length !== rollups.length;
+  const slotRangeFilterEnabled = !!blockFilters.slot;
+  const nonRollupAddressesExists = transactionFilters.fromId?.in
+    .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
+    .some((r) => !r);
 
   return (
     blockNumberRangeFilterEnabled ||
     slotRangeFilterEnabled ||
     reorgedFilterEnabled ||
-    nonRollupAddressesPresent
+    transactionFilters.toId ||
+    nonRollupAddressesExists
   );
 }
 
 export function buildStatsWhereClause({
-  blockTimestamp,
-  transactionCategory,
-  transactionRollup,
-  transactionAddresses,
+  blockFilters,
+  transactionFilters,
 }: Filters) {
   const clauses = [];
+  const fromAddressFilter = transactionFilters?.fromId?.in;
+  let categoryClause: Category | null = null;
+  let rollupClause: null | { in: Rollup[] } | { not: null } = null;
 
-  const filterRollups: Rollup[] = [];
+  if (transactionFilters?.from?.rollup !== undefined) {
+    // When "not" is present in the rollup filter, it means we are looking for rollup addresses only.
+    categoryClause =
+      transactionFilters.from.rollup === null ? "OTHER" : "ROLLUP";
+  } else if (fromAddressFilter?.length) {
+    const resolvedRollups = fromAddressFilter
+      .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
+      .filter((r): r is Rollup => !!r);
 
-  if (transactionRollup) {
-    filterRollups.push(transactionRollup);
+    rollupClause = { in: Array.from(new Set(resolvedRollups)) };
   }
 
-  if (transactionAddresses) {
-    filterRollups.push(...extractRollupsFromFilter(transactionAddresses));
-  }
-
-  const rollupsFilterPresent = filterRollups.length > 0;
-  const singleRollupFilter = filterRollups.length === 1;
-
-  // Set 'category' or 'rollup' to null when there are no corresponding filters
-  // because the db stores total stats for each grouping in rows where
-  // 'category' or 'rollup' is null.
-  const rollup = rollupsFilterPresent
-    ? singleRollupFilter
-      ? filterRollups[0]
-      : { in: filterRollups }
-    : null;
-  // Set 'category' to null when the rollup filter is present as we store rollup stats
-  // in rows where 'category' is null.
-  const category = (rollupsFilterPresent ? null : transactionCategory) ?? null;
-
-  clauses.push({ category }, { rollup });
+  clauses.push(
+    { category: categoryClause },
+    {
+      rollup: rollupClause,
+    }
+  );
 
   const { from, to } = toDailyDatePeriod({
-    from: blockTimestamp?.gte,
-    to: blockTimestamp?.lt,
+    from: blockFilters?.timestamp?.gte,
+    to: blockFilters?.timestamp?.lt,
   });
 
   if (from || to) {

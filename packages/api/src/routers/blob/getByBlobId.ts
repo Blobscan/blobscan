@@ -8,6 +8,7 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
+import type { Blob } from "./common/selects";
 import { createBlobSelect } from "./common/selects";
 import { serializeBlob, serializedBlobSchema } from "./common/serializers";
 
@@ -35,24 +36,24 @@ export const getByBlobId = publicProcedure
   .query(async ({ ctx: { prisma, blobStorageManager, expands }, input }) => {
     const { id } = input;
 
-    const queriedBlob = await prisma.blob.findFirst({
+    const dbBlob = (await prisma.blob.findFirst({
       select: createBlobSelect(expands),
       where: {
         OR: [{ versionedHash: id }, { commitment: id }],
       },
-    });
+    })) as unknown as Blob;
 
-    if (!queriedBlob) {
+    if (!dbBlob) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
-    const data = await retrieveBlobData(blobStorageManager, queriedBlob);
+    const data = await retrieveBlobData(blobStorageManager, dbBlob);
 
     return serializeBlob({
-      ...queriedBlob,
+      ...dbBlob,
       data,
     });
   });

@@ -153,14 +153,12 @@ describe("Indexer router", async () => {
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
-                "category": "OTHER",
                 "decodedFields": {},
                 "fromId": "address9",
                 "gasPrice": "10000",
                 "hash": "txHash999",
                 "index": 0,
                 "maxFeePerBlobGas": "1800",
-                "rollup": null,
                 "toId": "address10",
               },
               {
@@ -168,14 +166,12 @@ describe("Indexer router", async () => {
                 "blockHash": "blockHash2010",
                 "blockNumber": 2010,
                 "blockTimestamp": 2023-09-01T13:50:21.000Z,
-                "category": "OTHER",
                 "decodedFields": {},
                 "fromId": "address7",
                 "gasPrice": "3000000",
                 "hash": "txHash1000",
                 "index": 1,
                 "maxFeePerBlobGas": "20000",
-                "rollup": null,
                 "toId": "address2",
               },
             ]
@@ -190,13 +186,19 @@ describe("Indexer router", async () => {
           const indexedTxHashesAndRollups =
             await authorizedContext.prisma.transaction
               .findMany({
+                select: {
+                  hash: true,
+                  from: {
+                    select: {
+                      rollup: true,
+                    },
+                  },
+                },
                 where: {
                   blockHash: ROLLUP_BLOB_TRANSACTION_INPUT.block.hash,
                 },
               })
-              .then((r) =>
-                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.rollup])
-              );
+              .then((r) => r.map((tx) => [tx.hash, tx.from.rollup]));
 
           const expectedTxHashesAndRollups =
             ROLLUP_BLOB_TRANSACTION_INPUT.transactions.map(({ hash }) => [
@@ -215,12 +217,20 @@ describe("Indexer router", async () => {
           const indexedTxHashesAndCategories =
             await authorizedContext.prisma.transaction
               .findMany({
+                select: {
+                  hash: true,
+                  from: {
+                    select: {
+                      rollup: true,
+                    },
+                  },
+                },
                 where: {
                   blockHash: ROLLUP_BLOB_TRANSACTION_INPUT.block.hash,
                 },
               })
               .then((r) =>
-                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.category])
+                r.map((tx) => [tx.hash, tx.from.rollup ? "ROLLUP" : "OTHER"])
               );
 
           const expectedTxHashesAndCategories =
@@ -236,6 +246,14 @@ describe("Indexer router", async () => {
           const indexedTxHashesAndCategories =
             await authorizedContext.prisma.transaction
               .findMany({
+                select: {
+                  hash: true,
+                  from: {
+                    select: {
+                      rollup: true,
+                    },
+                  },
+                },
                 where: {
                   blockHash: INPUT.block.hash,
                 },
@@ -249,7 +267,7 @@ describe("Indexer router", async () => {
                 ],
               })
               .then((r) =>
-                r.map(omitDBTimestampFields).map((tx) => [tx.hash, tx.category])
+                r.map((tx) => [tx.hash, tx.from.rollup ? "ROLLUP" : "OTHER"])
               );
 
           const expectedTxHashesAndCategories = INPUT.transactions.map(
@@ -405,7 +423,7 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash1000",
                     "blobStorage": "GOOGLE",
-                    "dataReference": "70118930558/ob/Ha/sh/obHash1000.txt",
+                    "dataReference": "1/ob/Ha/sh/obHash1000.txt",
                   },
                   {
                     "blobHash": "blobHash1000",
@@ -415,7 +433,7 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash1001",
                     "blobStorage": "GOOGLE",
-                    "dataReference": "70118930558/ob/Ha/sh/obHash1001.txt",
+                    "dataReference": "1/ob/Ha/sh/obHash1001.txt",
                   },
                   {
                     "blobHash": "blobHash1001",
@@ -425,7 +443,7 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash999",
                     "blobStorage": "GOOGLE",
-                    "dataReference": "70118930558/ob/Ha/sh/obHash999.txt",
+                    "dataReference": "1/ob/Ha/sh/obHash999.txt",
                   },
                   {
                     "blobHash": "blobHash999",
@@ -529,83 +547,49 @@ describe("Indexer router", async () => {
         `);
       });
 
-      it("should update the indexed addresses category info correctly", async () => {
+      it("should update address entities correctly", async () => {
         // Remove duplicates
         const addressesSet = new Set(
           INPUT.transactions.flatMap((tx) => [tx.from, tx.to])
         );
         const indexedAddresses =
-          await authorizedContext.prisma.addressCategoryInfo
-            .findMany({
-              where: {
-                address: {
-                  in: Array.from(addressesSet),
-                },
+          await authorizedContext.prisma.address.findMany({
+            select: {
+              address: true,
+              firstBlockNumberAsReceiver: true,
+              firstBlockNumberAsSender: true,
+            },
+            where: {
+              address: {
+                in: Array.from(addressesSet),
               },
-              orderBy: [
-                {
-                  address: "asc",
-                },
-                {
-                  category: "asc",
-                },
-              ],
-            })
-            .then((r) => r.map(({ id: _, ...rest }) => rest));
+            },
+            orderBy: [
+              {
+                address: "asc",
+              },
+            ],
+          });
 
         expect(indexedAddresses).toMatchInlineSnapshot(`
           [
             {
               "address": "address10",
-              "category": "OTHER",
-              "firstBlockNumberAsReceiver": 2010,
-              "firstBlockNumberAsSender": null,
-            },
-            {
-              "address": "address10",
-              "category": null,
               "firstBlockNumberAsReceiver": 2010,
               "firstBlockNumberAsSender": null,
             },
             {
               "address": "address2",
-              "category": "OTHER",
-              "firstBlockNumberAsReceiver": 1001,
-              "firstBlockNumberAsSender": 1003,
-            },
-            {
-              "address": "address2",
-              "category": "ROLLUP",
-              "firstBlockNumberAsReceiver": 1004,
-              "firstBlockNumberAsSender": null,
-            },
-            {
-              "address": "address2",
-              "category": null,
               "firstBlockNumberAsReceiver": 1001,
               "firstBlockNumberAsSender": 1003,
             },
             {
               "address": "address7",
-              "category": "OTHER",
-              "firstBlockNumberAsReceiver": null,
-              "firstBlockNumberAsSender": 2010,
-            },
-            {
-              "address": "address7",
-              "category": null,
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },
             {
               "address": "address9",
-              "category": "OTHER",
-              "firstBlockNumberAsReceiver": null,
-              "firstBlockNumberAsSender": 2010,
-            },
-            {
-              "address": "address9",
-              "category": null,
               "firstBlockNumberAsReceiver": null,
               "firstBlockNumberAsSender": 2010,
             },
@@ -720,8 +704,8 @@ describe("Indexer router", async () => {
           });
 
           it("should remove block references from addresses with their first transaction in those blocks", async () => {
-            const addressCategoryInfosWithRewindedBlockReferencesBefore =
-              await authorizedContext.prisma.addressCategoryInfo.findMany({
+            const addressesWithRewindedBlockReferencesBefore =
+              await authorizedContext.prisma.address.findMany({
                 where: {
                   OR: [
                     {
@@ -742,8 +726,8 @@ describe("Indexer router", async () => {
               rewindedBlocks: rewindedBlockHashes,
             });
 
-            const addressCategoryInfosWithRewindedBlockReferencesAfter =
-              await authorizedContext.prisma.addressCategoryInfo.findMany({
+            const addressesWithRewindedBlockReferencesAfter =
+              await authorizedContext.prisma.address.findMany({
                 where: {
                   OR: [
                     {
@@ -761,11 +745,11 @@ describe("Indexer router", async () => {
               });
 
             expect(
-              addressCategoryInfosWithRewindedBlockReferencesBefore.length,
+              addressesWithRewindedBlockReferencesBefore.length,
               "address category infos should have rewinded block references before handling reorg"
             ).toBeGreaterThan(0);
             expect(
-              addressCategoryInfosWithRewindedBlockReferencesAfter.length,
+              addressesWithRewindedBlockReferencesAfter.length,
               "address category info's rewinded block references should have been deleted"
             ).toEqual(0);
           });

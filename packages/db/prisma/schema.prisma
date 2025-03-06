@@ -129,32 +129,21 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
-model AddressCategoryInfo {
-  id                         Int       @id @default(autoincrement())
-  address                    String
-  category                   Category?
-  firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
-  firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
+model Address {
+  address                    String   @id
+  rollup                     Rollup?
+  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  insertedAt                 DateTime @default(now()) @map("inserted_at")
+  updatedAt                  DateTime @default(now()) @map("updated_at")
 
-  addressEntity          Address       @relation(fields: [address], references: [address])
-  transactionsAsSender   Transaction[] @relation("senderAddressCategoryInfoRelation")
-  transactionsAsReceiver Transaction[] @relation("receiverAddressCategoryInfoRelation")
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
-  @@unique([address, category])
+  @@index([address, rollup])
+  @@index([rollup])
   @@index([firstBlockNumberAsReceiver])
   @@index([firstBlockNumberAsSender])
-  @@map("address_category_info")
-}
-
-model Address {
-  address    String   @id
-  insertedAt DateTime @default(now()) @map("inserted_at")
-  updatedAt  DateTime @default(now()) @map("updated_at")
-
-  transactionsAsSender   Transaction[]         @relation("senderAddressRelation")
-  transactionsAsReceiver Transaction[]         @relation("receiverAddressRelation")
-  addressCategoryInfo    AddressCategoryInfo[]
-
   @@index([insertedAt])
   @@map("address")
 }
@@ -228,26 +217,20 @@ model Transaction {
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
-  category              Category @default(OTHER)
-  rollup                Rollup?
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
   decodedFields         Json     @default("{}") @map("decoded_fields")
 
-  blobs                   BlobsOnTransactions[]
-  block                   Block                 @relation(fields: [blockHash], references: [hash])
-  from                    Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to                      Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
-  fromAddressCategoryInfo AddressCategoryInfo   @relation("senderAddressCategoryInfoRelation", fields: [fromId, category], references: [address, category])
-  toAddressCategoryInfo   AddressCategoryInfo   @relation("receiverAddressCategoryInfoRelation", fields: [toId, category], references: [address, category])
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockHash], references: [hash])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   transactionForks TransactionFork[]
 
   @@index([blockHash])
   @@index([blockTimestamp, index])
   @@index([blockNumber, index])
-  @@index([category, rollup, blockTimestamp, index])
-  @@index([category, rollup, blockNumber, index])
   @@index([fromId, blockTimestamp, index])
   @@index([toId, blockTimestamp, index])
   @@index([insertedAt])

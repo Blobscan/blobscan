@@ -38,7 +38,6 @@ const Home: NextPage = () => {
     isLoading: latestBlocksLoading,
   } = api.block.getAll.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
-    totalBlocks: number;
   }>({
     p: 1,
     ps: LATEST_ITEMS_LENGTH,
@@ -69,7 +68,7 @@ const Home: NextPage = () => {
       )
       .slice(0, LATEST_ITEMS_LENGTH);
     const blobs = transactions
-      .flatMap(({ blobs, ...t }) => blobs.map((b) => ({ ...b, tx: t })))
+      .flatMap((tx) => tx.blobs.map((b) => ({ ...b, rollup: tx.rollup })))
       .slice(0, LATEST_ITEMS_LENGTH);
 
     return {
@@ -297,7 +296,6 @@ const Home: NextPage = () => {
                   element: (
                     <BlobCard
                       blob={b}
-                      transactions={[b.tx]}
                       compact
                       key={b.versionedHash}
                       className={CARD_HEIGHT}
