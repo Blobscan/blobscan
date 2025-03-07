@@ -2,7 +2,7 @@
   "name": "@blobscan/syncers",
   "description": "Blobscan's stats syncer",
   "private": true,
-  "version": "0.3.4",
+  "version": "0.3.5",
   "main": "./src/index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@blobscan/dates": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.0",
-    "@blobscan/db": "workspace:^0.14.0",
+    "@blobscan/db": "workspace:^0.15.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/zod": "workspace:^0.1.0",
     "axios": "^1.7.2",
