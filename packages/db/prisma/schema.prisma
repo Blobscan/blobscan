@@ -12,6 +12,12 @@ generator enum {
   provider = "ts-node --transpile-only ./prisma/enum-generator"
 }
 
+generator zod {
+  provider = "zod-prisma"
+  output   = "./zod"
+  imports  = "./zod-utils"
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")

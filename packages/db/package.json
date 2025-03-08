@@ -30,7 +30,8 @@
     "@blobscan/open-telemetry": "workspace:^0.0.9",
     "@prisma/client": "^5.19.1",
     "@prisma/generator-helper": "^5.19.1",
-    "prisma": "^5.19.1"
+    "prisma": "^5.19.1",
+    "zod-prisma": "^0.5.4"
   },
   "devDependencies": {
     "@blobscan/network-blob-config": "workspace:^0.1.0",
