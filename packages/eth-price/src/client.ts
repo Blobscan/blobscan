@@ -1,12 +1,14 @@
 import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 
+import { env } from "@blobscan/env";
+
 export const client = createPublicClient({
   chain: {
     ...mainnet,
     rpcUrls: {
       default: {
-        http: [process.env.RPC_URL!],
+        http: [env.RPC_URL],
       },
     },
   },

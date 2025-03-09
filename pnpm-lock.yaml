@@ -626,6 +626,9 @@ importers:
 
   packages/eth-price:
     dependencies:
+      '@blobscan/env':
+        specifier: workspace:^0.1.0
+        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.2
         version: link:../logger

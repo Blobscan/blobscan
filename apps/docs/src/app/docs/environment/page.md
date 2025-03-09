@@ -61,6 +61,7 @@ nextjs:
 | `STATS_SYNCER_DAILY_CRON_PATTERN`    | Cron pattern for the daily stats job                                                               | No                              | `30 0 * * * *`                 |
 | `STATS_SYNCER_OVERALL_CRON_PATTERN`  | Cron pattern for the overall stats job                                                             | No                              | `*/15 * * * *`                 |
 | `ETH_PRICE_SYNCER_CRON_PATTERN`      | Cron pattern for the job that periodically stores ETH price in database                            | No                              | `0 * * * *`                    |
+| `RPC_URL`                            | Ethereum RPC endpoint                                                                              | Yes                             | (empty)                        |
 | `SWARM_STAMP_CRON_PATTERN`           | Cron pattern for swarm job                                                                         | No                              | `*/15 * * * *`                 |
 | `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE` | Remove completed jobs after the specified number of seconds (default: 1 day)                       | No                              | `86400`                        |
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`    | Remove completed jobs after the specified number of seconds (default: 7 days)                      | No                              | `604800`                       |
