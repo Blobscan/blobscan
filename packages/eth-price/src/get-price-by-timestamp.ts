@@ -28,13 +28,13 @@ export async function getPriceByTimestamp({
   targetTimestamp: bigint;
   tolerance: bigint;
 }): Promise<PriceData> {
-  const response = await getClosestRoundData({
+  const closestRoundData = await getClosestRoundData({
     address,
     targetTimestamp,
     tolerance,
   });
 
-  if (response === null) {
+  if (closestRoundData === null) {
     throw new Error(
       `Could not retrieve ETH price from Chainlink oracle using timestamp: ${targetTimestamp}`
     );
@@ -43,13 +43,13 @@ export async function getPriceByTimestamp({
   const roundData = await client.readContract({
     functionName: "getRoundData",
     abi: Aggregator,
-    args: [response.roundId],
-    address: response.phaseAggregatorContractAddress,
+    args: [closestRoundData.roundId],
+    address: closestRoundData.phaseAggregatorContractAddress,
   });
 
   return {
-    phaseId: response.phaseId,
-    roundId: response.roundId,
+    phaseId: closestRoundData.phaseId,
+    roundId: closestRoundData.roundId,
     price: roundData[1],
     timestamp: roundData[3],
   };
