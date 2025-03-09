@@ -9,6 +9,18 @@ type RoundData = {
   phaseAggregatorContractAddress: Address;
 };
 
+/**
+ * This function gets the round data that is closest to the target timestamp.
+ *
+ * This function is an adaptation of this implementation:
+ * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/main/lib/getStartPhaseData.ts
+ *
+ * @param address The price feed contract address.
+ * @param targetTimestamp The target timestamp.
+ * @param tolerance The maximum difference between the target timestamp and the timestamp of the round.
+ * @returns The round data that is closest to the target timestamp.
+ * If the round data is not found, it returns null.
+ */
 export async function getClosestRoundData({
   address,
   targetTimestamp,
