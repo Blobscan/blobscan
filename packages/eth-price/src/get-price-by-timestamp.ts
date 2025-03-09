@@ -35,7 +35,9 @@ export async function getPriceByTimestamp({
   });
 
   if (response === null) {
-    throw new Error(`No data found for target timestamp: ${targetTimestamp}`);
+    throw new Error(
+      `Could not retrieve ETH price from Chainlink oracle using timestamp: ${targetTimestamp}`
+    );
   }
 
   const roundData = await client.readContract({
