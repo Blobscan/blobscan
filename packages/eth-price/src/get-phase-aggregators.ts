@@ -13,22 +13,6 @@ type PhaseAggregator = {
 /**
  * This function gets the phase aggregators contracts of a price feed contract.
  *
- * Definitions:
- *
- *  - Phase: Each time the price feed has a significant change, for example,
- *    when the set of oracles is changed a new phase is created.
- *
- *  - PhaseId: The phaseId is a unique identifier for each phase.
- *
- *  - Phase aggregator contract: The phase aggregator contract is responsible
- *    for aggregating the data for a specific phase.
- *
- *  - Round: Each time new data is added to the price feed, a new round is created.
- *
- *  - RoundId: The roundId is a unique identifier for each round.
- *
- * Note: The price information is stored in rounds in the phase aggregator contracts.
- *
  * This function was extracted from a fragment of this larger function:
  * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/85180c5a1d06eba6e32417bfbf19fcbb53e140be/controllers/index.ts#L108
  *
