@@ -301,12 +301,12 @@ model OverallStats {
   @@map("overall_stats")
 }
 
-model ETHPrice {
+model EthUsdPrice {
   id        Int      @id @default(autoincrement())
   price     Decimal
   timestamp DateTime
 
-  @@map("eth_price")
+  @@map("eth_usd_price")
 }
 
 // NextAuth.js Models

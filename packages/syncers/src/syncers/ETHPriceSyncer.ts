@@ -23,7 +23,7 @@ export class ETHPriceSyncer extends BaseSyncer {
         // Prisma expects a Date object.
         const timestamp = new Date(Number(priceData.timestamp) * 1_000);
 
-        await prisma.eTHPrice.create({
+        await prisma.ethUsdPrice.create({
           data: {
             price: priceData.price.toString(),
             timestamp,
