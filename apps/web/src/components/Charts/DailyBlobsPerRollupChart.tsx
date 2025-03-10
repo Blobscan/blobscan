@@ -36,7 +36,5 @@ export const DailyBlobsPerRollupChart: FC<Partial<DailyRollupChartProps>> =
       toolbox: { show: false },
     };
 
-    return (
-      <ChartCard title="Daily Blobs Per Rollup" size="sm" options={options} />
-    );
+    return <ChartCard title="Rollup Blob Usage" size="sm" options={options} />;
   };
