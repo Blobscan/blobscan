@@ -10,7 +10,7 @@ import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
 import { DailyBlobsPerRollupChart } from "~/components/Charts/Blob";
-import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
+import { DailyAvgBlobGasPriceChart } from "~/components/Charts/Block";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -116,12 +116,9 @@ const Home: NextPage = () => {
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
-            <DailyBlobGasComparisonChart
+            <DailyAvgBlobGasPriceChart
               days={dailyBlockStats?.days}
-              blobAsCalldataGasUsed={
-                dailyBlockStats?.totalBlobAsCalldataGasUsed
-              }
-              blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+              avgBlobGasPrices={dailyBlockStats?.avgBlobGasPrices}
               opts={{ toolbox: { show: false } }}
             />
           </div>
