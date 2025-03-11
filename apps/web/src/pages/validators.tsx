@@ -13,17 +13,27 @@ import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import { buildValidatorRoute, convertWei } from "~/utils";
 
+
+
 const Validators: NextPage = function () {
   const router = useRouter();
   const { p, ps } = getPaginationParams(router.query);
-  const { data: validators, error } = api.stats.getAllValidators.useQuery();
   const pubkey = router.query.pubkey as string | undefined;
-  const validatorsCount = validators?.data.length;
+  const { data: validators, error } = api.stats.getAllValidators.useQuery({
+    page: p,
+    limit: ps,
+    pubkey: pubkey,
+  });
+  
+  // const validatorsCount = validators?.data.length;
+  const validatorsCount = validators?.totalNum;
+
   const validatorsShow = pubkey
     ? validators?.data.filter((validator) =>
         validator.validator.pubkey.includes(pubkey)
       )
-    : validators?.data.slice((p - 1) * ps, p * ps);
+    // : validators?.data.slice((p - 1) * ps, p * ps);
+    : validators?.data;
 
   if (error) {
     return (
