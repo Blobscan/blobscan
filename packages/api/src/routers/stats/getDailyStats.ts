@@ -1,4 +1,10 @@
-import { z } from "@blobscan/zod";
+import { DailyStatsModel } from "@blobscan/db/prisma/zod";
+import {
+  nullishCategorySchema,
+  nullishRollupSchema,
+  toISODateSchema,
+  stringifyDecimalSchema,
+} from "@blobscan/db/prisma/zod-utils";
 
 import { withSortFilterSchema } from "../../middlewares/withFilters";
 import {
@@ -6,25 +12,49 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import {
-  categorySchema,
-  rollupSchema,
-  serializeCategory,
-  serializeDate,
-  serializeRollup,
-} from "../../utils";
-import { statsSchema } from "./common";
+
+const serializedDailyStatsSchema = DailyStatsModel.omit({
+  id: true,
+}).transform(
+  ({
+    day,
+    category,
+    rollup,
+    totalBlobAsCalldataFee,
+    totalBlobAsCalldataGasUsed,
+    totalBlobAsCalldataMaxFees,
+    totalBlobFee,
+    totalBlobGasPrice,
+    totalBlobGasUsed,
+    totalBlobMaxFees,
+    totalBlobMaxGasFees,
+    totalBlobSize,
+    ...restDailyStats
+  }) => ({
+    ...restDailyStats,
+    day: toISODateSchema.parse(day),
+    category: nullishCategorySchema.parse(category),
+    rollup: nullishRollupSchema.parse(rollup),
+    totalBlobAsCalldataFee: stringifyDecimalSchema.parse(
+      totalBlobAsCalldataFee
+    ),
+    totalBlobAsCalldataGasUsed: stringifyDecimalSchema.parse(
+      totalBlobAsCalldataGasUsed
+    ),
+    totalBlobAsCalldataMaxFees: stringifyDecimalSchema.parse(
+      totalBlobAsCalldataMaxFees
+    ),
+    totalBlobFee: stringifyDecimalSchema.parse(totalBlobFee),
+    totalBlobGasPrice: stringifyDecimalSchema.parse(totalBlobGasPrice),
+    totalBlobGasUsed: stringifyDecimalSchema.parse(totalBlobGasUsed),
+    totalBlobMaxFees: stringifyDecimalSchema.parse(totalBlobMaxFees),
+    totalBlobMaxGasFees: stringifyDecimalSchema.parse(totalBlobMaxGasFees),
+    totalBlobSize: totalBlobSize.toString(),
+  })
+);
 
 const inputSchema = withTimeFrameSchema.merge(withSortFilterSchema);
-const outputSchema = statsSchema
-  .merge(
-    z.object({
-      day: z.string(),
-      category: categorySchema.nullable(),
-      rollup: rollupSchema.nullable(),
-    })
-  )
-  .array();
+const outputSchema = serializedDailyStatsSchema.array();
 
 export const getDailyStats = publicProcedure
   .input(inputSchema)
@@ -61,27 +91,5 @@ export const getDailyStats = publicProcedure
       ],
     });
 
-    return dailyStats.map(
-      ({
-        day,
-        category,
-        rollup,
-        totalBlobSize,
-        totalBlobAsCalldataFee,
-        totalBlobAsCalldataGasUsed,
-        totalBlobFee,
-        totalBlobGasUsed,
-        ...restStats
-      }) => ({
-        ...restStats,
-        day: serializeDate(day),
-        category: category ? serializeCategory(category) : category,
-        rollup: serializeRollup(rollup),
-        totalBlobSize: totalBlobSize.toString(),
-        totalBlobAsCalldataFee: totalBlobAsCalldataFee.toString(),
-        totalBlobAsCalldataGasUsed: totalBlobAsCalldataGasUsed.toString(),
-        totalBlobFee: totalBlobFee.toString(),
-        totalBlobGasUsed: totalBlobGasUsed.toString(),
-      })
-    );
+    return dailyStats;
   });

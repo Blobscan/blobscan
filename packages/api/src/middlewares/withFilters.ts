@@ -1,17 +1,14 @@
 import type { Prisma } from "@blobscan/db";
-import type { Rollup } from "@blobscan/db/prisma/enums";
+import {
+  dbCategoryCoercionSchema,
+  dbRollupCoercionSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import { getAddressesByRollup } from "@blobscan/rollups";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
-import {
-  addressSchema,
-  blockNumberSchema,
-  categorySchema,
-  rollupSchema,
-  slotSchema,
-} from "../utils";
+import { addressSchema, blockNumberSchema, slotSchema } from "../utils";
 
 type NumberRangeFilter = {
   gte?: number;
@@ -65,12 +62,12 @@ export const withSlotRangeFilterSchema = z.object({
 
 export const withRollupsFilterSchema = z.object({
   rollups: commaSeparatedValuesSchema.transform((values) =>
-    values?.map((v) => rollupSchema.parse(v).toUpperCase() as Rollup)
+    values?.map((v) => dbRollupCoercionSchema.parse(v))
   ),
 });
 
 export const withCategoryFilterSchema = z.object({
-  category: categorySchema.optional(),
+  category: dbCategoryCoercionSchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -178,7 +175,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     transactionFilters.fromId = { in: resolvedAddresses };
   } else if (category) {
     transactionFilters.from = {
-      rollup: category === "rollup" ? { not: null } : null,
+      rollup: category === "ROLLUP" ? { not: null } : null,
     };
   }
 

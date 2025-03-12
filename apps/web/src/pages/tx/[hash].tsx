@@ -53,7 +53,7 @@ const Tx: NextPage = () => {
       ? {
           senderAddress: tx.from,
           blockNumber: tx.blockNumber,
-          index: tx.index,
+          index: tx.index as number,
         }
       : {
           senderAddress: "",
@@ -227,11 +227,6 @@ const Tx: NextPage = () => {
     );
   }
 
-  const decodedData =
-    rawTxData?.decodedFields?.type === "optimism"
-      ? rawTxData.decodedFields.payload
-      : undefined;
-
   return (
     <>
       <DetailsLayout
@@ -256,9 +251,9 @@ const Tx: NextPage = () => {
         fields={detailsFields}
       />
 
-      {decodedData && (
+      {tx?.rollup === "optimism" && !!tx.decodedFields && (
         <OptimismCard
-          data={decodedData}
+          data={tx.decodedFields}
           txTimestamp={tx ? tx.blockTimestamp : undefined}
         />
       )}

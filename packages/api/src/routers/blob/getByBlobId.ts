@@ -7,10 +7,9 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { retrieveBlobData } from "../../utils";
-import type { Blob } from "./common/selects";
-import { createBlobSelect } from "./common/selects";
-import { serializeBlob, serializedBlobSchema } from "./common/serializers";
+import { calculateTxFeeFields, retrieveBlobData } from "../../utils";
+import type { Blob } from "./common";
+import { createBlobSelect, serializedBlobSchema } from "./common";
 
 const inputSchema = z
   .object({
@@ -36,24 +35,56 @@ export const getByBlobId = publicProcedure
   .query(async ({ ctx: { prisma, blobStorageManager, expands }, input }) => {
     const { id } = input;
 
-    const dbBlob = (await prisma.blob.findFirst({
+    const blob = (await prisma.blob.findFirst({
       select: createBlobSelect(expands),
       where: {
         OR: [{ versionedHash: id }, { commitment: id }],
       },
-    })) as unknown as Blob;
+    })) as unknown as Blob | null;
 
-    if (!dbBlob) {
+    if (!blob) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
-    const data = await retrieveBlobData(blobStorageManager, dbBlob);
+    blob.data = await retrieveBlobData(blobStorageManager, blob);
 
-    return serializeBlob({
-      ...dbBlob,
-      data,
-    });
+    if (expands.transaction) {
+      blob.transactions.forEach(({ transaction }) => {
+        if (transaction) {
+          const {
+            blobAsCalldataGasUsed,
+            block,
+            blobGasUsed,
+            gasPrice,
+            maxFeePerBlobGas,
+          } = transaction;
+
+          if (
+            blobAsCalldataGasUsed &&
+            block?.blobGasPrice &&
+            blobGasUsed &&
+            gasPrice &&
+            maxFeePerBlobGas
+          ) {
+            const { blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee } =
+              calculateTxFeeFields({
+                blobAsCalldataGasUsed,
+                blobGasPrice: block.blobGasPrice,
+                blobGasUsed,
+                gasPrice,
+                maxFeePerBlobGas,
+              });
+
+            transaction.blobAsCalldataGasFee = blobAsCalldataGasFee;
+            transaction.blobGasBaseFee = blobGasBaseFee;
+            transaction.blobGasMaxFee = blobGasMaxFee;
+          }
+        }
+      });
+    }
+
+    return blob;
   });

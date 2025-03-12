@@ -1,115 +1,116 @@
+import {
+  AddressModel,
+  BlobsOnTransactionsModel,
+  BlockModel,
+  TransactionModel,
+} from "@blobscan/db/prisma/zod";
+import type { optimismDecodedFieldsSchema } from "@blobscan/db/prisma/zod-utils";
+import {
+  toCategorySchema,
+  nullishRollupSchema,
+  toISODateSchema,
+  stringifyDecimalSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {
-  decodedFields,
-  parseDecodedFields,
-} from "../../../blob-parse/parse-decoded-fields";
-import {
-  serializeExpandedBlobData,
-  serializeExpandedBlock,
-  serializedExpandedBlobDataSchema,
+  expandedBlobSchema,
+  expandedBlockSchema,
+  serializedExpandedBlobSchema,
   serializedExpandedBlockSchema,
 } from "../../../middlewares/withExpands";
 import {
-  rollupSchema,
-  serializeDecimal,
-  serializeRollup,
   isEmptyObject,
-  serializeTxFeeFields,
-  serializedTxFeeFieldsSchema,
-  serializeDate,
-  categorySchema,
-  serializeCategory,
+  serializedTransactionFeeFieldsSchema,
+  transactionFeeFieldsSchema,
 } from "../../../utils";
-import type { Transaction, IncompletedTransaction } from "./selects";
 
-const baseSerializedTransactionFieldsSchema = z.object({
-  hash: z.string(),
-  blockNumber: z.number(),
-  blockTimestamp: z.string(),
-  blockHash: z.string(),
-  index: z.number().nullable(),
-  from: z.string(),
-  to: z.string(),
-  maxFeePerBlobGas: z.string(),
-  blobGasUsed: z.string(),
-  blobAsCalldataGasUsed: z.string(),
-  category: categorySchema,
-  rollup: rollupSchema.nullable(),
-  blobs: z.array(
-    z
-      .object({
-        versionedHash: z.string(),
-        index: z.number(),
+export const transactionSchema = TransactionModel.omit({
+  insertedAt: true,
+  updatedAt: true,
+})
+  .merge(transactionFeeFieldsSchema)
+  .extend({
+    block: expandedBlockSchema
+      .partial({
+        blobAsCalldataGasUsed: true,
+        blobGasUsed: true,
+        excessBlobGas: true,
+        slot: true,
       })
-      .merge(serializedExpandedBlobDataSchema)
-  ),
-  block: serializedExpandedBlockSchema.optional(),
-  decodedFields: decodedFields.optional(),
-});
+      .merge(BlockModel.pick({ blobGasPrice: true })),
+    blobs: z.array(
+      BlobsOnTransactionsModel.pick({
+        blobHash: true,
+      }).extend({
+        blob: expandedBlobSchema.partial().optional(),
+      })
+    ),
+    from: AddressModel.pick({
+      address: true,
+      rollup: true,
+    }),
+  });
 
-export const serializedTransactionSchema =
-  baseSerializedTransactionFieldsSchema.merge(serializedTxFeeFieldsSchema);
-
-type SerializedBaseTransactionFields = z.infer<
-  typeof baseSerializedTransactionFieldsSchema
->;
-
-export type SerializedTransaction = z.infer<typeof serializedTransactionSchema>;
-
-export function serializeBaseTransactionFields(
-  dbTx: IncompletedTransaction
-): SerializedBaseTransactionFields {
-  const {
-    hash,
-    blockHash,
-    blockNumber,
-    blockTimestamp,
-    index,
-    from: { address: fromAddress, rollup },
-    toId,
+export const serializedTransactionSchema = transactionSchema.transform(
+  ({
     block,
-  } = dbTx;
-  const category = rollup ? "ROLLUP" : "OTHER";
-  const expandedBlock = serializeExpandedBlock(block);
-
-  return {
-    hash,
-    blockNumber: blockNumber,
-    blockTimestamp: serializeDate(blockTimestamp),
-    blockHash,
-    index,
-    to: toId,
-    from: fromAddress,
-    blobAsCalldataGasUsed: serializeDecimal(dbTx.blobAsCalldataGasUsed),
-    blobGasUsed: serializeDecimal(dbTx.blobGasUsed),
-    maxFeePerBlobGas: serializeDecimal(dbTx.maxFeePerBlobGas),
-    category: serializeCategory(category),
-    rollup: serializeRollup(rollup),
-    ...(isEmptyObject(expandedBlock) ? {} : { block: expandedBlock }),
-    blobs: dbTx.blobs.map(({ blob, blobHash }) => {
+    blobs,
+    blockTimestamp,
+    blobAsCalldataGasUsed,
+    blobGasUsed,
+    maxFeePerBlobGas,
+    fromId,
+    from,
+    toId,
+    gasPrice: _,
+    decodedFields,
+    ...restTransaction
+  }) => {
+    const { blobGasPrice, ...restExpandedBlock } = block;
+    const serializedTransactionFeeFields =
+      serializedTransactionFeeFieldsSchema.parse(restTransaction);
+    const serializedExpandedBlock = {
+      block: {
+        blobGasPrice: stringifyDecimalSchema.parse(blobGasPrice),
+        ...(!isEmptyObject(restExpandedBlock)
+          ? serializedExpandedBlockSchema.parse(block)
+          : {}),
+      },
+    };
+    const serializedExpandedBlobs = blobs.map(({ blob, blobHash }) => {
       const serializedExpandedBlobFields = blob
-        ? serializeExpandedBlobData(blob)
-        : {};
+        ? serializedExpandedBlobSchema.parse(blob)
+        : undefined;
 
       return {
         versionedHash: blobHash,
-        ...serializedExpandedBlobFields,
+        ...(serializedExpandedBlobFields || {}),
       };
-    }),
-  };
-}
+    });
 
-export function serializeTransaction(tx: Transaction): SerializedTransaction {
-  const serializedBaseTx = serializeBaseTransactionFields(tx);
-  const serializedTxFeeFields = serializeTxFeeFields(tx);
+    return {
+      ...restTransaction,
+      ...serializedTransactionFeeFields,
+      blobAsCalldataGasUsed: stringifyDecimalSchema.parse(
+        blobAsCalldataGasUsed
+      ),
+      blobGasUsed: stringifyDecimalSchema.parse(blobGasUsed),
+      blockTimestamp: toISODateSchema.parse(blockTimestamp),
+      category: toCategorySchema.parse(from.rollup ? "ROLLUP" : "OTHER"),
+      rollup: nullishRollupSchema.parse(from.rollup),
+      decodedFields: isEmptyObject(decodedFields)
+        ? null
+        : (decodedFields as z.infer<typeof optimismDecodedFieldsSchema>),
+      from: fromId,
+      maxFeePerBlobGas: stringifyDecimalSchema.parse(maxFeePerBlobGas),
+      to: toId,
+      ...(serializedExpandedBlock || {}),
+      blobs: serializedExpandedBlobs,
+    };
+  }
+);
 
-  const decodedFieldsString = JSON.stringify(tx.decodedFields);
-  const decodedFields = parseDecodedFields(decodedFieldsString);
+export type SerializedTransaction = z.infer<typeof serializedTransactionSchema>;
 
-  return {
-    ...serializedBaseTx,
-    ...serializedTxFeeFields,
-    decodedFields,
-  };
-}
+export type Transaction = z.input<typeof transactionSchema>;
