@@ -28,12 +28,12 @@ const Validators: NextPage = function () {
   // const validatorsCount = validators?.data.length;
   const validatorsCount = validators?.totalNum;
 
-  const validatorsShow = pubkey
-    ? validators?.data.filter((validator) =>
-        validator.validator.pubkey.includes(pubkey)
-      )
-    // : validators?.data.slice((p - 1) * ps, p * ps);
-    : validators?.data;
+  // const validatorsShow = pubkey
+  //   ? validators?.data.filter((validator) =>
+  //       validator.validator.pubkey.includes(pubkey)
+  //     )
+  //   : validators?.data.slice((p - 1) * ps, p * ps);
+  const validatorsShow = validators?.data;
 
   if (error) {
     return (
