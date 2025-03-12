@@ -13,9 +13,10 @@ generator enum {
 }
 
 generator zod {
-  provider = "zod-prisma"
-  output   = "./zod"
-  imports  = "./zod-utils"
+  provider              = "zod-prisma"
+  output                = "./zod"
+  imports               = "./zod-utils"
+  prismaJsonNullability = false
 }
 
 datasource db {
@@ -195,9 +196,13 @@ model Block {
   number                Int
   timestamp             DateTime @unique
   slot                  Int      @unique
+  /// @zod.custom(imports.zodDecimalSchema)
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   excessBlobGas         Decimal  @map("excess_blob_gas") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   blobGasPrice          Decimal  @map("blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
@@ -219,12 +224,17 @@ model Transaction {
   blockNumber           Int      @map("block_number")
   blockTimestamp        DateTime @map("block_timestamp")
   index                 Int?
+  /// @zod.custom(imports.zodDecimalSchema)
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
+  /// @zod.custom(imports.decodedFieldsSchema)
   decodedFields         Json     @default("{}") @map("decoded_fields")
 
   blobs BlobsOnTransactions[]
@@ -289,13 +299,21 @@ model DailyStats {
   avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
   avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
   avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
   totalBlobs                 Int       @default(0) @map("total_blobs")
   totalBlobSize              BigInt    @default(0) @map("total_blob_size")
@@ -319,13 +337,21 @@ model OverallStats {
   avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
   avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
   avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.zodDecimalSchema)
   totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
   totalBlobs                 Int       @default(0) @map("total_blobs")
   totalBlobSize              BigInt    @default(0) @map("total_blob_size")

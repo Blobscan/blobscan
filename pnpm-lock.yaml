@@ -602,6 +602,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.9
         version: link:../open-telemetry
+      '@blobscan/zod':
+        specifier: workspace:^0.1.0
+        version: link:../zod
       '@prisma/client':
         specifier: ^5.19.1
         version: 5.19.1(prisma@5.19.1)
