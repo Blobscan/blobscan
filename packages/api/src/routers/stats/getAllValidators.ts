@@ -146,7 +146,7 @@ export const getAllValidators = publicProcedure
     const { page, limit, pubkey } = input;
     
     if (pubkey) {
-      let url = `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validators/${pubkey}`; 
+      let url = `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validators/${pubkey.trim()}`; 
       let response = await fetch(url);
       let rawData = await response.json();
       let data = rawData.data;
