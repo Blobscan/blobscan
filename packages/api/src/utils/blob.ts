@@ -8,15 +8,40 @@ import type {
 } from "@blobscan/blob-storage-manager";
 import type { Prisma } from "@blobscan/db";
 import type { BlobDataStorageReference } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
+import {
+  stringifyDecimalSchema,
+  zodDecimalSchema,
+} from "@blobscan/db/prisma/zod-utils";
+import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
-
-import { serializeDecimal } from "./serializers";
 
 export type TransactionFeeFields = {
   blobAsCalldataGasFee: Prisma.Decimal;
   blobGasBaseFee: Prisma.Decimal;
   blobGasMaxFee: Prisma.Decimal;
 };
+
+export function buildBlobDataUrl(
+  blobStorage: BlobStorage,
+  blobDataUri: string
+) {
+  switch (blobStorage) {
+    case "GOOGLE": {
+      return `https://storage.googleapis.com/${env.GOOGLE_STORAGE_BUCKET_NAME}/${blobDataUri}`;
+    }
+    case "SWARM": {
+      return `https://gateway.ethswarm.org/access/${blobDataUri}`;
+    }
+    case "FILE_SYSTEM":
+    case "POSTGRES": {
+      return `${env.BLOBSCAN_API_BASE_URL}/blobs/${blobDataUri}/data`;
+    }
+    case "WEAVEVM": {
+      return `${env.WEAVEVM_STORAGE_API_BASE_URL}/v1/blob/${blobDataUri}`;
+    }
+  }
+}
 
 export function calculateTxFeeFields({
   blobGasUsed,
@@ -42,30 +67,20 @@ export function calculateTxFeeFields({
   };
 }
 
-export const serializedTxFeeFieldsSchema = z.object({
-  blobAsCalldataGasFee: z.string(),
-  blobGasBaseFee: z.string().optional(),
-  blobGasMaxFee: z.string(),
+export const transactionFeeFieldsSchema = z.object({
+  blobAsCalldataGasFee: zodDecimalSchema,
+  blobGasBaseFee: zodDecimalSchema,
+  blobGasMaxFee: zodDecimalSchema,
 });
 
-export type SerializedTxFeeFields = z.infer<typeof serializedTxFeeFieldsSchema>;
-
-export function serializeTxFeeFields({
-  blobAsCalldataGasFee,
-  blobGasBaseFee,
-  blobGasMaxFee,
-}: TransactionFeeFields): SerializedTxFeeFields {
-  const serializedFields: SerializedTxFeeFields = {
-    blobAsCalldataGasFee: serializeDecimal(blobAsCalldataGasFee),
-    blobGasMaxFee: serializeDecimal(blobGasMaxFee),
-  };
-
-  if (blobGasBaseFee) {
-    serializedFields.blobGasBaseFee = serializeDecimal(blobGasBaseFee);
-  }
-
-  return serializedFields;
-}
+export const serializedTransactionFeeFieldsSchema =
+  transactionFeeFieldsSchema.transform(
+    ({ blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee }) => ({
+      blobAsCalldataGasFee: stringifyDecimalSchema.parse(blobAsCalldataGasFee),
+      blobGasBaseFee: stringifyDecimalSchema.parse(blobGasBaseFee),
+      blobGasMaxFee: stringifyDecimalSchema.parse(blobGasMaxFee),
+    })
+  );
 
 export function buildVersionedHash(commitment: string) {
   const hashedCommitment = sha256(commitment as `0x${string}`);

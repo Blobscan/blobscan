@@ -23,7 +23,7 @@ const Address: NextPage = () => {
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>(
-    { ...paginationParams, to: address, from: address, expand: "block,blob" },
+    { ...paginationParams, from: address, expand: "block,blob" },
     { enabled: router.isReady }
   );
   const addressTxsData = useMemo(() => {

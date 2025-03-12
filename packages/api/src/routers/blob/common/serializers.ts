@@ -1,161 +1,137 @@
+import {
+  BlobDataStorageReferenceModel,
+  BlobModel,
+  BlobsOnTransactionsModel,
+  BlockModel,
+} from "@blobscan/db/prisma/zod";
+import {
+  blobStorageSchema,
+  toISODateSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {
-  serializeExpandedBlock,
-  serializeExpandedTransaction,
+  expandedBlockSchema,
+  expandedTransactionSchema,
   serializedExpandedBlockSchema,
   serializedExpandedTransactionSchema,
 } from "../../../middlewares/withExpands";
-import {
-  blobIndexSchema,
-  blockNumberSchema,
-  serializedBlobDataStorageReferenceSchema,
-  serializeBlobDataStorageReferences,
-  serializeDate,
-} from "../../../utils";
-import type { BaseBlob, Blob, BlobOnTransaction } from "./selects";
+import { buildBlobDataUrl } from "../../../utils";
 
-export type SerializedBlobDataStorageReference = z.infer<
-  typeof serializedBlobDataStorageReferenceSchema
->;
+export const serializedBlobDataStorageReferenceSchema =
+  BlobDataStorageReferenceModel.omit({ blobHash: true }).transform(
+    ({ blobStorage, dataReference }) => ({
+      storage: blobStorageSchema.parse(blobStorage),
+      url: buildBlobDataUrl(blobStorage, dataReference),
+    })
+  );
 
-export const serializedBaseBlobSchema = z.object({
-  commitment: z.string(),
-  proof: z.string(),
-  size: z.number(),
-  versionedHash: z.string(),
-  data: z.string().optional(),
-  dataStorageReferences: z.array(serializedBlobDataStorageReferenceSchema),
+export const blobBaseSchema = BlobModel.omit({
+  firstBlockNumber: true,
+  insertedAt: true,
+  updatedAt: true,
+}).extend({
+  dataStorageReferences: z.array(
+    BlobDataStorageReferenceModel.pick({
+      blobStorage: true,
+      dataReference: true,
+    })
+  ),
 });
 
-export type SerializedBaseBlob = z.infer<typeof serializedBaseBlobSchema>;
-
-export const serializedBlobOnTransactionSchema = serializedBaseBlobSchema.merge(
-  z.object({
-    index: blobIndexSchema,
-    txHash: z.string(),
-    txIndex: z.number().nonnegative(),
-    blockHash: z.string(),
-    blockNumber: blockNumberSchema,
-    blockTimestamp: z.string(),
-    block: serializedExpandedBlockSchema.optional(),
-    transaction: serializedExpandedTransactionSchema.optional(),
-  })
-);
-
-export type SerializedBlobOnTransaction = z.infer<
-  typeof serializedBlobOnTransactionSchema
->;
-
-export const serializedBlobSchema = serializedBaseBlobSchema.merge(
-  z.object({
-    data: z.string(),
-    transactions: z.array(
-      z
-        .object({
-          hash: z.string(),
-          txIndex: z.number().nonnegative(),
-          index: blobIndexSchema,
-          blockHash: z.string(),
-          blockNumber: z.number().nonnegative(),
-          blockTimestamp: z.date(),
-          block: serializedExpandedBlockSchema.optional(),
-        })
-        .merge(serializedExpandedTransactionSchema)
+export const serializedBlobBaseSchema = blobBaseSchema.transform(
+  ({ dataStorageReferences, ...restBlob }) => ({
+    ...restBlob,
+    dataStorageReferences: dataStorageReferences.map((ref) =>
+      serializedBlobDataStorageReferenceSchema.parse(ref)
     ),
   })
 );
 
+export const blobSchema = blobBaseSchema.extend({
+  data: z.string(),
+  transactions: z.array(
+    BlobsOnTransactionsModel.omit({ blobHash: true }).extend({
+      block: expandedBlockSchema.partial().optional(),
+      transaction: expandedTransactionSchema
+        .merge(z.object({ block: BlockModel.pick({ blobGasPrice: true }) }))
+        .partial()
+        .optional(),
+    })
+  ),
+});
+
+export const serializedBlobSchema = blobSchema.transform(
+  ({ data, transactions, ...restBlob }) => {
+    const serializedBlob = serializedBlobBaseSchema.parse(restBlob);
+
+    return {
+      ...serializedBlob,
+      data,
+      transactions: transactions.map(
+        ({ block, transaction, blockTimestamp, txHash, ...restBlobOnTx }) => {
+          const serializedExpandedTransaction = transaction
+            ? serializedExpandedTransactionSchema.parse(transaction)
+            : undefined;
+          const serializedExpandedBlock = block
+            ? { block: serializedExpandedBlockSchema.parse(block) }
+            : undefined;
+
+          return {
+            ...restBlobOnTx,
+            hash: txHash,
+            blockTimestamp: toISODateSchema.parse(blockTimestamp),
+            ...(serializedExpandedTransaction || {}),
+            ...(serializedExpandedBlock || {}),
+          };
+        }
+      ),
+    };
+  }
+);
+export const blobsOnTransactionsSchema = BlobsOnTransactionsModel.omit({
+  blobHash: true,
+}).extend({
+  blob: blobBaseSchema,
+  block: expandedBlockSchema.partial().optional(),
+  transaction: expandedTransactionSchema
+    .merge(z.object({ block: BlockModel.pick({ blobGasPrice: true }) }))
+    .partial()
+    .optional(),
+});
+
+export const serializedBlobsOnTransactionsSchema =
+  blobsOnTransactionsSchema.transform(
+    ({
+      blob,
+      block,
+      transaction,
+      blockTimestamp,
+      ...restBlobOnTransaction
+    }) => {
+      const serializedBlock = block
+        ? { block: serializedExpandedBlockSchema.parse(block) }
+        : undefined;
+      const serializedTx = transaction
+        ? {
+            transaction: serializedExpandedTransactionSchema.parse(transaction),
+          }
+        : undefined;
+      const serializedBlob = serializedBlobBaseSchema.parse(blob);
+
+      return {
+        ...(serializedTx ? serializedTx : {}),
+        ...restBlobOnTransaction,
+        ...serializedBlob,
+        blockTimestamp: toISODateSchema.parse(blockTimestamp),
+        ...(serializedBlock ? serializedBlock : {}),
+      };
+    }
+  );
+
+export type Blob = z.input<typeof blobSchema>;
+export type BlobOnTransaction = z.input<typeof blobsOnTransactionsSchema>;
 export type SerializedBlob = z.infer<typeof serializedBlobSchema>;
-
-export function serializeBaseBlob({
-  commitment,
-  proof,
-  size,
-  versionedHash,
-  dataStorageReferences,
-}: BaseBlob): SerializedBaseBlob {
-  return {
-    commitment,
-    proof,
-    size,
-    versionedHash,
-    dataStorageReferences: serializeBlobDataStorageReferences(
-      dataStorageReferences
-    ),
-  };
-}
-
-export function serializeBlobOnTransaction(
-  blobOnTransaction: BlobOnTransaction
-): SerializedBlobOnTransaction {
-  const {
-    blob,
-    blockHash,
-    blockNumber,
-    blockTimestamp,
-    index,
-    txHash,
-    txIndex,
-    block,
-    transaction,
-  } = blobOnTransaction;
-  const serializedBlob: SerializedBlobOnTransaction = {
-    ...serializeBaseBlob(blob),
-    blockHash,
-    blockNumber,
-    blockTimestamp: serializeDate(blockTimestamp),
-    txHash,
-    txIndex,
-    index,
-  };
-
-  if (block) {
-    serializedBlob.block = serializeExpandedBlock(block);
-  }
-
-  if (transaction) {
-    const expandedTransaction = serializeExpandedTransaction(transaction);
-
-    serializedBlob.transaction = expandedTransaction;
-  }
-
-  return serializedBlob;
-}
-
-export function serializeBlob(blob: Blob): SerializedBlob {
-  const { data, transactions, ...baseBlob } = blob;
-  const serializedBlob: SerializedBlob = {
-    ...serializeBaseBlob(baseBlob),
-    data,
-    transactions: [],
-  };
-
-  if (transactions) {
-    serializedBlob.transactions = transactions
-      .sort((a, b) => a.txHash.localeCompare(b.txHash))
-      .map(
-        ({
-          blockHash,
-          blockNumber,
-          blockTimestamp,
-          txIndex,
-          index,
-          txHash,
-          block,
-          transaction,
-        }) => ({
-          index,
-          txIndex,
-          hash: txHash,
-          blockHash,
-          blockNumber,
-          blockTimestamp,
-          ...(transaction ? serializeExpandedTransaction(transaction) : {}),
-          ...(block ? { block: serializeExpandedBlock(block) } : {}),
-        })
-      );
-  }
-
-  return serializedBlob;
-}
+export type SerializedBlobsOnTransactions = z.infer<
+  typeof serializedBlobsOnTransactionsSchema
+>;

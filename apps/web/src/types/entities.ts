@@ -28,7 +28,7 @@ export type Transaction = GetTxByHashOutput;
 
 export type TransactionWithExpandedBlock = MakeFieldRequired<
   Transaction,
-  "block" | "blobGasBaseFee"
+  "block"
 >;
 
 export type TransactionWithExpandedBlob = MakeFieldRequired<
@@ -38,7 +38,7 @@ export type TransactionWithExpandedBlob = MakeFieldRequired<
 
 export type TransactionWithExpandedBlockAndBlob = MakeFieldRequired<
   Transaction,
-  "blobs" | "block" | "blobGasBaseFee"
+  "blobs" | "block"
 >;
 
 type BlockExpandedTransactionWithExpandedBlobs = MakeFieldRequired<

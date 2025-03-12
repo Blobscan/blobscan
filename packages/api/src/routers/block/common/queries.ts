@@ -4,8 +4,8 @@ import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
 import type { Expands } from "../../../middlewares/withExpands";
 import type { Filters } from "../../../middlewares/withFilters";
 import { calculateTxFeeFields, retrieveBlobData } from "../../../utils";
-import type { Block } from "./selects";
 import { createBlockSelect } from "./selects";
+import type { Block } from "./serializers";
 
 export type BlockId = "hash" | "number" | "slot";
 export type BlockIdField =

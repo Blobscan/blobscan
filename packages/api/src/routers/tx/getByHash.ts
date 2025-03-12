@@ -8,12 +8,8 @@ import {
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
 import { calculateTxFeeFields, retrieveBlobData } from "../../utils";
-import type { IncompletedTransaction } from "./common";
-import {
-  createTransactionSelect,
-  serializeTransaction,
-  serializedTransactionSchema,
-} from "./common";
+import { createTransactionSelect, serializedTransactionSchema } from "./common";
+import type { Transaction } from "./common/serializers";
 
 const inputSchema = z
   .object({
@@ -39,12 +35,12 @@ export const getByHash = publicProcedure
       ctx: { blobStorageManager, expands, prisma },
       input: { hash },
     }) => {
-      const dbTx = (await prisma.transaction.findUnique({
+      const tx = (await prisma.transaction.findUnique({
         select: createTransactionSelect(expands),
         where: { hash },
-      })) as unknown as IncompletedTransaction;
+      })) as unknown as Transaction;
 
-      if (!dbTx) {
+      if (!tx) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `No transaction with hash '${hash}'.`,
@@ -53,7 +49,7 @@ export const getByHash = publicProcedure
 
       if (expands.blobData) {
         await Promise.all(
-          dbTx.blobs.map(async ({ blob }) => {
+          tx.blobs.map(async ({ blob }) => {
             if (blob?.dataStorageReferences?.length) {
               const data = await retrieveBlobData(blobStorageManager, blob);
 
@@ -63,18 +59,19 @@ export const getByHash = publicProcedure
         );
       }
 
-      const txFeeFields = calculateTxFeeFields({
-        blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
-        blobGasUsed: dbTx.blobGasUsed,
-        gasPrice: dbTx.gasPrice,
-        maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
-        blobGasPrice: dbTx.block.blobGasPrice,
-      });
-      const tx = {
-        ...dbTx,
-        ...txFeeFields,
-      };
+      const { blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee } =
+        calculateTxFeeFields({
+          blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed,
+          blobGasUsed: tx.blobGasUsed,
+          gasPrice: tx.gasPrice,
+          maxFeePerBlobGas: tx.maxFeePerBlobGas,
+          blobGasPrice: tx.block.blobGasPrice,
+        });
 
-      return serializeTransaction(tx);
+      tx.blobAsCalldataGasFee = blobAsCalldataGasFee;
+      tx.blobGasBaseFee = blobGasBaseFee;
+      tx.blobGasMaxFee = blobGasMaxFee;
+
+      return tx;
     }
   );

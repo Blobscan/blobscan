@@ -12,7 +12,7 @@ import {
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import type { BlockIdField } from "./common";
-import { fetchBlock, serializeBlock, serializedBlockSchema } from "./common";
+import { fetchBlock, serializedBlockSchema } from "./common";
 
 const blockHashSchema = hashSchema.refine((value) => value.length === 66, {
   message: "Block hashes must be 66 characters long",
@@ -99,6 +99,6 @@ export const getByBlockId = publicProcedure
         });
       }
 
-      return serializeBlock(block);
+      return block;
     }
   );

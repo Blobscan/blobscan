@@ -15,11 +15,7 @@ import {
 import { publicProcedure } from "../../procedures";
 import { calculateTxFeeFields } from "../../utils";
 import type { Block } from "./common";
-import {
-  createBlockSelect,
-  serializeBlock,
-  serializedBlockSchema,
-} from "./common";
+import { createBlockSelect, serializedBlockSchema } from "./common";
 import { countBlocks } from "./getCount";
 
 const inputSchema = withAllFiltersSchema
@@ -106,8 +102,8 @@ export const getAll = publicProcedure
       }));
     }
 
-    const output: z.infer<typeof outputSchema> = {
-      blocks: blocks.map(serializeBlock),
+    const output: z.input<typeof outputSchema> = {
+      blocks,
     };
 
     if (count) {

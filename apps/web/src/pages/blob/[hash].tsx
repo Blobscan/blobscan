@@ -38,6 +38,7 @@ const Blob: NextPage = function () {
   } = api.blob.getByBlobId.useQuery(
     {
       id: versionedHash,
+      expand: "transaction",
     },
     {
       enabled: router.isReady,

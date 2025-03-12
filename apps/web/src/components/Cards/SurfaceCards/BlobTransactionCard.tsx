@@ -37,10 +37,10 @@ type BlobTransactionCardProps = Partial<{
       | "blobGasBaseFee"
       | "blobGasMaxFee"
     >
-  > & { blobsLength?: number };
+  >;
   blobs: Pick<
     DeserializedFullTransaction["blobs"][number],
-    "versionedHash" | "index" | "size"
+    "versionedHash" | "size"
   >[];
   compact?: boolean;
   className?: string;
@@ -216,9 +216,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
               <TableHeader>Index</TableHeader>
               <TableHeader>Versioned Hash</TableHeader>
               <TableHeader>Size</TableHeader>
-              {blobsOnTx.map(({ versionedHash, index, size }) => (
-                <React.Fragment key={`${versionedHash}-${index}`}>
-                  <TableCol>{index}</TableCol>
+              {blobsOnTx.map(({ versionedHash, size }, i) => (
+                <React.Fragment key={`${versionedHash}-${i}`}>
+                  <TableCol>{i}</TableCol>
                   <TableCol>
                     <Copyable
                       value={versionedHash}

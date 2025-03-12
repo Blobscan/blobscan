@@ -77,7 +77,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "transaction": {
+      "blobAsCalldataGasFee": "10000",
       "blobAsCalldataGasUsed": "1000",
+      "blobGasBaseFee": "2883584",
+      "blobGasMaxFee": "13107200",
       "blobGasUsed": "131072",
       "category": "other",
       "from": "address2",
@@ -115,7 +118,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "proof004",
     "size": 1300,
     "transaction": {
+      "blobAsCalldataGasFee": "10000",
       "blobAsCalldataGasUsed": "1000",
+      "blobGasBaseFee": "8650752",
+      "blobGasMaxFee": "39321600",
       "blobGasUsed": "393216",
       "category": "rollup",
       "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
@@ -143,7 +149,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "transaction": {
+      "blobAsCalldataGasFee": "10000",
       "blobAsCalldataGasUsed": "1000",
+      "blobGasBaseFee": "2883584",
+      "blobGasMaxFee": "13107200",
       "blobGasUsed": "131072",
       "category": "other",
       "from": "address2",
@@ -174,7 +183,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "proof004",
     "size": 1300,
     "transaction": {
+      "blobAsCalldataGasFee": "10000",
       "blobAsCalldataGasUsed": "1000",
+      "blobGasBaseFee": "8650752",
+      "blobGasMaxFee": "39321600",
       "blobGasUsed": "393216",
       "category": "rollup",
       "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
@@ -2137,7 +2149,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
-      "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "blockTimestamp": "2023-08-31T14:00:00.000Z",
       "hash": "txHash015",
       "index": 0,
       "txIndex": 0,
@@ -2145,7 +2157,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
-      "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "blockTimestamp": "2023-08-31T14:00:00.000Z",
       "hash": "txHash015",
       "index": 1,
       "txIndex": 0,
@@ -2153,7 +2165,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
-      "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "blockTimestamp": "2023-08-31T14:00:00.000Z",
       "hash": "txHash015",
       "index": 2,
       "txIndex": 0,
@@ -2183,7 +2195,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
-      "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "blockTimestamp": "2023-08-31T14:00:00.000Z",
       "hash": "txHash015",
       "index": 0,
       "txIndex": 0,
@@ -2191,7 +2203,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
-      "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "blockTimestamp": "2023-08-31T14:00:00.000Z",
       "hash": "txHash015",
       "index": 1,
       "txIndex": 0,
@@ -2199,7 +2211,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
-      "blockTimestamp": 2023-08-31T14:00:00.000Z,
+      "blockTimestamp": "2023-08-31T14:00:00.000Z",
       "hash": "txHash015",
       "index": 2,
       "txIndex": 0,

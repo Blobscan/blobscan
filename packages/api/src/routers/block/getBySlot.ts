@@ -9,7 +9,7 @@ import {
 import { withFilters } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import type { BlockIdField } from "./common";
-import { fetchBlock, serializeBlock, serializedBlockSchema } from "./common";
+import { fetchBlock, serializedBlockSchema } from "./common";
 
 const inputSchema = z
   .object({
@@ -53,6 +53,6 @@ export const getBySlot = publicProcedure
         });
       }
 
-      return serializeBlock(block);
+      return block;
     }
   );

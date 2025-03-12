@@ -15,12 +15,8 @@ import {
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
 import { calculateTxFeeFields } from "../../utils";
-import type { IncompletedTransaction } from "./common";
-import {
-  createTransactionSelect,
-  serializeTransaction,
-  serializedTransactionSchema,
-} from "./common";
+import type { Transaction } from "./common";
+import { createTransactionSelect, serializedTransactionSchema } from "./common";
 import { countTxs } from "./getCount";
 
 const inputSchema = withAllFiltersSchema
@@ -83,34 +79,31 @@ export const getAll = publicProcedure
         },
       ],
       ...pagination,
-    }) as unknown as IncompletedTransaction[];
+    }) as unknown as Transaction[];
 
     const countOp = count
       ? countTxs(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [queriedTxs, txCountOrStats] = await Promise.all([
-      transactionsOp,
-      countOp,
-    ]);
+    const [txs, txCountOrStats] = await Promise.all([transactionsOp, countOp]);
 
-    const txs = queriedTxs.map((dbTx) => {
-      const feeFields = calculateTxFeeFields({
-        blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
-        blobGasUsed: dbTx.blobGasUsed,
-        gasPrice: dbTx.gasPrice,
-        maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
-        blobGasPrice: dbTx.block.blobGasPrice,
-      });
+    txs.forEach((tx) => {
+      const { blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee } =
+        calculateTxFeeFields({
+          blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed,
+          blobGasUsed: tx.blobGasUsed,
+          gasPrice: tx.gasPrice,
+          maxFeePerBlobGas: tx.maxFeePerBlobGas,
+          blobGasPrice: tx.block.blobGasPrice,
+        });
 
-      return {
-        ...dbTx,
-        ...feeFields,
-      };
+      tx.blobAsCalldataGasFee = blobAsCalldataGasFee;
+      tx.blobGasBaseFee = blobGasBaseFee;
+      tx.blobGasMaxFee = blobGasMaxFee;
     });
 
-    const output: z.infer<typeof outputSchema> = {
-      transactions: txs.map(serializeTransaction),
+    const output: z.input<typeof outputSchema> = {
+      transactions: txs,
     };
 
     if (count) {
