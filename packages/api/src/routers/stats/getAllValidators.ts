@@ -165,7 +165,7 @@ export const getAllValidators = publicProcedure
         });
         totalNum=1;
       }
-      logger.info(enrichedData);
+      logger.debug(enrichedData);
       return {data: enrichedData,totalNum};
       }
     else{
