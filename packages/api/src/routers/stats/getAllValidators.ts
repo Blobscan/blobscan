@@ -69,20 +69,14 @@ async function getAllValidatorQuery(page: number, limit: number) {
   try {
     const startIndex = (page - 1) * limit;  
     const endIndex = startIndex + limit;   
-
-    let validators: any[] = [];
     
-    for (let index = startIndex; index < endIndex; index++) {
-      const response = await fetch(
-        `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validators/${index}`
-      );
-      const rawdata = await response.json();
-      const data = rawdata.data;
-
-      if (data) {
-        validators.push(data);  
-      }
-    }
+    const ids = Array.from({ length: endIndex - startIndex }, (_, i) => `id=${startIndex + i}`).join("&");
+  
+    const url = `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validators?${ids}`;
+    const response = await fetch(url);
+  
+    const rawdata = await response.json();
+    const validators = rawdata.data || []; 
     
     return validators;
   } catch (error) {
@@ -147,26 +141,16 @@ export const getAllValidators = publicProcedure
   .input(inputSchema)
   .output(outputSchema)
   .query(async ({ input }) => {
-    const totalCount = await fetch(
-      `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validator_count`
-    );
-    const rawdata = await totalCount.json();
-    let totalNum = calculateCountTotal(rawdata.data);
-
-    const { page, limit, pubkey } = input;
     let enrichedData: any[] = [];
-
+    let totalNum = 0;
+    const { page, limit, pubkey } = input;
+    
     if (pubkey) {
-      // 如果 pubkey 存在，查询指定的 validator
-      logger.info(`Fetching validator for pubkey: ${pubkey}`);
-      
-      const response = await fetch(
-        `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validators/${pubkey}`
-      );
-      const rawData = await response.json();
-      const data = rawData.data;
-
-      if (data) {
+      let url = `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validators/${pubkey}`; 
+      let response = await fetch(url);
+      let rawData = await response.json();
+      let data = rawData.data;
+      if (data){
         const withdrawalAmounts = await getWithdrawalAmounts([data.index]);
         enrichedData.push({
           index: data.index,
@@ -182,14 +166,17 @@ export const getAllValidators = publicProcedure
         totalNum=1;
       }
       return {data: enrichedData,totalNum};
-    }
+      }
     else{
-      logger.info(`page ${page} limit ${limit}`);
       enrichedData = await enrichValidators(page, limit);
-      return {data: enrichedData,totalNum}
-      ;
+
+      const totalCount = await fetch(
+        `${env.BEACON_NODE_ENDPOINT}/eth/v1/beacon/states/head/validator_count`
+      );
+      const rawdata = await totalCount.json();
+      totalNum = calculateCountTotal(rawdata.data);
+      return {data: enrichedData,totalNum};
     }
-    
   });
   
 
