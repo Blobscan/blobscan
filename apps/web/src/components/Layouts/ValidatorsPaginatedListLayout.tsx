@@ -124,7 +124,8 @@ export const ValidatorsPaginatedListLayout: FC<ValidatorsPaginatedListLayoutProp
                         id="search"
                         className={"rounded-none rounded-l-md font-normal"}
                         style={{ height: "36px", fontWeight: "normal" }}
-                        placeholder={`Search by Public Key or part of it`}
+                        // placeholder={`Search by Public Key or part of it`}
+                        placeholder={`Search by Public Key (with 0x prefix) or Validator Index`}
                       />
                     </div>
                     <Button
