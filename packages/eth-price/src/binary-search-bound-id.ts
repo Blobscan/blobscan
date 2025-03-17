@@ -10,7 +10,7 @@ import { client } from "./client";
  * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/main/lib/binarySearch.ts
  *
  * @param address The phase aggregator contract address.
- * @param targetTimestamp The target timestamp.
+ * @param targetTimestampSeconds The target timestamp.
  * @param tolerance The maximum difference between the target timestamp and the timestamp of the round.
  * @param latestRoundId The latest roundId of the phase aggregator contract.
  * @returns The roundId of the timestamp.
@@ -18,12 +18,12 @@ import { client } from "./client";
  * */
 export async function binarySearchRoundId({
   address,
-  targetTimestamp,
+  targetTimestampSeconds,
   tolerance,
   latestRoundId,
 }: {
   address: Address;
-  targetTimestamp: bigint;
+  targetTimestampSeconds: bigint;
   tolerance: bigint;
   latestRoundId: bigint;
 }): Promise<bigint | null> {
@@ -41,13 +41,13 @@ export async function binarySearchRoundId({
     });
 
     if (
-      timestamp >= targetTimestamp - tolerance &&
-      timestamp <= targetTimestamp + tolerance
+      timestamp >= targetTimestampSeconds - tolerance &&
+      timestamp <= targetTimestampSeconds + tolerance
     ) {
       return mid;
-    } else if (timestamp < targetTimestamp) {
+    } else if (timestamp < targetTimestampSeconds) {
       low = mid + BigInt(1);
-    } else if (timestamp > targetTimestamp) {
+    } else if (timestamp > targetTimestampSeconds) {
       high = mid - BigInt(1);
     }
   }

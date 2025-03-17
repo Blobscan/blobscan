@@ -8,8 +8,7 @@ type PriceData = {
   phaseId: number;
   roundId: bigint;
   price: bigint;
-  // The timestamp of the data in seconds.
-  timestamp: bigint;
+  timestampSeconds: bigint;
 };
 
 /**
@@ -45,41 +44,61 @@ type PriceData = {
  * Aditional information can be found here: https://docs.chain.link/data-feeds
  *
  * @param address The price feed contract Addresses (https://docs.chain.link/data-feeds/price-feeds/addresses).
- * @param targetTimestamp The timestamp for which the price is requested in seconds.
+ * @param targetTimestampSeconds The timestamp for which the price is requested in seconds.
  * @param tolerance The maximum difference between the target timestamp and the timestamp of the data.
  * @returns The price of the asset at the given timestamp.
  **/
 export async function getPriceByTimestamp({
   address,
-  targetTimestamp,
+  targetTimestampSeconds,
   tolerance,
 }: {
   address: Address;
-  targetTimestamp: bigint;
+  targetTimestampSeconds: bigint;
   tolerance: bigint;
 }): Promise<PriceData> {
-  const closestRoundData = await getClosestRoundData({
+  const closestRound = await getClosestRoundData({
     address,
-    targetTimestamp,
+    targetTimestampSeconds,
     tolerance,
   });
 
-  if (closestRoundData === null) {
+  if (closestRound === null) {
     throw new Error(
-      `Could not retrieve ETH price from Chainlink oracle using timestamp: ${targetTimestamp}`
+      `Could not retrieve ETH price from Chainlink oracle using timestamp: ${targetTimestampSeconds}`
     );
   }
 
+  const roundData = await getRoundData(closestRound);
+
+  return {
+    phaseId: closestRound.phaseId,
+    roundId: closestRound.roundId,
+    price: roundData.price,
+    timestampSeconds: roundData.timestamp,
+  };
+}
+
+export type RoundData = {
+  price: bigint;
+  timestamp: bigint;
+};
+
+export async function getRoundData({
+  roundId,
+  phaseAggregatorAddress,
+}: {
+  roundId: bigint;
+  phaseAggregatorAddress: Address;
+}): Promise<RoundData> {
   const roundData = await client.readContract({
     functionName: "getRoundData",
     abi: Aggregator,
-    args: [closestRoundData.roundId],
-    address: closestRoundData.phaseAggregatorContractAddress,
+    args: [roundId],
+    address: phaseAggregatorAddress,
   });
 
   return {
-    phaseId: closestRoundData.phaseId,
-    roundId: closestRoundData.roundId,
     price: roundData[1],
     timestamp: roundData[3],
   };
