@@ -1,116 +1,87 @@
-import {
-  AddressModel,
-  BlobsOnTransactionsModel,
-  BlockModel,
-  TransactionModel,
-} from "@blobscan/db/prisma/zod";
-import type { optimismDecodedFieldsSchema } from "@blobscan/db/prisma/zod-utils";
-import {
-  toCategorySchema,
-  nullishRollupSchema,
-  toISODateSchema,
-  stringifyDecimalSchema,
-} from "@blobscan/db/prisma/zod-utils";
+import type { Prisma } from "@blobscan/db";
+import { Category } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
 import {
-  expandedBlobSchema,
-  expandedBlockSchema,
-  serializedExpandedBlobSchema,
-  serializedExpandedBlockSchema,
-} from "../../../middlewares/withExpands";
-import {
-  isEmptyObject,
-  serializedTransactionFeeFieldsSchema,
-  transactionFeeFieldsSchema,
-} from "../../../utils";
+  prismaBlobOnTransactionSchema,
+  prismaBlockSchema,
+  prismaTransactionSchema,
+} from "../../../schemas";
+import { isEmptyObject, serialize } from "../../../utils";
+import { transformPrismaBlobOnTx } from "../../blob/common";
 
-export const transactionSchema = TransactionModel.omit({
-  insertedAt: true,
-  updatedAt: true,
-})
-  .merge(transactionFeeFieldsSchema)
-  .extend({
-    block: expandedBlockSchema
-      .partial({
-        blobAsCalldataGasUsed: true,
-        blobGasUsed: true,
-        excessBlobGas: true,
-        slot: true,
-      })
-      .merge(BlockModel.pick({ blobGasPrice: true })),
-    blobs: z.array(
-      BlobsOnTransactionsModel.pick({
-        blobHash: true,
-      }).extend({
-        blob: expandedBlobSchema.partial().optional(),
-      })
-    ),
-    from: AddressModel.pick({
-      address: true,
-      rollup: true,
+export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
+
+export const fullPrismaTransactionSchema = prismaTransactionSchema.extend({
+  blobs: z.array(prismaBlobOnTransactionSchema.required({ blobHash: true })),
+  block: prismaBlockSchema
+    .omit({
+      hash: true,
+      number: true,
+      timestamp: true,
+    })
+    .partial()
+    .required({
+      blobGasPrice: true,
     }),
-  });
+});
 
-export const serializedTransactionSchema = transactionSchema.transform(
-  ({
-    block,
-    blobs,
-    blockTimestamp,
-    blobAsCalldataGasUsed,
-    blobGasUsed,
-    maxFeePerBlobGas,
-    fromId,
-    from,
-    toId,
-    gasPrice: _,
-    decodedFields,
-    ...restTransaction
-  }) => {
-    const { blobGasPrice, ...restExpandedBlock } = block;
-    const serializedTransactionFeeFields =
-      serializedTransactionFeeFieldsSchema.parse(restTransaction);
-    const serializedExpandedBlock = {
-      block: {
-        blobGasPrice: stringifyDecimalSchema.parse(blobGasPrice),
-        ...(!isEmptyObject(restExpandedBlock)
-          ? serializedExpandedBlockSchema.parse(block)
-          : {}),
-      },
-    };
-    const serializedExpandedBlobs = blobs.map(({ blob, blobHash }) => {
-      const serializedExpandedBlobFields = blob
-        ? serializedExpandedBlobSchema.parse(blob)
-        : undefined;
+export type FullPrismaTransaction = z.infer<typeof fullPrismaTransactionSchema>;
 
-      return {
-        versionedHash: blobHash,
-        ...(serializedExpandedBlobFields || {}),
-      };
-    });
+export function transformPrismaTransaction(
+  prismaTx: Partial<FullPrismaTransaction> | Partial<PrismaTransaction>,
+  blobGasPrice?: Prisma.Decimal
+) {
+  const parsedPrismaTx = prismaTransactionSchema
+    .partial({
+      hash: true,
+      blockNumber: true,
+      blockTimestamp: true,
+      blockHash: true,
+    })
+    .passthrough()
+    .safeParse(prismaTx);
 
-    return {
-      ...restTransaction,
-      ...serializedTransactionFeeFields,
-      blobAsCalldataGasUsed: stringifyDecimalSchema.parse(
-        blobAsCalldataGasUsed
-      ),
-      blobGasUsed: stringifyDecimalSchema.parse(blobGasUsed),
-      blockTimestamp: toISODateSchema.parse(blockTimestamp),
-      category: toCategorySchema.parse(from.rollup ? "ROLLUP" : "OTHER"),
-      rollup: nullishRollupSchema.parse(from.rollup),
-      decodedFields: isEmptyObject(decodedFields)
-        ? null
-        : (decodedFields as z.infer<typeof optimismDecodedFieldsSchema>),
-      from: fromId,
-      maxFeePerBlobGas: stringifyDecimalSchema.parse(maxFeePerBlobGas),
-      to: toId,
-      ...(serializedExpandedBlock || {}),
-      blobs: serializedExpandedBlobs,
-    };
+  if (!parsedPrismaTx.success) {
+    return prismaTx;
   }
+
+  const { maxFeePerBlobGas, blobGasUsed, blobAsCalldataGasUsed } =
+    parsedPrismaTx.data;
+  const {
+    from: { rollup },
+    fromId,
+    toId,
+    decodedFields,
+    gasPrice,
+    ...restTxFields
+  } = parsedPrismaTx.data;
+  const txFeeFields = blobGasPrice
+    ? {
+        blobGasMaxFee: maxFeePerBlobGas.mul(blobGasUsed),
+        blobAsCalldataGasFee: gasPrice.mul(blobAsCalldataGasUsed),
+        blobGasBaseFee: blobGasPrice.mul(blobGasUsed),
+      }
+    : undefined;
+
+  return {
+    category: rollup ? Category.ROLLUP : Category.OTHER,
+    rollup,
+    decodedFields: isEmptyObject(decodedFields) ? null : decodedFields,
+    from: fromId,
+    to: toId,
+    ...restTxFields,
+    ...txFeeFields,
+  };
+}
+
+export const transactionSchema = fullPrismaTransactionSchema.transform(
+  ({ blobs, ...prismaTx }) => ({
+    ...transformPrismaTransaction(prismaTx, prismaTx.block.blobGasPrice),
+    blobs: blobs.map((btx) => transformPrismaBlobOnTx(btx)),
+  })
 );
 
-export type SerializedTransaction = z.infer<typeof serializedTransactionSchema>;
-
-export type Transaction = z.input<typeof transactionSchema>;
+export const serializedTransactionSchema = transactionSchema.transform((tx) =>
+  serialize(tx)
+);

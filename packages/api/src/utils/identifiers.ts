@@ -17,3 +17,9 @@ export function isBlockNumber(number: string): boolean {
 export function isEmptyObject(obj: Record<string, unknown>) {
   return Object.values(obj).length === 0;
 }
+
+export function isNullish<T>(
+  value: T | null | undefined
+): value is null | undefined {
+  return value === null || value === undefined;
+}

@@ -1,3 +1,11 @@
+import {
+  AddressModel,
+  BlobDataStorageReferenceModel,
+  BlobModel,
+  BlobsOnTransactionsModel,
+  BlockModel,
+  TransactionModel,
+} from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 export const blockNumberSchema = z.number().nonnegative();
@@ -64,3 +72,60 @@ export const blobIdSchema = z
   .describe(
     "Blob identifier. It can be the blob's versioned hash or kzg commitment."
   );
+
+export const prismaBlockSchema = BlockModel.omit({
+  insertedAt: true,
+  updatedAt: true,
+});
+
+export const prismaBlobSchema = BlobModel.omit({
+  firstBlockNumber: true,
+  insertedAt: true,
+  updatedAt: true,
+}).extend({
+  data: z.string().optional(),
+  dataStorageReferences: z.array(
+    BlobDataStorageReferenceModel.pick({
+      blobStorage: true,
+      dataReference: true,
+    })
+  ),
+});
+
+export const prismaTransactionSchema = TransactionModel.omit({
+  insertedAt: true,
+  updatedAt: true,
+}).extend({
+  from: AddressModel.pick({
+    address: true,
+    rollup: true,
+  }),
+});
+
+export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel.partial()
+  .required({ blobHash: true })
+  .extend({
+    blob: prismaBlobSchema.omit({ versionedHash: true }).optional(),
+    block: prismaBlockSchema
+      .omit({
+        hash: true,
+        number: true,
+        timestamp: true,
+      })
+      .optional(),
+    transaction: prismaTransactionSchema
+      .omit({
+        hash: true,
+        blockNumber: true,
+        blockTimestamp: true,
+        blockHash: true,
+      })
+      .extend({ block: prismaBlockSchema.pick({ blobGasPrice: true }) })
+      .optional(),
+  });
+
+export type PrismaBlob = z.input<typeof prismaBlobSchema>;
+
+export type PrismaBlobOnTransaction = z.input<
+  typeof prismaBlobOnTransactionSchema
+>;

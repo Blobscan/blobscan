@@ -10,12 +10,6 @@ import { Category as DBCategoryEnum } from "./enums";
 
 export const zodDecimalSchema = z.instanceof(Prisma.Decimal);
 
-export const stringifyDecimalSchema = z
-  .instanceof(Prisma.Decimal)
-  .transform((decimal) => decimal.toFixed());
-
-export const toISODateSchema = z.date().transform((date) => date.toISOString());
-
 // TODO: create helper to checksum addresses
 
 export const dbRollupSchema = z.nativeEnum(DBRollupEnum);
@@ -24,7 +18,7 @@ export const toRollupSchema = dbRollupSchema.transform<Lowercase<DBRollupEnum>>(
   (value) => value.toLowerCase() as Lowercase<DBRollupEnum>
 );
 
-export const nullishRollupSchema = toRollupSchema.nullish();
+export const nullishToRollupSchema = toRollupSchema.nullish();
 
 export const dbRollupCoercionSchema = z.string().transform((value, ctx) => {
   const result = dbRollupSchema.safeParse(value.toUpperCase());
@@ -70,7 +64,7 @@ export const toCategorySchema = dbCategorySchema.transform<
   Lowercase<DBCategoryEnum>
 >((value) => value.toLowerCase() as Lowercase<DBCategoryEnum>);
 
-export const nullishCategorySchema = dbCategorySchema.nullish();
+export const nullishToCategorySchema = toCategorySchema.nullish();
 
 export const dbCategoryCoercionSchema = z.string().transform((value, ctx) => {
   const result = dbCategorySchema.safeParse(value.toUpperCase());
@@ -84,6 +78,12 @@ export const dbCategoryCoercionSchema = z.string().transform((value, ctx) => {
 
   return result.data;
 });
+
+export const dbEnumSchema = dbCategorySchema
+  .or(dbRollupSchema)
+  .or(dbBlobStorageSchema);
+
+export type DBEnum = z.infer<typeof dbEnumSchema>;
 
 export const optimismDecodedFieldsSchema = z.object({
   timestampSinceL2Genesis: z.number(),

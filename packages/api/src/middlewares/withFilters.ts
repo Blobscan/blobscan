@@ -7,8 +7,8 @@ import { env } from "@blobscan/env";
 import { getAddressesByRollup } from "@blobscan/rollups";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
+import { addressSchema, blockNumberSchema, slotSchema } from "../schemas";
 import { t } from "../trpc-client";
-import { addressSchema, blockNumberSchema, slotSchema } from "../utils";
 
 type NumberRangeFilter = {
   gte?: number;

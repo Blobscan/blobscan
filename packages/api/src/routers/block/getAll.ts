@@ -13,8 +13,7 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields } from "../../utils";
-import type { Block } from "./common";
+import type { CompletePrismaBlock } from "./common";
 import { createBlockSelect, serializedBlockSchema } from "./common";
 import { countBlocks } from "./getCount";
 
@@ -68,47 +67,11 @@ export const getAll = publicProcedure
       ? countBlocks(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [queriedBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
+    const [dbBlocks_, totalBlocks] = await Promise.all([blocksOp, countOp]);
+    const dbBlocks = dbBlocks_ as unknown as CompletePrismaBlock[];
 
-    let blocks: Block[] = queriedBlocks as unknown as Block[];
-
-    if (expands.transaction) {
-      blocks = blocks.map((block) => ({
-        ...block,
-        transactions: block.transactions.map((tx) => {
-          const {
-            maxFeePerBlobGas,
-            blobAsCalldataGasUsed,
-            gasPrice,
-            blobGasUsed,
-          } = tx;
-
-          const derivedTxFields =
-            maxFeePerBlobGas && blobAsCalldataGasUsed && gasPrice && blobGasUsed
-              ? calculateTxFeeFields({
-                  blobAsCalldataGasUsed,
-                  blobGasUsed,
-                  gasPrice,
-                  blobGasPrice: block.blobGasPrice,
-                  maxFeePerBlobGas,
-                })
-              : {};
-
-          return {
-            ...tx,
-            ...derivedTxFields,
-          };
-        }),
-      }));
-    }
-
-    const output: z.input<typeof outputSchema> = {
-      blocks,
+    return {
+      blocks: dbBlocks,
+      ...(count ? { totalBlocks } : {}),
     };
-
-    if (count) {
-      output.totalBlocks = totalBlocks;
-    }
-
-    return output;
   });

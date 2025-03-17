@@ -3,9 +3,9 @@ import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
 
 import type { Expands } from "../../../middlewares/withExpands";
 import type { Filters } from "../../../middlewares/withFilters";
-import { calculateTxFeeFields, retrieveBlobData } from "../../../utils";
+import { retrieveBlobData } from "../../../utils";
+import type { CompletePrismaBlock } from "./selects";
 import { createBlockSelect } from "./selects";
-import type { Block } from "./serializers";
 
 export type BlockId = "hash" | "number" | "slot";
 export type BlockIdField =
@@ -43,59 +43,36 @@ export async function fetchBlock(
     filters: Filters;
     expands: Expands;
   }
-) {
+): Promise<CompletePrismaBlock | undefined> {
+  const select = createBlockSelect(expands);
   const where = buildBlockWhereClause(blockId, filters);
 
-  const queriedBlock = (await prisma.block.findFirst({
-    select: createBlockSelect(expands),
+  const prismaBlock = (await prisma.block.findFirst({
+    select,
     where,
-  })) as unknown as Block;
+  })) as unknown as CompletePrismaBlock | null;
 
-  if (!queriedBlock) {
+  if (!prismaBlock) {
     return;
   }
 
-  const block = queriedBlock;
-
-  if (expands.transaction) {
-    block.transactions = block.transactions.map((tx) => {
-      const { blobAsCalldataGasUsed, blobGasUsed, gasPrice, maxFeePerBlobGas } =
-        tx;
-      const feeFields =
-        maxFeePerBlobGas && blobAsCalldataGasUsed && blobGasUsed && gasPrice
-          ? calculateTxFeeFields({
-              blobAsCalldataGasUsed,
-              blobGasUsed,
-              gasPrice,
-              blobGasPrice: block.blobGasPrice,
-              maxFeePerBlobGas,
-            })
-          : {};
-
-      return {
-        ...tx,
-        ...feeFields,
-      };
-    });
-  }
-
   if (expands.blobData) {
-    const txsBlobs = block.transactions.flatMap((tx) => tx.blobs);
-
     await Promise.all(
-      txsBlobs.map(async ({ blobHash, blob }) => {
-        const dataStorageReferences = blob?.dataStorageReferences;
-        if (dataStorageReferences) {
-          const data = await retrieveBlobData(blobStorageManager, {
-            dataStorageReferences,
-            versionedHash: blobHash,
-          });
+      prismaBlock.transactions
+        .flatMap((tx) => tx.blobs)
+        .map(async ({ blobHash, blob }) => {
+          const dataStorageReferences = blob?.dataStorageReferences;
+          if (dataStorageReferences) {
+            const data = await retrieveBlobData(blobStorageManager, {
+              dataStorageReferences,
+              versionedHash: blobHash,
+            });
 
-          blob.data = data;
-        }
-      })
+            blob.data = data;
+          }
+        })
     );
   }
 
-  return block;
+  return prismaBlock;
 }

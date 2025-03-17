@@ -4,10 +4,9 @@ import { publicProcedure } from "../../procedures";
 import {
   blobIdSchema,
   blobVersionedHashSchema,
-  buildVersionedHash,
   hexSchema,
-  retrieveBlobData,
-} from "../../utils";
+} from "../../schemas";
+import { buildVersionedHash, retrieveBlobData } from "../../utils";
 
 const inputSchema = z.object({
   id: blobIdSchema,

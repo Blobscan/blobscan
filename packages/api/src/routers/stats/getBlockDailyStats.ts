@@ -1,3 +1,4 @@
+import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import {
@@ -5,23 +6,27 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
+import { serialize } from "../../utils";
 import { BLOCK_BASE_PATH } from "./common";
 
 const inputSchema = withTimeFrameSchema;
 
-export const outputSchema = z.object({
-  days: z.array(z.string()),
-  totalBlocks: z.array(z.number()),
-  totalBlobGasUsed: z.array(z.string()),
-  totalBlobAsCalldataGasUsed: z.array(z.string()),
-  totalBlobFees: z.array(z.string()),
-  totalBlobAsCalldataFees: z.array(z.string()),
-  avgBlobFees: z.array(z.number()),
-  avgBlobAsCalldataFees: z.array(z.number()),
-  avgBlobGasPrices: z.array(z.number()),
+const blockDailyStatsResponse = z.object({
+  days: DailyStatsModel.shape.day.array(),
+  totalBlocks: DailyStatsModel.shape.totalBlocks.array(),
+  totalBlobGasUsed: DailyStatsModel.shape.totalBlobGasUsed.array(),
+  totalBlobAsCalldataGasUsed:
+    DailyStatsModel.shape.totalBlobAsCalldataGasUsed.array(),
+  totalBlobFees: DailyStatsModel.shape.totalBlobFee.array(),
+  totalBlobAsCalldataFees: DailyStatsModel.shape.totalBlobAsCalldataFee.array(),
+  avgBlobFees: DailyStatsModel.shape.avgBlobFee.array(),
+  avgBlobAsCalldataFees: DailyStatsModel.shape.avgBlobAsCalldataFee.array(),
+  avgBlobGasPrices: DailyStatsModel.shape.avgBlobGasPrice.array(),
 });
 
-type OutputSchema = z.infer<typeof outputSchema>;
+export const outputSchema = blockDailyStatsResponse.transform(serialize);
+
+type OutputSchema = z.input<typeof outputSchema>;
 
 export const getBlockDailyStats = publicProcedure
   .meta({
@@ -71,16 +76,14 @@ export const getBlockDailyStats = publicProcedure
           avgBlobGasPrice,
         }
       ) => {
-        transformedStats.days.push(day.toISOString());
+        transformedStats.days.push(day);
         transformedStats.totalBlocks.push(totalBlocks);
-        transformedStats.totalBlobGasUsed.push(totalBlobGasUsed.toFixed());
+        transformedStats.totalBlobGasUsed.push(totalBlobGasUsed);
         transformedStats.totalBlobAsCalldataGasUsed.push(
-          totalBlobAsCalldataGasUsed.toFixed()
+          totalBlobAsCalldataGasUsed
         );
-        transformedStats.totalBlobFees.push(totalBlobFee.toFixed());
-        transformedStats.totalBlobAsCalldataFees.push(
-          totalBlobAsCalldataFee.toFixed()
-        );
+        transformedStats.totalBlobFees.push(totalBlobFee);
+        transformedStats.totalBlobAsCalldataFees.push(totalBlobAsCalldataFee);
         transformedStats.avgBlobFees.push(avgBlobFee);
         transformedStats.avgBlobAsCalldataFees.push(avgBlobAsCalldataFee);
         transformedStats.avgBlobGasPrices.push(avgBlobGasPrice);

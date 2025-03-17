@@ -1,3 +1,4 @@
+import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import {
@@ -5,19 +6,22 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
+import { serialize } from "../../utils";
 import { TRANSACTION_BASE_PATH } from "./common";
 
 const inputSchema = withTimeFrameSchema;
 
-export const outputSchema = z.object({
-  days: z.array(z.string()),
-  totalTransactions: z.array(z.number()),
-  totalUniqueSenders: z.array(z.number()),
-  totalUniqueReceivers: z.array(z.number()),
-  avgMaxBlobGasFees: z.array(z.number()),
+const dailyStatsReponse = z.object({
+  days: DailyStatsModel.shape.day.array(),
+  totalTransactions: DailyStatsModel.shape.totalTransactions.array(),
+  totalUniqueSenders: DailyStatsModel.shape.totalUniqueSenders.array(),
+  totalUniqueReceivers: DailyStatsModel.shape.totalUniqueReceivers.array(),
+  avgMaxBlobGasFees: DailyStatsModel.shape.avgMaxBlobGasFee.array(),
 });
 
-type OutputSchema = z.infer<typeof outputSchema>;
+export const outputSchema = dailyStatsReponse.transform(serialize);
+
+type OutputSchema = z.input<typeof outputSchema>;
 
 export const getTransactionDailyStats = publicProcedure
   .meta({
@@ -63,7 +67,7 @@ export const getTransactionDailyStats = publicProcedure
           totalUniqueSenders,
         }
       ) => {
-        outputStats.days.push(day.toISOString());
+        outputStats.days.push(day);
         outputStats.totalTransactions.push(totalTransactions);
         outputStats.totalUniqueSenders.push(totalUniqueSenders);
         outputStats.totalUniqueReceivers.push(totalUniqueReceivers);

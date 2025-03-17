@@ -14,8 +14,7 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields } from "../../utils";
-import type { Transaction } from "./common";
+import type { CompletePrismaTransaction } from "./common";
 import { createTransactionSelect, serializedTransactionSchema } from "./common";
 import { countTxs } from "./getCount";
 
@@ -61,7 +60,7 @@ export const getAll = publicProcedure
       };
     }
 
-    const transactionsOp = prisma.transaction.findMany({
+    const prismaTxsOp = prisma.transaction.findMany({
       select: createTransactionSelect(expands),
       where: {
         ...transactionFilters,
@@ -79,36 +78,20 @@ export const getAll = publicProcedure
         },
       ],
       ...pagination,
-    }) as unknown as Transaction[];
+    });
 
     const countOp = count
       ? countTxs(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [txs, txCountOrStats] = await Promise.all([transactionsOp, countOp]);
+    const [prismaTxs_, txCountOrStats] = await Promise.all([
+      prismaTxsOp,
+      countOp,
+    ]);
+    const prismaTxs = prismaTxs_ as unknown as CompletePrismaTransaction[];
 
-    txs.forEach((tx) => {
-      const { blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee } =
-        calculateTxFeeFields({
-          blobAsCalldataGasUsed: tx.blobAsCalldataGasUsed,
-          blobGasUsed: tx.blobGasUsed,
-          gasPrice: tx.gasPrice,
-          maxFeePerBlobGas: tx.maxFeePerBlobGas,
-          blobGasPrice: tx.block.blobGasPrice,
-        });
-
-      tx.blobAsCalldataGasFee = blobAsCalldataGasFee;
-      tx.blobGasBaseFee = blobGasBaseFee;
-      tx.blobGasMaxFee = blobGasMaxFee;
-    });
-
-    const output: z.input<typeof outputSchema> = {
-      transactions: txs,
+    return {
+      transactions: prismaTxs,
+      ...(count ? { totalTransactions: txCountOrStats } : {}),
     };
-
-    if (count) {
-      output.totalTransactions = txCountOrStats;
-    }
-
-    return output;
   });

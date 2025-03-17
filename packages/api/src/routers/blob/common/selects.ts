@@ -1,6 +1,12 @@
 import type { Prisma } from "@blobscan/db";
 
-import type { Expands } from "../../../middlewares/withExpands";
+import type {
+  ExpandedBlob,
+  ExpandedBlock,
+  ExpandedTransaction,
+  Expands,
+} from "../../../middlewares/withExpands";
+import type { Prettify } from "../../../utils";
 import { dataStorageReferencesSelect } from "../../../utils";
 
 export const baseBlobSelect = {
@@ -26,6 +32,38 @@ export const baseBlobOnTransactionSelect = {
   txIndex: true,
 } satisfies Prisma.BlobsOnTransactionsSelect;
 
+type PrismaBlob = Prisma.BlobGetPayload<{
+  select: typeof baseBlobSelect;
+}> & {
+  data?: string;
+};
+
+type PrismaBlobOnTransaction = Prisma.BlobsOnTransactionsGetPayload<{
+  select: typeof baseBlobOnTransactionSelect;
+}>;
+
+export type CompletePrismaBlob = Prettify<
+  PrismaBlob & {
+    transactions: Prettify<
+      PrismaBlobOnTransaction & {
+        block?: ExpandedBlock;
+        transaction?: ExpandedTransaction & {
+          block: { blobGasPrice: ExpandedBlock["blobGasPrice"] };
+        };
+      }
+    >[];
+  }
+>;
+
+export type CompletePrismaBlobOnTransaction = Prettify<
+  PrismaBlobOnTransaction & {
+    blob: ExpandedBlob;
+    block?: ExpandedBlock;
+    transaction?: ExpandedTransaction & {
+      block: { blobGasPrice: ExpandedBlock["blobGasPrice"] };
+    };
+  }
+>;
 export function createBlobSelect(expands: Expands) {
   const blockExpand = expands.block ? { block: expands.block } : {};
   const txExpand = expands.transaction
@@ -48,7 +86,6 @@ export function createBlobSelect(expands: Expands) {
     transactions: {
       select: {
         ...baseBlobOnTransactionSelect,
-        blobHash: false,
         ...blockExpand,
         ...txExpand,
       },

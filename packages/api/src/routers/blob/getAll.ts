@@ -14,11 +14,10 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields } from "../../utils";
-import type { BlobOnTransaction } from "./common";
+import type { CompletePrismaBlobOnTransaction } from "./common";
 import {
   createBlobsOnTransactionsSelect,
-  serializedBlobsOnTransactionsSchema,
+  serializedBlobOnTransactionSchema,
 } from "./common";
 import { countBlobs } from "./getCount";
 
@@ -27,7 +26,7 @@ const inputSchema = withPaginationSchema
   .merge(createExpandsSchema(["transaction", "block"]));
 
 const outputSchema = z.object({
-  blobs: serializedBlobsOnTransactionsSchema.array(),
+  blobs: serializedBlobOnTransactionSchema.array(),
   totalBlobs: z.number().optional(),
 });
 
@@ -87,50 +86,11 @@ export const getAll = publicProcedure
       countOp,
     ]);
 
-    const blobsOnTransactions = dbBlobsOnTxs as unknown as BlobOnTransaction[];
+    const blobsOnTransactions =
+      dbBlobsOnTxs as unknown as CompletePrismaBlobOnTransaction[];
 
-    if (expands.transaction) {
-      blobsOnTransactions.forEach(({ transaction }) => {
-        if (transaction) {
-          const {
-            blobAsCalldataGasUsed,
-            blobGasUsed,
-            gasPrice,
-            maxFeePerBlobGas,
-            block,
-          } = transaction;
-
-          if (
-            blobAsCalldataGasUsed &&
-            blobGasUsed &&
-            gasPrice &&
-            maxFeePerBlobGas &&
-            block?.blobGasPrice
-          ) {
-            const { blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee } =
-              calculateTxFeeFields({
-                blobAsCalldataGasUsed,
-                blobGasUsed,
-                gasPrice,
-                maxFeePerBlobGas,
-                blobGasPrice: block.blobGasPrice,
-              });
-
-            transaction.blobAsCalldataGasFee = blobAsCalldataGasFee;
-            transaction.blobGasBaseFee = blobGasBaseFee;
-            transaction.blobGasMaxFee = blobGasMaxFee;
-          }
-        }
-      });
-    }
-
-    const output: z.input<typeof outputSchema> = {
+    return {
       blobs: blobsOnTransactions,
+      ...(count ? { totalBlobs } : {}),
     };
-
-    if (count) {
-      output.totalBlobs = totalBlobs;
-    }
-
-    return output;
   });

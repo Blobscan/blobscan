@@ -1,137 +1,131 @@
-import {
-  BlobDataStorageReferenceModel,
-  BlobModel,
-  BlobsOnTransactionsModel,
-  BlockModel,
-} from "@blobscan/db/prisma/zod";
-import {
-  blobStorageSchema,
-  toISODateSchema,
-} from "@blobscan/db/prisma/zod-utils";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
+import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
 
+import type { PrismaBlob, PrismaBlobOnTransaction } from "../../../schemas";
 import {
-  expandedBlockSchema,
-  expandedTransactionSchema,
-  serializedExpandedBlockSchema,
-  serializedExpandedTransactionSchema,
-} from "../../../middlewares/withExpands";
-import { buildBlobDataUrl } from "../../../utils";
+  prismaBlobOnTransactionSchema,
+  prismaBlobSchema,
+} from "../../../schemas";
+import { serialize } from "../../../utils";
+import { transformPrismaTransaction } from "../../tx/common";
 
-export const serializedBlobDataStorageReferenceSchema =
-  BlobDataStorageReferenceModel.omit({ blobHash: true }).transform(
-    ({ blobStorage, dataReference }) => ({
-      storage: blobStorageSchema.parse(blobStorage),
-      url: buildBlobDataUrl(blobStorage, dataReference),
-    })
-  );
+function buildBlobDataUrl(blobStorage: BlobStorage, blobDataUri: string) {
+  switch (blobStorage) {
+    case "GOOGLE": {
+      return `https://storage.googleapis.com/${env.GOOGLE_STORAGE_BUCKET_NAME}/${blobDataUri}`;
+    }
+    case "SWARM": {
+      return `https://gateway.ethswarm.org/access/${blobDataUri}`;
+    }
+    case "FILE_SYSTEM":
+    case "POSTGRES": {
+      return `${env.BLOBSCAN_API_BASE_URL}/blobs/${blobDataUri}/data`;
+    }
+    case "WEAVEVM": {
+      return `${env.WEAVEVM_STORAGE_API_BASE_URL}/v1/blob/${blobDataUri}`;
+    }
+  }
+}
 
-export const blobBaseSchema = BlobModel.omit({
-  firstBlockNumber: true,
-  insertedAt: true,
-  updatedAt: true,
-}).extend({
-  dataStorageReferences: z.array(
-    BlobDataStorageReferenceModel.pick({
-      blobStorage: true,
-      dataReference: true,
+export const fullPrismaBlobSchema = prismaBlobSchema.extend({
+  transactions: z.array(
+    prismaBlobOnTransactionSchema.omit({ blobHash: true }).required({
+      blockHash: true,
+      blockNumber: true,
+      blockTimestamp: true,
+      index: true,
+      txHash: true,
+      txIndex: true,
     })
   ),
 });
 
-export const serializedBlobBaseSchema = blobBaseSchema.transform(
-  ({ dataStorageReferences, ...restBlob }) => ({
-    ...restBlob,
-    dataStorageReferences: dataStorageReferences.map((ref) =>
-      serializedBlobDataStorageReferenceSchema.parse(ref)
+export const blobSchema = fullPrismaBlobSchema.transform(
+  ({ transactions, ...restBlob }) => ({
+    ...transformPrismaBlob(restBlob),
+    transactions: transactions.map(
+      ({ transaction, block, ...restBlobOnTx }) => ({
+        ...transformPrismaBlobOnTx(restBlobOnTx),
+        ...(transaction
+          ? {
+              transaction: transformPrismaTransaction(
+                transaction,
+                transaction.block.blobGasPrice
+              ),
+            }
+          : {}),
+        ...(block ? { block } : {}),
+      })
     ),
   })
 );
 
-export const blobSchema = blobBaseSchema.extend({
-  data: z.string(),
-  transactions: z.array(
-    BlobsOnTransactionsModel.omit({ blobHash: true }).extend({
-      block: expandedBlockSchema.partial().optional(),
-      transaction: expandedTransactionSchema
-        .merge(z.object({ block: BlockModel.pick({ blobGasPrice: true }) }))
-        .partial()
-        .optional(),
-    })
-  ),
-});
+export const serializedBlobSchema = blobSchema.transform(serialize);
 
-export const serializedBlobSchema = blobSchema.transform(
-  ({ data, transactions, ...restBlob }) => {
-    const serializedBlob = serializedBlobBaseSchema.parse(restBlob);
-
-    return {
-      ...serializedBlob,
-      data,
-      transactions: transactions.map(
-        ({ block, transaction, blockTimestamp, txHash, ...restBlobOnTx }) => {
-          const serializedExpandedTransaction = transaction
-            ? serializedExpandedTransactionSchema.parse(transaction)
-            : undefined;
-          const serializedExpandedBlock = block
-            ? { block: serializedExpandedBlockSchema.parse(block) }
-            : undefined;
-
-          return {
-            ...restBlobOnTx,
-            hash: txHash,
-            blockTimestamp: toISODateSchema.parse(blockTimestamp),
-            ...(serializedExpandedTransaction || {}),
-            ...(serializedExpandedBlock || {}),
-          };
+export const blobOnTransactionSchema = prismaBlobOnTransactionSchema
+  .required({
+    blockHash: true,
+    blockNumber: true,
+    blockTimestamp: true,
+    index: true,
+    txHash: true,
+    txIndex: true,
+  })
+  .required({
+    blob: true,
+  })
+  .transform(({ block, transaction, ...restBlobOnTx }) => ({
+    ...transformPrismaBlobOnTx(restBlobOnTx),
+    ...(block ? { block } : {}),
+    ...(transaction
+      ? {
+          transaction: transformPrismaTransaction(
+            transaction,
+            transaction.block.blobGasPrice
+          ),
         }
-      ),
-    };
+      : {}),
+  }));
+
+export const serializedBlobOnTransactionSchema =
+  blobOnTransactionSchema.transform(serialize);
+
+export function transformPrismaBlobOnTx(
+  prismaBlobOnTx: Partial<PrismaBlobOnTransaction>
+) {
+  const parsedBlobOnTx = prismaBlobOnTransactionSchema
+    .partial({ blobHash: true })
+    .passthrough()
+    .safeParse(prismaBlobOnTx);
+
+  if (!parsedBlobOnTx.success) {
+    return prismaBlobOnTx;
   }
-);
-export const blobsOnTransactionsSchema = BlobsOnTransactionsModel.omit({
-  blobHash: true,
-}).extend({
-  blob: blobBaseSchema,
-  block: expandedBlockSchema.partial().optional(),
-  transaction: expandedTransactionSchema
-    .merge(z.object({ block: BlockModel.pick({ blobGasPrice: true }) }))
-    .partial()
-    .optional(),
-});
 
-export const serializedBlobsOnTransactionsSchema =
-  blobsOnTransactionsSchema.transform(
-    ({
-      blob,
-      block,
-      transaction,
-      blockTimestamp,
-      ...restBlobOnTransaction
-    }) => {
-      const serializedBlock = block
-        ? { block: serializedExpandedBlockSchema.parse(block) }
-        : undefined;
-      const serializedTx = transaction
-        ? {
-            transaction: serializedExpandedTransactionSchema.parse(transaction),
-          }
-        : undefined;
-      const serializedBlob = serializedBlobBaseSchema.parse(blob);
+  const { blobHash, blob, ...restBlobOnTx } = parsedBlobOnTx.data;
+  const transformedBlob = blob ? transformPrismaBlob(blob) : {};
 
-      return {
-        ...(serializedTx ? serializedTx : {}),
-        ...restBlobOnTransaction,
-        ...serializedBlob,
-        blockTimestamp: toISODateSchema.parse(blockTimestamp),
-        ...(serializedBlock ? serializedBlock : {}),
-      };
-    }
-  );
+  return {
+    ...(blobHash ? { versionedHash: blobHash } : {}),
+    ...restBlobOnTx,
+    ...transformedBlob,
+  };
+}
 
-export type Blob = z.input<typeof blobSchema>;
-export type BlobOnTransaction = z.input<typeof blobsOnTransactionsSchema>;
-export type SerializedBlob = z.infer<typeof serializedBlobSchema>;
-export type SerializedBlobsOnTransactions = z.infer<
-  typeof serializedBlobsOnTransactionsSchema
->;
+export function transformPrismaBlob({
+  dataStorageReferences,
+  ...restPrismaBlob
+}: Omit<PrismaBlob, "versionedHash"> & { versionedHash?: string }) {
+  return {
+    ...(dataStorageReferences
+      ? {
+          dataStorageReferences: dataStorageReferences?.map((ref) => ({
+            storage: ref.blobStorage,
+            url: buildBlobDataUrl(ref.blobStorage, ref.dataReference),
+          })),
+        }
+      : {}),
+    ...restPrismaBlob,
+  };
+}

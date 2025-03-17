@@ -1,52 +1,14 @@
 import { Prisma } from "@blobscan/db";
 import { OverallStatsModel } from "@blobscan/db/prisma/zod";
-import {
-  nullishCategorySchema,
-  nullishRollupSchema,
-  stringifyDecimalSchema,
-} from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
+import { serialize } from "../../utils";
 import { BASE_PATH } from "./common";
 
 const serializedOverallStatsSchema = OverallStatsModel.omit({
   id: true,
-}).transform(
-  ({
-    category,
-    rollup,
-    totalBlobAsCalldataFee,
-    totalBlobAsCalldataGasUsed,
-    totalBlobAsCalldataMaxFees,
-    totalBlobFee,
-    totalBlobGasPrice,
-    totalBlobGasUsed,
-    totalBlobMaxFees,
-    totalBlobMaxGasFees,
-    totalBlobSize,
-    ...restOverallStats
-  }) => ({
-    ...restOverallStats,
-    category: nullishCategorySchema.parse(category),
-    rollup: nullishRollupSchema.parse(rollup),
-    totalBlobAsCalldataFee: stringifyDecimalSchema.parse(
-      totalBlobAsCalldataFee
-    ),
-    totalBlobAsCalldataGasUsed: stringifyDecimalSchema.parse(
-      totalBlobAsCalldataGasUsed
-    ),
-    totalBlobAsCalldataMaxFees: stringifyDecimalSchema.parse(
-      totalBlobAsCalldataMaxFees
-    ),
-    totalBlobFee: stringifyDecimalSchema.parse(totalBlobFee),
-    totalBlobGasPrice: stringifyDecimalSchema.parse(totalBlobGasPrice),
-    totalBlobGasUsed: stringifyDecimalSchema.parse(totalBlobGasUsed),
-    totalBlobMaxFees: stringifyDecimalSchema.parse(totalBlobMaxFees),
-    totalBlobMaxGasFees: stringifyDecimalSchema.parse(totalBlobMaxGasFees),
-    totalBlobSize: totalBlobSize.toString(),
-  })
-);
+}).transform(serialize);
 
 const inputSchema = z.void();
 

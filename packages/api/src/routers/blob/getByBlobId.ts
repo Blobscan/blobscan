@@ -7,8 +7,8 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields, retrieveBlobData } from "../../utils";
-import type { Blob } from "./common";
+import { retrieveBlobData } from "../../utils";
+import type { CompletePrismaBlob } from "./common";
 import { createBlobSelect, serializedBlobSchema } from "./common";
 
 const inputSchema = z
@@ -40,7 +40,7 @@ export const getByBlobId = publicProcedure
       where: {
         OR: [{ versionedHash: id }, { commitment: id }],
       },
-    })) as unknown as Blob | null;
+    })) as unknown as CompletePrismaBlob | null;
 
     if (!blob) {
       throw new TRPCError({
@@ -50,41 +50,6 @@ export const getByBlobId = publicProcedure
     }
 
     blob.data = await retrieveBlobData(blobStorageManager, blob);
-
-    if (expands.transaction) {
-      blob.transactions.forEach(({ transaction }) => {
-        if (transaction) {
-          const {
-            blobAsCalldataGasUsed,
-            block,
-            blobGasUsed,
-            gasPrice,
-            maxFeePerBlobGas,
-          } = transaction;
-
-          if (
-            blobAsCalldataGasUsed &&
-            block?.blobGasPrice &&
-            blobGasUsed &&
-            gasPrice &&
-            maxFeePerBlobGas
-          ) {
-            const { blobAsCalldataGasFee, blobGasBaseFee, blobGasMaxFee } =
-              calculateTxFeeFields({
-                blobAsCalldataGasUsed,
-                blobGasPrice: block.blobGasPrice,
-                blobGasUsed,
-                gasPrice,
-                maxFeePerBlobGas,
-              });
-
-            transaction.blobAsCalldataGasFee = blobAsCalldataGasFee;
-            transaction.blobGasBaseFee = blobGasBaseFee;
-            transaction.blobGasMaxFee = blobGasMaxFee;
-          }
-        }
-      });
-    }
 
     return blob;
   });
