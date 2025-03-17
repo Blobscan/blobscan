@@ -3,7 +3,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "test": "pnpm vitest --reporter=verbose"
+    "test": "pnpm dotenv -e .env -- vitest"
   },
   "dependencies": {
     "viem": "^2.22.17",

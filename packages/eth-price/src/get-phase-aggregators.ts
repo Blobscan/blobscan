@@ -75,3 +75,34 @@ export async function getPhaseAggregators(
 
   return phaseAggregatorContracts;
 }
+
+export async function getPhaseAggregatorByPhaseId({
+  address,
+  phaseId,
+}: {
+  address: Address;
+  phaseId: number;
+}): Promise<PhaseAggregator> {
+  const phaseAggregatorAddress = await client.readContract({
+    address,
+    abi: EAC,
+    functionName: "phaseAggregators",
+    args: [phaseId],
+  });
+
+  if (phaseAggregatorAddress === null) {
+    throw new Error("Phase aggregator not found");
+  }
+
+  const latestRoundId = await client.readContract({
+    address: phaseAggregatorAddress,
+    abi: Aggregator,
+    functionName: "latestRound",
+  });
+
+  return {
+    phaseId,
+    address: phaseAggregatorAddress,
+    latestRoundId,
+  };
+}
