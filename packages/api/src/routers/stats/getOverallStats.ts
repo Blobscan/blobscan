@@ -1,8 +1,8 @@
 import { Prisma } from "@blobscan/db";
-import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
+import { OverallStatsModel } from "../../schemas";
 import { serialize } from "../../utils";
 import { BASE_PATH } from "./common";
 
@@ -52,7 +52,7 @@ export const getOverallStats = publicProcedure
         totalBlobMaxFees: new Prisma.Decimal(0),
         totalBlobMaxGasFees: new Prisma.Decimal(0),
         totalBlobs: 0,
-        totalBlobSize: BigInt(0),
+        totalBlobSize: "0",
         totalBlocks: 0,
         totalTransactions: 0,
         totalUniqueBlobs: 0,
@@ -64,5 +64,8 @@ export const getOverallStats = publicProcedure
       } satisfies z.input<typeof outputSchema>;
     }
 
-    return overallStats;
+    return {
+      ...overallStats,
+      totalBlobSize: overallStats.totalBlobSize.toString(),
+    };
   });

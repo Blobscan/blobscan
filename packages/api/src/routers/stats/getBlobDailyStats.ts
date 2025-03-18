@@ -15,7 +15,7 @@ const blobDailyStatsResponseSchema = z.object({
   days: DailyStatsModel.shape.day.array(),
   totalBlobs: DailyStatsModel.shape.totalBlobs.array(),
   totalUniqueBlobs: DailyStatsModel.shape.totalUniqueBlobs.array(),
-  totalBlobSizes: DailyStatsModel.shape.totalBlobSize.array(),
+  totalBlobSizes: z.string().array(),
 });
 
 export const outputSchema = blobDailyStatsResponseSchema.transform(serialize);
@@ -60,7 +60,9 @@ export const getBlobDailyStats = publicProcedure
         transformedStats.days.push(currStats.day);
         transformedStats.totalBlobs.push(currStats.totalBlobs);
         transformedStats.totalUniqueBlobs.push(currStats.totalUniqueBlobs);
-        transformedStats.totalBlobSizes.push(currStats.totalBlobSize);
+        transformedStats.totalBlobSizes.push(
+          currStats.totalBlobSize.toString()
+        );
 
         return transformedStats;
       },

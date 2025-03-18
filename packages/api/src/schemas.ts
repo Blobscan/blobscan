@@ -4,10 +4,24 @@ import {
   BlobModel,
   BlobsOnTransactionsModel,
   BlockModel,
+  DailyStatsModel as GeneratedDailyStatsModel,
+  OverallStatsModel as GeneratedOverallStatsModel,
   TransactionModel,
 } from "@blobscan/db/prisma/zod";
 import { hexSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
+
+export const toBigIntSchema = z.string().transform((value) => BigInt(value));
+
+export const commaSeparatedValuesSchema = z
+  .string()
+  .optional()
+  .transform((values) =>
+    values
+      ?.split(",")
+      .map((v) => v.trim())
+      .filter((v) => !!v.length)
+  );
 
 export const blobIdSchema = z
   .string()
@@ -101,6 +115,16 @@ export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel.partial()
       .extend({ block: prismaBlockSchema.pick({ blobGasPrice: true }) })
       .optional(),
   });
+
+// Need to override the `totalBlobSize` field to be a string instead of a bigint
+// as trpc-openapi swagger generator can't deserialize bigint
+// See https://github.com/trpc/trpc-openapi/issues/264
+export const OverallStatsModel = GeneratedOverallStatsModel.extend({
+  totalBlobSize: z.string(),
+});
+export const DailyStatsModel = GeneratedDailyStatsModel.extend({
+  totalBlobSize: z.string(),
+});
 
 export type PrismaBlob = z.input<typeof prismaBlobSchema>;
 

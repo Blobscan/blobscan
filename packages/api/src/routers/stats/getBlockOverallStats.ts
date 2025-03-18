@@ -1,8 +1,8 @@
 import { Prisma } from "@blobscan/db";
-import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
+import { OverallStatsModel } from "../../schemas";
 import { serialize } from "../../utils";
 import { BLOCK_BASE_PATH } from "./common";
 

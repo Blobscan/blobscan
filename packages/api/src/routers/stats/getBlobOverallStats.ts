@@ -1,7 +1,7 @@
-import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
+import { OverallStatsModel } from "../../schemas";
 import { serialize } from "../../utils";
 import { BLOB_BASE_PATH } from "./common";
 
@@ -47,7 +47,7 @@ export const getBlobOverallStats = publicProcedure
       return {
         totalBlobs: 0,
         totalUniqueBlobs: 0,
-        totalBlobSize: BigInt(0),
+        totalBlobSize: "0",
         updatedAt: new Date(),
       };
     }
@@ -55,7 +55,7 @@ export const getBlobOverallStats = publicProcedure
     return {
       totalBlobs: allStats.totalBlobs,
       totalUniqueBlobs: allStats.totalUniqueBlobs,
-      totalBlobSize: allStats.totalBlobSize,
+      totalBlobSize: allStats.totalBlobSize.toString(),
       updatedAt: allStats.updatedAt,
     };
   });
