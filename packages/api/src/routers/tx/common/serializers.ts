@@ -2,6 +2,7 @@ import type { Prisma } from "@blobscan/db";
 import { Category } from "@blobscan/db/prisma/enums";
 import { z } from "@blobscan/zod";
 
+import type { PrismaTransaction } from "../../../schemas";
 import {
   prismaBlobOnTransactionSchema,
   prismaBlockSchema,
@@ -9,8 +10,6 @@ import {
 } from "../../../schemas";
 import { isEmptyObject, serialize } from "../../../utils";
 import { transformPrismaBlobOnTx } from "../../blob/common";
-
-export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
 
 export const fullPrismaTransactionSchema = prismaTransactionSchema.extend({
   blobs: z.array(prismaBlobOnTransactionSchema.required({ blobHash: true })),

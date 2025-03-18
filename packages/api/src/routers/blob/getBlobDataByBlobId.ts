@@ -1,11 +1,11 @@
+import {
+  blobVersionedHashSchema,
+  hexSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
-import {
-  blobIdSchema,
-  blobVersionedHashSchema,
-  hexSchema,
-} from "../../schemas";
+import { blobIdSchema } from "../../schemas";
 import { buildVersionedHash, retrieveBlobData } from "../../utils";
 
 const inputSchema = z.object({

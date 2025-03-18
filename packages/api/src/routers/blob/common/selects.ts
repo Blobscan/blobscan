@@ -7,7 +7,6 @@ import type {
   Expands,
 } from "../../../middlewares/withExpands";
 import type { Prettify } from "../../../utils";
-import { dataStorageReferencesSelect } from "../../../utils";
 
 export const baseBlobSelect = {
   commitment: true,
@@ -15,7 +14,10 @@ export const baseBlobSelect = {
   size: true,
   versionedHash: true,
   dataStorageReferences: {
-    select: dataStorageReferencesSelect,
+    select: {
+      blobStorage: true,
+      dataReference: true,
+    } satisfies Prisma.BlobDataStorageReferenceSelect,
     orderBy: {
       blobStorage: "asc",
     },

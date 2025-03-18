@@ -6,32 +6,8 @@ import {
   BlockModel,
   TransactionModel,
 } from "@blobscan/db/prisma/zod";
+import { hexSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
-
-export const blockNumberSchema = z.number().nonnegative();
-
-export const slotSchema = z.number().nonnegative();
-
-export const hexSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, {
-  message: "Invalid hexadecimal string",
-});
-
-export const blockHashSchema = hexSchema.refine(
-  (value) => value.length === 66,
-  {
-    message: "Block hashes must be 66 characters long",
-  }
-);
-
-export const blobIndexSchema = z.number().nonnegative();
-
-export const addressSchema = z
-  .string()
-  .transform((value) => value.toLowerCase());
-
-export const blobVersionedHashSchema = hexSchema.length(66).startsWith("0x01");
-
-export const blobCommitmentSchema = hexSchema.length(98);
 
 export const blobIdSchema = z
   .string()
@@ -101,6 +77,8 @@ export const prismaTransactionSchema = TransactionModel.omit({
     rollup: true,
   }),
 });
+
+export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
 
 export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel.partial()
   .required({ blobHash: true })

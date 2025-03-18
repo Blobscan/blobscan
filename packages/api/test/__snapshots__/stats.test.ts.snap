@@ -6,7 +6,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    6900,
+    "6900",
   ],
   "totalBlobs": [
     5,
@@ -24,8 +24,8 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    4000,
-    6900,
+    "4000",
+    "6900",
   ],
   "totalBlobs": [
     4,
@@ -46,9 +46,9 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    5900,
-    4000,
-    6900,
+    "5900",
+    "4000",
+    "6900",
   ],
   "totalBlobs": [
     5,
@@ -72,10 +72,10 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    6200,
-    5900,
-    4000,
-    6900,
+    "6200",
+    "5900",
+    "4000",
+    "6900",
   ],
   "totalBlobs": [
     6,
@@ -102,11 +102,11 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    393216,
-    6200,
-    5900,
-    4000,
-    6900,
+    "393216",
+    "6200",
+    "5900",
+    "4000",
+    "6900",
   ],
   "totalBlobs": [
     3,
@@ -136,12 +136,12 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     "2023-08-31T00:00:00.000Z",
   ],
   "totalBlobSizes": [
-    6400,
-    393216,
-    6200,
-    5900,
-    4000,
-    6900,
+    "6400",
+    "393216",
+    "6200",
+    "5900",
+    "4000",
+    "6900",
   ],
   "totalBlobs": [
     6,

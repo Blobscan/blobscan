@@ -1,9 +1,9 @@
 import type { Prisma } from "@blobscan/db";
+import { blockHashSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import type { TRPCInnerContext } from "../../context";
 import { createAuthedProcedure } from "../../procedures";
-import { blockHashSchema } from "../../utils";
 import { INDEXER_PATH } from "./common";
 
 /**

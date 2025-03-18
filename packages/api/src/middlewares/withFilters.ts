@@ -1,4 +1,5 @@
 import type { Prisma } from "@blobscan/db";
+import { AddressModel, BlockModel } from "@blobscan/db/prisma/zod";
 import {
   dbCategoryCoercionSchema,
   dbRollupCoercionSchema,
@@ -7,7 +8,6 @@ import { env } from "@blobscan/env";
 import { getAddressesByRollup } from "@blobscan/rollups";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
-import { addressSchema, blockNumberSchema, slotSchema } from "../schemas";
 import { t } from "../trpc-client";
 
 type NumberRangeFilter = {
@@ -51,13 +51,13 @@ const sortSchema = z.enum(["asc", "desc"]);
 const typeSchema = z.enum(["reorged", "canonical"]);
 
 export const withBlockRangeFilterSchema = z.object({
-  startBlock: blockNumberSchema.optional(),
-  endBlock: blockNumberSchema.optional(),
+  startBlock: BlockModel.shape.number.optional(),
+  endBlock: BlockModel.shape.number.optional(),
 });
 
 export const withSlotRangeFilterSchema = z.object({
-  startSlot: slotSchema.optional(),
-  endSlot: slotSchema.optional(),
+  startSlot: BlockModel.shape.slot.optional(),
+  endSlot: BlockModel.shape.slot.optional(),
 });
 
 export const withRollupsFilterSchema = z.object({
@@ -81,9 +81,9 @@ export const withDateRangeFilterSchema = z.object({
 
 export const withAddressFilterSchema = z.object({
   from: commaSeparatedValuesSchema.transform((values) =>
-    values?.map((v) => addressSchema.parse(v))
+    values?.map((v) => AddressModel.shape.address.parse(v))
   ),
-  to: addressSchema.optional(),
+  to: AddressModel.shape.address.optional(),
 });
 
 export const withSortFilterSchema = z.object({

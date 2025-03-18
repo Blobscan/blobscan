@@ -8,6 +8,24 @@ import {
 } from "./enums";
 import { Category as DBCategoryEnum } from "./enums";
 
+export const hexSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, {
+  message: "Invalid hexadecimal string",
+});
+
+export const blockHashSchema = hexSchema.length(
+  66,
+  "Invalid block hash length"
+);
+
+export const addressSchema = hexSchema.length(42, "Invalid address length");
+
+export const blobCommitmentSchema = hexSchema.length(
+  98,
+  "Invalid blob commitment length"
+);
+
+export const blobVersionedHashSchema = hexSchema.length(66).startsWith("0x01");
+
 export const zodDecimalSchema = z.instanceof(Prisma.Decimal);
 
 // TODO: create helper to checksum addresses

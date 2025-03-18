@@ -75,7 +75,11 @@ exports[`Blockchain sync state route > updateState > when authorized > should fa
     ]
   },
   {
-    \\"code\\": \\"custom\\",
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 66,
+    \\"type\\": \\"string\\",
+    \\"inclusive\\": true,
+    \\"exact\\": true,
     \\"message\\": \\"Block hashes must be 66 characters long\\",
     \\"path\\": [
       \\"lastUpperSyncedBlockRoot\\"
@@ -95,7 +99,11 @@ exports[`Blockchain sync state route > updateState > when authorized > should fa
     ]
   },
   {
-    "code": "custom",
+    "code": "too_small",
+    "minimum": 66,
+    "type": "string",
+    "inclusive": true,
+    "exact": true,
     "message": "Block hashes must be 66 characters long",
     "path": [
       "lastUpperSyncedBlockRoot"
