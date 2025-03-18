@@ -80,7 +80,7 @@ exports[`Blockchain sync state route > updateState > when authorized > should fa
     \\"type\\": \\"string\\",
     \\"inclusive\\": true,
     \\"exact\\": true,
-    \\"message\\": \\"Block hashes must be 66 characters long\\",
+    \\"message\\": \\"Invalid block hash length\\",
     \\"path\\": [
       \\"lastUpperSyncedBlockRoot\\"
     ]
@@ -104,7 +104,7 @@ exports[`Blockchain sync state route > updateState > when authorized > should fa
     "type": "string",
     "inclusive": true,
     "exact": true,
-    "message": "Block hashes must be 66 characters long",
+    "message": "Invalid block hash length",
     "path": [
       "lastUpperSyncedBlockRoot"
     ]

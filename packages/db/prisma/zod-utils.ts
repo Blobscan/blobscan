@@ -26,7 +26,14 @@ export const blobCommitmentSchema = hexSchema.length(
 
 export const blobVersionedHashSchema = hexSchema.length(66).startsWith("0x01");
 
-export const zodDecimalSchema = z.instanceof(Prisma.Decimal);
+export const prismaDecimalSchema = z.instanceof(Prisma.Decimal);
+
+export const nonNegativeDecimalSchema = prismaDecimalSchema.refine(
+  (value) => value.gte(0),
+  {
+    message: "Value must be greater than or equal to 0",
+  }
+);
 
 // TODO: create helper to checksum addresses
 

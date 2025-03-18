@@ -8,7 +8,7 @@ import {
   prismaBlockSchema,
   prismaTransactionSchema,
 } from "../../../schemas";
-import { isEmptyObject, serialize } from "../../../utils";
+import { hasProperties, serialize } from "../../../utils";
 import { transformPrismaBlobOnTx } from "../../blob/common";
 
 export const fullPrismaTransactionSchema = prismaTransactionSchema.extend({
@@ -66,7 +66,7 @@ export function transformPrismaTransaction(
   return {
     category: rollup ? Category.ROLLUP : Category.OTHER,
     rollup,
-    decodedFields: isEmptyObject(decodedFields) ? null : decodedFields,
+    decodedFields: hasProperties(decodedFields) ? decodedFields : null,
     from: fromId,
     to: toId,
     ...restTxFields,

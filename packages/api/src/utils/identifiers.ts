@@ -14,8 +14,8 @@ export function isBlockNumber(number: string): boolean {
   return !isNaN(number_) && isValidInt(number_);
 }
 
-export function isEmptyObject(obj: Record<string, unknown>) {
-  return Object.values(obj).length === 0;
+export function hasProperties(obj: Record<string, unknown>) {
+  return Object.values(obj).length > 0;
 }
 
 export function isNullish<T>(
