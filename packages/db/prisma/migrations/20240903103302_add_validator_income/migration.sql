@@ -28,3 +28,4 @@ CREATE TABLE "validator_income" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "uni_validaotr_epoch_income" ON "validator_income"("validator_idx", "epoch_idx");
+CREATE INDEX "idx_inserted_at" ON "validator_income"("inserted_at");
