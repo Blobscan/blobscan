@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -11,7 +10,6 @@ import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
-import { deserializeFullTransaction } from "~/utils";
 
 const Address: NextPage = () => {
   const { env } = useEnv();
@@ -19,25 +17,13 @@ const Address: NextPage = () => {
   const { paginationParams } = useQueryParams();
   const address = (router.query.address as string | undefined) ?? "";
 
-  const { data: serializedAddressTxs, error } = api.tx.getAll.useQuery<{
+  const { data: addressTxsData, error } = api.tx.getAll.useQuery<{
     transactions: TransactionWithExpandedBlockAndBlob[];
     totalTransactions: number;
   }>(
     { ...paginationParams, from: address, expand: "block,blob" },
     { enabled: router.isReady }
   );
-  const addressTxsData = useMemo(() => {
-    if (!serializedAddressTxs) {
-      return;
-    }
-
-    return {
-      totalTransactions: serializedAddressTxs.totalTransactions,
-      transactions: serializedAddressTxs.transactions.map(
-        deserializeFullTransaction
-      ),
-    };
-  }, [serializedAddressTxs]);
 
   if (error) {
     return (

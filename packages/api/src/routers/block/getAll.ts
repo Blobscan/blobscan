@@ -13,19 +13,26 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import type { CompletePrismaBlock } from "./common";
-import { createBlockSelect, serializedBlockSchema } from "./common";
+import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
+import type { CompletePrismaBlock } from "./helpers";
+import {
+  responseBlockSchema,
+  createBlockSelect,
+  toResponseBlock,
+} from "./helpers";
 
 const inputSchema = withAllFiltersSchema
   .merge(createExpandsSchema(["transaction", "blob"]))
   .merge(withPaginationSchema)
   .optional();
 
-const outputSchema = z.object({
-  blocks: serializedBlockSchema.array(),
-  totalBlocks: z.number().optional(),
-});
+const outputSchema = z
+  .object({
+    blocks: responseBlockSchema.array(),
+    totalBlocks: z.number().optional(),
+  })
+  .transform(normalize);
 
 export const getAll = publicProcedure
   .meta({
@@ -67,11 +74,12 @@ export const getAll = publicProcedure
       ? countBlocks(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [dbBlocks_, totalBlocks] = await Promise.all([blocksOp, countOp]);
-    const dbBlocks = dbBlocks_ as unknown as CompletePrismaBlock[];
+    const [prismaBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
 
     return {
-      blocks: dbBlocks,
+      blocks: prismaBlocks.map((prismaBlock) =>
+        toResponseBlock(prismaBlock as unknown as CompletePrismaBlock)
+      ),
       ...(count ? { totalBlocks } : {}),
     };
   });

@@ -1,18 +1,19 @@
+import { DailyStatsModel } from "@blobscan/db/prisma/zod";
+
 import { withSortFilterSchema } from "../../middlewares/withFilters";
 import {
   withTimeFrame,
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import { DailyStatsModel } from "../../schemas";
-import { serialize } from "../../utils";
+import { normalize } from "../../utils";
 
 const inputSchema = withTimeFrameSchema.merge(withSortFilterSchema);
 const outputSchema = DailyStatsModel.omit({
   id: true,
 })
   .array()
-  .transform(serialize);
+  .transform(normalize);
 
 export const getDailyStats = publicProcedure
   .input(inputSchema)
@@ -49,8 +50,5 @@ export const getDailyStats = publicProcedure
       ],
     });
 
-    return dailyStats.map((stats) => ({
-      ...stats,
-      totalBlobSize: stats.totalBlobSize.toString(),
-    }));
+    return dailyStats;
   });

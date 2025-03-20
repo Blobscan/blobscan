@@ -6,12 +6,12 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import { serialize } from "../../utils";
-import { TRANSACTION_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { TRANSACTION_BASE_PATH } from "./helpers";
 
 const inputSchema = withTimeFrameSchema;
 
-const dailyStatsReponse = z.object({
+const responseDailyStatsSchema = z.object({
   days: DailyStatsModel.shape.day.array(),
   totalTransactions: DailyStatsModel.shape.totalTransactions.array(),
   totalUniqueSenders: DailyStatsModel.shape.totalUniqueSenders.array(),
@@ -19,7 +19,7 @@ const dailyStatsReponse = z.object({
   avgMaxBlobGasFees: DailyStatsModel.shape.avgMaxBlobGasFee.array(),
 });
 
-export const outputSchema = dailyStatsReponse.transform(serialize);
+export const outputSchema = responseDailyStatsSchema.transform(normalize);
 
 type OutputSchema = z.input<typeof outputSchema>;
 

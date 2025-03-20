@@ -14,21 +14,25 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import type { CompletePrismaBlobOnTransaction } from "./common";
-import {
-  createBlobsOnTransactionsSelect,
-  serializedBlobOnTransactionSchema,
-} from "./common";
+import { normalize } from "../../utils";
 import { countBlobs } from "./getCount";
+import type { CompletePrismaBlobOnTransaction } from "./helpers";
+import {
+  responseBlobOnTransactionSchema,
+  createBlobsOnTransactionsSelect,
+  toResponseBlobOnTransaction,
+} from "./helpers";
 
 const inputSchema = withPaginationSchema
   .merge(withAllFiltersSchema)
   .merge(createExpandsSchema(["transaction", "block"]));
 
-const outputSchema = z.object({
-  blobs: serializedBlobOnTransactionSchema.array(),
-  totalBlobs: z.number().optional(),
-});
+const outputSchema = z
+  .object({
+    blobs: responseBlobOnTransactionSchema.array(),
+    totalBlobs: z.number().optional(),
+  })
+  .transform(normalize);
 
 export const getAll = publicProcedure
   .meta({
@@ -81,16 +85,17 @@ export const getAll = publicProcedure
     });
     const countOp = count ? countBlobs(prisma, filters) : undefined;
 
-    const [dbBlobsOnTxs, totalBlobs] = await Promise.all([
+    const [prismaBlobsOnTxs, totalBlobs] = await Promise.all([
       blobsOnTransactinonsOp,
       countOp,
     ]);
 
-    const blobsOnTransactions =
-      dbBlobsOnTxs as unknown as CompletePrismaBlobOnTransaction[];
-
     return {
-      blobs: blobsOnTransactions,
+      blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
+        toResponseBlobOnTransaction(
+          prismaBlobOnTx as unknown as CompletePrismaBlobOnTransaction
+        )
+      ),
       ...(count ? { totalBlobs } : {}),
     };
   });

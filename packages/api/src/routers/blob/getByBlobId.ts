@@ -7,9 +7,13 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { retrieveBlobData } from "../../utils";
-import type { CompletePrismaBlob } from "./common";
-import { createBlobSelect, serializedBlobSchema } from "./common";
+import { normalize, retrieveBlobData } from "../../utils";
+import type { CompletePrismaBlob } from "./helpers";
+import {
+  responseBlobSchema,
+  createBlobSelect,
+  toResponseBlob,
+} from "./helpers";
 
 const inputSchema = z
   .object({
@@ -17,7 +21,7 @@ const inputSchema = z
   })
   .merge(createExpandsSchema(["transaction", "block"]));
 
-const outputSchema = serializedBlobSchema;
+const outputSchema = responseBlobSchema.transform(normalize);
 
 export const getByBlobId = publicProcedure
   .meta({
@@ -35,21 +39,21 @@ export const getByBlobId = publicProcedure
   .query(async ({ ctx: { prisma, blobStorageManager, expands }, input }) => {
     const { id } = input;
 
-    const blob = (await prisma.blob.findFirst({
+    const prismaBlob = (await prisma.blob.findFirst({
       select: createBlobSelect(expands),
       where: {
         OR: [{ versionedHash: id }, { commitment: id }],
       },
     })) as unknown as CompletePrismaBlob | null;
 
-    if (!blob) {
+    if (!prismaBlob) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
-    blob.data = await retrieveBlobData(blobStorageManager, blob);
+    const blobData = await retrieveBlobData(blobStorageManager, prismaBlob);
 
-    return blob;
+    return toResponseBlob(prismaBlob, blobData);
   });

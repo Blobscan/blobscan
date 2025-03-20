@@ -26,9 +26,9 @@ export const blobCommitmentSchema = hexSchema.length(
 
 export const blobVersionedHashSchema = hexSchema.length(66).startsWith("0x01");
 
-export const prismaDecimalSchema = z.instanceof(Prisma.Decimal);
+export const decimalSchema = z.instanceof(Prisma.Decimal);
 
-export const nonNegativeDecimalSchema = prismaDecimalSchema.refine(
+export const nonNegativeDecimalSchema = decimalSchema.refine(
   (value) => value.gte(0),
   {
     message: "Value must be greater than or equal to 0",

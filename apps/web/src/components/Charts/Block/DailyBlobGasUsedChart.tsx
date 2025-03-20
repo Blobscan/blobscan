@@ -2,16 +2,16 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { DailyBlockStats } from "~/types";
+import type { EChartCompliantDailyStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyBlobGasUsedChartProps = Partial<{
-  days: DailyBlockStats["days"];
-  blobGasUsed: DailyBlockStats["totalBlobGasUsed"];
+  days: EChartCompliantDailyStats["day"][];
+  totalBlobGasUsed: EChartCompliantDailyStats["totalBlobGasUsed"][];
 }>;
 
 const BaseChart: FC<DailyBlobGasUsedChartProps & { title: string }> =
-  function ({ days, blobGasUsed, title }) {
+  function ({ days, totalBlobGasUsed, title }) {
     const options: EChartOption<EChartOption.SeriesBar> = {
       ...buildTimeSeriesOptions({
         dates: days,
@@ -22,7 +22,7 @@ const BaseChart: FC<DailyBlobGasUsedChartProps & { title: string }> =
       series: [
         {
           name: "Blob Gas Used",
-          data: blobGasUsed,
+          data: totalBlobGasUsed,
           stack: "gas",
           type: "bar",
         },

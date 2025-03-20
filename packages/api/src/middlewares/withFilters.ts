@@ -6,9 +6,10 @@ import {
 } from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import { getAddressesByRollup } from "@blobscan/rollups";
-import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
+import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
+import { commaSeparatedValuesSchema } from "../zod-schemas";
 
 type NumberRangeFilter = {
   gte?: number;

@@ -5,12 +5,12 @@ import { formatWei, prettyFormatWei } from "@blobscan/eth-format";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { DailyBlockStats } from "~/types";
+import type { EChartCompliantDailyStats } from "~/types";
 import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgBlobGasPriceChartProps = {
-  days: DailyBlockStats["days"];
-  avgBlobGasPrices: DailyBlockStats["avgBlobGasPrices"];
+  days: EChartCompliantDailyStats["day"][];
+  avgBlobGasPrices: EChartCompliantDailyStats["avgBlobGasPrice"][];
 };
 
 export const DailyAvgBlobGasPriceChart: FC<

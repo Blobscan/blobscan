@@ -2,17 +2,17 @@ import type { FC } from "react";
 import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { DailyBlockStats } from "~/types";
+import type { EChartCompliantDailyStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
-export type DailyBlocksChartProps = {
-  days: DailyBlockStats["days"];
-  blocks: DailyBlockStats["totalBlocks"];
-};
+export type DailyBlocksChartProps = Partial<{
+  days: EChartCompliantDailyStats["day"][];
+  totalBlocks: EChartCompliantDailyStats["totalBlocks"][];
+}>;
 
 export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
   days,
-  blocks,
+  totalBlocks,
 }) {
   const options: EChartOption<EChartOption.SeriesBar> = {
     ...buildTimeSeriesOptions({
@@ -24,7 +24,7 @@ export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
     series: [
       {
         name: "Total Blocks",
-        data: blocks,
+        data: totalBlocks,
         type: "bar",
       },
     ],

@@ -4,11 +4,15 @@ import {
   BlobModel,
   BlobsOnTransactionsModel,
   BlockModel,
-  DailyStatsModel as GeneratedDailyStatsModel,
-  OverallStatsModel as GeneratedOverallStatsModel,
   TransactionModel,
 } from "@blobscan/db/prisma/zod";
-import { hexSchema } from "@blobscan/db/prisma/zod-utils";
+import {
+  blobStorageSchema,
+  dbCategorySchema,
+  decimalSchema,
+  hexSchema,
+  optimismDecodedFieldsSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 export const toBigIntSchema = z.string().transform((value) => BigInt(value));
@@ -68,6 +72,8 @@ export const prismaBlockSchema = BlockModel.omit({
   updatedAt: true,
 });
 
+export const baseBlockSchema = prismaBlockSchema;
+
 export const prismaBlobSchema = BlobModel.omit({
   firstBlockNumber: true,
   insertedAt: true,
@@ -78,6 +84,15 @@ export const prismaBlobSchema = BlobModel.omit({
     BlobDataStorageReferenceModel.pick({
       blobStorage: true,
       dataReference: true,
+    })
+  ),
+});
+
+export const baseBlobSchema = prismaBlobSchema.extend({
+  dataStorageReferences: z.array(
+    z.object({
+      storage: blobStorageSchema,
+      url: z.string().url(),
     })
   ),
 });
@@ -94,37 +109,32 @@ export const prismaTransactionSchema = TransactionModel.omit({
 
 export type PrismaTransaction = z.infer<typeof prismaTransactionSchema>;
 
-export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel.partial()
-  .required({ blobHash: true })
-  .extend({
-    blob: prismaBlobSchema.omit({ versionedHash: true }).optional(),
-    block: prismaBlockSchema
-      .omit({
-        hash: true,
-        number: true,
-        timestamp: true,
-      })
-      .optional(),
-    transaction: prismaTransactionSchema
-      .omit({
-        hash: true,
-        blockNumber: true,
-        blockTimestamp: true,
-        blockHash: true,
-      })
-      .extend({ block: prismaBlockSchema.pick({ blobGasPrice: true }) })
-      .optional(),
-  });
+export const prismaTransactionBlob = BlobsOnTransactionsModel.extend({
+  blob: prismaBlobSchema,
+});
+export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel;
 
-// Need to override the `totalBlobSize` field to be a string instead of a bigint
-// as trpc-openapi swagger generator can't deserialize bigint
-// See https://github.com/trpc/trpc-openapi/issues/264
-export const OverallStatsModel = GeneratedOverallStatsModel.extend({
-  totalBlobSize: z.string(),
+export const transactionFeeFieldsSchema = z.object({
+  blobGasBaseFee: decimalSchema,
+  blobGasMaxFee: decimalSchema,
+  blobAsCalldataGasFee: decimalSchema,
 });
-export const DailyStatsModel = GeneratedDailyStatsModel.extend({
-  totalBlobSize: z.string(),
-});
+
+export const baseTransactionSchema = prismaTransactionSchema
+  .omit({
+    fromId: true,
+    toId: true,
+    gasPrice: true,
+  })
+  .merge(transactionFeeFieldsSchema)
+  .extend({
+    blobGasPrice: prismaBlockSchema.shape.blobGasPrice,
+    category: dbCategorySchema,
+    rollup: AddressModel.shape.rollup,
+    from: AddressModel.shape.address,
+    to: AddressModel.shape.address,
+    decodedFields: optimismDecodedFieldsSchema.nullable(),
+  });
 
 export type PrismaBlob = z.input<typeof prismaBlobSchema>;
 

@@ -2,8 +2,8 @@ import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
-import { serialize } from "../../utils";
-import { TRANSACTION_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { TRANSACTION_BASE_PATH } from "./helpers";
 
 export const inputSchema = z.void();
 
@@ -15,7 +15,7 @@ const overallStatsResponse = OverallStatsModel.pick({
   updatedAt: true,
 });
 
-export const outputSchema = overallStatsResponse.transform(serialize);
+export const outputSchema = overallStatsResponse.transform(normalize);
 
 export const getTransactionOverallStats = publicProcedure
   .meta({

@@ -20,20 +20,19 @@ import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedTransactions } from "~/types";
-import type { DeserializedBlock } from "~/utils";
 import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
-  deserializeBlock,
   formatNumber,
+  normalizeTimestamp,
 } from "~/utils";
 
 const Blocks: NextPage = function () {
   const { env } = useEnv();
   const { filterParams, paginationParams } = useQueryParams();
   const {
-    data: serializedBlocksData,
+    data: blocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
   } = api.block.getAll.useQuery<{ blocks: BlockWithExpandedTransactions[] }>({
@@ -48,22 +47,11 @@ const Blocks: NextPage = function () {
   } = api.block.getCount.useQuery(filterParams, {
     refetchOnWindowFocus: false,
   });
-  const blocksData = useMemo(() => {
-    if (!serializedBlocksData) {
-      return {};
-    }
-
-    return {
-      blocks: serializedBlocksData.blocks.map(deserializeBlock),
-    };
-  }, [serializedBlocksData]);
-  const { blocks } = blocksData;
+  const { blocks } = blocksData || {};
   const { totalBlocks } = countData || {};
   const error = blocksError || countError;
-
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
-
-  const BLOCKS_TABLE_HEADERS = [
+  const blockHeaders = [
     {
       cells: [
         {
@@ -109,40 +97,21 @@ const Blocks: NextPage = function () {
       return;
     }
 
-    return blocks.map((block: DeserializedBlock) => {
-      const {
+    return blocks.map(
+      ({
         blobGasPrice,
         blobGasUsed,
         number,
         slot,
         timestamp,
         transactions,
-      } = block;
-      const blobCount = transactions?.reduce(
-        (acc, tx) => acc + tx.blobs.length,
-        0
-      );
-
-      const getBlocksTableRowExpandItem = ({
-        transactions,
-      }: DeserializedBlock) => {
-        const headers = [
-          {
-            cells: [
-              { item: "" },
-              {
-                item: "Tx Hash",
-              },
-              {
-                item: "Blob Versioned Hash",
-              },
-            ],
-            className: "dark:border-border-dark/20",
-            sticky: true,
-          },
-        ];
-
-        const transactionsCombinedWithInnerBlobs = transactions.flatMap((tx) =>
+      }) => {
+        const formattedTimestamp = normalizeTimestamp(timestamp);
+        const blobCount = transactions?.reduce(
+          (acc, tx) => acc + tx.blobs.length,
+          0
+        );
+        const txsBlobs = transactions.flatMap((tx) =>
           tx.blobs.map((blob) => ({
             transactionHash: tx.hash,
             blobVersionedHash: blob.versionedHash,
@@ -151,134 +120,144 @@ const Blocks: NextPage = function () {
           }))
         );
 
-        const rows = transactionsCombinedWithInnerBlobs.map(
-          ({ transactionHash, blobVersionedHash, rollup, category }) => ({
-            cells: [
-              {
-                item:
-                  category === "rollup" && rollup ? (
-                    <RollupIcon rollup={rollup} />
-                  ) : (
-                    <></>
-                  ),
-              },
-              {
-                item: (
-                  <Copyable
-                    value={transactionHash}
-                    tooltipText="Copy transaction hash"
-                  >
-                    <Link href={buildTransactionRoute(transactionHash)}>
-                      {transactionHash}
-                    </Link>
-                  </Copyable>
-                ),
-              },
-              {
-                item: (
-                  <Copyable
-                    value={blobVersionedHash}
-                    tooltipText="Copy blob versioned hash"
-                  >
-                    <Link href={buildBlobRoute(blobVersionedHash)}>
-                      {blobVersionedHash}
-                    </Link>
-                  </Copyable>
-                ),
-              },
-            ],
-          })
-        );
-
-        return (
-          <Table
-            className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
-            size="xs"
-            alignment="left"
-            headers={headers}
-            rows={rows}
-          />
-        );
-      };
-
-      return {
-        cells: [
-          {
-            item: (
-              <div className="relative flex">
-                {[...new Set(transactions.map((tx) => tx.rollup))].map(
-                  (rollup, i) => {
-                    return rollup ? (
-                      <div key={i} className="-ml-1 first-of-type:ml-0">
-                        <RollupIcon rollup={rollup} />
-                      </div>
-                    ) : (
-                      <></>
-                    );
-                  }
-                )}
-              </div>
-            ),
-          },
-          {
-            item: (
-              <Copyable
-                value={number.toString()}
-                tooltipText="Copy block number"
-              >
-                <Link href={buildBlockRoute(number)}>{number}</Link>
-              </Copyable>
-            ),
-          },
-          {
-            item:
-              timeFormat === "relative"
-                ? timestamp.fromNow()
-                : timestamp.format("YYYY-MM-DD HH:mm:ss"),
-          },
-          {
-            item: (
-              <Link
-                href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${slot}`}
-                isExternal
-              >
-                {slot}
-              </Link>
-            ),
-          },
-          {
-            item: (
-              <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                {transactions.length}
-              </span>
-            ),
-          },
-          {
-            item: (
-              <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                {blobCount}
-              </span>
-            ),
-          },
-          {
-            item: <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />,
-          },
-          {
-            item: (
-              <BlobGasUsageDisplay
-                networkBlobConfig={getNetworkBlobConfigBySlot(
-                  env.PUBLIC_NETWORK_NAME,
-                  slot
-                )}
-                blobGasUsed={blobGasUsed}
-                compact
-              />
-            ),
-          },
-        ],
-        expandItem: getBlocksTableRowExpandItem(block),
-      };
-    });
+        return {
+          cells: [
+            {
+              item: (
+                <div className="relative flex">
+                  {[...new Set(transactions.map((tx) => tx.rollup))].map(
+                    (rollup, i) => {
+                      return rollup ? (
+                        <div key={i} className="-ml-1 first-of-type:ml-0">
+                          <RollupIcon rollup={rollup} />
+                        </div>
+                      ) : (
+                        <></>
+                      );
+                    }
+                  )}
+                </div>
+              ),
+            },
+            {
+              item: (
+                <Copyable
+                  value={number.toString()}
+                  tooltipText="Copy block number"
+                >
+                  <Link href={buildBlockRoute(number)}>{number}</Link>
+                </Copyable>
+              ),
+            },
+            {
+              item:
+                timeFormat === "relative"
+                  ? formattedTimestamp.fromNow()
+                  : formattedTimestamp.format("YYYY-MM-DD HH:mm:ss"),
+            },
+            {
+              item: (
+                <Link
+                  href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${slot}`}
+                  isExternal
+                >
+                  {slot}
+                </Link>
+              ),
+            },
+            {
+              item: (
+                <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {transactions.length}
+                </span>
+              ),
+            },
+            {
+              item: (
+                <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
+                  {blobCount}
+                </span>
+              ),
+            },
+            {
+              item: <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />,
+            },
+            {
+              item: (
+                <BlobGasUsageDisplay
+                  networkBlobConfig={getNetworkBlobConfigBySlot(
+                    env.PUBLIC_NETWORK_NAME,
+                    slot
+                  )}
+                  blobGasUsed={blobGasUsed}
+                  compact
+                />
+              ),
+            },
+          ],
+          expandItem: (
+            <Table
+              className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
+              size="xs"
+              alignment="left"
+              headers={[
+                {
+                  cells: [
+                    { item: "" },
+                    {
+                      item: "Tx Hash",
+                    },
+                    {
+                      item: "Blob Versioned Hash",
+                    },
+                  ],
+                  className: "dark:border-border-dark/20",
+                  sticky: true,
+                },
+              ]}
+              rows={txsBlobs.map(
+                ({ transactionHash, blobVersionedHash, rollup, category }) => ({
+                  cells: [
+                    {
+                      item:
+                        category === "rollup" && rollup ? (
+                          <RollupIcon rollup={rollup} />
+                        ) : (
+                          <></>
+                        ),
+                    },
+                    {
+                      item: (
+                        <Copyable
+                          value={transactionHash}
+                          tooltipText="Copy transaction hash"
+                        >
+                          <Link href={buildTransactionRoute(transactionHash)}>
+                            {transactionHash}
+                          </Link>
+                        </Copyable>
+                      ),
+                    },
+                    {
+                      item: (
+                        <Copyable
+                          value={blobVersionedHash}
+                          tooltipText="Copy blob versioned hash"
+                        >
+                          <Link href={buildBlobRoute(blobVersionedHash)}>
+                            {blobVersionedHash}
+                          </Link>
+                        </Copyable>
+                      ),
+                    },
+                  ],
+                })
+              )}
+            />
+          ),
+        };
+      }
+    );
   }, [blocks, timeFormat, env]);
 
   if (error) {
@@ -309,7 +288,7 @@ const Blocks: NextPage = function () {
       <Filters />
       <PaginatedTable
         isLoading={blocksIsLoading}
-        headers={BLOCKS_TABLE_HEADERS}
+        headers={blockHeaders}
         rows={blocksRows}
         totalItems={totalBlocks}
         paginationData={{

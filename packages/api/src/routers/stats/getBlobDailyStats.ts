@@ -6,19 +6,19 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import { serialize } from "../../utils";
-import { BLOB_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { BLOB_BASE_PATH } from "./helpers";
 
 const inputSchema = withTimeFrameSchema;
 
-const blobDailyStatsResponseSchema = z.object({
+const responseBlobDailyStatsSchema = z.object({
   days: DailyStatsModel.shape.day.array(),
   totalBlobs: DailyStatsModel.shape.totalBlobs.array(),
   totalUniqueBlobs: DailyStatsModel.shape.totalUniqueBlobs.array(),
   totalBlobSizes: z.string().array(),
 });
 
-export const outputSchema = blobDailyStatsResponseSchema.transform(serialize);
+export const outputSchema = responseBlobDailyStatsSchema.transform(normalize);
 
 type OutputSchema = z.input<typeof outputSchema>;
 

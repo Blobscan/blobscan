@@ -4,7 +4,7 @@ import { z } from "@blobscan/zod";
 
 import type { TRPCInnerContext } from "../../context";
 import { createAuthedProcedure } from "../../procedures";
-import { INDEXER_PATH } from "./common";
+import { INDEXER_PATH } from "./helpers";
 
 /**
  * Generates a set of Prisma operations to remove references to reorged blocks from the db.

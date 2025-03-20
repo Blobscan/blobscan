@@ -7,9 +7,13 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { retrieveBlobData } from "../../utils";
-import type { CompletePrismaTransaction } from "./common";
-import { createTransactionSelect, serializedTransactionSchema } from "./common";
+import { normalize, retrieveBlobData } from "../../utils";
+import type { CompletePrismaTransaction } from "./helpers";
+import {
+  createTransactionSelect,
+  responseTransactionSchema,
+  toResponseTransaction,
+} from "./helpers";
 
 const inputSchema = z
   .object({
@@ -17,7 +21,8 @@ const inputSchema = z
   })
   .merge(createExpandsSchema(["block", "blob", "blob_data"]));
 
-const outputSchema = serializedTransactionSchema;
+const outputSchema = responseTransactionSchema.transform(normalize);
+
 export const getByHash = publicProcedure
   .meta({
     openapi: {
@@ -59,6 +64,6 @@ export const getByHash = publicProcedure
         );
       }
 
-      return prismaTx;
+      return toResponseTransaction(prismaTx);
     }
   );

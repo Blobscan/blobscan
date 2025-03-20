@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-
 import * as Sentry from "@sentry/node";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -7,6 +6,7 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
+import "./bigint";
 import {
   appRouter,
   createTRPCContext,

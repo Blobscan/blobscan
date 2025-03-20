@@ -10,15 +10,16 @@ import { RollupIcon } from "~/components/RollupIcon";
 import { Rotable } from "~/components/Rotable";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import type { Blob, Transaction } from "~/types";
 import {
   buildAddressRoute,
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
+  normalizeTimestamp,
   shortenAddress,
 } from "~/utils";
-import type { DeserializedFullTransaction } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
@@ -27,7 +28,7 @@ import { SurfaceCardBase } from "./SurfaceCardBase";
 type BlobTransactionCardProps = Partial<{
   transaction: Partial<
     Pick<
-      DeserializedFullTransaction,
+      Transaction,
       | "hash"
       | "from"
       | "to"
@@ -38,10 +39,7 @@ type BlobTransactionCardProps = Partial<{
       | "blobGasMaxFee"
     >
   >;
-  blobs: Pick<
-    DeserializedFullTransaction["blobs"][number],
-    "versionedHash" | "size"
-  >[];
+  blobs: Pick<Blob, "versionedHash" | "size">[];
   compact?: boolean;
   className?: string;
 }>;
@@ -189,7 +187,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
                 </div>
                 <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-                  {blockTimestamp.fromNow()}
+                  {normalizeTimestamp(blockTimestamp).fromNow()}
                 </div>
               </div>
             )}

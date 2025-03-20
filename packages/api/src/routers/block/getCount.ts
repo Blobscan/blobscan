@@ -8,12 +8,15 @@ import {
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
+import { normalize } from "../../utils";
 
 const inputSchema = withAllFiltersSchema;
 
-const outputSchema = z.object({
-  totalBlocks: z.number(),
-});
+const outputSchema = z
+  .object({
+    totalBlocks: z.number(),
+  })
+  .transform(normalize);
 
 export async function countBlocks(
   prisma: BlobscanPrismaClient,

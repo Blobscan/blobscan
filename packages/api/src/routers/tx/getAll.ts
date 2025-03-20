@@ -14,19 +14,26 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import type { CompletePrismaTransaction } from "./common";
-import { createTransactionSelect, serializedTransactionSchema } from "./common";
+import { normalize } from "../../utils";
 import { countTxs } from "./getCount";
+import type { CompletePrismaTransaction } from "./helpers";
+import {
+  createTransactionSelect,
+  responseTransactionSchema,
+  toResponseTransaction,
+} from "./helpers";
 
 const inputSchema = withAllFiltersSchema
   .merge(createExpandsSchema(["block", "blob"]))
   .merge(withPaginationSchema)
   .optional();
 
-const outputSchema = z.object({
-  transactions: serializedTransactionSchema.array(),
-  totalTransactions: z.number().optional(),
-});
+const outputSchema = z
+  .object({
+    transactions: responseTransactionSchema.array(),
+    totalTransactions: z.number().optional(),
+  })
+  .transform(normalize);
 
 export const getAll = publicProcedure
   .meta({
@@ -84,14 +91,15 @@ export const getAll = publicProcedure
       ? countTxs(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [prismaTxs_, txCountOrStats] = await Promise.all([
+    const [prismaTxs, txCountOrStats] = await Promise.all([
       prismaTxsOp,
       countOp,
     ]);
-    const prismaTxs = prismaTxs_ as unknown as CompletePrismaTransaction[];
 
     return {
-      transactions: prismaTxs,
+      transactions: prismaTxs.map((tx) =>
+        toResponseTransaction(tx as unknown as CompletePrismaTransaction)
+      ),
       ...(count ? { totalTransactions: txCountOrStats } : {}),
     };
   });

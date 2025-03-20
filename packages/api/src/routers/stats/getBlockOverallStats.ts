@@ -1,14 +1,14 @@
 import { Prisma } from "@blobscan/db";
+import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
-import { OverallStatsModel } from "../../schemas";
-import { serialize } from "../../utils";
-import { BLOCK_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { BLOCK_BASE_PATH } from "./helpers";
 
 const inputSchema = z.void();
 
-const blockOverallStatsResponse = OverallStatsModel.pick({
+const responseBlockOverallStatsSchema = OverallStatsModel.pick({
   totalBlocks: true,
   totalBlobGasUsed: true,
   totalBlobAsCalldataGasUsed: true,
@@ -20,7 +20,8 @@ const blockOverallStatsResponse = OverallStatsModel.pick({
   updatedAt: true,
 });
 
-export const outputSchema = blockOverallStatsResponse.transform(serialize);
+export const outputSchema =
+  responseBlockOverallStatsSchema.transform(normalize);
 
 export const getBlockOverallStats = publicProcedure
   .meta({

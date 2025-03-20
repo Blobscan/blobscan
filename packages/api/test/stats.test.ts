@@ -64,15 +64,15 @@ describe("Stats router", async () => {
           "avgMaxBlobGasFee": 101.875,
           "category": null,
           "rollup": null,
-          "totalBlobAsCalldataFee": "354600",
-          "totalBlobAsCalldataGasUsed": "16300",
-          "totalBlobAsCalldataMaxFees": "1665000",
-          "totalBlobFee": "82575360",
-          "totalBlobGasPrice": "348",
-          "totalBlobGasUsed": "3801088",
-          "totalBlobMaxFees": "386662400",
-          "totalBlobMaxGasFees": "1630",
-          "totalBlobSize": "422616",
+          "totalBlobAsCalldataFee": 354600n,
+          "totalBlobAsCalldataGasUsed": 16300n,
+          "totalBlobAsCalldataMaxFees": 1665000n,
+          "totalBlobFee": 82575360n,
+          "totalBlobGasPrice": 348n,
+          "totalBlobGasUsed": 3801088n,
+          "totalBlobMaxFees": 386662400n,
+          "totalBlobMaxGasFees": 1630n,
+          "totalBlobSize": 422616n,
           "totalBlobs": 29,
           "totalBlocks": 8,
           "totalTransactions": 16,
@@ -90,7 +90,7 @@ describe("Stats router", async () => {
 
       expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
         {
-          "totalBlobSize": "422616",
+          "totalBlobSize": 422616n,
           "totalBlobs": 29,
           "totalUniqueBlobs": 9,
         }
@@ -120,10 +120,10 @@ describe("Stats router", async () => {
           "avgBlobAsCalldataFee": 22162.5,
           "avgBlobFee": 5160960,
           "avgBlobGasPrice": 21.75,
-          "totalBlobAsCalldataFee": "354600",
-          "totalBlobAsCalldataGasUsed": "16300",
-          "totalBlobFee": "82575360",
-          "totalBlobGasUsed": "3801088",
+          "totalBlobAsCalldataFee": 354600n,
+          "totalBlobAsCalldataGasUsed": 16300n,
+          "totalBlobFee": 82575360n,
+          "totalBlobGasUsed": 3801088n,
           "totalBlocks": 8,
         }
       `);

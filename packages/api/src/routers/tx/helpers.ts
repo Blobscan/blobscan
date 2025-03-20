@@ -1,11 +1,22 @@
 import type { Prisma } from "@blobscan/db";
+import { z } from "@blobscan/zod";
 
 import type {
   ExpandedBlob,
   ExpandedBlock,
   Expands,
-} from "../../../middlewares/withExpands";
-import type { Prettify } from "../../../utils";
+} from "../../middlewares/withExpands";
+import type { Prettify } from "../../types";
+import {
+  deriveTransactionFields,
+  normalizePrismaBlobFields,
+  normalizePrismaTransactionFields,
+} from "../../utils/transformers";
+import {
+  baseTransactionSchema,
+  baseBlobSchema,
+  baseBlockSchema,
+} from "../../zod-schemas";
 
 const transactionSelect = {
   hash: true,
@@ -69,4 +80,43 @@ export function createTransactionSelect(expands: Expands) {
       },
     },
   } satisfies Prisma.TransactionSelect;
+}
+
+export const responseTransactionSchema = baseTransactionSchema.extend({
+  block: baseBlockSchema
+    .omit({
+      hash: true,
+      number: true,
+      timestamp: true,
+    })
+    .partial()
+    .required({
+      blobGasPrice: true,
+    }),
+  blobs: z.array(baseBlobSchema.partial().required({ versionedHash: true })),
+});
+
+export type ResponseTransaction = z.input<typeof responseTransactionSchema>;
+
+export function toResponseTransaction(
+  prismaTx: CompletePrismaTransaction
+): ResponseTransaction {
+  const { blobs: blobsOnTxs, block } = prismaTx;
+  const normalizedFields = normalizePrismaTransactionFields(prismaTx);
+  const derivedFields = deriveTransactionFields({
+    ...prismaTx,
+    blobGasPrice: block.blobGasPrice,
+  });
+  const blobs = blobsOnTxs.map(({ blobHash, blob }) =>
+    blob
+      ? normalizePrismaBlobFields({ versionedHash: blobHash, ...blob })
+      : { versionedHash: blobHash }
+  );
+
+  return {
+    ...prismaTx,
+    ...normalizedFields,
+    ...derivedFields,
+    blobs,
+  };
 }

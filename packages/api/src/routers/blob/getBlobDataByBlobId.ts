@@ -5,14 +5,14 @@ import {
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
-import { blobIdSchema } from "../../schemas";
-import { buildVersionedHash, retrieveBlobData } from "../../utils";
+import { buildVersionedHash, normalize, retrieveBlobData } from "../../utils";
+import { blobIdSchema } from "../../zod-schemas";
 
 const inputSchema = z.object({
   id: blobIdSchema,
 });
 
-const outputSchema = hexSchema;
+const outputSchema = hexSchema.transform(normalize);
 
 export const getBlobDataByBlobId = publicProcedure
   .meta({

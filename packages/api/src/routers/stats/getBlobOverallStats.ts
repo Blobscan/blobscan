@@ -1,20 +1,20 @@
+import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
-import { OverallStatsModel } from "../../schemas";
-import { serialize } from "../../utils";
-import { BLOB_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { BLOB_BASE_PATH } from "./helpers";
 
 export const inputSchema = z.void();
 
-const blobOverallStatsSchema = OverallStatsModel.pick({
+const responseBlobOverallStatsSchema = OverallStatsModel.pick({
   totalBlobs: true,
   totalUniqueBlobs: true,
   totalBlobSize: true,
   updatedAt: true,
 });
 
-export const outputSchema = blobOverallStatsSchema.transform(serialize);
+export const outputSchema = responseBlobOverallStatsSchema.transform(normalize);
 
 export const getBlobOverallStats = publicProcedure
   .meta({
@@ -47,7 +47,7 @@ export const getBlobOverallStats = publicProcedure
       return {
         totalBlobs: 0,
         totalUniqueBlobs: 0,
-        totalBlobSize: "0",
+        totalBlobSize: BigInt(0),
         updatedAt: new Date(),
       };
     }
@@ -55,7 +55,7 @@ export const getBlobOverallStats = publicProcedure
     return {
       totalBlobs: allStats.totalBlobs,
       totalUniqueBlobs: allStats.totalUniqueBlobs,
-      totalBlobSize: allStats.totalBlobSize.toString(),
+      totalBlobSize: allStats.totalBlobSize,
       updatedAt: allStats.updatedAt,
     };
   });

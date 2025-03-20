@@ -6,12 +6,12 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import { serialize } from "../../utils";
-import { BLOCK_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { BLOCK_BASE_PATH } from "./helpers";
 
 const inputSchema = withTimeFrameSchema;
 
-const blockDailyStatsResponse = z.object({
+const responseBlockDailyStatsResponseSchema = z.object({
   days: DailyStatsModel.shape.day.array(),
   totalBlocks: DailyStatsModel.shape.totalBlocks.array(),
   totalBlobGasUsed: DailyStatsModel.shape.totalBlobGasUsed.array(),
@@ -24,7 +24,8 @@ const blockDailyStatsResponse = z.object({
   avgBlobGasPrices: DailyStatsModel.shape.avgBlobGasPrice.array(),
 });
 
-export const outputSchema = blockDailyStatsResponse.transform(serialize);
+export const outputSchema =
+  responseBlockDailyStatsResponseSchema.transform(normalize);
 
 type OutputSchema = z.input<typeof outputSchema>;
 
