@@ -89,6 +89,7 @@ describe("Transaction router", async () => {
       const result = await caller.tx.getByHash({
         hash: "txHash001",
       });
+
       expect(result).toMatchSnapshot();
     });
 

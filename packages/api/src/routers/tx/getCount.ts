@@ -7,6 +7,7 @@ import {
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
+import { normalize } from "../../utils";
 import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 
 /**
@@ -68,9 +69,11 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
 
 const inputSchema = withAllFiltersSchema;
 
-const outputSchema = z.object({
-  totalTransactions: z.number(),
-});
+const outputSchema = z
+  .object({
+    totalTransactions: z.number(),
+  })
+  .transform(normalize);
 
 export const getCount = publicProcedure
   .input(inputSchema)

@@ -1,18 +1,15 @@
 import { TRPCError } from "@trpc/server";
 
+import { BlockchainSyncStateModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
-import { blockHashSchema, blockNumberSchema, slotSchema } from "../../utils";
+import { isNullish } from "../../utils";
 import { BASE_PATH } from "./common";
 
-export const inputSchema = z.object({
-  lastLowerSyncedSlot: slotSchema.optional(),
-  lastUpperSyncedSlot: slotSchema.optional(),
-  lastFinalizedBlock: blockNumberSchema.optional(),
-  lastUpperSyncedBlockRoot: blockHashSchema.optional(),
-  lastUpperSyncedBlockSlot: slotSchema.optional(),
-});
+export const inputSchema = BlockchainSyncStateModel.omit({
+  id: true,
+}).partial();
 
 export const outputSchema = z.void();
 
@@ -40,8 +37,8 @@ export const updateState = createAuthedProcedure("indexer")
       },
     }) => {
       if (
-        lastLowerSyncedSlot !== undefined &&
-        lastUpperSyncedSlot !== undefined &&
+        !isNullish(lastLowerSyncedSlot) &&
+        !isNullish(lastUpperSyncedSlot) &&
         lastLowerSyncedSlot > lastUpperSyncedSlot
       ) {
         throw new TRPCError({

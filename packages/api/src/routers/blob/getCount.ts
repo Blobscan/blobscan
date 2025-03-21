@@ -7,13 +7,16 @@ import {
   withFilters,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
+import { normalize } from "../../utils";
 import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
 
 const inputSchema = withAllFiltersSchema;
 
-const outputSchema = z.object({
-  totalBlobs: z.number(),
-});
+const outputSchema = z
+  .object({
+    totalBlobs: z.number(),
+  })
+  .transform(normalize);
 
 /**
  * Counts blobs based on the provided filters.

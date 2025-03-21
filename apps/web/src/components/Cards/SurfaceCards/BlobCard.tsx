@@ -4,19 +4,17 @@ import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { StorageIcon } from "~/components/StorageIcon";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
-import type { Rollup } from "~/types";
+import type { Blob, Rollup } from "~/types";
 import { buildBlobRoute, formatBytes } from "~/utils";
-import type { DeserializedBlob } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlobCardProps = Partial<{
   blob: Pick<
-    DeserializedBlob,
+    Blob,
     "versionedHash" | "commitment" | "size" | "dataStorageReferences" | "proof"
   > & { rollup?: Rollup | null };
-  rollup: Rollup | null;
   compact?: boolean;
   className?: string;
 }>;

@@ -1,50 +1,27 @@
+import { Prisma } from "@blobscan/db";
+import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
-import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
-import { BLOCK_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { BLOCK_BASE_PATH } from "./helpers";
 
 const inputSchema = z.void();
-export const outputSchema = z.object({
-  totalBlocks: z.number(),
-  totalBlobGasUsed: z.string(),
-  totalBlobAsCalldataGasUsed: z.string(),
-  totalBlobFee: z.string(),
-  totalBlobAsCalldataFee: z.string(),
-  avgBlobFee: z.number(),
-  avgBlobAsCalldataFee: z.number(),
-  avgBlobGasPrice: z.number(),
-  updatedAt: z.date(),
+
+const responseBlockOverallStatsSchema = OverallStatsModel.pick({
+  totalBlocks: true,
+  totalBlobGasUsed: true,
+  totalBlobAsCalldataGasUsed: true,
+  totalBlobFee: true,
+  totalBlobAsCalldataFee: true,
+  avgBlobFee: true,
+  avgBlobAsCalldataFee: true,
+  avgBlobGasPrice: true,
+  updatedAt: true,
 });
 
-export async function getBlockOverallStatsQuery(prisma: TRPCContext["prisma"]) {
-  return prisma.overallStats
-    .findFirst({
-      where: { category: null, rollup: null },
-    })
-    .then((stats) =>
-      stats
-        ? {
-            ...stats,
-            totalBlobGasUsed: stats.totalBlobGasUsed.toFixed(),
-            totalBlobAsCalldataGasUsed:
-              stats.totalBlobAsCalldataGasUsed.toFixed(),
-            totalBlobFee: stats.totalBlobFee.toFixed(),
-            totalBlobAsCalldataFee: stats.totalBlobAsCalldataFee.toFixed(),
-          }
-        : {
-            totalBlocks: 0,
-            totalBlobGasUsed: "0",
-            totalBlobAsCalldataGasUsed: "0",
-            totalBlobFee: "0",
-            totalBlobAsCalldataFee: "0",
-            avgBlobFee: 0,
-            avgBlobAsCalldataFee: 0,
-            avgBlobGasPrice: 0,
-            updatedAt: new Date(),
-          }
-    );
-}
+export const outputSchema =
+  responseBlockOverallStatsSchema.transform(normalize);
 
 export const getBlockOverallStats = publicProcedure
   .meta({
@@ -57,4 +34,24 @@ export const getBlockOverallStats = publicProcedure
   })
   .input(inputSchema)
   .output(outputSchema)
-  .query(async ({ ctx }) => getBlockOverallStatsQuery(ctx.prisma));
+  .query(async ({ ctx: { prisma } }) =>
+    prisma.overallStats
+      .findFirst({
+        where: { category: null, rollup: null },
+      })
+      .then(
+        (stats) =>
+          stats ?? {
+            totalBlocks: 0,
+            totalBlobGasPrice: new Prisma.Decimal(0),
+            totalBlobGasUsed: new Prisma.Decimal(0),
+            totalBlobAsCalldataGasUsed: new Prisma.Decimal(0),
+            totalBlobFee: new Prisma.Decimal(0),
+            totalBlobAsCalldataFee: new Prisma.Decimal(0),
+            avgBlobFee: 0,
+            avgBlobAsCalldataFee: 0,
+            avgBlobGasPrice: 0,
+            updatedAt: new Date(),
+          }
+      )
+  );

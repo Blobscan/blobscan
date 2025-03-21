@@ -1,10 +1,11 @@
 import { TRPCError } from "@trpc/server";
 
 import type { BlobDataStorageReference } from "@blobscan/db";
-import { toBigIntSchema, z } from "@blobscan/zod";
+import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
-import { INDEXER_PATH } from "./common";
+import { toBigIntSchema } from "../../zod-schemas";
+import { INDEXER_PATH } from "./helpers";
 import {
   createDBAddresses,
   createDBBlobs,

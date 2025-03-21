@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -24,7 +23,6 @@ import {
   formatBytes,
   formatNumber,
   performDiv,
-  deserializeFullTransaction,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -33,27 +31,20 @@ const Tx: NextPage = () => {
   const hash = (router.query.hash as string | undefined) ?? "";
 
   const {
-    data: rawTxData,
+    data: tx,
     error,
     isLoading,
   } = api.tx.getByHash.useQuery<TransactionWithExpandedBlockAndBlob>(
     { hash, expand: "block,blob" },
     { enabled: router.isReady }
   );
-  const tx = useMemo(() => {
-    if (!rawTxData) {
-      return;
-    }
-
-    return deserializeFullTransaction(rawTxData);
-  }, [rawTxData]);
 
   const { data: neighbors } = api.tx.getTxNeighbors.useQuery(
     tx
       ? {
           senderAddress: tx.from,
           blockNumber: tx.blockNumber,
-          index: tx.index,
+          index: tx.index as number,
         }
       : {
           senderAddress: "",
@@ -227,11 +218,6 @@ const Tx: NextPage = () => {
     );
   }
 
-  const decodedData =
-    rawTxData?.decodedFields?.type === "optimism"
-      ? rawTxData.decodedFields.payload
-      : undefined;
-
   return (
     <>
       <DetailsLayout
@@ -256,9 +242,9 @@ const Tx: NextPage = () => {
         fields={detailsFields}
       />
 
-      {decodedData && (
+      {tx?.rollup === "optimism" && !!tx.decodedFields && (
         <OptimismCard
-          data={decodedData}
+          data={tx.decodedFields}
           txTimestamp={tx ? tx.blockTimestamp : undefined}
         />
       )}

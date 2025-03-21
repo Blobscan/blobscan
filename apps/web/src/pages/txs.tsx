@@ -18,7 +18,6 @@ import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
-import type { DeserializedBlob, DeserializedFullTransaction } from "~/utils";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -27,29 +26,13 @@ import {
   formatNumber,
   formatTimestamp,
   shortenAddress,
-  deserializeFullTransaction,
   buildBlobRoute,
 } from "~/utils";
-
-type Transaction = Pick<
-  DeserializedFullTransaction,
-  | "hash"
-  | "from"
-  | "to"
-  | "blobs"
-  | "rollup"
-  | "blockNumber"
-  | "blobGasBaseFee"
-  | "blobGasMaxFee"
-  | "block"
-  | "blockTimestamp"
-  | "category"
-> & { blobsLength?: number };
 
 const Txs: NextPage = function () {
   const { filterParams, paginationParams } = useQueryParams();
   const {
-    data: serializedTxs,
+    data: txsData,
     isLoading: txsIsLoading,
     error: txsError,
   } = api.tx.getAll.useQuery<{
@@ -67,22 +50,11 @@ const Txs: NextPage = function () {
   } = api.tx.getCount.useQuery(filterParams, {
     refetchOnWindowFocus: false,
   });
-  const txsData = useMemo(() => {
-    if (!serializedTxs) {
-      return;
-    }
-
-    return {
-      totalTransactions: serializedTxs.totalTransactions,
-      transactions: serializedTxs.transactions.map(deserializeFullTransaction),
-    };
-  }, [serializedTxs]);
   const { transactions } = txsData || {};
   const { totalTransactions } = countData || {};
   const error = txsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
-
-  const TRANSACTIONS_TABLE_HEADERS = [
+  const transactionHeaders = [
     {
       cells: [
         { item: "", className: "w-[40px]" },
@@ -124,11 +96,10 @@ const Txs: NextPage = function () {
       ],
     },
   ];
-
   const transactionRows = useMemo(() => {
     return transactions
-      ? transactions.map((t: Transaction) => {
-          const {
+      ? transactions.map(
+          ({
             hash,
             from,
             to,
@@ -140,74 +111,7 @@ const Txs: NextPage = function () {
             blobGasMaxFee,
             block,
             blockTimestamp,
-          } = t;
-
-          const getTransactionsTableRowExpandItem = (
-            blobs?: Pick<
-              DeserializedBlob,
-              | "versionedHash"
-              | "commitment"
-              | "size"
-              | "dataStorageReferences"
-              | "proof"
-            >[]
-          ) => {
-            const headers = [
-              {
-                cells: [
-                  {
-                    item: "Blob Versioned Hash",
-                    className: "bg-primary-50 dark:bg-primary-900",
-                  },
-                  {
-                    item: "Size",
-                    className: "bg-primary-50 dark:bg-primary-900",
-                  },
-                ],
-                className: "dark:border-border-dark/20",
-                sticky: true,
-              },
-            ];
-
-            const rows = blobs
-              ? blobs.map((b) => ({
-                  cells: [
-                    {
-                      item: (
-                        <Copyable
-                          value={b.versionedHash}
-                          tooltipText="Copy blob versioned hash"
-                        >
-                          <Link href={buildBlobRoute(b.versionedHash)}>
-                            {b.versionedHash}
-                          </Link>
-                        </Copyable>
-                      ),
-                    },
-                    {
-                      item: (
-                        <div className="flex gap-2">
-                          <span>{formatBytes(b.size)}</span>
-                        </div>
-                      ),
-                    },
-                  ],
-                  className: "dark:border-border-dark/10",
-                }))
-              : undefined;
-
-            return (
-              <Table
-                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-900"
-                size="xs"
-                alignment="left"
-                headers={headers}
-                rows={rows}
-              />
-            );
-          };
-
-          return {
+          }) => ({
             cells: [
               {
                 item:
@@ -283,9 +187,59 @@ const Txs: NextPage = function () {
                 ),
               },
             ],
-            expandItem: getTransactionsTableRowExpandItem(blobs),
-          };
-        })
+            expandItem: (
+              <Table
+                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-900"
+                size="xs"
+                alignment="left"
+                headers={[
+                  {
+                    cells: [
+                      {
+                        item: "Blob Versioned Hash",
+                        className: "bg-primary-50 dark:bg-primary-900",
+                      },
+                      {
+                        item: "Size",
+                        className: "bg-primary-50 dark:bg-primary-900",
+                      },
+                    ],
+                    className: "dark:border-border-dark/20",
+                    sticky: true,
+                  },
+                ]}
+                rows={
+                  blobs
+                    ? blobs.map((b) => ({
+                        cells: [
+                          {
+                            item: (
+                              <Copyable
+                                value={b.versionedHash}
+                                tooltipText="Copy blob versioned hash"
+                              >
+                                <Link href={buildBlobRoute(b.versionedHash)}>
+                                  {b.versionedHash}
+                                </Link>
+                              </Copyable>
+                            ),
+                          },
+                          {
+                            item: (
+                              <div className="flex gap-2">
+                                <span>{formatBytes(b.size)}</span>
+                              </div>
+                            ),
+                          },
+                        ],
+                        className: "dark:border-border-dark/10",
+                      }))
+                    : undefined
+                }
+              />
+            ),
+          })
+        )
       : undefined;
   }, [transactions, timeFormat]);
 
@@ -317,7 +271,7 @@ const Txs: NextPage = function () {
       <Filters />
       <PaginatedTable
         isLoading={txsIsLoading}
-        headers={TRANSACTIONS_TABLE_HEADERS}
+        headers={transactionHeaders}
         rows={transactionRows}
         totalItems={totalTransactions}
         paginationData={{

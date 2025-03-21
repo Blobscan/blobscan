@@ -4,18 +4,18 @@ import type { EChartOption } from "echarts";
 import { useTheme } from "next-themes";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { DailyBlockStats } from "~/types";
+import type { EChartCompliantDailyStats } from "~/types";
 import { buildTimeSeriesOptions, formatNumber } from "~/utils";
 
 export type DailyBlobGasComparisonChartProps = Partial<{
-  days: DailyBlockStats["days"];
-  blobGasUsed: DailyBlockStats["totalBlobGasUsed"];
-  blobAsCalldataGasUsed: DailyBlockStats["totalBlobAsCalldataGasUsed"];
+  days: EChartCompliantDailyStats["day"][];
+  totalBlobGasUsed: EChartCompliantDailyStats["totalBlobGasUsed"][];
+  totalBlobAsCalldataGasUsed: EChartCompliantDailyStats["totalBlobAsCalldataGasUsed"][];
   opts?: EChartOption;
 }>;
 
 export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
-  function ({ blobAsCalldataGasUsed, blobGasUsed, days, opts = {} }) {
+  function ({ totalBlobAsCalldataGasUsed, totalBlobGasUsed, days, opts = {} }) {
     const { resolvedTheme } = useTheme();
 
     const options: EChartOption<EChartOption.Series> = {
@@ -28,7 +28,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
       series: [
         {
           name: "Blob Gas Used",
-          data: blobGasUsed,
+          data: totalBlobGasUsed,
           stack: "gas",
           type: "bar",
 
@@ -52,7 +52,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
         },
         {
           name: "Equivalent Blob As Calldata Gas",
-          data: blobAsCalldataGasUsed,
+          data: totalBlobAsCalldataGasUsed,
           stack: "gas",
           type: "bar",
           itemStyle: {
