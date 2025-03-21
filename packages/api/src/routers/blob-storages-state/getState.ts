@@ -1,3 +1,4 @@
+import { BlobStoragesStateModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
@@ -5,12 +6,14 @@ import { normalize } from "../../utils";
 
 export const inputSchema = z.void();
 
-export const outputSchema = z
-  .object({
-    swarmDataId: z.string().nullable(),
-    swarmDataTTL: z.number().nullable(),
-  })
-  .transform(normalize);
+BlobStoragesStateModel.omit({
+  id: true,
+  updatedAt: true,
+});
+export const outputSchema = BlobStoragesStateModel.omit({
+  id: true,
+  updatedAt: true,
+}).transform(normalize);
 
 export const getState = publicProcedure
   .input(inputSchema)
