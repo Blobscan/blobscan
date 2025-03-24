@@ -11,11 +11,12 @@ import { buildTimeSeriesOptions } from "~/utils";
 export type DailyAvgBlobGasPriceChartProps = {
   days: DailyBlockStats["days"];
   avgBlobGasPrices: DailyBlockStats["avgBlobGasPrices"];
+  opts?: EChartOption;
 };
 
 export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
-> = function ({ days, avgBlobGasPrices }) {
+> = function ({ days, avgBlobGasPrices, opts = {} }) {
   const { unit } = useScaledWeiAmounts(avgBlobGasPrices);
 
   const options: EChartOption<EChartOption.Series> = {
@@ -35,6 +36,7 @@ export const DailyAvgBlobGasPriceChart: FC<
       },
     ],
     animationEasing: "cubicOut",
+    ...opts,
   };
 
   return (
