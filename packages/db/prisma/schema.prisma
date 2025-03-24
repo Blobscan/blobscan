@@ -303,8 +303,8 @@ model OverallStats {
 
 model EthUsdPrice {
   id        Int      @id @default(autoincrement())
-  price     Decimal
-  timestamp DateTime
+  price     Decimal  @db.Decimal(100, 0)
+  timestamp DateTime @unique
 
   @@map("eth_usd_price")
 }
