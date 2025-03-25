@@ -6,8 +6,13 @@
     "test": "pnpm dotenv -e .env -- vitest"
   },
   "dependencies": {
-    "viem": "^2.22.17",
-    "@blobscan/logger": "workspace:^0.1.2",
-    "@blobscan/env": "workspace:^0.1.0"
+    "@blobscan/env": "workspace:^0.1.0",
+    "@blobscan/logger": "workspace:^0.1.2"
+  },
+  "peerDependencies": {
+    "viem": "^2.22.17"
+  },
+  "devDependencies": {
+    "prool": "^0.0.23"
   }
 }

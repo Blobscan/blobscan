@@ -50,12 +50,17 @@ export function setUpSyncers() {
     })
   );
 
-  syncers.push(
-    new ETHPriceSyncer({
-      cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
-      redisUriOrConnection: connection,
-    })
-  );
+  if (env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL) {
+    syncers.push(
+      new ETHPriceSyncer({
+        cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
+        chainJsonRpcUrl: env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL,
+        ethUsdDataFeedContractAddress:
+          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS,
+        redisUriOrConnection: connection,
+      })
+    );
+  }
 
   Promise.all(syncers.map((syncer) => syncer.start()));
 

@@ -22,7 +22,8 @@
     "@blobscan/zod": "workspace:^0.1.0",
     "axios": "^1.7.2",
     "bullmq": "^4.13.2",
-    "ioredis": "^5.3.2"
+    "ioredis": "^5.3.2",
+    "viem": "^2.22.17"
   },
   "eslintConfig": {
     "root": true,

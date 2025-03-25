@@ -85,7 +85,10 @@ export const env = createEnv({
 
       // ETH Price (default: every hour)
       ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("0 * * * *"),
-      RPC_URL: z.string().url(),
+      ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: z.string().url().optional(),
+      ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
+        .string()
+        .default("0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"),
 
       /**
        * =====================
@@ -139,6 +142,12 @@ export const env = createEnv({
         .string()
         .optional()
         .superRefine(requireIfEnvEnabled("WEAVEVM_STORAGE_ENABLED")),
+
+      VITEST_MAINNET_FORK_URL: z
+        .string()
+        .url()
+        .optional()
+        .default("https://eth.llamarpc.com"),
     },
 
     ...presetEnvOptions,
