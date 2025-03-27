@@ -1,42 +1,50 @@
 import type { Address } from "viem";
 import { createPublicClient, http } from "viem";
-import { mainnet } from "viem/chains";
+import { mainnet, polygon } from "viem/chains";
 
+import dayjs from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 import { PriceFeedFinder } from "@blobscan/eth-price";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
 
-const ONE_HOUR_SECONDS = BigInt(60 * 60);
-
 export interface ETHPriceSyncerConfig extends CommonSyncerConfig {
+  chainId: number;
   chainJsonRpcUrl: string;
   ethUsdDataFeedContractAddress: string;
 }
 
 let ethUsdPriceFinder: PriceFeedFinder | undefined;
 
-function getEthUsdPriceFinder(
-  chainJsonRpcUrl: string,
-  ethUsdDataFeedContractAddress: string
-) {
+function getViemChain(chainId: number) {
+  switch (chainId) {
+    case 1:
+      return mainnet;
+    case 137:
+      return polygon;
+
+    default:
+      throw new Error(`Unsupported chain ID: ${chainId}`);
+  }
+}
+
+async function getEthUsdPriceFinder({
+  chainId,
+  chainJsonRpcUrl,
+  ethUsdDataFeedContractAddress,
+}: ETHPriceSyncerConfig) {
   if (!ethUsdPriceFinder) {
-    ethUsdPriceFinder = new PriceFeedFinder(
-      createPublicClient({
-        chain: {
-          ...mainnet,
-          rpcUrls: {
-            default: {
-              http: [chainJsonRpcUrl],
-            },
-          },
-        },
-        transport: http(),
-      }),
-      ethUsdDataFeedContractAddress as Address,
-      ONE_HOUR_SECONDS
-    );
+    const chain = getViemChain(chainId);
+    const client = createPublicClient({
+      chain,
+      transport: http(chainJsonRpcUrl),
+    });
+
+    ethUsdPriceFinder = await PriceFeedFinder.create({
+      client,
+      dataFeedContractAddress: ethUsdDataFeedContractAddress as Address,
+    });
   }
 
   return ethUsdPriceFinder;
@@ -48,17 +56,23 @@ export class ETHPriceSyncer extends BaseSyncer {
       ...config,
       name: "eth-price",
       syncerFn: async () => {
-        const ethUsdPriceFinder = getEthUsdPriceFinder(
-          config.chainJsonRpcUrl,
-          config.ethUsdDataFeedContractAddress
-        );
-        const priceData = await ethUsdPriceFinder.getPriceByTimestamp(
-          BigInt(Math.floor(Date.now() / 1_000))
-        );
+        const ethUsdPriceFinder = await getEthUsdPriceFinder(config);
+        const now = Math.floor(Date.now() / 1_000);
+        const priceData = await ethUsdPriceFinder.getPriceByTimestamp(now);
+
+        if (!priceData) {
+          console.log(
+            `No price data found for time date ${dayjs
+              .unix(now)
+              .utc()}. Skipping…`
+          );
+
+          return;
+        }
 
         // The timestamp is a bigint in seconds.
         // Prisma expects a Date object.
-        const timestamp = new Date(Number(priceData.timestampSeconds) * 1_000);
+        const timestamp = new Date(Number(priceData.updatedAt) * 1_000);
 
         await prisma.ethUsdPrice.create({
           data: {

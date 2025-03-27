@@ -50,10 +50,15 @@ export function setUpSyncers() {
     })
   );
 
-  if (env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL) {
+  if (
+    env.ETH_PRICE_SYNCER_CHAIN_ID &&
+    env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL &&
+    env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS
+  ) {
     syncers.push(
       new ETHPriceSyncer({
         cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
+        chainId: env.ETH_PRICE_SYNCER_CHAIN_ID,
         chainJsonRpcUrl: env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL,
         ethUsdDataFeedContractAddress:
           env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS,

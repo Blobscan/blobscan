@@ -1,43 +1,76 @@
-import { Address, PublicClient, TestClient } from "viem";
+import { Address, PublicClient } from "viem";
+
+import dayjs from "@blobscan/dayjs";
 
 import { EAC } from "../abi/EAC";
 import { Aggregator } from "../abi/aggregator";
+import { buildRoundId, toDayjs, parseRoundId, Timestampish } from "./utils";
 
-export type PriceData = {
+export type PriceRoundData = {
+  aggregatorRoundId: bigint;
   phaseId: number;
-  roundId: bigint;
   price: bigint;
-  timestampSeconds: bigint;
-};
-
-type RoundData = {
-  price: bigint;
-  timestamp: bigint;
-};
-
-type Round = {
-  phaseId: number;
   roundId: bigint;
-  phaseAggregatorAddress: Address;
+  startedAt: dayjs.Dayjs;
+  updatedAt: dayjs.Dayjs;
 };
 
-type PhaseAggregator = {
+type AggregatorData = {
   phaseId: number;
   address: Address;
-  latestRoundId: bigint;
+  lastRoundTimestamp?: dayjs.Dayjs;
+  lastRoundId?: bigint;
+  lastAggregatorRoundId?: bigint;
 };
 
+type ParsedRoundId = ReturnType<typeof parseRoundId>;
+
+type RoundIdLike = bigint | ParsedRoundId;
+export interface Options {
+  startRoundId?: RoundIdLike;
+}
+
 export class PriceFeedFinder {
-  /**
-   * @param client The client used to interact with the data feed contract.
-   * @param priceFeedContractAddress The price feed contract address.
-   * @param tolerance The maximum difference between the target timestamp and the timestamp of the round.
-   */
-  constructor(
-    private client: PublicClient,
-    private priceFeedContractAddress: Address,
-    private tolerance: bigint
+  private constructor(
+    private readonly client: PublicClient,
+    private readonly aggregators: AggregatorData[],
+    private readonly timeTolerance: number
   ) {}
+
+  /**
+   * Creates a new instance of the PriceFeedFinder class.
+   * @param client The client used to interact with the data feed contract.
+   * @param dataFeedContractAddress The price data feed contract address.
+   * @param aggregators The phase aggregators of the price feed contract.
+   * @param timeTolerance The maximum time difference in seconds allowed between the target
+   * timestamp and the round timestamp.
+   */
+  static async create({
+    client,
+    dataFeedContractAddress,
+    timeTolerance,
+  }: {
+    client: PublicClient;
+    dataFeedContractAddress: Address;
+    timeTolerance?: number;
+  }) {
+    const aggregators = await PriceFeedFinder.#retrieveAggregators(
+      client,
+      dataFeedContractAddress
+    );
+
+    if (!aggregators.length) {
+      throw new Error("Failed to create PriceFeedFinder: no aggregators found");
+    }
+
+    const instance = new PriceFeedFinder(
+      client,
+      aggregators,
+      timeTolerance || Infinity
+    );
+
+    return instance;
+  }
 
   /**
    * Get the price of an asset at a specific timestamp.
@@ -71,30 +104,61 @@ export class PriceFeedFinder {
    *
    * Aditional information can be found here: https://docs.chain.link/data-feeds
    *
-   * @param targetTimestampSeconds The timestamp for which the price is requested in seconds.
+   * @param timestamp The timestamp for which the price is requested in seconds.
    * @returns The price of the asset at the given timestamp.
    **/
   async getPriceByTimestamp(
-    targetTimestampSeconds: bigint
-  ): Promise<PriceData> {
-    const closestRound = await this.#getClosestRoundData(
-      targetTimestampSeconds
-    );
+    timestamp: Timestampish,
+    { startRoundId }: Options = {}
+  ): Promise<PriceRoundData | null> {
+    const normalizedTargetTimestamp = toDayjs(timestamp);
 
-    if (closestRound === null) {
-      throw new Error(
-        `Could not retrieve ETH price from Chainlink oracle using timestamp: ${targetTimestampSeconds}`
-      );
+    // Skip if the timestamp is in the future
+    if (normalizedTargetTimestamp.isAfter(dayjs().utc())) {
+      return null;
     }
 
-    const roundData = await this.#getRoundData(closestRound);
+    const parsedStartRoundId = startRoundId
+      ? parseRoundId(startRoundId)
+      : undefined;
 
-    return {
-      phaseId: closestRound.phaseId,
-      roundId: closestRound.roundId,
-      price: roundData.price,
-      timestampSeconds: roundData.timestamp,
-    };
+    for (const aggregator of this.aggregators.sort(
+      (a, b) => b.phaseId - a.phaseId
+    )) {
+      const { lastRoundTimestamp } = aggregator;
+
+      if (
+        parsedStartRoundId &&
+        parsedStartRoundId.phaseId !== aggregator.phaseId
+      ) {
+        continue;
+      }
+
+      if (
+        lastRoundTimestamp &&
+        normalizedTargetTimestamp.isAfter(lastRoundTimestamp)
+      ) {
+        continue;
+      }
+
+      const roundData = await this.#binarySearchPriceRoundData(
+        aggregator,
+        Number(timestamp),
+        parsedStartRoundId
+          ? {
+              initialAggregatorRoundRange: {
+                low: parsedStartRoundId.phaseRoundId,
+              },
+            }
+          : undefined
+      );
+
+      if (roundData) {
+        return roundData;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -103,79 +167,53 @@ export class PriceFeedFinder {
    * This function is an adaptation of this implementation:
    * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/main/lib/binarySearch.ts
    *
-   * @param targetTimestampSeconds The target timestamp.
-   * @param latestRoundId The latest roundId of the phase aggregator contract.
+   * @param targetTimestamp The target timestamp.
+   * @param latestAggregatorRoundId The latest roundId of the phase aggregator contract.
    * @returns The roundId of the timestamp. If the roundId is not found, it returns null.
    * */
-  async #binarySearchRoundId(
-    aggregatorContractAddress: Address,
-    targetTimestampSeconds: bigint,
-    latestRoundId: bigint
-  ): Promise<bigint | null> {
-    let low = BigInt(0);
-    let high = latestRoundId;
+  async #binarySearchPriceRoundData(
+    aggregator: AggregatorData,
+    targetTimestamp: number,
+    {
+      initialAggregatorRoundRange,
+    }: Partial<{
+      initialAggregatorRoundRange: Partial<{ low: bigint; high: bigint }>;
+    }> = {}
+  ): Promise<PriceRoundData | null> {
+    let low = initialAggregatorRoundRange?.low || BigInt(0);
+    let high =
+      initialAggregatorRoundRange?.high ||
+      aggregator.lastAggregatorRoundId ||
+      (await this.#fetchPriceRoundDataOrThrow(aggregator, "latest"))
+        .aggregatorRoundId;
+    let closestRoundData: PriceRoundData | null = null;
+
+    let count = 0;
 
     while (low <= high) {
       const mid = low + (high - low) / BigInt(2);
 
-      const timestamp = await this.client.readContract({
-        address: aggregatorContractAddress,
-        abi: EAC,
-        functionName: "getTimestamp",
-        args: [mid],
-      });
+      count++;
+      const roundData = await this.#fetchPriceRoundData(aggregator, mid);
 
-      if (
-        timestamp >= targetTimestampSeconds - this.tolerance &&
-        timestamp <= targetTimestampSeconds + this.tolerance
-      ) {
-        return mid;
-      } else if (timestamp < targetTimestampSeconds) {
+      if (roundData) {
+        const midTimestamp = roundData.updatedAt.unix();
+
+        if (midTimestamp <= targetTimestamp) {
+          low = mid + BigInt(1);
+
+          if (targetTimestamp - midTimestamp <= this.timeTolerance) {
+            closestRoundData = roundData;
+          }
+        } else {
+          high = mid - BigInt(1);
+        }
+      } else {
         low = mid + BigInt(1);
-      } else if (timestamp > targetTimestampSeconds) {
-        high = mid - BigInt(1);
       }
     }
 
-    return null;
-  }
-
-  /**
-   * Gets the round data that is closest to the target timestamp.
-   *
-   * This function is an adaptation of this implementation:
-   * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/main/lib/getStartPhaseData.ts
-   *
-   * @param targetTimestampSeconds The target timestamp.
-   * @param tolerance The maximum difference between the target timestamp and the timestamp of the round.
-   * @returns The round data that is closest to the target timestamp.
-   * If the round data is not found, it returns null.
-   */
-  async #getClosestRoundData(
-    targetTimestampSeconds: bigint
-  ): Promise<Round | null> {
-    const phaseAggregators = await this.#getPhaseAggregators();
-    phaseAggregators.sort((a, b) => b.phaseId - a.phaseId);
-
-    for (const phaseAggregator of phaseAggregators) {
-      const roundId = await this.#binarySearchRoundId(
-        phaseAggregator.address,
-        targetTimestampSeconds,
-        phaseAggregator.latestRoundId
-      );
-
-      if (roundId === null) {
-        continue;
-      }
-
-      return {
-        roundId,
-        phaseId: phaseAggregator.phaseId,
-        phaseAggregatorAddress: phaseAggregator.address,
-      };
-    }
-
-    return null;
+    return closestRoundData;
   }
 
   /**
@@ -186,78 +224,130 @@ export class PriceFeedFinder {
    *
    * @returns A set of phase aggregator contracts.
    */
-  async #getPhaseAggregators(): Promise<PhaseAggregator[]> {
-    const phaseId = await this.client.readContract({
-      address: this.priceFeedContractAddress,
-      abi: EAC,
-      functionName: "phaseId",
-    });
-
-    const phaseAggregatorIds: number[] = [];
-
-    for (let i = 1; i <= phaseId; i++) {
-      phaseAggregatorIds.push(i);
-    }
-
-    const phaseAggregators = await this.client.multicall({
-      contracts: phaseAggregatorIds.map((id) => ({
-        address: this.priceFeedContractAddress,
+  static async #retrieveAggregators(
+    client: PublicClient,
+    dataFeedAddress: Address
+  ): Promise<AggregatorData[]> {
+    try {
+      const latestPhaseId = await client.readContract({
+        address: dataFeedAddress,
         abi: EAC,
-        functionName: "phaseAggregators",
-        args: [id.toString()],
-      })),
-    });
+        functionName: "phaseId",
+      });
 
-    const phaseAggregatorContracts: PhaseAggregator[] = [];
+      const phaseAggregatorIds: number[] = [];
 
-    for (let i = 0; i < phaseAggregators.length; i++) {
-      const phaseAggregator = phaseAggregators[i];
-
-      if (phaseAggregator === undefined) {
-        continue;
+      for (let i = 1; i <= latestPhaseId; i++) {
+        phaseAggregatorIds.push(i);
       }
 
-      if (phaseAggregator.status === "failure") {
-        continue;
+      const phaseAggregators = await client.multicall({
+        contracts: phaseAggregatorIds.map((id) => ({
+          address: dataFeedAddress,
+          abi: EAC,
+          functionName: "phaseAggregators",
+          args: [id.toString()],
+        })),
+      });
+
+      const aggregatorDatas: AggregatorData[] = [];
+
+      for (let i = 0; i < phaseAggregators.length; i++) {
+        const phaseAggregator = phaseAggregators[i];
+
+        if (!phaseAggregator || phaseAggregator.status === "failure") {
+          continue;
+        }
+
+        const address = phaseAggregator.result as Address;
+        const currentPhaseId = i + 1;
+        const isLatestAggregator = currentPhaseId === latestPhaseId;
+
+        if (isLatestAggregator) {
+          aggregatorDatas.push({
+            phaseId: i + 1,
+            address,
+          });
+
+          continue;
+        }
+
+        try {
+          const [
+            latestAggregatorRoundId,
+            _,
+            __,
+            latestRoundUpdatedAtTimestamp,
+          ] = await client.readContract({
+            address,
+            abi: Aggregator,
+            functionName: "latestRoundData",
+          });
+
+          aggregatorDatas.push({
+            phaseId: currentPhaseId,
+            address,
+            lastRoundTimestamp: toDayjs(latestRoundUpdatedAtTimestamp),
+            lastRoundId: buildRoundId(currentPhaseId, latestAggregatorRoundId),
+            lastAggregatorRoundId: latestAggregatorRoundId,
+          });
+        } catch (_) {
+          continue;
+        }
       }
 
-      try {
-        const latestRoundId = await this.client.readContract({
-          address: phaseAggregator.result as Address,
-          abi: Aggregator,
-          functionName: "latestRound",
-        });
-
-        phaseAggregatorContracts.push({
-          phaseId: i + 1,
-          address: phaseAggregator.result as Address,
-          latestRoundId,
-        });
-      } catch (error) {
-        continue;
-      }
+      return aggregatorDatas;
+    } catch (err) {
+      throw new Error(
+        `Failed to retrieve aggregators from data feed contract ${dataFeedAddress}`,
+        { cause: err }
+      );
     }
-
-    return phaseAggregatorContracts;
   }
 
-  async #getRoundData({
-    roundId,
-    phaseAggregatorAddress,
-  }: {
-    roundId: bigint;
-    phaseAggregatorAddress: Address;
-  }): Promise<RoundData> {
-    const [_, answer, __, updatedAt] = await this.client.readContract({
-      functionName: "getRoundData",
-      abi: Aggregator,
-      args: [roundId],
-      address: phaseAggregatorAddress,
-    });
+  async #fetchPriceRoundData(
+    { address, phaseId }: AggregatorData,
+    aggregatorRoundId: bigint | "latest"
+  ): Promise<PriceRoundData | null> {
+    try {
+      const isLatest = aggregatorRoundId === "latest";
+      const [aggregatorRoundId_, answer, startedAt, updatedAt] =
+        await this.client.readContract({
+          functionName: isLatest ? "latestRoundData" : "getRoundData",
+          abi: Aggregator,
+          args: isLatest ? undefined : [aggregatorRoundId],
+          address: address,
+        });
 
-    return {
-      price: answer,
-      timestamp: updatedAt,
-    };
+      if (startedAt === BigInt(0)) {
+        return null;
+      }
+
+      return {
+        roundId: buildRoundId(phaseId, aggregatorRoundId_),
+        phaseId,
+        aggregatorRoundId: aggregatorRoundId_,
+        price: answer,
+        startedAt: toDayjs(startedAt),
+        updatedAt: toDayjs(updatedAt),
+      };
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async #fetchPriceRoundDataOrThrow(
+    aggregatorData: AggregatorData,
+    roundId: bigint | "latest"
+  ) {
+    const roundData = await this.#fetchPriceRoundData(aggregatorData, roundId);
+
+    if (!roundData) {
+      throw new Error(
+        `Failed to retrieve round data with id ${roundId} from aggregator contract: ${aggregatorData.address}`
+      );
+    }
+
+    return roundData;
   }
 }

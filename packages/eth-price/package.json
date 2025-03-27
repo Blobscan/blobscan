@@ -3,9 +3,11 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "test": "pnpm dotenv -e .env -- vitest"
+    "test": "pnpm with-env:test vitest",
+    "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
+    "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2"
   },
@@ -13,6 +15,6 @@
     "viem": "^2.22.17"
   },
   "devDependencies": {
-    "prool": "^0.0.23"
+    "@blobscan/test": "workspace:^0.0.1"
   }
 }
