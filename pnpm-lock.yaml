@@ -56,6 +56,9 @@ importers:
       '@vitest/ui':
         specifier: ^0.34.1
         version: 0.34.7(vitest@0.34.6)
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       dotenv-cli:
         specifier: ^7.2.1
         version: 7.4.2
@@ -626,6 +629,9 @@ importers:
 
   packages/eth-price:
     dependencies:
+      '@blobscan/dayjs':
+        specifier: workspace:^0.1.0
+        version: link:../dayjs
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../env
@@ -636,9 +642,9 @@ importers:
         specifier: ^2.22.17
         version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
     devDependencies:
-      prool:
-        specifier: ^0.0.23
-        version: 0.0.23
+      '@blobscan/test':
+        specifier: workspace:^0.0.1
+        version: link:../test
 
   packages/logger:
     dependencies:
@@ -750,6 +756,9 @@ importers:
       '@prisma/client':
         specifier: ^5.19.1
         version: 5.19.1(prisma@5.19.1)
+      prool:
+        specifier: ^0.0.23
+        version: 0.0.23
 
   packages/zod:
     dependencies:
@@ -4377,8 +4386,8 @@ packages:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
 
-  dotenv@16.3.1:
-    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
   dotenv@8.6.0:
@@ -11698,7 +11707,7 @@ snapshots:
   dotenv-cli@7.4.2:
     dependencies:
       cross-spawn: 7.0.3
-      dotenv: 16.3.1
+      dotenv: 16.4.7
       dotenv-expand: 10.0.0
       minimist: 1.2.8
 
@@ -11706,7 +11715,7 @@ snapshots:
 
   dotenv@16.0.3: {}
 
-  dotenv@16.3.1: {}
+  dotenv@16.4.7: {}
 
   dotenv@8.6.0: {}
 

@@ -1,8 +1,5 @@
-import { defineConfig } from "vitest/config";
+import { defineProject } from "vitest/config";
 
-export default defineConfig({
-  test: {
-    testTimeout: 5 * 60 * 1_000,
-    reporters: ["verbose"],
-  },
-});
+import { sharedProjectConfig } from "../../vitest.shared";
+
+export default defineProject(sharedProjectConfig);
