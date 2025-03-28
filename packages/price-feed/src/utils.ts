@@ -7,7 +7,7 @@ export type ParsedRoundId = {
   phaseRoundId: bigint;
 };
 
-export type RoundIdish = bigint | ParsedRoundId;
+export type RoundIdish = bigint | ParsedRoundId | string;
 
 export type Timestampish = number | bigint | Date;
 
@@ -16,10 +16,11 @@ export type RawRoundData = readonly [bigint, bigint, bigint, bigint, bigint];
 /// See https://docs.chain.link/data-feeds/historical-data#roundid-in-proxy to learn more about how
 /// to round ids are encoded in the proxy contract.
 export function parseRoundId(roundIdLike: RoundIdish): ParsedRoundId {
-  if (typeof roundIdLike === "bigint") {
+  if (typeof roundIdLike === "bigint" || typeof roundIdLike === "string") {
+    const roundId = BigInt(roundIdLike);
     return {
-      phaseId: Number(roundIdLike >> BigInt(64)),
-      phaseRoundId: roundIdLike & BigInt("0xffffffffffffffff"),
+      phaseId: Number(roundId >> BigInt(64)),
+      phaseRoundId: roundId & BigInt("0xffffffffffffffff"),
     };
   }
 

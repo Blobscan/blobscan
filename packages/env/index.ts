@@ -84,11 +84,20 @@ export const env = createEnv({
         .default("http://localhost:4318"),
 
       // ETH Price (default: every hour)
-      ETH_PRICE_SYNCER_CRON_PATTERN: z.string().default("0 * * * *"),
+      ETH_PRICE_SYNCER_CRON_PATTERN: z
+        .enum(["0 * * * *", "0 0 * * *", "* * * * *"])
+        .default("0 * * * *"),
       ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().optional(),
       ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: z.string().url().optional(),
-      ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z.string(),
-      /**
+      ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
+        .string()
+        .optional(),
+      ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce
+        .number()
+        .positive()
+        .default(3600),
+
+      /*
        * =====================
        *   STORAGE PROVIDERS
        * =====================

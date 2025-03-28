@@ -2,7 +2,7 @@ import type { Address, PublicClient } from "viem";
 
 import { EACAggregatorProxyABI } from "./abi/EACAggregatorProxy";
 import { AggregatorV3ABI } from "./abi/aggregator";
-import type { Timestampish } from "./utils";
+import type { RoundIdish, Timestampish } from "./utils";
 import {
   parseRoundId,
   isEmptyRoundData,
@@ -31,11 +31,8 @@ type PhaseAggregator = {
   lastRound?: RoundData;
 };
 
-type ParsedRoundId = ReturnType<typeof parseRoundId>;
-
-type RoundIdLike = bigint | ParsedRoundId;
 export interface Options {
-  startRoundId?: RoundIdLike;
+  startRoundId?: RoundIdish;
 }
 
 /**
