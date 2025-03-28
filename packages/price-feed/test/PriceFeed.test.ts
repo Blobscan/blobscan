@@ -1,4 +1,5 @@
-import { createPublicClient, http, PublicClient } from "viem";
+import { createPublicClient, http } from "viem";
+import type { PublicClient } from "viem";
 import { mainnet, foundry } from "viem/chains";
 import { expect, describe, it, beforeAll } from "vitest";
 

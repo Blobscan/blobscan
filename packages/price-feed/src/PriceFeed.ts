@@ -1,4 +1,4 @@
-import { Address, PublicClient } from "viem";
+import type { Address, PublicClient } from "viem";
 
 import { EACAggregatorProxyABI } from "./abi/EACAggregatorProxy";
 import { AggregatorV3ABI } from "./abi/aggregator";
