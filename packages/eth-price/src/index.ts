@@ -1,2 +1,2 @@
-export * from "./PriceFeedFinder";
+export * from "./PriceFeed";
 export * from "./utils";

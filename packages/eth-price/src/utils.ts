@@ -1,4 +1,4 @@
-import { PriceData, RoundData } from "./PriceFeedFinder";
+import { PriceData, RoundData } from "./PriceFeed";
 
 export type ParsedRoundId = {
   phaseId: number;

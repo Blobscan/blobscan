@@ -53,7 +53,7 @@ export interface Options {
  *
  * *See https://docs.chain.link/data-feeds to learn how more about data feesds.*
  */
-export class PriceFeedFinder {
+export class PriceFeed {
   /**
    *
    * @param client The viem client used to interact with the data feed contract.
@@ -74,7 +74,7 @@ export class PriceFeedFinder {
    * @param timeTolerance The maximum time difference in seconds allowed between the target
    * timestamp and the round timestamp.
    *
-   * @returns A new instance of PriceFeedFinder.
+   * @returns A new instance of PriceFeed.
    */
   static async create({
     client,
@@ -85,16 +85,16 @@ export class PriceFeedFinder {
     dataFeedContractAddress: Address;
     timeTolerance?: number;
   }) {
-    const aggregators = await PriceFeedFinder.#retrievePhaseAggregators(
+    const aggregators = await PriceFeed.#retrievePhaseAggregators(
       client,
       dataFeedContractAddress
     );
 
     if (!aggregators.length) {
-      throw new Error("Failed to create PriceFeedFinder: no aggregators found");
+      throw new Error("Failed to create PriceFeed: no aggregators found");
     }
 
-    const instance = new PriceFeedFinder(
+    const instance = new PriceFeed(
       client,
       aggregators,
       timeTolerance || Infinity
