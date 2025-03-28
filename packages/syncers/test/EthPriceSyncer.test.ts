@@ -15,7 +15,8 @@ class EthPriceUpdaterMock extends ETHPriceSyncer {
       cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
       redisUriOrConnection: "redis://localhost:6379/1",
       ...config,
-      chainId: env.ETH_PRICE_SYNCER_CHAIN_ID!,
+      // Zod is not properly coercing the chainId to a number
+      chainId: Number(env.ETH_PRICE_SYNCER_CHAIN_ID)!,
       chainJsonRpcUrl: env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL!,
       ethUsdDataFeedContractAddress:
         env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS!,
