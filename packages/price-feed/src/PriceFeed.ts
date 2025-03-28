@@ -1,7 +1,7 @@
 import { Address, PublicClient } from "viem";
 
-import { EACAggregatorProxyABI } from "../abi/EACAggregatorProxy";
-import { AggregatorV3ABI } from "../abi/aggregator";
+import { EACAggregatorProxyABI } from "./abi/EACAggregatorProxy";
+import { AggregatorV3ABI } from "./abi/aggregator";
 import {
   parseRoundId,
   Timestampish,

@@ -4,8 +4,8 @@ import { expect, describe, it, beforeAll } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { EACAggregatorProxyABI } from "../abi/EACAggregatorProxy";
 import { PriceFeed } from "../src/PriceFeed";
+import { EACAggregatorProxyABI } from "../src/abi/EACAggregatorProxy";
 
 const DATE_FEED_CONTRACT_ADDRESS = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
 

@@ -3,7 +3,7 @@ import { createPublicClient, http } from "viem";
 import { mainnet, polygon } from "viem/chains";
 
 import { prisma } from "@blobscan/db";
-import { PriceFeedFinder } from "@blobscan/eth-price";
+import { PriceFeed } from "@blobscan/eth-price";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
@@ -14,7 +14,7 @@ export interface ETHPriceSyncerConfig extends CommonSyncerConfig {
   ethUsdDataFeedContractAddress: string;
 }
 
-let ethUsdPriceFinder: PriceFeedFinder | undefined;
+let ethUsdPriceFeed: PriceFeed | undefined;
 
 function getViemChain(chainId: number) {
   switch (chainId) {
@@ -28,25 +28,25 @@ function getViemChain(chainId: number) {
   }
 }
 
-async function getEthUsdPriceFinder({
+async function createOrGetEthUsdPriceFeed({
   chainId,
   chainJsonRpcUrl,
   ethUsdDataFeedContractAddress,
 }: ETHPriceSyncerConfig) {
-  if (!ethUsdPriceFinder) {
+  if (!ethUsdPriceFeed) {
     const chain = getViemChain(chainId);
     const client = createPublicClient({
       chain,
       transport: http(chainJsonRpcUrl),
     });
 
-    ethUsdPriceFinder = await PriceFeedFinder.create({
+    ethUsdPriceFeed = await PriceFeed.create({
       client,
       dataFeedContractAddress: ethUsdDataFeedContractAddress as Address,
     });
   }
 
-  return ethUsdPriceFinder;
+  return ethUsdPriceFeed;
 }
 
 export class ETHPriceSyncer extends BaseSyncer {
@@ -55,9 +55,9 @@ export class ETHPriceSyncer extends BaseSyncer {
       ...config,
       name: "eth-price",
       syncerFn: async () => {
-        const ethUsdPriceFinder = await getEthUsdPriceFinder(config);
+        const ethUsdPriceFeed = await createOrGetEthUsdPriceFeed(config);
         const now = new Date();
-        const priceData = await ethUsdPriceFinder.findPriceByTimestamp(now);
+        const priceData = await ethUsdPriceFeed.findPriceByTimestamp(now);
 
         if (!priceData) {
           console.log(

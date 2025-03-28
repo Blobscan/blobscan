@@ -627,22 +627,6 @@ importers:
 
   packages/eth-format: {}
 
-  packages/eth-price:
-    dependencies:
-      '@blobscan/env':
-        specifier: workspace:^0.1.0
-        version: link:../env
-      '@blobscan/logger':
-        specifier: workspace:^0.1.2
-        version: link:../logger
-      viem:
-        specifier: ^2.22.17
-        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
-    devDependencies:
-      '@blobscan/test':
-        specifier: workspace:^0.0.1
-        version: link:../test
-
   packages/logger:
     dependencies:
       '@blobscan/env':
@@ -706,6 +690,22 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
 
+  packages/price-feed:
+    dependencies:
+      '@blobscan/env':
+        specifier: workspace:^0.1.0
+        version: link:../env
+      '@blobscan/logger':
+        specifier: workspace:^0.1.2
+        version: link:../logger
+      viem:
+        specifier: ^2.22.17
+        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
+    devDependencies:
+      '@blobscan/test':
+        specifier: workspace:^0.0.1
+        version: link:../test
+
   packages/rollups:
     dependencies:
       '@blobscan/db':
@@ -723,12 +723,12 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.14.0
         version: link:../db
-      '@blobscan/eth-price':
-        specifier: workspace:*
-        version: link:../eth-price
       '@blobscan/logger':
         specifier: workspace:^0.1.2
         version: link:../logger
+      '@blobscan/price-feed':
+        specifier: workspace:*
+        version: link:../price-feed
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../zod
