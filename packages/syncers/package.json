@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@blobscan/dates": "workspace:*",
-    "@blobscan/price-feed": "workspace:*",
+    "@blobscan/price-feed": "workspace:^0.0.1",
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/db": "workspace:^0.14.0",
     "@blobscan/logger": "workspace:^0.1.2",
