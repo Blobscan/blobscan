@@ -1,7 +1,7 @@
 import { Address, PublicClient } from "viem";
 
-import { EAC } from "../abi/EAC";
-import { Aggregator as AggregatorABI } from "../abi/aggregator";
+import { EACAggregatorProxyABI } from "../abi/EACAggregatorProxy";
+import { AggregatorV3ABI } from "../abi/aggregator";
 import {
   parseRoundId,
   Timestampish,
@@ -266,7 +266,7 @@ export class PriceFeedFinder {
     try {
       const latestPhaseId = await client.readContract({
         address: dataFeedAddress,
-        abi: EAC,
+        abi: EACAggregatorProxyABI,
         functionName: "phaseId",
       });
 
@@ -279,7 +279,7 @@ export class PriceFeedFinder {
       const phaseAggregatorAddresses = await client.multicall({
         contracts: phaseAggregatorIds.map((id) => ({
           address: dataFeedAddress,
-          abi: EAC,
+          abi: EACAggregatorProxyABI,
           functionName: "phaseAggregators",
           args: [id.toString()],
         })),
@@ -294,7 +294,7 @@ export class PriceFeedFinder {
           continue;
         }
 
-        const address = phaseAggregator.result as Address;
+        const address = phaseAggregator.result as unknown as Address;
         const currentPhaseId = i + 1;
         const isLatestAggregator = currentPhaseId === latestPhaseId;
 
@@ -307,13 +307,13 @@ export class PriceFeedFinder {
           const [firstRoundData, latestRoundData] = await Promise.all([
             client.readContract({
               address,
-              abi: AggregatorABI,
+              abi: AggregatorV3ABI,
               functionName: "getRoundData",
               args: [BigInt(1)],
             }),
             client.readContract({
               address,
-              abi: AggregatorABI,
+              abi: AggregatorV3ABI,
               functionName: "latestRoundData",
             }),
           ]);
@@ -355,7 +355,7 @@ export class PriceFeedFinder {
       const isLatest = aggregatorRoundId === "latest";
       const rawRoundData = await this.client.readContract({
         functionName: isLatest ? "latestRoundData" : "getRoundData",
-        abi: AggregatorABI,
+        abi: AggregatorV3ABI,
         args: isLatest ? undefined : [aggregatorRoundId],
         address: address,
       });

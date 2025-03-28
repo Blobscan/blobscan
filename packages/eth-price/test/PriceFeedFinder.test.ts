@@ -1,11 +1,10 @@
 import { createPublicClient, http, PublicClient } from "viem";
-import { mainnet } from "viem/chains";
-import { foundry } from "viem/chains";
-import { expect, describe, it, beforeAll, vi } from "vitest";
+import { mainnet, foundry } from "viem/chains";
+import { expect, describe, it, beforeAll } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { EAC } from "../abi/EAC";
+import { EACAggregatorProxyABI } from "../abi/EACAggregatorProxy";
 import { PriceFeedFinder } from "../src/PriceFeedFinder";
 
 const DATE_FEED_CONTRACT_ADDRESS = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
@@ -40,7 +39,7 @@ describe("PriceFeedFinder", () => {
       const [_, expectedPrice, __, expectedUpdatedAt] =
         await client.readContract({
           address: DATE_FEED_CONTRACT_ADDRESS,
-          abi: EAC,
+          abi: EACAggregatorProxyABI,
           functionName: "getRoundData",
           args: [expectedRoundId],
         });
