@@ -79,6 +79,14 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
+model EthUsdPriceFeedState {
+  id            Int      @id @default(autoincrement())
+  latestRoundId Decimal  @map("latest_round_id") @db.Decimal(100, 0)
+  updatedAt     DateTime @default(now()) @map("updated_at")
+
+  @@map("eth_usd_price_feed_state")
+}
+
 model AddressCategoryInfo {
   id                         Int       @id @default(autoincrement())
   address                    String
@@ -303,7 +311,7 @@ model OverallStats {
 
 model EthUsdPrice {
   id        Int      @id @default(autoincrement())
-  price     Decimal  @db.Decimal(100, 0)
+  price     Decimal  @db.Decimal(18, 8)
   timestamp DateTime @unique
 
   @@map("eth_usd_price")
