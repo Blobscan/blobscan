@@ -250,7 +250,9 @@ const Tx: NextPage = () => {
             />
           </div>
         }
-        externalLink={tx ? `${env}` : undefined}
+        externalLink={
+          tx ? `${env?.PUBLIC_EXPLORER_BASE_URL}/tx/${tx.hash}` : undefined
+        }
         fields={detailsFields}
       />
 

@@ -325,7 +325,7 @@ describe("BlobPropagator", () => {
             },
           ],
           "data": {
-            "temporaryBlobUri": "test-blobscan-blobs/70118930558/ob/Ve/rs/obVersionedHash.txt",
+            "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash.txt",
           },
           "name": "propagateBlob:finalizer-worker-blobVersionedHash",
           "opts": {

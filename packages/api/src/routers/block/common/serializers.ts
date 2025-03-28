@@ -1,4 +1,3 @@
-import type { Block as DBBlock } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import {
@@ -7,10 +6,6 @@ import {
   serializedExpandedBlobDataSchema,
   serializedExpandedTransactionSchema,
 } from "../../../middlewares/withExpands";
-import type {
-  ExpandedBlobData,
-  ExpandedTransaction,
-} from "../../../middlewares/withExpands";
 import {
   blockNumberSchema,
   serializeDate,
@@ -18,8 +13,9 @@ import {
   serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../../../utils";
+import type { BaseBlock, Block } from "./selects";
 
-export const serializedBlockSchema = z.object({
+export const serializedBaseBlockSchema = z.object({
   hash: z.string(),
   number: blockNumberSchema,
   timestamp: z.string(),
@@ -28,81 +24,44 @@ export const serializedBlockSchema = z.object({
   blobAsCalldataGasUsed: z.string(),
   blobGasPrice: z.string(),
   excessBlobGas: z.string(),
-  transactions: z.array(
-    z
-      .object({
-        hash: z.string(),
-        blobs: z.array(
-          z
-            .object({
-              versionedHash: z.string(),
-              dataStorageReferences: z.array(
-                serializedBlobDataStorageReferenceSchema
-              ),
-            })
-            .merge(serializedExpandedBlobDataSchema)
-        ),
-      })
-      .merge(serializedExpandedTransactionSchema)
-  ),
 });
+
+export const serializedBlockSchema = serializedBaseBlockSchema.merge(
+  z.object({
+    transactions: z.array(
+      z
+        .object({
+          hash: z.string(),
+          blobs: z.array(
+            z
+              .object({
+                versionedHash: z.string(),
+                dataStorageReferences: z.array(
+                  serializedBlobDataStorageReferenceSchema
+                ),
+              })
+              .merge(serializedExpandedBlobDataSchema)
+          ),
+        })
+        .merge(serializedExpandedTransactionSchema)
+    ),
+  })
+);
+
+type SerializedBaseBlock = z.infer<typeof serializedBaseBlockSchema>;
 
 export type SerializedBlock = z.infer<typeof serializedBlockSchema>;
 
-export type QueriedBlock = Pick<
-  DBBlock,
-  | "blobAsCalldataGasUsed"
-  | "hash"
-  | "number"
-  | "slot"
-  | "timestamp"
-  | "blobGasUsed"
-  | "blobGasPrice"
-  | "excessBlobGas"
-> & {
-  transactions: ({
-    hash: string;
-    blobs: {
-      index?: number;
-      blobHash: string;
-      blob: ExpandedBlobData;
-    }[];
-  } & ExpandedTransaction)[];
-};
-
-export function serializeBlock(block: QueriedBlock): SerializedBlock {
-  const {
-    blobAsCalldataGasUsed,
-    blobGasPrice,
-    blobGasUsed,
-    excessBlobGas,
-    hash,
-    number,
-    slot,
-    timestamp,
-    transactions: rawTransactions,
-  } = block;
-
-  const transactions = rawTransactions.map(
-    (rawTx): SerializedBlock["transactions"][number] => {
-      const { hash, blobs } = rawTx;
-
-      return {
-        hash,
-        ...serializeExpandedTransaction(rawTx),
-        blobs: blobs.map((blob) => {
-          const { blobHash, index, blob: blobData } = blob;
-
-          return {
-            versionedHash: blobHash,
-            ...(index !== undefined ? { index } : {}),
-            ...serializeExpandedBlobData(blobData),
-          };
-        }),
-      };
-    }
-  );
-
+function serializeBaseBlock({
+  blobAsCalldataGasUsed,
+  blobGasPrice,
+  blobGasUsed,
+  excessBlobGas,
+  hash,
+  number,
+  slot,
+  timestamp,
+}: BaseBlock): SerializedBaseBlock {
   return {
     hash,
     number,
@@ -112,6 +71,38 @@ export function serializeBlock(block: QueriedBlock): SerializedBlock {
     blobGasUsed: serializeDecimal(blobGasUsed),
     excessBlobGas: serializeDecimal(excessBlobGas),
     timestamp: serializeDate(timestamp),
+  };
+}
+
+export function serializeBlock({
+  transactions: rawTransactions,
+  ...baseBlock
+}: Block): SerializedBlock {
+  const transactions = rawTransactions.map(
+    ({ hash, blobs: blobsOnTxs, ...restTransaction }) => {
+      const blobs = blobsOnTxs.map((bTx) => {
+        const { blobHash, blob } = bTx;
+        const expandedBlob = blob ? serializeExpandedBlobData(blob) : {};
+
+        return {
+          versionedHash: blobHash,
+          ...expandedBlob,
+        };
+      });
+      const expandedTransaction = serializeExpandedTransaction(restTransaction);
+
+      return {
+        hash,
+        blobs,
+        ...expandedTransaction,
+      };
+    }
+  );
+
+  const serializedBlock: SerializedBlock = {
+    ...serializeBaseBlock(baseBlock),
     transactions,
   };
+
+  return serializedBlock;
 }

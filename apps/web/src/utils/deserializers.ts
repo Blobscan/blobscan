@@ -21,7 +21,7 @@ export type DeserializedFullTransaction = ReturnType<
   typeof deserializeFullTransaction
 >;
 
-function deserializedBlockCommonFields(
+function deserializeBlockGasFields(
   block: TransactionWithExpandedBlock["block"]
 ) {
   const { blobAsCalldataGasUsed, blobGasPrice, blobGasUsed, excessBlobGas } =
@@ -82,7 +82,7 @@ export function deserializeTransactionWithBlock(
     blobGasBaseFee: BigInt(blobGasBaseFee),
     block: {
       ...block,
-      ...deserializedBlockCommonFields(block),
+      ...deserializeBlockGasFields(block),
     },
   };
 }
@@ -99,7 +99,7 @@ export function deserializeFullTransaction(
     blobGasBaseFee: BigInt(blobGasBaseFee),
     block: {
       ...block,
-      ...deserializedBlockCommonFields(block),
+      ...deserializeBlockGasFields(block),
     },
   };
 }
@@ -108,7 +108,7 @@ export function deserializeBlock(block: Block) {
   return {
     ...block,
     timestamp: normalizeTimestamp(block.timestamp),
-    ...deserializedBlockCommonFields(block),
+    ...deserializeBlockGasFields(block),
   };
 }
 
@@ -119,7 +119,7 @@ export function deserializeFullBlock(
 
   return {
     ...block,
-    ...deserializedBlockCommonFields(block),
+    ...deserializeBlockGasFields(block),
     timestamp: normalizeTimestamp(block.timestamp),
     transactions: transactions.map((tx) => ({
       ...tx,

@@ -9,6 +9,7 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
   DATABASE_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
+  DIRECT_URL: "postgresql://blobscan:s3cr3t@localhost:5432/blobscan_dev?schema=public"
 
 jobs:
   release_docker:
@@ -80,6 +81,7 @@ jobs:
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
 
       - name: Extract metadata (tags, labels) for Docker (Web)
         id: meta_web
@@ -104,3 +106,4 @@ jobs:
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
             GIT_COMMIT=${{ env.GIT_COMMIT }}
             DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}

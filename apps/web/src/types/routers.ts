@@ -10,7 +10,7 @@ export type GetTxByHashOutput = RouterOutputs["tx"]["getByHash"];
 
 export type AllTransactions = RouterOutputs["tx"]["getAll"];
 
-export type AllBlobs = RouterOutputs["blob"]["getAll"];
+export type GetAllBlobsOutput = RouterOutputs["blob"]["getAll"];
 
 export type GetByBlobIdOutput = RouterOutputs["blob"]["getByBlobId"];
 
@@ -22,3 +22,5 @@ export type DailyTransactionStats =
 export type DailyStats = RouterOutputs["stats"]["getDailyStats"][number];
 
 export type OverallStats = RouterOutputs["stats"]["getOverallStats"];
+
+export type RollupDailyStats = RouterOutputs["stats"]["getRollupDailyStats"];

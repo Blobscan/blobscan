@@ -32,7 +32,7 @@ const closeSyncers = setUpSyncers();
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json({ limit: "2mb" }));
+app.use(bodyParser.json({ limit: "3mb" }));
 app.use(morganMiddleware);
 
 app.get("/metrics", metricsHandler);

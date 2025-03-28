@@ -6,6 +6,7 @@ import type {
 
 import type { MakeFieldRequired } from "./helpers";
 import type {
+  GetAllBlobsOutput,
   GetByBlobIdOutput,
   GetByBlockIdOutput,
   GetTxByHashOutput,
@@ -18,6 +19,8 @@ export type Rollup = Lowercase<RollupEnum>;
 export type Category = Lowercase<CategoryEnum>;
 
 export type Blob = GetByBlobIdOutput;
+
+export type BlobOnTransaction = GetAllBlobsOutput["blobs"][number];
 
 export type Block = GetByBlockIdOutput;
 
@@ -54,3 +57,8 @@ export type BlockWithExpandedBlobsAndTransactions = Omit<
 > & {
   transactions: BlockExpandedTransactionWithExpandedBlobs[];
 };
+
+export type BlobWithExpandedTransaction = MakeFieldRequired<
+  BlobOnTransaction,
+  "transaction"
+>;

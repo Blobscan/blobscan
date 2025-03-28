@@ -11,16 +11,19 @@ import { Category, Prisma } from "@prisma/client";
 import { sha256 } from "js-sha256";
 
 import dayjs from "@blobscan/dayjs";
+import { FORK_BLOB_CONFIGS } from "@blobscan/network-blob-config";
 
+import type { Rollup } from "../enums";
 import { BlobStorage } from "../enums";
 import type { SeedParams } from "./params";
 import {
-  BLOB_GAS_PER_BLOB,
   calculateBlobGasPrice,
   calculateExcessBlobGas,
   COMMON_MAX_FEE_PER_BLOB_GAS,
   ROLLUP_ADDRESSES,
 } from "./web3";
+
+const GAS_PER_BLOB = FORK_BLOB_CONFIGS["dencun"].gasPerBlob;
 
 export type FullBlock = Block & {
   transactions: (Transaction & {
@@ -50,6 +53,10 @@ export class DataGenerator {
     const now = new Date();
     return addresses.map((address) => ({
       address,
+      rollup:
+        (ROLLUP_ADDRESSES[
+          address as keyof typeof ROLLUP_ADDRESSES
+        ] as Rollup) ?? null,
       firstBlockNumberAsReceiver:
         blocks.find(
           (b) => txs.find((tx) => tx.toId === address)?.blockHash === b.hash
@@ -67,15 +74,17 @@ export class DataGenerator {
     const now = new Date();
     const addresses = [tx.fromId, tx.toId];
 
-    return addresses.map((address) => {
-      return {
-        address,
-        firstBlockNumberAsReceiver: tx.blockNumber,
-        firstBlockNumberAsSender: tx.blockNumber,
-        insertedAt: now,
-        updatedAt: now,
-      };
-    });
+    return addresses.map((address) => ({
+      address,
+      firstBlockNumberAsReceiver: tx.blockNumber,
+      firstBlockNumberAsSender: tx.blockNumber,
+      rollup:
+        (ROLLUP_ADDRESSES[
+          address as keyof typeof ROLLUP_ADDRESSES
+        ] as Rollup) ?? null,
+      insertedAt: now,
+      updatedAt: now,
+    }));
   }
 
   generateBlob(): Blob {
@@ -85,7 +94,7 @@ export class DataGenerator {
     });
     const proof = faker.string.hexadecimal({ length: 96 });
     const versionedHash = `0x01${sha256(commitment).slice(2)}`;
-    const size = Number(BLOB_GAS_PER_BLOB);
+    const size = Number(GAS_PER_BLOB);
 
     return {
       commitment,
@@ -128,7 +137,7 @@ export class DataGenerator {
       min: 1,
       max: 6,
     });
-    const blobGasUsed = BLOB_GAS_PER_BLOB * BigInt(txsCount);
+    const blobGasUsed = GAS_PER_BLOB * BigInt(txsCount);
     const excessBlobGas = calculateExcessBlobGas(
       BigInt(parentBlock.excessBlobGas.toString()),
       BigInt(
@@ -160,7 +169,7 @@ export class DataGenerator {
     uniqueAddresses: string[]
   ): Transaction[] {
     const now = new Date();
-    const maxBlobs = Number(block.blobGasUsed) / Number(BLOB_GAS_PER_BLOB);
+    const maxBlobs = Number(block.blobGasUsed) / Number(GAS_PER_BLOB);
 
     const txCount = faker.number.int({
       min: 1,
@@ -181,13 +190,9 @@ export class DataGenerator {
           ? faker.helpers.weightedArrayElement(this.#seedParams.rollupWeights)
           : null;
 
-      let fromId: string;
-
-      if (rollup) {
-        fromId = ROLLUP_ADDRESSES[rollup];
-      } else {
-        fromId = faker.helpers.arrayElement(uniqueAddresses);
-      }
+      const fromId =
+        ROLLUP_ADDRESSES[rollup?.toString() as keyof typeof ROLLUP_ADDRESSES] ??
+        faker.helpers.arrayElement(uniqueAddresses);
 
       let toId = faker.helpers.arrayElement(uniqueAddresses);
 
@@ -205,9 +210,7 @@ export class DataGenerator {
         .arrayElement(COMMON_MAX_FEE_PER_BLOB_GAS)
         .toString();
       const extraBlobs = faker.number.int({ min: 0, max: remainingBlobs });
-      const blobGasUsed = (
-        BigInt(1 + extraBlobs) * BLOB_GAS_PER_BLOB
-      ).toString();
+      const blobGasUsed = (BigInt(1 + extraBlobs) * GAS_PER_BLOB).toString();
 
       remainingBlobs -= extraBlobs;
 
@@ -234,9 +237,10 @@ export class DataGenerator {
 
   generateTransactionBlobs(tx: Transaction, prevBlobs: Blob[]): Blob[] {
     return Array.from({
-      length: Number(tx.blobGasUsed) / Number(BLOB_GAS_PER_BLOB),
+      length: Number(tx.blobGasUsed) / Number(GAS_PER_BLOB),
     }).map(() => {
-      const isUnique = tx.rollup
+      const isRollupTx = Object.values(ROLLUP_ADDRESSES).includes(tx.fromId);
+      const isUnique = isRollupTx
         ? true
         : faker.datatype.boolean({
             probability: this.#seedParams.uniqueBlobsRatio,

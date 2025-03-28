@@ -20,26 +20,16 @@ import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
  *
  */
 export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
-  const {
-    blockNumber,
-    blockTimestamp,
-    transactionAddresses,
-    transactionCategory,
-    transactionRollup,
-    blockSlot,
-    blockType,
-  } = filters;
+  const { blockFilters = {}, blockType, transactionFilters } = filters;
 
   if (requiresDirectCount(filters)) {
     return prisma.transaction.count({
       where: {
-        blockNumber: blockNumber,
-        blockTimestamp: blockTimestamp,
-        category: transactionCategory,
-        rollup: transactionRollup,
-        OR: transactionAddresses,
+        ...transactionFilters,
+        blockNumber: blockFilters.number,
+        blockTimestamp: blockFilters.timestamp,
         block: {
-          slot: blockSlot,
+          slot: blockFilters.slot,
           transactionForks: blockType,
         },
       },
@@ -49,7 +39,7 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
   const where = buildStatsWhereClause(filters);
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
-  if (filters.blockTimestamp) {
+  if (blockFilters.timestamp) {
     const dailyStats = await prisma.dailyStats.findMany({
       select: {
         totalTransactions: true,

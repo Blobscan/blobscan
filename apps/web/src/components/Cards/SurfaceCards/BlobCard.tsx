@@ -15,15 +15,21 @@ type BlobCardProps = Partial<{
   blob: Pick<
     DeserializedBlob,
     "versionedHash" | "commitment" | "size" | "dataStorageReferences" | "proof"
-  >;
-  transactions: { rollup: Rollup | null }[];
+  > & { rollup?: Rollup | null };
+  rollup: Rollup | null;
   compact?: boolean;
   className?: string;
 }>;
 
 const BlobCard: FC<BlobCardProps> = ({
-  blob: { versionedHash, commitment, size, dataStorageReferences, proof } = {},
-  transactions,
+  blob: {
+    versionedHash,
+    commitment,
+    size,
+    dataStorageReferences,
+    proof,
+    rollup,
+  } = {},
   compact,
   className,
 }) => {
@@ -45,11 +51,7 @@ const BlobCard: FC<BlobCardProps> = ({
               </span>
               <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
             </div>
-            {transactions
-              ?.filter((tx) => !!tx.rollup)
-              .map(({ rollup }) =>
-                rollup ? <RollupIcon key={rollup} rollup={rollup} /> : null
-              )}
+            {rollup ? <RollupIcon key={rollup} rollup={rollup} /> : null}
           </div>
         ) : (
           <Skeleton width={isCompact ? undefined : 630} />

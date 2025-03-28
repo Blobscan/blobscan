@@ -6,7 +6,7 @@ import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
 
 import { BlobStorage } from "../enums";
-import type { Category, Rollup } from "../enums";
+import type { Rollup } from "../enums";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
@@ -287,20 +287,18 @@ describe("Blob router", () => {
       expect(totalBlobs).toBe(expectedTotalBlobs);
     });
 
-    runFilterTests(async (filters) => {
-      const categoryFilter: Category | null =
-        filters.rollup === "null" ? "ROLLUP" : null;
-      const rollupFilter: Rollup | null =
-        filters.rollup === "null"
-          ? null
-          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
-      const directCountRequired = requiresDirectCount(filters);
+    runFilterTests(async (queryParamFilters) => {
+      const directCountRequired = requiresDirectCount(queryParamFilters);
       let expectedTotalBlobs = 0;
 
       if (directCountRequired) {
-        expectedTotalBlobs = getFilteredBlobs(filters).length;
+        expectedTotalBlobs = getFilteredBlobs(queryParamFilters).length;
       } else {
-        const { startDate, endDate } = filters;
+        const rollups = queryParamFilters.rollups
+          ?.split(",")
+          .map((r) => r.toUpperCase() as Rollup);
+
+        const { startDate, endDate } = queryParamFilters;
         const dateFilterEnabled = startDate || endDate;
 
         if (dateFilterEnabled) {
@@ -313,12 +311,27 @@ describe("Blob router", () => {
             0
           );
 
+          if (rollups?.length) {
+            await Promise.all(
+              rollups.map((r) =>
+                dailyCounts.map(({ day, count }) =>
+                  createNewDailyStats({
+                    day,
+                    totalBlobs: count,
+                    category: null,
+                    rollup: r,
+                  })
+                )
+              )
+            );
+          }
+
           await Promise.all(
             dailyCounts.map(({ day, count }) =>
               createNewDailyStats({
                 day,
-                category: categoryFilter,
-                rollup: rollupFilter,
+                category: null,
+                rollup: null,
                 totalBlobs: count,
               })
             )
@@ -326,17 +339,31 @@ describe("Blob router", () => {
         } else {
           expectedTotalBlobs = STATS_TOTAL_BLOBS;
 
+          if (rollups?.length) {
+            await Promise.all(
+              rollups.map((r) =>
+                ctx.prisma.overallStats.create({
+                  data: {
+                    totalBlobs: expectedTotalBlobs,
+                    category: null,
+                    rollup: r,
+                  },
+                })
+              )
+            );
+          }
+
           await ctx.prisma.overallStats.create({
             data: {
-              category: categoryFilter,
-              rollup: rollupFilter,
+              category: null,
+              rollup: null,
               totalBlobs: expectedTotalBlobs,
             },
           });
         }
       }
 
-      const { totalBlobs } = await caller.blob.getCount(filters);
+      const { totalBlobs } = await caller.blob.getCount(queryParamFilters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
     });

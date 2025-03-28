@@ -1,51 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Base Extension > Address Category Info model > upsertMany() > should insert multiple addresses correctly 1`] = `
-[
-  {
-    "address": "address10",
-    "category": "OTHER",
-    "firstBlockNumberAsReceiver": 1002,
-    "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address11",
-    "category": "OTHER",
-    "firstBlockNumberAsReceiver": 1002,
-    "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address9",
-    "category": "OTHER",
-    "firstBlockNumberAsReceiver": 1002,
-    "firstBlockNumberAsSender": 1001,
-  },
-]
-`;
-
-exports[`Base Extension > Address Category Info model > upsertMany() > update multiple addresses correctly 1`] = `
-[
-  {
-    "address": "address2",
-    "category": "OTHER",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1003,
-  },
-  {
-    "address": "address5",
-    "category": "OTHER",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1001,
-  },
-  {
-    "address": "address6",
-    "category": "OTHER",
-    "firstBlockNumberAsReceiver": 1001,
-    "firstBlockNumberAsSender": 1001,
-  },
-]
-`;
-
 exports[`Base Extension > BlobDataStorageReference model > upsertMany() > should fail when upserting a reference for a non-existent blob 1`] = `
 "
 Invalid \`prisma.$executeRaw()\` invocation:

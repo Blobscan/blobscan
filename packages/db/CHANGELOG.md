@@ -1,5 +1,19 @@
 # @blobscan/db
 
+## 0.15.0
+
+### Minor Changes
+
+- [#730](https://github.com/Blobscan/blobscan/pull/730) [`8e4633e`](https://github.com/Blobscan/blobscan/commit/8e4633eee4c0b736819d56ef6dc701d3df42d04d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added following rollups: abstract, aevo, ancient8, arenaz, bob, debankchain, ethernity, fraxtal, fuel, hashkey, hemi, hypr, infinaeon, ink, karak, kinto, lambda, lisk, manta, mantle, metamail, metis, mint, morph, nal, nanonnetwork, opbnb, optopia, orderly, pandasea, parallel, phala, polynomial, r0ar, race, rari, shape, snaxchain, soneium, superlumio, superseed, swanchain, swellchain, unichain, world, xga, zeronetwork and zircuit
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the `category` field from the `Transaction` model and now derive its value from the `rollup` field
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped `category` from `Transaction` model and computed it from `rollup` field
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Reallocated the `rollup` field from the `Transaction` model to the `Address` model
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped `AddressCategoryInfo` and added its columns to `Address` model
+
 ## 0.14.0
 
 ### Minor Changes

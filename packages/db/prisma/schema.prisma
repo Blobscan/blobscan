@@ -13,8 +13,9 @@ generator enum {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum BlobStorage {
@@ -35,24 +36,73 @@ enum Category {
 }
 
 enum Rollup {
-  ARBITRUM @map("arbitrum")
-  BASE     @map("base")
-  BLAST    @map("blast")
-  BOBA     @map("boba")
-  CAMP     @map("camp")
-  KROMA    @map("kroma")
-  LINEA    @map("linea")
-  METAL    @map("metal")
-  OPTIMISM @map("optimism")
-  OPTOPIA  @map("optopia")
-  PARADEX  @map("paradex")
-  PGN      @map("pgn")
-  SCROLL   @map("scroll")
-  STARKNET @map("starknet")
-  TAIKO    @map("taiko")
-  ZKSYNC   @map("zksync")
-  MODE     @map("mode")
-  ZORA     @map("zora")
+  ABSTRACT          @map("abstract")
+  AEVO              @map("aevo")
+  ANCIENT8          @map("ancient8")
+  ARBITRUM          @map("arbitrum")
+  ARENAZ            @map("arenaz")
+  BASE              @map("base")
+  BLAST             @map("blast")
+  BOB               @map("bob")
+  BOBA              @map("boba")
+  CAMP              @map("camp")
+  DEBANKCHAIN       @map("debankchain")
+  ETHERNITY         @map("ethernity")
+  FRAXTAL           @map("fraxtal")
+  FUEL              @map("fuel")
+  HASHKEY           @map("hashkey")
+  HEMI              @map("hemi")
+  HYPR              @map("hypr")
+  INFINAEON         @map("infinaeon")
+  INK               @map("ink")
+  KARAK             @map("karak")
+  KINTO             @map("kinto")
+  KROMA             @map("kroma")
+  LAMBDA            @map("lambda")
+  LINEA             @map("linea")
+  LISK              @map("lisk")
+  MANTA             @map("manta")
+  MANTLE            @map("mantle")
+  METAL             @map("metal")
+  METAMAIL          @map("metamail")
+  METIS             @map("metis")
+  MINT              @map("mint")
+  MODE              @map("mode")
+  MORPH             @map("morph")
+  NAL               @map("nal")
+  NANONNETWORK      @map("nanonnetwork")
+  OPBNB             @map("opbnb")
+  OPTIMISM          @map("optimism")
+  OPTOPIA           @map("optopia")
+  ORDERLY           @map("orderly")
+  PANDASEA          @map("pandasea")
+  PARADEX           @map("paradex")
+  PARALLEL          @map("parallel")
+  PHALA             @map("phala")
+  PGN               @map("pgn")
+  POLYNOMIAL        @map("polynomial")
+  R0AR              @map("r0ar")
+  RACE              @map("race")
+  RARI              @map("rari")
+  RIVER             @map("river")
+  SCROLL            @map("scroll")
+  SHAPE             @map("shape")
+  SNAXCHAIN         @map("snaxchain")
+  SONEIUM           @map("soneium")
+  STARKNET          @map("starknet")
+  SUPERLUMIO        @map("superlumio")
+  SUPERSEED         @map("superseed")
+  SWANCHAIN         @map("swanchain")
+  SWELLCHAIN        @map("swellchain")
+  TAIKO             @map("taiko")
+  THEBINARYHOLDINGS @map("thebinaryholdings")
+  UNICHAIN          @map("unichain")
+  WORLD             @map("world")
+  XGA               @map("xga")
+  ZERONETWORK       @map("zeronetwork")
+  ZIRCUIT           @map("zircuit")
+  ZORA              @map("zora")
+  ZKSYNC            @map("zksync")
 
   @@map("rollup")
 }
@@ -87,32 +137,21 @@ model EthUsdPriceFeedState {
   @@map("eth_usd_price_feed_state")
 }
 
-model AddressCategoryInfo {
-  id                         Int       @id @default(autoincrement())
-  address                    String
-  category                   Category?
-  firstBlockNumberAsReceiver Int?      @map("first_block_number_as_receiver")
-  firstBlockNumberAsSender   Int?      @map("first_block_number_as_sender")
+model Address {
+  address                    String   @id
+  rollup                     Rollup?
+  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  insertedAt                 DateTime @default(now()) @map("inserted_at")
+  updatedAt                  DateTime @default(now()) @map("updated_at")
 
-  addressEntity          Address       @relation(fields: [address], references: [address])
-  transactionsAsSender   Transaction[] @relation("senderAddressCategoryInfoRelation")
-  transactionsAsReceiver Transaction[] @relation("receiverAddressCategoryInfoRelation")
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
 
-  @@unique([address, category])
+  @@index([address, rollup])
+  @@index([rollup])
   @@index([firstBlockNumberAsReceiver])
   @@index([firstBlockNumberAsSender])
-  @@map("address_category_info")
-}
-
-model Address {
-  address    String   @id
-  insertedAt DateTime @default(now()) @map("inserted_at")
-  updatedAt  DateTime @default(now()) @map("updated_at")
-
-  transactionsAsSender   Transaction[]         @relation("senderAddressRelation")
-  transactionsAsReceiver Transaction[]         @relation("receiverAddressRelation")
-  addressCategoryInfo    AddressCategoryInfo[]
-
   @@index([insertedAt])
   @@map("address")
 }
@@ -186,26 +225,20 @@ model Transaction {
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
-  category              Category @default(OTHER)
-  rollup                Rollup?
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
   decodedFields         Json     @default("{}") @map("decoded_fields")
 
-  blobs                   BlobsOnTransactions[]
-  block                   Block                 @relation(fields: [blockHash], references: [hash])
-  from                    Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
-  to                      Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
-  fromAddressCategoryInfo AddressCategoryInfo   @relation("senderAddressCategoryInfoRelation", fields: [fromId, category], references: [address, category])
-  toAddressCategoryInfo   AddressCategoryInfo   @relation("receiverAddressCategoryInfoRelation", fields: [toId, category], references: [address, category])
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockHash], references: [hash])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
 
   transactionForks TransactionFork[]
 
   @@index([blockHash])
   @@index([blockTimestamp, index])
   @@index([blockNumber, index])
-  @@index([category, rollup, blockTimestamp, index])
-  @@index([category, rollup, blockNumber, index])
   @@index([fromId, blockTimestamp, index])
   @@index([toId, blockTimestamp, index])
   @@index([insertedAt])

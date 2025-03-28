@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
-import type { Category, Rollup } from "../enums";
+import type { Rollup } from "../enums";
 import type { TRPCContext } from "../src";
 import { appRouter } from "../src/app-router";
 import {
@@ -62,13 +62,15 @@ describe("Transaction router", async () => {
     it("should get the total number of transactions for a rollup", async () => {
       const expectedTotalTransactions = await ctx.prisma.transaction.count({
         where: {
-          rollup: "BASE",
+          from: {
+            rollup: "BASE",
+          },
         },
       });
 
       const { totalTransactions } = await caller.tx.getAll({
         count: true,
-        rollup: "base",
+        rollups: "base",
       });
 
       expect(totalTransactions).toBe(expectedTotalTransactions);
@@ -154,20 +156,19 @@ describe("Transaction router", async () => {
       expect(totalTransactions).toBe(expectedTotalTransactions);
     });
 
-    runFilterTests(async (filters) => {
-      const categoryFilter: Category | null =
-        filters.rollup === "null" ? "ROLLUP" : null;
-      const rollupFilter: Rollup | null =
-        filters.rollup === "null"
-          ? null
-          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
-      const directCountRequired = requiresDirectCount(filters);
+    runFilterTests(async (queryParamFilters) => {
+      const directCountRequired = requiresDirectCount(queryParamFilters);
       let expectedTotalTransactions = 0;
 
       if (directCountRequired) {
-        expectedTotalTransactions = getFilteredTransactions(filters).length;
+        expectedTotalTransactions =
+          getFilteredTransactions(queryParamFilters).length;
       } else {
-        const { startDate, endDate } = filters;
+        const rollups = queryParamFilters.rollups
+          ?.split(",")
+          .map((r) => r.toUpperCase() as Rollup);
+
+        const { startDate, endDate } = queryParamFilters;
         const dateFilterEnabled = startDate || endDate;
 
         if (dateFilterEnabled) {
@@ -180,30 +181,59 @@ describe("Transaction router", async () => {
             0
           );
 
+          if (rollups?.length) {
+            await Promise.all(
+              rollups.map((r) =>
+                dailyCounts.map(({ day, count }) =>
+                  createNewDailyStats({
+                    day,
+                    totalTransactions: count,
+                    category: null,
+                    rollup: r,
+                  })
+                )
+              )
+            );
+          }
+
           await Promise.all(
             dailyCounts.map(({ day, count }) =>
               createNewDailyStats({
                 day,
                 totalTransactions: count,
-                category: categoryFilter,
-                rollup: rollupFilter,
+                category: null,
+                rollup: null,
               })
             )
           );
         } else {
           expectedTotalTransactions = STATS_TOTAL_TRANSACTIONS;
 
+          if (rollups?.length) {
+            await Promise.all(
+              rollups.map((r) =>
+                ctx.prisma.overallStats.create({
+                  data: {
+                    totalTransactions: expectedTotalTransactions,
+                    category: null,
+                    rollup: r,
+                  },
+                })
+              )
+            );
+          }
+
           await ctx.prisma.overallStats.create({
             data: {
               totalTransactions: expectedTotalTransactions,
-              category: categoryFilter,
-              rollup: rollupFilter,
+              category: null,
+              rollup: null,
             },
           });
         }
       }
 
-      const { totalTransactions } = await caller.tx.getCount(filters);
+      const { totalTransactions } = await caller.tx.getCount(queryParamFilters);
 
       const expectMsg = directCountRequired
         ? "Expect count to match direct count"

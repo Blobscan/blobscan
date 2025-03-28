@@ -1,13 +1,11 @@
 import NextLink from "next/link";
 import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
-import { useTheme } from "next-themes";
 
-import GoogleIcon from "~/icons/google.svg";
-import PostgresIcon from "~/icons/postgres.svg";
-import SwarmIcon from "~/icons/swarm.svg";
-import WeaveVMDarkIcon from "~/icons/weavevm-dark.svg";
-import WeaveVMLightIcon from "~/icons/weavevm-light.svg";
+import GoogleIcon from "~/icons/blob-storages/google.svg";
+import PostgresIcon from "~/icons/blob-storages/postgres.svg";
+import SwarmIcon from "~/icons/blob-storages/swarm.svg";
+import WeaveVMIcon from "~/icons/blob-storages/weavevm.svg";
 import type { BlobStorage, Size } from "~/types";
 import { capitalize } from "~/utils";
 
@@ -22,35 +20,29 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
   storage,
   url = "#",
 }) => {
-  const { resolvedTheme } = useTheme();
   const commonStyles = cn({
     "h-3 w-3": size === "sm",
     "h-4 w-4": size === "md",
     "h-5 w-5": size === "lg",
   });
 
-  let storageIcon;
+  let StorageIcon;
 
   switch (storage) {
     case "file_system":
-      storageIcon = <ArchiveBoxIcon className={commonStyles} />;
+      StorageIcon = ArchiveBoxIcon;
       break;
     case "google":
-      storageIcon = <GoogleIcon className={commonStyles} />;
+      StorageIcon = GoogleIcon;
       break;
     case "swarm":
-      storageIcon = <SwarmIcon className={commonStyles} />;
+      StorageIcon = SwarmIcon;
       break;
     case "postgres":
-      storageIcon = <PostgresIcon className={commonStyles} />;
+      StorageIcon = PostgresIcon;
       break;
     case "weavevm":
-      storageIcon =
-        resolvedTheme === "light" ? (
-          <WeaveVMLightIcon className={commonStyles} />
-        ) : (
-          <WeaveVMDarkIcon className={commonStyles} />
-        );
+      StorageIcon = WeaveVMIcon;
       break;
   }
 
@@ -60,7 +52,7 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
         title={capitalize(storage)}
         className={url ? `hover:opacity-70` : ""}
       >
-        {storageIcon}
+        <StorageIcon className={commonStyles} />
       </div>
     </NextLink>
   );

@@ -14,6 +14,7 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
+import type { BlobOnTransaction } from "./common/selects";
 import { createBlobsOnTransactionsSelect } from "./common/selects";
 import {
   serializeBlobOnTransaction,
@@ -45,56 +46,57 @@ export const getAll = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
+    const { blockFilters = {}, blockType, transactionFilters, sort } = filters;
+
     let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
       {
-        blockTimestamp: filters.sort,
+        blockTimestamp: sort,
       };
 
-    if (filters.blockNumber) {
+    if (blockFilters.number) {
       leadingOrderColumn = {
-        blockNumber: filters.sort,
+        blockNumber: sort,
       };
     }
-    const blockFiltersExists = filters.blockSlot || filters.blockType;
-    const txFiltersExists =
-      filters.transactionRollup !== undefined ||
-      filters.transactionAddresses ||
-      filters.transactionCategory !== undefined;
 
-    const txsBlobsOp = prisma.blobsOnTransactions.findMany({
+    const blobsOnTransactinonsOp = prisma.blobsOnTransactions.findMany({
       select: createBlobsOnTransactionsSelect(expands),
       where: {
-        blockNumber: filters.blockNumber,
-        blockTimestamp: filters.blockTimestamp,
-        block: blockFiltersExists
-          ? {
-              slot: filters.blockSlot,
-              transactionForks: filters.blockType,
-            }
-          : undefined,
-        transaction: txFiltersExists
-          ? {
-              category: filters.transactionCategory,
-              rollup: filters.transactionRollup,
-              OR: filters.transactionAddresses,
-            }
-          : undefined,
+        blockNumber: blockFilters.number,
+        blockTimestamp: blockFilters.timestamp,
+        block: {
+          slot: blockFilters.slot,
+          transactionForks: blockType,
+        },
+
+        transaction: transactionFilters,
       },
       orderBy: [
         leadingOrderColumn,
-        { txIndex: filters.sort },
+        { txIndex: sort },
         {
-          index: filters.sort,
+          index: sort,
         },
       ],
       ...pagination,
     });
     const countOp = count ? countBlobs(prisma, filters) : undefined;
 
-    const [txsBlobs, totalBlobs] = await Promise.all([txsBlobsOp, countOp]);
+    const [queriedBlobsOnTxs, totalBlobs] = await Promise.all([
+      blobsOnTransactinonsOp,
+      countOp,
+    ]);
 
-    return {
-      blobs: txsBlobs.map(serializeBlobOnTransaction),
-      ...(count ? { totalBlobs } : {}),
+    const blobsOnTransactions =
+      queriedBlobsOnTxs as unknown as BlobOnTransaction[];
+
+    const output: z.infer<typeof outputSchema> = {
+      blobs: blobsOnTransactions.map(serializeBlobOnTransaction),
     };
+
+    if (count) {
+      output.totalBlobs = totalBlobs;
+    }
+
+    return output;
   });

@@ -25,7 +25,7 @@ import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
-const FROM_ADDRESSES_FORMAT_SEPARATOR = ",";
+const MULTIPLE_VALUES_SEPARATOR = ",";
 
 type FiltersState = {
   rollups: Option[] | null;
@@ -114,9 +114,9 @@ export const Filters: FC = function () {
     } = filters;
 
     if (rollups && rollups.length > 0) {
-      query.from = rollups
+      query.rollups = rollups
         .flatMap((r) => r.value)
-        .join(FROM_ADDRESSES_FORMAT_SEPARATOR);
+        .join(MULTIPLE_VALUES_SEPARATOR);
     }
 
     if (category) {
@@ -174,9 +174,9 @@ export const Filters: FC = function () {
     const rollups = chainId ? getChainRollups(chainId) : [];
 
     return rollups.map(
-      ([name, addresses]) =>
+      ([name]) =>
         ({
-          value: addresses,
+          value: name.toLowerCase(),
           selectedLabel: (
             <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
           ),
@@ -193,7 +193,7 @@ export const Filters: FC = function () {
   useEffect(() => {
     const { sort } = queryParams.paginationParams;
     const {
-      from,
+      rollups,
       startDate,
       endDate,
       startBlock,
@@ -204,16 +204,16 @@ export const Filters: FC = function () {
     } = queryParams.filterParams;
     const newFilters: Partial<FiltersState> = {};
 
-    if (from) {
+    if (rollups) {
       const rollupOptions_ = rollupOptions.filter((opt) => {
-        const fromAddresses = from?.split(FROM_ADDRESSES_FORMAT_SEPARATOR);
+        const parsedRollups = rollups?.split(MULTIPLE_VALUES_SEPARATOR);
         const rollupOptionAddresses = Array.isArray(opt.value)
           ? opt.value
           : [opt.value];
 
         return (
           rollupOptionAddresses.filter((rollupAddress) =>
-            fromAddresses?.includes(rollupAddress as string)
+            parsedRollups?.includes(rollupAddress as string)
           ).length > 0
         );
       });

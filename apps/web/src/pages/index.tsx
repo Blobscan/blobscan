@@ -9,8 +9,8 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { DailyBlobGasComparisonChart } from "~/components/Charts/Block";
-import { DailyTransactionsChart } from "~/components/Charts/Transaction";
+import { DailyBlobsPerRollupChart } from "~/components/Charts/Blob";
+import { DailyAvgBlobGasPriceChart } from "~/components/Charts/Block";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
@@ -26,7 +26,6 @@ import {
 } from "~/utils";
 
 const LATEST_ITEMS_LENGTH = 5;
-const DAILY_STATS_TIMEFRAME = "15d";
 
 const CARD_HEIGHT = "sm:h-28";
 
@@ -38,7 +37,6 @@ const Home: NextPage = () => {
     isLoading: latestBlocksLoading,
   } = api.block.getAll.useQuery<{
     blocks: BlockWithExpandedBlobsAndTransactions[];
-    totalBlocks: number;
   }>({
     p: 1,
     ps: LATEST_ITEMS_LENGTH,
@@ -46,14 +44,15 @@ const Home: NextPage = () => {
   });
   const { data: rawOverallStats, error: overallStatsErr } =
     api.stats.getOverallStats.useQuery();
-  const { data: dailyTxStats, error: dailyTxStatsErr } =
-    api.stats.getTransactionDailyStats.useQuery({
-      timeFrame: DAILY_STATS_TIMEFRAME,
-    });
   const { data: dailyBlockStats, error: dailyBlockStatsErr } =
     api.stats.getBlockDailyStats.useQuery({
-      timeFrame: DAILY_STATS_TIMEFRAME,
+      timeFrame: "30d",
     });
+  const { data: dailyRollupStats, error: dailyRollupStatsErr } =
+    api.stats.getRollupDailyStats.useQuery({
+      timeFrame: "90d",
+    });
+
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!rawBlocksData) {
       return { blocks: [], transactions: [], blobs: [] };
@@ -69,7 +68,7 @@ const Home: NextPage = () => {
       )
       .slice(0, LATEST_ITEMS_LENGTH);
     const blobs = transactions
-      .flatMap(({ blobs, ...t }) => blobs.map((b) => ({ ...b, tx: t })))
+      .flatMap((tx) => tx.blobs.map((b) => ({ ...b, rollup: tx.rollup })))
       .slice(0, LATEST_ITEMS_LENGTH);
 
     return {
@@ -87,8 +86,8 @@ const Home: NextPage = () => {
   const error =
     latestBlocksError ||
     overallStatsErr ||
-    dailyTxStatsErr ||
-    dailyBlockStatsErr;
+    dailyBlockStatsErr ||
+    dailyRollupStatsErr;
 
   if (error) {
     return (
@@ -116,12 +115,9 @@ const Home: NextPage = () => {
       <div className="flex w-full flex-col gap-8 sm:gap-10">
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
-            <DailyBlobGasComparisonChart
+            <DailyAvgBlobGasPriceChart
               days={dailyBlockStats?.days}
-              blobAsCalldataGasUsed={
-                dailyBlockStats?.totalBlobAsCalldataGasUsed
-              }
-              blobGasUsed={dailyBlockStats?.totalBlobGasUsed}
+              avgBlobGasPrices={dailyBlockStats?.avgBlobGasPrices}
               opts={{ toolbox: { show: false } }}
             />
           </div>
@@ -170,12 +166,7 @@ const Home: NextPage = () => {
             />
           </div>
           <div className="col-span-2 sm:col-span-4">
-            <DailyTransactionsChart
-              days={dailyTxStats?.days}
-              transactions={dailyTxStats?.totalTransactions}
-              opts={{ toolbox: { show: false } }}
-              compact
-            />
+            <DailyBlobsPerRollupChart {...dailyRollupStats} />
           </div>
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
@@ -297,7 +288,6 @@ const Home: NextPage = () => {
                   element: (
                     <BlobCard
                       blob={b}
-                      transactions={[b.tx]}
                       compact
                       key={b.versionedHash}
                       className={CARD_HEIGHT}

@@ -1,7 +1,7 @@
 import type { Prisma } from "@blobscan/db";
-import type { Category, Rollup } from "@blobscan/db/prisma/enums";
+import type { Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
-import { getRollupByAddress } from "@blobscan/rollups";
+import { getAddressesByRollup } from "@blobscan/rollups";
 import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
@@ -23,8 +23,10 @@ type DateRangeFilter = {
   lt?: Date;
 };
 
-export type FromAddressFilter = {
-  fromId: { in: string[] } | string;
+export type FromAddressFilter = { in: string[] };
+
+export type RollupFilter = {
+  rollup: null | { not: null };
 };
 
 export type ToAddressFilter = {
@@ -32,13 +34,17 @@ export type ToAddressFilter = {
 };
 
 export type Filters = Partial<{
-  blockNumber: NumberRangeFilter;
-  blockTimestamp: DateRangeFilter;
-  blockSlot: NumberRangeFilter;
   blockType: Prisma.TransactionForkListRelationFilter;
-  transactionAddresses: (FromAddressFilter | ToAddressFilter)[];
-  transactionCategory: Category;
-  transactionRollup: Rollup | null;
+  blockFilters: Partial<{
+    number: NumberRangeFilter;
+    slot: NumberRangeFilter;
+    timestamp: DateRangeFilter;
+  }>;
+  transactionFilters: Partial<{
+    fromId: FromAddressFilter;
+    toId: string;
+    from: RollupFilter;
+  }>;
 
   sort: Prisma.SortOrder;
 }>;
@@ -57,8 +63,10 @@ export const withSlotRangeFilterSchema = z.object({
   endSlot: slotSchema.optional(),
 });
 
-export const withRollupFilterSchema = z.object({
-  rollup: rollupSchema.optional(),
+export const withRollupsFilterSchema = z.object({
+  rollups: commaSeparatedValuesSchema.transform((values) =>
+    values?.map((v) => rollupSchema.parse(v).toUpperCase() as Rollup)
+  ),
 });
 
 export const withCategoryFilterSchema = z.object({
@@ -89,7 +97,7 @@ export const withAllFiltersSchema = withSortFilterSchema
   .merge(withBlockRangeFilterSchema)
   .merge(withDateRangeFilterSchema)
   .merge(withSlotRangeFilterSchema)
-  .merge(withRollupFilterSchema)
+  .merge(withRollupsFilterSchema)
   .merge(withCategoryFilterSchema)
   .merge(withAddressFilterSchema)
   .merge(withTypeFilterSchema);
@@ -106,51 +114,6 @@ export function hasCustomFilters(filters: Filters) {
   );
 }
 
-export function extractAddressesFromFilter(
-  addressesFilter: Filters["transactionAddresses"]
-) {
-  if (!addressesFilter) {
-    return [];
-  }
-
-  const fromAddressFilter = addressesFilter.find(
-    (f): f is FromAddressFilter => "fromId" in f
-  );
-  const toAddressFilter = addressesFilter.find(
-    (f): f is ToAddressFilter => "toId" in f
-  );
-  const addresses: string[] = [];
-
-  if (fromAddressFilter) {
-    if (typeof fromAddressFilter.fromId === "string") {
-      addresses.push(fromAddressFilter.fromId);
-    } else {
-      addresses.push(...fromAddressFilter.fromId.in);
-    }
-  }
-
-  if (toAddressFilter) {
-    addresses.push(toAddressFilter.toId);
-  }
-
-  return addresses;
-}
-
-export function extractRollupsFromFilter(
-  addressesFilter: Filters["transactionAddresses"]
-) {
-  if (!addressesFilter) {
-    return [];
-  }
-
-  const addresses = extractAddressesFromFilter(addressesFilter);
-  const rollups: Rollup[] = addresses
-    .map((addr) => getRollupByAddress(addr, env.CHAIN_ID))
-    .filter((r): r is Rollup => !!r);
-
-  return rollups;
-}
-
 export const withFilters = t.middleware(({ next, input = {} }) => {
   const filters: Filters = {
     sort: "desc",
@@ -161,7 +124,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     type,
     endBlock,
     endSlot,
-    rollup,
+    rollups,
     category,
     startBlock,
     startSlot,
@@ -175,52 +138,59 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
   const dateRangeExists = startDate !== undefined || endDate !== undefined;
   const slotRangeExists = startSlot !== undefined || endSlot !== undefined;
 
+  const blockFilters: Filters["blockFilters"] = {};
+  const transactionFilters: Filters["transactionFilters"] = {};
+
   if (blockRangeExists) {
-    filters.blockNumber = {
+    blockFilters.number = {
       lte: endBlock,
       gte: startBlock,
     };
   }
 
   if (dateRangeExists) {
-    filters.blockTimestamp = {
+    blockFilters.timestamp = {
       lt: endDate,
       gte: startDate,
     };
   }
 
   if (slotRangeExists) {
-    filters.blockSlot = {
+    blockFilters.slot = {
       lte: endSlot,
       gte: startSlot,
     };
   }
 
-  if (from?.length || to) {
-    filters.transactionAddresses = [];
+  if (to) {
+    transactionFilters.toId = to;
+  }
 
-    if (from?.length) {
-      filters.transactionAddresses.push({
-        fromId: from.length === 1 ? (from[0] as string) : { in: from },
-      });
-    }
+  if (from?.length) {
+    transactionFilters.fromId = { in: from };
+  }
 
-    if (to) {
-      filters.transactionAddresses.push({
-        toId: to,
-      });
-    }
+  if (rollups?.length) {
+    const resolvedAddresses = rollups
+      .flatMap((r) => getAddressesByRollup(r, env.CHAIN_ID))
+      .filter((r): r is string => !!r);
+
+    transactionFilters.fromId = { in: resolvedAddresses };
+  } else if (category) {
+    transactionFilters.from = {
+      rollup: category === "rollup" ? { not: null } : null,
+    };
   }
 
   filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
 
-  filters.transactionRollup = rollup?.toUpperCase() as Rollup | undefined;
-
-  if (filters.transactionRollup !== undefined) {
-    filters.transactionCategory = "ROLLUP";
+  if (Object.keys(blockFilters).length) {
+    filters.blockFilters = blockFilters;
   }
 
-  filters.transactionCategory = category?.toUpperCase() as Category | undefined;
+  if (Object.keys(transactionFilters).length) {
+    filters.transactionFilters = transactionFilters;
+  }
 
   filters.sort = sort;
 

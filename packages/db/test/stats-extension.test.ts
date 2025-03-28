@@ -393,7 +393,7 @@ describe("Stats Extension", () => {
     const totalTransactions = transactions.length;
     const totalUniqueReceivers = new Set(
       transactions
-        .filter(({ toHistory: { firstBlockNumberAsReceiver } }) =>
+        .filter(({ to: { firstBlockNumberAsReceiver } }) =>
           blockNumberRange && firstBlockNumberAsReceiver
             ? firstBlockNumberAsReceiver >= blockNumberRange.from &&
               firstBlockNumberAsReceiver <= blockNumberRange.to
@@ -403,7 +403,7 @@ describe("Stats Extension", () => {
     ).size;
     const totalUniqueSenders = new Set(
       transactions
-        .filter(({ fromHistory: { firstBlockNumberAsSender } }) =>
+        .filter(({ from: { firstBlockNumberAsSender } = {} }) =>
           blockNumberRange && firstBlockNumberAsSender
             ? firstBlockNumberAsSender >= blockNumberRange.from &&
               firstBlockNumberAsSender <= blockNumberRange.to

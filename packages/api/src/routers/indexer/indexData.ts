@@ -7,7 +7,6 @@ import { createAuthedProcedure } from "../../procedures";
 import { INDEXER_PATH } from "./common";
 import {
   createDBAddresses,
-  createDBAddressCategoryInfo,
   createDBBlobs,
   createDBBlobsOnTransactions,
   createDBBlock,
@@ -122,7 +121,6 @@ export const indexData = createAuthedProcedure("indexer")
       const dbBlobs = createDBBlobs(input);
       const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
       const dbAddress = createDBAddresses(input);
-      const dbAddressCategoryInfos = createDBAddressCategoryInfo(dbTxs);
 
       operations.push(
         prisma.block.upsert({
@@ -138,7 +136,6 @@ export const indexData = createAuthedProcedure("indexer")
           },
         }),
         prisma.address.upsertMany(dbAddress),
-        prisma.addressCategoryInfo.upsertMany(dbAddressCategoryInfos),
         prisma.transaction.upsertMany(dbTxs),
         prisma.blob.upsertMany(dbBlobs)
       );

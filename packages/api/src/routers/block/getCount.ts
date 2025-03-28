@@ -33,34 +33,15 @@ export async function countBlocks(
     return overallStats?.totalBlocks ?? 0;
   }
 
-  const {
-    transactionAddresses,
-    transactionCategory,
-    transactionRollup,
-    blockNumber,
-    blockSlot,
-    blockType,
-    blockTimestamp,
-  } = filters;
-
-  const txFiltersExists =
-    transactionRollup !== undefined ||
-    transactionAddresses ||
-    transactionCategory;
+  const { blockFilters = {}, blockType, transactionFilters } = filters;
 
   return prisma.block.count({
     where: {
-      number: blockNumber,
-      timestamp: blockTimestamp,
+      ...blockFilters,
       transactionForks: blockType,
-      slot: blockSlot,
-      transactions: txFiltersExists
+      transactions: transactionFilters
         ? {
-            some: {
-              category: filters.transactionCategory,
-              rollup: filters.transactionRollup,
-              OR: filters.transactionAddresses,
-            },
+            some: transactionFilters,
           }
         : undefined,
     },

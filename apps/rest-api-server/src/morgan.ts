@@ -7,6 +7,6 @@ const stream = {
 };
 
 export const morganMiddleware = morgan(
-  ":remote-addr :method :url :status :res[content-length] - :response-time ms",
+  ":remote-addr :method :url :status :req[Content-Length] bytes - :response-time ms",
   { stream }
 );
