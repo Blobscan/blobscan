@@ -629,9 +629,6 @@ importers:
 
   packages/eth-price:
     dependencies:
-      '@blobscan/dayjs':
-        specifier: workspace:^0.1.0
-        version: link:../dayjs
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../env

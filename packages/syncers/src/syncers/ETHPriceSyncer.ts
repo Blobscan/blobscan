@@ -2,7 +2,6 @@ import type { Address } from "viem";
 import { createPublicClient, http } from "viem";
 import { mainnet, polygon } from "viem/chains";
 
-import dayjs from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 import { PriceFeedFinder } from "@blobscan/eth-price";
 
@@ -57,26 +56,27 @@ export class ETHPriceSyncer extends BaseSyncer {
       name: "eth-price",
       syncerFn: async () => {
         const ethUsdPriceFinder = await getEthUsdPriceFinder(config);
-        const now = Math.floor(Date.now() / 1_000);
-        const priceData = await ethUsdPriceFinder.getPriceByTimestamp(now);
+        const now = new Date();
+        const priceData = await ethUsdPriceFinder.findPriceByTimestamp(now);
 
         if (!priceData) {
           console.log(
-            `No price data found for time date ${dayjs
-              .unix(now)
-              .utc()}. Skipping…`
+            `No price data found for time date ${
+              now.getTime() / 1000
+            }. Skipping…`
           );
 
           return;
         }
 
+        const { price, timestamp } = priceData;
+
         // The timestamp is a bigint in seconds.
         // Prisma expects a Date object.
-        const timestamp = new Date(Number(priceData.updatedAt) * 1_000);
 
         await prisma.ethUsdPrice.create({
           data: {
-            price: priceData.price.toString(),
+            price: price.toString(),
             timestamp,
           },
         });

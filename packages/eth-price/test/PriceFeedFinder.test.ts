@@ -3,7 +3,6 @@ import { mainnet } from "viem/chains";
 import { foundry } from "viem/chains";
 import { expect, describe, it, beforeAll, vi } from "vitest";
 
-import dayjs from "@blobscan/dayjs";
 import { testValidError } from "@blobscan/test";
 
 import { EAC } from "../abi/EAC";
@@ -46,13 +45,14 @@ describe("PriceFeedFinder", () => {
           args: [expectedRoundId],
         });
 
-      const { price, updatedAt } =
-        (await priceFeedFinder.getPriceByTimestamp(timestamp)) || {};
+      const { price, timestamp: priceTimestamp } =
+        (await priceFeedFinder.findPriceByTimestamp(timestamp)) || {};
 
       expect(price, "Price mismatch").toBe(expectedPrice);
-      expect(updatedAt?.unix(), "Updated at mismatch").toBe(
-        Number(expectedUpdatedAt)
-      );
+      expect(
+        (priceTimestamp?.getTime() ?? 0) / 1000,
+        "Price timestamp mismatch"
+      ).toBe(Number(expectedUpdatedAt));
     });
 
     it("should retrieve the correct price data when a tolerance threshold is set", async () => {
@@ -62,7 +62,7 @@ describe("PriceFeedFinder", () => {
         timeTolerance: 60,
       });
 
-      const priceData = await priceFeedFinderWithTolerance.getPriceByTimestamp(
+      const priceData = await priceFeedFinderWithTolerance.findPriceByTimestamp(
         timestamp
       );
 
@@ -70,9 +70,9 @@ describe("PriceFeedFinder", () => {
     });
 
     it("should return no price data when the timestamp is in the future", async () => {
-      const futureTimestamp = dayjs("2057-01-24T00:00:00").unix();
+      const futureTimestamp = new Date("2057-01-24T00:00:00").getTime() / 1000;
 
-      const priceData = await priceFeedFinder.getPriceByTimestamp(
+      const priceData = await priceFeedFinder.findPriceByTimestamp(
         futureTimestamp
       );
 

@@ -7,7 +7,6 @@
     "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
-    "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2"
   },
