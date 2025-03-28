@@ -8,7 +8,8 @@ import { testValidError } from "@blobscan/test";
 import { PriceFeed } from "../src/PriceFeed";
 import { EACAggregatorProxyABI } from "../src/abi/EACAggregatorProxy";
 
-const DATE_FEED_CONTRACT_ADDRESS = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
+const DATE_FEED_CONTRACT_ADDRESS = process.env
+  .ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS as `0x${string}`;
 
 describe("PriceFeedFinder", () => {
   let client: PublicClient;
