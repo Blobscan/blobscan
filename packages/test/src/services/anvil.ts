@@ -5,12 +5,15 @@ import type { CreateServerReturnType, Instance } from "prool";
 import { createServer } from "prool";
 import { anvil } from "prool/instances";
 
-const envFile = fs.readFileSync(
-  path.resolve(__dirname, "../../../../.env"),
-  "utf-8"
-);
+let VITEST_MAINNET_FORK_URL = process.env.VITEST_MAINNET_FORK_URL;
 
-const VITEST_MAINNET_FORK_URL = parse(envFile).VITEST_MAINNET_FORK_URL;
+if (!VITEST_MAINNET_FORK_URL) {
+  const envFile = fs.readFileSync(
+    path.resolve(__dirname, "../../../../.env"),
+    "utf-8"
+  );
+  VITEST_MAINNET_FORK_URL = parse(envFile).VITEST_MAINNET_FORK_URL;
+}
 
 let server: CreateServerReturnType;
 let instance: Instance;
