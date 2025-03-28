@@ -1,4 +1,4 @@
-import { createPublicClient, http } from "viem";
+import { createPublicClient, formatUnits, http } from "viem";
 import type { PublicClient } from "viem";
 import { mainnet, foundry } from "viem/chains";
 import { expect, describe, it, beforeAll } from "vitest";
@@ -48,7 +48,9 @@ describe("PriceFeedFinder", () => {
       const { price, timestamp: priceTimestamp } =
         (await priceFeed.findPriceByTimestamp(timestamp)) || {};
 
-      expect(price, "Price mismatch").toBe(expectedPrice);
+      expect(price, "Price mismatch").toBe(
+        Number(formatUnits(expectedPrice, priceFeed.priceDecimals))
+      );
       expect(
         (priceTimestamp?.getTime() ?? 0) / 1000,
         "Price timestamp mismatch"

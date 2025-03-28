@@ -1,3 +1,5 @@
+import { formatUnits } from "viem";
+
 import type { PriceData, RoundData } from "./PriceFeed";
 
 export type ParsedRoundId = {
@@ -50,12 +52,15 @@ export function toRoundData(
   };
 }
 
-export function toPriceData(roundData: RoundData): PriceData {
+export function toPriceData(
+  roundData: RoundData,
+  priceDecimals: number
+): PriceData {
   const { roundId, price, timestamp } = roundData;
 
   return {
     roundId,
-    price,
+    price: Number(formatUnits(price, priceDecimals)),
     timestamp: new Date(timestamp * 1000),
   };
 }

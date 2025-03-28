@@ -2,9 +2,9 @@ import type { Address, PublicClient } from "viem";
 
 import { EACAggregatorProxyABI } from "./abi/EACAggregatorProxy";
 import { AggregatorV3ABI } from "./abi/aggregator";
+import type { Timestampish } from "./utils";
 import {
   parseRoundId,
-  Timestampish,
   isEmptyRoundData,
   toRoundData,
   normalizeTimestamp,
@@ -20,7 +20,7 @@ export interface RoundData {
 
 export type PriceData = {
   roundId: bigint;
-  price: bigint;
+  price: number;
   timestamp: Date;
 };
 
@@ -64,6 +64,7 @@ export class PriceFeed {
   private constructor(
     private readonly client: PublicClient,
     private readonly phaseAggregators: PhaseAggregator[],
+    readonly priceDecimals: number,
     private readonly timeTolerance: number
   ) {}
 
@@ -89,6 +90,11 @@ export class PriceFeed {
       client,
       dataFeedContractAddress
     );
+    const priceDecimals = await client.readContract({
+      address: dataFeedContractAddress,
+      abi: EACAggregatorProxyABI,
+      functionName: "decimals",
+    });
 
     if (!aggregators.length) {
       throw new Error("Failed to create PriceFeed: no aggregators found");
@@ -97,6 +103,7 @@ export class PriceFeed {
     const instance = new PriceFeed(
       client,
       aggregators,
+      priceDecimals,
       timeTolerance || Infinity
     );
 
@@ -117,7 +124,7 @@ export class PriceFeed {
    **/
   async findPriceByTimestamp(
     timestamp: Timestampish,
-    { startRoundId }: Options = {}
+    opts: Options = {}
   ): Promise<PriceData | null> {
     const targetTimestamp = normalizeTimestamp(timestamp);
     const nowTimestamp = normalizeTimestamp(new Date());
@@ -127,6 +134,15 @@ export class PriceFeed {
       return null;
     }
 
+    const roundData = await this.#getClosestRoundData(targetTimestamp, opts);
+
+    return roundData ? toPriceData(roundData, this.priceDecimals) : null;
+  }
+
+  async #getClosestRoundData(
+    timestamp: number,
+    { startRoundId }: Options
+  ): Promise<RoundData | null> {
     const parsedStartRoundId = startRoundId
       ? parseRoundId(startRoundId)
       : undefined;
@@ -144,8 +160,8 @@ export class PriceFeed {
       }
 
       if (
-        (firstRound && targetTimestamp < firstRound.timestamp) ||
-        (lastRound && targetTimestamp > lastRound.timestamp)
+        (firstRound && timestamp < firstRound.timestamp) ||
+        (lastRound && timestamp > lastRound.timestamp)
       ) {
         continue;
       }
@@ -161,18 +177,13 @@ export class PriceFeed {
         );
       }
 
-      if (
-        this.#isTimestampWithinToleranceRange(
-          targetTimestamp,
-          highRoundData.timestamp
-        )
-      ) {
-        return toPriceData(highRoundData);
+      if (this.#isWithinToleranceRange(timestamp, highRoundData.timestamp)) {
+        return highRoundData;
       }
 
       const roundData = await this.#binarySearchPriceRoundData(
         phaseAggregator,
-        targetTimestamp,
+        timestamp,
         {
           low: parsedStartRoundId?.phaseRoundId,
           high: highRoundData.aggregatorRoundId,
@@ -180,7 +191,7 @@ export class PriceFeed {
       );
 
       if (roundData) {
-        return toPriceData(roundData);
+        return roundData;
       }
     }
 
@@ -220,9 +231,7 @@ export class PriceFeed {
         if (midTimestamp <= targetTimestamp) {
           low = mid + BigInt(1);
 
-          if (
-            this.#isTimestampWithinToleranceRange(targetTimestamp, midTimestamp)
-          ) {
+          if (this.#isWithinToleranceRange(targetTimestamp, midTimestamp)) {
             closestRoundData = roundData;
           }
         } else {
@@ -242,10 +251,7 @@ export class PriceFeed {
    * @param timestamp The timestamp to compare with.
    * @returns
    */
-  #isTimestampWithinToleranceRange(
-    targetTimestamp: number,
-    timestamp: number
-  ): boolean {
+  #isWithinToleranceRange(targetTimestamp: number, timestamp: number): boolean {
     const distance = targetTimestamp - timestamp;
 
     return distance >= 0 && distance <= this.timeTolerance;
