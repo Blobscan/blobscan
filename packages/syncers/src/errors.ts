@@ -42,7 +42,7 @@ export class SwarmNodeError extends ErrorException {
       message = error.message;
     }
 
-    super(message, error.cause);
+    super(message, { cause: error.cause });
 
     this.code = code;
     this.reasons = reasons;
