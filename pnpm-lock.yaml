@@ -712,13 +712,13 @@ importers:
       '@blobscan/logger':
         specifier: workspace:^0.1.2
         version: link:../logger
-      viem:
-        specifier: ^2.22.17
-        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
     devDependencies:
       '@blobscan/test':
         specifier: workspace:^0.0.1
         version: link:../test
+      viem:
+        specifier: ^2.17.4
+        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
 
   packages/rollups:
     dependencies:
@@ -756,7 +756,7 @@ importers:
         specifier: ^5.3.2
         version: 5.4.1
       viem:
-        specifier: ^2.22.17
+        specifier: ^2.17.4
         version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
 
   packages/test:

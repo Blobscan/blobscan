@@ -18,10 +18,11 @@
     "@blobscan/logger": "workspace:^0.1.2"
   },
   "peerDependencies": {
-    "viem": "^2.22.17"
+    "viem": "^2.17.4"
   },
   "devDependencies": {
-    "@blobscan/test": "workspace:^0.0.1"
+    "@blobscan/test": "workspace:^0.0.1",
+    "viem": "^2.17.4"
   },
   "eslintConfig": {
     "root": true,
