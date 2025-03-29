@@ -1,5 +1,19 @@
 # @blobscan/api
 
+## 0.20.0
+
+### Minor Changes
+
+- [#732](https://github.com/Blobscan/blobscan/pull/732) [`b6217e8`](https://github.com/Blobscan/blobscan/commit/b6217e810f77d105df356b866d5df432a96d88ab) Thanks [@xFJA](https://github.com/xFJA)! - Added stat endpoint to return blobs per rollup data.
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295)]:
+  - @blobscan/db@0.16.0
+  - @blobscan/blob-propagator@0.2.11
+  - @blobscan/blob-storage-manager@0.4.3
+  - @blobscan/rollups@0.3.1
+
 ## 0.19.0
 
 ### Minor Changes

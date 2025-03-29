@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.23.0
+
+### Minor Changes
+
+- [#732](https://github.com/Blobscan/blobscan/pull/732) [`b6217e8`](https://github.com/Blobscan/blobscan/commit/b6217e810f77d105df356b866d5df432a96d88ab) Thanks [@xFJA](https://github.com/xFJA)! - Updated Home page charts: increase to 30 days the 'Blob Gas Price Expenditure' chart and replace Daily Transactions chart by 'Blobs per rollup'
+
+### Patch Changes
+
+- Updated dependencies [[`b6217e8`](https://github.com/Blobscan/blobscan/commit/b6217e810f77d105df356b866d5df432a96d88ab), [`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295)]:
+  - @blobscan/api@0.20.0
+  - @blobscan/db@0.16.0
+  - @blobscan/rollups@0.3.1
+
 ## 0.22.0
 
 ### Minor Changes
