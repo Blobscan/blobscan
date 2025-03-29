@@ -27,9 +27,6 @@ export function requiredStorageConfigSchema<T extends z.ZodTypeAny>(
 export const env = createEnv({
   envOptions: {
     server: {
-      // Coingecko
-      COINGECKO_API_KEY: z.string().optional(),
-
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
