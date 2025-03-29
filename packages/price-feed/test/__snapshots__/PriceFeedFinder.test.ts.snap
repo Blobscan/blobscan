@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PriceFeed > when creating a new instance > should fail when providing an invalid data feed contract address 1`] = `"Failed to retrieve aggregators from data feed contract 0x254CF413F17DB09EBdA443be26c6cCEbaC436D48"`;
+
+exports[`PriceFeed > when creating a new instance > should fail when providing an invalid data feed contract address 2`] = `
+[ContractFunctionExecutionError: The contract function "phaseId" returned no data ("0x").
+
+This could be due to any of the following:
+  - The contract does not have the function "phaseId",
+  - The parameters passed to the contract function may be invalid, or
+  - The address is not a contract.
+ 
+Contract Call:
+  address:   0x254CF413F17DB09EBdA443be26c6cCEbaC436D48
+  function:  phaseId()
+
+Docs: https://viem.sh/docs/contract/readContract
+Version: viem@2.22.17]
+`;
