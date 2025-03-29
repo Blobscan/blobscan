@@ -1,7 +1,7 @@
 import type { Address, PublicClient } from "viem";
 
+import { AggregatorV3ABI } from "./abi/AggregatorV3";
 import { EACAggregatorProxyABI } from "./abi/EACAggregatorProxy";
-import { AggregatorV3ABI } from "./abi/aggregator";
 import type { RoundIdish, Timestampish } from "./utils";
 import {
   parseRoundId,
