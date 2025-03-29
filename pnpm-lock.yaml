@@ -719,9 +719,6 @@ importers:
         specifier: workspace:^0.1.2
         version: link:../logger
     devDependencies:
-      '@blobscan/test':
-        specifier: workspace:^0.0.1
-        version: link:../test
       viem:
         specifier: ^2.17.4
         version: 2.22.17(typescript@5.5.3)(zod@3.23.8)

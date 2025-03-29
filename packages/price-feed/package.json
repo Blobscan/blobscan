@@ -21,7 +21,6 @@
     "viem": "^2.17.4"
   },
   "devDependencies": {
-    "@blobscan/test": "workspace:^0.0.1",
     "viem": "^2.17.4"
   },
   "eslintConfig": {
