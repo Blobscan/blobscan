@@ -180,6 +180,9 @@ importers:
       '@blobscan/open-telemetry':
         specifier: workspace:^0.0.9
         version: link:../../packages/open-telemetry
+      '@blobscan/price-feed':
+        specifier: workspace:^0.0.1
+        version: link:../../packages/price-feed
       '@blobscan/syncers':
         specifier: workspace:^0.3.5
         version: link:../../packages/syncers
@@ -210,6 +213,9 @@ importers:
       trpc-openapi:
         specifier: ^1.2.0
         version: 1.2.0(@trpc/server@10.45.2)(zod@3.23.8)
+      viem:
+        specifier: ^2.17.4
+        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.13
@@ -755,9 +761,6 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.4.1
-      viem:
-        specifier: ^2.17.4
-        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
 
   packages/test:
     devDependencies:
@@ -770,6 +773,9 @@ importers:
       prool:
         specifier: ^0.0.23
         version: 0.0.23
+      viem:
+        specifier: ^2.17.4
+        version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
 
   packages/zod:
     dependencies:

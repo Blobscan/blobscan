@@ -1,52 +1,12 @@
-import type { Address } from "viem";
-import { createPublicClient, http } from "viem";
-import { mainnet, polygon } from "viem/chains";
-
 import dayjs, { normalizeDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
-import { PriceFeed } from "@blobscan/price-feed";
+import type { PriceFeed } from "@blobscan/price-feed";
 
 import { BaseSyncer } from "../BaseSyncer";
 import type { CommonSyncerConfig } from "../BaseSyncer";
 
 export interface ETHPriceSyncerConfig extends CommonSyncerConfig {
-  chainId: number;
-  chainJsonRpcUrl: string;
-  ethUsdDataFeedContractAddress: string;
-}
-
-let ethUsdPriceFeed: PriceFeed | undefined;
-
-function getViemChain(chainId: number) {
-  switch (chainId) {
-    case 1:
-      return mainnet;
-    case 137:
-      return polygon;
-    default:
-      throw new Error(`Unsupported chain ID: ${chainId}`);
-  }
-}
-
-async function createOrGetEthUsdPriceFeed({
-  chainId,
-  chainJsonRpcUrl,
-  ethUsdDataFeedContractAddress,
-}: ETHPriceSyncerConfig) {
-  if (!ethUsdPriceFeed) {
-    const chain = getViemChain(chainId);
-    const client = createPublicClient({
-      chain,
-      transport: http(chainJsonRpcUrl),
-    });
-
-    ethUsdPriceFeed = await PriceFeed.create({
-      client,
-      dataFeedContractAddress: ethUsdDataFeedContractAddress as Address,
-    });
-  }
-
-  return ethUsdPriceFeed;
+  ethUsdPriceFeed: PriceFeed;
 }
 
 type Granularity = "minute" | "hour" | "day";
@@ -73,7 +33,6 @@ export class ETHPriceSyncer extends BaseSyncer {
         const now = normalizeDate(dayjs());
         const granularity = determineGranularity(config.cronPattern);
 
-        const ethUsdPriceFeed = await createOrGetEthUsdPriceFeed(config);
         const [priceFeedState, latestPrice] = await Promise.all([
           prisma.ethUsdPriceFeedState.findFirst(),
           prisma.ethUsdPrice.findFirst({
@@ -92,7 +51,7 @@ export class ETHPriceSyncer extends BaseSyncer {
         let latestRoundId = priceFeedState?.latestRoundId.toFixed();
 
         while (targetDateTime >= currentDateTime) {
-          const priceData = await ethUsdPriceFeed.findPriceByTimestamp(
+          const priceData = await config.ethUsdPriceFeed.findPriceByTimestamp(
             currentDateTime.unix(),
             {
               startRoundId: latestRoundId,

@@ -27,60 +27,64 @@ collectDefaultMetrics();
 
 printBanner();
 
-const closeSyncers = setUpSyncers();
+async function main() {
+  const closeSyncers = await setUpSyncers();
 
-const app = express();
+  const app = express();
 
-app.use(cors());
-app.use(bodyParser.json({ limit: "3mb" }));
-app.use(morganMiddleware);
+  app.use(cors());
+  app.use(bodyParser.json({ limit: "3mb" }));
+  app.use(morganMiddleware);
 
-app.get("/metrics", metricsHandler);
+  app.get("/metrics", metricsHandler);
 
-// Serve Swagger UI with our OpenAPI schema
-app.use("/", swaggerUi.serve);
-app.get("/", swaggerUi.setup(openApiDocument));
+  // Serve Swagger UI with our OpenAPI schema
+  app.use("/", swaggerUi.serve);
+  app.get("/", swaggerUi.setup(openApiDocument));
 
-// Handle incoming OpenAPI requests
-app.use(
-  "/",
-  createOpenApiExpressMiddleware({
-    router: appRouter,
-    createContext: createTRPCContext({
-      scope: "rest-api",
-    }),
-    onError({ error }) {
-      Sentry.captureException(error);
+  // Handle incoming OpenAPI requests
+  app.use(
+    "/",
+    createOpenApiExpressMiddleware({
+      router: appRouter,
+      createContext: createTRPCContext({
+        scope: "rest-api",
+      }),
+      onError({ error }) {
+        Sentry.captureException(error);
 
-      logger.error(error);
-    },
-  })
-);
-
-const server = app.listen(env.BLOBSCAN_API_PORT, () => {
-  logger.info(`Server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`);
-});
-
-async function gracefulShutdown(signal: string) {
-  logger.debug(`Received ${signal}. Shutting down...`);
-
-  await apiGracefulShutdown()
-    .finally(async () => {
-      await closeSyncers();
+        logger.error(error);
+      },
     })
-    .finally(() => {
-      server.close(() => {
-        logger.debug("Server shut down successfully");
+  );
+
+  const server = app.listen(env.BLOBSCAN_API_PORT, () => {
+    logger.info(`Server started on http://0.0.0.0:${env.BLOBSCAN_API_PORT}`);
+  });
+
+  async function gracefulShutdown(signal: string) {
+    logger.debug(`Received ${signal}. Shutting down...`);
+
+    await apiGracefulShutdown()
+      .finally(async () => {
+        await closeSyncers();
+      })
+      .finally(() => {
+        server.close(() => {
+          logger.debug("Server shut down successfully");
+        });
       });
-    });
+  }
+
+  // Listen for TERM signal .e.g. kill
+  process.on("SIGTERM", async () => {
+    await gracefulShutdown("SIGTERM");
+  });
+
+  // Listen for INT signal e.g. Ctrl-C
+  process.on("SIGINT", async () => {
+    await gracefulShutdown("SIGINT");
+  });
 }
 
-// Listen for TERM signal .e.g. kill
-process.on("SIGTERM", async () => {
-  await gracefulShutdown("SIGTERM");
-});
-
-// Listen for INT signal e.g. Ctrl-C
-process.on("SIGINT", async () => {
-  await gracefulShutdown("SIGINT");
-});
+main();
