@@ -1,5 +1,17 @@
 # @blobscan/rest-api-server
 
+## 0.5.0
+
+### Minor Changes
+
+- [#731](https://github.com/Blobscan/blobscan/pull/731) [`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added ETH price syncer
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295), [`b6217e8`](https://github.com/Blobscan/blobscan/commit/b6217e810f77d105df356b866d5df432a96d88ab)]:
+  - @blobscan/syncers@0.4.0
+  - @blobscan/api@0.20.0
+
 ## 0.4.9
 
 ### Patch Changes
