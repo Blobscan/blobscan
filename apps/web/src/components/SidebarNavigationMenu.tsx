@@ -1,21 +1,31 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 
+import { useEnv } from "~/providers/Env";
+import type { ExpandibleNavigationItem, NavigationItem } from "../content";
+import { isExpandibleNavigationItem, getNavigationItems } from "../content";
 import { BlobscanLogo } from "./BlobscanLogo";
 import { Collapsable } from "./Collapsable";
 import { IconButton } from "./IconButton";
 import { Rotable } from "./Rotable";
 import { SidePanel, useSidePanel } from "./SidePanel";
 import { ThemeModeButton } from "./ThemeModeButton";
-import type { ExpandibleNavigationItem, NavigationItem } from "./content";
-import { isExpandibleNavigationItem, NAVIGATION_ITEMS } from "./content";
 
 export function SidebarNavigationMenu({ className }: { className?: string }) {
+  const { env } = useEnv();
   const [open, setOpen] = useState(false);
+  const navigationItems = useMemo(
+    () =>
+      getNavigationItems({
+        networkName: env?.PUBLIC_NETWORK_NAME,
+        publicSupportedNetworks: env?.PUBLIC_SUPPORTED_NETWORKS,
+      }),
+    [env]
+  );
 
   const openSidebar = useCallback(() => setOpen(true), []);
 
@@ -30,7 +40,7 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
         <div className="p-4 pb-16">
           <BlobscanLogo className="mb-8 mt-4 w-40" />
           <div className="flex flex-col justify-center gap-2 opacity-80">
-            {NAVIGATION_ITEMS.map((item, i) =>
+            {navigationItems.map((item, i) =>
               isExpandibleNavigationItem(item) ? (
                 <ExpandableNavigationLinks
                   key={`${item.label}-${i}`}

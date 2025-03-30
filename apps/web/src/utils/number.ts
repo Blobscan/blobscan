@@ -1,6 +1,6 @@
 type FormatMode = "compact" | "standard";
 
-export function numberToBigInt(value: number): bigint {
+export function toBigInt(value: number): bigint {
   if (Number.isNaN(value) || !Number.isFinite(value)) {
     return BigInt(0);
   }
@@ -75,21 +75,27 @@ export function parseDecimalNumber(value: string) {
 }
 
 export function calculatePercentage(
-  numerator: bigint,
-  denominator: bigint,
+  numerator: number | bigint,
+  denominator: number | bigint,
   opts?: Partial<{ returnComplement: boolean }>
 ): number {
-  if (denominator === BigInt(0)) {
+  if (denominator === 0 || denominator === BigInt(0)) {
     return 0;
   }
 
-  const pct = performDiv(numerator, denominator) * 100;
+  let pct: number;
 
-  if (opts?.returnComplement) {
-    return 100 - pct;
+  if (typeof numerator === "number" && typeof denominator === "number") {
+    // Perform normal division for numbers
+    pct = (numerator / denominator) * 100;
+  } else {
+    // Convert both to BigInt and perform division
+    const num = BigInt(numerator);
+    const den = BigInt(denominator);
+    pct = Number((num * BigInt(100)) / den); // Convert back to number after computation
   }
 
-  return pct;
+  return opts?.returnComplement ? 100 - pct : pct;
 }
 
 function isNumberArray(arr: unknown[]): arr is number[] {

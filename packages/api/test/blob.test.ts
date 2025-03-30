@@ -1,10 +1,12 @@
+import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { DailyStats, Prisma } from "@blobscan/db";
-import { fixtures } from "@blobscan/test";
+import { fixtures, testValidError } from "@blobscan/test";
 
-import type { Category, Rollup } from "../enums";
+import { BlobStorage } from "../enums";
+import type { Rollup } from "../enums";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
@@ -14,6 +16,7 @@ import {
   runExpandsTestsSuite,
   runFiltersTestsSuite,
   runPaginationTestsSuite,
+  unauthorizedRPCCallTest,
 } from "./helpers";
 import {
   getFilteredBlobs,
@@ -24,13 +27,124 @@ import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
-describe("Blob router", async () => {
+describe("Blob router", () => {
+  let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
   let caller: ReturnType<typeof appRouter.createCaller>;
   let ctx: TRPCContext;
+  let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
+    authorizedContext = await createTestContext({
+      apiClient: { type: "weavevm" },
+    });
     ctx = await createTestContext();
+
+    authorizedCaller = appRouter.createCaller(authorizedContext);
     caller = appRouter.createCaller(ctx);
+  });
+
+  describe("createWeaveVmReferences", () => {
+    const blobHashes = ["blobHash001", "blobHash002", "blobHash003"];
+    const where = {
+      AND: [
+        {
+          blobHash: {
+            in: blobHashes,
+          },
+        },
+        {
+          blobStorage: BlobStorage.WEAVEVM,
+        },
+      ],
+    };
+
+    describe("when authorized", () => {
+      it("should insert references correctly", async () => {
+        const blobReferencesBefore =
+          await ctx.prisma.blobDataStorageReference.findMany({
+            where,
+          });
+
+        expect(
+          blobReferencesBefore,
+          "There should be no blob weavevm references initially"
+        ).toEqual([]);
+
+        await authorizedCaller.blob.createWeaveVMReferences({
+          blobHashes,
+        });
+
+        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
+          .findMany({
+            where,
+          })
+          .then((refs) =>
+            refs
+              .map(({ blobHash }) => blobHash)
+              .sort((a, b) => a.localeCompare(b))
+          );
+
+        expect(
+          blobReferencesAfter,
+          "References should have been inserted"
+        ).toEqual(blobHashes.sort((a, b) => a.localeCompare(b)));
+      });
+
+      it("should skip already existing references correctly", async () => {
+        await ctx.prisma.blobDataStorageReference.createMany({
+          data: blobHashes.map((blobHash) => ({
+            blobHash,
+            blobStorage: BlobStorage.WEAVEVM,
+            dataReference: blobHash,
+          })),
+        });
+
+        await authorizedCaller.blob.createWeaveVMReferences({
+          blobHashes,
+        });
+
+        const blobReferencesAfter = await ctx.prisma.blobDataStorageReference
+          .findMany({
+            where,
+          })
+          .then((refs) =>
+            refs
+              .map(({ blobHash }) => blobHash)
+              .sort((a, b) => a.localeCompare(b))
+          );
+
+        expect(blobReferencesAfter).toEqual(
+          blobHashes.sort((a, b) => a.localeCompare(b))
+        );
+      });
+
+      it("should be called with an empty blob hashes array correctly", async () => {
+        await expect(
+          authorizedCaller.blob.createWeaveVMReferences({
+            blobHashes: [],
+          })
+        ).resolves.toBeUndefined();
+      });
+
+      testValidError(
+        "should fail when one or more provided blobs do not exist",
+        async () => {
+          await authorizedCaller.blob.createWeaveVMReferences({
+            blobHashes: ["nonExistingBlobHash"],
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
+
+      unauthorizedRPCCallTest(() =>
+        caller.blob.createWeaveVMReferences({
+          blobHashes,
+        })
+      );
+    });
   });
 
   describe("getAll", () => {
@@ -173,20 +287,18 @@ describe("Blob router", async () => {
       expect(totalBlobs).toBe(expectedTotalBlobs);
     });
 
-    runFilterTests(async (filters) => {
-      const categoryFilter: Category | null =
-        filters.rollup === "null" ? "ROLLUP" : null;
-      const rollupFilter: Rollup | null =
-        filters.rollup === "null"
-          ? null
-          : ((filters.rollup?.toUpperCase() ?? null) as Rollup | null);
-      const directCountRequired = requiresDirectCount(filters);
+    runFilterTests(async (queryParamFilters) => {
+      const directCountRequired = requiresDirectCount(queryParamFilters);
       let expectedTotalBlobs = 0;
 
       if (directCountRequired) {
-        expectedTotalBlobs = getFilteredBlobs(filters).length;
+        expectedTotalBlobs = getFilteredBlobs(queryParamFilters).length;
       } else {
-        const { startDate, endDate } = filters;
+        const rollups = queryParamFilters.rollups
+          ?.split(",")
+          .map((r) => r.toUpperCase() as Rollup);
+
+        const { startDate, endDate } = queryParamFilters;
         const dateFilterEnabled = startDate || endDate;
 
         if (dateFilterEnabled) {
@@ -199,12 +311,27 @@ describe("Blob router", async () => {
             0
           );
 
+          if (rollups?.length) {
+            await Promise.all(
+              rollups.map((r) =>
+                dailyCounts.map(({ day, count }) =>
+                  createNewDailyStats({
+                    day,
+                    totalBlobs: count,
+                    category: null,
+                    rollup: r,
+                  })
+                )
+              )
+            );
+          }
+
           await Promise.all(
             dailyCounts.map(({ day, count }) =>
               createNewDailyStats({
                 day,
-                category: categoryFilter,
-                rollup: rollupFilter,
+                category: null,
+                rollup: null,
                 totalBlobs: count,
               })
             )
@@ -212,17 +339,31 @@ describe("Blob router", async () => {
         } else {
           expectedTotalBlobs = STATS_TOTAL_BLOBS;
 
+          if (rollups?.length) {
+            await Promise.all(
+              rollups.map((r) =>
+                ctx.prisma.overallStats.create({
+                  data: {
+                    totalBlobs: expectedTotalBlobs,
+                    category: null,
+                    rollup: r,
+                  },
+                })
+              )
+            );
+          }
+
           await ctx.prisma.overallStats.create({
             data: {
-              category: categoryFilter,
-              rollup: rollupFilter,
+              category: null,
+              rollup: null,
               totalBlobs: expectedTotalBlobs,
             },
           });
         }
       }
 
-      const { totalBlobs } = await caller.blob.getCount(filters);
+      const { totalBlobs } = await caller.blob.getCount(queryParamFilters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
     });

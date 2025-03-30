@@ -7,8 +7,8 @@ import Skeleton from "react-loading-skeleton";
 import { formatTtl } from "@blobscan/dates";
 
 import { api } from "~/api-client";
-import { env } from "~/env.mjs";
 import Gas from "~/icons/gas.svg";
+import { useEnv } from "~/providers/Env";
 import { capitalize, formatNumber } from "~/utils";
 import { GasPrice } from "./GasPrice";
 
@@ -44,11 +44,20 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
 
+  const { env } = useEnv();
+
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [];
 
   if (placement === "top") {
     explorerDetailsItems.push(
-      { name: "Network", value: capitalize(env.NEXT_PUBLIC_NETWORK_NAME) },
+      {
+        name: "Network",
+        value: env ? (
+          capitalize(env.PUBLIC_NETWORK_NAME)
+        ) : (
+          <Skeleton height={14} width={48} />
+        ),
+      },
       {
         name: "Blob gas price",
         icon: <Gas className="h-4 w-4" />,

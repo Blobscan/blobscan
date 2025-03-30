@@ -1,0 +1,32 @@
+{
+  "name": "@blobscan/price-feed",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "with-env:test": "dotenv -e ../../.env.test --"
+  },
+  "dependencies": {
+    "@blobscan/env": "workspace:^0.1.0",
+    "@blobscan/logger": "workspace:^0.1.2"
+  },
+  "peerDependencies": {
+    "viem": "^2.17.4"
+  },
+  "devDependencies": {
+    "viem": "^2.17.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

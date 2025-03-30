@@ -1,5 +1,80 @@
 # @blobscan/api
 
+## 0.19.0
+
+### Minor Changes
+
+- [#730](https://github.com/Blobscan/blobscan/pull/730) [`8e4633e`](https://github.com/Blobscan/blobscan/commit/8e4633eee4c0b736819d56ef6dc701d3df42d04d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added following rollups: abstract, aevo, ancient8, arenaz, bob, debankchain, ethernity, fraxtal, fuel, hashkey, hemi, hypr, infinaeon, ink, karak, kinto, lambda, lisk, manta, mantle, metamail, metis, mint, morph, nal, nanonnetwork, opbnb, optopia, orderly, pandasea, parallel, phala, polynomial, r0ar, race, rari, shape, snaxchain, soneium, superlumio, superseed, swanchain, swellchain, unichain, world, xga, zeronetwork and zircuit
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed the `category` field from the `Transaction` model and now derive its value from the `rollup` field
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped `category` from `Transaction` model and computed it from `rollup` field
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Reallocated the `rollup` field from the `Transaction` model to the `Address` model
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Dropped `AddressCategoryInfo` and added its columns to `Address` model
+
+### Patch Changes
+
+- Updated dependencies [[`8e4633e`](https://github.com/Blobscan/blobscan/commit/8e4633eee4c0b736819d56ef6dc701d3df42d04d), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf)]:
+  - @blobscan/rollups@0.3.0
+  - @blobscan/db@0.15.0
+  - @blobscan/blob-propagator@0.2.10
+  - @blobscan/blob-storage-manager@0.4.2
+
+## 0.18.1
+
+### Patch Changes
+
+- [#722](https://github.com/Blobscan/blobscan/pull/722) [`1ab2c7f`](https://github.com/Blobscan/blobscan/commit/1ab2c7fddce9883b81387bce0e11ac8104c7d983) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed `sort` query param from `getBySlot` procedure
+
+## 0.18.0
+
+### Minor Changes
+
+- [#721](https://github.com/Blobscan/blobscan/pull/721) [`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added last upper synced block root and block slot fields
+
+- [#700](https://github.com/Blobscan/blobscan/pull/700) [`b90971b`](https://github.com/Blobscan/blobscan/commit/b90971b1415e32c23c530feff1fc2dd1560d377d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for fetching blocks by slot
+
+- [#713](https://github.com/Blobscan/blobscan/pull/713) [`27cddc4`](https://github.com/Blobscan/blobscan/commit/27cddc45aeb593d1dd9a1c693d5bfe69b6569f9a) Thanks [@PJColombo](https://github.com/PJColombo)! - Renamed and modified handleReorgedSlots to handleReorg, which now receives a set of rewinded and forwarded block hashes.
+
+### Patch Changes
+
+- [#695](https://github.com/Blobscan/blobscan/pull/695) [`9f88066`](https://github.com/Blobscan/blobscan/commit/9f88066f7445d3bfddc9088fe7078a9d53d9828e) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added sorting option to the getDailyStats API endpoint
+
+- [#658](https://github.com/Blobscan/blobscan/pull/658) [`95f8043`](https://github.com/Blobscan/blobscan/commit/95f8043f253e83d37e224ccfd63f4c61088af4c2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Removed auto-completion logic for hashes in Optimism decoded fields retrieval
+
+- Updated dependencies [[`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a)]:
+  - @blobscan/db@0.14.0
+  - @blobscan/blob-propagator@0.2.9
+  - @blobscan/blob-storage-manager@0.4.1
+  - @blobscan/rollups@0.2.3
+
+## 0.17.1
+
+### Patch Changes
+
+- [#689](https://github.com/Blobscan/blobscan/pull/689) [`a04245e`](https://github.com/Blobscan/blobscan/commit/a04245e23afe8e783ed8be81c34b98e6f5fc02b0) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for parameterizing the WeaveVm blob data storage reference base URL
+
+## 0.17.0
+
+### Minor Changes
+
+- [#681](https://github.com/Blobscan/blobscan/pull/681) [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Weavevm blob storage support
+
+- [#683](https://github.com/Blobscan/blobscan/pull/683) [`6a06872`](https://github.com/Blobscan/blobscan/commit/6a06872d13de893f821200b3541567b413916c9a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a protected procedure to upsert weaveVM blob storage references
+
+### Patch Changes
+
+- Updated dependencies [[`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202), [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256), [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202)]:
+  - @blobscan/db@0.13.0
+  - @blobscan/blob-storage-manager@0.4.0
+  - @blobscan/env@0.1.0
+  - @blobscan/blob-propagator@0.2.8
+  - @blobscan/rollups@0.2.2
+  - @blobscan/logger@0.1.2
+  - @blobscan/open-telemetry@0.0.9
+
 ## 0.16.0
 
 ### Minor Changes
@@ -318,7 +393,7 @@
 
 - [#296](https://github.com/Blobscan/blobscan/pull/296) [`56ebc7d`](https://github.com/Blobscan/blobscan/commit/56ebc7d0fa44ef5abdea4df4ab31fe697bcfde21) Thanks [@0xGabi](https://github.com/0xGabi)! - Fixed blob gas as calldata calculation
 
-- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Splited getByBlockId schema to handle openapi parse restrictions
+- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Split getByBlockId schema to handle openapi parse restrictions
 
 - [#294](https://github.com/Blobscan/blobscan/pull/294) [`3a9c304`](https://github.com/Blobscan/blobscan/commit/3a9c3045b35dd3efef29caa75b87cbf5549f7ee2) Thanks [@0xGabi](https://github.com/0xGabi)! - Resolved overall stats format
 

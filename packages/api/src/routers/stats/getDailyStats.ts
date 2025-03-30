@@ -1,5 +1,6 @@
 import { z } from "@blobscan/zod";
 
+import { withSortFilterSchema } from "../../middlewares/withFilters";
 import {
   withTimeFrame,
   withTimeFrameSchema,
@@ -14,7 +15,7 @@ import {
 } from "../../utils";
 import { statsSchema } from "./common";
 
-const inputSchema = withTimeFrameSchema;
+const inputSchema = withTimeFrameSchema.merge(withSortFilterSchema);
 const outputSchema = statsSchema
   .merge(
     z.object({
@@ -29,7 +30,7 @@ export const getDailyStats = publicProcedure
   .input(inputSchema)
   .output(outputSchema)
   .use(withTimeFrame)
-  .query(async ({ ctx: { prisma, timeFrame } }) => {
+  .query(async ({ ctx: { prisma, timeFrame }, input }) => {
     const dailyStats = await prisma.dailyStats.findMany({
       where: {
         AND: [
@@ -47,7 +48,17 @@ export const getDailyStats = publicProcedure
           },
         ],
       },
-      orderBy: [{ day: "desc" }, { category: "desc" }, { rollup: "desc" }],
+      orderBy: [
+        {
+          day: input.sort,
+        },
+        {
+          category: "desc",
+        },
+        {
+          rollup: "desc",
+        },
+      ],
     });
 
     return dailyStats.map(

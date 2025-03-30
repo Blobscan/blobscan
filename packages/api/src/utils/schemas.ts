@@ -10,24 +10,73 @@ const zodBlobStorageEnums = [
 ] as const;
 
 const zodRollupEnums = [
+  "abstract",
+  "aevo",
+  "ancient8",
   "arbitrum",
+  "arenaz",
   "base",
   "blast",
+  "bob",
   "boba",
   "camp",
+  "debankchain",
+  "ethernity",
+  "fraxtal",
+  "fuel",
+  "hashkey",
+  "hemi",
+  "hypr",
+  "infinaeon",
+  "ink",
+  "karak",
+  "kinto",
   "kroma",
+  "lambda",
   "linea",
+  "lisk",
+  "manta",
+  "mantle",
+  "metis",
   "metal",
+  "metamail",
+  "mint",
+  "mode",
+  "morph",
+  "nal",
+  "nanonnetwork",
+  "opbnb",
   "optimism",
   "optopia",
+  "orderly",
+  "pandasea",
   "paradex",
+  "parallel",
+  "phala",
   "pgn",
+  "polynomial",
+  "r0ar",
+  "race",
+  "rari",
+  "river",
   "scroll",
+  "shape",
+  "snaxchain",
+  "soneium",
   "starknet",
+  "superlumio",
+  "superseed",
+  "swanchain",
+  "swellchain",
   "taiko",
-  "zksync",
-  "mode",
+  "thebinaryholdings",
+  "unichain",
+  "world",
+  "xga",
+  "zeronetwork",
+  "zircuit",
   "zora",
+  "zksync",
 ] as const;
 
 const zodCategoryEnum = ["other", "rollup"] as const;
@@ -107,11 +156,18 @@ export const blockNumberSchema = z.number().nonnegative();
 
 export const slotSchema = z.number().nonnegative();
 
-export const blobIndexSchema = z.number().nonnegative();
-
 export const hexSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, {
   message: "Invalid hexadecimal string",
 });
+
+export const blockHashSchema = hexSchema.refine(
+  (value) => value.length === 66,
+  {
+    message: "Block hashes must be 66 characters long",
+  }
+);
+
+export const blobIndexSchema = z.number().nonnegative();
 
 export const addressSchema = z
   .string()

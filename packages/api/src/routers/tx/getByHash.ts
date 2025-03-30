@@ -7,14 +7,13 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { retrieveBlobData } from "../../utils";
+import { calculateTxFeeFields, retrieveBlobData } from "../../utils";
+import type { IncompletedTransaction } from "./common";
 import {
-  addDerivedFieldsToTransaction,
   createTransactionSelect,
   serializeTransaction,
   serializedTransactionSchema,
 } from "./common";
-import type { BaseTransaction } from "./common";
 
 const inputSchema = z
   .object({
@@ -40,13 +39,12 @@ export const getByHash = publicProcedure
       ctx: { blobStorageManager, expands, prisma },
       input: { hash },
     }) => {
-      const queriedTx: BaseTransaction | null =
-        await prisma.transaction.findUnique({
-          select: createTransactionSelect(expands),
-          where: { hash },
-        });
+      const dbTx = (await prisma.transaction.findUnique({
+        select: createTransactionSelect(expands),
+        where: { hash },
+      })) as unknown as IncompletedTransaction;
 
-      if (!queriedTx) {
+      if (!dbTx) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `No transaction with hash '${hash}'.`,
@@ -55,8 +53,8 @@ export const getByHash = publicProcedure
 
       if (expands.blobData) {
         await Promise.all(
-          queriedTx.blobs.map(async ({ blob }) => {
-            if (blob.dataStorageReferences?.length) {
+          dbTx.blobs.map(async ({ blob }) => {
+            if (blob?.dataStorageReferences?.length) {
               const data = await retrieveBlobData(blobStorageManager, blob);
 
               blob.data = data;
@@ -65,6 +63,18 @@ export const getByHash = publicProcedure
         );
       }
 
-      return serializeTransaction(addDerivedFieldsToTransaction(queriedTx));
+      const txFeeFields = calculateTxFeeFields({
+        blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
+        blobGasUsed: dbTx.blobGasUsed,
+        gasPrice: dbTx.gasPrice,
+        maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
+        blobGasPrice: dbTx.block.blobGasPrice,
+      });
+      const tx = {
+        ...dbTx,
+        ...txFeeFields,
+      };
+
+      return serializeTransaction(tx);
     }
   );

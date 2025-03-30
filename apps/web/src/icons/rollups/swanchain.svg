@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1024 1024">
+  <path fill="url(#swanchain_svg__a)" fill-rule="evenodd" d="M512.055 49.555 85.221 295.13l649.433 374.678-222.617 127.904v-98.406L85.307 454.13l-.026 274.12 426.737 246.195L938.78 728.217 291.068 354.533l220.969-127.139v96.55l426.735 246.98V295.738zm-.018 807.453 274.112-157.491 49.749 28.701-323.861 186.858zm0-688.931v-59.176l-.017-.01-323.809 186.301 51.38 29.643zm-51.414 560.985v156.375L239.544 757.891V602.042zM188.13 572.503l-51.418-29.542-.015 155.596 51.433 29.673zm375.321-278.206V138.563l323.908 186.87v156.331z" clip-rule="evenodd"/>
+  <path fill="url(#swanchain_svg__b)" fill-rule="evenodd" d="M512.018 482.006v59.357l222.636 128.445-222.617 127.905v-98.406l-.019-.011v275.149l426.735-246.212v-.031zM786.15 699.518l-274.113 157.49v58.068l323.861-186.857z" clip-rule="evenodd"/>
+  <path fill="url(#swanchain_svg__c)" fill-rule="evenodd" d="M512.017 227.405v-59.317L239.591 324.835l-51.38-29.643 323.806-186.3V49.576L85.282 295.095v.071l426.735 246.196v-59.357L291.068 354.533z" clip-rule="evenodd"/>
+  <defs>
+    <linearGradient id="swanchain_svg__a" x1="85.221" x2="935.959" y1="293.422" y2="731.168" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#447DFF"/>
+      <stop offset="1" stop-color="#84EEFE"/>
+    </linearGradient>
+    <linearGradient id="swanchain_svg__b" x1="754.647" x2="505.774" y1="693.513" y2="829.938" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#71CDFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#4B88FF"/>
+    </linearGradient>
+    <linearGradient id="swanchain_svg__c" x1="370.629" x2="509.056" y1="199.939" y2="132.558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3F80FF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#2A72FF"/>
+    </linearGradient>
+  </defs>
+</svg>

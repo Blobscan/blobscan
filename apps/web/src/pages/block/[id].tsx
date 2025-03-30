@@ -3,6 +3,8 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import type { NextRouter } from "next/router";
 
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
+
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
@@ -13,23 +15,18 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { BlockStatus } from "~/components/Status";
-import { getFirstBlobNumber } from "~/components/content";
 import { api } from "~/api-client";
+import { getFirstBlobNumber } from "~/content";
 import NextError from "~/pages/_error";
+import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
-  BLOB_GAS_LIMIT_PER_BLOCK,
-  buildBlockExternalUrl,
-  buildSlotExternalUrl,
   deserializeFullBlock,
   formatBytes,
   formatNumber,
   formatTimestamp,
-  GAS_PER_BLOB,
-  MAX_BLOBS_PER_BLOCK,
   performDiv,
   pluralize,
-  TARGET_BLOB_GAS_PER_BLOCK,
 } from "~/utils";
 
 function performBlockQuery(router: NextRouter) {
@@ -56,6 +53,9 @@ const Block: NextPage = function () {
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
   const blockNumber = blockData ? blockData.number : undefined;
 
+  const { env } = useEnv();
+  const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
+
   if (error) {
     return (
       <NextError
@@ -71,7 +71,20 @@ const Block: NextPage = function () {
 
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
-  if (blockData) {
+  if (blockData && env) {
+    const networkBlobConfig = getNetworkBlobConfigBySlot(
+      env.PUBLIC_NETWORK_NAME,
+      blockData.slot
+    );
+    const {
+      bytesPerFieldElement,
+      fieldElementsPerBlob,
+      blobGasLimit,
+      maxBlobsPerBlock,
+      targetBlobGasPerBlock,
+    } = networkBlobConfig;
+    const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
+
     const totalBlockBlobSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
         const totalBlobsSize = blobs.reduce(
@@ -84,6 +97,15 @@ const Block: NextPage = function () {
       0
     );
 
+    const firstBlobNumber = networkName
+      ? getFirstBlobNumber(networkName)
+      : undefined;
+
+    const previousBlockHref =
+      firstBlobNumber && blockNumber && firstBlobNumber < blockNumber
+        ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
+        : undefined;
+
     detailsFields = [
       {
         name: "Block Height",
@@ -92,14 +114,11 @@ const Block: NextPage = function () {
         value: (
           <div className="flex items-center justify-start gap-4">
             {blockData.number}
-            {blockNumber !== undefined && (
+            {!!blockNumber && previousBlockHref && (
               <NavArrows
                 prev={{
                   tooltip: "Previous Block",
-                  href:
-                    getFirstBlobNumber() < blockNumber
-                      ? `/block_neighbor?blockNumber=${blockNumber}&direction=prev`
-                      : undefined,
+                  href: previousBlockHref,
                 }}
                 next={{
                   tooltip: "Next Block",
@@ -136,7 +155,10 @@ const Block: NextPage = function () {
         name: "Slot",
         helpText: "The slot number of the block.",
         value: (
-          <Link href={buildSlotExternalUrl(blockData.slot)} isExternal>
+          <Link
+            href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${blockData.slot}`}
+            isExternal
+          >
             {blockData.slot}
           </Link>
         ),
@@ -148,8 +170,8 @@ const Block: NextPage = function () {
           <div>
             {formatBytes(totalBlockBlobSize)}
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(totalBlockBlobSize / GAS_PER_BLOB)}{" "}
-              {pluralize("blob", totalBlockBlobSize / GAS_PER_BLOB)})
+              ({formatNumber(totalBlockBlobSize / blobSize)}{" "}
+              {pluralize("blob", totalBlockBlobSize / blobSize)})
             </span>
           </div>
         ),
@@ -162,20 +184,25 @@ const Block: NextPage = function () {
       },
       {
         name: "Blob Gas Used",
-        helpText: `The total blob gas used by the blobs in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${(
-          TARGET_BLOB_GAS_PER_BLOCK / 1024
-        ).toFixed(0)} KB).`,
-        value: <BlobGasUsageDisplay blobGasUsed={blockData.blobGasUsed} />,
+        helpText: `The total blob gas used by the blobs in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
+          targetBlobGasPerBlock / BigInt(1024)
+        } KB).`,
+        value: (
+          <BlobGasUsageDisplay
+            networkBlobConfig={networkBlobConfig}
+            blobGasUsed={blockData.blobGasUsed}
+          />
+        ),
       },
       {
         name: "Blob Gas Limit",
         helpText: "The maximum blob gas limit for this block.",
         value: (
           <div>
-            {formatNumber(BLOB_GAS_LIMIT_PER_BLOCK)}
+            {formatNumber(blobGasLimit)}
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(MAX_BLOBS_PER_BLOCK)}{" "}
-              {pluralize("blob", MAX_BLOBS_PER_BLOCK)} per block)
+              ({formatNumber(maxBlobsPerBlock)}{" "}
+              {pluralize("blob", maxBlobsPerBlock)} per block)
             </span>
           </div>
         ),
@@ -212,7 +239,9 @@ const Block: NextPage = function () {
       <DetailsLayout
         header="Block Details"
         externalLink={
-          blockData ? buildBlockExternalUrl(blockData.number) : undefined
+          blockData
+            ? `${env?.PUBLIC_EXPLORER_BASE_URL}/block/${blockData.number}`
+            : undefined
         }
         fields={detailsFields}
       />

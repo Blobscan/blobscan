@@ -1,62 +1,77 @@
-import { Prisma } from "@blobscan/db";
-import type {
-  Block as DBBlock,
-  Transaction as DBTransaction,
-  WithoutTimestampFields,
-} from "@blobscan/db";
+import type { Prisma } from "@blobscan/db";
 
 import type {
+  ExpandedBlob,
+  ExpandedBlock,
   Expands,
-  ExpandedBlobData,
 } from "../../../middlewares/withExpands";
-import { blobReferenceSelect } from "../../../utils";
-import type { DerivedTxBlobGasFields } from "../../../utils";
+import type { TransactionFeeFields, Prettify } from "../../../utils";
 
-export type BaseTransaction = WithoutTimestampFields<DBTransaction> & {
-  block: Partial<DBBlock>;
-  blobs: { blob: ExpandedBlobData; index: number; blobHash: string }[];
-};
+export const baseTransactionSelect = {
+  hash: true,
+  toId: true,
+  blobGasUsed: true,
+  blobAsCalldataGasUsed: true,
+  gasPrice: true,
+  maxFeePerBlobGas: true,
+  blockHash: true,
+  blockNumber: true,
+  blockTimestamp: true,
+  index: true,
+  decodedFields: true,
+  from: {
+    select: {
+      address: true,
+      rollup: true,
+    },
+  },
+} satisfies Prisma.TransactionSelect;
 
-export type FullQueriedTransaction = BaseTransaction & DerivedTxBlobGasFields;
+export type BaseTransaction = Prisma.TransactionGetPayload<{
+  select: typeof baseTransactionSelect;
+}>;
 
-export const baseTransactionSelect =
-  Prisma.validator<Prisma.TransactionSelect>()({
-    hash: true,
-    fromId: true,
-    toId: true,
-    blobGasUsed: true,
-    blobAsCalldataGasUsed: true,
-    gasPrice: true,
-    maxFeePerBlobGas: true,
-    category: true,
-    rollup: true,
-    blockHash: true,
-    blockNumber: true,
-    blockTimestamp: true,
-    index: true,
-    decodedFields: true,
-  });
+type BlobHash = Prisma.BlobsOnTransactionsGetPayload<{
+  select: {
+    blobHash: true;
+  };
+}>;
 
-export function createTransactionSelect(expands: Expands) {
-  return Prisma.validator<Prisma.TransactionSelect>()({
+type BlobOnTransaction = Prettify<
+  BlobHash & { blob?: ExpandedBlob; data?: string }
+>;
+
+export type IncompletedTransaction = Prettify<
+  BaseTransaction & {
+    block: { blobGasPrice: Prisma.Decimal } & Partial<ExpandedBlock>;
+    blobs: BlobOnTransaction[];
+  }
+>;
+
+export type Transaction = Prettify<
+  IncompletedTransaction & TransactionFeeFields
+>;
+
+export function createTransactionSelect<E extends Expands>(expands: E) {
+  const blobExpand = expands.blob ? { blob: expands.blob } : {};
+  const blockExpand = expands.block?.select ?? {};
+
+  return {
     ...baseTransactionSelect,
     block: {
       select: {
-        ...(expands.block?.select ?? {}),
         blobGasPrice: true,
+        ...blockExpand,
       },
     },
     blobs: {
       select: {
-        index: true,
         blobHash: true,
-        blob: {
-          select: {
-            ...blobReferenceSelect,
-            ...(expands.blob?.select ?? {}),
-          },
-        },
+        ...blobExpand,
+      },
+      orderBy: {
+        index: "asc",
       },
     },
-  });
+  } satisfies Prisma.TransactionSelect;
 }

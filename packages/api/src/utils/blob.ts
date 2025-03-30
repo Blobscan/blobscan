@@ -12,13 +12,13 @@ import { z } from "@blobscan/zod";
 
 import { serializeDecimal } from "./serializers";
 
-export type DerivedTxBlobGasFields = {
+export type TransactionFeeFields = {
   blobAsCalldataGasFee: Prisma.Decimal;
-  blobGasBaseFee?: Prisma.Decimal;
+  blobGasBaseFee: Prisma.Decimal;
   blobGasMaxFee: Prisma.Decimal;
 };
 
-export function calculateDerivedTxBlobGasFields({
+export function calculateTxFeeFields({
   blobGasUsed,
   blobAsCalldataGasUsed,
   blobGasPrice,
@@ -27,40 +27,35 @@ export function calculateDerivedTxBlobGasFields({
 }: {
   blobGasUsed: Prisma.Decimal;
   blobAsCalldataGasUsed: Prisma.Decimal;
-  blobGasPrice?: Prisma.Decimal;
+  blobGasPrice: Prisma.Decimal;
   gasPrice: Prisma.Decimal;
   maxFeePerBlobGas: Prisma.Decimal;
-}): DerivedTxBlobGasFields {
+}): TransactionFeeFields {
   const blobGasMaxFee = maxFeePerBlobGas.mul(blobGasUsed);
+  const blobAsCalldataGasFee = gasPrice.mul(blobAsCalldataGasUsed);
+  const blobGasBaseFee = blobGasPrice.mul(blobGasUsed);
 
-  const derivedBlobGasFields: DerivedTxBlobGasFields = {
-    blobAsCalldataGasFee: gasPrice.mul(blobAsCalldataGasUsed),
+  return {
+    blobAsCalldataGasFee,
+    blobGasBaseFee,
     blobGasMaxFee,
   };
-
-  if (blobGasPrice) {
-    derivedBlobGasFields.blobGasBaseFee = blobGasPrice.mul(blobGasUsed);
-  }
-
-  return derivedBlobGasFields;
 }
 
-export const serializedDerivedTxBlobGasFieldsSchema = z.object({
+export const serializedTxFeeFieldsSchema = z.object({
   blobAsCalldataGasFee: z.string(),
   blobGasBaseFee: z.string().optional(),
   blobGasMaxFee: z.string(),
 });
 
-export type SerializedDerivedTxBlobGasFields = z.infer<
-  typeof serializedDerivedTxBlobGasFieldsSchema
->;
+export type SerializedTxFeeFields = z.infer<typeof serializedTxFeeFieldsSchema>;
 
-export function serializeDerivedTxBlobGasFields({
+export function serializeTxFeeFields({
   blobAsCalldataGasFee,
   blobGasBaseFee,
   blobGasMaxFee,
-}: DerivedTxBlobGasFields): SerializedDerivedTxBlobGasFields {
-  const serializedFields: SerializedDerivedTxBlobGasFields = {
+}: TransactionFeeFields): SerializedTxFeeFields {
+  const serializedFields: SerializedTxFeeFields = {
     blobAsCalldataGasFee: serializeDecimal(blobAsCalldataGasFee),
     blobGasMaxFee: serializeDecimal(blobGasMaxFee),
   };

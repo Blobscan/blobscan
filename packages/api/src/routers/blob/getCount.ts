@@ -28,35 +28,18 @@ export async function countBlobs(
   prisma: BlobscanPrismaClient,
   filters: Filters
 ) {
-  const {
-    blockNumber,
-    blockTimestamp,
-    transactionAddresses,
-    transactionCategory,
-    transactionRollup,
-    blockSlot,
-    blockType,
-  } = filters;
+  const { blockFilters = {}, transactionFilters, blockType } = filters;
 
   if (requiresDirectCount(filters)) {
-    const transactionFiltersEnabled =
-      transactionCategory || transactionRollup || transactionAddresses;
-
     return prisma.blobsOnTransactions.count({
       where: {
-        blockNumber,
-        blockTimestamp,
+        blockNumber: blockFilters.number,
+        blockTimestamp: blockFilters.timestamp,
         block: {
-          slot: blockSlot,
+          slot: blockFilters.slot,
           transactionForks: blockType,
         },
-        transaction: transactionFiltersEnabled
-          ? {
-              category: transactionCategory,
-              rollup: transactionRollup,
-              OR: transactionAddresses,
-            }
-          : undefined,
+        transaction: transactionFilters,
       },
     });
   }
@@ -64,7 +47,7 @@ export async function countBlobs(
   const where = buildStatsWhereClause(filters);
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
-  if (filters.blockTimestamp) {
+  if (blockFilters.timestamp) {
     const dailyStats = await prisma.dailyStats.findMany({
       select: {
         totalBlobs: true,

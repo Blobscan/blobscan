@@ -18,9 +18,10 @@ type ChartCardProps = {
 
 function getSeriesDataState(series: EChartOption.Series[] | undefined) {
   return {
-    isLoading: series
-      ? series.some(({ data }) => data === undefined || data === null)
-      : true,
+    isLoading:
+      series && series.length > 0
+        ? series.some(({ data }) => data === undefined || data === null)
+        : true,
     isEmpty: series ? series.some(({ data }) => data?.length === 0) : false,
   };
 }

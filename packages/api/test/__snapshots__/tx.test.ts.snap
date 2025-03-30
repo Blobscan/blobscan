@@ -10,27 +10,17 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "commitment": "commitment001",
-        "dataStorageReferences": [
-          {
-            "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-          },
-          {
-            "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-          },
-        ],
-        "index": 0,
-        "proof": "proof001",
-        "size": 1000,
-        "versionedHash": "blobHash001",
+        "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "dataStorageReferences": [],
+        "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "size": 1500,
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -57,14 +47,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
           },
           {
             "storage": "postgres",
             "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
-        "index": 0,
         "proof": "proof004",
         "size": 1300,
         "versionedHash": "blobHash004",
@@ -74,14 +63,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
           },
           {
             "storage": "postgres",
             "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
-        "index": 1,
         "proof": "proof004",
         "size": 1300,
         "versionedHash": "blobHash004",
@@ -91,14 +79,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
           },
           {
             "storage": "postgres",
             "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
-        "index": 2,
         "proof": "proof004",
         "size": 1300,
         "versionedHash": "blobHash004",
@@ -107,7 +94,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -115,7 +102,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -135,8 +122,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -146,7 +132,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 108,
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -169,15 +155,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
@@ -188,7 +171,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 107,
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -196,7 +179,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -216,21 +199,11 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "commitment": "commitment001",
-        "dataStorageReferences": [
-          {
-            "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-          },
-          {
-            "storage": "swarm",
-            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-          },
-        ],
-        "index": 0,
-        "proof": "proof001",
-        "size": 1000,
-        "versionedHash": "blobHash001",
+        "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "dataStorageReferences": [],
+        "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "size": 1500,
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
@@ -240,7 +213,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 108,
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -267,14 +240,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
           },
           {
             "storage": "postgres",
             "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
-        "index": 0,
         "proof": "proof004",
         "size": 1300,
         "versionedHash": "blobHash004",
@@ -284,14 +256,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
           },
           {
             "storage": "postgres",
             "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
-        "index": 1,
         "proof": "proof004",
         "size": 1300,
         "versionedHash": "blobHash004",
@@ -301,14 +272,13 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [
           {
             "storage": "google",
-            "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
           },
           {
             "storage": "postgres",
             "url": "http://localhost:3001/blobs/blobHash004/data",
           },
         ],
-        "index": 2,
         "proof": "proof004",
         "size": 1300,
         "versionedHash": "blobHash004",
@@ -321,7 +291,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "excessBlobGas": "15000",
       "slot": 107,
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -329,7 +299,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -349,15 +319,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
-        "index": 1,
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
-        "index": 2,
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
@@ -372,7 +339,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "baseAddress",
+    "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -387,11 +354,9 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "262144",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
     ],
@@ -406,7 +371,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
     "maxFeePerBlobGas": "120",
@@ -421,7 +386,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -451,15 +415,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -494,14 +455,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -524,22 +484,19 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -547,7 +504,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -562,7 +519,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
@@ -597,15 +553,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -635,7 +588,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -665,11 +617,9 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "262144",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
     ],
@@ -684,7 +634,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
     "maxFeePerBlobGas": "120",
@@ -704,22 +654,19 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -727,7 +674,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -742,15 +689,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash001",
       },
     ],
@@ -765,7 +709,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -780,7 +724,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -795,7 +738,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -810,11 +753,9 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "262144",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
     ],
@@ -829,7 +770,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
     "maxFeePerBlobGas": "120",
@@ -849,7 +790,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "262144",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
       },
     ],
@@ -864,7 +804,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "index": 0,
     "maxFeePerBlobGas": "566",
@@ -884,7 +824,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
@@ -914,7 +853,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -944,15 +882,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash001",
       },
     ],
@@ -967,7 +902,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -982,7 +917,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash005",
       },
     ],
@@ -997,7 +931,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "baseAddress",
+    "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
     "maxFeePerBlobGas": "100",
@@ -1012,7 +946,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1042,7 +975,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1072,7 +1004,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash002",
       },
     ],
@@ -1087,7 +1018,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "arbitrumAddress",
+    "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
     "maxFeePerBlobGas": "100",
@@ -1102,7 +1033,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1117,7 +1047,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -1137,7 +1067,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash005",
       },
     ],
@@ -1152,7 +1081,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "baseAddress",
+    "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
     "maxFeePerBlobGas": "100",
@@ -1167,7 +1096,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1197,7 +1125,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1227,7 +1154,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash002",
       },
     ],
@@ -1242,7 +1168,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "arbitrumAddress",
+    "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
     "maxFeePerBlobGas": "100",
@@ -1257,7 +1183,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1272,7 +1197,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -1287,15 +1212,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1325,15 +1247,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1368,7 +1287,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1383,7 +1301,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -1398,15 +1316,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1441,15 +1356,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1479,50 +1391,17 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   {
     "blobAsCalldataGasFee": "10000",
     "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
-    "blobs": [
-      {
-        "index": 0,
-        "versionedHash": "blobHash001",
-      },
-    ],
-    "block": {
-      "blobGasPrice": "22",
-    },
-    "blockHash": "blockHash004",
-    "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
-    "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
-    "from": "optimismAddress",
-    "hash": "txHash007",
-    "index": 0,
-    "maxFeePerBlobGas": "100",
-    "rollup": "optimism",
-    "to": "address2",
-  },
-  {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
     "blobGasBaseFee": "8650752",
     "blobGasMaxFee": "39321600",
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1557,15 +1436,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
-        "index": 1,
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
-        "index": 2,
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
@@ -1580,7 +1456,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "baseAddress",
+    "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -1595,11 +1471,9 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "262144",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
     ],
@@ -1614,7 +1488,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
     "maxFeePerBlobGas": "120",
@@ -1629,7 +1503,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1659,15 +1532,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1702,11 +1572,9 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "262144",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
     ],
@@ -1721,7 +1589,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
     "maxFeePerBlobGas": "120",
@@ -1736,7 +1604,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
     ],
@@ -1766,15 +1633,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash002",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash003",
       },
     ],
@@ -1799,7 +1663,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 ]
 `;
 
-exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the block specificed 1`] = `
+exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the block specified 1`] = `
 [
   {
     "blobAsCalldataGasFee": "10000",
@@ -1809,14 +1673,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -1839,22 +1702,19 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -1862,7 +1722,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -1882,14 +1742,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -1912,22 +1771,19 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -1935,7 +1791,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -1950,7 +1806,6 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
@@ -1985,14 +1840,13 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -2015,22 +1869,19 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -2038,7 +1889,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -2058,14 +1909,13 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
-        "versionedHash": "blobHash001",
+        "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash008",
+    "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
     "blockTimestamp": "2023-08-31T16:00:00.000Z",
     "category": "other",
@@ -2088,22 +1938,19 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash004",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
       "blobGasPrice": "22",
     },
-    "blockHash": "blockHash007",
+    "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
     "blockTimestamp": "2023-08-31T14:00:00.000Z",
     "category": "rollup",
@@ -2111,7 +1958,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -2131,15 +1978,12 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": "393216",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 1,
         "versionedHash": "blobHash001",
       },
       {
-        "index": 2,
         "versionedHash": "blobHash001",
       },
     ],
@@ -2154,7 +1998,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "optimismAddress",
+    "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
     "maxFeePerBlobGas": "100",
@@ -2169,7 +2013,6 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": "131072",
     "blobs": [
       {
-        "index": 0,
         "versionedHash": "blobHash005",
       },
     ],
@@ -2184,7 +2027,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
       "payload": "{}",
       "type": "unknown",
     },
-    "from": "baseAddress",
+    "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
     "maxFeePerBlobGas": "100",
@@ -2207,15 +2050,12 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
   "blobGasUsed": "393216",
   "blobs": [
     {
-      "index": 0,
       "versionedHash": "blobHash001",
     },
     {
-      "index": 1,
       "versionedHash": "blobHash002",
     },
     {
-      "index": 2,
       "versionedHash": "blobHash003",
     },
   ],
@@ -2252,14 +2092,13 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
         },
         {
           "storage": "swarm",
           "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
         },
       ],
-      "index": 0,
       "proof": "proof001",
       "size": 1000,
       "versionedHash": "blobHash001",
@@ -2269,10 +2108,9 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
         },
       ],
-      "index": 1,
       "proof": "proof002",
       "size": 1100,
       "versionedHash": "blobHash002",
@@ -2282,14 +2120,13 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
         },
         {
           "storage": "swarm",
           "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
         },
       ],
-      "index": 2,
       "proof": "proof003",
       "size": 1200,
       "versionedHash": "blobHash003",
@@ -2329,14 +2166,13 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
         },
         {
           "storage": "swarm",
           "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
         },
       ],
-      "index": 0,
       "proof": "proof001",
       "size": 1000,
       "versionedHash": "blobHash001",
@@ -2347,10 +2183,9 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
         },
       ],
-      "index": 1,
       "proof": "proof002",
       "size": 1100,
       "versionedHash": "blobHash002",
@@ -2361,14 +2196,13 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
         },
         {
           "storage": "swarm",
           "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
         },
       ],
-      "index": 2,
       "proof": "proof003",
       "size": 1200,
       "versionedHash": "blobHash003",
@@ -2403,15 +2237,12 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blobGasUsed": "393216",
   "blobs": [
     {
-      "index": 0,
       "versionedHash": "blobHash001",
     },
     {
-      "index": 1,
       "versionedHash": "blobHash002",
     },
     {
-      "index": 2,
       "versionedHash": "blobHash003",
     },
   ],
@@ -2453,14 +2284,13 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
         },
         {
           "storage": "swarm",
           "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
         },
       ],
-      "index": 0,
       "proof": "proof001",
       "size": 1000,
       "versionedHash": "blobHash001",
@@ -2471,10 +2301,9 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash002.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
         },
       ],
-      "index": 1,
       "proof": "proof002",
       "size": 1100,
       "versionedHash": "blobHash002",
@@ -2485,14 +2314,13 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       "dataStorageReferences": [
         {
           "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash003.txt",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
         },
         {
           "storage": "swarm",
           "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
         },
       ],
-      "index": 2,
       "proof": "proof003",
       "size": 1200,
       "versionedHash": "blobHash003",

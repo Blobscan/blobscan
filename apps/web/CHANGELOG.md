@@ -1,5 +1,70 @@
 # @blobscan/web
 
+## 0.22.0
+
+### Minor Changes
+
+- [#730](https://github.com/Blobscan/blobscan/pull/730) [`8e4633e`](https://github.com/Blobscan/blobscan/commit/8e4633eee4c0b736819d56ef6dc701d3df42d04d) Thanks [@PJColombo](https://github.com/PJColombo)! - Added following rollups: abstract, aevo, ancient8, arenaz, bob, debankchain, ethernity, fraxtal, fuel, hashkey, hemi, hypr, infinaeon, ink, karak, kinto, lambda, lisk, manta, mantle, metamail, metis, mint, morph, nal, nanonnetwork, opbnb, optopia, orderly, pandasea, parallel, phala, polynomial, r0ar, race, rari, shape, snaxchain, soneium, superlumio, superseed, swanchain, swellchain, unichain, world, xga, zeronetwork and zircuit
+
+- [#739](https://github.com/Blobscan/blobscan/pull/739) [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf) Thanks [@PJColombo](https://github.com/PJColombo)! - Reallocated the `rollup` field from the `Transaction` model to the `Address` model
+
+### Patch Changes
+
+- Updated dependencies [[`8e4633e`](https://github.com/Blobscan/blobscan/commit/8e4633eee4c0b736819d56ef6dc701d3df42d04d), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf), [`82ca4dd`](https://github.com/Blobscan/blobscan/commit/82ca4dd8b01b275bedbfca5dcc918f6acc4ecfdf)]:
+  - @blobscan/rollups@0.3.0
+  - @blobscan/api@0.19.0
+  - @blobscan/db@0.15.0
+
+## 0.21.0
+
+### Minor Changes
+
+- [#719](https://github.com/Blobscan/blobscan/pull/719) [`9b403be`](https://github.com/Blobscan/blobscan/commit/9b403be258b2daa8b2b415180c1a2a415375ab63) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for calculating the blob gas target using Pectra update params
+
+## 0.20.1
+
+### Patch Changes
+
+- [#724](https://github.com/Blobscan/blobscan/pull/724) [`baecae5`](https://github.com/Blobscan/blobscan/commit/baecae5f7bb30a1c3845fd241eaa25ecc83b4abc) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed skeleton display from navigation items component if the env vars are not set
+
+- Updated dependencies [[`1ab2c7f`](https://github.com/Blobscan/blobscan/commit/1ab2c7fddce9883b81387bce0e11ac8104c7d983)]:
+  - @blobscan/api@0.18.1
+
+## 0.20.0
+
+### Minor Changes
+
+- [#678](https://github.com/Blobscan/blobscan/pull/678) [`22ae59a`](https://github.com/Blobscan/blobscan/commit/22ae59a36fe8a35c0055b053bb288e7f071132a2) Thanks [@xFJA](https://github.com/xFJA)! - Get environment variables from API endpoint.
+
+### Patch Changes
+
+- [#658](https://github.com/Blobscan/blobscan/pull/658) [`95f8043`](https://github.com/Blobscan/blobscan/commit/95f8043f253e83d37e224ccfd63f4c61088af4c2) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Improved Optimism tx decoded fields card
+
+- Updated dependencies [[`9f88066`](https://github.com/Blobscan/blobscan/commit/9f88066f7445d3bfddc9088fe7078a9d53d9828e), [`242af90`](https://github.com/Blobscan/blobscan/commit/242af90b145ec95277172dc1a74ebb222231e58a), [`b90971b`](https://github.com/Blobscan/blobscan/commit/b90971b1415e32c23c530feff1fc2dd1560d377d), [`95f8043`](https://github.com/Blobscan/blobscan/commit/95f8043f253e83d37e224ccfd63f4c61088af4c2), [`27cddc4`](https://github.com/Blobscan/blobscan/commit/27cddc45aeb593d1dd9a1c693d5bfe69b6569f9a)]:
+  - @blobscan/api@0.18.0
+  - @blobscan/db@0.14.0
+  - @blobscan/rollups@0.2.3
+
+## 0.19.0
+
+### Minor Changes
+
+- [#681](https://github.com/Blobscan/blobscan/pull/681) [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Weavevm blob storage support
+
+- [#665](https://github.com/Blobscan/blobscan/pull/665) [`a0f594f`](https://github.com/Blobscan/blobscan/commit/a0f594fb31aa6c811b03c5d07c725d8bdc391813) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added a help tooltip to each field in the block details page
+
+- [#664](https://github.com/Blobscan/blobscan/pull/664) [`bdda00f`](https://github.com/Blobscan/blobscan/commit/bdda00f7513328cb9fa6601c9007baf14af242dc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Allowed to toggle the timestamp column between relative time and date-time format in blobs, blocks and txs pages.
+
+### Patch Changes
+
+- Updated dependencies [[`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202), [`e1421f6`](https://github.com/Blobscan/blobscan/commit/e1421f64443ee6c9395bdc43e0cd29e7fc81e256), [`6a06872`](https://github.com/Blobscan/blobscan/commit/6a06872d13de893f821200b3541567b413916c9a), [`e4dbe7a`](https://github.com/Blobscan/blobscan/commit/e4dbe7aa80b8bb885942cebb122c00e503db8202)]:
+  - @blobscan/db@0.13.0
+  - @blobscan/api@0.17.0
+  - @blobscan/env@0.1.0
+  - @blobscan/rollups@0.2.2
+  - @blobscan/open-telemetry@0.0.9
+  - @blobscan/blob-decoder@0.2.1
+
 ## 0.18.0
 
 ### Minor Changes
@@ -460,7 +525,7 @@
 
 ### Patch Changes
 
-- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Splited getByBlockId schema to handle openapi parse restrictions
+- [#295](https://github.com/Blobscan/blobscan/pull/295) [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63) Thanks [@0xGabi](https://github.com/0xGabi)! - Split getByBlockId schema to handle openapi parse restrictions
 
 - Updated dependencies [[`14c0ed0`](https://github.com/Blobscan/blobscan/commit/14c0ed06ad543239138fc5c14f753a1cf2175032), [`1f40a4b`](https://github.com/Blobscan/blobscan/commit/1f40a4b7dbe73a947c3325588069bbbd50b334da), [`56ebc7d`](https://github.com/Blobscan/blobscan/commit/56ebc7d0fa44ef5abdea4df4ab31fe697bcfde21), [`b307c59`](https://github.com/Blobscan/blobscan/commit/b307c59cace1858634b0bf54099338429c69ce63), [`3a9c304`](https://github.com/Blobscan/blobscan/commit/3a9c3045b35dd3efef29caa75b87cbf5549f7ee2)]:
   - @blobscan/api@0.3.0

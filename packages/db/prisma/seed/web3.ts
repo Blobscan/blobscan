@@ -1,9 +1,6 @@
-import { Rollup } from "../enums";
+import { FORK_BLOB_CONFIGS } from "@blobscan/network-blob-config";
 
-const MIN_BLOB_BASE_FEE = BigInt(1);
-const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
-export const BLOB_GAS_PER_BLOB = BigInt(131_072);
-export const TARGET_BLOB_GAS_PER_BLOCK = BigInt(393216);
+import { Rollup } from "../enums";
 
 export const COMMON_MAX_FEE_PER_BLOB_GAS = [
   1000000000, 2, 150000000000, 10, 2000000000, 26000000000, 1, 4000000000, 4,
@@ -18,7 +15,7 @@ export const COMMON_MAX_FEE_PER_BLOB_GAS = [
   14200000000, 40000000000, 56649567354, 52371487834, 54468542552, 44760150790,
 ].map((x) => BigInt(x));
 
-export const ROLLUP_ADDRESSES: Record<Rollup, string> = {
+export const ROLLUP_ADDRESSES = {
   [Rollup.ARBITRUM]: "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
   [Rollup.BASE]: "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
   [Rollup.BLAST]: "0x415c8893d514f9bc5211d36eeda4183226b84aa7",
@@ -75,12 +72,11 @@ export function getEIP2028CalldataGas(hexData: string) {
 }
 
 export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } =
+    FORK_BLOB_CONFIGS["pectra"];
+
   return BigInt(
-    fakeExponential(
-      MIN_BLOB_BASE_FEE,
-      excessBlobGas,
-      BLOB_BASE_FEE_UPDATE_FRACTION
-    )
+    fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
   );
 }
 
@@ -88,12 +84,14 @@ export function calculateExcessBlobGas(
   parentExcessBlobGas: bigint,
   parentBlobGasUsed: bigint
 ) {
+  const targetBlobGasPerBlock =
+    FORK_BLOB_CONFIGS["pectra"].targetBlobGasPerBlock;
   const excessBlobGas = BigInt(parentExcessBlobGas.toString());
   const blobGasUsed = BigInt(parentBlobGasUsed.toString());
 
-  if (excessBlobGas + blobGasUsed < TARGET_BLOB_GAS_PER_BLOCK) {
+  if (excessBlobGas + blobGasUsed < targetBlobGasPerBlock) {
     return BigInt(0);
   } else {
-    return excessBlobGas + blobGasUsed - TARGET_BLOB_GAS_PER_BLOCK;
+    return excessBlobGas + blobGasUsed - targetBlobGasPerBlock;
   }
 }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 51 51">
+  <path fill="url(#superlumio_svg__a)" d="m0 2.779 44.926 16.674v12.042L0 48.168z"/>
+  <path fill="url(#superlumio_svg__b)" d="m0 12.042 44.926 7.41v12.043L0 38.905z"/>
+  <circle cx="44.926" cy="25.474" r="6.021" fill="#fff"/>
+  <defs>
+    <linearGradient id="superlumio_svg__a" x1="5.558" x2="45.389" y1="25.937" y2="26.256" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8D29C1" stop-opacity="0"/>
+      <stop offset="1" stop-color="#8D29C1"/>
+    </linearGradient>
+    <linearGradient id="superlumio_svg__b" x1="0" x2="45.389" y1="25.937" y2="25.937" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F03F79" stop-opacity="0"/>
+      <stop offset="1" stop-color="#F03F79"/>
+    </linearGradient>
+  </defs>
+</svg>

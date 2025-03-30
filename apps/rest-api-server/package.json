@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/rest-api-server",
-  "version": "0.4.6",
+  "version": "0.4.9",
   "private": true,
   "scripts": {
     "build": "ncc build src/index.ts --target es2020 --minify",
@@ -17,11 +17,12 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@blobscan/api": "workspace:^0.16.0",
-    "@blobscan/env": "workspace:^0.0.1",
-    "@blobscan/logger": "workspace:^0.1.1",
-    "@blobscan/open-telemetry": "workspace:^0.0.8",
-    "@blobscan/syncers": "workspace:^0.3.2",
+    "@blobscan/api": "workspace:^0.19.0",
+    "@blobscan/env": "workspace:^0.1.0",
+    "@blobscan/logger": "workspace:^0.1.2",
+    "@blobscan/open-telemetry": "workspace:^0.0.9",
+    "@blobscan/price-feed": "workspace:^0.0.1",
+    "@blobscan/syncers": "workspace:^0.3.5",
     "@blobscan/zod": "workspace:^0.1.0",
     "@opentelemetry/instrumentation-express": "^0.33.0",
     "@sentry/node": "^7.109.0",
@@ -30,7 +31,8 @@
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "swagger-ui-express": "^4.6.2",
-    "trpc-openapi": "^1.2.0"
+    "trpc-openapi": "^1.2.0",
+    "viem": "^2.17.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

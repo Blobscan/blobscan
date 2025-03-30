@@ -7,7 +7,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -15,24 +15,13 @@ exports[`Block router > getAll > when getting expanded block results > should re
       {
         "blobs": [
           {
-            "commitment": "commitment001",
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "index": 0,
-            "proof": "proof001",
-            "size": 1000,
-            "versionedHash": "blobHash001",
+            "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "dataStorageReferences": [],
+            "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "size": 1500,
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
-        "category": "other",
         "hash": "txHash016",
       },
     ],
@@ -42,7 +31,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -54,14 +43,13 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
                 "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
-            "index": 0,
             "proof": "proof004",
             "size": 1300,
             "versionedHash": "blobHash004",
@@ -71,14 +59,13 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
                 "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
-            "index": 1,
             "proof": "proof004",
             "size": 1300,
             "versionedHash": "blobHash004",
@@ -88,22 +75,19 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
                 "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
-            "index": 2,
             "proof": "proof004",
             "size": 1300,
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -117,7 +101,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -130,21 +114,11 @@ exports[`Block router > getAll > when getting expanded block results > should re
         "blobGasUsed": "131072",
         "blobs": [
           {
-            "commitment": "commitment001",
-            "dataStorageReferences": [
-              {
-                "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash001.txt",
-              },
-              {
-                "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-              },
-            ],
-            "index": 0,
-            "proof": "proof001",
-            "size": 1000,
-            "versionedHash": "blobHash001",
+            "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "dataStorageReferences": [],
+            "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "size": 1500,
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -161,7 +135,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -178,14 +152,13 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
                 "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
-            "index": 0,
             "proof": "proof004",
             "size": 1300,
             "versionedHash": "blobHash004",
@@ -195,14 +168,13 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
                 "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
-            "index": 1,
             "proof": "proof004",
             "size": 1300,
             "versionedHash": "blobHash004",
@@ -212,21 +184,20 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [
               {
                 "storage": "google",
-                "url": "https://storage.googleapis.com/blobscan-test-bucket/70118930558/ob/Ha/sh/obHash004.txt",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
               },
               {
                 "storage": "postgres",
                 "url": "http://localhost:3001/blobs/blobHash004/data",
               },
             ],
-            "index": 2,
             "proof": "proof004",
             "size": 1300,
             "versionedHash": "blobHash004",
           },
         ],
         "category": "rollup",
-        "from": "optimismAddress",
+        "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
@@ -245,7 +216,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -258,7 +229,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
         "blobGasUsed": "131072",
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
@@ -275,7 +246,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -298,7 +269,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "rollup",
-        "from": "optimismAddress",
+        "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
         "hash": "txHash015",
         "index": 0,
         "maxFeePerBlobGas": "100",
@@ -334,9 +305,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
           },
         ],
-        "category": "rollup",
         "hash": "txHash004",
-        "rollup": "base",
       },
     ],
   },
@@ -362,7 +331,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
       {
@@ -371,7 +339,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash002",
       },
       {
@@ -383,9 +350,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -399,7 +364,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -407,10 +372,9 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
-        "category": "other",
         "hash": "txHash016",
       },
     ],
@@ -420,7 +384,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -437,9 +401,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -459,7 +421,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
-        "category": "other",
         "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
       },
     ],
@@ -491,7 +452,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
       {
@@ -500,7 +460,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash002",
       },
       {
@@ -512,9 +471,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -540,9 +497,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
           },
         ],
-        "category": "rollup",
         "hash": "txHash004",
-        "rollup": "base",
       },
     ],
   },
@@ -568,7 +523,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash005",
       },
       {
@@ -583,7 +537,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash006",
       },
     ],
@@ -598,7 +551,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -615,9 +568,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -643,9 +594,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash012",
-        "rollup": "optimism",
       },
     ],
   },
@@ -665,9 +614,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash007",
-        "rollup": "optimism",
       },
     ],
   },
@@ -690,9 +637,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -717,9 +662,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
           },
         ],
-        "category": "rollup",
         "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-        "rollup": "optimism",
       },
     ],
   },
@@ -744,7 +687,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
-        "category": "other",
         "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
       },
     ],
@@ -771,9 +713,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash012",
-        "rollup": "optimism",
       },
       {
         "blobs": [
@@ -781,7 +721,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash013",
       },
     ],
@@ -802,9 +741,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash007",
-        "rollup": "optimism",
       },
       {
         "blobs": [
@@ -812,9 +749,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash008",
-        "rollup": "arbitrum",
       },
       {
         "blobs": [
@@ -822,7 +757,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash009",
       },
       {
@@ -831,7 +765,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash010",
       },
       {
@@ -840,9 +773,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash005",
           },
         ],
-        "category": "rollup",
         "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -867,9 +798,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash007",
-        "rollup": "optimism",
       },
       {
         "blobs": [
@@ -877,9 +806,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash008",
-        "rollup": "arbitrum",
       },
       {
         "blobs": [
@@ -887,7 +814,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash009",
       },
       {
@@ -896,7 +822,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash010",
       },
       {
@@ -905,9 +830,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash005",
           },
         ],
-        "category": "rollup",
         "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -933,7 +856,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash005",
       },
       {
@@ -948,7 +870,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash006",
       },
     ],
@@ -974,9 +895,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash007",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1002,7 +921,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
     ],
@@ -1034,7 +952,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
     ],
@@ -1044,28 +961,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
 
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
-  {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
-    "hash": "blockHash004",
-    "number": 1004,
-    "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
-    "transactions": [
-      {
-        "blobs": [
-          {
-            "versionedHash": "blobHash001",
-          },
-        ],
-        "category": "rollup",
-        "hash": "txHash007",
-        "rollup": "optimism",
-      },
-    ],
-  },
   {
     "blobAsCalldataGasUsed": "2042780",
     "blobGasPrice": "22",
@@ -1088,7 +983,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
     ],
@@ -1120,9 +1014,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
           },
         ],
-        "category": "rollup",
         "hash": "txHash004",
-        "rollup": "base",
       },
     ],
   },
@@ -1148,7 +1040,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
       {
@@ -1157,7 +1048,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash002",
       },
       {
@@ -1169,9 +1059,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1202,7 +1090,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash001",
       },
       {
@@ -1211,7 +1098,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash002",
       },
       {
@@ -1223,23 +1109,21 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash003",
-        "rollup": "optimism",
       },
     ],
   },
 ]
 `;
 
-exports[`Block router > getAll > when getting filtered block results > should return the results starting from the block specificed 1`] = `
+exports[`Block router > getAll > when getting filtered block results > should return the results starting from the block specified 1`] = `
 [
   {
     "blobAsCalldataGasUsed": "255000",
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -1247,10 +1131,9 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
-        "category": "other",
         "hash": "txHash016",
       },
     ],
@@ -1260,7 +1143,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -1277,9 +1160,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1293,7 +1174,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -1301,10 +1182,9 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
-        "category": "other",
         "hash": "txHash016",
       },
     ],
@@ -1314,7 +1194,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -1331,9 +1211,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1353,7 +1231,6 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
-        "category": "other",
         "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
       },
     ],
@@ -1368,7 +1245,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -1376,10 +1253,9 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
-        "category": "other",
         "hash": "txHash016",
       },
     ],
@@ -1389,7 +1265,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -1406,9 +1282,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1422,7 +1296,7 @@ exports[`Block router > getAll > when getting paginated block results > should d
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash008",
+    "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
     "timestamp": "2023-08-31T16:00:00.000Z",
@@ -1430,10 +1304,9 @@ exports[`Block router > getAll > when getting paginated block results > should d
       {
         "blobs": [
           {
-            "versionedHash": "blobHash001",
+            "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
-        "category": "other",
         "hash": "txHash016",
       },
     ],
@@ -1443,7 +1316,7 @@ exports[`Block router > getAll > when getting paginated block results > should d
     "blobGasPrice": "22",
     "blobGasUsed": "5500000",
     "excessBlobGas": "15000",
-    "hash": "blockHash007",
+    "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
     "timestamp": "2023-08-31T14:00:00.000Z",
@@ -1460,9 +1333,7 @@ exports[`Block router > getAll > when getting paginated block results > should d
             "versionedHash": "blobHash004",
           },
         ],
-        "category": "rollup",
         "hash": "txHash015",
-        "rollup": "optimism",
       },
     ],
   },
@@ -1487,9 +1358,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "rollup",
         "hash": "txHash007",
-        "rollup": "optimism",
       },
       {
         "blobs": [
@@ -1497,9 +1366,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash002",
           },
         ],
-        "category": "rollup",
         "hash": "txHash008",
-        "rollup": "arbitrum",
       },
       {
         "blobs": [
@@ -1507,7 +1374,6 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash009",
       },
       {
@@ -1516,7 +1382,6 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash003",
           },
         ],
-        "category": "other",
         "hash": "txHash010",
       },
       {
@@ -1525,9 +1390,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash005",
           },
         ],
-        "category": "rollup",
         "hash": "txHash011",
-        "rollup": "base",
       },
     ],
   },
@@ -1553,7 +1416,6 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash005",
       },
       {
@@ -1568,7 +1430,6 @@ exports[`Block router > getAll > when getting paginated block results > should r
             "versionedHash": "blobHash001",
           },
         ],
-        "category": "other",
         "hash": "txHash006",
       },
     ],
@@ -1601,9 +1462,7 @@ exports[`Block router > getByBlockId > should get a block by block number 1`] = 
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
-      "category": "rollup",
       "hash": "txHash004",
-      "rollup": "base",
     },
   ],
 }
@@ -1626,9 +1485,7 @@ exports[`Block router > getByBlockId > should get a block by hash 1`] = `
           "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
         },
       ],
-      "category": "rollup",
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "rollup": "optimism",
     },
   ],
 }
@@ -1651,9 +1508,7 @@ exports[`Block router > getByBlockId > should get a reorged block by block numbe
           "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
         },
       ],
-      "category": "rollup",
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
-      "rollup": "optimism",
     },
   ],
 }
@@ -1665,7 +1520,7 @@ exports[`Block router > getByBlockId > should get the canonical block when provi
   "blobGasPrice": "22",
   "blobGasUsed": "5500000",
   "excessBlobGas": "15000",
-  "hash": "blockHash008",
+  "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
   "number": 1008,
   "slot": 108,
   "timestamp": "2023-08-31T16:00:00.000Z",
@@ -1673,10 +1528,9 @@ exports[`Block router > getByBlockId > should get the canonical block when provi
     {
       "blobs": [
         {
-          "versionedHash": "blobHash001",
+          "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
         },
       ],
-      "category": "other",
       "hash": "txHash016",
     },
   ],
@@ -1704,7 +1558,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
             },
           ],
-          "index": 0,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
@@ -1717,7 +1570,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
             },
           ],
-          "index": 1,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
@@ -1730,15 +1582,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
             },
           ],
-          "index": 2,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
-      "category": "rollup",
       "hash": "txHash004",
-      "rollup": "base",
     },
   ],
 }
@@ -1766,7 +1615,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
             },
           ],
-          "index": 0,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
@@ -1780,7 +1628,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
             },
           ],
-          "index": 1,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
@@ -1794,15 +1641,12 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
             },
           ],
-          "index": 2,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
-      "category": "rollup",
       "hash": "txHash004",
-      "rollup": "base",
     },
   ],
 }
@@ -1835,7 +1679,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
             },
           ],
-          "index": 0,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
@@ -1849,7 +1692,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
             },
           ],
-          "index": 1,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
@@ -1863,14 +1705,13 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
               "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
             },
           ],
-          "index": 2,
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
           "size": 131072,
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
       "category": "rollup",
-      "from": "baseAddress",
+      "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",
@@ -1910,12 +1751,94 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "category": "rollup",
-      "from": "baseAddress",
+      "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "hash": "txHash004",
       "index": 0,
       "maxFeePerBlobGas": "100",
       "rollup": "base",
       "to": "address3",
+    },
+  ],
+}
+`;
+
+exports[`Block router > getBySlot > should fail when trying to get a block with a negative slot 1`] = `
+"[
+  {
+    \\"code\\": \\"too_small\\",
+    \\"minimum\\": 0,
+    \\"type\\": \\"number\\",
+    \\"inclusive\\": false,
+    \\"exact\\": false,
+    \\"message\\": \\"Number must be greater than 0\\",
+    \\"path\\": [
+      \\"slot\\"
+    ]
+  }
+]"
+`;
+
+exports[`Block router > getBySlot > should fail when trying to get a block with a negative slot 2`] = `
+[ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 0,
+    "type": "number",
+    "inclusive": false,
+    "exact": false,
+    "message": "Number must be greater than 0",
+    "path": [
+      "slot"
+    ]
+  }
+]]
+`;
+
+exports[`Block router > getBySlot > should fail when trying to get a reorged block by slot 1`] = `"Block with slot 110 not found"`;
+
+exports[`Block router > getBySlot > should get a block by slot 1`] = `
+{
+  "blobAsCalldataGasUsed": "2042780",
+  "blobGasPrice": "22",
+  "blobGasUsed": "786432",
+  "excessBlobGas": "15000",
+  "hash": "blockHash001",
+  "number": 1001,
+  "slot": 101,
+  "timestamp": "2022-10-16T12:00:00.000Z",
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "versionedHash": "blobHash001",
+        },
+        {
+          "versionedHash": "blobHash002",
+        },
+        {
+          "versionedHash": "blobHash003",
+        },
+      ],
+      "hash": "txHash001",
+    },
+    {
+      "blobs": [
+        {
+          "versionedHash": "blobHash001",
+        },
+      ],
+      "hash": "txHash002",
+    },
+    {
+      "blobs": [
+        {
+          "versionedHash": "blobHash001",
+        },
+        {
+          "versionedHash": "blobHash002",
+        },
+      ],
+      "hash": "txHash003",
     },
   ],
 }

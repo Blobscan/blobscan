@@ -1,6 +1,5 @@
 import type {
   Address,
-  AddressCategoryInfo,
   Blob,
   BlobsOnTransactions,
   Block,
@@ -8,15 +7,11 @@ import type {
   WithoutTimestampFields,
 } from "@blobscan/db";
 import { Prisma } from "@blobscan/db";
-import { Category } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { getRollupByAddress } from "@blobscan/rollups";
 
 import type { IndexDataFormattedInput } from "./indexData";
-
-const MIN_BLOB_BASE_FEE = BigInt(1);
-const BLOB_BASE_FEE_UPDATE_FRACTION = BigInt(3_338_477);
-const BLOB_GAS_PER_BLOB = BigInt(131_072);
 
 function bigIntToDecimal(bigint: bigint) {
   return new Prisma.Decimal(bigint.toString());
@@ -65,13 +60,15 @@ export function calculateBlobSize(blob: string): number {
   return blob.slice(2).length / 2;
 }
 
-export function calculateBlobGasPrice(excessBlobGas: bigint): bigint {
+export function calculateBlobGasPrice(
+  slot: number,
+  excessBlobGas: bigint
+): bigint {
+  const { minBlobBaseFee, blobBaseFeeUpdateFraction } =
+    getNetworkBlobConfigBySlot(env.CHAIN_ID, slot);
+
   return BigInt(
-    fakeExponential(
-      MIN_BLOB_BASE_FEE,
-      excessBlobGas,
-      BLOB_BASE_FEE_UPDATE_FRACTION
-    )
+    fakeExponential(minBlobBaseFee, excessBlobGas, blobBaseFeeUpdateFraction)
   );
 }
 
@@ -93,9 +90,14 @@ export function createDBTransactions({
         BigInt(0)
       );
 
-      const blobGasPrice = calculateBlobGasPrice(block.excessBlobGas);
-      const rollup = getRollupByAddress(from, env.CHAIN_ID);
-      const category = rollup ? Category.ROLLUP : Category.OTHER;
+      const ethereumConfig = getNetworkBlobConfigBySlot(
+        env.CHAIN_ID,
+        block.slot
+      );
+      const blobGasPrice = calculateBlobGasPrice(
+        block.slot,
+        block.excessBlobGas
+      );
 
       return {
         blockHash: block.hash,
@@ -107,13 +109,11 @@ export function createDBTransactions({
         index,
         gasPrice: bigIntToDecimal(gasPrice),
         blobGasUsed: bigIntToDecimal(
-          BigInt(txBlobs.length) * BLOB_GAS_PER_BLOB
+          BigInt(txBlobs.length) * ethereumConfig.gasPerBlob
         ),
         blobGasPrice: bigIntToDecimal(blobGasPrice),
         maxFeePerBlobGas: bigIntToDecimal(maxFeePerBlobGas),
         blobAsCalldataGasUsed: bigIntToDecimal(blobGasAsCalldataUsed),
-        rollup,
-        category,
         decodedFields: null,
       };
     }
@@ -130,10 +130,11 @@ export function createDBBlock(
     (acc, tx) => acc.add(tx.blobAsCalldataGasUsed),
     new Prisma.Decimal(0)
   );
+  const blobGasPrice = calculateBlobGasPrice(slot, excessBlobGas);
 
-  const blobGasPrice = calculateBlobGasPrice(excessBlobGas);
   return {
     number,
+
     hash,
     timestamp: timestampToDate(timestamp),
     slot,
@@ -199,94 +200,37 @@ export function createDBBlobsOnTransactions({
 export function createDBAddresses({
   transactions,
 }: IndexDataFormattedInput): WithoutTimestampFields<Address>[] {
-  return Array.from(
-    new Set<string>(transactions.flatMap(({ from, to }) => [from, to]))
-  ).map((addr) => ({
-    address: addr,
-  }));
-}
+  const addresses = transactions.reduce<
+    Record<string, WithoutTimestampFields<Address>>
+  >((addressToEntity, { from, to, blockNumber }) => {
+    const fromEntity: WithoutTimestampFields<Address> = addressToEntity[
+      from
+    ] ?? {
+      address: from,
+      firstBlockNumberAsReceiver: null,
+      firstBlockNumberAsSender: null,
+      rollup: getRollupByAddress(from, env.CHAIN_ID),
+    };
+    const toEntity: WithoutTimestampFields<Address> = addressToEntity[to] ?? {
+      address: to,
+      firstBlockNumberAsReceiver: null,
+      firstBlockNumberAsSender: null,
+      rollup: getRollupByAddress(to, env.CHAIN_ID),
+    };
 
-function updateDbCategoryInfo({
-  address,
-  category,
-  dbAddressesCategoryInfo,
-  type,
-  blockNumber,
-}: {
-  address: string;
-  category: Category | null;
-  dbAddressesCategoryInfo: Omit<AddressCategoryInfo, "id">[];
-  type: "sender" | "receiver";
-  blockNumber: number;
-}) {
-  const dbAddressCategoryInfo = dbAddressesCategoryInfo.find(
-    (a) => a.address === address && a.category === category
-  );
+    fromEntity.firstBlockNumberAsSender = fromEntity.firstBlockNumberAsSender
+      ? Math.min(fromEntity.firstBlockNumberAsSender, blockNumber)
+      : blockNumber;
+    toEntity.firstBlockNumberAsReceiver = toEntity.firstBlockNumberAsReceiver
+      ? Math.min(toEntity.firstBlockNumberAsReceiver, blockNumber)
+      : blockNumber;
 
-  const isSender = type === "sender";
+    return {
+      ...addressToEntity,
+      [from]: fromEntity,
+      [to]: toEntity,
+    };
+  }, {});
 
-  if (!dbAddressCategoryInfo) {
-    dbAddressesCategoryInfo.push({
-      address,
-      category,
-      firstBlockNumberAsReceiver: isSender ? null : blockNumber,
-      firstBlockNumberAsSender: isSender ? blockNumber : null,
-    });
-
-    return;
-  }
-
-  const currBlockNumber = isSender
-    ? dbAddressCategoryInfo.firstBlockNumberAsSender
-    : dbAddressCategoryInfo.firstBlockNumberAsReceiver;
-
-  if (currBlockNumber) {
-    dbAddressCategoryInfo[
-      isSender ? "firstBlockNumberAsSender" : "firstBlockNumberAsReceiver"
-    ] = Math.min(currBlockNumber, blockNumber);
-  }
-
-  return dbAddressCategoryInfo;
-}
-
-export function createDBAddressCategoryInfo(
-  dbTxs: WithoutTimestampFields<Transaction>[]
-): Omit<AddressCategoryInfo, "id">[] {
-  const dbAddresses: Omit<AddressCategoryInfo, "id">[] = [];
-
-  dbTxs.forEach(({ fromId, toId, category, blockNumber }) => {
-    updateDbCategoryInfo({
-      address: fromId,
-      category,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "sender",
-      blockNumber,
-    });
-
-    updateDbCategoryInfo({
-      address: fromId,
-      category: null,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "sender",
-      blockNumber,
-    });
-
-    updateDbCategoryInfo({
-      address: toId,
-      category: null,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "receiver",
-      blockNumber,
-    });
-
-    updateDbCategoryInfo({
-      address: toId,
-      category,
-      dbAddressesCategoryInfo: dbAddresses,
-      type: "receiver",
-      blockNumber,
-    });
-  });
-
-  return dbAddresses;
+  return Object.values(addresses);
 }

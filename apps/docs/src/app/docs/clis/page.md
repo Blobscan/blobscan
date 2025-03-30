@@ -55,7 +55,7 @@ Remove Command
 Options
 
   -h, --help                 Print this usage guide.
-  -q, --queue queue          Queue to retry failed jobs from. Valid values are
+  -q, --queue queue          Queue to remove failed jobs from. Valid values are
                              finalizer, google, postgres or swarm.
   -b, --blobHash blob-hash   Blob hash of the failed jobs to retry.
   -f, --force                Force removal of jobs by obliterating the selected

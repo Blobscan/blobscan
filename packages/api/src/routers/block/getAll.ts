@@ -13,13 +13,13 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateDerivedTxBlobGasFields } from "../../utils";
+import { calculateTxFeeFields } from "../../utils";
+import type { Block } from "./common";
 import {
   createBlockSelect,
   serializeBlock,
   serializedBlockSchema,
 } from "./common";
-import type { QueriedBlock } from "./common";
 import { countBlocks } from "./getCount";
 
 const inputSchema = withAllFiltersSchema
@@ -47,27 +47,25 @@ export const getAll = publicProcedure
   .use(withPagination)
   .output(outputSchema)
   .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
+    const {
+      blockFilters = {},
+      blockType,
+      transactionFilters = {},
+      sort,
+    } = filters;
+
     const blocksOp = prisma.block.findMany({
       select: createBlockSelect(expands, filters),
       where: {
-        number: filters.blockNumber,
-        timestamp: filters.blockTimestamp,
-        slot: filters.blockSlot,
-
-        transactionForks: filters.blockType,
-        transactions:
-          filters.transactionRollup !== undefined || filters.transactionCategory !== undefined ||
-          filters.transactionAddresses
-            ? {
-                some: {
-                  rollup: filters.transactionRollup,
-                  category: filters.transactionCategory,
-                  OR: filters.transactionAddresses,
-                },
-              }
-            : undefined,
+        ...blockFilters,
+        transactionForks: blockType,
+        transactions: transactionFilters
+          ? {
+              some: transactionFilters,
+            }
+          : undefined,
       },
-      orderBy: { number: filters.sort },
+      orderBy: { number: sort },
       ...pagination,
     });
     const countOp = count
@@ -76,7 +74,7 @@ export const getAll = publicProcedure
 
     const [queriedBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
 
-    let blocks: QueriedBlock[] = queriedBlocks;
+    let blocks: Block[] = queriedBlocks as unknown as Block[];
 
     if (expands.transaction) {
       blocks = blocks.map((block) => ({
@@ -91,7 +89,7 @@ export const getAll = publicProcedure
 
           const derivedTxFields =
             maxFeePerBlobGas && blobAsCalldataGasUsed && gasPrice && blobGasUsed
-              ? calculateDerivedTxBlobGasFields({
+              ? calculateTxFeeFields({
                   blobAsCalldataGasUsed,
                   blobGasUsed,
                   gasPrice,
@@ -108,8 +106,13 @@ export const getAll = publicProcedure
       }));
     }
 
-    return {
+    const output: z.infer<typeof outputSchema> = {
       blocks: blocks.map(serializeBlock),
-      ...(count ? { totalBlocks } : {}),
     };
+
+    if (count) {
+      output.totalBlocks = totalBlocks;
+    }
+
+    return output;
   });

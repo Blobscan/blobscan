@@ -14,8 +14,9 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
+import { calculateTxFeeFields } from "../../utils";
+import type { IncompletedTransaction } from "./common";
 import {
-  addDerivedFieldsToTransaction,
   createTransactionSelect,
   serializeTransaction,
   serializedTransactionSchema,
@@ -47,40 +48,43 @@ export const getAll = publicProcedure
   .use(withPagination)
   .output(outputSchema)
   .query(async ({ ctx: { prisma, expands, filters, pagination, count } }) => {
-    const blockFiltersExists = filters.blockSlot || filters.blockType;
+    const {
+      transactionFilters = {},
+      blockFilters = {},
+      blockType,
+      sort,
+    } = filters;
+
     let leadingOrderColumn: Prisma.TransactionOrderByWithRelationInput = {
-      blockTimestamp: filters.sort,
+      blockTimestamp: sort,
     };
 
-    if (filters.blockNumber) {
+    if (blockFilters.number) {
       leadingOrderColumn = {
-        blockNumber: filters.sort,
+        blockNumber: sort,
       };
     }
 
     const transactionsOp = prisma.transaction.findMany({
       select: createTransactionSelect(expands),
       where: {
-        blockNumber: filters.blockNumber,
-        blockTimestamp: filters.blockTimestamp,
-        rollup: filters.transactionRollup,
-        category: filters.transactionCategory,
-        OR: filters.transactionAddresses,
-        block: blockFiltersExists
-          ? {
-              slot: filters.blockSlot,
-              transactionForks: filters.blockType,
-            }
-          : undefined,
+        ...transactionFilters,
+        blockNumber: blockFilters.number,
+        blockTimestamp: blockFilters.timestamp,
+        block: {
+          slot: blockFilters.slot,
+          transactionForks: blockType,
+        },
       },
       orderBy: [
         leadingOrderColumn,
         {
-          index: filters.sort,
+          index: sort,
         },
       ],
       ...pagination,
-    });
+    }) as unknown as IncompletedTransaction[];
+
     const countOp = count
       ? countTxs(prisma, filters)
       : Promise.resolve(undefined);
@@ -90,12 +94,28 @@ export const getAll = publicProcedure
       countOp,
     ]);
 
-    const transactions = await Promise.all(
-      queriedTxs.map(addDerivedFieldsToTransaction).map(serializeTransaction)
-    );
+    const txs = queriedTxs.map((dbTx) => {
+      const feeFields = calculateTxFeeFields({
+        blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
+        blobGasUsed: dbTx.blobGasUsed,
+        gasPrice: dbTx.gasPrice,
+        maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
+        blobGasPrice: dbTx.block.blobGasPrice,
+      });
 
-    return {
-      transactions,
-      ...(count ? { totalTransactions: txCountOrStats } : {}),
+      return {
+        ...dbTx,
+        ...feeFields,
+      };
+    });
+
+    const output: z.infer<typeof outputSchema> = {
+      transactions: txs.map(serializeTransaction),
     };
+
+    if (count) {
+      output.totalTransactions = txCountOrStats;
+    }
+
+    return output;
   });

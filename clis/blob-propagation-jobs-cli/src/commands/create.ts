@@ -22,7 +22,7 @@ import {
   queuesOptionDef,
 } from "../utils";
 
-// TODO: Need to convert it to number explicity due to ci tests failing
+// TODO: Need to convert it to number explicitly due to ci tests failing
 // with the following error:
 const PRISMA_BATCH_OPERATIONS_MAX_SIZE = parseInt(
   env.PRISMA_BATCH_OPERATIONS_MAX_SIZE.toString()

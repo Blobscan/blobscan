@@ -6,7 +6,7 @@ import type { Category } from "~/types";
 export type Sort = "asc" | "desc";
 
 type FilterQueryParams = Partial<{
-  from: string;
+  rollups: string;
   category: Category;
   startDate: Date;
   endDate: Date;
@@ -48,7 +48,7 @@ export function useQueryParams() {
     }
 
     const {
-      from: from_,
+      rollups: rollups_,
       p: p_,
       ps: ps_,
       category: category_,
@@ -61,7 +61,7 @@ export function useQueryParams() {
       sort: sort_,
     } = router.query;
 
-    const from = (from_ as string)?.toLowerCase();
+    const rollups = (rollups_ as string)?.toLowerCase();
     const p = parseInt(p_ as string) || DEFAULT_INITIAL_PAGE;
     const ps = parseInt(ps_ as string) || DEFAULT_INITIAL_PAGE_SIZE;
     const sort = sort_ ? (sort_ as Sort) : DEFAULT_SORT;
@@ -76,7 +76,7 @@ export function useQueryParams() {
 
     setQueryParams({
       filterParams: {
-        from,
+        rollups,
         category,
         startDate,
         endDate,

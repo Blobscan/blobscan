@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -6,22 +5,21 @@ import { useRouter } from "next/router";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
-import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
 import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
-import { InfoGrid } from "~/components/InfoGrid";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
+import { OptimismCard } from "~/components/OptimismCard";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
+import { useEnv } from "~/providers/Env";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
   buildAddressRoute,
   buildBlockRoute,
-  buildTransactionExternalUrl,
   formatTimestamp,
   formatBytes,
   formatNumber,
@@ -30,6 +28,7 @@ import {
 } from "~/utils";
 
 const Tx: NextPage = () => {
+  const { env } = useEnv();
   const router = useRouter();
   const hash = (router.query.hash as string | undefined) ?? "";
 
@@ -251,67 +250,17 @@ const Tx: NextPage = () => {
             />
           </div>
         }
-        externalLink={tx ? buildTransactionExternalUrl(tx.hash) : undefined}
+        externalLink={
+          tx ? `${env?.PUBLIC_EXPLORER_BASE_URL}/tx/${tx.hash}` : undefined
+        }
         fields={detailsFields}
       />
 
       {decodedData && (
-        <Card header="Decoded Fields">
-          <div>
-            <InfoGrid
-              fields={[
-                {
-                  name: "Timestamp since L2 genesis",
-                  value: (
-                    <div className="whitespace-break-spaces">
-                      {tx
-                        ? formatTimestamp(
-                            tx.blockTimestamp.subtract(
-                              decodedData.timestampSinceL2Genesis,
-                              "ms"
-                            )
-                          )
-                        : ""}
-                    </div>
-                  ),
-                },
-                {
-                  name: "Last L1 origin number",
-                  value: decodedData.lastL1OriginNumber,
-                },
-                {
-                  name: "Parent L2 block hash",
-                  value: "0x" + decodedData.parentL2BlockHash + "...",
-                },
-                {
-                  name: "L1 origin block hash",
-                  value: (
-                    <BlockHash
-                      fullHash={decodedData.fullL1OriginBlockHash}
-                      partialHash={decodedData.l1OriginBlockHash}
-                    />
-                  ),
-                },
-                {
-                  name: "Number of L2 blocks",
-                  value: decodedData.numberOfL2Blocks,
-                },
-                {
-                  name: "Changed by L1 origin",
-                  value: decodedData.changedByL1Origin,
-                },
-                {
-                  name: "Total transactions",
-                  value: decodedData.totalTxs,
-                },
-                {
-                  name: "Contract creation transactions",
-                  value: decodedData.contractCreationTxsNumber,
-                },
-              ]}
-            />
-          </div>
-        </Card>
+        <OptimismCard
+          data={decodedData}
+          txTimestamp={tx ? tx.blockTimestamp : undefined}
+        />
       )}
 
       <Card header={`Blobs ${tx ? `(${tx.blobs.length})` : ""}`}>
@@ -322,31 +271,6 @@ const Tx: NextPage = () => {
         </div>
       </Card>
     </>
-  );
-};
-
-type BlockHashProps = {
-  partialHash: string;
-  fullHash: string | undefined;
-};
-
-const BlockHash: FC<BlockHashProps> = ({ fullHash, partialHash }) => {
-  if (fullHash === undefined) {
-    return "0x" + partialHash + "...";
-  }
-
-  const prefixedFullHash = "0x" + fullHash;
-
-  return (
-    <div className="flex items-center gap-2">
-      <Link href={`https://blobscan.com/block/${prefixedFullHash}`}>
-        {prefixedFullHash}
-      </Link>
-      <CopyToClipboard
-        value={prefixedFullHash}
-        tooltipText="Copy L1 origin block hash"
-      />
-    </div>
   );
 };
 
