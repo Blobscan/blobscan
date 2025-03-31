@@ -1,7 +1,13 @@
+import type { PublicClient } from "viem";
+import { createPublicClient, http } from "viem";
+import * as chains from "viem/chains";
+
 import { env } from "@blobscan/env";
+import { PriceFeed } from "@blobscan/price-feed";
 import type { BaseSyncer } from "@blobscan/syncers";
 import {
   DailyStatsSyncer,
+  ETHPriceSyncer,
   OverallStatsSyncer,
   SwarmStampSyncer,
   createRedisConnection,
@@ -10,7 +16,7 @@ import {
 import { logger } from "./logger";
 import { getNetworkDencunForkSlot } from "./utils";
 
-export function setUpSyncers() {
+export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);
   const syncers: BaseSyncer[] = [];
 
@@ -49,7 +55,43 @@ export function setUpSyncers() {
     })
   );
 
-  Promise.all(syncers.map((syncer) => syncer.start()));
+  if (
+    env.ETH_PRICE_SYNCER_CHAIN_ID &&
+    env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL &&
+    env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS
+  ) {
+    const chain = Object.values(chains).find(
+      (c) => c.id === env.ETH_PRICE_SYNCER_CHAIN_ID
+    );
+
+    if (!chain) {
+      throw new Error(
+        `Can't initialize ETH price syncer: chain with id ${env.ETH_PRICE_SYNCER_CHAIN_ID} not found`
+      );
+    }
+
+    const client = createPublicClient({
+      chain,
+      transport: http(env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL),
+    });
+
+    const ethUsdPriceFeed = await PriceFeed.create({
+      client: client as PublicClient,
+      dataFeedContractAddress:
+        env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS as `0x${string}`,
+      timeTolerance: env.ETH_PRICE_SYNCER_TIME_TOLERANCE,
+    });
+
+    syncers.push(
+      new ETHPriceSyncer({
+        cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
+        redisUriOrConnection: connection,
+        ethUsdPriceFeed,
+      })
+    );
+  }
+
+  await Promise.all(syncers.map((syncer) => syncer.start()));
 
   return () => {
     let teardownPromise = Promise.resolve();

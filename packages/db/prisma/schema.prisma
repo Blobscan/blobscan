@@ -142,6 +142,14 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
+model EthUsdPriceFeedState {
+  id            Int      @id @default(autoincrement())
+  latestRoundId Decimal  @map("latest_round_id") @db.Decimal(100, 0)
+  updatedAt     DateTime @default(now()) @map("updated_at")
+
+  @@map("eth_usd_price_feed_state")
+}
+
 model Address {
   address                    String   @id
   rollup                     Rollup?
@@ -406,6 +414,14 @@ model OverallStats {
 
   @@unique([category, rollup])
   @@map("overall_stats")
+}
+
+model EthUsdPrice {
+  id        Int      @id @default(autoincrement())
+  price     Decimal  @db.Decimal(18, 8)
+  timestamp DateTime @unique
+
+  @@map("eth_usd_price")
 }
 
 // NextAuth.js Models
