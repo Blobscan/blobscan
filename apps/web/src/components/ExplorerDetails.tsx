@@ -5,12 +5,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 
 import { formatTtl } from "@blobscan/dates";
+import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { api } from "~/api-client";
-import Gas from "~/icons/gas.svg";
 import { useEnv } from "~/providers/Env";
-import { capitalize, formatNumber } from "~/utils";
-import { GasPrice } from "./GasPrice";
+import { capitalize, formatNumber, formatUsd } from "~/utils";
 
 type ExplorerDetailsItemProps = {
   name: string;
@@ -43,8 +43,27 @@ type ExplorerDetailsProps = {
 export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
+  const { data: ethPriceData } = api.ethPrice.getByTimestamp.useQuery();
+  const { data: latestBlock } = api.block.getLatestBlock.useQuery();
 
   const { env } = useEnv();
+
+  const networkConfig =
+    latestBlock && env?.PUBLIC_NETWORK_NAME
+      ? getNetworkBlobConfigBySlot(env.PUBLIC_NETWORK_NAME, latestBlock.slot)
+      : undefined;
+  const blobGasPrice = latestBlock?.blobGasPrice.toString();
+  const blobPrice =
+    blobGasPrice && networkConfig
+      ? BigInt(blobGasPrice) * networkConfig.gasPerBlob
+      : undefined;
+  const ethBlobPrice = blobPrice
+    ? convertWei(blobPrice.toString(), "ether")
+    : undefined;
+  const blobUsdPrice =
+    ethBlobPrice && ethPriceData
+      ? Number(ethBlobPrice) * ethPriceData.usdPrice
+      : undefined;
 
   const explorerDetailsItems: ExplorerDetailsItemProps[] = [];
 
@@ -59,9 +78,35 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
         ),
       },
       {
-        name: "Blob gas price",
-        icon: <Gas className="h-4 w-4" />,
-        value: <GasPrice />,
+        name: "ETH Price",
+        value: ethPriceData ? (
+          <div>
+            {formatUsd(ethPriceData.usdPrice, { maximumFractionDigits: 2 })}
+          </div>
+        ) : (
+          <Skeleton height={14} width={50} />
+        ),
+      },
+      {
+        name: "Blob Price",
+        value:
+          blobPrice && blobUsdPrice ? (
+            <div className="flex items-center gap-1">
+              <div>{formatUsd(blobUsdPrice)}</div>
+              <div className="flex">
+                (
+                {prettyFormatWei(blobPrice, {
+                  numberFormatOpts: {
+                    notation: "standard",
+                    maximumFractionDigits: 4,
+                  },
+                })}
+                )
+              </div>
+            </div>
+          ) : (
+            <Skeleton height={14} width={120} />
+          ),
       }
     );
   }
