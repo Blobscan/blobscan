@@ -22,31 +22,20 @@ export type TimeInterval = {
 };
 
 function getTimeFrameIntervals(timeFrame: TimeFrame): TimeInterval {
-  switch (timeFrame) {
-    case "1d":
-    case "7d":
-    case "15d":
-    case "30d":
-    case "90d":
-    case "180d":
-    case "360d":
-    default: {
-      const day = parseInt(timeFrame.split("d")[0] ?? "1d");
-      const final = dayjs().subtract(1, "day").endOf("day");
+  const day = parseInt(timeFrame.split("d")[0] ?? "1d");
+  const final = dayjs().subtract(1, "day").endOf("day");
 
-      if (day === 1) {
-        return {
-          initial: final,
-          final,
-        };
-      }
-
-      return {
-        initial: final.subtract(day, "day").startOf("day"),
-        final,
-      };
-    }
+  if (day === 1) {
+    return {
+      initial: final,
+      final,
+    };
   }
+
+  return {
+    initial: final.subtract(day, "day").startOf("day"),
+    final,
+  };
 }
 
 export const withTimeFrameSchema = z.object({
