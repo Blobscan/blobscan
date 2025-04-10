@@ -4,12 +4,17 @@ import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type { Category, Rollup } from "../../enums";
+import type { ContextScope } from "../context";
 import { t } from "../trpc-client";
 import {
   commaSeparatedCategoriesSchema,
   commaSeparatedRollupsSchema,
   commaSeparatedValuesSchema,
 } from "../zod-schemas";
+
+// Number of days to subtract when the time frame is larger than 30 days
+// and the scope is web. This is to avoid fetching too many days of data at once.
+const DAYS_INTERVAL_GRANULARITY = 5;
 
 export const timeFrameSchema = z.enum([
   "1d",
@@ -18,7 +23,7 @@ export const timeFrameSchema = z.enum([
   "30d",
   "90d",
   "180d",
-  "360d",
+  "365d",
   "All",
 ]);
 
@@ -95,12 +100,30 @@ export const withAllStatFiltersSchema = withStatsFilterSchema
 
 export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
 
-function buildDayWhereClause(timeFrame: TimeFrame): DayStatFilter["day"] {
-  const day = parseInt(timeFrame.split("d")[0] ?? "1d");
+function buildDayWhereClause(
+  scope: ContextScope,
+  timeFrame: TimeFrame
+): DayStatFilter["day"] {
+  const days = parseInt(timeFrame.split("d")[0] ?? "1");
   const final = dayjs().subtract(1, "day").endOf("day");
   const finalDate = final.toDate();
 
-  if (day === 1) {
+  const isLargeTimeFrame = days > 30;
+
+  if (scope === "web" && isLargeTimeFrame) {
+    const origin = final.subtract(days, "day").startOf("day");
+    const dates: Date[] = [];
+
+    let current = final.clone();
+    while (current.isAfter(origin) || current.isSame(origin)) {
+      dates.push(current.toDate());
+      current = current.subtract(DAYS_INTERVAL_GRANULARITY, "day");
+    }
+
+    return { in: dates };
+  }
+
+  if (days === 1) {
     return {
       gte: finalDate,
       lte: finalDate,
@@ -108,35 +131,76 @@ function buildDayWhereClause(timeFrame: TimeFrame): DayStatFilter["day"] {
   }
 
   return {
-    gte: final.subtract(day, "day").startOf("day").toDate(),
+    gte: final.subtract(days, "day").startOf("day").toDate(),
     lte: finalDate,
   };
 }
 
-export const withStatFilters = t.middleware(({ next, input = {} }) => {
-  const { categories, rollups, timeFrame, stats } =
-    input as StatFiltersOutputSchema;
-  let select: StatsFilters["select"];
-  const where: StatsFilters["where"] = {};
+export const withStatFilters = t.middleware(
+  ({ next, input = {}, ctx: { scope } }) => {
+    const { categories, rollups, timeFrame, stats } =
+      input as StatFiltersOutputSchema;
+    let select: StatsFilters["select"];
+    const where: StatsFilters["where"] = {};
 
-  if (stats) {
-    select = stats.reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: true,
-      }),
-      { day: true, category: true, rollup: true }
-    );
-  }
+    if (stats) {
+      select = stats.reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: true,
+        }),
+        { day: true, category: true, rollup: true }
+      );
+    }
 
-  if (timeFrame) {
-    where.day = buildDayWhereClause(timeFrame);
-  }
+    if (timeFrame) {
+      where.day = buildDayWhereClause(scope, timeFrame);
+    }
 
-  const isAllCategoriesEnabled = categories === "all";
-  const isAllRollupsEnabled = rollups === "all";
+    const isAllCategoriesEnabled = categories === "all";
+    const isAllRollupsEnabled = rollups === "all";
 
-  if (isAllCategoriesEnabled && isAllRollupsEnabled) {
+    if (isAllCategoriesEnabled && isAllRollupsEnabled) {
+      return next({
+        ctx: {
+          statFilters: {
+            select,
+            where,
+          },
+        },
+      });
+    }
+
+    const categoryFilter: CategoryStatFilter = {
+      category: categories
+        ? isAllCategoriesEnabled
+          ? {
+              not: null,
+            }
+          : {
+              in: categories,
+            }
+        : null,
+    };
+    const rollupFilter: RollupStatFilter = {
+      rollup: rollups
+        ? isAllRollupsEnabled
+          ? {
+              not: null,
+            }
+          : {
+              in: rollups,
+            }
+        : null,
+    };
+
+    if (categories && rollups) {
+      where.OR = [categoryFilter, rollupFilter];
+    } else {
+      where.category = categoryFilter.category;
+      where.rollup = rollupFilter.rollup;
+    }
+
     return next({
       ctx: {
         statFilters: {
@@ -146,43 +210,4 @@ export const withStatFilters = t.middleware(({ next, input = {} }) => {
       },
     });
   }
-
-  const categoryFilter: CategoryStatFilter = {
-    category: categories
-      ? isAllCategoriesEnabled
-        ? {
-            not: null,
-          }
-        : {
-            in: categories,
-          }
-      : null,
-  };
-  const rollupFilter: RollupStatFilter = {
-    rollup: rollups
-      ? isAllRollupsEnabled
-        ? {
-            not: null,
-          }
-        : {
-            in: rollups,
-          }
-      : null,
-  };
-
-  if (categories && rollups) {
-    where.OR = [categoryFilter, rollupFilter];
-  } else {
-    where.category = categoryFilter.category;
-    where.rollup = rollupFilter.rollup;
-  }
-
-  return next({
-    ctx: {
-      statFilters: {
-        select,
-        where,
-      },
-    },
-  });
-});
+);

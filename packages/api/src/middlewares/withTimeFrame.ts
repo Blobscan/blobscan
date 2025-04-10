@@ -11,7 +11,7 @@ export const TIME_FRAMES = z.enum([
   "30d",
   "90d",
   "180d",
-  "360d",
+  "365d",
   "All",
 ]);
 
