@@ -1,5 +1,6 @@
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
+import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type { Category, Rollup } from "../../enums";
@@ -7,6 +8,7 @@ import { t } from "../trpc-client";
 import {
   commaSeparatedCategoriesSchema,
   commaSeparatedRollupsSchema,
+  commaSeparatedValuesSchema,
 } from "../zod-schemas";
 
 export const timeFrameSchema = z.enum([
@@ -33,11 +35,14 @@ export type RollupStatFilter = {
   rollup?: null | { not: null } | { in: Rollup[] };
 };
 
-export type StatsFilters = Partial<
-  DayStatFilter &
-    CategoryStatFilter &
-    RollupStatFilter & { OR: (CategoryStatFilter & RollupStatFilter)[] }
->;
+export type StatsFilters = {
+  select?: Prisma.DailyStatsSelect;
+  where: Partial<
+    DayStatFilter &
+      CategoryStatFilter &
+      RollupStatFilter & { OR: (CategoryStatFilter & RollupStatFilter)[] }
+  >;
+};
 
 const allSchema = z.literal("all");
 
@@ -53,9 +58,40 @@ export const withStatRollupsFilterSchema = z.object({
   rollups: allSchema.or(commaSeparatedRollupsSchema).optional(),
 });
 
-export const withAllStatFiltersSchema = withTimeFrameFilterSchema.merge(
-  withStatCategoriesFilterSchema.merge(withStatRollupsFilterSchema)
-);
+export const withStatsFilterSchema = z
+  .object({
+    stats: commaSeparatedValuesSchema.transform((values, ctx) =>
+      values?.map((v) => {
+        const res = DailyStatsModel.omit({
+          id: true,
+          day: true,
+          category: true,
+          rollup: true,
+        })
+          .keyof()
+          .safeParse(v);
+
+        if (!res.success) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            params: {
+              value: v,
+            },
+            message: "Provided stats value is invalid",
+          });
+
+          return z.NEVER;
+        }
+
+        return res.data;
+      })
+    ),
+  })
+  .partial();
+
+export const withAllStatFiltersSchema = withStatsFilterSchema
+  .merge(withTimeFrameFilterSchema)
+  .merge(withStatCategoriesFilterSchema.merge(withStatRollupsFilterSchema));
 
 export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
 
@@ -78,11 +114,23 @@ function buildDayWhereClause(timeFrame: TimeFrame): DayStatFilter["day"] {
 }
 
 export const withStatFilters = t.middleware(({ next, input = {} }) => {
-  const { categories, rollups, timeFrame } = input as StatFiltersOutputSchema;
-  const statFilters: StatsFilters = {};
+  const { categories, rollups, timeFrame, stats } =
+    input as StatFiltersOutputSchema;
+  let select: StatsFilters["select"];
+  const where: StatsFilters["where"] = {};
+
+  if (stats) {
+    select = stats.reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: true,
+      }),
+      { day: true, category: true, rollup: true }
+    );
+  }
 
   if (timeFrame) {
-    statFilters.day = buildDayWhereClause(timeFrame);
+    where.day = buildDayWhereClause(timeFrame);
   }
 
   const isAllCategoriesEnabled = categories === "all";
@@ -91,7 +139,10 @@ export const withStatFilters = t.middleware(({ next, input = {} }) => {
   if (isAllCategoriesEnabled && isAllRollupsEnabled) {
     return next({
       ctx: {
-        statFilters,
+        statFilters: {
+          select,
+          where,
+        },
       },
     });
   }
@@ -120,15 +171,18 @@ export const withStatFilters = t.middleware(({ next, input = {} }) => {
   };
 
   if (categories && rollups) {
-    statFilters.OR = [categoryFilter, rollupFilter];
+    where.OR = [categoryFilter, rollupFilter];
   } else {
-    statFilters.category = categoryFilter.category;
-    statFilters.rollup = rollupFilter.rollup;
+    where.category = categoryFilter.category;
+    where.rollup = rollupFilter.rollup;
   }
 
   return next({
     ctx: {
-      statFilters,
+      statFilters: {
+        select,
+        where,
+      },
     },
   });
 });

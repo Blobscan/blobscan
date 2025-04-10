@@ -29,16 +29,8 @@ export const commaSeparatedValuesSchema = z
       .filter((v) => !!v.length)
   );
 
-export const commaSeparatedRollupsSchema = z
-  .string()
-  .optional()
-  .transform((values) =>
-    values
-      ?.split(",")
-      .map((v) => v.trim())
-      .filter((v) => !!v.length)
-  )
-  .transform((values, ctx) =>
+export const commaSeparatedRollupsSchema = commaSeparatedValuesSchema.transform(
+  (values, ctx) =>
     values?.map((v) => {
       const res = lowercaseToUpercaseDBRollupSchema.safeParse(v);
 
@@ -56,18 +48,10 @@ export const commaSeparatedRollupsSchema = z
 
       return res.data;
     })
-  );
+);
 
-export const commaSeparatedCategoriesSchema = z
-  .string()
-  .optional()
-  .transform((values) =>
-    values
-      ?.split(",")
-      .map((v) => v.trim())
-      .filter((v) => !!v.length)
-  )
-  .transform((values, ctx) =>
+export const commaSeparatedCategoriesSchema =
+  commaSeparatedValuesSchema.transform((values, ctx) =>
     values?.map((v) => {
       const res = lowercaseToUppercaseDBCategorySchema.safeParse(v);
 
