@@ -1,47 +1,43 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { EChartCompliantDailyStats } from "~/types";
-import { buildTimeSeriesOptions, formatNumber } from "~/utils";
+import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyUniqueAddressesChartProps = Partial<{
-  days: EChartCompliantDailyStats["day"][];
-  totalUniqueReceivers: EChartCompliantDailyStats["totalUniqueReceivers"][];
-  totalUniqueSenders: EChartCompliantDailyStats["totalUniqueSenders"][];
+export type DailyUniqueAddressesChartProps = TimeSeriesBaseProps<{
+  totalUniqueSenders: number[];
+  totalUniqueReceivers: number[];
 }>;
 
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
-  function ({ days, totalUniqueReceivers, totalUniqueSenders }) {
-    const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions({
-        dates: days,
-        axisFormatters: {
-          yAxisTooltip: (value) => formatNumber(value),
-        },
-      }),
-      series: [
-        {
-          name: "Total Unique Receivers",
-          data: totalUniqueReceivers,
-          type: "bar",
-          // @ts-ignore
-          emphasis: { focus: "series" },
-        },
-        {
-          name: "Total Unique Senders",
-          data: totalUniqueSenders,
-          type: "bar",
-          // @ts-ignore
-          emphasis: { focus: "series" },
-        },
-      ],
-      animationEasing: "cubicOut",
-    };
-
+  function ({ days, series }) {
     return (
-      <ChartCard title="Daily Unique Addresses" size="sm" options={options} />
+      <ChartCard
+        title="Daily Unique Addresses"
+        metricInfo={{
+          xAxis: {
+            type: "time",
+          },
+          yAxis: { type: "count", unitType: "none" },
+        }}
+        options={{
+          xAxis: {
+            data: days,
+          },
+          series: series
+            ? [
+                {
+                  name: "Total Unique Receivers",
+                  data: series.totalUniqueReceivers,
+                  type: "bar",
+                },
+                {
+                  name: "Total Unique Senders",
+                  data: series.totalUniqueSenders,
+                  type: "bar",
+                },
+              ]
+            : [],
+        }}
+      />
     );
   };

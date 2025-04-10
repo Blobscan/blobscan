@@ -1,48 +1,40 @@
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
-
-import { formatWei, prettyFormatWei } from "@blobscan/eth-format";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { EChartCompliantDailyStats } from "~/types";
-import { buildTimeSeriesOptions } from "~/utils";
+import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyAvgBlobFeeChartProps = Partial<{
-  days: EChartCompliantDailyStats["day"][];
-  avgBlobFees: EChartCompliantDailyStats["avgBlobFee"][];
-}>;
+export type DailyAvgBlobFeeChartProps = TimeSeriesBaseProps<number[]>;
 
 export const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = function ({
   days,
-  avgBlobFees,
+  series,
 }) {
-  const { unit } = useScaledWeiAmounts(avgBlobFees);
-
-  const options: EChartOption<EChartOption.Series> = {
-    ...buildTimeSeriesOptions({
-      dates: days,
-      axisFormatters: {
-        yAxisTooltip: (value) => formatWei(value, { toUnit: unit }),
-        yAxisLabel: (value) =>
-          prettyFormatWei(value, { toUnit: unit, hideUnit: true }),
-      },
-    }),
-    series: [
-      {
-        name: "Avg. Blob Fees",
-        data: avgBlobFees,
-        type: "line",
-      },
-    ],
-    animationEasing: "cubicOut",
-  };
+  const { scaledValues, unit } = useScaledWeiAmounts(series);
 
   return (
     <ChartCard
-      title={`Daily Avg. Blob Fee (in ${unit})`}
-      size="sm"
-      options={options}
+      title={"Daily Avg. Blob Fee"}
+      metricInfo={{
+        xAxis: {
+          type: "time",
+        },
+        yAxis: { type: "average", unitType: "ether", unit },
+      }}
+      options={{
+        xAxis: {
+          data: days,
+        },
+        series: scaledValues
+          ? [
+              {
+                name: "Avg. Blob Fee",
+                data: scaledValues,
+                type: "line",
+              },
+            ]
+          : undefined,
+      }}
     />
   );
 };

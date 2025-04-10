@@ -1,35 +1,42 @@
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { EChartCompliantDailyStats } from "~/types";
-import { buildTimeSeriesOptions, formatNumber } from "~/utils";
+import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyBlocksChartProps = Partial<{
-  days: EChartCompliantDailyStats["day"][];
-  totalBlocks: EChartCompliantDailyStats["totalBlocks"][];
-}>;
+export type DailyBlocksChartProps = TimeSeriesBaseProps<
+  {
+    name?: string;
+    values: number[];
+  }[]
+>;
 
-export const DailyBlocksChart: FC<Partial<DailyBlocksChartProps>> = function ({
+export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
   days,
-  totalBlocks,
+  series,
 }) {
-  const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions({
-      dates: days,
-      axisFormatters: {
-        yAxisTooltip: (value) => formatNumber(value),
-      },
-    }),
-    series: [
-      {
-        name: "Total Blocks",
-        data: totalBlocks,
-        type: "bar",
-      },
-    ],
-    animationEasing: "cubicOut",
-  };
-
-  return <ChartCard title="Daily Blocks" size="sm" options={options} />;
+  return (
+    <ChartCard
+      title="Daily Blocks"
+      metricInfo={{
+        xAxis: {
+          type: "time",
+        },
+        yAxis: { type: "count", unitType: "none" },
+      }}
+      options={{
+        xAxis: {
+          data: days,
+        },
+        series: series?.map(({ name, values }) => ({
+          name,
+          data: values,
+          type: "bar",
+          stack: "total",
+        })),
+        tooltipExtraOptions: {
+          displayTotal: true,
+        },
+      }}
+    />
+  );
 };

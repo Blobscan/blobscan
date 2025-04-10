@@ -1,40 +1,42 @@
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { EChartCompliantDailyStats } from "~/types";
-import { buildTimeSeriesOptions, formatNumber } from "~/utils";
+import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyBlobGasUsedChartProps = Partial<{
-  days: EChartCompliantDailyStats["day"][];
-  totalBlobGasUsed: EChartCompliantDailyStats["totalBlobGasUsed"][];
-}>;
+export type DailyBlobGasUsedChartProps = TimeSeriesBaseProps<
+  {
+    name?: string;
+    values: string[];
+  }[]
+>;
 
-const BaseChart: FC<DailyBlobGasUsedChartProps & { title: string }> =
-  function ({ days, totalBlobGasUsed, title }) {
-    const options: EChartOption<EChartOption.SeriesBar> = {
-      ...buildTimeSeriesOptions({
-        dates: days,
-        axisFormatters: {
-          yAxisTooltip: (value) => formatNumber(value, "standard"),
+export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function ({
+  days,
+  series,
+}) {
+  return (
+    <ChartCard
+      title="Daily Blob Gas Used"
+      metricInfo={{
+        xAxis: {
+          type: "time",
         },
-      }),
-      series: [
-        {
-          name: "Blob Gas Used",
-          data: totalBlobGasUsed,
-          stack: "gas",
+        yAxis: { type: "count", unitType: "none" },
+      }}
+      options={{
+        xAxis: {
+          data: days,
+        },
+        series: series?.map(({ name, values }) => ({
+          name,
+          data: values,
           type: "bar",
+          stack: "total",
+        })),
+        tooltipExtraOptions: {
+          displayTotal: true,
         },
-      ],
-      animationEasing: "cubicOut",
-    };
-
-    return <ChartCard title={title} size="sm" options={options} />;
-  };
-
-export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function (
-  props
-) {
-  return <BaseChart title="Daily Blob Gas Used" {...props} />;
+      }}
+    />
+  );
 };

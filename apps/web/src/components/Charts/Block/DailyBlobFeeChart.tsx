@@ -1,49 +1,45 @@
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
-
-import { formatWei, prettyFormatWei } from "@blobscan/eth-format";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { EChartCompliantDailyStats } from "~/types";
-import { buildTimeSeriesOptions } from "~/utils";
+import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyBlobFeeChartProps = Partial<{
-  days: EChartCompliantDailyStats["day"][];
-  totalBlobFees: EChartCompliantDailyStats["totalBlobFee"][];
-}>;
+export type DailyBlobFeeChartProps = TimeSeriesBaseProps<
+  {
+    name?: string;
+    values: string[];
+  }[]
+>;
 
 export const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = function ({
   days,
-  totalBlobFees,
+  series,
 }) {
-  const data = totalBlobFees?.map((x) => Number(x));
-  const { unit } = useScaledWeiAmounts(data);
-
-  const options: EChartOption<EChartOption.SeriesBar> = {
-    ...buildTimeSeriesOptions({
-      dates: days,
-      axisFormatters: {
-        yAxisTooltip: (value) => formatWei(value, { toUnit: unit }),
-        yAxisLabel: (value) =>
-          prettyFormatWei(value, { toUnit: unit, hideUnit: true }),
-      },
-    }),
-    series: [
-      {
-        name: "Blob Fees",
-        data: totalBlobFees,
-        type: "bar",
-      },
-    ],
-    animationEasing: "cubicOut",
-  };
+  const { scaledValues, unit } = useScaledWeiAmounts(series);
 
   return (
     <ChartCard
-      title={`Daily Blob Fees (in ${unit})`}
-      size="sm"
-      options={options}
+      title="Daily Blob Fees"
+      metricInfo={{
+        xAxis: {
+          type: "time",
+        },
+        yAxis: { type: "count", unitType: "ether", unit },
+      }}
+      options={{
+        xAxis: {
+          data: days,
+        },
+        series: scaledValues?.map(({ name, values }) => ({
+          name,
+          data: values,
+          type: "bar",
+          stack: "total",
+        })),
+        tooltipExtraOptions: {
+          displayTotal: true,
+        },
+      }}
     />
   );
 };

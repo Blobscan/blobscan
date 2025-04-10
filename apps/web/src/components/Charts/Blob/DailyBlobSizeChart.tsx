@@ -1,47 +1,54 @@
 import type { FC } from "react";
-import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { EChartCompliantDailyStats } from "~/types";
-import { buildTimeSeriesOptions, formatBytes } from "~/utils";
+import { formatBytes } from "~/utils";
+import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyBlobsSizeProps = Partial<{
-  days: EChartCompliantDailyStats["day"][];
-  totalBlobSizes: EChartCompliantDailyStats["totalBlobSize"][];
-  compact: boolean;
-}>;
+export type DailyBlobsSizeProps = TimeSeriesBaseProps<
+  {
+    name?: string;
+    values: string[];
+  }[]
+>;
 
 export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
   days,
-  totalBlobSizes,
-  compact = false,
+  series,
 }) {
-  const options: EChartOption<
-    EChartOption.SeriesBar | EChartOption.SeriesLine
-  > = {
-    ...buildTimeSeriesOptions({
-      dates: days,
-      axisFormatters: {
-        yAxisLabel: (value) =>
-          formatBytes(Number(value), {
-            unit: "GiB",
-            hideUnit: true,
-          }),
-        yAxisTooltip: (value) =>
-          formatBytes(Number(value), { unit: "GiB", displayAllDecimals: true }),
-      },
-    }),
-    series: [
-      {
-        name: "Blob Size",
-        data: totalBlobSizes,
-        type: compact ? "line" : "bar",
-        smooth: true,
-      },
-    ],
-  };
+  const scaledSeries = series?.map(({ name, values }) => ({
+    name,
+    values: values.map((v) =>
+      formatBytes(v, { unit: "GiB", hideUnit: true, displayAllDecimals: true })
+    ),
+  }));
 
   return (
-    <ChartCard title="Daily Blob Size (in GiB)" size="sm" options={options} />
+    <ChartCard
+      title="Daily Blob Size"
+      metricInfo={{
+        xAxis: {
+          type: "time",
+        },
+        yAxis: {
+          type: "count",
+          unitType: "byte",
+          unit: "GiB",
+        },
+      }}
+      options={{
+        xAxis: {
+          data: days,
+        },
+        series: scaledSeries?.map(({ name, values }) => ({
+          name,
+          data: values,
+          type: "bar",
+          stack: "total",
+        })),
+        tooltipExtraOptions: {
+          displayTotal: true,
+        },
+      }}
+    />
   );
 };

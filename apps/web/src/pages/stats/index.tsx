@@ -19,11 +19,12 @@ import {
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
 } from "~/components/Charts/Transaction";
+import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
 import { Header } from "~/components/Header";
 import { api } from "~/api-client";
-import { arrayfy, stringify } from "~/utils";
+import type { DailyStats } from "~/types";
 
 const Stats = function () {
   return (
@@ -208,14 +209,21 @@ type Section = "All" | "Blob" | "Block" | "Transaction";
 
 function Charts() {
   const [sectionFilter, setSectionFilter] = useState<Section>("All");
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>("180d");
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>("90d");
   const { data: dailyStats } = api.stats.getDailyStats.useQuery(
     {
+      categories: "all",
+      rollups: "all",
       timeFrame,
       sort: "asc",
     },
-    { select: (data) => arrayfy(stringify(data)) }
+    {
+      select: (data) =>
+        convertStatsToChartSeries(data as Required<DailyStats>[]),
+      refetchOnWindowFocus: false,
+    }
   );
+  const { days, series, totalSeries } = dailyStats || {};
 
   return (
     <div className="flex flex-col gap-8">
@@ -245,45 +253,33 @@ function Charts() {
         title="Blobs"
         hide={sectionFilter !== "All" && sectionFilter !== "Blob"}
       >
-        <DailyBlobsChart
-          days={dailyStats?.day}
-          totalBlobs={dailyStats?.totalBlobs}
-          totalUniqueBlobs={dailyStats?.totalUniqueBlobs}
-        />
-        <DailyBlobSizeChart
-          days={dailyStats?.day}
-          totalBlobSizes={dailyStats?.totalBlobSize}
-        />
+        <DailyBlobsChart days={days} series={series?.totalBlobs} />
+        <DailyBlobSizeChart days={days} series={series?.totalBlobSize} />
       </ChartSection>
 
       <ChartSection
         title="Blocks"
         hide={sectionFilter !== "All" && sectionFilter !== "Block"}
       >
-        <DailyBlocksChart
-          days={dailyStats?.day}
-          totalBlocks={dailyStats?.totalBlocks}
-        />
-        <DailyBlobGasUsedChart
-          days={dailyStats?.day}
-          totalBlobGasUsed={dailyStats?.totalBlobGasUsed}
-        />
-        <DailyBlobGasComparisonChart
-          days={dailyStats?.day}
-          totalBlobGasUsed={dailyStats?.totalBlobGasUsed}
-          totalBlobAsCalldataGasUsed={dailyStats?.totalBlobAsCalldataGasUsed}
-        />
-        <DailyBlobFeeChart
-          days={dailyStats?.day}
-          totalBlobFees={dailyStats?.totalBlobFee}
-        />
-        <DailyAvgBlobFeeChart
-          days={dailyStats?.day}
-          avgBlobFees={dailyStats?.avgBlobFee}
-        />
+        <DailyBlocksChart days={days} series={series?.totalBlocks} />
+        <DailyBlobGasUsedChart days={days} series={series?.totalBlobGasUsed} />
+        <DailyBlobFeeChart days={days} series={series?.totalBlobFee} />
         <DailyAvgBlobGasPriceChart
-          days={dailyStats?.day}
-          avgBlobGasPrices={dailyStats?.avgBlobGasPrice}
+          days={days}
+          series={totalSeries?.avgBlobGasPrice}
+        />
+        <DailyAvgBlobFeeChart days={days} series={totalSeries?.avgBlobFee} />
+        <DailyBlobGasComparisonChart
+          days={days}
+          series={
+            totalSeries
+              ? {
+                  totalBlobGasUsed: totalSeries.totalBlobGasUsed,
+                  totalBlobAsCalldataGasUsed:
+                    totalSeries.totalBlobAsCalldataGasUsed,
+                }
+              : undefined
+          }
         />
       </ChartSection>
 
@@ -292,17 +288,23 @@ function Charts() {
         hide={sectionFilter !== "All" && sectionFilter !== "Transaction"}
       >
         <DailyTransactionsChart
-          days={dailyStats?.day}
-          totalTransactions={dailyStats?.totalTransactions}
+          days={days}
+          series={series?.totalTransactions}
         />
         <DailyUniqueAddressesChart
-          days={dailyStats?.day}
-          totalUniqueReceivers={dailyStats?.totalUniqueReceivers}
-          totalUniqueSenders={dailyStats?.totalUniqueSenders}
+          days={days}
+          series={
+            totalSeries
+              ? {
+                  totalUniqueReceivers: totalSeries.totalUniqueReceivers,
+                  totalUniqueSenders: totalSeries.totalUniqueSenders,
+                }
+              : undefined
+          }
         />
         <DailyAvgMaxBlobGasFeeChart
-          days={dailyStats?.day}
-          avgMaxBlobGasFees={dailyStats?.avgMaxBlobGasFee}
+          days={days}
+          series={totalSeries?.avgMaxBlobGasFee}
         />
       </ChartSection>
     </div>

@@ -8,13 +8,13 @@ import Skeleton from "react-loading-skeleton";
 
 import { ChartSkeleton } from "../ChartSkeleton";
 import { ChartBase } from "../Charts/ChartBase";
+import type { ChartBaseProps } from "../Charts/ChartBase";
 import { Card } from "./Card";
 
-type ChartCardProps = {
+interface ChartCardProps extends ChartBaseProps {
   title?: ReactNode;
   size?: "sm" | "md" | "lg";
-  options: EChartOption;
-};
+}
 
 function getSeriesDataState(series: EChartOption.Series[] | undefined) {
   return {
@@ -30,13 +30,18 @@ export const ChartCard: FC<ChartCardProps> = function ({
   title,
   size = "md",
   options,
+  metricInfo,
+  compact,
 }) {
+  const { yAxis } = metricInfo;
+  const yUnit =
+    yAxis.type !== "time" && yAxis.unitType !== "none" ? yAxis.unit : undefined;
   const { isEmpty, isLoading } = getSeriesDataState(options.series);
 
   return (
     <Card className="h-full overflow-visible" compact>
       <div className="flex-start -mb-2 ml-2 flex font-semibold dark:text-warmGray-50">
-        {title ?? <Skeleton width={150} />}
+        {`${title}${yUnit ? ` (${yUnit})` : ""}` ?? <Skeleton width={150} />}
       </div>
       <div className="flex h-full flex-col gap-2">
         <div
@@ -57,7 +62,11 @@ export const ChartCard: FC<ChartCardProps> = function ({
               <ChartSkeleton itemsCount={6} />
             </div>
           ) : (
-            <ChartBase options={options} />
+            <ChartBase
+              metricInfo={metricInfo}
+              options={options}
+              compact={compact}
+            />
           )}
         </div>
       </div>
