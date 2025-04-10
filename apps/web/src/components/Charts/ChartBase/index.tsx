@@ -68,6 +68,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 }) {
   const { resolvedTheme } = useTheme();
   const themeMode = resolvedTheme as "light" | "dark";
+  const cachedCumulativeSumsRef = useRef<string[][] | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
     seriesName?: string;
@@ -103,13 +104,24 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
   const formattedChartSeries = useMemo(
     () =>
-      seriesOptions?.map<EChartOption.Series>((series) => {
+      seriesOptions?.map<EChartOption.Series>((series, i) => {
         const { data, ...restSeries } = series;
 
         let newData = data;
 
         if (showCumulative && data) {
-          newData = performCumulativeSum(data);
+          if (!cachedCumulativeSumsRef.current) {
+            cachedCumulativeSumsRef.current = [];
+          }
+
+          let cumulativeSums = cachedCumulativeSumsRef.current[i];
+
+          if (!cumulativeSums) {
+            cumulativeSums = performCumulativeSum(data);
+            cachedCumulativeSumsRef.current[i] = cumulativeSums;
+          }
+
+          newData = cumulativeSums;
         }
 
         return {
