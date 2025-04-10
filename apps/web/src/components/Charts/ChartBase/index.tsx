@@ -94,11 +94,20 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   });
   const toolbox = !compact
     ? createToolBox({
+        extraFeatures: {
+          cumulativeSum:
+            yAxisMetricInfo.type === "count"
+              ? {
+                  onClick() {
+                    setShowCumulative(
+                      (prevShowCumulative) => !prevShowCumulative
+                    );
+                  },
+                }
+              : undefined,
+        },
         themeMode,
         opts: toolboxOptions,
-        onClickCumulative() {
-          setShowCumulative((prevShowCumulative) => !prevShowCumulative);
-        },
       })
     : undefined;
 
