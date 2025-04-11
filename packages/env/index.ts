@@ -83,15 +83,24 @@ export const env = createEnv({
         .url()
         .default("http://localhost:4318"),
 
-      // ETH Price (default: every hour)
-      ETH_PRICE_SYNCER_CRON_PATTERN: z
-        .enum(["0 * * * *", "0 0 * * *", "* * * * *"])
-        .default("0 * * * *"),
-      ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().optional(),
+      /*
+       * ====================
+       *  ETH/USD Price Feed
+       * ====================
+       *
+       * https://polygonscan.com/address/0xF9680D99D6C9589e2a93a78A04A279e509205945
+       * https://data.chain.link/
+       */
+
+      // ETH Price is retrieved every second from the Chainlink: ETH/USD oracle
+      // in the Polygon network.
+      ETH_PRICE_SYNCER_ENABLED: booleanSchema.default("false"),
+      ETH_PRICE_SYNCER_CRON_PATTERN: z.default("* * * * *"),
+      ETH_PRICE_SYNCER_CHAIN_ID: z.coerce.number().default(137),
       ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL: z.string().url().optional(),
       ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
         .string()
-        .optional(),
+        .default("0xF9680D99D6C9589e2a93a78A04A279e509205945"),
       ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce
         .number()
         .positive()
