@@ -4,13 +4,12 @@ import type { FC } from "react";
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps, Option } from "~/components/Dropdown";
 
+export type RollupOption = Option<string>;
+
 type RollupFilterProps = Pick<
-  DropdownProps,
-  "selected" | "disabled" | "options"
-> & {
-  onChange(newRollups: Option[]): void;
-  selected: Option[] | null;
-};
+  DropdownProps<string, true, true>,
+  "selected" | "disabled" | "options" | "onChange"
+>;
 
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
@@ -20,8 +19,9 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
 }) {
   const noneIsSelected = useRef<boolean>(false);
 
-  const handleOnChange = (newRollups_: Option[]) => {
-    let newRollups = newRollups_;
+  const handleOnChange = (newRollups_: RollupOption[] | null) => {
+    let newRollups = newRollups_ ? newRollups_ : [];
+
     const noneOptionIndex = newRollups.findIndex((r) => r.value === "null");
 
     if (noneIsSelected.current && newRollups.length > 1) {

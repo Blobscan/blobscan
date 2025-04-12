@@ -12,38 +12,68 @@ import cn from "classnames";
 import useOverflow from "~/hooks/useOverflow";
 import { Option } from "./Option";
 
-export interface Option {
-  value: string | number | string[] | number[];
+export interface Option<T> {
+  value: T;
   label?: ReactNode;
   selectedLabel?: ReactNode;
 }
 
-export interface DropdownProps {
-  options: Option[];
+interface BaseDropdownProps<T> {
+  options: readonly Option<T>[];
   disabled?: boolean;
   width?: string;
   placeholder?: string;
   clearable?: boolean;
-  selected?: Option | Option[] | null;
-  multiple?: boolean;
-  onChange(newOption: Option | Option[] | null): void;
 }
+
+type SelectedValue<
+  T,
+  M extends boolean | undefined,
+  C extends boolean | undefined
+> = M extends true
+  ? C extends true
+    ? Option<T>[] | null
+    : Option<T>[]
+  : C extends true
+  ? Option<T> | null
+  : Option<T>;
+
+type OnChangeFn<
+  T,
+  M extends boolean | undefined,
+  C extends boolean | undefined
+> = (newValue: SelectedValue<T, M, C>) => void;
+
+export type DropdownProps<
+  T,
+  M extends boolean | undefined = undefined,
+  C extends boolean | undefined = undefined
+> = BaseDropdownProps<T> & {
+  multiple?: M;
+  clearable?: C;
+  selected: SelectedValue<T, M, C>;
+  onChange: OnChangeFn<T, M, C>;
+};
 
 const DEFAULT_WIDTH = "w-32";
 
-export const Dropdown: React.FC<DropdownProps> = function ({
+export function Dropdown<
+  T,
+  M extends boolean | undefined = undefined,
+  C extends boolean | undefined = undefined
+>({
   options,
   selected,
   multiple,
   width,
   onChange,
-  clearable = false,
-  disabled = false,
+  clearable,
+  disabled,
   placeholder = "Select an item",
-}) {
+}: DropdownProps<T, M, C>) {
   const hasSelectedValue = Array.isArray(selected)
     ? selected.length > 0
-    : selected;
+    : !!selected;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
@@ -79,11 +109,9 @@ export const Dropdown: React.FC<DropdownProps> = function ({
               {hasSelectedValue ? (
                 Array.isArray(selected) ? (
                   <div className="flex flex-row items-center gap-1">
-                    {selected.map(({ selectedLabel, label, value }) => {
+                    {selected.map(({ selectedLabel, label }, i) => {
                       return (
-                        <Fragment
-                          key={Array.isArray(value) ? value.join("-") : value}
-                        >
+                        <Fragment key={i}>
                           {selectedLabel ? selectedLabel : label}
                         </Fragment>
                       );
@@ -92,7 +120,7 @@ export const Dropdown: React.FC<DropdownProps> = function ({
                 ) : selected?.label ? (
                   selected.label
                 ) : (
-                  selected?.value
+                  (selected?.value as ReactNode)
                 )
               ) : (
                 <div
@@ -111,7 +139,9 @@ export const Dropdown: React.FC<DropdownProps> = function ({
                 className="h-5 w-5 text-icon-light hover:text-iconHighlight-light dark:text-icon-dark dark:hover:text-iconHighlight-dark"
                 onClick={(e) => {
                   e.stopPropagation();
-                  multiple ? onChange([]) : onChange(null);
+                  multiple
+                    ? onChange([] as unknown as SelectedValue<T, M, C>)
+                    : onChange(null as SelectedValue<T, M, C>);
                 }}
               />
             ) : (
@@ -141,4 +171,4 @@ export const Dropdown: React.FC<DropdownProps> = function ({
       </div>
     </Listbox>
   );
-};
+}

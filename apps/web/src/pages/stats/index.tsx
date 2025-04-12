@@ -192,33 +192,39 @@ function OverallStats() {
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
 
-const TIME_FRAME_OPTIONS: { label: string; value: TimeFrame }[] = [
+type SectionOption = Option<Section>;
+
+type TimeFrameOption = Option<TimeFrame>;
+
+const TIME_FRAME_OPTIONS = [
   { label: "1 year", value: "365d" },
   { label: "6 months", value: "180d" },
   { label: "1 month", value: "30d" },
   { label: "7 days", value: "7d" },
   { label: "1 day", value: "1d" },
-];
+] as const;
 
-const SECTION_OPTIONS: Option[] = [
+const SECTION_OPTIONS = [
   { value: "All" },
   { value: "Blob" },
   { value: "Block" },
   { value: "Gas" },
   { value: "Fee" },
   { value: "Transaction" },
-];
+] as const;
 
 function Charts() {
-  const [selectedSection, setSelectedSection] = useState<Option>(
-    SECTION_OPTIONS[0] as Option
+  const [selectedSection, setSelectedSection] = useState<SectionOption>(
+    SECTION_OPTIONS[0]
   );
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>("365d");
+  const [timeFrameOption, setTimeFrameOption] = useState<TimeFrameOption>(
+    TIME_FRAME_OPTIONS[0]
+  );
   const { data: dailyStats } = api.stats.getDailyStats.useQuery(
     {
       categories: "all",
       rollups: "all",
-      timeFrame,
+      timeFrame: timeFrameOption?.value,
       sort: "asc",
     },
     {
@@ -325,7 +331,7 @@ function Charts() {
       ],
     },
   ];
-  const currentSectionOption = selectedSection.value as Section;
+  const currentSectionOption = selectedSection?.value ?? "All";
   const displayedSections =
     currentSectionOption === "All"
       ? sections
@@ -339,18 +345,15 @@ function Charts() {
             width="w-48"
             options={SECTION_OPTIONS}
             selected={selectedSection}
-            onChange={(option: Option) => {
+            onChange={(option) => {
               setSelectedSection(option);
             }}
           />
           <Dropdown
             options={TIME_FRAME_OPTIONS}
-            selected={TIME_FRAME_OPTIONS.find(
-              (option) => option.value === timeFrame
-            )}
-            onChange={(option: Option) => {
-              if (!option) return;
-              setTimeFrame(option.value as TimeFrame);
+            selected={timeFrameOption}
+            onChange={(option) => {
+              setTimeFrameOption(option);
             }}
           />
         </div>

@@ -16,20 +16,23 @@ import { capitalize, getChainIdByName, getISODate } from "~/utils";
 import { RollupBadge } from "../Badges/RollupBadge";
 import { Card } from "../Cards/Card";
 import { Dropdown } from "../Dropdown";
-import type { DropdownProps, Option } from "../Dropdown";
+import type { Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { RollupIcon } from "../RollupIcon";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { RollupFilter } from "./RollupFilter";
+import type { RollupOption } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
 const MULTIPLE_VALUES_SEPARATOR = ",";
 
+type CategoryOption = Option<string>;
+
 type FiltersState = {
-  rollups: Option[] | null;
-  category: Option | null;
+  rollups: RollupOption[] | null;
+  category: CategoryOption | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
@@ -50,7 +53,7 @@ type FiltersAction<V extends keyof FiltersState> =
   | ClearAction<V>
   | UpdateAction;
 
-const CATEGORY_FILTER_OPTIONS: DropdownProps["options"] = [
+const CATEGORY_FILTER_OPTIONS: CategoryOption[] = [
   { value: Category.ROLLUP.toLowerCase(), label: capitalize(Category.ROLLUP) },
   { value: Category.OTHER.toLowerCase(), label: capitalize(Category.OTHER) },
 ];
@@ -169,7 +172,7 @@ export const Filters: FC = function () {
     });
   };
 
-  const rollupOptions: DropdownProps["options"] = useMemo(() => {
+  const rollupOptions: RollupOption[] = useMemo(() => {
     const chainId = env && getChainIdByName(env.PUBLIC_NETWORK_NAME);
     const rollups = chainId ? getChainRollups(chainId) : [];
 
@@ -186,7 +189,7 @@ export const Filters: FC = function () {
               <div>{capitalize(name)}</div>
             </div>
           ),
-        } satisfies Option)
+        } satisfies RollupOption)
     );
   }, [env]);
 
@@ -271,7 +274,7 @@ export const Filters: FC = function () {
                 options={CATEGORY_FILTER_OPTIONS}
                 selected={filters.category}
                 width="w-full"
-                onChange={(newCategory: Option | null) => {
+                onChange={(newCategory) => {
                   const newFilters: Partial<FiltersState> = {
                     category: newCategory,
                   };
