@@ -190,26 +190,30 @@ function OverallStats() {
   );
 }
 
-const TIME_FRAMES: { label: string; value: TimeFrame }[] = [
-  { label: "1 year", value: "360d" },
+type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
+
+const TIME_FRAME_OPTIONS: { label: string; value: TimeFrame }[] = [
+  { label: "1 year", value: "365d" },
   { label: "6 months", value: "180d" },
   { label: "1 month", value: "30d" },
   { label: "7 days", value: "7d" },
   { label: "1 day", value: "1d" },
 ];
 
-const SECTIONS: { label: string; value: Section }[] = [
-  { label: "All", value: "All" },
-  { label: "Blobs", value: "Blob" },
-  { label: "Blocks", value: "Block" },
-  { label: "Transactions", value: "Transaction" },
+const SECTION_OPTIONS: Option[] = [
+  { value: "All" },
+  { value: "Blob" },
+  { value: "Block" },
+  { value: "Gas" },
+  { value: "Fee" },
+  { value: "Transaction" },
 ];
 
-type Section = "All" | "Blob" | "Block" | "Transaction";
-
 function Charts() {
-  const [sectionFilter, setSectionFilter] = useState<Section>("All");
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>("90d");
+  const [selectedSection, setSelectedSection] = useState<Option>(
+    SECTION_OPTIONS[0] as Option
+  );
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>("365d");
   const { data: dailyStats } = api.stats.getDailyStats.useQuery(
     {
       categories: "all",
@@ -224,52 +228,47 @@ function Charts() {
     }
   );
   const { days, series, totalSeries } = dailyStats || {};
-
-  return (
-    <div className="flex flex-col gap-8">
-      <Card>
-        <div className="flex flex-wrap items-center justify-start gap-4">
-          <Dropdown
-            width="w-48"
-            options={SECTIONS}
-            selected={SECTIONS.find((option) => option.value === sectionFilter)}
-            onChange={(option: Option) => {
-              if (!option) return;
-              setSectionFilter(option.value as Section);
-            }}
-          />
-          <Dropdown
-            options={TIME_FRAMES}
-            selected={TIME_FRAMES.find((option) => option.value === timeFrame)}
-            onChange={(option: Option) => {
-              if (!option) return;
-              setTimeFrame(option.value as TimeFrame);
-            }}
-          />
-        </div>
-      </Card>
-
-      <ChartSection
-        title="Blobs"
-        hide={sectionFilter !== "All" && sectionFilter !== "Blob"}
-      >
-        <DailyBlobsChart days={days} series={series?.totalBlobs} />
-        <DailyBlobSizeChart days={days} series={series?.totalBlobSize} />
-      </ChartSection>
-
-      <ChartSection
-        title="Blocks"
-        hide={sectionFilter !== "All" && sectionFilter !== "Block"}
-      >
-        <DailyBlocksChart days={days} series={series?.totalBlocks} />
-        <DailyBlobGasUsedChart days={days} series={series?.totalBlobGasUsed} />
-        <DailyBlobFeeChart days={days} series={series?.totalBlobFee} />
+  const sections: { section: Section; charts: ReactNode[] }[] = [
+    {
+      section: "Blob",
+      charts: [
+        <DailyBlobsChart
+          key="daily-blobs"
+          days={days}
+          series={series?.totalBlobs}
+        />,
+        <DailyBlobSizeChart
+          key="daily-blob-size"
+          days={days}
+          series={series?.totalBlobSize}
+        />,
+      ],
+    },
+    {
+      section: "Block",
+      charts: [
+        <DailyBlocksChart
+          key="daily-blocks"
+          days={days}
+          series={series?.totalBlocks}
+        />,
+      ],
+    },
+    {
+      section: "Gas",
+      charts: [
+        <DailyBlobGasUsedChart
+          key="daily-blob-gas-used"
+          days={days}
+          series={series?.totalBlobGasUsed}
+        />,
         <DailyAvgBlobGasPriceChart
+          key="daily-avg-blob-gas-price"
           days={days}
           series={totalSeries?.avgBlobGasPrice}
-        />
-        <DailyAvgBlobFeeChart days={days} series={totalSeries?.avgBlobFee} />
+        />,
         <DailyBlobGasComparisonChart
+          key="daily-blob-gas-comparison"
           days={days}
           series={
             totalSeries
@@ -280,18 +279,39 @@ function Charts() {
                 }
               : undefined
           }
-        />
-      </ChartSection>
-
-      <ChartSection
-        title="Transactions"
-        hide={sectionFilter !== "All" && sectionFilter !== "Transaction"}
-      >
+        />,
+      ],
+    },
+    {
+      section: "Fee",
+      charts: [
+        <DailyBlobFeeChart
+          key="daily-blob-fee"
+          days={days}
+          series={series?.totalBlobFee}
+        />,
+        <DailyAvgBlobFeeChart
+          key="daily-avg-blob-fee"
+          days={days}
+          series={totalSeries?.avgBlobFee}
+        />,
+        <DailyAvgMaxBlobGasFeeChart
+          key="daily-avg-max-blob-gas-fee"
+          days={days}
+          series={totalSeries?.avgMaxBlobGasFee}
+        />,
+      ],
+    },
+    {
+      section: "Transaction",
+      charts: [
         <DailyTransactionsChart
+          key="daily-transactions"
           days={days}
           series={series?.totalTransactions}
-        />
+        />,
         <DailyUniqueAddressesChart
+          key="daily-unique-addresses"
           days={days}
           series={
             totalSeries
@@ -301,33 +321,53 @@ function Charts() {
                 }
               : undefined
           }
-        />
-        <DailyAvgMaxBlobGasFeeChart
-          days={days}
-          series={totalSeries?.avgMaxBlobGasFee}
-        />
-      </ChartSection>
-    </div>
-  );
-}
-
-function ChartSection({
-  children,
-  title,
-  hide,
-}: {
-  children: ReactNode;
-  title: string;
-  hide?: boolean;
-}) {
-  if (hide) return null;
+        />,
+      ],
+    },
+  ];
+  const currentSectionOption = selectedSection.value as Section;
+  const displayedSections =
+    currentSectionOption === "All"
+      ? sections
+      : sections.filter((s) => s.section === currentSectionOption);
 
   return (
-    <div className="flex flex-col gap-2">
-      <Header>{title}</Header>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 [&>div]:w-full">
-        {children}
-      </div>
+    <div className="flex flex-col gap-8">
+      <Card>
+        <div className="flex flex-wrap items-center justify-start gap-4">
+          <Dropdown
+            width="w-48"
+            options={SECTION_OPTIONS}
+            selected={selectedSection}
+            onChange={(option: Option) => {
+              setSelectedSection(option);
+            }}
+          />
+          <Dropdown
+            options={TIME_FRAME_OPTIONS}
+            selected={TIME_FRAME_OPTIONS.find(
+              (option) => option.value === timeFrame
+            )}
+            onChange={(option: Option) => {
+              if (!option) return;
+              setTimeFrame(option.value as TimeFrame);
+            }}
+          />
+        </div>
+      </Card>
+
+      {displayedSections.map(({ section, charts }) => (
+        <div key={section} className="flex flex-col gap-4">
+          <Header>{section}</Header>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 [&>div]:w-full">
+            {charts.map((chart, index) => (
+              <Card key={index} className="h-full">
+                {chart}
+              </Card>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
