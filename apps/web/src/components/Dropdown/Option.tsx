@@ -1,13 +1,14 @@
+import type { ReactNode } from "react";
 import { ListboxOption } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
-import type { Option as OptionType } from ".";
+import type { Option as OptionType } from "./index";
 
-interface OptionProps {
-  option: OptionType;
+interface OptionProps<T> {
+  option: OptionType<T>;
 }
 
-export const Option: React.FC<OptionProps> = function ({ option }) {
+export function Option<T>({ option }: OptionProps<T>) {
   const { label, value } = option;
   const formattedValue = Array.isArray(value) ? value.join(", ") : value;
 
@@ -19,7 +20,7 @@ export const Option: React.FC<OptionProps> = function ({ option }) {
       {({ selected }) => (
         <div className="flex items-center justify-between gap-3">
           <div className="truncate text-sm">
-            {label ? label : formattedValue}
+            {label ? label : (formattedValue as ReactNode)}
           </div>
           {selected && (
             <CheckIcon
@@ -31,4 +32,4 @@ export const Option: React.FC<OptionProps> = function ({ option }) {
       )}
     </ListboxOption>
   );
-};
+}
