@@ -2,27 +2,31 @@ import type { Rollup } from "@blobscan/db/prisma/enums";
 
 export const ROLLUP_REGISTRY: Record<
   Lowercase<Rollup>,
-  { label?: string; color: { light: string; dark: string } }
+  { label: string; color: { light: string; dark: string } }
 > = {
   abstract: {
+    label: "Abstract",
     color: {
       light: "#195b3b",
       dark: "#7dffc0",
     },
   },
   aevo: {
+    label: "Aevo",
     color: {
       light: "#291f3f",
       dark: "#d8c9fa",
     },
   },
   ancient8: {
+    label: "Ancient8",
     color: {
       light: "#3b4e0b",
       dark: "#d8ff76",
     },
   },
   arbitrum: {
+    label: "Arbitrum",
     color: {
       light: "#12537e",
       dark: "#80cffc",
@@ -36,6 +40,7 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   base: {
+    label: "Base",
     color: {
       light: "#2242a1",
       dark: "#88a6ff",
@@ -49,18 +54,21 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   bob: {
+    label: "BoB",
     color: {
       light: "#e4d341",
       dark: "#9d9245",
     },
   },
   boba: {
+    label: "Boba",
     color: {
       light: "#648314",
       dark: "#cdff03",
     },
   },
   camp: {
+    label: "Camp",
     color: {
       light: "#8c4b1f",
       dark: "#ffc79b",
@@ -74,12 +82,14 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   ethernity: {
+    label: "Ethernity",
     color: {
       light: "#6a2aff",
       dark: "#00e8c2",
     },
   },
   fraxtal: {
+    label: "Fraxtal",
     color: {
       light: "#013280",
       dark: "#5e9cff",
@@ -100,78 +110,91 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   hemi: {
+    label: "Hemi",
     color: {
       light: "#844b04",
       dark: "#ffb272",
     },
   },
   hypr: {
+    label: "Hypr",
     color: {
       light: "#8c1f1f",
       dark: "#f7a8a8",
     },
   },
   infinaeon: {
+    label: "Infinaeon",
     color: {
       light: "#007b7f",
       dark: "#7dfbff",
     },
   },
   ink: {
+    label: "Ink",
     color: {
       light: "#2f1176",
       dark: "#c0a9f6",
     },
   },
   karak: {
+    label: "Karak",
     color: {
       light: "#8c501f",
       dark: "#f7d2a8",
     },
   },
   kinto: {
+    label: "Kinto",
     color: {
       light: "#949292",
       dark: "#dfd7d7",
     },
   },
   kroma: {
+    label: "Kroma",
     color: {
       light: "#16822a",
       dark: "#1fb63a",
     },
   },
   lambda: {
+    label: "Lambda",
     color: {
       light: "#3f4ae1",
       dark: "#c5c9ff",
     },
   },
   linea: {
+    label: "Linea",
     color: {
       light: "#878119",
       dark: "#efe52b",
     },
   },
   lisk: {
+    label: "Lisk",
     color: {
       light: "#7b1b0a",
       dark: "#e84d31",
     },
   },
   manta: {
+    label: "Manta",
     color: {
       light: "#2770ab",
       dark: "#32e7ff",
     },
   },
   mantle: {
+    label: "Mantle",
     color: {
       light: "#008F6A",
       dark: "#65B3AE",
     },
   },
   metal: {
+    label: "Metal",
     color: {
       light: "#69439c",
       dark: "#dbc0ff",
@@ -185,24 +208,28 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   metis: {
+    label: "Metis",
     color: {
       light: "#5d878b",
       dark: "#c0fbfd",
     },
   },
   mint: {
+    label: "Mint",
     color: {
       light: "#3d8141",
       dark: "#75ff7c",
     },
   },
   mode: {
+    label: "Mode",
     color: {
       light: "#8c8c35",
       dark: "#ffff5d",
     },
   },
   morph: {
+    label: "Morph",
     color: {
       light: "#176800",
       dark: "#3bff04",
@@ -230,18 +257,21 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   optimism: {
+    label: "Optimism",
     color: {
       light: "#ff3232",
       dark: "#ffb2b2",
     },
   },
   optopia: {
+    label: "Optopia",
     color: {
       light: "#8c0101",
       dark: "#ff9292",
     },
   },
   orderly: {
+    label: "Orderly",
     color: {
       light: "#6f27ff",
       dark: "#d4bfff",
@@ -255,18 +285,21 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   paradex: {
+    label: "Paradex",
     color: {
       light: "#8f00b7",
       dark: "#e37eff",
     },
   },
   parallel: {
+    label: "Parallel",
     color: {
       light: "#830059",
       dark: "#ffc5ed",
     },
   },
   phala: {
+    label: "Phala",
     color: {
       light: "#20a42f",
       dark: "#00ff1e",
@@ -280,42 +313,49 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   polynomial: {
+    label: "Polynomial",
     color: {
       light: "#5d741a",
       dark: "#bcd570",
     },
   },
   r0ar: {
+    label: "R0ar",
     color: {
       light: "#539632",
       dark: "#b0f872",
     },
   },
   race: {
+    label: "Race",
     color: {
       light: "#824800",
       dark: "#ffbd6d",
     },
   },
   rari: {
+    label: "Rari",
     color: {
       light: "#7b00ff",
       dark: "#e1cafa",
     },
   },
   river: {
+    label: "River",
     color: {
       light: "#1c1c1c",
       dark: "#f2e6e6",
     },
   },
   scroll: {
+    label: "Scroll",
     color: {
       light: "#d28800",
       dark: "#ffd689",
     },
   },
   shape: {
+    label: "Shape",
     color: {
       light: "#cccaca",
       dark: "#cccaca",
@@ -329,18 +369,21 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   soneium: {
+    label: "Soneium",
     color: {
       light: "#434242",
       dark: "#b5b1b1",
     },
   },
   starknet: {
+    label: "Starknet",
     color: {
       light: "#d6bcfa",
       dark: "#6b21a8",
     },
   },
   superlumio: {
+    label: "Superlumio",
     color: {
       light: "#2f1364",
       dark: "#c198ff",
@@ -368,6 +411,7 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   taiko: {
+    label: "Taiko",
     color: {
       light: "#97266d",
       dark: "#fbb6ce",
@@ -388,6 +432,7 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   world: {
+    label: "World",
     color: {
       light: "#029e9e",
       dark: "#93dcf8",
@@ -408,12 +453,14 @@ export const ROLLUP_REGISTRY: Record<
     },
   },
   zircuit: {
+    label: "Zircuit",
     color: {
       light: "#587351",
       dark: "#dcead5",
     },
   },
   zora: {
+    label: "Zora",
     color: {
       light: "#0f3197",
       dark: "#94afff",
