@@ -75,7 +75,6 @@ export function createToolBox({
   };
   opts?: EChartOption<EChartOption.Series>["toolbox"];
 }): EChartOption<EChartOption.Series>["toolbox"] {
-  console.log(extraFeatures);
   const cumulativeSumFeature = extraFeatures?.cumulativeSum
     ? {
         myCumulativeSum: {

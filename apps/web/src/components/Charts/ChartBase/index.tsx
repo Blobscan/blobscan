@@ -1,20 +1,19 @@
 import type { FC } from "react";
 import { useCallback, useMemo, useRef } from "react";
 import { useState } from "react";
-import type { Color, EChartOption, ECElementEvent } from "echarts";
+import type { EChartOption, ECElementEvent } from "echarts";
 import EChartsReact from "echarts-for-react";
 import type { EChartsInstance } from "echarts-for-react";
 import { useTheme } from "next-themes";
 
-import { ROLLUP_REGISTRY } from "@blobscan/rollups";
-
-import type { Rollup } from "~/types";
+import { Legend } from "./Legend";
 import {
   createToolBox,
   createTooltip,
   formatMetricValue,
   performCumulativeSum,
 } from "./helpers";
+import { getSeriesColor } from "./helpers/colors";
 import type { MetricInfo } from "./types";
 
 export interface ChartBaseProps {
@@ -29,21 +28,6 @@ export interface ChartBaseProps {
   };
 
   compact?: boolean;
-}
-
-function getCategorySeriesStyle(
-  seriesName: string,
-  themeMode: "dark" | "light"
-): { color: Color } | undefined {
-  if (seriesName === "other") {
-    return { color: "#505050" };
-  }
-
-  const rollupSettings = ROLLUP_REGISTRY[seriesName as Rollup];
-
-  if (rollupSettings) {
-    return { color: rollupSettings.color[themeMode] as Color };
-  }
 }
 
 function buildAxisOptions(metricInfo: MetricInfo) {
@@ -67,8 +51,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   compact = false,
 }) {
   const { resolvedTheme } = useTheme();
-  const themeMode = resolvedTheme as "light" | "dark";
   const cachedCumulativeSumsRef = useRef<string[][] | null>(null);
+  const chartInstanceRef = useRef<EChartsInstance | null>(null);
   const hoveredSeriesRef = useRef<{
     seriesIndex?: number;
     seriesName?: string;
@@ -85,6 +69,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     tooltipExtraOptions,
     ...restOptions
   } = options;
+  const themeMode = resolvedTheme as "light" | "dark";
+
   const tooltip = createTooltip({
     currentSeriesRef: hoveredSeriesRef,
     metricInfo,
@@ -111,10 +97,13 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       })
     : undefined;
 
-  const formattedChartSeries = useMemo(
-    () =>
-      seriesOptions?.map<EChartOption.Series>((series, i) => {
-        const { data, ...restSeries } = series;
+  const formattedSeries = useMemo(() => {
+    return seriesOptions
+      ?.sort((a, b) =>
+        (a.name?.toLowerCase() ?? "").localeCompare(b.name?.toLowerCase() ?? "")
+      )
+      ?.map((series, i) => {
+        const { data, name, ...restSeries } = series;
 
         let newData = data;
 
@@ -133,21 +122,31 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           newData = cumulativeSums;
         }
 
+        const color = getSeriesColor({
+          seriesName: name,
+          seriesIndex: i,
+          themeMode,
+        });
+
         return {
           smooth: true,
           data: newData,
           areaStyle: {},
-          itemStyle: series.name
-            ? getCategorySeriesStyle(series.name, themeMode)
-            : undefined,
+          itemStyle: {
+            color,
+          },
           emphasis: {
             focus: "series",
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
           },
           ...restSeries,
-        } as EChartOption.Series;
-      }),
-    [seriesOptions, showCumulative, themeMode]
-  );
+        };
+      });
+  }, [seriesOptions, showCumulative, themeMode]);
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
     chart.on("mouseover", (params: ECElementEvent) => {
@@ -165,45 +164,52 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, []);
 
   return (
-    <EChartsReact
-      onChartReady={onChartReady}
-      option={
-        {
-          series: formattedChartSeries,
-          grid: {
-            top: 27,
-            right: 10,
-            bottom: 22,
-            left: 40,
-            ...(gridOptions || {}),
-          },
-          xAxis: {
-            ...buildAxisOptions(xAxisMetricInfo),
-            boundaryGap: true,
-            axisTick: {
-              alignWithLabel: true,
+    <div className="flex h-full w-full flex-col gap-2 md:flex-row md:gap-1">
+      <EChartsReact
+        ref={chartInstanceRef}
+        onChartReady={onChartReady}
+        option={
+          {
+            series: formattedSeries as EChartOption.Series[],
+            legend: {
+              show: false,
             },
-            ...(compact
-              ? {
-                  axisLine: { show: false },
-                }
-              : {}),
-            ...(xAxisOptions || {}),
-          },
-          yAxis: {
-            ...buildAxisOptions(yAxisMetricInfo),
-            splitLine: { show: false },
-            axisLine: { show: !compact },
-            ...(yAxisOptions || {}),
-          },
-          toolbox,
-          tooltip,
-          animationEasing: "linear",
-          ...restOptions,
-        } satisfies EChartOption
-      }
-      style={{ height: "100%", width: "100%" }}
-    />
+            grid: {
+              top: 27,
+              right: 10,
+              bottom: 22,
+              left: 40,
+              ...(gridOptions || {}),
+            },
+            xAxis: {
+              ...buildAxisOptions(xAxisMetricInfo),
+              boundaryGap: true,
+              axisTick: {
+                alignWithLabel: true,
+              },
+              ...(compact
+                ? {
+                    axisLine: { show: false },
+                  }
+                : {}),
+              ...(xAxisOptions || {}),
+            },
+            yAxis: {
+              ...buildAxisOptions(yAxisMetricInfo),
+              splitLine: { show: false },
+              axisLine: { show: !compact },
+              ...(yAxisOptions || {}),
+            },
+            toolbox,
+            tooltip,
+            animationEasing: "linear",
+            ...restOptions,
+          } satisfies EChartOption
+        }
+        style={{ height: "100%", width: "95%" }}
+      />
+      <Legend echartRef={chartInstanceRef} />
+    </div>
   );
 };
 

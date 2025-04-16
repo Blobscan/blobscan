@@ -6,13 +6,12 @@ import { ROLLUP_REGISTRY } from "@blobscan/rollups";
 import type { Rollup } from "~/types";
 import {
   calculatePercentage,
-  capitalize,
   getNeighbouringElements,
   normalizeNumerish,
 } from "~/utils";
 import type { Numerish } from "~/utils";
 import type { MetricInfo } from "../types";
-import { formatMetricValue } from "./formatters";
+import { formatMetricValue, formatSeriesName } from "./formatters";
 
 function getTotal(data: number[] | string[], { type }: MetricInfo) {
   if (!data.length) {
@@ -89,7 +88,7 @@ function buildSeriesHtmlElement({
         isDarkMode ? "#FFFFFF" : "#171717"
       }; display: flex; align-items: center; gap: 4px;">
         ${markerElement}
-        <div>${capitalize(name)}</div>
+        <div>${name}</div>
       </div>
       <div style="color: ${isDarkMode ? "#A3A3A3" : "#404040"};">
         ${formattedValue ?? "-"}
@@ -174,9 +173,11 @@ export function createTooltip({
               currentSeriesName
             : undefined;
 
+          const formattedName = formatSeriesName(seriesName);
+
           seriesHTMLElements.push(
             buildSeriesHtmlElement({
-              name: seriesName ?? "Total",
+              name: formattedName,
               value: value,
               total: dayTotal,
               metricInfo: yAxisMetricInfo,
@@ -217,9 +218,11 @@ export function createTooltip({
       } else {
         const { name, seriesName, value, color } = paramOrParams;
 
+        const formattedName = formatSeriesName(seriesName);
+
         seriesHTMLElements.push(
           buildSeriesHtmlElement({
-            name: seriesName ?? "Total",
+            name: formattedName,
             value: (value as number | string) ?? 0,
             metricInfo: yAxisMetricInfo,
             markerColor: color,
