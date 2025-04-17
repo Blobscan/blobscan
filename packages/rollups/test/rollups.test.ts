@@ -94,7 +94,7 @@ describe("Rollups", () => {
     expect(getChainRollups(chainId)).toEqual(expectedRollups);
   });
 
-  it("should return an empty array when when retrieving the rollups of a chain that does not exists", () => {
+  it("should return an empty array when retrieving the rollups of a chain that does not exists", () => {
     const chainId = 12323;
 
     expect(getChainRollups(chainId)).toEqual([]);
