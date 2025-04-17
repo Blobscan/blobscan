@@ -104,18 +104,18 @@ export const Legend: React.FC<LegendProps> = function ({ echartRef }) {
     <div
       ref={legendRef}
       className={cn(
-        "flex w-full cursor-pointer  gap-2 overflow-x-scroll",
+        "flex w-full cursor-pointer gap-2 overflow-x-scroll",
         "md:w-20 md:flex-col md:items-start md:gap-0 md:overflow-x-hidden md:overflow-y-scroll",
         { "justify-center": items.length <= 15 }
       )}
     >
-      {items?.map((item) => {
+      {items?.map((item, i) => {
         const { color, disabled, name } = item;
         const formattedName = formatSeriesName(name);
 
         return (
           <div
-            key={name}
+            key={`${name}-${i}`}
             className={cn(
               {
                 "opacity-100": currentSeriesName === name || !currentSeriesName,

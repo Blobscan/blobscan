@@ -129,6 +129,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         });
 
         return {
+          name,
           smooth: true,
           data: newData,
           areaStyle: {},
@@ -164,7 +165,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, []);
 
   return (
-    <div className="flex h-full w-full flex-col gap-2 md:flex-row md:gap-1">
+    <div className="flex h-full w-full flex-col gap-1 md:flex-row md:gap-1">
       <EChartsReact
         ref={chartInstanceRef}
         onChartReady={onChartReady}
