@@ -5,6 +5,7 @@ import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
+import type { MetricCardProps } from "~/components/Cards/MetricCard";
 import { DailyBlobsChart, DailyBlobSizeChart } from "~/components/Charts/Blob";
 import {
   DailyAvgBlobFeeChart,
@@ -22,6 +23,7 @@ import {
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
+import { Fadeable } from "~/components/Fadeable";
 import { Header } from "~/components/Header";
 import { api } from "~/api-client";
 import type { DailyStats } from "~/types";
@@ -37,155 +39,142 @@ const Stats = function () {
 
 function OverallStats() {
   const { data: overallStats } = api.stats.getOverallStats.useQuery();
+  const metrics: MetricCardProps[] = [
+    {
+      name: "Total Blobs",
+      metric: {
+        value: overallStats?.totalBlobs,
+      },
+    },
+    {
+      name: "Total Blob Size",
+      metric: {
+        value: overallStats?.totalBlobSize,
+        type: "bytes",
+      },
+    },
+    {
+      name: "Total Unique Blobs",
+      metric: {
+        value: overallStats?.totalUniqueBlobs,
+      },
+    },
+    {
+      name: "Total Blocks",
+      metric: {
+        value: overallStats?.totalBlocks,
+      },
+    },
+    {
+      name: "Total Blob Gas Used",
+      metric: {
+        value: overallStats?.totalBlobGasUsed,
+        type: "ethereum",
+      },
+    },
+    {
+      name: "Total Blob Fees",
+      metric: {
+        value: overallStats?.totalBlobFee,
+        type: "ethereum",
+      },
+    },
+    {
+      name: "Avg. Blob Gas Price",
+      metric: overallStats
+        ? {
+            value: overallStats.avgBlobGasPrice,
+            type: "ethereum",
+            numberFormatOpts: {
+              maximumFractionDigits: 9,
+            },
+          }
+        : undefined,
+    },
+    {
+      name: "Total Tx Fees Saved",
+      metric: overallStats
+        ? {
+            value:
+              BigInt(overallStats.totalBlobAsCalldataFee) -
+              BigInt(overallStats.totalBlobFee),
+            type: "ethereum",
+          }
+        : undefined,
+      // secondaryMetric={
+      //   overallStats
+      //     ? {
+      //         value: calculatePercentage(
+      //           BigInt(overallStats.block.totalBlobFee),
+      //           BigInt(overallStats.block.totalBlobAsCalldataFee),
+      //           { returnComplement: true }
+      //         ),
+      //         type: "percentage",
+      //       }
+      //     : undefined
+      // }
+    },
+    {
+      name: "Total Gas Saved",
+      metric: {
+        value: overallStats
+          ? BigInt(overallStats.totalBlobAsCalldataGasUsed) -
+            BigInt(overallStats.totalBlobGasUsed)
+          : undefined,
+      },
+      // secondaryMetric={
+      //   overallStats &&
+      //   BigInt(overallStats.block.totalBlobAsCalldataFee) > BigInt(0)
+      //     ? {
+      //         value: calculatePercentage(
+      //           BigInt(overallStats.block.totalBlobGasUsed),
+      //           BigInt(overallStats.block.totalBlobAsCalldataGasUsed),
+      //           { returnComplement: true }
+      //         ),
+      //         type: "percentage",
+      //       }
+      //     : undefined
+      // }
+    },
+    {
+      name: "Total Transactions",
+      metric: {
+        value: overallStats?.totalTransactions,
+      },
+    },
+    {
+      name: "Total Unique Receivers",
+      metric: {
+        value: overallStats?.totalUniqueReceivers,
+      },
+    },
+    {
+      name: "Total Unique Senders",
+      metric: {
+        value: overallStats?.totalUniqueSenders,
+      },
+    },
+    {
+      name: "Avg. Max Blob Gas Fee",
+      metric: {
+        value: overallStats?.avgMaxBlobGasFee,
+        type: "ethereum",
+      },
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-4">
       <Header>Stats Overview</Header>
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {/* BLOBS */}
-
-        <MetricCard
-          name="Total Blobs"
-          metric={{
-            value: overallStats?.totalBlobs,
-          }}
-        />
-
-        <MetricCard
-          name="Total Blob Size"
-          metric={{
-            value: overallStats?.totalBlobSize,
-            type: "bytes",
-          }}
-        />
-
-        <MetricCard
-          name="Total Unique Blobs"
-          metric={{
-            value: overallStats?.totalUniqueBlobs,
-          }}
-        />
-
-        {/* BLOCKS */}
-
-        <MetricCard
-          name="Total Blocks"
-          metric={{
-            value: overallStats?.totalBlocks,
-          }}
-        />
-
-        <MetricCard
-          name="Total Blob Gas Used"
-          metric={{
-            value: overallStats?.totalBlobGasUsed,
-            type: "ethereum",
-          }}
-        />
-
-        <MetricCard
-          name="Total Blob Fees"
-          metric={{
-            value: overallStats?.totalBlobFee,
-            type: "ethereum",
-          }}
-        />
-
-        <MetricCard
-          name="Avg. Blob Gas Price"
-          metric={
-            overallStats
-              ? {
-                  value: overallStats.avgBlobGasPrice,
-                  type: "ethereum",
-                  numberFormatOpts: {
-                    maximumFractionDigits: 9,
-                  },
-                }
-              : undefined
-          }
-        />
-
-        <MetricCard
-          name="Total Tx Fees Saved"
-          metric={
-            overallStats
-              ? {
-                  value:
-                    BigInt(overallStats.totalBlobAsCalldataFee) -
-                    BigInt(overallStats.totalBlobFee),
-                  type: "ethereum",
-                }
-              : undefined
-          }
-          // secondaryMetric={
-          //   overallStats
-          //     ? {
-          //         value: calculatePercentage(
-          //           BigInt(overallStats.block.totalBlobFee),
-          //           BigInt(overallStats.block.totalBlobAsCalldataFee),
-          //           { returnComplement: true }
-          //         ),
-          //         type: "percentage",
-          //       }
-          //     : undefined
-          // }
-        />
-
-        <MetricCard
-          name="Total Gas Saved"
-          metric={{
-            value: overallStats
-              ? BigInt(overallStats.totalBlobAsCalldataGasUsed) -
-                BigInt(overallStats.totalBlobGasUsed)
-              : undefined,
-          }}
-          // secondaryMetric={
-          //   overallStats &&
-          //   BigInt(overallStats.block.totalBlobAsCalldataFee) > BigInt(0)
-          //     ? {
-          //         value: calculatePercentage(
-          //           BigInt(overallStats.block.totalBlobGasUsed),
-          //           BigInt(overallStats.block.totalBlobAsCalldataGasUsed),
-          //           { returnComplement: true }
-          //         ),
-          //         type: "percentage",
-          //       }
-          //     : undefined
-          // }
-        />
-
-        {/* TX */}
-
-        <MetricCard
-          name="Total Transactions"
-          metric={{
-            value: overallStats?.totalTransactions,
-          }}
-        />
-
-        <MetricCard
-          name="Total Unique Receivers"
-          metric={{
-            value: overallStats?.totalUniqueReceivers,
-          }}
-        />
-
-        <MetricCard
-          name="Total Unique Senders"
-          metric={{
-            value: overallStats?.totalUniqueSenders,
-          }}
-        />
-
-        <MetricCard
-          name="Avg. Max Blob Gas Fee"
-          metric={{
-            value: overallStats?.avgMaxBlobGasFee,
-            type: "ethereum",
-          }}
-        />
-      </div>
+      <Fadeable>
+        <div className="grid grid-flow-col grid-rows-2 gap-4">
+          {metrics.map((metricProps) => (
+            <div key={metricProps.name} className="min-w-[240px]">
+              <MetricCard {...metricProps} />
+            </div>
+          ))}
+        </div>
+      </Fadeable>
     </div>
   );
 }
