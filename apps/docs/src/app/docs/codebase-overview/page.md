@@ -22,7 +22,7 @@ Blobscan.com is comprised of the following major components:
 
 Blobscan is a monorepo managed with [Turborepo](https://turbo.build/) which contains two main folders: `apps` and `packages`.
 
-The indexer is not part of the monorepo and it's located in a separate [repository](https://github.com/Blobscan/blobscan-indexer.rs/tree/next).
+The indexer is not part of the monorepo and it's located in a separate [repository](https://github.com/Blobscan/blobscan/tree/main/packages/network-blob-config).
 
 ### Apps
 
