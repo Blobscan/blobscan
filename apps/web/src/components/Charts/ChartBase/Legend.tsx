@@ -4,6 +4,7 @@ import cn from "classnames";
 import type { ECElementEvent, EChartOption } from "echarts";
 import type { EChartsInstance } from "echarts-for-react";
 
+import { Scrollable } from "~/components/Scrollable";
 import { formatSeriesName } from "./helpers";
 
 export type LegendProps = {
@@ -104,70 +105,76 @@ export const Legend: React.FC<LegendProps> = function ({ echartRef }) {
     <div
       ref={legendRef}
       className={cn(
-        "flex w-full cursor-pointer gap-2 overflow-x-scroll",
-        "md:w-20 md:flex-col md:items-start md:gap-0 md:overflow-x-hidden md:overflow-y-scroll",
+        "flex h-full w-full cursor-pointer gap-2 truncate",
+        "md:w-20 md:flex-col md:items-start md:gap-0",
         { "justify-center": items.length <= 15 }
       )}
     >
-      {items?.map((item, i) => {
-        const { color, disabled, name } = item;
-        const formattedName = formatSeriesName(name);
+      <Scrollable>
+        <div className="flex items-center md:flex-col">
+          {items?.map((item, i) => {
+            const { color, disabled, name } = item;
+            const formattedName = formatSeriesName(name);
 
-        return (
-          <div
-            key={`${name}-${i}`}
-            className={cn(
-              {
-                "opacity-100": currentSeriesName === name || !currentSeriesName,
-              },
-              {
-                "opacity-50": currentSeriesName !== name && !!currentSeriesName,
-              },
-
-              { "text-[#505050]": disabled },
-              "cursor flex w-full items-center gap-1 break-normal text-xs opacity-100 transition-opacity"
-            )}
-            role="button"
-            tabIndex={0}
-            onMouseEnter={() => {
-              setCurrentSeriesName(name);
-              echartRef.current?.getEchartsInstance().dispatchAction({
-                type: "highlight",
-                seriesName: name,
-              });
-            }}
-            onMouseLeave={() => {
-              setCurrentSeriesName(undefined);
-              echartRef.current?.getEchartsInstance().dispatchAction({
-                type: "downplay",
-                seriesName: name,
-              });
-            }}
-            onClick={() => handleToggle(item)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                handleToggle(item);
-              }
-            }}
-          >
-            {name !== "All" && (
+            return (
               <div
-                className="h-[8px] w-[8px] rounded border"
-                style={{
-                  borderColor: color,
-                  ...(disabled ? {} : { backgroundColor: color }),
+                key={`${name}-${i}`}
+                className={cn(
+                  {
+                    "opacity-100":
+                      currentSeriesName === name || !currentSeriesName,
+                  },
+                  {
+                    "opacity-50":
+                      currentSeriesName !== name && !!currentSeriesName,
+                  },
+
+                  { "text-[#505050]": disabled },
+                  "cursor flex w-full items-center gap-1 break-normal text-xs opacity-100 transition-opacity"
+                )}
+                role="button"
+                tabIndex={0}
+                onMouseEnter={() => {
+                  setCurrentSeriesName(name);
+                  echartRef.current?.getEchartsInstance().dispatchAction({
+                    type: "highlight",
+                    seriesName: name,
+                  });
                 }}
-              />
-            )}
-            <div
-              title={formattedName}
-              className="w-full whitespace-nowrap md:truncate"
-            >
-              {formattedName}
-            </div>
-          </div>
-        );
-      })}
+                onMouseLeave={() => {
+                  setCurrentSeriesName(undefined);
+                  echartRef.current?.getEchartsInstance().dispatchAction({
+                    type: "downplay",
+                    seriesName: name,
+                  });
+                }}
+                onClick={() => handleToggle(item)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleToggle(item);
+                  }
+                }}
+              >
+                {name !== "All" && (
+                  <div
+                    className="h-[8px] w-[8px] rounded border"
+                    style={{
+                      borderColor: color,
+                      ...(disabled ? {} : { backgroundColor: color }),
+                    }}
+                  />
+                )}
+                <div
+                  title={formattedName}
+                  className="w-full whitespace-nowrap md:truncate"
+                >
+                  {formattedName}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Scrollable>
     </div>
   );
 };

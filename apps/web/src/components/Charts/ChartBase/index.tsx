@@ -209,7 +209,9 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         }
         style={{ height: "100%", width: "95%" }}
       />
-      <Legend echartRef={chartInstanceRef} />
+      <div className="h-4 md:h-full">
+        <Legend echartRef={chartInstanceRef} />
+      </div>
     </div>
   );
 };

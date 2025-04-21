@@ -1,29 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import type { RefObject } from "react";
+import { useResize } from "@react-spring/web";
 
-const useOverflow = (
-  containerRef: React.RefObject<HTMLDivElement>,
-  innerRef: React.RefObject<HTMLDivElement>
-) => {
-  const [isOverflowing, setIsOverflowing] = useState<boolean>(false);
+export function useOverflow<T extends HTMLElement>(elementRef: RefObject<T>) {
+  const [overflowing, setOverflowing] = useState({
+    xOverflowing: false,
+    yOverflowing: false,
+  });
 
-  useEffect(() => {
-    const container = containerRef.current;
-    const inner = innerRef.current;
+  useResize({
+    container: elementRef,
+    onChange: () => {
+      const el = elementRef.current;
+      if (!el) return;
 
-    if (!container || !inner) return;
+      const { scrollWidth, clientWidth, scrollHeight, clientHeight } = el;
 
-    const resizeObserver = new ResizeObserver(() => {
-      setIsOverflowing(inner.scrollWidth > container.clientWidth);
-    });
+      setOverflowing({
+        xOverflowing: scrollWidth > clientWidth,
+        yOverflowing: scrollHeight > clientHeight,
+      });
+    },
+  });
 
-    resizeObserver.observe(inner);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [containerRef, innerRef]);
-
-  return isOverflowing;
-};
-
-export default useOverflow;
+  return overflowing;
+}

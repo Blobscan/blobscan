@@ -1,4 +1,4 @@
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import type { ReactNode } from "react";
 import {
   Listbox,
@@ -9,7 +9,7 @@ import {
 import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 
-import useOverflow from "~/hooks/useOverflow";
+import { Scrollable } from "../Scrollable";
 import { Option } from "./Option";
 
 export interface Option<T> {
@@ -75,10 +75,6 @@ export function Dropdown<
     ? selected.length > 0
     : !!selected;
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const innerRef = useRef<HTMLDivElement | null>(null);
-  const isOverflowing = useOverflow(containerRef, innerRef);
-
   return (
     <Listbox
       value={selected}
@@ -90,49 +86,39 @@ export function Dropdown<
         <ListboxButton
           className={`${
             width ?? DEFAULT_WIDTH
-          } relative flex h-9 cursor-pointer items-center justify-between rounded-lg border border-transparent
+          } flex h-9 cursor-pointer items-center justify-between rounded-lg border border-transparent
           bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light 
             focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark
             disabled:cursor-not-allowed disabled:bg-opacity-40 disabled:hover:border-transparent ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:disabled:bg-opacity-40
             disabled:dark:hover:border-transparent dark:ui-open:border-controlActive-dark`}
         >
-          <div
-            className={cn(
-              {
-                "gradient-mask-r-90": isOverflowing,
-              },
-              "flex h-full items-center overflow-auto align-middle"
-            )}
-            ref={containerRef}
-          >
-            <div className="h-fit w-fit" ref={innerRef}>
-              {hasSelectedValue ? (
-                Array.isArray(selected) ? (
-                  <div className="flex flex-row items-center gap-1">
-                    {selected.map(({ selectedLabel, label }, i) => {
-                      return (
-                        <Fragment key={i}>
-                          {selectedLabel ? selectedLabel : label}
-                        </Fragment>
-                      );
-                    })}
-                  </div>
-                ) : selected?.label ? (
-                  selected.label
-                ) : (
-                  (selected?.value as ReactNode)
-                )
-              ) : (
-                <div
-                  className={cn("text-hint-light dark:text-hint-dark", {
-                    "text-opacity-40 dark:text-opacity-40": disabled,
+          <Scrollable>
+            {hasSelectedValue ? (
+              Array.isArray(selected) ? (
+                <div className="flex flex-row items-center gap-1 align-middle">
+                  {selected.map(({ selectedLabel, label }, i) => {
+                    return (
+                      <Fragment key={i}>
+                        {selectedLabel ? selectedLabel : label}
+                      </Fragment>
+                    );
                   })}
-                >
-                  {placeholder}
                 </div>
-              )}
-            </div>
-          </div>
+              ) : selected?.label ? (
+                selected.label
+              ) : (
+                (selected?.value as ReactNode)
+              )
+            ) : (
+              <div
+                className={cn("text-hint-light dark:text-hint-dark", {
+                  "text-opacity-40 dark:text-opacity-40": disabled,
+                })}
+              >
+                {placeholder}
+              </div>
+            )}
+          </Scrollable>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2">
             {clearable && hasSelectedValue ? (
               <XMarkIcon
