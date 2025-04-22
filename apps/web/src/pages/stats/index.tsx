@@ -23,8 +23,10 @@ import {
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
-import { Fadeable } from "~/components/Fadeable";
+import { RollupFilter } from "~/components/Filters/RollupFilter";
+import type { RollupOption } from "~/components/Filters/RollupFilter";
 import { Header } from "~/components/Header";
+import { Scrollable } from "~/components/Scrollable";
 import { api } from "~/api-client";
 import type { DailyStats } from "~/types";
 
@@ -166,7 +168,7 @@ function OverallStats() {
   return (
     <div className="flex flex-col gap-4">
       <Header>Stats Overview</Header>
-      <Fadeable>
+      <Scrollable>
         <div className="grid grid-flow-col grid-rows-2 gap-4">
           {metrics.map((metricProps) => (
             <div key={metricProps.name} className="min-w-[240px]">
@@ -174,7 +176,7 @@ function OverallStats() {
             </div>
           ))}
         </div>
-      </Fadeable>
+      </Scrollable>
     </div>
   );
 }
@@ -209,6 +211,7 @@ function Charts() {
   const [timeFrameOption, setTimeFrameOption] = useState<TimeFrameOption>(
     TIME_FRAME_OPTIONS[0]
   );
+  const [selectedRollups, setSelectedRollups] = useState<RollupOption[]>([]);
   const { data: dailyStats } = api.stats.getDailyStats.useQuery(
     {
       categories: "all",
@@ -222,6 +225,7 @@ function Charts() {
       refetchOnWindowFocus: false,
     }
   );
+
   const { days, series, totalSeries } = dailyStats || {};
   const sections: { section: Section; charts: ReactNode[] }[] = [
     {
@@ -329,7 +333,7 @@ function Charts() {
   return (
     <div className="flex flex-col gap-8">
       <Card>
-        <div className="flex flex-wrap items-center justify-start gap-4">
+        <div className="flex w-full items-center justify-start gap-4">
           <Dropdown
             width="w-48"
             options={SECTION_OPTIONS}
@@ -344,6 +348,10 @@ function Charts() {
             onChange={(option) => {
               setTimeFrameOption(option);
             }}
+          />
+          <RollupFilter
+            selected={selectedRollups}
+            onChange={(newRollups) => setSelectedRollups(newRollups ?? [])}
           />
         </div>
       </Card>

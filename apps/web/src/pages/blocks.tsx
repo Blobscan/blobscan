@@ -30,7 +30,9 @@ import {
 
 const Blocks: NextPage = function () {
   const { env } = useEnv();
-  const { filterParams, paginationParams } = useQueryParams();
+  const { paginationParams, filterParams } = useQueryParams();
+  const rollups = filterParams?.rollups?.join(",");
+
   const {
     data: blocksData,
     isLoading: blocksIsLoading,
@@ -38,15 +40,22 @@ const Blocks: NextPage = function () {
   } = api.block.getAll.useQuery<{ blocks: BlockWithExpandedTransactions[] }>({
     ...paginationParams,
     ...filterParams,
+    rollups,
     expand: "transaction",
   });
   const {
     data: countData,
     error: countError,
     isLoading: countIsLoading,
-  } = api.block.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
+  } = api.block.getCount.useQuery(
+    {
+      ...filterParams,
+      rollups,
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
   const { blocks } = blocksData || {};
   const { totalBlocks } = countData || {};
   const error = blocksError || countError;

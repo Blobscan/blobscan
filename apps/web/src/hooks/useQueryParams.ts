@@ -1,97 +1,75 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { z } from "zod";
 
-import type { Category } from "~/types";
+import { commaSeparatedRollupsSchema } from "~/utils/zod-schemas";
 
 export type Sort = "asc" | "desc";
 
-type FilterQueryParams = Partial<{
-  rollups: string;
-  category: Category;
-  startDate: Date;
-  endDate: Date;
-  startBlock: number;
-  endBlock: number;
-  startSlot: number;
-  endSlot: number;
-}>;
-
-type PaginationQueryParams = {
-  p: number;
-  ps: number;
-  sort: Sort;
-};
-
-type QueryParams = {
-  filterParams: FilterQueryParams;
-  paginationParams: PaginationQueryParams;
-};
-
-const DEFAULT_INITIAL_PAGE_SIZE = 50;
-const DEFAULT_INITIAL_PAGE = 1;
+const DEFAULT_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 50;
 const DEFAULT_SORT = "desc";
+
+const paginationParamsSchema = z.object({
+  p: z.coerce.number().default(DEFAULT_PAGE),
+  ps: z.coerce.number().default(DEFAULT_PAGE_SIZE),
+  sort: z.enum(["asc", "desc"]).default(DEFAULT_SORT),
+});
+
+const filterParamsSchema = z
+  .object({
+    rollups: commaSeparatedRollupsSchema,
+    category: z.enum(["rollup", "other"]),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
+    startBlock: z.coerce.number(),
+    endBlock: z.coerce.number(),
+    startSlot: z.coerce.number(),
+    endSlot: z.coerce.number(),
+  })
+  .partial();
+
+export type PaginationParamsSchema = z.infer<typeof paginationParamsSchema>;
+export type FilterParamsSchema = z.infer<typeof filterParamsSchema>;
+
+export const MULTIPLE_VALUES_SEPARATOR = ",";
 
 export function useQueryParams() {
   const router = useRouter();
-  const [queryParams, setQueryParams] = useState<QueryParams>({
-    paginationParams: {
-      p: DEFAULT_INITIAL_PAGE,
-      ps: DEFAULT_INITIAL_PAGE_SIZE,
+  const [paginationParams, setPaginationParams] =
+    useState<PaginationParamsSchema>({
+      p: DEFAULT_PAGE,
+      ps: DEFAULT_PAGE_SIZE,
       sort: DEFAULT_SORT,
-    },
-    filterParams: {},
-  });
+    });
+  const [filterParams, setFilterParams] = useState<FilterParamsSchema>({});
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
 
-    const {
-      rollups: rollups_,
-      p: p_,
-      ps: ps_,
-      category: category_,
-      startDate: startDate_,
-      endDate: endDate_,
-      startBlock: startBlock_,
-      endBlock: endBlock_,
-      startSlot: startSlot_,
-      endSlot: endSlot_,
-      sort: sort_,
-    } = router.query;
+    const paginationRes = paginationParamsSchema.safeParse(router.query);
+    const filtersRes = filterParamsSchema.safeParse(router.query);
 
-    const rollups = (rollups_ as string)?.toLowerCase();
-    const p = parseInt(p_ as string) || DEFAULT_INITIAL_PAGE;
-    const ps = parseInt(ps_ as string) || DEFAULT_INITIAL_PAGE_SIZE;
-    const sort = sort_ ? (sort_ as Sort) : DEFAULT_SORT;
+    if (paginationRes.success) {
+      setPaginationParams(paginationRes.data);
+    } else {
+      console.error("Invalid pagination params ", paginationRes.error);
+    }
 
-    const category = category_ as Category;
-    const startDate = startDate_ ? new Date(startDate_ as string) : undefined;
-    const endDate = endDate_ ? new Date(endDate_ as string) : undefined;
-    const startBlock = parseInt(startBlock_ as string) || undefined;
-    const endBlock = parseInt(endBlock_ as string) || undefined;
-    const startSlot = parseInt(startSlot_ as string) || undefined;
-    const endSlot = parseInt(endSlot_ as string) || undefined;
-
-    setQueryParams({
-      filterParams: {
-        rollups,
-        category,
-        startDate,
-        endDate,
-        startBlock,
-        endBlock,
-        startSlot,
-        endSlot,
-      },
-      paginationParams: {
-        p,
-        ps,
-        sort,
-      },
-    });
+    if (filtersRes.success) {
+      setFilterParams(filtersRes.data);
+    } else {
+      console.error("Invalid filters params ", filtersRes.error);
+    }
   }, [router]);
-
-  return queryParams;
+  return {
+    params: {
+      ...paginationParams,
+      ...filterParams,
+    },
+    paginationParams,
+    filterParams,
+  };
 }
