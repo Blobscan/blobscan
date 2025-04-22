@@ -1,51 +1,73 @@
-import { useRef } from "react";
+import { useEffect, useMemo } from "react";
 import type { FC } from "react";
+
+import { getChainRollups } from "@blobscan/rollups";
 
 import { Dropdown } from "~/components/Dropdown";
 import type { DropdownProps, Option } from "~/components/Dropdown";
+import { useQueryParams } from "~/hooks/useQueryParams";
+import { useEnv } from "~/providers/Env";
+import type { Rollup } from "~/types";
+import { capitalize, getChainIdByName } from "~/utils";
+import { RollupBadge } from "../Badges/RollupBadge";
+import { RollupIcon } from "../RollupIcon";
 
-export type RollupOption = Option<string>;
+export type RollupOption = Option<Rollup>;
 
 type RollupFilterProps = Pick<
-  DropdownProps<string, true, true>,
-  "selected" | "disabled" | "options" | "onChange"
+  DropdownProps<Rollup, true, true>,
+  "selected" | "disabled" | "onChange"
 >;
 
 export const RollupFilter: FC<RollupFilterProps> = function ({
   onChange,
   selected,
   disabled,
-  options,
 }) {
-  const noneIsSelected = useRef<boolean>(false);
+  const { env } = useEnv();
+  const { params } = useQueryParams();
+  const rollupOptions = useMemo<RollupOption[]>(() => {
+    const chainId = env && getChainIdByName(env.PUBLIC_NETWORK_NAME);
+    const rollups = chainId ? getChainRollups(chainId) : [];
 
-  const handleOnChange = (newRollups_: RollupOption[] | null) => {
-    let newRollups = newRollups_ ? newRollups_ : [];
+    return rollups.map(
+      ([name]) =>
+        ({
+          value: name.toLowerCase() as Rollup,
+          selectedLabel: (
+            <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
+          ),
+          label: (
+            <div className="flex flex-row items-center gap-2">
+              <RollupIcon rollup={name.toLowerCase() as Rollup} />
+              <div>{capitalize(name)}</div>
+            </div>
+          ),
+        } satisfies RollupOption)
+    );
+  }, [env]);
 
-    const noneOptionIndex = newRollups.findIndex((r) => r.value === "null");
+  useEffect(() => {
+    const rollups = params?.rollups;
 
-    if (noneIsSelected.current && newRollups.length > 1) {
-      noneIsSelected.current = false;
-      newRollups = newRollups.filter((_, index) => index !== noneOptionIndex);
+    if (!rollups) {
+      return;
     }
 
-    if (
-      !noneIsSelected.current &&
-      noneOptionIndex !== -1 &&
-      newRollups.length > 1
-    ) {
-      noneIsSelected.current = true;
-      newRollups = newRollups.filter((_, index) => index === noneOptionIndex);
-    }
+    const selectedRollupOptions = rollupOptions.filter((opt) =>
+      rollups.includes(opt.value)
+    );
 
-    onChange(newRollups);
-  };
+    if (selectedRollupOptions) {
+      onChange(selectedRollupOptions);
+    }
+  }, [rollupOptions, params?.rollups, onChange]);
 
   return (
     <Dropdown
       selected={selected}
-      options={options}
-      onChange={handleOnChange}
+      options={rollupOptions}
+      onChange={onChange}
       placeholder="Rollup"
       width="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]"
       disabled={disabled}
