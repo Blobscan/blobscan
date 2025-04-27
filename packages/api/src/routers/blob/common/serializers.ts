@@ -49,7 +49,6 @@ export type SerializedBlobOnTransaction = z.infer<
 
 export const serializedBlobSchema = serializedBaseBlobSchema.merge(
   z.object({
-    data: z.string(),
     transactions: z.array(
       z
         .object({
@@ -66,7 +65,7 @@ export const serializedBlobSchema = serializedBaseBlobSchema.merge(
   })
 );
 
-export type SerializedBlob = z.infer<typeof serializedBlobSchema>;
+type SerializedBlob = z.infer<typeof serializedBlobSchema>;
 
 export function serializeBaseBlob({
   commitment,
@@ -124,10 +123,9 @@ export function serializeBlobOnTransaction(
 }
 
 export function serializeBlob(blob: Blob): SerializedBlob {
-  const { data, transactions, ...baseBlob } = blob;
+  const { transactions, ...baseBlob } = blob;
   const serializedBlob: SerializedBlob = {
     ...serializeBaseBlob(baseBlob),
-    data,
     transactions: [],
   };
 
