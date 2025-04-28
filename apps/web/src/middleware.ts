@@ -1,11 +1,16 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { Ratelimit } from "@upstash/ratelimit";
-import { kv } from "@vercel/kv";
+import { Redis } from "ioredis";
+import { RateLimiterRedis } from "rate-limiter-flexible";
 
-const ratelimit = new Ratelimit({
-  redis: kv,
-  limiter: Ratelimit.slidingWindow(2, "10 s"),
+import { env } from "@blobscan/env";
+
+const redis = new Redis(env.REDIS_URI);
+
+const ratelimit = new RateLimiterRedis({
+  storeClient: redis,
+  points: 2,
+  duration: 10,
 });
 
 // Routes to rate limit
@@ -15,8 +20,11 @@ export const config = {
 
 export default async function middleware(request: NextRequest) {
   const ip = request.ip ?? "127.0.0.1";
-  const { success } = await ratelimit.limit(ip);
-  return success
-    ? NextResponse.next()
-    : NextResponse.redirect(new URL("/", request.url));
+
+  try {
+    await ratelimit.consume(ip);
+    return NextResponse.next();
+  } catch {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 }
