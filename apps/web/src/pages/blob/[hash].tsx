@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useQuery } from "@tanstack/react-query";
+
 import type { Decoder } from "@blobscan/blob-decoder";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -19,7 +21,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { BlockStatus } from "~/components/Status";
-import { api } from "~/api-client";
+import { api, client } from "~/api-client";
 import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
@@ -27,6 +29,31 @@ import {
   formatBytes,
   isValidDecoder,
 } from "~/utils";
+
+function useBlobData(id: string) {
+  return useQuery({
+    queryKey: ["blob-data", id],
+    queryFn: async () => {
+      const response = await client.blob.getBlobData.query({ id });
+
+      if (!response) {
+        throw new Error("No blob data found");
+      }
+
+      if ("data" in response) {
+        return response.data;
+      }
+
+      const data = await fetch(response.redirectUri);
+
+      if (!data.ok) {
+        throw new Error("Failed to fetch blob data");
+      }
+
+      return data.text();
+    },
+  });
+}
 
 const Blob: NextPage = function () {
   const router = useRouter();
@@ -43,6 +70,8 @@ const Blob: NextPage = function () {
       enabled: router.isReady,
     }
   );
+
+  const { data: blobData } = useBlobData(versionedHash);
 
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Raw");
@@ -182,11 +211,11 @@ const Blob: NextPage = function () {
         header={
           <div className="flex items-center justify-between">
             <div>Blob Data</div>
-            {blob && (
+            {blob && blobData && (
               <div className="flex items-center gap-4">
                 <CopyToClipboard
                   tooltipText="Copy blob data"
-                  value={blob.data}
+                  value={blobData}
                 />
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -211,7 +240,7 @@ const Blob: NextPage = function () {
         }
       >
         <BlobViewer
-          data={blob?.data}
+          data={blobData}
           selectedView={selectedBlobViewMode}
           decoder={decoder}
         />

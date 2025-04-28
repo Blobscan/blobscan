@@ -24,7 +24,6 @@ export const serializedBaseBlobSchema = z.object({
   proof: z.string(),
   size: z.number(),
   versionedHash: z.string(),
-  data: z.string().optional(),
   dataStorageReferences: z.array(serializedBlobDataStorageReferenceSchema),
 });
 

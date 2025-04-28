@@ -1,4 +1,5 @@
 import { httpLink, loggerLink } from "@trpc/client";
+import { createTRPCProxyClient } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import superjson from "superjson";
 
@@ -32,6 +33,20 @@ export const api = createTRPCNext<AppRouter>({
     };
   },
   ssr: false,
+});
+
+export const client = createTRPCProxyClient<AppRouter>({
+  transformer: superjson,
+  links: [
+    loggerLink({
+      enabled: (opts) =>
+        process.env.NODE_ENV === "development" ||
+        (opts.direction === "down" && opts.result instanceof Error),
+    }),
+    httpLink({
+      url: `${getBaseUrl()}/api/trpc`,
+    }),
+  ],
 });
 
 export { type RouterInputs, type RouterOutputs } from "@blobscan/api";

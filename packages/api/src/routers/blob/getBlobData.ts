@@ -6,7 +6,7 @@ import { z } from "@blobscan/zod";
 import { publicProcedure } from "../../procedures";
 import { retrieveBlobData } from "../../utils";
 
-export const getByBlobData = publicProcedure
+export const getBlobData = publicProcedure
   .meta({
     openapi: {
       method: "GET",
@@ -21,7 +21,16 @@ export const getByBlobData = publicProcedure
       id: z.string(),
     })
   )
-  .output(z.string().optional())
+  .output(
+    z.union([
+      z.object({
+        data: z.string(),
+      }),
+      z.object({
+        redirectUri: z.string(),
+      }),
+    ])
+  )
   .query(async ({ ctx, input }) => {
     const blob = await prisma.blob.findFirst({
       select: {
@@ -58,18 +67,18 @@ export const getByBlobData = publicProcedure
         break;
       }
 
-      const uri = storage.getBlobUri(reference.dataReference);
+      const redirectUri = storage.getBlobUri(reference.dataReference);
 
-      if (uri === undefined) {
+      if (redirectUri === undefined) {
         break;
       }
 
-      ctx.res.setHeader("Location", uri);
-      ctx.res.statusCode = 302;
-      ctx.res.end();
-
-      return;
+      return {
+        redirectUri,
+      };
     }
 
-    return await retrieveBlobData(ctx.blobStorageManager, blob);
+    return {
+      data: await retrieveBlobData(ctx.blobStorageManager, blob),
+    };
   });
