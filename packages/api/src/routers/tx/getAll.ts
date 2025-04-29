@@ -23,11 +23,6 @@ import {
 } from "./common";
 import { countTxs } from "./getCount";
 
-const inputSchema = withAllFiltersSchema
-  .merge(createExpandsSchema(["block", "blob"]))
-  .merge(withPaginationSchema)
-  .optional();
-
 const outputSchema = z.object({
   transactions: serializedTransactionSchema.array(),
   totalTransactions: z.number().optional(),
@@ -42,9 +37,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blob transactions.",
     },
   })
-  .input(inputSchema)
+  .input(withAllFiltersSchema)
   .use(withFilters)
+  .input(createExpandsSchema(["block", "blob"]))
   .use(withExpands)
+  .input(withPaginationSchema)
   .use(withPagination)
   .output(outputSchema)
   .query(async ({ ctx: { prisma, expands, filters, pagination, count } }) => {

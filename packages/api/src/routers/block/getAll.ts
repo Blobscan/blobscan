@@ -22,11 +22,6 @@ import {
 } from "./common";
 import { countBlocks } from "./getCount";
 
-const inputSchema = withAllFiltersSchema
-  .merge(createExpandsSchema(["transaction", "blob"]))
-  .merge(withPaginationSchema)
-  .optional();
-
 const outputSchema = z.object({
   blocks: serializedBlockSchema.array(),
   totalBlocks: z.number().optional(),
@@ -41,9 +36,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blocks.",
     },
   })
-  .input(inputSchema)
+  .input(withAllFiltersSchema)
   .use(withFilters)
+  .input(createExpandsSchema(["transaction", "blob"]))
   .use(withExpands)
+  .input(withPaginationSchema)
   .use(withPagination)
   .output(outputSchema)
   .query(async ({ ctx: { expands, filters, pagination, prisma, count } }) => {
