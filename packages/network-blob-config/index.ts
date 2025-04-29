@@ -50,6 +50,12 @@ export function getNetworkForkBySlot(
   slot: number
 ): NetworkFork {
   switch (network) {
+    case "mainnet": {
+      return slot >= 11649024 ? "pectra" : "dencun";
+    }
+    case "gnosis": {
+      return slot >= 21405696 ? "pectra" : "dencun";
+    }
     case "holesky": {
       return slot >= 3710976 ? "pectra" : "dencun";
     }
