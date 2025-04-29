@@ -55,6 +55,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set Github ENV variables
         shell: bash
         run: |
@@ -68,7 +76,9 @@ jobs:
           context: .
           push: true
           target: api
-          tags: blossomlabs/blobscan-api:development
+          tags: |
+            blossomlabs/blobscan-api:development
+            ghcr.io/${{ github.repository_owner }}/blobscan-api:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
@@ -82,7 +92,9 @@ jobs:
           context: .
           push: true
           target: web
-          tags: blossomlabs/blobscan-web:development
+          tags: |
+            blossomlabs/blobscan-web:development
+            ghcr.io/${{ github.repository_owner }}/blobscan-web:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
