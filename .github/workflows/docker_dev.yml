@@ -78,7 +78,7 @@ jobs:
           target: api
           tags: |
             blossomlabs/blobscan-api:development
-            ghcr.io/${{ github.repository_owner }}/blobscan-api:development
+            ghcr.io/blobscan/blobscan-api:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
@@ -94,7 +94,7 @@ jobs:
           target: web
           tags: |
             blossomlabs/blobscan-web:development
-            ghcr.io/${{ github.repository_owner }}/blobscan-web:development
+            ghcr.io/blobscan/blobscan-web:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
