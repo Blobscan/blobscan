@@ -1,105 +1,38 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import type { MutableRefObject } from "react";
+import React, { useCallback, useRef } from "react";
 import cn from "classnames";
-import type { ECElementEvent, EChartOption } from "echarts";
-import type { EChartsInstance } from "echarts-for-react";
 
 import { Scrollable } from "~/components/Scrollable";
 import { formatSeriesName } from "./helpers";
 
 export type LegendProps = {
-  echartRef: MutableRefObject<EChartsInstance | null>;
+  items: LegendItem[];
+  selectedItem?: string;
+  onItemToggle?: (itemName: string | "all", disabled: boolean) => void;
+  onItemHover?: (itemName: string, direction: "in" | "out") => void;
 };
 
-type LegendItem = {
+export type LegendItem = {
   name: string;
-  color: string;
+  color?: string;
   disabled: boolean;
 };
 
-export const Legend: React.FC<LegendProps> = function ({ echartRef }) {
+export const Legend: React.FC<LegendProps> = function ({
+  items,
+  selectedItem,
+  onItemHover,
+  onItemToggle,
+}) {
   const legendRef = useRef<HTMLDivElement>(null);
-  const [currentSeriesName, setCurrentSeriesName] = useState<
-    string | undefined
-  >();
-  const [items, setItems] = useState<LegendItem[]>([]);
 
   const handleToggle = useCallback(
     ({ name, disabled: itemDisabled }: LegendItem) => {
-      const allClicked = name === "All";
+      const itemName = name === "All" ? "all" : name;
 
-      if (allClicked) {
-        echartRef.current?.getEchartsInstance().dispatchAction({
-          type: !itemDisabled ? "legendUnSelect" : "legendToggleSelect",
-          batch: items.map(({ name }) => ({
-            name,
-          })),
-        });
-        setItems((prev) =>
-          prev.map((item) => ({ ...item, disabled: !itemDisabled }))
-        );
-
-        return;
-      }
-
-      echartRef.current?.getEchartsInstance().dispatchAction({
-        type: "legendToggleSelect",
-        name,
-      });
-
-      setItems((prev) =>
-        prev.map((item) =>
-          item.name === name || allClicked
-            ? { ...item, disabled: !item.disabled }
-            : item
-        )
-      );
+      onItemToggle?.(itemName, !itemDisabled);
     },
-    [echartRef, items]
+    [onItemToggle]
   );
-
-  useEffect(() => {
-    const echartInstance = echartRef.current?.getEchartsInstance();
-
-    if (!echartInstance) {
-      return;
-    }
-
-    const options = echartInstance.getOption();
-    const series =
-      options?.series.map(({ name, itemStyle }: EChartOption.SeriesLine) => ({
-        name,
-        color: itemStyle?.color ?? "#505050",
-        disabled: false,
-      })) ?? [];
-
-    const items = [...series].reverse();
-
-    if (items.length > 1) {
-      items.unshift({
-        name: "All",
-        disabled: false,
-      });
-    }
-    setItems(items);
-
-    echartInstance.on(
-      "mouseover",
-      ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
-        if (componentType === "series" && !!seriesName && !!seriesIndex) {
-          setCurrentSeriesName(seriesName);
-        }
-      }
-    );
-
-    echartInstance.on("mouseout", () => {
-      setCurrentSeriesName(undefined);
-    });
-
-    echartInstance.on("globalout", () => {
-      setCurrentSeriesName(undefined);
-    });
-  }, [echartRef]);
 
   return (
     <div
@@ -121,12 +54,10 @@ export const Legend: React.FC<LegendProps> = function ({ echartRef }) {
                 key={`${name}-${i}`}
                 className={cn(
                   {
-                    "opacity-100":
-                      currentSeriesName === name || !currentSeriesName,
+                    "opacity-100": selectedItem === name || !selectedItem,
                   },
                   {
-                    "opacity-50":
-                      currentSeriesName !== name && !!currentSeriesName,
+                    "opacity-50": selectedItem !== name && !!selectedItem,
                   },
 
                   { "text-[#505050]": disabled },
@@ -134,20 +65,8 @@ export const Legend: React.FC<LegendProps> = function ({ echartRef }) {
                 )}
                 role="button"
                 tabIndex={0}
-                onMouseEnter={() => {
-                  setCurrentSeriesName(name);
-                  echartRef.current?.getEchartsInstance().dispatchAction({
-                    type: "highlight",
-                    seriesName: name,
-                  });
-                }}
-                onMouseLeave={() => {
-                  setCurrentSeriesName(undefined);
-                  echartRef.current?.getEchartsInstance().dispatchAction({
-                    type: "downplay",
-                    seriesName: name,
-                  });
-                }}
+                onMouseEnter={() => onItemHover?.(name, "in")}
+                onMouseLeave={() => onItemHover?.(name, "out")}
                 onClick={() => handleToggle(item)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {

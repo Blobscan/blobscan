@@ -2,6 +2,8 @@ import { ROLLUP_REGISTRY } from "@blobscan/rollups";
 
 import type { Rollup } from "~/types";
 
+export const DEFAULT_COLOR = "#505050";
+
 const DEFAULT_COLORS = [
   "#7289ab",
   "#8dc1a9",
@@ -21,7 +23,7 @@ function getCategoryRollupSeriesColor(
   themeMode: "dark" | "light"
 ): string | undefined {
   if (seriesName === "other") {
-    return "#505050";
+    return DEFAULT_COLOR;
   }
 
   const rollupSettings = ROLLUP_REGISTRY[seriesName as Rollup];

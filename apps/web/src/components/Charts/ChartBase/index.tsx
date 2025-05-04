@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useState } from "react";
 import type { EChartOption, ECElementEvent } from "echarts";
 import EChartsReact from "echarts-for-react";
@@ -7,13 +7,14 @@ import type { EChartsInstance } from "echarts-for-react";
 import { useTheme } from "next-themes";
 
 import { Legend } from "./Legend";
+import type { LegendItem } from "./Legend";
 import {
   createToolBox,
   createTooltip,
   formatMetricValue,
   performCumulativeSum,
 } from "./helpers";
-import { getSeriesColor } from "./helpers/colors";
+import { DEFAULT_COLOR, getSeriesColor } from "./helpers/colors";
 import type { MetricInfo } from "./types";
 
 export interface ChartBaseProps {
@@ -26,6 +27,7 @@ export interface ChartBaseProps {
       displayTotal?: boolean;
     };
   };
+  highlightedSeries: string[];
 
   compact?: boolean;
 }
@@ -58,6 +60,10 @@ export const ChartBase: FC<ChartBaseProps> = function ({
     seriesName?: string;
   } | null>(null);
   const [showCumulative, setShowCumulative] = useState(false);
+  const [legendItems, setLegendItems] = useState<LegendItem[]>([]);
+  const [selectedLegendItem, setSelectedLegendItem] = useState<
+    string | undefined
+  >();
   const { xAxis: xAxisMetricInfo, yAxis: yAxisMetricInfo } = metricInfo;
   const {
     series: seriesOptions,
@@ -150,19 +156,106 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [seriesOptions, showCumulative, themeMode]);
 
   const onChartReady = useCallback((chart: EChartsInstance) => {
-    chart.on("mouseover", (params: ECElementEvent) => {
-      if (params.componentType === "series") {
-        hoveredSeriesRef.current = {
-          seriesIndex: params.seriesIndex,
-          seriesName: params.seriesName,
-        };
+    chart.on(
+      "mouseover",
+      ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
+        if (componentType === "series") {
+          setSelectedLegendItem(seriesName);
+          hoveredSeriesRef.current = {
+            seriesIndex,
+            seriesName,
+          };
+        }
       }
+    );
+
+    chart.on("mouseout", () => {
+      setSelectedLegendItem(undefined);
     });
 
     chart.on("globalout", () => {
       hoveredSeriesRef.current = null;
+      setSelectedLegendItem(undefined);
     });
   }, []);
+
+  const handleLegendToggle = useCallback(
+    (itemName: string | "all", direction: "in" | "out") => {
+      const chart = chartInstanceRef.current?.getEchartsInstance();
+
+      if (!chart) {
+        return;
+      }
+
+      if (direction === "in") {
+        chart.dispatchAction({
+          type: "highlight",
+          seriesName: itemName,
+        });
+
+        console.log(itemName);
+
+        setSelectedLegendItem(itemName);
+
+        return;
+      }
+
+      if (direction === "out") {
+        chart.dispatchAction({
+          type: "downplay",
+          seriesName: itemName,
+        });
+
+        setSelectedLegendItem(undefined);
+
+        return;
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!formattedSeries?.length) {
+      return;
+    }
+
+    const items = [
+      ...formattedSeries.map(
+        ({ name, itemStyle }): LegendItem => ({
+          name: name ?? "",
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          color: itemStyle?.color ?? DEFAULT_COLOR,
+          disabled: false,
+        })
+      ),
+    ].reverse();
+
+    if (items.length > 1) {
+      items.unshift({
+        name: "All",
+        color: undefined,
+        disabled: false,
+      } satisfies LegendItem);
+    }
+
+    setLegendItems(items);
+  }, [formattedSeries]);
+
+  useEffect(() => {
+    const chartInstance = chartInstanceRef.current?.getEchartsInstance();
+
+    if (!chartInstance) {
+      return;
+    }
+
+    chartInstance.setOption(
+      {
+        series: formattedSeries,
+      },
+      { replaceMerge: ["series"] }
+    );
+  }, [formattedSeries]);
 
   return (
     <div className="flex h-full w-full flex-col gap-1 md:flex-row md:gap-1">
@@ -171,7 +264,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         onChartReady={onChartReady}
         option={
           {
-            series: formattedSeries as EChartOption.Series[],
             legend: {
               show: false,
             },
@@ -210,7 +302,42 @@ export const ChartBase: FC<ChartBaseProps> = function ({
         style={{ height: "100%", width: "95%" }}
       />
       <div className="h-4 md:h-full">
-        <Legend echartRef={chartInstanceRef} />
+        <Legend
+          items={legendItems}
+          selectedItem={selectedLegendItem}
+          onItemToggle={(itemName, disabled) => {
+            const chart = chartInstanceRef.current?.getEchartsInstance();
+
+            if (!chart) {
+              return;
+            }
+
+            if (itemName === "all") {
+              chart.dispatchAction({
+                type: disabled ? "legendUnSelect" : "legendToggleSelect",
+                name: legendItems.map(({ name }) => name),
+              });
+
+              setLegendItems((prev) =>
+                prev.map((item) => ({ ...item, disabled }))
+              );
+
+              return;
+            }
+
+            chart.dispatchAction({
+              type: "legendToggleSelect",
+              name: itemName,
+            });
+
+            setLegendItems((prev) =>
+              prev.map((item) =>
+                item.name === itemName ? { ...item, disabled } : item
+              )
+            );
+          }}
+          onItemHover={handleLegendToggle}
+        />
       </div>
     </div>
   );
