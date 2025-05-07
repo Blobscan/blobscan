@@ -104,7 +104,7 @@ export const env = createEnv({
       ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce
         .number()
         .positive()
-        .default(3600),
+        .default(60),
 
       /*
        * =====================
