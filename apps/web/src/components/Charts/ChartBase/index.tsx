@@ -27,8 +27,6 @@ export interface ChartBaseProps {
       displayTotal?: boolean;
     };
   };
-  highlightedSeries: string[];
-
   compact?: boolean;
 }
 
@@ -193,8 +191,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
           seriesName: itemName,
         });
 
-        console.log(itemName);
-
         setSelectedLegendItem(itemName);
 
         return;
@@ -315,7 +311,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             if (itemName === "all") {
               chart.dispatchAction({
                 type: disabled ? "legendUnSelect" : "legendToggleSelect",
-                name: legendItems.map(({ name }) => name),
+                batch: legendItems.map(({ name }) => ({ name })),
               });
 
               setLegendItems((prev) =>
