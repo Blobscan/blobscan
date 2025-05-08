@@ -1,6 +1,5 @@
 import type { FC, ReactNode } from "react";
 import cn from "classnames";
-import type { EChartOption } from "echarts";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import React from "react";
@@ -16,16 +15,6 @@ interface ChartCardProps extends ChartBaseProps {
   size?: "sm" | "md" | "lg";
 }
 
-function getSeriesDataState(series: EChartOption.Series[] | undefined) {
-  return {
-    isLoading:
-      series && series.length > 0
-        ? series.some(({ data }) => data === undefined || data === null)
-        : true,
-    isEmpty: series ? series.some(({ data }) => data?.length === 0) : false,
-  };
-}
-
 export const ChartCard: FC<ChartCardProps> = function ({
   title,
   size = "md",
@@ -36,7 +25,8 @@ export const ChartCard: FC<ChartCardProps> = function ({
   const { yAxis } = metricInfo;
   const yUnit =
     yAxis.type !== "time" && yAxis.unitType !== "none" ? yAxis.unit : undefined;
-  const { isEmpty, isLoading } = getSeriesDataState(options.series);
+  const isEmpty = options.series && options.series.length === 0;
+  const isLoading = !options.series;
 
   return (
     <Card className="h-full overflow-visible" compact>

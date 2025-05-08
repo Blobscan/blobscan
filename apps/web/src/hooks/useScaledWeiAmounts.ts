@@ -32,7 +32,7 @@ export function useScaledWeiAmounts<T extends NumericArray | NumericArrays>(
   toUnit?: Exclude<EtherUnit, "wei">
 ): ScaledWeiAmounts<T> {
   return useMemo<ScaledWeiAmounts<T>>(() => {
-    if (!arr) {
+    if (!arr?.length) {
       return {
         unit: "wei",
       };
