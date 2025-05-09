@@ -46,7 +46,9 @@ const Home: NextPage = () => {
     expand: "transaction,blob",
   });
   const { data: overallStats, error: overallStatsErr } =
-    api.stats.getOverallStats.useQuery();
+    api.stats.getOverallStats.useQuery(undefined, {
+      select: (data) => data[0],
+    });
   const { data: dailyStatsData, error: dailyStatsErr } =
     api.stats.getDailyStats.useQuery(
       {

@@ -57,7 +57,7 @@ export type DailyStatName = keyof Omit<
   "day" | "category" | "rollup"
 >;
 
-export type OverallStats = RouterOutputs["stats"]["getOverallStats"];
+export type OverallStats = RouterOutputs["stats"]["getOverallStats"][number];
 
 export type EChartCompliantDailyStats = EChartCompliant<DailyStats>;
 
