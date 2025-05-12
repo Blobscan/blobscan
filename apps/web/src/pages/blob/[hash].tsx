@@ -12,6 +12,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
+import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
@@ -21,7 +22,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { BlockStatus } from "~/components/Status";
-import { api, client } from "~/api-client";
+import { api } from "~/api-client";
 import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
@@ -29,31 +30,6 @@ import {
   formatBytes,
   isValidDecoder,
 } from "~/utils";
-
-function useBlobData(id: string) {
-  return useQuery({
-    queryKey: ["blob-data", id],
-    queryFn: async () => {
-      const response = await client.blob.getBlobData.query({ id });
-
-      if (!response) {
-        throw new Error("No blob data found");
-      }
-
-      if ("data" in response) {
-        return response.data;
-      }
-
-      const data = await fetch(response.redirectUri);
-
-      if (!data.ok) {
-        throw new Error("Failed to fetch blob data");
-      }
-
-      return data.text();
-    },
-  });
-}
 
 const Blob: NextPage = function () {
   const router = useRouter();
@@ -70,9 +46,36 @@ const Blob: NextPage = function () {
       enabled: router.isReady,
     }
   );
+  const { data: blobData, error: blobDataError } = useQuery({
+    queryKey: ["blob-data", versionedHash],
+    queryFn: async () => {
+      if (!blob || !blob.dataStorageReferences.length) {
+        return null;
+      }
 
-  const { data: blobData } = useBlobData(versionedHash);
+      for (const { storage, url } of blob.dataStorageReferences) {
+        try {
+          const response = await fetch(url);
+          const blobData = await response.text();
 
+          return blobData;
+        } catch (err) {
+          console.warn(
+            `Failed to fetch data of blob "${versionedHash}" from storage ${storage}:`,
+            err
+          );
+          continue;
+        }
+      }
+
+      throw new Error(
+        `Failed to fetch data of blob "${versionedHash}" from any storage`
+      );
+    },
+    enabled: !!blob,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Raw");
   const decoder = blob?.transactions.find(
@@ -239,11 +242,23 @@ const Blob: NextPage = function () {
           </div>
         }
       >
-        <BlobViewer
-          data={blobData}
-          selectedView={selectedBlobViewMode}
-          decoder={decoder}
-        />
+        {blobDataError || blobData === null ? (
+          <div className="text-md flex h-44 w-full items-center justify-center">
+            {blobData === null ? (
+              <div className="text-contentSecondary-light dark:text-contentTertiary-dark">
+                Data not available yet
+              </div>
+            ) : (
+              <ErrorMessage error={"Failed to retrieve blob data"} />
+            )}
+          </div>
+        ) : (
+          <BlobViewer
+            data={blobData}
+            selectedView={selectedBlobViewMode}
+            decoder={decoder}
+          />
+        )}
       </Card>
     </>
   );
