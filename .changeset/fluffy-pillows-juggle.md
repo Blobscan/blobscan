@@ -1,5 +1,5 @@
 ---
-"@blobscan/api": patch
+"@blobscan/api": minor
 ---
 
-chore: do not return blob data in api response
+Dropped the blob data field from API responses to reduce payload size
