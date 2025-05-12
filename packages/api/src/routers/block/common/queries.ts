@@ -3,7 +3,7 @@ import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
 
 import type { Expands } from "../../../middlewares/withExpands";
 import type { Filters } from "../../../middlewares/withFilters";
-import { calculateTxFeeFields, retrieveBlobData } from "../../../utils";
+import { calculateTxFeeFields } from "../../../utils";
 import type { Block } from "./selects";
 import { createBlockSelect } from "./selects";
 
@@ -33,7 +33,6 @@ function buildBlockWhereClause(
 export async function fetchBlock(
   blockId: BlockIdField,
   {
-    blobStorageManager,
     prisma,
     filters,
     expands,
@@ -77,24 +76,6 @@ export async function fetchBlock(
         ...feeFields,
       };
     });
-  }
-
-  if (expands.blobData) {
-    const txsBlobs = block.transactions.flatMap((tx) => tx.blobs);
-
-    await Promise.all(
-      txsBlobs.map(async ({ blobHash, blob }) => {
-        const dataStorageReferences = blob?.dataStorageReferences;
-        if (dataStorageReferences) {
-          const data = await retrieveBlobData(blobStorageManager, {
-            dataStorageReferences,
-            versionedHash: blobHash,
-          });
-
-          blob.data = data;
-        }
-      })
-    );
   }
 
   return block;

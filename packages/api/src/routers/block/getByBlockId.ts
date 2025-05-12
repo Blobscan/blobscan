@@ -45,7 +45,7 @@ const inputSchema = z
     id: blockIdSchema,
   })
   .merge(withTypeFilterSchema)
-  .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
+  .merge(createExpandsSchema(["transaction", "blob"]));
 
 const outputSchema = serializedBlockSchema;
 

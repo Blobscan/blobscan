@@ -305,14 +305,6 @@ export function runExpandsTestsSuite(
       });
     }
 
-    if (allowedExpands.includes("blob_data")) {
-      it("should return the correct expanded blob data", async () => {
-        const result = await fetcher({ expand: "blob_data", ps: 2 });
-
-        expect(result).toMatchSnapshot();
-      });
-    }
-
     it("should return the correct expanded results when multiple expands are requested", async () => {
       const result = await fetcher({ expand: allowedExpands.join(","), ps: 2 });
 
