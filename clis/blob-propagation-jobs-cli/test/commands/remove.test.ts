@@ -135,7 +135,7 @@ describe("Remove command", () => {
       Object.entries(queueSpies).forEach(([storageName, queueSpy]) => {
         expect(
           queueSpy,
-          `Storage ${storageName} queue wansn't force removed`
+          `Storage ${storageName} queue wasn't force removed`
         ).toHaveBeenCalledOnce();
       });
     });
