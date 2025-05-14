@@ -20,8 +20,12 @@
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/open-telemetry": "workspace:^0.0.9",
     "@blobscan/zod": "workspace:^0.1.0",
-    "@ethersphere/bee-js": "6.4.0",
-    "@google-cloud/storage": "^6.10.1"
+    "@ethersphere/bee-js": "^9.1.1",
+    "@google-cloud/storage": "^6.10.1",
+    "@types/keccak": "^3.0.5",
+    "cafe-utility": "^28.0.0",
+    "keccak": "^3.0.4",
+    "web3": "^4.16.0"
   },
   "eslintConfig": {
     "root": true,

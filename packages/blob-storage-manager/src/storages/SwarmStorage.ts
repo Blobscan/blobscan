@@ -2,11 +2,11 @@ import { Bee } from "@ethersphere/bee-js";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
-import { env } from "@blobscan/env";
 
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
+import { uploadWithStamping } from "../utils/swarm";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
   batchId: string;
@@ -68,17 +68,14 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    const response = await this._beeClient.uploadFile(
-      this.batchId,
+    // TODO: Check whether versionedHash can be used
+    const reference = await uploadWithStamping({
       data,
-      this.getBlobFilePath(versionedHash),
-      {
-        contentType: "text/plain",
-        deferred: env.SWARM_DEFERRED_UPLOAD,
-      }
-    );
+      bee: this._beeClient,
+      batchIdString: this.batchId,
+    });
 
-    return response.reference.toString();
+    return reference.toString();
   }
 
   getBlobUri(_: string) {

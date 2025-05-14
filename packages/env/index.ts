@@ -132,6 +132,9 @@ export const env = createEnv({
       SWARM_DEFERRED_UPLOAD: booleanSchema.default("true"),
       SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
       SWARM_BATCH_ID: z.string().optional(),
+      SWARM_KEYSTORE_PATH: z.string().optional(),
+      SWARM_KEYSTORE_PASSWORD: z.string().optional(),
+      SWARM_BATCH_DEPTH: z.coerce.number().positive().optional(),
       BEE_ENDPOINT: z
         .string()
         .url()
