@@ -1,4 +1,4 @@
-import { blob_recover } from "@blobscan/majin-blob-wasm";
+import { blob_recover } from "@blobscan/main-blob-wasm";
 import { z } from "@blobscan/zod";
 
 import type { BlobDecoderFn } from "./types";
