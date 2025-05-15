@@ -326,7 +326,7 @@ describe("Blob router", () => {
     });
   });
 
-  describe.only("getBlobDataByBlobId", () => {
+  describe("getBlobDataByBlobId", () => {
     const versionedHash =
       "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
     const unprefixedBlobData = fixtures.blobDatas
