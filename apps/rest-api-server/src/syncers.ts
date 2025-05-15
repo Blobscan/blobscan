@@ -55,11 +55,7 @@ export async function setUpSyncers() {
     })
   );
 
-  if (
-    env.ETH_PRICE_SYNCER_CHAIN_ID &&
-    env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL &&
-    env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS
-  ) {
+  if (env.ETH_PRICE_SYNCER_ENABLED && env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL) {
     const chain = Object.values(chains).find(
       (c) => c.id === env.ETH_PRICE_SYNCER_CHAIN_ID
     );
