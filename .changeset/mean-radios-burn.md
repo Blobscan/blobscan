@@ -2,4 +2,4 @@
 "@blobscan/api": minor
 ---
 
-Dropped `getBlobDataByBlobId` procedure
+Updated `getBlobDataByBlobId` procedure to retrieve blob data from the database only.

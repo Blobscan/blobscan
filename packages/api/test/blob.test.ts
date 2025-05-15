@@ -3,7 +3,7 @@ import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { DailyStats, Prisma } from "@blobscan/db";
-import { testValidError } from "@blobscan/test";
+import { fixtures, testValidError } from "@blobscan/test";
 
 import { BlobStorage } from "../enums";
 import type { Rollup } from "../enums";
@@ -23,6 +23,7 @@ import {
   requiresDirectCount,
   runFilterTests,
 } from "./test-suites/filters";
+import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
 
@@ -315,6 +316,50 @@ describe("Blob router", () => {
       const { totalBlobs } = await caller.blob.getCount(queryParamFilters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
+    });
+  });
+
+  describe("getBlobDataByBlobId", () => {
+    const versionedHash =
+      "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
+    const unprefixedBlobData = fixtures.blobDatas
+      .find((d) => d.id === versionedHash)
+      ?.data.toString("hex");
+    const expectedBlobData = `0x${unprefixedBlobData}`;
+
+    it("should get data by versioned hash", async () => {
+      const result = await caller.blob.getBlobDataByBlobId({
+        id: versionedHash,
+      });
+
+      expect(result).toEqual(expectedBlobData);
+    });
+
+    it("should get data by kzg commitment", async () => {
+      const commitment =
+        "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
+
+      const result = await caller.blob.getBlobDataByBlobId({
+        id: commitment,
+      });
+
+      expect(result).toEqual(expectedBlobData);
+    });
+
+    testValidError(
+      "should fail when no blob data is found for the provided id",
+      async () => {
+        await caller.blob.getBlobDataByBlobId({
+          id: "0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1",
+        });
+      },
+      TRPCError
+    );
+
+    blobIdSchemaTestsSuite(async (invalidBlobId) => {
+      await caller.blob.getBlobDataByBlobId({
+        id: invalidBlobId,
+      });
     });
   });
 });

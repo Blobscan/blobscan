@@ -2072,6 +2072,49 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
 
 exports[`Blob router > getAll > when getting paginated blob results > should return the total number of items when count is provided 1`] = `29`;
 
+exports[`Blob router > getBlobDataByBlobId > should fail when no blob data is found for the provided id 1`] = `"No blob data found for blob with id '0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1'."`;
+
+exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a hex string with invalid length 1`] = `
+"[
+  {
+    \\"code\\": \\"custom\\",
+    \\"message\\": \\"Invalid input length: must be a versioned hash (32 bytes) or a kzg commitment (48 bytes)\\",
+    \\"fatal\\": true,
+    \\"path\\": [
+      \\"id\\"
+    ]
+  }
+]"
+`;
+
+exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a non-hex string 1`] = `
+"[
+  {
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Invalid input: must be a valid hex string\\",
+    \\"validation\\": \\"regex\\",
+    \\"fatal\\": true,
+    \\"path\\": [
+      \\"id\\"
+    ]
+  }
+]"
+`;
+
+exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a versioned hash with invalid prefix 1`] = `
+"[
+  {
+    \\"code\\": \\"invalid_string\\",
+    \\"message\\": \\"Invalid versioned hash: must start with \\\\\\"0x01\\\\\\"\\",
+    \\"validation\\": \\"regex\\",
+    \\"fatal\\": true,
+    \\"path\\": [
+      \\"id\\"
+    ]
+  }
+]"
+`;
+
 exports[`Blob router > getByBlobId > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
 
 exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
