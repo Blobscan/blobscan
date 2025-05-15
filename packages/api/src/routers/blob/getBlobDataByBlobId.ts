@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { z } from "@blobscan/zod";
 
-import { publicProcedure } from "../../procedures";
+import { createAuthedProcedure } from "../../procedures";
 import {
   blobIdSchema,
   blobVersionedHashSchema,
@@ -17,7 +17,7 @@ const inputSchema = z.object({
 
 const outputSchema = hexSchema;
 
-export const getBlobDataByBlobId = publicProcedure
+export const getBlobDataByBlobId = createAuthedProcedure("blob-data")
   .meta({
     openapi: {
       method: "GET",

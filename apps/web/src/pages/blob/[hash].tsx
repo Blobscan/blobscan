@@ -55,8 +55,21 @@ const Blob: NextPage = function () {
 
       for (const { storage, url } of blob.dataStorageReferences) {
         try {
-          const response = await fetch(url);
-          const blobData = await response.text();
+          const isBlobscanStorageRef =
+            storage === "postgres" || storage === "file_system";
+          const blobDataUrl = isBlobscanStorageRef
+            ? `/api/blob-data?url=${url}`
+            : url;
+          const response = await fetch(blobDataUrl);
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message ?? "Couldn't retrieve blob data");
+          }
+
+          const blobData = await (isBlobscanStorageRef
+            ? response.json()
+            : response.text());
 
           return blobData;
         } catch (err) {

@@ -32,6 +32,8 @@ describe("Blob router", () => {
   let caller: ReturnType<typeof appRouter.createCaller>;
   let ctx: TRPCContext;
   let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
+  let blobDataAuthorizedContext: Awaited<ReturnType<typeof createTestContext>>;
+  let blobDataCaller: ReturnType<typeof appRouter.createCaller>;
 
   beforeAll(async () => {
     authorizedContext = await createTestContext({
@@ -41,6 +43,11 @@ describe("Blob router", () => {
 
     authorizedCaller = appRouter.createCaller(authorizedContext);
     caller = appRouter.createCaller(ctx);
+
+    blobDataAuthorizedContext = await createTestContext({
+      apiClient: { type: "blob-data" },
+    });
+    blobDataCaller = appRouter.createCaller(blobDataAuthorizedContext);
   });
 
   describe("createWeaveVmReferences", () => {
@@ -319,7 +326,7 @@ describe("Blob router", () => {
     });
   });
 
-  describe("getBlobDataByBlobId", () => {
+  describe.only("getBlobDataByBlobId", () => {
     const versionedHash =
       "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
     const unprefixedBlobData = fixtures.blobDatas
@@ -327,39 +334,49 @@ describe("Blob router", () => {
       ?.data.toString("hex");
     const expectedBlobData = `0x${unprefixedBlobData}`;
 
-    it("should get data by versioned hash", async () => {
-      const result = await caller.blob.getBlobDataByBlobId({
-        id: versionedHash,
-      });
-
-      expect(result).toEqual(expectedBlobData);
-    });
-
-    it("should get data by kzg commitment", async () => {
-      const commitment =
-        "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
-
-      const result = await caller.blob.getBlobDataByBlobId({
-        id: commitment,
-      });
-
-      expect(result).toEqual(expectedBlobData);
-    });
-
-    testValidError(
-      "should fail when no blob data is found for the provided id",
-      async () => {
-        await caller.blob.getBlobDataByBlobId({
-          id: "0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1",
+    describe("when authorized", () => {
+      it("should get data by versioned hash", async () => {
+        const result = await blobDataCaller.blob.getBlobDataByBlobId({
+          id: versionedHash,
         });
-      },
-      TRPCError
-    );
 
-    blobIdSchemaTestsSuite(async (invalidBlobId) => {
-      await caller.blob.getBlobDataByBlobId({
-        id: invalidBlobId,
+        expect(result).toEqual(expectedBlobData);
       });
+
+      it("should get data by kzg commitment", async () => {
+        const commitment =
+          "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
+
+        const result = await blobDataCaller.blob.getBlobDataByBlobId({
+          id: commitment,
+        });
+
+        expect(result).toEqual(expectedBlobData);
+      });
+
+      testValidError(
+        "should fail when no blob data is found for the provided id",
+        async () => {
+          await blobDataCaller.blob.getBlobDataByBlobId({
+            id: "0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1",
+          });
+        },
+        TRPCError
+      );
+
+      blobIdSchemaTestsSuite(async (invalidBlobId) => {
+        await blobDataCaller.blob.getBlobDataByBlobId({
+          id: invalidBlobId,
+        });
+      });
+    });
+
+    it("should fail when calling procedure without auth", async () => {
+      await expect(
+        caller.blob.getBlobDataByBlobId({
+          id: versionedHash,
+        })
+      ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
     });
   });
 });

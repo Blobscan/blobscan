@@ -49,6 +49,8 @@ export async function createTestContext({
       req.headers.authorization = `Bearer ${token}`;
     } else if (type === "weavevm") {
       req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
+    } else if (type === "blob-data") {
+      req.headers.authorization = `Bearer ${env.BLOB_DATA_API_KEY}`;
     }
   }
 
