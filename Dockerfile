@@ -1,6 +1,4 @@
-#FROM node:20-alpine AS builder
-# Pinned due to https://github.com/nodejs/docker-node/issues/2009
-FROM node:20-alpine3.18 AS base
+FROM node:22-alpine AS base
 
 ADD docker-entrypoint.sh /
 
