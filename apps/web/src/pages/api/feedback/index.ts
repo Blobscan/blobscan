@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { api } from "@blobscan/open-telemetry";
 
 import { env } from "~/env.mjs";
+import { rateLimited } from "./rate-limit";
 
 const feedbackMessagesTotalCounter = api.metrics
   .getMeter("blobscan_web")
@@ -15,6 +16,10 @@ const feedbackMessagesTotalCounter = api.metrics
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const { message, rate, metadata } = req.body;
   const method = req.method;
+
+  if (await rateLimited(req)) {
+    return res.status(429).json({ message: "Rate limit exceeded" });
+  }
 
   if (!env.FEEDBACK_WEBHOOK_URL) {
     return res.status(500).json({ message: "Feedback is not enabled" });
