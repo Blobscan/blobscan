@@ -2,6 +2,9 @@ FROM node:22-alpine AS base
 
 ADD docker-entrypoint.sh /
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache bash openssl
+
 # stage: deps
 FROM base AS deps
 
@@ -16,7 +19,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Do not perform environment variable validation during build time
 ENV SKIP_ENV_VALIDATION=true
 
-RUN apk add bash curl
+RUN apk add --no-cache curl
 RUN npm install -g pnpm turbo
 WORKDIR /app
 RUN mkdir -p /tmp/blobscan-blobs && chmod 777 /tmp/blobscan-blobs
@@ -52,7 +55,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} D
 
 # stage: web
 FROM base AS web
-RUN apk add bash
 WORKDIR /app
 
 ENV HOSTNAME=0.0.0.0
@@ -99,7 +101,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} D
 
 # stage: api
 FROM base AS api
-RUN apk add bash
 WORKDIR /app
 
 ENV NODE_ENV=production
