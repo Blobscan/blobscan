@@ -21,17 +21,38 @@ export const tracer = api.trace.getTracer(scopeName);
 export const meter = api.metrics.getMeter(scopeName);
 
 // Prometheus metrics for latest block and slot
-export const latestBlockNumberGauge = new Gauge({
-  name: 'blobscan_latest_block_number',
-  help: 'Latest block number indexed by Blobscan',
-  registers: [promRegister],
-});
+// Use a function that safely registers metrics to prevent duplicate registration errors in tests
+const registerGauge = (name: string, help: string): Gauge<string> => {
+  try {
+    const existingMetric = promRegister.getSingleMetric(name);
+    if (existingMetric) {
+      return existingMetric as Gauge<string>;
+    }
+    return new Gauge({
+      name,
+      help,
+      registers: [promRegister],
+    });
+  } catch (error) {
+    // If there's an error, log it and return a no-op gauge
+    console.error(`Error registering gauge ${name}:`, error);
+    return new Gauge({
+      name,
+      help,
+      registers: [],
+    });
+  }
+};
 
-export const latestSlotGauge = new Gauge({
-  name: 'blobscan_latest_slot',
-  help: 'Latest slot indexed by Blobscan',
-  registers: [promRegister],
-});
+export const latestBlockNumberGauge = registerGauge(
+  "blobscan_latest_block_number",
+  "Latest block number indexed by Blobscan"
+);
+
+export const latestSlotGauge = registerGauge(
+  "blobscan_latest_slot",
+  "Latest slot indexed by Blobscan"
+);
 
 export async function metricsHandler(
   _: NodeHTTPRequest,
