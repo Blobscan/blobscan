@@ -66,7 +66,6 @@ export async function metricsHandler(
       return;
     }
 
-    // Update the latest block and slot metrics
     try {
       const latestBlock = await prisma.block.findLatest();
       if (latestBlock) {
