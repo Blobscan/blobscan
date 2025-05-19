@@ -2,6 +2,7 @@ import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
+import { Gauge } from "prom-client";
 
 import { prisma } from "@blobscan/db";
 import type { MetricsClient } from "@blobscan/db";
@@ -19,6 +20,19 @@ function hasMetricsClient(
 export const tracer = api.trace.getTracer(scopeName);
 export const meter = api.metrics.getMeter(scopeName);
 
+// Prometheus metrics for latest block and slot
+export const latestBlockNumberGauge = new Gauge({
+  name: 'blobscan_latest_block_number',
+  help: 'Latest block number indexed by Blobscan',
+  registers: [promRegister],
+});
+
+export const latestSlotGauge = new Gauge({
+  name: 'blobscan_latest_slot',
+  help: 'Latest slot indexed by Blobscan',
+  registers: [promRegister],
+});
+
 export async function metricsHandler(
   _: NodeHTTPRequest,
   res: NodeHTTPResponse
@@ -29,6 +43,17 @@ export async function metricsHandler(
       res.end("Metrics are disabled");
 
       return;
+    }
+
+    // Update the latest block and slot metrics
+    try {
+      const latestBlock = await prisma.block.findLatest();
+      if (latestBlock) {
+        latestBlockNumberGauge.set(latestBlock.number);
+        latestSlotGauge.set(latestBlock.slot);
+      }
+    } catch (error) {
+      console.error("Failed to update latest block metrics:", error);
     }
 
     const prismaMetricsClient = hasMetricsClient(prisma)
