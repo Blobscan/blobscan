@@ -54,6 +54,11 @@ export const latestSlotGauge = registerGauge(
   "Latest slot indexed by Blobscan"
 );
 
+export const lastBlockIndexTimestampGauge = registerGauge(
+  "blobscan_last_block_index_timestamp",
+  "Timestamp of the last block indexed by Blobscan"
+);
+
 export async function metricsHandler(
   _: NodeHTTPRequest,
   res: NodeHTTPResponse
@@ -71,6 +76,7 @@ export async function metricsHandler(
       if (latestBlock) {
         latestBlockNumberGauge.set(latestBlock.number);
         latestSlotGauge.set(latestBlock.slot);
+        lastBlockIndexTimestampGauge.set(Math.floor(Date.now() / 1000));
       }
     } catch (error) {
       console.error("Failed to update latest block metrics:", error);
