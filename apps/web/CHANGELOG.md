@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.23.1
+
+### Patch Changes
+
+- [`cbfcfca`](https://github.com/Blobscan/blobscan/commit/cbfcfcafe777a51ebe516f41cb15feb9be12772a) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Require NodeJS 22
+
 ## 0.23.0
 
 ### Minor Changes
