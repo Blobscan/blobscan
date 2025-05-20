@@ -111,7 +111,7 @@ export class PriceFeed {
    *
    * It retrieves the closest price data to the given timestamp.
    *
-   * Aditional information can be found here: https://docs.chain.link/data-feeds
+   * Additional information can be found here: https://docs.chain.link/data-feeds
    *
    * @param timestamp The timestamp for which the price is requested in seconds.
    * @param options The options to use for the search.
