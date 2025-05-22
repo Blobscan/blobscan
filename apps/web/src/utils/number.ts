@@ -134,7 +134,7 @@ export function findBiggestValue<T extends number[] | bigint[] | string[]>(
     const b_ = typeof b === "string" ? BigInt(b) : b;
 
     return a_ > b_ ? a_ : b_;
-  });
+  }, 0);
 }
 
 export function normalizeNumerish(value: Numerish) {
