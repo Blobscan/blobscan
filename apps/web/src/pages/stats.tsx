@@ -29,7 +29,8 @@ import type { RollupOption } from "~/components/Filters/RollupFilter";
 import { Header } from "~/components/Header";
 import { Scrollable } from "~/components/Scrollable";
 import { api } from "~/api-client";
-import type { DailyStats, OverallStats } from "~/types";
+import { useAggregateOverallStats } from "~/hooks/useAggregateOverallStats";
+import type { DailyStats } from "~/types";
 import { splitArrayIntoChunks } from "~/utils";
 
 type Section = "All" | "Blob" | "Block" | "Gas" | "Fee" | "Transaction";
@@ -106,94 +107,10 @@ const Stats: NextPage = function () {
       return acc;
     }, {} as typeof series);
   }, [series, selectedRollups]);
-  const overallStats = useMemo(() => {
-    const rollups = selectedRollups.map((r) => r.value);
-
-    if (!allOverallStats) {
-      return;
-    }
-
-    if (!rollups.length) {
-      return allOverallStats.find(
-        (s) => s.category === null && s.rollup === null
-      );
-    }
-
-    const selectedOverallStats = allOverallStats.filter((s) =>
-      s.rollup !== null ? rollups.includes(s.rollup) : false
-    );
-
-    return selectedOverallStats.reduce(
-      (acc, s) => {
-        acc.avgBlobAsCalldataFee =
-          acc.avgBlobAsCalldataFee === 0
-            ? s.avgBlobAsCalldataFee
-            : (acc.avgBlobAsCalldataFee + s.avgBlobAsCalldataFee) / 2;
-        acc.avgBlobAsCalldataMaxFee =
-          acc.avgBlobAsCalldataMaxFee === 0
-            ? s.avgBlobAsCalldataMaxFee
-            : (acc.avgBlobAsCalldataMaxFee + s.avgBlobAsCalldataMaxFee) / 2;
-        acc.avgBlobFee =
-          acc.avgBlobFee === 0
-            ? s.avgBlobFee
-            : (acc.avgBlobFee + s.avgBlobFee) / 2;
-        acc.avgBlobGasPrice =
-          acc.avgBlobGasPrice === 0
-            ? s.avgBlobGasPrice
-            : (acc.avgBlobGasPrice + s.avgBlobGasPrice) / 2;
-        acc.avgBlobMaxFee =
-          acc.avgBlobMaxFee === 0
-            ? s.avgBlobMaxFee
-            : (acc.avgBlobMaxFee + s.avgBlobMaxFee) / 2;
-        acc.avgMaxBlobGasFee =
-          acc.avgMaxBlobGasFee === 0
-            ? s.avgMaxBlobGasFee
-            : (acc.avgMaxBlobGasFee + s.avgMaxBlobGasFee) / 2;
-        acc.totalBlobAsCalldataFee += s.totalBlobAsCalldataFee;
-        acc.totalBlobAsCalldataGasUsed += s.totalBlobAsCalldataGasUsed;
-        acc.totalBlobAsCalldataMaxFees += s.totalBlobAsCalldataMaxFees;
-        acc.totalBlobGasPrice += s.totalBlobGasPrice;
-        acc.totalBlobFee += s.totalBlobFee;
-        acc.totalBlobGasUsed += s.totalBlobGasUsed;
-        acc.totalBlobMaxFees += s.totalBlobMaxFees;
-        acc.totalBlobMaxGasFees += s.totalBlobMaxGasFees;
-        acc.totalBlobs += s.totalBlobs;
-        acc.totalBlobSize += s.totalBlobSize;
-        acc.totalBlocks += s.totalBlocks;
-        acc.totalTransactions += s.totalTransactions;
-        acc.totalUniqueBlobs += s.totalUniqueBlobs;
-        acc.totalUniqueReceivers += s.totalUniqueReceivers;
-        acc.totalUniqueSenders += s.totalUniqueSenders;
-
-        return acc;
-      },
-      {
-        category: null,
-        rollup: null,
-        avgBlobAsCalldataFee: 0,
-        avgBlobAsCalldataMaxFee: 0,
-        avgBlobFee: 0,
-        avgBlobGasPrice: 0,
-        avgBlobMaxFee: 0,
-        avgMaxBlobGasFee: 0,
-        totalBlobAsCalldataFee: BigInt(0),
-        totalBlobAsCalldataGasUsed: BigInt(0),
-        totalBlobAsCalldataMaxFees: BigInt(0),
-        totalBlobGasPrice: BigInt(0),
-        totalBlobFee: BigInt(0),
-        totalBlobGasUsed: BigInt(0),
-        totalBlobMaxFees: BigInt(0),
-        totalBlobMaxGasFees: BigInt(0),
-        totalBlobs: 0,
-        totalBlobSize: BigInt(0),
-        totalBlocks: 0,
-        totalTransactions: 0,
-        totalUniqueBlobs: 0,
-        totalUniqueReceivers: 0,
-        totalUniqueSenders: 0,
-      } satisfies Omit<OverallStats, "updatedAt">
-    );
-  }, [allOverallStats, selectedRollups]);
+  const aggregatedOverallStats = useAggregateOverallStats(
+    selectedRollups.map((r) => r.value),
+    allOverallStats
+  );
   const selectedRollupOrTotalSeries = selectedRollups.length
     ? selectedRollupSeries
     : totalSeries;
@@ -208,20 +125,20 @@ const Stats: NextPage = function () {
         {
           name: "Total Blobs",
           metric: {
-            value: overallStats?.totalBlobs,
+            value: aggregatedOverallStats?.totalBlobs,
           },
         },
         {
           name: "Total Blob Size",
           metric: {
-            value: overallStats?.totalBlobSize,
+            value: aggregatedOverallStats?.totalBlobSize,
             type: "bytes",
           },
         },
         {
           name: "Total Unique Blobs",
           metric: {
-            value: overallStats?.totalUniqueBlobs,
+            value: aggregatedOverallStats?.totalUniqueBlobs,
           },
         },
       ],
@@ -244,7 +161,7 @@ const Stats: NextPage = function () {
         {
           name: "Total Blocks",
           metric: {
-            value: overallStats?.totalBlocks,
+            value: aggregatedOverallStats?.totalBlocks,
           },
         },
       ],
@@ -262,16 +179,16 @@ const Stats: NextPage = function () {
         {
           name: "Total Blob Gas Used",
           metric: {
-            value: overallStats?.totalBlobGasUsed,
+            value: aggregatedOverallStats?.totalBlobGasUsed,
             type: "ethereum",
           },
         },
         {
           name: "Total Gas Saved",
           metric: {
-            value: overallStats
-              ? overallStats.totalBlobAsCalldataGasUsed -
-                overallStats.totalBlobGasUsed
+            value: aggregatedOverallStats
+              ? aggregatedOverallStats.totalBlobAsCalldataGasUsed -
+                aggregatedOverallStats.totalBlobGasUsed
               : undefined,
           },
           // secondaryMetric={
@@ -290,9 +207,9 @@ const Stats: NextPage = function () {
         },
         {
           name: "Avg. Blob Gas Price",
-          metric: overallStats
+          metric: aggregatedOverallStats
             ? {
-                value: overallStats.avgBlobGasPrice,
+                value: aggregatedOverallStats.avgBlobGasPrice,
                 type: "ethereum",
                 numberFormatOpts: {
                   maximumFractionDigits: 9,
@@ -325,17 +242,17 @@ const Stats: NextPage = function () {
         {
           name: "Total Blob Fees",
           metric: {
-            value: overallStats?.totalBlobFee,
+            value: aggregatedOverallStats?.totalBlobFee,
             type: "ethereum",
           },
         },
         {
           name: "Total Tx Fees Saved",
-          metric: overallStats
+          metric: aggregatedOverallStats
             ? {
                 value:
-                  overallStats.totalBlobAsCalldataFee -
-                  overallStats.totalBlobFee,
+                  aggregatedOverallStats.totalBlobAsCalldataFee -
+                  aggregatedOverallStats.totalBlobFee,
                 type: "ethereum",
               }
             : undefined,
@@ -355,7 +272,7 @@ const Stats: NextPage = function () {
         {
           name: "Avg. Max Blob Gas Fee",
           metric: {
-            value: overallStats?.avgMaxBlobGasFee,
+            value: aggregatedOverallStats?.avgMaxBlobGasFee,
             type: "ethereum",
           },
         },
@@ -384,19 +301,19 @@ const Stats: NextPage = function () {
         {
           name: "Total Transactions",
           metric: {
-            value: overallStats?.totalTransactions,
+            value: aggregatedOverallStats?.totalTransactions,
           },
         },
         {
           name: "Total Unique Receivers",
           metric: {
-            value: overallStats?.totalUniqueReceivers,
+            value: aggregatedOverallStats?.totalUniqueReceivers,
           },
         },
         {
           name: "Total Unique Senders",
           metric: {
-            value: overallStats?.totalUniqueSenders,
+            value: aggregatedOverallStats?.totalUniqueSenders,
           },
         },
       ],
