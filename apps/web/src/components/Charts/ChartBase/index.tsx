@@ -254,7 +254,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
   }, [formattedSeries]);
 
   return (
-    <div className="flex h-full w-full flex-col gap-1 md:flex-row md:gap-1">
+    <div className="flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2">
       <EChartsReact
         ref={chartInstanceRef}
         onChartReady={onChartReady}
@@ -295,7 +295,7 @@ export const ChartBase: FC<ChartBaseProps> = function ({
             ...restOptions,
           } satisfies EChartOption
         }
-        style={{ height: "100%", width: "95%" }}
+        style={{ height: "100%", width: "100%" }}
       />
       <div className="h-4 md:h-full">
         <Legend
@@ -343,5 +343,5 @@ export type {
   MetricInfo,
   MetricType,
   MetricUnitType,
-  TimeSeriesBaseProps,
+  TimeSeriesProps as TimeSeriesBaseProps,
 } from "./helpers";

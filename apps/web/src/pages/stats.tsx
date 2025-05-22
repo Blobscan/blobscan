@@ -60,7 +60,7 @@ const Stats: NextPage = function () {
     SECTION_OPTIONS[0]
   );
   const [timeFrameOption, setTimeFrameOption] = useState<TimeFrameOption>(
-    TIME_FRAME_OPTIONS[0]
+    TIME_FRAME_OPTIONS[1]
   );
   const [selectedRollups, setSelectedRollups] = useState<RollupOption[]>([]);
   const { data: dailyStats } = api.stats.getDailyStats.useQuery(
@@ -106,7 +106,6 @@ const Stats: NextPage = function () {
       return acc;
     }, {} as typeof series);
   }, [series, selectedRollups]);
-
   const overallStats = useMemo(() => {
     const rollups = selectedRollups.map((r) => r.value);
 
@@ -195,6 +194,9 @@ const Stats: NextPage = function () {
       } satisfies Omit<OverallStats, "updatedAt">
     );
   }, [allOverallStats, selectedRollups]);
+  const selectedRollupOrTotalSeries = selectedRollups.length
+    ? selectedRollupSeries
+    : totalSeries;
   const sections: {
     section: Section;
     metrics: MetricCardProps[];
@@ -308,20 +310,12 @@ const Stats: NextPage = function () {
         <DailyAvgBlobGasPriceChart
           key="daily-avg-blob-gas-price"
           days={days}
-          series={totalSeries?.avgBlobGasPrice}
+          series={selectedRollupOrTotalSeries?.avgBlobGasPrice}
         />,
         <DailyBlobGasComparisonChart
           key="daily-blob-gas-comparison"
           days={days}
-          series={
-            totalSeries
-              ? {
-                  totalBlobGasUsed: totalSeries.totalBlobGasUsed,
-                  totalBlobAsCalldataGasUsed:
-                    totalSeries.totalBlobAsCalldataGasUsed,
-                }
-              : undefined
-          }
+          series={selectedRollupOrTotalSeries}
         />,
       ],
     },
@@ -375,12 +369,12 @@ const Stats: NextPage = function () {
         <DailyAvgBlobFeeChart
           key="daily-avg-blob-fee"
           days={days}
-          series={totalSeries?.avgBlobFee}
+          series={selectedRollupOrTotalSeries?.avgBlobFee}
         />,
         <DailyAvgMaxBlobGasFeeChart
           key="daily-avg-max-blob-gas-fee"
           days={days}
-          series={totalSeries?.avgMaxBlobGasFee}
+          series={selectedRollupOrTotalSeries?.avgMaxBlobGasFee}
         />,
       ],
     },
@@ -415,14 +409,7 @@ const Stats: NextPage = function () {
         <DailyUniqueAddressesChart
           key="daily-unique-addresses"
           days={days}
-          series={
-            totalSeries
-              ? {
-                  totalUniqueReceivers: totalSeries.totalUniqueReceivers,
-                  totalUniqueSenders: totalSeries.totalUniqueSenders,
-                }
-              : undefined
-          }
+          series={selectedRollupOrTotalSeries}
         />,
       ],
     },

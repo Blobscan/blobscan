@@ -2,9 +2,9 @@ import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { TimeSeriesBaseProps } from "../ChartBase";
+import type { TimeSeriesProps } from "../ChartBase/types";
 
-export type DailyAvgBlobFeeChartProps = TimeSeriesBaseProps<number[]>;
+export type DailyAvgBlobFeeChartProps = TimeSeriesProps<number>;
 
 export const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = function ({
   days,
@@ -25,15 +25,11 @@ export const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = function ({
         xAxis: {
           data: days,
         },
-        series: scaledValues
-          ? [
-              {
-                name: "Avg. Blob Fee",
-                data: scaledValues,
-                type: "line",
-              },
-            ]
-          : undefined,
+        series: scaledValues?.map(({ name, values }) => ({
+          name: name === "total" ? "Avg. Blob Fee" : name,
+          data: values,
+          type: "line",
+        })),
       }}
     />
   );

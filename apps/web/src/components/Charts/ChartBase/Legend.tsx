@@ -44,7 +44,7 @@ export const Legend: React.FC<LegendProps> = function ({
       )}
     >
       <Scrollable>
-        <div className="flex items-center md:flex-col">
+        <div className="flex items-center gap-1 md:flex-col">
           {items?.map((item, i) => {
             const { color, disabled, name } = item;
             const formattedName = formatSeriesName(name);

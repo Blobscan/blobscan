@@ -2,14 +2,9 @@ import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { formatBytes } from "~/utils";
-import type { TimeSeriesBaseProps } from "../ChartBase";
+import type { TimeSeriesProps } from "../ChartBase/types";
 
-export type DailyBlobsSizeProps = TimeSeriesBaseProps<
-  {
-    name?: string;
-    values: string[];
-  }[]
->;
+export type DailyBlobsSizeProps = TimeSeriesProps<string>;
 
 export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
   days,
@@ -18,7 +13,13 @@ export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
   const scaledSeries = series?.map(({ name, values }) => ({
     name,
     values: values.map((v) =>
-      formatBytes(v, { unit: "GiB", hideUnit: true, displayAllDecimals: true })
+      Number(
+        formatBytes(v, {
+          unit: "GiB",
+          hideUnit: true,
+          displayAllDecimals: true,
+        })
+      )
     ),
   }));
 

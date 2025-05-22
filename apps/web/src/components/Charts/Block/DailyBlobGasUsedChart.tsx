@@ -1,14 +1,9 @@
 import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { TimeSeriesBaseProps } from "../ChartBase";
+import type { TimeSeriesProps } from "../ChartBase/types";
 
-export type DailyBlobGasUsedChartProps = TimeSeriesBaseProps<
-  {
-    name?: string;
-    values: string[];
-  }[]
->;
+export type DailyBlobGasUsedChartProps = TimeSeriesProps<string>;
 
 export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function ({
   days,

@@ -1,15 +1,53 @@
+import { useMemo } from "react";
 import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { TimeSeriesBaseProps } from "../ChartBase";
+import type { CustomTimeSeriesProps } from "../ChartBase/types";
+import { aggregateSeries } from "../helpers";
 
-export type DailyUniqueAddressesChartProps = TimeSeriesBaseProps<{
-  totalUniqueSenders: number[];
-  totalUniqueReceivers: number[];
+export type DailyUniqueAddressesChartProps = CustomTimeSeriesProps<{
+  totalUniqueReceivers: {
+    name?: string;
+    values: number[];
+  }[];
+  totalUniqueSenders: {
+    name?: string;
+    values: number[];
+  }[];
 }>;
 
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
-  function ({ days, series }) {
+  function ({ days, series: seriesProps }) {
+    const { totalUniqueReceivers, totalUniqueSenders } = useMemo(
+      () => ({
+        totalUniqueReceivers: seriesProps?.totalUniqueReceivers
+          ? aggregateSeries(seriesProps.totalUniqueReceivers, "count")
+          : undefined,
+        totalUniqueSenders: seriesProps?.totalUniqueSenders
+          ? aggregateSeries(seriesProps.totalUniqueSenders, "count")
+          : undefined,
+      }),
+      [seriesProps]
+    );
+    const series: echarts.EChartOption.Series[] | undefined =
+      totalUniqueReceivers && totalUniqueSenders ? [] : undefined;
+
+    if (series && totalUniqueReceivers?.length) {
+      series.push({
+        name: "Total Unique Receivers",
+        data: totalUniqueReceivers,
+        type: "bar",
+      });
+    }
+
+    if (series && totalUniqueSenders?.length) {
+      series.push({
+        name: "Total Unique Senders",
+        data: totalUniqueSenders,
+        type: "bar",
+      });
+    }
+
     return (
       <ChartCard
         title="Daily Unique Addresses"
@@ -23,20 +61,7 @@ export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
           xAxis: {
             data: days,
           },
-          series: series
-            ? [
-                {
-                  name: "Total Unique Receivers",
-                  data: series.totalUniqueReceivers,
-                  type: "bar",
-                },
-                {
-                  name: "Total Unique Senders",
-                  data: series.totalUniqueSenders,
-                  type: "bar",
-                },
-              ]
-            : [],
+          series,
         }}
       />
     );

@@ -4,7 +4,7 @@ import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
 import type { TimeSeriesBaseProps } from "../ChartBase";
 
-export type DailyAvgMaxBlobGasFeeChartProps = TimeSeriesBaseProps<number[]>;
+export type DailyAvgMaxBlobGasFeeChartProps = TimeSeriesBaseProps<number>;
 
 export const DailyAvgMaxBlobGasFeeChart: FC<DailyAvgMaxBlobGasFeeChartProps> =
   function ({ days, series }) {
@@ -23,15 +23,11 @@ export const DailyAvgMaxBlobGasFeeChart: FC<DailyAvgMaxBlobGasFeeChartProps> =
           xAxis: {
             data: days,
           },
-          series: scaledValues
-            ? [
-                {
-                  name: "Avg. Max Blob Gas Fees",
-                  data: scaledValues,
-                  type: "line",
-                },
-              ]
-            : [],
+          series: scaledValues?.map(({ name, values }) => ({
+            name: name === "total" ? "Avg. Blob Gas Price" : name,
+            data: values,
+            type: "line",
+          })),
         }}
       />
     );

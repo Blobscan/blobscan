@@ -4,48 +4,11 @@ import type { EChartOption } from "echarts";
 import { ROLLUP_REGISTRY } from "@blobscan/rollups";
 
 import type { Rollup } from "~/types";
-import {
-  calculatePercentage,
-  getNeighbouringElements,
-  normalizeNumerish,
-} from "~/utils";
+import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
+import { aggregateData } from "../../helpers";
 import type { MetricInfo } from "../types";
 import { formatMetricValue, formatSeriesName } from "./formatters";
-
-function getTotal(data: number[] | string[], { type }: MetricInfo) {
-  if (!data.length) {
-    return 0;
-  }
-
-  const value = data[0] ? normalizeNumerish(data[0]) : undefined;
-
-  if (!value) {
-    return 0;
-  }
-
-  if (type === "count") {
-    if (typeof value === "number") {
-      return data.reduce<number>((acc, value) => acc + Number(value), 0);
-    }
-
-    return data.reduce((acc, value) => acc + BigInt(value), BigInt(0));
-  }
-
-  if (type === "average") {
-    if (typeof value === "number") {
-      const total = data.reduce<number>((acc, value) => acc + Number(value), 0);
-
-      return total / data.length;
-    }
-
-    const total = data.reduce((acc, value) => acc + BigInt(value), BigInt(0));
-
-    return total / BigInt(data.length);
-  }
-
-  throw new Error("Invalid data type");
-}
 
 function buildSeriesHtmlElement({
   name,
@@ -136,9 +99,9 @@ export function createTooltip({
         }
 
         const dayTotal = displayTotal
-          ? getTotal(
-              paramOrParams.map((p) => p.value ?? 0) as string[] | number[],
-              yAxisMetricInfo
+          ? aggregateData(
+              paramOrParams.map((p) => p.value ?? 0) as number[],
+              yAxisMetricInfo.type
             )
           : undefined;
         const rollupSeries = paramOrParams.filter(
@@ -190,9 +153,9 @@ export function createTooltip({
 
         if (displayTotal) {
           if (rollupSeries.length) {
-            const rollupTotal = getTotal(
-              rollupSeries.map((p) => p.value ?? 0) as string[] | number[],
-              yAxisMetricInfo
+            const rollupTotal = aggregateData(
+              rollupSeries.map((p) => p.value ?? 0) as number[],
+              yAxisMetricInfo.type
             );
 
             totalSeriesHTMLElements.push(

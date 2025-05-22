@@ -42,9 +42,20 @@ export interface AxisMetricInfo {
   yAxis: MetricInfo;
 }
 
-export type TimeSeriesBaseProps<T> = Partial<{
-  compact: boolean;
-  size: "sm" | "md" | "lg";
-  days: string[];
-  series: T;
-}>;
+interface BaseTimeSeriesProps {
+  compact?: boolean;
+  size?: "sm" | "md" | "lg";
+  days?: string[];
+}
+
+export interface TimeSeriesProps<T extends number | string>
+  extends BaseTimeSeriesProps {
+  series?: {
+    name?: string;
+    values: T[];
+  }[];
+}
+
+export interface CustomTimeSeriesProps<T> extends BaseTimeSeriesProps {
+  series?: T;
+}

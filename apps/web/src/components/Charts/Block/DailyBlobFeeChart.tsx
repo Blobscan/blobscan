@@ -2,14 +2,9 @@ import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { TimeSeriesBaseProps } from "../ChartBase";
+import type { TimeSeriesProps } from "../ChartBase/types";
 
-export type DailyBlobFeeChartProps = TimeSeriesBaseProps<
-  {
-    name?: string;
-    values: string[];
-  }[]
->;
+export type DailyBlobFeeChartProps = TimeSeriesProps<string>;
 
 export const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = function ({
   days,

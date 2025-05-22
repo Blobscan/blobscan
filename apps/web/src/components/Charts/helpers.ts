@@ -1,11 +1,5 @@
-import type {
-  Arrayified,
-  Category,
-  DailyStats,
-  Rollup,
-  Stringified,
-} from "~/types";
-import { arrayfy, stringify } from "~/utils";
+import type { Category, DailyStats, Rollup, Stringified } from "~/types";
+import { normalizeNumerish } from "../../utils";
 
 type CategoryName = Category | Rollup | "total" | "unknown";
 
@@ -16,18 +10,14 @@ type ChartStatsSeries<T extends DailyStats> = {
   }[];
 };
 
-type EChartCompliantStats<T extends DailyStats> = Stringified<
-  Arrayified<Omit<T, "day" | "category" | "rollup">>
->;
-
 export function convertStatsToChartSeries<T extends DailyStats>(
   dailyStats: T[]
 ):
   | {
       days: string[];
       series?: ChartStatsSeries<T>;
-      totalSeries?: EChartCompliantStats<T>;
-      totalRollupSeries?: EChartCompliantStats<T>;
+      totalSeries?: ChartStatsSeries<T>;
+      totalRollupSeries?: ChartStatsSeries<T>;
     }
   | undefined {
   if (dailyStats.length === 0) {
@@ -35,64 +25,152 @@ export function convertStatsToChartSeries<T extends DailyStats>(
   }
 
   const days = Array.from(new Set(dailyStats.map(({ day }) => day.toString())));
+  const totalSeries: ChartStatsSeries<T> = {} as ChartStatsSeries<T>;
+  const totalRollupSeries: ChartStatsSeries<T> = {} as ChartStatsSeries<T>;
+  const categoriesSeries: ChartStatsSeries<T> = {} as ChartStatsSeries<T>;
+  let currentDayIndex = 0;
+  let prevDay = days[0];
 
-  const groupedStats = Object.groupBy(
-    dailyStats,
-    ({ category, rollup }): CategoryName => {
-      if (!category && !rollup) return "total";
-      return category ?? rollup ?? "unknown";
+  for (const stats of dailyStats) {
+    const day = stats.day.toString();
+    const seriesName = stats.category ?? stats.rollup ?? "total";
+
+    if (day !== prevDay) {
+      prevDay = day;
+      currentDayIndex++;
     }
-  );
 
-  const { total, rollup, ...groupedCategories } = groupedStats;
+    Object.entries(stats).forEach(([statKey, statValue]) => {
+      if (statKey === "day" || statKey === "category" || statKey === "rollup") {
+        return;
+      }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const baseStatKeys = Object.keys(dailyStats[0]!).filter(
-    (key) => !["day", "category", "rollup"].includes(key)
-  ) as (keyof Omit<T, "day" | "category" | "rollup">)[];
+      const defaultStatValue = typeof statValue === "number" ? 0 : "0";
 
-  const allSeries = Object.entries(groupedCategories).map(
-    ([name, entries]) => ({
-      name: name as CategoryName,
-      values: arrayfy(
-        stringify(entries as Omit<DailyStats, "day" | "category" | "rollup">[])
-      ),
-    })
-  );
+      const statKey_ = statKey as keyof ChartStatsSeries<T>;
+      const series =
+        seriesName === "total"
+          ? totalSeries
+          : seriesName === "rollup"
+          ? totalRollupSeries
+          : categoriesSeries;
 
-  const series = baseStatKeys.reduce<ChartStatsSeries<T>>((acc, key) => {
-    acc[key] = allSeries.map(({ name, values }) => ({
-      name,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      values: values[key],
-    }));
-    return acc;
-  }, {} as ChartStatsSeries<T>);
+      if (!series[statKey_]) {
+        series[statKey_] = [];
+      }
 
-  const cleanedTotal = total?.map(
-    ({ day: _, category: __, rollup: ___, ...rest }) => stringify(rest)
-  );
-  const cleanedRollup = rollup?.map(
-    ({ day: _, category: __, rollup: ___, ...rest }) => stringify(rest)
-  );
+      const statSeries = series[statKey_];
+      const categoryStat = statSeries.find(({ name }) => name === seriesName);
+      const statValue_ = (
+        typeof statValue !== "number" ? String(statValue) : statValue
+      ) as Stringified<T[typeof statKey_]>;
 
-  const totalSeries =
-    cleanedTotal && typeof cleanedTotal !== "string"
-      ? (arrayfy(
-          cleanedTotal as Record<string, unknown>[]
-        ) as EChartCompliantStats<T>)
-      : undefined;
-  const totalRollupSeries = cleanedRollup
-    ? (arrayfy(
-        stringify(cleanedRollup) as Record<string, unknown>[]
-      ) as EChartCompliantStats<T>)
-    : undefined;
+      if (!categoryStat) {
+        const values = Array.from({ length: days.length }).fill(
+          defaultStatValue
+        ) as Stringified<T[typeof statKey_]>[];
+
+        values[currentDayIndex] = statValue_;
+
+        statSeries.push({
+          name: seriesName,
+          values,
+        });
+      } else {
+        categoryStat.values[currentDayIndex] = statValue_;
+      }
+    });
+  }
 
   return {
     days,
-    series,
+    series: categoriesSeries,
     totalSeries,
     totalRollupSeries,
   };
+}
+
+type AggregationType = "count" | "average" | "time";
+
+export function aggregateData(data: number[], type: AggregationType): number;
+export function aggregateData(data: string[], type: AggregationType): bigint;
+export function aggregateData(
+  data: number[] | string[],
+  type: AggregationType
+): number | bigint {
+  const first = data[0] !== undefined ? normalizeNumerish(data[0]) : undefined;
+  const isNumberInput = typeof first === "number";
+
+  if (!data.length) {
+    return 0;
+  }
+
+  if (type === "count") {
+    if (isNumberInput) {
+      return (data as number[]).reduce((acc, value) => acc + value, 0);
+    }
+    return (data as string[]).reduce(
+      (acc, value) => acc + BigInt(value),
+      BigInt(0)
+    );
+  }
+
+  if (type === "average") {
+    if (isNumberInput) {
+      const total = (data as number[]).reduce((acc, value) => acc + value, 0);
+      return total / data.length;
+    }
+    const total = (data as string[]).reduce(
+      (acc, value) => acc + BigInt(value),
+      BigInt(0)
+    );
+    return total / BigInt(data.length);
+  }
+
+  throw new Error("Invalid aggregation type");
+}
+
+export function aggregateSeries(
+  series: { name?: string; values: number[] }[],
+  type: AggregationType
+): number[];
+export function aggregateSeries(
+  series: { name?: string; values: string[] }[],
+  type: AggregationType
+): string[];
+export function aggregateSeries<T extends number | string | bigint>(
+  series: {
+    name?: string;
+    values: T[];
+  }[],
+  type: AggregationType
+): T[] {
+  return series.reduce((acc, { values }) => {
+    return values.map((v, i) => {
+      const value = normalizeNumerish(v);
+      const zero = typeof value === "bigint" ? BigInt(0) : 0;
+      const accValue = acc[i] ? normalizeNumerish(acc[i]) : zero;
+
+      if (accValue === zero) {
+        return v as T;
+      }
+
+      if (type === "average") {
+        if (typeof value === "bigint") {
+          return (
+            ((accValue as bigint) + (value as bigint)) /
+            BigInt(2)
+          ).toString() as T;
+        }
+
+        return (((accValue as number) + (value as number)) / 2) as T;
+      }
+
+      if (typeof value === "bigint") {
+        return ((accValue as bigint) + (value as bigint)).toString() as T;
+      }
+
+      return ((accValue as number) + (value as number)) as T;
+    });
+  }, [] as T[]);
 }
