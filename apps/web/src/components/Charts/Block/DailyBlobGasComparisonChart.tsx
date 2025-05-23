@@ -19,7 +19,7 @@ export type DailyBlobGasComparisonChartProps = CustomTimeSeriesProps<{
 }>;
 
 export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
-  function ({ days, series: seriesProps }) {
+  function ({ days, series: seriesProps, ...restProps }) {
     const { resolvedTheme } = useTheme();
     const { totalBlobAsCalldataGasUsed, totalBlobGasUsed } = useMemo(() => {
       return {
@@ -94,6 +94,7 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           },
           series,
         }}
+        {...restProps}
       />
     );
   };

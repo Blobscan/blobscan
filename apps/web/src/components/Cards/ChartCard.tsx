@@ -12,7 +12,6 @@ import { Card } from "./Card";
 
 interface ChartCardProps extends ChartBaseProps {
   title?: ReactNode;
-  size?: "sm" | "md" | "lg";
 }
 
 export const ChartCard: FC<ChartCardProps> = function ({
@@ -21,6 +20,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
   options,
   metricInfo,
   compact,
+  showLegend,
 }) {
   const { yAxis } = metricInfo;
   const yUnit =
@@ -56,6 +56,7 @@ export const ChartCard: FC<ChartCardProps> = function ({
               metricInfo={metricInfo}
               options={options}
               compact={compact}
+              showLegend={showLegend}
             />
           )}
         </div>

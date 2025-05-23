@@ -9,6 +9,7 @@ export type DailyBlobsSizeProps = TimeSeriesProps<string>;
 export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
   days,
   series,
+  ...restProps
 }) {
   const scaledSeries = series?.map(({ name, values }) => ({
     name,
@@ -50,6 +51,7 @@ export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
           displayTotal: true,
         },
       }}
+      {...restProps}
     />
   );
 };

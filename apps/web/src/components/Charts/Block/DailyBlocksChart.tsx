@@ -8,6 +8,7 @@ export type DailyBlocksChartProps = TimeSeriesProps<number>;
 export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
   days,
   series,
+  ...restProps
 }) {
   return (
     <ChartCard
@@ -32,6 +33,7 @@ export const DailyBlocksChart: FC<DailyBlocksChartProps> = function ({
           displayTotal: true,
         },
       }}
+      {...restProps}
     />
   );
 };

@@ -38,7 +38,7 @@ export const Legend: React.FC<LegendProps> = function ({
     <div
       ref={legendRef}
       className={cn(
-        "flex h-full w-full cursor-pointer gap-2 truncate",
+        "flex h-full w-full gap-2 truncate",
         "md:w-20 md:flex-col md:items-start md:gap-0",
         { "justify-center": items.length <= 15 }
       )}

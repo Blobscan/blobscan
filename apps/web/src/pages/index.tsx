@@ -125,7 +125,7 @@ const Home: NextPage = () => {
               days={days}
               series={totalSeries?.avgBlobGasPrice}
               size="sm"
-              compact={true}
+              compact
             />
           </div>
           <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
@@ -177,7 +177,7 @@ const Home: NextPage = () => {
               size="sm"
               days={days}
               series={series?.totalBlobs}
-              compact={true}
+              compact
             />
           </div>
         </div>

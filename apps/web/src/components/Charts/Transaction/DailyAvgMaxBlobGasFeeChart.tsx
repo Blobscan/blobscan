@@ -7,7 +7,7 @@ import type { TimeSeriesBaseProps } from "../ChartBase";
 export type DailyAvgMaxBlobGasFeeChartProps = TimeSeriesBaseProps<number>;
 
 export const DailyAvgMaxBlobGasFeeChart: FC<DailyAvgMaxBlobGasFeeChartProps> =
-  function ({ days, series }) {
+  function ({ days, series, ...restProps }) {
     const { scaledValues, unit } = useScaledWeiAmounts(series);
 
     return (
@@ -29,6 +29,7 @@ export const DailyAvgMaxBlobGasFeeChart: FC<DailyAvgMaxBlobGasFeeChartProps> =
             type: "line",
           })),
         }}
+        {...restProps}
       />
     );
   };

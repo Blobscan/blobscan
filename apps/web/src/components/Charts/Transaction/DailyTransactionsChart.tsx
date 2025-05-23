@@ -6,7 +6,7 @@ import type { TimeSeriesBaseProps } from "../ChartBase";
 export type DailyTransactionsChartProps = TimeSeriesBaseProps<number>;
 
 export const DailyTransactionsChart: FC<DailyTransactionsChartProps> =
-  function ({ days, series }) {
+  function ({ days, series, ...restProps }) {
     return (
       <ChartCard
         title="Daily Transactions"
@@ -30,6 +30,7 @@ export const DailyTransactionsChart: FC<DailyTransactionsChartProps> =
             displayTotal: true,
           },
         }}
+        {...restProps}
       />
     );
   };

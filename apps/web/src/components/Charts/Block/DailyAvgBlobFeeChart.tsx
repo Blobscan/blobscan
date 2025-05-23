@@ -9,6 +9,7 @@ export type DailyAvgBlobFeeChartProps = TimeSeriesProps<number>;
 export const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = function ({
   days,
   series,
+  ...restProps
 }) {
   const { scaledValues, unit } = useScaledWeiAmounts(series);
 
@@ -31,6 +32,7 @@ export const DailyAvgBlobFeeChart: FC<DailyAvgBlobFeeChartProps> = function ({
           type: "line",
         })),
       }}
+      {...restProps}
     />
   );
 };

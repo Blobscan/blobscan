@@ -42,20 +42,24 @@ export interface AxisMetricInfo {
   yAxis: MetricInfo;
 }
 
-interface BaseTimeSeriesProps {
+export interface ChartCommonProps {
   compact?: boolean;
+  showLegend?: boolean;
   size?: "sm" | "md" | "lg";
+}
+
+interface TimeSeriesBaseProps extends ChartCommonProps {
   days?: string[];
 }
 
 export interface TimeSeriesProps<T extends number | string>
-  extends BaseTimeSeriesProps {
+  extends TimeSeriesBaseProps {
   series?: {
     name?: string;
     values: T[];
   }[];
 }
 
-export interface CustomTimeSeriesProps<T> extends BaseTimeSeriesProps {
+export interface CustomTimeSeriesProps<T> extends TimeSeriesBaseProps {
   series?: T;
 }

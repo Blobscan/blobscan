@@ -8,6 +8,7 @@ export type DailyBlobGasUsedChartProps = TimeSeriesProps<string>;
 export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function ({
   days,
   series,
+  ...restProps
 }) {
   return (
     <ChartCard
@@ -32,6 +33,7 @@ export const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = function ({
           displayTotal: true,
         },
       }}
+      {...restProps}
     />
   );
 };

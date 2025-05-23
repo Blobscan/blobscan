@@ -17,7 +17,7 @@ export type DailyUniqueAddressesChartProps = CustomTimeSeriesProps<{
 }>;
 
 export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
-  function ({ days, series: seriesProps }) {
+  function ({ days, series: seriesProps, ...restProps }) {
     const { totalUniqueReceivers, totalUniqueSenders } = useMemo(
       () => ({
         totalUniqueReceivers: seriesProps?.totalUniqueReceivers
@@ -63,6 +63,7 @@ export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
           },
           series,
         }}
+        {...restProps}
       />
     );
   };

@@ -147,11 +147,13 @@ const Stats: NextPage = function () {
           key="daily-blobs"
           days={days}
           series={selectedRollupSeries?.totalBlobs}
+          showLegend
         />,
         <DailyBlobSizeChart
           key="daily-blob-size"
           days={days}
           series={selectedRollupSeries?.totalBlobSize}
+          showLegend
         />,
       ],
     },
@@ -170,6 +172,7 @@ const Stats: NextPage = function () {
           key="daily-blocks"
           days={days}
           series={selectedRollupSeries?.totalBlocks}
+          showLegend
         />,
       ],
     },
@@ -223,16 +226,19 @@ const Stats: NextPage = function () {
           key="daily-blob-gas-used"
           days={days}
           series={selectedRollupSeries?.totalBlobGasUsed}
+          showLegend
         />,
         <DailyAvgBlobGasPriceChart
           key="daily-avg-blob-gas-price"
           days={days}
           series={selectedRollupOrTotalSeries?.avgBlobGasPrice}
+          showLegend
         />,
         <DailyBlobGasComparisonChart
           key="daily-blob-gas-comparison"
           days={days}
           series={selectedRollupOrTotalSeries}
+          showLegend
         />,
       ],
     },
@@ -282,16 +288,19 @@ const Stats: NextPage = function () {
           key="daily-blob-fee"
           days={days}
           series={selectedRollupSeries?.totalBlobFee}
+          showLegend
         />,
         <DailyAvgBlobFeeChart
           key="daily-avg-blob-fee"
           days={days}
           series={selectedRollupOrTotalSeries?.avgBlobFee}
+          showLegend
         />,
         <DailyAvgMaxBlobGasFeeChart
           key="daily-avg-max-blob-gas-fee"
           days={days}
           series={selectedRollupOrTotalSeries?.avgMaxBlobGasFee}
+          showLegend
         />,
       ],
     },
@@ -322,11 +331,13 @@ const Stats: NextPage = function () {
           key="daily-transactions"
           days={days}
           series={selectedRollupSeries?.totalTransactions}
+          showLegend
         />,
         <DailyUniqueAddressesChart
           key="daily-unique-addresses"
           days={days}
           series={selectedRollupOrTotalSeries}
+          showLegend
         />,
       ],
     },
