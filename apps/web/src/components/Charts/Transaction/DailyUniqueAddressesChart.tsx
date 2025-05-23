@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
@@ -16,8 +16,8 @@ export type DailyUniqueAddressesChartProps = CustomTimeSeriesProps<{
   }[];
 }>;
 
-export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
-  function ({ days, series: seriesProps, ...restProps }) {
+const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
+  React.memo(function ({ days, series: seriesProps, ...restProps }) {
     const { totalUniqueReceivers, totalUniqueSenders } = useMemo(
       () => ({
         totalUniqueReceivers: seriesProps?.totalUniqueReceivers
@@ -66,4 +66,8 @@ export const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
         {...restProps}
       />
     );
-  };
+  });
+
+DailyUniqueAddressesChart.displayName = "DailyUniqueAddressesChart";
+
+export { DailyUniqueAddressesChart };

@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { formatBytes } from "~/utils";
@@ -6,7 +7,7 @@ import type { TimeSeriesProps } from "../ChartBase/types";
 
 export type DailyBlobsSizeProps = TimeSeriesProps<string>;
 
-export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
+const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = React.memo(function ({
   days,
   series,
   ...restProps
@@ -54,4 +55,8 @@ export const DailyBlobSizeChart: FC<DailyBlobsSizeProps> = function ({
       {...restProps}
     />
   );
-};
+});
+
+DailyBlobSizeChart.displayName = "DailyBlobSizeChart";
+
+export { DailyBlobSizeChart };

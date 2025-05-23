@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
@@ -6,8 +7,8 @@ import type { TimeSeriesProps } from "../ChartBase/types";
 
 export type DailyAvgBlobGasPriceChartProps = TimeSeriesProps<number>;
 
-export const DailyAvgBlobGasPriceChart: FC<DailyAvgBlobGasPriceChartProps> =
-  function ({ days, series, ...restProps }) {
+const DailyAvgBlobGasPriceChart: FC<DailyAvgBlobGasPriceChartProps> =
+  React.memo(function ({ days, series, ...restProps }) {
     const { scaledValues, unit } = useScaledWeiAmounts(series);
 
     return (
@@ -32,4 +33,8 @@ export const DailyAvgBlobGasPriceChart: FC<DailyAvgBlobGasPriceChartProps> =
         {...restProps}
       />
     );
-  };
+  });
+
+DailyAvgBlobGasPriceChart.displayName = "DailyAvgBlobGasPriceChart";
+
+export { DailyAvgBlobGasPriceChart };

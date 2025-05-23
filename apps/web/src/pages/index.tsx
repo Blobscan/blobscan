@@ -47,6 +47,9 @@ const Home: NextPage = () => {
   });
   const { data: overallStats, error: overallStatsErr } =
     api.stats.getOverallStats.useQuery(undefined, {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
       select: (data) => data[0],
     });
   const { data: dailyStatsData, error: dailyStatsErr } =
@@ -60,13 +63,21 @@ const Home: NextPage = () => {
       },
       {
         refetchOnWindowFocus: false,
-        select: (data) =>
-          convertStatsToChartSeries(
-            data as MakeRequired<DailyStats, "totalBlobs" | "avgBlobGasPrice">[]
-          ),
       }
     );
-  const { days, series, totalSeries } = dailyStatsData || {};
+
+  const dailyStats = useMemo(() => {
+    if (!dailyStatsData) {
+      return;
+    }
+    return convertStatsToChartSeries(
+      dailyStatsData as MakeRequired<
+        DailyStats,
+        "totalBlobs" | "avgBlobGasPrice"
+      >[]
+    );
+  }, [dailyStatsData]);
+  const { days, series, totalSeries } = dailyStats || {};
 
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {

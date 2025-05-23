@@ -64,7 +64,7 @@ const Stats: NextPage = function () {
     TIME_FRAME_OPTIONS[1]
   );
   const [selectedRollups, setSelectedRollups] = useState<RollupOption[]>([]);
-  const { data: dailyStats } = api.stats.getDailyStats.useQuery(
+  const { data: dailyStatsData } = api.stats.getDailyStats.useQuery(
     {
       categories: "all",
       rollups: "all",
@@ -72,19 +72,19 @@ const Stats: NextPage = function () {
       sort: "asc",
     },
     {
-      select: (data) =>
-        convertStatsToChartSeries(data as Required<DailyStats>[]),
       refetchOnWindowFocus: false,
     }
   );
-  const { data: allOverallStats } = api.stats.getOverallStats.useQuery(
-    {
-      categories: "all",
-      rollups: "all",
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
+  const { data: allOverallStats } = api.stats.getOverallStats.useQuery({
+    categories: "all",
+    rollups: "all",
+  });
+  const dailyStats = useMemo(
+    () =>
+      dailyStatsData
+        ? convertStatsToChartSeries(dailyStatsData as Required<DailyStats>[])
+        : undefined,
+    [dailyStatsData]
   );
 
   const { days, series, totalSeries } = dailyStats || {};

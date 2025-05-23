@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import * as echarts from "echarts";
 import { useTheme } from "next-themes";
 
@@ -18,8 +18,8 @@ export type DailyBlobGasComparisonChartProps = CustomTimeSeriesProps<{
   }[];
 }>;
 
-export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
-  function ({ days, series: seriesProps, ...restProps }) {
+const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
+  React.memo(function ({ days, series: seriesProps, ...restProps }) {
     const { resolvedTheme } = useTheme();
     const { totalBlobAsCalldataGasUsed, totalBlobGasUsed } = useMemo(() => {
       return {
@@ -97,4 +97,8 @@ export const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
         {...restProps}
       />
     );
-  };
+  });
+
+DailyBlobGasComparisonChart.displayName = "DailyBlobGasComparisonChart";
+
+export { DailyBlobGasComparisonChart };

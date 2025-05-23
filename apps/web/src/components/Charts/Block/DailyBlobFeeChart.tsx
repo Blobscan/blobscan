@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
@@ -6,7 +7,7 @@ import type { TimeSeriesProps } from "../ChartBase/types";
 
 export type DailyBlobFeeChartProps = TimeSeriesProps<string>;
 
-export const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = function ({
+const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = React.memo(function ({
   days,
   series,
   ...restProps
@@ -39,4 +40,8 @@ export const DailyBlobFeeChart: FC<DailyBlobFeeChartProps> = function ({
       {...restProps}
     />
   );
-};
+});
+
+DailyBlobFeeChart.displayName = "DailyBlobFeeChart";
+
+export { DailyBlobFeeChart };
