@@ -76,7 +76,9 @@ export async function metricsHandler(
       if (latestBlock) {
         latestBlockNumberGauge.set(latestBlock.number);
         latestSlotGauge.set(latestBlock.slot);
-        lastBlockIndexTimestampGauge.set(Math.floor(Date.now() / 1000));
+        lastBlockIndexTimestampGauge.set(
+          Math.floor(latestBlock.insertedAt.getTime() / 1000)
+        );
       }
     } catch (error) {
       console.error("Failed to update latest block metrics:", error);
