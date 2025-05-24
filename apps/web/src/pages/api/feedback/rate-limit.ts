@@ -6,6 +6,10 @@ import { env } from "@blobscan/env";
 
 const redis = new Redis(env.REDIS_URI);
 
+redis.on("error", (error) => {
+  console.error("Redis error:", error);
+});
+
 const ratelimit = new RateLimiterRedis({
   storeClient: redis,
   points: 2,
@@ -13,6 +17,11 @@ const ratelimit = new RateLimiterRedis({
 });
 
 export async function rateLimited(request: NextApiRequest): Promise<boolean> {
+  if (redis.status !== "ready") {
+    console.warn("Skipping rate limit check, Redis is not available");
+    return false;
+  }
+
   let ip = request.headers["x-forwarded-for"] || request.socket.remoteAddress;
 
   if (Array.isArray(ip)) {
