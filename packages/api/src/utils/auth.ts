@@ -9,20 +9,24 @@ type NextHTTPRequest = CreateNextContextOptions["req"];
 
 type HTTPRequest = NodeHTTPRequest | NextHTTPRequest;
 
-export type APIClientType = "indexer" | "weavevm";
+export type APIClientType = "indexer" | "weavevm" | "blob-data";
 
 export type APIClient = {
   type: APIClientType;
 };
 
-function verifyIndexerClient(token: string) {
+function isValidIndexerAPIKey(token: string) {
   const decoded = jwt.verify(token, env.SECRET_KEY) as string;
 
   return decoded;
 }
 
-function verifyWeaveVMClient(token: string) {
+function isValidWeaveVMAPIKey(token: string) {
   return token === env.WEAVEVM_API_KEY;
+}
+
+function isValidBlobDataAPIKey(token: string) {
+  return token === env.BLOB_DATA_API_KEY;
 }
 
 export function retrieveAPIClient(req: HTTPRequest): APIClient | undefined {
@@ -39,11 +43,15 @@ export function retrieveAPIClient(req: HTTPRequest): APIClient | undefined {
   }
 
   try {
-    if (verifyWeaveVMClient(token)) {
+    if (isValidBlobDataAPIKey(token)) {
+      return { type: "blob-data" };
+    }
+
+    if (isValidWeaveVMAPIKey(token)) {
       return { type: "weavevm" };
     }
 
-    if (verifyIndexerClient(token)) {
+    if (isValidIndexerAPIKey(token)) {
       return { type: "indexer" };
     }
   } catch (err) {

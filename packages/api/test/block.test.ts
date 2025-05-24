@@ -108,10 +108,8 @@ describe("Block router", async () => {
       expect(result).toMatchSnapshot();
     });
 
-    runExpandsTestsSuite(
-      "block",
-      ["transaction", "blob", "blob_data"],
-      (expandInput) => caller.block.getByBlockId({ id: "1002", ...expandInput })
+    runExpandsTestsSuite("block", ["transaction", "blob"], (expandInput) =>
+      caller.block.getByBlockId({ id: "1002", ...expandInput })
     );
 
     it("should fail when trying to get a block with an invalid hash", async () => {

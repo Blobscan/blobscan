@@ -13,7 +13,7 @@ import {
 } from "../utils";
 import type { TransactionFeeFields } from "../utils";
 
-const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
+const zodExpandEnums = ["blob", "block", "transaction"] as const;
 
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
@@ -76,7 +76,6 @@ export type ExpandSelect<T> = { select: T };
 export type Expands = {
   transaction?: ExpandSelect<typeof expandedTransactionSelect>;
   blob?: ExpandSelect<typeof expandedBlobSelect>;
-  blobData?: boolean;
   block?: ExpandSelect<typeof expandedBlockSelect>;
 };
 
@@ -97,12 +96,6 @@ export const serializedExpandedBlobSchema = z.object({
     .optional(),
   index: z.number().nonnegative().optional(),
 });
-
-export const serializedExpandedBlobDataSchema = z
-  .object({
-    data: z.string().optional(),
-  })
-  .merge(serializedExpandedBlobSchema);
 
 export const serializedExpandedTransactionSchema = z
   .object({
@@ -125,10 +118,6 @@ export const serializedExpandedTransactionSchema = z
 
 export type SerializedExpandedBlob = z.infer<
   typeof serializedExpandedBlobSchema
->;
-
-export type SerializedExpandedBlobData = z.infer<
-  typeof serializedExpandedBlobDataSchema
 >;
 
 export type SerializedExpandedBlock = z.infer<
@@ -163,19 +152,6 @@ export function serializeExpandedBlob(
   }
 
   return expandedBlob;
-}
-
-export function serializeExpandedBlobData(
-  blob: Partial<ExpandedBlobWithData>
-): SerializedExpandedBlobData {
-  const serializedBlob: SerializedExpandedBlobData =
-    serializeExpandedBlob(blob);
-
-  if (blob.data) {
-    serializedBlob.data = blob.data;
-  }
-
-  return serializedBlob;
 }
 
 export function serializeExpandedBlock(
@@ -305,7 +281,6 @@ export function createExpandsSchema(allowedExpands: ZodExpand[]) {
 
 const allExpandKeysSchema = createExpandsSchema([
   "blob",
-  "blob_data",
   "block",
   "transaction",
 ]);
@@ -328,12 +303,6 @@ export const withExpands = t.middleware(({ next, input }) => {
       case "blob":
         exp.blob = { select: expandedBlobSelect };
         break;
-      case "blob_data": {
-        exp.blobData = true;
-        // We need to expand the blob data as well
-        exp.blob = { select: expandedBlobSelect };
-        break;
-      }
       case "block":
         exp.block = { select: expandedBlockSelect };
         break;
