@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.23.2
+
+### Patch Changes
+
+- [#768](https://github.com/Blobscan/blobscan/pull/768) [`7df3e2d`](https://github.com/Blobscan/blobscan/commit/7df3e2d6ab1bb392e67b79c1e484caa794ab7a6a) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Updated the rate limit logic to use ioredis instead of Vercel/KV
+
 ## 0.23.1
 
 ### Patch Changes
