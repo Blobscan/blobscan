@@ -1,4 +1,14 @@
+import { env } from "@blobscan/env";
+
 import { withTelemetry } from "../middlewares/withTelemetry";
 import { t } from "../trpc-client";
 
-export const publicProcedure = t.procedure.use(withTelemetry);
+function buildPublicProcedure() {
+  if (env.TRACES_ENABLED) {
+    return t.procedure.use(withTelemetry);
+  }
+
+  return t.procedure;
+}
+
+export const publicProcedure = buildPublicProcedure();

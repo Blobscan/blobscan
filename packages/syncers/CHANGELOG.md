@@ -1,5 +1,16 @@
 # @blobscan/syncers
 
+## 0.4.0
+
+### Minor Changes
+
+- [#731](https://github.com/Blobscan/blobscan/pull/731) [`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added ETH price syncer
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295)]:
+  - @blobscan/db@0.16.0
+
 ## 0.3.5
 
 ### Patch Changes

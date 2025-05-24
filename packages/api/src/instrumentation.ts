@@ -2,6 +2,7 @@ import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
+import { Gauge } from "prom-client";
 
 import { prisma } from "@blobscan/db";
 import type { MetricsClient } from "@blobscan/db";
@@ -19,6 +20,45 @@ function hasMetricsClient(
 export const tracer = api.trace.getTracer(scopeName);
 export const meter = api.metrics.getMeter(scopeName);
 
+// Prometheus metrics for latest block and slot
+// Use a function that safely registers metrics to prevent duplicate registration errors in tests
+const registerGauge = (name: string, help: string): Gauge<string> => {
+  try {
+    const existingMetric = promRegister.getSingleMetric(name);
+    if (existingMetric) {
+      return existingMetric as Gauge<string>;
+    }
+    return new Gauge({
+      name,
+      help,
+      registers: [promRegister],
+    });
+  } catch (error) {
+    // If there's an error, log it and return a no-op gauge
+    console.error(`Error registering gauge ${name}:`, error);
+    return new Gauge({
+      name,
+      help,
+      registers: [],
+    });
+  }
+};
+
+export const latestBlockNumberGauge = registerGauge(
+  "blobscan_latest_block_number",
+  "Latest block number indexed by Blobscan"
+);
+
+export const latestSlotGauge = registerGauge(
+  "blobscan_latest_slot",
+  "Latest slot indexed by Blobscan"
+);
+
+export const lastBlockIndexTimestampGauge = registerGauge(
+  "blobscan_last_block_index_timestamp",
+  "Timestamp of the last block indexed by Blobscan"
+);
+
 export async function metricsHandler(
   _: NodeHTTPRequest,
   res: NodeHTTPResponse
@@ -29,6 +69,17 @@ export async function metricsHandler(
       res.end("Metrics are disabled");
 
       return;
+    }
+
+    try {
+      const latestBlock = await prisma.block.findLatest();
+      if (latestBlock) {
+        latestBlockNumberGauge.set(latestBlock.number);
+        latestSlotGauge.set(latestBlock.slot);
+        lastBlockIndexTimestampGauge.set(Math.floor(Date.now() / 1000));
+      }
+    } catch (error) {
+      console.error("Failed to update latest block metrics:", error);
     }
 
     const prismaMetricsClient = hasMetricsClient(prisma)
