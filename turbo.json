@@ -48,6 +48,7 @@
     }
   },
   "globalEnv": [
+    "BLOB_DATA_API_ENABLED",
     "BLOB_DATA_API_KEY",
     "NEXT_PUBLIC_BLOBSCAN_RELEASE",
     "PUBLIC_POSTHOG_ID",
