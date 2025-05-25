@@ -1,9 +1,10 @@
 import { TRPCError } from "@trpc/server";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
+import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
 
-import { createAuthedProcedure } from "../../procedures";
+import { createAuthedProcedure, publicProcedure } from "../../procedures";
 import {
   blobIdSchema,
   blobVersionedHashSchema,
@@ -11,24 +12,38 @@ import {
   hexSchema,
 } from "../../utils";
 
+const procedure = env.BLOB_DATA_API_KEY?.length
+  ? createAuthedProcedure("blob-data")
+  : publicProcedure;
+
 const inputSchema = z.object({
   id: blobIdSchema,
 });
 
 const outputSchema = hexSchema;
 
-export const getBlobDataByBlobId = createAuthedProcedure("blob-data")
+export const getBlobDataByBlobId = procedure
   .meta({
     openapi: {
       method: "GET",
       path: "/blobs/{id}/data",
       tags: ["blobs"],
       summary: "Retrieves blob data for given blob id.",
+      enabled: env.BLOB_DATA_API_ENABLED,
+      protect: !!env.BLOB_DATA_API_KEY?.length,
     },
   })
   .input(inputSchema)
   .output(outputSchema)
   .query(async ({ ctx: { prisma, blobStorageManager }, input: { id } }) => {
+    if (!env.BLOB_DATA_API_ENABLED) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message:
+          "This endpoint is disabled. You must retrieve blob data from any of the storages directly.",
+      });
+    }
+
     let versionedHash: string;
 
     if (blobVersionedHashSchema.safeParse(id).success) {

@@ -3,13 +3,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "~/env.mjs";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  if (env.BLOB_DATA_API_ENABLED === false) {
-    return res.status(204).json({
-      message:
-        "This endpoint is disabled. You must retrieve blob data from the storage directly.",
-    });
-  }
-
   const url = req.query.url as string | undefined;
 
   if (!url) {
