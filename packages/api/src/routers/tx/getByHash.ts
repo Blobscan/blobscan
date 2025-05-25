@@ -7,7 +7,7 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields, retrieveBlobData } from "../../utils";
+import { calculateTxFeeFields } from "../../utils";
 import type { IncompletedTransaction } from "./common";
 import {
   createTransactionSelect,
@@ -19,7 +19,7 @@ const inputSchema = z
   .object({
     hash: z.string(),
   })
-  .merge(createExpandsSchema(["block", "blob", "blob_data"]));
+  .merge(createExpandsSchema(["block", "blob"]));
 
 const outputSchema = serializedTransactionSchema;
 export const getByHash = publicProcedure
@@ -34,47 +34,30 @@ export const getByHash = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
-  .query(
-    async ({
-      ctx: { blobStorageManager, expands, prisma },
-      input: { hash },
-    }) => {
-      const dbTx = (await prisma.transaction.findUnique({
-        select: createTransactionSelect(expands),
-        where: { hash },
-      })) as unknown as IncompletedTransaction;
+  .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
+    const dbTx = (await prisma.transaction.findUnique({
+      select: createTransactionSelect(expands),
+      where: { hash },
+    })) as unknown as IncompletedTransaction;
 
-      if (!dbTx) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No transaction with hash '${hash}'.`,
-        });
-      }
-
-      if (expands.blobData) {
-        await Promise.all(
-          dbTx.blobs.map(async ({ blob }) => {
-            if (blob?.dataStorageReferences?.length) {
-              const data = await retrieveBlobData(blobStorageManager, blob);
-
-              blob.data = data;
-            }
-          })
-        );
-      }
-
-      const txFeeFields = calculateTxFeeFields({
-        blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
-        blobGasUsed: dbTx.blobGasUsed,
-        gasPrice: dbTx.gasPrice,
-        maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
-        blobGasPrice: dbTx.block.blobGasPrice,
+    if (!dbTx) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No transaction with hash '${hash}'.`,
       });
-      const tx = {
-        ...dbTx,
-        ...txFeeFields,
-      };
-
-      return serializeTransaction(tx);
     }
-  );
+
+    const txFeeFields = calculateTxFeeFields({
+      blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
+      blobGasUsed: dbTx.blobGasUsed,
+      gasPrice: dbTx.gasPrice,
+      maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
+      blobGasPrice: dbTx.block.blobGasPrice,
+    });
+    const tx = {
+      ...dbTx,
+      ...txFeeFields,
+    };
+
+    return serializeTransaction(tx);
+  });

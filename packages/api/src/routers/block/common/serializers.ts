@@ -1,16 +1,15 @@
 import { z } from "@blobscan/zod";
 
 import {
-  serializeExpandedBlobData,
+  serializeExpandedBlob,
   serializeExpandedTransaction,
-  serializedExpandedBlobDataSchema,
+  serializedExpandedBlobSchema,
   serializedExpandedTransactionSchema,
 } from "../../../middlewares/withExpands";
 import {
   blockNumberSchema,
   serializeDate,
   serializeDecimal,
-  serializedBlobDataStorageReferenceSchema,
   slotSchema,
 } from "../../../utils";
 import type { BaseBlock, Block } from "./selects";
@@ -36,11 +35,8 @@ export const serializedBlockSchema = serializedBaseBlockSchema.merge(
             z
               .object({
                 versionedHash: z.string(),
-                dataStorageReferences: z.array(
-                  serializedBlobDataStorageReferenceSchema
-                ),
               })
-              .merge(serializedExpandedBlobDataSchema)
+              .merge(serializedExpandedBlobSchema)
           ),
         })
         .merge(serializedExpandedTransactionSchema)
@@ -82,7 +78,7 @@ export function serializeBlock({
     ({ hash, blobs: blobsOnTxs, ...restTransaction }) => {
       const blobs = blobsOnTxs.map((bTx) => {
         const { blobHash, blob } = bTx;
-        const expandedBlob = blob ? serializeExpandedBlobData(blob) : {};
+        const expandedBlob = blob ? serializeExpandedBlob(blob) : {};
 
         return {
           versionedHash: blobHash,

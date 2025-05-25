@@ -30,6 +30,8 @@ export const env = createEnv({
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
       NODE_ENV: nodeEnvSchema.optional(),
       SECRET_KEY: z.string(),
+      BLOB_DATA_API_ENABLED: booleanSchema.default("true"),
+      BLOB_DATA_API_KEY: z.string().optional(),
       CHAIN_ID: z.coerce.number().positive().default(1),
       DENCUN_FORK_SLOT: z.coerce.number().optional(),
       NETWORK_NAME: networkSchema.default("mainnet"),

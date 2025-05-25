@@ -1593,65 +1593,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
 }
 `;
 
-exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded blob data 1`] = `
-{
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
-  "hash": "blockHash002",
-  "number": 1002,
-  "slot": 102,
-  "timestamp": "2023-05-10T12:00:00.000Z",
-  "transactions": [
-    {
-      "blobs": [
-        {
-          "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
-          "data": "0xf9530408b74b2803432879b5e7fb5fdcbbcf7e71660f2f6a7cbd182eb9db7a026e0d0b",
-          "dataStorageReferences": [
-            {
-              "storage": "postgres",
-              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
-            },
-          ],
-          "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
-          "size": 131072,
-          "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
-        },
-        {
-          "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
-          "data": "0x682a4f046bbcf3a56762c7e719b030ff9c7c0df9181015daffe724296c59d6bb8dfd5c",
-          "dataStorageReferences": [
-            {
-              "storage": "postgres",
-              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
-            },
-          ],
-          "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
-          "size": 131072,
-          "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
-        },
-        {
-          "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
-          "data": "0x6eff1a27d044dc0d6f1d072c75ce47ccc63b5305b424eb4bafd250ad1de4985cd69fbc",
-          "dataStorageReferences": [
-            {
-              "storage": "postgres",
-              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
-            },
-          ],
-          "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
-          "size": 131072,
-          "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
-        },
-      ],
-      "hash": "txHash004",
-    },
-  ],
-}
-`;
-
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
   "blobAsCalldataGasUsed": "255000",
@@ -1672,7 +1613,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
       "blobs": [
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
-          "data": "0xf9530408b74b2803432879b5e7fb5fdcbbcf7e71660f2f6a7cbd182eb9db7a026e0d0b",
           "dataStorageReferences": [
             {
               "storage": "postgres",
@@ -1685,7 +1625,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
-          "data": "0x682a4f046bbcf3a56762c7e719b030ff9c7c0df9181015daffe724296c59d6bb8dfd5c",
           "dataStorageReferences": [
             {
               "storage": "postgres",
@@ -1698,7 +1637,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
-          "data": "0x6eff1a27d044dc0d6f1d072c75ce47ccc63b5305b424eb4bafd250ad1de4985cd69fbc",
           "dataStorageReferences": [
             {
               "storage": "postgres",

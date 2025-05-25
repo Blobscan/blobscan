@@ -42,7 +42,6 @@ type BlobTransactions = Prettify<
 
 export type Blob = Prettify<
   BaseBlob & {
-    data: string;
     transactions?: BlobTransactions[];
   }
 >;

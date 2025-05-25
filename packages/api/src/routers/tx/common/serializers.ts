@@ -5,9 +5,9 @@ import {
   parseDecodedFields,
 } from "../../../blob-parse/parse-decoded-fields";
 import {
-  serializeExpandedBlobData,
+  serializeExpandedBlob,
   serializeExpandedBlock,
-  serializedExpandedBlobDataSchema,
+  serializedExpandedBlobSchema,
   serializedExpandedBlockSchema,
 } from "../../../middlewares/withExpands";
 import {
@@ -42,7 +42,7 @@ const baseSerializedTransactionFieldsSchema = z.object({
         versionedHash: z.string(),
         index: z.number(),
       })
-      .merge(serializedExpandedBlobDataSchema)
+      .merge(serializedExpandedBlobSchema)
   ),
   block: serializedExpandedBlockSchema.optional(),
   decodedFields: decodedFields.optional(),
@@ -89,7 +89,7 @@ export function serializeBaseTransactionFields(
     ...(isEmptyObject(expandedBlock) ? {} : { block: expandedBlock }),
     blobs: dbTx.blobs.map(({ blob, blobHash }) => {
       const serializedExpandedBlobFields = blob
-        ? serializeExpandedBlobData(blob)
+        ? serializeExpandedBlob(blob)
         : {};
 
       return {
