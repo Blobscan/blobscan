@@ -23,7 +23,6 @@ import type {
   MakeRequired,
 } from "~/types";
 import {
-  arrayfy,
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,

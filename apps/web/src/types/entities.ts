@@ -5,7 +5,7 @@ import type {
   Category as CategoryEnum,
 } from "@blobscan/api/enums";
 
-import type { EChartCompliant, MakeRequired } from "./helpers";
+import type { MakeRequired } from "./helpers";
 
 export type BlobStorage = Lowercase<BlobStorageEnum>;
 
@@ -58,7 +58,3 @@ export type DailyStatName = keyof Omit<
 >;
 
 export type OverallStats = RouterOutputs["stats"]["getOverallStats"][number];
-
-export type EChartCompliantDailyStats = EChartCompliant<DailyStats>;
-
-export type EChartCompliantOverallStats = EChartCompliant<OverallStats>;
