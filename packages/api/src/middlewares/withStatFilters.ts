@@ -1,6 +1,8 @@
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
 import { DailyStatsModel } from "@blobscan/db/prisma/zod";
+import { env } from "@blobscan/env";
+import { getNetworkForkTimestamp } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
 
 import type { Category, Rollup } from "../../enums";
@@ -104,7 +106,19 @@ function buildDayWhereClause(
   scope: ContextScope,
   timeFrame: TimeFrame
 ): DayStatFilter["day"] {
-  const days = parseInt(timeFrame.split("d")[0] ?? "1");
+  let days: number;
+
+  console.log(timeFrame);
+  if (timeFrame === "All") {
+    const firstDate = dayjs(getNetworkForkTimestamp(env.NETWORK_NAME));
+
+    days = dayjs().diff(firstDate, "D");
+
+    console.log("here");
+  } else {
+    days = parseInt(timeFrame.split("d")[0] ?? "1");
+  }
+
   const final = dayjs().subtract(1, "day").endOf("day");
   const finalDate = final.toDate();
 

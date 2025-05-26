@@ -67,6 +67,26 @@ export function getNetworkForkBySlot(
   }
 }
 
+export function getNetworkForkTimestamp(network: Network): number {
+  switch (network) {
+    case "mainnet": {
+      return 1710338159;
+    }
+    case "gnosis": {
+      return 1710181965;
+    }
+    case "holesky": {
+      return 1707305700;
+    }
+    case "sepolia": {
+      return 1706655456;
+    }
+    default: {
+      return 1707305700;
+    }
+  }
+}
+
 function getNetworkNameById(networkId: number): Network {
   switch (networkId) {
     case 1:

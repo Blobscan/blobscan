@@ -92,6 +92,35 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
 }
 `;
 
+exports[`Stats router > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 90d 1`] = `
+{
+  "days": [
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobSizes": [
+    "6200",
+    "5900",
+    "4000",
+    "6900",
+  ],
+  "totalBlobs": [
+    6,
+    5,
+    4,
+    5,
+  ],
+  "totalUniqueBlobs": [
+    0,
+    1,
+    0,
+    2,
+  ],
+}
+`;
+
 exports[`Stats router > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
 {
   "days": [
@@ -125,7 +154,7 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
 }
 `;
 
-exports[`Stats router > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 360d 1`] = `
+exports[`Stats router > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for 365d 1`] = `
 {
   "days": [
     2022-10-16T00:00:00.000Z,
@@ -159,6 +188,15 @@ exports[`Stats router > getBlobDailyStats > when getting stats for a specific ti
     0,
     2,
   ],
+}
+`;
+
+exports[`Stats router > getBlobDailyStats > when getting stats for a specific timeframe > should get daily stats for All 1`] = `
+{
+  "days": [],
+  "totalBlobSizes": [],
+  "totalBlobs": [],
+  "totalUniqueBlobs": [],
 }
 `;
 
@@ -344,6 +382,65 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
 }
 `;
 
+exports[`Stats router > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 90d 1`] = `
+{
+  "avgBlobAsCalldataFees": [
+    22000,
+    22000,
+    20000,
+    22000,
+  ],
+  "avgBlobFees": [
+    8650752,
+    2883584,
+    5242880,
+    4805973.333333333,
+  ],
+  "avgBlobGasPrices": [
+    22,
+    22,
+    20,
+    22,
+  ],
+  "days": [
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalBlobAsCalldataFees": [
+    44000n,
+    110000n,
+    40000n,
+    66000n,
+  ],
+  "totalBlobAsCalldataGasUsed": [
+    2000n,
+    5000n,
+    2000n,
+    3000n,
+  ],
+  "totalBlobFees": [
+    17301504n,
+    14417920n,
+    10485760n,
+    14417920n,
+  ],
+  "totalBlobGasUsed": [
+    786432n,
+    655360n,
+    524288n,
+    655360n,
+  ],
+  "totalBlocks": [
+    1,
+    1,
+    1,
+    3,
+  ],
+}
+`;
+
 exports[`Stats router > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
 {
   "avgBlobAsCalldataFees": [
@@ -412,7 +509,7 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
 }
 `;
 
-exports[`Stats router > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 360d 1`] = `
+exports[`Stats router > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for 365d 1`] = `
 {
   "avgBlobAsCalldataFees": [
     24200,
@@ -486,6 +583,20 @@ exports[`Stats router > getBlockDailyStats > when getting stats for a specific t
     1,
     3,
   ],
+}
+`;
+
+exports[`Stats router > getBlockDailyStats > when getting stats for a specific timeframe > should get daily stats for All 1`] = `
+{
+  "avgBlobAsCalldataFees": [],
+  "avgBlobFees": [],
+  "avgBlobGasPrices": [],
+  "days": [],
+  "totalBlobAsCalldataFees": [],
+  "totalBlobAsCalldataGasUsed": [],
+  "totalBlobFees": [],
+  "totalBlobGasUsed": [],
+  "totalBlocks": [],
 }
 `;
 
@@ -599,6 +710,41 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
 }
 `;
 
+exports[`Stats router > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 90d 1`] = `
+{
+  "avgMaxBlobGasFees": [
+    100,
+    100,
+    100,
+    100,
+  ],
+  "days": [
+    2023-08-03T00:00:00.000Z,
+    2023-08-20T00:00:00.000Z,
+    2023-08-28T00:00:00.000Z,
+    2023-08-31T00:00:00.000Z,
+  ],
+  "totalTransactions": [
+    2,
+    5,
+    2,
+    3,
+  ],
+  "totalUniqueReceivers": [
+    1,
+    3,
+    1,
+    2,
+  ],
+  "totalUniqueSenders": [
+    1,
+    5,
+    2,
+    3,
+  ],
+}
+`;
+
 exports[`Stats router > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 180d 1`] = `
 {
   "avgMaxBlobGasFees": [
@@ -639,7 +785,7 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
 }
 `;
 
-exports[`Stats router > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 360d 1`] = `
+exports[`Stats router > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for 365d 1`] = `
 {
   "avgMaxBlobGasFees": [
     110,
@@ -681,5 +827,15 @@ exports[`Stats router > getTransactionDailyStats > when getting stats for a spec
     2,
     3,
   ],
+}
+`;
+
+exports[`Stats router > getTransactionDailyStats > when getting stats for a specific timeframe > should get daily stats for All 1`] = `
+{
+  "avgMaxBlobGasFees": [],
+  "days": [],
+  "totalTransactions": [],
+  "totalUniqueReceivers": [],
+  "totalUniqueSenders": [],
 }
 `;
