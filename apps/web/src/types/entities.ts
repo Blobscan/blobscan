@@ -66,3 +66,5 @@ export type OverallStats = RouterOutputs["stats"]["getOverallStats"];
 export type EChartCompliantDailyStats = EChartCompliant<DailyStats>;
 
 export type EChartCompliantOverallStats = EChartCompliant<OverallStats>;
+
+export type RollupDailyStats = RouterOutputs["stats"]["getRollupDailyStats"];

@@ -3,7 +3,7 @@ import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
 
-const zodExpandEnums = ["blob", "blob_data", "block", "transaction"] as const;
+const zodExpandEnums = ["blob", "block", "transaction"] as const;
 
 export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 
@@ -79,7 +79,6 @@ export type ExpandSelect<T> = { select: T };
 export type Expands = Partial<{
   transaction: ExpandSelect<typeof expandedTransactionSelect>;
   blob: ExpandSelect<typeof expandedBlobSelect>;
-  blobData: boolean;
   block: ExpandSelect<typeof expandedBlockSelect>;
 }>;
 
@@ -105,7 +104,6 @@ export function createExpandsSchema(allowedExpands: ZodExpand[]) {
 
 const allExpandKeysSchema = createExpandsSchema([
   "blob",
-  "blob_data",
   "block",
   "transaction",
 ]);
@@ -128,12 +126,6 @@ export const withExpands = t.middleware(({ next, input }) => {
       case "blob":
         exp.blob = { select: expandedBlobSelect };
         break;
-      case "blob_data": {
-        exp.blobData = true;
-        // We need to expand the blob data as well
-        exp.blob = { select: expandedBlobSelect };
-        break;
-      }
       case "block":
         exp.block = { select: expandedBlockSelect };
         break;

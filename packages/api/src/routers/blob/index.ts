@@ -8,7 +8,7 @@ import { getCount } from "./getCount";
 export const blobRouter = t.router({
   createWeaveVMReferences,
   getAll,
-  getByBlobId,
   getBlobDataByBlobId,
+  getByBlobId,
   getCount,
 });

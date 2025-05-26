@@ -7,7 +7,7 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { normalize, retrieveBlobData } from "../../utils";
+import { normalize } from "../../utils";
 import type { CompletePrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
@@ -19,7 +19,7 @@ const inputSchema = z
   .object({
     hash: z.string(),
   })
-  .merge(createExpandsSchema(["block", "blob", "blob_data"]));
+  .merge(createExpandsSchema(["block", "blob"]));
 
 const outputSchema = responseTransactionSchema.transform(normalize);
 
@@ -35,35 +35,18 @@ export const getByHash = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
-  .query(
-    async ({
-      ctx: { blobStorageManager, expands, prisma },
-      input: { hash },
-    }) => {
-      const prismaTx = (await prisma.transaction.findUnique({
-        select: createTransactionSelect(expands),
-        where: { hash },
-      })) as unknown as CompletePrismaTransaction | null;
+  .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
+    const prismaTx = (await prisma.transaction.findUnique({
+      select: createTransactionSelect(expands),
+      where: { hash },
+    })) as unknown as CompletePrismaTransaction | null;
 
-      if (!prismaTx) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `No transaction with hash '${hash}'.`,
-        });
-      }
-
-      if (expands.blobData) {
-        await Promise.all(
-          prismaTx.blobs.map(async ({ blob }) => {
-            if (blob?.dataStorageReferences?.length) {
-              const data = await retrieveBlobData(blobStorageManager, blob);
-
-              blob.data = data;
-            }
-          })
-        );
-      }
-
-      return toResponseTransaction(prismaTx);
+    if (!prismaTx) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `No transaction with hash '${hash}'.`,
+      });
     }
-  );
+
+    return toResponseTransaction(prismaTx);
+  });

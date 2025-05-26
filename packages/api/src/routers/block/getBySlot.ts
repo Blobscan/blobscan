@@ -16,7 +16,7 @@ const inputSchema = z
   .object({
     slot: z.coerce.number().int().positive(),
   })
-  .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
+  .merge(createExpandsSchema(["transaction", "blob"]));
 
 const outputSchema = responseBlockSchema.transform(normalize);
 

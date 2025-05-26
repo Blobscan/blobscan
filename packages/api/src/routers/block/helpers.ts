@@ -10,7 +10,6 @@ import type {
 import type { Filters } from "../../middlewares/withFilters";
 import type { Prettify } from "../../types";
 import { isFullyDefined } from "../../utils";
-import { retrieveBlobData } from "../../utils";
 import {
   deriveTransactionFields,
   normalizePrismaBlobFields,
@@ -157,7 +156,6 @@ function buildBlockWhereClause(
 export async function fetchBlock(
   blockId: BlockIdField,
   {
-    blobStorageManager,
     prisma,
     filters,
     expands,
@@ -178,24 +176,6 @@ export async function fetchBlock(
 
   if (!prismaBlock) {
     return;
-  }
-
-  if (expands.blobData) {
-    await Promise.all(
-      prismaBlock.transactions
-        .flatMap((tx) => tx.blobs)
-        .map(async ({ blobHash, blob }) => {
-          const dataStorageReferences = blob?.dataStorageReferences;
-          if (dataStorageReferences) {
-            const data = await retrieveBlobData(blobStorageManager, {
-              dataStorageReferences,
-              versionedHash: blobHash,
-            });
-
-            blob.data = data;
-          }
-        })
-    );
   }
 
   return prismaBlock;

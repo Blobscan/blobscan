@@ -62,7 +62,8 @@ jobs:
         id: meta_api
         uses: docker/metadata-action@v5
         with:
-          images: blossomlabs/blobscan-api
+          images: |
+            blossomlabs/blobscan-api
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -87,7 +88,8 @@ jobs:
         id: meta_web
         uses: docker/metadata-action@v5
         with:
-          images: blossomlabs/blobscan-web
+          images: |
+            blossomlabs/blobscan-web
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}

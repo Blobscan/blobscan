@@ -7,7 +7,7 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { normalize, retrieveBlobData } from "../../utils";
+import { normalize } from "../../utils";
 import type { CompletePrismaBlob } from "./helpers";
 import {
   responseBlobSchema,
@@ -36,7 +36,7 @@ export const getByBlobId = publicProcedure
   .input(inputSchema)
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx: { prisma, blobStorageManager, expands }, input }) => {
+  .query(async ({ ctx: { prisma, expands }, input }) => {
     const { id } = input;
 
     const prismaBlob = (await prisma.blob.findFirst({
@@ -53,7 +53,5 @@ export const getByBlobId = publicProcedure
       });
     }
 
-    const blobData = await retrieveBlobData(blobStorageManager, prismaBlob);
-
-    return toResponseBlob(prismaBlob, blobData);
+    return toResponseBlob(prismaBlob);
   });

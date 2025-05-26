@@ -9,10 +9,10 @@ export function stringify<T>(v: T): Stringified<T> {
     return v.map((item) => stringify(item)) as Stringified<T>;
   }
   if (v && typeof v === "object") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result: any = {};
+    const result = {} as Stringified<T>;
+
     for (const [key, value] of Object.entries(v)) {
-      result[key] = stringify(value);
+      result[key as keyof Stringified<T>] = stringify(value);
     }
     return result;
   }
