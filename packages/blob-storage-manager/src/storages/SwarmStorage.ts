@@ -68,17 +68,42 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    const response = await this._beeClient.uploadFile(
-      this.batchId,
-      data,
-      this.getBlobFilePath(versionedHash),
-      {
-        contentType: "text/plain",
-        deferred: env.SWARM_DEFERRED_UPLOAD,
-      }
-    );
+    try {
+      const response = await this._beeClient.uploadFile(
+        this.batchId,
+        data,
+        this.getBlobFilePath(versionedHash),
+        {
+          // contentType: "text/plain",
+          deferred: env.SWARM_DEFERRED_UPLOAD,
+        }
+      );
 
-    return response.reference.toString();
+      return response.reference.toString();
+    } catch (err) {
+      // Enhanced error reporting for HTTP errors
+      if (err instanceof Error) {
+        const errorMsg = `Failed to store blob with hash "${versionedHash}" to Swarm`;
+        let detailedMsg = errorMsg;
+        detailedMsg += ` - Endpoint: ${this._beeClient.url}`;
+        detailedMsg += ` - Batch ID: ${this.batchId}`;
+
+        if (err.cause && typeof err.cause === 'object' && 'response' in err.cause) {
+          const axiosErr = err.cause as { response?: { status?: number; statusText?: string; data?: unknown } };
+          if (axiosErr.response) {
+            detailedMsg += ` - Response: ${axiosErr.response.status} ${axiosErr.response.statusText || ''}`;
+            if (axiosErr.response.data) {
+              detailedMsg += ` - Details: ${JSON.stringify(axiosErr.response.data)}`;
+            }
+          }
+        }
+
+        throw new Error(detailedMsg, { cause: err });
+      }
+
+      // If not an Error instance, just re-throw
+      throw err;
+    }
   }
 
   getBlobUri(_: string) {
