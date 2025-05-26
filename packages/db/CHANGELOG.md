@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.17.0
+
+### Minor Changes
+
+- [#743](https://github.com/Blobscan/blobscan/pull/743) [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for zod-prisma to generate a zod schema for every Prisma model
+
 ## 0.16.0
 
 ### Minor Changes
