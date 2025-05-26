@@ -41,6 +41,7 @@ const Blob: NextPage = function () {
   } = api.blob.getByBlobId.useQuery(
     {
       id: versionedHash,
+      expand: "transaction",
     },
     {
       enabled: router.isReady,
@@ -190,7 +191,7 @@ const Blob: NextPage = function () {
       name: "Transactions and Blocks",
       value: (
         <div className="grid w-full grid-cols-3 gap-x-6 gap-y-3">
-          {blob.transactions.map(({ hash: txHash, blockNumber }) => (
+          {blob.transactions.map(({ txHash, blockNumber }) => (
             <Fragment key={`${txHash}-${blockNumber}`}>
               <div className="col-span-2 flex gap-1">
                 <div className="text-contentSecondary-light dark:text-contentSecondary-dark">

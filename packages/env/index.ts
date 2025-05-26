@@ -1,16 +1,35 @@
 import type { RefinementCtx } from "@blobscan/zod";
 import {
   z,
-  blobStorageSchema,
   booleanSchema,
   createEnv,
   presetEnvOptions,
-  nodeEnvSchema,
   maskPassword,
-  networkSchema,
   maskSensitiveData,
-  prismaBatchOperationsMaxSizeSchema,
 } from "@blobscan/zod";
+
+const nodeEnvSchema = z.enum(["development", "test", "production"]);
+
+const blobStorageSchema = z.enum([
+  "FILE_SYSTEM",
+  "GOOGLE",
+  "POSTGRES",
+  "SWARM",
+] as const);
+
+const networkSchema = z.enum([
+  "mainnet",
+  "holesky",
+  "sepolia",
+  "gnosis",
+  "chiado",
+  "devnet",
+]);
+
+const prismaBatchOperationsMaxSizeSchema = z.coerce
+  .number()
+  .positive()
+  .default(100_000);
 
 function requireIfEnvEnabled(envName: string) {
   return (value: unknown, ctx: RefinementCtx) => {

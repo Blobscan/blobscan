@@ -2,16 +2,6 @@ import type { Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
-import {
-  categorySchema,
-  rollupSchema,
-  serializeBlobDataStorageReferences,
-  serializeDecimal,
-  serializeRollup,
-  serializedBlobDataStorageReferenceSchema,
-  slotSchema,
-} from "../utils";
-import type { TransactionFeeFields } from "../utils";
 
 const zodExpandEnums = ["blob", "block", "transaction"] as const;
 
@@ -20,6 +10,7 @@ export type ZodExpandEnum = (typeof zodExpandEnums)[number];
 const expandedTransactionSelect = {
   blobAsCalldataGasUsed: true,
   blobGasUsed: true,
+  fromId: true,
   from: {
     select: {
       address: true,
@@ -30,6 +21,7 @@ const expandedTransactionSelect = {
   gasPrice: true,
   maxFeePerBlobGas: true,
   index: true,
+  decodedFields: true,
 } satisfies Prisma.TransactionSelect;
 
 export const expandedBlobSelect = {
@@ -40,6 +32,9 @@ export const expandedBlobSelect = {
     select: {
       blobStorage: true,
       dataReference: true,
+    },
+    orderBy: {
+      blobStorage: "asc",
     },
   },
 } satisfies Prisma.BlobSelect;
@@ -56,10 +51,18 @@ export type ExpandedBlock = Prisma.BlockGetPayload<{
   select: typeof expandedBlockSelect;
 }>;
 
+export type ExpandedBaseTransaction = Prisma.TransactionGetPayload<{
+  select: typeof expandedTransactionSelect;
+}>;
 export type ExpandedTransaction = Prisma.TransactionGetPayload<{
   select: typeof expandedTransactionSelect;
-}> &
-  Partial<TransactionFeeFields>;
+}> & {
+  decodedFields: NonNullable<
+    Prisma.TransactionGetPayload<{
+      select: typeof expandedTransactionSelect;
+    }>["decodedFields"]
+  >;
+};
 
 export type ExpandedBlob = Prisma.BlobGetPayload<{
   select: typeof expandedBlobSelect;
@@ -73,191 +76,11 @@ export type ZodExpand = (typeof zodExpandEnums)[number];
 
 export type ExpandSelect<T> = { select: T };
 
-export type Expands = {
-  transaction?: ExpandSelect<typeof expandedTransactionSelect>;
-  blob?: ExpandSelect<typeof expandedBlobSelect>;
-  block?: ExpandSelect<typeof expandedBlockSelect>;
-};
-
-export const serializedExpandedBlockSchema = z.object({
-  blobGasUsed: z.string().optional(),
-  blobAsCalldataGasUsed: z.string().optional(),
-  blobGasPrice: z.string().optional(),
-  excessBlobGas: z.string().optional(),
-  slot: slotSchema.optional(),
-});
-
-export const serializedExpandedBlobSchema = z.object({
-  commitment: z.string().optional(),
-  proof: z.string().optional(),
-  size: z.number().optional(),
-  dataStorageReferences: z
-    .array(serializedBlobDataStorageReferenceSchema)
-    .optional(),
-  index: z.number().nonnegative().optional(),
-});
-
-export const serializedExpandedTransactionSchema = z
-  .object({
-    from: z.string().optional(),
-    to: z.string().optional(),
-    maxFeePerBlobGas: z.string().optional(),
-    blobAsCalldataGasUsed: z.string().optional(),
-    blobGasUsed: z.string().optional(),
-    category: categorySchema.optional(),
-    rollup: rollupSchema.nullable().optional(),
-    index: z.number().nonnegative().optional(),
-  })
-  .merge(
-    z.object({
-      blobAsCalldataGasFee: z.string().optional(),
-      blobGasBaseFee: z.string().optional(),
-      blobGasMaxFee: z.string().optional(),
-    })
-  );
-
-export type SerializedExpandedBlob = z.infer<
-  typeof serializedExpandedBlobSchema
->;
-
-export type SerializedExpandedBlock = z.infer<
-  typeof serializedExpandedBlockSchema
->;
-export type SerializedExpandedTransaction = z.infer<
-  typeof serializedExpandedTransactionSchema
->;
-
-export function serializeExpandedBlob(
-  blob: Partial<ExpandedBlob>
-): SerializedExpandedBlob {
-  const { commitment, proof, size, dataStorageReferences } = blob;
-  const expandedBlob: SerializedExpandedBlob = {};
-
-  if (commitment) {
-    expandedBlob.commitment = commitment;
-  }
-
-  if (proof) {
-    expandedBlob.proof = proof;
-  }
-
-  if (size) {
-    expandedBlob.size = size;
-  }
-
-  if (dataStorageReferences) {
-    expandedBlob.dataStorageReferences = serializeBlobDataStorageReferences(
-      dataStorageReferences
-    );
-  }
-
-  return expandedBlob;
-}
-
-export function serializeExpandedBlock(
-  block: Partial<ExpandedBlock>
-): SerializedExpandedBlock {
-  const {
-    blobGasPrice,
-    blobAsCalldataGasUsed,
-    blobGasUsed,
-    excessBlobGas,
-    slot,
-  } = block;
-  const expandedBlock: SerializedExpandedBlock = {};
-
-  if (blobGasPrice) {
-    expandedBlock.blobGasPrice = serializeDecimal(blobGasPrice);
-  }
-
-  if (blobAsCalldataGasUsed) {
-    expandedBlock.blobAsCalldataGasUsed = serializeDecimal(
-      blobAsCalldataGasUsed
-    );
-  }
-
-  if (blobGasUsed) {
-    expandedBlock.blobGasUsed = serializeDecimal(blobGasUsed);
-  }
-
-  if (excessBlobGas) {
-    expandedBlock.excessBlobGas = serializeDecimal(excessBlobGas);
-  }
-
-  if (slot) {
-    expandedBlock.slot = slot;
-  }
-
-  return expandedBlock;
-}
-
-export function serializeExpandedTransaction(
-  transaction: Partial<ExpandedTransaction>
-): SerializedExpandedTransaction {
-  const {
-    blobAsCalldataGasUsed,
-    maxFeePerBlobGas,
-    from,
-    toId,
-    blobAsCalldataGasFee,
-    blobGasBaseFee,
-    blobGasMaxFee,
-    blobGasUsed,
-    index,
-  } = transaction;
-  const expandedTransaction: SerializedExpandedTransaction = {};
-
-  if (blobAsCalldataGasUsed) {
-    expandedTransaction.blobAsCalldataGasUsed = serializeDecimal(
-      blobAsCalldataGasUsed
-    );
-  }
-
-  if (maxFeePerBlobGas) {
-    expandedTransaction.maxFeePerBlobGas = serializeDecimal(maxFeePerBlobGas);
-  }
-
-  if (from) {
-    if (from.address) {
-      expandedTransaction.from = from.address;
-    }
-
-    if (from.rollup) {
-      expandedTransaction.rollup = serializeRollup(from.rollup);
-
-      expandedTransaction.category = "rollup";
-    } else {
-      expandedTransaction.category = "other";
-    }
-  }
-
-  if (toId) {
-    expandedTransaction.to = toId;
-  }
-
-  if (blobGasBaseFee) {
-    expandedTransaction.blobGasBaseFee = serializeDecimal(blobGasBaseFee);
-  }
-
-  if (blobGasMaxFee) {
-    expandedTransaction.blobGasMaxFee = serializeDecimal(blobGasMaxFee);
-  }
-
-  if (blobGasUsed) {
-    expandedTransaction.blobGasUsed = serializeDecimal(blobGasUsed);
-  }
-
-  if (blobAsCalldataGasFee) {
-    expandedTransaction.blobAsCalldataGasFee =
-      serializeDecimal(blobAsCalldataGasFee);
-  }
-
-  if (index !== undefined && index !== null) {
-    expandedTransaction.index = index;
-  }
-
-  return expandedTransaction;
-}
+export type Expands = Partial<{
+  transaction: ExpandSelect<typeof expandedTransactionSelect>;
+  blob: ExpandSelect<typeof expandedBlobSelect>;
+  block: ExpandSelect<typeof expandedBlockSelect>;
+}>;
 
 export function createExpandsSchema(allowedExpands: ZodExpand[]) {
   return z.object({

@@ -13,19 +13,21 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields } from "../../utils";
-import type { Block } from "./common";
-import {
-  createBlockSelect,
-  serializeBlock,
-  serializedBlockSchema,
-} from "./common";
+import { normalize } from "../../utils";
 import { countBlocks } from "./getCount";
+import type { CompletePrismaBlock } from "./helpers";
+import {
+  responseBlockSchema,
+  createBlockSelect,
+  toResponseBlock,
+} from "./helpers";
 
-const outputSchema = z.object({
-  blocks: serializedBlockSchema.array(),
-  totalBlocks: z.number().optional(),
-});
+const outputSchema = z
+  .object({
+    blocks: responseBlockSchema.array(),
+    totalBlocks: z.number().optional(),
+  })
+  .transform(normalize);
 
 export const getAll = publicProcedure
   .meta({
@@ -69,47 +71,12 @@ export const getAll = publicProcedure
       ? countBlocks(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [queriedBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
+    const [prismaBlocks, totalBlocks] = await Promise.all([blocksOp, countOp]);
 
-    let blocks: Block[] = queriedBlocks as unknown as Block[];
-
-    if (expands.transaction) {
-      blocks = blocks.map((block) => ({
-        ...block,
-        transactions: block.transactions.map((tx) => {
-          const {
-            maxFeePerBlobGas,
-            blobAsCalldataGasUsed,
-            gasPrice,
-            blobGasUsed,
-          } = tx;
-
-          const derivedTxFields =
-            maxFeePerBlobGas && blobAsCalldataGasUsed && gasPrice && blobGasUsed
-              ? calculateTxFeeFields({
-                  blobAsCalldataGasUsed,
-                  blobGasUsed,
-                  gasPrice,
-                  blobGasPrice: block.blobGasPrice,
-                  maxFeePerBlobGas,
-                })
-              : {};
-
-          return {
-            ...tx,
-            ...derivedTxFields,
-          };
-        }),
-      }));
-    }
-
-    const output: z.infer<typeof outputSchema> = {
-      blocks: blocks.map(serializeBlock),
+    return {
+      blocks: prismaBlocks.map((prismaBlock) =>
+        toResponseBlock(prismaBlock as unknown as CompletePrismaBlock)
+      ),
+      ...(count ? { totalBlocks } : {}),
     };
-
-    if (count) {
-      output.totalBlocks = totalBlocks;
-    }
-
-    return output;
   });

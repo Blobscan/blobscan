@@ -7,13 +7,13 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields } from "../../utils";
-import type { IncompletedTransaction } from "./common";
+import { normalize } from "../../utils";
+import type { CompletePrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
-  serializeTransaction,
-  serializedTransactionSchema,
-} from "./common";
+  responseTransactionSchema,
+  toResponseTransaction,
+} from "./helpers";
 
 const inputSchema = z
   .object({
@@ -21,7 +21,8 @@ const inputSchema = z
   })
   .merge(createExpandsSchema(["block", "blob"]));
 
-const outputSchema = serializedTransactionSchema;
+const outputSchema = responseTransactionSchema.transform(normalize);
+
 export const getByHash = publicProcedure
   .meta({
     openapi: {
@@ -35,29 +36,17 @@ export const getByHash = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
-    const dbTx = (await prisma.transaction.findUnique({
+    const prismaTx = (await prisma.transaction.findUnique({
       select: createTransactionSelect(expands),
       where: { hash },
-    })) as unknown as IncompletedTransaction;
+    })) as unknown as CompletePrismaTransaction | null;
 
-    if (!dbTx) {
+    if (!prismaTx) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No transaction with hash '${hash}'.`,
       });
     }
 
-    const txFeeFields = calculateTxFeeFields({
-      blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
-      blobGasUsed: dbTx.blobGasUsed,
-      gasPrice: dbTx.gasPrice,
-      maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
-      blobGasPrice: dbTx.block.blobGasPrice,
-    });
-    const tx = {
-      ...dbTx,
-      ...txFeeFields,
-    };
-
-    return serializeTransaction(tx);
+    return toResponseTransaction(prismaTx);
   });

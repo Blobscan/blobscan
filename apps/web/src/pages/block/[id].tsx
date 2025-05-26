@@ -1,7 +1,5 @@
-import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import type { NextRouter } from "next/router";
 
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
@@ -21,7 +19,6 @@ import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
-  deserializeFullBlock,
   formatBytes,
   formatNumber,
   formatTimestamp,
@@ -29,26 +26,18 @@ import {
   pluralize,
 } from "~/utils";
 
-function performBlockQuery(router: NextRouter) {
+const Block: NextPage = function () {
+  const router = useRouter();
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
-
-  return api.block.getByBlockId.useQuery<BlockWithExpandedBlobsAndTransactions>(
+  const {
+    data: blockData,
+    error,
+    isLoading,
+  } = api.block.getByBlockId.useQuery<BlockWithExpandedBlobsAndTransactions>(
     { id: blockNumberOrHash ?? "", expand: "transaction,blob" },
     { enabled: isReady }
   );
-}
-
-const Block: NextPage = function () {
-  const router = useRouter();
-  const { data: rawBlockData, error, isLoading } = performBlockQuery(router);
-  const blockData = useMemo(() => {
-    if (!rawBlockData) {
-      return;
-    }
-
-    return deserializeFullBlock(rawBlockData);
-  }, [rawBlockData]);
 
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
   const blockNumber = blockData ? blockData.number : undefined;

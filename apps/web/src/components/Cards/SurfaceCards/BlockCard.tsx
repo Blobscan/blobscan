@@ -1,30 +1,26 @@
 import { useMemo } from "react";
 import type { FC } from "react";
 
-import type dayjs from "@blobscan/dayjs";
-
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
-import type { Rollup } from "~/types";
-import { buildBlockRoute } from "~/utils";
+import type { Block, Rollup } from "~/types";
+import { buildBlockRoute, normalizeTimestamp } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
 
 type BlockCardProps = {
   className?: string;
-  block: {
-    hash: string;
-    number: number;
-    blobGasPrice: bigint;
-    blobGasUsed: bigint;
-    timestamp: dayjs.Dayjs;
-    transactions: {
-      rollup?: Rollup | null;
-      blobs: { versionedHash: string }[];
-    }[];
-  };
+  block: Pick<
+    Block,
+    | "hash"
+    | "number"
+    | "blobGasPrice"
+    | "blobGasUsed"
+    | "timestamp"
+    | "transactions"
+  >;
 };
 
 const BlockCard: FC<Partial<BlockCardProps>> = function ({
@@ -61,7 +57,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
       </div>
       {timestamp ? (
         <div className="text-xs italic text-contentSecondary-light dark:text-contentSecondary-dark">
-          {timestamp.fromNow()}
+          {normalizeTimestamp(timestamp).fromNow()}
         </div>
       ) : (
         <Skeleton width={110} size="xs" />

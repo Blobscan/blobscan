@@ -1,19 +1,15 @@
+import { BlockchainSyncStateModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
-import { blockHashSchema, slotSchema } from "../../utils";
+import { normalize } from "../../utils";
 import { BASE_PATH } from "./common";
 
 export const inputSchema = z.void();
 
-export const outputSchema = z.object({
-  lastAggregatedBlock: z.number().nullable(),
-  lastFinalizedBlock: z.number().nullable(),
-  lastLowerSyncedSlot: slotSchema.nullable(),
-  lastUpperSyncedSlot: slotSchema.nullable(),
-  lastUpperSyncedBlockRoot: blockHashSchema.nullable(),
-  lastUpperSyncedBlockSlot: slotSchema.nullable(),
-});
+export const outputSchema = BlockchainSyncStateModel.omit({
+  id: true,
+}).transform(normalize);
 
 export const getState = publicProcedure
   .meta({

@@ -9,6 +9,8 @@ const inputSchema = z.object({
   blobHashes: z.array(z.string()),
 });
 
+const outputSchema = z.void();
+
 export const createWeaveVMReferences = createAuthedProcedure("weavevm")
   .meta({
     openapi: {
@@ -20,7 +22,7 @@ export const createWeaveVMReferences = createAuthedProcedure("weavevm")
     },
   })
   .input(inputSchema)
-  .output(z.void())
+  .output(outputSchema)
   .mutation(async ({ ctx: { prisma }, input: { blobHashes } }) => {
     if (!blobHashes.length) {
       return;

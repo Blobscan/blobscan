@@ -12,6 +12,13 @@ generator enum {
   provider = "ts-node --transpile-only ./prisma/enum-generator"
 }
 
+generator zod {
+  provider              = "zod-prisma"
+  output                = "./zod"
+  imports               = "./zod-utils"
+  prismaJsonNullability = false
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -109,11 +116,17 @@ enum Rollup {
 
 model BlockchainSyncState {
   id                       Int     @id @default(autoincrement())
+  /// @zod.nonnegative()
   lastAggregatedBlock      Int?    @map("last_aggregated_block")
+  /// @zod.nonnegative()
   lastFinalizedBlock       Int?    @map("last_finalized_block")
+  /// @zod.nonnegative()
   lastLowerSyncedSlot      Int?    @map("last_lower_synced_slot")
+  /// @zod.nonnegative()
   lastUpperSyncedSlot      Int?    @map("last_upper_synced_slot")
+  /// @zod.custom(imports.blockHashSchema)
   lastUpperSyncedBlockRoot String? @map("last_upper_synced_block_root")
+  /// @zod.nonnegative()
   lastUpperSyncedBlockSlot Int?    @map("last_upper_synced_block_slot")
 
   @@map("blockchain_sync_state")
@@ -140,7 +153,9 @@ model EthUsdPriceFeedState {
 model Address {
   address                    String   @id
   rollup                     Rollup?
+  /// @zod.nonnegative()
   firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  /// @zod.nonnegative()
   firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
   insertedAt                 DateTime @default(now()) @map("inserted_at")
   updatedAt                  DateTime @default(now()) @map("updated_at")
@@ -161,6 +176,7 @@ model Blob {
   commitment       String   @unique
   proof            String
   size             Int
+  /// @zod.nonnegative()
   firstBlockNumber Int?     @map("first_block_number")
   insertedAt       DateTime @default(now()) @map("inserted_at")
   updatedAt        DateTime @default(now()) @map("updated_at")
@@ -194,12 +210,18 @@ model BlobDataStorageReference {
 
 model Block {
   hash                  String   @id
+  /// @zod.nonnegative()
   number                Int
   timestamp             DateTime @unique
+  /// @zod.nonnegative()
   slot                  Int      @unique
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   excessBlobGas         Decimal  @map("excess_blob_gas") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   blobGasPrice          Decimal  @map("blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
@@ -218,15 +240,22 @@ model Transaction {
   fromId                String   @map("from_id")
   toId                  String   @map("to_id")
   blockHash             String   @map("block_hash")
+  /// @zod.nonnegative()
   blockNumber           Int      @map("block_number")
   blockTimestamp        DateTime @map("block_timestamp")
+  /// @zod.nonnegative()
   index                 Int?
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
   insertedAt            DateTime @default(now()) @map("inserted_at")
   updatedAt             DateTime @default(now()) @map("updated_at")
+  /// @zod.custom(imports.decodedFieldsSchema)
   decodedFields         Json     @default("{}") @map("decoded_fields")
 
   blobs BlobsOnTransactions[]
@@ -248,10 +277,13 @@ model Transaction {
 model BlobsOnTransactions {
   blobHash       String   @map("blob_hash")
   blockHash      String   @map("block_hash")
+  /// @zod.nonnegative()
   blockNumber    Int      @map("block_number")
   blockTimestamp DateTime @map("block_timestamp")
   txHash         String   @map("tx_hash")
+  /// @zod.nonnegative()
   txIndex        Int      @map("tx_index")
+  /// @zod.nonnegative()
   index          Int
 
   blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
@@ -285,26 +317,47 @@ model DailyStats {
   day                        DateTime  @db.Date
   category                   Category?
   rollup                     Rollup?
+  /// @zod.nonnegative()
   avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
   avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
   avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  /// @zod.nonnegative()
   avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
   avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
   avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
   totalBlobs                 Int       @default(0) @map("total_blobs")
+  /// @zod.nonnegative()
   totalBlobSize              BigInt    @default(0) @map("total_blob_size")
+  /// @zod.nonnegative()
   totalBlocks                Int       @default(0) @map("total_blocks")
+  /// @zod.nonnegative()
   totalTransactions          Int       @default(0) @map("total_transactions")
+  /// @zod.nonnegative()
   totalUniqueBlobs           Int       @default(0) @map("total_unique_blobs")
+  /// @zod.nonnegative()
   totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  /// @zod.nonnegative()
   totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
 
   @@unique([day, category, rollup])
@@ -315,26 +368,47 @@ model OverallStats {
   id                         Int       @id @default(autoincrement())
   category                   Category?
   rollup                     Rollup?
+  /// @zod.nonnegative()
   avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
   avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
   avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  /// @zod.nonnegative()
   avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
   avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
   avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
   totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
   totalBlobs                 Int       @default(0) @map("total_blobs")
+  /// @zod.nonnegative()
   totalBlobSize              BigInt    @default(0) @map("total_blob_size")
+  /// @zod.nonnegative()
   totalBlocks                Int       @default(0) @map("total_blocks")
+  /// @zod.nonnegative()
   totalTransactions          Int       @default(0) @map("total_transactions")
+  /// @zod.nonnegative()
   totalUniqueBlobs           Int       @default(0) @map("total_unique_blobs")
+  /// @zod.nonnegative()
   totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  /// @zod.nonnegative()
   totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
   updatedAt                  DateTime  @default(now()) @map("updated_at")
 

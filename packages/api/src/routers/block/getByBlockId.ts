@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 
-import { hashSchema, z } from "@blobscan/zod";
+import { blockHashSchema } from "@blobscan/db/prisma/zod-utils";
+import { z } from "@blobscan/zod";
 
 import {
   createExpandsSchema,
@@ -11,12 +12,9 @@ import {
   withTypeFilterSchema,
 } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
-import type { BlockIdField } from "./common";
-import { fetchBlock, serializeBlock, serializedBlockSchema } from "./common";
-
-const blockHashSchema = hashSchema.refine((value) => value.length === 66, {
-  message: "Block hashes must be 66 characters long",
-});
+import { normalize } from "../../utils";
+import type { BlockIdField } from "./helpers";
+import { fetchBlock, toResponseBlock, responseBlockSchema } from "./helpers";
 
 const blockNumberSchema = z.coerce.number().int().positive();
 
@@ -47,7 +45,7 @@ const inputSchema = z
   .merge(withTypeFilterSchema)
   .merge(createExpandsSchema(["transaction", "blob"]));
 
-const outputSchema = serializedBlockSchema;
+const outputSchema = responseBlockSchema.transform(normalize);
 
 export const getByBlockId = publicProcedure
   .meta({
@@ -85,20 +83,20 @@ export const getByBlockId = publicProcedure
         });
       }
 
-      const block = await fetchBlock(blockIdField, {
+      const prismaBlock = await fetchBlock(blockIdField, {
         blobStorageManager,
         prisma,
         filters,
         expands,
       });
 
-      if (!block) {
+      if (!prismaBlock) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `Block with id "${id}" not found`,
         });
       }
 
-      return serializeBlock(block);
+      return toResponseBlock(prismaBlock);
     }
   );

@@ -7,9 +7,13 @@ import {
   withExpands,
 } from "../../middlewares/withExpands";
 import { publicProcedure } from "../../procedures";
-import type { Blob } from "./common/selects";
-import { createBlobSelect } from "./common/selects";
-import { serializeBlob, serializedBlobSchema } from "./common/serializers";
+import { normalize } from "../../utils";
+import type { CompletePrismaBlob } from "./helpers";
+import {
+  responseBlobSchema,
+  createBlobSelect,
+  toResponseBlob,
+} from "./helpers";
 
 const inputSchema = z
   .object({
@@ -17,7 +21,7 @@ const inputSchema = z
   })
   .merge(createExpandsSchema(["transaction", "block"]));
 
-const outputSchema = serializedBlobSchema;
+const outputSchema = responseBlobSchema.transform(normalize);
 
 export const getByBlobId = publicProcedure
   .meta({
@@ -35,19 +39,19 @@ export const getByBlobId = publicProcedure
   .query(async ({ ctx: { prisma, expands }, input }) => {
     const { id } = input;
 
-    const dbBlob = (await prisma.blob.findFirst({
+    const prismaBlob = (await prisma.blob.findFirst({
       select: createBlobSelect(expands),
       where: {
         OR: [{ versionedHash: id }, { commitment: id }],
       },
-    })) as unknown as Blob;
+    })) as unknown as CompletePrismaBlob | null;
 
-    if (!dbBlob) {
+    if (!prismaBlob) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
 
-    return serializeBlob(dbBlob);
+    return toResponseBlob(prismaBlob);
   });

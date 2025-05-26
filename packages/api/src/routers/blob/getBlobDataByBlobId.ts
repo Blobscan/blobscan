@@ -1,16 +1,16 @@
 import { TRPCError } from "@trpc/server";
 
 import type { BlobReference } from "@blobscan/blob-storage-manager";
+import {
+  blobVersionedHashSchema,
+  hexSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure, publicProcedure } from "../../procedures";
-import {
-  blobIdSchema,
-  blobVersionedHashSchema,
-  buildVersionedHash,
-  hexSchema,
-} from "../../utils";
+import { computeVersionedHash, normalize } from "../../utils";
+import { blobIdSchema } from "../../zod-schemas";
 
 const procedure = env.BLOB_DATA_API_KEY?.length
   ? createAuthedProcedure("blob-data")
@@ -20,7 +20,7 @@ const inputSchema = z.object({
   id: blobIdSchema,
 });
 
-const outputSchema = hexSchema;
+const outputSchema = hexSchema.transform(normalize);
 
 export const getBlobDataByBlobId = procedure
   .meta({
@@ -49,7 +49,7 @@ export const getBlobDataByBlobId = procedure
     if (blobVersionedHashSchema.safeParse(id).success) {
       versionedHash = id;
     } else {
-      versionedHash = buildVersionedHash(id);
+      versionedHash = computeVersionedHash(id);
     }
 
     let blobData: string | undefined;
