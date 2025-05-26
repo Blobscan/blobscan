@@ -1,5 +1,12 @@
 # @blobscan/blob-storage-manager
 
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295)]:
+  - @blobscan/db@0.16.0
+
 ## 0.4.2
 
 ### Patch Changes

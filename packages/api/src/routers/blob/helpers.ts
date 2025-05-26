@@ -49,9 +49,7 @@ export const baseBlobOnTransactionSelect = {
 
 type PrismaBlob = Prisma.BlobGetPayload<{
   select: typeof baseBlobSelect;
-}> & {
-  data?: string;
-};
+}>;
 
 type PrismaBlobOnTransaction = Prisma.BlobsOnTransactionsGetPayload<{
   select: typeof baseBlobOnTransactionSelect;
@@ -146,32 +144,30 @@ const responseBlobOnTxSchema = prismaBlobOnTransactionSchema
     txIndex: true,
   });
 
-export const responseBlobSchema = baseBlobSchema
-  .required({ data: true })
-  .extend({
-    transactions: z.array(
-      responseBlobOnTxSchema
-        .merge(
-          baseTransactionSchema
-            .omit({
-              hash: true,
-              blockNumber: true,
-              blockTimestamp: true,
-              blockHash: true,
-            })
-            .partial()
-        )
-        .extend({
-          block: baseBlockSchema
-            .omit({
-              hash: true,
-              number: true,
-              timestamp: true,
-            })
-            .optional(),
-        })
-    ),
-  });
+export const responseBlobSchema = baseBlobSchema.extend({
+  transactions: z.array(
+    responseBlobOnTxSchema
+      .merge(
+        baseTransactionSchema
+          .omit({
+            hash: true,
+            blockNumber: true,
+            blockTimestamp: true,
+            blockHash: true,
+          })
+          .partial()
+      )
+      .extend({
+        block: baseBlockSchema
+          .omit({
+            hash: true,
+            number: true,
+            timestamp: true,
+          })
+          .optional(),
+      })
+  ),
+});
 
 export const responseBlobOnTransactionSchema = responseBlobOnTxSchema
   .merge(baseBlobSchema)
@@ -198,10 +194,7 @@ export type ResponseBlobOnTransaction = z.input<
   typeof responseBlobOnTransactionSchema
 >;
 
-export function toResponseBlob(
-  prismaBlob: CompletePrismaBlob,
-  blobData: string
-): ResponseBlob {
+export function toResponseBlob(prismaBlob: CompletePrismaBlob): ResponseBlob {
   const normalizedPrismaBlob = normalizePrismaBlobFields(prismaBlob);
   const transactions = prismaBlob.transactions.map(
     ({ block, transaction: prismaTx = {}, ...restBlobOnTx }) => {
@@ -226,7 +219,6 @@ export function toResponseBlob(
 
   return {
     ...normalizedPrismaBlob,
-    data: blobData,
     transactions,
   };
 }

@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
@@ -196,56 +196,6 @@ describe("Blob router", () => {
         })
       ).rejects.toMatchSnapshot();
     });
-
-    it("should fail when getting a blob and the blob data is not available", async () => {
-      const blobHash = "blobHash006";
-
-      await ctx.prisma.blobData.delete({
-        where: {
-          id: blobHash,
-        },
-      });
-
-      await expect(
-        caller.blob.getByBlobId({
-          id: blobHash,
-        })
-      ).rejects.toMatchSnapshot();
-    });
-  });
-
-  describe("getBlobDataByBlobId", () => {
-    const versionedHash =
-      "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
-    const unprefixedBlobData = fixtures.blobDatas
-      .find((d) => d.id === versionedHash)
-      ?.data.toString("hex");
-    const expectedBlobData = `0x${unprefixedBlobData}`;
-
-    it("should get data by versioned hash", async () => {
-      const result = await caller.blob.getBlobDataByBlobId({
-        id: versionedHash,
-      });
-
-      expect(result).toEqual(expectedBlobData);
-    });
-
-    it("should get data by kzg commitment", async () => {
-      const commitment =
-        "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
-
-      const result = await caller.blob.getBlobDataByBlobId({
-        id: commitment,
-      });
-
-      expect(result).toEqual(expectedBlobData);
-    });
-
-    blobIdSchemaTestsSuite(async (invalidBlobId) => {
-      await caller.blob.getBlobDataByBlobId({
-        id: invalidBlobId,
-      });
-    });
   });
 
   describe("getCount", () => {
@@ -366,6 +316,98 @@ describe("Blob router", () => {
       const { totalBlobs } = await caller.blob.getCount(queryParamFilters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
+    });
+  });
+
+  describe("getBlobDataByBlobId", () => {
+    let blobDataAuthorizedContext: Awaited<
+      ReturnType<typeof createTestContext>
+    >;
+    let authorizedBlobDataCaller: ReturnType<typeof appRouter.createCaller>;
+    const versionedHash =
+      "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
+    const unprefixedBlobData = fixtures.blobDatas
+      .find((d) => d.id === versionedHash)
+      ?.data.toString("hex");
+    const expectedBlobData = `0x${unprefixedBlobData}`;
+
+    beforeEach(async () => {
+      vi.resetModules();
+      vi.unmock("@blobscan/env");
+
+      blobDataAuthorizedContext = await createTestContext({
+        apiClient: { type: "blob-data" },
+      });
+      authorizedBlobDataCaller = appRouter.createCaller(
+        blobDataAuthorizedContext
+      );
+    });
+
+    describe("when authorized", () => {
+      it("should get data by versioned hash", async () => {
+        const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          id: versionedHash,
+        });
+
+        expect(result).toEqual(expectedBlobData);
+      });
+
+      it("should get data by kzg commitment", async () => {
+        const commitment =
+          "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
+
+        const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          id: commitment,
+        });
+
+        expect(result).toEqual(expectedBlobData);
+      });
+
+      testValidError(
+        "should fail when no blob data is found for the provided id",
+        async () => {
+          blobDataAuthorizedContext = await createTestContext({
+            apiClient: { type: "blob-data" },
+          });
+          authorizedBlobDataCaller = appRouter.createCaller(
+            blobDataAuthorizedContext
+          );
+
+          await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+            id: "0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1",
+          });
+        },
+        TRPCError
+      );
+
+      blobIdSchemaTestsSuite(async (invalidBlobId) => {
+        await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          id: invalidBlobId,
+        });
+      });
+    });
+
+    it("should fail when calling procedure without auth", async () => {
+      vi.mock("@blobscan/env", async (original) => {
+        const mod = (await original()) as { env: Record<string, unknown> };
+        return {
+          ...mod,
+          env: {
+            ...mod.env,
+            BLOB_DATA_API_KEY: "key_secret",
+            BLOB_DATA_API_ENABLED: true,
+          },
+        };
+      });
+
+      const ctx = await createTestContext();
+      const unauthorizedBlobDataCaller = appRouter.createCaller(ctx);
+
+      await expect(
+        unauthorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          id: versionedHash,
+        })
+      ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
     });
   });
 });

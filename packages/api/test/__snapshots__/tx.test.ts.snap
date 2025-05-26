@@ -2032,80 +2032,6 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 }
 `;
 
-exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob data 1`] = `
-{
-  "blobAsCalldataGasFee": 10000n,
-  "blobAsCalldataGasUsed": 1000n,
-  "blobGasBaseFee": 8650752n,
-  "blobGasMaxFee": 39321600n,
-  "blobGasPrice": 22n,
-  "blobGasUsed": 393216n,
-  "blobs": [
-    {
-      "commitment": "commitment001",
-      "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
-      "dataStorageReferences": [
-        {
-          "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
-        },
-        {
-          "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-        },
-      ],
-      "proof": "proof001",
-      "size": 1000,
-      "versionedHash": "blobHash001",
-    },
-    {
-      "commitment": "commitment002",
-      "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
-      "dataStorageReferences": [
-        {
-          "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
-        },
-      ],
-      "proof": "proof002",
-      "size": 1100,
-      "versionedHash": "blobHash002",
-    },
-    {
-      "commitment": "commitment003",
-      "data": "0x2142337a5355685b119880ba35efdd6b",
-      "dataStorageReferences": [
-        {
-          "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
-        },
-        {
-          "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
-        },
-      ],
-      "proof": "proof003",
-      "size": 1200,
-      "versionedHash": "blobHash003",
-    },
-  ],
-  "block": {
-    "blobGasPrice": 22n,
-  },
-  "blockHash": "blockHash001",
-  "blockNumber": 1001,
-  "blockTimestamp": 2022-10-16T12:00:00.000Z,
-  "category": "other",
-  "decodedFields": null,
-  "from": "address1",
-  "hash": "txHash001",
-  "index": 0,
-  "maxFeePerBlobGas": 100n,
-  "rollup": null,
-  "to": "address2",
-}
-`;
-
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded block 1`] = `
 {
   "blobAsCalldataGasFee": 10000n,
@@ -2157,7 +2083,6 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blobs": [
     {
       "commitment": "commitment001",
-      "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
       "dataStorageReferences": [
         {
           "storage": "google",
@@ -2174,7 +2099,6 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
     {
       "commitment": "commitment002",
-      "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
       "dataStorageReferences": [
         {
           "storage": "google",
@@ -2187,7 +2111,6 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
     {
       "commitment": "commitment003",
-      "data": "0x2142337a5355685b119880ba35efdd6b",
       "dataStorageReferences": [
         {
           "storage": "google",

@@ -4,12 +4,15 @@ import { useRouter } from "next/router";
 
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useQuery } from "@tanstack/react-query";
+
 import type { Decoder } from "@blobscan/blob-decoder";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
 import type { BlobViewMode } from "~/components/BlobViewer";
+import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
@@ -44,7 +47,49 @@ const Blob: NextPage = function () {
       enabled: router.isReady,
     }
   );
+  const { data: blobData, error: blobDataError } = useQuery({
+    queryKey: ["blob-data", versionedHash],
+    queryFn: async () => {
+      if (!blob || !blob.dataStorageReferences.length) {
+        return null;
+      }
 
+      for (const { storage, url } of blob.dataStorageReferences) {
+        try {
+          const isBlobscanStorageRef =
+            storage === "postgres" || storage === "file_system";
+          const blobDataUrl = isBlobscanStorageRef
+            ? `/api/blob-data?url=${url}`
+            : url;
+          const response = await fetch(blobDataUrl);
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message ?? "Couldn't retrieve blob data");
+          }
+
+          const blobData = await (isBlobscanStorageRef
+            ? response.json()
+            : response.text());
+
+          return blobData;
+        } catch (err) {
+          console.warn(
+            `Failed to fetch data of blob "${versionedHash}" from storage ${storage}:`,
+            err
+          );
+          continue;
+        }
+      }
+
+      throw new Error(
+        `Failed to fetch data of blob "${versionedHash}" from any storage`
+      );
+    },
+    enabled: !!blob,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
   const [selectedBlobViewMode, setSelectedBlobViewMode] =
     useState<BlobViewMode>("Raw");
   const decoder = blob?.transactions.find(
@@ -183,11 +228,11 @@ const Blob: NextPage = function () {
         header={
           <div className="flex items-center justify-between">
             <div>Blob Data</div>
-            {blob && (
+            {blob && blobData && (
               <div className="flex items-center gap-4">
                 <CopyToClipboard
                   tooltipText="Copy blob data"
-                  value={blob.data}
+                  value={blobData}
                 />
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-normal text-contentSecondary-light dark:text-contentSecondary-dark">
@@ -209,11 +254,23 @@ const Blob: NextPage = function () {
           </div>
         }
       >
-        <BlobViewer
-          data={blob?.data}
-          selectedView={selectedBlobViewMode}
-          decoder={decoder}
-        />
+        {blobDataError || blobData === null ? (
+          <div className="text-md flex h-44 w-full items-center justify-center">
+            {blobData === null ? (
+              <div className="text-contentSecondary-light dark:text-contentTertiary-dark">
+                Data not available yet
+              </div>
+            ) : (
+              <ErrorMessage error={"Failed to retrieve blob data"} />
+            )}
+          </div>
+        ) : (
+          <BlobViewer
+            data={blobData}
+            selectedView={selectedBlobViewMode}
+            decoder={decoder}
+          />
+        )}
       </Card>
     </>
   );

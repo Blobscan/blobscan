@@ -23,10 +23,6 @@ import {
   toResponseBlobOnTransaction,
 } from "./helpers";
 
-const inputSchema = withPaginationSchema
-  .merge(withAllFiltersSchema)
-  .merge(createExpandsSchema(["transaction", "block"]));
-
 const outputSchema = z
   .object({
     blobs: responseBlobOnTransactionSchema.array(),
@@ -43,9 +39,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(inputSchema)
+  .input(withPaginationSchema)
   .use(withPagination)
+  .input(withAllFiltersSchema)
   .use(withFilters)
+  .input(createExpandsSchema(["transaction", "block"]))
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
