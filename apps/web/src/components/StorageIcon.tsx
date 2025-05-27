@@ -25,6 +25,8 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
     "h-4 w-4": size === "md",
     "h-5 w-5": size === "lg",
   });
+  const storageName =
+    storage === "weavevm" ? "Load Network" : capitalize(storage);
 
   let StorageIcon;
 
@@ -48,10 +50,7 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
 
   return (
     <NextLink href={url} target={url !== "#" ? "_blank" : "_self"}>
-      <div
-        title={capitalize(storage)}
-        className={url ? `hover:opacity-70` : ""}
-      >
+      <div title={storageName} className={url ? `hover:opacity-70` : ""}>
         <StorageIcon className={commonStyles} />
       </div>
     </NextLink>
