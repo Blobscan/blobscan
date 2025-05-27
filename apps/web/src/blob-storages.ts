@@ -26,6 +26,6 @@ export const STORAGE_CONFIGS: Record<BlobStorage, StorageConfig> = {
   weavevm: {
     name: "Load Network",
     style:
-      "bg-gray-100 hover:bg-gray-200 text-gray-800 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-200",
+      "bg-blue-400 text-gray-800 hover:bg-blue-200 hover:text-blue-900 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-blue-200",
   },
 };
