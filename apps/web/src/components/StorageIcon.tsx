@@ -2,6 +2,7 @@ import NextLink from "next/link";
 import { ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
 
+import { STORAGE_CONFIGS } from "~/blob-storages";
 import GoogleIcon from "~/icons/blob-storages/google.svg";
 import PostgresIcon from "~/icons/blob-storages/postgres.svg";
 import SwarmIcon from "~/icons/blob-storages/swarm.svg";
@@ -25,7 +26,6 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
     "h-4 w-4": size === "md",
     "h-5 w-5": size === "lg",
   });
-
   let StorageIcon;
 
   switch (storage) {
@@ -49,7 +49,7 @@ export const StorageIcon: React.FC<StorageIconProps> = ({
   return (
     <NextLink href={url} target={url !== "#" ? "_blank" : "_self"}>
       <div
-        title={capitalize(storage)}
+        title={STORAGE_CONFIGS[storage]?.name ?? capitalize(storage)}
         className={url ? `hover:opacity-70` : ""}
       >
         <StorageIcon className={commonStyles} />
