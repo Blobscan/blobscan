@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.25.0
+
+### Minor Changes
+
+- [#784](https://github.com/Blobscan/blobscan/pull/784) [`72efde6`](https://github.com/Blobscan/blobscan/commit/72efde6f73e817c2f38e1813f3615e581dc67689) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated WeaveVM icon and renamed to Load Network
+
 ## 0.24.0
 
 ### Minor Changes
