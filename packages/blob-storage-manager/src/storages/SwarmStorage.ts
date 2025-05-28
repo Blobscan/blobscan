@@ -103,7 +103,9 @@ export class SwarmStorage extends BlobStorage {
             this.batchId
           }" at "${this._beeClient.url}" failed with status code ${
             err.status
-          } ${err.statusText}: ${err.message}`,
+          } ${err.statusText}: ${err.message}
+            - Details: ${JSON.stringify(err.responseBody, null, 2)}
+          `,
           err.cause as Error | undefined
         );
       }
