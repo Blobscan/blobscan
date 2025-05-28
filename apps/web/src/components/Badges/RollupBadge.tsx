@@ -1,8 +1,10 @@
 import React from "react";
+import Image from "next/image";
 
+import { ICONS } from "~/icons/rollups";
+import { ICON_CLASSES } from "~/styles";
 import type { Rollup } from "~/types";
 import { capitalize } from "~/utils";
-import { RollupIcon } from "../RollupIcon";
 import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
 
@@ -229,20 +231,62 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
 };
 
+const ROLLUP_CUSTOM_STYLES: Partial<Record<Rollup, string>> = {
+  ancient8: "rounded-lg bg-green-500",
+  arenaz: "rounded-xl ",
+  mantle: "rounded-lg",
+  metamail: "text-blue-500",
+  mode: "text-[#ceb245] dark:text-[#ffd940]",
+  morph: "text-[#f7f7f7] dark:text-[#000000]",
+  nanonnetwork: "rounded-lg",
+  paradex: "rounded-lg",
+  thebinaryholdings: "h-3 w-3",
+  xga: "rounded-xl bg-gray-200 dark:bg-white h-[18px] w-[18px]",
+};
+
 type RollupBadgeProps = BadgeProps & {
   rollup: Rollup;
+  compact?: boolean;
 };
 
 export const RollupBadge: React.FC<RollupBadgeProps> = ({
+  compact = false,
   rollup,
   ...props
 }) => {
-  const { style, label } = ROLLUP_CONFIG[rollup];
+  const { style, label = capitalize(rollup) } = ROLLUP_CONFIG[rollup];
+  const customStyles = ROLLUP_CUSTOM_STYLES[rollup] ?? "";
+  const iconSizeStyles = ICON_CLASSES[props.size ?? "md"];
+  const RollupImage = ICONS[rollup];
+  const rollupIcon = RollupImage ? (
+    <div
+      className={`${iconSizeStyles.tailwindClasses} flex items-center`}
+      title={compact ? label : undefined}
+    >
+      {typeof RollupImage === "string" ? (
+        <Image
+          alt={label}
+          width={iconSizeStyles.css.width}
+          height={iconSizeStyles.css.height}
+          src={RollupImage}
+          className={customStyles}
+        />
+      ) : (
+        <RollupImage
+          className={`${iconSizeStyles.tailwindClasses} ${customStyles}`}
+        />
+      )}
+    </div>
+  ) : (
+    <div className={iconSizeStyles.tailwindClasses}></div>
+  );
 
-  return (
+  return compact ? (
+    rollupIcon
+  ) : (
     <Badge className={style} {...props}>
-      <RollupIcon rollup={rollup} />
-      {label ?? capitalize(rollup)}
+      {rollupIcon}
+      {label}
     </Badge>
   );
 };

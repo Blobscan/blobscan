@@ -6,7 +6,6 @@ import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { IconButton } from "~/components/IconButton";
-import { RollupIcon } from "~/components/RollupIcon";
 import { Rotable } from "~/components/Rotable";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -102,12 +101,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                 <Link href={buildTransactionRoute(hash)}>{hash}</Link>
               </div>
               <div>
-                {rollup &&
-                  (isCompact ? (
-                    <RollupIcon rollup={rollup} />
-                  ) : (
-                    <RollupBadge rollup={rollup} size="xs" />
-                  ))}
+                {rollup && <RollupBadge rollup={rollup} compact={isCompact} />}
               </div>
             </div>
           ) : (

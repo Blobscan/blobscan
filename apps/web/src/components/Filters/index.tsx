@@ -18,7 +18,6 @@ import { Card } from "../Cards/Card";
 import { Dropdown } from "../Dropdown";
 import type { DropdownProps, Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
-import { RollupIcon } from "../RollupIcon";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { RollupFilter } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
@@ -182,7 +181,7 @@ export const Filters: FC = function () {
           ),
           label: (
             <div className="flex flex-row items-center gap-2">
-              <RollupIcon rollup={name.toLowerCase() as Rollup} />
+              <RollupBadge rollup={name.toLowerCase() as Rollup} compact />
               <div>{capitalize(name)}</div>
             </div>
           ),

@@ -1,8 +1,8 @@
 import type { FC } from "react";
 
-import { RollupIcon } from "~/components/RollupIcon";
+import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Skeleton } from "~/components/Skeleton";
-import { StorageIcon } from "~/components/StorageIcon";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Blob, Rollup } from "~/types";
 import { buildBlobRoute, formatBytes } from "~/utils";
@@ -49,7 +49,9 @@ const BlobCard: FC<BlobCardProps> = ({
               </span>
               <Link href={buildBlobRoute(versionedHash)}>{versionedHash}</Link>
             </div>
-            {rollup ? <RollupIcon key={rollup} rollup={rollup} /> : null}
+            {rollup ? (
+              <RollupBadge key={rollup} rollup={rollup} compact />
+            ) : null}
           </div>
         ) : (
           <Skeleton width={isCompact ? undefined : 630} />
@@ -73,11 +75,12 @@ const BlobCard: FC<BlobCardProps> = ({
               <span>·</span>
               <div className="flex flex-row gap-1">
                 {dataStorageReferences.map(({ storage, url }) => (
-                  <StorageIcon
+                  <StorageBadge
                     key={storage}
                     storage={storage}
                     url={url}
                     size="md"
+                    compact
                   />
                 ))}
               </div>
