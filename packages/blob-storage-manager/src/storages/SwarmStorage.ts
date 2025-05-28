@@ -80,7 +80,7 @@ export class SwarmStorage extends BlobStorage {
         {
           // : "text/plain",
           deferred: env.SWARM_DEFERRED_UPLOAD,
-        },
+        }
       );
 
       return response.reference.toHex();
@@ -98,13 +98,13 @@ export class SwarmStorage extends BlobStorage {
       return res;
     } catch (err) {
       if (err instanceof BeeResponseError) {
-        const details = JSON.stringify(err.responseBody, null, 2);
-
         throw new Error(
-          `Bee API ${err.method.toUpperCase()} request to "${err.url}" failed.
- - Status: ${err.status} ${err.statusText}
- - Details: ${details}`,
-          err.cause as Error,
+          `Request ${err.method.toUpperCase()} to Bee API ${err.url} batch "${
+            this.batchId
+          }" at "${this._beeClient.url}" failed with status code ${
+            err.status
+          } ${err.statusText}: ${err.message}`,
+          err.cause as Error | undefined
         );
       }
 
@@ -115,7 +115,7 @@ export class SwarmStorage extends BlobStorage {
   protected getBlobFilePath(hash: string) {
     return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
-      6,
+      6
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
   }
 
@@ -136,7 +136,7 @@ export class SwarmStorage extends BlobStorage {
       throw new StorageCreationError(
         this.name,
         err_.message,
-        err_.cause as Error,
+        err_.cause as Error
       );
     }
   }
