@@ -122,7 +122,10 @@ export const env = createEnv({
       ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
         .string()
         .default("0xF9680D99D6C9589e2a93a78A04A279e509205945"),
-      ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce.number().positive().default(60),
+      ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce
+        .number()
+        .positive()
+        .default(100),
 
       /*
        * =====================
