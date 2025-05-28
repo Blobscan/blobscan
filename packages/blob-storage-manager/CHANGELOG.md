@@ -1,5 +1,15 @@
 # @blobscan/blob-storage-manager
 
+## 0.4.5
+
+### Patch Changes
+
+- [#783](https://github.com/Blobscan/blobscan/pull/783) [`1452221`](https://github.com/Blobscan/blobscan/commit/1452221a6ac876c558cd9e6e30e0af3bcb8d5238) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Bumped bee client
+
+- [#783](https://github.com/Blobscan/blobscan/pull/783) [`1452221`](https://github.com/Blobscan/blobscan/commit/1452221a6ac876c558cd9e6e30e0af3bcb8d5238) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Improved Swarm storage error handling
+
+- [#788](https://github.com/Blobscan/blobscan/pull/788) [`499c9aa`](https://github.com/Blobscan/blobscan/commit/499c9aac0d843ed5b8bb8f15983389b3898f25ee) Thanks [@PJColombo](https://github.com/PJColombo)! - Attached bee endpoint and batch id to swarm storage errors
+
 ## 0.4.4
 
 ### Patch Changes
