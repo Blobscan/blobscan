@@ -68,66 +68,70 @@ export async function propagateBlob(
   targetStorageName: BlobStorage,
   { blobStorageManager, prisma }: BlobPropagationWorkerParams
 ) {
-  let blobData: string;
-
   try {
-    blobData = await blobStorageManager
-      .getBlobByHash(versionedHash)
-      .then(({ data }) => data);
-  } catch (err) {
-    const blobRefs = await prisma.blobDataStorageReference
-      .findMany({
-        where: {
-          blobHash: versionedHash,
-        },
-      })
-      .then((refs): BlobReference[] =>
-        refs.map((ref) => ({
-          reference: ref.dataReference,
-          storage: ref.blobStorage,
-        }))
-      );
+    let blobData: string;
 
-    if (!blobRefs.length) {
-      throw new Error(
-        `Failed to propagate blob with hash "${versionedHash}": no blob storage references found to retrieve data from`
-      );
+    try {
+      blobData = await blobStorageManager
+        .getBlobByHash(versionedHash)
+        .then(({ data }) => data);
+    } catch (err) {
+      const blobRefs = await prisma.blobDataStorageReference
+        .findMany({
+          where: {
+            blobHash: versionedHash,
+          },
+        })
+        .then((refs): BlobReference[] =>
+          refs.map((ref) => ({
+            reference: ref.dataReference,
+            storage: ref.blobStorage,
+          }))
+        );
+
+      if (!blobRefs.length) {
+        throw new Error(
+          `No blob storage references found to retrieve data from`
+        );
+      }
+
+      const result = await blobStorageManager.getBlobByReferences(...blobRefs);
+
+      blobData = result.data;
     }
 
-    const result = await blobStorageManager.getBlobByReferences(...blobRefs);
+    const targetStorage = blobStorageManager.getStorage(targetStorageName);
 
-    blobData = result.data;
-  }
+    if (!targetStorage) {
+      throw new Error(`Target storage "${targetStorageName}" not found`);
+    }
 
-  const targetStorage = blobStorageManager.getStorage(targetStorageName);
+    const blobUri = await targetStorage.storeBlob(versionedHash, blobData);
 
-  if (!targetStorage) {
-    throw new Error(
-      `Failed to propagate blob with hash "${versionedHash}": target storage "${targetStorageName}" not found`
-    );
-  }
-
-  const blobUri = await targetStorage.storeBlob(versionedHash, blobData);
-
-  await prisma.blobDataStorageReference.upsert({
-    create: {
-      blobStorage: targetStorageName,
-      blobHash: versionedHash,
-      dataReference: blobUri,
-    },
-    update: {
-      dataReference: blobUri,
-    },
-    where: {
-      blobHash_blobStorage: {
-        blobHash: versionedHash,
+    await prisma.blobDataStorageReference.upsert({
+      create: {
         blobStorage: targetStorageName,
+        blobHash: versionedHash,
+        dataReference: blobUri,
       },
-    },
-  });
+      update: {
+        dataReference: blobUri,
+      },
+      where: {
+        blobHash_blobStorage: {
+          blobHash: versionedHash,
+          blobStorage: targetStorageName,
+        },
+      },
+    });
 
-  return {
-    storage: targetStorageName,
-    reference: blobUri,
-  };
+    return {
+      storage: targetStorageName,
+      reference: blobUri,
+    };
+  } catch (err) {
+    throw new Error(`Failed to propagate blob with hash "${versionedHash}"`, {
+      cause: err,
+    });
+  }
 }

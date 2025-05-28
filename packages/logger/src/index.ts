@@ -3,10 +3,13 @@ import winston from "winston";
 import { env } from "@blobscan/env";
 
 function buildErrorCause(err: Error) {
-  let msg = ` - Cause: ${err.message}`;
+  let msg = `\n - Cause: ${err.message}`;
 
-  if (err.cause instanceof Error) {
-    msg += buildErrorCause(err.cause);
+  const cause = err.cause;
+  if (cause instanceof Error || typeof cause === "string") {
+    const errorCause = typeof cause === "string" ? new Error(cause) : cause;
+
+    msg += buildErrorCause(errorCause);
   }
 
   return msg;
