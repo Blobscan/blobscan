@@ -1,4 +1,4 @@
-import { Bee } from "@ethersphere/bee-js";
+import { Bee, BeeResponseError } from "@ethersphere/bee-js";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
@@ -54,41 +54,68 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _healthCheck() {
-    await this._beeClient.checkConnection();
+    return this.#performBeeAPICall(async () => {
+      await this._beeClient.checkConnection();
+    });
   }
 
   protected async _getBlob(uri: string) {
-    const file = await this._beeClient.downloadFile(uri);
+    return this.#performBeeAPICall(async () => {
+      const file = await this._beeClient.downloadFile(uri);
 
-    return file.data.text();
+      return file.data.toHex();
+    });
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    await this._beeClient.unpin(uri);
+    await this.#performBeeAPICall(() => this._beeClient.unpin(uri));
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    const response = await this._beeClient.uploadFile(
-      this.batchId,
-      data,
-      this.getBlobFilePath(versionedHash),
-      {
-        contentType: "text/plain",
-        deferred: env.SWARM_DEFERRED_UPLOAD,
-      }
-    );
+    return this.#performBeeAPICall(async () => {
+      const response = await this._beeClient.uploadFile(
+        this.batchId,
+        data,
+        this.getBlobFilePath(versionedHash),
+        {
+          // : "text/plain",
+          deferred: env.SWARM_DEFERRED_UPLOAD,
+        },
+      );
 
-    return response.reference.toString();
+      return response.reference.toHex();
+    });
   }
 
   getBlobUri(_: string) {
     return undefined;
   }
 
+  async #performBeeAPICall<T>(call: () => T) {
+    try {
+      const res = await call();
+
+      return res;
+    } catch (err) {
+      if (err instanceof BeeResponseError) {
+        const details = JSON.stringify(err.responseBody, null, 2);
+
+        throw new Error(
+          `Bee API ${err.method.toUpperCase()} request to "${err.url}" failed.
+ - Status: ${err.status} ${err.statusText}
+ - Details: ${details}`,
+          err.cause as Error,
+        );
+      }
+
+      throw err;
+    }
+  }
+
   protected getBlobFilePath(hash: string) {
     return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
-      6
+      6,
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
   }
 
@@ -109,7 +136,7 @@ export class SwarmStorage extends BlobStorage {
       throw new StorageCreationError(
         this.name,
         err_.message,
-        err_.cause as Error
+        err_.cause as Error,
       );
     }
   }
