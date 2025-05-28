@@ -3,9 +3,9 @@ import React from "react";
 import NextLink from "next/link";
 
 import { ICONS } from "~/icons/blob-storages";
-import { ICON_CLASSES } from "~/styles";
 import type { BlobStorage } from "~/types";
 import { capitalize } from "~/utils";
+import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
 
@@ -51,16 +51,14 @@ export const StorageBadge: FC<StorageBadgeProps> = ({
   url,
   ...props
 }) => {
-  const iconSizeStyles = ICON_CLASSES[props.size ?? "md"];
   const { name = capitalize(storage), style } = STORAGES[storage];
-  const StorageSVG = ICONS[storage];
   const storageIcon = (
-    <div
+    <Icon
+      src={ICONS[storage]}
+      size={props.size ?? "md"}
       title={compact ? name : undefined}
       className={compact ? `hover:opacity-70` : ""}
-    >
-      <StorageSVG className={iconSizeStyles.tailwindClasses} />
-    </div>
+    />
   );
 
   return (

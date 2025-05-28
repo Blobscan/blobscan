@@ -1,10 +1,9 @@
 import React from "react";
-import Image from "next/image";
 
 import { ICONS } from "~/icons/rollups";
-import { ICON_CLASSES } from "~/styles";
 import type { Rollup } from "~/types";
 import { capitalize } from "~/utils";
+import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
 
@@ -255,30 +254,13 @@ export const RollupBadge: React.FC<RollupBadgeProps> = ({
   ...props
 }) => {
   const { style, label = capitalize(rollup) } = ROLLUP_CONFIG[rollup];
-  const customStyles = ROLLUP_CUSTOM_STYLES[rollup] ?? "";
-  const iconSizeStyles = ICON_CLASSES[props.size ?? "md"];
-  const RollupImage = ICONS[rollup];
-  const rollupIcon = RollupImage ? (
-    <div
-      className={`${iconSizeStyles.tailwindClasses} flex items-center`}
-      title={compact ? label : undefined}
-    >
-      {typeof RollupImage === "string" ? (
-        <Image
-          alt={label}
-          width={iconSizeStyles.css.width}
-          height={iconSizeStyles.css.height}
-          src={RollupImage}
-          className={customStyles}
-        />
-      ) : (
-        <RollupImage
-          className={`${iconSizeStyles.tailwindClasses} ${customStyles}`}
-        />
-      )}
-    </div>
-  ) : (
-    <div className={iconSizeStyles.tailwindClasses}></div>
+  const rollupIcon = (
+    <Icon
+      src={ICONS[rollup]}
+      title={label}
+      className={ROLLUP_CUSTOM_STYLES[rollup]}
+      size={props.size ?? "md"}
+    />
   );
 
   return compact ? (
