@@ -17,4 +17,8 @@ if (env.SWARM_STORAGE_ENABLED) {
   availableStorages.push(BlobStorage.SWARM);
 }
 
+if (env.CHUNKSTORM_STORAGE_ENABLED) {
+  availableStorages.push(BlobStorage.CHUNKSTORM);
+}
+
 export const context = new Context(availableStorages, env.REDIS_URI);

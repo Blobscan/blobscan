@@ -45,4 +45,5 @@ export const blobStorageSchema = z.enum([
   "GOOGLE",
   "POSTGRES",
   "SWARM",
+  "CHUNKSTORM",
 ] as const);

@@ -143,6 +143,12 @@ export const env = createEnv({
         .url()
         .optional()
         .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
+      CHUNKSTORM_STORAGE_ENABLED: booleanSchema.default("false"),
+      CHUNKSTORM_STORAGE_API_BASE_URL: z
+        .string()
+        .url()
+        .optional()
+        .superRefine(requireIfEnvEnabled("CHUNKSTORM_STORAGE_ENABLED")),
 
       // WeaveVM storage
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -189,7 +195,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, chunkstorm=${env.CHUNKSTORM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
@@ -204,6 +210,12 @@ export const env = createEnv({
 
     if (env.SWARM_STORAGE_ENABLED) {
       console.log(`Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}`);
+    }
+
+    if (env.CHUNKSTORM_STORAGE_ENABLED) {
+      console.log(
+        `Chunkstorm configuration: apiBaseUrl=${env.CHUNKSTORM_STORAGE_API_BASE_URL}, beeEndpoint=${env.BEE_ENDPOINT}`
+      );
     }
 
     if (env.FILE_SYSTEM_STORAGE_ENABLED) {

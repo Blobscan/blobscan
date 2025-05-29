@@ -20,7 +20,7 @@ export async function setUpSyncers() {
   const connection = createRedisConnection(env.REDIS_URI);
   const syncers: BaseSyncer[] = [];
 
-  if (env.SWARM_STORAGE_ENABLED) {
+  if (env.SWARM_STORAGE_ENABLED || env.CHUNKSTORM_STORAGE_ENABLED) {
     if (!env.SWARM_BATCH_ID) {
       logger.error(`Can't initialize Swarm stamp job: no batch ID provided`);
     } else if (!env.BEE_ENDPOINT) {

@@ -4,6 +4,7 @@ import { env } from "@blobscan/env";
 
 import type { BlobStorage } from "../BlobStorage";
 import {
+  ChunkstormStorage,
   FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
@@ -65,6 +66,22 @@ export async function createStorageFromEnv(
       });
 
       return swarmStorage;
+    }
+    case BlobStorageName.CHUNKSTORM: {
+      if (!env.BEE_ENDPOINT || !env.CHUNKSTORM_STORAGE_API_BASE_URL) {
+        throw new Error(
+          "Missing required env variables for ChunkstormStorage: BEE_ENDPOINT and CHUNKSTORM_STORAGE_API_BASE_URL"
+        );
+      }
+
+      const chunkstormStorage = await ChunkstormStorage.create({
+        chainId,
+        apiBaseUrl: env.CHUNKSTORM_STORAGE_API_BASE_URL,
+        beeEndpoint: env.BEE_ENDPOINT,
+        prisma,
+      });
+
+      return chunkstormStorage;
     }
     case BlobStorageName.FILE_SYSTEM: {
       const fileSystemStorage = await FileSystemStorage.create({

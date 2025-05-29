@@ -1,73 +1,24 @@
-import { Bee } from "@ethersphere/bee-js";
-
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 
-import type { BlobStorageConfig } from "../BlobStorage";
-import { BlobStorage } from "../BlobStorage";
-import { StorageCreationError } from "../errors";
+import { BaseSwarmStorage } from "./BaseSwarmStorage";
+import type { BaseSwarmStorageConfig } from "./BaseSwarmStorage";
 
-export interface SwarmStorageConfig extends BlobStorageConfig {
+export interface SwarmStorageConfig extends BaseSwarmStorageConfig {
   batchId: string;
-  beeEndpoint: string;
 }
 
-async function getBatchId(prisma: BlobscanPrismaClient) {
-  try {
-    const state = await prisma.blobStoragesState.findUnique({
-      select: {
-        swarmDataId: true,
-      },
-      where: { id: 1 },
-    });
-
-    const batchId = state?.swarmDataId;
-
-    if (!batchId) {
-      throw new Error("No batch id found");
-    }
-
-    return batchId;
-  } catch (err) {
-    throw new Error("Failed to get swarm batch id from the database", {
-      cause: err,
-    });
-  }
-}
-
-export class SwarmStorage extends BlobStorage {
-  _beeClient: Bee;
-  batchId: string;
-
-  protected constructor({ batchId, beeEndpoint, chainId }: SwarmStorageConfig) {
-    super(BlobStorageName.SWARM, chainId);
-
-    this.batchId = batchId;
-    try {
-      this._beeClient = new Bee(beeEndpoint);
-    } catch (err) {
-      throw new Error("Failed to create swarm clients", {
-        cause: err,
-      });
-    }
-  }
-
-  protected async _healthCheck() {
-    await this._beeClient.checkConnection();
-  }
-
-  protected async _getBlob(uri: string) {
-    const file = await this._beeClient.downloadFile(uri);
-
-    return file.data.text();
-  }
-
-  protected async _removeBlob(uri: string): Promise<void> {
-    await this._beeClient.unpin(uri);
+export class SwarmStorage extends BaseSwarmStorage {
+  constructor({ batchId, beeEndpoint, chainId }: SwarmStorageConfig) {
+    super(BlobStorageName.SWARM, { beeEndpoint, chainId, batchId });
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
+    if (!this.batchId) {
+      throw new Error("Batch ID is required for storing blobs in Swarm");
+    }
+
     const response = await this._beeClient.uploadFile(
       this.batchId,
       data,
@@ -81,10 +32,6 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toString();
   }
 
-  getBlobUri(_: string) {
-    return undefined;
-  }
-
   protected getBlobFilePath(hash: string) {
     return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
@@ -96,21 +43,6 @@ export class SwarmStorage extends BlobStorage {
     prisma,
     ...config
   }: Omit<SwarmStorageConfig, "batchId"> & { prisma: BlobscanPrismaClient }) {
-    try {
-      const batchId = await getBatchId(prisma);
-      const storage = new SwarmStorage({ ...config, batchId });
-
-      await storage.healthCheck();
-
-      return storage;
-    } catch (err) {
-      const err_ = err as Error;
-
-      throw new StorageCreationError(
-        this.name,
-        err_.message,
-        err_.cause as Error
-      );
-    }
+    return BaseSwarmStorage.safeCreate(SwarmStorage, prisma, config, this.name);
   }
 }
