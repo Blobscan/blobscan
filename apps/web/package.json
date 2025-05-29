@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/web",
-  "version": "0.24.0",
+  "version": "0.25.1",
   "private": true,
   "scripts": {
     "analyze": "ANALYZE=true pnpm with-env next build",
@@ -15,7 +15,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@blobscan/api": "workspace:^0.21.0",
+    "@blobscan/api": "workspace:^0.22.0",
     "@blobscan/blob-decoder": "workspace:^0.2.1",
     "@blobscan/dates": "workspace:*",
     "@blobscan/dayjs": "workspace:^0.1.0",

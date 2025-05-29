@@ -10,7 +10,6 @@ import { useEnv } from "~/providers/Env";
 import type { Rollup } from "~/types";
 import { capitalize, getChainIdByName } from "~/utils";
 import { RollupBadge } from "../Badges/RollupBadge";
-import { RollupIcon } from "../RollupIcon";
 
 export type RollupOption = Option<Rollup>;
 
@@ -39,7 +38,7 @@ export const RollupFilter: FC<RollupFilterProps> = function ({
           ),
           label: (
             <div className="flex flex-row items-center gap-2">
-              <RollupIcon rollup={name.toLowerCase() as Rollup} />
+              <RollupBadge rollup={name.toLowerCase() as Rollup} compact />
               <div>{capitalize(name)}</div>
             </div>
           ),

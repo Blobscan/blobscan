@@ -2,11 +2,13 @@ import { afterAll, vi } from "vitest";
 
 import { SWARM_REFERENCE } from "./test/fixtures";
 
-vi.mock("@ethersphere/bee-js", async () => {
+vi.mock("@ethersphere/bee-js", async (importOriginal) => {
   const blobBatches: Record<string, { reference: string; data: string }[]> = {
     ["mock-batch-id"]: [],
   };
 
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const original = await importOriginal<typeof import("@ethersphere/bee-js")>();
   return {
     Bee: vi.fn().mockImplementation((endpoint) => {
       return {
@@ -28,7 +30,7 @@ vi.mock("@ethersphere/bee-js", async () => {
           if (file) {
             return {
               data: {
-                text() {
+                toHex() {
                   return "mock-data";
                 },
               },
@@ -44,7 +46,11 @@ vi.mock("@ethersphere/bee-js", async () => {
           }
 
           return {
-            reference: SWARM_REFERENCE,
+            reference: {
+              toHex() {
+                return SWARM_REFERENCE;
+              },
+            },
           };
         }),
         unpin: vi.fn().mockImplementation((_) => {
@@ -58,6 +64,7 @@ vi.mock("@ethersphere/bee-js", async () => {
         }),
       };
     }),
+    BeeResponseError: original.BeeResponseError,
   };
 });
 

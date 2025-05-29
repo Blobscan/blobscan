@@ -174,6 +174,7 @@ const Blob: NextPage = function () {
 
     detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
+    console.log("here");
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
         name: "Storages",

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type { FC } from "react";
 
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
-import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import type { Block, Rollup } from "~/types";
 import { buildBlockRoute, normalizeTimestamp } from "~/utils";
@@ -51,7 +51,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
         </div>
         <div className="flex items-center gap-2">
           {rollups.map((rollup, i) => (
-            <RollupIcon key={i} rollup={rollup} />
+            <RollupBadge key={i} rollup={rollup} compact />
           ))}
         </div>
       </div>

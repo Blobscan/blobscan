@@ -66,17 +66,23 @@ export function normalizePrismaTransactionFields({
   };
 }
 
+export function normalizeDataStorageReferences(
+  dataStorageReferences: PrismaBlob["dataStorageReferences"]
+) {
+  return dataStorageReferences.map(({ blobStorage, dataReference }) => ({
+    storage: blobStorage,
+    url: buildBlobDataUrl(blobStorage, dataReference),
+  }));
+}
+
 export function normalizePrismaBlobFields({
   dataStorageReferences,
   ...restBlob
 }: PrismaBlob) {
   return {
     ...restBlob,
-    dataStorageReferences: dataStorageReferences.map(
-      ({ blobStorage, dataReference }) => ({
-        storage: blobStorage,
-        url: buildBlobDataUrl(blobStorage, dataReference),
-      })
+    dataStorageReferences: normalizeDataStorageReferences(
+      dataStorageReferences
     ),
   };
 }

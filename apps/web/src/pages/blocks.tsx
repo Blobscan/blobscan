@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
+import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
@@ -10,7 +11,6 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
-import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/TimestampToggle";
@@ -138,7 +138,7 @@ const Blocks: NextPage = function () {
                     (rollup, i) => {
                       return rollup ? (
                         <div key={i} className="-ml-1 first-of-type:ml-0">
-                          <RollupIcon rollup={rollup} />
+                          <RollupBadge rollup={rollup} compact />
                         </div>
                       ) : (
                         <></>
@@ -230,7 +230,7 @@ const Blocks: NextPage = function () {
                     {
                       item:
                         category === "rollup" && rollup ? (
-                          <RollupIcon rollup={rollup} />
+                          <RollupBadge rollup={rollup} compact />
                         ) : (
                           <></>
                         ),

@@ -24,6 +24,8 @@ function determineGranularity(cronPattern: string): Granularity {
   }
 }
 
+const PRICE_FEED_STATE_ID = 1;
+
 export class ETHPriceSyncer extends BaseSyncer {
   constructor(config: ETHPriceSyncerConfig) {
     super({
@@ -34,7 +36,11 @@ export class ETHPriceSyncer extends BaseSyncer {
         const granularity = determineGranularity(config.cronPattern);
 
         const [priceFeedState, latestPrice] = await Promise.all([
-          prisma.ethUsdPriceFeedState.findFirst(),
+          prisma.ethUsdPriceFeedState.findFirst({
+            where: {
+              id: PRICE_FEED_STATE_ID,
+            },
+          }),
           prisma.ethUsdPrice.findFirst({
             orderBy: {
               timestamp: "desc",
@@ -50,7 +56,10 @@ export class ETHPriceSyncer extends BaseSyncer {
           : targetDateTime;
         let latestRoundId = priceFeedState?.latestRoundId.toFixed();
 
-        while (targetDateTime >= currentDateTime) {
+        while (
+          targetDateTime.isAfter(currentDateTime) ||
+          targetDateTime.isSame(currentDateTime)
+        ) {
           const priceData = await config.ethUsdPriceFeed.findPriceByTimestamp(
             currentDateTime.unix(),
             {
@@ -59,10 +68,14 @@ export class ETHPriceSyncer extends BaseSyncer {
           );
 
           if (!priceData) {
-            console.log(
-              `Skipping eth price update: No price data found for datetime ${targetDateTime
+            this.logger.warn(
+              `Skipping eth price update: No price data found for datetime ${currentDateTime
                 .utc()
-                .toISOString()}`
+                .toISOString()}${
+                latestRoundId
+                  ? ` starting at round with ID "${latestRoundId}"`
+                  : ""
+              }`
             );
 
             return;
@@ -82,12 +95,14 @@ export class ETHPriceSyncer extends BaseSyncer {
             prisma.ethUsdPriceFeedState.upsert({
               create: {
                 latestRoundId: roundId,
+                id: PRICE_FEED_STATE_ID,
               },
               update: {
                 latestRoundId: roundId,
+                updatedAt: new Date(),
               },
               where: {
-                id: 1,
+                id: PRICE_FEED_STATE_ID,
               },
             });
 

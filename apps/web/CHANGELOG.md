@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.25.1
+
+### Patch Changes
+
+- Updated dependencies [[`969ab8f`](https://github.com/Blobscan/blobscan/commit/969ab8f757b77698ebd855425541ef209295d3c8)]:
+  - @blobscan/api@0.22.0
+
+## 0.25.0
+
+### Minor Changes
+
+- [#784](https://github.com/Blobscan/blobscan/pull/784) [`72efde6`](https://github.com/Blobscan/blobscan/commit/72efde6f73e817c2f38e1813f3615e581dc67689) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated WeaveVM icon and renamed to Load Network
+
 ## 0.24.0
 
 ### Minor Changes
