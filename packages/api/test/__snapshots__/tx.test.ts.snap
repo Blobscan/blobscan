@@ -119,6 +119,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -150,12 +151,42 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -308,12 +339,30 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
@@ -341,9 +390,25 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -371,6 +436,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -398,12 +473,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -436,6 +537,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -463,12 +565,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -496,6 +628,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+          },
+        ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
@@ -528,12 +670,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -561,6 +729,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -588,9 +766,25 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -623,12 +817,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -656,12 +880,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -689,6 +943,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -716,9 +980,25 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -751,6 +1031,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436/data",
+          },
+        ],
         "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
       },
     ],
@@ -783,6 +1069,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+          },
+        ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
@@ -810,6 +1106,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -837,12 +1143,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -870,6 +1206,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash005/data",
+          },
+        ],
         "versionedHash": "blobHash005",
       },
     ],
@@ -897,6 +1239,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -924,6 +1276,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -951,6 +1313,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -978,6 +1346,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1010,6 +1388,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash005/data",
+          },
+        ],
         "versionedHash": "blobHash005",
       },
     ],
@@ -1037,6 +1421,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1064,6 +1458,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1091,6 +1495,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -1118,6 +1528,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1145,12 +1565,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1178,12 +1628,34 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1216,6 +1688,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1243,12 +1725,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1281,12 +1789,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1319,12 +1853,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1357,12 +1917,30 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
@@ -1390,9 +1968,25 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -1420,6 +2014,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1447,12 +2051,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1485,9 +2115,25 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
@@ -1515,6 +2161,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1542,12 +2198,38 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
@@ -1580,6 +2262,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -1607,12 +2290,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -1645,6 +2358,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -1672,12 +2386,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -1705,6 +2449,16 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+          },
+        ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
@@ -1737,6 +2491,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -1764,12 +2519,42 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -1802,6 +2587,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -1829,12 +2615,42 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
@@ -1867,12 +2683,42 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
@@ -1900,6 +2746,12 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash005/data",
+          },
+        ],
         "versionedHash": "blobHash005",
       },
     ],
@@ -1935,12 +2787,38 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
   "blobGasUsed": 393216n,
   "blobs": [
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        },
+      ],
       "versionedHash": "blobHash001",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+        },
+      ],
       "versionedHash": "blobHash002",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        },
+      ],
       "versionedHash": "blobHash003",
     },
   ],
@@ -2042,12 +2920,38 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blobGasUsed": 393216n,
   "blobs": [
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        },
+      ],
       "versionedHash": "blobHash001",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+        },
+      ],
       "versionedHash": "blobHash002",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        },
+      ],
       "versionedHash": "blobHash003",
     },
   ],

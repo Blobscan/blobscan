@@ -28,15 +28,6 @@ export const expandedBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
-  dataStorageReferences: {
-    select: {
-      blobStorage: true,
-      dataReference: true,
-    },
-    orderBy: {
-      blobStorage: "asc",
-    },
-  },
 } satisfies Prisma.BlobSelect;
 
 const expandedBlockSelect = {
@@ -66,9 +57,7 @@ export type ExpandedTransaction = Prisma.TransactionGetPayload<{
 
 export type ExpandedBlob = Prisma.BlobGetPayload<{
   select: typeof expandedBlobSelect;
-}> & {
-  data?: string;
-};
+}>;
 
 export type ExpandedBlobWithData = ExpandedBlob & { data?: string };
 

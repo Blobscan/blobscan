@@ -21,16 +21,18 @@ import {
   prismaBlobOnTransactionSchema,
 } from "../../zod-schemas";
 
+const dataStorageReferenceSelect = {
+  blobStorage: true,
+  dataReference: true,
+} satisfies Prisma.BlobDataStorageReferenceSelect;
+5;
 export const baseBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
   versionedHash: true,
   dataStorageReferences: {
-    select: {
-      blobStorage: true,
-      dataReference: true,
-    } satisfies Prisma.BlobDataStorageReferenceSelect,
+    select: dataStorageReferenceSelect,
     orderBy: {
       blobStorage: "asc",
     },
@@ -55,6 +57,10 @@ type PrismaBlobOnTransaction = Prisma.BlobsOnTransactionsGetPayload<{
   select: typeof baseBlobOnTransactionSelect;
 }>;
 
+type DataStorageReference = Prisma.BlobDataStorageReferenceGetPayload<{
+  select: typeof dataStorageReferenceSelect;
+}>;
+
 export type CompletePrismaBlob = Prettify<
   PrismaBlob & {
     transactions: Prettify<
@@ -70,7 +76,9 @@ export type CompletePrismaBlob = Prettify<
 
 export type CompletePrismaBlobOnTransaction = Prettify<
   PrismaBlobOnTransaction & {
-    blob: ExpandedBlob;
+    blob: {
+      dataStorageReferences: DataStorageReference[];
+    } & ExpandedBlob;
     block?: ExpandedBlock;
     transaction?: ExpandedTransaction & {
       block: { blobGasPrice: ExpandedBlock["blobGasPrice"] };
