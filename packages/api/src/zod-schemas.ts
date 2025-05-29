@@ -79,7 +79,6 @@ export const prismaBlobSchema = BlobModel.omit({
   insertedAt: true,
   updatedAt: true,
 }).extend({
-  data: z.string().optional(),
   dataStorageReferences: z.array(
     BlobDataStorageReferenceModel.pick({
       blobStorage: true,

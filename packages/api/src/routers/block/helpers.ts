@@ -12,6 +12,7 @@ import type { Prettify } from "../../types";
 import { isFullyDefined } from "../../utils";
 import {
   deriveTransactionFields,
+  normalizeDataStorageReferences,
   normalizePrismaBlobFields,
   normalizePrismaTransactionFields,
 } from "../../utils/transformers";
@@ -32,6 +33,15 @@ const prismaBlockSelect = {
   excessBlobGas: true,
 } satisfies Prisma.BlockSelect;
 
+const dataStorageReferenceSelect = {
+  blobStorage: true,
+  dataReference: true,
+} satisfies Prisma.BlobDataStorageReferenceSelect;
+
+type DataStorageReference = Prisma.BlobDataStorageReferenceGetPayload<{
+  select: typeof dataStorageReferenceSelect;
+}>;
+
 export type PrismaBlock = Prisma.BlockGetPayload<{
   select: typeof prismaBlockSelect;
 }>;
@@ -43,8 +53,12 @@ export type CompletePrismaBlock = Prettify<
         hash: string;
       } & Partial<ExpandedTransaction> & {
           blobs: Prettify<
-            { blobHash: string } & {
-              blob?: ExpandedBlob;
+            {
+              blobHash: string;
+            } & {
+              blob: {
+                dataStorageReferences: DataStorageReference[];
+              } & Partial<ExpandedBlob>;
             }
           >[];
         }
@@ -53,7 +67,7 @@ export type CompletePrismaBlock = Prettify<
 >;
 
 export function createBlockSelect(expands: Expands, filters?: Filters) {
-  const blobExpand = expands.blob ? { blob: expands.blob } : {};
+  const blobExpand = expands.blob?.select;
   const transactionExpand = expands.transaction?.select ?? {};
 
   return {
@@ -65,7 +79,20 @@ export function createBlockSelect(expands: Expands, filters?: Filters) {
         blobs: {
           select: {
             blobHash: true,
-            ...blobExpand,
+            blob: {
+              select: {
+                dataStorageReferences: {
+                  select: {
+                    blobStorage: true,
+                    dataReference: true,
+                  },
+                  orderBy: {
+                    blobStorage: "asc",
+                  },
+                },
+                ...(blobExpand ?? {}),
+              },
+            },
           },
           orderBy: {
             index: "asc",
@@ -116,10 +143,20 @@ export function toResponseBlock(
             }),
           }
         : {}),
-      blobs: blobs.map(({ blobHash, blob }) =>
-        blob
-          ? normalizePrismaBlobFields({ versionedHash: blobHash, ...blob })
-          : { versionedHash: blobHash }
+      blobs: blobs.map(
+        ({ blobHash, blob: { dataStorageReferences, ...expandedBlob } }) =>
+          Object.keys(expandedBlob)
+            ? normalizePrismaBlobFields({
+                versionedHash: blobHash,
+                dataStorageReferences,
+                ...(expandedBlob as Required<typeof expandedBlob>),
+              })
+            : {
+                versionedHash: blobHash,
+                dataStorageReferences: normalizeDataStorageReferences(
+                  dataStorageReferences
+                ),
+              }
       ),
     })
   );

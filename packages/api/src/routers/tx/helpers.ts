@@ -9,6 +9,7 @@ import type {
 import type { Prettify } from "../../types";
 import {
   deriveTransactionFields,
+  normalizeDataStorageReferences,
   normalizePrismaBlobFields,
   normalizePrismaTransactionFields,
 } from "../../utils/transformers";
@@ -39,6 +40,15 @@ const transactionSelect = {
   },
 } satisfies Prisma.TransactionSelect;
 
+const dataStorageReferenceSelect = {
+  blobStorage: true,
+  dataReference: true,
+} satisfies Prisma.BlobDataStorageReferenceSelect;
+
+type DataStorageReference = Prisma.BlobDataStorageReferenceGetPayload<{
+  select: typeof dataStorageReferenceSelect;
+}>;
+
 type PrismaTransaction = Prisma.TransactionGetPayload<{
   select: typeof transactionSelect;
 }>;
@@ -53,14 +63,16 @@ export type CompletePrismaTransaction = Prettify<
     >;
     blobs: Prettify<
       { blobHash: string } & {
-        blob?: ExpandedBlob;
+        blob: {
+          dataStorageReferences: DataStorageReference[];
+        } & Partial<ExpandedBlob>;
       }
     >[];
   }
 >;
 export function createTransactionSelect(expands: Expands) {
   const blockExpand = expands.block?.select;
-  const blobExpand = expands.blob;
+  const blobExpand = expands.blob?.select;
 
   return {
     ...transactionSelect,
@@ -73,7 +85,20 @@ export function createTransactionSelect(expands: Expands) {
     blobs: {
       select: {
         blobHash: true,
-        ...(blobExpand ? { blob: blobExpand } : {}),
+        blob: {
+          select: {
+            dataStorageReferences: {
+              select: {
+                blobStorage: true,
+                dataReference: true,
+              },
+              orderBy: {
+                blobStorage: "asc",
+              },
+            },
+            ...(blobExpand ?? {}),
+          },
+        },
       },
       orderBy: {
         index: "asc",
@@ -107,10 +132,20 @@ export function toResponseTransaction(
     ...prismaTx,
     blobGasPrice: block.blobGasPrice,
   });
-  const blobs = blobsOnTxs.map(({ blobHash, blob }) =>
-    blob
-      ? normalizePrismaBlobFields({ versionedHash: blobHash, ...blob })
-      : { versionedHash: blobHash }
+  const blobs = blobsOnTxs.map(
+    ({ blobHash, blob: { dataStorageReferences, ...restBlob } }) =>
+      Object.keys(restBlob)
+        ? normalizePrismaBlobFields({
+            versionedHash: blobHash,
+            dataStorageReferences,
+            ...(restBlob as Required<typeof restBlob>),
+          })
+        : {
+            versionedHash: blobHash,
+            dataStorageReferences: normalizeDataStorageReferences(
+              dataStorageReferences
+            ),
+          }
   );
 
   return {
