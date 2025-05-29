@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.22.0
+
+### Minor Changes
+
+- [#791](https://github.com/Blobscan/blobscan/pull/791) [`969ab8f`](https://github.com/Blobscan/blobscan/commit/969ab8f757b77698ebd855425541ef209295d3c8) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob storage references field to block and transaction API responses by default
+
 ## 0.21.0
 
 ### Minor Changes
