@@ -92,42 +92,27 @@ export function convertStatsToChartSeries<T extends DailyStats>(
 
 type AggregationType = "count" | "average" | "time";
 
-export function aggregateData(data: number[], type: AggregationType): number;
-export function aggregateData(data: string[], type: AggregationType): bigint;
-export function aggregateData(
-  data: number[] | string[],
+export function aggregateValues(
+  values: number[] | string[],
   type: AggregationType
-): number | bigint {
-  const first = data[0] !== undefined ? normalizeNumerish(data[0]) : undefined;
-  const isNumberInput = typeof first === "number";
-
-  if (!data.length) {
+): number {
+  if (!values.length) {
     return 0;
   }
 
-  if (type === "count") {
-    if (isNumberInput) {
-      return (data as number[]).reduce((acc, value) => acc + value, 0);
-    }
-    return (data as string[]).reduce(
-      (acc, value) => acc + BigInt(value),
-      BigInt(0)
-    );
-  }
+  const normalizedValues = values.map((v) => Number(v));
 
-  if (type === "average") {
-    if (isNumberInput) {
-      const total = (data as number[]).reduce((acc, value) => acc + value, 0);
-      return total / data.length;
+  switch (type) {
+    case "count": {
+      return normalizedValues.reduce((acc, value) => acc + value, 0);
     }
-    const total = (data as string[]).reduce(
-      (acc, value) => acc + BigInt(value),
-      BigInt(0)
-    );
-    return total / BigInt(data.length);
+    case "average": {
+      const total = normalizedValues.reduce((acc, value) => acc + value, 0);
+      return total / values.length;
+    }
+    default:
+      throw new Error(`Aggregation type "${type}" not supported`);
   }
-
-  throw new Error("Invalid aggregation type");
 }
 
 export function aggregateSeries(

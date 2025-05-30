@@ -108,13 +108,10 @@ function buildDayWhereClause(
 ): DayStatFilter["day"] {
   let days: number;
 
-  console.log(timeFrame);
   if (timeFrame === "All") {
     const firstDate = dayjs(getNetworkForkTimestamp(env.NETWORK_NAME));
 
     days = dayjs().diff(firstDate, "D");
-
-    console.log("here");
   } else {
     days = parseInt(timeFrame.split("d")[0] ?? "1");
   }

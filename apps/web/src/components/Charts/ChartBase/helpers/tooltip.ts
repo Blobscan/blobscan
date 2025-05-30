@@ -6,7 +6,7 @@ import { ROLLUP_REGISTRY } from "@blobscan/rollups";
 import type { Rollup } from "~/types";
 import { calculatePercentage, getNeighbouringElements } from "~/utils";
 import type { Numerish } from "~/utils";
-import { aggregateData } from "../../helpers";
+import { aggregateValues } from "../../helpers";
 import type { MetricInfo } from "../types";
 import { formatMetricValue, formatSeriesName } from "./formatters";
 
@@ -99,11 +99,12 @@ export function createTooltip({
         }
 
         const dayTotal = displayTotal
-          ? aggregateData(
+          ? aggregateValues(
               paramOrParams.map((p) => p.value ?? 0) as number[],
               yAxisMetricInfo.type
             )
           : undefined;
+
         const rollupSeries = paramOrParams.filter(
           (d) => !!ROLLUP_REGISTRY[d.seriesName as Rollup]
         );
@@ -153,7 +154,7 @@ export function createTooltip({
 
         if (displayTotal) {
           if (rollupSeries.length) {
-            const rollupTotal = aggregateData(
+            const rollupTotal = aggregateValues(
               rollupSeries.map((p) => p.value ?? 0) as number[],
               yAxisMetricInfo.type
             );
