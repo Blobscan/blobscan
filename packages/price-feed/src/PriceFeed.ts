@@ -54,7 +54,7 @@ export class PriceFeed {
   /**
    *
    * @param client The viem client used to interact with the data feed contract.
-   * @param phaseAggregators The phase aggregators of the data feed contract.
+   * @param phaseAggregators The phase aggregators of the data feed contract sorted from most recent to oldest.
    * @param timeTolerance The maximum time difference in seconds allowed between the target
    * timestamp and the round timestamp.
    */
@@ -62,7 +62,7 @@ export class PriceFeed {
     private readonly client: PublicClient,
     private readonly phaseAggregators: PhaseAggregator[],
     readonly priceDecimals: number,
-    private readonly timeTolerance?: number
+    private readonly timeTolerance: number
   ) {}
 
   /**
@@ -99,12 +99,29 @@ export class PriceFeed {
 
     const instance = new PriceFeed(
       client,
-      aggregators,
+      aggregators.sort((a, b) => b.phaseId - a.phaseId),
       priceDecimals,
       timeTolerance || Infinity
     );
 
     return instance;
+  }
+
+  async findPriceByRoundId(roundId: RoundIdish): Promise<PriceData | null> {
+    const { phaseId, phaseRoundId } = parseRoundId(roundId);
+    const aggregator = this.#getPhaseAggregator(phaseId);
+
+    if (!aggregator) {
+      return null;
+    }
+
+    const roundData = await this.#fetchRoundData(aggregator, phaseRoundId);
+
+    if (!roundData) {
+      return null;
+    }
+
+    return toPriceData(roundData, this.priceDecimals);
   }
 
   /**
@@ -144,9 +161,7 @@ export class PriceFeed {
       ? parseRoundId(startRoundId)
       : undefined;
 
-    for (const phaseAggregator of this.phaseAggregators.sort(
-      (a, b) => b.phaseId - a.phaseId
-    )) {
+    for (const phaseAggregator of this.phaseAggregators) {
       const { firstRound, lastRound } = phaseAggregator;
 
       if (
@@ -249,14 +264,13 @@ export class PriceFeed {
    * @returns
    */
   #isWithinToleranceRange(targetTimestamp: number, timestamp: number): boolean {
-    const isToleranceDisabled = typeof this.timeTolerance === "undefined";
     const distance = targetTimestamp - timestamp;
 
     if (distance < 0) {
       return false;
     }
 
-    return isToleranceDisabled || distance <= this.timeTolerance;
+    return distance <= this.timeTolerance;
   }
 
   /**
@@ -391,5 +405,9 @@ export class PriceFeed {
     }
 
     return roundData;
+  }
+
+  #getPhaseAggregator(phaseId: number): PhaseAggregator | undefined {
+    return this.phaseAggregators.find((p) => p.phaseId === phaseId);
   }
 }
