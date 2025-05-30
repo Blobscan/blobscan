@@ -54,7 +54,7 @@ export class PriceFeed {
   /**
    *
    * @param client The viem client used to interact with the data feed contract.
-   * @param phaseAggregators The phase aggregators of the data feed contract.
+   * @param phaseAggregators The phase aggregators of the data feed contract sorted from most recent to oldest.
    * @param timeTolerance The maximum time difference in seconds allowed between the target
    * timestamp and the round timestamp.
    */
@@ -99,7 +99,7 @@ export class PriceFeed {
 
     const instance = new PriceFeed(
       client,
-      aggregators,
+      aggregators.sort((a, b) => b.phaseId - a.phaseId),
       priceDecimals,
       timeTolerance || Infinity
     );
@@ -107,11 +107,28 @@ export class PriceFeed {
     return instance;
   }
 
+  async findPriceByRoundId(roundId: RoundIdish): Promise<PriceData | null> {
+    const { phaseId, phaseRoundId } = parseRoundId(roundId);
+    const aggregator = this.#getPhaseAggregator(phaseId);
+
+    if (!aggregator) {
+      return null;
+    }
+
+    const roundData = await this.#fetchRoundData(aggregator, phaseRoundId);
+
+    if (!roundData) {
+      return null;
+    }
+
+    return toPriceData(roundData, this.priceDecimals);
+  }
+
   /**
    *
    * It retrieves the closest price data to the given timestamp.
    *
-   * Aditional information can be found here: https://docs.chain.link/data-feeds
+   * Additional information can be found here: https://docs.chain.link/data-feeds
    *
    * @param timestamp The timestamp for which the price is requested in seconds.
    * @param options The options to use for the search.
@@ -144,9 +161,7 @@ export class PriceFeed {
       ? parseRoundId(startRoundId)
       : undefined;
 
-    for (const phaseAggregator of this.phaseAggregators.sort(
-      (a, b) => b.phaseId - a.phaseId
-    )) {
+    for (const phaseAggregator of this.phaseAggregators) {
       const { firstRound, lastRound } = phaseAggregator;
 
       if (
@@ -251,7 +266,11 @@ export class PriceFeed {
   #isWithinToleranceRange(targetTimestamp: number, timestamp: number): boolean {
     const distance = targetTimestamp - timestamp;
 
-    return distance >= 0 && distance <= this.timeTolerance;
+    if (distance < 0) {
+      return false;
+    }
+
+    return distance <= this.timeTolerance;
   }
 
   /**
@@ -386,5 +405,9 @@ export class PriceFeed {
     }
 
     return roundData;
+  }
+
+  #getPhaseAggregator(phaseId: number): PhaseAggregator | undefined {
+    return this.phaseAggregators.find((p) => p.phaseId === phaseId);
   }
 }

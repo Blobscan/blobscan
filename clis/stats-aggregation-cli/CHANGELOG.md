@@ -1,5 +1,19 @@
 # @blobscan/stats-aggregation-cli
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [[`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92)]:
+  - @blobscan/db@0.17.0
+
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295)]:
+  - @blobscan/db@0.16.0
+
 ## 0.2.5
 
 ### Patch Changes

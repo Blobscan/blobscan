@@ -14,22 +14,21 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import type { BlobOnTransaction } from "./common/selects";
-import { createBlobsOnTransactionsSelect } from "./common/selects";
-import {
-  serializeBlobOnTransaction,
-  serializedBlobOnTransactionSchema,
-} from "./common/serializers";
+import { normalize } from "../../utils";
 import { countBlobs } from "./getCount";
+import type { CompletePrismaBlobOnTransaction } from "./helpers";
+import {
+  responseBlobOnTransactionSchema,
+  createBlobsOnTransactionsSelect,
+  toResponseBlobOnTransaction,
+} from "./helpers";
 
-const inputSchema = withPaginationSchema
-  .merge(withAllFiltersSchema)
-  .merge(createExpandsSchema(["transaction", "block"]));
-
-const outputSchema = z.object({
-  blobs: serializedBlobOnTransactionSchema.array(),
-  totalBlobs: z.number().optional(),
-});
+const outputSchema = z
+  .object({
+    blobs: responseBlobOnTransactionSchema.array(),
+    totalBlobs: z.number().optional(),
+  })
+  .transform(normalize);
 
 export const getAll = publicProcedure
   .meta({
@@ -40,9 +39,11 @@ export const getAll = publicProcedure
       summary: "retrieves all blobs.",
     },
   })
-  .input(inputSchema)
+  .input(withPaginationSchema)
   .use(withPagination)
+  .input(withAllFiltersSchema)
   .use(withFilters)
+  .input(createExpandsSchema(["transaction", "block"]))
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
@@ -82,21 +83,17 @@ export const getAll = publicProcedure
     });
     const countOp = count ? countBlobs(prisma, filters) : undefined;
 
-    const [queriedBlobsOnTxs, totalBlobs] = await Promise.all([
+    const [prismaBlobsOnTxs, totalBlobs] = await Promise.all([
       blobsOnTransactinonsOp,
       countOp,
     ]);
 
-    const blobsOnTransactions =
-      queriedBlobsOnTxs as unknown as BlobOnTransaction[];
-
-    const output: z.infer<typeof outputSchema> = {
-      blobs: blobsOnTransactions.map(serializeBlobOnTransaction),
+    return {
+      blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
+        toResponseBlobOnTransaction(
+          prismaBlobOnTx as unknown as CompletePrismaBlobOnTransaction
+        )
+      ),
+      ...(count ? { totalBlobs } : {}),
     };
-
-    if (count) {
-      output.totalBlobs = totalBlobs;
-    }
-
-    return output;
   });

@@ -1,8 +1,9 @@
 import React from "react";
 
+import { ICONS } from "~/icons/rollups";
 import type { Rollup } from "~/types";
 import { capitalize } from "~/utils";
-import { RollupIcon } from "../RollupIcon";
+import { Icon } from "../Icon";
 import type { BadgeProps } from "./Badge";
 import { Badge } from "./Badge";
 
@@ -229,20 +230,45 @@ const ROLLUP_CONFIG: Record<Rollup, { style: string; label?: string }> = {
   },
 };
 
+const ROLLUP_CUSTOM_STYLES: Partial<Record<Rollup, string>> = {
+  ancient8: "rounded-lg bg-green-500",
+  arenaz: "rounded-xl ",
+  mantle: "rounded-lg",
+  metamail: "text-blue-500",
+  mode: "text-[#ceb245] dark:text-[#ffd940]",
+  morph: "text-[#f7f7f7] dark:text-[#000000]",
+  nanonnetwork: "rounded-lg",
+  paradex: "rounded-lg",
+  thebinaryholdings: "h-3 w-3",
+  xga: "rounded-xl bg-gray-200 dark:bg-white h-[18px] w-[18px]",
+};
+
 type RollupBadgeProps = BadgeProps & {
   rollup: Rollup;
+  compact?: boolean;
 };
 
 export const RollupBadge: React.FC<RollupBadgeProps> = ({
+  compact = false,
   rollup,
   ...props
 }) => {
-  const { style, label } = ROLLUP_CONFIG[rollup];
+  const { style, label = capitalize(rollup) } = ROLLUP_CONFIG[rollup];
+  const rollupIcon = (
+    <Icon
+      src={ICONS[rollup]}
+      title={label}
+      className={ROLLUP_CUSTOM_STYLES[rollup]}
+      size={props.size ?? "md"}
+    />
+  );
 
-  return (
+  return compact ? (
+    rollupIcon
+  ) : (
     <Badge className={style} {...props}>
-      <RollupIcon rollup={rollup} />
-      {label ?? capitalize(rollup)}
+      {rollupIcon}
+      {label}
     </Badge>
   );
 };

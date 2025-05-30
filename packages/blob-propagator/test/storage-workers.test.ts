@@ -25,6 +25,7 @@ import type {
   BlobStorage as BlobStorageName,
 } from "@blobscan/db";
 import { env } from "@blobscan/env";
+import { testValidError } from "@blobscan/test";
 
 import { STORAGE_WORKER_PROCESSORS } from "../src/BlobPropagator";
 import type {
@@ -112,21 +113,23 @@ function runWorkerTests(
       });
     });
 
-    it("should throw an error if the blob data to be propagated wasn't found in any of the other storages", async () => {
-      const versionedHash = "missingBlobDataFileVersionedHash";
-      const jobWithMissingBlobData = {
-        data: {
-          versionedHash,
-        },
-      } as BlobPropagationJob;
+    testValidError(
+      "should throw an error if the blob data to be propagated wasn't found in any of the other storages",
+      async () => {
+        const versionedHash = "missingBlobDataFileVersionedHash";
+        const jobWithMissingBlobData = {
+          data: {
+            versionedHash,
+          },
+        } as BlobPropagationJob;
 
-      await expect(
-        storageWorkerProcessor(jobWithMissingBlobData)
-      ).rejects.toThrowErrorMatchingInlineSnapshot(
-        '"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\": no blob storage references found to retrieve data from"'
-      );
-      ``;
-    });
+        await storageWorkerProcessor(jobWithMissingBlobData);
+      },
+      Error,
+      {
+        checkCause: true,
+      }
+    );
   });
 }
 describe("Storage Workers", () => {

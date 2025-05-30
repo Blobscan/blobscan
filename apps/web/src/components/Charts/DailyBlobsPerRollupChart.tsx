@@ -14,7 +14,7 @@ export const DailyBlobsPerRollupChart: FC<Partial<DailyRollupChartProps>> =
   function ({ days, blobsPerRollup }) {
     const rollupNames =
       blobsPerRollup && blobsPerRollup[0]
-        ? (Object.keys(blobsPerRollup[0]) as Rollup[])
+        ? (Object.keys(blobsPerRollup[0]) as Uppercase<Rollup>[])
         : [];
 
     const options: EChartOption<EChartOption.SeriesBar> = {
@@ -29,7 +29,7 @@ export const DailyBlobsPerRollupChart: FC<Partial<DailyRollupChartProps>> =
         type: "bar",
         stack: "total",
         data: blobsPerRollup
-          ? blobsPerRollup.map((dayEntry) => dayEntry[rollup as Rollup])
+          ? blobsPerRollup.map((dayEntry) => dayEntry[rollup])
           : undefined,
       })),
       animationEasing: "cubicOut",

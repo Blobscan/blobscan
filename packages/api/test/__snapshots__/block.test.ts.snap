@@ -3,14 +3,14 @@
 exports[`Block router > getAll > when getting expanded block results > should return the correct expanded blob 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
         "blobs": [
@@ -27,14 +27,14 @@ exports[`Block router > getAll > when getting expanded block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
@@ -97,21 +97,22 @@ exports[`Block router > getAll > when getting expanded block results > should re
 exports[`Block router > getAll > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
-        "blobAsCalldataGasFee": "10000",
-        "blobAsCalldataGasUsed": "1000",
-        "blobGasBaseFee": "2883584",
-        "blobGasMaxFee": "13107200",
-        "blobGasUsed": "131072",
+        "blobAsCalldataGasFee": 10000n,
+        "blobAsCalldataGasUsed": 1000n,
+        "blobGasBaseFee": 2883584n,
+        "blobGasMaxFee": 13107200n,
+        "blobGasPrice": 22n,
+        "blobGasUsed": 131072n,
         "blobs": [
           {
             "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -122,30 +123,33 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "other",
+        "decodedFields": null,
         "from": "address2",
         "hash": "txHash016",
         "index": 0,
-        "maxFeePerBlobGas": "100",
+        "maxFeePerBlobGas": 100n,
+        "rollup": null,
         "to": "address4",
       },
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
-        "blobAsCalldataGasFee": "10000",
-        "blobAsCalldataGasUsed": "1000",
-        "blobGasBaseFee": "8650752",
-        "blobGasMaxFee": "39321600",
-        "blobGasUsed": "393216",
+        "blobAsCalldataGasFee": 10000n,
+        "blobAsCalldataGasUsed": 1000n,
+        "blobGasBaseFee": 8650752n,
+        "blobGasMaxFee": 39321600n,
+        "blobGasPrice": 22n,
+        "blobGasUsed": 393216n,
         "blobs": [
           {
             "commitment": "commitment004",
@@ -197,10 +201,11 @@ exports[`Block router > getAll > when getting expanded block results > should re
           },
         ],
         "category": "rollup",
+        "decodedFields": null,
         "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
         "hash": "txHash015",
         "index": 0,
-        "maxFeePerBlobGas": "100",
+        "maxFeePerBlobGas": 100n,
         "rollup": "optimism",
         "to": "address4",
       },
@@ -212,67 +217,103 @@ exports[`Block router > getAll > when getting expanded block results > should re
 exports[`Block router > getAll > when getting expanded block results > should return the correct expanded transaction 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
-        "blobAsCalldataGasFee": "10000",
-        "blobAsCalldataGasUsed": "1000",
-        "blobGasBaseFee": "2883584",
-        "blobGasMaxFee": "13107200",
-        "blobGasUsed": "131072",
+        "blobAsCalldataGasFee": 10000n,
+        "blobAsCalldataGasUsed": 1000n,
+        "blobGasBaseFee": 2883584n,
+        "blobGasMaxFee": 13107200n,
+        "blobGasPrice": 22n,
+        "blobGasUsed": 131072n,
         "blobs": [
           {
+            "dataStorageReferences": [],
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
         "category": "other",
+        "decodedFields": null,
         "from": "address2",
         "hash": "txHash016",
         "index": 0,
-        "maxFeePerBlobGas": "100",
+        "maxFeePerBlobGas": 100n,
+        "rollup": null,
         "to": "address4",
       },
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
-        "blobAsCalldataGasFee": "10000",
-        "blobAsCalldataGasUsed": "1000",
-        "blobGasBaseFee": "8650752",
-        "blobGasMaxFee": "39321600",
-        "blobGasUsed": "393216",
+        "blobAsCalldataGasFee": 10000n,
+        "blobAsCalldataGasUsed": 1000n,
+        "blobGasBaseFee": 8650752n,
+        "blobGasMaxFee": 39321600n,
+        "blobGasPrice": 22n,
+        "blobGasUsed": 393216n,
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
         "category": "rollup",
+        "decodedFields": null,
         "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
         "hash": "txHash015",
         "index": 0,
-        "maxFeePerBlobGas": "100",
+        "maxFeePerBlobGas": 100n,
         "rollup": "optimism",
         "to": "address4",
       },
@@ -284,24 +325,42 @@ exports[`Block router > getAll > when getting expanded block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return results up to and including the specified slot 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash002",
     "number": 1002,
     "slot": 102,
-    "timestamp": "2023-05-10T12:00:00.000Z",
+    "timestamp": 2023-05-10T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
           },
         ],
@@ -310,24 +369,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -336,6 +421,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -344,9 +439,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -360,18 +471,19 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the latest results when no sort was specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [],
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -380,24 +492,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
@@ -406,18 +548,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash006",
     "number": 1006,
     "slot": 106,
-    "timestamp": "2023-08-31T12:00:00.000Z",
+    "timestamp": 2023-08-31T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+              },
+            ],
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
@@ -431,24 +583,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the oldest results when ascending order is specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -457,6 +635,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -465,9 +653,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -476,24 +680,42 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash002",
     "number": 1002,
     "slot": 102,
-    "timestamp": "2023-05-10T12:00:00.000Z",
+    "timestamp": 2023-05-10T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
           },
         ],
@@ -502,24 +724,46 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash003",
     "number": 1003,
     "slot": 103,
-    "timestamp": "2023-08-03T12:00:00.000Z",
+    "timestamp": 2023-08-03T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -528,12 +772,42 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -547,24 +821,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to a provided rollup 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
@@ -573,24 +877,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "250000",
-    "blobGasPrice": "20",
-    "blobGasUsed": "5000000",
-    "excessBlobGas": "10000",
+    "blobAsCalldataGasUsed": 250000n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 5000000n,
+    "excessBlobGas": 10000n,
     "hash": "blockHash005",
     "number": 1005,
     "slot": 105,
-    "timestamp": "2023-08-28T10:00:00.000Z",
+    "timestamp": 2023-08-28T10:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -599,18 +933,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash004",
     "number": 1004,
     "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
+    "timestamp": 2023-08-20T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -619,21 +963,37 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -647,18 +1007,24 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "2500000",
-    "excessBlobGas": "55000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 2500000n,
+    "excessBlobGas": 55000n,
     "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
     "number": 1008,
     "slot": 110,
-    "timestamp": "2023-08-31T15:50:00.000Z",
+    "timestamp": 2023-08-31T15:50:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436/data",
+              },
+            ],
             "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
           },
         ],
@@ -672,18 +1038,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the block range specified  1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash006",
     "number": 1006,
     "slot": 106,
-    "timestamp": "2023-08-31T12:00:00.000Z",
+    "timestamp": 2023-08-31T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+              },
+            ],
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
@@ -692,24 +1068,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "250000",
-    "blobGasPrice": "20",
-    "blobGasUsed": "5000000",
-    "excessBlobGas": "10000",
+    "blobAsCalldataGasUsed": 250000n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 5000000n,
+    "excessBlobGas": 10000n,
     "hash": "blockHash005",
     "number": 1005,
     "slot": 105,
-    "timestamp": "2023-08-28T10:00:00.000Z",
+    "timestamp": 2023-08-28T10:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -718,6 +1124,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -726,18 +1142,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash004",
     "number": 1004,
     "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
+    "timestamp": 2023-08-20T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -746,6 +1172,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -754,6 +1186,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -762,6 +1204,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -770,6 +1222,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash005/data",
+              },
+            ],
             "versionedHash": "blobHash005",
           },
         ],
@@ -783,18 +1241,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the date range specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash004",
     "number": 1004,
     "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
+    "timestamp": 2023-08-20T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -803,6 +1271,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -811,6 +1285,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -819,6 +1303,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -827,6 +1321,12 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash005/data",
+              },
+            ],
             "versionedHash": "blobHash005",
           },
         ],
@@ -835,24 +1335,46 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash003",
     "number": 1003,
     "slot": 103,
-    "timestamp": "2023-08-03T12:00:00.000Z",
+    "timestamp": 2023-08-03T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -861,12 +1383,42 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -880,18 +1432,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the receiver address specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash004",
     "number": 1004,
     "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
+    "timestamp": 2023-08-20T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -900,24 +1462,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -931,24 +1519,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -962,24 +1576,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -993,24 +1633,42 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results ending at the block specified without including it 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash002",
     "number": 1002,
     "slot": 102,
-    "timestamp": "2023-05-10T12:00:00.000Z",
+    "timestamp": 2023-05-10T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+              },
+            ],
             "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
           },
         ],
@@ -1019,24 +1677,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -1045,6 +1729,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -1053,9 +1747,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -1069,24 +1779,50 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results ending at the date specified without including it 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash001",
     "number": 1001,
     "slot": 101,
-    "timestamp": "2022-10-16T12:00:00.000Z",
+    "timestamp": 2022-10-16T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -1095,6 +1831,16 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -1103,9 +1849,25 @@ exports[`Block router > getAll > when getting filtered block results > should re
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -1119,18 +1881,19 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results starting from the block specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [],
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -1139,24 +1902,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
@@ -1170,18 +1963,19 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results starting from the date specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [],
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -1190,24 +1984,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
@@ -1216,18 +2040,28 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash006",
     "number": 1006,
     "slot": 106,
-    "timestamp": "2023-08-31T12:00:00.000Z",
+    "timestamp": 2023-08-31T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+              },
+            ],
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
           },
         ],
@@ -1241,18 +2075,19 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting filtered block results > should return the results starting from the slot specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [],
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -1261,24 +2096,54 @@ exports[`Block router > getAll > when getting filtered block results > should re
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
@@ -1292,18 +2157,19 @@ exports[`Block router > getAll > when getting filtered block results > should re
 exports[`Block router > getAll > when getting paginated block results > should default to the first page when no page was specified 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "number": 1008,
     "slot": 108,
-    "timestamp": "2023-08-31T16:00:00.000Z",
+    "timestamp": 2023-08-31T16:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [],
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -1312,24 +2178,54 @@ exports[`Block router > getAll > when getting paginated block results > should d
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "number": 1007,
     "slot": 107,
-    "timestamp": "2023-08-31T14:00:00.000Z",
+    "timestamp": 2023-08-31T14:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+              },
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash004/data",
+              },
+            ],
             "versionedHash": "blobHash004",
           },
         ],
@@ -1343,18 +2239,28 @@ exports[`Block router > getAll > when getting paginated block results > should d
 exports[`Block router > getAll > when getting paginated block results > should return the correct results when a specific page is requested 1`] = `
 [
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash004",
     "number": 1004,
     "slot": 104,
-    "timestamp": "2023-08-20T12:00:00.000Z",
+    "timestamp": 2023-08-20T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -1363,6 +2269,12 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
         ],
@@ -1371,6 +2283,16 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -1379,6 +2301,16 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              },
+            ],
             "versionedHash": "blobHash003",
           },
         ],
@@ -1387,6 +2319,12 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "postgres",
+                "url": "http://localhost:3001/blobs/blobHash005/data",
+              },
+            ],
             "versionedHash": "blobHash005",
           },
         ],
@@ -1395,24 +2333,46 @@ exports[`Block router > getAll > when getting paginated block results > should r
     ],
   },
   {
-    "blobAsCalldataGasUsed": "255000",
-    "blobGasPrice": "22",
-    "blobGasUsed": "5500000",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 255000n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 5500000n,
+    "excessBlobGas": 15000n,
     "hash": "blockHash003",
     "number": 1003,
     "slot": 103,
-    "timestamp": "2023-08-03T12:00:00.000Z",
+    "timestamp": 2023-08-03T12:00:00.000Z,
     "transactions": [
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+              },
+            ],
             "versionedHash": "blobHash002",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -1421,12 +2381,42 @@ exports[`Block router > getAll > when getting paginated block results > should r
       {
         "blobs": [
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
           {
+            "dataStorageReferences": [
+              {
+                "storage": "google",
+                "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+              },
+              {
+                "storage": "swarm",
+                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              },
+            ],
             "versionedHash": "blobHash001",
           },
         ],
@@ -1441,24 +2431,42 @@ exports[`Block router > getAll > when getting paginated block results > should r
 
 exports[`Block router > getByBlockId > should get a block by block number 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000n,
+  "excessBlobGas": 15000n,
   "hash": "blockHash002",
   "number": 1002,
   "slot": 102,
-  "timestamp": "2023-05-10T12:00:00.000Z",
+  "timestamp": 2023-05-10T12:00:00.000Z,
   "transactions": [
     {
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+            },
+          ],
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+            },
+          ],
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+            },
+          ],
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
@@ -1470,18 +2478,24 @@ exports[`Block router > getByBlockId > should get a block by block number 1`] = 
 
 exports[`Block router > getByBlockId > should get a block by hash 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "2500000",
-  "excessBlobGas": "55000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 2500000n,
+  "excessBlobGas": 55000n,
   "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
   "number": 1008,
   "slot": 110,
-  "timestamp": "2023-08-31T15:50:00.000Z",
+  "timestamp": 2023-08-31T15:50:00.000Z,
   "transactions": [
     {
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436/data",
+            },
+          ],
           "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
         },
       ],
@@ -1493,18 +2507,24 @@ exports[`Block router > getByBlockId > should get a block by hash 1`] = `
 
 exports[`Block router > getByBlockId > should get a reorged block by block number 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "2500000",
-  "excessBlobGas": "55000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 2500000n,
+  "excessBlobGas": 55000n,
   "hash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
   "number": 1008,
   "slot": 110,
-  "timestamp": "2023-08-31T15:50:00.000Z",
+  "timestamp": 2023-08-31T15:50:00.000Z,
   "transactions": [
     {
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436/data",
+            },
+          ],
           "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
         },
       ],
@@ -1516,18 +2536,19 @@ exports[`Block router > getByBlockId > should get a reorged block by block numbe
 
 exports[`Block router > getByBlockId > should get the canonical block when providing a block number matching a reorged block 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000n,
+  "excessBlobGas": 15000n,
   "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
   "number": 1008,
   "slot": 108,
-  "timestamp": "2023-08-31T16:00:00.000Z",
+  "timestamp": 2023-08-31T16:00:00.000Z,
   "transactions": [
     {
       "blobs": [
         {
+          "dataStorageReferences": [],
           "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
         },
       ],
@@ -1539,14 +2560,14 @@ exports[`Block router > getByBlockId > should get the canonical block when provi
 
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded blob 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000n,
+  "excessBlobGas": 15000n,
   "hash": "blockHash002",
   "number": 1002,
   "slot": 102,
-  "timestamp": "2023-05-10T12:00:00.000Z",
+  "timestamp": 2023-05-10T12:00:00.000Z,
   "transactions": [
     {
       "blobs": [
@@ -1576,65 +2597,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
-          "dataStorageReferences": [
-            {
-              "storage": "postgres",
-              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
-            },
-          ],
-          "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
-          "size": 131072,
-          "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
-        },
-      ],
-      "hash": "txHash004",
-    },
-  ],
-}
-`;
-
-exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded blob data 1`] = `
-{
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
-  "hash": "blockHash002",
-  "number": 1002,
-  "slot": 102,
-  "timestamp": "2023-05-10T12:00:00.000Z",
-  "transactions": [
-    {
-      "blobs": [
-        {
-          "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
-          "data": "0xf9530408b74b2803432879b5e7fb5fdcbbcf7e71660f2f6a7cbd182eb9db7a026e0d0b",
-          "dataStorageReferences": [
-            {
-              "storage": "postgres",
-              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
-            },
-          ],
-          "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
-          "size": 131072,
-          "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
-        },
-        {
-          "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
-          "data": "0x682a4f046bbcf3a56762c7e719b030ff9c7c0df9181015daffe724296c59d6bb8dfd5c",
-          "dataStorageReferences": [
-            {
-              "storage": "postgres",
-              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
-            },
-          ],
-          "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
-          "size": 131072,
-          "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
-        },
-        {
-          "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
-          "data": "0x6eff1a27d044dc0d6f1d072c75ce47ccc63b5305b424eb4bafd250ad1de4985cd69fbc",
           "dataStorageReferences": [
             {
               "storage": "postgres",
@@ -1654,25 +2616,25 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
 
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000n,
+  "excessBlobGas": 15000n,
   "hash": "blockHash002",
   "number": 1002,
   "slot": 102,
-  "timestamp": "2023-05-10T12:00:00.000Z",
+  "timestamp": 2023-05-10T12:00:00.000Z,
   "transactions": [
     {
-      "blobAsCalldataGasFee": "10000",
-      "blobAsCalldataGasUsed": "1000",
-      "blobGasBaseFee": "8650752",
-      "blobGasMaxFee": "39321600",
-      "blobGasUsed": "393216",
+      "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsed": 1000n,
+      "blobGasBaseFee": 8650752n,
+      "blobGasMaxFee": 39321600n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 393216n,
       "blobs": [
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
-          "data": "0xf9530408b74b2803432879b5e7fb5fdcbbcf7e71660f2f6a7cbd182eb9db7a026e0d0b",
           "dataStorageReferences": [
             {
               "storage": "postgres",
@@ -1685,7 +2647,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
-          "data": "0x682a4f046bbcf3a56762c7e719b030ff9c7c0df9181015daffe724296c59d6bb8dfd5c",
           "dataStorageReferences": [
             {
               "storage": "postgres",
@@ -1698,7 +2659,6 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
         {
           "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
-          "data": "0x6eff1a27d044dc0d6f1d072c75ce47ccc63b5305b424eb4bafd250ad1de4985cd69fbc",
           "dataStorageReferences": [
             {
               "storage": "postgres",
@@ -1711,10 +2671,11 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
         },
       ],
       "category": "rollup",
+      "decodedFields": null,
       "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "hash": "txHash004",
       "index": 0,
-      "maxFeePerBlobGas": "100",
+      "maxFeePerBlobGas": 100n,
       "rollup": "base",
       "to": "address3",
     },
@@ -1724,37 +2685,57 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
 
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded transaction 1`] = `
 {
-  "blobAsCalldataGasUsed": "255000",
-  "blobGasPrice": "22",
-  "blobGasUsed": "5500000",
-  "excessBlobGas": "15000",
+  "blobAsCalldataGasUsed": 255000n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 5500000n,
+  "excessBlobGas": 15000n,
   "hash": "blockHash002",
   "number": 1002,
   "slot": 102,
-  "timestamp": "2023-05-10T12:00:00.000Z",
+  "timestamp": 2023-05-10T12:00:00.000Z,
   "transactions": [
     {
-      "blobAsCalldataGasFee": "10000",
-      "blobAsCalldataGasUsed": "1000",
-      "blobGasBaseFee": "8650752",
-      "blobGasMaxFee": "39321600",
-      "blobGasUsed": "393216",
+      "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsed": 1000n,
+      "blobGasBaseFee": 8650752n,
+      "blobGasMaxFee": 39321600n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 393216n,
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+            },
+          ],
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+            },
+          ],
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "postgres",
+              "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+            },
+          ],
           "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
       "category": "rollup",
+      "decodedFields": null,
       "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
       "hash": "txHash004",
       "index": 0,
-      "maxFeePerBlobGas": "100",
+      "maxFeePerBlobGas": 100n,
       "rollup": "base",
       "to": "address3",
     },
@@ -1798,24 +2779,50 @@ exports[`Block router > getBySlot > should fail when trying to get a reorged blo
 
 exports[`Block router > getBySlot > should get a block by slot 1`] = `
 {
-  "blobAsCalldataGasUsed": "2042780",
-  "blobGasPrice": "22",
-  "blobGasUsed": "786432",
-  "excessBlobGas": "15000",
+  "blobAsCalldataGasUsed": 2042780n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 786432n,
+  "excessBlobGas": 15000n,
   "hash": "blockHash001",
   "number": 1001,
   "slot": 101,
-  "timestamp": "2022-10-16T12:00:00.000Z",
+  "timestamp": 2022-10-16T12:00:00.000Z,
   "transactions": [
     {
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            },
+          ],
           "versionedHash": "blobHash001",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+            },
+          ],
           "versionedHash": "blobHash002",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+            },
+          ],
           "versionedHash": "blobHash003",
         },
       ],
@@ -1824,6 +2831,16 @@ exports[`Block router > getBySlot > should get a block by slot 1`] = `
     {
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            },
+          ],
           "versionedHash": "blobHash001",
         },
       ],
@@ -1832,9 +2849,25 @@ exports[`Block router > getBySlot > should get a block by slot 1`] = `
     {
       "blobs": [
         {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+            },
+          ],
           "versionedHash": "blobHash001",
         },
         {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+            },
+          ],
           "versionedHash": "blobHash002",
         },
       ],

@@ -22,7 +22,7 @@ Blobscan.com is comprised of the following major components:
 
 Blobscan is a monorepo managed with [Turborepo](https://turbo.build/) which contains two main folders: `apps` and `packages`.
 
-The indexer is not part of the monorepo and it's located in a separate [repository](https://github.com/Blobscan/blobscan-indexer.rs/tree/next).
+The indexer is not part of the monorepo and it's located in a separate [repository](https://github.com/Blobscan/blobscan-indexer.rs/).
 
 ### Apps
 
@@ -59,7 +59,7 @@ Here you can find all the shared packages used by the apps:
 | [`@blobscan/open-telemetry`](https://github.com/Blobscan/blobscan/tree/main/packages/open-telemetry)             | [Otel](https://opentelemetry.io/) configuration and sdk setup.                                                                                                                                                                          |
 | [`@blobscan/test`](https://github.com/Blobscan/blobscan/tree/main/packages/test)                                 | Shared test utilities and fixtures.                                                                                                                                                                                                     |
 | [`@blobscan/zod`](https://github.com/Blobscan/blobscan/tree/main/packages/zod)                                   | Shared [Zod](https://zod.dev) schemas and utilities.                                                                                                                                                                                    |
-| [`@blobscan/network-blob-config`](https://github.com/Blobscan/blobscan/tree/main/packages/eth-config)            | Provides network blob-related fork configuration parameters.                                                                                                                                                                            |
+| [`@blobscan/network-blob-config`](https://github.com/Blobscan/blobscan/tree/main/packages/network-blob-config)            | Provides network blob-related fork configuration parameters.                                                                                                                                                                            |
 | [`@blobscan/eth-format`](https://github.com/Blobscan/blobscan/tree/main/packages/eth-format)                     | Provides utility functions for handling Ethereum value conversions and formatting.                                                                                                                                                      |
 | [`@blobscan/rollups`](https://github.com/Blobscan/blobscan/tree/main/packages/rollups)                           | A utility that provides a comprehensive list of all rollups and their associated addresses supported by Blobscan, along with functions to retrieve them easily.                                                                         |
 

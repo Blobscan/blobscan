@@ -49,6 +49,8 @@ export async function createTestContext({
       req.headers.authorization = `Bearer ${token}`;
     } else if (type === "weavevm") {
       req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
+    } else if (type === "blob-data") {
+      req.headers.authorization = `Bearer ${env.BLOB_DATA_API_KEY}`;
     }
   }
 
@@ -300,14 +302,6 @@ export function runExpandsTestsSuite(
     if (allowedExpands.includes("blob")) {
       it("should return the correct expanded blob", async () => {
         const result = await fetcher({ expand: "blob", ps: 2 });
-
-        expect(result).toMatchSnapshot();
-      });
-    }
-
-    if (allowedExpands.includes("blob_data")) {
-      it("should return the correct expanded blob data", async () => {
-        const result = await fetcher({ expand: "blob_data", ps: 2 });
 
         expect(result).toMatchSnapshot();
       });

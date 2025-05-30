@@ -1,5 +1,17 @@
 # @blobscan/db
 
+## 0.17.0
+
+### Minor Changes
+
+- [#743](https://github.com/Blobscan/blobscan/pull/743) [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for zod-prisma to generate a zod schema for every Prisma model
+
+## 0.16.0
+
+### Minor Changes
+
+- [#731](https://github.com/Blobscan/blobscan/pull/731) [`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added ETH price feed state and eth usd price models
+
 ## 0.15.0
 
 ### Minor Changes

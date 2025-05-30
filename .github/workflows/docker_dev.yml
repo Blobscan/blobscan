@@ -68,7 +68,8 @@ jobs:
           context: .
           push: true
           target: api
-          tags: blossomlabs/blobscan-api:development
+          tags: |
+            blossomlabs/blobscan-api:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
@@ -82,7 +83,8 @@ jobs:
           context: .
           push: true
           target: web
-          tags: blossomlabs/blobscan-web:development
+          tags: |
+            blossomlabs/blobscan-web:development
           build-args: |
             NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
             BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}

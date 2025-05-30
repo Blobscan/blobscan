@@ -1,17 +1,15 @@
 import type { Prisma } from "@blobscan/db";
-import type { Rollup } from "@blobscan/db/prisma/enums";
+import { AddressModel, BlockModel } from "@blobscan/db/prisma/zod";
+import {
+  dbCategoryCoercionSchema,
+  dbRollupCoercionSchema,
+} from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import { getAddressesByRollup } from "@blobscan/rollups";
-import { commaSeparatedValuesSchema, z } from "@blobscan/zod";
+import { z } from "@blobscan/zod";
 
 import { t } from "../trpc-client";
-import {
-  addressSchema,
-  blockNumberSchema,
-  categorySchema,
-  rollupSchema,
-  slotSchema,
-} from "../utils";
+import { commaSeparatedValuesSchema } from "../zod-schemas";
 
 type NumberRangeFilter = {
   gte?: number;
@@ -54,23 +52,23 @@ const sortSchema = z.enum(["asc", "desc"]);
 const typeSchema = z.enum(["reorged", "canonical"]);
 
 export const withBlockRangeFilterSchema = z.object({
-  startBlock: blockNumberSchema.optional(),
-  endBlock: blockNumberSchema.optional(),
+  startBlock: BlockModel.shape.number.optional(),
+  endBlock: BlockModel.shape.number.optional(),
 });
 
 export const withSlotRangeFilterSchema = z.object({
-  startSlot: slotSchema.optional(),
-  endSlot: slotSchema.optional(),
+  startSlot: BlockModel.shape.slot.optional(),
+  endSlot: BlockModel.shape.slot.optional(),
 });
 
 export const withRollupsFilterSchema = z.object({
   rollups: commaSeparatedValuesSchema.transform((values) =>
-    values?.map((v) => rollupSchema.parse(v).toUpperCase() as Rollup)
+    values?.map((v) => dbRollupCoercionSchema.parse(v))
   ),
 });
 
 export const withCategoryFilterSchema = z.object({
-  category: categorySchema.optional(),
+  category: dbCategoryCoercionSchema.optional(),
 });
 
 export const withTypeFilterSchema = z.object({
@@ -84,9 +82,9 @@ export const withDateRangeFilterSchema = z.object({
 
 export const withAddressFilterSchema = z.object({
   from: commaSeparatedValuesSchema.transform((values) =>
-    values?.map((v) => addressSchema.parse(v))
+    values?.map((v) => AddressModel.shape.address.parse(v))
   ),
-  to: addressSchema.optional(),
+  to: AddressModel.shape.address.optional(),
 });
 
 export const withSortFilterSchema = z.object({
@@ -178,7 +176,7 @@ export const withFilters = t.middleware(({ next, input = {} }) => {
     transactionFilters.fromId = { in: resolvedAddresses };
   } else if (category) {
     transactionFilters.from = {
-      rollup: category === "rollup" ? { not: null } : null,
+      rollup: category === "ROLLUP" ? { not: null } : null,
     };
   }
 

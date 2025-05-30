@@ -5,18 +5,17 @@ import { formatWei, prettyFormatWei } from "@blobscan/eth-format";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { DailyBlockStats } from "~/types";
+import type { EChartCompliantDailyStats } from "~/types";
 import { buildTimeSeriesOptions } from "~/utils";
 
 export type DailyAvgBlobGasPriceChartProps = {
-  days: DailyBlockStats["days"];
-  avgBlobGasPrices: DailyBlockStats["avgBlobGasPrices"];
-  opts?: EChartOption;
+  days: EChartCompliantDailyStats["day"][];
+  avgBlobGasPrices: EChartCompliantDailyStats["avgBlobGasPrice"][];
 };
 
 export const DailyAvgBlobGasPriceChart: FC<
   Partial<DailyAvgBlobGasPriceChartProps>
-> = function ({ days, avgBlobGasPrices, opts = {} }) {
+> = function ({ days, avgBlobGasPrices }) {
   const { unit } = useScaledWeiAmounts(avgBlobGasPrices);
 
   const options: EChartOption<EChartOption.Series> = {
@@ -36,7 +35,6 @@ export const DailyAvgBlobGasPriceChart: FC<
       },
     ],
     animationEasing: "cubicOut",
-    ...opts,
   };
 
   return (

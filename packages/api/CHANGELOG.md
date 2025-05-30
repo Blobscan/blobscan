@@ -1,5 +1,51 @@
 # @blobscan/api
 
+## 0.22.0
+
+### Minor Changes
+
+- [#791](https://github.com/Blobscan/blobscan/pull/791) [`969ab8f`](https://github.com/Blobscan/blobscan/commit/969ab8f757b77698ebd855425541ef209295d3c8) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob storage references field to block and transaction API responses by default
+
+## 0.21.0
+
+### Minor Changes
+
+- [#762](https://github.com/Blobscan/blobscan/pull/762) [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added API key authentication to the `getBlobDataByBlobId` procedure
+
+- [#762](https://github.com/Blobscan/blobscan/pull/762) [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Dropped the blob data field from API responses to reduce payload size
+
+- [#743](https://github.com/Blobscan/blobscan/pull/743) [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92) Thanks [@PJColombo](https://github.com/PJColombo)! - Added missing transaction gas fee fields (blob gas base fee, blob gas max fee, and blob as calldata gas fee) to the expanded transaction object in the blob RPC procedures
+
+- [#762](https://github.com/Blobscan/blobscan/pull/762) [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Updated `getBlobDataByBlobId` procedure to retrieve blob data from the database only.
+
+- [#743](https://github.com/Blobscan/blobscan/pull/743) [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved transaction RPC procedures to return a parsed decodedFields object instead of a stringified version
+
+- [#762](https://github.com/Blobscan/blobscan/pull/762) [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Dropped `blob_data` value from expand query param
+
+- [#743](https://github.com/Blobscan/blobscan/pull/743) [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92) Thanks [@PJColombo](https://github.com/PJColombo)! - Returned all Prisma DecimalJS fields as bigints across all procedures
+
+### Patch Changes
+
+- Updated dependencies [[`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92)]:
+  - @blobscan/db@0.17.0
+  - @blobscan/blob-propagator@0.2.12
+  - @blobscan/blob-storage-manager@0.4.4
+  - @blobscan/rollups@0.3.2
+
+## 0.20.0
+
+### Minor Changes
+
+- [#732](https://github.com/Blobscan/blobscan/pull/732) [`b6217e8`](https://github.com/Blobscan/blobscan/commit/b6217e810f77d105df356b866d5df432a96d88ab) Thanks [@xFJA](https://github.com/xFJA)! - Added stat endpoint to return blobs per rollup data.
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295)]:
+  - @blobscan/db@0.16.0
+  - @blobscan/blob-propagator@0.2.11
+  - @blobscan/blob-storage-manager@0.4.3
+  - @blobscan/rollups@0.3.1
+
 ## 0.19.0
 
 ### Minor Changes

@@ -1,5 +1,33 @@
 # @blobscan/rest-api-server
 
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [[`3b54479`](https://github.com/Blobscan/blobscan/commit/3b54479da9d7e49398bd8f2b6ad8882b9fcb7a24), [`969ab8f`](https://github.com/Blobscan/blobscan/commit/969ab8f757b77698ebd855425541ef209295d3c8)]:
+  - @blobscan/syncers@0.4.2
+  - @blobscan/api@0.22.0
+
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies [[`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92), [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92), [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92)]:
+  - @blobscan/api@0.21.0
+  - @blobscan/syncers@0.4.1
+
+## 0.5.0
+
+### Minor Changes
+
+- [#731](https://github.com/Blobscan/blobscan/pull/731) [`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added ETH price syncer
+
+### Patch Changes
+
+- Updated dependencies [[`29b205a`](https://github.com/Blobscan/blobscan/commit/29b205a0e096a7cf42f26554c2f4818c94303295), [`b6217e8`](https://github.com/Blobscan/blobscan/commit/b6217e810f77d105df356b866d5df432a96d88ab)]:
+  - @blobscan/syncers@0.4.0
+  - @blobscan/api@0.20.0
+
 ## 0.4.9
 
 ### Patch Changes
