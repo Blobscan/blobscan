@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 import type { FC } from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { CustomTimeSeriesProps } from "../ChartBase/types";
-import { aggregateSeries } from "../helpers";
+import type { CustomTimeSeriesProps } from "./ChartBase/types";
+import { aggregateSeries } from "./helpers";
 
 export type DailyUniqueAddressesChartProps = CustomTimeSeriesProps<{
   totalUniqueReceivers: {

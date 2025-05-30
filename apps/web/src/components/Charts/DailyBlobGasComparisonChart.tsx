@@ -4,8 +4,8 @@ import * as echarts from "echarts";
 import { useTheme } from "next-themes";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { CustomTimeSeriesProps } from "../ChartBase/types";
-import { aggregateSeries } from "../helpers";
+import type { CustomTimeSeriesProps } from "./ChartBase/types";
+import { aggregateSeries } from "./helpers";
 
 export type DailyBlobGasComparisonChartProps = CustomTimeSeriesProps<{
   totalBlobAsCalldataGasUsed: {

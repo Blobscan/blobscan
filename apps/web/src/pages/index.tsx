@@ -9,8 +9,10 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { DailyBlobsChart } from "~/components/Charts/Blob";
-import { DailyAvgBlobGasPriceChart } from "~/components/Charts/Block";
+import {
+  DailyAvgBlobGasPriceChart,
+  DailyBlobsChart,
+} from "~/components/Charts";
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";

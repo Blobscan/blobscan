@@ -3,7 +3,7 @@ import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { formatBytes } from "~/utils";
-import type { TimeSeriesProps } from "../ChartBase/types";
+import type { TimeSeriesProps } from "./ChartBase/types";
 
 export type DailyBlobsSizeProps = TimeSeriesProps<string>;
 

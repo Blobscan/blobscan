@@ -3,7 +3,7 @@ import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import { useScaledWeiAmounts } from "~/hooks/useScaledWeiAmounts";
-import type { TimeSeriesProps } from "../ChartBase/types";
+import type { TimeSeriesProps } from "./ChartBase/types";
 
 export type DailyAvgBlobGasPriceChartProps = TimeSeriesProps<number>;
 

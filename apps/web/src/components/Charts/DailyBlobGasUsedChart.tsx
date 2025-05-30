@@ -2,15 +2,15 @@ import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { TimeSeriesBaseProps } from "../ChartBase";
+import type { TimeSeriesProps } from "./ChartBase/types";
 
-export type DailyTransactionsChartProps = TimeSeriesBaseProps<number>;
+export type DailyBlobGasUsedChartProps = TimeSeriesProps<string>;
 
-const DailyTransactionsChart: FC<DailyTransactionsChartProps> = React.memo(
+const DailyBlobGasUsedChart: FC<DailyBlobGasUsedChartProps> = React.memo(
   function ({ days, series, ...restProps }) {
     return (
       <ChartCard
-        title="Daily Transactions"
+        title="Daily Blob Gas Used"
         metricInfo={{
           xAxis: {
             type: "time",
@@ -22,7 +22,7 @@ const DailyTransactionsChart: FC<DailyTransactionsChartProps> = React.memo(
             data: days,
           },
           series: series?.map(({ name, values }) => ({
-            name: name,
+            name,
             data: values,
             type: "bar",
             stack: "total",
@@ -37,6 +37,6 @@ const DailyTransactionsChart: FC<DailyTransactionsChartProps> = React.memo(
   }
 );
 
-DailyTransactionsChart.displayName = "DailyTransactionsChart";
+DailyBlobGasUsedChart.displayName = "DailyBlobGasUsedChart";
 
-export { DailyTransactionsChart };
+export { DailyBlobGasUsedChart };

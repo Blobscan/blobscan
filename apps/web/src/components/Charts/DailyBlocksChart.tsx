@@ -2,7 +2,7 @@ import type { FC } from "react";
 import React from "react";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
-import type { TimeSeriesProps } from "../ChartBase/types";
+import type { TimeSeriesProps } from "./ChartBase/types";
 
 export type DailyBlocksChartProps = TimeSeriesProps<number>;
 

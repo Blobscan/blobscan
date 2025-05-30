@@ -7,20 +7,19 @@ import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
 import type { MetricCardProps } from "~/components/Cards/MetricCard";
-import { DailyBlobsChart, DailyBlobSizeChart } from "~/components/Charts/Blob";
 import {
   DailyAvgBlobFeeChart,
-  DailyAvgBlobGasPriceChart,
   DailyBlobFeeChart,
   DailyBlobGasComparisonChart,
   DailyBlobGasUsedChart,
+  DailyBlobSizeChart,
+  DailyBlobsChart,
   DailyBlocksChart,
-} from "~/components/Charts/Block";
-import {
   DailyAvgMaxBlobGasFeeChart,
   DailyTransactionsChart,
   DailyUniqueAddressesChart,
-} from "~/components/Charts/Transaction";
+  DailyAvgBlobGasPriceChart,
+} from "~/components/Charts";
 import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import type { Option } from "~/components/Dropdown";
 import { Dropdown } from "~/components/Dropdown";
