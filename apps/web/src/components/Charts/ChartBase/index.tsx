@@ -155,10 +155,6 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
   const onChartReady = useCallback(
     (chart: EChartsInstance) => {
-      if (!showLegend) {
-        return;
-      }
-
       chart.on(
         "mouseover",
         ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
