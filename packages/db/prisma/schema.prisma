@@ -142,14 +142,6 @@ model BlobStoragesState {
   @@map("blob_storages_state")
 }
 
-model EthUsdPriceFeedState {
-  id            Int      @id @default(autoincrement())
-  latestRoundId Decimal  @map("latest_round_id") @db.Decimal(100, 0)
-  updatedAt     DateTime @default(now()) @map("updated_at")
-
-  @@map("eth_usd_price_feed_state")
-}
-
 model Address {
   address                    String   @id
   rollup                     Rollup?

@@ -24,8 +24,6 @@ function determineGranularity(cronPattern: string): Granularity {
   }
 }
 
-const PRICE_FEED_STATE_ID = 1;
-
 export class ETHPriceSyncer extends BaseSyncer {
   constructor(config: ETHPriceSyncerConfig) {
     super({
@@ -35,89 +33,41 @@ export class ETHPriceSyncer extends BaseSyncer {
         const now = normalizeDate(dayjs());
         const granularity = determineGranularity(config.cronPattern);
 
-        const [priceFeedState, latestPrice] = await Promise.all([
-          prisma.ethUsdPriceFeedState.findFirst({
-            where: {
-              id: PRICE_FEED_STATE_ID,
-            },
-          }),
-          prisma.ethUsdPrice.findFirst({
-            orderBy: {
-              timestamp: "desc",
-            },
-          }),
-        ]);
-
         const targetDateTime = now.startOf(granularity);
-        let currentDateTime = latestPrice?.timestamp
-          ? normalizeDate(latestPrice.timestamp)
-              .add(1, granularity)
-              .startOf(granularity)
-          : targetDateTime;
-        let latestRoundId = priceFeedState?.latestRoundId.toFixed();
 
-        while (
-          targetDateTime.isAfter(currentDateTime) ||
-          targetDateTime.isSame(currentDateTime)
-        ) {
-          const priceData = await config.ethUsdPriceFeed.findPriceByTimestamp(
-            currentDateTime.unix(),
-            {
-              startRoundId: latestRoundId,
-            }
+        const priceData = await config.ethUsdPriceFeed.findPriceByTimestamp(
+          targetDateTime.unix()
+        );
+
+        if (!priceData) {
+          this.logger.warn(
+            `Skipping eth price update: No price data found for datetime ${targetDateTime
+              .utc()
+              .toISOString()}`
           );
 
-          if (!priceData) {
-            this.logger.warn(
-              `Skipping eth price update: No price data found for datetime ${currentDateTime
-                .utc()
-                .toISOString()}${
-                latestRoundId
-                  ? ` starting at round with ID "${latestRoundId}"`
-                  : ""
-              }`
-            );
-
-            return;
-          }
-
-          const roundId = priceData.roundId.toString();
-          const price = priceData.price;
-
-          const priceUpdatePromise = prisma.ethUsdPrice.create({
-            data: {
-              price,
-              timestamp: currentDateTime.toDate(),
-            },
-          });
-
-          const priceFeedStateUpdatePromise =
-            prisma.ethUsdPriceFeedState.upsert({
-              create: {
-                latestRoundId: roundId,
-                id: PRICE_FEED_STATE_ID,
-              },
-              update: {
-                latestRoundId: roundId,
-                updatedAt: new Date(),
-              },
-              where: {
-                id: PRICE_FEED_STATE_ID,
-              },
-            });
-
-          await prisma.$transaction([
-            priceUpdatePromise,
-            priceFeedStateUpdatePromise,
-          ]);
-
-          this.logger.info(
-            `ETH price synced: $${price} at ${currentDateTime.toISOString()} recorded (retrieved from round ${roundId})`
-          );
-
-          currentDateTime = currentDateTime.add(1, granularity);
-          latestRoundId = roundId;
+          return;
         }
+
+        const roundId = priceData.roundId.toString();
+        const price = priceData.price;
+        const priceTimestamp = targetDateTime.toDate();
+        const priceRow = {
+          price,
+          timestamp: priceTimestamp,
+        };
+
+        await prisma.ethUsdPrice.upsert({
+          create: priceRow,
+          update: priceRow,
+          where: {
+            timestamp: priceTimestamp,
+          },
+        });
+
+        this.logger.info(
+          `ETH price synced: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
+        );
       },
     });
   }
