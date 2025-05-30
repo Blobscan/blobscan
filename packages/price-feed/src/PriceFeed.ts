@@ -199,7 +199,7 @@ export class PriceFeed {
    * Finds the round data that corresponds to a timestamp using binary search algorithm
    *
    * *This function is an adaptation of this implementation:
-   * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/main/lib/binarySearch.ts*
+   * https://github.com/smartcontractkit/quickstarts-historical-prices-api/blob/main/lib/binarySearch.ts
    *
    * @param aggregator The phase aggregator contract to search in.
    * @param targetTimestamp The target timestamp.
