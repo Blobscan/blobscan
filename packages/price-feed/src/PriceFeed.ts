@@ -62,7 +62,7 @@ export class PriceFeed {
     private readonly client: PublicClient,
     private readonly phaseAggregators: PhaseAggregator[],
     readonly priceDecimals: number,
-    private readonly timeTolerance: number
+    private readonly timeTolerance?: number
   ) {}
 
   /**
@@ -249,9 +249,14 @@ export class PriceFeed {
    * @returns
    */
   #isWithinToleranceRange(targetTimestamp: number, timestamp: number): boolean {
+    const isToleranceDisabled = typeof this.timeTolerance === "undefined";
     const distance = targetTimestamp - timestamp;
 
-    return distance >= 0 && distance <= this.timeTolerance;
+    if (distance < 0) {
+      return false;
+    }
+
+    return isToleranceDisabled || distance <= this.timeTolerance;
   }
 
   /**
