@@ -38,7 +38,7 @@ export function performDiv(a: bigint, b: bigint, precision = 16) {
   return Number(scaledResult) / scaleFactor;
 }
 
-export function formatUsd(
+export function formatFiat(
   value: number | string,
   opts: Intl.NumberFormatOptions = {}
 ): string {

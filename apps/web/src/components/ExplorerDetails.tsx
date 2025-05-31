@@ -9,18 +9,23 @@ import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { api } from "~/api-client";
+import GasIcon from "~/icons/gas.svg";
 import { useEnv } from "~/providers/Env";
-import { capitalize, formatNumber, formatUsd } from "~/utils";
+import { capitalize, formatNumber } from "~/utils";
+import { FiatDisplay } from "./Displays/FiatDisplay";
+import { Icon } from "./Icon";
 
 type ExplorerDetailsItemProps = {
   name: string;
   value: React.ReactNode;
+  secondaryValue?: React.ReactNode;
   icon?: React.ReactNode;
 };
 
 function ExplorerDetailsItem({
   name,
   value,
+  secondaryValue,
   icon = null,
 }: ExplorerDetailsItemProps) {
   return (
@@ -28,9 +33,18 @@ function ExplorerDetailsItem({
       {icon}
       <span>{name}:</span>
       {value !== undefined ? (
-        <span className="font-semibold">{value}</span>
+        <div className="flex items-center gap-1">
+          <span className="text-content-light dark:text-content-dark">
+            {value}
+          </span>
+          {secondaryValue && (
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({secondaryValue})
+            </span>
+          )}
+        </div>
       ) : (
-        <Skeleton width={50} />
+        <Skeleton width={75} />
       )}
     </div>
   );
@@ -41,18 +55,20 @@ type ExplorerDetailsProps = {
 };
 
 export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
+  const { env } = useEnv();
   const { data: syncStateData } = api.syncState.getState.useQuery();
   const { data: blobStoragesState } = api.blobStoragesState.getState.useQuery();
   const { data: ethPriceData } = api.ethPrice.getByTimestamp.useQuery();
   const { data: latestBlock } = api.block.getLatestBlock.useQuery();
-
-  const { env } = useEnv();
-
   const networkConfig =
     latestBlock && env?.PUBLIC_NETWORK_NAME
       ? getNetworkBlobConfigBySlot(env.PUBLIC_NETWORK_NAME, latestBlock.slot)
       : undefined;
   const blobGasPrice = latestBlock?.blobGasPrice.toString();
+  const blobGasUsdPrice =
+    blobGasPrice && ethPriceData
+      ? Number(convertWei(blobGasPrice, "ether")) * ethPriceData.usdPrice
+      : undefined;
   const blobPrice =
     blobGasPrice && networkConfig
       ? BigInt(blobGasPrice) * networkConfig.gasPerBlob
@@ -79,34 +95,38 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
       },
       {
         name: "ETH Price",
-        value: ethPriceData ? (
-          <div>
-            {formatUsd(ethPriceData.usdPrice, { maximumFractionDigits: 2 })}
-          </div>
-        ) : (
-          <Skeleton height={14} width={50} />
+        value: ethPriceData && <FiatDisplay amount={ethPriceData.usdPrice} />,
+      },
+      {
+        name: "Blob Gas Price",
+        icon: <Icon src={GasIcon} size="md" />,
+        value: blobGasPrice && (
+          <span>
+            {prettyFormatWei(blobGasPrice, {
+              numberFormatOpts: {
+                notation: "standard",
+                maximumFractionDigits: 4,
+              },
+            })}
+          </span>
+        ),
+        secondaryValue: blobGasUsdPrice && (
+          <FiatDisplay amount={blobGasUsdPrice} />
         ),
       },
       {
         name: "Blob Price",
-        value:
-          blobPrice && blobUsdPrice ? (
-            <div className="flex items-center gap-1">
-              <div>{formatUsd(blobUsdPrice)}</div>
-              <div className="flex">
-                (
-                {prettyFormatWei(blobPrice, {
-                  numberFormatOpts: {
-                    notation: "standard",
-                    maximumFractionDigits: 4,
-                  },
-                })}
-                )
-              </div>
-            </div>
-          ) : (
-            <Skeleton height={14} width={120} />
-          ),
+        value: blobPrice && (
+          <span>
+            {prettyFormatWei(blobPrice, {
+              numberFormatOpts: {
+                notation: "standard",
+                maximumFractionDigits: 4,
+              },
+            })}
+          </span>
+        ),
+        secondaryValue: blobUsdPrice && <FiatDisplay amount={blobUsdPrice} />,
       }
     );
   }
@@ -134,10 +154,10 @@ export function ExplorerDetails({ placement }: ExplorerDetailsProps) {
 
   return (
     <div className="flex flex-col flex-wrap items-center justify-center gap-2 align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:flex-row">
-      {explorerDetailsItems.map(({ name, value, icon }, i) => {
+      {explorerDetailsItems.map((props, i) => {
         return (
-          <div key={name} className="flex items-center gap-2">
-            <ExplorerDetailsItem name={name} value={value} icon={icon} />
+          <div key={props.name} className="flex items-center gap-2">
+            <ExplorerDetailsItem {...props} />
             <span className="hidden sm:flex">
               {i < explorerDetailsItems.length - 1 ? "･" : ""}
             </span>
