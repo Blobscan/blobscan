@@ -1,5 +1,21 @@
 # @blobscan/api
 
+## 0.23.0
+
+### Minor Changes
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced `category` and `rollup` query parameters to daily and overall stats procedures for filtering stats and metrics
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Updates overall stats procedures to to return a set of overall stats elements instead of a single item.
+
+### Patch Changes
+
+- Updated dependencies [[`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
+  - @blobscan/db@0.18.0
+  - @blobscan/blob-propagator@0.2.13
+  - @blobscan/blob-storage-manager@0.4.6
+  - @blobscan/rollups@0.3.3
+
 ## 0.22.0
 
 ### Minor Changes
