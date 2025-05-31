@@ -1,18 +1,24 @@
-import { Prisma } from "@blobscan/db";
 import { OverallStatsModel } from "@blobscan/db/prisma/zod";
-import { z } from "@blobscan/zod";
 
+import {
+  withStatCategoriesFilterSchema,
+  withStatFilters,
+  withStatRollupsFilterSchema,
+} from "../../middlewares/withStatFilters";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
 import { BASE_PATH } from "./helpers";
 
-const responseOverallStatsSchema = OverallStatsModel.omit({
+const inputSchema = withStatCategoriesFilterSchema
+  .merge(withStatRollupsFilterSchema)
+  .optional();
+
+const outputSchema = OverallStatsModel.omit({
   id: true,
-});
-
-const inputSchema = z.void();
-
-const outputSchema = responseOverallStatsSchema.transform(normalize);
+})
+  .required({ category: true, rollup: true })
+  .array()
+  .transform(normalize);
 
 export const getOverallStats = publicProcedure
   .meta({
@@ -25,44 +31,13 @@ export const getOverallStats = publicProcedure
   })
   .input(inputSchema)
   .output(outputSchema)
-  .query(async ({ ctx }) => {
-    const allOverallStats = await ctx.prisma.overallStats.findMany({
-      where: {
-        category: null,
-        rollup: null,
-      },
+  .use(withStatFilters)
+  .query(async ({ ctx: { prisma, statFilters } }) => {
+    const allOverallStats = await prisma.overallStats.findMany({
+      select: statFilters.select,
+      where: statFilters.where,
+      orderBy: [{ category: "asc" }, { rollup: "asc" }],
     });
 
-    const overallStats = allOverallStats[0];
-
-    if (!overallStats) {
-      return {
-        avgBlobAsCalldataFee: 0,
-        avgBlobAsCalldataMaxFee: 0,
-        avgBlobFee: 0,
-        avgBlobGasPrice: 0,
-        avgBlobMaxFee: 0,
-        avgMaxBlobGasFee: 0,
-        totalBlobAsCalldataFee: new Prisma.Decimal(0),
-        totalBlobAsCalldataGasUsed: new Prisma.Decimal(0),
-        totalBlobAsCalldataMaxFees: new Prisma.Decimal(0),
-        totalBlobFee: new Prisma.Decimal(0),
-        totalBlobGasPrice: new Prisma.Decimal(0),
-        totalBlobGasUsed: new Prisma.Decimal(0),
-        totalBlobMaxFees: new Prisma.Decimal(0),
-        totalBlobMaxGasFees: new Prisma.Decimal(0),
-        totalBlobs: 0,
-        totalBlobSize: BigInt(0),
-        totalBlocks: 0,
-        totalTransactions: 0,
-        totalUniqueBlobs: 0,
-        totalUniqueReceivers: 0,
-        totalUniqueSenders: 0,
-        updatedAt: new Date(),
-        category: null,
-        rollup: null,
-      } satisfies z.input<typeof outputSchema>;
-    }
-
-    return overallStats;
+    return allOverallStats;
   });

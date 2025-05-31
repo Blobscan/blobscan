@@ -139,12 +139,12 @@ function Metric({
     numberFormatOpts,
   });
 
+  const isValueSet = value !== undefined;
   const valueProps = useSpring({
     value: parsedMetric.numericPart,
     from: { value: 0 },
-    cancel: !value,
+    cancel: !isValueSet,
   });
-  const isValueSet = value !== undefined;
 
   return (
     <div>

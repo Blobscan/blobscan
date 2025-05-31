@@ -9,20 +9,25 @@ import { MetricCard } from "~/components/Cards/MetricCard";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { BlockCard } from "~/components/Cards/SurfaceCards/BlockCard";
-import { DailyBlobsPerRollupChart } from "~/components/Charts/Blob";
-import { DailyAvgBlobGasPriceChart } from "~/components/Charts/Block";
+import {
+  DailyAvgBlobGasPriceChart,
+  DailyBlobsChart,
+} from "~/components/Charts";
+import { convertStatsToChartSeries } from "~/components/Charts/helpers";
 import { Link } from "~/components/Link";
 import { SearchInput } from "~/components/SearchInput";
 import { SlidableList } from "~/components/SlidableList";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
+import type {
+  BlockWithExpandedBlobsAndTransactions,
+  DailyStats,
+  MakeRequired,
+} from "~/types";
 import {
-  arrayfy,
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
-  stringify,
 } from "~/utils";
 
 const LATEST_ITEMS_LENGTH = 5;
@@ -43,20 +48,38 @@ const Home: NextPage = () => {
     expand: "transaction,blob",
   });
   const { data: overallStats, error: overallStatsErr } =
-    api.stats.getOverallStats.useQuery();
-  const { data: dailyStats, error: dailyStatsErr } =
+    api.stats.getOverallStats.useQuery(undefined, {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      select: (data) => data[0],
+    });
+  const { data: dailyStatsData, error: dailyStatsErr } =
     api.stats.getDailyStats.useQuery(
       {
-        timeFrame: "30d",
+        stats: "totalBlobs,avgBlobGasPrice",
+        timeFrame: "15d",
+        categories: "all",
+        rollups: "all",
+        sort: "asc",
       },
       {
-        select: (data) => arrayfy(stringify(data)),
+        refetchOnWindowFocus: false,
       }
     );
-  const { data: dailyRollupStats, error: dailyRollupStatsErr } =
-    api.stats.getRollupDailyStats.useQuery({
-      timeFrame: "90d",
-    });
+
+  const dailyStats = useMemo(() => {
+    if (!dailyStatsData) {
+      return;
+    }
+    return convertStatsToChartSeries(
+      dailyStatsData as MakeRequired<
+        DailyStats,
+        "totalBlobs" | "avgBlobGasPrice"
+      >[]
+    );
+  }, [dailyStatsData]);
+  const { days, series, totalSeries } = dailyStats || {};
 
   const { blocks, transactions, blobs } = useMemo(() => {
     if (!blocksData) {
@@ -83,11 +106,7 @@ const Home: NextPage = () => {
     };
   }, [blocksData]);
 
-  const error =
-    latestBlocksError ||
-    overallStatsErr ||
-    dailyStatsErr ||
-    dailyRollupStatsErr;
+  const error = latestBlocksError || overallStatsErr || dailyStatsErr;
 
   if (error) {
     return (
@@ -116,8 +135,10 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyAvgBlobGasPriceChart
-              days={dailyStats?.day}
-              avgBlobGasPrices={dailyStats?.avgBlobGasPrice}
+              days={days}
+              series={totalSeries?.avgBlobGasPrice}
+              size="sm"
+              compact
             />
           </div>
           <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">
@@ -165,7 +186,12 @@ const Home: NextPage = () => {
             />
           </div>
           <div className="col-span-2 sm:col-span-4">
-            <DailyBlobsPerRollupChart {...dailyRollupStats} />
+            <DailyBlobsChart
+              size="sm"
+              days={days}
+              series={series?.totalBlobs}
+              compact
+            />
           </div>
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">

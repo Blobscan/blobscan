@@ -45,7 +45,7 @@ export async function createTRPCInnerContext(
   };
 }
 
-type ContextScope = "web" | "rest-api";
+export type ContextScope = "web" | "rest-api";
 
 export function createTRPCContext({ scope }: { scope: ContextScope }) {
   return async (opts: CreateContextOptions) => {

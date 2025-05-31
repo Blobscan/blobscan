@@ -39,26 +39,53 @@ export const nonNegativeDecimalSchema = decimalSchema.refine(
 
 export const dbRollupSchema = z.nativeEnum(DBRollupEnum);
 
+const LOWERCASE_DB_ROLLUP_ENUM = Object.entries(DBRollupEnum).reduce(
+  (acc, [key, value]) => {
+    acc[key.toLowerCase() as Lowercase<keyof typeof DBRollupEnum>] =
+      value.toLowerCase() as Lowercase<DBRollupEnum>;
+    return acc;
+  },
+  {} as Record<Lowercase<keyof typeof DBRollupEnum>, Lowercase<DBRollupEnum>>
+);
+
+export const lowercaseDBRollupSchema = z.nativeEnum(LOWERCASE_DB_ROLLUP_ENUM);
+
+export const lowercaseToUpercaseDBRollupSchema =
+  lowercaseDBRollupSchema.transform<Uppercase<DBRollupEnum>>(
+    (value) => value.toUpperCase() as Uppercase<DBRollupEnum>
+  );
+
 export const toRollupSchema = dbRollupSchema.transform<Lowercase<DBRollupEnum>>(
   (value) => value.toLowerCase() as Lowercase<DBRollupEnum>
 );
 
 export const nullishToRollupSchema = toRollupSchema.nullish();
 
-export const dbRollupCoercionSchema = z.string().transform((value, ctx) => {
-  const result = dbRollupSchema.safeParse(value.toUpperCase());
+export const dbRollupCoercionSchema = z
+  .string()
+  .refine((v) => {
+    const result = dbRollupSchema.safeParse(v.toUpperCase());
 
-  if (!result.success) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Invalid rollup",
-    });
+    if (!result.success) {
+      return false;
+    }
 
-    return z.NEVER;
-  }
+    return true;
+  })
+  .transform((value, ctx) => {
+    const result = dbRollupSchema.safeParse(value.toUpperCase());
 
-  return result.data;
-});
+    if (!result.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid rollup",
+      });
+
+      return z.NEVER;
+    }
+
+    return result.data;
+  });
 
 export const dbBlobStorageSchema = z.nativeEnum(DBBlobStorageEnum);
 
@@ -85,6 +112,27 @@ export const dbBlobStorageCoercionSchema = z
 
 export const dbCategorySchema = z.nativeEnum(DBCategoryEnum);
 
+const LOWERCASE_DB_CATEGORY_ENUM = Object.entries(DBCategoryEnum).reduce(
+  (acc, [key, value]) => {
+    acc[key.toLowerCase() as Lowercase<keyof typeof DBCategoryEnum>] =
+      value.toLowerCase() as Lowercase<DBCategoryEnum>;
+    return acc;
+  },
+  {} as Record<
+    Lowercase<keyof typeof DBCategoryEnum>,
+    Lowercase<DBCategoryEnum>
+  >
+);
+
+export const lowercaseDBCategorySchema = z.nativeEnum(
+  LOWERCASE_DB_CATEGORY_ENUM
+);
+
+export const lowercaseToUppercaseDBCategorySchema =
+  lowercaseDBCategorySchema.transform<Uppercase<DBCategoryEnum>>(
+    (value) => value.toUpperCase() as Uppercase<DBCategoryEnum>
+  );
+
 export const toCategorySchema = dbCategorySchema.transform<
   Lowercase<DBCategoryEnum>
 >((value) => value.toLowerCase() as Lowercase<DBCategoryEnum>);
@@ -99,6 +147,8 @@ export const dbCategoryCoercionSchema = z.string().transform((value, ctx) => {
       code: z.ZodIssueCode.custom,
       message: "Invalid category",
     });
+
+    return z.NEVER;
   }
 
   return result.data;

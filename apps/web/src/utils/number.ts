@@ -1,5 +1,7 @@
 type FormatMode = "compact" | "standard";
 
+export type Numerish = number | string | bigint;
+
 export function toBigInt(value: number): bigint {
   if (Number.isNaN(value) || !Number.isFinite(value)) {
     return BigInt(0);
@@ -23,7 +25,7 @@ const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
 export function abbreviateNumber(value: number | string): string {
   return Intl.NumberFormat("en-US", {
     notation: "compact",
-    maximumFractionDigits: 1,
+    maximumFractionDigits: 2,
   }).format(Number(value));
 }
 
@@ -39,7 +41,7 @@ export function performDiv(a: bigint, b: bigint, precision = 16) {
 }
 
 export function formatNumber(
-  x: number | string | bigint,
+  x: Numerish,
   mode: "compact" | "standard" = "standard",
   opts: Intl.NumberFormatOptions = {}
 ): string {
@@ -75,23 +77,25 @@ export function parseDecimalNumber(value: string) {
 }
 
 export function calculatePercentage(
-  numerator: number | bigint,
-  denominator: number | bigint,
+  numerator: Numerish,
+  denominator: Numerish,
   opts?: Partial<{ returnComplement: boolean }>
 ): number {
-  if (denominator === 0 || denominator === BigInt(0)) {
+  const numerator_ = normalizeNumerish(numerator);
+  const denominator_ = normalizeNumerish(denominator);
+  if (denominator_ === 0 || denominator_ === BigInt(0)) {
     return 0;
   }
 
   let pct: number;
 
-  if (typeof numerator === "number" && typeof denominator === "number") {
+  if (typeof numerator_ === "number" || typeof denominator_ === "number") {
     // Perform normal division for numbers
-    pct = (numerator / denominator) * 100;
+    pct = (Number(numerator_) / Number(denominator_)) * 100;
   } else {
     // Convert both to BigInt and perform division
-    const num = BigInt(numerator);
-    const den = BigInt(denominator);
+    const num = BigInt(numerator_);
+    const den = BigInt(denominator_);
     pct = Number((num * BigInt(100)) / den); // Convert back to number after computation
   }
 
@@ -120,4 +124,27 @@ export function cumulativeSum(arr: number[] | bigint[]): number[] | bigint[] {
 
 export function hexToBigInt(hex: string): string {
   return BigInt(hex).toString(10);
+}
+
+export function findBiggestValue<T extends number[] | bigint[] | string[]>(
+  values: T
+): T[number] {
+  return values.reduce((a, b) => {
+    const a_ = typeof a === "string" ? BigInt(a) : a;
+    const b_ = typeof b === "string" ? BigInt(b) : b;
+
+    return a_ > b_ ? a_ : b_;
+  }, 0);
+}
+
+export function normalizeNumerish(value: Numerish) {
+  if (typeof value === "string") {
+    if (value.includes(".")) {
+      return Number(value);
+    }
+
+    return BigInt(value);
+  }
+
+  return value;
 }

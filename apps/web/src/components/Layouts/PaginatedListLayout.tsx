@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Header } from "~/components/Header";
 import { Card } from "../Cards/Card";
 import { Dropdown } from "../Dropdown";
-import type { DropdownProps, Option } from "../Dropdown";
+import type { Option } from "../Dropdown";
 import { Pagination } from "../Pagination";
 import type { PaginationProps } from "../Pagination";
 
@@ -20,12 +20,14 @@ export type PaginatedListLayoutProps = {
   emptyState?: ReactNode;
 };
 
-const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+type PageSizeOption = Option<number>;
+
+const PAGE_SIZES_OPTIONS: PageSizeOption[] = [
   { value: 10 },
   { value: 25 },
   { value: 50 },
   { value: 100 },
-];
+] as const;
 
 export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
   header,
@@ -46,13 +48,9 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
       : undefined;
   const hasItems = !items || items.length;
 
-  const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (option: Option) => {
-      if (!option) {
-        return;
-      }
-
-      const newPageSize = option.value as number;
+  const handlePageSizeSelection = useCallback(
+    (option: PageSizeOption) => {
+      const newPageSize = option.value;
 
       void router.push({
         pathname: router.pathname,
@@ -62,10 +60,7 @@ export const PaginatedListLayout: FC<PaginatedListLayoutProps> = function ({
            * Update the selected page to a lower value if we require less pages to show the
            * new amount of elements per page.
            */
-          p: Math.min(
-            Math.ceil(totalItems ?? 0 / (newPageSize as number)),
-            page
-          ),
+          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
           ps: newPageSize,
         },
       });
