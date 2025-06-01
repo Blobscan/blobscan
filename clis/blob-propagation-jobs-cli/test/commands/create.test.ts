@@ -160,7 +160,7 @@ describe("Create command", () => {
     expect(
       create(["-q", "invalid-storage-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Invalid queue 'invalid-storage-name'. Valid values are finalizer, file_system, google, postgres, swarm."`
+      `"Invalid queue 'invalid-storage-name'. Valid values are finalizer, file_system, google, postgres, swarm, chunkstorm."`
     );
   });
 
