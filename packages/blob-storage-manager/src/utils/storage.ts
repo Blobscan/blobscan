@@ -68,7 +68,7 @@ export async function createStorageFromEnv(
       return swarmStorage;
     }
     case BlobStorageName.CHUNKSTORM: {
-      if (!env.BEE_ENDPOINT || !env.CHUNKSTORM_STORAGE_API_BASE_URL) {
+      if (!env.BEE_ENDPOINT || !env.CHUNKSTORM_URL) {
         throw new Error(
           "Missing required env variables for ChunkstormStorage: BEE_ENDPOINT and CHUNKSTORM_STORAGE_API_BASE_URL"
         );
@@ -76,7 +76,7 @@ export async function createStorageFromEnv(
 
       const chunkstormStorage = await ChunkstormStorage.create({
         chainId,
-        apiBaseUrl: env.CHUNKSTORM_STORAGE_API_BASE_URL,
+        apiBaseUrl: env.CHUNKSTORM_URL,
         beeEndpoint: env.BEE_ENDPOINT,
         prisma,
       });

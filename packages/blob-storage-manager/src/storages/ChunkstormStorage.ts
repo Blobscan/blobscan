@@ -1,35 +1,49 @@
+import { Bee } from "@ethersphere/bee-js";
 import axios from "axios";
 
-import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import { BaseSwarmStorage } from "./BaseSwarmStorage";
-import type { BaseSwarmStorageConfig } from "./BaseSwarmStorage";
+import type { BlobStorageConfig } from "../BlobStorage";
+import { BlobStorage } from "../BlobStorage";
+import { StorageCreationError } from "../errors";
 
-export interface ChunkstormStorageConfig extends BaseSwarmStorageConfig {
+export interface ChunkstormStorageConfig extends BlobStorageConfig {
+  beeEndpoint: string;
   apiBaseUrl: string;
-  batchId?: string;
 }
+export class ChunkstormStorage extends BlobStorage {
+  _beeClient: Bee;
+  apiBaseUrl: string;
 
-export class ChunkstormStorage extends BaseSwarmStorage {
-  private apiBaseUrl: string;
-
-  constructor({
-    apiBaseUrl,
+  protected constructor({
     beeEndpoint,
     chainId,
-    batchId,
+    apiBaseUrl,
   }: ChunkstormStorageConfig) {
-    super(BlobStorageName.CHUNKSTORM, { beeEndpoint, chainId, batchId });
+    super(BlobStorageName.CHUNKSTORM, chainId);
+
     this.apiBaseUrl = apiBaseUrl;
+    try {
+      this._beeClient = new Bee(beeEndpoint);
+    } catch (err) {
+      throw new Error("Failed to create Bee client", {
+        cause: err,
+      });
+    }
   }
 
-  protected async _healthCheck(): Promise<void> {
-    try {
-      await axios.get(`${this.apiBaseUrl}/health`);
-    } catch (error) {
-      throw new Error(`Chunkstorm server is not reachable: ${error}`);
-    }
+  protected async _healthCheck() {
+    await this._beeClient.checkConnection();
+  }
+
+  protected async _getBlob(uri: string) {
+    const file = await this._beeClient.downloadFile(uri);
+
+    return file.data.text();
+  }
+
+  protected async _removeBlob(uri: string): Promise<void> {
+    await this._beeClient.unpin(uri);
   }
 
   // TODO: Investigate how to use versionedHash for upload chunk functions
@@ -42,25 +56,35 @@ export class ChunkstormStorage extends BaseSwarmStorage {
     const response = await axios.post(`${this.apiBaseUrl}/data`, buffer, {
       headers: {
         Accept: "application/json",
+
         "Content-Type": "application/octet-stream",
       },
+
       responseType: "json",
     });
 
     return response.data.reference;
   }
 
-  static async create({
-    prisma,
-    ...config
-  }: Omit<ChunkstormStorageConfig, "batchId"> & {
-    prisma: BlobscanPrismaClient;
-  }) {
-    return BaseSwarmStorage.safeCreate(
-      ChunkstormStorage,
-      prisma,
-      config,
-      this.name
-    );
+  getBlobUri(_: string) {
+    return undefined;
+  }
+
+  static async create({ ...config }: ChunkstormStorageConfig) {
+    try {
+      const storage = new ChunkstormStorage({ ...config });
+
+      await storage.healthCheck();
+
+      return storage;
+    } catch (err) {
+      const err_ = err as Error;
+
+      throw new StorageCreationError(
+        this.name,
+        err_.message,
+        err_.cause as Error
+      );
+    }
   }
 }

@@ -144,7 +144,7 @@ export const env = createEnv({
         .optional()
         .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
       CHUNKSTORM_STORAGE_ENABLED: booleanSchema.default("false"),
-      CHUNKSTORM_STORAGE_API_BASE_URL: z
+      CHUNKSTORM_URL: z
         .string()
         .url()
         .optional()
@@ -214,7 +214,7 @@ export const env = createEnv({
 
     if (env.CHUNKSTORM_STORAGE_ENABLED) {
       console.log(
-        `Chunkstorm configuration: apiBaseUrl=${env.CHUNKSTORM_STORAGE_API_BASE_URL}, beeEndpoint=${env.BEE_ENDPOINT}`
+        `Chunkstorm configuration: chunstormUrl=${env.CHUNKSTORM_URL}, beeEndpoint=${env.BEE_ENDPOINT}`
       );
     }
 
