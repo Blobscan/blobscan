@@ -33,8 +33,12 @@ export class ChunkstormStorage extends BlobStorage {
     }
   }
 
-  protected async _healthCheck() {
-    await this._beeClient.checkConnection();
+  protected async _healthCheck(): Promise<void> {
+    try {
+      await axios.get(`${this.apiBaseUrl}/health`);
+    } catch (error) {
+      throw new Error(`Chunkstorm server is not reachable: ${error}`);
+    }
   }
 
   protected async _getBlob(uri: string) {

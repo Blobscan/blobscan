@@ -1,4 +1,4 @@
-import { Bee, BeeResponseError } from "@ethersphere/bee-js";
+import { Bee } from "@ethersphere/bee-js";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
