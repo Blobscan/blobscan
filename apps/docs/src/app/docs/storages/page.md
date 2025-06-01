@@ -11,6 +11,7 @@ nextjs:
 Blobscan can be configured to use any of the following blob storages:
 
 - [Ethereum Swarm](https://www.ethswarm.org/)
+- [Chunkstorm](https://github.com/Cafe137/chunkstorm/)
 - File system
 - [Load Network (prev. WeaveVM)](https://www.load.network) (currently supports blob reading only)
 - Google Cloud Storage

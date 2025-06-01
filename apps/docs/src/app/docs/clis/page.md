@@ -56,7 +56,7 @@ Options
 
   -h, --help                 Print this usage guide.
   -q, --queue queue          Queue to remove failed jobs from. Valid values are
-                             finalizer, google, postgres or swarm.
+                             finalizer, google, postgres, swarm or chunkstorm.
   -b, --blobHash blob-hash   Blob hash of the failed jobs to retry.
   -f, --force                Force removal of jobs by obliterating the selected
                              queues.
