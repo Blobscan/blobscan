@@ -1,4 +1,4 @@
-import { z } from "@blobscan/zod";
+import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 
 import { withSortFilterSchema } from "../../middlewares/withFilters";
 import {
@@ -6,25 +6,14 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import {
-  categorySchema,
-  rollupSchema,
-  serializeCategory,
-  serializeDate,
-  serializeRollup,
-} from "../../utils";
-import { statsSchema } from "./common";
+import { normalize } from "../../utils";
 
 const inputSchema = withTimeFrameSchema.merge(withSortFilterSchema);
-const outputSchema = statsSchema
-  .merge(
-    z.object({
-      day: z.string(),
-      category: categorySchema.nullable(),
-      rollup: rollupSchema.nullable(),
-    })
-  )
-  .array();
+const outputSchema = DailyStatsModel.omit({
+  id: true,
+})
+  .array()
+  .transform(normalize);
 
 export const getDailyStats = publicProcedure
   .input(inputSchema)
@@ -61,27 +50,5 @@ export const getDailyStats = publicProcedure
       ],
     });
 
-    return dailyStats.map(
-      ({
-        day,
-        category,
-        rollup,
-        totalBlobSize,
-        totalBlobAsCalldataFee,
-        totalBlobAsCalldataGasUsed,
-        totalBlobFee,
-        totalBlobGasUsed,
-        ...restStats
-      }) => ({
-        ...restStats,
-        day: serializeDate(day),
-        category: category ? serializeCategory(category) : category,
-        rollup: serializeRollup(rollup),
-        totalBlobSize: totalBlobSize.toString(),
-        totalBlobAsCalldataFee: totalBlobAsCalldataFee.toString(),
-        totalBlobAsCalldataGasUsed: totalBlobAsCalldataGasUsed.toString(),
-        totalBlobFee: totalBlobFee.toString(),
-        totalBlobGasUsed: totalBlobGasUsed.toString(),
-      })
-    );
+    return dailyStats;
   });

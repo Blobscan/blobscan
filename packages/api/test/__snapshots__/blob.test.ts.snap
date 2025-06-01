@@ -8,15 +8,15 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
 [
   {
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 108,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
@@ -28,15 +28,15 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   },
   {
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 107,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -62,27 +62,33 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
 [
   {
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 108,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "transaction": {
-      "blobAsCalldataGasUsed": "1000",
-      "blobGasUsed": "131072",
+      "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsed": 1000n,
+      "blobGasBaseFee": 2883584n,
+      "blobGasMaxFee": 13107200n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 131072n,
       "category": "other",
+      "decodedFields": null,
       "from": "address2",
       "index": 0,
-      "maxFeePerBlobGas": "100",
+      "maxFeePerBlobGas": 100n,
+      "rollup": null,
       "to": "address4",
     },
     "txHash": "txHash016",
@@ -91,15 +97,15 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   },
   {
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 107,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -115,12 +121,17 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "proof004",
     "size": 1300,
     "transaction": {
-      "blobAsCalldataGasUsed": "1000",
-      "blobGasUsed": "393216",
+      "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsed": 1000n,
+      "blobGasBaseFee": 8650752n,
+      "blobGasMaxFee": 39321600n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 393216n,
       "category": "rollup",
+      "decodedFields": null,
       "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "index": 0,
-      "maxFeePerBlobGas": "100",
+      "maxFeePerBlobGas": 100n,
       "rollup": "optimism",
       "to": "address4",
     },
@@ -136,19 +147,25 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
     "transaction": {
-      "blobAsCalldataGasUsed": "1000",
-      "blobGasUsed": "131072",
+      "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsed": 1000n,
+      "blobGasBaseFee": 2883584n,
+      "blobGasMaxFee": 13107200n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 131072n,
       "category": "other",
+      "decodedFields": null,
       "from": "address2",
       "index": 0,
-      "maxFeePerBlobGas": "100",
+      "maxFeePerBlobGas": 100n,
+      "rollup": null,
       "to": "address4",
     },
     "txHash": "txHash016",
@@ -158,7 +175,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -174,12 +191,17 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "proof": "proof004",
     "size": 1300,
     "transaction": {
-      "blobAsCalldataGasUsed": "1000",
-      "blobGasUsed": "393216",
+      "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsed": 1000n,
+      "blobGasBaseFee": 8650752n,
+      "blobGasMaxFee": 39321600n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 393216n,
       "category": "rollup",
+      "decodedFields": null,
       "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "index": 0,
-      "maxFeePerBlobGas": "100",
+      "maxFeePerBlobGas": 100n,
       "rollup": "optimism",
       "to": "address4",
     },
@@ -195,7 +217,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
     "dataStorageReferences": [
       {
@@ -213,7 +235,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
     "dataStorageReferences": [
       {
@@ -231,7 +253,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
     "dataStorageReferences": [
       {
@@ -249,7 +271,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -267,7 +289,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -289,7 +311,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -311,7 +333,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -333,7 +355,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -351,7 +373,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -378,7 +400,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
@@ -391,7 +413,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -413,7 +435,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -440,7 +462,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -462,7 +484,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -480,7 +502,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -507,7 +529,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -529,7 +551,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -551,7 +573,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -573,7 +595,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -595,7 +617,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -617,7 +639,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -639,7 +661,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -661,7 +683,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -679,7 +701,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -706,7 +728,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T15:50:00.000Z",
+    "blockTimestamp": 2023-08-31T15:50:00.000Z,
     "commitment": "0x89e6ebcf42d04b1d09f54aa731fd3a2f1df95bd45ba488f28f7e72842a6ea547570d446391c627d4341a1ec922feb529",
     "dataStorageReferences": [
       {
@@ -729,7 +751,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash006",
     "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -751,7 +773,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -773,7 +795,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -795,7 +817,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -817,7 +839,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -839,7 +861,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -857,7 +879,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -879,7 +901,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -901,7 +923,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -919,7 +941,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -946,7 +968,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment005",
     "dataStorageReferences": [
       {
@@ -964,7 +986,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -986,7 +1008,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1008,7 +1030,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1026,7 +1048,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1048,7 +1070,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1070,7 +1092,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1092,7 +1114,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1114,7 +1136,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1136,7 +1158,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1154,7 +1176,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1177,7 +1199,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1199,7 +1221,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1221,7 +1243,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1239,7 +1261,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1266,7 +1288,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1288,7 +1310,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1306,7 +1328,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1333,7 +1355,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1355,7 +1377,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1373,7 +1395,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1400,7 +1422,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b3",
     "dataStorageReferences": [
       {
@@ -1418,7 +1440,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b2",
     "dataStorageReferences": [
       {
@@ -1436,7 +1458,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "commitment": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b1",
     "dataStorageReferences": [
       {
@@ -1454,7 +1476,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1472,7 +1494,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1494,7 +1516,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1516,7 +1538,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1538,7 +1560,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1556,7 +1578,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1583,7 +1605,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1601,7 +1623,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1623,7 +1645,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1645,7 +1667,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
     "dataStorageReferences": [
       {
@@ -1667,7 +1689,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
     "dataStorageReferences": [
       {
@@ -1685,7 +1707,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -1712,7 +1734,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
@@ -1725,7 +1747,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1747,7 +1769,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1769,7 +1791,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1796,7 +1818,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
@@ -1809,7 +1831,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1831,7 +1853,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1853,7 +1875,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1875,7 +1897,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "blockHash006",
     "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -1902,7 +1924,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
@@ -1915,7 +1937,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1937,7 +1959,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1959,7 +1981,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -1986,7 +2008,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
   {
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "dataStorageReferences": [],
     "index": 0,
@@ -1999,7 +2021,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
   {
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "commitment": "commitment004",
     "dataStorageReferences": [
       {
@@ -2026,7 +2048,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
   {
     "blockHash": "blockHash006",
     "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "commitment": "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
     "dataStorageReferences": [
       {
@@ -2048,7 +2070,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
   {
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "commitment": "commitment001",
     "dataStorageReferences": [
       {
@@ -2072,7 +2094,9 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
 
 exports[`Blob router > getAll > when getting paginated blob results > should return the total number of items when count is provided 1`] = `29`;
 
-exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a hex string with invalid length 1`] = `
+exports[`Blob router > getBlobDataByBlobId > when authorized > should fail when no blob data is found for the provided id 1`] = `"No blob data found for blob with id '0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1'."`;
+
+exports[`Blob router > getBlobDataByBlobId > when authorized > when providing an invalid blob id > should fail when providing a hex string with invalid length 1`] = `
 "[
   {
     \\"code\\": \\"custom\\",
@@ -2085,7 +2109,7 @@ exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id >
 ]"
 `;
 
-exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a non-hex string 1`] = `
+exports[`Blob router > getBlobDataByBlobId > when authorized > when providing an invalid blob id > should fail when providing a non-hex string 1`] = `
 "[
   {
     \\"code\\": \\"invalid_string\\",
@@ -2099,7 +2123,7 @@ exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id >
 ]"
 `;
 
-exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id > should fail when providing a versioned hash with invalid prefix 1`] = `
+exports[`Blob router > getBlobDataByBlobId > when authorized > when providing an invalid blob id > should fail when providing a versioned hash with invalid prefix 1`] = `
 "[
   {
     \\"code\\": \\"invalid_string\\",
@@ -2113,14 +2137,11 @@ exports[`Blob router > getBlobDataByBlobId > when providing an invalid blob id >
 ]"
 `;
 
-exports[`Blob router > getByBlobId > should fail when getting a blob and the blob data is not available 1`] = `[TRPCError: Failed to get blob from any of the storages]`;
-
 exports[`Blob router > getByBlobId > should fail when trying to get a blob by a non-existent hash 1`] = `[TRPCError: No blob with versioned hash or kzg commitment 'nonExistingHash'.]`;
 
 exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
 {
   "commitment": "commitment004",
-  "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
   "dataStorageReferences": [
     {
       "storage": "google",
@@ -2138,24 +2159,24 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
-      "hash": "txHash015",
       "index": 0,
+      "txHash": "txHash015",
       "txIndex": 0,
     },
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
-      "hash": "txHash015",
       "index": 1,
+      "txHash": "txHash015",
       "txIndex": 0,
     },
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
-      "hash": "txHash015",
       "index": 2,
+      "txHash": "txHash015",
       "txIndex": 0,
     },
   ],
@@ -2166,7 +2187,6 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
 exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
 {
   "commitment": "commitment004",
-  "data": "0x4fe40fc67f9c3a3ffa2be77d10fe7818",
   "dataStorageReferences": [
     {
       "storage": "google",
@@ -2184,24 +2204,24 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
-      "hash": "txHash015",
       "index": 0,
+      "txHash": "txHash015",
       "txIndex": 0,
     },
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
-      "hash": "txHash015",
       "index": 1,
+      "txHash": "txHash015",
       "txIndex": 0,
     },
     {
       "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1007,
       "blockTimestamp": 2023-08-31T14:00:00.000Z,
-      "hash": "txHash015",
       "index": 2,
+      "txHash": "txHash015",
       "txIndex": 0,
     },
   ],

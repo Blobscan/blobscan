@@ -1,3 +1,5 @@
+import type { Rollup } from "@blobscan/db/prisma/enums";
+import { dbRollupSchema } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {
@@ -5,13 +7,12 @@ import {
   withTimeFrameSchema,
 } from "../../middlewares/withTimeFrame";
 import { publicProcedure } from "../../procedures";
-import { rollupSchema } from "../../utils";
 
 const inputSchema = withTimeFrameSchema;
 
 export const outputSchema = z.object({
   days: z.array(z.string()),
-  blobsPerRollup: z.array(z.record(rollupSchema, z.number())),
+  blobsPerRollup: z.array(z.record(dbRollupSchema, z.number())),
 });
 
 type OutputSchema = z.infer<typeof outputSchema>;
@@ -57,12 +58,11 @@ export const getRollupDailyStats = publicProcedure
       blobsPerRollup: uniqueDays.map((day) =>
         stats.reduce((acc, item) => {
           if (item.day.toISOString() === day && item.rollup) {
-            const lowercaseRollup = item.rollup.toLowerCase();
-            acc[lowercaseRollup] =
-              (acc[lowercaseRollup] ?? 0) + (item._sum.totalBlobs ?? 0);
+            acc[item.rollup] =
+              (acc[item.rollup] ?? 0) + (item._sum.totalBlobs ?? 0);
           }
           return acc;
-        }, {} as { [key: string]: number })
+        }, {} as Record<Rollup, number>)
       ),
     };
 

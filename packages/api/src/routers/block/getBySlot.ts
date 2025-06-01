@@ -8,16 +8,17 @@ import {
 } from "../../middlewares/withExpands";
 import { withFilters } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
-import type { BlockIdField } from "./common";
-import { fetchBlock, serializeBlock, serializedBlockSchema } from "./common";
+import { normalize } from "../../utils";
+import type { BlockIdField } from "./helpers";
+import { responseBlockSchema, fetchBlock, toResponseBlock } from "./helpers";
 
 const inputSchema = z
   .object({
     slot: z.coerce.number().int().positive(),
   })
-  .merge(createExpandsSchema(["transaction", "blob", "blob_data"]));
+  .merge(createExpandsSchema(["transaction", "blob"]));
 
-const outputSchema = serializedBlockSchema;
+const outputSchema = responseBlockSchema.transform(normalize);
 
 export const getBySlot = publicProcedure
   .meta({
@@ -39,20 +40,20 @@ export const getBySlot = publicProcedure
     }) => {
       const blockIdField: BlockIdField = { type: "slot", value: slot };
 
-      const block = await fetchBlock(blockIdField, {
+      const prismaBlock = await fetchBlock(blockIdField, {
         blobStorageManager,
         prisma,
         filters,
         expands,
       });
 
-      if (!block) {
+      if (!prismaBlock) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: `Block with slot ${slot} not found`,
         });
       }
 
-      return serializeBlock(block);
+      return toResponseBlock(prismaBlock);
     }
   );

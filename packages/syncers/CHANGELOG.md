@@ -1,5 +1,18 @@
 # @blobscan/syncers
 
+## 0.4.2
+
+### Patch Changes
+
+- [#789](https://github.com/Blobscan/blobscan/pull/789) [`3b54479`](https://github.com/Blobscan/blobscan/commit/3b54479da9d7e49398bd8f2b6ad8882b9fcb7a24) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved issue where the ETH-USD price feed syncer was creating new price feed state rows in the database on every run
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92)]:
+  - @blobscan/db@0.17.0
+
 ## 0.4.0
 
 ### Minor Changes

@@ -14,19 +14,21 @@ import {
   withPagination,
 } from "../../middlewares/withPagination";
 import { publicProcedure } from "../../procedures";
-import { calculateTxFeeFields } from "../../utils";
-import type { IncompletedTransaction } from "./common";
+import { normalize } from "../../utils";
+import { countTxs } from "./getCount";
+import type { CompletePrismaTransaction } from "./helpers";
 import {
   createTransactionSelect,
-  serializeTransaction,
-  serializedTransactionSchema,
-} from "./common";
-import { countTxs } from "./getCount";
+  responseTransactionSchema,
+  toResponseTransaction,
+} from "./helpers";
 
-const outputSchema = z.object({
-  transactions: serializedTransactionSchema.array(),
-  totalTransactions: z.number().optional(),
-});
+const outputSchema = z
+  .object({
+    transactions: responseTransactionSchema.array(),
+    totalTransactions: z.number().optional(),
+  })
+  .transform(normalize);
 
 export const getAll = publicProcedure
   .meta({
@@ -62,7 +64,7 @@ export const getAll = publicProcedure
       };
     }
 
-    const transactionsOp = prisma.transaction.findMany({
+    const prismaTxsOp = prisma.transaction.findMany({
       select: createTransactionSelect(expands),
       where: {
         ...transactionFilters,
@@ -80,39 +82,21 @@ export const getAll = publicProcedure
         },
       ],
       ...pagination,
-    }) as unknown as IncompletedTransaction[];
+    });
 
     const countOp = count
       ? countTxs(prisma, filters)
       : Promise.resolve(undefined);
 
-    const [queriedTxs, txCountOrStats] = await Promise.all([
-      transactionsOp,
+    const [prismaTxs, txCountOrStats] = await Promise.all([
+      prismaTxsOp,
       countOp,
     ]);
 
-    const txs = queriedTxs.map((dbTx) => {
-      const feeFields = calculateTxFeeFields({
-        blobAsCalldataGasUsed: dbTx.blobAsCalldataGasUsed,
-        blobGasUsed: dbTx.blobGasUsed,
-        gasPrice: dbTx.gasPrice,
-        maxFeePerBlobGas: dbTx.maxFeePerBlobGas,
-        blobGasPrice: dbTx.block.blobGasPrice,
-      });
-
-      return {
-        ...dbTx,
-        ...feeFields,
-      };
-    });
-
-    const output: z.infer<typeof outputSchema> = {
-      transactions: txs.map(serializeTransaction),
+    return {
+      transactions: prismaTxs.map((tx) =>
+        toResponseTransaction(tx as unknown as CompletePrismaTransaction)
+      ),
+      ...(count ? { totalTransactions: txCountOrStats } : {}),
     };
-
-    if (count) {
-      output.totalTransactions = txCountOrStats;
-    }
-
-    return output;
   });

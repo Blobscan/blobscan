@@ -1,5 +1,35 @@
 # @blobscan/web
 
+## 0.25.1
+
+### Patch Changes
+
+- Updated dependencies [[`969ab8f`](https://github.com/Blobscan/blobscan/commit/969ab8f757b77698ebd855425541ef209295d3c8)]:
+  - @blobscan/api@0.22.0
+
+## 0.25.0
+
+### Minor Changes
+
+- [#784](https://github.com/Blobscan/blobscan/pull/784) [`72efde6`](https://github.com/Blobscan/blobscan/commit/72efde6f73e817c2f38e1813f3615e581dc67689) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated WeaveVM icon and renamed to Load Network
+
+## 0.24.0
+
+### Minor Changes
+
+- [#762](https://github.com/Blobscan/blobscan/pull/762) [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added API key authentication to the `getBlobDataByBlobId` procedure
+
+- [#762](https://github.com/Blobscan/blobscan/pull/762) [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Implemented blob data retrieval from storage URLs with proper handling of errors and missing data scenarios.
+
+### Patch Changes
+
+- [#768](https://github.com/Blobscan/blobscan/pull/768) [`7df3e2d`](https://github.com/Blobscan/blobscan/commit/7df3e2d6ab1bb392e67b79c1e484caa794ab7a6a) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Updated the rate limit logic to use ioredis instead of Vercel/KV
+
+- Updated dependencies [[`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92), [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92), [`c4a2693`](https://github.com/Blobscan/blobscan/commit/c4a26939cd270c3f9bc5c57d37a01f83f59981fc), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92), [`186aa87`](https://github.com/Blobscan/blobscan/commit/186aa873c0970d9717cb04db1a6ad4adeb1faf92)]:
+  - @blobscan/api@0.21.0
+  - @blobscan/db@0.17.0
+  - @blobscan/rollups@0.3.2
+
 ## 0.23.1
 
 ### Patch Changes

@@ -18,11 +18,11 @@ import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
+  arrayfy,
   buildBlobsRoute,
   buildBlocksRoute,
   buildTransactionsRoute,
-  deserializeFullBlock,
-  deserializeOverallStats,
+  stringify,
 } from "~/utils";
 
 const LATEST_ITEMS_LENGTH = 5;
@@ -32,7 +32,7 @@ const CARD_HEIGHT = "sm:h-28";
 const Home: NextPage = () => {
   const router = useRouter();
   const {
-    data: rawBlocksData,
+    data: blocksData,
     error: latestBlocksError,
     isLoading: latestBlocksLoading,
   } = api.block.getAll.useQuery<{
@@ -42,23 +42,28 @@ const Home: NextPage = () => {
     ps: LATEST_ITEMS_LENGTH,
     expand: "transaction,blob",
   });
-  const { data: rawOverallStats, error: overallStatsErr } =
+  const { data: overallStats, error: overallStatsErr } =
     api.stats.getOverallStats.useQuery();
-  const { data: dailyBlockStats, error: dailyBlockStatsErr } =
-    api.stats.getBlockDailyStats.useQuery({
-      timeFrame: "30d",
-    });
+  const { data: dailyStats, error: dailyStatsErr } =
+    api.stats.getDailyStats.useQuery(
+      {
+        timeFrame: "30d",
+      },
+      {
+        select: (data) => arrayfy(stringify(data)),
+      }
+    );
   const { data: dailyRollupStats, error: dailyRollupStatsErr } =
     api.stats.getRollupDailyStats.useQuery({
       timeFrame: "90d",
     });
 
   const { blocks, transactions, blobs } = useMemo(() => {
-    if (!rawBlocksData) {
+    if (!blocksData) {
       return { blocks: [], transactions: [], blobs: [] };
     }
 
-    const blocks = rawBlocksData.blocks.map(deserializeFullBlock);
+    const blocks = blocksData.blocks;
     const transactions = blocks
       .flatMap((b) =>
         b.transactions.map((tx) => ({
@@ -76,17 +81,12 @@ const Home: NextPage = () => {
       transactions,
       blobs,
     };
-  }, [rawBlocksData]);
-  const overallStats = useMemo(
-    () =>
-      rawOverallStats ? deserializeOverallStats(rawOverallStats) : undefined,
-    [rawOverallStats]
-  );
+  }, [blocksData]);
 
   const error =
     latestBlocksError ||
     overallStatsErr ||
-    dailyBlockStatsErr ||
+    dailyStatsErr ||
     dailyRollupStatsErr;
 
   if (error) {
@@ -116,9 +116,8 @@ const Home: NextPage = () => {
         <div className="grid grid-cols-2 space-y-6 lg:grid-cols-10 lg:gap-6 lg:space-y-0">
           <div className="col-span-2 sm:col-span-4">
             <DailyAvgBlobGasPriceChart
-              days={dailyBlockStats?.days}
-              avgBlobGasPrices={dailyBlockStats?.avgBlobGasPrices}
-              opts={{ toolbox: { show: false } }}
+              days={dailyStats?.day}
+              avgBlobGasPrices={dailyStats?.avgBlobGasPrice}
             />
           </div>
           <div className="col-span-2 grid w-full grid-cols-2 gap-2 sm:col-span-2 sm:grid-cols-2">

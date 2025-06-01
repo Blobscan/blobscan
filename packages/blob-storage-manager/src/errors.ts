@@ -1,4 +1,4 @@
-class ErrorException extends Error {
+export class ErrorException extends Error {
   constructor(message: string, cause?: Error | Error[]) {
     super(message, {
       cause,
@@ -19,7 +19,7 @@ export class StorageCreationError extends BlobStorageError {
     super(
       storageName,
       `Creation failed${message.length ? `: ${message}` : ""}`,
-      cause
+      cause,
     );
   }
 }

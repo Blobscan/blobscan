@@ -1,19 +1,18 @@
 import type { FC } from "react";
 
 import type { OptimismDecodedData } from "@blobscan/api/src/blob-parse/optimism";
-import type dayjs from "@blobscan/dayjs";
 
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
 import { api } from "~/api-client";
 import Loading from "~/icons/loading.svg";
-import { formatTimestamp } from "~/utils";
+import { formatTimestamp, normalizeTimestamp } from "~/utils";
 import { Card } from "./Cards/Card";
 import { Copyable } from "./Copyable";
 
 type OptimismCardProps = {
   data: OptimismDecodedData;
-  txTimestamp?: dayjs.Dayjs;
+  txTimestamp?: Date;
 };
 
 export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
@@ -28,7 +27,12 @@ export const OptimismCard: FC<OptimismCardProps> = ({ data, txTimestamp }) => {
   const hash = `0x${data.l1OriginBlockHash}...`;
 
   const timestamp = txTimestamp
-    ? formatTimestamp(txTimestamp.subtract(data.timestampSinceL2Genesis, "ms"))
+    ? formatTimestamp(
+        normalizeTimestamp(txTimestamp).subtract(
+          data.timestampSinceL2Genesis,
+          "ms"
+        )
+      )
     : undefined;
 
   if (isLoading) {

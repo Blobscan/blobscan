@@ -1,9 +1,14 @@
 {
   "name": "@blobscan/db",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
+  "files": [
+    "./prisma/zod-utils.ts",
+    "./prisma/zod",
+    "./prisma/enums"
+  ],
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
@@ -28,9 +33,11 @@
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/open-telemetry": "workspace:^0.0.9",
+    "@blobscan/zod": "workspace:^0.1.0",
     "@prisma/client": "^5.19.1",
     "@prisma/generator-helper": "^5.19.1",
-    "prisma": "^5.19.1"
+    "prisma": "^5.19.1",
+    "zod-prisma": "^0.5.4"
   },
   "devDependencies": {
     "@blobscan/network-blob-config": "workspace:^0.1.0",
@@ -41,6 +48,10 @@
   },
   "eslintConfig": {
     "root": true,
+    "ignorePatterns": [
+      "prisma/zod/*.ts",
+      "prisma/enums/*.ts"
+    ],
     "extends": [
       "@blobscan/eslint-config/base"
     ]

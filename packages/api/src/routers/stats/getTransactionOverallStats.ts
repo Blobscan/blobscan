@@ -1,55 +1,21 @@
+import { OverallStatsModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
-import type { TRPCContext } from "../../context";
 import { publicProcedure } from "../../procedures";
-import { TRANSACTION_BASE_PATH } from "./common";
+import { normalize } from "../../utils";
+import { TRANSACTION_BASE_PATH } from "./helpers";
 
 export const inputSchema = z.void();
 
-export const outputSchema = z.object({
-  totalTransactions: z.number(),
-  totalUniqueReceivers: z.number(),
-  totalUniqueSenders: z.number(),
-  avgMaxBlobGasFee: z.number(),
-  updatedAt: z.date(),
+const overallStatsResponse = OverallStatsModel.pick({
+  avgMaxBlobGasFee: true,
+  totalTransactions: true,
+  totalUniqueReceivers: true,
+  totalUniqueSenders: true,
+  updatedAt: true,
 });
 
-export async function getTransactionOverallStatsQuery(
-  prisma: TRPCContext["prisma"]
-) {
-  const overallStats = await prisma.overallStats.findFirst({
-    where: {
-      category: null,
-      rollup: null,
-    },
-  });
-
-  if (!overallStats) {
-    return {
-      totalTransactions: 0,
-      totalUniqueReceivers: 0,
-      totalUniqueSenders: 0,
-      avgMaxBlobGasFee: 0,
-      updatedAt: new Date(),
-    };
-  }
-
-  const {
-    totalTransactions,
-    totalUniqueReceivers,
-    totalUniqueSenders,
-    avgMaxBlobGasFee,
-    updatedAt,
-  } = overallStats;
-
-  return {
-    totalTransactions,
-    totalUniqueReceivers,
-    totalUniqueSenders,
-    avgMaxBlobGasFee,
-    updatedAt,
-  };
-}
+export const outputSchema = overallStatsResponse.transform(normalize);
 
 export const getTransactionOverallStats = publicProcedure
   .meta({

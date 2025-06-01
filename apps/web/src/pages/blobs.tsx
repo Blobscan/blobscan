@@ -4,14 +4,14 @@ import NextError from "next/error";
 
 import dayjs from "@blobscan/dayjs";
 
+import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
-import { RollupIcon } from "~/components/RollupIcon";
 import { Skeleton } from "~/components/Skeleton";
-import { StorageIcon } from "~/components/StorageIcon";
 import { TimestampToggle } from "~/components/TimestampToggle";
 import type { TimestampFormat } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
@@ -49,10 +49,8 @@ const Blobs: NextPage = function () {
   const error = blobsError ?? countError;
   const { blobs } = blobsData || {};
   const { totalBlobs } = countData || {};
-
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
-
-  const BLOBS_TABLE_HEADERS = [
+  const blobHeaders = [
     {
       cells: [
         {
@@ -88,94 +86,99 @@ const Blobs: NextPage = function () {
       ],
     },
   ];
-
-  const blobRows = useMemo(() => {
-    return blobs
-      ? blobs.map(
-          ({
-            versionedHash,
-            size,
-            dataStorageReferences,
-            txHash,
-            blockTimestamp,
-            blockNumber,
-            transaction,
-          }) => ({
-            cells: [
-              {
-                item: transaction.rollup ? (
-                  <RollupIcon rollup={transaction.rollup} />
-                ) : (
-                  <></>
-                ),
-              },
-              {
-                item: (
-                  <Copyable
-                    value={versionedHash}
-                    tooltipText="Copy versioned hash"
-                  >
-                    <Link href={buildBlobRoute(versionedHash)}>
-                      {shortenAddress(versionedHash, 8)}
-                    </Link>
-                  </Copyable>
-                ),
-              },
-              {
-                item: (
-                  <Copyable value={txHash} tooltipText="Copy transaction hash">
-                    <Link href={buildTransactionRoute(txHash)}>
-                      {shortenAddress(txHash, 8)}
-                    </Link>
-                  </Copyable>
-                ),
-              },
-              {
-                item: (
-                  <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+  const blobRows = useMemo(
+    () =>
+      blobs
+        ? blobs.map(
+            ({
+              versionedHash,
+              size,
+              dataStorageReferences,
+              txHash,
+              blockTimestamp,
+              blockNumber,
+              transaction,
+            }) => ({
+              cells: [
+                {
+                  item: transaction.rollup ? (
+                    <RollupBadge rollup={transaction.rollup} compact />
+                  ) : (
+                    <></>
+                  ),
+                },
+                {
+                  item: (
                     <Copyable
-                      value={blockNumber.toString()}
-                      tooltipText="Copy block number"
+                      value={versionedHash}
+                      tooltipText="Copy versioned hash"
                     >
-                      <Link href={buildBlockRoute(blockNumber)}>
-                        {blockNumber}
+                      <Link href={buildBlobRoute(versionedHash)}>
+                        {shortenAddress(versionedHash, 8)}
                       </Link>
                     </Copyable>
-                  </div>
-                ),
-              },
-              {
-                item:
-                  timeFormat === "relative"
-                    ? formatTimestamp(blockTimestamp, true)
-                    : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
-              },
-              {
-                item: (
-                  <div className="flex gap-2">
-                    <span>{formatBytes(size)}</span>
-                  </div>
-                ),
-              },
-              {
-                item: (
-                  <div className="flex flex-row gap-1">
-                    {dataStorageReferences.map(({ storage, url }) => (
-                      <StorageIcon
-                        key={storage}
-                        storage={storage}
-                        url={url}
-                        size="md"
-                      />
-                    ))}
-                  </div>
-                ),
-              },
-            ],
-          })
-        )
-      : undefined;
-  }, [blobs, timeFormat]);
+                  ),
+                },
+                {
+                  item: (
+                    <Copyable
+                      value={txHash}
+                      tooltipText="Copy transaction hash"
+                    >
+                      <Link href={buildTransactionRoute(txHash)}>
+                        {shortenAddress(txHash, 8)}
+                      </Link>
+                    </Copyable>
+                  ),
+                },
+                {
+                  item: (
+                    <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                      <Copyable
+                        value={blockNumber.toString()}
+                        tooltipText="Copy block number"
+                      >
+                        <Link href={buildBlockRoute(blockNumber)}>
+                          {blockNumber}
+                        </Link>
+                      </Copyable>
+                    </div>
+                  ),
+                },
+                {
+                  item:
+                    timeFormat === "relative"
+                      ? formatTimestamp(blockTimestamp, true)
+                      : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
+                },
+                {
+                  item: (
+                    <div className="flex gap-2">
+                      <span>{formatBytes(size)}</span>
+                    </div>
+                  ),
+                },
+                {
+                  item: (
+                    <div className="flex flex-row gap-1">
+                      {dataStorageReferences.map(({ storage, url }) => (
+                        <StorageBadge
+                          key={storage}
+                          storage={storage}
+                          url={url}
+                          size="md"
+                          compact
+                        />
+                      ))}
+                    </div>
+                  ),
+                },
+              ],
+            })
+          )
+        : undefined,
+    [blobs, timeFormat]
+  );
 
   if (error) {
     return (
@@ -205,7 +208,7 @@ const Blobs: NextPage = function () {
       <Filters />
       <PaginatedTable
         isLoading={isLoading}
-        headers={BLOBS_TABLE_HEADERS}
+        headers={blobHeaders}
         rows={blobRows}
         totalItems={totalBlobs}
         paginationData={{

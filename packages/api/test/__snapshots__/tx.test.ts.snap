@@ -3,11 +3,12 @@
 exports[`Transaction router > getAll > when getting expanded transaction results > should return the correct expanded blob 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
         "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -18,29 +19,27 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
         "commitment": "commitment004",
@@ -92,20 +91,17 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
@@ -115,74 +111,101 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 exports[`Transaction router > getAll > when getting expanded transaction results > should return the correct expanded block 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 108,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 107,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
@@ -192,11 +215,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 exports[`Transaction router > getAll > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
         "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -207,33 +231,31 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 108,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
         "commitment": "commitment004",
@@ -285,24 +307,21 @@ exports[`Transaction router > getAll > when getting expanded transaction results
       },
     ],
     "block": {
-      "blobAsCalldataGasUsed": "255000",
-      "blobGasPrice": "22",
-      "blobGasUsed": "5500000",
-      "excessBlobGas": "15000",
+      "blobAsCalldataGasUsed": 255000n,
+      "blobGasPrice": 22n,
+      "blobGasUsed": 5500000n,
+      "excessBlobGas": 15000n,
       "slot": 107,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
@@ -312,133 +331,195 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return results up to and including the specified slot 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "base",
     "to": "address3",
   },
   {
-    "blobAsCalldataGasFee": "14400",
-    "blobAsCalldataGasUsed": "1200",
-    "blobGasBaseFee": "5767168",
-    "blobGasMaxFee": "31457280",
-    "blobGasUsed": "262144",
+    "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsed": 1200n,
+    "blobGasBaseFee": 5767168n,
+    "blobGasMaxFee": 31457280n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
-    "maxFeePerBlobGas": "120",
+    "maxFeePerBlobGas": 120n,
     "rollup": "optimism",
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "12100",
-    "blobAsCalldataGasUsed": "1100",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "14417920",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsed": 1100n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 14417920n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
-    "maxFeePerBlobGas": "110",
+    "maxFeePerBlobGas": 110n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
@@ -448,95 +529,130 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the latest results when no sort was specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+          },
+        ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash006",
     "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address6",
   },
@@ -546,98 +662,144 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the oldest results when ascending order is specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
   {
-    "blobAsCalldataGasFee": "12100",
-    "blobAsCalldataGasUsed": "1100",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "14417920",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsed": 1100n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 14417920n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
-    "maxFeePerBlobGas": "110",
+    "maxFeePerBlobGas": 110n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "14400",
-    "blobAsCalldataGasUsed": "1200",
-    "blobGasBaseFee": "5767168",
-    "blobGasMaxFee": "31457280",
-    "blobGasUsed": "262144",
+    "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsed": 1200n,
+    "blobGasBaseFee": 5767168n,
+    "blobGasMaxFee": 31457280n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
-    "maxFeePerBlobGas": "120",
+    "maxFeePerBlobGas": 120n,
     "rollup": "optimism",
     "to": "address6",
   },
@@ -647,133 +809,211 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to a provided rollup 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "7864320",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 7864320n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "20",
+      "blobGasPrice": 20n,
     },
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address2",
   },
   {
-    "blobAsCalldataGasFee": "14400",
-    "blobAsCalldataGasUsed": "1200",
-    "blobGasBaseFee": "5767168",
-    "blobGasMaxFee": "31457280",
-    "blobGasUsed": "262144",
+    "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsed": 1200n,
+    "blobGasBaseFee": 5767168n,
+    "blobGasMaxFee": 31457280n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
-    "maxFeePerBlobGas": "120",
+    "maxFeePerBlobGas": 120n,
     "rollup": "optimism",
     "to": "address6",
   },
@@ -783,31 +1023,35 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to reorged blocks when 'reorged' type is specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "1866000",
-    "blobAsCalldataGasUsed": "15550",
-    "blobGasBaseFee": "5767168",
-    "blobGasMaxFee": "148373504",
-    "blobGasUsed": "262144",
+    "blobAsCalldataGasFee": 1866000n,
+    "blobAsCalldataGasUsed": 15550n,
+    "blobGasBaseFee": 5767168n,
+    "blobGasMaxFee": 148373504n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436/data",
+          },
+        ],
         "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x00903f147f44929cdb385b595b2e745566fe50658362b4e3821fa52b5ebe8f06",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T15:50:00.000Z",
+    "blockTimestamp": 2023-08-31T15:50:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "index": 0,
-    "maxFeePerBlobGas": "566",
+    "maxFeePerBlobGas": 566n,
     "rollup": "optimism",
     "to": "address1",
   },
@@ -817,240 +1061,316 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the block range specified  1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+          },
+        ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash006",
     "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2621440",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2621440n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "20",
+      "blobGasPrice": 20n,
     },
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address5",
     "hash": "txHash013",
     "index": 1,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "7864320",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 7864320n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "20",
+      "blobGasPrice": 20n,
     },
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash005/data",
+          },
+        ],
         "versionedHash": "blobHash005",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "base",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address3",
     "hash": "txHash010",
     "index": 3,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address5",
     "hash": "txHash009",
     "index": 2,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "arbitrum",
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address2",
   },
@@ -1060,217 +1380,297 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the date range specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash005/data",
+          },
+        ],
         "versionedHash": "blobHash005",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "base",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address3",
     "hash": "txHash010",
     "index": 3,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address5",
     "hash": "txHash009",
     "index": 2,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "arbitrum",
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address2",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash006",
     "index": 1,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash003",
     "blockNumber": 1003,
-    "blockTimestamp": "2023-08-03T12:00:00.000Z",
+    "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash005",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
@@ -1280,66 +1680,98 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the receiver address specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address2",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
@@ -1349,37 +1781,61 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
@@ -1389,37 +1845,61 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
@@ -1429,133 +1909,195 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the block specified without including it 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b1/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b1",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b2/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b2",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x000000000000000000000000000000000000000000000000000000000000b3/data",
+          },
+        ],
         "versionedHash": "0x000000000000000000000000000000000000000000000000000000000000b3",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash002",
     "blockNumber": 1002,
-    "blockTimestamp": "2023-05-10T12:00:00.000Z",
+    "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "base",
     "to": "address3",
   },
   {
-    "blobAsCalldataGasFee": "14400",
-    "blobAsCalldataGasUsed": "1200",
-    "blobGasBaseFee": "5767168",
-    "blobGasMaxFee": "31457280",
-    "blobGasUsed": "262144",
+    "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsed": 1200n,
+    "blobGasBaseFee": 5767168n,
+    "blobGasMaxFee": 31457280n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
-    "maxFeePerBlobGas": "120",
+    "maxFeePerBlobGas": 120n,
     "rollup": "optimism",
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "12100",
-    "blobAsCalldataGasUsed": "1100",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "14417920",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsed": 1100n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 14417920n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
-    "maxFeePerBlobGas": "110",
+    "maxFeePerBlobGas": 110n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
@@ -1565,98 +2107,144 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results ending at the date specified without including it 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "14400",
-    "blobAsCalldataGasUsed": "1200",
-    "blobGasBaseFee": "5767168",
-    "blobGasMaxFee": "31457280",
-    "blobGasUsed": "262144",
+    "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsed": 1200n,
+    "blobGasBaseFee": 5767168n,
+    "blobGasMaxFee": 31457280n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 262144n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
-    "maxFeePerBlobGas": "120",
+    "maxFeePerBlobGas": 120n,
     "rollup": "optimism",
     "to": "address6",
   },
   {
-    "blobAsCalldataGasFee": "12100",
-    "blobAsCalldataGasUsed": "1100",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "14417920",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsed": 1100n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 14417920n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
-    "maxFeePerBlobGas": "110",
+    "maxFeePerBlobGas": 110n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+          },
+        ],
         "versionedHash": "blobHash002",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+          },
+        ],
         "versionedHash": "blobHash003",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash001",
     "blockNumber": 1001,
-    "blockTimestamp": "2022-10-16T12:00:00.000Z",
+    "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address2",
   },
@@ -1666,66 +2254,93 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the block specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
@@ -1735,95 +2350,130 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the date specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368/data",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+          },
+        ],
         "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash006",
     "blockNumber": 1006,
-    "blockTimestamp": "2023-08-31T12:00:00.000Z",
+    "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address6",
   },
@@ -1833,66 +2483,93 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting filtered transaction results > should return the results starting from the slot specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
@@ -1902,66 +2579,93 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 exports[`Transaction router > getAll > when getting paginated transaction results > should default to the first page when no page was specified 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x8000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1008,
-    "blockTimestamp": "2023-08-31T16:00:00.000Z",
+    "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": null,
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "8650752",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 8650752n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash004.txt",
+          },
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash004/data",
+          },
+        ],
         "versionedHash": "blobHash004",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "0x7000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1007,
-    "blockTimestamp": "2023-08-31T14:00:00.000Z",
+    "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
@@ -1971,66 +2675,98 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 exports[`Transaction router > getAll > when getting paginated transaction results > should return the correct results when a specific page is requested 1`] = `
 [
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "7864320",
-    "blobGasMaxFee": "39321600",
-    "blobGasUsed": "393216",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 7864320n,
+    "blobGasMaxFee": 39321600n,
+    "blobGasPrice": 20n,
+    "blobGasUsed": 393216n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
       {
+        "dataStorageReferences": [
+          {
+            "storage": "google",
+            "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+          },
+          {
+            "storage": "swarm",
+            "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+          },
+        ],
         "versionedHash": "blobHash001",
       },
     ],
     "block": {
-      "blobGasPrice": "20",
+      "blobGasPrice": 20n,
     },
     "blockHash": "blockHash005",
     "blockNumber": 1005,
-    "blockTimestamp": "2023-08-28T10:00:00.000Z",
+    "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "optimism",
     "to": "address4",
   },
   {
-    "blobAsCalldataGasFee": "10000",
-    "blobAsCalldataGasUsed": "1000",
-    "blobGasBaseFee": "2883584",
-    "blobGasMaxFee": "13107200",
-    "blobGasUsed": "131072",
+    "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsed": 1000n,
+    "blobGasBaseFee": 2883584n,
+    "blobGasMaxFee": 13107200n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 131072n,
     "blobs": [
       {
+        "dataStorageReferences": [
+          {
+            "storage": "postgres",
+            "url": "http://localhost:3001/blobs/blobHash005/data",
+          },
+        ],
         "versionedHash": "blobHash005",
       },
     ],
     "block": {
-      "blobGasPrice": "22",
+      "blobGasPrice": 22n,
     },
     "blockHash": "blockHash004",
     "blockNumber": 1004,
-    "blockTimestamp": "2023-08-20T12:00:00.000Z",
+    "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
-    "decodedFields": {
-      "payload": "{}",
-      "type": "unknown",
-    },
+    "decodedFields": null,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
-    "maxFeePerBlobGas": "100",
+    "maxFeePerBlobGas": 100n,
     "rollup": "base",
     "to": "address4",
   },
@@ -2043,37 +2779,61 @@ exports[`Transaction router > getByHash > should fail when providing a non-exist
 
 exports[`Transaction router > getByHash > should get a transaction by hash correctly 1`] = `
 {
-  "blobAsCalldataGasFee": "10000",
-  "blobAsCalldataGasUsed": "1000",
-  "blobGasBaseFee": "8650752",
-  "blobGasMaxFee": "39321600",
-  "blobGasUsed": "393216",
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
   "blobs": [
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        },
+      ],
       "versionedHash": "blobHash001",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+        },
+      ],
       "versionedHash": "blobHash002",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        },
+      ],
       "versionedHash": "blobHash003",
     },
   ],
   "block": {
-    "blobGasPrice": "22",
+    "blobGasPrice": 22n,
   },
   "blockHash": "blockHash001",
   "blockNumber": 1001,
-  "blockTimestamp": "2022-10-16T12:00:00.000Z",
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
-  "decodedFields": {
-    "payload": "{}",
-    "type": "unknown",
-  },
+  "decodedFields": null,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
-  "maxFeePerBlobGas": "100",
+  "maxFeePerBlobGas": 100n,
   "rollup": null,
   "to": "address2",
 }
@@ -2081,11 +2841,12 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob 1`] = `
 {
-  "blobAsCalldataGasFee": "10000",
-  "blobAsCalldataGasUsed": "1000",
-  "blobGasBaseFee": "8650752",
-  "blobGasMaxFee": "39321600",
-  "blobGasUsed": "393216",
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
   "blobs": [
     {
       "commitment": "commitment001",
@@ -2133,96 +2894,17 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
   ],
   "block": {
-    "blobGasPrice": "22",
+    "blobGasPrice": 22n,
   },
   "blockHash": "blockHash001",
   "blockNumber": 1001,
-  "blockTimestamp": "2022-10-16T12:00:00.000Z",
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
-  "decodedFields": {
-    "payload": "{}",
-    "type": "unknown",
-  },
+  "decodedFields": null,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
-  "maxFeePerBlobGas": "100",
-  "rollup": null,
-  "to": "address2",
-}
-`;
-
-exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob data 1`] = `
-{
-  "blobAsCalldataGasFee": "10000",
-  "blobAsCalldataGasUsed": "1000",
-  "blobGasBaseFee": "8650752",
-  "blobGasMaxFee": "39321600",
-  "blobGasUsed": "393216",
-  "blobs": [
-    {
-      "commitment": "commitment001",
-      "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
-      "dataStorageReferences": [
-        {
-          "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
-        },
-        {
-          "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
-        },
-      ],
-      "proof": "proof001",
-      "size": 1000,
-      "versionedHash": "blobHash001",
-    },
-    {
-      "commitment": "commitment002",
-      "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
-      "dataStorageReferences": [
-        {
-          "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
-        },
-      ],
-      "proof": "proof002",
-      "size": 1100,
-      "versionedHash": "blobHash002",
-    },
-    {
-      "commitment": "commitment003",
-      "data": "0x2142337a5355685b119880ba35efdd6b",
-      "dataStorageReferences": [
-        {
-          "storage": "google",
-          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
-        },
-        {
-          "storage": "swarm",
-          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
-        },
-      ],
-      "proof": "proof003",
-      "size": 1200,
-      "versionedHash": "blobHash003",
-    },
-  ],
-  "block": {
-    "blobGasPrice": "22",
-  },
-  "blockHash": "blockHash001",
-  "blockNumber": 1001,
-  "blockTimestamp": "2022-10-16T12:00:00.000Z",
-  "category": "other",
-  "decodedFields": {
-    "payload": "{}",
-    "type": "unknown",
-  },
-  "from": "address1",
-  "hash": "txHash001",
-  "index": 0,
-  "maxFeePerBlobGas": "100",
+  "maxFeePerBlobGas": 100n,
   "rollup": null,
   "to": "address2",
 }
@@ -2230,41 +2912,65 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded block 1`] = `
 {
-  "blobAsCalldataGasFee": "10000",
-  "blobAsCalldataGasUsed": "1000",
-  "blobGasBaseFee": "8650752",
-  "blobGasMaxFee": "39321600",
-  "blobGasUsed": "393216",
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
   "blobs": [
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash001.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+        },
+      ],
       "versionedHash": "blobHash001",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash002.txt",
+        },
+      ],
       "versionedHash": "blobHash002",
     },
     {
+      "dataStorageReferences": [
+        {
+          "storage": "google",
+          "url": "https://storage.googleapis.com/blobscan-test-bucket/1/ob/Ha/sh/obHash003.txt",
+        },
+        {
+          "storage": "swarm",
+          "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+        },
+      ],
       "versionedHash": "blobHash003",
     },
   ],
   "block": {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "slot": 101,
   },
   "blockHash": "blockHash001",
   "blockNumber": 1001,
-  "blockTimestamp": "2022-10-16T12:00:00.000Z",
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
-  "decodedFields": {
-    "payload": "{}",
-    "type": "unknown",
-  },
+  "decodedFields": null,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
-  "maxFeePerBlobGas": "100",
+  "maxFeePerBlobGas": 100n,
   "rollup": null,
   "to": "address2",
 }
@@ -2272,15 +2978,15 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
-  "blobAsCalldataGasFee": "10000",
-  "blobAsCalldataGasUsed": "1000",
-  "blobGasBaseFee": "8650752",
-  "blobGasMaxFee": "39321600",
-  "blobGasUsed": "393216",
+  "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsed": 1000n,
+  "blobGasBaseFee": 8650752n,
+  "blobGasMaxFee": 39321600n,
+  "blobGasPrice": 22n,
+  "blobGasUsed": 393216n,
   "blobs": [
     {
       "commitment": "commitment001",
-      "data": "0x0e2e5a3a2011ad49f5055eb3227d66d5",
       "dataStorageReferences": [
         {
           "storage": "google",
@@ -2297,7 +3003,6 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
     {
       "commitment": "commitment002",
-      "data": "0x1ad6f58b3af99d6f7f70adcee71a1813",
       "dataStorageReferences": [
         {
           "storage": "google",
@@ -2310,7 +3015,6 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
     {
       "commitment": "commitment003",
-      "data": "0x2142337a5355685b119880ba35efdd6b",
       "dataStorageReferences": [
         {
           "storage": "google",
@@ -2327,24 +3031,21 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     },
   ],
   "block": {
-    "blobAsCalldataGasUsed": "2042780",
-    "blobGasPrice": "22",
-    "blobGasUsed": "786432",
-    "excessBlobGas": "15000",
+    "blobAsCalldataGasUsed": 2042780n,
+    "blobGasPrice": 22n,
+    "blobGasUsed": 786432n,
+    "excessBlobGas": 15000n,
     "slot": 101,
   },
   "blockHash": "blockHash001",
   "blockNumber": 1001,
-  "blockTimestamp": "2022-10-16T12:00:00.000Z",
+  "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
-  "decodedFields": {
-    "payload": "{}",
-    "type": "unknown",
-  },
+  "decodedFields": null,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
-  "maxFeePerBlobGas": "100",
+  "maxFeePerBlobGas": 100n,
   "rollup": null,
   "to": "address2",
 }

@@ -1,16 +1,35 @@
 import type { RefinementCtx } from "@blobscan/zod";
 import {
   z,
-  blobStorageSchema,
   booleanSchema,
   createEnv,
   presetEnvOptions,
-  nodeEnvSchema,
   maskPassword,
-  networkSchema,
   maskSensitiveData,
-  prismaBatchOperationsMaxSizeSchema,
 } from "@blobscan/zod";
+
+const nodeEnvSchema = z.enum(["development", "test", "production"]);
+
+const blobStorageSchema = z.enum([
+  "FILE_SYSTEM",
+  "GOOGLE",
+  "POSTGRES",
+  "SWARM",
+] as const);
+
+const networkSchema = z.enum([
+  "mainnet",
+  "holesky",
+  "sepolia",
+  "gnosis",
+  "chiado",
+  "devnet",
+]);
+
+const prismaBatchOperationsMaxSizeSchema = z.coerce
+  .number()
+  .positive()
+  .default(100_000);
 
 function requireIfEnvEnabled(envName: string) {
   return (value: unknown, ctx: RefinementCtx) => {
@@ -30,6 +49,8 @@ export const env = createEnv({
       BLOBSCAN_API_PORT: z.coerce.number().positive().default(3001),
       NODE_ENV: nodeEnvSchema.optional(),
       SECRET_KEY: z.string(),
+      BLOB_DATA_API_ENABLED: booleanSchema.default("true"),
+      BLOB_DATA_API_KEY: z.string().optional(),
       CHAIN_ID: z.coerce.number().positive().default(1),
       DENCUN_FORK_SLOT: z.coerce.number().optional(),
       NETWORK_NAME: networkSchema.default("mainnet"),
@@ -101,7 +122,10 @@ export const env = createEnv({
       ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS: z
         .string()
         .default("0xF9680D99D6C9589e2a93a78A04A279e509205945"),
-      ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce.number().positive().default(60),
+      ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce
+        .number()
+        .positive()
+        .default(100),
 
       /*
        * =====================
