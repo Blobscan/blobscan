@@ -78,7 +78,6 @@ export async function createStorageFromEnv(
         chainId,
         apiBaseUrl: env.CHUNKSTORM_URL,
         beeEndpoint: env.BEE_ENDPOINT,
-        prisma,
       });
 
       return chunkstormStorage;

@@ -1,6 +1,7 @@
 import type { FC, SVGProps } from "react";
 
 import type { BlobStorage } from "~/types";
+import chunkstorm from "./chunkstorm.svg";
 import file_system from "./file-system.svg";
 import google from "./google.svg";
 import postgres from "./postgres.svg";
@@ -18,4 +19,5 @@ export const ICONS: BlobStorageSVGRegistry = {
   postgres,
   swarm,
   weavevm,
+  chunkstorm,
 };

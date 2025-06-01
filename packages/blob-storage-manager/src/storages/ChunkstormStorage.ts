@@ -39,7 +39,7 @@ export class ChunkstormStorage extends BlobStorage {
   protected async _getBlob(uri: string) {
     const file = await this._beeClient.downloadFile(uri);
 
-    return file.data.text();
+    return file.data.toHex();
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
