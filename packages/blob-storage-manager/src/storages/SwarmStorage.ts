@@ -7,6 +7,7 @@ import { env } from "@blobscan/env";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
+import { performBeeAPICall } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
   batchId: string;
@@ -54,64 +55,62 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _healthCheck() {
-    return this.#performBeeAPICall(async () => {
-      await this._beeClient.checkConnection();
-    });
+    return performBeeAPICall(
+      async () => {
+        await this._beeClient.checkConnection();
+      },
+      {
+        beeUrl: this._beeClient.url,
+        batchId: this.batchId,
+      }
+    );
   }
 
   protected async _getBlob(uri: string) {
-    return this.#performBeeAPICall(async () => {
-      const file = await this._beeClient.downloadFile(uri);
+    return performBeeAPICall(
+      async () => {
+        const file = await this._beeClient.downloadFile(uri);
 
-      return file.data.toHex();
-    });
+        return file.data.toHex();
+      },
+      {
+        beeUrl: this._beeClient.url,
+        batchId: this.batchId,
+      }
+    );
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    await this.#performBeeAPICall(() => this._beeClient.unpin(uri));
+    await performBeeAPICall(() => this._beeClient.unpin(uri), {
+      beeUrl: this._beeClient.url,
+      batchId: this.batchId,
+    });
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    return this.#performBeeAPICall(async () => {
-      const response = await this._beeClient.uploadFile(
-        this.batchId,
-        data,
-        this.getBlobFilePath(versionedHash),
-        {
-          // : "text/plain",
-          deferred: env.SWARM_DEFERRED_UPLOAD,
-        }
-      );
+    return performBeeAPICall(
+      async () => {
+        const response = await this._beeClient.uploadFile(
+          this.batchId,
+          data,
+          this.getBlobFilePath(versionedHash),
+          {
+            // : "text/plain",
+            deferred: env.SWARM_DEFERRED_UPLOAD,
+          }
+        );
 
-      return response.reference.toHex();
-    });
+        return response.reference.toHex();
+      },
+      {
+        beeUrl: this._beeClient.url,
+        batchId: this.batchId,
+      }
+    );
   }
 
   getBlobUri(_: string) {
     return undefined;
-  }
-
-  async #performBeeAPICall<T>(call: () => T) {
-    try {
-      const res = await call();
-
-      return res;
-    } catch (err) {
-      if (err instanceof BeeResponseError) {
-        throw new Error(
-          `Request ${err.method.toUpperCase()} to Bee API ${err.url} batch "${
-            this.batchId
-          }" at "${this._beeClient.url}" failed with status code ${
-            err.status
-          } ${err.statusText}: ${err.message}
-            - Details: ${JSON.stringify(err.responseBody, null, 2)}
-          `,
-          err.cause as Error | undefined
-        );
-      }
-
-      throw err;
-    }
   }
 
   protected getBlobFilePath(hash: string) {

@@ -6,6 +6,7 @@ import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
+import { performBeeAPICall } from "../utils";
 
 export interface ChunkstormStorageConfig extends BlobStorageConfig {
   beeEndpoint: string;
@@ -37,13 +38,22 @@ export class ChunkstormStorage extends BlobStorage {
   }
 
   protected async _getBlob(uri: string) {
-    const file = await this._beeClient.downloadFile(uri);
+    return performBeeAPICall(
+      async () => {
+        const file = await this._beeClient.downloadFile(uri);
 
-    return file.data.toHex();
+        return file.data.toHex();
+      },
+      {
+        beeUrl: this._beeClient.url,
+      }
+    );
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    await this._beeClient.unpin(uri);
+    await performBeeAPICall(() => this._beeClient.unpin(uri), {
+      beeUrl: this._beeClient.url,
+    });
   }
 
   // TODO: Investigate how to use versionedHash for upload chunk functions
