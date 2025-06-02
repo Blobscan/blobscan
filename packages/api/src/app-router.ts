@@ -5,6 +5,7 @@ import { blobRouter } from "./routers/blob";
 import { blobStoragesStateRouter } from "./routers/blob-storages-state";
 import { blockRouter } from "./routers/block";
 import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
+import { ethPriceRouter } from "./routers/eth-price";
 import { indexerRouter } from "./routers/indexer";
 import { searchRouter } from "./routers/search";
 import { statsRouter } from "./routers/stats";
@@ -20,6 +21,7 @@ export const appRouter = t.router({
   indexer: indexerRouter,
   syncState: blockchainSyncStateRouter,
   blobStoragesState: blobStoragesStateRouter,
+  ethPrice: ethPriceRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {

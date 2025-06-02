@@ -40,6 +40,20 @@ export function performDiv(a: bigint, b: bigint, precision = 16) {
   return Number(scaledResult) / scaleFactor;
 }
 
+export function formatFiat(
+  value: number | string,
+  opts: Intl.NumberFormatOptions = {}
+): string {
+  return Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    notation: "standard",
+    maximumFractionDigits: 6,
+    minimumFractionDigits: 2,
+    ...opts,
+  }).format(Number(value));
+}
+
 export function formatNumber(
   x: Numerish,
   mode: "compact" | "standard" = "standard",
