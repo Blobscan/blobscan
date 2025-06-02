@@ -24,9 +24,9 @@ export function formatTimestamp(
 
   const dateFormattedSuffix = compact
     ? ""
-    : `(${unixHandler.format("MMM D, YYYY h:mm AZ")})`;
+    : ` (${unixHandler.format("MMM D, YYYY h:mm AZ")})`;
 
-  return `${unixHandler.fromNow()} ${dateFormattedSuffix}`;
+  return `${unixHandler.fromNow()}${dateFormattedSuffix}`;
 }
 
 export function formatDate(

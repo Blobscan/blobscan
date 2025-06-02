@@ -1,6 +1,8 @@
+import { TopNetworkInfo } from "~/components/NetworkInfo";
 import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
+import { TopBar } from "./TopBar";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const CompactTopBar = function () {
@@ -21,6 +23,9 @@ export const CompactTopBar = function () {
               <SearchInput />
             </div>
           </div>
+        </TopBarSurface>
+        <TopBarSurface>
+          <TopNetworkInfo />
         </TopBarSurface>
       </div>
     </>

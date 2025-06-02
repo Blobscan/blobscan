@@ -2,8 +2,8 @@ import React from "react";
 
 import { BlobscanSocialLinks } from "~/components/BlobscanSocialLinks";
 import { BlobscanVersionInfo } from "~/components/BlobscanVersionInfo";
-import { ExplorerDetails } from "~/components/ExplorerDetails";
 import { Link } from "~/components/Link";
+import { BottomNetworkInfo } from "~/components/NetworkInfo";
 
 export const BottomBarLayout = () => {
   return (
@@ -19,7 +19,7 @@ export const BottomBarLayout = () => {
           scale Ethereum.
         </div>
         <div className="my-1">
-          <ExplorerDetails placement="footer" />
+          <BottomNetworkInfo />
         </div>
         <BlobscanVersionInfo />
         <div className="flex gap-2">
