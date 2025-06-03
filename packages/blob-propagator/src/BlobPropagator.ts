@@ -35,7 +35,6 @@ import type {
 } from "./types";
 import { createBlobPropagationFlowJob } from "./utils";
 import {
-  chunkstormProcessor,
   fileSystemProcessor,
   finalizerProcessor,
   gcsProcessor,
@@ -60,7 +59,6 @@ export const STORAGE_WORKER_PROCESSORS: Record<
   POSTGRES: postgresProcessor,
   FILE_SYSTEM: fileSystemProcessor,
   WEAVEVM: undefined,
-  CHUNKSTORM: chunkstormProcessor,
 };
 
 export class BlobPropagator {

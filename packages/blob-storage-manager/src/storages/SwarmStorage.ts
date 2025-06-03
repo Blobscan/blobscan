@@ -1,4 +1,5 @@
-import { Bee } from "@ethersphere/bee-js";
+import { Bee, BeeResponseError } from "@ethersphere/bee-js";
+import axios from "axios";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
@@ -7,7 +8,6 @@ import { env } from "@blobscan/env";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
-import { performBeeAPICall } from "../utils";
 
 export interface SwarmStorageConfig extends BlobStorageConfig {
   batchId: string;
@@ -55,62 +55,84 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _healthCheck() {
-    return performBeeAPICall(
-      async () => {
-        await this._beeClient.checkConnection();
-      },
-      {
-        beeUrl: this._beeClient.url,
-        batchId: this.batchId,
-      }
-    );
-  }
-
-  protected async _getBlob(uri: string) {
-    return performBeeAPICall(
-      async () => {
-        const file = await this._beeClient.downloadFile(uri);
-
-        return file.data.toHex();
-      },
-      {
-        beeUrl: this._beeClient.url,
-        batchId: this.batchId,
-      }
-    );
-  }
-
-  protected async _removeBlob(uri: string): Promise<void> {
-    await performBeeAPICall(() => this._beeClient.unpin(uri), {
-      beeUrl: this._beeClient.url,
-      batchId: this.batchId,
+    return this.#performBeeAPICall(async () => {
+      await this._beeClient.checkConnection();
     });
   }
 
-  protected async _storeBlob(versionedHash: string, data: string) {
-    return performBeeAPICall(
-      async () => {
-        const response = await this._beeClient.uploadFile(
-          this.batchId,
-          data,
-          this.getBlobFilePath(versionedHash),
-          {
-            // : "text/plain",
-            deferred: env.SWARM_DEFERRED_UPLOAD,
-          }
-        );
+  protected async _getBlob(uri: string) {
+    return this.#performBeeAPICall(async () => {
+      const file = await this._beeClient.downloadFile(uri);
 
-        return response.reference.toHex();
-      },
+      return file.data.toHex();
+    });
+  }
+
+  protected async _removeBlob(uri: string): Promise<void> {
+    await this.#performBeeAPICall(() => this._beeClient.unpin(uri));
+  }
+
+  protected async _storeBlob(versionedHash: string, data: string) {
+    return this.#performBeeAPICall(async () => {
+      return env.SWARM_CHUNK_UPLOAD_ENABLED
+        ? this.#uploadChunks(data)
+        : this.#uploadFile(versionedHash, data);
+    });
+  }
+
+  async #uploadChunks(data: string) {
+    const buffer = Buffer.from(data);
+    const response = await axios.post(
+      `${env.SWARM_CHUNKSTORM_URL}/data`,
+      buffer,
       {
-        beeUrl: this._beeClient.url,
-        batchId: this.batchId,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/octet-stream",
+        },
+        responseType: "json",
       }
     );
+    return response.data.reference;
+  }
+
+  async #uploadFile(versionedHash: string, data: string) {
+    const response = await this._beeClient.uploadFile(
+      this.batchId,
+      data,
+      this.getBlobFilePath(versionedHash),
+      {
+        deferred: env.SWARM_DEFERRED_UPLOAD,
+      }
+    );
+    return response.reference.toHex();
   }
 
   getBlobUri(_: string) {
     return undefined;
+  }
+
+  async #performBeeAPICall<T>(call: () => T) {
+    try {
+      const res = await call();
+
+      return res;
+    } catch (err) {
+      if (err instanceof BeeResponseError) {
+        throw new Error(
+          `Request ${err.method.toUpperCase()} to Bee API ${err.url} batch "${
+            this.batchId
+          }" at "${this._beeClient.url}" failed with status code ${
+            err.status
+          } ${err.statusText}: ${err.message}
+            - Details: ${JSON.stringify(err.responseBody, null, 2)}
+          `,
+          err.cause as Error | undefined
+        );
+      }
+
+      throw err;
+    }
   }
 
   protected getBlobFilePath(hash: string) {

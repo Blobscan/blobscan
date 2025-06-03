@@ -13,8 +13,7 @@ function buildBlobDataUrl(blobStorage: BlobStorage, blobDataUri: string) {
     case "GOOGLE": {
       return `https://storage.googleapis.com/${env.GOOGLE_STORAGE_BUCKET_NAME}/${blobDataUri}`;
     }
-    case "SWARM":
-    case "CHUNKSTORM": {
+    case "SWARM": {
       return `https://gateway.ethswarm.org/access/${blobDataUri}`;
     }
     case "FILE_SYSTEM":

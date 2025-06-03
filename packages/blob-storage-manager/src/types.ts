@@ -2,7 +2,6 @@ import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
 import type { BlobStorageError } from "./errors";
 import type {
-  ChunkstormStorage,
   FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
@@ -17,8 +16,6 @@ export type StorageOf<N extends BlobStorage> = N extends "GOOGLE"
   ? PostgresStorage
   : N extends "FILE_SYSTEM"
   ? FileSystemStorage
-  : N extends "CHUNKSTORM"
-  ? ChunkstormStorage
   : never;
 
 export type BlobReference<N extends BlobStorage = BlobStorage> = {

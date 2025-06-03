@@ -31,7 +31,6 @@ enum BlobStorage {
   POSTGRES    @map("postgres")
   SWARM       @map("swarm")
   WEAVEVM     @map("weavevm")
-  CHUNKSTORM  @map("chunkstorm")
 
   @@map("blob_storage")
 }

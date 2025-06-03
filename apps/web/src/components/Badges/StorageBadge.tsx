@@ -43,11 +43,6 @@ export const STORAGES: Record<BlobStorage, StorageConfig> = {
     style:
       "bg-blue-300 text-gray-800 hover:bg-blue-200 hover:text-blue-900 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-blue-200",
   },
-  chunkstorm: {
-    name: "Chunkstorm",
-    style:
-      "bg-purple-300 text-purple-800 hover:bg-purple-200 hover:text-purple-900 dark:bg-purple-800 dark:text-purple-300 dark:hover:bg-purple-600 dark:hover:text-purple-200",
-  },
 };
 
 export const StorageBadge: FC<StorageBadgeProps> = ({
