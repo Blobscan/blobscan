@@ -1,5 +1,23 @@
 # @blobscan/web
 
+## 0.26.0
+
+### Minor Changes
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup filter dropdown to allow filtering stats and metrics by specific rollups
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced stats page to display rollup-specific stats and metrics
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Added legend to chart to enable toggling visibility of individual series
+
+### Patch Changes
+
+- Updated dependencies [[`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2), [`9a78399`](https://github.com/Blobscan/blobscan/commit/9a783998bac9c6e9f929a89f0e685b8745edd3ac), [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
+  - @blobscan/api@0.23.0
+  - @blobscan/network-blob-config@0.2.0
+  - @blobscan/db@0.18.0
+  - @blobscan/rollups@0.3.3
+
 ## 0.25.1
 
 ### Patch Changes
