@@ -33,8 +33,8 @@ export async function setUpSyncers() {
       new SwarmStampSyncer({
         cronPattern: env.SWARM_STAMP_CRON_PATTERN,
         redisUriOrConnection: connection,
-        batchId: env.SWARM_BATCH_ID,
-        beeEndpoint: env.BEE_ENDPOINT,
+        batchId: env.SWARM_BATCH_ID || blobStoragesState.swarmDataId,
+        beeEndpoint: env.BEE_ENDPOINT || "http://localhost:1633",
       })
     );
   }
