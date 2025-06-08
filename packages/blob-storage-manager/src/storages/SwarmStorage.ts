@@ -76,9 +76,9 @@ export class SwarmStorage extends BlobStorage {
       const response = await this._beeClient.uploadFile(
         this.batchId,
         data,
-        this.getBlobFilePath(versionedHash),
+        versionedHash,
         {
-          // : "text/plain",
+          // contentType: "text/plain",
           deferred: env.SWARM_DEFERRED_UPLOAD,
         }
       );
