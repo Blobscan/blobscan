@@ -1,3 +1,6 @@
+import { normalizeNumerish } from "./number";
+import type { Numerish } from "./number";
+
 export const BYTE_UNITS = [
   "B",
   "KiB",
@@ -17,13 +20,11 @@ export type BytesOptions = {
   unit?: (typeof BYTE_UNITS)[number];
 };
 
-export function formatBytes(
-  value: number | bigint,
-  opts?: BytesOptions
-): string {
+export function formatBytes(value: Numerish, opts?: BytesOptions): string {
+  const value_ = normalizeNumerish(value);
   const { decimals = 2, displayAllDecimals, hideUnit, unit } = opts ?? {};
 
-  const bytes_ = typeof value !== "number" ? Number(value) : value;
+  const bytes_ = typeof value_ !== "number" ? Number(value_) : value_;
 
   if (bytes_ === 0) return hideUnit ? "0" : "0 B";
 

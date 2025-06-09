@@ -30,7 +30,8 @@ import {
 } from "~/utils";
 
 const Txs: NextPage = function () {
-  const { filterParams, paginationParams } = useQueryParams();
+  const { paginationParams, filterParams } = useQueryParams();
+  const rollups = filterParams.rollups?.join(",");
   const {
     data: txsData,
     isLoading: txsIsLoading,
@@ -41,15 +42,22 @@ const Txs: NextPage = function () {
   }>({
     ...paginationParams,
     ...filterParams,
+    rollups,
     expand: "block,blob",
   });
   const {
     data: countData,
     error: countError,
     isLoading: countIsLoading,
-  } = api.tx.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
+  } = api.tx.getCount.useQuery(
+    {
+      ...filterParams,
+      rollups,
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
   const { transactions } = txsData || {};
   const { totalTransactions } = countData || {};
   const error = txsError ?? countError;

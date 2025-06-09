@@ -4,10 +4,9 @@ import dayjs from "@blobscan/dayjs";
 import { omitDBTimestampFields } from "@blobscan/test";
 
 import { appRouter } from "../src/app-router";
+import { TIME_FRAMES } from "../src/middlewares/withTimeFrame";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
 import { createTestContext } from "./helpers";
-
-const TIME_FRAMES = ["1d", "7d", "15d", "30d", "180d", "360d"] as const;
 
 function runTimeFrameTests({
   statsFiller,
@@ -52,34 +51,36 @@ describe("Stats router", async () => {
     it("should return the correct overall stats", async () => {
       const overallStats = await caller.stats
         .getOverallStats()
-        .then(omitDBTimestampFields);
+        .then((stats) => stats.map((s) => omitDBTimestampFields(s)));
 
       expect(overallStats).toMatchInlineSnapshot(`
-        {
-          "avgBlobAsCalldataFee": 22162.5,
-          "avgBlobAsCalldataMaxFee": 104062.5,
-          "avgBlobFee": 5160960,
-          "avgBlobGasPrice": 21.75,
-          "avgBlobMaxFee": 24166400,
-          "avgMaxBlobGasFee": 101.875,
-          "category": null,
-          "rollup": null,
-          "totalBlobAsCalldataFee": 354600n,
-          "totalBlobAsCalldataGasUsed": 16300n,
-          "totalBlobAsCalldataMaxFees": 1665000n,
-          "totalBlobFee": 82575360n,
-          "totalBlobGasPrice": 348n,
-          "totalBlobGasUsed": 3801088n,
-          "totalBlobMaxFees": 386662400n,
-          "totalBlobMaxGasFees": 1630n,
-          "totalBlobSize": 422616n,
-          "totalBlobs": 29,
-          "totalBlocks": 8,
-          "totalTransactions": 16,
-          "totalUniqueBlobs": 9,
-          "totalUniqueReceivers": 4,
-          "totalUniqueSenders": 7,
-        }
+        [
+          {
+            "avgBlobAsCalldataFee": 22162.5,
+            "avgBlobAsCalldataMaxFee": 104062.5,
+            "avgBlobFee": 5160960,
+            "avgBlobGasPrice": 21.75,
+            "avgBlobMaxFee": 24166400,
+            "avgMaxBlobGasFee": 101.875,
+            "category": null,
+            "rollup": null,
+            "totalBlobAsCalldataFee": 354600n,
+            "totalBlobAsCalldataGasUsed": 16300n,
+            "totalBlobAsCalldataMaxFees": 1665000n,
+            "totalBlobFee": 82575360n,
+            "totalBlobGasPrice": 348n,
+            "totalBlobGasUsed": 3801088n,
+            "totalBlobMaxFees": 386662400n,
+            "totalBlobMaxGasFees": 1630n,
+            "totalBlobSize": 422616n,
+            "totalBlobs": 29,
+            "totalBlocks": 8,
+            "totalTransactions": 16,
+            "totalUniqueBlobs": 9,
+            "totalUniqueReceivers": 4,
+            "totalUniqueSenders": 7,
+          },
+        ]
       `);
     });
   });

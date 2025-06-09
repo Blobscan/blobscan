@@ -24,7 +24,6 @@ const COMMON_NETWORK_BLOB_CONFIG = {
   bytesPerFieldElement: 32,
   fieldElementsPerBlob: 4096,
   gasPerBlob: BigInt(131_072),
-  blobBaseFeeUpdateFraction: BigInt(3_338_477),
   minBlobBaseFee: BigInt(1),
 };
 
@@ -34,6 +33,7 @@ export const FORK_BLOB_CONFIGS: Record<NetworkFork, NetworkBlobConfig> = {
     targetBlobsPerBlock: 3,
     maxBlobsPerBlock: 6,
     targetBlobGasPerBlock: BigInt(393_216),
+    blobBaseFeeUpdateFraction: BigInt(3_338_477),
     blobGasLimit: BigInt(786_432),
   },
   pectra: {
@@ -41,6 +41,7 @@ export const FORK_BLOB_CONFIGS: Record<NetworkFork, NetworkBlobConfig> = {
     targetBlobsPerBlock: 6,
     maxBlobsPerBlock: 9,
     targetBlobGasPerBlock: BigInt(786_432),
+    blobBaseFeeUpdateFraction: BigInt(5007716),
     blobGasLimit: BigInt(1_179_648),
   },
 };
@@ -64,6 +65,26 @@ export function getNetworkForkBySlot(
     }
     default:
       return "dencun";
+  }
+}
+
+export function getNetworkForkTimestamp(network: Network): number {
+  switch (network) {
+    case "mainnet": {
+      return 1710338159;
+    }
+    case "gnosis": {
+      return 1710181965;
+    }
+    case "holesky": {
+      return 1707305700;
+    }
+    case "sepolia": {
+      return 1706655456;
+    }
+    default: {
+      return 1707305700;
+    }
   }
 }
 
