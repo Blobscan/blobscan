@@ -11,6 +11,8 @@ import {
   dbCategorySchema,
   decimalSchema,
   hexSchema,
+  lowercaseToUppercaseDBCategorySchema,
+  lowercaseToUpercaseDBRollupSchema,
   optimismDecodedFieldsSchema,
 } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
@@ -25,6 +27,48 @@ export const commaSeparatedValuesSchema = z
       ?.split(",")
       .map((v) => v.trim())
       .filter((v) => !!v.length)
+  );
+
+export const commaSeparatedRollupsSchema = commaSeparatedValuesSchema.transform(
+  (values, ctx) =>
+    values?.map((v) => {
+      const res = lowercaseToUpercaseDBRollupSchema.safeParse(v);
+
+      if (!res.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          params: {
+            value: v,
+          },
+          message: "Provided rollup value is invalid",
+        });
+
+        return z.NEVER;
+      }
+
+      return res.data;
+    })
+);
+
+export const commaSeparatedCategoriesSchema =
+  commaSeparatedValuesSchema.transform((values, ctx) =>
+    values?.map((v) => {
+      const res = lowercaseToUppercaseDBCategorySchema.safeParse(v);
+
+      if (!res.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          params: {
+            value: v,
+          },
+          message: "Provided category value is invalid",
+        });
+
+        return z.NEVER;
+      }
+
+      return res.data;
+    })
   );
 
 export const blobIdSchema = z

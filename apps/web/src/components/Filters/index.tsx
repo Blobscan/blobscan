@@ -1,34 +1,34 @@
-import { useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import type { FC } from "react";
 import { useRouter } from "next/router";
 import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
 import { Category } from "@blobscan/api/enums";
-import { getChainRollups } from "@blobscan/rollups";
 
 import { Button } from "~/components/Button";
 import type { Sort } from "~/hooks/useQueryParams";
-import { useQueryParams } from "~/hooks/useQueryParams";
-import { useEnv } from "~/providers/Env";
-import type { Rollup } from "~/types";
-import { capitalize, getChainIdByName, getISODate } from "~/utils";
-import { RollupBadge } from "../Badges/RollupBadge";
+import {
+  MULTIPLE_VALUES_SEPARATOR,
+  useQueryParams,
+} from "~/hooks/useQueryParams";
+import { capitalize, getISODate } from "~/utils";
 import { Card } from "../Cards/Card";
 import { Dropdown } from "../Dropdown";
-import type { DropdownProps, Option } from "../Dropdown";
+import type { Option } from "../Dropdown";
 import type { NumberRange } from "../Inputs/NumberRangeInput";
 import { BlockNumberFilter } from "./BlockNumberFilter";
 import { RollupFilter } from "./RollupFilter";
+import type { RollupOption } from "./RollupFilter";
 import { SlotFilter } from "./SlotFilter";
 import { SortToggle } from "./SortToggle";
 import { TimestampFilter } from "./TimestampFilter";
 
-const MULTIPLE_VALUES_SEPARATOR = ",";
+type CategoryOption = Option<string>;
 
 type FiltersState = {
-  rollups: Option[] | null;
-  category: Option | null;
+  rollups: RollupOption[] | null;
+  category: CategoryOption | null;
   timestampRange: DateRangeType | null;
   blockNumberRange: NumberRange | null;
   slotRange: NumberRange | null;
@@ -49,7 +49,7 @@ type FiltersAction<V extends keyof FiltersState> =
   | ClearAction<V>
   | UpdateAction;
 
-const CATEGORY_FILTER_OPTIONS: DropdownProps["options"] = [
+const CATEGORY_FILTER_OPTIONS: CategoryOption[] = [
   { value: Category.ROLLUP.toLowerCase(), label: capitalize(Category.ROLLUP) },
   { value: Category.OTHER.toLowerCase(), label: capitalize(Category.OTHER) },
 ];
@@ -88,9 +88,8 @@ function reducer<V extends keyof FiltersState>(
 
 export const Filters: FC = function () {
   const router = useRouter();
-  const queryParams = useQueryParams();
+  const { filterParams, paginationParams } = useQueryParams();
   const [filters, dispatch] = useReducer(reducer, INIT_STATE);
-  const { env } = useEnv();
 
   const disableClear =
     !filters.category &&
@@ -168,59 +167,24 @@ export const Filters: FC = function () {
     });
   };
 
-  const rollupOptions: DropdownProps["options"] = useMemo(() => {
-    const chainId = env && getChainIdByName(env.PUBLIC_NETWORK_NAME);
-    const rollups = chainId ? getChainRollups(chainId) : [];
-
-    return rollups.map(
-      ([name]) =>
-        ({
-          value: name.toLowerCase(),
-          selectedLabel: (
-            <RollupBadge rollup={name.toLowerCase() as Rollup} size="sm" />
-          ),
-          label: (
-            <div className="flex flex-row items-center gap-2">
-              <RollupBadge rollup={name.toLowerCase() as Rollup} compact />
-              <div>{capitalize(name)}</div>
-            </div>
-          ),
-        } satisfies Option)
-    );
-  }, [env]);
+  const handleRollupChange = useCallback(
+    (newRollups: RollupOption[] | null) =>
+      dispatch({ type: "UPDATE", payload: { rollups: newRollups } }),
+    []
+  );
 
   useEffect(() => {
-    const { sort } = queryParams.paginationParams;
     const {
-      rollups,
+      category,
       startDate,
       endDate,
       startBlock,
       endBlock,
       startSlot,
       endSlot,
-      category,
-    } = queryParams.filterParams;
+    } = filterParams;
+    const { sort } = paginationParams;
     const newFilters: Partial<FiltersState> = {};
-
-    if (rollups) {
-      const rollupOptions_ = rollupOptions.filter((opt) => {
-        const parsedRollups = rollups?.split(MULTIPLE_VALUES_SEPARATOR);
-        const rollupOptionAddresses = Array.isArray(opt.value)
-          ? opt.value
-          : [opt.value];
-
-        return (
-          rollupOptionAddresses.filter((rollupAddress) =>
-            parsedRollups?.includes(rollupAddress as string)
-          ).length > 0
-        );
-      });
-
-      if (rollupOptions_) {
-        newFilters.rollups = rollupOptions_;
-      }
-    }
 
     if (startDate || endDate) {
       newFilters.timestampRange = {
@@ -252,7 +216,7 @@ export const Filters: FC = function () {
     }
 
     dispatch({ type: "UPDATE", payload: newFilters });
-  }, [queryParams, rollupOptions]);
+  }, [filterParams, paginationParams]);
 
   return (
     <Card compact>
@@ -270,7 +234,7 @@ export const Filters: FC = function () {
                 options={CATEGORY_FILTER_OPTIONS}
                 selected={filters.category}
                 width="w-full"
-                onChange={(newCategory: Option | null) => {
+                onChange={(newCategory) => {
                   const newFilters: Partial<FiltersState> = {
                     category: newCategory,
                   };
@@ -292,14 +256,11 @@ export const Filters: FC = function () {
             <div className="w-[120px] min-[440px]:w-[180px] min-[540px]:w-[260px] min-[580px]:w-[280px] sm:w-[170px] md:w-[110px] lg:w-[180px] xl:w-[200px]">
               <RollupFilter
                 selected={filters.rollups}
-                options={rollupOptions}
                 disabled={
                   filters.category?.value.toString().toUpperCase() !==
                   Category.ROLLUP
                 }
-                onChange={(newRollups) =>
-                  dispatch({ type: "UPDATE", payload: { rollups: newRollups } })
-                }
+                onChange={handleRollupChange}
               />
             </div>
             <div className="w-[42px] sm:w-[222px] md:max-xl:w-[42px] xl:w-[222px]">
@@ -339,7 +300,7 @@ export const Filters: FC = function () {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 md:flex-row lg:ml-2">
+        <div className="flex gap-2 md:flex-row lg:ml-2">
           <Button
             className="w-full lg:w-auto lg:px-3 xl:px-6"
             variant="outline"

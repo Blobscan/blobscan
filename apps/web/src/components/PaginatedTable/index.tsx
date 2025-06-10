@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { Card } from "~/components/Cards/Card";
 import { Dropdown } from "~/components/Dropdown";
-import type { DropdownProps, Option } from "~/components/Dropdown";
+import type { Option } from "~/components/Dropdown";
 import type { PaginationProps } from "~/components/Pagination";
 import { Pagination } from "~/components/Pagination";
 import type { TableProps } from "~/components/Table";
@@ -13,12 +13,15 @@ import { Table } from "~/components/Table";
 import type { Rollup } from "~/types";
 
 const DEFAULT_TABLE_EMPTY_STATE = "No items";
-const PAGE_SIZES_OPTIONS: DropdownProps["options"] = [
+
+type PageSizeOption = Option<number>;
+
+const PAGE_SIZES_OPTIONS: PageSizeOption[] = [
   { value: 10 },
   { value: 25 },
   { value: 50 },
   { value: 100 },
-];
+] as const;
 const DEFAULT_ROW_SKELETON_HEIGHT = 22;
 
 export interface PaginatedTableQueryFilters {
@@ -74,13 +77,13 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
         : Math.ceil(totalItems / pageSize)
       : undefined;
 
-  const handlePageSizeSelection = useCallback<DropdownProps["onChange"]>(
-    (option: Option) => {
+  const handlePageSizeSelection = useCallback(
+    (option: PageSizeOption) => {
       if (!option) {
         return;
       }
 
-      const newPageSize = option.value as number;
+      const newPageSize = option.value;
 
       void router.push({
         pathname: router.pathname,
@@ -90,10 +93,7 @@ export const PaginatedTable: FC<PaginatedTableProps> = function ({
            * Update the selected page to a lower value if we require less pages to show the
            * new amount of elements per page.
            */
-          p: Math.min(
-            Math.ceil(totalItems ?? 0 / (newPageSize as number)),
-            page
-          ),
+          p: Math.min(Math.ceil(totalItems ?? 0 / newPageSize), page),
           ps: newPageSize,
         },
       });

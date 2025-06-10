@@ -17,7 +17,7 @@ import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
 import { Dropdown } from "~/components/Dropdown";
-import type { DropdownProps, Option } from "~/components/Dropdown";
+import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -99,7 +99,7 @@ const Blob: NextPage = function () {
     ...(blob && decoder ? ["Decoded" as BlobViewMode] : []),
     ...DEFAULT_BLOB_VIEW_MODES,
   ];
-  const blobViewModesOptions: DropdownProps["options"] = blobViewModes.map(
+  const blobViewModesOptions: Option<BlobViewMode>[] = blobViewModes.map(
     (blobViewMode) => ({ value: blobViewMode })
   );
 
@@ -174,7 +174,6 @@ const Blob: NextPage = function () {
 
     detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
-    console.log("here");
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
         name: "Storages",
@@ -245,10 +244,8 @@ const Blob: NextPage = function () {
                       value: selectedBlobViewMode,
                       label: selectedBlobViewMode,
                     }}
-                    onChange={(option: Option) =>
-                      option
-                        ? setSelectedBlobViewMode(option.value as BlobViewMode)
-                        : undefined
+                    onChange={(option) =>
+                      option ? setSelectedBlobViewMode(option.value) : undefined
                     }
                   />
                 </div>

@@ -1,4 +1,4 @@
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import type { ReactNode } from "react";
 import {
   Listbox,
@@ -9,45 +9,71 @@ import {
 import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 
-import useOverflow from "~/hooks/useOverflow";
+import { Scrollable } from "../Scrollable";
 import { Option } from "./Option";
 
-export interface Option {
-  value: string | number | string[] | number[];
+export interface Option<T> {
+  value: T;
   label?: ReactNode;
   selectedLabel?: ReactNode;
 }
 
-export interface DropdownProps {
-  options: Option[];
+interface BaseDropdownProps<T> {
+  options: readonly Option<T>[];
   disabled?: boolean;
   width?: string;
   placeholder?: string;
   clearable?: boolean;
-  selected?: Option | Option[] | null;
-  multiple?: boolean;
-  onChange(newOption: Option | Option[] | null): void;
 }
+
+type SelectedValue<
+  T,
+  M extends boolean | undefined,
+  C extends boolean | undefined
+> = M extends true
+  ? C extends true
+    ? Option<T>[] | null
+    : Option<T>[]
+  : C extends true
+  ? Option<T> | null
+  : Option<T>;
+
+type OnChangeFn<
+  T,
+  M extends boolean | undefined,
+  C extends boolean | undefined
+> = (newValue: SelectedValue<T, M, C>) => void;
+
+export type DropdownProps<
+  T,
+  M extends boolean | undefined = undefined,
+  C extends boolean | undefined = undefined
+> = BaseDropdownProps<T> & {
+  multiple?: M;
+  clearable?: C;
+  selected: SelectedValue<T, M, C>;
+  onChange: OnChangeFn<T, M, C>;
+};
 
 const DEFAULT_WIDTH = "w-32";
 
-export const Dropdown: React.FC<DropdownProps> = function ({
+export function Dropdown<
+  T,
+  M extends boolean | undefined = undefined,
+  C extends boolean | undefined = undefined
+>({
   options,
   selected,
   multiple,
   width,
   onChange,
-  clearable = false,
-  disabled = false,
+  clearable,
+  disabled,
   placeholder = "Select an item",
-}) {
+}: DropdownProps<T, M, C>) {
   const hasSelectedValue = Array.isArray(selected)
     ? selected.length > 0
-    : selected;
-
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const innerRef = useRef<HTMLDivElement | null>(null);
-  const isOverflowing = useOverflow(containerRef, innerRef);
+    : !!selected;
 
   return (
     <Listbox
@@ -60,58 +86,48 @@ export const Dropdown: React.FC<DropdownProps> = function ({
         <ListboxButton
           className={`${
             width ?? DEFAULT_WIDTH
-          } relative flex h-9 cursor-pointer items-center justify-between rounded-lg border border-transparent
+          } flex h-9 cursor-pointer items-center justify-between rounded-lg border border-transparent
           bg-controlBackground-light pl-2 pr-8 text-left text-sm shadow-md hover:border hover:border-controlBorderHighlight-light 
             focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white active:border-controlBorderHighlight-dark
             disabled:cursor-not-allowed disabled:bg-opacity-40 disabled:hover:border-transparent ui-open:border-controlActive-light dark:bg-controlBackground-dark dark:hover:border-controlBorderHighlight-dark dark:disabled:bg-opacity-40
             disabled:dark:hover:border-transparent dark:ui-open:border-controlActive-dark`}
         >
-          <div
-            className={cn(
-              {
-                "gradient-mask-r-90": isOverflowing,
-              },
-              "flex h-full items-center overflow-auto align-middle"
-            )}
-            ref={containerRef}
-          >
-            <div className="h-fit w-fit" ref={innerRef}>
-              {hasSelectedValue ? (
-                Array.isArray(selected) ? (
-                  <div className="flex flex-row items-center gap-1">
-                    {selected.map(({ selectedLabel, label, value }) => {
-                      return (
-                        <Fragment
-                          key={Array.isArray(value) ? value.join("-") : value}
-                        >
-                          {selectedLabel ? selectedLabel : label}
-                        </Fragment>
-                      );
-                    })}
-                  </div>
-                ) : selected?.label ? (
-                  selected.label
-                ) : (
-                  selected?.value
-                )
-              ) : (
-                <div
-                  className={cn("text-hint-light dark:text-hint-dark", {
-                    "text-opacity-40 dark:text-opacity-40": disabled,
+          <Scrollable>
+            {hasSelectedValue ? (
+              Array.isArray(selected) ? (
+                <div className="flex flex-row items-center gap-1 align-middle">
+                  {selected.map(({ selectedLabel, label }, i) => {
+                    return (
+                      <Fragment key={i}>
+                        {selectedLabel ? selectedLabel : label}
+                      </Fragment>
+                    );
                   })}
-                >
-                  {placeholder}
                 </div>
-              )}
-            </div>
-          </div>
+              ) : selected?.label ? (
+                selected.label
+              ) : (
+                (selected?.value as ReactNode)
+              )
+            ) : (
+              <div
+                className={cn("text-hint-light dark:text-hint-dark", {
+                  "text-opacity-40 dark:text-opacity-40": disabled,
+                })}
+              >
+                {placeholder}
+              </div>
+            )}
+          </Scrollable>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2">
             {clearable && hasSelectedValue ? (
               <XMarkIcon
                 className="h-5 w-5 text-icon-light hover:text-iconHighlight-light dark:text-icon-dark dark:hover:text-iconHighlight-dark"
                 onClick={(e) => {
                   e.stopPropagation();
-                  multiple ? onChange([]) : onChange(null);
+                  multiple
+                    ? onChange([] as unknown as SelectedValue<T, M, C>)
+                    : onChange(null as SelectedValue<T, M, C>);
                 }}
               />
             ) : (
@@ -141,4 +157,4 @@ export const Dropdown: React.FC<DropdownProps> = function ({
       </div>
     </Listbox>
   );
-};
+}

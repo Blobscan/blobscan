@@ -29,6 +29,7 @@ import {
 
 const Blobs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
+  const rollups = filterParams?.rollups?.join(",");
 
   const {
     data: blobsData,
@@ -37,15 +38,22 @@ const Blobs: NextPage = function () {
   } = api.blob.getAll.useQuery<{ blobs: BlobWithExpandedTransaction[] }>({
     ...paginationParams,
     ...filterParams,
+    rollups,
     expand: "transaction",
   });
   const {
     data: countData,
     error: countError,
     isLoading: countIsLoading,
-  } = api.blob.getCount.useQuery(filterParams, {
-    refetchOnWindowFocus: false,
-  });
+  } = api.blob.getCount.useQuery(
+    {
+      ...filterParams,
+      rollups,
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
   const error = blobsError ?? countError;
   const { blobs } = blobsData || {};
   const { totalBlobs } = countData || {};

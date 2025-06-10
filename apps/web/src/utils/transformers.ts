@@ -1,4 +1,4 @@
-import type { Arrayified, Stringified } from "~/types";
+import type { Stringified } from "~/types";
 
 export function stringify<T>(v: T): Stringified<T> {
   if (v instanceof Date || typeof v === "bigint") {
@@ -18,20 +18,4 @@ export function stringify<T>(v: T): Stringified<T> {
   }
 
   return v as Stringified<T>;
-}
-
-export function arrayfy<T extends Record<string, unknown>>(
-  arr: T[]
-): Arrayified<T> {
-  if (!Array.isArray(arr) || arr.length === 0) return {} as Arrayified<T>;
-
-  return arr.reduce((acc, obj) => {
-    Object.keys(obj).forEach((key: keyof T) => {
-      if (!acc[key]) {
-        acc[key as keyof T] = [];
-      }
-      acc[key].push(obj[key]);
-    });
-    return acc;
-  }, {} as Arrayified<T>);
 }
