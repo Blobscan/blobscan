@@ -26,8 +26,15 @@ export function NetworkIndicators() {
     refetchOnWindowFocus: false,
   });
   const { ethPrices, blocks } = data || {};
+  const latestEthPrice = ethPrices?.latest;
   const { usdPrice: latestUsdPrice, timestamp: latestUsdPriceTimestamp } =
-    ethPrices?.latest || {};
+    latestEthPrice ||
+    (latestEthPrice === null
+      ? {
+          usdPrice: 0,
+          timestamp: new Date(),
+        }
+      : {});
   const { usdPrice: past24hUsdPrice } = ethPrices?.past24h || {};
   const networkConfig =
     blocks?.latest && env?.PUBLIC_NETWORK_NAME
@@ -40,7 +47,7 @@ export function NetworkIndicators() {
     ? BigInt(blocks.latest.blobGasPrice.toString())
     : undefined;
   const latestBlobGasUsdPrice =
-    latestBlobGasPrice && latestUsdPrice
+    latestBlobGasPrice && latestUsdPrice !== undefined
       ? Number(convertWei(latestBlobGasPrice, "ether")) * latestUsdPrice
       : undefined;
   const blobPrice =
@@ -51,7 +58,7 @@ export function NetworkIndicators() {
     ? convertWei(blobPrice.toString(), "ether")
     : undefined;
   const blobUsdPrice =
-    ethBlobPrice && latestUsdPrice
+    ethBlobPrice && latestUsdPrice !== undefined
       ? Number(ethBlobPrice) * latestUsdPrice
       : undefined;
   const isOutdated =
@@ -72,43 +79,42 @@ export function NetworkIndicators() {
         {
           icon: <Icon src={EthereumIcon} />,
           name: "ETH Price",
-          value: latestUsdPrice ? (
-            <div className="flex items-center gap-1">
-              <FiatDisplay amount={latestUsdPrice} />
+          value:
+            latestUsdPrice !== undefined ? (
+              <div className="flex items-center gap-1">
+                <FiatDisplay amount={latestUsdPrice} />
 
-              {past24hUsdPrice ? (
-                <>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <DeltaPercentageChange
-                        initialValue={past24hUsdPrice}
-                        finalValue={latestUsdPrice}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>Last 24 hours changes</TooltipContent>
-                  </Tooltip>
-                </>
-              ) : undefined}
-              {isOutdated && (
-                <>
-                  <Tooltip>
-                    <TooltipContent>
-                      Outdated price (last updated{" "}
-                      {latestUsdPriceTimestamp
-                        ? formatTimestamp(latestUsdPriceTimestamp, true)
-                        : ""}
-                      )
-                    </TooltipContent>
-                    <TooltipTrigger>
-                      <ExclamationTriangleIcon className="h-3 w-3 text-yellow-600 dark:text-yellow-300" />
-                    </TooltipTrigger>
-                  </Tooltip>
-                </>
-              )}
-            </div>
-          ) : latestUsdPrice === null ? (
-            "-"
-          ) : undefined,
+                {past24hUsdPrice ? (
+                  <>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <DeltaPercentageChange
+                          initialValue={past24hUsdPrice}
+                          finalValue={latestUsdPrice}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Last 24 hours changes</TooltipContent>
+                    </Tooltip>
+                  </>
+                ) : undefined}
+                {isOutdated && (
+                  <>
+                    <Tooltip>
+                      <TooltipContent>
+                        Outdated price (last updated{" "}
+                        {latestUsdPriceTimestamp
+                          ? formatTimestamp(latestUsdPriceTimestamp, true)
+                          : ""}
+                        )
+                      </TooltipContent>
+                      <TooltipTrigger>
+                        <ExclamationTriangleIcon className="h-3 w-3 text-yellow-600 dark:text-yellow-300" />
+                      </TooltipTrigger>
+                    </Tooltip>
+                  </>
+                )}
+              </div>
+            ) : undefined,
         },
         {
           name: "Blob Gas Price",
@@ -136,7 +142,7 @@ export function NetworkIndicators() {
               ) : undefined}
             </div>
           ),
-          secondaryValue: latestBlobGasUsdPrice && (
+          secondaryValue: latestBlobGasUsdPrice !== undefined && (
             <FiatDisplay amount={latestBlobGasUsdPrice} />
           ),
         },
@@ -152,7 +158,9 @@ export function NetworkIndicators() {
               })}
             </span>
           ),
-          secondaryValue: blobUsdPrice && <FiatDisplay amount={blobUsdPrice} />,
+          secondaryValue: blobUsdPrice !== undefined && (
+            <FiatDisplay amount={blobUsdPrice} />
+          ),
         },
       ]}
     />
