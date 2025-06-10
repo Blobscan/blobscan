@@ -1,10 +1,37 @@
 import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
-import { TopAppStatus } from "../../AppStatus";
 import { BlobscanLogo } from "../../BlobscanLogo";
+import { NetworkIndicators } from "../../Indicators/NetworkIndicators";
 import { NavigationMenus } from "../../NavigationMenus";
 import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
+
+export const CompactedTopBar = function () {
+  return (
+    <>
+      <div className="z-50 sm:hidden">
+        <TopBarSurface>
+          <div className="flex w-full items-center justify-between">
+            <BlobscanLogo className="w-40" />
+            <SidebarNavigationMenu className="xl:hidden" />
+          </div>
+        </TopBarSurface>
+      </div>
+      <div className="sticky top-0 z-10 sm:hidden">
+        <TopBarSurface>
+          <div className="flex items-center justify-between space-x-3">
+            <div className="w-full">
+              <SearchInput />
+            </div>
+          </div>
+        </TopBarSurface>
+        <TopBarSurface>
+          <NetworkIndicators />
+        </TopBarSurface>
+      </div>
+    </>
+  );
+};
 
 export const TopBar: React.FC = () => {
   return (
@@ -32,7 +59,7 @@ export const TopBar: React.FC = () => {
       </TopBarSurface>
       <TopBarSurface>
         <div className="-my-1 flex items-center gap-2">
-          <TopAppStatus />
+          <NetworkIndicators />
         </div>
       </TopBarSurface>
     </div>

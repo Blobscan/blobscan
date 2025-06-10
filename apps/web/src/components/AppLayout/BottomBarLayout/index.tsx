@@ -1,8 +1,8 @@
 import React from "react";
 
-import { BottomAppStatus } from "~/components/AppStatus";
 import { BlobscanSocialLinks } from "~/components/BlobscanSocialLinks";
 import { BlobscanVersionInfo } from "~/components/BlobscanVersionInfo";
+import { SyncIndicators } from "~/components/Indicators/SyncIndicators";
 import { Link } from "~/components/Link";
 
 export const BottomBarLayout = () => {
@@ -19,7 +19,7 @@ export const BottomBarLayout = () => {
           scale Ethereum.
         </div>
         <div className="my-1">
-          <BottomAppStatus />
+          <SyncIndicators />
         </div>
         <BlobscanVersionInfo />
         <div className="flex gap-2">

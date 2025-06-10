@@ -1,11 +1,9 @@
-import React, { FC } from "react";
-import { ClockIcon } from "@heroicons/react/24/solid";
+import React from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import Skeleton from "react-loading-skeleton";
 
-import { formatTtl } from "@blobscan/dates";
 import dayjs from "@blobscan/dayjs";
 import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
@@ -14,14 +12,14 @@ import { api } from "~/api-client";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
 import { useEnv } from "~/providers/Env";
-import { capitalize, formatNumber, formatTimestamp } from "~/utils";
-import { DeltaPercentageChange } from "./DeltaPercentage";
-import { FiatDisplay } from "./Displays/FiatDisplay";
-import { Icon } from "./Icon";
-import { IndicatorProps, IndicatorsStrip } from "./Indicators";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
+import { capitalize, formatTimestamp } from "~/utils";
+import { DeltaPercentageChange } from "../DeltaPercentage";
+import { FiatDisplay } from "../Displays/FiatDisplay";
+import { Icon } from "../Icon";
+import { IndicatorsStrip } from "../Indicators";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
-export function TopAppStatus() {
+export function NetworkIndicators() {
   const { env } = useEnv();
   const { data } = api.state.getAppState.useQuery(undefined, {
     refetchInterval: 60_000,
@@ -160,28 +158,3 @@ export function TopAppStatus() {
     />
   );
 }
-
-export const BottomAppStatus: FC = function () {
-  const { data } = api.state.getAppState.useQuery(undefined, {
-    refetchInterval: 60_000,
-    refetchOnWindowFocus: false,
-  });
-  const state = data?.syncState;
-
-  const items: IndicatorProps[] = [
-    {
-      name: "Last synced slot",
-      value: state ? formatNumber(state.lastUpperSyncedSlot ?? 0) : undefined,
-    },
-  ];
-
-  if (state && state.swarmDataTTL) {
-    items.push({
-      name: "Swarm blob data expiry",
-      value: formatTtl(state.swarmDataTTL),
-      icon: <ClockIcon className="h-4 w-4" />,
-    });
-  }
-
-  return <IndicatorsStrip indicators={items} />;
-};
