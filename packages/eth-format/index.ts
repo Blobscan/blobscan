@@ -5,12 +5,8 @@ export type EtherUnit = keyof typeof ETH_UNITS;
 export type FormatOptions = Partial<{
   hideUnit: boolean;
   toUnit: EtherUnit;
+  numberFormatOpts?: Intl.NumberFormatOptions;
 }>;
-
-const compactFormatter = Intl.NumberFormat("en-US", {
-  notation: "compact",
-  maximumFractionDigits: 2,
-});
 
 const fullwideFormatter = Intl.NumberFormat("fullwide", {
   useGrouping: false,
@@ -45,7 +41,11 @@ export function formatWei(wei: EthAmount, opts?: FormatOptions): string {
 export function prettyFormatWei(wei: EthAmount, opts?: FormatOptions) {
   const toUnit = opts?.toUnit || findBestUnit(wei);
   const converted = convertWei(wei, toUnit) as Intl.StringNumericLiteral;
-  const formatted = compactFormatter.format(converted);
+  const formatted = Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 3,
+    ...(opts?.numberFormatOpts || {}),
+  }).format(converted);
 
   if (opts?.hideUnit) {
     return formatted;

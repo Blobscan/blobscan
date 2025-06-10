@@ -3,10 +3,9 @@ import React from "react";
 import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { ThemeModeButton } from "~/components/ThemeModeButton";
 import { useIsHomepage } from "~/hooks/useIsHomePage";
-import { ExplorerDetails } from "../../ExplorerDetails";
+import { NetworkIndicators } from "../../Indicators/NetworkIndicators";
 import { NavigationMenus } from "../../NavigationMenus";
-import { CompactTopBar } from "./CompactTopBar";
-import { TopBar } from "./TopBar";
+import { CompactedTopBar, TopBar } from "./TopBar";
 
 export const TopBarLayout: React.FC = () => {
   const isHomepage = useIsHomepage();
@@ -14,9 +13,9 @@ export const TopBarLayout: React.FC = () => {
   if (isHomepage) {
     return (
       <>
-        <nav className="z-10 flex h-16 w-full items-center justify-end px-4 md:justify-between">
-          <div className="ml-5 w-full md:ml-0 md:flex">
-            <ExplorerDetails placement="top" />
+        <nav className="z-10 flex h-16 w-full items-center  justify-between px-4">
+          <div className="w-11/12 sm:w-full md:ml-0 md:flex">
+            <NetworkIndicators />
           </div>
           <div className="flex items-center gap-3">
             <div className="xl:hidden">
@@ -37,11 +36,11 @@ export const TopBarLayout: React.FC = () => {
   return (
     <>
       <div
-        className={`z-10 hidden h-16 w-full items-center justify-between sm:block`}
+        className={`hidden h-16 w-full items-center justify-between sm:block`}
       >
         <TopBar />
       </div>
-      <CompactTopBar />
+      <CompactedTopBar />
     </>
   );
 };
