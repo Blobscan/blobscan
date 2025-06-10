@@ -1,8 +1,7 @@
-import { TopNetworkInfo } from "~/components/NetworkInfo";
+import { TopAppStatus } from "~/components/AppStatus";
 import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { SearchInput } from "../../SearchInput";
-import { TopBar } from "./TopBar";
 import { TopBarSurface } from "./TopBarSurface";
 
 export const CompactTopBar = function () {
@@ -25,7 +24,7 @@ export const CompactTopBar = function () {
           </div>
         </TopBarSurface>
         <TopBarSurface>
-          <TopNetworkInfo />
+          <TopAppStatus />
         </TopBarSurface>
       </div>
     </>

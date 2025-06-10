@@ -1,7 +1,7 @@
 import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
+import { TopAppStatus } from "../../AppStatus";
 import { BlobscanLogo } from "../../BlobscanLogo";
 import { NavigationMenus } from "../../NavigationMenus";
-import { TopNetworkInfo } from "../../NetworkInfo";
 import { SearchInput } from "../../SearchInput";
 import { ThemeModeButton } from "../../ThemeModeButton";
 import { TopBarSurface } from "./TopBarSurface";
@@ -32,7 +32,7 @@ export const TopBar: React.FC = () => {
       </TopBarSurface>
       <TopBarSurface>
         <div className="-my-1 flex items-center gap-2">
-          <TopNetworkInfo />
+          <TopAppStatus />
         </div>
       </TopBarSurface>
     </div>

@@ -3,8 +3,8 @@ import React from "react";
 import { SidebarNavigationMenu } from "~/components/SidebarNavigationMenu";
 import { ThemeModeButton } from "~/components/ThemeModeButton";
 import { useIsHomepage } from "~/hooks/useIsHomePage";
+import { TopAppStatus } from "../../AppStatus";
 import { NavigationMenus } from "../../NavigationMenus";
-import { TopNetworkInfo } from "../../NetworkInfo";
 import { CompactTopBar } from "./CompactTopBar";
 import { TopBar } from "./TopBar";
 
@@ -16,7 +16,7 @@ export const TopBarLayout: React.FC = () => {
       <>
         <nav className="z-10 flex h-16 w-full items-center  justify-between px-4">
           <div className="w-11/12 sm:w-full md:ml-0 md:flex">
-            <TopNetworkInfo />
+            <TopAppStatus />
           </div>
           <div className="flex items-center gap-3">
             <div className="xl:hidden">

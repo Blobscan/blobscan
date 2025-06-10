@@ -1,9 +1,9 @@
 import React from "react";
 
+import { BottomAppStatus } from "~/components/AppStatus";
 import { BlobscanSocialLinks } from "~/components/BlobscanSocialLinks";
 import { BlobscanVersionInfo } from "~/components/BlobscanVersionInfo";
 import { Link } from "~/components/Link";
-import { BottomNetworkInfo } from "~/components/NetworkInfo";
 
 export const BottomBarLayout = () => {
   return (
@@ -19,7 +19,7 @@ export const BottomBarLayout = () => {
           scale Ethereum.
         </div>
         <div className="my-1">
-          <BottomNetworkInfo />
+          <BottomAppStatus />
         </div>
         <BlobscanVersionInfo />
         <div className="flex gap-2">

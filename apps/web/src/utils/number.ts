@@ -1,13 +1,5 @@
 type FormatMode = "compact" | "standard";
 
-export function toBigInt(value: number): bigint {
-  if (Number.isNaN(value) || !Number.isFinite(value)) {
-    return BigInt(0);
-  }
-
-  return BigInt(Math.round(value));
-}
-
 const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
   compact: {
     notation: "compact",
@@ -91,7 +83,7 @@ export function parseDecimalNumber(value: string) {
 export function calculatePercentage(
   numerator: number | bigint,
   denominator: number | bigint,
-  opts?: Partial<{ returnComplement: boolean }>
+  opts?: Partial<{ returnComplement: boolean; decimals: number }>
 ): number {
   if (denominator === 0 || denominator === BigInt(0)) {
     return 0;
@@ -108,6 +100,10 @@ export function calculatePercentage(
     const den = BigInt(denominator);
     pct = Number((num * BigInt(100)) / den); // Convert back to number after computation
   }
+
+  const decimals = opts?.decimals ?? 2;
+
+  pct = Number(pct.toFixed(decimals));
 
   return opts?.returnComplement ? 100 - pct : pct;
 }
