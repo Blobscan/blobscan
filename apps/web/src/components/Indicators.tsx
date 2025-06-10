@@ -25,9 +25,9 @@ function Indicator({
             {value}
           </div>
           {secondaryValue && (
-            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              <span className="opacity-30">|</span> {secondaryValue}
-            </span>
+            <div className="flex items-center gap-1 text-nowrap text-contentTertiary-light dark:text-contentTertiary-dark">
+              <div className="opacity-30">|</div> {secondaryValue}
+            </div>
           )}
         </div>
       ) : (
