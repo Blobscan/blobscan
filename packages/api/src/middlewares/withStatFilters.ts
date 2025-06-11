@@ -16,7 +16,7 @@ import {
 
 // Number of days to subtract when the time frame is larger than 30 days
 // and the scope is web. This is to avoid fetching too many days of data at once.
-const DAYS_INTERVAL_GRANULARITY = 5;
+const DAYS_INTERVAL_GRANULARITY = 4;
 
 export const timeFrameSchema = z.enum([
   "1d",
@@ -104,7 +104,8 @@ export type StatFiltersOutputSchema = z.output<typeof withAllStatFiltersSchema>;
 
 function buildDayWhereClause(
   scope: ContextScope,
-  timeFrame: TimeFrame
+  timeFrame: TimeFrame,
+  selectedStats: StatFiltersOutputSchema["stats"]
 ): DayStatFilter["day"] {
   let days: number;
 
@@ -119,9 +120,18 @@ function buildDayWhereClause(
   const final = dayjs().subtract(1, "day").endOf("day");
   const finalDate = final.toDate();
 
+  if (days === 1) {
+    return {
+      gte: finalDate,
+      lte: finalDate,
+    };
+  }
+
   const isLargeTimeFrame = days > 30;
 
-  if (scope === "web" && isLargeTimeFrame) {
+  let selectedDates: Date[] | undefined;
+
+  if (scope === "web" && isLargeTimeFrame && !selectedStats?.length) {
     const origin = final.subtract(days, "day").startOf("day");
     const dates: Date[] = [];
 
@@ -131,19 +141,13 @@ function buildDayWhereClause(
       current = current.subtract(DAYS_INTERVAL_GRANULARITY, "day");
     }
 
-    return { in: dates };
-  }
-
-  if (days === 1) {
-    return {
-      gte: finalDate,
-      lte: finalDate,
-    };
+    selectedDates = dates;
   }
 
   return {
     gte: final.subtract(days, "day").startOf("day").toDate(),
     lte: finalDate,
+    in: selectedDates,
   };
 }
 
@@ -165,7 +169,7 @@ export const withStatFilters = t.middleware(
     }
 
     if (timeFrame) {
-      where.day = buildDayWhereClause(scope, timeFrame);
+      where.day = buildDayWhereClause(scope, timeFrame, stats);
     }
 
     const isAllCategoriesEnabled = categories === "all";
