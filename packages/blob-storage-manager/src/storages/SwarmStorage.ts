@@ -1,4 +1,5 @@
 import { Bee, BeeResponseError } from "@ethersphere/bee-js";
+import axios from "axios";
 
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
@@ -73,18 +74,38 @@ export class SwarmStorage extends BlobStorage {
 
   protected async _storeBlob(versionedHash: string, data: string) {
     return this.#performBeeAPICall(async () => {
-      const response = await this._beeClient.uploadFile(
-        this.batchId,
-        data,
-        versionedHash,
-        {
-          // contentType: "text/plain",
-          deferred: env.SWARM_DEFERRED_UPLOAD,
-        }
-      );
-
-      return response.reference.toHex();
+      return env.SWARM_CHUNKSTORM_ENABLED
+        ? this.#sendToChunkstorm(data)
+        : this.#sendToBeeNode(versionedHash, data);
     });
+  }
+
+  async #sendToChunkstorm(data: string) {
+    const buffer = Buffer.from(data);
+    const response = await axios.post(
+      `${env.SWARM_CHUNKSTORM_URL}/data`,
+      buffer,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/octet-stream",
+        },
+        responseType: "json",
+      }
+    );
+    return response.data.reference;
+  }
+
+  async #sendToBeeNode(versionedHash: string, data: string) {
+    const response = await this._beeClient.uploadFile(
+      this.batchId,
+      data,
+      versionedHash,
+      {
+        deferred: env.SWARM_DEFERRED_UPLOAD,
+      }
+    );
+    return response.reference.toHex();
   }
 
   getBlobUri(_: string) {

@@ -164,6 +164,12 @@ export const env = createEnv({
         .url()
         .optional()
         .superRefine(requireIfEnvEnabled("SWARM_STORAGE_ENABLED")),
+      SWARM_CHUNKSTORM_ENABLED: booleanSchema.default("false"),
+      SWARM_CHUNKSTORM_URL: z
+        .string()
+        .url()
+        .optional()
+        .default("http://localhost:3050"),
 
       // WeaveVM storage
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -224,7 +230,15 @@ export const env = createEnv({
     }
 
     if (env.SWARM_STORAGE_ENABLED) {
-      console.log(`Swarm configuration: beeEndpoint=${env.BEE_ENDPOINT}`);
+      console.log(
+        `Swarm configuration: beeEndpoint=${
+          env.BEE_ENDPOINT
+        }, swarmChunkstormEnabled=${env.SWARM_CHUNKSTORM_ENABLED},${
+          env.SWARM_CHUNKSTORM_ENABLED
+            ? `swarmChunkstormUrl=${env.SWARM_CHUNKSTORM_URL}`
+            : ""
+        }, swarmDeferredUpload=${env.SWARM_DEFERRED_UPLOAD}`
+      );
     }
 
     if (env.FILE_SYSTEM_STORAGE_ENABLED) {
