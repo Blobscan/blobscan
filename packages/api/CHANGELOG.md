@@ -1,5 +1,30 @@
 # @blobscan/api
 
+## 0.23.0
+
+### Minor Changes
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced `category` and `rollup` query parameters to daily and overall stats procedures for filtering stats and metrics
+
+- [#685](https://github.com/Blobscan/blobscan/pull/685) [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added procedure to retrieve overall app state (eth usd prices, sync state and latest block)
+
+- [#685](https://github.com/Blobscan/blobscan/pull/685) [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added eth price retrieval procedure
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Updates overall stats procedures to to return a set of overall stats elements instead of a single item.
+
+### Patch Changes
+
+- [#802](https://github.com/Blobscan/blobscan/pull/802) [`783216a`](https://github.com/Blobscan/blobscan/commit/783216ad98c611c84642fa776a9ea35db3d97d5e) Thanks [@PJColombo](https://github.com/PJColombo)! - Improved daily stats sampling fetching performance
+
+- [#802](https://github.com/Blobscan/blobscan/pull/802) [`783216a`](https://github.com/Blobscan/blobscan/commit/783216ad98c611c84642fa776a9ea35db3d97d5e) Thanks [@PJColombo](https://github.com/PJColombo)! - Returned full amount of daily stats when the number of requested stats is limited
+
+- Updated dependencies [[`ec6f24f`](https://github.com/Blobscan/blobscan/commit/ec6f24f9a24114be0fd973f30eb1d67b683e0f73), [`9a78399`](https://github.com/Blobscan/blobscan/commit/9a783998bac9c6e9f929a89f0e685b8745edd3ac), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
+  - @blobscan/blob-storage-manager@0.5.0
+  - @blobscan/network-blob-config@0.2.0
+  - @blobscan/db@0.18.0
+  - @blobscan/blob-propagator@0.2.13
+  - @blobscan/rollups@0.3.3
+
 ## 0.22.0
 
 ### Minor Changes
