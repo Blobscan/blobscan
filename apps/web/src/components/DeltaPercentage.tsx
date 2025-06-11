@@ -1,7 +1,6 @@
 import cn from "classnames";
 
 import { calculatePercentage } from "~/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
 type DeltaPercentageChangeProps<T extends number | bigint> = {
   initialValue: T;

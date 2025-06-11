@@ -1,4 +1,5 @@
-import { FC, ReactNode, useRef } from "react";
+import type { FC } from "react";
+import { useRef } from "react";
 
 import { useHover } from "~/hooks/useHover";
 import { formatFiat } from "~/utils";
