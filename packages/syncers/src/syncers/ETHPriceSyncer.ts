@@ -65,7 +65,7 @@ export class ETHPriceSyncer extends BaseSyncer {
           },
         });
 
-        this.logger.info(
+        this.logger.debug(
           `ETH price synced: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
         );
       },

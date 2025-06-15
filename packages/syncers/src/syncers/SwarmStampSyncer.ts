@@ -58,17 +58,19 @@ export class SwarmStampSyncer extends BaseSyncer {
             swarmDataTTL: batchTTL,
           },
           update: {
+            swarmDataId: batchId,
             swarmDataTTL: batchTTL,
             updatedAt: new Date(),
           },
           where: {
             id: 1,
-            swarmDataId: batchId,
           },
         });
 
         const expiryDate = formatTtl(batchTTL);
-        this.logger.info(`Swarm batch ID "${batchId}" updated. New expiry date: ${expiryDate}.`);
+        this.logger.info(
+          `Swarm batch ID "${batchId}" updated. New expiry date: ${expiryDate}.`
+        );
       },
     });
   }

@@ -5,13 +5,16 @@ import { blobRouter } from "./routers/blob";
 import { blobStoragesStateRouter } from "./routers/blob-storages-state";
 import { blockRouter } from "./routers/block";
 import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
+import { ethPriceRouter } from "./routers/eth-price";
 import { indexerRouter } from "./routers/indexer";
 import { searchRouter } from "./routers/search";
+import { stateRouter } from "./routers/state";
 import { statsRouter } from "./routers/stats";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
 export const appRouter = t.router({
+  state: stateRouter,
   block: blockRouter,
   tx: transactionRouter,
   blob: blobRouter,
@@ -20,6 +23,7 @@ export const appRouter = t.router({
   indexer: indexerRouter,
   syncState: blockchainSyncStateRouter,
   blobStoragesState: blobStoragesStateRouter,
+  ethPrice: ethPriceRouter,
   healthcheck: publicProcedure
     .meta({
       openapi: {
