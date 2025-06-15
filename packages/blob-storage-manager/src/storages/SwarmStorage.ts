@@ -72,13 +72,15 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
+    const binaryData = Buffer.from(data, "base64");
+
     return this.#performBeeAPICall(async () => {
       const response = await this._beeClient.uploadFile(
         this.batchId,
-        data,
+        binaryData,
         this.getBlobFilePath(versionedHash),
         {
-          // : "text/plain",
+          contentType: "application/octet-stream",
           deferred: env.SWARM_DEFERRED_UPLOAD,
         }
       );
