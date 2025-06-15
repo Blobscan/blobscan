@@ -73,8 +73,6 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
-    const binaryData = Buffer.from(data, "base64");
-
     return this.#performBeeAPICall(async () => {
       return env.SWARM_CHUNKSTORM_ENABLED
         ? this.#sendToChunkstorm(data)
@@ -100,6 +98,7 @@ export class SwarmStorage extends BlobStorage {
 
   async #sendToBeeNode(versionedHash: string, data: string) {
     const buffer = Buffer.from(data);
+
     const response = await this._beeClient.uploadFile(
       this.batchId,
       buffer,
