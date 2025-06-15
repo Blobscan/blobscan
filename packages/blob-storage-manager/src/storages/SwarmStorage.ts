@@ -97,11 +97,14 @@ export class SwarmStorage extends BlobStorage {
   }
 
   async #sendToBeeNode(versionedHash: string, data: string) {
+    const buffer = Buffer.from(data);
+
     const response = await this._beeClient.uploadFile(
       this.batchId,
-      data,
+      buffer,
       versionedHash,
       {
+        contentType: "application/octet-stream",
         deferred: env.SWARM_DEFERRED_UPLOAD,
       }
     );
