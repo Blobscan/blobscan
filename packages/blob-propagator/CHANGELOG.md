@@ -1,5 +1,13 @@
 # @blobscan/blob-propagator
 
+## 0.2.13
+
+### Patch Changes
+
+- Updated dependencies [[`ec6f24f`](https://github.com/Blobscan/blobscan/commit/ec6f24f9a24114be0fd973f30eb1d67b683e0f73), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
+  - @blobscan/blob-storage-manager@0.5.0
+  - @blobscan/db@0.18.0
+
 ## 0.2.12
 
 ### Patch Changes

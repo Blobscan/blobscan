@@ -1,5 +1,17 @@
 # @blobscan/syncers
 
+## 0.5.0
+
+### Minor Changes
+
+- [#794](https://github.com/Blobscan/blobscan/pull/794) [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated eth usd price syncer to only index latest ETH price and removed any backfilling logic
+
+### Patch Changes
+
+- Updated dependencies [[`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
+  - @blobscan/price-feed@0.1.0
+  - @blobscan/db@0.18.0
+
 ## 0.4.2
 
 ### Patch Changes
