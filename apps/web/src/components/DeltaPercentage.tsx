@@ -11,8 +11,6 @@ export const DeltaPercentageChange = function <T extends number | bigint>({
   initialValue,
   finalValue,
 }: DeltaPercentageChangeProps<T>) {
-  console.log("Rendering");
-
   const sign =
     finalValue < initialValue ? "-" : finalValue > initialValue ? "+" : "";
   const delta = finalValue - initialValue;
