@@ -376,8 +376,8 @@ const Stats: NextPage = function () {
         </div>
       </Card>
       <div className="flex flex-col gap-4">
-        <OverallMetricWrapper>
-          <div className="flex flex-row gap-4">
+        <OverallMetricWrapper displayScrollbar>
+          <div className="flex w-full flex-row gap-4">
             {splitArrayIntoChunks(
               displayedSections.flatMap((s) => s.metrics),
               2
