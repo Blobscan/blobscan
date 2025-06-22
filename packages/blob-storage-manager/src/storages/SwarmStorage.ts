@@ -73,15 +73,16 @@ export class SwarmStorage extends BlobStorage {
   }
 
   protected async _storeBlob(versionedHash: string, data: string) {
+    const buffer = Buffer.from(data);
+
     return this.#performBeeAPICall(async () => {
       return env.SWARM_CHUNKSTORM_ENABLED
-        ? this.#sendToChunkstorm(data)
-        : this.#sendToBeeNode(versionedHash, data);
+        ? this.#sendToChunkstorm(buffer)
+        : this.#sendToBeeNode(versionedHash, buffer);
     });
   }
 
-  async #sendToChunkstorm(data: string) {
-    const buffer = Buffer.from(data);
+  async #sendToChunkstorm(buffer: Buffer) {
     const response = await axios.post(
       `${env.SWARM_CHUNKSTORM_URL}/data`,
       buffer,
@@ -96,9 +97,7 @@ export class SwarmStorage extends BlobStorage {
     return response.data.reference;
   }
 
-  async #sendToBeeNode(versionedHash: string, data: string) {
-    const buffer = Buffer.from(data);
-
+  async #sendToBeeNode(versionedHash: string, buffer: Buffer) {
     const response = await this._beeClient.uploadFile(
       this.batchId,
       buffer,
