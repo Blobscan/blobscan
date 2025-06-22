@@ -84,9 +84,13 @@ export class GoogleStorage extends BlobStorage {
     versionedHash: string,
     data: string
   ): Promise<string> {
+    const buffer = Buffer.from(data);
     const blobUri = this.getBlobUri(versionedHash);
 
-    await this._storageClient.bucket(this._bucketName).file(blobUri).save(data);
+    await this._storageClient
+      .bucket(this._bucketName)
+      .file(blobUri)
+      .save(buffer);
 
     return blobUri;
   }
