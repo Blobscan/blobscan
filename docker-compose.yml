@@ -32,3 +32,9 @@ services:
     depends_on:
       api:
         condition: service_healthy
+
+  docs:
+    image: blossomlabs/blobscan-docs:latest
+    restart: always
+    ports:
+      - ${EXTERNAL_DOCS_PORT:-3002}:3002
