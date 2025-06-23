@@ -1,6 +1,3 @@
----
-version: "3.7"
-
 services:
   api:
     image: blossomlabs/blobscan-api:${BLOBSCAN_API_TAG}

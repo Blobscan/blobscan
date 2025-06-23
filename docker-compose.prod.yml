@@ -1,6 +1,3 @@
----
-version: "3.7"
-
 services:
   web:
     extends:
@@ -23,3 +20,11 @@ services:
       file: docker-compose.yml
       service: indexer
     image: blossomlabs/blobscan-indexer:${INDEXER_TAG}
+
+  docs:
+    extends:
+      file: docker-compose.yml
+      service: docs
+    image: blossomlabs/blobscan-docs:${BLOBSCAN_DOCS_TAG}
+    ports:
+      - ${EXTERNAL_DOCS_PORT:-3002}:3002

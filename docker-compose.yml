@@ -1,6 +1,3 @@
----
-version: "3.7"
-
 services:
   web:
     image: blossomlabs/blobscan-web:${BLOBSCAN_WEB_TAG}
