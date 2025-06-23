@@ -24,7 +24,7 @@
     "fast-glob": "^3.2.12",
     "flexsearch": "^0.7.31",
     "js-yaml": "^4.1.0",
-    "next": "14.2.5",
+    "next": "^14.2.30",
     "next-themes": "^0.2.1",
     "prism-react-renderer": "^2.0.6",
     "react": "18.2.0",
