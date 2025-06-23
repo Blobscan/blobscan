@@ -19,16 +19,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
 COPY --from=base /prepare/docs-output/json .
-
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY --from=base /prepare/docs-output/full .
 COPY --from=base /prepare/turbo.json .
-
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm build --filter=@blobscan/docs
 
-# stage: docs
 FROM node:22-alpine
 
 ENV HOSTNAME=0.0.0.0
