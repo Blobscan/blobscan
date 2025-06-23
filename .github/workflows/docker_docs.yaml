@@ -6,7 +6,6 @@ on:
     paths:
       - "apps/docs/**"
       - "Dockerfile.docs"
-      - "docker-entrypoint.sh"
 
 jobs:
   release_docs_docker:

@@ -19,6 +19,16 @@ services:
     depends_on:
       - postgres
 
+  docs:
+    extends:
+      file: docker-compose.yml
+      service: docs
+    build:
+      context: .
+      dockerfile: ./Dockerfile.docs
+    ports:
+      - ${EXTERNAL_DOCS_PORT:-3002}:3002
+
   # External dependencies
 
   postgres:
