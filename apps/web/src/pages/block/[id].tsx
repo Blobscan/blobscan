@@ -7,8 +7,7 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
-import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
+import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -170,7 +169,7 @@ const Block: NextPage = function () {
         name: "Blob Gas Price",
         helpText:
           "The cost per unit of blob gas used by the blobs in this block.",
-        value: <StandardEtherUnitDisplay amount={blockData.blobGasPrice} />,
+        value: <EtherWithGweiDisplay amount={blockData.blobGasPrice} />,
       },
       {
         name: "Blob Gas Used",
