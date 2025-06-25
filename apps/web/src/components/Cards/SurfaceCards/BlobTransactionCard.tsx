@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import type { FC } from "react";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
+import { formatWei } from "@blobscan/eth-format";
+
 import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { IconButton } from "~/components/IconButton";
 import { Rotable } from "~/components/Rotable";
 import { Skeleton } from "~/components/Skeleton";
@@ -139,7 +140,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       name={<div title="Blob Base Fee">B. Base Fee</div>}
                       value={
                         <div className="truncate">
-                          <EtherUnitDisplay amount={blobGasBaseFee} />
+                          {formatWei(blobGasBaseFee)}
                         </div>
                       }
                     />
@@ -147,7 +148,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       name={<div title="Blob Max Fee">B.Max Fee</div>}
                       value={
                         <div className="truncate">
-                          <EtherUnitDisplay amount={blobGasMaxFee} />
+                          {formatWei(blobGasMaxFee)}
                         </div>
                       }
                     />

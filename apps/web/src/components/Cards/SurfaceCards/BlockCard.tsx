@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import type { FC } from "react";
 
+import { formatWei } from "@blobscan/eth-format";
+
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Skeleton } from "~/components/Skeleton";
 import type { Block, Rollup } from "~/types";
 import { buildBlockRoute, normalizeTimestamp } from "~/utils";
@@ -68,7 +69,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
             <>
               <CardField
                 name={<div title="Blob Gas Price">B. Gas Price</div>}
-                value={<EtherUnitDisplay amount={blobGasPrice} />}
+                value={formatWei(blobGasPrice)}
               />
               <CardField
                 name={<div title="Blob Gas Used">B. Gas Used</div>}

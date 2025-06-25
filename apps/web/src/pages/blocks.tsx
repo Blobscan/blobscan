@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
+import { formatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
@@ -189,7 +190,7 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />,
+              item: formatWei(blobGasPrice, { toUnit: "Gwei" }),
             },
             {
               item: (
