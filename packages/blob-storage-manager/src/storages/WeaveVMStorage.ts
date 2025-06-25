@@ -40,7 +40,7 @@ export class WeaveVMStorage extends BlobStorage {
     return res.data.blob_data;
   }
 
-  protected async _storeBlob(_: string, __: string): Promise<string> {
+  protected async _storeBlob(_: string, __: Buffer): Promise<string> {
     throw new Error(
       "Blob storage operation is not allowed for WeaveVM storage"
     );

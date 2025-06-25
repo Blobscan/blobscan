@@ -50,13 +50,13 @@ export class FileSystemStorage extends BlobStorage {
 
   protected async _storeBlob(
     versionedHash: string,
-    data: string
+    data: Buffer
   ): Promise<string> {
     const blobUri = this.getBlobUri(versionedHash);
     const blobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
     createFullPermissionDirectory(blobDirPath);
-    createFullPermissionFile(blobUri, data);
+    createFullPermissionFile(blobUri, data.toString());
 
     return blobUri;
   }

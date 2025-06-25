@@ -55,8 +55,7 @@ export class PostgresStorage extends BlobStorage {
     }
   }
 
-  protected async _storeBlob(versionedHash: string, blobData: string) {
-    const data = Buffer.from(blobData.slice(2), "hex");
+  protected async _storeBlob(versionedHash: string, data: Buffer) {
     const id = versionedHash;
 
     await this.client.blobData.upsert({

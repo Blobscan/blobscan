@@ -82,16 +82,10 @@ export class GoogleStorage extends BlobStorage {
 
   protected async _storeBlob(
     versionedHash: string,
-    data: string
+    data: Buffer
   ): Promise<string> {
-    const buffer = Buffer.from(data);
     const blobUri = this.getBlobUri(versionedHash);
-
-    await this._storageClient
-      .bucket(this._bucketName)
-      .file(blobUri)
-      .save(buffer);
-
+    await this._storageClient.bucket(this._bucketName).file(blobUri).save(data);
     return blobUri;
   }
 

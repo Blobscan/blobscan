@@ -72,13 +72,11 @@ export class SwarmStorage extends BlobStorage {
     await this.#performBeeAPICall(() => this._beeClient.unpin(uri));
   }
 
-  protected async _storeBlob(versionedHash: string, data: string) {
-    const buffer = Buffer.from(data);
-
+  protected async _storeBlob(versionedHash: string, data: Buffer) {
     return this.#performBeeAPICall(async () => {
       return env.SWARM_CHUNKSTORM_ENABLED
-        ? this.#sendToChunkstorm(buffer)
-        : this.#sendToBeeNode(versionedHash, buffer);
+        ? this.#sendToChunkstorm(data)
+        : this.#sendToBeeNode(versionedHash, data);
     });
   }
 

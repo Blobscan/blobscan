@@ -17,7 +17,7 @@ export abstract class BlobStorage {
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string): Promise<string>;
-  protected abstract _storeBlob(hash: string, data: string): Promise<string>;
+  protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
 
   abstract getBlobUri(hash: string): string | undefined;
@@ -62,7 +62,7 @@ export abstract class BlobStorage {
 
   async storeBlob(hash: string, data: string): Promise<string> {
     try {
-      const res = await this._storeBlob(hash, data);
+      const res = await this._storeBlob(hash, Buffer.from(data));
 
       return res;
     } catch (err) {
