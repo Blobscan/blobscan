@@ -153,32 +153,29 @@ export const ChartBase: FC<ChartBaseProps> = function ({
       });
   }, [seriesOptions, showCumulative, themeMode]);
 
-  const onChartReady = useCallback(
-    (chart: EChartsInstance) => {
-      chart.on(
-        "mouseover",
-        ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
-          if (componentType === "series") {
-            setSelectedLegendItem(seriesName);
-            hoveredSeriesRef.current = {
-              seriesIndex,
-              seriesName,
-            };
-          }
+  const onChartReady = useCallback((chart: EChartsInstance) => {
+    chart.on(
+      "mouseover",
+      ({ componentType, seriesName, seriesIndex }: ECElementEvent) => {
+        if (componentType === "series") {
+          setSelectedLegendItem(seriesName);
+          hoveredSeriesRef.current = {
+            seriesIndex,
+            seriesName,
+          };
         }
-      );
+      }
+    );
 
-      chart.on("mouseout", () => {
-        setSelectedLegendItem(undefined);
-      });
+    chart.on("mouseout", () => {
+      setSelectedLegendItem(undefined);
+    });
 
-      chart.on("globalout", () => {
-        hoveredSeriesRef.current = null;
-        setSelectedLegendItem(undefined);
-      });
-    },
-    [showLegend]
-  );
+    chart.on("globalout", () => {
+      hoveredSeriesRef.current = null;
+      setSelectedLegendItem(undefined);
+    });
+  }, []);
 
   const handleLegendToggle = useCallback(
     (itemName: string | "all", direction: "in" | "out") => {

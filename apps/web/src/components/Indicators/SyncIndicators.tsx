@@ -1,11 +1,12 @@
-import { FC } from "react";
+import type { FC } from "react";
 import { ClockIcon } from "@heroicons/react/24/solid";
 
 import { formatTtl } from "@blobscan/dates";
 
 import { api } from "~/api-client";
 import { formatNumber } from "~/utils";
-import { IndicatorProps, IndicatorsStrip } from "../Indicators";
+import type { IndicatorProps } from "../Indicators";
+import { IndicatorsStrip } from "../Indicators";
 
 export const SyncIndicators: FC = function () {
   const { data } = api.state.getAppState.useQuery(undefined, {
