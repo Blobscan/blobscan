@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
 import dayjs from "@blobscan/dayjs";
+import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Copyable } from "~/components/Copyable";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -173,24 +173,21 @@ const Txs: NextPage = function () {
               {
                 item: (
                   <div className="truncate">
-                    <EtherUnitDisplay amount={blobGasBaseFee} toUnit="Gwei" />
+                    {formatWei(blobGasBaseFee, { toUnit: "Gwei" })}
                   </div>
                 ),
               },
               {
                 item: (
                   <div className="truncate">
-                    <EtherUnitDisplay amount={blobGasMaxFee} toUnit="Gwei" />
+                    {formatWei(blobGasMaxFee, { toUnit: "Gwei" })}
                   </div>
                 ),
               },
               {
                 item: (
                   <div className="truncate">
-                    <EtherUnitDisplay
-                      amount={block.blobGasPrice}
-                      toUnit="Gwei"
-                    />
+                    {formatWei(block.blobGasPrice, { toUnit: "Gwei" })}
                   </div>
                 ),
               },
