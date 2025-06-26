@@ -7,8 +7,9 @@ import { BlobStorage } from "../BlobStorage";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import {
+  bytesToHex,
   createFullPermissionDirectory,
-  createFullPermissionFile,
+  createFullPermissionBinFile,
 } from "../utils";
 
 export interface FileSystemStorageConfig extends BlobStorageConfig {
@@ -32,9 +33,9 @@ export class FileSystemStorage extends BlobStorage {
 
   protected async _getBlob(reference: string): Promise<string> {
     try {
-      const blobData = await fs.promises.readFile(reference, "utf-8");
+      const bytes = await fs.promises.readFile(reference);
 
-      return blobData;
+      return bytesToHex(bytes);
     } catch (error) {
       throw new Error(`Blob file ${reference} missing: ${error}`);
     }
@@ -56,7 +57,7 @@ export class FileSystemStorage extends BlobStorage {
     const blobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
     createFullPermissionDirectory(blobDirPath);
-    createFullPermissionFile(blobUri, data.toString());
+    createFullPermissionBinFile(blobUri, data);
 
     return blobUri;
   }
@@ -65,7 +66,7 @@ export class FileSystemStorage extends BlobStorage {
     const blobFilePath = `${this.chainId.toString()}/${hash.slice(
       2,
       4
-    )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+    )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
 
     return path.join(this.blobDirPath, blobFilePath);
   }

@@ -15,8 +15,8 @@ export function createFullPermissionDirectory(dirPath: string) {
   });
 }
 
-export function createFullPermissionFile(filePath: string, data: string) {
+export function createFullPermissionBinFile(filePath: string, data: Buffer) {
   performFullPermissionOp(() => {
-    fs.writeFileSync(filePath, data, { encoding: "utf-8", mode: 0o777 });
+    fs.writeFileSync(filePath, data, { mode: 0o777 });
   });
 }
