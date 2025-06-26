@@ -12,9 +12,13 @@ export function bytesToHex(bytes: Buffer) {
   return `0x${bytes.toString("hex")}`;
 }
 
-export function normalizeBlobData(data: HexString | Buffer) {
+export function isHexString(data: string): data is HexString {
+  return data.startsWith("0x");
+}
+
+export function normalizeBlobData(data: string | Buffer) {
   if (typeof data === "string") {
-    if (!data.startsWith("0x")) {
+    if (!isHexString(data)) {
       throw new Error(`Invalid blob data hex string: must start with '0x'`);
     }
 

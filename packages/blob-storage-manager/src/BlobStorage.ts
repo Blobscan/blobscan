@@ -1,7 +1,6 @@
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import { BlobStorageError } from "./errors";
-import type { HexString } from "./types";
 import { normalizeBlobData } from "./utils";
 
 export interface BlobStorageConfig {
@@ -62,7 +61,7 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeBlob(hash: string, data: HexString | Buffer): Promise<string> {
+  async storeBlob(hash: string, data: string | Buffer): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
       const res = await this._storeBlob(hash, normalizedData);
