@@ -83,7 +83,7 @@ export class SwarmStorage extends BlobStorage {
   async #sendToChunkstorm(data: string) {
     const buffer = Buffer.from(data);
     const response = await axios.post(
-      `${env.SWARM_CHUNKSTORM_URL}/data`,
+      `${env.SWARM_CHUNKSTORM_URL}/upload`,
       buffer,
       {
         headers: {
