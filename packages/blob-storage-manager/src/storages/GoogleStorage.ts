@@ -3,9 +3,10 @@ import { Storage } from "@google-cloud/storage";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import type { BlobStorageConfig } from "../BlobStorage";
+import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
+import { bytesToHex } from "../utils";
 
 export interface GoogleStorageConfig extends BlobStorageConfig {
   serviceKey?: string;
@@ -65,10 +66,11 @@ export class GoogleStorage extends BlobStorage {
     }
   }
 
-  protected async _getBlob(uri: string) {
-    const blobFile = await this.getBlobFile(uri).download();
+  protected async _getBlob(uri: string, { fileType }: GetBlobOpts) {
+    const res = await this.getBlobFile(uri).download();
+    const [data] = res;
 
-    return blobFile.toString();
+    return fileType === "text" ? res.toString() : bytesToHex(data);
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
@@ -82,11 +84,22 @@ export class GoogleStorage extends BlobStorage {
 
   protected async _storeBlob(
     versionedHash: string,
-    data: string
+    data: Buffer
   ): Promise<string> {
     const blobUri = this.getBlobUri(versionedHash);
 
-    await this._storageClient.bucket(this._bucketName).file(blobUri).save(data);
+    await this._storageClient
+      .bucket(this._bucketName)
+      .file(blobUri)
+      .save(data, {
+        /**
+         * Sends the whole file in a single HTTP request. It makes the upload faster and simpler.
+         * Recommended for files < 5MB
+         */
+        //
+        resumable: false,
+        contentType: "application/octet-stream",
+      });
 
     return blobUri;
   }
@@ -95,7 +108,7 @@ export class GoogleStorage extends BlobStorage {
     return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
       6
-    )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+    )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
   }
 
   protected getBlobFile(uri: string) {

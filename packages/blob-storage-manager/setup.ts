@@ -31,7 +31,7 @@ vi.mock("@ethersphere/bee-js", async (importOriginal) => {
             return {
               data: {
                 toHex() {
-                  return "mock-data";
+                  return "0x12bc45f2a2";
                 },
               },
             };

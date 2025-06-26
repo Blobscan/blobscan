@@ -558,7 +558,7 @@
     {
       "blobHash": "blobHash001",
       "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash001.txt"
+      "dataReference": "1/ob/Ha/sh/obHash001.bin"
     },
     {
       "blobHash": "blobHash001",
@@ -568,7 +568,7 @@
     {
       "blobHash": "blobHash002",
       "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash002.txt"
+      "dataReference": "1/ob/Ha/sh/obHash002.bin"
     },
     {
       "blobHash": "blobHash003",
@@ -578,7 +578,7 @@
     {
       "blobHash": "blobHash003",
       "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash003.txt"
+      "dataReference": "1/ob/Ha/sh/obHash003.bin"
     },
     {
       "blobHash": "blobHash004",
@@ -588,7 +588,7 @@
     {
       "blobHash": "blobHash004",
       "blobStorage": "GOOGLE",
-      "dataReference": "1/ob/Ha/sh/obHash004.txt"
+      "dataReference": "1/ob/Ha/sh/obHash004.bin"
     },
     {
       "blobHash": "blobHash005",
@@ -637,6 +637,10 @@
     }
   ],
   "blobDatas": [
+    {
+      "id": "blobHash003",
+      "data": "2142337a5355685b119880ba35efdd6b"
+    },
     {
       "id": "blobHash004",
       "data": "4fe40fc67f9c3a3ffa2be77d10fe7818"

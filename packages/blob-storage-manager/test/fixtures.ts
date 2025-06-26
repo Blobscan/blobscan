@@ -6,8 +6,8 @@ export const NEW_BLOB_FILE_URI = `${process.env.CHAIN_ID}/${NEW_BLOB_HASH.slice(
 )}/${NEW_BLOB_HASH.slice(4, 6)}/${NEW_BLOB_HASH.slice(
   6,
   8
-)}/${NEW_BLOB_HASH.slice(2)}.txt`;
-export const NEW_BLOB_DATA = "mock-data";
+)}/${NEW_BLOB_HASH.slice(2)}.bin`;
+export const NEW_BLOB_DATA = "0x12bc45f2a2";
 export const RAW_DATA = Buffer.from("mock-data");
 export const HEX_DATA = `0x${RAW_DATA.toString("hex")}`;
 export const SWARM_REFERENCE = "mock-reference";

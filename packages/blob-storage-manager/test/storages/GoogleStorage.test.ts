@@ -7,6 +7,7 @@ import { testValidError } from "@blobscan/test";
 import { GoogleStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import type { GoogleStorageConfig } from "../../src/storages";
+import { hexToBytes } from "../../src/utils";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "../fixtures";
 
 class GoogleStorageMock extends GoogleStorage {
@@ -41,7 +42,7 @@ describe("GoogleStorage", () => {
     6
   )}/${expectedStoredBlobHash.slice(6, 8)}/${expectedStoredBlobHash.slice(
     2
-  )}.txt`;
+  )}.bin`;
   const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
 
   beforeAll(() => {
@@ -86,7 +87,9 @@ describe("GoogleStorage", () => {
     await storage.storageClient
       .bucket(storage.bucketName)
       .file(expectedStoredBlobFileUri)
-      .save(expectedStoredBlobData);
+      .save(hexToBytes(expectedStoredBlobData), {
+        contentType: "application/octet-stream",
+      });
 
     const blob = await storage.getBlob(expectedStoredBlobFileUri);
 
@@ -119,7 +122,7 @@ describe("GoogleStorage", () => {
     const file = await storage.storeBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
 
     expect(file).toMatchInlineSnapshot(
-      '"1/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.txt"'
+      '"1/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.bin"'
     );
   });
 

@@ -36,3 +36,7 @@ export type Blob = {
 export type StoreOptions = {
   selectedStorages: BlobStorage[];
 };
+
+export type HexString = `0x${string}`;
+
+export type BlobFileType = "text" | "binary";

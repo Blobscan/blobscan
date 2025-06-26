@@ -15,7 +15,7 @@ const code = `{
   },
   "blobDataStorage": [{
     "storage": "GOOGLE",
-    "reference": "1/01/00/0100...1368.txt"
+    "reference": "1/01/00/0100...1368.bin"
   }]
 }`
 

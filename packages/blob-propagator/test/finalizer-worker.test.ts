@@ -21,7 +21,7 @@ describe("Finalizer Worker", () => {
 
   const blob: Blob = {
     versionedHash: fixtures.blobs[0]?.versionedHash ?? "",
-    data: "0x1234abcdeff123456789ab34223a4b2c2ed",
+    data: "0x1234abcdeff123456789ab34223a4b2c2ed0",
   };
 
   beforeAll(async () => {

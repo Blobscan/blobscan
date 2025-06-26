@@ -135,7 +135,10 @@ describe("WeavevmStorage", () => {
   testValidError(
     "should fail when trying to store a blob",
     async () => {
-      await storage.storeBlob("blobHash", "blobData");
+      await storage.storeBlob(
+        "0x01aaeb1f6ac28c7dc38569bced04f3c7d8b8d16ee2f1818b5b15b2004a5a04eb",
+        "0x190001fbfc00224e90"
+      );
     },
     BlobStorageError,
     {

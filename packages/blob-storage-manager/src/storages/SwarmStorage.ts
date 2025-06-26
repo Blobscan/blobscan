@@ -72,7 +72,7 @@ export class SwarmStorage extends BlobStorage {
     await this.#performBeeAPICall(() => this._beeClient.unpin(uri));
   }
 
-  protected async _storeBlob(versionedHash: string, data: string) {
+  protected async _storeBlob(versionedHash: string, data: Buffer) {
     return this.#performBeeAPICall(async () => {
       return env.SWARM_CHUNKSTORM_ENABLED
         ? this.#sendToChunkstorm(data)
@@ -80,8 +80,7 @@ export class SwarmStorage extends BlobStorage {
     });
   }
 
-  async #sendToChunkstorm(data: string) {
-    const buffer = Buffer.from(data);
+  async #sendToChunkstorm(buffer: Buffer) {
     const response = await axios.post(
       `${env.SWARM_CHUNKSTORM_URL}/data`,
       buffer,
@@ -96,12 +95,13 @@ export class SwarmStorage extends BlobStorage {
     return response.data.reference;
   }
 
-  async #sendToBeeNode(versionedHash: string, data: string) {
+  async #sendToBeeNode(versionedHash: string, buffer: Buffer) {
     const response = await this._beeClient.uploadFile(
       this.batchId,
-      data,
+      buffer,
       versionedHash,
       {
+        contentType: "application/octet-stream",
         deferred: env.SWARM_DEFERRED_UPLOAD,
       }
     );
@@ -139,7 +139,7 @@ export class SwarmStorage extends BlobStorage {
     return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
       6
-    )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+    )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
   }
 
   static async create({

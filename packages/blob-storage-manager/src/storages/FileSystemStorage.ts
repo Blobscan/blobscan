@@ -4,11 +4,12 @@ import path from "path";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import { BlobStorage } from "../BlobStorage";
-import type { BlobStorageConfig } from "../BlobStorage";
+import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import {
+  bytesToHex,
   createFullPermissionDirectory,
-  createFullPermissionFile,
+  createFullPermissionBinFile,
 } from "../utils";
 
 export interface FileSystemStorageConfig extends BlobStorageConfig {
@@ -30,11 +31,16 @@ export class FileSystemStorage extends BlobStorage {
     return Promise.resolve();
   }
 
-  protected async _getBlob(reference: string): Promise<string> {
+  protected async _getBlob(
+    reference: string,
+    { fileType }: GetBlobOpts
+  ): Promise<string> {
     try {
-      const blobData = await fs.promises.readFile(reference, "utf-8");
+      const opts =
+        fileType === "text" ? { encoding: "utf-8" as const } : undefined;
+      const res = await fs.promises.readFile(reference, opts);
 
-      return blobData;
+      return typeof res === "string" ? res : bytesToHex(res);
     } catch (error) {
       throw new Error(`Blob file ${reference} missing: ${error}`);
     }
@@ -50,13 +56,13 @@ export class FileSystemStorage extends BlobStorage {
 
   protected async _storeBlob(
     versionedHash: string,
-    data: string
+    data: Buffer
   ): Promise<string> {
     const blobUri = this.getBlobUri(versionedHash);
     const blobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
     createFullPermissionDirectory(blobDirPath);
-    createFullPermissionFile(blobUri, data);
+    createFullPermissionBinFile(blobUri, data);
 
     return blobUri;
   }
@@ -65,7 +71,7 @@ export class FileSystemStorage extends BlobStorage {
     const blobFilePath = `${this.chainId.toString()}/${hash.slice(
       2,
       4
-    )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+    )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
 
     return path.join(this.blobDirPath, blobFilePath);
   }

@@ -66,7 +66,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
     ],
     "data": {
-      "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash1.txt",
+      "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash1.bin",
     },
     "name": "propagateBlob:finalizer-worker-blobVersionedHash1",
     "opts": {
@@ -115,7 +115,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
     ],
     "data": {
-      "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash2.txt",
+      "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash2.bin",
     },
     "name": "propagateBlob:finalizer-worker-blobVersionedHash2",
     "opts": {
