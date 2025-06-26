@@ -198,11 +198,11 @@ describe("Storage Workers", () => {
     },
     {
       storage: "GOOGLE",
-      uri: "1/st/-b/lo/st-blob-versioned-hash.txt",
+      uri: "1/st/-b/lo/st-blob-versioned-hash.bin",
     },
     {
       storage: "FILE_SYSTEM",
-      uri: "test-blobscan-blobs/1/st/-b/lo/st-blob-versioned-hash.txt",
+      uri: "test-blobscan-blobs/1/st/-b/lo/st-blob-versioned-hash.bin",
     },
   ];
 

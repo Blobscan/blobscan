@@ -325,7 +325,7 @@ describe("BlobPropagator", () => {
             },
           ],
           "data": {
-            "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash.txt",
+            "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash.bin",
           },
           "name": "propagateBlob:finalizer-worker-blobVersionedHash",
           "opts": {
@@ -367,7 +367,7 @@ describe("BlobPropagator", () => {
       },
       {
         versionedHash: "blobVersionedHash2",
-        data: "0x2467234ab65cff34faa23",
+        data: "0x2467234ab65cff34faa230",
       },
     ];
 

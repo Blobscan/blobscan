@@ -1,4 +1,4 @@
-export { BlobStorage } from "./BlobStorage";
+export { BlobStorage as BlobStorage } from "./BlobStorage";
 export { BlobStorageManager } from "./BlobStorageManager";
 export * from "./blob-storage-manager";
 export * from "./errors";

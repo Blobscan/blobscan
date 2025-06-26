@@ -7,6 +7,7 @@ import { testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src/errors";
 import { FileSystemStorage } from "../../src/storages/FileSystemStorage";
+import { bytesToHex, hexToBytes } from "../../src/utils";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, NEW_BLOB_FILE_URI } from "../fixtures";
 
 class FileSystemStorageMock extends FileSystemStorage {
@@ -69,7 +70,7 @@ describe("FileSystemStorage", () => {
       )}/${NEW_BLOB_HASH.slice(4, 6)}/${NEW_BLOB_HASH.slice(
         6,
         8
-      )}/${NEW_BLOB_HASH.slice(2)}.txt`
+      )}/${NEW_BLOB_HASH.slice(2)}.bin`
     );
 
     expect(blobFilePath).toEqual(expectedBlobFilePath);
@@ -81,7 +82,7 @@ describe("FileSystemStorage", () => {
       const blobDirs = blobFilePath.slice(0, blobFilePath.lastIndexOf("/"));
 
       fs.mkdirSync(blobDirs, { recursive: true });
-      fs.writeFileSync(blobFilePath, NEW_BLOB_DATA, { encoding: "utf-8" });
+      fs.writeFileSync(blobFilePath, hexToBytes(NEW_BLOB_DATA));
 
       return () => {
         fs.rmSync(storage.blobDirPath, { recursive: true });
@@ -146,9 +147,9 @@ describe("FileSystemStorage", () => {
         NEW_BLOB_DATA
       );
 
-      const fileData = fs.readFileSync(blobReference, { encoding: "utf-8" });
+      const bytes = fs.readFileSync(blobReference);
 
-      expect(fileData).toEqual(NEW_BLOB_DATA);
+      expect(bytesToHex(bytes)).toEqual(NEW_BLOB_DATA);
     });
 
     it("should return a reference", async () => {

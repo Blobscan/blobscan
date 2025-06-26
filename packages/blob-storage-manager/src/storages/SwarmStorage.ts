@@ -139,7 +139,7 @@ export class SwarmStorage extends BlobStorage {
     return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
       6
-    )}/${hash.slice(6, 8)}/${hash.slice(2)}.txt`;
+    )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
   }
 
   static async create({

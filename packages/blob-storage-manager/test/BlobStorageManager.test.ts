@@ -27,9 +27,8 @@ describe("BlobStorageManager", () => {
   let failingGoogleStorage: DeepMockProxy<GoogleStorage>;
   let failingSwarmStorage: DeepMockProxy<SwarmStorage>;
 
-  const expectedStoredBlobHash = "blobHash004";
-  const expectedStoredBlobData = "0x4fe40fc67f9c3a3ffa2be77d10fe7818";
-  const expectedPostgresStoredBlobUri = expectedStoredBlobHash;
+  const expectedStoredBlobHash = "blobHash003";
+  const expectedStoredBlobData = "0x2142337a5355685b119880ba35efdd6b";
   const expectedGoogleStoredBlobUri = `${
     env.CHAIN_ID
   }/${expectedStoredBlobHash.slice(2, 4)}/${expectedStoredBlobHash.slice(
@@ -37,7 +36,7 @@ describe("BlobStorageManager", () => {
     6
   )}/${expectedStoredBlobHash.slice(6, 8)}/${expectedStoredBlobHash.slice(
     2
-  )}.txt`;
+  )}.bin`;
 
   beforeAll(async () => {
     if (!env.GOOGLE_STORAGE_BUCKET_NAME) {
@@ -128,21 +127,15 @@ describe("BlobStorageManager", () => {
   describe("when getting a blob", async () => {
     describe("when getting a blob by its references", () => {
       it("should return the blob data", async () => {
-        const result = await blobStorageManager.getBlobByReferences(
-          {
-            reference: expectedPostgresStoredBlobUri,
-            storage: "POSTGRES",
-          },
-          {
-            reference: expectedGoogleStoredBlobUri,
-            storage: "GOOGLE",
-          }
-        );
+        const result = await blobStorageManager.getBlobByReferences({
+          reference: expectedGoogleStoredBlobUri,
+          storage: "GOOGLE",
+        });
 
-        expect([
-          { data: expectedStoredBlobData, storage: "POSTGRES" },
-          { data: expectedStoredBlobData, storage: "GOOGLE" },
-        ]).toContainEqual(result);
+        expect(result).toEqual({
+          data: expectedStoredBlobData,
+          storage: "GOOGLE",
+        });
       });
 
       testValidError(
@@ -160,7 +153,7 @@ describe("BlobStorageManager", () => {
         "should throw an error if the data for the provided blob uri is not found",
         async () => {
           const UNKNOWN_BLOB_HASH = "0x6d6f60xa123bc3245cde6b2d64617461";
-          const UNKNOWN_FILE_URI = "1/6d/6f/636b2d64617461.txt";
+          const UNKNOWN_FILE_URI = "1/6d/6f/636b2d64617461.bin";
           const UNKNOWN_SWARM_REFERENCE = "123456789abcdef";
 
           await blobStorageManager.getBlobByReferences(
@@ -208,7 +201,7 @@ describe("BlobStorageManager", () => {
       );
 
       testValidError(
-        "should throw an error if no storage is supported that can get the blob by its hash",
+        "should throw an error if no storage is supported",
         async () => {
           const failingBlobStorageManager = new BlobStorageManager([
             swarmStorage,
@@ -232,7 +225,7 @@ describe("BlobStorageManager", () => {
 
     it("should return errors for failed uploads", async () => {
       const newHash = "0x6d6f636b2d64617461";
-      const blob = { data: "New data", versionedHash: newHash };
+      const blob = { data: "0x1111111111111111111111", versionedHash: newHash };
 
       const blobStorageManager = new BlobStorageManager([
         failingPostgresStorage,

@@ -5,6 +5,7 @@ import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
+import { bytesToHex } from "../utils";
 
 export interface PostgresStorageConfig extends BlobStorageConfig {
   prisma?: PrismaClient | BlobscanPrismaClient;
@@ -33,7 +34,7 @@ export class PostgresStorage extends BlobStorage {
           id: uri,
         },
       })
-      .then(({ data }) => `0x${data.toString("hex")}`);
+      .then(({ data }) => bytesToHex(data));
   }
 
   protected async _removeBlob(versionedHash: string): Promise<void> {

@@ -423,7 +423,7 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash1000",
                     "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash1000.txt",
+                    "dataReference": "1/ob/Ha/sh/obHash1000.bin",
                   },
                   {
                     "blobHash": "blobHash1000",
@@ -433,7 +433,7 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash1001",
                     "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash1001.txt",
+                    "dataReference": "1/ob/Ha/sh/obHash1001.bin",
                   },
                   {
                     "blobHash": "blobHash1001",
@@ -443,7 +443,7 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash999",
                     "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash999.txt",
+                    "dataReference": "1/ob/Ha/sh/obHash999.bin",
                   },
                   {
                     "blobHash": "blobHash999",
