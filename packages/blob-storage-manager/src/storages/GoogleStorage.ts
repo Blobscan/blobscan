@@ -3,7 +3,7 @@ import { Storage } from "@google-cloud/storage";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import type { BlobStorageConfig } from "../BlobStorage";
+import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
@@ -66,11 +66,11 @@ export class GoogleStorage extends BlobStorage {
     }
   }
 
-  protected async _getBlob(uri: string) {
+  protected async _getBlob(uri: string, { fileType }: GetBlobOpts) {
     const res = await this.getBlobFile(uri).download();
     const [data] = res;
 
-    return bytesToHex(data);
+    return fileType === "text" ? res.toString() : bytesToHex(data);
   }
 
   protected async _removeBlob(uri: string): Promise<void> {

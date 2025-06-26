@@ -1,4 +1,4 @@
-import type { HexString } from "../types";
+import type { BlobFileType, HexString } from "../types";
 
 export function calculateBlobBytes(blob: string): number {
   return blob.slice(2).length / 2;
@@ -30,4 +30,12 @@ export function normalizeBlobData(data: string | Buffer) {
   }
 
   return data;
+}
+
+/**
+ * Determines the expected file type based on the URI extension.
+ * Defaults to "binary" for all non-.txt files, assuming future blobs use binary format.
+ */
+export function getBlobFileType(uri: string): BlobFileType {
+  return uri.endsWith(".txt") ? "text" : "binary";
 }

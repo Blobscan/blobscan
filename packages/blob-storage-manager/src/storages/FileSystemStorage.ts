@@ -4,7 +4,7 @@ import path from "path";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import { BlobStorage } from "../BlobStorage";
-import type { BlobStorageConfig } from "../BlobStorage";
+import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import {
   bytesToHex,
@@ -31,11 +31,16 @@ export class FileSystemStorage extends BlobStorage {
     return Promise.resolve();
   }
 
-  protected async _getBlob(reference: string): Promise<string> {
+  protected async _getBlob(
+    reference: string,
+    { fileType }: GetBlobOpts
+  ): Promise<string> {
     try {
-      const bytes = await fs.promises.readFile(reference);
+      const opts =
+        fileType === "text" ? { encoding: "utf-8" as const } : undefined;
+      const res = await fs.promises.readFile(reference, opts);
 
-      return bytesToHex(bytes);
+      return typeof res === "string" ? res : bytesToHex(res);
     } catch (error) {
       throw new Error(`Blob file ${reference} missing: ${error}`);
     }
