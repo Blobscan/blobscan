@@ -68,9 +68,18 @@ const Blob: NextPage = function () {
             throw new Error(error.message ?? "Couldn't retrieve blob data");
           }
 
-          const blobData = await (isBlobscanStorageRef
-            ? response.json()
-            : response.text());
+          let blobData: string;
+
+          if (isBlobscanStorageRef) {
+            blobData = await response.json();
+          } else {
+            if (blobDataUrl.endsWith(".bin")) {
+              const blobBytes = await response.arrayBuffer();
+              blobData = Buffer.from(blobBytes).toString("hex");
+            } else {
+              blobData = await response.text();
+            }
+          }
 
           return blobData;
         } catch (err) {
