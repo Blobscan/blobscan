@@ -5,7 +5,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
-import { StandardEtherUnitDisplay } from "~/components/Displays/StandardEtherUnitDisplay";
+import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -146,7 +146,7 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Price",
-        value: <StandardEtherUnitDisplay amount={block.blobGasPrice} />,
+        value: <EtherWithGweiDisplay amount={block.blobGasPrice} />,
       },
       {
         name: "Blob Fee",
@@ -157,14 +157,14 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <StandardEtherUnitDisplay amount={blobGasBaseFee} />
+                <EtherWithGweiDisplay amount={blobGasBaseFee} />
               </div>
             ) : null}
             <div className=" flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <StandardEtherUnitDisplay amount={blobGasMaxFee} />
+              <EtherWithGweiDisplay amount={blobGasMaxFee} />
             </div>
           </div>
         ),
@@ -198,7 +198,7 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<StandardEtherUnitDisplay amount={blobAsCalldataGasFee} />}
+            {<EtherWithGweiDisplay amount={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               |{" "}
               <strong>

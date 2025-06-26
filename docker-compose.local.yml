@@ -1,6 +1,3 @@
----
-version: "3.7"
-
 services:
   web:
     extends:
@@ -21,6 +18,14 @@ services:
       target: api
     depends_on:
       - postgres
+
+  docs:
+    extends:
+      file: docker-compose.yml
+      service: docs
+    build:
+      context: .
+      dockerfile: ./Dockerfile.docs
 
   # External dependencies
 

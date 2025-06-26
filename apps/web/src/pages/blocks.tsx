@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
+import { formatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { EtherUnitDisplay } from "~/components/Displays/EtherUnitDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -189,7 +189,7 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: <EtherUnitDisplay amount={blobGasPrice} toUnit="Gwei" />,
+              item: formatWei(blobGasPrice, { toUnit: "Gwei" }),
             },
             {
               item: (

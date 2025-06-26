@@ -24,7 +24,7 @@ export const BottomBarLayout = () => {
         <BlobscanVersionInfo />
         <div className="flex gap-2">
           <div className="text-sm text-contentTertiary-light dark:text-contentTertiary-dark">
-            Blobscan © 2024
+            Blobscan © 2024-2025
           </div>
         </div>
       </div>

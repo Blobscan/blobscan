@@ -1,0 +1,35 @@
+name: Docker Docs
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/docs/**"
+      - "Dockerfile.docs"
+
+jobs:
+  release_docs_docker:
+    name: Build Docker image (Docs)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push (docs)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          file: Dockerfile.docs
+          push: true
+          tags: |
+            blossomlabs/blobscan-docs:latest

@@ -1,5 +1,29 @@
 # @blobscan/web
 
+## 0.26.0
+
+### Minor Changes
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Added rollup filter dropdown to allow filtering stats and metrics by specific rollups
+
+- [#805](https://github.com/Blobscan/blobscan/pull/805) [`02b9da9`](https://github.com/Blobscan/blobscan/commit/02b9da90811e7de0867ebdff5c3313521296f6e5) Thanks [@PJColombo](https://github.com/PJColombo)! - Made overall stats scrollbar always visible
+
+- [#685](https://github.com/Blobscan/blobscan/pull/685) [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added blob price to top bar
+
+- [#685](https://github.com/Blobscan/blobscan/pull/685) [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Added eth price to top bar
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Enhanced stats page to display rollup-specific stats and metrics
+
+- [#781](https://github.com/Blobscan/blobscan/pull/781) [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2) Thanks [@PJColombo](https://github.com/PJColombo)! - Added legend to chart to enable toggling visibility of individual series
+
+### Patch Changes
+
+- Updated dependencies [[`783216a`](https://github.com/Blobscan/blobscan/commit/783216ad98c611c84642fa776a9ea35db3d97d5e), [`783216a`](https://github.com/Blobscan/blobscan/commit/783216ad98c611c84642fa776a9ea35db3d97d5e), [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2), [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50), [`46a9699`](https://github.com/Blobscan/blobscan/commit/46a96994f5fd01ff1cf109f2c561203bfb475f50), [`9a78399`](https://github.com/Blobscan/blobscan/commit/9a783998bac9c6e9f929a89f0e685b8745edd3ac), [`3564e6e`](https://github.com/Blobscan/blobscan/commit/3564e6e79bc187b6bcb8cf99d901dfd9b233afb2), [`052da7e`](https://github.com/Blobscan/blobscan/commit/052da7e93a3c3289ec67097b8f8bc34315d84b2e)]:
+  - @blobscan/api@0.23.0
+  - @blobscan/network-blob-config@0.2.0
+  - @blobscan/db@0.18.0
+  - @blobscan/rollups@0.3.3
+
 ## 0.25.1
 
 ### Patch Changes
