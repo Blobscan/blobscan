@@ -24,15 +24,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       return res.status(response.status).json({ message: response.statusText });
     }
 
-    if (url.endsWith(".txt")) {
-      const blobData = (await response.json()) as string;
+    const blobData = (await response.json()) as string;
 
-      return res.status(200).json(blobData);
-    }
-
-    const buffer = Buffer.from(await response.arrayBuffer());
-
-    return buffer.toString("hex");
+    return res.status(200).json(blobData);
   } catch (err) {
     return res.status(500).json({ message: "Failed to fetch blob data" });
   }
