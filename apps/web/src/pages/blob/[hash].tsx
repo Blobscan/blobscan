@@ -75,7 +75,7 @@ const Blob: NextPage = function () {
           } else {
             if (blobDataUrl.endsWith(".bin")) {
               const blobBytes = await response.arrayBuffer();
-              blobData = Buffer.from(blobBytes).toString("hex");
+              blobData = `0x${Buffer.from(blobBytes).toString("hex")}`;
             } else {
               blobData = await response.text();
             }
