@@ -45,7 +45,7 @@ export class SwarmStampSyncer extends BaseSyncer {
             cause = new SwarmNodeError(err);
           }
 
-          throw new Error(`Failed to fetch stamp batch "${batchId}"`, {
+          throw new Error(`Failed to fetch stamp batches for Bee node`, {
             cause,
           });
         }
