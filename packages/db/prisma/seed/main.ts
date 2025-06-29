@@ -96,6 +96,9 @@ async function main() {
             tx.blockNumber
           );
 
+          addressToAddressEntity[fromAddress.address] = fromAddress;
+          addressToAddressEntity[toAddress.address] = toAddress;
+
           blobs.forEach(({ storageRefs, ...blob }, i) => {
             dbBlobInsertions.push(blob);
             dbBlobsOnTxsInsertions.push({

@@ -39,9 +39,7 @@ export class DataGenerator {
 
   generateAddresses(): string[] {
     return Array.from({
-      length:
-        this.#seedParams.maxUniqueAddresses -
-        Object.keys(ROLLUP_ADDRESSES).length,
+      length: this.#seedParams.maxUniqueAddresses,
     }).map(() => faker.finance.ethereumAddress());
   }
 
@@ -226,8 +224,6 @@ export class DataGenerator {
         blobGasUsed: new Prisma.Decimal(blobGasUsed),
         gasPrice: new Prisma.Decimal(gasPrice),
         maxFeePerBlobGas: new Prisma.Decimal(maxFeePerBlobGas),
-        category,
-        rollup,
         decodedFields: {},
         insertedAt: now,
         updatedAt: now,
