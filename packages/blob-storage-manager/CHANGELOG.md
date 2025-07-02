@@ -1,5 +1,13 @@
 # @blobscan/blob-storage-manager
 
+## 0.5.1
+
+### Patch Changes
+
+- [#804](https://github.com/Blobscan/blobscan/pull/804) [`926bd56`](https://github.com/Blobscan/blobscan/commit/926bd56a3b3bfd2deec6402a6f22b183623a8cbe) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Store blob data as `.bin` files instead of .txt to reduce storage footprint and improve efficiency.
+
+- [#804](https://github.com/Blobscan/blobscan/pull/804) [`926bd56`](https://github.com/Blobscan/blobscan/commit/926bd56a3b3bfd2deec6402a6f22b183623a8cbe) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Checked blob data URI extension (`.txt` or `.bin`) and parsed the content accordingly
+
 ## 0.5.0
 
 ### Minor Changes
