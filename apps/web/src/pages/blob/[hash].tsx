@@ -7,6 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "@tanstack/react-query";
 
 import type { Decoder } from "@blobscan/blob-decoder";
+import { bytesToHex } from "@blobscan/utils";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
