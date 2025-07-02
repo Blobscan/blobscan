@@ -6,6 +6,7 @@ import {
   HeadBucketCommand,
 } from "@aws-sdk/client-s3";
 import type { S3ClientConfig } from "@aws-sdk/client-s3";
+import { Readable } from "stream";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
@@ -89,14 +90,7 @@ export class S3Storage extends BlobStorage {
       throw new Error(`Failed to get blob content from ${uri}`);
     }
 
-    // Convert the readable stream to a buffer
-    const chunks: Uint8Array[] = [];
-    // @ts-expect-error - Body is a ReadableStream
-    for await (const chunk of response.Body) {
-      chunks.push(chunk);
-    }
-
-    const buffer = Buffer.concat(chunks);
+    const buffer = await this._toBuffer(response.Body);
 
     return fileType === "text" ? buffer.toString() : bytesToHex(buffer);
   }
@@ -126,6 +120,37 @@ export class S3Storage extends BlobStorage {
     await this._s3Client.send(command);
 
     return blobUri;
+  }
+
+  protected async _toBuffer(
+    payload: Buffer | Blob | ReadableStream | Readable
+  ): Promise<Buffer> {
+    if (!payload) {
+      throw new Error("No payload provided");
+    }
+
+    if (Buffer.isBuffer(payload)) {
+      return payload;
+    }
+
+    if (payload instanceof Uint8Array) {
+      return Buffer.from(payload);
+    }
+
+    if (typeof Blob !== "undefined" && payload instanceof Blob) {
+      const arrayBuffer = await payload.arrayBuffer();
+      return Buffer.from(arrayBuffer);
+    }
+
+    if (payload instanceof Readable) {
+      const chunks: Buffer[] = [];
+      for await (const chunk of payload) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from([chunk]));
+      }
+      return Buffer.concat(chunks);
+    }
+
+    throw new Error("Unsupported payload type");
   }
 
   getBlobUri(hash: string) {
