@@ -62,7 +62,7 @@ export function getNetworkForkBySlot(
       return slot >= 3710976 ? "pectra" : "dencun";
     }
     case "hoodi": {
-      return "pectra";
+      return slot >= 2048 ? "pectra": "dencun";
     }
     case "sepolia": {
       return slot >= 7118848 ? "pectra" : "dencun";
