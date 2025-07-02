@@ -23,8 +23,8 @@ export interface S3StorageConfig extends BlobStorageConfig {
 }
 
 export class S3Storage extends BlobStorage {
-  private _s3Client: S3Client;
-  private _bucketName: string;
+  protected _s3Client: S3Client;
+  protected _bucketName: string;
 
   protected constructor({
     chainId,
