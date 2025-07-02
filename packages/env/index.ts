@@ -15,6 +15,8 @@ const blobStorageSchema = z.enum([
   "GOOGLE",
   "POSTGRES",
   "SWARM",
+  "S3",
+  "WEAVEVM",
 ] as const);
 
 const networkSchema = z.enum([
@@ -171,6 +173,20 @@ export const env = createEnv({
         .optional()
         .default("http://localhost:3050"),
 
+      // S3 storage
+      S3_STORAGE_ENABLED: booleanSchema.default("false"),
+      S3_STORAGE_REGION: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("S3_STORAGE_ENABLED")),
+      S3_STORAGE_BUCKET_NAME: z
+        .string()
+        .optional()
+        .superRefine(requireIfEnvEnabled("S3_STORAGE_ENABLED")),
+      S3_STORAGE_ACCESS_KEY_ID: z.string().optional(),
+      S3_STORAGE_SECRET_ACCESS_KEY: z.string().optional(),
+      S3_STORAGE_ENDPOINT: z.string().url().optional(),
+
       // WeaveVM storage
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
       WEAVEVM_STORAGE_API_BASE_URL: z
@@ -216,7 +232,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
@@ -244,6 +260,14 @@ export const env = createEnv({
     if (env.FILE_SYSTEM_STORAGE_ENABLED) {
       console.log(
         `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
+      );
+    }
+
+    if (env.S3_STORAGE_ENABLED) {
+      console.log(
+        `S3 configuration: bucketName=${env.S3_STORAGE_BUCKET_NAME}, region=${
+          env.S3_STORAGE_REGION
+        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}`
       );
     }
     console.log(

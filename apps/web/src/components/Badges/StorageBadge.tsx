@@ -43,6 +43,11 @@ export const STORAGES: Record<BlobStorage, StorageConfig> = {
     style:
       "bg-blue-300 text-gray-800 hover:bg-blue-200 hover:text-blue-900 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-blue-200",
   },
+  s3: {
+    name: "S3",
+    style:
+      "bg-yellow-100 hover:bg-yellow-200 text-yellow-800 hover:text-yellow-900 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800 dark:hover:text-yellow-200",
+  },
 };
 
 export const StorageBadge: FC<StorageBadgeProps> = ({

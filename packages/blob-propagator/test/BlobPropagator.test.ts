@@ -64,6 +64,7 @@ describe("BlobPropagator", () => {
 
   beforeEach(async () => {
     blobStorageManager = await getBlobStorageManager();
+
     const tmpStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
@@ -322,6 +323,22 @@ describe("BlobPropagator", () => {
                 "removeDependencyOnFailure": true,
               },
               "queueName": "postgres-worker",
+            },
+            {
+              "data": {
+                "versionedHash": "blobVersionedHash",
+              },
+              "name": "storeBlob:s3-worker-blobVersionedHash",
+              "opts": {
+                "attempts": 3,
+                "backoff": {
+                  "delay": 1000,
+                  "type": "exponential",
+                },
+                "jobId": "s3-worker-blobVersionedHash",
+                "removeDependencyOnFailure": true,
+              },
+              "queueName": "s3-worker",
             },
           ],
           "data": {
