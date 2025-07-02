@@ -9,7 +9,7 @@ type NextHTTPRequest = CreateNextContextOptions["req"];
 
 type HTTPRequest = NodeHTTPRequest | NextHTTPRequest;
 
-export type APIClientType = "indexer" | "weavevm" | "blob-data";
+export type APIClientType = "indexer" | "weavevm" | "blob-data" | "admin";
 
 export type APIClient = {
   type: APIClientType;
@@ -27,6 +27,10 @@ function isValidWeaveVMAPIKey(token: string) {
 
 function isValidBlobDataAPIKey(token: string) {
   return token === env.BLOB_DATA_API_KEY;
+}
+
+function isValidAdminAPIKey(token: string) {
+  return token === env.ADMIN_API_KEY;
 }
 
 export function retrieveAPIClient(req: HTTPRequest): APIClient | undefined {
@@ -49,6 +53,10 @@ export function retrieveAPIClient(req: HTTPRequest): APIClient | undefined {
 
     if (isValidWeaveVMAPIKey(token)) {
       return { type: "weavevm" };
+    }
+
+    if (isValidAdminAPIKey(token)) {
+      return { type: "admin" };
     }
 
     if (isValidIndexerAPIKey(token)) {
