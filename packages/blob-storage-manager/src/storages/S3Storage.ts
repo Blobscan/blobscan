@@ -34,7 +34,6 @@ export class S3Storage extends BlobStorage {
     bucketName,
     endpoint,
   }: S3StorageConfig) {
-    // @ts-expect-error - S3 will be added to the BlobStorageName enum after Prisma migration
     super(BlobStorageName.S3, chainId);
 
     try {

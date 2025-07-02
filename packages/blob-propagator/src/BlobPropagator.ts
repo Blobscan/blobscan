@@ -39,6 +39,7 @@ import {
   finalizerProcessor,
   gcsProcessor,
   postgresProcessor,
+  s3Processor,
   swarmProcessor,
 } from "./worker-processors";
 
@@ -58,6 +59,7 @@ export const STORAGE_WORKER_PROCESSORS: Record<
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
   FILE_SYSTEM: fileSystemProcessor,
+  S3: s3Processor,
   WEAVEVM: undefined,
 };
 
