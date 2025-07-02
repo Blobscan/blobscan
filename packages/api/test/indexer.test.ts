@@ -427,8 +427,18 @@ describe("Indexer router", async () => {
                   },
                   {
                     "blobHash": "blobHash1000",
+                    "blobStorage": "S3",
+                    "dataReference": "1/ob/Ha/sh/obHash1000.bin",
+                  },
+                  {
+                    "blobHash": "blobHash1000",
                     "blobStorage": "POSTGRES",
                     "dataReference": "blobHash1000",
+                  },
+                  {
+                    "blobHash": "blobHash1001",
+                    "blobStorage": "S3",
+                    "dataReference": "1/ob/Ha/sh/obHash1001.bin",
                   },
                   {
                     "blobHash": "blobHash1001",
@@ -443,6 +453,11 @@ describe("Indexer router", async () => {
                   {
                     "blobHash": "blobHash999",
                     "blobStorage": "GOOGLE",
+                    "dataReference": "1/ob/Ha/sh/obHash999.bin",
+                  },
+                  {
+                    "blobHash": "blobHash999",
+                    "blobStorage": "S3",
                     "dataReference": "1/ob/Ha/sh/obHash999.bin",
                   },
                   {
