@@ -85,7 +85,7 @@ vi.mock("@aws-sdk/client-s3", async (originalImport) => {
             | typeof original.HeadBucketCommand
         ) {
           if (c instanceof original.HeadBucketCommand) {
-            if (c.input.Bucket !== "blobscan-s3-test-bucket") {
+            if (c.input.Bucket !== "blobscan-s3-bucket") {
               throw new Error("No such bucket");
             }
 
