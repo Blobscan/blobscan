@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`S3Storage > should throw a valid error if the bucket does not exist 1`] = `"S3Storage failed: Creation failed: Storage is not reachable"`;
+
+exports[`S3Storage > should throw a valid error if the bucket does not exist 2`] = `[Error: Bucket non-existent-bucket does not exist or is not accessible]`;
+
+exports[`S3Storage > should throw a valid error when trying to get a non-existent blob 1`] = `"S3StorageMock failed: Failed to get blob with uri \\"missing-blob\\""`;
+
+exports[`S3Storage > should throw a valid error when trying to get a non-existent blob 2`] = `[Error: no such key exists]`;
+
+exports[`S3Storage > should throw valid error if the bucket does not exist 1`] = `"S3Storage failed: Creation failed: Storage is not reachable"`;
+
+exports[`S3Storage > should throw valid error if the bucket does not exist 2`] = `[Error: Bucket non-existent-bucket does not exist or is not accessible]`;
