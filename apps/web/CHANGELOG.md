@@ -1,5 +1,19 @@
 # @blobscan/web
 
+## 0.27.0
+
+### Minor Changes
+
+- [#810](https://github.com/Blobscan/blobscan/pull/810) [`500d6a4`](https://github.com/Blobscan/blobscan/commit/500d6a4307aa928644ea1ab4ee3da0f05d4a1e4b) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed blob gas price display on the block page to match the format used across the rest of the web app (showing both Ether and Gwei).
+
+### Patch Changes
+
+- [#818](https://github.com/Blobscan/blobscan/pull/818) [`046151d`](https://github.com/Blobscan/blobscan/commit/046151dd220ed5ab781c514466cb8fe04474545e) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Octant Epoch 8 banner
+
+- [#804](https://github.com/Blobscan/blobscan/pull/804) [`926bd56`](https://github.com/Blobscan/blobscan/commit/926bd56a3b3bfd2deec6402a6f22b183623a8cbe) Thanks [@luis-herasme](https://github.com/luis-herasme)! - Checked blob data URI extension (`.txt` or `.bin`) and parsed the content accordingly
+
+- [#815](https://github.com/Blobscan/blobscan/pull/815) [`ecfd54b`](https://github.com/Blobscan/blobscan/commit/ecfd54bebeb5f16c24a68e207c6ffaa1be65eb33) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the blob data response body for `.bin` blob data files wasn't being read properly due to missing extension-based handling
+
 ## 0.26.0
 
 ### Minor Changes
