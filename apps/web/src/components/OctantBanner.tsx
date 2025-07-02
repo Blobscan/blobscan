@@ -52,11 +52,11 @@ export const OctantBanner: FC<OctantBannerProps> = function GitcoinBanner({
           >
             <circle cx={1} cy={1} r={1} />
           </svg>
-          Support us by getting and locking{" "}
+          Support us by locking{" "}
           <Link isExternal href="https://octant.build/en-EN/glm-token">
             GLM
           </Link>
-          , then allocating it to us during the next allocation window starting{" "}
+          , then donating during the next allocation window, starting{" "}
           <span className="font-bold">
             {dayjs(EPOCH_START_DATE).fromNow()}.
           </span>
