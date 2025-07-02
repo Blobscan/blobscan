@@ -112,6 +112,13 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      s3mock:
+        image: adobe/s3mock:latest
+        env:
+          COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: blobscan-s3-bucket
+          COM_ADOBE_TESTING_S3MOCK_STORE_REGION: us-east-1
+        ports:
+          - 9090:9090
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

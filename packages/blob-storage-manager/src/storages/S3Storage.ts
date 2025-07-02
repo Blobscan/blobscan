@@ -21,6 +21,7 @@ export interface S3StorageConfig extends BlobStorageConfig {
   secretAccessKey?: string;
   bucketName: string;
   endpoint?: string;
+  forcePathStyle?: boolean;
 }
 
 export class S3Storage extends BlobStorage {
@@ -34,12 +35,14 @@ export class S3Storage extends BlobStorage {
     secretAccessKey,
     bucketName,
     endpoint,
+    forcePathStyle,
   }: S3StorageConfig) {
     super(BlobStorageName.S3, chainId);
 
     try {
       const clientConfig: S3ClientConfig = {
         region,
+        forcePathStyle,
       };
 
       if (accessKeyId && secretAccessKey) {

@@ -11,7 +11,7 @@ import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "../fixtures";
 
 class S3StorageMock extends S3Storage {
   constructor(config: S3StorageConfig) {
-    super(config);
+    super({ ...config, forcePathStyle: true });
   }
 
   closeMock() {
@@ -74,9 +74,15 @@ describe("S3Storage", () => {
     expect(blobUri).toBe(expectedStoredBlobFileUri);
   });
 
-  it("should return 'OK' if storage is healthy", async () => {
-    await expect(storage.healthCheck()).resolves.toBe("OK");
-  });
+  it(
+    "should return 'OK' if storage is healthy",
+    async () => {
+      await expect(storage.healthCheck()).resolves.toBe("OK");
+    },
+    {
+      timeout: 100_000,
+    }
+  );
 
   it("should get a blob given its reference", async () => {
     // First store the blob so we can retrieve it

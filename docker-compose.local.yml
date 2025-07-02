@@ -51,7 +51,13 @@ services:
       - type: bind
         source: ./packages/test/src/fixtures/gcs
         target: /data
-
+  s3mock:
+    image: adobe/s3mock:latest
+    environment:
+      - COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS=blobscan-s3-bucket
+      - COM_ADOBE_TESTING_S3MOCK_STORE_REGION=us-east-1
+    ports:
+      - 9090:9090
   redis:
     image: "redis:alpine"
     command: redis-server /usr/local/etc/redis/redis.conf
