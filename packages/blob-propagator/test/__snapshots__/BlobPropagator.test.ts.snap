@@ -64,6 +64,22 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
         },
         "queueName": "postgres-worker",
       },
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash1",
+        },
+        "name": "storeBlob:s3-worker-blobVersionedHash1",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "s3-worker-blobVersionedHash1",
+          "removeDependencyOnFailure": true,
+        },
+        "queueName": "s3-worker",
+      },
     ],
     "data": {
       "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash1.bin",
@@ -112,6 +128,22 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
           "removeDependencyOnFailure": true,
         },
         "queueName": "postgres-worker",
+      },
+      {
+        "data": {
+          "versionedHash": "blobVersionedHash2",
+        },
+        "name": "storeBlob:s3-worker-blobVersionedHash2",
+        "opts": {
+          "attempts": 3,
+          "backoff": {
+            "delay": 1000,
+            "type": "exponential",
+          },
+          "jobId": "s3-worker-blobVersionedHash2",
+          "removeDependencyOnFailure": true,
+        },
+        "queueName": "s3-worker",
       },
     ],
     "data": {
