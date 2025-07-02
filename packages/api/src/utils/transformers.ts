@@ -24,7 +24,7 @@ function buildBlobDataUrl(blobStorage: BlobStorage, blobDataUri: string) {
       return `${env.WEAVEVM_STORAGE_API_BASE_URL}/v1/blob/${blobDataUri}`;
     }
     case "S3": {
-      return `${env.S3_ENDPOINT}/${env.S3_BUCKET_NAME}/${blobDataUri}`;
+      return `${env.S3_STORAGE_ENDPOINT}/${env.S3_STORAGE_BUCKET_NAME}/${blobDataUri}`;
     }
   }
 }
