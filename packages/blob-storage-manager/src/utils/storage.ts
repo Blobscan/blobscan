@@ -7,6 +7,7 @@ import {
   FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
+  S3Storage,
   SwarmStorage,
   WeaveVMStorage,
 } from "../storages";
@@ -26,6 +27,24 @@ export async function createStorageFromEnv(
   const chainId = env.CHAIN_ID;
 
   switch (storageName) {
+    case BlobStorageName.S3: {
+      if (!env.S3_STORAGE_BUCKET_NAME || !env.S3_STORAGE_REGION) {
+        throw new Error(
+          "Missing required env variables for S3Storage: S3_STORAGE_BUCKET_NAME, S3_STORAGE_REGION"
+        );
+      }
+
+      const s3Storage = await S3Storage.create({
+        chainId,
+        bucketName: env.S3_STORAGE_BUCKET_NAME,
+        region: env.S3_STORAGE_REGION,
+        accessKeyId: env.S3_STORAGE_ACCESS_KEY_ID,
+        secretAccessKey: env.S3_STORAGE_SECRET_ACCESS_KEY,
+        endpoint: env.S3_STORAGE_ENDPOINT,
+      });
+
+      return s3Storage;
+    }
     case BlobStorageName.GOOGLE: {
       if (
         !env.GOOGLE_STORAGE_BUCKET_NAME ||
@@ -87,6 +106,9 @@ export async function createStorageFromEnv(
       });
 
       return weavevmStorage;
+    }
+    default: {
+      throw new Error(`Unsupported storage type: ${storageName}`);
     }
   }
 }

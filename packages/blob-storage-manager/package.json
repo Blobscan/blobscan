@@ -15,6 +15,7 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.840.0",
     "@blobscan/db": "workspace:^0.18.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
