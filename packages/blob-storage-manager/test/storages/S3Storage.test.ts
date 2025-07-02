@@ -7,7 +7,6 @@ import { testValidError } from "@blobscan/test";
 import { S3Storage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import type { S3StorageConfig } from "../../src/storages";
-import { hexToBytes } from "../../src/utils";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "../fixtures";
 
 class S3StorageMock extends S3Storage {
@@ -82,7 +81,7 @@ describe("S3Storage", () => {
   it("should get a blob given its reference", async () => {
     // First store the blob so we can retrieve it
     await storage.storeBlob(expectedStoredBlobHash, expectedStoredBlobData);
-    
+
     const blob = await storage.getBlob(expectedStoredBlobFileUri);
 
     expect(blob).toEqual(expectedStoredBlobData);
@@ -91,7 +90,7 @@ describe("S3Storage", () => {
   it("should remove a blob given its reference", async () => {
     // First store the blob so we can remove it
     await storage.storeBlob(expectedStoredBlobHash, expectedStoredBlobData);
-    
+
     await storage.removeBlob(expectedStoredBlobFileUri);
 
     await expect(
