@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "start:eth-price": "pnpm with-env node dist/eth-price/worker.js",
+    "start:stats": "pnpm with-env node dist/stats/worker.js",
     "start:swarm-stamp": "pnpm with-env node dist/swar-stamp/worker.js",
     "profile": "pnpm with-env node -r ts-node/register --prof --require ./src/scripts/instrumentation.ts src/index.ts",
     "with-env": "dotenv -e ../../.env --",

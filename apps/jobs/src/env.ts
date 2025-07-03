@@ -1,9 +1,25 @@
 import { booleanSchema, createEnv, presetEnvOptions, z } from "@blobscan/zod";
 
+const networkSchema = z.enum([
+  "mainnet",
+  "holesky",
+  "sepolia",
+  "gnosis",
+  "chiado",
+  "devnet",
+]);
+
 export const env = createEnv({
   envOptions: {
     server: {
       DATABASE_URL: z.string().url(),
+      DENCUN_FORK_SLOT: z.coerce.number().optional(),
+      NETWORK_NAME: networkSchema.default("mainnet"),
+
+      // Stats jobs
+      STATS_SYNCER_DAILY_CRON_PATTERN: z.string().default("30 0 * * * *"),
+      STATS_SYNCER_OVERALL_CRON_PATTERN: z.string().default("*/15 * * * *"),
+
       // ETH Price is retrieved every second from the Chainlink: ETH/USD oracle
       // in the Polygon network.
       ETH_PRICE_SYNCER_ENABLED: booleanSchema.default("false"),
