@@ -5,8 +5,8 @@ import axios from "axios";
 import { formatTtl } from "@blobscan/dates";
 import { prisma } from "@blobscan/db";
 
-import type { CommonCronJobConfig } from "../CronJob";
-import { CronJob } from "../CronJob";
+import type { CommonCronJobConfig } from "../BaseCronJob";
+import { BaseCronJob } from "../BaseCronJob";
 import { SwarmNodeError } from "../errors";
 
 type BatchData = {
@@ -19,7 +19,7 @@ export interface SwarmStampCronJobConfig extends CommonCronJobConfig {
   batchId: string;
 }
 
-export class SwarmStampCronJob extends CronJob {
+export class SwarmStampCronJob extends BaseCronJob {
   constructor({
     cronPattern,
     redisUriOrConnection,

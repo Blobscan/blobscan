@@ -1,8 +1,8 @@
 import { prisma } from "@blobscan/db";
 import type { BlockNumberRange } from "@blobscan/db";
 
-import { CronJob } from "../CronJob";
-import type { CommonCronJobConfig } from "../CronJob";
+import { BaseCronJob } from "../BaseCronJob";
+import type { CommonCronJobConfig } from "../BaseCronJob";
 
 export interface OverallStatsCronJobConfig extends CommonCronJobConfig {
   batchSize?: number;
@@ -16,7 +16,7 @@ function isUnset<T>(value: T | undefined | null): value is null | undefined {
   return value === undefined || value === null;
 }
 
-export class OverallStatsCronJob extends CronJob {
+export class OverallStatsCronJob extends BaseCronJob {
   constructor({
     cronPattern,
     redisUriOrConnection,

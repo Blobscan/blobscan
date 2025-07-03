@@ -1,13 +1,13 @@
 import { normalizeDate, toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 
-import { CronJob } from "../CronJob";
-import type { CommonCronJobConfig } from "../CronJob";
+import { BaseCronJob } from "../BaseCronJob";
+import type { CommonCronJobConfig } from "../BaseCronJob";
 import { formatDate } from "../utils";
 
 export type DailyStatsCronJobConfig = CommonCronJobConfig;
 
-export class DailyStatsCronJob extends CronJob {
+export class DailyStatsCronJob extends BaseCronJob {
   constructor({ redisUriOrConnection, cronPattern }: DailyStatsCronJobConfig) {
     const name = "daily-stats";
 

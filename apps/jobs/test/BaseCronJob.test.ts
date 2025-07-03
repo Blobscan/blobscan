@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { CronJob, CronJobError } from "../src/CronJob";
-import type { BaseCronJobConfig } from "../src/CronJob";
+import { BaseCronJob, CronJobError } from "../src/BaseCronJob";
+import type { BaseCronJobConfig } from "../src/BaseCronJob";
 
-class CronJobMock extends CronJob {
+class BaseCronJobMock extends BaseCronJob {
   constructor({ name, jobFn }: Partial<BaseCronJobConfig> = {}) {
     super({
       name: name ?? "test-updater",
@@ -28,11 +28,11 @@ class CronJobMock extends CronJob {
   }
 }
 
-describe("CronJob", () => {
-  let cronJob: CronJobMock;
+describe("BaseCronJob", () => {
+  let cronJob: BaseCronJobMock;
 
   beforeEach(() => {
-    cronJob = new CronJobMock();
+    cronJob = new BaseCronJobMock();
 
     return async () => {
       await cronJob.close();
@@ -78,7 +78,7 @@ describe("CronJob", () => {
 
   describe("when closing an updater", () => {
     it("should close correctly", async () => {
-      const closingCronJob = new CronJobMock();
+      const closingCronJob = new BaseCronJobMock();
 
       await closingCronJob.start();
 

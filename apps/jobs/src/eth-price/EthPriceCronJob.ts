@@ -2,16 +2,16 @@ import dayjs, { normalizeDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 import type { PriceFeed } from "@blobscan/price-feed";
 
-import type { CommonCronJobConfig } from "../CronJob";
-import { CronJob } from "../CronJob";
+import type { CommonCronJobConfig } from "../BaseCronJob";
+import { BaseCronJob } from "../BaseCronJob";
 import { determineGranularity } from "../utils";
 
-export interface EthPriceConfig extends CommonCronJobConfig {
+export interface EthPriceCronJobConfig extends CommonCronJobConfig {
   ethUsdPriceFeed: PriceFeed;
 }
 
-export class EthPriceCronJob extends CronJob {
-  constructor(config: EthPriceConfig) {
+export class EthPriceCronJob extends BaseCronJob {
+  constructor(config: EthPriceCronJobConfig) {
     super({
       ...config,
       name: "eth-price",

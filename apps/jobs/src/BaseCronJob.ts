@@ -19,12 +19,12 @@ export interface BaseCronJobConfig extends CommonCronJobConfig {
 }
 
 export class CronJobError extends ErrorException {
-  constructor(syncerName: string, message: string, cause: unknown) {
-    super(`Syncer "${syncerName}" failed: ${message}`, cause);
+  constructor(cronJobName: string, message: string, cause: unknown) {
+    super(`Cron job "${cronJobName}" failed: ${message}`, cause);
   }
 }
 
-export class CronJob {
+export class BaseCronJob {
   name: string;
   cronPattern: string;
 
