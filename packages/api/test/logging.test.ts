@@ -1,5 +1,4 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { TRPCError } from "@trpc/server";
 import { appRouter } from "../src/app-router";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import * as logger from "@blobscan/logger";
@@ -17,17 +16,17 @@ vi.mock("@blobscan/logger", async () => {
 describe("Logging Router", () => {
   const mockGetLogLevel = vi.mocked(logger.getLogLevel);
   const mockSetLogLevel = vi.mocked(logger.setLogLevel);
-  
+
   beforeEach(() => {
     // Reset mocks before each test
     mockGetLogLevel.mockReset();
     mockSetLogLevel.mockReset();
   });
-  
+
   afterEach(() => {
     vi.clearAllMocks();
   });
-  
+
   describe("getLevel", () => {
     it("should return the current log level", async () => {
       // Arrange
@@ -36,10 +35,10 @@ describe("Logging Router", () => {
       });
       const caller = appRouter.createCaller(ctx);
       mockGetLogLevel.mockReturnValue("info");
-      
+
       // Act
       const result = await caller.logging.getLevel();
-      
+
       // Assert
       expect(mockGetLogLevel).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
@@ -47,7 +46,7 @@ describe("Logging Router", () => {
         success: true,
       });
     });
-    
+
     it("should fail when calling procedure without auth", async () => {
       await unauthorizedRPCCallTest(async () => {
         const ctx = await createTestContext();
@@ -56,7 +55,7 @@ describe("Logging Router", () => {
       });
     });
   });
-  
+
   describe("setLevel", () => {
     it("should change the log level successfully", async () => {
       // Arrange
@@ -66,10 +65,10 @@ describe("Logging Router", () => {
       const caller = appRouter.createCaller(ctx);
       mockGetLogLevel.mockReturnValue("info");
       mockSetLogLevel.mockReturnValue(true);
-      
+
       // Act
       const result = await caller.logging.setLevel({ level: "debug" });
-      
+
       // Assert
       expect(mockGetLogLevel).toHaveBeenCalledTimes(1);
       expect(mockSetLogLevel).toHaveBeenCalledWith("debug");
@@ -79,7 +78,7 @@ describe("Logging Router", () => {
         success: true,
       });
     });
-    
+
     it("should handle failure when setting log level", async () => {
       // Arrange
       const ctx = await createTestContext({
@@ -88,10 +87,10 @@ describe("Logging Router", () => {
       const caller = appRouter.createCaller(ctx);
       mockGetLogLevel.mockReturnValue("info");
       mockSetLogLevel.mockReturnValue(false);
-      
+
       // Act
       const result = await caller.logging.setLevel({ level: "debug" });
-      
+
       // Assert
       expect(mockGetLogLevel).toHaveBeenCalledTimes(1);
       expect(mockSetLogLevel).toHaveBeenCalledWith("debug");
@@ -101,7 +100,7 @@ describe("Logging Router", () => {
         success: false,
       });
     });
-    
+
     it("should fail when calling procedure without auth", async () => {
       await unauthorizedRPCCallTest(async () => {
         const ctx = await createTestContext();
