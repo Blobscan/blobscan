@@ -3,6 +3,7 @@ export type NetworkFork = "dencun" | "pectra";
 export type Network =
   | "mainnet"
   | "holesky"
+  | "hoodi"
   | "sepolia"
   | "gnosis"
   | "chiado"
@@ -60,6 +61,9 @@ export function getNetworkForkBySlot(
     case "holesky": {
       return slot >= 3710976 ? "pectra" : "dencun";
     }
+    case "hoodi": {
+      return slot >= 2048 ? "pectra": "dencun";
+    }
     case "sepolia": {
       return slot >= 7118848 ? "pectra" : "dencun";
     }
@@ -79,6 +83,9 @@ export function getNetworkForkTimestamp(network: Network): number {
     case "holesky": {
       return 1707305700;
     }
+    case "hoodi": {
+      return 0;
+    }
     case "sepolia": {
       return 1706655456;
     }
@@ -94,6 +101,8 @@ function getNetworkNameById(networkId: number): Network {
       return "mainnet";
     case 17000:
       return "holesky";
+    case 560048:
+      return "hoodi";
     case 11155111:
       return "sepolia";
     case 100:
