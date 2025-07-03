@@ -16,6 +16,11 @@ export const env = createEnv({
       ETH_PRICE_SYNCER_TIME_TOLERANCE: z.coerce.number().positive().optional(),
 
       REDIS_URI: z.string().default("redis://localhost:6379"),
+
+      SWARM_STAMP_SYNCER_ENABLED: booleanSchema.default("false"),
+      SWARM_STAMP_CRON_PATTERN: z.string().default("*/15 * * * *"),
+      SWARM_BATCH_ID: z.string().optional(),
+      BEE_ENDPOINT: z.string().url().optional(),
     },
     ...presetEnvOptions,
   },
