@@ -2,26 +2,12 @@ import dayjs, { normalizeDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 import type { PriceFeed } from "@blobscan/price-feed";
 
-import type { BaseCronJobConfig } from "../shared/CronJob";
-import { CronJob } from "../shared/CronJob";
+import type { CommonCronJobConfig } from "../CronJob";
+import { CronJob } from "../CronJob";
+import { determineGranularity } from "../utils";
 
-export interface EthPriceConfig extends BaseCronJobConfig {
+export interface EthPriceConfig extends CommonCronJobConfig {
   ethUsdPriceFeed: PriceFeed;
-}
-
-type Granularity = "minute" | "hour" | "day";
-
-function determineGranularity(cronPattern: string): Granularity {
-  switch (cronPattern) {
-    case "0 * * * *":
-      return "hour";
-    case "0 0 * * *":
-      return "day";
-    case "* * * * *":
-      return "minute";
-    default:
-      throw new Error(`Unsupported cron pattern: ${cronPattern}`);
-  }
 }
 
 export class EthPriceCronJob extends CronJob {
@@ -65,7 +51,7 @@ export class EthPriceCronJob extends CronJob {
           },
         });
 
-        this.logger.debug(
+        this.logger.info(
           `ETH price indexed: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
         );
       },

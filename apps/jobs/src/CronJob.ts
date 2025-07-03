@@ -8,12 +8,12 @@ import type { Logger } from "@blobscan/logger";
 import { ErrorException } from "./errors";
 import { createRedis } from "./redis";
 
-export interface CronJobConfig {
+export interface CommonCronJobConfig {
   redisUriOrConnection: Redis | string;
   cronPattern: string;
 }
 
-export interface BaseCronJobConfig extends CronJobConfig {
+export interface BaseCronJobConfig extends CommonCronJobConfig {
   name: string;
   jobFn: () => Promise<void>;
 }
@@ -82,7 +82,7 @@ export class CronJob {
         },
       });
 
-      this.logger.info("Cron job started successfully");
+      this.logger.debug("Cron job started successfully");
 
       return repeatableJob;
     } catch (err) {
