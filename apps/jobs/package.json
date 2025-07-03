@@ -6,13 +6,14 @@
     "build": "node esbuild.config.mjs",
     "build:metadata": "BUILD_METADATA_ENABLED=true pnpm build",
     "clean": "git clean -xdf node_modules",
-    "dev": "pnpm with-env ts-node-dev --require ./scripts/init-bucket.ts --respawn --transpile-only --exit-child ./src/index.ts",
+    "dev:eth-price": "pnpm with-env tsx src/eth-price/worker.ts",
+    "dev:stats": "pnpm with-env tsx src/stats/worker.ts",
+    "dev:swarm-stamp": "pnpm with-env tsx src/swarm-stamp/worker.ts",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "start:eth-price": "pnpm with-env node dist/eth-price/worker.js",
     "start:stats": "pnpm with-env node dist/stats/worker.js",
-    "start:swarm-stamp": "pnpm with-env node dist/swar-stamp/worker.js",
-    "profile": "pnpm with-env node -r ts-node/register --prof --require ./src/scripts/instrumentation.ts src/index.ts",
+    "start:swarm-stamp": "pnpm with-env node dist/swarm-stamp/worker.js",
     "with-env": "dotenv -e ../../.env --",
     "type-check": "tsc --noEmit"
   },
@@ -31,9 +32,9 @@
     "viem": "^2.17.4"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0",
     "esbuild": "0.25.5",
-    "fast-glob": "^3.3.2"
+    "fast-glob": "^3.3.2",
+    "tsx": "^4.19.2"
   },
   "eslintConfig": {
     "root": true,
