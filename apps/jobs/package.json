@@ -16,6 +16,9 @@
     "start:eth-price": "pnpm with-env node dist/eth-price/worker.js",
     "start:stats": "pnpm with-env node dist/stats/worker.js",
     "start:swarm-stamp": "pnpm with-env node dist/swarm-stamp/worker.js",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "with-env:test": "dotenv -e ../../.env.test --",
     "with-env": "dotenv -e ../../.env --",
     "type-check": "tsc --noEmit"
   },

@@ -10,5 +10,10 @@
       "module": "commonjs"
     }
   },
-  "include": ["src", "esbuild.config.mjs"]
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "esbuild.config.mjs",
+    "vitest.config.ts"
+  ]
 }
