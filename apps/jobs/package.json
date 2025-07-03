@@ -6,11 +6,13 @@
     "build": "node esbuild.config.mjs",
     "build:metadata": "BUILD_METADATA_ENABLED=true pnpm build",
     "clean": "git clean -xdf node_modules",
+    "dev": "concurrently -n eth-price,stats,swarm-stamp -c green,blue,magenta \"pnpm dev:eth-price\" \"pnpm dev:stats\" \"pnpm dev:swarm-stamp\"",
     "dev:eth-price": "pnpm with-env tsx src/eth-price/worker.ts",
     "dev:stats": "pnpm with-env tsx src/stats/worker.ts",
     "dev:swarm-stamp": "pnpm with-env tsx src/swarm-stamp/worker.ts",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
+    "start": "concurrently -n eth-price,stats,swarm-stamp -c green,blue,magenta \"pnpm start:eth-price\" \"pnpm start:stats\" \"pnpm start:swarm-stamp\"",
     "start:eth-price": "pnpm with-env node dist/eth-price/worker.js",
     "start:stats": "pnpm with-env node dist/stats/worker.js",
     "start:swarm-stamp": "pnpm with-env node dist/swarm-stamp/worker.js",
@@ -32,6 +34,7 @@
     "viem": "^2.17.4"
   },
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "esbuild": "0.25.5",
     "fast-glob": "^3.3.2",
     "tsx": "^4.19.2"
