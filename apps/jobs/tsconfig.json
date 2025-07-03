@@ -10,5 +10,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["src"]
+  "include": ["src", "esbuild.config.mjs"]
 }
