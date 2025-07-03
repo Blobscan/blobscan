@@ -238,9 +238,6 @@ importers:
       '@blobscan/price-feed':
         specifier: workspace:^0.1.0
         version: link:../../packages/price-feed
-      '@blobscan/syncers':
-        specifier: workspace:^0.5.0
-        version: link:../../packages/syncers
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../../packages/zod
