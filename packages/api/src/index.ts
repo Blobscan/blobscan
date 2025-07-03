@@ -15,6 +15,7 @@ export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
 
 export { searchByTerm } from "./routers/search/byTerm";
+export { loggingRouter } from "./routers/logging";
 
 /**
  * Inference helpers for input types
