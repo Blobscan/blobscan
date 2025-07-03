@@ -43,6 +43,7 @@ Check out the following PRs:
 
 * https://github.com/Blobscan/blobscan/pull/823
 * https://github.com/Blobscan/blobscan/commit/0a2a94c587e9b93f6b36ad15fd55065e824b5049
+* https://github.com/Blobscan/blobscan/pull/826
 
 ## Add a new storage provider
 
