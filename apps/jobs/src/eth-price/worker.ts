@@ -19,10 +19,9 @@ async function main() {
   console.log(
     `ETH Price Cron Job Worker
       granularity=${determineGranularity(env.ETH_PRICE_SYNCER_CRON_PATTERN)},
-      redisUri=${maskConnectionUrl(env.REDIS_URI)}
-      databaseUrl=${maskConnectionUrl(env.DATABASE_URL)} chainId=${
-      env.ETH_PRICE_SYNCER_CHAIN_ID
-    },
+      redisUri=${maskConnectionUrl(env.REDIS_URI)},
+      databaseUrl=${maskConnectionUrl(env.DATABASE_URL)},
+      chainId=${env.ETH_PRICE_SYNCER_CHAIN_ID},
       jsonRpcUrl=${maskJSONRPCUrl(env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL)},
       priceFeedContract=${
         env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS
