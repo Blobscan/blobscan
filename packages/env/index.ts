@@ -22,6 +22,7 @@ const blobStorageSchema = z.enum([
 const networkSchema = z.enum([
   "mainnet",
   "holesky",
+  "hoodi",
   "sepolia",
   "gnosis",
   "chiado",
