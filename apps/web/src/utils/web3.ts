@@ -9,6 +9,8 @@ export function getChainIdByName(chainName: string): number | undefined {
       return 1;
     case "holesky":
       return 17000;
+    case "hoodi":
+      return 560048;
     case "sepolia":
       return 11155111;
     case "gnosis":

@@ -116,6 +116,8 @@ export const ADDRESS_TO_ROLLUP_MAPPINGS: Map<
   ],
   // Gnosis
   [100, new Map()],
+  // Hoodi
+  [560048, new Map()],
 ]);
 
 export const ROLLUP_TO_ADDRESSES_MAPPINGS = new Map(
