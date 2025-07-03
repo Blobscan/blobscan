@@ -4,15 +4,47 @@ import axios from "axios";
 
 import { formatTtl } from "@blobscan/dates";
 import { prisma } from "@blobscan/db";
+import { z } from "@blobscan/zod";
 
 import type { CommonCronJobConfig } from "../BaseCronJob";
 import { BaseCronJob } from "../BaseCronJob";
-import { SwarmNodeError } from "../errors";
+import { ErrorException } from "../errors";
 
 type BatchData = {
   batchID: string;
   batchTTL: number;
 };
+
+const swarmApiResponseErrorSchema = z.object({
+  code: z.number(),
+  message: z.string(),
+  reasons: z.array(z.unknown()).optional(),
+});
+
+export class SwarmNodeError extends ErrorException {
+  code: number | undefined;
+  reasons?: unknown[];
+
+  constructor(error: AxiosError) {
+    let message: string;
+    let code: number | undefined;
+    const result = swarmApiResponseErrorSchema.safeParse(error.response?.data);
+    let reasons: unknown[] | undefined;
+
+    if (result.success) {
+      code = result.data.code;
+      message = result.data.message;
+      reasons = result.data.reasons;
+    } else {
+      message = error.message;
+    }
+
+    super(message, { cause: error.cause });
+
+    this.code = code;
+    this.reasons = reasons;
+  }
+}
 
 export interface SwarmStampCronJobConfig extends CommonCronJobConfig {
   beeEndpoint: string;
