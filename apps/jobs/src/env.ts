@@ -3,6 +3,7 @@ import { booleanSchema, createEnv, presetEnvOptions, z } from "@blobscan/zod";
 const networkSchema = z.enum([
   "mainnet",
   "holesky",
+  "hoodi",
   "sepolia",
   "gnosis",
   "chiado",

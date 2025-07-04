@@ -29,6 +29,8 @@ export function getNetworkDencunForkSlot(
       return 8626176;
     case "holesky":
       return 950272;
+    case "hoodi":
+      return 0;
     case "sepolia":
       return 4243456;
     case "gnosis":
