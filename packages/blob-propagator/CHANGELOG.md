@@ -1,5 +1,17 @@
 # @blobscan/blob-propagator
 
+## 0.3.0
+
+### Minor Changes
+
+- [#820](https://github.com/Blobscan/blobscan/pull/820) [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added AWS S3 blob storage
+
+### Patch Changes
+
+- Updated dependencies [[`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4), [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d), [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4)]:
+  - @blobscan/blob-storage-manager@0.6.0
+  - @blobscan/db@0.18.0
+
 ## 0.2.13
 
 ### Patch Changes
