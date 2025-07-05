@@ -3,11 +3,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
-import { OverallStatsSyncer } from "../src/syncers/OverallStatsSyncer";
-import type { OverallStatsSyncerConfig } from "../src/syncers/OverallStatsSyncer";
+import { OverallStatsCronJob } from "../src/stats/OverallStatsCronJob";
+import type { OverallStatsCronJobConfig } from "../src/stats/OverallStatsCronJob";
 
-class OverallStatsUpdaterMock extends OverallStatsSyncer {
-  constructor(config: Partial<OverallStatsSyncerConfig> = {}) {
+class OverallStatsCronJobMock extends OverallStatsCronJob {
+  constructor(config: Partial<OverallStatsCronJobConfig> = {}) {
     const lowestSlot =
       config.lowestSlot ?? fixtures.blockchainSyncState[0]?.lastLowerSyncedSlot;
     super({
@@ -23,7 +23,7 @@ class OverallStatsUpdaterMock extends OverallStatsSyncer {
   }
 
   getWorkerProcessor() {
-    return this.syncerFn;
+    return this.jobFn;
   }
 
   getQueue() {
@@ -56,19 +56,19 @@ function assertEmptyStats(
   expect(overallStats, "Overall stats should be empty").toEqual([]);
 }
 
-describe("OverallStatsUpdater", () => {
-  let overallStatsUpdater: OverallStatsUpdaterMock;
+describe("OverallStatsCronjob", () => {
+  let overallStatsCronJob: OverallStatsCronJobMock;
 
   beforeEach(() => {
-    overallStatsUpdater = new OverallStatsUpdaterMock();
+    overallStatsCronJob = new OverallStatsCronJobMock();
 
     return async () => {
-      await overallStatsUpdater.close();
+      await overallStatsCronJob.close();
     };
   });
 
   it("should aggregate overall stats correctly", async () => {
-    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
 
     await workerProcessor();
 
@@ -182,7 +182,7 @@ describe("OverallStatsUpdater", () => {
   });
 
   it("should update last aggregated block to last finalized block after aggregation", async () => {
-    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
     const expectedLastAggregatedBlock =
       fixtures.blockchainSyncState[0]?.lastFinalizedBlock;
 
@@ -204,7 +204,7 @@ describe("OverallStatsUpdater", () => {
 
   it("should aggregate overall stats in batches correctly when there are too many blocks", async () => {
     const batchSize = 2;
-    const workerProcessor = new OverallStatsUpdaterMock({
+    const workerProcessor = new OverallStatsCronJobMock({
       batchSize,
     }).getWorkerProcessor();
     const incrementTransactionSpy = vi.spyOn(prisma.overallStats, "aggregate");
@@ -227,7 +227,7 @@ describe("OverallStatsUpdater", () => {
   });
 
   it("should skip aggregation when no finalized block has been set", async () => {
-    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
 
     await prisma.blockchainSyncState.update({
       data: {
@@ -248,7 +248,7 @@ describe("OverallStatsUpdater", () => {
   });
 
   it("should skip aggregation when no blocks have been indexed yet", async () => {
-    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
 
     vi.spyOn(prisma.block, "findLatest").mockResolvedValueOnce(null);
 
@@ -262,7 +262,7 @@ describe("OverallStatsUpdater", () => {
   });
 
   it("should skip aggregation when the lowest slot hasn't been reached yet", async () => {
-    const workerProcessor = new OverallStatsUpdaterMock({
+    const workerProcessor = new OverallStatsCronJobMock({
       lowestSlot: 1,
     }).getWorkerProcessor();
 
@@ -276,7 +276,7 @@ describe("OverallStatsUpdater", () => {
   });
 
   it("should skip aggregation when there is no new finalized blocks", async () => {
-    const workerProcessor = overallStatsUpdater.getWorkerProcessor();
+    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
 
     await workerProcessor();
 

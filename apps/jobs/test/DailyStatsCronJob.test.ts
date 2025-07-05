@@ -3,14 +3,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getDateFromISODateTime, toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 
-import { DailyStatsSyncer } from "../src/syncers/";
-import { CURRENT_DAY_DATA } from "./DailyStatsSyncer.test.fixtures";
+import { DailyStatsCronJob } from "../src/stats/DailyStatsCronJob";
+import { CURRENT_DAY_DATA } from "./DailyStatsCronJob.test.fixtures";
 import {
   getDailyStatsDates,
   indexNewBlock,
-} from "./DailyStatsSyncer.test.utils";
+} from "./DailyStatsCronJob.test.utils";
 
-class DailyStatsSyncerMock extends DailyStatsSyncer {
+class DailyStatsCronJobMock extends DailyStatsCronJob {
   constructor(redisUri = process.env.REDIS_URI ?? "") {
     super({ redisUriOrConnection: redisUri, cronPattern: "* * * * *" });
   }
@@ -20,7 +20,7 @@ class DailyStatsSyncerMock extends DailyStatsSyncer {
   }
 
   getWorkerProcessor() {
-    return this.syncerFn;
+    return this.jobFn;
   }
 
   getQueue() {
@@ -28,19 +28,19 @@ class DailyStatsSyncerMock extends DailyStatsSyncer {
   }
 }
 
-describe("DailyStatsSyncer", () => {
-  let dailyStatsSyncer: DailyStatsSyncerMock;
+describe("DailyStatsCronJob", () => {
+  let dailyStatsCronJob: DailyStatsCronJobMock;
 
   beforeEach(() => {
-    dailyStatsSyncer = new DailyStatsSyncerMock();
+    dailyStatsCronJob = new DailyStatsCronJobMock();
 
     return async () => {
-      await dailyStatsSyncer.close();
+      await dailyStatsCronJob.close();
     };
   });
 
   it("should aggregate data for all available days", async () => {
-    const workerProcessor = dailyStatsSyncer.getWorkerProcessor();
+    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
 
     await workerProcessor();
 
@@ -50,7 +50,7 @@ describe("DailyStatsSyncer", () => {
   });
 
   it("should skip aggregation if not all blocks have been indexed for the last day", async () => {
-    const workerProcessor = dailyStatsSyncer.getWorkerProcessor();
+    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
 
     await indexNewBlock(CURRENT_DAY_DATA);
 
@@ -69,7 +69,7 @@ describe("DailyStatsSyncer", () => {
   });
 
   it("should skip aggregation if no blocks have been indexed yet", async () => {
-    const workerProcessor = dailyStatsSyncer.getWorkerProcessor();
+    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
 
     const findLatestSpy = vi
       .spyOn(prisma.block, "findLatest")
@@ -86,7 +86,7 @@ describe("DailyStatsSyncer", () => {
   it("should skip aggregation if already up to date", async () => {
     await indexNewBlock(CURRENT_DAY_DATA);
 
-    const workerProcessor = dailyStatsSyncer.getWorkerProcessor();
+    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
 
     await workerProcessor();
 

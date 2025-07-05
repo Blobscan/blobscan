@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CronJob > should throw a valid error when failing to close it 1`] = `"Cron job \\"test-updater-cron-job\\" failed: An error ocurred when performing closing operation"`;
+
+exports[`CronJob > should throw a valid error when failing to close it 2`] = `[Error: Queue closing error]`;
+
+exports[`CronJob > when running an updater > should throw a valid error when failing to run 1`] = `"Cron job \\"test-updater-cron-job\\" failed: An error ocurred when starting cron job"`;
+
+exports[`CronJob > when running an updater > should throw a valid error when failing to run 2`] = `[Error: Queue error]`;

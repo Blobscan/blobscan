@@ -29,6 +29,7 @@ WORKDIR /prepare
 
 RUN turbo prune @blobscan/web --docker --out-dir /prepare/web
 RUN turbo prune @blobscan/rest-api-server --docker --out-dir /prepare/api
+RUN turbo prune @blobscan/jobs --docker --out-dir /prepare/jobs
 
 # stage: web-builder
 FROM deps AS web-builder
@@ -116,3 +117,37 @@ ENV PORT=3001
 ADD docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["api"]
+
+# stage: jobs-builder
+FROM deps AS jobs-builder
+
+WORKDIR /app
+
+ARG DATABASE_URL
+ARG DIRECT_URL
+
+COPY --from=deps /prepare/jobs/json .
+COPY --from=deps /prepare/jobs/pnpm-lock.yaml .
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch -r
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+COPY --from=deps /prepare/jobs/full .
+
+# Copy original which includes pipelines
+COPY --from=deps /prepare/turbo.json .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store DATABASE_URL=${DATABASE_URL} DIRECT_URL=${DIRECT_URL} pnpm build --filter=@blobscan/jobs
+
+# stage: jobs
+FROM base AS jobs
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=jobs-builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=jobs-builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=jobs-builder /app/apps/jobs/dist ./
+
+ADD docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"] 

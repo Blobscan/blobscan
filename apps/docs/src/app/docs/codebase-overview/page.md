@@ -14,6 +14,7 @@ Blobscan.com is comprised of the following major components:
 
 - **Web App**: A [Next.js](https://nextjs.org/) application hosted on [Vercel](https://vercel.com/) that spins up a [tRPC API](https://trpc.io) that communicates with the database via [Prisma](https://www.prisma.io/). It also uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 - **REST API**: An express app that runs the tRPC API with [OpenAPI](https://www.openapis.org/) support. It exposes some of the tRPC API endpoints as REST endpoints for the public and external services such as the indexer.
+- **Jobs**: A Node.js app running the following BullMQ background cron jobs: eth usd price syncing, stats aggregation and swarm stamp syncing.
 - **Indexer**: A Rust service that listens to the Ethereum blockchain looking for blocks and transactions containing blobs and forwards them to the REST API to be indexed.
 
 {% figure  src="/architecture.svg" appendCurrentTheme=true /%}
@@ -33,6 +34,7 @@ Blobscan is composed of the following apps:
 |  [`@blobscan/docs`](https://github.com/Blobscan/blobscan/tree/main/apps/docs)                       | Nextjs app that contains the documentation. |
 |  [`@blobscan/web`](https://github.com/Blobscan/blobscan/tree/main/apps/web)                         | Nextjs app that contains the web app.       |
 |  [`@blobscan/rest-api-server`](https://github.com/Blobscan/blobscan/tree/main/apps/rest-api-server) | Express app that contains the REST API.     |
+|  [`@blobscan/jobs`](https://github.com/Blobscan/blobscan/tree/main/apps/jobs)                       | Node.js app running BullMQ cron jobs.       |
 
 ### CLI
 

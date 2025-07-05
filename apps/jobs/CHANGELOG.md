@@ -1,4 +1,4 @@
-# @blobscan/syncers
+# @blobscan/jobs
 
 ## 0.5.0
 

@@ -7,14 +7,14 @@ import { prisma } from "@blobscan/db";
 import { PriceFeed } from "@blobscan/price-feed";
 import { fixtures, getViemClient } from "@blobscan/test";
 
-import { env } from "../../env";
-import { ETHPriceSyncer } from "../src";
-import type { ETHPriceSyncerConfig } from "../src/syncers/ETHPriceSyncer";
+import { env } from "../src/env";
+import type { EthPriceCronJobConfig } from "../src/eth-price/EthPriceCronJob";
+import { EthPriceCronJob } from "../src/eth-price/EthPriceCronJob";
 
-class EthPriceUpdaterMock extends ETHPriceSyncer {
+class EthPriceCronJobMock extends EthPriceCronJob {
   constructor({
     ethUsdPriceFeed,
-  }: Pick<ETHPriceSyncerConfig, "ethUsdPriceFeed">) {
+  }: Pick<EthPriceCronJobConfig, "ethUsdPriceFeed">) {
     super({
       cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
       redisUriOrConnection: env.REDIS_URI,
@@ -27,7 +27,7 @@ class EthPriceUpdaterMock extends ETHPriceSyncer {
   }
 
   getWorkerProcessor() {
-    return this.syncerFn;
+    return this.jobFn;
   }
 
   getQueue() {
@@ -35,8 +35,8 @@ class EthPriceUpdaterMock extends ETHPriceSyncer {
   }
 }
 
-describe("EthPriceSyncer", () => {
-  let ethPriceUpdater: EthPriceUpdaterMock;
+describe("EthPriceCronJob", () => {
+  let ethPriceUpdater: EthPriceCronJobMock;
 
   beforeEach(async () => {
     const ethUsdPriceFeed = await PriceFeed.create({
@@ -44,7 +44,7 @@ describe("EthPriceSyncer", () => {
       dataFeedContractAddress:
         env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
     });
-    ethPriceUpdater = new EthPriceUpdaterMock({ ethUsdPriceFeed });
+    ethPriceUpdater = new EthPriceCronJobMock({ ethUsdPriceFeed });
 
     return async () => {
       await ethPriceUpdater.close();
@@ -80,7 +80,7 @@ describe("EthPriceSyncer", () => {
         timeTolerance,
       });
 
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceUpdaterMock({
+      const ethPriceUpdaterWithTimeTolerance = new EthPriceCronJobMock({
         ethUsdPriceFeed,
       });
 
@@ -111,7 +111,7 @@ describe("EthPriceSyncer", () => {
           env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
         timeTolerance,
       });
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceUpdaterMock({
+      const ethPriceUpdaterWithTimeTolerance = new EthPriceCronJobMock({
         ethUsdPriceFeed,
       });
 

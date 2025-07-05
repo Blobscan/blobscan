@@ -5,24 +5,30 @@ import type { Redis } from "ioredis";
 import { createModuleLogger } from "@blobscan/logger";
 import type { Logger } from "@blobscan/logger";
 
-import { ErrorException, SyncerError } from "./errors";
-import { createRedisConnection } from "./utils";
+import { ErrorException } from "./errors";
+import { createRedis } from "./redis";
 
-export interface CommonSyncerConfig {
+export interface CommonCronJobConfig {
   redisUriOrConnection: Redis | string;
   cronPattern: string;
 }
 
-export interface BaseSyncerConfig extends CommonSyncerConfig {
+export interface BaseCronJobConfig extends CommonCronJobConfig {
   name: string;
-  syncerFn: () => Promise<void>;
+  jobFn: () => Promise<void>;
 }
 
-export class BaseSyncer {
+export class CronJobError extends ErrorException {
+  constructor(cronJobName: string, message: string, cause: unknown) {
+    super(`Cron job "${cronJobName}" failed: ${message}`, cause);
+  }
+}
+
+export class BaseCronJob {
   name: string;
   cronPattern: string;
 
-  protected syncerFn: () => Promise<void>;
+  protected jobFn: () => Promise<void>;
   protected logger: Logger;
 
   protected connection: Redis;
@@ -33,16 +39,16 @@ export class BaseSyncer {
     name,
     cronPattern,
     redisUriOrConnection,
-    syncerFn,
-  }: BaseSyncerConfig) {
-    this.name = `${name}-syncer`;
+    jobFn,
+  }: BaseCronJobConfig) {
+    this.name = `${name}-cron-job`;
     this.cronPattern = cronPattern;
     this.logger = createModuleLogger(this.name);
 
     let connection: Redis;
 
     if (typeof redisUriOrConnection === "string") {
-      connection = createRedisConnection(redisUriOrConnection);
+      connection = createRedis(redisUriOrConnection);
     } else {
       connection = redisUriOrConnection;
     }
@@ -51,7 +57,7 @@ export class BaseSyncer {
       connection,
     });
 
-    this.worker = new Worker(this.queue.name, syncerFn, {
+    this.worker = new Worker(this.queue.name, jobFn, {
       connection,
     });
 
@@ -64,7 +70,7 @@ export class BaseSyncer {
     });
 
     this.connection = connection;
-    this.syncerFn = syncerFn;
+    this.jobFn = jobFn;
   }
 
   async start() {
@@ -76,13 +82,13 @@ export class BaseSyncer {
         },
       });
 
-      this.logger.info("Syncer started successfully");
+      this.logger.debug("Cron job started successfully");
 
       return repeatableJob;
     } catch (err) {
-      throw new SyncerError(
+      throw new CronJobError(
         this.name,
-        "An error ocurred when starting syncer",
+        "An error ocurred when starting cron job",
         err
       );
     }
@@ -107,7 +113,7 @@ export class BaseSyncer {
           this.queue?.removeAllListeners().close()
         );
 
-        this.logger.info("Syncer closed successfully");
+        this.logger.info("Cron job closed successfully");
       });
   }
 
@@ -115,7 +121,7 @@ export class BaseSyncer {
     try {
       await operation();
     } catch (err) {
-      const err_ = new SyncerError(
+      const err_ = new CronJobError(
         this.name,
         "An error ocurred when performing closing operation",
         err

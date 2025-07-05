@@ -2,34 +2,20 @@ import dayjs, { normalizeDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 import type { PriceFeed } from "@blobscan/price-feed";
 
-import { BaseSyncer } from "../BaseSyncer";
-import type { CommonSyncerConfig } from "../BaseSyncer";
+import type { CommonCronJobConfig } from "../BaseCronJob";
+import { BaseCronJob } from "../BaseCronJob";
+import { determineGranularity } from "../utils";
 
-export interface ETHPriceSyncerConfig extends CommonSyncerConfig {
+export interface EthPriceCronJobConfig extends CommonCronJobConfig {
   ethUsdPriceFeed: PriceFeed;
 }
 
-type Granularity = "minute" | "hour" | "day";
-
-function determineGranularity(cronPattern: string): Granularity {
-  switch (cronPattern) {
-    case "0 * * * *":
-      return "hour";
-    case "0 0 * * *":
-      return "day";
-    case "* * * * *":
-      return "minute";
-    default:
-      throw new Error(`Unsupported cron pattern: ${cronPattern}`);
-  }
-}
-
-export class ETHPriceSyncer extends BaseSyncer {
-  constructor(config: ETHPriceSyncerConfig) {
+export class EthPriceCronJob extends BaseCronJob {
+  constructor(config: EthPriceCronJobConfig) {
     super({
       ...config,
       name: "eth-price",
-      syncerFn: async () => {
+      jobFn: async () => {
         const now = normalizeDate(dayjs());
         const granularity = determineGranularity(config.cronPattern);
 
@@ -65,8 +51,8 @@ export class ETHPriceSyncer extends BaseSyncer {
           },
         });
 
-        this.logger.debug(
-          `ETH price synced: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
+        this.logger.info(
+          `ETH price indexed: $${price} at ${targetDateTime.toISOString()} recorded (retrieved from round ${roundId})`
         );
       },
     });

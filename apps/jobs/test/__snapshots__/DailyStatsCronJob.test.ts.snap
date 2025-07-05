@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DailyStatsSyncer > should aggregate data for all available days 1`] = `
+exports[`DailyStatsCronJob > should aggregate data for all available days 1`] = `
 [
   [
     "2022-10-16",

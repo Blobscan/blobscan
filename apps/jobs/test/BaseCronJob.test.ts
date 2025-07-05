@@ -2,17 +2,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { BaseSyncer } from "../src/BaseSyncer";
-import type { BaseSyncerConfig } from "../src/BaseSyncer";
-import { SyncerError } from "../src/errors";
+import { BaseCronJob, CronJobError } from "../src/BaseCronJob";
+import type { BaseCronJobConfig } from "../src/BaseCronJob";
 
-class PeriodicUpdaterMock extends BaseSyncer {
-  constructor({ name, syncerFn: updaterFn }: Partial<BaseSyncerConfig> = {}) {
+class BaseCronJobMock extends BaseCronJob {
+  constructor({ name, jobFn }: Partial<BaseCronJobConfig> = {}) {
     super({
       name: name ?? "test-updater",
       redisUriOrConnection: "redis://localhost:6379/1",
       cronPattern: "* * * * *",
-      syncerFn: updaterFn ?? (() => Promise.resolve()),
+      jobFn: jobFn ?? (() => Promise.resolve()),
     });
   }
 
@@ -29,20 +28,20 @@ class PeriodicUpdaterMock extends BaseSyncer {
   }
 }
 
-describe("PeriodicUpdater", () => {
-  let periodicUpdater: PeriodicUpdaterMock;
+describe("BaseCronJob", () => {
+  let cronJob: BaseCronJobMock;
 
   beforeEach(() => {
-    periodicUpdater = new PeriodicUpdaterMock();
+    cronJob = new BaseCronJobMock();
 
     return async () => {
-      await periodicUpdater.close();
+      await cronJob.close();
     };
   });
 
   it("should create an updater correctly", async () => {
-    const queue = periodicUpdater.getQueue();
-    const worker = periodicUpdater.getWorker();
+    const queue = cronJob.getQueue();
+    const worker = cronJob.getWorker();
     const isPaused = await queue.isPaused();
 
     expect(worker.isRunning(), "Expected worker to be running").toBeTruthy();
@@ -51,9 +50,9 @@ describe("PeriodicUpdater", () => {
 
   describe("when running an updater", () => {
     it("should set up a repeatable job correctly", async () => {
-      const queue = periodicUpdater.getQueue();
+      const queue = cronJob.getQueue();
 
-      await periodicUpdater.start();
+      await cronJob.start();
 
       const jobs = await queue.getRepeatableJobs();
 
@@ -66,25 +65,25 @@ describe("PeriodicUpdater", () => {
     testValidError(
       "should throw a valid error when failing to run",
       async () => {
-        const queue = periodicUpdater.getQueue();
+        const queue = cronJob.getQueue();
 
         vi.spyOn(queue, "add").mockRejectedValueOnce(new Error("Queue error"));
 
-        await periodicUpdater.start();
+        await cronJob.start();
       },
-      SyncerError,
+      CronJobError,
       { checkCause: true }
     );
   });
 
   describe("when closing an updater", () => {
     it("should close correctly", async () => {
-      const closingPeriodicUpdater = new PeriodicUpdaterMock();
+      const closingCronJob = new BaseCronJobMock();
 
-      await closingPeriodicUpdater.start();
+      await closingCronJob.start();
 
-      const queue = closingPeriodicUpdater.getQueue();
-      const worker = closingPeriodicUpdater.getWorker();
+      const queue = closingCronJob.getQueue();
+      const worker = closingCronJob.getWorker();
 
       const queueCloseSpy = vi.spyOn(queue, "close").mockResolvedValueOnce();
       const queueRemoveAllListenersSpy = vi
@@ -96,7 +95,7 @@ describe("PeriodicUpdater", () => {
         .spyOn(worker, "removeAllListeners")
         .mockReturnValueOnce(worker);
 
-      await closingPeriodicUpdater.close();
+      await closingCronJob.close();
 
       expect(queueCloseSpy).toHaveBeenCalledOnce();
       expect(workerCloseSpy).toHaveBeenCalledOnce();
@@ -109,8 +108,8 @@ describe("PeriodicUpdater", () => {
   testValidError(
     "should throw a valid error when failing to close it",
     async () => {
-      const queue = periodicUpdater.getQueue();
-      const worker = periodicUpdater.getWorker();
+      const queue = cronJob.getQueue();
+      const worker = cronJob.getWorker();
 
       vi.spyOn(queue, "close").mockRejectedValueOnce(
         new Error("Queue closing error")
@@ -119,9 +118,9 @@ describe("PeriodicUpdater", () => {
         new Error("Worker closing error")
       );
 
-      await periodicUpdater.close();
+      await cronJob.close();
     },
-    SyncerError,
+    CronJobError,
     {
       checkCause: true,
     }

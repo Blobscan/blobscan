@@ -1,21 +1,21 @@
 import { normalizeDate, toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 
-import { BaseSyncer } from "../BaseSyncer";
-import type { CommonSyncerConfig } from "../BaseSyncer";
+import { BaseCronJob } from "../BaseCronJob";
+import type { CommonCronJobConfig } from "../BaseCronJob";
 import { formatDate } from "../utils";
 
-export type DailyStatsSyncerConfig = CommonSyncerConfig;
+export type DailyStatsCronJobConfig = CommonCronJobConfig;
 
-export class DailyStatsSyncer extends BaseSyncer {
-  constructor({ redisUriOrConnection, cronPattern }: DailyStatsSyncerConfig) {
+export class DailyStatsCronJob extends BaseCronJob {
+  constructor({ redisUriOrConnection, cronPattern }: DailyStatsCronJobConfig) {
     const name = "daily-stats";
 
     super({
       name,
       redisUriOrConnection,
       cronPattern,
-      syncerFn: async () => {
+      jobFn: async () => {
         const lastIndexedBlock = await prisma.block.findLatest();
 
         if (!lastIndexedBlock) {

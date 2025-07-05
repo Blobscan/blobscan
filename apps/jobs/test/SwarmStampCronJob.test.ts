@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
@@ -7,13 +8,13 @@ import type { BlobStoragesState } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
 
-import type { SwarmStampSyncerConfig } from "../src/syncers/SwarmStampSyncer";
-import { SwarmStampSyncer } from "../src/syncers/SwarmStampSyncer";
+import type { SwarmStampCronJobConfig } from "../src/swarm-stamp/SwarmStampCronJob";
+import { SwarmStampCronJob } from "../src/swarm-stamp/SwarmStampCronJob";
 
 const BEE_ENDPOINT = process.env.BEE_ENDPOINT ?? "http://localhost:1633";
 
-class SwarmStampSyncerMock extends SwarmStampSyncer {
-  constructor({ batchId, cronPattern }: Partial<SwarmStampSyncerConfig> = {}) {
+class SwarmStampCronJobMock extends SwarmStampCronJob {
+  constructor({ batchId, cronPattern }: Partial<SwarmStampCronJobConfig> = {}) {
     super({
       redisUriOrConnection: process.env.REDIS_URI ?? "",
       cronPattern: cronPattern ?? "* * * * *",
@@ -27,15 +28,15 @@ class SwarmStampSyncerMock extends SwarmStampSyncer {
   }
 
   getWorkerProcessor() {
-    return this.syncerFn;
+    return this.jobFn;
   }
 }
 
-describe("SwarmStampSyncer", () => {
+describe("SwarmStampCronjob", () => {
   const expectedBatchId = fixtures.blobStoragesState[0]?.swarmDataId as string;
   const expectedBatchTTL = 1000;
 
-  let swarmStampSyncer: SwarmStampSyncerMock;
+  let swarmStampCronJob: SwarmStampCronJobMock;
 
   beforeAll(() => {
     const baseUrl = `${BEE_ENDPOINT}/stamps`;
@@ -91,10 +92,10 @@ describe("SwarmStampSyncer", () => {
   });
 
   beforeEach(() => {
-    swarmStampSyncer = new SwarmStampSyncerMock();
+    swarmStampCronJob = new SwarmStampCronJobMock();
 
     return async () => {
-      await swarmStampSyncer.close();
+      await swarmStampCronJob.close();
     };
   });
 
@@ -104,7 +105,7 @@ describe("SwarmStampSyncer", () => {
     beforeEach(async () => {
       await prisma.blobStoragesState.deleteMany();
 
-      const workerProcessor = swarmStampSyncer.getWorkerProcessor();
+      const workerProcessor = swarmStampCronJob.getWorkerProcessor();
 
       await workerProcessor().catch((err) => console.log(err));
 
@@ -130,7 +131,7 @@ describe("SwarmStampSyncer", () => {
       },
     });
 
-    const workerProcessor = swarmStampSyncer.getWorkerProcessor();
+    const workerProcessor = swarmStampCronJob.getWorkerProcessor();
     await workerProcessor();
 
     const blobStorageState = await prisma.blobStoragesState.findFirst();
@@ -141,15 +142,15 @@ describe("SwarmStampSyncer", () => {
   testValidError(
     "should fail when trying to fetch a non-existing batch",
     async () => {
-      const failingSwarmStampSyncer = new SwarmStampSyncerMock({
+      const failingSwarmStampCronJob = new SwarmStampCronJobMock({
         batchId:
           "6b538866048cfb6e9e1d06805374c51572c11219d2d550c03e6e277366cb0371",
       });
       const failingWorkerProcessor =
-        failingSwarmStampSyncer.getWorkerProcessor();
+        failingSwarmStampCronJob.getWorkerProcessor();
 
       await failingWorkerProcessor().finally(async () => {
-        await failingSwarmStampSyncer.close();
+        await failingSwarmStampCronJob.close();
       });
     },
     Error,
@@ -161,14 +162,14 @@ describe("SwarmStampSyncer", () => {
   testValidError(
     "should fail when trying to fetch an invalid batch",
     async () => {
-      const failingSwarmStampSyncer = new SwarmStampSyncerMock({
+      const failingSwarmStampCronJob = new SwarmStampCronJobMock({
         batchId: "invalid-batch",
       });
       const failingWorkerProcessor =
-        failingSwarmStampSyncer.getWorkerProcessor();
+        failingSwarmStampCronJob.getWorkerProcessor();
 
       await failingWorkerProcessor().finally(async () => {
-        await failingSwarmStampSyncer.close();
+        await failingSwarmStampCronJob.close();
       });
     },
     Error,
