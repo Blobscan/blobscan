@@ -41,6 +41,7 @@ export async function createStorageFromEnv(
         accessKeyId: env.S3_STORAGE_ACCESS_KEY_ID,
         secretAccessKey: env.S3_STORAGE_SECRET_ACCESS_KEY,
         endpoint: env.S3_STORAGE_ENDPOINT,
+        forcePathStyle: env.S3_STORAGE_FORCE_PATH_STYLE,
       });
 
       return s3Storage;

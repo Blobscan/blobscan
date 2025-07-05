@@ -118,6 +118,7 @@ export class S3Storage extends BlobStorage {
       Key: blobUri,
       Body: data,
       ContentType: "application/octet-stream",
+      ACL: "public-read",
     });
 
     await this._s3Client.send(command);

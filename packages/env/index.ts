@@ -187,6 +187,7 @@ export const env = createEnv({
       S3_STORAGE_ACCESS_KEY_ID: z.string().optional(),
       S3_STORAGE_SECRET_ACCESS_KEY: z.string().optional(),
       S3_STORAGE_ENDPOINT: z.string().url().optional(),
+      S3_STORAGE_FORCE_PATH_STYLE: booleanSchema.optional(),
 
       // WeaveVM storage
       WEAVEVM_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -268,7 +269,7 @@ export const env = createEnv({
       console.log(
         `S3 configuration: bucketName=${env.S3_STORAGE_BUCKET_NAME}, region=${
           env.S3_STORAGE_REGION
-        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}`
+        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}, forcePathStyle=${env.S3_STORAGE_FORCE_PATH_STYLE || false}`
       );
     }
     console.log(
