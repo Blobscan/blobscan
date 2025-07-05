@@ -1,5 +1,21 @@
 # @blobscan/api
 
+## 0.24.0
+
+### Minor Changes
+
+- [#830](https://github.com/Blobscan/blobscan/pull/830) [`9258c4d`](https://github.com/Blobscan/blobscan/commit/9258c4db203707040c8da96d1276a11be51b1b8d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Implement Redis caching for stats endpoints
+
+### Patch Changes
+
+- [#814](https://github.com/Blobscan/blobscan/pull/814) [`095564d`](https://github.com/Blobscan/blobscan/commit/095564d18b1200243ea272df1be55c4567978834) Thanks [@xFJA](https://github.com/xFJA)! - Updated Chunkstorm endpoint
+
+- Updated dependencies [[`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4), [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d), [`a550799`](https://github.com/Blobscan/blobscan/commit/a550799462d4d657ef6e1f50155c3efe55e39759), [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4)]:
+  - @blobscan/blob-storage-manager@0.6.0
+  - @blobscan/blob-propagator@0.3.0
+  - @blobscan/network-blob-config@0.3.0
+  - @blobscan/db@0.18.0
+
 ## 0.23.0
 
 ### Minor Changes

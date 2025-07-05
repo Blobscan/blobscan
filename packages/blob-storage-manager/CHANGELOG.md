@@ -1,5 +1,20 @@
 # @blobscan/blob-storage-manager
 
+## 0.6.0
+
+### Minor Changes
+
+- [#829](https://github.com/Blobscan/blobscan/pull/829) [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Add support for S3_STORAGE_FORCE_PATH_STYLE environment variable
+
+- [#820](https://github.com/Blobscan/blobscan/pull/820) [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Added AWS S3 blob storage
+
+- [#829](https://github.com/Blobscan/blobscan/pull/829) [`d579a78`](https://github.com/Blobscan/blobscan/commit/d579a788f6baa152ffca3344fc5207ecd2d104a4) Thanks [@PabloCastellano](https://github.com/PabloCastellano)! - Changed default behavior to make uploaded S3 files publicly accessible.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/db@0.18.0
+
 ## 0.5.1
 
 ### Patch Changes
