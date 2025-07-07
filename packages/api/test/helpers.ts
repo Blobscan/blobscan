@@ -6,7 +6,6 @@ import type {
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
-import { createBlobPropagator } from "@blobscan/blob-propagator/src/blob-propagator";
 import { createBlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
@@ -69,10 +68,11 @@ export async function createTestContext({
   };
 
   if (withBlobPropagator) {
-    ctx.blobPropagator = await createBlobPropagator(
-      ctx.blobStorageManager,
-      ctx.prisma
-    );
+    ctx.blobPropagator = {
+      propagateBlobs(_) {
+        return Promise.resolve();
+      },
+    };
   }
 
   return ctx;

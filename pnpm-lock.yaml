@@ -455,9 +455,6 @@ importers:
 
   packages/api:
     dependencies:
-      '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.13
-        version: link:../blob-propagator
       '@blobscan/blob-storage-manager':
         specifier: workspace:^0.5.0
         version: link:../blob-storage-manager

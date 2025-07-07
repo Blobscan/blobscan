@@ -15,7 +15,6 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-propagator": "workspace:^0.2.13",
     "@blobscan/blob-storage-manager": "workspace:^0.5.0",
     "@blobscan/dayjs": "workspace:^0.1.0",
     "@blobscan/db": "workspace:^0.18.0",

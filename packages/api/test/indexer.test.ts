@@ -2,7 +2,6 @@ import { TRPCError } from "@trpc/server";
 import type { SpyInstance } from "vitest";
 import {
   afterAll,
-  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -11,8 +10,6 @@ import {
   vi,
 } from "vitest";
 
-import type { Blob as PropagatorBlob } from "@blobscan/blob-propagator";
-import type { BlobReference } from "@blobscan/blob-storage-manager";
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
@@ -327,136 +324,6 @@ describe("Indexer router", async () => {
         });
 
         describe("when indexing blob data", () => {
-          const blobVersionedHashes = INPUT.blobs.map((b) => b.versionedHash);
-
-          describe("when blob propagator is disabled", () => {
-            it("should store it on the db correctly", async () => {
-              const dbBlobData = await authorizedContext.prisma.blobData
-                .findMany({
-                  where: {
-                    id: {
-                      in: blobVersionedHashes,
-                    },
-                  },
-                })
-                .then((res) =>
-                  res
-                    .sort((a, b) => a.id.localeCompare(b.id))
-                    .map((b) => `0x${b.data.toString("hex")}`)
-                );
-
-              expect(dbBlobData).toMatchInlineSnapshot(`
-              [
-                "0x34567890abcdef1234567890abcdef",
-                "0x34567890abcdef1234567890abcdef1234567890abcdef",
-                "0x1234abcdeff123456789ab",
-              ]
-            `);
-            });
-
-            it("should store it on google storage correctly", async () => {
-              const blobDataStorageRefs =
-                await authorizedContext.prisma.blobDataStorageReference.findMany(
-                  {
-                    where: {
-                      AND: {
-                        blobHash: {
-                          in: blobVersionedHashes,
-                        },
-                        blobStorage: "GOOGLE",
-                      },
-                    },
-                  }
-                );
-              const blobRefs = blobDataStorageRefs.map<BlobReference>(
-                (ref) => ({
-                  reference: ref.dataReference,
-                  storage: "GOOGLE",
-                })
-              );
-              const gcsBlobData = await Promise.all(
-                blobRefs.map((ref) =>
-                  authorizedContext.blobStorageManager.getBlobByReferences(ref)
-                )
-              ).then((res) =>
-                res.sort((a, b) => (a && b ? a.data.localeCompare(b.data) : 0))
-              );
-
-              expect(gcsBlobData).toMatchInlineSnapshot(`
-                [
-                  {
-                    "data": "0x1234abcdeff123456789ab",
-                    "storage": "GOOGLE",
-                  },
-                  {
-                    "data": "0x34567890abcdef1234567890abcdef",
-                    "storage": "GOOGLE",
-                  },
-                  {
-                    "data": "0x34567890abcdef1234567890abcdef1234567890abcdef",
-                    "storage": "GOOGLE",
-                  },
-                ]
-              `);
-            });
-
-            it("should create blob storage references correctly", async () => {
-              const indexedBlobHashes = INPUT.blobs.map(
-                (blob) => blob.versionedHash
-              );
-              const blobStorageRefs =
-                await authorizedContext.prisma.blobDataStorageReference.findMany(
-                  {
-                    orderBy: {
-                      blobHash: "asc",
-                    },
-                    where: {
-                      blobHash: {
-                        in: indexedBlobHashes,
-                      },
-                    },
-                  }
-                );
-
-              expect(blobStorageRefs).toMatchInlineSnapshot(`
-                [
-                  {
-                    "blobHash": "blobHash1000",
-                    "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash1000.bin",
-                  },
-                  {
-                    "blobHash": "blobHash1000",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash1000",
-                  },
-                  {
-                    "blobHash": "blobHash1001",
-                    "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash1001.bin",
-                  },
-                  {
-                    "blobHash": "blobHash1001",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash1001",
-                  },
-                  {
-                    "blobHash": "blobHash999",
-                    "blobStorage": "GOOGLE",
-                    "dataReference": "1/ob/Ha/sh/obHash999.bin",
-                  },
-                  {
-                    "blobHash": "blobHash999",
-                    "blobStorage": "POSTGRES",
-                    "dataReference": "blobHash999",
-                  },
-                ]
-              `);
-            });
-          });
-        });
-
-        describe("when blob propagator is enabled", () => {
           let ctxWithBlobPropagator: Awaited<
             ReturnType<typeof createTestContext>
           >;
@@ -464,7 +331,12 @@ describe("Indexer router", async () => {
             typeof appRouter.createCaller
           >;
           let blobPropagatorSpy: SpyInstance<
-            [blobs: PropagatorBlob[]],
+            [
+              blobs: {
+                versionedHash: string;
+                data: string;
+              }[]
+            ],
             Promise<void>
           >;
 
@@ -485,20 +357,16 @@ describe("Indexer router", async () => {
             );
           });
 
-          afterEach(async () => {
-            const blobPropagator = ctxWithBlobPropagator.blobPropagator;
-
-            if (blobPropagator) {
-              await blobPropagator.close();
-            }
-          });
-
           it("should call blob propagator", async () => {
             await callerWithBlobPropagator.indexer.indexData(
               INPUT_WITH_DUPLICATED_BLOBS
             );
 
             expect(blobPropagatorSpy).toHaveBeenCalledOnce();
+            expect(
+              blobPropagatorSpy,
+              "Propagator called with invalid blobs"
+            ).toHaveBeenCalledWith(INPUT_WITH_DUPLICATED_BLOBS.blobs);
           });
         });
       });

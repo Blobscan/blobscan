@@ -1,5 +1,3 @@
-import { TRPCError } from "@trpc/server";
-
 import type { BlobDataStorageReference } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
@@ -70,93 +68,52 @@ export const indexData = createAuthedProcedure("indexer")
   })
   .input(inputSchema)
   .output(outputSchema)
-  .mutation(
-    async ({ ctx: { prisma, blobStorageManager, blobPropagator }, input }) => {
-      const operations = [];
+  .mutation(async ({ ctx: { prisma, blobPropagator }, input }) => {
+    const operations = [];
 
-      let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
+    let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
 
-      // 1. Store blobs' data
-      if (!blobPropagator) {
-        const uniqueBlobs: RawBlob[] = Array.from(
-          new Set(input.blobs.map((b) => b.versionedHash))
-        ).map((versionedHash) => {
-          const blob = input.blobs.find(
-            (b) => b.versionedHash === versionedHash
-          );
+    // 1. Propagate blobs
+    await blobPropagator?.propagateBlobs(input.blobs);
 
-          if (!blob) {
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: `No blob found for hash ${versionedHash}`,
-            });
-          }
+    // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
+    const now = new Date();
 
-          return blob;
-        });
+    // 2. Prepare address, block, transaction and blob insertions
+    const dbTxs = createDBTransactions(input);
+    const dbBlock = createDBBlock(input, dbTxs);
+    const dbBlobs = createDBBlobs(input);
+    const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
+    const dbAddress = createDBAddresses(input);
 
-        const blobStorageOps = uniqueBlobs.map(async (b) =>
-          blobStorageManager.storeBlob(b).then((uploadRes) => ({
-            blob: b,
-            uploadRes,
-          }))
-        );
-        const storageResults = (await Promise.all(blobStorageOps)).flat();
+    operations.push(
+      prisma.block.upsert({
+        where: { hash: input.block.hash },
+        create: {
+          ...dbBlock,
+          insertedAt: now,
+          updatedAt: now,
+        },
+        update: {
+          ...dbBlock,
+          updatedAt: now,
+        },
+      }),
+      prisma.address.upsertMany(dbAddress),
+      prisma.transaction.upsertMany(dbTxs),
+      prisma.blob.upsertMany(dbBlobs)
+    );
 
-        dbBlobStorageRefs = storageResults.flatMap(
-          ({ uploadRes: { references }, blob }) =>
-            references.map((ref) => ({
-              blobHash: blob.versionedHash,
-              blobStorage: ref.storage,
-              dataReference: ref.reference,
-            }))
-        );
-      }
-
-      // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
-      const now = new Date();
-
-      // 2. Prepare address, block, transaction and blob insertions
-      const dbTxs = createDBTransactions(input);
-      const dbBlock = createDBBlock(input, dbTxs);
-      const dbBlobs = createDBBlobs(input);
-      const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
-      const dbAddress = createDBAddresses(input);
-
+    if (dbBlobStorageRefs?.length) {
       operations.push(
-        prisma.block.upsert({
-          where: { hash: input.block.hash },
-          create: {
-            ...dbBlock,
-            insertedAt: now,
-            updatedAt: now,
-          },
-          update: {
-            ...dbBlock,
-            updatedAt: now,
-          },
-        }),
-        prisma.address.upsertMany(dbAddress),
-        prisma.transaction.upsertMany(dbTxs),
-        prisma.blob.upsertMany(dbBlobs)
+        prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
       );
-
-      if (dbBlobStorageRefs?.length) {
-        operations.push(
-          prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
-        );
-      }
-
-      operations.push(
-        prisma.blobsOnTransactions.upsertMany(dbBlobsOnTransactions)
-      );
-
-      // 3. Execute all database operations in a single transaction
-      await prisma.$transaction(operations);
-
-      // 4. Propagate blobs to storages
-      if (blobPropagator) {
-        await blobPropagator.propagateBlobs(input.blobs);
-      }
     }
-  );
+
+    operations.push(
+      prisma.blobsOnTransactions.upsertMany(dbBlobsOnTransactions)
+    );
+
+    // 3. Execute all database operations in a single transaction
+    await prisma.$transaction(operations);
+  });

@@ -7,12 +7,11 @@ import type {
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
 
-import type { BlobPropagator } from "@blobscan/blob-propagator";
-import { getBlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
+import type { BlobPropagator } from "./types";
 import type { APIClient } from "./utils";
 import { retrieveAPIClient } from "./utils";
 
@@ -22,6 +21,7 @@ export type CreateContextOptions =
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: APIClient;
+  blobPropagator?: BlobPropagator;
 };
 
 export type TRPCInnerContext = {
@@ -35,12 +35,11 @@ export async function createTRPCInnerContext(
   opts?: CreateInnerContextOptions
 ): Promise<TRPCInnerContext> {
   const blobStorageManager = await getBlobStorageManager();
-  const blobPropagator = await getBlobPropagator();
 
   return {
     prisma,
     blobStorageManager,
-    blobPropagator,
+    blobPropagator: opts?.blobPropagator,
     apiClient: opts?.apiClient,
   };
 }
