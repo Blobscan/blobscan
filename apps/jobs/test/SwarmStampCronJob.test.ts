@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
@@ -8,8 +6,11 @@ import type { BlobStoragesState } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
 
-import type { SwarmStampCronJobConfig } from "../src/swarm-stamp/SwarmStampCronJob";
-import { SwarmStampCronJob } from "../src/swarm-stamp/SwarmStampCronJob";
+import { CronJobError } from "../src/cron-jobs/BaseCronJob";
+import type { SwarmStampCronJobConfig } from "../src/cron-jobs/swarm-stamp/SwarmStampCronJob";
+import { SwarmStampCronJob } from "../src/cron-jobs/swarm-stamp/SwarmStampCronJob";
+import workerProcessor from "../src/cron-jobs/swarm-stamp/processor";
+import type { SwarmStampJob } from "../src/cron-jobs/swarm-stamp/types";
 
 const BEE_ENDPOINT = process.env.BEE_ENDPOINT ?? "http://localhost:1633";
 
@@ -18,7 +19,7 @@ class SwarmStampCronJobMock extends SwarmStampCronJob {
     super({
       redisUriOrConnection: process.env.REDIS_URI ?? "",
       cronPattern: cronPattern ?? "* * * * *",
-      batchId: batchId ?? process.env.SWARM_BATCH_ID ?? "",
+      batchId,
       beeEndpoint: BEE_ENDPOINT,
     });
   }
@@ -26,17 +27,18 @@ class SwarmStampCronJobMock extends SwarmStampCronJob {
   getQueue() {
     return this.queue;
   }
-
-  getWorkerProcessor() {
-    return this.jobFn;
-  }
 }
 
 describe("SwarmStampCronjob", () => {
   const expectedBatchId = fixtures.blobStoragesState[0]?.swarmDataId as string;
   const expectedBatchTTL = 1000;
 
-  let swarmStampCronJob: SwarmStampCronJobMock;
+  const job = {
+    data: {
+      batchId: expectedBatchId,
+      beeEndpoint: BEE_ENDPOINT,
+    },
+  } as SwarmStampJob;
 
   beforeAll(() => {
     const baseUrl = `${BEE_ENDPOINT}/stamps`;
@@ -91,12 +93,38 @@ describe("SwarmStampCronjob", () => {
     };
   });
 
-  beforeEach(() => {
-    swarmStampCronJob = new SwarmStampCronJobMock();
+  describe("when creating a new instance", () => {
+    let swarmStampCronJob: SwarmStampCronJobMock;
 
-    return async () => {
-      await swarmStampCronJob.close();
-    };
+    beforeEach(() => {
+      swarmStampCronJob = new SwarmStampCronJobMock();
+
+      return async () => {
+        await swarmStampCronJob.close();
+      };
+    });
+
+    it("should fetch batch id from db if none is provided", async () => {
+      const job = await swarmStampCronJob.start();
+
+      expect(job?.data).toEqual({
+        batchId: expectedBatchId,
+        beeEndpoint: BEE_ENDPOINT,
+      });
+    });
+
+    testValidError(
+      "should throw a valid error when no batch id was found and none was provided",
+      async () => {
+        await prisma.blobStoragesState.deleteMany();
+
+        await swarmStampCronJob.start();
+      },
+      CronJobError,
+      {
+        checkCause: true,
+      }
+    );
   });
 
   describe("when creating a new swarm batch data row in the db", async () => {
@@ -105,9 +133,7 @@ describe("SwarmStampCronjob", () => {
     beforeEach(async () => {
       await prisma.blobStoragesState.deleteMany();
 
-      const workerProcessor = swarmStampCronJob.getWorkerProcessor();
-
-      await workerProcessor().catch((err) => console.log(err));
+      await workerProcessor(job).catch((err: unknown) => console.log(err));
 
       blobStorageState = await prisma.blobStoragesState.findFirst();
     });
@@ -131,8 +157,7 @@ describe("SwarmStampCronjob", () => {
       },
     });
 
-    const workerProcessor = swarmStampCronJob.getWorkerProcessor();
-    await workerProcessor();
+    await workerProcessor(job);
 
     const blobStorageState = await prisma.blobStoragesState.findFirst();
 
@@ -142,16 +167,15 @@ describe("SwarmStampCronjob", () => {
   testValidError(
     "should fail when trying to fetch a non-existing batch",
     async () => {
-      const failingSwarmStampCronJob = new SwarmStampCronJobMock({
-        batchId:
-          "6b538866048cfb6e9e1d06805374c51572c11219d2d550c03e6e277366cb0371",
-      });
-      const failingWorkerProcessor =
-        failingSwarmStampCronJob.getWorkerProcessor();
+      const job = {
+        data: {
+          batchId:
+            "6b538866048cfb6e9e1d06805374c51572c11219d2d550c03e6e277366cb0371",
+          beeEndpoint: BEE_ENDPOINT,
+        },
+      } as SwarmStampJob;
 
-      await failingWorkerProcessor().finally(async () => {
-        await failingSwarmStampCronJob.close();
-      });
+      await workerProcessor(job);
     },
     Error,
     {
@@ -162,15 +186,14 @@ describe("SwarmStampCronjob", () => {
   testValidError(
     "should fail when trying to fetch an invalid batch",
     async () => {
-      const failingSwarmStampCronJob = new SwarmStampCronJobMock({
-        batchId: "invalid-batch",
-      });
-      const failingWorkerProcessor =
-        failingSwarmStampCronJob.getWorkerProcessor();
+      const job = {
+        data: {
+          batchId: "invalid-batch",
+          beeEndpoint: BEE_ENDPOINT,
+        },
+      } as SwarmStampJob;
 
-      await failingWorkerProcessor().finally(async () => {
-        await failingSwarmStampCronJob.close();
-      });
+      await workerProcessor(job);
     },
     Error,
     {

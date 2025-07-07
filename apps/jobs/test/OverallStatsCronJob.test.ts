@@ -1,35 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
-import { OverallStatsCronJob } from "../src/stats/OverallStatsCronJob";
-import type { OverallStatsCronJobConfig } from "../src/stats/OverallStatsCronJob";
+import workerProcessor from "../src/cron-jobs/overall-stats/processor";
+import type { OverallStatsJob } from "../src/cron-jobs/overall-stats/types";
 
-class OverallStatsCronJobMock extends OverallStatsCronJob {
-  constructor(config: Partial<OverallStatsCronJobConfig> = {}) {
-    const lowestSlot =
-      config.lowestSlot ?? fixtures.blockchainSyncState[0]?.lastLowerSyncedSlot;
-    super({
-      cronPattern: "* * * * *",
-      redisUriOrConnection: "redis://localhost:6379/1",
-      ...config,
-      lowestSlot,
-    });
-  }
-
-  getWorker() {
-    return this.worker;
-  }
-
-  getWorkerProcessor() {
-    return this.jobFn;
-  }
-
-  getQueue() {
-    return this.queue;
-  }
-}
+const FORK_SLOT = fixtures.blockchainSyncState[0]?.lastLowerSyncedSlot ?? 106;
 
 function getOverallStats() {
   return prisma.overallStats
@@ -57,20 +34,14 @@ function assertEmptyStats(
 }
 
 describe("OverallStatsCronjob", () => {
-  let overallStatsCronJob: OverallStatsCronJobMock;
-
-  beforeEach(() => {
-    overallStatsCronJob = new OverallStatsCronJobMock();
-
-    return async () => {
-      await overallStatsCronJob.close();
-    };
-  });
+  const job = {
+    data: {
+      forkSlot: FORK_SLOT,
+    },
+  } as OverallStatsJob;
 
   it("should aggregate overall stats correctly", async () => {
-    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
-
-    await workerProcessor();
+    await workerProcessor(job);
 
     const overallStats = await getOverallStats();
 
@@ -182,11 +153,10 @@ describe("OverallStatsCronjob", () => {
   });
 
   it("should update last aggregated block to last finalized block after aggregation", async () => {
-    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
     const expectedLastAggregatedBlock =
       fixtures.blockchainSyncState[0]?.lastFinalizedBlock;
 
-    await workerProcessor();
+    await workerProcessor(job);
 
     const lastAggregatedBlock = await prisma.blockchainSyncState
       .findUnique({
@@ -204,9 +174,7 @@ describe("OverallStatsCronjob", () => {
 
   it("should aggregate overall stats in batches correctly when there are too many blocks", async () => {
     const batchSize = 2;
-    const workerProcessor = new OverallStatsCronJobMock({
-      batchSize,
-    }).getWorkerProcessor();
+
     const incrementTransactionSpy = vi.spyOn(prisma.overallStats, "aggregate");
     const blockchainSyncState = fixtures.blockchainSyncState[0];
     const lastAggregatedBlock = blockchainSyncState
@@ -218,7 +186,12 @@ describe("OverallStatsCronjob", () => {
       (lastFinalizedBlock - lastAggregatedBlock + 1) / batchSize
     );
 
-    await workerProcessor();
+    await workerProcessor({
+      data: {
+        batchSize,
+        forkSlot: FORK_SLOT,
+      },
+    } as OverallStatsJob);
 
     expect(
       incrementTransactionSpy,
@@ -227,8 +200,6 @@ describe("OverallStatsCronjob", () => {
   });
 
   it("should skip aggregation when no finalized block has been set", async () => {
-    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
-
     await prisma.blockchainSyncState.update({
       data: {
         lastFinalizedBlock: null,
@@ -238,7 +209,7 @@ describe("OverallStatsCronjob", () => {
       },
     });
 
-    await workerProcessor();
+    await workerProcessor(job);
 
     const allOverallStats = await getOverallStats().then((allOverallStats) =>
       allOverallStats.filter((stats) => !!stats)
@@ -248,11 +219,9 @@ describe("OverallStatsCronjob", () => {
   });
 
   it("should skip aggregation when no blocks have been indexed yet", async () => {
-    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
-
     vi.spyOn(prisma.block, "findLatest").mockResolvedValueOnce(null);
 
-    await workerProcessor();
+    await workerProcessor(job);
 
     const allOverallStats = await getOverallStats().then((allOverallStats) =>
       allOverallStats.filter((stats) => !!stats)
@@ -262,11 +231,11 @@ describe("OverallStatsCronjob", () => {
   });
 
   it("should skip aggregation when the lowest slot hasn't been reached yet", async () => {
-    const workerProcessor = new OverallStatsCronJobMock({
-      lowestSlot: 1,
-    }).getWorkerProcessor();
-
-    await workerProcessor();
+    await workerProcessor({
+      data: {
+        forkSlot: 1,
+      },
+    } as OverallStatsJob);
 
     const allOverallStats = await getOverallStats().then((allOverallStats) =>
       allOverallStats.filter((stats) => !!stats)
@@ -276,13 +245,11 @@ describe("OverallStatsCronjob", () => {
   });
 
   it("should skip aggregation when there is no new finalized blocks", async () => {
-    const workerProcessor = overallStatsCronJob.getWorkerProcessor();
-
-    await workerProcessor();
+    await workerProcessor(job);
 
     const allOverallStats = await getOverallStats();
 
-    await workerProcessor();
+    await workerProcessor(job);
 
     const allOverallStatsAfter = await getOverallStats();
 

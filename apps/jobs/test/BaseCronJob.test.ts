@@ -2,16 +2,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { testValidError } from "@blobscan/test";
 
-import { BaseCronJob, CronJobError } from "../src/BaseCronJob";
-import type { BaseCronJobConfig } from "../src/BaseCronJob";
+import { BaseCronJob, CronJobError } from "../src/cron-jobs/BaseCronJob";
+import type { BaseCronJobConfig } from "../src/cron-jobs/BaseCronJob";
 
 class BaseCronJobMock extends BaseCronJob {
-  constructor({ name, jobFn }: Partial<BaseCronJobConfig> = {}) {
+  constructor({ name }: Partial<BaseCronJobConfig> = {}) {
     super({
       name: name ?? "test-updater",
       redisUriOrConnection: "redis://localhost:6379/1",
       cronPattern: "* * * * *",
-      jobFn: jobFn ?? (() => Promise.resolve()),
+      processor: async () => void {},
     });
   }
 

@@ -1,64 +1,34 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
-import { PriceFeed } from "@blobscan/price-feed";
 import { fixtures, getViemClient } from "@blobscan/test";
 
+import workerProcessor from "../src/cron-jobs/eth-price/processor";
+import type { EthPriceJob } from "../src/cron-jobs/eth-price/types";
 import { env } from "../src/env";
-import type { EthPriceCronJobConfig } from "../src/eth-price/EthPriceCronJob";
-import { EthPriceCronJob } from "../src/eth-price/EthPriceCronJob";
 
-class EthPriceCronJobMock extends EthPriceCronJob {
-  constructor({
-    ethUsdPriceFeed,
-  }: Pick<EthPriceCronJobConfig, "ethUsdPriceFeed">) {
-    super({
-      cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
-      redisUriOrConnection: env.REDIS_URI,
-      ethUsdPriceFeed,
-    });
-  }
-
-  getWorker() {
-    return this.worker;
-  }
-
-  getWorkerProcessor() {
-    return this.jobFn;
-  }
-
-  getQueue() {
-    return this.queue;
-  }
-}
+vi.mock("../src/cron-jobs/eth-price/viem.ts", async () => {
+  return {
+    client: getViemClient(),
+  };
+});
 
 describe("EthPriceCronJob", () => {
-  let ethPriceUpdater: EthPriceCronJobMock;
-
-  beforeEach(async () => {
-    const ethUsdPriceFeed = await PriceFeed.create({
-      client: getViemClient(),
-      dataFeedContractAddress:
-        env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
-    });
-    ethPriceUpdater = new EthPriceCronJobMock({ ethUsdPriceFeed });
-
-    return async () => {
-      await ethPriceUpdater.close();
-    };
-  });
+  const job = {
+    data: {
+      granularity: "minute",
+    },
+  } as EthPriceJob;
 
   afterEach(() => {
     vi.setSystemTime(fixtures.systemDate);
+    vi.resetAllMocks();
   });
 
   it("should sync eth price for current timestamp", async () => {
-    const workerProcessor = ethPriceUpdater.getWorkerProcessor();
-
-    await workerProcessor();
+    vi.setSystemTime("2023-08-31T11:56:30");
+    await workerProcessor(job);
 
     const expectedTimestamp = dayjs().utc().startOf("minute");
 
@@ -72,22 +42,9 @@ describe("EthPriceCronJob", () => {
 
   describe("when time tolerance is set", () => {
     it("should sync eth price if it is within threshold", async () => {
-      const timeTolerance = 3600;
-      const ethUsdPriceFeed = await PriceFeed.create({
-        client: getViemClient(),
-        dataFeedContractAddress:
-          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
-        timeTolerance,
-      });
+      vi.setSystemTime("2023-08-31T11:56:30");
 
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceCronJobMock({
-        ethUsdPriceFeed,
-      });
-
-      const workerProcessor =
-        ethPriceUpdaterWithTimeTolerance.getWorkerProcessor();
-
-      await workerProcessor();
+      await workerProcessor(job);
 
       const latestPrice = await prisma.ethUsdPrice.findFirst({
         orderBy: {
@@ -98,26 +55,12 @@ describe("EthPriceCronJob", () => {
       const timestamp = dayjs.unix(Number(latestPrice?.timestamp));
 
       expect(dayjs().diff(timestamp, "second")).toBeLessThanOrEqual(
-        timeTolerance
+        env.ETH_PRICE_SYNCER_TIME_TOLERANCE as number
       );
     });
 
     it("should skip eth price if it is outside threshold", async () => {
-      const timeTolerance = 60;
-
-      const ethUsdPriceFeed = await PriceFeed.create({
-        client: getViemClient(),
-        dataFeedContractAddress:
-          env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS! as `0x${string}`,
-        timeTolerance,
-      });
-      const ethPriceUpdaterWithTimeTolerance = new EthPriceCronJobMock({
-        ethUsdPriceFeed,
-      });
-
-      const workerProcessor =
-        ethPriceUpdaterWithTimeTolerance.getWorkerProcessor();
-      await workerProcessor();
+      await workerProcessor(job);
 
       const ethPrices = await prisma.ethUsdPrice.findMany();
 

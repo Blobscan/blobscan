@@ -20,23 +20,15 @@ _main() {
 	elif [ "$1" = 'api' ]; then
 		apply_prisma_migrations --schema schema.prisma
 		node /app/index.js
-	elif [ "$1" = 'job']; then
-		JOB_NAME="$2"
-
-		if [ -z "$JOB_NAME" ]; then
-			echo "❌ Missing job name."
-			echo "Usage: $0 job [eth-price|stats|swarm-stamp]"
-			exit 1
-  	fi
-
-		node /app/${JOB_NAME}/worker.js
+	elif [ "$1" = 'jobs' ]; then
+		node /app/index.js
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
 		echo ""
 		echo "Usage:"
 		echo "  $0 web               # Start the web server"
 		echo "  $0 api               # Start the REST API"
-		echo "  $0 job [eth-price|stats|swarm-stamp]    # Run a specific job worker"
+		echo "  $0 jobs    					 # Run cron jobs"
 	else
 		echo "Invalid command: $1"
 		exit 1

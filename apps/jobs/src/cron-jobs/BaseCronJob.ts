@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import type { Processor } from "bullmq";
 import { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
 import { createModuleLogger } from "@blobscan/logger";
 import type { Logger } from "@blobscan/logger";
 
-import { ErrorException } from "./errors";
-import { createRedis } from "./redis";
+import { ErrorException } from "../errors";
+import { createRedis } from "../redis";
 
 export interface CommonCronJobConfig {
   redisUriOrConnection: Redis | string;
@@ -15,11 +16,12 @@ export interface CommonCronJobConfig {
 
 export interface BaseCronJobConfig extends CommonCronJobConfig {
   name: string;
-  jobFn: () => Promise<void>;
+  processor: Processor;
+  jobData?: Record<string, unknown>;
 }
 
 export class CronJobError extends ErrorException {
-  constructor(cronJobName: string, message: string, cause: unknown) {
+  constructor(cronJobName: string, message: string, cause?: unknown) {
     super(`Cron job "${cronJobName}" failed: ${message}`, cause);
   }
 }
@@ -28,22 +30,25 @@ export class BaseCronJob {
   name: string;
   cronPattern: string;
 
-  protected jobFn: () => Promise<void>;
   protected logger: Logger;
 
   protected connection: Redis;
-  protected worker: Worker | undefined;
-  protected queue: Queue | undefined;
+  protected worker?: Worker;
+  protected queue?: Queue;
+
+  protected jobData?: Record<string, unknown>;
 
   constructor({
     name,
     cronPattern,
     redisUriOrConnection,
-    jobFn,
+    processor: processorFile,
+    jobData,
   }: BaseCronJobConfig) {
     this.name = `${name}-cron-job`;
     this.cronPattern = cronPattern;
     this.logger = createModuleLogger(this.name);
+    this.jobData = jobData;
 
     let connection: Redis;
 
@@ -57,7 +62,7 @@ export class BaseCronJob {
       connection,
     });
 
-    this.worker = new Worker(this.queue.name, jobFn, {
+    this.worker = new Worker(this.queue.name, processorFile, {
       connection,
     });
 
@@ -70,13 +75,12 @@ export class BaseCronJob {
     });
 
     this.connection = connection;
-    this.jobFn = jobFn;
   }
 
   async start() {
     try {
       const jobName = `${this.name}-job`;
-      const repeatableJob = await this.queue?.add(jobName, null, {
+      const repeatableJob = await this.queue?.add(jobName, this.jobData, {
         repeat: {
           pattern: this.cronPattern,
         },

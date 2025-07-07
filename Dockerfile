@@ -145,9 +145,11 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+COPY --from=jobs-builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=jobs-builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=jobs-builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=jobs-builder /app/apps/jobs/dist ./
 
 ADD docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"] 
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["jobs"]

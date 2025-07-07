@@ -1,4 +1,13 @@
-import { booleanSchema, createEnv, presetEnvOptions, z } from "@blobscan/zod";
+import {
+  booleanSchema,
+  createEnv,
+  maskConnectionUrl,
+  maskJSONRPCUrl,
+  presetEnvOptions,
+  z,
+} from "@blobscan/zod";
+
+import { determineGranularity, getNetworkDencunForkSlot } from "./utils";
 
 const networkSchema = z.enum([
   "mainnet",
@@ -40,5 +49,37 @@ export const env = createEnv({
       BEE_ENDPOINT: z.string().url().optional(),
     },
     ...presetEnvOptions,
+  },
+  display(env) {
+    console.log(
+      `ETH Price Cron Job Worker granularity=${determineGranularity(
+        env.ETH_PRICE_SYNCER_CRON_PATTERN
+      )}, redisUri=${maskConnectionUrl(
+        env.REDIS_URI
+      )}, databaseUrl=${maskConnectionUrl(env.DATABASE_URL)}, chainId=${
+        env.ETH_PRICE_SYNCER_CHAIN_ID
+      }, jsonRpcUrl=${maskJSONRPCUrl(
+        env.ETH_PRICE_SYNCER_CHAIN_JSON_RPC_URL
+      )}, priceFeedContract=${
+        env.ETH_PRICE_SYNCER_ETH_USD_PRICE_FEED_CONTRACT_ADDRESS
+      }, timeTolerance=${env.ETH_PRICE_SYNCER_TIME_TOLERANCE}`
+    );
+    console.log(
+      `Daily Stats Cron Job pattern=${env.STATS_SYNCER_DAILY_CRON_PATTERN}`
+    );
+    console.log(
+      `Overall Stats Cron Job pattern=${
+        env.STATS_SYNCER_OVERALL_CRON_PATTERN
+      }, forkSlot=${
+        env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME)
+      }`
+    );
+    console.log(
+      `Swarm Stamp Cron Job enabled=${
+        env.SWARM_STAMP_SYNCER_ENABLED
+      }, pattern=${env.SWARM_STAMP_CRON_PATTERN}, beeEndpoint=${
+        env.BEE_ENDPOINT ? maskConnectionUrl(env.BEE_ENDPOINT) : undefined
+      }, batchId=${env.SWARM_BATCH_ID}`
+    );
   },
 });

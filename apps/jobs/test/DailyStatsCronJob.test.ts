@@ -1,47 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { getDateFromISODateTime, toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
 
-import { DailyStatsCronJob } from "../src/stats/DailyStatsCronJob";
+import workerProcessor from "../src/cron-jobs/daily-stats/processor";
 import { CURRENT_DAY_DATA } from "./DailyStatsCronJob.test.fixtures";
 import {
   getDailyStatsDates,
   indexNewBlock,
 } from "./DailyStatsCronJob.test.utils";
 
-class DailyStatsCronJobMock extends DailyStatsCronJob {
-  constructor(redisUri = process.env.REDIS_URI ?? "") {
-    super({ redisUriOrConnection: redisUri, cronPattern: "* * * * *" });
-  }
-
-  getWorker() {
-    return this.worker;
-  }
-
-  getWorkerProcessor() {
-    return this.jobFn;
-  }
-
-  getQueue() {
-    return this.queue;
-  }
-}
-
 describe("DailyStatsCronJob", () => {
-  let dailyStatsCronJob: DailyStatsCronJobMock;
-
-  beforeEach(() => {
-    dailyStatsCronJob = new DailyStatsCronJobMock();
-
-    return async () => {
-      await dailyStatsCronJob.close();
-    };
-  });
-
   it("should aggregate data for all available days", async () => {
-    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
-
     await workerProcessor();
 
     const dailyStatsDates = await getDailyStatsDates();
@@ -50,8 +20,6 @@ describe("DailyStatsCronJob", () => {
   });
 
   it("should skip aggregation if not all blocks have been indexed for the last day", async () => {
-    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
-
     await indexNewBlock(CURRENT_DAY_DATA);
 
     await workerProcessor();
@@ -69,8 +37,6 @@ describe("DailyStatsCronJob", () => {
   });
 
   it("should skip aggregation if no blocks have been indexed yet", async () => {
-    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
-
     const findLatestSpy = vi
       .spyOn(prisma.block, "findLatest")
       .mockImplementationOnce(() => Promise.resolve(null));
@@ -85,8 +51,6 @@ describe("DailyStatsCronJob", () => {
 
   it("should skip aggregation if already up to date", async () => {
     await indexNewBlock(CURRENT_DAY_DATA);
-
-    const workerProcessor = dailyStatsCronJob.getWorkerProcessor();
 
     await workerProcessor();
 

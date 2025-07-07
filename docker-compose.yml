@@ -22,24 +22,12 @@ services:
       - /tmp/blobscan-blobs:/tmp/blobscan-blobs
     env_file:
       - ".env"
-  eth-price-job:
+  jobs:
     image: blossomlabs/blobscan-jobs:${BLOBSCAN_JOBS_TAG}
     restart: always
-    command: ["job", "eth-price"]
     env_file:
       - .env
-  swarm-stamp-job:
-    image: blossomlabs/blobscan-jobs:${BLOBSCAN_JOBS_TAG}
-    restart: always
-    command: ["job", "swarm-stamp"]
-    env_file:
-      - .env
-  stats-job:
-    image: blossomlabs/blobscan-jobs:${BLOBSCAN_JOBS_TAG}
-    restart: always
-    command: ["job", "stats"]
-    env_file:
-      - .env
+
   indexer:
     image: blossomlabs/blobscan-indexer:master
     network_mode: host

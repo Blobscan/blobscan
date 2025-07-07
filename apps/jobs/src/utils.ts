@@ -4,10 +4,6 @@ import type { env } from "./env";
 
 export type Granularity = "minute" | "hour" | "day";
 
-export function formatDate(date: Date | string | dayjs.Dayjs) {
-  return dayjs(date).format("YYYY-MM-DD");
-}
-
 export function determineGranularity(cronPattern: string): Granularity {
   switch (cronPattern) {
     case "0 * * * *":
@@ -19,6 +15,16 @@ export function determineGranularity(cronPattern: string): Granularity {
     default:
       throw new Error(`Unsupported cron pattern: ${cronPattern}`);
   }
+}
+
+export function isUnset<T>(
+  value: T | undefined | null
+): value is null | undefined {
+  return value === undefined || value === null;
+}
+
+export function formatDate(date: Date | string | dayjs.Dayjs) {
+  return dayjs(date).format("YYYY-MM-DD");
 }
 
 export function getNetworkDencunForkSlot(
