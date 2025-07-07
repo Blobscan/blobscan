@@ -43,3 +43,39 @@ export function maskPassword(uri: string | undefined) {
 
   return uri?.replace(regex, (_, username) => `://${username}:****@`);
 }
+
+export function maskJSONRPCUrl(url?: string): string | undefined {
+  if (!url) {
+    return;
+  }
+
+  try {
+    const parsed = new URL(url);
+    const hostParts = parsed.hostname.split(".");
+    const domain = hostParts.slice(-3).join(".");
+    const network = hostParts.slice(1, 2)[0];
+    return `https://****.${network}.${domain
+      .split(".")
+      .slice(1)
+      .join(".")}/****`;
+  } catch {
+    return "****";
+  }
+}
+
+export function maskConnectionUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+
+    // Mask username and password if present
+    if (parsed.username || parsed.password) {
+      parsed.username = "***";
+      parsed.password = "***";
+    }
+
+    return parsed.toString();
+  } catch {
+    // Fallback if URL is malformed or not standard
+    return url.replace(/\/\/([^:@]+):([^@]+)@/, "//***:***@");
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "@blobscan/jobs",
+  "version": "0.5.0",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "build:metadata": "BUILD_METADATA_ENABLED=true pnpm build",
+    "clean": "git clean -xdf node_modules",
+    "dev": "pnpm with-env tsx src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "start": "pnpm with-env node dist/index.js",
+    "test": "pnpm with-env:test vitest",
+    "test:ui": "pnpm with-env:test vitest --ui",
+    "with-env:test": "dotenv -e ../../.env.test --",
+    "with-env": "dotenv -e ../../.env --",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@blobscan/dates": "workspace:^0.0.1",
+    "@blobscan/dayjs": "workspace:^0.1.0",
+    "@blobscan/db": "workspace:^0.18.0",
+    "@blobscan/logger": "workspace:^0.1.2",
+    "@blobscan/price-feed": "workspace:^0.1.0",
+    "@blobscan/zod": "workspace:^0.1.0",
+    "axios": "^1.7.2",
+    "bullmq": "^4.13.2",
+    "ioredis": "^5.3.2",
+    "viem": "^2.17.4"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "esbuild": "0.25.5",
+    "fast-glob": "^3.3.2",
+    "tsx": "^4.19.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@blobscan/eslint-config/base"
+    ]
+  }
+}

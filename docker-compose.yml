@@ -22,6 +22,11 @@ services:
       - /tmp/blobscan-blobs:/tmp/blobscan-blobs
     env_file:
       - ".env"
+  jobs:
+    image: blossomlabs/blobscan-jobs:${BLOBSCAN_JOBS_TAG}
+    restart: always
+    env_file:
+      - .env
 
   indexer:
     image: blossomlabs/blobscan-indexer:master

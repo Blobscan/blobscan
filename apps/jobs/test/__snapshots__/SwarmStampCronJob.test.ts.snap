@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SwarmStampCronjob > should fail when trying to fetch a non-existing batch 1`] = `"Failed to fetch stamp batch \\"6b538866048cfb6e9e1d06805374c51572c11219d2d550c03e6e277366cb0371\\""`;
+
+exports[`SwarmStampCronjob > should fail when trying to fetch a non-existing batch 2`] = `[SwarmNodeError: issuer does not exist]`;
+
+exports[`SwarmStampCronjob > should fail when trying to fetch an invalid batch 1`] = `"Failed to fetch stamp batch \\"invalid-batch\\""`;
+
+exports[`SwarmStampCronjob > should fail when trying to fetch an invalid batch 2`] = `[SwarmNodeError: invalid path params]`;
+
+exports[`SwarmStampCronjob > when creating a new instance > should throw a valid error when no batch id was found and none was provided 1`] = `"Cron job \\"swarm-stamp-cron-job\\" failed: No swarm batch id found"`;
+
+exports[`SwarmStampCronjob > when creating a new instance > should throw a valid error when no batch id was found and none was provided 2`] = `undefined`;

@@ -19,6 +19,17 @@ services:
     depends_on:
       - postgres
 
+  jobs:
+    extends:
+      file: docker-compose.yml
+      service: jobs
+    build:
+      context: .
+      target: jobs
+    depends_on:
+      - postgres
+      - redis
+
   docs:
     extends:
       file: docker-compose.yml

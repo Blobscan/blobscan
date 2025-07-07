@@ -84,6 +84,32 @@ jobs:
             DATABASE_URL=${{ env.DATABASE_URL }}
             DIRECT_URL=${{ env.DIRECT_URL }}
 
+      - name: Extract metadata (tags, labels) for Docker (jobs)
+        id: meta_jobs
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            blossomlabs/blobscan-jobs
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Build and push (jobs)
+        uses: docker/build-push-action@v6.5.0
+        with:
+          context: .
+          push: true
+          target: jobs
+          tags: ${{ steps.meta_api.outputs.tags }}
+          labels: ${{ steps.meta_api.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_BLOBSCAN_RELEASE=${{ env.NEXT_PUBLIC_BLOBSCAN_RELEASE }}
+            BUILD_TIMESTAMP=${{ env.BUILD_TIMESTAMP }}
+            GIT_COMMIT=${{ env.GIT_COMMIT }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
+            DIRECT_URL=${{ env.DIRECT_URL }}
+
       - name: Extract metadata (tags, labels) for Docker (Web)
         id: meta_web
         uses: docker/metadata-action@v5
