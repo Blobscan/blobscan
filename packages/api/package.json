@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@blobscan/dayjs": "workspace:^0.1.0",
-    "@blobscan/db": "workspace:^0.18.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/network-blob-config": "workspace:^0.2.0",
@@ -31,7 +30,13 @@
     "viem": "^2.17.4"
   },
   "devDependencies": {
+    "@blobscan/db": "workspace:^0.18.0",
+    "@blobscan/blob-propagator": "workspace:^0.2.13",
     "@types/jsonwebtoken": "^9.0.2"
+  },
+  "peerDependencies": {
+    "@blobscan/db": "workspace:^0.18.0",
+    "@blobscan/blob-propagator": "workspace:^0.2.13"
   },
   "eslintConfig": {
     "root": true,
