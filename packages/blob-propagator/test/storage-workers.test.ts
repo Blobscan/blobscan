@@ -9,10 +9,6 @@ import {
   vi,
 } from "vitest";
 
-import {
-  createStorageFromEnv,
-  getBlobStorageManager,
-} from "@blobscan/blob-storage-manager";
 import type {
   BlobStorage,
   BlobStorageManager,
@@ -33,6 +29,7 @@ import type {
   BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
 } from "../src/types";
+import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
 
 function runWorkerTests(
   storageName: BlobStorageName,
@@ -136,6 +133,7 @@ describe("Storage Workers", () => {
   let tmpBlobStorage: BlobStorage;
   const blobVersionedHash = "test-blob-versioned-hash";
   const blobData = "0x1234abcdeff123456789ab34223a4b2c2e";
+  let bsm: BlobStorageManager;
 
   const blob: DBBlob = {
     versionedHash: blobVersionedHash,
@@ -150,7 +148,7 @@ describe("Storage Workers", () => {
   const mockedSwarmBlobUri = "0xswarm-reference";
 
   beforeAll(async () => {
-    const bsm = await getBlobStorageManager();
+    bsm = await createBlobStorageManager();
 
     const tmpStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
@@ -209,10 +207,8 @@ describe("Storage Workers", () => {
   storages.forEach(({ storage, uri }) => {
     runWorkerTests(
       storage,
-      async () => {
-        const blobStorageManager = await getBlobStorageManager();
-
-        return { blobStorageManager, prisma };
+      () => {
+        return Promise.resolve({ blobStorageManager: bsm, prisma });
       },
       {
         blobUri: uri,
@@ -224,28 +220,25 @@ describe("Storage Workers", () => {
 
   runWorkerTests(
     "SWARM",
-    async () => {
-      const blobStorageManager = await getBlobStorageManager();
+    () => {
+      vi.spyOn(bsm, "getStorage").mockImplementation((storage) => {
+        if (storage === "SWARM") {
+          return {
+            getBlob: async (uri) => {
+              if (uri === mockedSwarmBlobUri) {
+                return Promise.resolve(blobData);
+              }
 
-      vi.spyOn(blobStorageManager, "getStorage").mockImplementation(
-        (storage) => {
-          if (storage === "SWARM") {
-            return {
-              getBlob: async (uri) => {
-                if (uri === mockedSwarmBlobUri) {
-                  return Promise.resolve(blobData);
-                }
-
-                return Promise.reject(new Error("Blob not found"));
-              },
-              storeBlob: async (_, __) => {
-                return mockedSwarmBlobUri;
-              },
-            } as SwarmStorage;
-          }
+              return Promise.reject(new Error("Blob not found"));
+            },
+            storeBlob: async (_, __) => {
+              return mockedSwarmBlobUri;
+            },
+          } as SwarmStorage;
         }
-      );
-      return { blobStorageManager, prisma };
+      });
+
+      return Promise.resolve({ blobStorageManager: bsm, prisma });
     },
     {
       versionedHash: blobVersionedHash,

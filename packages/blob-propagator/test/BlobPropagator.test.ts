@@ -1,11 +1,8 @@
-import type { ConnectionOptions } from "bullmq";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   PostgresStorage,
   WeaveVMStorage,
-  createStorageFromEnv,
-  getBlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { FileSystemStorage } from "@blobscan/blob-storage-manager";
@@ -19,6 +16,7 @@ import {
   BlobPropagatorError,
 } from "../src/errors";
 import type { Blob } from "../src/types";
+import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
 
 export class MockedBlobPropagator extends BlobPropagator {
   getFinalizerWorker() {
@@ -51,10 +49,6 @@ describe("BlobPropagator", () => {
   let blobStorageManager: BlobStorageManager;
   let tmpBlobStorage: FileSystemStorage;
 
-  const connection: ConnectionOptions = {
-    host: "localhost",
-    port: 6379,
-  };
   const blob: Blob = {
     versionedHash: "blobVersionedHash",
     data: "0x1234abcdeff123456789ab34223a4b2c2e",
@@ -63,7 +57,7 @@ describe("BlobPropagator", () => {
   let blobPropagator: MockedBlobPropagator;
 
   beforeEach(async () => {
-    blobStorageManager = await getBlobStorageManager();
+    blobStorageManager = await createBlobStorageManager();
 
     const tmpStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
@@ -77,9 +71,7 @@ describe("BlobPropagator", () => {
       blobStorageManager,
       prisma,
       tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-      workerOptions: {
-        connection,
-      },
+      redisConnectionOrUri: env.REDIS_URI,
     });
   });
 
@@ -102,9 +94,7 @@ describe("BlobPropagator", () => {
         blobStorageManager: emptyBlobStorageManager,
         prisma,
         tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-        workerOptions: {
-          connection,
-        },
+        redisConnectionOrUri: env.REDIS_URI,
       });
     },
     BlobPropagatorCreationError,
@@ -124,9 +114,7 @@ describe("BlobPropagator", () => {
         blobStorageManager,
         prisma,
         tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-        workerOptions: {
-          connection,
-        },
+        redisConnectionOrUri: env.REDIS_URI,
       });
     },
     BlobPropagatorCreationError,
@@ -150,9 +138,7 @@ describe("BlobPropagator", () => {
         blobStorageManager: noTmpStorageBlobStorageManager,
         prisma,
         tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-        workerOptions: {
-          connection,
-        },
+        redisConnectionOrUri: env.REDIS_URI,
       });
     },
     BlobPropagatorCreationError,
@@ -169,9 +155,7 @@ describe("BlobPropagator", () => {
         blobStorageManager,
         prisma,
         tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-        workerOptions: {
-          connection,
-        },
+        redisConnectionOrUri: env.REDIS_URI,
       });
     });
 

@@ -6,7 +6,7 @@ import { BlobStorageManagerError } from "./errors";
 import type { BlobStorageError } from "./errors";
 import { tracer, updateBlobStorageMetrics } from "./instrumentation";
 import type { Blob, BlobReference, StorageOf, StoreOptions } from "./types";
-import { calculateBlobBytes, removeDuplicatedStorages } from "./utils";
+import { calculateBlobBytes } from "./utils";
 
 type GetBlobOperation = [BlobStorageName, () => Promise<string>];
 export class BlobStorageManager {
@@ -17,7 +17,11 @@ export class BlobStorageManager {
       throw new BlobStorageManagerError("No blob storages provided");
     }
 
-    this.#blobStorages = removeDuplicatedStorages(blobStorages);
+    // Remove duplicated storages
+    this.#blobStorages = blobStorages.filter(
+      (blobStorage, index, self) =>
+        index === self.findIndex((t) => t.name === blobStorage.name)
+    );
   }
 
   addStorage(storage: BlobStorage) {
