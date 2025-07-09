@@ -30,13 +30,13 @@
     "viem": "^2.17.4"
   },
   "devDependencies": {
-    "@blobscan/db": "workspace:^0.18.0",
     "@blobscan/blob-propagator": "workspace:^0.2.13",
+    "@blobscan/db": "workspace:^0.18.0",
     "@types/jsonwebtoken": "^9.0.2"
   },
   "peerDependencies": {
-    "@blobscan/db": "workspace:^0.18.0",
-    "@blobscan/blob-propagator": "workspace:^0.2.13"
+    "@blobscan/blob-propagator": "workspace:^0.2.13",
+    "@blobscan/db": "workspace:^0.18.0"
   },
   "eslintConfig": {
     "root": true,
