@@ -174,7 +174,7 @@ describe("Base Extension", () => {
 
         it("should not update a blob's first block number when new one is higher", async () => {
           const versionedHash =
-            "0x000000000000000000000000000000000000000000000000000000000000b2";
+            "0x01000000000000000000000000000000000000000000000000000000000000b2";
 
           const blob = await prisma.blob.findUniqueOrThrow({
             where: {
