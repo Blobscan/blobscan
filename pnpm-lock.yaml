@@ -183,6 +183,12 @@ importers:
       '@blobscan/blob-propagator':
         specifier: workspace:^0.2.13
         version: link:../../packages/blob-propagator
+      '@blobscan/blob-storage-manager':
+        specifier: workspace:^0.5.1
+        version: link:../../packages/blob-storage-manager
+      '@blobscan/db':
+        specifier: workspace:^0.18.0
+        version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../../packages/env

@@ -11,7 +11,6 @@ export type {
   TRPCContext,
 } from "./context";
 
-export { gracefulShutdown } from "./graceful-shutdown";
 export { metricsHandler } from "./instrumentation";
 
 export { searchByTerm } from "./routers/search/byTerm";
