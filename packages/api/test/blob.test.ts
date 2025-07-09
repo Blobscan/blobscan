@@ -1,7 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import type { inferProcedureInput } from "@trpc/server";
+import fs from "fs";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { BlobDataStorageReference } from "@blobscan/db";
+import { prisma } from "@blobscan/db";
 import type { DailyStats, Prisma } from "@blobscan/db";
 import { fixtures, testValidError } from "@blobscan/test";
 
@@ -10,6 +13,8 @@ import type { Rollup } from "../enums";
 import type { AppRouter } from "../src/app-router";
 import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
+import { bytesToHex, hexToBytes } from "../src/utils";
+import { buildBlobDataUrl } from "../src/utils/transformers";
 import {
   createTestContext,
   generateDailyCounts,
@@ -344,7 +349,7 @@ describe("Blob router", () => {
     });
 
     describe("when authorized", () => {
-      it("should get data by versioned hash", async () => {
+      it("should fetch data by versioned hash", async () => {
         const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
           id: versionedHash,
         });
@@ -352,7 +357,7 @@ describe("Blob router", () => {
         expect(result).toEqual(expectedBlobData);
       });
 
-      it("should get data by kzg commitment", async () => {
+      it("should fetch data by kzg commitment", async () => {
         const commitment =
           "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
 
@@ -362,6 +367,188 @@ describe("Blob router", () => {
 
         expect(result).toEqual(expectedBlobData);
       });
+
+      describe("when fetching blob data stored in different formats", () => {
+        const blobHash =
+          "0x01000000000000000000000000000000000000000000000000000000000000b1";
+        const blobBinFileName = `${blobHash.slice(2)}.bin`;
+        const blobTxtFileName = `${blobHash.slice(2)}.txt`;
+        const blobData = "0x0e2e5a3a2011ad49f5055eb3227d66d5";
+        function createBlobDataStorageRef(
+          blobStorage: BlobStorage,
+          extension: "bin" | "txt"
+        ): BlobDataStorageReference {
+          return {
+            blobHash: blobHash,
+            blobStorage: blobStorage,
+            dataReference: `1/01/00/00/01000000000000000000000000000000000000000000000000000000000000b1.${extension}`,
+          };
+        }
+
+        beforeEach(async () => {
+          fs.writeFileSync(
+            blobBinFileName,
+            hexToBytes("0x0e2e5a3a2011ad49f5055eb3227d66d5")
+          );
+          fs.writeFileSync(blobTxtFileName, blobData, {
+            encoding: "utf-8",
+          });
+
+          await prisma.blobDataStorageReference.create;
+
+          return async () => {
+            await Promise.all([
+              fs.promises.unlink(blobBinFileName),
+              fs.promises.unlink(blobTxtFileName),
+            ]);
+          };
+        });
+
+        beforeEach(async () => {
+          await prisma.blobDataStorageReference.deleteMany({
+            where: {
+              blobHash: blobHash,
+            },
+          });
+        });
+
+        it("should fetch data stored as a binary", async () => {
+          const gcsBinRef = createBlobDataStorageRef("GOOGLE", "bin");
+          const gcsUrl = buildBlobDataUrl(
+            gcsBinRef.blobStorage,
+            gcsBinRef.dataReference
+          );
+          const response = await fetch(gcsUrl);
+
+          if (!response.ok) {
+            throw new Error(await response.text());
+          }
+
+          const blobBytes = await response.arrayBuffer();
+          const expectedBlobData = bytesToHex(blobBytes);
+
+          await prisma.blobDataStorageReference.create({
+            data: gcsBinRef,
+          });
+
+          const result =
+            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+              id: gcsBinRef.blobHash,
+            });
+
+          expect(result).toEqual(expectedBlobData);
+        });
+
+        it("should fetch data stored as binary from file system", async () => {
+          await prisma.blobDataStorageReference.create({
+            data: {
+              dataReference: blobBinFileName,
+              blobStorage: "FILE_SYSTEM",
+              blobHash,
+            },
+          });
+          const result =
+            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+              id: blobHash,
+            });
+
+          expect(result).toEqual(blobData);
+        });
+
+        it("should fetch data stored as text", async () => {
+          const gcsTxtRef = createBlobDataStorageRef("GOOGLE", "txt");
+
+          const gcsUrl = buildBlobDataUrl(
+            gcsTxtRef.blobStorage,
+            gcsTxtRef.dataReference
+          );
+          const response = await fetch(gcsUrl);
+
+          if (!response.ok) {
+            throw new Error(await response.text());
+          }
+
+          const expectedBlobData = await response.text();
+
+          await prisma.blobDataStorageReference.create({
+            data: gcsTxtRef,
+          });
+
+          const result =
+            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+              id: gcsTxtRef.blobHash,
+            });
+
+          expect(result).toEqual(expectedBlobData);
+        });
+
+        it("should fetch data stored as txt from file system", async () => {
+          await prisma.blobDataStorageReference.create({
+            data: {
+              dataReference: blobTxtFileName,
+              blobStorage: "FILE_SYSTEM",
+              blobHash,
+            },
+          });
+
+          const result =
+            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+              id: blobHash,
+            });
+
+          expect(result).toEqual(blobData);
+        });
+      });
+
+      it("should fetch data stored in Postgres", async () => {
+        const blobHash =
+          "0x01000000000000000000000000000000000000000000000000000000000000b3";
+        const expectedBlobData = await prisma.blobData
+          .findUnique({
+            where: {
+              id: blobHash,
+            },
+          })
+          .then((r) => (r?.data ? bytesToHex(r.data) : undefined));
+
+        const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          id: blobHash,
+        });
+
+        expect(result).toEqual(expectedBlobData);
+      });
+
+      testValidError(
+        "should fail when the blob data wasn't retrieved from any of the storages",
+        async () => {
+          await prisma.blobDataStorageReference.update({
+            data: {
+              dataReference: "123131231231231231231",
+            },
+            where: {
+              blobHash_blobStorage: {
+                blobHash: versionedHash,
+                blobStorage: "POSTGRES",
+              },
+            },
+          });
+          await prisma.blobDataStorageReference.create({
+            data: {
+              blobHash: versionedHash,
+              blobStorage: "GOOGLE",
+              dataReference: "123131231231231231231",
+            },
+          });
+
+          await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+            id: versionedHash,
+          });
+        },
+        TRPCError,
+        {
+          checkCause: true,
+        }
+      );
 
       testValidError(
         "should fail when no blob data is found for the provided id",

@@ -7,8 +7,6 @@ import type {
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
 
-import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
 import type { BlobPropagator } from "./types";
@@ -26,7 +24,6 @@ type CreateInnerContextOptions = Partial<CreateContextOptions> & {
 
 export type TRPCInnerContext = {
   prisma: typeof prisma;
-  blobStorageManager: BlobStorageManager;
   blobPropagator?: BlobPropagator;
   apiClient?: APIClient;
 };
@@ -34,11 +31,8 @@ export type TRPCInnerContext = {
 export async function createTRPCInnerContext(
   opts?: CreateInnerContextOptions
 ): Promise<TRPCInnerContext> {
-  const blobStorageManager = await getBlobStorageManager();
-
   return {
     prisma,
-    blobStorageManager,
     blobPropagator: opts?.blobPropagator,
     apiClient: opts?.apiClient,
   };
