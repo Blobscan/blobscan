@@ -726,13 +726,6 @@ importers:
         version: 3.0.0
 
   packages/price-feed:
-    dependencies:
-      '@blobscan/env':
-        specifier: workspace:^0.1.0
-        version: link:../env
-      '@blobscan/logger':
-        specifier: workspace:^0.1.2
-        version: link:../logger
     devDependencies:
       viem:
         specifier: ^2.17.4

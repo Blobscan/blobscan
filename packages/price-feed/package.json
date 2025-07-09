@@ -13,10 +13,6 @@
     "test:ui": "pnpm with-env:test vitest --ui",
     "with-env:test": "dotenv -e ../../.env.test --"
   },
-  "dependencies": {
-    "@blobscan/env": "workspace:^0.1.0",
-    "@blobscan/logger": "workspace:^0.1.2"
-  },
   "peerDependencies": {
     "viem": "^2.17.4"
   },
