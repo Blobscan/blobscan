@@ -234,6 +234,10 @@ export const env = createEnv({
     );
 
     console.log(
+      `Blob propagator configuration: redisUri=${env.REDIS_URI} temporaryBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE}`
+    );
+
+    console.log(
       `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
@@ -269,7 +273,9 @@ export const env = createEnv({
       console.log(
         `S3 configuration: bucketName=${env.S3_STORAGE_BUCKET_NAME}, region=${
           env.S3_STORAGE_REGION
-        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}, forcePathStyle=${env.S3_STORAGE_FORCE_PATH_STYLE || false}`
+        }, endpoint=${env.S3_STORAGE_ENDPOINT || "default"}, forcePathStyle=${
+          env.S3_STORAGE_FORCE_PATH_STYLE || false
+        }`
       );
     }
     console.log(
