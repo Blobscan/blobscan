@@ -28,9 +28,7 @@ export type TRPCInnerContext = {
   apiClient?: APIClient;
 };
 
-export async function createTRPCInnerContext(
-  opts?: CreateInnerContextOptions
-): Promise<TRPCInnerContext> {
+export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,
     blobPropagator: opts?.blobPropagator,
@@ -40,13 +38,20 @@ export async function createTRPCInnerContext(
 
 export type ContextScope = "web" | "rest-api";
 
-export function createTRPCContext({ scope }: { scope: ContextScope }) {
+export function createTRPCContext({
+  blobPropagator,
+  scope,
+}: {
+  blobPropagator?: BlobPropagator;
+  scope: ContextScope;
+}) {
   return async (opts: CreateContextOptions) => {
     try {
       const apiClient = retrieveAPIClient(opts.req);
 
-      const innerContext = await createTRPCInnerContext({
+      const innerContext = createTRPCInnerContext({
         apiClient,
+        blobPropagator,
       });
 
       return {
