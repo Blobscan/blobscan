@@ -171,4 +171,6 @@ export const optimismDecodedFieldsSchema = z.object({
   contractCreationTxsNumber: z.number(),
 });
 
+export type OptimismDecodedFields = z.input<typeof optimismDecodedFieldsSchema>;
+
 export const decodedFieldsSchema = optimismDecodedFieldsSchema.or(z.object({}));

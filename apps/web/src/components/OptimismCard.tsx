@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import type { OptimismDecodedData } from "@blobscan/api/src/blob-parse/optimism";
+import type { OptimismDecodedFields } from "@blobscan/db/prisma/zod-utils";
 
 import { InfoGrid } from "~/components/InfoGrid";
 import { Link } from "~/components/Link";
@@ -11,7 +11,7 @@ import { Card } from "./Cards/Card";
 import { Copyable } from "./Copyable";
 
 type OptimismCardProps = {
-  data: OptimismDecodedData;
+  data: OptimismDecodedFields;
   txTimestamp?: Date;
 };
 
