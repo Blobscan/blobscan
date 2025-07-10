@@ -1,11 +1,9 @@
-import { z } from "@blobscan/zod";
-
-import { publicProcedure } from "./procedures";
 import { blobRouter } from "./routers/blob";
 import { blobStoragesStateRouter } from "./routers/blob-storages-state";
 import { blockRouter } from "./routers/block";
 import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { ethPriceRouter } from "./routers/eth-price";
+import { healthcheck } from "./routers/healthcheck";
 import { indexerRouter } from "./routers/indexer";
 import { searchRouter } from "./routers/search";
 import { stateRouter } from "./routers/state";
@@ -24,18 +22,7 @@ export const appRouter = t.router({
   syncState: blockchainSyncStateRouter,
   blobStoragesState: blobStoragesStateRouter,
   ethPrice: ethPriceRouter,
-  healthcheck: publicProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/healthcheck",
-        summary: "connection healthcheck.",
-        tags: ["system"],
-      },
-    })
-    .input(z.void())
-    .output(z.string())
-    .query(() => "yay!"),
+  healthcheck,
 });
 
 // export type definition of API
