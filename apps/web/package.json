@@ -56,7 +56,6 @@
     "superjson": "1.9.1",
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwind-merge": "^2.4.0",
-    "viem": "^2.17.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {

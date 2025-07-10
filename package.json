@@ -64,5 +64,8 @@
   },
   "manypkg": {
     "workspaceProtocol": "require"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.6"
   }
 }
