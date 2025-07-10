@@ -4,6 +4,7 @@ import type { EChartOption } from "echarts";
 import { useTheme } from "next-themes";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
+import echarts from "~/echarts";
 import type { CustomTimeSeriesProps } from "./ChartBase/types";
 import { aggregateSeries } from "./helpers";
 

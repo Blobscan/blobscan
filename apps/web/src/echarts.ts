@@ -5,20 +5,22 @@ import {
   ToolboxComponent,
   GridComponent,
   LegendComponent,
+  GraphicComponent,
 } from "echarts/components";
 import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 
 // Register only needed components
 echarts.use([
-  LineChart,
   BarChart,
-  ToolboxComponent,
-  TitleComponent,
-  TooltipComponent,
+  CanvasRenderer,
+  GraphicComponent,
   GridComponent,
   LegendComponent,
-  CanvasRenderer,
+  LineChart,
+  TitleComponent,
+  ToolboxComponent,
+  TooltipComponent,
 ]);
 
 export default echarts;
