@@ -1,3 +1,5 @@
+export * from "@trpc/server/adapters/next";
+
 export { createTRPCContext, createTRPCInnerContext } from "./context";
 export type {
   TRPCInnerContext as TRCInnerContext,
@@ -7,3 +9,7 @@ export type {
 export { metricsHandler } from "./instrumentation";
 
 export type { TimeFrame } from "./middlewares/withTimeFrame";
+
+export { searchByTerm } from "./routers/search/byTerm";
+
+export * from "./app-router";

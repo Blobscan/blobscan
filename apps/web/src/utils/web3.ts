@@ -1,3 +1,5 @@
+const addressRegex = /^0x[a-fA-F0-9]{40}$/;
+
 // This function shortens an Ethereum address by removing characters from the middle.
 export function shortenAddress(address: string, length = 4): string {
   return `${address.slice(0, length)}…${address.slice(-length)}`;
@@ -16,4 +18,8 @@ export function getChainIdByName(chainName: string): number | undefined {
     case "gnosis":
       return 100;
   }
+}
+
+export function isAddress(address: string) {
+  return addressRegex.test(address) || address.toLowerCase() === address;
 }

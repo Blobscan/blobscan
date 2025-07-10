@@ -1,6 +1,7 @@
 import React from "react";
 import Blockies from "react-blockies";
-import { isAddress } from "viem";
+
+import { isAddress } from "~/utils";
 
 const PX_RATIO = typeof devicePixelRatio === "undefined" ? 2 : devicePixelRatio;
 const BLOCKIES_SQUARES = 8; // commonly used to represent Ethereum addresses

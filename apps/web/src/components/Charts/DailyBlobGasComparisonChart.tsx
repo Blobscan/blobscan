@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import React, { useMemo } from "react";
-import * as echarts from "echarts";
+import type { EChartOption } from "echarts";
 import { useTheme } from "next-themes";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
@@ -31,7 +31,7 @@ const DailyBlobGasComparisonChart: FC<DailyBlobGasComparisonChartProps> =
           : undefined,
       };
     }, [seriesProps]);
-    const series: echarts.EChartOption.Series[] | undefined =
+    const series: EChartOption.Series[] | undefined =
       totalBlobAsCalldataGasUsed && totalBlobGasUsed ? [] : undefined;
 
     if (series && totalBlobAsCalldataGasUsed?.length) {
