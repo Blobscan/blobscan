@@ -1,10 +1,10 @@
 import type { Prisma } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
+import { Category } from "@blobscan/db/prisma/enums";
 import type { optimismDecodedFieldsSchema } from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import type { z } from "@blobscan/zod";
 
-import type { BlobStorage } from "../../enums";
-import { Category } from "../../enums";
 import type { PrismaBlob, PrismaTransaction } from "../zod-schemas";
 import { hasProperties } from "./identifiers";
 

@@ -1,11 +1,11 @@
 import dayjs from "@blobscan/dayjs";
 import type { Prisma } from "@blobscan/db";
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { DailyStatsModel } from "@blobscan/db/prisma/zod";
 import { env } from "@blobscan/env";
 import { getNetworkForkTimestamp } from "@blobscan/network-blob-config";
 import { z } from "@blobscan/zod";
 
-import type { Category, Rollup } from "../../enums";
 import type { ContextScope } from "../context";
 import { t } from "../trpc-client";
 import {

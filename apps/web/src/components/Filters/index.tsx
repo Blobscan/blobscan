@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import type { DateRangeType } from "react-tailwindcss-datepicker";
 import type { UrlObject } from "url";
 
-import { Category } from "@blobscan/api/enums";
+import { Category } from "@blobscan/db/prisma/enums";
 
 import { Button } from "~/components/Button";
 import type { Sort } from "~/hooks/useQueryParams";
