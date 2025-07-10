@@ -1,6 +1,6 @@
 import { generateOpenApiDocument } from "trpc-openapi";
 
-import { appRouter } from "@blobscan/api";
+import { appRouter } from "@blobscan/api/rest-api";
 import { env } from "@blobscan/env";
 
 // Generate OpenAPI schema document

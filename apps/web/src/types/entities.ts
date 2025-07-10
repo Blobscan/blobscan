@@ -1,9 +1,9 @@
-import type { RouterOutputs } from "@blobscan/api";
+import type { AppRouterOutputs } from "@blobscan/api/web";
 import type {
   BlobStorage as BlobStorageEnum,
   Rollup as RollupEnum,
   Category as CategoryEnum,
-} from "@blobscan/api/enums";
+} from "@blobscan/db/prisma/enums";
 
 import type { MakeRequired } from "./helpers";
 
@@ -13,14 +13,14 @@ export type Rollup = Lowercase<RollupEnum>;
 
 export type Category = Lowercase<CategoryEnum>;
 
-export type Blob = RouterOutputs["blob"]["getByBlobId"];
+export type Blob = AppRouterOutputs["blob"]["getByBlobId"];
 
 export type BlobOnTransaction =
-  RouterOutputs["blob"]["getAll"]["blobs"][number];
+  AppRouterOutputs["blob"]["getAll"]["blobs"][number];
 
-export type Block = RouterOutputs["block"]["getByBlockId"];
+export type Block = AppRouterOutputs["block"]["getByBlockId"];
 
-export type Transaction = RouterOutputs["tx"]["getByHash"];
+export type Transaction = AppRouterOutputs["tx"]["getByHash"];
 
 export type TransactionWithExpandedBlock = MakeRequired<Transaction, "block">;
 
@@ -50,11 +50,13 @@ export type BlobWithExpandedTransaction = MakeRequired<
   "transaction"
 >;
 
-export type DailyStats = RouterOutputs["stats"]["getDailyStats"][number];
+export type DailyStats = AppRouterOutputs["stats"]["getDailyStats"][number];
 
 export type DailyStatName = keyof Omit<
   DailyStats,
   "day" | "category" | "rollup"
 >;
 
-export type OverallStats = RouterOutputs["stats"]["getOverallStats"][number];
+export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
+
+export type SearchResult = AppRouterOutputs["search"]["byTerm"];

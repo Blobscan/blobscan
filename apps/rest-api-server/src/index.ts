@@ -7,7 +7,8 @@ import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
-import { appRouter, createTRPCContext, metricsHandler } from "@blobscan/api";
+import { createTRPCContext, metricsHandler } from "@blobscan/api";
+import { appRouter } from "@blobscan/api/rest-api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 

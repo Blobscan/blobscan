@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { Category, Rollup } from "@blobscan/api/enums";
+import { Category, Rollup } from "@blobscan/db/prisma/enums";
 
 export const commaSeparatedValuesSchema = z
   .string()

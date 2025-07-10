@@ -6,6 +6,8 @@
     "test/**/*.ts",
     "vitest.config.ts",
     "enums.ts",
-    "setup.ts"
+    "setup.ts",
+    "rest-api.ts",
+    "web.ts"
   ]
 }

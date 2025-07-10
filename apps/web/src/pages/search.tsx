@@ -1,14 +1,13 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
-import { searchByTerm } from "@blobscan/api";
+import { searchByTerm } from "@blobscan/api/web";
 
 import { Button } from "~/components/Button";
-import type { RouterOutputs } from "~/api-client";
+import type { SearchResult } from "~/types";
 import { getRouteBySearchCategory } from "~/utils";
 
-type SearchOutput = RouterOutputs["search"]["byTerm"];
-type SearchCategory = keyof SearchOutput;
+type SearchCategory = keyof SearchResult;
 
 type SearchProps = {
   term: string;

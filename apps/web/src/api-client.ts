@@ -2,7 +2,7 @@ import { httpLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import superjson from "superjson";
 
-import type { AppRouter } from "@blobscan/api";
+import type { AppRouter } from "@blobscan/api/web";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -33,5 +33,3 @@ export const api = createTRPCNext<AppRouter>({
   },
   ssr: false,
 });
-
-export { type RouterInputs, type RouterOutputs } from "@blobscan/api";
