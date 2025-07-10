@@ -1,9 +1,11 @@
-import { sha256 } from "viem";
+import { createHash } from "crypto";
 
 export function computeVersionedHash(commitment: string) {
-  const hashedCommitment = sha256(commitment as `0x${string}`);
+  const hashedCommitment = createHash("sha256")
+    .update(commitment.slice(2), "hex")
+    .digest("hex");
 
-  return `0x01${hashedCommitment.slice(4)}`;
+  return `0x01${hashedCommitment.slice(2)}`;
 }
 
 export function hexToBytes(hex: string) {

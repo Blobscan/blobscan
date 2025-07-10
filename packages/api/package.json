@@ -27,8 +27,7 @@
     "jsonwebtoken": "^9.0.0",
     "posthog-node": "^4.2.0",
     "superjson": "1.9.1",
-    "trpc-openapi": "^1.2.0",
-    "viem": "^2.17.4"
+    "trpc-openapi": "^1.2.0"
   },
   "devDependencies": {
     "@blobscan/blob-propagator": "workspace:^0.2.13",
