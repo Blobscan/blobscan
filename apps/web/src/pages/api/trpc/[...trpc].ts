@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/nextjs";
+import { captureException } from "@sentry/nextjs";
 
 import { createTRPCContext } from "@blobscan/api";
 import { createNextApiHandler } from "@blobscan/api";
@@ -11,7 +11,7 @@ export default createNextApiHandler({
     scope: "web",
   }),
   onError({ error }) {
-    Sentry.captureException(error);
+    captureException(error);
 
     if (error.code === "INTERNAL_SERVER_ERROR") {
       console.error(error);
