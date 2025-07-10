@@ -2,10 +2,11 @@ import type { FC } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useState } from "react";
 import type { EChartOption, ECElementEvent } from "echarts";
-import EChartsReact from "echarts-for-react";
 import type { EChartsInstance } from "echarts-for-react";
+import ReactEChartsCore from "echarts-for-react/lib/core";
 import { useTheme } from "next-themes";
 
+import echarts from "~/echarts";
 import { Legend } from "./Legend";
 import type { LegendItem } from "./Legend";
 import {
@@ -255,7 +256,8 @@ export const ChartBase: FC<ChartBaseProps> = function ({
 
   return (
     <div className="flex h-full w-full flex-col gap-1 overflow-visible md:flex-row md:gap-2">
-      <EChartsReact
+      <ReactEChartsCore
+        echarts={echarts}
         ref={chartInstanceRef}
         onChartReady={onChartReady}
         option={

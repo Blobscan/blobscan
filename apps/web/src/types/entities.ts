@@ -1,4 +1,4 @@
-import type { AppRouterOutputs } from "@blobscan/api/web";
+import type { AppRouterOutputs } from "@blobscan/api";
 import type {
   BlobStorage as BlobStorageEnum,
   Rollup as RollupEnum,

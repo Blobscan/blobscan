@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import type { FC } from "react";
+import type { EChartOption } from "echarts";
 
 import { ChartCard } from "~/components/Cards/ChartCard";
 import type { CustomTimeSeriesProps } from "./ChartBase/types";
@@ -29,7 +30,7 @@ const DailyUniqueAddressesChart: FC<DailyUniqueAddressesChartProps> =
       }),
       [seriesProps]
     );
-    const series: echarts.EChartOption.Series[] | undefined =
+    const series: EChartOption.Series[] | undefined =
       totalUniqueReceivers && totalUniqueSenders ? [] : undefined;
 
     if (series && totalUniqueReceivers?.length) {

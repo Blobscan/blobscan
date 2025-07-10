@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
-import { searchByTerm } from "@blobscan/api/web";
+import { searchByTerm } from "@blobscan/api";
 
 import { Button } from "~/components/Button";
 import type { SearchResults } from "~/types";
