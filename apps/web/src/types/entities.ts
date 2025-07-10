@@ -59,4 +59,4 @@ export type DailyStatName = keyof Omit<
 
 export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
 
-export type SearchResult = AppRouterOutputs["search"]["byTerm"];
+export type SearchResults = AppRouterOutputs["search"]["byTerm"];

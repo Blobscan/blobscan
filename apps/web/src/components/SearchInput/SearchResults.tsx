@@ -2,15 +2,14 @@ import React from "react";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { CpuChipIcon, CubeIcon, DocumentIcon } from "@heroicons/react/24/solid";
 
-import type { RouterOutputs } from "~/api-client";
+import type { SearchResults as SearchResultsType } from "~/types";
 import { capitalize } from "~/utils";
 import { Badge } from "../Badges/Badge";
 import { Card } from "../Cards/Card";
 
-type SearchOutput = RouterOutputs["search"]["byTerm"];
-type SearchCategory = keyof SearchOutput;
+type SearchCategory = keyof SearchResultsType;
 
-type SearchResult = NonNullable<SearchOutput["address"]>[number];
+type SearchResult = NonNullable<SearchResultsType["address"]>[number];
 
 type SearchResultItemProps = {
   category: SearchCategory;
@@ -80,7 +79,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
 };
 
 export type SearchResultsProps = {
-  searchResults: SearchOutput;
+  searchResults: SearchResultsType;
   onResultClick(category: SearchCategory, id: string): void;
 };
 

@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 import { searchByTerm } from "@blobscan/api/web";
 
 import { Button } from "~/components/Button";
-import type { SearchResult } from "~/types";
+import type { SearchResults } from "~/types";
 import { getRouteBySearchCategory } from "~/utils";
 
-type SearchCategory = keyof SearchResult;
+type SearchCategory = keyof SearchResults;
 
 type SearchProps = {
   term: string;

@@ -1,4 +1,4 @@
-import type { SearchResult } from "~/types";
+import type { SearchResults } from "~/types";
 import {
   buildAddressRoute,
   buildBlobRoute,
@@ -7,7 +7,7 @@ import {
 } from "./routes";
 
 export function getRouteBySearchCategory(
-  category: keyof SearchResult,
+  category: keyof SearchResults,
   id: string
 ): string {
   switch (category) {
