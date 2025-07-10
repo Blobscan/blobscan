@@ -12,7 +12,10 @@
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@blobscan/db": "workspace:^0.18.0"
+  },
+  "peerDependencies": {
     "@blobscan/db": "workspace:^0.18.0"
   },
   "eslintConfig": {

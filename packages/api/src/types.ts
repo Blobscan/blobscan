@@ -4,3 +4,12 @@ export type Prettify<T> = {
 } & {};
 
 export type PartialOrFull<T> = T | Partial<T>;
+
+export interface BlobPropagator {
+  propagateBlobs(
+    blobs: {
+      versionedHash: string;
+      data: string;
+    }[]
+  ): Promise<void>;
+}

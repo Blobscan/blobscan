@@ -3,22 +3,22 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { Prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
-import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
+import { stateRouter } from "../src/routers/state";
 import { createTestContext } from "./helpers";
 
 describe("getAppState", () => {
-  let caller: ReturnType<typeof appRouter.createCaller>;
+  let stateCaller: ReturnType<typeof stateRouter.createCaller>;
   let ctx: TRPCContext;
 
   beforeAll(async () => {
     ctx = await createTestContext();
 
-    caller = appRouter.createCaller(ctx);
+    stateCaller = stateRouter.createCaller(ctx);
   });
 
   it("should return the sync state", async () => {
-    const { syncState } = await caller.state.getAppState();
+    const { syncState } = await stateCaller.getAppState();
 
     const expectedState = {
       ...fixtures.blockchainSyncState[0],
@@ -34,7 +34,7 @@ describe("getAppState", () => {
   });
 
   it("should return the latest block", async () => {
-    const { blocks } = await caller.state.getAppState();
+    const { blocks } = await stateCaller.getAppState();
 
     const latestBlock =
       fixtures.canonicalBlocks[fixtures.canonicalBlocks.length - 1];
@@ -52,13 +52,13 @@ describe("getAppState", () => {
   });
 
   it("should return the 24h-ago block", async () => {
-    const { blocks } = await caller.state.getAppState();
+    const { blocks } = await stateCaller.getAppState();
 
     expect(blocks?.past24h).toBeUndefined();
   });
 
   it("should not return a 24h-ago block older than the allowed stale margin", async () => {
-    const { blocks } = await caller.state.getAppState();
+    const { blocks } = await stateCaller.getAppState();
 
     expect(blocks?.past24h).toBeUndefined();
   });

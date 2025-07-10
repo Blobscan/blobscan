@@ -1,5 +1,4 @@
-import type { RouterOutputs } from "@blobscan/api";
-
+import type { SearchResults } from "~/types";
 import {
   buildAddressRoute,
   buildBlobRoute,
@@ -7,10 +6,8 @@ import {
   buildTransactionRoute,
 } from "./routes";
 
-type SearchOutput = RouterOutputs["search"]["byTerm"];
-
 export function getRouteBySearchCategory(
-  category: keyof SearchOutput,
+  category: keyof SearchResults,
   id: string
 ): string {
   switch (category) {

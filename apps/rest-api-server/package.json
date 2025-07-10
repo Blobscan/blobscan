@@ -18,6 +18,9 @@
   "license": "MIT",
   "dependencies": {
     "@blobscan/api": "workspace:^0.23.0",
+    "@blobscan/blob-propagator": "workspace:^0.2.13",
+    "@blobscan/blob-storage-manager": "workspace:^0.5.1",
+    "@blobscan/db": "workspace:^0.18.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/open-telemetry": "workspace:^0.0.9",

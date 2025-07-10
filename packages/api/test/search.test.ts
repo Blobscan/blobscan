@@ -1,18 +1,18 @@
 import type { inferProcedureInput } from "@trpc/server";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import type { AppRouter } from "../src/app-router";
-import { appRouter } from "../src/app-router";
+import { searchRouter } from "../src/routers/search";
+import type { byTerm } from "../src/routers/search/byTerm";
 import { createTestContext } from "./helpers";
 
-type Input = inferProcedureInput<AppRouter["search"]["byTerm"]>;
+type Input = inferProcedureInput<typeof byTerm>;
 
 describe("Search route", async () => {
-  let caller: ReturnType<typeof appRouter.createCaller>;
+  let searchCaller: ReturnType<typeof searchRouter.createCaller>;
 
   beforeAll(async () => {
     const ctx = await createTestContext();
-    caller = appRouter.createCaller(ctx);
+    searchCaller = searchRouter.createCaller(ctx);
   });
 
   describe("byTerm", () => {
@@ -21,7 +21,7 @@ describe("Search route", async () => {
         term: "0xad01b55d7c3448b8899862eb335fbb17075d8de2",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({
         address: [{ id: "0xad01b55d7c3448b8899862eb335fbb17075d8de2" }],
       });
@@ -32,7 +32,7 @@ describe("Search route", async () => {
         term: "0xb4f67eb0771fbbf1b06b88ce0e23383daf994320508d44dd30dbd507f598c0d9b3da5a152e41a0428375060c3803b983",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({
         blob: [
           {
@@ -47,7 +47,7 @@ describe("Search route", async () => {
         term: "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({
         blob: [
           {
@@ -62,7 +62,7 @@ describe("Search route", async () => {
         term: "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({
         transaction: [
           {
@@ -77,7 +77,7 @@ describe("Search route", async () => {
         term: "1001",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({
         block: [
           {
@@ -94,7 +94,7 @@ describe("Search route", async () => {
         term: "101",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({
         slot: [
           {
@@ -111,7 +111,7 @@ describe("Search route", async () => {
         term: "unknown",
       };
 
-      const result = await caller.search.byTerm(input);
+      const result = await searchCaller.byTerm(input);
       expect(result).toMatchObject({});
     });
   });

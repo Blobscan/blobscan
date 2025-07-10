@@ -1,17 +1,26 @@
 import type { Prisma } from "@blobscan/db";
+import type { BlobStorage } from "@blobscan/db/prisma/enums";
+import { Category } from "@blobscan/db/prisma/enums";
 import type { optimismDecodedFieldsSchema } from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import type { z } from "@blobscan/zod";
 
-import type { BlobStorage } from "../../enums";
-import { Category } from "../../enums";
 import type { PrismaBlob, PrismaTransaction } from "../zod-schemas";
 import { hasProperties } from "./identifiers";
 
-function buildBlobDataUrl(blobStorage: BlobStorage, blobDataUri: string) {
+export function buildBlobDataUrl(
+  blobStorage: BlobStorage,
+  blobDataUri: string
+) {
   switch (blobStorage) {
     case "GOOGLE": {
-      return `https://storage.googleapis.com/${env.GOOGLE_STORAGE_BUCKET_NAME}/${blobDataUri}`;
+      // TEMPORARY: Use fallback logic until all blob data storage references are updated to full access URLs
+      // eslint-disable-next-line turbo/no-undeclared-env-vars
+      return process.env.MODE === "test"
+        ? `${env.GOOGLE_STORAGE_API_ENDPOINT}/storage/v1/b/${
+            env.GOOGLE_STORAGE_BUCKET_NAME
+          }/o/${encodeURIComponent(blobDataUri)}?alt=media`
+        : `https://storage.googleapis.com/${env.GOOGLE_STORAGE_BUCKET_NAME}/${blobDataUri}`;
     }
     case "SWARM": {
       return `https://gateway.ethswarm.org/access/${blobDataUri}`;

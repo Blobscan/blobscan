@@ -4,20 +4,19 @@ import { useRouter } from "next/router";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import { api } from "~/api-client";
-import type { RouterOutputs } from "~/api-client";
 import { useClickOutside } from "~/hooks/useClickOutside";
 import { useDebounce } from "~/hooks/useDebounce";
 import EmptyBox from "~/icons/empty-box.svg";
 import Loading from "~/icons/loading.svg";
 import NextError from "~/pages/_error";
+import type { SearchResults as SearchResultsType } from "~/types";
 import { getRouteBySearchCategory } from "~/utils";
 import { Button } from "../Button";
 import { Input } from "../Inputs/Input";
 import { SearchResults } from "./SearchResults";
 import type { SearchResultsProps } from "./SearchResults";
 
-type SearchOutput = RouterOutputs["search"]["byTerm"];
-type SearchCategory = keyof SearchOutput;
+type SearchCategory = keyof SearchResultsType;
 type SearchInputProps = {
   className?: HTMLAttributes<HTMLInputElement>["className"];
   noIconButton?: boolean;

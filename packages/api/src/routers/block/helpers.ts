@@ -1,4 +1,3 @@
-import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
@@ -197,7 +196,6 @@ export async function fetchBlock(
     filters,
     expands,
   }: {
-    blobStorageManager: BlobStorageManager;
     prisma: BlobscanPrismaClient;
     filters: Filters;
     expands: Expands;

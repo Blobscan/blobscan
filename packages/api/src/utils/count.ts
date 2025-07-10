@@ -1,8 +1,8 @@
 import { toDailyDatePeriod } from "@blobscan/dayjs";
+import type { Category, Rollup } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import { getRollupByAddress } from "@blobscan/rollups";
 
-import type { Category, Rollup } from "../../enums";
 import type { Filters } from "../middlewares/withFilters";
 
 /**

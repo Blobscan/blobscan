@@ -1,10 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import "@blobscan/test";
-import {
-  createStorageFromEnv,
-  getBlobStorageManager,
-} from "@blobscan/blob-storage-manager";
 import type {
   BlobStorage,
   BlobStorageManager,
@@ -14,6 +10,7 @@ import { fixtures } from "@blobscan/test";
 
 import type { Blob, BlobPropagationFinalizerJob } from "../src/types";
 import { finalizerProcessor } from "../src/worker-processors";
+import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
 
 describe("Finalizer Worker", () => {
   let blobStorageManager: BlobStorageManager;
@@ -25,7 +22,7 @@ describe("Finalizer Worker", () => {
   };
 
   beforeAll(async () => {
-    blobStorageManager = await getBlobStorageManager();
+    blobStorageManager = await createBlobStorageManager();
 
     const tmpBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE

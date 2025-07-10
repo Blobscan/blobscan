@@ -180,6 +180,15 @@ importers:
       '@blobscan/api':
         specifier: workspace:^0.23.0
         version: link:../../packages/api
+      '@blobscan/blob-propagator':
+        specifier: workspace:^0.2.13
+        version: link:../../packages/blob-propagator
+      '@blobscan/blob-storage-manager':
+        specifier: workspace:^0.5.1
+        version: link:../../packages/blob-storage-manager
+      '@blobscan/db':
+        specifier: workspace:^0.18.0
+        version: link:../../packages/db
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../../packages/env
@@ -316,9 +325,6 @@ importers:
       '@trpc/react-query':
         specifier: ^10.43.2
         version: 10.45.2(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.2(@trpc/server@10.45.2))(@trpc/server@10.45.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@trpc/server':
-        specifier: ^10.43.2
-        version: 10.45.2
       '@upstash/feedback':
         specifier: ^2.0.0
         version: 2.0.0(@babel/core@7.24.5)
@@ -455,18 +461,9 @@ importers:
 
   packages/api:
     dependencies:
-      '@blobscan/blob-propagator':
-        specifier: workspace:^0.2.13
-        version: link:../blob-propagator
-      '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.5.0
-        version: link:../blob-storage-manager
       '@blobscan/dayjs':
         specifier: workspace:^0.1.0
         version: link:../dayjs
-      '@blobscan/db':
-        specifier: workspace:^0.18.0
-        version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../env
@@ -504,6 +501,12 @@ importers:
         specifier: ^2.17.4
         version: 2.17.8(typescript@5.5.3)(zod@3.23.8)
     devDependencies:
+      '@blobscan/blob-propagator':
+        specifier: workspace:^0.2.13
+        version: link:../blob-propagator
+      '@blobscan/db':
+        specifier: workspace:^0.18.0
+        version: link:../db
       '@types/jsonwebtoken':
         specifier: ^9.0.2
         version: 9.0.6
@@ -546,12 +549,6 @@ importers:
 
   packages/blob-propagator:
     dependencies:
-      '@blobscan/blob-storage-manager':
-        specifier: workspace:^0.5.0
-        version: link:../blob-storage-manager
-      '@blobscan/db':
-        specifier: workspace:^0.18.0
-        version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../env
@@ -570,15 +567,19 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.4.1
+    devDependencies:
+      '@blobscan/blob-storage-manager':
+        specifier: workspace:^0.5.0
+        version: link:../blob-storage-manager
+      '@blobscan/db':
+        specifier: workspace:^0.18.0
+        version: link:../db
 
   packages/blob-storage-manager:
     dependencies:
       '@aws-sdk/client-s3':
         specifier: ^3.840.0
         version: 3.840.0
-      '@blobscan/db':
-        specifier: workspace:^0.18.0
-        version: link:../db
       '@blobscan/env':
         specifier: workspace:^0.1.0
         version: link:../env
@@ -597,6 +598,10 @@ importers:
       '@google-cloud/storage':
         specifier: ^6.10.1
         version: 6.12.0(encoding@0.1.13)
+    devDependencies:
+      '@blobscan/db':
+        specifier: workspace:^0.18.0
+        version: link:../db
 
   packages/dates: {}
 
@@ -723,20 +728,13 @@ importers:
         version: 3.0.0
 
   packages/price-feed:
-    dependencies:
-      '@blobscan/env':
-        specifier: workspace:^0.1.0
-        version: link:../env
-      '@blobscan/logger':
-        specifier: workspace:^0.1.2
-        version: link:../logger
     devDependencies:
       viem:
         specifier: ^2.17.4
         version: 2.22.17(typescript@5.5.3)(zod@3.23.8)
 
   packages/rollups:
-    dependencies:
+    devDependencies:
       '@blobscan/db':
         specifier: workspace:^0.18.0
         version: link:../db

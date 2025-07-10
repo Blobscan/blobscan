@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { FlowProducer, Worker } from "bullmq";
 import type {
   ConnectionOptions,
@@ -6,6 +7,7 @@ import type {
   Processor,
   WorkerOptions,
 } from "bullmq";
+import IORedis from "ioredis";
 
 import type {
   BlobStorage,
@@ -47,7 +49,8 @@ export type BlobPropagatorConfig = {
   blobStorageManager: BlobStorageManager;
   tmpBlobStorage: BlobStorageName;
   prisma: BlobscanPrismaClient;
-  workerOptions: Partial<WorkerOptions>;
+  redisConnectionOrUri: IORedis | string;
+  workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
   jobOptions?: Partial<JobsOptions>;
 };
 
@@ -75,12 +78,18 @@ export class BlobPropagator {
   constructor({
     blobStorageManager,
     prisma,
+    redisConnectionOrUri,
     tmpBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
   }: BlobPropagatorConfig) {
+    const connection =
+      typeof redisConnectionOrUri === "string"
+        ? new IORedis(redisConnectionOrUri, { maxRetriesPerRequest: null })
+        : redisConnectionOrUri;
     const workerOptions_ = {
       ...DEFAULT_WORKER_OPTIONS,
+      connection,
       ...workerOptions,
     };
 
@@ -139,9 +148,7 @@ export class BlobPropagator {
       workerOptions_
     );
 
-    this.blobPropagationFlowProducer = this.#createFlowProducer(
-      workerOptions?.connection
-    );
+    this.blobPropagationFlowProducer = this.#createFlowProducer(connection);
     this.temporaryBlobStorage = temporaryBlobStorage;
     this.jobOptions = {
       ...DEFAULT_JOB_OPTIONS,

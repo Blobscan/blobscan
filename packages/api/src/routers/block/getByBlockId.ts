@@ -60,43 +60,37 @@ export const getByBlockId = publicProcedure
   .use(withExpands)
   .use(withFilters)
   .output(outputSchema)
-  .query(
-    async ({
-      ctx: { blobStorageManager, prisma, expands, filters },
-      input: { id },
-    }) => {
-      let blockIdField: BlockIdField | undefined;
+  .query(async ({ ctx: { prisma, expands, filters }, input: { id } }) => {
+    let blockIdField: BlockIdField | undefined;
 
-      const parsedHash = blockHashSchema.safeParse(id);
-      const parsedBlockNumber = blockNumberSchema.safeParse(id);
+    const parsedHash = blockHashSchema.safeParse(id);
+    const parsedBlockNumber = blockNumberSchema.safeParse(id);
 
-      if (parsedHash.success) {
-        blockIdField = { type: "hash", value: parsedHash.data };
-      } else if (parsedBlockNumber.success) {
-        blockIdField = { type: "number", value: parsedBlockNumber.data };
-      }
-
-      if (!blockIdField) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: `Invalid block id "${id}"`,
-        });
-      }
-
-      const prismaBlock = await fetchBlock(blockIdField, {
-        blobStorageManager,
-        prisma,
-        filters,
-        expands,
-      });
-
-      if (!prismaBlock) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Block with id "${id}" not found`,
-        });
-      }
-
-      return toResponseBlock(prismaBlock);
+    if (parsedHash.success) {
+      blockIdField = { type: "hash", value: parsedHash.data };
+    } else if (parsedBlockNumber.success) {
+      blockIdField = { type: "number", value: parsedBlockNumber.data };
     }
-  );
+
+    if (!blockIdField) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `Invalid block id "${id}"`,
+      });
+    }
+
+    const prismaBlock = await fetchBlock(blockIdField, {
+      prisma,
+      filters,
+      expands,
+    });
+
+    if (!prismaBlock) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Block with id "${id}" not found`,
+      });
+    }
+
+    return toResponseBlock(prismaBlock);
+  });

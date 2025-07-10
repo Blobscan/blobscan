@@ -15,14 +15,20 @@
     "test:ui": "pnpm with-env:test vitest --ui"
   },
   "dependencies": {
-    "@blobscan/blob-storage-manager": "workspace:^0.5.0",
-    "@blobscan/db": "workspace:^0.18.0",
     "@blobscan/env": "workspace:^0.1.0",
     "@blobscan/logger": "workspace:^0.1.2",
     "@blobscan/open-telemetry": "workspace:^0.0.9",
     "@blobscan/zod": "workspace:^0.1.0",
     "bullmq": "^4.13.2",
     "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "@blobscan/blob-storage-manager": "workspace:^0.5.0",
+    "@blobscan/db": "workspace:^0.18.0"
+  },
+  "peerDependencies": {
+    "@blobscan/blob-storage-manager": "workspace:^0.5.0",
+    "@blobscan/db": "workspace:^0.18.0"
   },
   "eslintConfig": {
     "root": true,

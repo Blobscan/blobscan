@@ -1,7 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
-import { createNextApiHandler } from "@trpc/server/adapters/next";
 
-import { appRouter, createTRPCContext } from "@blobscan/api";
+import { createTRPCContext } from "@blobscan/api";
+import { createNextApiHandler } from "@blobscan/api/trpc-adapters/next";
+import { appRouter } from "@blobscan/api/web";
 
 // export API handler
 export default createNextApiHandler({

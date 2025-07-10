@@ -7,17 +7,16 @@ import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
-import {
-  appRouter,
-  createTRPCContext,
-  metricsHandler,
-  gracefulShutdown as apiGracefulShutdown,
-} from "@blobscan/api";
+import { createTRPCContext, metricsHandler } from "@blobscan/api";
+import { appRouter } from "@blobscan/api/rest-api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
+import { prisma } from "@blobscan/db";
+
 import { printBanner } from "./banner";
+import { getBlobPropagator } from "./blob-propagator";
 import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
@@ -29,6 +28,8 @@ printBanner();
 
 async function main() {
   const closeSyncers = await setUpSyncers();
+
+  const blobPropagator = await getBlobPropagator();
 
   const app = express();
 
@@ -48,6 +49,7 @@ async function main() {
     createOpenApiExpressMiddleware({
       router: appRouter,
       createContext: createTRPCContext({
+        blobPropagator,
         scope: "rest-api",
       }),
       onError({ error }) {
@@ -65,7 +67,11 @@ async function main() {
   async function gracefulShutdown(signal: string) {
     logger.debug(`Received ${signal}. Shutting down...`);
 
-    await apiGracefulShutdown()
+    await prisma
+      .$disconnect()
+      .finally(async () => {
+        await blobPropagator.close();
+      })
       .finally(async () => {
         await closeSyncers();
       })

@@ -7,12 +7,9 @@ import type {
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
 
-import type { BlobPropagator } from "@blobscan/blob-propagator";
-import { getBlobPropagator } from "@blobscan/blob-propagator";
-import type { BlobStorageManager } from "@blobscan/blob-storage-manager";
-import { getBlobStorageManager } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 
+import type { BlobPropagator } from "./types";
 import type { APIClient } from "./utils";
 import { retrieveAPIClient } from "./utils";
 
@@ -22,38 +19,39 @@ export type CreateContextOptions =
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   apiClient?: APIClient;
+  blobPropagator?: BlobPropagator;
 };
 
 export type TRPCInnerContext = {
   prisma: typeof prisma;
-  blobStorageManager: BlobStorageManager;
   blobPropagator?: BlobPropagator;
   apiClient?: APIClient;
 };
 
-export async function createTRPCInnerContext(
-  opts?: CreateInnerContextOptions
-): Promise<TRPCInnerContext> {
-  const blobStorageManager = await getBlobStorageManager();
-  const blobPropagator = await getBlobPropagator();
-
+export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,
-    blobStorageManager,
-    blobPropagator,
+    blobPropagator: opts?.blobPropagator,
     apiClient: opts?.apiClient,
   };
 }
 
 export type ContextScope = "web" | "rest-api";
 
-export function createTRPCContext({ scope }: { scope: ContextScope }) {
+export function createTRPCContext({
+  blobPropagator,
+  scope,
+}: {
+  blobPropagator?: BlobPropagator;
+  scope: ContextScope;
+}) {
   return async (opts: CreateContextOptions) => {
     try {
       const apiClient = retrieveAPIClient(opts.req);
 
-      const innerContext = await createTRPCInnerContext({
+      const innerContext = createTRPCInnerContext({
         apiClient,
+        blobPropagator,
       });
 
       return {

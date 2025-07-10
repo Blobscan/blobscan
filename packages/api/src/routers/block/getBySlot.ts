@@ -33,27 +33,21 @@ export const getBySlot = publicProcedure
   .output(outputSchema)
   .use(withExpands)
   .use(withFilters)
-  .query(
-    async ({
-      ctx: { blobStorageManager, prisma, filters, expands },
-      input: { slot },
-    }) => {
-      const blockIdField: BlockIdField = { type: "slot", value: slot };
+  .query(async ({ ctx: { prisma, filters, expands }, input: { slot } }) => {
+    const blockIdField: BlockIdField = { type: "slot", value: slot };
 
-      const prismaBlock = await fetchBlock(blockIdField, {
-        blobStorageManager,
-        prisma,
-        filters,
-        expands,
+    const prismaBlock = await fetchBlock(blockIdField, {
+      prisma,
+      filters,
+      expands,
+    });
+
+    if (!prismaBlock) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: `Block with slot ${slot} not found`,
       });
-
-      if (!prismaBlock) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Block with slot ${slot} not found`,
-        });
-      }
-
-      return toResponseBlock(prismaBlock);
     }
-  );
+
+    return toResponseBlock(prismaBlock);
+  });

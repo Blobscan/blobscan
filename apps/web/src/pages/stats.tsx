@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import React, { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
-import type { TimeFrame } from "@blobscan/api/src/middlewares/withTimeFrame";
+import type { TimeFrame } from "@blobscan/api";
 
 import { Card } from "~/components/Cards/Card";
 import { MetricCard } from "~/components/Cards/MetricCard";
