@@ -8,7 +8,7 @@ import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
 import { createTRPCContext, metricsHandler } from "@blobscan/api";
-import { appRouter } from "@blobscan/api/rest-api";
+import { appRouter } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
