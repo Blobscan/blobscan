@@ -6,7 +6,6 @@
   "types": "./src/index.ts",
   "license": "MIT",
   "scripts": {
-    "build": "esbuild ./src/index.ts --platform=node --outdir=dist --bundle --minify --tree-shaking=true --external:@blobscan/db --metafile=meta.json",
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
