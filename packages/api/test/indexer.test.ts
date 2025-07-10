@@ -15,7 +15,7 @@ import { env } from "@blobscan/env";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
 import { omitDBTimestampFields, testValidError } from "@blobscan/test";
 
-import { appRouter } from "../src/app-router";
+import { indexerRouter } from "../src/routers/indexer";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
 import { createTestContext, unauthorizedRPCCallTest } from "./helpers";
 import {
@@ -25,8 +25,8 @@ import {
 } from "./indexer.test.fixtures";
 
 describe("Indexer router", async () => {
-  let nonAuthorizedCaller: ReturnType<typeof appRouter.createCaller>;
-  let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
+  let nonAuthorizedIndexerCaller: ReturnType<typeof indexerRouter.createCaller>;
+  let authorizedIndexerCaller: ReturnType<typeof indexerRouter.createCaller>;
   let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
   beforeAll(async () => {
@@ -36,8 +36,8 @@ describe("Indexer router", async () => {
       apiClient: { type: "indexer" },
     });
 
-    nonAuthorizedCaller = appRouter.createCaller(ctx);
-    authorizedCaller = appRouter.createCaller(authorizedContext);
+    nonAuthorizedIndexerCaller = indexerRouter.createCaller(ctx);
+    authorizedIndexerCaller = indexerRouter.createCaller(authorizedContext);
   });
 
   afterAll(async () => {
@@ -48,7 +48,7 @@ describe("Indexer router", async () => {
   describe("indexData", () => {
     describe("when authorized", () => {
       beforeEach(async () => {
-        await authorizedCaller.indexer.indexData(INPUT);
+        await authorizedIndexerCaller.indexData(INPUT);
       });
 
       it("should index a block correctly", async () => {
@@ -176,7 +176,7 @@ describe("Indexer router", async () => {
         });
 
         it("should identify rollup transactions correctly", async () => {
-          await authorizedCaller.indexer.indexData(
+          await authorizedIndexerCaller.indexData(
             ROLLUP_BLOB_TRANSACTION_INPUT
           );
 
@@ -207,7 +207,7 @@ describe("Indexer router", async () => {
         });
 
         it("should categorize a rollup transaction correctly", async () => {
-          await authorizedCaller.indexer.indexData(
+          await authorizedIndexerCaller.indexData(
             ROLLUP_BLOB_TRANSACTION_INPUT
           );
 
@@ -327,8 +327,8 @@ describe("Indexer router", async () => {
           let ctxWithBlobPropagator: Awaited<
             ReturnType<typeof createTestContext>
           >;
-          let callerWithBlobPropagator: ReturnType<
-            typeof appRouter.createCaller
+          let indexerCallerWithBlobPropagator: ReturnType<
+            typeof indexerRouter.createCaller
           >;
           let blobPropagatorSpy: SpyInstance<
             [
@@ -346,7 +346,7 @@ describe("Indexer router", async () => {
               withBlobPropagator: true,
             });
 
-            callerWithBlobPropagator = appRouter.createCaller(
+            indexerCallerWithBlobPropagator = indexerRouter.createCaller(
               ctxWithBlobPropagator
             );
 
@@ -358,7 +358,7 @@ describe("Indexer router", async () => {
           });
 
           it("should call blob propagator", async () => {
-            await callerWithBlobPropagator.indexer.indexData(
+            await indexerCallerWithBlobPropagator.indexData(
               INPUT_WITH_DUPLICATED_BLOBS
             );
 
@@ -468,14 +468,14 @@ describe("Indexer router", async () => {
       it("should be idempotent", async () => {
         // Index the same block again
         await expect(
-          authorizedCaller.indexer.indexData(INPUT)
+          authorizedIndexerCaller.indexData(INPUT)
         ).resolves.toBeUndefined();
       });
 
       testValidError(
         "should fail when receiving an empty array of transactions",
         async () => {
-          await authorizedCaller.indexer.indexData({
+          await authorizedIndexerCaller.indexData({
             ...INPUT,
             transactions: [] as unknown as typeof INPUT.transactions,
           });
@@ -486,7 +486,7 @@ describe("Indexer router", async () => {
       testValidError(
         "should fail when receiving an empty array of blobs",
         async () => {
-          await authorizedCaller.indexer.indexData({
+          await authorizedIndexerCaller.indexData({
             ...INPUT,
             blobs: [] as unknown as typeof INPUT.blobs,
           });
@@ -496,9 +496,9 @@ describe("Indexer router", async () => {
     });
 
     it("should fail when calling procedure without auth", async () => {
-      await expect(
-        nonAuthorizedCaller.indexer.indexData(INPUT)
-      ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));
+      await expect(nonAuthorizedIndexerCaller.indexData(INPUT)).rejects.toThrow(
+        new TRPCError({ code: "UNAUTHORIZED" })
+      );
     });
   });
 
@@ -514,7 +514,7 @@ describe("Indexer router", async () => {
 
       describe("when handling rewinded blocks", () => {
         it("should mark them as reorged", async () => {
-          await authorizedCaller.indexer.handleReorg({
+          await authorizedIndexerCaller.handleReorg({
             rewindedBlocks: rewindedBlockHashes,
             forwardedBlocks: [],
           });
@@ -590,7 +590,7 @@ describe("Indexer router", async () => {
                 },
               });
 
-            await authorizedCaller.indexer.handleReorg({
+            await authorizedIndexerCaller.handleReorg({
               rewindedBlocks: rewindedBlockHashes,
             });
 
@@ -632,7 +632,7 @@ describe("Indexer router", async () => {
                 },
               });
 
-            await authorizedCaller.indexer.handleReorg({
+            await authorizedIndexerCaller.handleReorg({
               rewindedBlocks: rewindedBlockHashes,
             });
 
@@ -673,7 +673,7 @@ describe("Indexer router", async () => {
             },
           });
 
-        await authorizedCaller.indexer.handleReorg({
+        await authorizedIndexerCaller.handleReorg({
           forwardedBlocks: forwardedBlockHashes,
         });
 
@@ -705,7 +705,7 @@ describe("Indexer router", async () => {
 
     it("should skip if receiving empty forwarded and rewinded block arrays", async () => {
       await expect(
-        authorizedCaller.indexer.handleReorg({
+        authorizedIndexerCaller.handleReorg({
           rewindedBlocks: [],
           forwardedBlocks: [],
         })
@@ -714,7 +714,7 @@ describe("Indexer router", async () => {
 
     it("should skip non-existent rewinded blocks", async () => {
       await expect(
-        authorizedCaller.indexer.handleReorg({
+        authorizedIndexerCaller.handleReorg({
           rewindedBlocks: [
             "0x992372cef5b4b0f1eee8589218fcd29908f6b19a76d23d0ad4e497479125aa85",
           ],
@@ -722,6 +722,6 @@ describe("Indexer router", async () => {
       ).resolves.toBeUndefined();
     });
 
-    unauthorizedRPCCallTest(() => nonAuthorizedCaller.indexer.handleReorg({}));
+    unauthorizedRPCCallTest(() => nonAuthorizedIndexerCaller.handleReorg({}));
   });
 });

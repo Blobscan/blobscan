@@ -6,13 +6,13 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { BlobDataStorageReference } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import type { DailyStats, Prisma } from "@blobscan/db";
+import { BlobStorage } from "@blobscan/db/prisma/enums";
+import type { Rollup } from "@blobscan/db/prisma/enums";
 import { fixtures, testValidError } from "@blobscan/test";
 
-import { BlobStorage } from "../enums";
-import type { Rollup } from "../enums";
-import type { AppRouter } from "../src/app-router";
-import { appRouter } from "../src/app-router";
 import type { TRPCContext } from "../src/context";
+import { blobRouter } from "../src/routers/blob";
+import type { getByBlobId } from "../src/routers/blob/getByBlobId";
 import { bytesToHex, hexToBytes } from "../src/utils";
 import { buildBlobDataUrl } from "../src/utils/transformers";
 import {
@@ -30,11 +30,11 @@ import {
 } from "./test-suites/filters";
 import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
-type GetByIdInput = inferProcedureInput<AppRouter["blob"]["getByBlobId"]>;
+type GetByIdInput = inferProcedureInput<typeof getByBlobId>;
 
 describe("Blob router", () => {
-  let authorizedCaller: ReturnType<typeof appRouter.createCaller>;
-  let caller: ReturnType<typeof appRouter.createCaller>;
+  let authorizedBlobCaller: ReturnType<typeof blobRouter.createCaller>;
+  let blobCaller: ReturnType<typeof blobRouter.createCaller>;
   let ctx: TRPCContext;
   let authorizedContext: Awaited<ReturnType<typeof createTestContext>>;
 
@@ -44,8 +44,8 @@ describe("Blob router", () => {
     });
     ctx = await createTestContext();
 
-    authorizedCaller = appRouter.createCaller(authorizedContext);
-    caller = appRouter.createCaller(ctx);
+    authorizedBlobCaller = blobRouter.createCaller(authorizedContext);
+    blobCaller = blobRouter.createCaller(ctx);
   });
 
   describe("createWeaveVmReferences", () => {
@@ -75,7 +75,7 @@ describe("Blob router", () => {
           "There should be no blob weavevm references initially"
         ).toEqual([]);
 
-        await authorizedCaller.blob.createWeaveVMReferences({
+        await authorizedBlobCaller.createWeaveVMReferences({
           blobHashes,
         });
 
@@ -104,7 +104,7 @@ describe("Blob router", () => {
           })),
         });
 
-        await authorizedCaller.blob.createWeaveVMReferences({
+        await authorizedBlobCaller.createWeaveVMReferences({
           blobHashes,
         });
 
@@ -125,7 +125,7 @@ describe("Blob router", () => {
 
       it("should be called with an empty blob hashes array correctly", async () => {
         await expect(
-          authorizedCaller.blob.createWeaveVMReferences({
+          authorizedBlobCaller.createWeaveVMReferences({
             blobHashes: [],
           })
         ).resolves.toBeUndefined();
@@ -134,7 +134,7 @@ describe("Blob router", () => {
       testValidError(
         "should fail when one or more provided blobs do not exist",
         async () => {
-          await authorizedCaller.blob.createWeaveVMReferences({
+          await authorizedBlobCaller.createWeaveVMReferences({
             blobHashes: ["nonExistingBlobHash"],
           });
         },
@@ -145,7 +145,7 @@ describe("Blob router", () => {
       );
 
       unauthorizedRPCCallTest(() =>
-        caller.blob.createWeaveVMReferences({
+        blobCaller.createWeaveVMReferences({
           blobHashes,
         })
       );
@@ -158,18 +158,18 @@ describe("Blob router", () => {
     });
 
     runPaginationTestsSuite("blob", (paginationInput) =>
-      caller.blob.getAll(paginationInput).then(({ blobs, totalBlobs }) => ({
+      blobCaller.getAll(paginationInput).then(({ blobs, totalBlobs }) => ({
         items: blobs,
         totalItems: totalBlobs,
       }))
     );
 
     runFiltersTestsSuite("blob", (baseGetAllInput) =>
-      caller.blob.getAll(baseGetAllInput).then(({ blobs }) => blobs)
+      blobCaller.getAll(baseGetAllInput).then(({ blobs }) => blobs)
     );
 
     runExpandsTestsSuite("blob", ["block", "transaction"], (input) =>
-      caller.blob.getAll(input).then(({ blobs }) => blobs)
+      blobCaller.getAll(input).then(({ blobs }) => blobs)
     );
   });
 
@@ -179,7 +179,7 @@ describe("Blob router", () => {
         id: "blobHash004",
       };
 
-      const result = await caller.blob.getByBlobId(input);
+      const result = await blobCaller.getByBlobId(input);
 
       expect(result).toMatchSnapshot();
     });
@@ -189,14 +189,14 @@ describe("Blob router", () => {
         id: "commitment004",
       };
 
-      const result = await caller.blob.getByBlobId(input);
+      const result = await blobCaller.getByBlobId(input);
 
       expect(result).toMatchSnapshot();
     });
 
     it("should fail when trying to get a blob by a non-existent hash", async () => {
       await expect(
-        caller.blob.getByBlobId({
+        blobCaller.getByBlobId({
           id: "nonExistingHash",
         })
       ).rejects.toMatchSnapshot();
@@ -237,7 +237,7 @@ describe("Blob router", () => {
           totalBlobs: expectedTotalBlobs,
         },
       });
-      const { totalBlobs } = await caller.blob.getCount({});
+      const { totalBlobs } = await blobCaller.getCount({});
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
     });
@@ -318,7 +318,7 @@ describe("Blob router", () => {
         }
       }
 
-      const { totalBlobs } = await caller.blob.getCount(queryParamFilters);
+      const { totalBlobs } = await blobCaller.getCount(queryParamFilters);
 
       expect(totalBlobs).toBe(expectedTotalBlobs);
     });
@@ -328,7 +328,7 @@ describe("Blob router", () => {
     let blobDataAuthorizedContext: Awaited<
       ReturnType<typeof createTestContext>
     >;
-    let authorizedBlobDataCaller: ReturnType<typeof appRouter.createCaller>;
+    let authorizedBlobDataCaller: ReturnType<typeof blobRouter.createCaller>;
     const versionedHash =
       "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734";
     const unprefixedBlobData = fixtures.blobDatas
@@ -343,14 +343,14 @@ describe("Blob router", () => {
       blobDataAuthorizedContext = await createTestContext({
         apiClient: { type: "blob-data" },
       });
-      authorizedBlobDataCaller = appRouter.createCaller(
+      authorizedBlobDataCaller = blobRouter.createCaller(
         blobDataAuthorizedContext
       );
     });
 
     describe("when authorized", () => {
       it("should fetch data by versioned hash", async () => {
-        const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+        const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
           id: versionedHash,
         });
 
@@ -361,7 +361,7 @@ describe("Blob router", () => {
         const commitment =
           "0x8c5b4383c1db58dc3f615ee8a1fdeb2a1ad19d1f26d72119c23b36b5df30ea4be9d55ccb9254f7a7993d23a78bd858ce";
 
-        const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+        const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
           id: commitment,
         });
 
@@ -431,10 +431,9 @@ describe("Blob router", () => {
             data: gcsBinRef,
           });
 
-          const result =
-            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
-              id: gcsBinRef.blobHash,
-            });
+          const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
+            id: gcsBinRef.blobHash,
+          });
 
           expect(result).toEqual(expectedBlobData);
         });
@@ -447,10 +446,9 @@ describe("Blob router", () => {
               blobHash,
             },
           });
-          const result =
-            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
-              id: blobHash,
-            });
+          const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
+            id: blobHash,
+          });
 
           expect(result).toEqual(blobData);
         });
@@ -474,10 +472,9 @@ describe("Blob router", () => {
             data: gcsTxtRef,
           });
 
-          const result =
-            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
-              id: gcsTxtRef.blobHash,
-            });
+          const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
+            id: gcsTxtRef.blobHash,
+          });
 
           expect(result).toEqual(expectedBlobData);
         });
@@ -491,10 +488,9 @@ describe("Blob router", () => {
             },
           });
 
-          const result =
-            await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
-              id: blobHash,
-            });
+          const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
+            id: blobHash,
+          });
 
           expect(result).toEqual(blobData);
         });
@@ -511,7 +507,7 @@ describe("Blob router", () => {
           })
           .then((r) => (r?.data ? bytesToHex(r.data) : undefined));
 
-        const result = await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+        const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
           id: blobHash,
         });
 
@@ -540,7 +536,7 @@ describe("Blob router", () => {
             },
           });
 
-          await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          await authorizedBlobDataCaller.getBlobDataByBlobId({
             id: versionedHash,
           });
         },
@@ -556,11 +552,11 @@ describe("Blob router", () => {
           blobDataAuthorizedContext = await createTestContext({
             apiClient: { type: "blob-data" },
           });
-          authorizedBlobDataCaller = appRouter.createCaller(
+          authorizedBlobDataCaller = blobRouter.createCaller(
             blobDataAuthorizedContext
           );
 
-          await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+          await authorizedBlobDataCaller.getBlobDataByBlobId({
             id: "0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1",
           });
         },
@@ -568,7 +564,7 @@ describe("Blob router", () => {
       );
 
       blobIdSchemaTestsSuite(async (invalidBlobId) => {
-        await authorizedBlobDataCaller.blob.getBlobDataByBlobId({
+        await authorizedBlobDataCaller.getBlobDataByBlobId({
           id: invalidBlobId,
         });
       });
@@ -588,10 +584,10 @@ describe("Blob router", () => {
       });
 
       const ctx = await createTestContext();
-      const unauthorizedBlobDataCaller = appRouter.createCaller(ctx);
+      const unauthorizedBlobDataCaller = blobRouter.createCaller(ctx);
 
       await expect(
-        unauthorizedBlobDataCaller.blob.getBlobDataByBlobId({
+        unauthorizedBlobDataCaller.getBlobDataByBlobId({
           id: versionedHash,
         })
       ).rejects.toThrow(new TRPCError({ code: "UNAUTHORIZED" }));

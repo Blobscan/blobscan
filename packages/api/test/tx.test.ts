@@ -1,11 +1,11 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { DailyStats, Prisma } from "@blobscan/db";
+import type { Rollup } from "@blobscan/db/prisma/enums";
 import { fixtures } from "@blobscan/test";
 
-import type { Rollup } from "../enums";
 import type { TRPCContext } from "../src";
-import { appRouter } from "../src/app-router";
+import { transactionRouter } from "../src/routers/tx";
 import {
   createTestContext,
   generateDailyCounts,
@@ -20,13 +20,13 @@ import {
 } from "./test-suites/filters";
 
 describe("Transaction router", async () => {
-  let caller: ReturnType<typeof appRouter.createCaller>;
+  let txCaller: ReturnType<typeof transactionRouter.createCaller>;
   let ctx: TRPCContext;
 
   beforeAll(async () => {
     ctx = await createTestContext();
 
-    caller = appRouter.createCaller(ctx);
+    txCaller = transactionRouter.createCaller(ctx);
   });
 
   describe("getAll", () => {
@@ -35,7 +35,7 @@ describe("Transaction router", async () => {
     });
 
     runPaginationTestsSuite("transaction", (paginationInput) =>
-      caller.tx
+      txCaller
         .getAll(paginationInput)
         .then(({ transactions, totalTransactions }) => ({
           items: transactions,
@@ -44,17 +44,17 @@ describe("Transaction router", async () => {
     );
 
     runFiltersTestsSuite("transaction", (filterInput) =>
-      caller.tx.getAll(filterInput).then(({ transactions }) => transactions)
+      txCaller.getAll(filterInput).then(({ transactions }) => transactions)
     );
 
     runExpandsTestsSuite("transaction", ["block", "blob"], (input) =>
-      caller.tx.getAll(input).then(({ transactions }) => transactions)
+      txCaller.getAll(input).then(({ transactions }) => transactions)
     );
 
     it("should get the total number of transactions", async () => {
       const expectedTotalTransactions = fixtures.canonicalTxs.length;
 
-      const { totalTransactions } = await caller.tx.getAll({ count: true });
+      const { totalTransactions } = await txCaller.getAll({ count: true });
 
       expect(totalTransactions).toBe(expectedTotalTransactions);
     });
@@ -68,7 +68,7 @@ describe("Transaction router", async () => {
         },
       });
 
-      const { totalTransactions } = await caller.tx.getAll({
+      const { totalTransactions } = await txCaller.getAll({
         count: true,
         rollups: "base",
       });
@@ -79,11 +79,11 @@ describe("Transaction router", async () => {
 
   describe("getByHash", () => {
     runExpandsTestsSuite("transaction", ["block", "blob"], (expandsInput) =>
-      caller.tx.getByHash({ hash: "txHash001", ...expandsInput })
+      txCaller.getByHash({ hash: "txHash001", ...expandsInput })
     );
 
     it("should get a transaction by hash correctly", async () => {
-      const result = await caller.tx.getByHash({
+      const result = await txCaller.getByHash({
         hash: "txHash001",
       });
 
@@ -92,7 +92,7 @@ describe("Transaction router", async () => {
 
     it("should fail when providing a non-existent hash", async () => {
       await expect(
-        caller.tx.getByHash({
+        txCaller.getByHash({
           hash: "nonExistingHash",
         })
       ).rejects.toMatchSnapshot(
@@ -149,7 +149,7 @@ describe("Transaction router", async () => {
         },
       });
 
-      const { totalTransactions } = await caller.tx.getCount({});
+      const { totalTransactions } = await txCaller.getCount({});
 
       expect(totalTransactions).toBe(expectedTotalTransactions);
     });
@@ -231,7 +231,7 @@ describe("Transaction router", async () => {
         }
       }
 
-      const { totalTransactions } = await caller.tx.getCount(queryParamFilters);
+      const { totalTransactions } = await txCaller.getCount(queryParamFilters);
 
       const expectMsg = directCountRequired
         ? "Expect count to match direct count"

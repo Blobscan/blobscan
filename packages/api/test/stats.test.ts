@@ -3,9 +3,9 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import dayjs from "@blobscan/dayjs";
 import { omitDBTimestampFields } from "@blobscan/test";
 
-import { appRouter } from "../src/app-router";
 import { TIME_FRAMES } from "../src/middlewares/withTimeFrame";
 import type { TimeFrame } from "../src/middlewares/withTimeFrame";
+import { statsRouter } from "../src/routers/stats";
 import { createTestContext } from "./helpers";
 
 function runTimeFrameTests({
@@ -33,14 +33,14 @@ function runTimeFrameTests({
 describe("Stats router", async () => {
   const systemDate = new Date("2023-09-01");
   const to = dayjs(systemDate).endOf("day").toISOString();
-  let caller: ReturnType<typeof appRouter.createCaller>;
+  let statsCaller: ReturnType<typeof statsRouter.createCaller>;
   let prisma: Awaited<ReturnType<typeof createTestContext>>["prisma"];
 
   beforeAll(async () => {
     const ctx = await createTestContext();
 
     prisma = ctx.prisma;
-    caller = appRouter.createCaller(ctx);
+    statsCaller = statsRouter.createCaller(ctx);
   });
 
   beforeEach(async () => {
@@ -49,7 +49,7 @@ describe("Stats router", async () => {
 
   describe("getOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      const overallStats = await caller.stats
+      const overallStats = await statsCaller
         .getOverallStats()
         .then((stats) => stats.map((s) => omitDBTimestampFields(s)));
 
@@ -87,7 +87,7 @@ describe("Stats router", async () => {
 
   describe("getBlobOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      const blobOverallStats = await caller.stats.getBlobOverallStats();
+      const blobOverallStats = await statsCaller.getBlobOverallStats();
 
       expect(omitDBTimestampFields(blobOverallStats)).toMatchInlineSnapshot(`
         {
@@ -105,14 +105,14 @@ describe("Stats router", async () => {
         return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
-        return caller.stats.getBlobDailyStats({ timeFrame });
+        return statsCaller.getBlobDailyStats({ timeFrame });
       },
     });
   });
 
   describe("getBlockOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      const blockOverallStats = await caller.stats
+      const blockOverallStats = await statsCaller
         .getBlockOverallStats()
         .then(omitDBTimestampFields);
 
@@ -137,14 +137,14 @@ describe("Stats router", async () => {
         return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
-        return caller.stats.getBlockDailyStats({ timeFrame });
+        return statsCaller.getBlockDailyStats({ timeFrame });
       },
     });
   });
 
   describe("getTransactionOverallStats", () => {
     it("should return the correct overall stats", async () => {
-      const result = await caller.stats
+      const result = await statsCaller
         .getTransactionOverallStats()
         .then(omitDBTimestampFields);
 
@@ -165,7 +165,7 @@ describe("Stats router", async () => {
         return prisma.dailyStats.aggregate({ to });
       },
       statsFetcher(timeFrame) {
-        return caller.stats.getTransactionDailyStats({ timeFrame });
+        return statsCaller.getTransactionDailyStats({ timeFrame });
       },
     });
   });
