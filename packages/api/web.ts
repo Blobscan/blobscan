@@ -1,13 +1,13 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 import { stateRouter } from "./src/routers/state";
-import { createSharedRouter } from "./src/shared-app-router";
+import { createSharedAppRouter } from "./src/shared-app-router";
 import { t } from "./src/trpc-client";
 
-const sharedRouter = createSharedRouter();
+const sharedAppRouter = createSharedAppRouter();
 
 export const appRouter = t.mergeRouters(
-  sharedRouter,
+  sharedAppRouter,
   t.router({
     state: stateRouter,
   })

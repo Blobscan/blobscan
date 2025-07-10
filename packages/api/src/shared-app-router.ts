@@ -8,7 +8,7 @@ import { statsRouter } from "./routers/stats";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
-export function createSharedRouter() {
+export function createSharedAppRouter() {
   return t.router({
     block: blockRouter,
     tx: transactionRouter,
@@ -21,4 +21,4 @@ export function createSharedRouter() {
   });
 }
 
-export type SharedAppRouter = ReturnType<typeof createSharedRouter>;
+export type SharedAppRouter = ReturnType<typeof createSharedAppRouter>;
