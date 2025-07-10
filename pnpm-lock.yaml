@@ -325,9 +325,6 @@ importers:
       '@trpc/react-query':
         specifier: ^10.43.2
         version: 10.45.2(@tanstack/react-query@4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@trpc/client@10.45.2(@trpc/server@10.45.2))(@trpc/server@10.45.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@trpc/server':
-        specifier: ^10.43.2
-        version: 10.45.2
       '@upstash/feedback':
         specifier: ^2.0.0
         version: 2.0.0(@babel/core@7.24.5)

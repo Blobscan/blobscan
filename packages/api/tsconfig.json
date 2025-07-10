@@ -4,6 +4,7 @@
     "src/**/*.ts",
     "scripts/**/*.ts",
     "test/**/*.ts",
+    "trpc-adapters/**/*.ts",
     "vitest.config.ts",
     "enums.ts",
     "setup.ts",
