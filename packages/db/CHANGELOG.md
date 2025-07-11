@@ -1,5 +1,13 @@
 # @blobscan/db
 
+## 0.18.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/logger@0.1.3
+  - @blobscan/open-telemetry@0.0.10
+
 ## 0.18.0
 
 ### Minor Changes

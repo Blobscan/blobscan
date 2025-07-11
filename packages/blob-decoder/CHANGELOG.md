@@ -1,5 +1,13 @@
 # @blobscan/blob-decoder
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @blobscan/logger@0.1.3
+  - @blobscan/open-telemetry@0.0.10
+
 ## 0.2.1
 
 ### Patch Changes
