@@ -13,6 +13,25 @@ import {
   performFullPermissionOp,
 } from "../utils";
 
+function deleteFilesInDirectory(dir: string) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  let count = 0;
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      count += deleteFilesInDirectory(fullPath); // recurse into subdirectory
+    } else {
+      fs.unlinkSync(fullPath); // delete file
+
+      count++;
+    }
+  }
+
+  return count;
+}
+
 export interface FileSystemStorageConfig extends BlobStorageConfig {
   blobDirPath: string;
 }
@@ -25,14 +44,9 @@ export class FileSystemStorage extends BlobStorage {
 
     this.blobDirPath = blobDirPath;
 
-    performFullPermissionOp(() => {
-      fs.rmSync(this.blobDirPath, {
-        recursive: true,
-        force: true,
-      });
+    const count = deleteFilesInDirectory(this.blobDirPath);
 
-      console.log(`TMP ${this.blobDirPath} removed!`);
-    });
+    console.log(`Total of ${count} files removed!`);
 
     createFullPermissionDirectory(this.blobDirPath);
   }
