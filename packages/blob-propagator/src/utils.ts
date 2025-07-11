@@ -99,7 +99,7 @@ export async function propagateBlob(
   }: BlobPropagationWorkerParams
 ) {
   try {
-    let blobData: string | undefined;
+    let blobData: string;
     const uri = temporaryBlobStorage.getBlobUri(versionedHash);
     const rawUri = uri?.slice(0, -4);
     const binUri = `${rawUri}.bin`;
@@ -120,9 +120,7 @@ export async function propagateBlob(
         logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
       } catch (err) {
         logger.debug(formatErrorWithCauses(err));
-      }
 
-      if (!blobData) {
         blobData = await blobStorageManager
           .getBlobByHash(versionedHash)
           .then(({ data }) => data);
