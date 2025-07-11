@@ -3,8 +3,6 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 
 import dayjs from "@blobscan/dayjs";
 
-import { Link } from "./Link";
-
 type OctantBannerProps = {
   onClose(): void;
 };
