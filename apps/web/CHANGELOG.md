@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.29.0
+
+### Minor Changes
+
+- [#834](https://github.com/Blobscan/blobscan/pull/834) [`0f60c60`](https://github.com/Blobscan/blobscan/commit/0f60c60b8833917815620ff2e428add19c7af5c9) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated Octant banner message to reflect the start of the current funding round
+
 ## 0.28.0
 
 ### Minor Changes
