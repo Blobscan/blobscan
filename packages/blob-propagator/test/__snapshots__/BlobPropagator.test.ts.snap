@@ -34,6 +34,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
     "children": [
       {
         "data": {
+          "blobRententionMode": "eager",
           "versionedHash": "blobVersionedHash1",
         },
         "name": "storeBlob:google-worker-blobVersionedHash1",
@@ -50,6 +51,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
       {
         "data": {
+          "blobRententionMode": "eager",
           "versionedHash": "blobVersionedHash1",
         },
         "name": "storeBlob:postgres-worker-blobVersionedHash1",
@@ -66,6 +68,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
       {
         "data": {
+          "blobRententionMode": "eager",
           "versionedHash": "blobVersionedHash1",
         },
         "name": "storeBlob:s3-worker-blobVersionedHash1",
@@ -82,6 +85,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
     ],
     "data": {
+      "blobRententionMode": "eager",
       "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash1.bin",
     },
     "name": "propagateBlob:finalizer-worker-blobVersionedHash1",
@@ -99,6 +103,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
     "children": [
       {
         "data": {
+          "blobRententionMode": "eager",
           "versionedHash": "blobVersionedHash2",
         },
         "name": "storeBlob:google-worker-blobVersionedHash2",
@@ -115,6 +120,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
       {
         "data": {
+          "blobRententionMode": "eager",
           "versionedHash": "blobVersionedHash2",
         },
         "name": "storeBlob:postgres-worker-blobVersionedHash2",
@@ -131,6 +137,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
       {
         "data": {
+          "blobRententionMode": "eager",
           "versionedHash": "blobVersionedHash2",
         },
         "name": "storeBlob:s3-worker-blobVersionedHash2",
@@ -147,6 +154,7 @@ exports[`BlobPropagator > when propagating multiple blobs > should create flow j
       },
     ],
     "data": {
+      "blobRententionMode": "eager",
       "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash2.bin",
     },
     "name": "propagateBlob:finalizer-worker-blobVersionedHash2",

@@ -208,7 +208,11 @@ describe("Storage Workers", () => {
     runWorkerTests(
       storage,
       () => {
-        return Promise.resolve({ blobStorageManager: bsm, prisma });
+        return Promise.resolve({
+          blobStorageManager: bsm,
+          temporaryBlobStorage: tmpBlobStorage,
+          prisma,
+        });
       },
       {
         blobUri: uri,
@@ -238,7 +242,11 @@ describe("Storage Workers", () => {
         }
       });
 
-      return Promise.resolve({ blobStorageManager: bsm, prisma });
+      return Promise.resolve({
+        blobStorageManager: bsm,
+        temporaryBlobStorage: tmpBlobStorage,
+        prisma,
+      });
     },
     {
       versionedHash: blobVersionedHash,

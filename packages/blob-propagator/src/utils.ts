@@ -4,9 +4,11 @@ import type { BlobReference } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
 import { DEFAULT_JOB_OPTIONS } from "./constants";
+import { logger } from "./logger";
 import type {
   BlobPropagationJobData,
   BlobPropagationWorkerParams,
+  BlobRententionMode,
 } from "./types";
 
 export function buildJobId(...parts: string[]) {
@@ -18,18 +20,20 @@ export function createBlobPropagationFlowJob(
   storageWorkerNames: string[],
   versionedHash: string,
   temporaryBlobUri: string,
+  blobRententionMode: BlobRententionMode,
   opts: Partial<JobsOptions> = {}
 ): FlowJob {
   const propagationFlowJobId = buildJobId(workerName, versionedHash);
 
   const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash)
+    createBlobStorageJob(name, versionedHash, blobRententionMode)
   );
 
   return {
     name: `propagateBlob:${propagationFlowJobId}`,
     queueName: workerName,
     data: {
+      blobRententionMode,
       temporaryBlobUri,
     },
     opts: {
@@ -44,6 +48,7 @@ export function createBlobPropagationFlowJob(
 export function createBlobStorageJob(
   storageWorkerName: string,
   versionedHash: string,
+  blobRententionMode?: BlobRententionMode,
   opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
@@ -53,6 +58,7 @@ export function createBlobStorageJob(
     queueName: storageWorkerName,
     data: {
       versionedHash,
+      blobRententionMode,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -64,14 +70,34 @@ export function createBlobStorageJob(
 }
 
 export async function propagateBlob(
-  { versionedHash }: BlobPropagationJobData,
+  { blobRetentionMode, versionedHash }: BlobPropagationJobData,
   targetStorageName: BlobStorage,
-  { blobStorageManager, prisma }: BlobPropagationWorkerParams
+  {
+    blobStorageManager,
+    prisma,
+    temporaryBlobStorage,
+  }: BlobPropagationWorkerParams
 ) {
   try {
     let blobData: string;
+    const uri = temporaryBlobStorage.getBlobUri(versionedHash);
+    const rawUri = uri?.slice(0, -4);
+    const binUri = `${rawUri}.bin`;
+    const txtUri = `${rawUri}.txt`;
 
     try {
+      // TODO: Remove this. It's a temporary fetching logic while we still have both binary and txt files
+      try {
+        blobData = await Promise.any([
+          temporaryBlobStorage.getBlob(binUri),
+          temporaryBlobStorage.getBlob(txtUri),
+        ]);
+
+        logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
+      } catch (_) {
+        //
+      }
+
       blobData = await blobStorageManager
         .getBlobByHash(versionedHash)
         .then(({ data }) => data);
@@ -124,6 +150,15 @@ export async function propagateBlob(
         },
       },
     });
+
+    if (blobRetentionMode) {
+      await Promise.allSettled([
+        temporaryBlobStorage.removeBlob(binUri),
+        temporaryBlobStorage.removeBlob(txtUri),
+      ]);
+
+      logger.debug(`Blob ${versionedHash} removed from temporary storage`);
+    }
 
     return {
       storage: targetStorageName,

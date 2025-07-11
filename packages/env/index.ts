@@ -90,6 +90,9 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
+      BLOB_PROPAGATOR_BLOB_RETENTION_MODE: z
+        .enum(["eager", "lazy"])
+        .default("eager"),
 
       // PostHog
       POSTHOG_ID: z.string().optional(),
@@ -216,6 +219,8 @@ export const env = createEnv({
         env.SECRET_KEY
       )} redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
         env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+      } blobRetentionMode=${
+        env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE
       } completedJobsAge=${
         env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE
       } seconds failedJobsAge=${
@@ -263,7 +268,10 @@ export const env = createEnv({
       );
     }
 
-    if (env.FILE_SYSTEM_STORAGE_ENABLED) {
+    if (
+      env.FILE_SYSTEM_STORAGE_ENABLED ||
+      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+    ) {
       console.log(
         `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
       );

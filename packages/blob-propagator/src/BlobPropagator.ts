@@ -34,6 +34,7 @@ import type {
   Blob,
   BlobPropagationWorker,
   BlobPropagationWorkerProcessor,
+  BlobRententionMode,
 } from "./types";
 import { createBlobPropagationFlowJob } from "./utils";
 import {
@@ -46,6 +47,7 @@ import {
 } from "./worker-processors";
 
 export type BlobPropagatorConfig = {
+  blobRententionMode?: BlobRententionMode;
   blobStorageManager: BlobStorageManager;
   tmpBlobStorage: BlobStorageName;
   prisma: BlobscanPrismaClient;
@@ -75,7 +77,10 @@ export class BlobPropagator {
 
   protected jobOptions: Partial<JobsOptions>;
 
+  protected blobRetentionMode: BlobRententionMode;
+
   constructor({
+    blobRententionMode = "eager",
     blobStorageManager,
     prisma,
     redisConnectionOrUri,
@@ -136,6 +141,7 @@ export class BlobPropagator {
           workerProcessor({
             prisma,
             blobStorageManager,
+            temporaryBlobStorage,
           }),
           workerOptions_
         );
@@ -154,6 +160,7 @@ export class BlobPropagator {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
     };
+    this.blobRetentionMode = blobRententionMode;
 
     logger.info("Blob propagator started successfully");
   }
@@ -170,7 +177,8 @@ export class BlobPropagator {
         this.finalizerWorker.name,
         storageWorkerNames,
         versionedHash,
-        temporalBlobUri
+        temporalBlobUri,
+        this.blobRetentionMode
       );
 
       await this.blobPropagationFlowProducer.add(flowJob);
@@ -210,7 +218,8 @@ export class BlobPropagator {
           this.finalizerWorker.name,
           storageWorkerNames,
           versionedHash,
-          temporalBlobUris[i] as string
+          temporalBlobUris[i] as string,
+          this.blobRetentionMode
         )
       );
 
