@@ -99,7 +99,7 @@ export async function propagateBlob(
   }: BlobPropagationWorkerParams
 ) {
   try {
-    let blobData: string;
+    let blobData: string | undefined;
     const uri = temporaryBlobStorage.getBlobUri(versionedHash);
     const rawUri = uri?.slice(0, -4);
     const binUri = `${rawUri}.bin`;
@@ -122,9 +122,11 @@ export async function propagateBlob(
         logger.debug(formatErrorWithCauses(err));
       }
 
-      blobData = await blobStorageManager
-        .getBlobByHash(versionedHash)
-        .then(({ data }) => data);
+      if (!blobData) {
+        blobData = await blobStorageManager
+          .getBlobByHash(versionedHash)
+          .then(({ data }) => data);
+      }
     } catch (err) {
       const blobRefs = await prisma.blobDataStorageReference
         .findMany({
