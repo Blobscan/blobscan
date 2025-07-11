@@ -9,7 +9,7 @@ type OctantBannerProps = {
   onClose(): void;
 };
 
-const EPOCH_START_DATE = "2025-07-11T23:59:00";
+const EPOCH_CLOSING_DATE = "2025-07-25T18:00:00";
 
 export const OctantBanner: FC<OctantBannerProps> = function GitcoinBanner({
   onClose,
@@ -42,9 +42,7 @@ export const OctantBanner: FC<OctantBannerProps> = function GitcoinBanner({
       </div>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="text-sm leading-6 text-gray-900">
-          <strong className="font-semibold">
-            We&#39;re participating on the Octant Epoch 8 Round! 🎉
-          </strong>
+          <strong className="font-semibold">Octant Epoch 8 is live! 🎉</strong>
           <svg
             viewBox="0 0 2 2"
             className="mx-2 inline h-0.5 w-0.5 fill-current"
@@ -52,20 +50,17 @@ export const OctantBanner: FC<OctantBannerProps> = function GitcoinBanner({
           >
             <circle cx={1} cy={1} r={1} />
           </svg>
-          Support us by locking{" "}
-          <Link isExternal href="https://octant.build/en-EN/glm-token">
-            GLM
-          </Link>
-          , then donating during the next allocation window, starting{" "}
+          Support us in building and maintaining Blobscan by donating your
+          Octant rewards before the round ends{" "}
           <span className="font-bold">
-            {dayjs(EPOCH_START_DATE).fromNow()}.
+            {dayjs(EPOCH_CLOSING_DATE).fromNow()}.
           </span>
         </p>
         <a
-          href="https://octant.app/home"
           className="flex-none rounded-full bg-gray-900 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+          href="https://octant.app/project/8/0xfBa741C00AE59c4376B46c773b0e67EfF0BA1023"
         >
-          Go to Octant Epoch 8
+          Donate here
         </a>
       </div>
       <div className="flex flex-1 justify-end">
