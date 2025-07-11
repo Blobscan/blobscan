@@ -106,13 +106,14 @@ export async function propagateBlob(
     const txtUri = `${rawUri}.txt`;
 
     logger.debug(
-      `Mode: ${blobRetentionMode}. Temporary Blob Storage: ${temporaryBlobStorage.name}, Bin Uri: ${binUri}, Txt Uri: ${txtUri}`
+      `Mode: ${blobRetentionMode}. Temporary Blob Storage: ${temporaryBlobStorage.name}`
     );
 
     try {
       // TODO: Remove this. It's a temporary fetching logic while we still have both binary and txt files
       try {
         blobData = await temporaryBlobStorage.getBlob(binUri).catch((err) => {
+          logger.debug(binUri);
           logger.debug(formatErrorWithCauses(err));
 
           return temporaryBlobStorage.getBlob(txtUri);
@@ -120,6 +121,7 @@ export async function propagateBlob(
 
         logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
       } catch (err) {
+        logger.debug(txtUri);
         logger.debug(formatErrorWithCauses(err));
         blobData = await blobStorageManager
           .getBlobByHash(versionedHash)
