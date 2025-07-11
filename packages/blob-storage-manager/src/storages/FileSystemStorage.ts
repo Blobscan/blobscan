@@ -10,6 +10,7 @@ import {
   bytesToHex,
   createFullPermissionDirectory,
   createFullPermissionBinFile,
+  performFullPermissionOp,
 } from "../utils";
 
 export interface FileSystemStorageConfig extends BlobStorageConfig {
@@ -23,6 +24,15 @@ export class FileSystemStorage extends BlobStorage {
     super(BlobStorageName.FILE_SYSTEM, chainId);
 
     this.blobDirPath = blobDirPath;
+
+    performFullPermissionOp(() => {
+      fs.rmSync(this.blobDirPath, {
+        recursive: true,
+        force: true,
+      });
+
+      console.log(`TMP ${this.blobDirPath} removed!`);
+    });
 
     createFullPermissionDirectory(this.blobDirPath);
   }

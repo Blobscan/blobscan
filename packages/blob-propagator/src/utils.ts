@@ -69,26 +69,6 @@ export function createBlobStorageJob(
   };
 }
 
-function formatErrorWithCauses(error: unknown): string {
-  if (!(error instanceof Error)) return String(error);
-
-  let message = `Error: ${error.message}`;
-  let current: unknown = error;
-  let depth = 0;
-
-  while (current instanceof Error && current.cause) {
-    depth++;
-    current = current.cause;
-    if (current instanceof Error) {
-      message += `\nCaused by (${depth}): ${current.message}`;
-    } else {
-      message += `\nCaused by (${depth}): ${String(current)}`;
-    }
-  }
-
-  return message;
-}
-
 export async function propagateBlob(
   { blobRetentionMode, versionedHash }: BlobPropagationJobData,
   targetStorageName: BlobStorage,
@@ -105,24 +85,15 @@ export async function propagateBlob(
     const binUri = `${rawUri}.bin`;
     const txtUri = `${rawUri}.txt`;
 
-    logger.debug(
-      `Mode: ${blobRetentionMode}. Temporary Blob Storage: ${temporaryBlobStorage.name}`
-    );
-
     try {
       // TODO: Remove this. It's a temporary fetching logic while we still have both binary and txt files
       try {
-        blobData = await temporaryBlobStorage.getBlob(binUri).catch((err) => {
-          logger.debug(binUri);
-          logger.debug(formatErrorWithCauses(err));
-
+        blobData = await temporaryBlobStorage.getBlob(binUri).catch((_) => {
           return temporaryBlobStorage.getBlob(txtUri);
         });
 
         logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
       } catch (err) {
-        logger.debug(txtUri);
-        logger.debug(formatErrorWithCauses(err));
         blobData = await blobStorageManager
           .getBlobByHash(versionedHash)
           .then(({ data }) => data);
