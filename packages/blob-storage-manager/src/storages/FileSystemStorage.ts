@@ -10,7 +10,6 @@ import {
   bytesToHex,
   createFullPermissionDirectory,
   createFullPermissionBinFile,
-  performFullPermissionOp,
 } from "../utils";
 
 function deleteFilesInDirectory(dir: string) {

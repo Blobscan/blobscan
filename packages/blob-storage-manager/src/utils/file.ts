@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export function performFullPermissionOp(operation: () => void) {
+function performFullPermissionOp(operation: () => void) {
   const oldUmask = process.umask(0);
 
   try {
