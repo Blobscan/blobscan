@@ -153,8 +153,6 @@ export async function propagateBlob(
         temporaryBlobStorage.removeBlob(binUri),
         temporaryBlobStorage.removeBlob(txtUri),
       ]);
-
-      logger.debug(`Blob ${versionedHash} removed from temporary storage`);
     }
 
     return {
