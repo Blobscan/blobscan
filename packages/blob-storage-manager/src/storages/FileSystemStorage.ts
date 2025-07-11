@@ -43,9 +43,10 @@ export class FileSystemStorage extends BlobStorage {
 
     this.blobDirPath = blobDirPath;
 
-    const count = deleteFilesInDirectory(this.blobDirPath);
-
-    console.log(`Total of ${count} files removed!`);
+    if (fs.existsSync(this.blobDirPath)) {
+      const count = deleteFilesInDirectory(this.blobDirPath);
+      console.log(`Total of ${count} files removed!`);
+    }
 
     createFullPermissionDirectory(this.blobDirPath);
   }
