@@ -7,6 +7,8 @@ import type {
 } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
+export type BlobRententionMode = "eager" | "lazy";
+
 export type Blob = {
   versionedHash: string;
   data: string;
@@ -14,6 +16,7 @@ export type Blob = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
+  blobRetentionMode: BlobRententionMode;
 };
 
 export type BlobPropagationFinalizerJobData = {
@@ -27,6 +30,7 @@ export type BlobPropagationFinalizerJob = Job<BlobPropagationFinalizerJobData>;
 export type BlobPropagationWorkerParams = {
   blobStorageManager: BlobStorageManager;
   prisma: BlobscanPrismaClient;
+  temporaryBlobStorage: BlobStorage;
 };
 
 export type BlobPropagationFinalizerWorkerParams = {

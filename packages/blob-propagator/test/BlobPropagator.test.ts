@@ -278,6 +278,7 @@ describe("BlobPropagator", () => {
           "children": [
             {
               "data": {
+                "blobRententionMode": "eager",
                 "versionedHash": "blobVersionedHash",
               },
               "name": "storeBlob:google-worker-blobVersionedHash",
@@ -294,6 +295,7 @@ describe("BlobPropagator", () => {
             },
             {
               "data": {
+                "blobRententionMode": "eager",
                 "versionedHash": "blobVersionedHash",
               },
               "name": "storeBlob:postgres-worker-blobVersionedHash",
@@ -310,6 +312,7 @@ describe("BlobPropagator", () => {
             },
             {
               "data": {
+                "blobRententionMode": "eager",
                 "versionedHash": "blobVersionedHash",
               },
               "name": "storeBlob:s3-worker-blobVersionedHash",
@@ -326,6 +329,7 @@ describe("BlobPropagator", () => {
             },
           ],
           "data": {
+            "blobRententionMode": "eager",
             "temporaryBlobUri": "test-blobscan-blobs/1/ob/Ve/rs/obVersionedHash.bin",
           },
           "name": "propagateBlob:finalizer-worker-blobVersionedHash",
