@@ -7,9 +7,9 @@ import type {
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
 
+import type { BlobPropagator } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
 
-import type { BlobPropagator } from "./types";
 import type { APIClient } from "./utils";
 import { retrieveAPIClient } from "./utils";
 
