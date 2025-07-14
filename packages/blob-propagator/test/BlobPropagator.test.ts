@@ -123,6 +123,36 @@ describe("BlobPropagator", () => {
   });
 
   describe("when creating a blob propagator", () => {
+    it("should return an instance", async () => {
+      await expect(
+        BlobPropagator.create({
+          blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
+          blobStorageManager,
+          prisma,
+          tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          redisConnectionOrUri: env.REDIS_URI,
+        })
+      ).resolves.toBeDefined();
+    });
+
+    it("should return an instance with the highest block number set to the last finalized block", async () => {
+      const propagator = await MockedBlobPropagator.create({
+        blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
+        blobStorageManager,
+        prisma,
+        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        redisConnectionOrUri: env.REDIS_URI,
+      });
+
+      const expectedHighestBlockNumber = await prisma.blockchainSyncState
+        .findFirst()
+        .then((s) => s?.lastFinalizedBlock);
+
+      expect(propagator.getHighestBlockNumber()).toBe(
+        expectedHighestBlockNumber
+      );
+    });
+
     testValidError(
       "should throw a valid error when creating it with no blob storages",
       async () => {
