@@ -71,19 +71,10 @@ export const indexData = createAuthedProcedure("indexer")
   .mutation(async ({ ctx: { prisma, blobPropagator }, input }) => {
     const operations = [];
 
-    let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
-
-    // 1. Propagate blobs
-    const propagatorInput = input.blobs.map((b) => ({
-      ...b,
-      blockNumber: input.block.number,
-    }));
-    await blobPropagator?.propagateBlobs(propagatorInput);
-
     // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
     const now = new Date();
 
-    // 2. Prepare address, block, transaction and blob insertions
+    // 1. Prepare address, block, transaction and blob insertions
     const dbTxs = createDBTransactions(input);
     const dbBlock = createDBBlock(input, dbTxs);
     const dbBlobs = createDBBlobs(input);
@@ -108,16 +99,17 @@ export const indexData = createAuthedProcedure("indexer")
       prisma.blob.upsertMany(dbBlobs)
     );
 
-    if (dbBlobStorageRefs?.length) {
-      operations.push(
-        prisma.blobDataStorageReference.upsertMany(dbBlobStorageRefs)
-      );
-    }
-
     operations.push(
       prisma.blobsOnTransactions.upsertMany(dbBlobsOnTransactions)
     );
 
-    // 3. Execute all database operations in a single transaction
+    // 2. Execute all database operations in a single transaction
     await prisma.$transaction(operations);
+
+    // 3. Propagate blobs
+    const propagatorInput = input.blobs.map((b) => ({
+      ...b,
+      blockNumber: input.block.number,
+    }));
+    await blobPropagator?.propagateBlobs(propagatorInput);
   });
