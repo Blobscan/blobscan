@@ -6,6 +6,7 @@ import type {
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
+import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
@@ -70,7 +71,7 @@ export async function createTestContext({
       propagateBlobs(_) {
         return Promise.resolve();
       },
-    };
+    } as BlobPropagator;
   }
 
   return ctx;
