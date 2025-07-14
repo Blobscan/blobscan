@@ -11,6 +11,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
+import { Separator } from "~/components/Separator";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
@@ -179,7 +180,7 @@ const Tx: NextPage = () => {
           <div>
             {formatNumber(blobAsCalldataGasUsed)}{" "}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              |{" "}
+              (
               <strong>
                 {formatNumber(
                   performDiv(blobAsCalldataGasUsed, blobGasUsed),
@@ -189,7 +190,7 @@ const Tx: NextPage = () => {
                   }
                 )}
               </strong>{" "}
-              times larger
+              times larger)
             </span>
           </div>
         ),
@@ -200,7 +201,7 @@ const Tx: NextPage = () => {
           <div className="display flex gap-1">
             {<EtherWithGweiDisplay amount={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              |{" "}
+              <Separator />{" "}
               <strong>
                 {formatNumber(
                   performDiv(blobAsCalldataGasFee, blobGasBaseFee),

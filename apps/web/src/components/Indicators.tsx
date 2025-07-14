@@ -1,5 +1,6 @@
 import type { FC } from "react";
 
+import { Separator } from "./Separator";
 import { Skeleton } from "./Skeleton";
 
 export type IndicatorProps = {
@@ -46,7 +47,9 @@ export const IndicatorsStrip: FC<{ indicators: IndicatorProps[] }> = function ({
         return (
           <div key={props.name} className="flex flex-row items-center gap-2">
             <Indicator {...props} />
-            <span className="flex">{i < indicators.length - 1 ? "･" : ""}</span>
+            <span className="flex">
+              {i < indicators.length - 1 ? <Separator /> : ""}
+            </span>
           </div>
         );
       })}

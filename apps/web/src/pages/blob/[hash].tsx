@@ -22,6 +22,7 @@ import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { Separator } from "~/components/Separator";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -262,9 +263,7 @@ const Blob: NextPage = function () {
                     </div>
                   </div>
                   <div className="flex w-4/12 gap-2 md:w-4/12 md:max-w-full lg:w-auto">
-                    <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                      ･
-                    </div>
+                    <Separator />
                     <div
                       className="flex items-center gap-1 truncate"
                       title={txHash}
@@ -277,10 +276,8 @@ const Blob: NextPage = function () {
                     </div>
                   </div>
                   <div className="flex items-center gap-1 truncate">
-                    <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                      ･
-                    </div>
-                    <div className="truncate text-contentSecondary-light dark:text-contentSecondary-dark">
+                    <Separator />
+                    <div>
                       {dayjs(blockTimestamp).format(
                         breakpoint === "sm"
                           ? "YY/MM/DD hh:mm:ss"
