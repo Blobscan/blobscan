@@ -1,4 +1,3 @@
-import type { BlobDataStorageReference } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
