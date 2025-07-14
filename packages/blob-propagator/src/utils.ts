@@ -8,8 +8,29 @@ import { logger } from "./logger";
 import type {
   BlobPropagationJobData,
   BlobPropagationWorkerParams,
-  BlobRententionMode,
+  BlobRetentionMode,
 } from "./types";
+
+export const MAX_JOB_PRIORITY = 2_097_152;
+
+export function computeLinearPriority(
+  value: number,
+  { min = 1, max }: { min?: number; max: number }
+): number {
+  if (min === max) {
+    return 1;
+  }
+
+  const clampedBlockNumber = Math.max(min, Math.min(value, max));
+
+  if (clampedBlockNumber === max) {
+    return 1;
+  }
+
+  const relative = (max - clampedBlockNumber) / (max - min);
+
+  return Math.round(relative * MAX_JOB_PRIORITY);
+}
 
 export function buildJobId(...parts: string[]) {
   return parts.join("-");
@@ -20,25 +41,28 @@ export function createBlobPropagationFlowJob(
   storageWorkerNames: string[],
   versionedHash: string,
   temporaryBlobUri: string,
-  blobRententionMode: BlobRententionMode,
+  blobRetentionMode: BlobRetentionMode,
   opts: Partial<JobsOptions> = {}
 ): FlowJob {
+  const { priority, ...restOpts } = opts;
   const propagationFlowJobId = buildJobId(workerName, versionedHash);
 
   const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash, blobRententionMode)
+    createBlobStorageJob(name, versionedHash, blobRetentionMode, {
+      priority,
+    })
   );
 
   return {
     name: `propagateBlob:${propagationFlowJobId}`,
     queueName: workerName,
     data: {
-      blobRententionMode,
+      blobRetentionMode,
       temporaryBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
-      ...opts,
+      ...restOpts,
       jobId: propagationFlowJobId,
     },
     children,
@@ -48,7 +72,7 @@ export function createBlobPropagationFlowJob(
 export function createBlobStorageJob(
   storageWorkerName: string,
   versionedHash: string,
-  blobRententionMode?: BlobRententionMode,
+  blobRetentionMode?: BlobRetentionMode,
   opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
@@ -58,7 +82,7 @@ export function createBlobStorageJob(
     queueName: storageWorkerName,
     data: {
       versionedHash,
-      blobRententionMode,
+      blobRetentionMode,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,

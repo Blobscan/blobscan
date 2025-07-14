@@ -31,12 +31,15 @@ import {
 } from "./errors";
 import { logger } from "./logger";
 import type {
-  Blob,
+  BlobPropagationInput,
   BlobPropagationWorker,
   BlobPropagationWorkerProcessor,
-  BlobRententionMode,
+  BlobRetentionMode,
 } from "./types";
-import { createBlobPropagationFlowJob } from "./utils";
+import {
+  createBlobPropagationFlowJob as _createBlobPropagationFlowJob,
+  computeLinearPriority,
+} from "./utils";
 import {
   fileSystemProcessor,
   finalizerProcessor,
@@ -47,8 +50,9 @@ import {
 } from "./worker-processors";
 
 export type BlobPropagatorConfig = {
-  blobRententionMode?: BlobRententionMode;
+  blobRetentionMode?: BlobRetentionMode;
   blobStorageManager: BlobStorageManager;
+  highestBlockNumber?: number;
   tmpBlobStorage: BlobStorageName;
   prisma: BlobscanPrismaClient;
   redisConnectionOrUri: IORedis | string;
@@ -77,13 +81,15 @@ export class BlobPropagator {
 
   protected jobOptions: Partial<JobsOptions>;
 
-  protected blobRetentionMode: BlobRententionMode;
+  protected blobRetentionMode: BlobRetentionMode;
+  protected highestBlockNumber?: number;
 
-  constructor({
-    blobRententionMode = "eager",
+  protected constructor({
+    blobRetentionMode = "eager",
     blobStorageManager,
     prisma,
     redisConnectionOrUri,
+    highestBlockNumber,
     tmpBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
@@ -160,26 +166,41 @@ export class BlobPropagator {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
     };
-    this.blobRetentionMode = blobRententionMode;
+    this.blobRetentionMode = blobRetentionMode;
+    this.highestBlockNumber = highestBlockNumber;
 
     logger.info("Blob propagator started successfully");
   }
 
-  async propagateBlob({ versionedHash, data }: Blob) {
+  static async create(
+    config: Omit<BlobPropagatorConfig, "highestBlockNumber">
+  ) {
+    const lastFinalizedBlock = await config.prisma.blockchainSyncState
+      .findFirst()
+      .then((s) => s?.lastFinalizedBlock ?? undefined);
+
+    return new BlobPropagator({
+      ...config,
+      highestBlockNumber: lastFinalizedBlock,
+    });
+  }
+
+  async propagateBlob({
+    blockNumber,
+    versionedHash,
+    data,
+  }: BlobPropagationInput) {
     try {
       const temporalBlobUri = await this.#storeBlobInTemporaryStorage(
         versionedHash,
         data
       );
 
-      const storageWorkerNames = this.storageWorkers.map((w) => w.name);
-      const flowJob = createBlobPropagationFlowJob(
-        this.finalizerWorker.name,
-        storageWorkerNames,
-        versionedHash,
+      const flowJob = this.createBlobPropagationFlowJob({
+        blockNumber,
         temporalBlobUri,
-        this.blobRetentionMode
-      );
+        versionedHash,
+      });
 
       await this.blobPropagationFlowProducer.add(flowJob);
     } catch (err) {
@@ -190,7 +211,7 @@ export class BlobPropagator {
     }
   }
 
-  async propagateBlobs(blobs: Blob[]) {
+  async propagateBlobs(blobs: BlobPropagationInput[]) {
     try {
       const uniqueBlobs = Array.from(
         new Set(blobs.map((b) => b.versionedHash))
@@ -212,15 +233,13 @@ export class BlobPropagator {
         )
       );
 
-      const storageWorkerNames = this.storageWorkers.map((w) => w.name);
-      const blobPropagationFlowJobs = uniqueBlobs.map(({ versionedHash }, i) =>
-        createBlobPropagationFlowJob(
-          this.finalizerWorker.name,
-          storageWorkerNames,
-          versionedHash,
-          temporalBlobUris[i] as string,
-          this.blobRetentionMode
-        )
+      const blobPropagationFlowJobs = uniqueBlobs.map(
+        ({ blockNumber, versionedHash }, i) =>
+          this.createBlobPropagationFlowJob({
+            blockNumber,
+            temporalBlobUri: temporalBlobUris[i] as string,
+            versionedHash,
+          })
       );
 
       await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
@@ -232,6 +251,44 @@ export class BlobPropagator {
         err as Error
       );
     }
+  }
+
+  protected createBlobPropagationFlowJob({
+    blockNumber,
+    temporalBlobUri,
+    versionedHash,
+  }: {
+    blockNumber?: number;
+    temporalBlobUri: string;
+    versionedHash: string;
+  }) {
+    const jobPriority = this.#computeJobPriority(blockNumber);
+    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
+
+    return _createBlobPropagationFlowJob(
+      this.finalizerWorker.name,
+      storageWorkerNames,
+      versionedHash,
+      temporalBlobUri,
+      this.blobRetentionMode,
+      {
+        priority: jobPriority,
+      }
+    );
+  }
+
+  #computeJobPriority(jobBlockNumber?: number): number {
+    if (!jobBlockNumber) {
+      return 1;
+    }
+
+    if (!this.highestBlockNumber || jobBlockNumber > this.highestBlockNumber) {
+      this.highestBlockNumber = jobBlockNumber;
+    }
+
+    return computeLinearPriority(jobBlockNumber, {
+      max: this.highestBlockNumber ?? jobBlockNumber,
+    });
   }
 
   async close() {

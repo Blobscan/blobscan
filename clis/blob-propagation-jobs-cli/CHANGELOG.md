@@ -5,7 +5,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`a0e25c0`](https://github.com/Blobscan/blobscan/commit/a0e25c0a1d51d382b6083bd6476e7923a9931c1e), [`f64d961`](https://github.com/Blobscan/blobscan/commit/f64d961a166cc6fe4ae9397d2d54b24c3764f13d), [`52b89d6`](https://github.com/Blobscan/blobscan/commit/52b89d6a90200eea5647c49bb5fba8c0b0ff1529)]:
-  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/blob-propagator@0.3.0
   - @blobscan/env@0.2.0
   - @blobscan/db@0.18.1
 

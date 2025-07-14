@@ -36,12 +36,12 @@ async function createBlobPropagator() {
     }
   }
 
-  return new BlobPropagator({
+  return BlobPropagator.create({
     blobStorageManager,
     prisma,
     tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
     redisConnectionOrUri: env.REDIS_URI,
-    blobRententionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
+    blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
   });
 }
 

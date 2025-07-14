@@ -74,7 +74,11 @@ export const indexData = createAuthedProcedure("indexer")
     let dbBlobStorageRefs: BlobDataStorageReference[] | undefined;
 
     // 1. Propagate blobs
-    await blobPropagator?.propagateBlobs(input.blobs);
+    const propagatorInput = input.blobs.map((b) => ({
+      ...b,
+      blockNumber: input.block.number,
+    }));
+    await blobPropagator?.propagateBlobs(propagatorInput);
 
     // TODO: Create an upsert extension that set the `insertedAt` and the `updatedAt` field
     const now = new Date();

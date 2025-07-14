@@ -358,6 +358,13 @@ describe("Indexer router", async () => {
           });
 
           it("should call blob propagator", async () => {
+            const expectedInput = INPUT_WITH_DUPLICATED_BLOBS.blobs.map(
+              (b) => ({
+                ...b,
+                blockNumber: INPUT_WITH_DUPLICATED_BLOBS.block.number,
+              })
+            );
+
             await indexerCallerWithBlobPropagator.indexData(
               INPUT_WITH_DUPLICATED_BLOBS
             );
@@ -366,7 +373,7 @@ describe("Indexer router", async () => {
             expect(
               blobPropagatorSpy,
               "Propagator called with invalid blobs"
-            ).toHaveBeenCalledWith(INPUT_WITH_DUPLICATED_BLOBS.blobs);
+            ).toHaveBeenCalledWith(expectedInput);
           });
         });
       });
