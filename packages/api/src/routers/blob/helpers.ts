@@ -110,6 +110,9 @@ export function createBlobSelect(expands: Expands) {
         ...blockExpand,
         ...txExpand,
       },
+      orderBy: {
+        blockNumber: "desc",
+      },
     },
   } satisfies Prisma.BlobSelect;
 }
