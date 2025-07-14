@@ -1,5 +1,7 @@
 import dayjs from "@blobscan/dayjs";
 
+export const TIMESTAMP_FORMAT = "MMM D, YYYY h:mm:ss AZ";
+
 export function normalizeTimestamp(timestamp: number | Date | string) {
   return typeof timestamp === "number"
     ? dayjs.unix(timestamp)
@@ -24,7 +26,7 @@ export function formatTimestamp(
 
   const dateFormattedSuffix = compact
     ? ""
-    : ` (${unixHandler.format("MMM D, YYYY h:mm AZ")})`;
+    : ` (${unixHandler.format(TIMESTAMP_FORMAT)})`;
 
   return `${unixHandler.fromNow()}${dateFormattedSuffix}`;
 }

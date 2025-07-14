@@ -7,6 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "@tanstack/react-query";
 
 import type { Decoder } from "@blobscan/blob-decoder";
+import dayjs from "@blobscan/dayjs";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
@@ -21,18 +22,23 @@ import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { Separator } from "~/components/Separator";
 import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
   buildTransactionRoute,
   formatBytes,
+  formatTimestamp,
   isValidDecoder,
+  TIMESTAMP_FORMAT,
 } from "~/utils";
 
 const Blob: NextPage = function () {
   const router = useRouter();
+  const breakpoint = useBreakpoint();
   const versionedHash = (router.query.hash as string | undefined) ?? "0";
   const {
     data: blob,
@@ -136,6 +142,8 @@ const Blob: NextPage = function () {
   const detailsFields: DetailsLayoutProps["fields"] = [];
 
   if (blob) {
+    const isUnique = blob.transactions.length === 1;
+
     const rollups = blob.transactions
       .filter(({ rollup }) => !!rollup)
       .map(({ rollup }) => rollup as Rollup);
@@ -168,6 +176,42 @@ const Blob: NextPage = function () {
       });
     }
 
+    if (isUnique && blob.transactions[0]) {
+      const { blockNumber, blockTimestamp, txHash } = blob.transactions[0];
+
+      detailsFields.push(
+        {
+          name: "Block",
+          value: (
+            <div className="flex items-center gap-2 truncate">
+              <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
+              <CopyToClipboard
+                value={blockNumber}
+                tooltipText="Copy block number"
+              />
+            </div>
+          ),
+        },
+        {
+          name: "Transaction",
+          value: (
+            <div className="flex items-center gap-2 truncate" title={txHash}>
+              {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
+              <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
+            </div>
+          ),
+        },
+        {
+          name: "Timestamp",
+          value: (
+            <div className="whitespace-break-spaces">
+              {formatTimestamp(blockTimestamp)}
+            </div>
+          ),
+        }
+      );
+    }
+
     detailsFields.push(
       {
         name: "Commitment",
@@ -196,35 +240,58 @@ const Blob: NextPage = function () {
       });
     }
 
-    detailsFields.push({
-      name: "Transactions and Blocks",
-      value: (
-        <div className="grid w-full grid-cols-3 gap-x-6 gap-y-3">
-          {blob.transactions.map(({ txHash, blockNumber }) => (
-            <Fragment key={`${txHash}-${blockNumber}`}>
-              <div className="col-span-2 flex gap-1">
-                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Tx{" "}
-                </div>
+    if (!isUnique) {
+      detailsFields.push({
+        name: `Blocks And Transactions (${blob.transactions.length})`,
+        value: (
+          <div className="flex flex-col gap-3">
+            {blob.transactions.map(
+              ({ txHash, blockNumber, blockTimestamp }) => (
                 <div
-                  className="flex items-center gap-2 truncate"
-                  title={txHash}
+                  key={`${txHash}-${blockNumber}`}
+                  className="flex max-w-full items-center gap-1 truncate"
                 >
-                  {<Link href={buildTransactionRoute(txHash)}>{txHash}</Link>}
-                  <CopyToClipboard value={txHash} tooltipText="Copy tx hash" />
+                  <div className="flex gap-2">
+                    <div className="flex items-center gap-1 truncate">
+                      <Link href={buildBlockRoute(blockNumber)}>
+                        {blockNumber}
+                      </Link>
+                      <CopyToClipboard
+                        value={blockNumber}
+                        tooltipText="Copy block number"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex w-4/12 gap-2 md:w-4/12 md:max-w-full lg:w-auto">
+                    <Separator />
+                    <div
+                      className="flex items-center gap-1 truncate"
+                      title={txHash}
+                    >
+                      <Link href={buildTransactionRoute(txHash)}>{txHash}</Link>
+                      <CopyToClipboard
+                        value={txHash}
+                        tooltipText="Copy tx hash"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 truncate">
+                    <Separator />
+                    <div>
+                      {dayjs(blockTimestamp).format(
+                        breakpoint === "sm"
+                          ? "YY/MM/DD hh:mm:ss"
+                          : TIMESTAMP_FORMAT
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-1">
-                <div className="text-contentSecondary-light dark:text-contentSecondary-dark">
-                  Block{" "}
-                </div>
-                <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
-              </div>
-            </Fragment>
-          ))}
-        </div>
-      ),
-    });
+              )
+            )}
+          </div>
+        ),
+      });
+    }
   }
 
   return (

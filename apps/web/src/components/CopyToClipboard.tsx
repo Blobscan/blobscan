@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
 type CopyToClipboardProps = {
   tooltipText?: string;
-  value: string;
+  value: string | number;
 };
 
 export const CopyToClipboard: FC<CopyToClipboardProps> = ({
@@ -18,7 +18,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
 
   const handleClick = async () => {
     try {
-      await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(value.toString());
       setIsCopied(true);
     } catch (error) {
       console.error("Failed to copy to clipboard", error);
