@@ -15,6 +15,7 @@ import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
+import { useBreakpoint } from "~/hooks/useBreakpoint";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
@@ -43,6 +44,9 @@ const Block: NextPage = function () {
   const blockNumber = blockData ? blockData.number : undefined;
 
   const { env } = useEnv();
+  const breakpoint = useBreakpoint();
+  const isCompact = breakpoint === "sm";
+  console.log(breakpoint);
   const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
 
   if (error) {
@@ -180,6 +184,7 @@ const Block: NextPage = function () {
           <BlobGasUsageDisplay
             networkBlobConfig={networkBlobConfig}
             blobGasUsed={blockData.blobGasUsed}
+            compact={isCompact}
           />
         ),
       },

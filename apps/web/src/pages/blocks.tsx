@@ -305,7 +305,6 @@ const Blocks: NextPage = function () {
           page: paginationParams.p,
         }}
         isExpandable
-        rowSkeletonHeight={44}
       />
     </>
   );
