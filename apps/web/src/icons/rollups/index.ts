@@ -1,6 +1,5 @@
-import type { FC, SVGProps } from "react";
-
 import type { Rollup } from "~/types";
+import type { RenderableIcon } from "~/types/icons";
 import abstract from "./abstract.svg";
 import aevo from "./aevo.svg";
 import ancient8 from "./ancient8.svg";
@@ -64,7 +63,7 @@ import zircuit from "./zircuit.svg";
 import zksync from "./zksync.svg";
 import zora from "./zora.svg";
 
-type RollupSvgRegistry = Record<Rollup, FC<SVGProps<SVGElement>> | string>;
+type RollupSvgRegistry = Record<Rollup, RenderableIcon>;
 
 export const ICONS: RollupSvgRegistry = {
   abstract,

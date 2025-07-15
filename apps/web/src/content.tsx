@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { ArrowsRightLeftIcon, CubeIcon } from "@heroicons/react/24/outline";
 import {
   BookOpenIcon,
   ChartBarIcon,
@@ -6,6 +6,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/24/solid";
 
+import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import {
   buildBlocksRoute,
@@ -13,6 +14,7 @@ import {
   buildBlobsRoute,
   buildAllStatsRoute,
 } from "~/utils";
+import type { RenderableIcon } from "./types/icons";
 
 function resolveApiUrl(networkName: string): string {
   if (networkName === "mainnet") {
@@ -38,16 +40,17 @@ export function getFirstBlobNumber(networkName: string): number | undefined {
 export type NavigationItem = {
   label: string;
   href: string;
-  icon: ReactNode;
+  icon: RenderableIcon;
 };
 
 export type ExpandibleNavigationItem = {
+  icon: RenderableIcon;
   label: string;
-  icon: ReactNode;
   items: ExpandibleNavigationSubItem[];
 };
 
 export type ExpandibleNavigationSubItem = {
+  icon?: RenderableIcon;
   label: string;
   href: string;
 };
@@ -68,17 +71,20 @@ export const getNavigationItems = ({
   return [
     {
       label: "Blockchain",
-      icon: <Squares2X2Icon />,
+      icon: Squares2X2Icon,
       items: [
         {
+          icon: BlobIcon,
           label: "Blobs",
           href: buildBlobsRoute(),
         },
         {
+          icon: CubeIcon,
           label: "Blocks",
           href: buildBlocksRoute(),
         },
         {
+          icon: ArrowsRightLeftIcon,
           label: "Transactions",
           href: buildTransactionsRoute(),
         },
@@ -86,22 +92,22 @@ export const getNavigationItems = ({
     },
     {
       label: "Networks",
-      icon: <EthereumIcon />,
+      icon: EthereumIcon,
       items: publicSupportedNetworks ?? [],
     },
     {
       label: "Stats",
-      icon: <ChartBarIcon />,
+      icon: ChartBarIcon,
       href: buildAllStatsRoute(),
     },
     {
       label: "API",
-      icon: <CommandLineIcon />,
+      icon: CommandLineIcon,
       href: networkName ? resolveApiUrl(networkName) : "#",
     },
     {
       label: "Docs",
-      icon: <BookOpenIcon />,
+      icon: BookOpenIcon,
       href: "https://docs.blobscan.com",
     },
   ];

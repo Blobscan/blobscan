@@ -1,11 +1,7 @@
-import type {
-  FC,
-  ForwardRefExoticComponent,
-  RefAttributes,
-  SVGProps,
-} from "react";
+import type { FC } from "react";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
+import type { RenderableIcon } from "~/types/icons";
 import { capitalize } from "~/utils";
 import { Icon } from "../Icon";
 import { Badge } from "./Badge";
@@ -13,12 +9,7 @@ import { Badge } from "./Badge";
 export type Status = "finalized" | "unfinalized";
 
 type StatusConfig = {
-  icon?: ForwardRefExoticComponent<
-    Omit<SVGProps<SVGSVGElement>, "ref"> & {
-      title?: string;
-      titleId?: string;
-    } & RefAttributes<SVGSVGElement>
-  >;
+  icon?: RenderableIcon;
   style: string;
 };
 
