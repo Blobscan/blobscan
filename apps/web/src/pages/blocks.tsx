@@ -122,9 +122,10 @@ const Blocks: NextPage = function () {
           0
         );
         const txsBlobs = transactions.flatMap((tx) =>
-          tx.blobs.map(({ dataStorageReferences, versionedHash }) => ({
+          tx.blobs.map(({ dataStorageReferences, versionedHash }, i) => ({
             transactionHash: tx.hash,
             blobVersionedHash: versionedHash,
+            blobIndex: i,
             category: tx.category,
             rollup: tx.rollup,
             dataStorageReferences,
@@ -219,10 +220,13 @@ const Blocks: NextPage = function () {
                       item: "Tx Hash",
                     },
                     {
+                      item: "Position",
+                    },
+                    {
                       item: "Blob Versioned Hash",
                     },
                     {
-                      item: "Blob Storages",
+                      item: "Storages",
                     },
                   ],
                   className: "dark:border-border-dark/20",
@@ -232,6 +236,7 @@ const Blocks: NextPage = function () {
               rows={txsBlobs.map(
                 ({
                   transactionHash,
+                  blobIndex,
                   blobVersionedHash,
                   rollup,
                   category,
@@ -257,6 +262,9 @@ const Blocks: NextPage = function () {
                           </Link>
                         </Copyable>
                       ),
+                    },
+                    {
+                      item: blobIndex,
                     },
                     {
                       item: (

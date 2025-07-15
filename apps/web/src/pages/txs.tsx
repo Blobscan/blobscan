@@ -195,23 +195,23 @@ const Txs: NextPage = function () {
             ],
             expandItem: (
               <Table
-                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-900"
+                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
                 size="xs"
                 alignment="left"
                 headers={[
                   {
                     cells: [
                       {
+                        item: "Position",
+                      },
+                      {
                         item: "Blob Versioned Hash",
-                        className: "bg-primary-50 dark:bg-primary-900",
                       },
                       {
                         item: "Size",
-                        className: "bg-primary-50 dark:bg-primary-900",
                       },
                       {
                         item: "Storages",
-                        className: "bg-primary-50 dark:bg-primary-900",
                       },
                     ],
                     className: "dark:border-border-dark/20",
@@ -221,8 +221,12 @@ const Txs: NextPage = function () {
                 rows={
                   blobs
                     ? blobs.map(
-                        ({ versionedHash, size, dataStorageReferences }) => ({
+                        (
+                          { versionedHash, size, dataStorageReferences },
+                          i
+                        ) => ({
                           cells: [
+                            { item: i },
                             {
                               item: (
                                 <Copyable
