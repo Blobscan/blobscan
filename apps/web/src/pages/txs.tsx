@@ -79,7 +79,11 @@ const Txs: NextPage = function () {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "w-[170px]",
+          className: "w-[165px]",
+        },
+        {
+          item: "Blobs",
+          className: "w-[65px]",
         },
         {
           item: "From",
@@ -149,6 +153,9 @@ const Txs: NextPage = function () {
                   timeFormat === "relative"
                     ? formatTimestamp(blockTimestamp, true)
                     : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
+              },
+              {
+                item: blobs.length,
               },
               {
                 item: (
