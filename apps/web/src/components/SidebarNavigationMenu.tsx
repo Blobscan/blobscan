@@ -10,6 +10,7 @@ import type { ExpandibleNavigationItem, NavigationItem } from "../content";
 import { isExpandibleNavigationItem, getNavigationItems } from "../content";
 import { BlobscanLogo } from "./BlobscanLogo";
 import { Collapsable } from "./Collapsable";
+import { Icon } from "./Icon";
 import { IconButton } from "./IconButton";
 import { Rotable } from "./Rotable";
 import { SidePanel, useSidePanel } from "./SidePanel";
@@ -91,7 +92,7 @@ function NavigationLink({
       href={href}
       onClick={onClick}
     >
-      <div className="h-5 w-5">{icon}</div>
+      <Icon src={icon} />
       {label}
     </Link>
   );
@@ -133,7 +134,7 @@ function ExpandableNavigationLinks({
           <ChevronDownIcon className="mb-2 h-5 w-5 -rotate-90" />
         </Rotable>
         <div className="flex items-center gap-1">
-          <div className="h-5 w-5">{icon}</div>
+          <Icon src={icon} />
           {label}
         </div>
       </button>
