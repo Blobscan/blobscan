@@ -209,7 +209,7 @@ export function toResponseBlob(prismaBlob: CompletePrismaBlob): ResponseBlob {
   const normalizedPrismaBlob = normalizePrismaBlobFields(prismaBlob);
   const transactions = prismaBlob.transactions.map(
     ({ block, transaction: prismaTx = {}, ...restBlobOnTx }) => {
-      const { block: prismaTxBlock, ...restPrismaTx } = prismaTx;
+      const { block: prismaTxBlock, index: _, ...restPrismaTx } = prismaTx;
 
       return {
         ...restBlobOnTx,

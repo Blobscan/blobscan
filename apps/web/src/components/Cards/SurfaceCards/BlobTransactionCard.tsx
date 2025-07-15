@@ -4,6 +4,7 @@ import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { formatWei } from "@blobscan/eth-format";
 
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
 import { IconButton } from "~/components/IconButton";
@@ -39,7 +40,7 @@ type BlobTransactionCardProps = Partial<{
       | "blobGasMaxFee"
     >
   >;
-  blobs: Pick<Blob, "versionedHash" | "size">[];
+  blobs: Pick<Blob, "versionedHash" | "size" | "dataStorageReferences">[];
   compact?: boolean;
   className?: string;
 }>;
@@ -205,26 +206,43 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
       {blobsOnTx && (
         <Collapsable opened={opened}>
           <div className="bg-primary-200 pr-4 dark:bg-primary-900">
-            <div className="ml-10 grid grid-cols-[1fr_6fr_2fr] gap-2 p-2 text-sm">
+            <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr] gap-2 p-2 text-sm">
               <TableHeader>Index</TableHeader>
               <TableHeader>Versioned Hash</TableHeader>
               <TableHeader>Size</TableHeader>
-              {blobsOnTx.map(({ versionedHash, size }, i) => (
-                <React.Fragment key={`${versionedHash}-${i}`}>
-                  <TableCol>{i}</TableCol>
-                  <TableCol>
-                    <Copyable
-                      value={versionedHash}
-                      tooltipText="Copy versioned hash"
-                    >
-                      <Link href={buildBlobRoute(versionedHash)}>
-                        {versionedHash}
-                      </Link>
-                    </Copyable>
-                  </TableCol>
-                  <TableCol>{formatBytes(size)}</TableCol>
-                </React.Fragment>
-              ))}
+              <TableHeader>Storages</TableHeader>
+              {blobsOnTx.map(
+                ({ dataStorageReferences, versionedHash, size }, i) => (
+                  <React.Fragment key={`${versionedHash}-${i}`}>
+                    <TableCol>{i}</TableCol>
+                    <TableCol>
+                      <Copyable
+                        value={versionedHash}
+                        tooltipText="Copy versioned hash"
+                      >
+                        <Link href={buildBlobRoute(versionedHash)}>
+                          {versionedHash}
+                        </Link>
+                      </Copyable>
+                    </TableCol>
+                    <TableCol>{formatBytes(size)}</TableCol>
+                    <TableCol>
+                      {dataStorageReferences && (
+                        <div className="flex items-center gap-2">
+                          {dataStorageReferences.map(({ storage, url }) => (
+                            <StorageBadge
+                              key={storage}
+                              storage={storage}
+                              url={url}
+                              compact
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </TableCol>
+                  </React.Fragment>
+                )
+              )}
             </div>
           </div>
         </Collapsable>

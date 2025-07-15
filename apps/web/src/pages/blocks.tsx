@@ -5,6 +5,7 @@ import { formatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { Filters } from "~/components/Filters";
@@ -121,11 +122,13 @@ const Blocks: NextPage = function () {
           0
         );
         const txsBlobs = transactions.flatMap((tx) =>
-          tx.blobs.map((blob) => ({
+          tx.blobs.map(({ dataStorageReferences, versionedHash }, i) => ({
             transactionHash: tx.hash,
-            blobVersionedHash: blob.versionedHash,
+            blobVersionedHash: versionedHash,
+            blobIndex: i,
             category: tx.category,
             rollup: tx.rollup,
+            dataStorageReferences,
           }))
         );
 
@@ -217,7 +220,13 @@ const Blocks: NextPage = function () {
                       item: "Tx Hash",
                     },
                     {
+                      item: "Position",
+                    },
+                    {
                       item: "Blob Versioned Hash",
+                    },
+                    {
+                      item: "Storages",
                     },
                   ],
                   className: "dark:border-border-dark/20",
@@ -225,7 +234,14 @@ const Blocks: NextPage = function () {
                 },
               ]}
               rows={txsBlobs.map(
-                ({ transactionHash, blobVersionedHash, rollup, category }) => ({
+                ({
+                  transactionHash,
+                  blobIndex,
+                  blobVersionedHash,
+                  rollup,
+                  category,
+                  dataStorageReferences,
+                }) => ({
                   cells: [
                     {
                       item:
@@ -248,6 +264,9 @@ const Blocks: NextPage = function () {
                       ),
                     },
                     {
+                      item: blobIndex,
+                    },
+                    {
                       item: (
                         <Copyable
                           value={blobVersionedHash}
@@ -257,6 +276,20 @@ const Blocks: NextPage = function () {
                             {blobVersionedHash}
                           </Link>
                         </Copyable>
+                      ),
+                    },
+                    {
+                      item: dataStorageReferences && (
+                        <div className="flex items-center gap-2">
+                          {dataStorageReferences.map(({ storage, url }) => (
+                            <StorageBadge
+                              key={storage}
+                              storage={storage}
+                              url={url}
+                              compact
+                            />
+                          ))}
+                        </div>
                       ),
                     },
                   ],

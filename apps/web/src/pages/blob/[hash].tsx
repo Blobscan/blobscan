@@ -177,7 +177,8 @@ const Blob: NextPage = function () {
     }
 
     if (isUnique && blob.transactions[0]) {
-      const { blockNumber, blockTimestamp, txHash } = blob.transactions[0];
+      const { blockNumber, blockTimestamp, txHash, index } =
+        blob.transactions[0];
 
       detailsFields.push(
         {
@@ -208,6 +209,10 @@ const Blob: NextPage = function () {
               {formatTimestamp(blockTimestamp)}
             </div>
           ),
+        },
+        {
+          name: "Position In Transaction",
+          value: index,
         }
       );
     }
@@ -231,9 +236,9 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Storages",
         value: (
-          <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map(({ storage, url }, index) => (
-              <StorageBadge key={index} storage={storage} url={url} />
+          <div className="flex items-center gap-2">
+            {blob.dataStorageReferences.map(({ storage, url }) => (
+              <StorageBadge key={storage} storage={storage} url={url} />
             ))}
           </div>
         ),
