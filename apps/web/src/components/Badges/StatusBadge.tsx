@@ -1,66 +1,50 @@
-import type { FC } from "react";
-import { cva } from "class-variance-authority";
-import type { VariantProps } from "class-variance-authority";
-import { twMerge } from "tailwind-merge";
+import type {
+  FC,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  SVGProps,
+} from "react";
+import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
+import { capitalize } from "~/utils";
+import { Icon } from "../Icon";
 import { Badge } from "./Badge";
-import type { BadgeProps } from "./Badge";
 
-const statusBadgeVariants = cva(
-  `
-    rounded-lg
-    font-medium
-    text-xs
-    h-6
-    p-1.5
-    bg-opacity-10
-    dark:bg-opacity-10
+export type Status = "finalized" | "unfinalized";
 
-    border
-    border-opacity-30
-    dark:border-opacity-30
-  `,
-  {
-    variants: {
-      variant: {
-        green: `
-          bg-green-600 
-          text-green-600 
-          border-green-600 
-  
-          dark:bg-green-500 
-          dark:text-green-500 
-          dark:border-green-500 
-          `,
-        gray: `
-          bg-contentTertiary-light
-          text-warmGray-500
-          border-contentTertiary-light
-          
-          dark:bg-contentTertiary-dark
-          dark:text-contentTertiary-dark
-          dark:border-contentTertiary-dark
-          `,
-      },
-    },
-    defaultVariants: {
-      variant: "green",
-    },
-  }
-);
+type StatusConfig = {
+  icon?: ForwardRefExoticComponent<
+    Omit<SVGProps<SVGSVGElement>, "ref"> & {
+      title?: string;
+      titleId?: string;
+    } & RefAttributes<SVGSVGElement>
+  >;
+  style: string;
+};
 
-type StatusBadgeProps = VariantProps<typeof statusBadgeVariants> &
-  Omit<BadgeProps, "variant">;
+const STATUSES: Record<Status, StatusConfig> = {
+  finalized: {
+    icon: CheckCircleIcon,
+    style:
+      "bg-green-300 text-green-700 border-green-600 dark:bg-green-900/60 dark:text-green-500",
+  },
+  unfinalized: {
+    icon: ClockIcon,
+    style: "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300",
+  },
+};
 
-export const StatusBadge: FC<StatusBadgeProps> = ({
-  className,
-  variant,
-  ...props
-}) => {
+interface StatusBadgeProps {
+  status: Status;
+}
+
+export const StatusBadge: FC<StatusBadgeProps> = ({ status, ...props }) => {
+  const { style, icon } = STATUSES[status];
+  const statusIcon = icon ? <Icon src={icon} /> : null;
   return (
-    <Badge
-      className={twMerge(statusBadgeVariants({ variant }), className)}
-      {...props}
-    />
+    <Badge className={style} {...props}>
+      {statusIcon}
+      {capitalize(status)}
+    </Badge>
   );
 };

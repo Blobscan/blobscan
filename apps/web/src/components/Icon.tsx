@@ -1,4 +1,9 @@
-import type { FC, SVGProps } from "react";
+import type {
+  FC,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  SVGProps,
+} from "react";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
@@ -6,7 +11,15 @@ import type { Size } from "~/types";
 
 export type IconProps = {
   className?: string;
-  src: FC<SVGProps<SVGElement>> | string;
+  src:
+    | FC<SVGProps<SVGElement>>
+    | string
+    | ForwardRefExoticComponent<
+        Omit<SVGProps<SVGSVGElement>, "ref"> & {
+          title?: string;
+          titleId?: string;
+        } & RefAttributes<SVGSVGElement>
+      >;
   title?: string;
   size?: Size;
 };
