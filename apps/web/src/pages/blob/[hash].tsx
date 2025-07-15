@@ -231,9 +231,9 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Storages",
         value: (
-          <div className="flex items-center gap-x-2">
-            {blob.dataStorageReferences.map(({ storage, url }, index) => (
-              <StorageBadge key={index} storage={storage} url={url} />
+          <div className="flex items-center gap-2">
+            {blob.dataStorageReferences.map(({ storage, url }) => (
+              <StorageBadge key={storage} storage={storage} url={url} />
             ))}
           </div>
         ),

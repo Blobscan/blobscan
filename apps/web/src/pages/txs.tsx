@@ -5,6 +5,7 @@ import dayjs from "@blobscan/dayjs";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
+import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
@@ -208,6 +209,10 @@ const Txs: NextPage = function () {
                         item: "Size",
                         className: "bg-primary-50 dark:bg-primary-900",
                       },
+                      {
+                        item: "Storages",
+                        className: "bg-primary-50 dark:bg-primary-900",
+                      },
                     ],
                     className: "dark:border-border-dark/20",
                     sticky: true,
@@ -215,30 +220,48 @@ const Txs: NextPage = function () {
                 ]}
                 rows={
                   blobs
-                    ? blobs.map((b) => ({
-                        cells: [
-                          {
-                            item: (
-                              <Copyable
-                                value={b.versionedHash}
-                                tooltipText="Copy blob versioned hash"
-                              >
-                                <Link href={buildBlobRoute(b.versionedHash)}>
-                                  {b.versionedHash}
-                                </Link>
-                              </Copyable>
-                            ),
-                          },
-                          {
-                            item: (
-                              <div className="flex gap-2">
-                                <span>{formatBytes(b.size)}</span>
-                              </div>
-                            ),
-                          },
-                        ],
-                        className: "dark:border-border-dark/10",
-                      }))
+                    ? blobs.map(
+                        ({ versionedHash, size, dataStorageReferences }) => ({
+                          cells: [
+                            {
+                              item: (
+                                <Copyable
+                                  value={versionedHash}
+                                  tooltipText="Copy blob versioned hash"
+                                >
+                                  <Link href={buildBlobRoute(versionedHash)}>
+                                    {versionedHash}
+                                  </Link>
+                                </Copyable>
+                              ),
+                            },
+                            {
+                              item: (
+                                <div className="flex gap-2">
+                                  <span>{formatBytes(size)}</span>
+                                </div>
+                              ),
+                            },
+                            {
+                              item: dataStorageReferences && (
+                                <div className="flex items-center gap-2">
+                                  {dataStorageReferences.map(
+                                    ({ storage, url }) => (
+                                      <StorageBadge
+                                        key={storage}
+                                        storage={storage}
+                                        url={url}
+                                        compact
+                                      />
+                                    )
+                                  )}
+                                </div>
+                              ),
+                            },
+                          ],
+                          className: "dark:border-border-dark/10",
+                        })
+                      )
                     : undefined
                 }
               />
