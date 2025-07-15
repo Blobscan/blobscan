@@ -1,7 +1,15 @@
-import { api } from "~/api-client";
-import { StatusBadge } from "./Badges/StatusBadge";
+import type { FC } from "react";
 
-export function BlockStatus({ blockNumber }: { blockNumber: number }) {
+import { api } from "~/api-client";
+import { StatusBadge } from "./StatusBadge";
+
+interface BlockStatusBadgeProps {
+  blockNumber: number;
+}
+
+export const BlockStatusBadge: FC<BlockStatusBadgeProps> = function ({
+  blockNumber,
+}) {
   const { data } = api.state.getAppState.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
@@ -16,4 +24,4 @@ export function BlockStatus({ blockNumber }: { blockNumber: number }) {
       status={blockNumber > lastFinalizedBlock ? "unfinalized" : "finalized"}
     />
   );
-}
+};
