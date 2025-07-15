@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "type-check": "tsc --noEmit",
-    "start": "pnpm with-env ts-node src/runner.ts",
+    "start": "pnpm with-env tsx src/runner.ts",
     "test": "pnpm with-env:test vitest",
     "test:ui": "pnpm with-env:test vitest --ui",
     "with-env": "dotenv -e ../../.env --",
