@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
 
+import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { BlobViewer, DEFAULT_BLOB_VIEW_MODES } from "~/components/BlobViewer";
@@ -23,7 +24,6 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { Separator } from "~/components/Separator";
-import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Rollup } from "~/types";
@@ -171,7 +171,7 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Status",
         value: blob.transactions[0] && (
-          <BlockStatus blockNumber={blob.transactions[0].blockNumber} />
+          <BlockStatusBadge blockNumber={blob.transactions[0].blockNumber} />
         ),
       });
     }

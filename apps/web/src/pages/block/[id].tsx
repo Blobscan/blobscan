@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
+import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
@@ -12,7 +13,6 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
-import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
 import NextError from "~/pages/_error";
@@ -124,7 +124,7 @@ const Block: NextPage = function () {
       {
         name: "Status",
         helpText: "The finality status of the block.",
-        value: <BlockStatus blockNumber={blockData.number} />,
+        value: <BlockStatusBadge blockNumber={blockData.number} />,
       },
       {
         name: "Hash",

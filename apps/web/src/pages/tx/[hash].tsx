@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
+import { BlockStatusBadge } from "~/components/Badges/BlockStatusBadge";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
@@ -12,7 +13,6 @@ import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
-import { BlockStatus } from "~/components/Status";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
@@ -96,7 +96,7 @@ const Tx: NextPage = () => {
         name: "Hash",
         value: <Copyable value={hash} tooltipText="Copy Hash" />,
       },
-      { name: "Status", value: <BlockStatus blockNumber={blockNumber} /> },
+      { name: "Status", value: <BlockStatusBadge blockNumber={blockNumber} /> },
       {
         name: "Block",
         value: <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>,
