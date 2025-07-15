@@ -177,7 +177,8 @@ const Blob: NextPage = function () {
     }
 
     if (isUnique && blob.transactions[0]) {
-      const { blockNumber, blockTimestamp, txHash } = blob.transactions[0];
+      const { blockNumber, blockTimestamp, txHash, index } =
+        blob.transactions[0];
 
       detailsFields.push(
         {
@@ -208,6 +209,10 @@ const Blob: NextPage = function () {
               {formatTimestamp(blockTimestamp)}
             </div>
           ),
+        },
+        {
+          name: "Position In Transaction",
+          value: index,
         }
       );
     }
