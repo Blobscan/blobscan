@@ -1,5 +1,30 @@
 # @blobscan/web
 
+## 0.30.0
+
+### Minor Changes
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob's position in transaction on blob page
+
+- [#839](https://github.com/Blobscan/blobscan/pull/839) [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated blob page layout to show block number, timestamp, and transaction hash on separate lines
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob index in all subtables
+
+- [#843](https://github.com/Blobscan/blobscan/pull/843) [`6a94415`](https://github.com/Blobscan/blobscan/commit/6a94415699195441662f40b62e7cd03ac370412a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blobs count column to transactions table
+
+- [#842](https://github.com/Blobscan/blobscan/pull/842) [`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob storage badges in subtables
+
+- [#844](https://github.com/Blobscan/blobscan/pull/844) [`d398eab`](https://github.com/Blobscan/blobscan/commit/d398eabfa255a692fb573971c30e12f041c628a5) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a custom icon for blobs and updated the icon for transactions to improve visual clarity.
+
+### Patch Changes
+
+- [#841](https://github.com/Blobscan/blobscan/pull/841) [`434e1b1`](https://github.com/Blobscan/blobscan/commit/434e1b1d9aadb9d1d70102baa627cf4a6c6429a8) Thanks [@PJColombo](https://github.com/PJColombo)! - Inlined blob gas target when compact is enabled
+
+- [#840](https://github.com/Blobscan/blobscan/pull/840) [`6d37aad`](https://github.com/Blobscan/blobscan/commit/6d37aad3d6cdd853eee26d30d8310789c3c0d70f) Thanks [@PJColombo](https://github.com/PJColombo)! - Aligned status badge styling with other badges
+
+- Updated dependencies [[`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431), [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb)]:
+  - @blobscan/api@1.0.0
+
 ## 0.29.0
 
 ### Minor Changes
