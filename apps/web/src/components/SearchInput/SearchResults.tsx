@@ -1,11 +1,17 @@
 import React from "react";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
-import { CpuChipIcon, CubeIcon, DocumentIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowsRightLeftIcon,
+  ChevronRightIcon,
+  CubeIcon,
+} from "@heroicons/react/24/outline";
 
+import BlobIcon from "~/icons/blob.svg";
 import type { SearchResults as SearchResultsType } from "~/types";
+import type { RenderableIcon } from "~/types/icons";
 import { capitalize } from "~/utils";
 import { Badge } from "../Badges/Badge";
 import { Card } from "../Cards/Card";
+import { Icon } from "../Icon";
 
 type SearchCategory = keyof SearchResultsType;
 
@@ -18,26 +24,24 @@ type SearchResultItemProps = {
 };
 
 type CategoryInfo = {
-  icon?: React.ReactNode;
+  icon?: RenderableIcon;
   label?: string;
 };
 
 function getCategoryInfo(type: SearchCategory): CategoryInfo | undefined {
-  const categoryIconClassName = "h-4 w-4  text-icon-light dark:text-icon-dark";
-
   switch (type) {
     case "transaction":
       return {
-        icon: <DocumentIcon className={categoryIconClassName} />,
+        icon: ArrowsRightLeftIcon,
       };
     case "blob":
       return {
-        icon: <CpuChipIcon className={categoryIconClassName} />,
+        icon: BlobIcon,
       };
     case "block":
     case "slot":
       return {
-        icon: <CubeIcon className={categoryIconClassName} />,
+        icon: CubeIcon,
         label: "Block",
       };
     default:
@@ -57,7 +61,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = function ({
     <div className="flex flex-col" onClick={() => onClick(category, id)}>
       <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md py-2 pl-1 pr-3 text-sm text-contentSecondary-light transition-colors hover:bg-primary-100 dark:text-contentSecondary-dark hover:dark:bg-primary-800/20">
         <div className="flex w-11/12 items-center gap-2">
-          {icon}
+          {icon && <Icon src={icon} />}
           <span className="flex truncate">
             {categoryLabel && (
               <div className="mr-1 text-content-light dark:text-content-dark">
