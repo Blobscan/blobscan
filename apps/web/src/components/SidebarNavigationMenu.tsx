@@ -131,7 +131,7 @@ function ExpandableNavigationLinks({
         }`}
       >
         <Rotable angle={90} rotated={open}>
-          <ChevronDownIcon className="mb-2 h-5 w-5 -rotate-90" />
+          <Icon src={ChevronDownIcon} className="-rotate-90" />
         </Rotable>
         <div className="flex items-center gap-1">
           <Icon src={icon} />
@@ -140,19 +140,21 @@ function ExpandableNavigationLinks({
       </button>
       <Collapsable opened={open}>
         <div className="flex flex-col gap-2 pb-4 pl-10 pt-2">
-          {items.map(({ href, label }, index) => (
-            <Link
-              key={index}
-              href={href}
-              className={`text-sm ${
-                href === pathname
-                  ? "text-iconHighlight-light dark:text-iconHighlight-dark"
-                  : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
-              }`}
-              onClick={onClick}
-            >
-              {label}
-            </Link>
+          {items.map(({ icon, href, label }) => (
+            <div key={href} className="flex items-center gap-2">
+              {icon && <Icon src={icon} />}
+              <Link
+                href={href}
+                className={`text-sm ${
+                  href === pathname
+                    ? "text-iconHighlight-light dark:text-iconHighlight-dark"
+                    : "hover:text-iconHighlight-light hover:dark:text-iconHighlight-dark"
+                }`}
+                onClick={onClick}
+              >
+                {label}
+              </Link>
+            </div>
           ))}
         </div>
       </Collapsable>
