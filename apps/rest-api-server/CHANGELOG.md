@@ -1,5 +1,17 @@
 # @blobscan/rest-api-server
 
+## 0.7.0
+
+### Minor Changes
+
+- [#837](https://github.com/Blobscan/blobscan/pull/837) [`3518952`](https://github.com/Blobscan/blobscan/commit/3518952f41d9c0a221e30c33a58578dde6fd1ed9) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for prioritizing blob propagation jobs
+
+### Patch Changes
+
+- Updated dependencies [[`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431), [`3518952`](https://github.com/Blobscan/blobscan/commit/3518952f41d9c0a221e30c33a58578dde6fd1ed9), [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb)]:
+  - @blobscan/api@1.0.0
+  - @blobscan/blob-propagator@0.4.0
+
 ## 0.6.0
 
 ### Minor Changes

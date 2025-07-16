@@ -1,5 +1,11 @@
 # @blobscan/blob-propagator
 
+## 0.4.0
+
+### Minor Changes
+
+- [#837](https://github.com/Blobscan/blobscan/pull/837) [`3518952`](https://github.com/Blobscan/blobscan/commit/3518952f41d9c0a221e30c33a58578dde6fd1ed9) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for prioritizing blob propagation jobs
+
 ## 0.3.0
 
 ### Minor Changes
