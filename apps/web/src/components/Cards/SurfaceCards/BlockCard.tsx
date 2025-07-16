@@ -33,8 +33,20 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
     () => transactions?.reduce((acc, tx) => acc + tx.blobs.length, 0),
     [transactions]
   );
-  const rollups =
-    (transactions?.map((tx) => tx.rollup).filter(Boolean) as Rollup[]) ?? [];
+  const rollupToAmount =
+    transactions?.reduce<Partial<Record<Rollup, number>>>(
+      (amounts, { blobs, rollup }) => {
+        if (!rollup) {
+          return amounts;
+        }
+        const amount = amounts[rollup] ?? 0;
+
+        amounts[rollup] = amount + blobs.length;
+
+        return amounts;
+      },
+      {} as Partial<Record<Rollup, number>>
+    ) ?? [];
 
   const hasOneBlob = blobCount === 1;
 
@@ -51,8 +63,13 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
           )}
         </div>
         <div className="flex items-center gap-2">
-          {rollups.map((rollup, i) => (
-            <RollupBadge key={i} rollup={rollup} compact />
+          {Object.entries(rollupToAmount).map(([rollup, amount], i) => (
+            <RollupBadge
+              key={i}
+              rollup={rollup as Rollup}
+              amount={amount}
+              compact
+            />
           ))}
         </div>
       </div>
