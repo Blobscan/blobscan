@@ -16,8 +16,8 @@
   Post-Ecotone tx (not working):  https://staging.blobscan.com/tx/0xce04f9a100534bcf6c74c0f322ddc628d09ad927670110d3fe851816cba90c8e
 
   Usage: provide a file with one transaction id per line, or list of transaction ids
-    npx ts-node src/download.ts optimism_ecotone.txt
-    npx ts-node src/download.ts 0x74ea2491e57101a18c0aca40983e5d2e00aca3f3e6c38bb5d93fa740195332f3 [...]
+    npx tsx src/download.ts optimism_ecotone.txt
+    npx tsx src/download.ts 0x74ea2491e57101a18c0aca40983e5d2e00aca3f3e6c38bb5d93fa740195332f3 [...]
 */
 import fs from "fs";
 import path from "path";

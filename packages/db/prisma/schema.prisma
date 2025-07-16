@@ -9,7 +9,7 @@ generator client {
 }
 
 generator enum {
-  provider = "ts-node --transpile-only ./prisma/enum-generator"
+  provider = "tsx ./prisma/enum-generator"
 }
 
 generator zod {
