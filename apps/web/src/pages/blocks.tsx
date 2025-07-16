@@ -20,7 +20,7 @@ import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
-import type { BlockWithExpandedTransactions } from "~/types";
+import type { BlockWithExpandedTransactions, Rollup } from "~/types";
 import {
   buildBlobRoute,
   buildBlockRoute,
@@ -131,23 +131,34 @@ const Blocks: NextPage = function () {
             dataStorageReferences,
           }))
         );
+        const rollupToAmount = txsBlobs.reduce<Partial<Record<Rollup, number>>>(
+          (amounts, { rollup }) => {
+            if (!rollup) {
+              return amounts;
+            }
+            const amount = amounts[rollup] ?? 0;
+
+            amounts[rollup] = amount + 1;
+
+            return amounts;
+          },
+          {} as Partial<Record<Rollup, number>>
+        );
 
         return {
           cells: [
             {
               item: (
-                <div className="relative flex">
-                  {[...new Set(transactions.map((tx) => tx.rollup))].map(
-                    (rollup, i) => {
-                      return rollup ? (
-                        <div key={i} className="-ml-1 first-of-type:ml-0">
-                          <RollupBadge rollup={rollup} compact />
-                        </div>
-                      ) : (
-                        <></>
-                      );
-                    }
-                  )}
+                <div className="relative flex gap-1">
+                  {Object.entries(rollupToAmount).map(([rollup, amount]) => (
+                    <div key={rollup} className="-ml-0.5">
+                      <RollupBadge
+                        amount={amount}
+                        rollup={rollup as Rollup}
+                        compact
+                      />
+                    </div>
+                  ))}
                 </div>
               ),
             },
