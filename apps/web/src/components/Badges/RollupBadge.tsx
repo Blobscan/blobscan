@@ -244,6 +244,7 @@ const ROLLUP_CUSTOM_STYLES: Partial<Record<Rollup, string>> = {
 };
 
 type RollupBadgeProps = BadgeProps & {
+  amount?: number;
   rollup: Rollup;
   compact?: boolean;
 };
@@ -251,16 +252,24 @@ type RollupBadgeProps = BadgeProps & {
 export const RollupBadge: React.FC<RollupBadgeProps> = ({
   compact = false,
   rollup,
+  amount = 1,
   ...props
 }) => {
   const { style, label = capitalize(rollup) } = ROLLUP_CONFIG[rollup];
   const rollupIcon = (
-    <Icon
-      src={ICONS[rollup]}
-      title={label}
-      className={ROLLUP_CUSTOM_STYLES[rollup]}
-      size={props.size ?? "md"}
-    />
+    <div className="relative">
+      <Icon
+        src={ICONS[rollup]}
+        title={label}
+        className={ROLLUP_CUSTOM_STYLES[rollup]}
+        size={props.size ?? "md"}
+      />
+      {amount > 1 && (
+        <div className="absolute -bottom-2 -right-1 text-[10px] text-black dark:text-contentSecondary-dark">
+          {amount}
+        </div>
+      )}
+    </div>
   );
 
   return compact ? (
