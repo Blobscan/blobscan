@@ -9,7 +9,6 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
-import { Icon } from "~/components/Icon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -31,7 +30,7 @@ import {
 
 const Block: NextPage = function () {
   const router = useRouter();
-  const { explorers, buildResourceUrl } = useExternalExplorers("consensus");
+  const { buildResourceUrl } = useExternalExplorers("consensus");
 
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
