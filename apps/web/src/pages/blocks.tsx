@@ -180,12 +180,9 @@ const Blocks: NextPage = function () {
             },
             {
               item: (
-                <Link
-                  href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${slot}`}
-                  isExternal
-                >
+                <Copyable value={slot.toString()} tooltipText="Copy Slot">
                   {slot}
-                </Link>
+                </Copyable>
               ),
             },
             {
