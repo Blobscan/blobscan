@@ -64,7 +64,9 @@ export class SwarmStorage extends BlobStorage {
     return this.#performBeeAPICall(async () => {
       const file = await this._beeClient.downloadFile(uri);
 
-      return file.data.toHex();
+      return file.contentType === "text/plain"
+        ? file.data.toUtf8()
+        : `0x${file.data.toHex()}`;
     });
   }
 
