@@ -1,5 +1,11 @@
 # @blobscan/blob-storage-manager
 
+## 0.6.1
+
+### Patch Changes
+
+- [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the blob data being fetched by the swarm storage wasn't being prefixed with `0x` when converting it to hex
+
 ## 0.6.0
 
 ### Minor Changes
