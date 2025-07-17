@@ -11,7 +11,7 @@
 - [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where requested blob data from swarm storage URLs wasn't being handled properly
 
 - Updated dependencies [[`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0)]:
-  - @blobscan/api@1.0.1
+  - @blobscan/api@0.24.2
 
 ## 0.30.0
 
@@ -36,7 +36,7 @@
 - [#840](https://github.com/Blobscan/blobscan/pull/840) [`6d37aad`](https://github.com/Blobscan/blobscan/commit/6d37aad3d6cdd853eee26d30d8310789c3c0d70f) Thanks [@PJColombo](https://github.com/PJColombo)! - Aligned status badge styling with other badges
 
 - Updated dependencies [[`02ef0a0`](https://github.com/Blobscan/blobscan/commit/02ef0a00401dc5f0d9f591f23ed0187060189431), [`5c786c5`](https://github.com/Blobscan/blobscan/commit/5c786c5c521a7f44f8bc88d5622fc26f311a2dfb)]:
-  - @blobscan/api@1.0.0
+  - @blobscan/api@0.24.1
 
 ## 0.29.0
 
