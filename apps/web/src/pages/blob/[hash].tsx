@@ -62,47 +62,26 @@ const Blob: NextPage = function () {
 
       for (const { storage, url } of blob.dataStorageReferences) {
         try {
-          const isBlobscanStorageRef =
-            storage === "postgres" || storage === "file_system";
-          const blobDataUrl = isBlobscanStorageRef
-            ? `/api/blob-data?url=${url}`
-            : url;
-          const response = await fetch(blobDataUrl);
+          const response = await fetch(
+            `/api/blob-data?storage=${storage}&url=${url}`
+          );
 
           if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message ?? "Couldn't retrieve blob data");
-          }
-
-          const contentType = response.headers.get("content-type");
-          let blobData: string;
-
-          const isBinaryFile =
-            blobDataUrl.endsWith(".bin") ||
-            contentType === "application/octet-stream";
-          const isTextPlainFile =
-            blobDataUrl.endsWith(".txt") || contentType === "text/plain";
-
-          if (isBlobscanStorageRef) {
-            blobData = await response.json();
-          } else if (isTextPlainFile) {
-            blobData = await response.text();
-          } else if (isBinaryFile) {
-            const blobBytes = await response.arrayBuffer();
-
-            blobData = `0x${Buffer.from(blobBytes).toString("hex")}`;
-          } else {
             throw new Error(
-              `Unexpected content type "${contentType}" for URL "${blobDataUrl}"`
+              error.message ?? "Couldn't retrieve blob data: unknown reason"
             );
           }
 
-          return blobData;
+          const blobBytes = await response.arrayBuffer();
+
+          return `0x${Buffer.from(blobBytes).toString("hex")}`;
         } catch (err) {
           console.warn(
             `Failed to fetch data of blob "${versionedHash}" from storage ${storage}:`,
             err
           );
+
           continue;
         }
       }
