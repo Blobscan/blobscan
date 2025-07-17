@@ -296,7 +296,7 @@ const Blob: NextPage = function () {
         resource={
           blob
             ? {
-                type: "blobs",
+                type: "blob",
                 value: blob.versionedHash,
               }
             : undefined
