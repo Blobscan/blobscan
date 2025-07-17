@@ -92,7 +92,7 @@ export const env = createEnv({
         .default(7 * 24 * 60 * 60),
       BLOB_PROPAGATOR_BLOB_RETENTION_MODE: z
         .enum(["eager", "lazy"])
-        .default("eager"),
+        .default("lazy"),
 
       // PostHog
       POSTHOG_ID: z.string().optional(),
