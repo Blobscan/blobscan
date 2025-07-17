@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 1.0.1
+
+### Patch Changes
+
+- [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where the blob data url for swarm storage references wasn't being built with the correct base url
+
 ## 1.0.0
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @blobscan/web
 
+## 0.31.0
+
+### Minor Changes
+
+- [#847](https://github.com/Blobscan/blobscan/pull/847) [`2a4f612`](https://github.com/Blobscan/blobscan/commit/2a4f612422d1080b1b06276c851622be0a808e85) Thanks [@PJColombo](https://github.com/PJColombo)! - Added display of rollup counts on block cards, block table, and rollup badges to indicate multiple instances of the same rollup.
+
+### Patch Changes
+
+- [#849](https://github.com/Blobscan/blobscan/pull/849) [`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0) Thanks [@PJColombo](https://github.com/PJColombo)! - Resolved an issue where requested blob data from swarm storage URLs wasn't being handled properly
+
+- Updated dependencies [[`d8b5340`](https://github.com/Blobscan/blobscan/commit/d8b53406065211ddda568eb9b20204306e30fcc0)]:
+  - @blobscan/api@1.0.1
+
 ## 0.30.0
 
 ### Minor Changes
