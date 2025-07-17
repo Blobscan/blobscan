@@ -15,7 +15,6 @@ import { OptimismCard } from "~/components/OptimismCard";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
-import { useEnv } from "~/providers/Env";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
 import {
   buildAddressRoute,
@@ -27,7 +26,6 @@ import {
 } from "~/utils";
 
 const Tx: NextPage = () => {
-  const { env } = useEnv();
   const router = useRouter();
   const hash = (router.query.hash as string | undefined) ?? "";
 
@@ -237,8 +235,13 @@ const Tx: NextPage = () => {
             />
           </div>
         }
-        externalLink={
-          tx ? `${env?.PUBLIC_EXPLORER_BASE_URL}/tx/${tx.hash}` : undefined
+        resource={
+          tx
+            ? {
+                type: "tx",
+                value: tx.hash,
+              }
+            : undefined
         }
         fields={detailsFields}
       />

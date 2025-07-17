@@ -232,9 +232,12 @@ const Block: NextPage = function () {
     <>
       <DetailsLayout
         header="Block Details"
-        externalLink={
+        resource={
           blockData
-            ? `${env?.PUBLIC_EXPLORER_BASE_URL}/block/${blockData.number}`
+            ? {
+                type: "block",
+                value: blockData.number,
+              }
             : undefined
         }
         fields={detailsFields}

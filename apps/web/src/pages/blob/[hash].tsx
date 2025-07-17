@@ -293,6 +293,14 @@ const Blob: NextPage = function () {
       <DetailsLayout
         header="Blob Details"
         fields={blob ? detailsFields : undefined}
+        resource={
+          blob
+            ? {
+                type: "blobs",
+                value: blob.versionedHash,
+              }
+            : undefined
+        }
       />
       <Card
         header={
