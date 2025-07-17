@@ -74,17 +74,27 @@ const Blob: NextPage = function () {
             throw new Error(error.message ?? "Couldn't retrieve blob data");
           }
 
+          const contentType = response.headers.get("content-type");
           let blobData: string;
+
+          const isBinaryFile =
+            blobDataUrl.endsWith(".bin") ||
+            contentType === "application/octet-stream";
+          const isTextPlainFile =
+            blobDataUrl.endsWith(".txt") || contentType === "text/plain";
 
           if (isBlobscanStorageRef) {
             blobData = await response.json();
+          } else if (isTextPlainFile) {
+            blobData = await response.text();
+          } else if (isBinaryFile) {
+            const blobBytes = await response.arrayBuffer();
+
+            blobData = `0x${Buffer.from(blobBytes).toString("hex")}`;
           } else {
-            if (blobDataUrl.endsWith(".bin")) {
-              const blobBytes = await response.arrayBuffer();
-              blobData = `0x${Buffer.from(blobBytes).toString("hex")}`;
-            } else {
-              blobData = await response.text();
-            }
+            throw new Error(
+              `Unexpected content type "${contentType}" for URL "${blobDataUrl}"`
+            );
           }
 
           return blobData;

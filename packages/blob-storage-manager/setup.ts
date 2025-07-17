@@ -30,6 +30,7 @@ vi.mock("@ethersphere/bee-js", async (importOriginal) => {
           if (file) {
             return {
               data: {
+                contentType: "application/octant-stream",
                 toHex() {
                   return "0x12bc45f2a2";
                 },
