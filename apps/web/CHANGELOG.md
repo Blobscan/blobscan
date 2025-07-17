@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.32.0
+
+### Minor Changes
+
+- [#850](https://github.com/Blobscan/blobscan/pull/850) [`c074f8a`](https://github.com/Blobscan/blobscan/commit/c074f8ab07397ff300954eda8c0f829ea38495ba) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blockscout links
+
 ## 0.31.0
 
 ### Minor Changes
