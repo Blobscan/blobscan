@@ -11,7 +11,7 @@ import {
 import { useEnv } from "~/providers/Env";
 
 export type ExplorerResource = {
-  type: "address" | "blob" | "block" | "tx";
+  type: "address" | "blob" | "block" | "tx" | "slot";
   value: number | string;
 };
 

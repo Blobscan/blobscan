@@ -9,6 +9,7 @@ import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransac
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
 import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { Icon } from "~/components/Icon";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -16,6 +17,7 @@ import { NavArrows } from "~/components/NavArrows";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
+import { useExternalExplorers } from "~/hooks/useExternalExplorers";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
@@ -29,6 +31,8 @@ import {
 
 const Block: NextPage = function () {
   const router = useRouter();
+  const { explorers, buildResourceUrl } = useExternalExplorers("consensus");
+
   const isReady = router.isReady;
   const blockNumberOrHash = router.query.id as string | undefined;
   const {
@@ -148,12 +152,17 @@ const Block: NextPage = function () {
         name: "Slot",
         helpText: "The slot number of the block.",
         value: (
-          <Link
-            href={`${env?.PUBLIC_BEACON_BASE_URL}/slot/${blockData.slot}`}
-            isExternal
-          >
-            {blockData.slot}
-          </Link>
+          <Copyable value={blockData.slot.toString()} tooltipText="Copy Slot">
+            <Link
+              href={buildResourceUrl("beaconchain", {
+                type: "slot",
+                value: blockData.slot,
+              })}
+              isExternal
+            >
+              {blockData.slot}
+            </Link>
+          </Copyable>
         ),
       },
       {
