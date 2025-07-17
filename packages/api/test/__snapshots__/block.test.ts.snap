@@ -388,7 +388,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -410,7 +410,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -428,7 +428,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -446,7 +446,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -567,7 +567,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
               },
             ],
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -602,7 +602,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -624,7 +624,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -642,7 +642,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -660,7 +660,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -761,7 +761,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -779,7 +779,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -792,7 +792,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -805,7 +805,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -896,7 +896,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -909,7 +909,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -922,7 +922,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -952,7 +952,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -982,7 +982,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1057,7 +1057,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
               },
             ],
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -1087,7 +1087,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1100,7 +1100,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1113,7 +1113,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1131,7 +1131,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1161,7 +1161,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1193,7 +1193,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1211,7 +1211,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1260,7 +1260,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1292,7 +1292,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1310,7 +1310,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1372,7 +1372,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1390,7 +1390,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1403,7 +1403,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1416,7 +1416,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1451,7 +1451,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1481,7 +1481,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1503,7 +1503,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1538,7 +1538,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1560,7 +1560,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1595,7 +1595,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1617,7 +1617,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1696,7 +1696,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1718,7 +1718,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1736,7 +1736,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1754,7 +1754,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1798,7 +1798,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1820,7 +1820,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -1838,7 +1838,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -1856,7 +1856,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2059,7 +2059,7 @@ exports[`Block router > getAll > when getting filtered block results > should re
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash006",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash006",
               },
             ],
             "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
@@ -2258,7 +2258,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2290,7 +2290,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -2308,7 +2308,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
               },
             ],
             "versionedHash": "blobHash003",
@@ -2370,7 +2370,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2388,7 +2388,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2401,7 +2401,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2414,7 +2414,7 @@ exports[`Block router > getAll > when getting paginated block results > should r
               },
               {
                 "storage": "swarm",
-                "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+                "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
               },
             ],
             "versionedHash": "blobHash001",
@@ -2798,7 +2798,7 @@ exports[`Block router > getBySlot > should get a block by slot 1`] = `
             },
             {
               "storage": "swarm",
-              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
           ],
           "versionedHash": "blobHash001",
@@ -2820,7 +2820,7 @@ exports[`Block router > getBySlot > should get a block by slot 1`] = `
             },
             {
               "storage": "swarm",
-              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash003",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
             },
           ],
           "versionedHash": "blobHash003",
@@ -2838,7 +2838,7 @@ exports[`Block router > getBySlot > should get a block by slot 1`] = `
             },
             {
               "storage": "swarm",
-              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
           ],
           "versionedHash": "blobHash001",
@@ -2856,7 +2856,7 @@ exports[`Block router > getBySlot > should get a block by slot 1`] = `
             },
             {
               "storage": "swarm",
-              "url": "https://gateway.ethswarm.org/access/bzz://some-hash-for-blobHash001",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
             },
           ],
           "versionedHash": "blobHash001",

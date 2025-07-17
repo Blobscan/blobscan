@@ -62,37 +62,26 @@ const Blob: NextPage = function () {
 
       for (const { storage, url } of blob.dataStorageReferences) {
         try {
-          const isBlobscanStorageRef =
-            storage === "postgres" || storage === "file_system";
-          const blobDataUrl = isBlobscanStorageRef
-            ? `/api/blob-data?url=${url}`
-            : url;
-          const response = await fetch(blobDataUrl);
+          const response = await fetch(
+            `/api/blob-data?storage=${storage}&url=${url}`
+          );
 
           if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message ?? "Couldn't retrieve blob data");
+            throw new Error(
+              error.message ?? "Couldn't retrieve blob data: unknown reason"
+            );
           }
 
-          let blobData: string;
+          const blobBytes = await response.arrayBuffer();
 
-          if (isBlobscanStorageRef) {
-            blobData = await response.json();
-          } else {
-            if (blobDataUrl.endsWith(".bin")) {
-              const blobBytes = await response.arrayBuffer();
-              blobData = `0x${Buffer.from(blobBytes).toString("hex")}`;
-            } else {
-              blobData = await response.text();
-            }
-          }
-
-          return blobData;
+          return `0x${Buffer.from(blobBytes).toString("hex")}`;
         } catch (err) {
           console.warn(
             `Failed to fetch data of blob "${versionedHash}" from storage ${storage}:`,
             err
           );
+
           continue;
         }
       }

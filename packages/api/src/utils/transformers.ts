@@ -23,7 +23,7 @@ export function buildBlobDataUrl(
         : `https://storage.googleapis.com/${env.GOOGLE_STORAGE_BUCKET_NAME}/${blobDataUri}`;
     }
     case "SWARM": {
-      return `https://gateway.ethswarm.org/access/${blobDataUri}`;
+      return `https://api.gateway.ethswarm.org/bzz/${blobDataUri}`;
     }
     case "FILE_SYSTEM":
     case "POSTGRES": {
