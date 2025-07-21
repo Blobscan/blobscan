@@ -122,7 +122,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             value={term}
             onChange={(e) => setTerm(e.target.value)}
             className={"rounded-none rounded-l-md"}
-            placeholder={`Search by Blob / KZG / Txn / Block / Slot / Address`}
+            placeholder={`Search by Hash / KZG / Proof / Txn / Block / Slot / Address`}
           />
         </div>
 
@@ -131,6 +131,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
         {displayResults && searchResults && (
           <div className="absolute inset-x-0 top-11 z-10 rounded-md border border-border-light dark:border-border-dark">
             <SearchResults
+              term={term}
               searchResults={searchResults}
               onResultClick={handleResultClick}
             />

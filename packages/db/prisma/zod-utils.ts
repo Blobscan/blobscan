@@ -12,16 +12,20 @@ export const hexSchema = z.string().regex(/^0x[0-9a-fA-F]+$/, {
   message: "Invalid hexadecimal string",
 });
 
+export const hashSchema = hexSchema.length(66);
+
 export const blockHashSchema = hexSchema.length(
   66,
   "Invalid block hash length"
 );
 
+export const blockNumberSchema = z.number().positive();
+
 export const addressSchema = hexSchema.length(42, "Invalid address length");
 
-export const blobCommitmentSchema = hexSchema.length(
+export const blobCommitmentOrProofSchema = hexSchema.length(
   98,
-  "Invalid blob commitment length"
+  "Invalid blob commitment or proof length"
 );
 
 export const blobVersionedHashSchema = hexSchema.length(66).startsWith("0x01");

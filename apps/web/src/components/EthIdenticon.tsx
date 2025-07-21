@@ -37,31 +37,22 @@ export const EthIdenticon: React.FC<EthIdenticonProps> = ({
   return isAddress(address) ? (
     <div
       className={`
-        w-[${BLOCKIES_SQUARES * blockiesScale}px] 
-        h-[${BLOCKIES_SQUARES * blockiesScale}px]
-        ${RADIUS[size]}
-        inline-flex 
-        overflow-hidden
+       
+        inline-flex
+        overflow-hidden 
+        rounded-md
         align-middle 
       `}
     >
       <div
         className={`
-          w-[${BLOCKIES_SQUARES * blockiesScale * PX_RATIO}px] 
-          h-[${BLOCKIES_SQUARES * blockiesScale * PX_RATIO}px]
           flex
           origin-top-left
           bg-white
           scale-{${1 / PX_RATIO}}
         `}
       >
-        <div className={`opacity-${(1 - soften) * 100}`}>
-          <Blockies
-            seed={address.toLowerCase()}
-            size={BLOCKIES_SQUARES}
-            scale={SCALES[size] * PX_RATIO}
-          />
-        </div>
+        <Blockies seed={address.toLowerCase()} size={6} />
       </div>
     </div>
   ) : null;
