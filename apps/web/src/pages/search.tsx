@@ -1,13 +1,22 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
-import { searchByTerm } from "@blobscan/api";
+import {
+  addressSchema,
+  blobCommitmentSchema,
+  blobProofSchema,
+  blobVersionedHashSchema,
+  blockNumberSchema,
+  hashSchema,
+} from "@blobscan/db/prisma/zod-utils";
 
 import { Button } from "~/components/Button";
-import type { SearchResults } from "~/types";
-import { getRouteBySearchCategory } from "~/utils";
-
-type SearchCategory = keyof SearchResults;
+import {
+  buildAddressRoute,
+  buildBlobRoute,
+  buildBlockRoute,
+  buildTransactionRoute,
+} from "~/utils";
 
 type SearchProps = {
   term: string;
@@ -25,10 +34,23 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
       };
     }
 
-    const searchResults = await searchByTerm(term);
-    const categories = Object.keys(searchResults) as SearchCategory[];
+    let route: string | undefined;
 
-    if (categories.length === 0) {
+    if (addressSchema.safeParse(term).success) {
+      route = buildAddressRoute(term);
+    } else if (
+      blobCommitmentSchema.safeParse(term).success ||
+      blobVersionedHashSchema.safeParse(term).success ||
+      blobProofSchema.safeParse(term).success
+    ) {
+      route = buildBlobRoute(term);
+    } else if (hashSchema.safeParse(term).success) {
+      route = buildTransactionRoute(term);
+    } else if (!term.startsWith("0x") && blockNumberSchema.safeParse(term)) {
+      route = buildBlockRoute(term);
+    }
+
+    if (!route) {
       return {
         props: {
           term,
@@ -36,33 +58,10 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
       };
     }
 
-    if (categories.length === 1) {
-      const category = categories[0] as SearchCategory;
-      const results = searchResults[category];
-
-      // TODO: display paginated results for terms with multiple matches
-      if (!results || !results.length || results.length > 1) {
-        return {
-          props: {
-            term,
-          },
-        };
-      }
-
-      const id = results[0]?.id as string;
-
-      return {
-        redirect: {
-          permanent: true,
-          destination: getRouteBySearchCategory(category, id),
-        },
-      };
-    }
-
-    // TODO: display paginated results for terms with multiple matches
     return {
-      props: {
-        term,
+      redirect: {
+        permanent: true,
+        destination: route,
       },
     };
   };

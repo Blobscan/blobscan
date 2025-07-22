@@ -19,11 +19,16 @@ export const blockHashSchema = hexSchema.length(
   "Invalid block hash length"
 );
 
-export const blockNumberSchema = z.number().positive();
+export const blockNumberSchema = z.coerce.number().int().positive();
 
 export const addressSchema = hexSchema.length(42, "Invalid address length");
 
-export const blobCommitmentOrProofSchema = hexSchema.length(
+export const blobProofSchema = hexSchema.length(
+  98,
+  "Invalid blob proof length"
+);
+
+export const blobCommitmentSchema = hexSchema.length(
   98,
   "Invalid blob commitment or proof length"
 );
