@@ -1,13 +1,16 @@
+import type { Prisma } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import {
   AddressModel,
   BlobModel,
+  BlobsOnTransactionsModel,
   BlockModel,
   TransactionModel,
 } from "@blobscan/db/prisma/zod";
 import {
   addressSchema,
-  blobCommitmentOrProofSchema,
+  blobCommitmentSchema,
+  blobProofSchema,
   blobVersionedHashSchema,
   blockNumberSchema,
   hashSchema,
@@ -16,37 +19,77 @@ import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
 
-const outputSchema = z
-  .object({
-    address: AddressModel.pick({
-      address: true,
-      rollup: true,
-    }).array(),
-    blob: BlobModel.pick({
-      versionedHash: true,
-      commitment: true,
-      proof: true,
-    }).array(),
-    transaction: TransactionModel.pick({
-      hash: true,
-      blockTimestamp: true,
-    }).array(),
-    block: BlockModel.pick({
-      hash: true,
-      number: true,
-      slot: true,
-      timestamp: true,
+const addressSearchResultSchema = AddressModel.pick({
+  address: true,
+  rollup: true,
+});
+
+const blobSearchResultSchema = BlobModel.pick({
+  versionedHash: true,
+  commitment: true,
+  proof: true,
+}).extend({
+  transactions: BlobsOnTransactionsModel.pick({
+    blockTimestamp: true,
+  })
+    .extend({
+      transaction: z.object({
+        from: AddressModel.pick({ rollup: true }).optional(),
+      }),
     })
-      .merge(
-        z
-          .object({
-            reorg: z.boolean(),
-          })
-          .partial()
-      )
-      .array(),
+    .array(),
+});
+
+const blockSearchResultSchema = BlockModel.pick({
+  hash: true,
+  number: true,
+  slot: true,
+  timestamp: true,
+}).extend({
+  reorg: z.boolean().optional(),
+});
+
+const transactionSearchResultSchema = TransactionModel.pick({
+  hash: true,
+  blockTimestamp: true,
+}).extend({
+  from: AddressModel.pick({ rollup: true }),
+});
+
+const searchResultsSchema = z
+  .object({
+    addresses: addressSearchResultSchema.array(),
+    blobs: blobSearchResultSchema.array(),
+    blocks: blockSearchResultSchema.array(),
+    transactions: transactionSearchResultSchema.array(),
   })
   .partial();
+
+const blockSelect = {
+  number: true,
+  timestamp: true,
+  transactionForks: true,
+  slot: true,
+  hash: true,
+} satisfies Prisma.BlockSelect;
+
+const transactionSelect = {
+  hash: true,
+  blockTimestamp: true,
+  from: {
+    select: {
+      rollup: true,
+    },
+  },
+} satisfies Prisma.TransactionSelect;
+
+type BlockPayload = Prisma.BlockGetPayload<{ select: typeof blockSelect }>;
+
+type TransactionPayload = Prisma.TransactionGetPayload<{
+  select: typeof transactionSelect;
+}>;
+
+const outputSchema = searchResultsSchema.nullable();
 
 export type OutputSchema = z.output<typeof outputSchema>;
 
@@ -56,11 +99,11 @@ export const byTerm = publicProcedure
       term: z.string(),
     })
   )
-  .output(outputSchema)
   .query(async ({ input }) => searchByTerm(input.term));
 
 export async function searchByTerm(term: string): Promise<OutputSchema> {
-  if (addressSchema.safeParse(term).success) {
+  const isAddress = addressSchema.safeParse(term).success;
+  if (isAddress) {
     const dbAddress = await prisma.address.findUnique({
       select: {
         address: true,
@@ -73,100 +116,108 @@ export async function searchByTerm(term: string): Promise<OutputSchema> {
 
     if (dbAddress) {
       return {
-        address: [dbAddress],
+        addresses: [dbAddress],
       };
     }
   }
 
-  if (blobCommitmentOrProofSchema.safeParse(term).success) {
-    const blobResults = await prisma.blob.findMany({
-      select: { versionedHash: true, commitment: true, proof: true },
-      where: {
-        OR: [
-          { commitment: term },
-          {
-            proof: term,
-          },
-        ],
-      },
-    });
+  const isCommitment = blobCommitmentSchema.safeParse(term).success;
+  const isProof = blobProofSchema.safeParse(term).success;
+  const isVersionedHash = blobVersionedHashSchema.safeParse(term).success;
+  const isBlob = isCommitment || isProof || isVersionedHash;
 
-    if (blobResults.length) {
-      return {
-        blob: blobResults.map((r) => r),
-      };
-    }
-  }
-
-  if (blobVersionedHashSchema.safeParse(term).data) {
-    const blob = await prisma.blob.findUnique({
-      select: { versionedHash: true, commitment: true, proof: true },
-      where: {
-        versionedHash: term,
-      },
-    });
-
-    if (blob) {
-      return {
-        blob: [blob],
-      };
-    }
-  }
-
-  if (hashSchema.safeParse(term).success) {
-    const [blockResult, txResult] = await Promise.all([
-      prisma.block.findUnique({
-        select: { hash: true, timestamp: true, number: true, slot: true },
-        where: {
-          hash: term,
-        },
-      }),
-      prisma.transaction.findUnique({
-        select: { hash: true, blockTimestamp: true },
-        where: {
-          hash: term,
-        },
-      }),
-    ]);
-
-    if (blockResult) {
-      return {
-        block: [blockResult],
-      };
-    }
-
-    if (txResult) {
-      return {
-        transaction: [txResult],
-      };
-    }
-  }
-
-  if (blockNumberSchema.safeParse(Number(term)).success) {
-    const blockNumber = Number(term);
-
-    const blocks = await prisma.block.findMany({
+  if (isBlob) {
+    const where: Prisma.BlobWhereInput = isVersionedHash
+      ? {
+          versionedHash: term,
+        }
+      : {
+          OR: [{ commitment: term }, { proof: term }],
+        };
+    const dbBlocks = await prisma.blob.findMany({
       select: {
-        number: true,
-        timestamp: true,
-        transactionForks: true,
-        slot: true,
-        hash: true,
+        versionedHash: true,
+        commitment: true,
+        proof: true,
+        transactions: {
+          select: {
+            transaction: {
+              select: {
+                from: {
+                  select: {
+                    rollup: true,
+                  },
+                },
+              },
+            },
+            blockTimestamp: true,
+          },
+          take: 1,
+          orderBy: {
+            blockNumber: "desc",
+          },
+        },
       },
-      where: {
-        OR: [{ number: blockNumber }, { slot: blockNumber }],
-      },
+      where,
     });
 
-    if (blocks.length) {
+    if (dbBlocks.length) {
       return {
-        block: blocks.map((b) => ({
-          ...b,
-          reorg: b.transactionForks.length > 0,
-        })),
+        blobs: dbBlocks.map((r) => r),
       };
     }
   }
 
-  return {};
+  const isHash = hashSchema.safeParse(term).success;
+  const isBlockNumber =
+    !term.startsWith("0x") && blockNumberSchema.safeParse(term).success;
+
+  if (isBlockNumber || isHash) {
+    const ops: [Promise<BlockPayload[]>?, Promise<TransactionPayload | null>?] =
+      [];
+
+    if (isBlockNumber || isHash) {
+      const where: Prisma.BlockWhereInput = isBlockNumber
+        ? {
+            OR: [{ number: Number(term) }, { slot: Number(term) }],
+          }
+        : {
+            hash: term,
+          };
+
+      ops.push(
+        prisma.block.findMany({
+          select: blockSelect,
+          where,
+        })
+      );
+
+      if (isHash) {
+        ops.push(
+          prisma.transaction.findUnique({
+            select: transactionSelect,
+            where: {
+              hash: term,
+            },
+          })
+        );
+      }
+    }
+
+    const [dbBlocks, dbTx] = await Promise.all(ops);
+
+    if (dbBlocks?.length) {
+      return {
+        blocks: dbBlocks,
+      };
+    }
+
+    if (dbTx) {
+      return {
+        transactions: [dbTx],
+      };
+    }
+  }
+
+  return null;
 }

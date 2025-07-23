@@ -41,8 +41,8 @@ export const TopBar: React.FC = () => {
           <div className="flex grow items-center gap-12">
             <BlobscanLogo className="w-40" />
           </div>
-          <div className="flex w-full items-center justify-end gap-5 border">
-            <div className="hidden border xl:block">
+          <div className="flex w-full items-center justify-end gap-5">
+            <div className="hidden xl:block">
               <NavigationMenus />
             </div>
             <div className="w-5/12 sm:max-w-xl">
