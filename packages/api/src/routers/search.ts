@@ -19,6 +19,10 @@ import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../procedures";
 
+const reorgFieldSchema = z.object({ reorg: z.boolean().optional() });
+const fromFieldSchema = z.object({
+  from: AddressModel.pick({ rollup: true }),
+});
 const addressSearchResultSchema = AddressModel.pick({
   address: true,
   rollup: true,
@@ -33,9 +37,7 @@ const blobSearchResultSchema = BlobModel.pick({
     blockTimestamp: true,
   })
     .extend({
-      transaction: z.object({
-        from: AddressModel.pick({ rollup: true }).optional(),
-      }),
+      transaction: fromFieldSchema,
     })
     .array(),
 });
@@ -45,16 +47,14 @@ const blockSearchResultSchema = BlockModel.pick({
   number: true,
   slot: true,
   timestamp: true,
-}).extend({
-  reorg: z.boolean().optional(),
-});
+}).merge(reorgFieldSchema);
 
 const transactionSearchResultSchema = TransactionModel.pick({
   hash: true,
   blockTimestamp: true,
-}).extend({
-  from: AddressModel.pick({ rollup: true }),
-});
+})
+  .merge(fromFieldSchema)
+  .merge(reorgFieldSchema);
 
 const searchResultsSchema = z
   .object({
@@ -81,6 +81,11 @@ const transactionSelect = {
       rollup: true,
     },
   },
+  block: {
+    select: {
+      transactionForks: true,
+    },
+  },
 } satisfies Prisma.TransactionSelect;
 
 type BlockPayload = Prisma.BlockGetPayload<{ select: typeof blockSelect }>;
@@ -99,6 +104,7 @@ export const search = publicProcedure
       query: z.string(),
     })
   )
+  .output(outputSchema)
   .query(async ({ input: { query } }) => {
     const isAddress = addressSchema.safeParse(query).success;
     if (isAddress) {
@@ -217,7 +223,12 @@ export const search = publicProcedure
 
       if (dbTx) {
         return {
-          transactions: [dbTx],
+          transactions: [
+            {
+              ...dbTx,
+              reorg: !!dbTx.block.transactionForks.length,
+            },
+          ],
         };
       }
     }

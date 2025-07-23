@@ -96,11 +96,12 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
   if (transactions) {
     categoryResults.push({
       category: "transactions",
-      results: transactions?.map(({ blockTimestamp, from, hash }) => ({
+      results: transactions?.map(({ blockTimestamp, from, hash, reorg }) => ({
         icon: <Icon src={ArrowsRightLeftIcon} size="lg" />,
         id: hash,
         label: hash,
         searchQuery,
+        isReorg: reorg,
         rollup: from.rollup?.toLowerCase() as Rollup | undefined,
         timestamp: blockTimestamp,
       })),
