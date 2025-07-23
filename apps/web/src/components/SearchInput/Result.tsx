@@ -10,12 +10,12 @@ import { HighlightedMatch } from "./HighlightedMatch";
 
 export interface ResultProps {
   id: string | number;
-  term: string;
+  searchQuery: string;
   timestamp?: Date;
-  reorg?: boolean;
+  isReorg?: boolean;
   rollup?: Rollup;
   icon: ReactNode;
-  secondaryData?: {
+  additionalDetails?: {
     label: ReactNode;
     value: string | number;
   }[];
@@ -23,11 +23,11 @@ export interface ResultProps {
 
 export const Result: FC<ResultProps> = function ({
   icon,
-  term,
+  searchQuery,
   id,
   timestamp,
-  reorg,
-  secondaryData,
+  isReorg,
+  additionalDetails,
   rollup,
 }) {
   const [date, time] = timestamp
@@ -53,28 +53,30 @@ export const Result: FC<ResultProps> = function ({
           <div className="flex flex-col items-start justify-start gap-1 truncate">
             <div className="flex w-full items-center justify-between gap-1 text-sm dark:text-content-dark">
               <div className="flex items-center gap-2 truncate">
-                <HighlightedMatch value={id} term={term} />
-                {reorg && (
+                <HighlightedMatch value={id} term={searchQuery} />
+                {isReorg && (
                   <Badge variant="primary" size="xs">
                     Reorg
                   </Badge>
                 )}
               </div>
             </div>
-            {secondaryData && (
+            {additionalDetails && (
               <div className="flex w-full items-center gap-1 text-xs dark:text-contentTertiary-dark">
-                {secondaryData.map(({ label, value }) => (
+                {additionalDetails.map(({ label, value }) => (
                   <div
                     key={value}
                     style={{
-                      maxWidth: `${Math.round(100 / secondaryData.length)}%`,
+                      maxWidth: `${Math.round(
+                        100 / additionalDetails.length
+                      )}%`,
                     }}
                     className={`flex items-center gap-1`}
                   >
                     <span className="dark:text-contentSecondary-dark">
                       {label}
                     </span>
-                    <HighlightedMatch value={value} term={term} />
+                    <HighlightedMatch value={value} term={searchQuery} />
                   </div>
                 ))}
               </div>

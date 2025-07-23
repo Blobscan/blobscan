@@ -7,21 +7,21 @@ import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
 import { ethPriceRouter } from "./routers/eth-price";
 import { healthcheck } from "./routers/healthcheck";
 import { indexerRouter } from "./routers/indexer";
-import { searchRouter } from "./routers/search";
+import { search } from "./routers/search";
 import { stateRouter } from "./routers/state";
 import { statsRouter } from "./routers/stats";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
 export const appRouter = t.router({
+  healthcheck,
+  search,
   blob: blobRouter,
   blobStoragesState: blobStoragesStateRouter,
   block: blockRouter,
   syncState: blockchainSyncStateRouter,
   ethPrice: ethPriceRouter,
-  healthcheck,
   indexer: indexerRouter,
-  search: searchRouter,
   stats: statsRouter,
   state: stateRouter,
   tx: transactionRouter,

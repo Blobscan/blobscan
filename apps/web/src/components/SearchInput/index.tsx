@@ -44,31 +44,31 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   className,
 }: SearchInputProps) {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const trimmedSearchTerm = searchTerm.trim();
-  const debouncedSearchTerm = useDebounce(trimmedSearchTerm, 200);
+  const [searchQuery, setSearchQuery] = useState("");
+  const trimmedSearchQuery = searchQuery.trim();
+  const debouncedSearchQuery = useDebounce(trimmedSearchQuery, 200);
   const searchRef = useRef<HTMLFormElement>(null);
   const clickOutside = useClickOutside(searchRef);
   const {
     data: searchData,
     error: searchError,
     isFetching: isSearchFetching,
-  } = api.search.byTerm.useQuery(
+  } = api.search.useQuery(
     {
-      term: debouncedSearchTerm,
+      query: debouncedSearchQuery,
     },
     {
-      queryKey: ["search.byTerm", { term: debouncedSearchTerm }],
-      enabled: Boolean(debouncedSearchTerm),
+      queryKey: ["search", { query: debouncedSearchQuery }],
+      enabled: Boolean(debouncedSearchQuery),
       staleTime: Infinity,
     }
   );
-  const isDebouncing = trimmedSearchTerm !== debouncedSearchTerm;
+  const isDebouncing = trimmedSearchQuery !== debouncedSearchQuery;
 
   const displayResults =
     !isDebouncing &&
     !clickOutside &&
-    trimmedSearchTerm &&
+    trimmedSearchQuery &&
     searchData !== undefined;
 
   const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
@@ -76,13 +76,13 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   ) => {
     e.preventDefault();
 
-    if (!trimmedSearchTerm) {
+    if (!trimmedSearchQuery) {
       return;
     }
 
-    setSearchTerm("");
+    setSearchQuery("");
 
-    let route = `/search?q=${trimmedSearchTerm}`;
+    let route = `/search?q=${trimmedSearchQuery}`;
 
     if (searchData) {
       const { addresses, blobs, blocks, transactions } = searchData;
@@ -113,7 +113,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
   const handleResultClick = useCallback<ResultsModalProps["onResultClick"]>(
     (category, id) => {
-      setSearchTerm("");
+      setSearchQuery("");
 
       void router.push(buildSearchResultRoute(category, id));
     },
@@ -140,8 +140,8 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
             type="text"
             name="search"
             id="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className={"rounded-none rounded-l-md"}
             placeholder={`Search by Hash / KZG / Proof / Block Number / Slot / Address`}
           />
@@ -149,7 +149,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
         {displayResults && (
           <ResultsModal
-            searchTerm={trimmedSearchTerm}
+            searchQuery={trimmedSearchQuery}
             results={searchData}
             onResultClick={handleResultClick}
           />
@@ -172,7 +172,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
         >
-          {(isSearchFetching || isDebouncing) && trimmedSearchTerm ? (
+          {(isSearchFetching || isDebouncing) && trimmedSearchQuery ? (
             <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
           ) : (
             <MagnifyingGlassIcon

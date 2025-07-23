@@ -12,13 +12,13 @@ import { Result } from "./Result";
 import type { ResultProps } from "./Result";
 
 export type ResultsModalProps = {
-  searchTerm: string;
+  searchQuery: string;
   results: SearchOutput | null;
   onResultClick(category: SearchCategory, id: string | number): void;
 };
 
 export const ResultsModal: React.FC<ResultsModalProps> = function ({
-  searchTerm,
+  searchQuery,
   results,
   onResultClick,
 }) {
@@ -35,7 +35,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       results: addresses.map(({ address, rollup }) => ({
         icon: <EthIdenticon address={address} size="sm" />,
         id: address,
-        term: searchTerm,
+        searchQuery,
         rollup: rollup?.toLowerCase() as Rollup | undefined,
       })),
     });
@@ -51,12 +51,12 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
           return {
             icon: <Icon src={BlobIcon} size="lg" />,
             id: versionedHash,
-            term: searchTerm,
+            searchQuery: searchQuery,
             rollup: latestBlobOnTx?.transaction.from?.rollup?.toLowerCase() as
               | Rollup
               | undefined,
             timestamp: latestBlobOnTx?.blockTimestamp,
-            secondaryData: [
+            additionalDetails: [
               {
                 label: "Commitment",
                 value: commitment,
@@ -78,9 +78,9 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       results: blocks.map(({ hash, number, slot, timestamp, reorg }) => ({
         icon: <Icon src={CubeIcon} size="lg" />,
         id: number,
-        term: searchTerm,
-        reorg,
-        secondaryData: [
+        searchQuery,
+        isReorg: reorg,
+        additionalDetails: [
           { label: "Hash", value: hash },
           { label: "Slot", value: slot },
         ],
@@ -95,7 +95,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       results: transactions?.map(({ blockTimestamp, from, hash }) => ({
         icon: <Icon src={ArrowsRightLeftIcon} size="lg" />,
         id: hash,
-        term: searchTerm,
+        searchQuery,
         rollup: from.rollup?.toLowerCase() as Rollup | undefined,
         timestamp: blockTimestamp,
       })),
