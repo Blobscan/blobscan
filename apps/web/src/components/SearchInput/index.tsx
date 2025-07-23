@@ -46,9 +46,12 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const trimmedSearchQuery = searchQuery.trim();
-  const debouncedSearchQuery = useDebounce(trimmedSearchQuery, 200);
+  const { value: debouncedSearchQuery, isDebouncing } = useDebounce(
+    trimmedSearchQuery,
+    200
+  );
   const searchRef = useRef<HTMLFormElement>(null);
-  const clickOutside = useClickOutside(searchRef);
+  const outsideClicked = useClickOutside(searchRef);
   const {
     data: searchData,
     error: searchError,
@@ -63,11 +66,10 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
       staleTime: Infinity,
     }
   );
-  const isDebouncing = trimmedSearchQuery !== debouncedSearchQuery;
 
   const displayResults =
     !isDebouncing &&
-    !clickOutside &&
+    !outsideClicked &&
     trimmedSearchQuery &&
     searchData !== undefined;
 
