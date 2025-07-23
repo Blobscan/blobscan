@@ -86,7 +86,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
     let route = `/search?q=${trimmedSearchQuery}`;
 
-    if (searchData) {
+    if (searchData && !isDebouncing) {
       const { addresses, blobs, blocks, transactions } = searchData;
       let category: SearchCategory | undefined;
       let id: string | number | undefined;
