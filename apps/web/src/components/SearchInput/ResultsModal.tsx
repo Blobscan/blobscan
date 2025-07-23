@@ -8,6 +8,7 @@ import { capitalize } from "~/utils";
 import { Card } from "../Cards/Card";
 import { EthIdenticon } from "../EthIdenticon";
 import { Icon } from "../Icon";
+import { Scrollable } from "../Scrollable";
 import { Result } from "./Result";
 import type { ResultProps } from "./Result";
 
@@ -106,24 +107,26 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
     <div className="absolute inset-x-0 top-11 z-10 rounded-md border border-border-light dark:border-border-dark">
       <Card className="px-3 py-4">
         {categoryResults.length ? (
-          <div className="flex flex-col">
-            {categoryResults.map(({ category, results }) => (
-              <Fragment key={category}>
-                <div className="rounded-md p-2 font-semibold dark:bg-primary-900">
-                  {capitalize(category)}
-                </div>
-                {results.map((p) => (
-                  <button
-                    className="cursor-pointer"
-                    key={p.id}
-                    onClick={() => onResultClick(category, p.id)}
-                  >
-                    <Result {...p} />
-                  </button>
-                ))}
-              </Fragment>
-            ))}
-          </div>
+          <Scrollable>
+            <div className="flex max-h-[350px] flex-col md:max-h-[550px]">
+              {categoryResults.map(({ category, results }) => (
+                <Fragment key={category}>
+                  <div className="rounded-md p-2 font-semibold dark:bg-primary-900">
+                    {capitalize(category)}
+                  </div>
+                  {results.map((p) => (
+                    <button
+                      className="cursor-pointer"
+                      key={p.id}
+                      onClick={() => onResultClick(category, p.id)}
+                    >
+                      <Result {...p} />
+                    </button>
+                  ))}
+                </Fragment>
+              ))}
+            </div>
+          </Scrollable>
         ) : (
           <div className="flex flex-col items-center justify-center gap-2 p-6">
             <Icon src={EmptyBox} size="2xl" className="stroke-1" />
