@@ -38,14 +38,14 @@ export const Result: FC<ResultProps> = function ({
     <div className="flex flex-col">
       <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md py-2 pl-1 pr-3 text-sm text-contentSecondary-light transition-colors hover:bg-primary-100 dark:text-contentSecondary-dark hover:dark:bg-primary-800/20">
         <div
-          className={cn("flex w-full items-center gap-2", {
+          className={cn("flex w-full items-center gap-2.5", {
             "justify-between": timestamp,
           })}
         >
           <div className="relative flex items-center">
             {icon}
             {rollup && (
-              <div className="relative -bottom-2 right-0.5">
+              <div className="absolute -bottom-1 left-[13px]">
                 <RollupBadge rollup={rollup} size="sm" compact />
               </div>
             )}
