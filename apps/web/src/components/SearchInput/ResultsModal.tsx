@@ -112,7 +112,9 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
               {categoryResults.map(({ category, results }) => (
                 <Fragment key={category}>
                   <div className="rounded-md bg-primary-200 p-2 font-semibold dark:bg-primary-900">
-                    {capitalize(category)}
+                    {`${capitalize(category)} ${
+                      results.length > 1 ? `(${results.length})` : ""
+                    }`}
                   </div>
                   {results.map((p) => (
                     <button
