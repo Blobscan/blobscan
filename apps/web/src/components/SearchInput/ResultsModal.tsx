@@ -111,7 +111,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
             <div className="flex max-h-[350px] flex-col md:max-h-[550px]">
               {categoryResults.map(({ category, results }) => (
                 <Fragment key={category}>
-                  <div className="rounded-md p-2 font-semibold dark:bg-primary-900">
+                  <div className="rounded-md bg-primary-200 p-2 font-semibold dark:bg-primary-900">
                     {capitalize(category)}
                   </div>
                   {results.map((p) => (
