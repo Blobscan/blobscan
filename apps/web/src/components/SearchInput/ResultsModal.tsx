@@ -25,7 +25,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
 }) {
   const categoryResults: {
     category: SearchCategory;
-    results: ResultProps[];
+    results: (ResultProps & { id: string | number })[];
   }[] = [];
 
   const { addresses, blobs, blocks, transactions } = results ?? {};
@@ -36,6 +36,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       results: addresses.map(({ address, rollup }) => ({
         icon: <EthIdenticon address={address} size="sm" />,
         id: address,
+        label: address,
         searchQuery,
         rollup: rollup?.toLowerCase() as Rollup | undefined,
       })),
@@ -52,6 +53,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
           return {
             icon: <Icon src={BlobIcon} size="lg" />,
             id: versionedHash,
+            label: versionedHash,
             searchQuery: searchQuery,
             rollup: latestBlobOnTx?.transaction.from?.rollup?.toLowerCase() as
               | Rollup
@@ -78,7 +80,8 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       category: "blocks",
       results: blocks.map(({ hash, number, slot, timestamp, reorg }) => ({
         icon: <Icon src={CubeIcon} size="lg" />,
-        id: number,
+        id: hash,
+        label: number,
         searchQuery,
         isReorg: reorg,
         additionalDetails: [
@@ -96,6 +99,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
       results: transactions?.map(({ blockTimestamp, from, hash }) => ({
         icon: <Icon src={ArrowsRightLeftIcon} size="lg" />,
         id: hash,
+        label: hash,
         searchQuery,
         rollup: from.rollup?.toLowerCase() as Rollup | undefined,
         timestamp: blockTimestamp,
@@ -116,13 +120,13 @@ export const ResultsModal: React.FC<ResultsModalProps> = function ({
                       results.length > 1 ? `(${results.length})` : ""
                     }`}
                   </div>
-                  {results.map((p) => (
+                  {results.map(({ id, ...props }) => (
                     <button
                       className="cursor-pointer"
-                      key={p.id}
-                      onClick={() => onResultClick(category, p.id)}
+                      key={id}
+                      onClick={() => onResultClick(category, id)}
                     >
-                      <Result {...p} />
+                      <Result {...props} />
                     </button>
                   ))}
                 </Fragment>

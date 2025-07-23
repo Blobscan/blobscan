@@ -9,7 +9,7 @@ import { RollupBadge } from "../Badges/RollupBadge";
 import { HighlightedMatch } from "./HighlightedMatch";
 
 export interface ResultProps {
-  id: string | number;
+  label: string | number;
   searchQuery: string;
   timestamp?: Date;
   isReorg?: boolean;
@@ -24,7 +24,7 @@ export interface ResultProps {
 export const Result: FC<ResultProps> = function ({
   icon,
   searchQuery,
-  id,
+  label,
   timestamp,
   isReorg,
   additionalDetails,
@@ -53,7 +53,7 @@ export const Result: FC<ResultProps> = function ({
           <div className="flex flex-col items-start justify-start gap-1 truncate">
             <div className="flex w-full items-center justify-between gap-1 text-sm dark:text-content-dark">
               <div className="flex items-center gap-2 truncate">
-                <HighlightedMatch value={id} term={searchQuery} />
+                <HighlightedMatch value={label} term={searchQuery} />
                 {isReorg && (
                   <Badge variant="primary" size="xs">
                     Reorg
