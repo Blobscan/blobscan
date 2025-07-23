@@ -33,6 +33,8 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
         },
       };
     }
+    console.log("aaaa");
+    console.log(query);
 
     let route: string | undefined;
 
@@ -46,7 +48,10 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
       route = buildBlobRoute(term);
     } else if (hashSchema.safeParse(term).success) {
       route = buildTransactionRoute(term);
-    } else if (!term.startsWith("0x") && blockNumberSchema.safeParse(term)) {
+    } else if (
+      !term.startsWith("0x") &&
+      blockNumberSchema.safeParse(term).success
+    ) {
       route = buildBlockRoute(term);
     }
 
@@ -58,6 +63,7 @@ export const getServerSideProps: GetServerSideProps<SearchProps> =
       };
     }
 
+    console.log(route);
     return {
       redirect: {
         permanent: true,
