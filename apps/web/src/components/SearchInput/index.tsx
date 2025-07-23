@@ -45,7 +45,8 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 }: SearchInputProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedTerm = useDebounce(searchTerm, 200);
+  const trimmedSearchTerm = searchTerm.trim();
+  const debouncedSearchTerm = useDebounce(trimmedSearchTerm, 200);
   const searchRef = useRef<HTMLFormElement>(null);
   const clickOutside = useClickOutside(searchRef);
   const {
@@ -54,27 +55,34 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     isFetching: isSearchFetching,
   } = api.search.byTerm.useQuery(
     {
-      term: debouncedTerm,
+      term: debouncedSearchTerm,
     },
     {
-      queryKey: ["search.byTerm", { term: debouncedTerm }],
-      enabled: Boolean(debouncedTerm),
+      queryKey: ["search.byTerm", { term: debouncedSearchTerm }],
+      enabled: Boolean(debouncedSearchTerm),
       staleTime: Infinity,
     }
   );
+  const isDebouncing = trimmedSearchTerm !== debouncedSearchTerm;
+
+  const displayResults =
+    !isDebouncing &&
+    !clickOutside &&
+    trimmedSearchTerm &&
+    searchData !== undefined;
 
   const handleSubmit: FormEventHandler<HTMLFormElement | HTMLButtonElement> = (
     e
   ) => {
     e.preventDefault();
 
-    if (!searchTerm) {
+    if (!trimmedSearchTerm) {
       return;
     }
 
     setSearchTerm("");
 
-    let route = `/search?q=${searchTerm}`;
+    let route = `/search?q=${trimmedSearchTerm}`;
 
     if (searchData) {
       const { addresses, blobs, blocks, transactions } = searchData;
@@ -121,11 +129,6 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
     );
   }
 
-  const isDebouncing = searchTerm !== debouncedTerm;
-
-  const displayResults =
-    !isDebouncing && !clickOutside && searchTerm && searchData !== undefined;
-
   return (
     <form ref={searchRef} onSubmit={handleSubmit}>
       <div
@@ -146,7 +149,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
 
         {displayResults && (
           <ResultsModal
-            searchTerm={searchTerm}
+            searchTerm={trimmedSearchTerm}
             results={searchData}
             onResultClick={handleResultClick}
           />
@@ -169,7 +172,7 @@ export const SearchInput: React.FC<SearchInputProps> = function ({
           ring-inset
           `}
         >
-          {(isSearchFetching || isDebouncing) && searchTerm ? (
+          {(isSearchFetching || isDebouncing) && trimmedSearchTerm ? (
             <Loading className="-ml-0.5 h-5 w-5 animate-spin" />
           ) : (
             <MagnifyingGlassIcon
