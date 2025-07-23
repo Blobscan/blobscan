@@ -208,7 +208,10 @@ export const search = publicProcedure
 
       if (dbBlocks?.length) {
         return {
-          blocks: dbBlocks,
+          blocks: dbBlocks.map((b) => ({
+            ...b,
+            reorg: !!b.transactionForks.length,
+          })),
         };
       }
 
