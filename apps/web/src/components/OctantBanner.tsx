@@ -7,11 +7,17 @@ type OctantBannerProps = {
   onClose(): void;
 };
 
-const EPOCH_CLOSING_DATE = "2025-07-25T18:00:00";
+const EPOCH_CLOSING_DATE = "2025-07-24T18:00:00";
 
 export const OctantBanner: FC<OctantBannerProps> = function GitcoinBanner({
   onClose,
 }) {
+  const now = dayjs();
+
+  if (now.isAfter(EPOCH_CLOSING_DATE)) {
+    return null;
+  }
+
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-primary-100 px-6 py-2.5 dark:bg-slate-300 sm:px-3.5 sm:before:flex-1">
       <div
