@@ -144,6 +144,27 @@ describe("Search procedure", async () => {
 
       expect(result).toMatchObject(expectedBlockResult);
     });
+
+    it("should find the ones with reorgs", async () => {
+      const blockNumber = 1008;
+      const expectedBlocksResult: SearchResultsSchema = {
+        blocks: fixtures.blocks
+          .filter((b) => b.number === blockNumber)
+          .map((b) => ({
+            hash: b.hash,
+            number: b.number,
+            slot: b.slot,
+            timestamp: new Date(b.timestamp),
+            reorg: !!fixtures.txForks.find((txF) => txF.blockHash === b.hash),
+          })),
+      };
+
+      const result = await searchCaller.search({
+        query: blockNumber.toString(),
+      });
+
+      expect(result).toMatchObject(expectedBlocksResult);
+    });
   });
 
   describe("when searching txs", () => {
@@ -171,6 +192,33 @@ describe("Search procedure", async () => {
       const result = await searchCaller.search({
         query:
           "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
+      });
+
+      expect(result).toMatchObject(expectedTransactionResult);
+    });
+
+    it("should find reorged txs", async () => {
+      const txHash =
+        "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272";
+      const tx = fixtures.txs.find((tx) => tx.hash === txHash);
+
+      const expectedTransactionResult: SearchResultsSchema = tx
+        ? {
+            transactions: [
+              {
+                blockTimestamp: new Date(tx.blockTimestamp),
+                from: {
+                  rollup: "OPTIMISM",
+                },
+                hash: tx.hash,
+                reorg: true,
+              },
+            ],
+          }
+        : ({} as SearchResultsSchema);
+
+      const result = await searchCaller.search({
+        query: txHash,
       });
 
       expect(result).toMatchObject(expectedTransactionResult);
