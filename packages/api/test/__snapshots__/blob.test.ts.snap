@@ -269,7 +269,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -287,7 +287,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -309,7 +309,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -331,7 +331,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -353,7 +353,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -371,7 +371,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -460,7 +460,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the oldest results when ascending order is specified 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -482,7 +482,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -500,7 +500,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -681,7 +681,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -699,7 +699,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1219,7 +1219,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -1241,7 +1241,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1259,7 +1259,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1286,7 +1286,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the sender address specified 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -1308,7 +1308,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1326,7 +1326,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1353,7 +1353,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results corresponding to the sender and receiver addresses specified 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -1375,7 +1375,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1393,7 +1393,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1474,7 +1474,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1492,7 +1492,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1514,7 +1514,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1536,7 +1536,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -1558,7 +1558,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1576,7 +1576,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1603,7 +1603,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
 exports[`Blob router > getAll > when getting filtered blob results > should return the results ending at the date specified without including it 1`] = `
 [
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1621,7 +1621,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1643,7 +1643,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",
@@ -1665,7 +1665,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash001",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment003",
@@ -1687,7 +1687,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash003",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment002",
@@ -1705,7 +1705,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "versionedHash": "blobHash002",
   },
   {
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "commitment": "commitment001",

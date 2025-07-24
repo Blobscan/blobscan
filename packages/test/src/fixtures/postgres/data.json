@@ -21,7 +21,7 @@
   ],
   "blocks": [
     {
-      "hash": "blockHash001",
+      "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "number": 1001,
       "timestamp": "2022-10-16T12:00:00Z",
       "slot": 101,
@@ -190,7 +190,7 @@
       "hash": "txHash001",
       "fromId": "address1",
       "toId": "address2",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "index": 0,
@@ -205,7 +205,7 @@
       "hash": "txHash002",
       "fromId": "address3",
       "toId": "address4",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "index": 1,
@@ -220,7 +220,7 @@
       "hash": "txHash003",
       "fromId": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
       "toId": "address6",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "index": 2,
@@ -682,7 +682,7 @@
     {
       "blobHash": "blobHash001",
       "txHash": "txHash001",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
@@ -691,7 +691,7 @@
     {
       "blobHash": "blobHash002",
       "txHash": "txHash001",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
@@ -700,7 +700,7 @@
     {
       "blobHash": "blobHash003",
       "txHash": "txHash001",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 0,
@@ -709,7 +709,7 @@
     {
       "blobHash": "blobHash001",
       "txHash": "txHash002",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 1,
@@ -718,7 +718,7 @@
     {
       "blobHash": "blobHash001",
       "txHash": "txHash003",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 2,
@@ -727,7 +727,7 @@
     {
       "blobHash": "blobHash002",
       "txHash": "txHash003",
-      "blockHash": "blockHash001",
+      "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
       "blockNumber": 1001,
       "blockTimestamp": "2022-10-16T12:00:00Z",
       "txIndex": 2,
