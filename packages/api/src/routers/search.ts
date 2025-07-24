@@ -23,12 +23,13 @@ const reorgFieldSchema = z.object({ reorg: z.boolean().optional() });
 const fromFieldSchema = z.object({
   from: AddressModel.pick({ rollup: true }),
 });
-const addressSearchResultSchema = AddressModel.pick({
+
+export const addressSearchResultSchema = AddressModel.pick({
   address: true,
   rollup: true,
 });
 
-const blobSearchResultSchema = BlobModel.pick({
+export const blobSearchResultSchema = BlobModel.pick({
   versionedHash: true,
   commitment: true,
   proof: true,
@@ -42,21 +43,21 @@ const blobSearchResultSchema = BlobModel.pick({
     .array(),
 });
 
-const blockSearchResultSchema = BlockModel.pick({
+export const blockSearchResultSchema = BlockModel.pick({
   hash: true,
   number: true,
   slot: true,
   timestamp: true,
 }).merge(reorgFieldSchema);
 
-const transactionSearchResultSchema = TransactionModel.pick({
+export const transactionSearchResultSchema = TransactionModel.pick({
   hash: true,
   blockTimestamp: true,
 })
   .merge(fromFieldSchema)
   .merge(reorgFieldSchema);
 
-const searchResultsSchema = z
+export const searchResultsSchema = z
   .object({
     addresses: addressSearchResultSchema.array(),
     blobs: blobSearchResultSchema.array(),
