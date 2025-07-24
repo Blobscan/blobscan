@@ -45,7 +45,7 @@ export const TopBar: React.FC = () => {
             <div className="hidden xl:block">
               <NavigationMenus />
             </div>
-            <div className="w-5/12 sm:max-w-xl">
+            <div className="w-full sm:max-w-md md:max-w-2xl">
               <SearchInput />
             </div>
             <div className="hidden xl:block">
