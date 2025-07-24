@@ -1,5 +1,11 @@
 # @blobscan/api
 
+## 0.25.0
+
+### Minor Changes
+
+- [#852](https://github.com/Blobscan/blobscan/pull/852) [`bd0efa3`](https://github.com/Blobscan/blobscan/commit/bd0efa3d3e3ee46305e45cac552c238d0568b6fa) Thanks [@PJColombo](https://github.com/PJColombo)! - Updated search procedure to return additional data such as block timestamp, block hash, blob commitment, block proof and rollup
+
 ## 0.24.2
 
 ### Patch Changes
