@@ -10,6 +10,4 @@ export { metricsHandler } from "./instrumentation";
 
 export type { TimeFrame } from "./middlewares/withTimeFrame";
 
-export { searchByTerm } from "./routers/search/byTerm";
-
 export * from "./app-router";

@@ -59,4 +59,6 @@ export type DailyStatName = keyof Omit<
 
 export type OverallStats = AppRouterOutputs["stats"]["getOverallStats"][number];
 
-export type SearchResults = AppRouterOutputs["search"]["byTerm"];
+export type SearchOutput = NonNullable<AppRouterOutputs["search"]>;
+
+export type SearchCategory = keyof SearchOutput;

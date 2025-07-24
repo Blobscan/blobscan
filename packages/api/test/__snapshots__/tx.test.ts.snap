@@ -415,7 +415,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
@@ -452,7 +452,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -511,7 +511,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -708,7 +708,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -745,7 +745,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -791,7 +791,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
@@ -1005,7 +1005,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
@@ -1763,7 +1763,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -1827,7 +1827,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -1891,7 +1891,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -1993,7 +1993,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
@@ -2030,7 +2030,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -2089,7 +2089,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -2140,7 +2140,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
@@ -2177,7 +2177,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -2236,7 +2236,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "block": {
       "blobGasPrice": 22n,
     },
-    "blockHash": "blockHash001",
+    "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
     "blockNumber": 1001,
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
@@ -2825,7 +2825,7 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
   "block": {
     "blobGasPrice": 22n,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
@@ -2896,7 +2896,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "block": {
     "blobGasPrice": 22n,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
@@ -2962,7 +2962,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     "excessBlobGas": 15000n,
     "slot": 101,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
@@ -3037,7 +3037,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
     "excessBlobGas": 15000n,
     "slot": 101,
   },
-  "blockHash": "blockHash001",
+  "blockHash": "0x1000000000000000000000000000000000000000000000000000000000000000",
   "blockNumber": 1001,
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",

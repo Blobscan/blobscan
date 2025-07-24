@@ -519,7 +519,8 @@ describe("Base Extension", () => {
             hash: "newTxHash2",
             fromId: "address5",
             toId: "address3",
-            blockHash: "blockHash001",
+            blockHash:
+              "0x1000000000000000000000000000000000000000000000000000000000000000",
             blockNumber: 1001,
             index: 0,
             blockTimestamp: new Date("2022-10-16T12:00:00Z"),

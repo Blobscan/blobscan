@@ -58,7 +58,7 @@ const ICON_CLASSES: Record<
     },
   },
   "2xl": {
-    className: "h-7 w-7",
+    className: "h-8 w-8",
     css: {
       width: 28,
       height: 28,

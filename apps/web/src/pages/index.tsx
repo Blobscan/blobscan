@@ -119,9 +119,9 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 sm:gap-20">
-      <div className=" flex flex-col items-center justify-center gap-8 md:w-8/12">
+      <div className=" flex flex-col items-center justify-center gap-8 md:w-[650px]">
         <BlobscanLogo className="w-64 md:w-80" />
-        <div className="flex w-full max-w-lg flex-col items-stretch justify-center space-y-2">
+        <div className="flex w-full  flex-col items-stretch justify-center space-y-2">
           <SearchInput />
           <span className="text-center text-sm  text-contentSecondary-light dark:text-contentSecondary-dark">
             Blob transaction explorer for the{" "}
