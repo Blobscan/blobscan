@@ -36,7 +36,8 @@ function calculateBlobGasTarget(
     blobsInBlock < targetBlobsPerBlock
       ? blobsInBlock
       : blobsInBlock - targetBlobsPerBlock,
-    targetBlobsPerBlock
+    targetBlobsPerBlock,
+    { returnComplement: blobsInBlock < targetBlobsPerBlock }
   );
 }
 
@@ -88,14 +89,13 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
         <div
           title={compact ? "Blob Gas Target" : undefined}
           className={cn(
-            isPositive
-              ? "text-positive-light dark:text-positive-dark"
-              : isNegative
-              ? "text-negative-light dark:text-negative-dark"
-              : "text-contentTertiary-light dark:text-contentTertiary-dark",
             {
-              "text-xs": compact,
-            }
+              "text-positive-light dark:text-positive-dark": isPositive,
+              "text-negative-light dark:text-negative-dark": isNegative,
+              "text-contentTertiary-light dark:text-contentTertiary-dark":
+                !isPositive && !isNegative,
+            },
+            "text-xs"
           )}
         >
           {targetSign}

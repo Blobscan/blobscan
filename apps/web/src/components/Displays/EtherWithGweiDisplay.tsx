@@ -3,13 +3,18 @@ import type { FC } from "react";
 import type { FormatOptions } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 
+import { formatEthFiatPrice } from "~/utils";
+import { Separator } from "../Separator";
+
 type EtherWithGweiDisplayProps = {
   amount: bigint;
+  usdAmount?: string;
   opts?: FormatOptions;
 };
 
 export const EtherWithGweiDisplay: FC<EtherWithGweiDisplayProps> = ({
   amount,
+  usdAmount,
   opts = {},
 }) => {
   return (
@@ -23,6 +28,14 @@ export const EtherWithGweiDisplay: FC<EtherWithGweiDisplayProps> = ({
         })}
         )
       </span>
+      {usdAmount && (
+        <>
+          <Separator />
+          <span className="text-contentSecondary-light dark:text-contentSecondary-dark">
+            {formatEthFiatPrice(usdAmount)}
+          </span>
+        </>
+      )}
     </div>
   );
 };

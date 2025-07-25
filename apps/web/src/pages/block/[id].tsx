@@ -13,6 +13,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
+import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -22,6 +23,8 @@ import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   formatBytes,
+  formatEthFiatPrice,
+  formatFiat,
   formatNumber,
   formatTimestamp,
   performDiv,
@@ -68,6 +71,7 @@ const Block: NextPage = function () {
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (blockData && env) {
+    console.log(blockData);
     const networkBlobConfig = getNetworkBlobConfigBySlot(
       env.PUBLIC_NETWORK_NAME,
       blockData.slot
@@ -178,14 +182,8 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Gas Price",
-        helpText:
-          "The cost per unit of blob gas used by the blobs in this block.",
-        value: <EtherWithGweiDisplay amount={blockData.blobGasPrice} />,
-      },
-      {
         name: "Blob Gas Used",
-        helpText: `The total blob gas used by the blobs in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
+        helpText: `The total blob gas used by transactions in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
           targetBlobGasPerBlock / BigInt(1024)
         } KB).`,
         value: (
@@ -193,6 +191,29 @@ const Block: NextPage = function () {
             networkBlobConfig={networkBlobConfig}
             blobGasUsed={blockData.blobGasUsed}
             compact={isCompact}
+          />
+        ),
+      },
+      {
+        name: "Blob Gas Price",
+        helpText:
+          "The cost per unit of blob gas used by the blobs in this block.",
+        value: (
+          <EtherWithGweiDisplay
+            amount={blockData.blobGasPrice}
+            usdAmount={blockData.blobGasUsdPrice}
+          />
+        ),
+      },
+
+      {
+        name: "Blob Base Fees",
+        helpText:
+          "The total blob gas base fees spent on all transactions included in this block.",
+        value: (
+          <EtherWithGweiDisplay
+            amount={blockData.blobBaseFees}
+            usdAmount={blockData.blobBaseUsdFees}
           />
         ),
       },
