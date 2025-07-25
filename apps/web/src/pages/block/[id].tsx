@@ -195,6 +195,20 @@ const Block: NextPage = function () {
         ),
       },
       {
+        name: "Excess Blob Gas",
+        helpText:
+          "The total amount of blob gas consumed in excess of the target, prior to the current block",
+        value: (
+          <div>
+            {blockData.excessBlobGas.toString()}
+            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({formatNumber(Number(blockData.excessBlobGas) / blobSize)}{" "}
+              {pluralize("blob", Number(blockData.excessBlobGas) / blobSize)})
+            </span>
+          </div>
+        ),
+      },
+      {
         name: "Blob Gas Price",
         helpText:
           "The cost per unit of blob gas used by the blobs in this block.",
