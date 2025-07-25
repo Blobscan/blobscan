@@ -116,7 +116,17 @@ export const prismaBlockSchema = BlockModel.omit({
   updatedAt: true,
 });
 
-export const baseBlockSchema = prismaBlockSchema;
+export const blockDerivedFieldsSchema = z.object({
+  blobBaseFees: decimalSchema,
+  blobBaseUsdFees: z.string().optional(),
+  blobGasUsdPrice: z.string().optional(),
+});
+
+export type BlockDerivedFields = z.output<typeof blockDerivedFieldsSchema>;
+
+export const baseBlockSchema = prismaBlockSchema.merge(
+  blockDerivedFieldsSchema
+);
 
 export const prismaBlobSchema = BlobModel.omit({
   firstBlockNumber: true,

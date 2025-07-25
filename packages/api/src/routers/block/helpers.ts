@@ -1,4 +1,4 @@
-import type { BlobscanPrismaClient, Prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient, EthUsdPrice, Prisma } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -10,6 +10,7 @@ import type { Filters } from "../../middlewares/withFilters";
 import type { Prettify } from "../../types";
 import { isFullyDefined } from "../../utils";
 import {
+  deriveBlockFields,
   deriveTransactionFields,
   normalizeDataStorageReferences,
   normalizePrismaBlobFields,
@@ -62,7 +63,7 @@ export type CompletePrismaBlock = Prettify<
           >[];
         }
     >[];
-  }
+  } & { ethUsdPrice?: EthUsdPrice }
 >;
 
 export function createBlockSelect(expands: Expands, filters?: Filters) {
@@ -129,7 +130,18 @@ export type ResponseBlock = z.input<typeof responseBlockSchema>;
 export function toResponseBlock(
   prismaBlock: CompletePrismaBlock
 ): ResponseBlock {
-  const transactions = prismaBlock.transactions.map(
+  const {
+    ethUsdPrice,
+    blobGasPrice,
+    blobGasUsed,
+    transactions: blockTransactions,
+  } = prismaBlock;
+  const derivedBlockFields = deriveBlockFields({
+    ethUsdPrice,
+    blobGasPrice,
+    blobGasUsed,
+  });
+  const transactions = blockTransactions.map(
     ({ hash, blobs, ...prismaTx }) => ({
       hash,
       ...(isFullyDefined(prismaTx)
@@ -138,7 +150,7 @@ export function toResponseBlock(
             ...normalizePrismaTransactionFields(prismaTx),
             ...deriveTransactionFields({
               ...prismaTx,
-              blobGasPrice: prismaBlock.blobGasPrice,
+              blobGasPrice,
             }),
           }
         : {}),
@@ -162,6 +174,7 @@ export function toResponseBlock(
 
   return {
     ...prismaBlock,
+    ...(derivedBlockFields ?? {}),
     transactions,
   };
 }
@@ -204,14 +217,19 @@ export async function fetchBlock(
   const select = createBlockSelect(expands);
   const where = buildBlockWhereClause(blockId, filters);
 
-  const prismaBlock = (await prisma.block.findFirst({
-    select,
-    where,
-  })) as unknown as CompletePrismaBlock | null;
+  const [prismaBlock, ethUsdPrice] = await Promise.all([
+    prisma.block.findFirst({
+      select,
+      where,
+    }) as unknown as Promise<CompletePrismaBlock | null>,
+    prisma.block.findEthUsdPrice(blockId.value),
+  ]);
 
   if (!prismaBlock) {
     return;
   }
+
+  prismaBlock.ethUsdPrice = ethUsdPrice;
 
   return prismaBlock;
 }

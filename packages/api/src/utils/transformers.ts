@@ -1,12 +1,17 @@
-import type { Prisma } from "@blobscan/db";
+import type { EthUsdPrice, Prisma } from "@blobscan/db";
 import type { BlobStorage } from "@blobscan/db/prisma/enums";
 import { Category } from "@blobscan/db/prisma/enums";
 import type { optimismDecodedFieldsSchema } from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
 import type { z } from "@blobscan/zod";
 
-import type { PrismaBlob, PrismaTransaction } from "../zod-schemas";
+import type {
+  BlockDerivedFields,
+  PrismaBlob,
+  PrismaTransaction,
+} from "../zod-schemas";
 import { hasProperties } from "./identifiers";
+import { ONE_ETH_IN_WEI } from "./web3";
 
 export function buildBlobDataUrl(
   blobStorage: BlobStorage,
@@ -36,6 +41,28 @@ export function buildBlobDataUrl(
       return `${env.S3_STORAGE_ENDPOINT}/${env.S3_STORAGE_BUCKET_NAME}/${blobDataUri}`;
     }
   }
+}
+
+export function deriveBlockFields({
+  ethUsdPrice,
+  blobGasUsed,
+  blobGasPrice,
+}: {
+  ethUsdPrice?: EthUsdPrice;
+  blobGasUsed: Prisma.Decimal;
+  blobGasPrice: Prisma.Decimal;
+}): BlockDerivedFields {
+  const price = ethUsdPrice?.price;
+  const weiUsdPrice = price?.mul(ONE_ETH_IN_WEI);
+  const blobBaseFees = blobGasUsed.mul(blobGasPrice);
+  const blobGasUsdPrice = weiUsdPrice?.mul(blobGasPrice);
+  const blobBaseUsdFees = blobGasUsdPrice?.mul(blobBaseFees);
+
+  return {
+    blobBaseFees: blobBaseFees,
+    blobBaseUsdFees: blobBaseUsdFees?.toFixed(),
+    blobGasUsdPrice: blobGasUsdPrice?.toFixed(),
+  };
 }
 
 export function deriveTransactionFields({
