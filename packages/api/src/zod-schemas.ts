@@ -167,11 +167,19 @@ export const prismaTransactionBlob = BlobsOnTransactionsModel.extend({
 });
 export const prismaBlobOnTransactionSchema = BlobsOnTransactionsModel;
 
-export const transactionFeeFieldsSchema = z.object({
-  blobGasBaseFee: decimalSchema,
-  blobGasMaxFee: decimalSchema,
+export const transactionDerivedFieldsSchema = z.object({
   blobAsCalldataGasFee: decimalSchema,
+  blobAsCalldataGasUsdFee: z.string().optional(),
+  blobGasBaseFee: decimalSchema,
+  blobGasBaseUsdFee: z.string().optional(),
+  blobGasMaxFee: decimalSchema,
+  blobGasMaxUsdFee: z.string().optional(),
+  blobGasUsdPrice: z.string().optional(),
 });
+
+export type TransactionDerivedFields = z.output<
+  typeof transactionDerivedFieldsSchema
+>;
 
 export const baseTransactionSchema = prismaTransactionSchema
   .omit({
@@ -179,7 +187,7 @@ export const baseTransactionSchema = prismaTransactionSchema
     toId: true,
     gasPrice: true,
   })
-  .merge(transactionFeeFieldsSchema)
+  .merge(transactionDerivedFieldsSchema)
   .extend({
     blobGasPrice: prismaBlockSchema.shape.blobGasPrice,
     category: dbCategorySchema,

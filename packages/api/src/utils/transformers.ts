@@ -1,5 +1,5 @@
 import type { EthUsdPrice, Prisma } from "@blobscan/db";
-import type { BlobStorage } from "@blobscan/db/prisma/enums";
+import type { BlobStorage, Rollup } from "@blobscan/db/prisma/enums";
 import { Category } from "@blobscan/db/prisma/enums";
 import type { optimismDecodedFieldsSchema } from "@blobscan/db/prisma/zod-utils";
 import { env } from "@blobscan/env";
@@ -9,6 +9,7 @@ import type {
   BlockDerivedFields,
   PrismaBlob,
   PrismaTransaction,
+  TransactionDerivedFields,
 } from "../zod-schemas";
 import { hasProperties } from "./identifiers";
 import { ONE_ETH_IN_WEI } from "./web3";
@@ -72,6 +73,7 @@ export function deriveTransactionFields({
   maxFeePerBlobGas,
   gasPrice,
   from,
+  ethUsdPrice,
 }: Pick<
   PrismaTransaction,
   | "gasPrice"
@@ -79,14 +81,32 @@ export function deriveTransactionFields({
   | "blobAsCalldataGasUsed"
   | "maxFeePerBlobGas"
   | "from"
-> & { blobGasPrice: Prisma.Decimal }) {
+> & { blobGasPrice: Prisma.Decimal; ethUsdPrice?: EthUsdPrice }): {
+  category: Category;
+  rollup?: Rollup | null;
+  blobGasPrice: Prisma.Decimal;
+} & TransactionDerivedFields {
+  const usdWeiPrice = ethUsdPrice?.price.mul(ONE_ETH_IN_WEI);
+
+  const blobGasUsdPrice = usdWeiPrice?.mul(blobGasPrice);
+  const blobAsCalldataGasFee = gasPrice.mul(blobAsCalldataGasUsed);
+  const blobGasBaseFee = blobGasPrice.mul(blobGasUsed);
+  const blobGasMaxFee = maxFeePerBlobGas.mul(blobGasUsed);
+  const blobAsCalldataGasUsdFee = usdWeiPrice?.mul(blobAsCalldataGasFee);
+  const blobGasBaseUsdFee = usdWeiPrice?.mul(blobGasBaseFee);
+  const blobGasMaxUsdFee = usdWeiPrice?.mul(blobGasMaxFee);
+
   return {
     category: from.rollup ? Category.ROLLUP : Category.OTHER,
     rollup: from.rollup,
-    blobGasBaseFee: blobGasPrice.mul(blobGasUsed),
+    blobGasBaseFee,
+    blobGasBaseUsdFee: blobGasBaseUsdFee?.toFixed(),
     blobAsCalldataGasFee: gasPrice.mul(blobAsCalldataGasUsed),
-    blobGasMaxFee: maxFeePerBlobGas.mul(blobGasUsed),
+    blobAsCalldataGasUsdFee: blobAsCalldataGasUsdFee?.toFixed(),
+    blobGasMaxFee,
+    blobGasMaxUsdFee: blobGasMaxUsdFee?.toFixed(),
     blobGasPrice,
+    blobGasUsdPrice: blobGasUsdPrice?.toFixed(),
   };
 }
 
