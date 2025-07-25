@@ -83,9 +83,12 @@ const Tx: NextPage = () => {
       from,
       to,
       rollup,
+      blobGasUsdPrice,
       blobGasUsed,
       blobGasBaseFee,
+      blobGasBaseUsdFee,
       blobGasMaxFee,
+      blobGasMaxUsdFee,
       blobAsCalldataGasFee,
     } = tx;
 
@@ -145,7 +148,12 @@ const Tx: NextPage = () => {
       },
       {
         name: "Blob Gas Price",
-        value: <EtherWithGweiDisplay amount={block.blobGasPrice} />,
+        value: (
+          <EtherWithGweiDisplay
+            amount={block.blobGasPrice}
+            usdAmount={blobGasUsdPrice}
+          />
+        ),
       },
       {
         name: "Blob Fee",
@@ -156,14 +164,20 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <EtherWithGweiDisplay amount={blobGasBaseFee} />
+                <EtherWithGweiDisplay
+                  amount={blobGasBaseFee}
+                  usdAmount={blobGasBaseUsdFee}
+                />
               </div>
             ) : null}
             <div className=" flex gap-1">
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <EtherWithGweiDisplay amount={blobGasMaxFee} />
+              <EtherWithGweiDisplay
+                amount={blobGasMaxFee}
+                usdAmount={blobGasMaxUsdFee}
+              />
             </div>
           </div>
         ),
@@ -199,7 +213,7 @@ const Tx: NextPage = () => {
           <div className="display flex gap-1">
             {<EtherWithGweiDisplay amount={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-              <Separator />{" "}
+              <Separator />
               <strong>
                 {formatNumber(
                   performDiv(blobAsCalldataGasFee, blobGasBaseFee),
