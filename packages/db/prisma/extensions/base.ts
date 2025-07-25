@@ -209,19 +209,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       block: {
-        findLatest() {
-          return startBlockModelFnSpan("findLatest", () => {
-            return prisma.block.findFirst({
-              where: {
-                transactionForks: {
-                  none: {},
-                },
-              },
-              orderBy: { number: "desc" },
-            });
-          });
-        },
-
         findEthUsdPrice(blockId: string | number) {
           let whereClause: Prisma.Sql;
           const isBlockNumber =
@@ -236,7 +223,7 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
           }
 
           if (isBlockHash) {
-            whereClause = Prisma.sql`b.hash = '${blockId}'`;
+            whereClause = Prisma.sql`b.hash = ${blockId}`;
           } else if (isBlockNumber) {
             whereClause = Prisma.sql`b.number = ${blockId}`;
           }
@@ -251,8 +238,31 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
             return ethUsdPrice[0];
           });
         },
+
+        findLatest() {
+          return startBlockModelFnSpan("findLatest", () => {
+            return prisma.block.findFirst({
+              where: {
+                transactionForks: {
+                  none: {},
+                },
+              },
+              orderBy: { number: "desc" },
+            });
+          });
+        },
       },
       transaction: {
+        async findEthUsdPrice(txHash: string) {
+          const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
+              SELECT p.id, p.price, p.timestamp
+              FROM transaction tx join eth_usd_price p on DATE_TRUNC('minute', tx.block_timestamp) = p.timestamp
+              WHERE tx.hash = ${txHash}
+            `;
+
+          return ethUsdPrice[0];
+        },
+
         upsertMany(transactions: WithoutTimestampFields<Transaction>[]) {
           if (!transactions.length) {
             return (
