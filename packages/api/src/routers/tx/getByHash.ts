@@ -36,10 +36,13 @@ export const getByHash = publicProcedure
   .use(withExpands)
   .output(outputSchema)
   .query(async ({ ctx: { expands, prisma }, input: { hash } }) => {
-    const prismaTx = (await prisma.transaction.findUnique({
-      select: createTransactionSelect(expands),
-      where: { hash },
-    })) as unknown as CompletePrismaTransaction | null;
+    const [prismaTx, ethUsdPrice] = await Promise.all([
+      prisma.transaction.findUnique({
+        select: createTransactionSelect(expands),
+        where: { hash },
+      }) as unknown as Promise<CompletePrismaTransaction | null>,
+      prisma.transaction.findEthUsdPrice(hash),
+    ]);
 
     if (!prismaTx) {
       throw new TRPCError({
@@ -47,6 +50,8 @@ export const getByHash = publicProcedure
         message: `No transaction with hash '${hash}'.`,
       });
     }
+
+    prismaTx.ethUsdPrice = ethUsdPrice;
 
     return toResponseTransaction(prismaTx);
   });

@@ -4,10 +4,14 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -26,6 +30,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -35,10 +40,14 @@ exports[`Transaction router > getAll > when getting expanded transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -98,6 +107,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -112,10 +122,14 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -125,7 +139,10 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 108,
@@ -135,6 +152,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -144,10 +162,14 @@ exports[`Transaction router > getAll > when getting expanded transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -192,7 +214,10 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 107,
@@ -202,6 +227,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -216,10 +242,14 @@ exports[`Transaction router > getAll > when getting expanded transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -232,7 +262,10 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 108,
@@ -242,6 +275,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -251,10 +285,14 @@ exports[`Transaction router > getAll > when getting expanded transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -308,7 +346,10 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     ],
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 107,
@@ -318,6 +359,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -332,10 +374,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -374,6 +420,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
@@ -383,10 +430,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1200n,
     "blobGasBaseFee": 5767168n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 31457280n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 262144n,
     "blobs": [
       {
@@ -420,6 +471,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -429,10 +481,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1100n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 14417920n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -457,6 +513,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -466,10 +523,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -516,6 +577,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -530,10 +592,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -549,6 +615,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -558,10 +625,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -612,6 +683,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -621,10 +693,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -649,6 +725,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
@@ -663,10 +740,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -713,6 +794,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -722,10 +804,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1100n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 14417920n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -750,6 +836,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -759,10 +846,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1200n,
     "blobGasBaseFee": 5767168n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 31457280n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 262144n,
     "blobs": [
       {
@@ -796,6 +887,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -810,10 +902,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -864,6 +960,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -873,10 +970,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 7864320n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 20n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -927,6 +1028,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
@@ -936,10 +1038,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -964,6 +1070,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -973,10 +1080,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1200n,
     "blobGasBaseFee": 5767168n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 31457280n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 262144n,
     "blobs": [
       {
@@ -1010,6 +1121,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -1024,10 +1136,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 1866000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 15550n,
     "blobGasBaseFee": 5767168n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 148373504n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 262144n,
     "blobs": [
       {
@@ -1048,6 +1164,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T15:50:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "index": 0,
@@ -1062,10 +1179,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1090,6 +1211,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
@@ -1099,10 +1221,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2621440n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 20n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1127,6 +1253,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "txHash013",
     "index": 1,
@@ -1136,10 +1263,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 7864320n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 20n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1190,6 +1321,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
@@ -1199,10 +1331,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1223,6 +1359,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
@@ -1232,10 +1369,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1260,6 +1401,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash010",
     "index": 3,
@@ -1269,10 +1411,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1297,6 +1443,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "txHash009",
     "index": 2,
@@ -1306,10 +1453,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1330,6 +1481,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
@@ -1339,10 +1491,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1367,6 +1523,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -1381,10 +1538,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1405,6 +1566,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
@@ -1414,10 +1576,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1442,6 +1608,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash010",
     "index": 3,
@@ -1451,10 +1618,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1479,6 +1650,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "txHash009",
     "index": 2,
@@ -1488,10 +1660,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1512,6 +1688,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0xc1b634853cb333d3ad8663715b08f41a3aec47cc",
     "hash": "txHash008",
     "index": 1,
@@ -1521,10 +1698,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1549,6 +1730,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -1558,10 +1740,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1612,6 +1798,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash006",
     "index": 1,
@@ -1621,10 +1808,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1667,6 +1858,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-03T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash005",
     "index": 0,
@@ -1681,10 +1873,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -1709,6 +1905,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash007",
     "index": 0,
@@ -1718,10 +1915,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1768,6 +1969,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -1782,10 +1984,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1832,6 +2038,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -1846,10 +2053,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1896,6 +2107,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -1910,10 +2122,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -1952,6 +2168,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-05-10T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash004",
     "index": 0,
@@ -1961,10 +2178,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1200n,
     "blobGasBaseFee": 5767168n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 31457280n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 262144n,
     "blobs": [
       {
@@ -1998,6 +2219,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -2007,10 +2229,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1100n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 14417920n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2035,6 +2261,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -2044,10 +2271,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2094,6 +2325,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -2108,10 +2340,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 14400n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1200n,
     "blobGasBaseFee": 5767168n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 31457280n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 262144n,
     "blobs": [
       {
@@ -2145,6 +2381,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash003",
     "index": 2,
@@ -2154,10 +2391,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 12100n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1100n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 14417920n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2182,6 +2423,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address3",
     "hash": "txHash002",
     "index": 1,
@@ -2191,10 +2433,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2241,6 +2487,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2022-10-16T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address1",
     "hash": "txHash001",
     "index": 0,
@@ -2255,10 +2502,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2274,6 +2525,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2283,10 +2535,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2337,6 +2593,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2351,10 +2608,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2370,6 +2631,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2379,10 +2641,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2433,6 +2699,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2442,10 +2709,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2470,6 +2741,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T12:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address5",
     "hash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "index": 0,
@@ -2484,10 +2756,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2503,6 +2779,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2512,10 +2789,14 @@ exports[`Transaction router > getAll > when getting filtered transaction results
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2566,6 +2847,7 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2580,10 +2862,14 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2599,6 +2885,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "category": "other",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "address2",
     "hash": "txHash016",
     "index": 0,
@@ -2608,10 +2895,14 @@ exports[`Transaction router > getAll > when getting paginated transaction result
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 8650752n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2662,6 +2953,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-31T14:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash015",
     "index": 0,
@@ -2676,10 +2968,14 @@ exports[`Transaction router > getAll > when getting paginated transaction result
 [
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 7864320n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 39321600n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 20n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 393216n,
     "blobs": [
       {
@@ -2730,6 +3026,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-28T10:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
     "hash": "txHash012",
     "index": 0,
@@ -2739,10 +3036,14 @@ exports[`Transaction router > getAll > when getting paginated transaction result
   },
   {
     "blobAsCalldataGasFee": 10000n,
+    "blobAsCalldataGasUsdFee": undefined,
     "blobAsCalldataGasUsed": 1000n,
     "blobGasBaseFee": 2883584n,
+    "blobGasBaseUsdFee": undefined,
     "blobGasMaxFee": 13107200n,
+    "blobGasMaxUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 131072n,
     "blobs": [
       {
@@ -2763,6 +3064,7 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blockTimestamp": 2023-08-20T12:00:00.000Z,
     "category": "rollup",
     "decodedFields": null,
+    "ethUsdPrice": undefined,
     "from": "0x5050f69a9786f081509234f1a7f4684b5e5b76c9",
     "hash": "txHash011",
     "index": 4,
@@ -2780,10 +3082,14 @@ exports[`Transaction router > getByHash > should fail when providing a non-exist
 exports[`Transaction router > getByHash > should get a transaction by hash correctly 1`] = `
 {
   "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsdFee": undefined,
   "blobAsCalldataGasUsed": 1000n,
   "blobGasBaseFee": 8650752n,
+  "blobGasBaseUsdFee": undefined,
   "blobGasMaxFee": 39321600n,
+  "blobGasMaxUsdFee": undefined,
   "blobGasPrice": 22n,
+  "blobGasUsdPrice": undefined,
   "blobGasUsed": 393216n,
   "blobs": [
     {
@@ -2830,6 +3136,7 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
@@ -2842,10 +3149,14 @@ exports[`Transaction router > getByHash > should get a transaction by hash corre
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded blob 1`] = `
 {
   "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsdFee": undefined,
   "blobAsCalldataGasUsed": 1000n,
   "blobGasBaseFee": 8650752n,
+  "blobGasBaseUsdFee": undefined,
   "blobGasMaxFee": 39321600n,
+  "blobGasMaxUsdFee": undefined,
   "blobGasPrice": 22n,
+  "blobGasUsdPrice": undefined,
   "blobGasUsed": 393216n,
   "blobs": [
     {
@@ -2901,6 +3212,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
@@ -2913,10 +3225,14 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded block 1`] = `
 {
   "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsdFee": undefined,
   "blobAsCalldataGasUsed": 1000n,
   "blobGasBaseFee": 8650752n,
+  "blobGasBaseUsdFee": undefined,
   "blobGasMaxFee": 39321600n,
+  "blobGasMaxUsdFee": undefined,
   "blobGasPrice": 22n,
+  "blobGasUsdPrice": undefined,
   "blobGasUsed": 393216n,
   "blobs": [
     {
@@ -2957,7 +3273,10 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   ],
   "block": {
     "blobAsCalldataGasUsed": 2042780n,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
     "excessBlobGas": 15000n,
     "slot": 101,
@@ -2967,6 +3286,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,
@@ -2979,10 +3299,14 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
 exports[`Transaction router > getByHash > when getting expanded transaction results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
   "blobAsCalldataGasFee": 10000n,
+  "blobAsCalldataGasUsdFee": undefined,
   "blobAsCalldataGasUsed": 1000n,
   "blobGasBaseFee": 8650752n,
+  "blobGasBaseUsdFee": undefined,
   "blobGasMaxFee": 39321600n,
+  "blobGasMaxUsdFee": undefined,
   "blobGasPrice": 22n,
+  "blobGasUsdPrice": undefined,
   "blobGasUsed": 393216n,
   "blobs": [
     {
@@ -3032,7 +3356,10 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   ],
   "block": {
     "blobAsCalldataGasUsed": 2042780n,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
+    "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
     "excessBlobGas": 15000n,
     "slot": 101,
@@ -3042,6 +3369,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
   "blockTimestamp": 2022-10-16T12:00:00.000Z,
   "category": "other",
   "decodedFields": null,
+  "ethUsdPrice": undefined,
   "from": "address1",
   "hash": "txHash001",
   "index": 0,

@@ -1,4 +1,5 @@
-import type { Prisma } from "@blobscan/db";
+import type { EthUsdPrice, Prisma } from "@blobscan/db";
+import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -8,6 +9,7 @@ import type {
 } from "../../middlewares/withExpands";
 import type { Prettify } from "../../types";
 import {
+  deriveBlockFields,
   deriveTransactionFields,
   normalizeDataStorageReferences,
   normalizePrismaBlobFields,
@@ -68,6 +70,8 @@ export type CompletePrismaTransaction = Prettify<
         } & Partial<ExpandedBlob>;
       }
     >[];
+  } & {
+    ethUsdPrice?: EthUsdPrice;
   }
 >;
 export function createTransactionSelect(expands: Expands) {
@@ -119,6 +123,7 @@ export const responseTransactionSchema = baseTransactionSchema.extend({
       blobGasPrice: true,
     }),
   blobs: z.array(baseBlobSchema.partial().required({ versionedHash: true })),
+  ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
 });
 
 export type ResponseTransaction = z.input<typeof responseTransactionSchema>;
@@ -128,7 +133,14 @@ export function toResponseTransaction(
 ): ResponseTransaction {
   const { blobs: blobsOnTxs, block } = prismaTx;
   const normalizedFields = normalizePrismaTransactionFields(prismaTx);
-  const derivedFields = deriveTransactionFields({
+  const derivedBlockFields = block.blobGasUsed
+    ? deriveBlockFields({
+        ethUsdPrice: prismaTx.ethUsdPrice,
+        blobGasPrice: block.blobGasPrice,
+        blobGasUsed: block.blobGasUsed,
+      })
+    : undefined;
+  const derivedTxFields = deriveTransactionFields({
     ...prismaTx,
     blobGasPrice: block.blobGasPrice,
   });
@@ -150,8 +162,13 @@ export function toResponseTransaction(
 
   return {
     ...prismaTx,
+    block: {
+      ...prismaTx.block,
+      ...(derivedBlockFields ?? {}),
+    },
     ...normalizedFields,
-    ...derivedFields,
+    ...derivedTxFields,
     blobs,
+    ethUsdPrice: prismaTx.ethUsdPrice?.price.toNumber(),
   };
 }

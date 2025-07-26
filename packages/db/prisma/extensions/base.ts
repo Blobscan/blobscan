@@ -6,11 +6,18 @@ import type {
   BlobsOnTransactions,
   PrismaPromise,
   Transaction,
+  EthUsdPrice,
 } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { WithoutTimestampFields } from "../types";
+import {
+  blobCommitmentSchema,
+  blobVersionedHashSchema,
+  blockHashSchema,
+  blockNumberSchema,
+} from "../zod-utils";
 
 const NOW_SQL = Prisma.sql`NOW()`;
 
@@ -83,6 +90,30 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       blob: {
+        findEthUsdPrices(blobId: string) {
+          let whereClause: Prisma.Sql;
+          const isCommitment = blobCommitmentSchema.safeParse(blobId);
+          const isVersionedHash = blobVersionedHashSchema.safeParse(blobId);
+
+          if (!isCommitment || !isVersionedHash) {
+            throw new Error(
+              `Couldn't retrieve ETH/USD price for blob: id "${blobId}" is not a valid versioned hash nor commitment.`
+            );
+          }
+
+          if (isCommitment) {
+            whereClause = Prisma.sql`b.versioned_hash = ${blobId}`;
+          } else {
+            whereClause = Prisma.sql`b.commitment = ${blobId}`;
+          }
+
+          return prisma.$queryRaw<EthUsdPrice[]>`
+            SELECT p.id, p.price, p.timestamp
+            FROM blob b join blobs_on_transactions btx on b.versioned_hash = btx.blob_hash join eth_usd_price p on DATE_TRUNC('minute', btx.block_timestamp) = p.timestamp
+            WHERE ${whereClause}
+            ORDER BY btx.block_timestamp DESC
+          `;
+        },
         upsertMany(blobs: WithoutTimestampFields<Blob>[]) {
           if (!blobs.length) {
             return (
@@ -207,6 +238,36 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       block: {
+        findEthUsdPrice(blockId: string | number) {
+          let whereClause: Prisma.Sql;
+          const isBlockNumber =
+            !blockId.toString().startsWith("0x") &&
+            blockNumberSchema.safeParse(blockId).success;
+          const isBlockHash = blockHashSchema.safeParse(blockId).success;
+
+          if (!isBlockHash && !isBlockNumber) {
+            throw new Error(
+              `Couldn't retrieve ETH/USD price for block: id "${blockId}" is invalid`
+            );
+          }
+
+          if (isBlockHash) {
+            whereClause = Prisma.sql`b.hash = ${blockId}`;
+          } else {
+            whereClause = Prisma.sql`b.number = ${blockId}`;
+          }
+
+          return startBlockModelFnSpan("findEthUsdPrice", async () => {
+            const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
+              SELECT p.id, p.price, p.timestamp
+              FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
+              WHERE ${whereClause}
+            `;
+
+            return ethUsdPrice[0];
+          });
+        },
+
         findLatest() {
           return startBlockModelFnSpan("findLatest", () => {
             return prisma.block.findFirst({
@@ -221,6 +282,16 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       transaction: {
+        async findEthUsdPrice(txHash: string) {
+          const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
+              SELECT p.id, p.price, p.timestamp
+              FROM transaction tx join eth_usd_price p on DATE_TRUNC('minute', tx.block_timestamp) = p.timestamp
+              WHERE tx.hash = ${txHash}
+            `;
+
+          return ethUsdPrice[0];
+        },
+
         upsertMany(transactions: WithoutTimestampFields<Transaction>[]) {
           if (!transactions.length) {
             return (

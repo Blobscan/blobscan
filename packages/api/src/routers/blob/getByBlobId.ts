@@ -38,13 +38,17 @@ export const getByBlobId = publicProcedure
   .output(outputSchema)
   .query(async ({ ctx: { prisma, expands }, input }) => {
     const { id } = input;
+    const isExpandEnabled = !!expands.block || !!expands.transaction;
 
-    const prismaBlob = (await prisma.blob.findFirst({
-      select: createBlobSelect(expands),
-      where: {
-        OR: [{ versionedHash: id }, { commitment: id }],
-      },
-    })) as unknown as CompletePrismaBlob | null;
+    const [prismaBlob, ethUsdPrices] = await Promise.all([
+      prisma.blob.findFirst({
+        select: createBlobSelect(expands),
+        where: {
+          OR: [{ versionedHash: id }, { commitment: id }],
+        },
+      }) as unknown as Promise<CompletePrismaBlob | null>,
+      isExpandEnabled ? prisma.blob.findEthUsdPrices(id) : Promise.resolve([]),
+    ]);
 
     if (!prismaBlob) {
       throw new TRPCError({
@@ -52,6 +56,10 @@ export const getByBlobId = publicProcedure
         message: `No blob with versioned hash or kzg commitment '${id}'.`,
       });
     }
+
+    prismaBlob.transactions.forEach((bTx, i) => {
+      bTx.ethUsdPrice = ethUsdPrices[i];
+    });
 
     return toResponseBlob(prismaBlob);
   });

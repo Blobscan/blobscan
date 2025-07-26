@@ -8,7 +8,8 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { EtherDisplay } from "~/components/Displays/EtherDisplay";
+import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -49,7 +50,6 @@ const Block: NextPage = function () {
   const { env } = useEnv();
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "sm";
-  console.log(breakpoint);
   const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
 
   if (error) {
@@ -178,14 +178,8 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Gas Price",
-        helpText:
-          "The cost per unit of blob gas used by the blobs in this block.",
-        value: <EtherWithGweiDisplay amount={blockData.blobGasPrice} />,
-      },
-      {
         name: "Blob Gas Used",
-        helpText: `The total blob gas used by the blobs in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
+        helpText: `The total blob gas used by transactions in this block, along with its percentage relative to both the total blob gas limit and the blob gas target (${
           targetBlobGasPerBlock / BigInt(1024)
         } KB).`,
         value: (
@@ -193,6 +187,46 @@ const Block: NextPage = function () {
             networkBlobConfig={networkBlobConfig}
             blobGasUsed={blockData.blobGasUsed}
             compact={isCompact}
+          />
+        ),
+      },
+      {
+        name: "Excess Blob Gas",
+        helpText:
+          "The total amount of blob gas consumed in excess of the target, prior to the current block",
+        value: (
+          <div>
+            {blockData.excessBlobGas.toString()}
+            <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({formatNumber(Number(blockData.excessBlobGas) / blobSize)}{" "}
+              {pluralize("blob", Number(blockData.excessBlobGas) / blobSize)})
+            </span>
+          </div>
+        ),
+      },
+      {
+        name: "Blob Gas Price",
+        helpText:
+          "The cost per unit of blob gas used by the blobs in this block.",
+        value: (
+          <EtherDisplay
+            weiAmount={blockData.blobGasPrice}
+            usdAmount={blockData.blobGasUsdPrice}
+            opts={{
+              toUnit: "Gwei",
+            }}
+          />
+        ),
+      },
+
+      {
+        name: "Blob Base Fees",
+        helpText:
+          "The total blob gas base fees spent on all transactions included in this block.",
+        value: (
+          <EtherDisplay
+            weiAmount={blockData.blobBaseFee}
+            usdAmount={blockData.blobBaseUsdFee}
           />
         ),
       },
@@ -234,6 +268,15 @@ const Block: NextPage = function () {
         ),
       },
     ];
+
+    if (blockData.ethUsdPrice) {
+      detailsFields.push({
+        name: "ETH Price",
+        helpText:
+          "The price of 1 ETH in USD at the time this block was produced.",
+        value: <FiatDisplay amount={blockData.ethUsdPrice} />,
+      });
+    }
   }
 
   return (

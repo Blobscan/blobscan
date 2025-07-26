@@ -46,6 +46,12 @@ export function formatFiat(
   }).format(Number(value));
 }
 
+export function formatEthFiatPrice(value: string | number) {
+  return formatFiat(value, {
+    maximumFractionDigits: 20,
+  });
+}
+
 export function formatNumber(
   x: Numerish,
   mode: "compact" | "standard" = "standard",

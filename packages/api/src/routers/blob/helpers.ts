@@ -1,4 +1,5 @@
-import type { Prisma } from "@blobscan/db";
+import type { EthUsdPrice, Prisma } from "@blobscan/db";
+import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -10,6 +11,7 @@ import type {
 import type { Prettify } from "../../types";
 import { isFullyDefined } from "../../utils";
 import {
+  deriveBlockFields,
   deriveTransactionFields,
   normalizePrismaBlobFields,
   normalizePrismaTransactionFields,
@@ -69,7 +71,7 @@ export type CompletePrismaBlob = Prettify<
         transaction?: ExpandedTransaction & {
           block: { blobGasPrice: ExpandedBlock["blobGasPrice"] };
         };
-      }
+      } & { ethUsdPrice?: EthUsdPrice }
     >[];
   }
 >;
@@ -176,6 +178,7 @@ export const responseBlobSchema = baseBlobSchema.extend({
             timestamp: true,
           })
           .optional(),
+        ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
       })
   ),
 });
@@ -208,7 +211,7 @@ export type ResponseBlobOnTransaction = z.input<
 export function toResponseBlob(prismaBlob: CompletePrismaBlob): ResponseBlob {
   const normalizedPrismaBlob = normalizePrismaBlobFields(prismaBlob);
   const transactions = prismaBlob.transactions.map(
-    ({ block, transaction: prismaTx = {}, ...restBlobOnTx }) => {
+    ({ block, transaction: prismaTx = {}, ethUsdPrice, ...restBlobOnTx }) => {
       const { block: prismaTxBlock, index: _, ...restPrismaTx } = prismaTx;
 
       return {
@@ -220,10 +223,23 @@ export function toResponseBlob(prismaBlob: CompletePrismaBlob): ResponseBlob {
               ...deriveTransactionFields({
                 ...restPrismaTx,
                 blobGasPrice: prismaTxBlock.blobGasPrice,
+                ethUsdPrice,
               }),
             }
           : {}),
-        ...(block ? { block } : {}),
+        ...(block
+          ? {
+              block: {
+                ...block,
+                ...deriveBlockFields({
+                  blobGasPrice: block.blobGasPrice,
+                  blobGasUsed: block.blobGasUsed,
+                  ethUsdPrice,
+                }),
+              },
+            }
+          : {}),
+        ethUsdPrice: ethUsdPrice?.price.toNumber(),
       };
     }
   );
@@ -238,6 +254,7 @@ export function toResponseBlobOnTransaction({
   blobHash,
   blob,
   transaction,
+  block,
   ...restBlobOnTransaction
 }: CompletePrismaBlobOnTransaction): ResponseBlobOnTransaction {
   const normalizedPrismaBlob = normalizePrismaBlobFields({
@@ -256,10 +273,17 @@ export function toResponseBlobOnTransaction({
         },
       }
     : {};
+  const expandedBlock = block
+    ? {
+        ...block,
+        ...deriveBlockFields(block),
+      }
+    : undefined;
 
   return {
     ...restBlobOnTransaction,
     ...normalizedPrismaBlob,
     ...transformedTransaction,
+    ...(expandedBlock ? { block: expandedBlock } : {}),
   };
 }
