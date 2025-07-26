@@ -24,6 +24,7 @@ import {
   formatBytes,
   formatNumber,
   performDiv,
+  pluralize,
 } from "~/utils";
 
 const Tx: NextPage = () => {
@@ -146,7 +147,14 @@ const Tx: NextPage = () => {
     detailsFields.push(
       {
         name: "Total Blob Size",
-        value: formatBytes(totalBlobSize),
+        value: (
+          <span>
+            {formatBytes(totalBlobSize)}{" "}
+            <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+              ({blobs.length} {pluralize("blob", blobs.length)})
+            </span>
+          </span>
+        ),
       },
       {
         name: "Blob Gas Price",
