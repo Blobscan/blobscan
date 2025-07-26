@@ -1,5 +1,11 @@
 # @blobscan/db
 
+## 0.19.0
+
+### Minor Changes
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a new method to block and tx model to retrieve the eth usd price for a given block id or tx hash
+
 ## 0.18.1
 
 ### Patch Changes
