@@ -9,8 +9,8 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
-      "blobBaseFees": 121000000n,
-      "blobBaseUsdFees": undefined,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
       "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
@@ -32,8 +32,8 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
-      "blobBaseFees": 121000000n,
-      "blobBaseUsdFees": undefined,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
       "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
@@ -69,8 +69,8 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
-      "blobBaseFees": 121000000n,
-      "blobBaseUsdFees": undefined,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
       "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
@@ -111,8 +111,8 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
-      "blobBaseFees": 121000000n,
-      "blobBaseUsdFees": undefined,
+      "blobBaseFee": 121000000n,
+      "blobBaseUsdFee": undefined,
       "blobGasPrice": 22n,
       "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,

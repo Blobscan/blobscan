@@ -4,8 +4,8 @@ exports[`Block router > getAll > when getting expanded block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -32,8 +32,8 @@ exports[`Block router > getAll > when getting expanded block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -106,8 +106,8 @@ exports[`Block router > getAll > when getting expanded block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -151,8 +151,8 @@ exports[`Block router > getAll > when getting expanded block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -242,8 +242,8 @@ exports[`Block router > getAll > when getting expanded block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -284,8 +284,8 @@ exports[`Block router > getAll > when getting expanded block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -366,8 +366,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -414,8 +414,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -520,8 +520,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -545,8 +545,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -605,8 +605,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -644,8 +644,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -745,8 +745,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -793,8 +793,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -894,8 +894,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -954,8 +954,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 250000n,
-    "blobBaseFees": 100000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 100000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 20n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5000000n,
@@ -1014,8 +1014,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1048,8 +1048,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -1096,8 +1096,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 55000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 55000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 2500000n,
@@ -1131,8 +1131,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1165,8 +1165,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 250000n,
-    "blobBaseFees": 100000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 100000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 20n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5000000n,
@@ -1243,8 +1243,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1346,8 +1346,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1444,8 +1444,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1545,8 +1545,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1579,8 +1579,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -1640,8 +1640,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -1701,8 +1701,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -1762,8 +1762,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -1810,8 +1810,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -1916,8 +1916,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 2042780n,
-    "blobBaseFees": 17301504n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 17301504n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 786432n,
@@ -2022,8 +2022,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2047,8 +2047,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2112,8 +2112,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2137,8 +2137,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2197,8 +2197,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2236,8 +2236,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2261,8 +2261,8 @@ exports[`Block router > getAll > when getting filtered block results > should re
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2326,8 +2326,8 @@ exports[`Block router > getAll > when getting paginated block results > should d
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2351,8 +2351,8 @@ exports[`Block router > getAll > when getting paginated block results > should d
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2416,8 +2416,8 @@ exports[`Block router > getAll > when getting paginated block results > should r
 [
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2514,8 +2514,8 @@ exports[`Block router > getAll > when getting paginated block results > should r
   },
   {
     "blobAsCalldataGasUsed": 255000n,
-    "blobBaseFees": 121000000n,
-    "blobBaseUsdFees": undefined,
+    "blobBaseFee": 121000000n,
+    "blobBaseUsdFee": undefined,
     "blobGasPrice": 22n,
     "blobGasUsdPrice": undefined,
     "blobGasUsed": 5500000n,
@@ -2616,8 +2616,8 @@ exports[`Block router > getAll > when getting paginated block results > should r
 exports[`Block router > getByBlockId > should get a block by block number 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 121000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 121000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 5500000n,
@@ -2667,8 +2667,8 @@ exports[`Block router > getByBlockId > should get a block by block number 1`] = 
 exports[`Block router > getByBlockId > should get a block by hash 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 55000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 55000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 2500000n,
@@ -2700,8 +2700,8 @@ exports[`Block router > getByBlockId > should get a block by hash 1`] = `
 exports[`Block router > getByBlockId > should get a reorged block by block number 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 55000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 55000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 2500000n,
@@ -2733,8 +2733,8 @@ exports[`Block router > getByBlockId > should get a reorged block by block numbe
 exports[`Block router > getByBlockId > should get the canonical block when providing a block number matching a reorged block 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 121000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 121000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 5500000n,
@@ -2761,8 +2761,8 @@ exports[`Block router > getByBlockId > should get the canonical block when provi
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded blob 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 121000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 121000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 5500000n,
@@ -2821,8 +2821,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded results when multiple expands are requested 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 121000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 121000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 5500000n,
@@ -2898,8 +2898,8 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
 exports[`Block router > getByBlockId > when getting expanded block results > should return the correct expanded transaction 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,
-  "blobBaseFees": 121000000n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 121000000n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 5500000n,
@@ -3000,8 +3000,8 @@ exports[`Block router > getBySlot > should fail when trying to get a reorged blo
 exports[`Block router > getBySlot > should get a block by slot 1`] = `
 {
   "blobAsCalldataGasUsed": 2042780n,
-  "blobBaseFees": 17301504n,
-  "blobBaseUsdFees": undefined,
+  "blobBaseFee": 17301504n,
+  "blobBaseUsdFee": undefined,
   "blobGasPrice": 22n,
   "blobGasUsdPrice": undefined,
   "blobGasUsed": 786432n,

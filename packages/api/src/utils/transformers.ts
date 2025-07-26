@@ -55,13 +55,13 @@ export function deriveBlockFields({
 }): BlockDerivedFields {
   const price = ethUsdPrice?.price;
   const weiUsdPrice = price?.mul(ONE_ETH_IN_WEI);
-  const blobBaseFees = blobGasUsed.mul(blobGasPrice);
+  const blobBaseFee = blobGasUsed.mul(blobGasPrice);
   const blobGasUsdPrice = weiUsdPrice?.mul(blobGasPrice);
-  const blobBaseUsdFees = blobGasUsdPrice?.mul(blobBaseFees);
+  const blobBaseUsdFee = blobGasUsdPrice?.mul(blobBaseFee);
 
   return {
-    blobBaseFees: blobBaseFees,
-    blobBaseUsdFees: blobBaseUsdFees?.toFixed(),
+    blobBaseFee,
+    blobBaseUsdFee: blobBaseUsdFee?.toFixed(),
     blobGasUsdPrice: blobGasUsdPrice?.toFixed(),
   };
 }

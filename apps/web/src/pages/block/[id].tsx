@@ -225,8 +225,8 @@ const Block: NextPage = function () {
           "The total blob gas base fees spent on all transactions included in this block.",
         value: (
           <EtherDisplay
-            weiAmount={blockData.blobBaseFees}
-            usdAmount={blockData.blobBaseUsdFees}
+            weiAmount={blockData.blobBaseFee}
+            usdAmount={blockData.blobBaseUsdFee}
           />
         ),
       },

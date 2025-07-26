@@ -117,8 +117,8 @@ export const prismaBlockSchema = BlockModel.omit({
 });
 
 export const blockDerivedFieldsSchema = z.object({
-  blobBaseFees: decimalSchema,
-  blobBaseUsdFees: z.string().optional(),
+  blobBaseFee: decimalSchema,
+  blobBaseUsdFee: z.string().optional(),
   blobGasUsdPrice: z.string().optional(),
 });
 
