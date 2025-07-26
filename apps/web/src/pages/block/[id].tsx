@@ -49,7 +49,6 @@ const Block: NextPage = function () {
   const { env } = useEnv();
   const breakpoint = useBreakpoint();
   const isCompact = breakpoint === "sm";
-  console.log(breakpoint);
   const networkName = env ? env.PUBLIC_NETWORK_NAME : undefined;
 
   if (error) {
@@ -68,7 +67,6 @@ const Block: NextPage = function () {
   let detailsFields: DetailsLayoutProps["fields"] | undefined;
 
   if (blockData && env) {
-    console.log(blockData);
     const networkBlobConfig = getNetworkBlobConfigBySlot(
       env.PUBLIC_NETWORK_NAME,
       blockData.slot
