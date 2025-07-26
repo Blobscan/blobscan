@@ -1,4 +1,5 @@
 import type { EthUsdPrice, Prisma } from "@blobscan/db";
+import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -177,6 +178,7 @@ export const responseBlobSchema = baseBlobSchema.extend({
             timestamp: true,
           })
           .optional(),
+        ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
       })
   ),
 });
@@ -237,6 +239,7 @@ export function toResponseBlob(prismaBlob: CompletePrismaBlob): ResponseBlob {
               },
             }
           : {}),
+        ethUsdPrice: ethUsdPrice?.price.toNumber(),
       };
     }
   );
