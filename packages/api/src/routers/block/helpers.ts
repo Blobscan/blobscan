@@ -153,6 +153,7 @@ export function toResponseBlock(
             ...deriveTransactionFields({
               ...prismaTx,
               blobGasPrice,
+              ethUsdPrice,
             }),
           }
         : {}),
