@@ -8,12 +8,11 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { EtherDisplay } from "~/components/Displays/EtherWithGweiDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
-import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -23,8 +22,6 @@ import { useEnv } from "~/providers/Env";
 import type { BlockWithExpandedBlobsAndTransactions } from "~/types";
 import {
   formatBytes,
-  formatEthFiatPrice,
-  formatFiat,
   formatNumber,
   formatTimestamp,
   performDiv,
@@ -213,9 +210,12 @@ const Block: NextPage = function () {
         helpText:
           "The cost per unit of blob gas used by the blobs in this block.",
         value: (
-          <EtherWithGweiDisplay
-            amount={blockData.blobGasPrice}
+          <EtherDisplay
+            weiAmount={blockData.blobGasPrice}
             usdAmount={blockData.blobGasUsdPrice}
+            opts={{
+              toUnit: "Gwei",
+            }}
           />
         ),
       },
@@ -225,8 +225,8 @@ const Block: NextPage = function () {
         helpText:
           "The total blob gas base fees spent on all transactions included in this block.",
         value: (
-          <EtherWithGweiDisplay
-            amount={blockData.blobBaseFees}
+          <EtherDisplay
+            weiAmount={blockData.blobBaseFees}
             usdAmount={blockData.blobBaseUsdFees}
           />
         ),

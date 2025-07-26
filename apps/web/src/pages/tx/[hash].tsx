@@ -6,7 +6,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
-import { EtherWithGweiDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { EtherDisplay } from "~/components/Displays/EtherWithGweiDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -149,9 +149,12 @@ const Tx: NextPage = () => {
       {
         name: "Blob Gas Price",
         value: (
-          <EtherWithGweiDisplay
-            amount={block.blobGasPrice}
+          <EtherDisplay
+            weiAmount={block.blobGasPrice}
             usdAmount={blobGasUsdPrice}
+            opts={{
+              toUnit: "Gwei",
+            }}
           />
         ),
       },
@@ -164,8 +167,8 @@ const Tx: NextPage = () => {
                 <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                   Base:
                 </div>
-                <EtherWithGweiDisplay
-                  amount={blobGasBaseFee}
+                <EtherDisplay
+                  weiAmount={blobGasBaseFee}
                   usdAmount={blobGasBaseUsdFee}
                 />
               </div>
@@ -174,8 +177,8 @@ const Tx: NextPage = () => {
               <div className="mr-1 text-contentSecondary-light dark:text-contentSecondary-dark">
                 Max:
               </div>
-              <EtherWithGweiDisplay
-                amount={blobGasMaxFee}
+              <EtherDisplay
+                weiAmount={blobGasMaxFee}
                 usdAmount={blobGasMaxUsdFee}
               />
             </div>
@@ -211,7 +214,7 @@ const Tx: NextPage = () => {
         name: "Blob As Calldata Gas Fee",
         value: (
           <div className="display flex gap-1">
-            {<EtherWithGweiDisplay amount={blobAsCalldataGasFee} />}
+            {<EtherDisplay weiAmount={blobAsCalldataGasFee} />}
             <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
               <Separator />
               <strong>
