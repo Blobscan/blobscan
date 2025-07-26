@@ -9,6 +9,7 @@ import { convertWei, prettyFormatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
 import { api } from "~/api-client";
+import BlobIcon from "~/icons/blob.svg";
 import EthereumIcon from "~/icons/ethereum.svg";
 import GasIcon from "~/icons/gas.svg";
 import { useEnv } from "~/providers/Env";
@@ -148,6 +149,7 @@ export function NetworkIndicators() {
         },
         {
           name: "Blob Price",
+          icon: <Icon src={BlobIcon} />,
           value: blobPrice && (
             <span>
               {prettyFormatWei(blobPrice, {
