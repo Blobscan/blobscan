@@ -9,7 +9,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFees": 121000000n,
+      "blobBaseUsdFees": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 108,
@@ -29,7 +32,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFees": 121000000n,
+      "blobBaseUsdFees": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 107,
@@ -63,7 +69,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFees": 121000000n,
+      "blobBaseUsdFees": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 108,
@@ -78,10 +87,14 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1500,
     "transaction": {
       "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsdFee": undefined,
       "blobAsCalldataGasUsed": 1000n,
       "blobGasBaseFee": 2883584n,
+      "blobGasBaseUsdFee": undefined,
       "blobGasMaxFee": 13107200n,
+      "blobGasMaxUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 131072n,
       "category": "other",
       "decodedFields": null,
@@ -98,7 +111,10 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
   {
     "block": {
       "blobAsCalldataGasUsed": 255000n,
+      "blobBaseFees": 121000000n,
+      "blobBaseUsdFees": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 5500000n,
       "excessBlobGas": 15000n,
       "slot": 107,
@@ -122,10 +138,14 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1300,
     "transaction": {
       "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsdFee": undefined,
       "blobAsCalldataGasUsed": 1000n,
       "blobGasBaseFee": 8650752n,
+      "blobGasBaseUsdFee": undefined,
       "blobGasMaxFee": 39321600n,
+      "blobGasMaxUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 393216n,
       "category": "rollup",
       "decodedFields": null,
@@ -155,10 +175,14 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1500,
     "transaction": {
       "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsdFee": undefined,
       "blobAsCalldataGasUsed": 1000n,
       "blobGasBaseFee": 2883584n,
+      "blobGasBaseUsdFee": undefined,
       "blobGasMaxFee": 13107200n,
+      "blobGasMaxUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 131072n,
       "category": "other",
       "decodedFields": null,
@@ -192,10 +216,14 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1300,
     "transaction": {
       "blobAsCalldataGasFee": 10000n,
+      "blobAsCalldataGasUsdFee": undefined,
       "blobAsCalldataGasUsed": 1000n,
       "blobGasBaseFee": 8650752n,
+      "blobGasBaseUsdFee": undefined,
       "blobGasMaxFee": 39321600n,
+      "blobGasMaxUsdFee": undefined,
       "blobGasPrice": 22n,
+      "blobGasUsdPrice": undefined,
       "blobGasUsed": 393216n,
       "category": "rollup",
       "decodedFields": null,

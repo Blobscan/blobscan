@@ -950,6 +950,7 @@
       "index": 0
     }
   ],
+  "ethUsdPrices": [],
   "transactionForks": [
     {
       "hash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",

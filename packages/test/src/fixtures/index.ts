@@ -28,6 +28,7 @@ export const fixtures = {
     insertedAt: "2022-10-16T12:10:00Z",
     updatedAt: "2022-10-16T12:10:00Z",
   })),
+  ethUsdPrices: POSTGRES_DATA.ethUsdPrices,
   txs: POSTGRES_DATA.txs,
   txForks: POSTGRES_DATA.transactionForks,
   blobs: POSTGRES_DATA.blobs,
@@ -197,7 +198,6 @@ export const fixtures = {
       prisma.block.deleteMany(),
       prisma.dailyStats.deleteMany(),
       prisma.overallStats.deleteMany(),
-
       prisma.ethUsdPrice.deleteMany(),
 
       prisma.blobStoragesState.createMany({
@@ -219,6 +219,9 @@ export const fixtures = {
       }),
       prisma.transactionFork.createMany({
         data: this.txForks,
+      }),
+      prisma.ethUsdPrice.createMany({
+        data: this.ethUsdPrices,
       }),
     ]);
   },
