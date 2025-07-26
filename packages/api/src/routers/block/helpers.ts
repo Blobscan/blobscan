@@ -1,4 +1,5 @@
 import type { BlobscanPrismaClient, EthUsdPrice, Prisma } from "@blobscan/db";
+import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -108,6 +109,7 @@ export function createBlockSelect(expands: Expands, filters?: Filters) {
 }
 
 export const responseBlockSchema = baseBlockSchema.extend({
+  ethUsdPrice: EthUsdPriceModel.shape.price.optional(),
   transactions: z.array(
     baseTransactionSchema
       .omit({
@@ -176,6 +178,7 @@ export function toResponseBlock(
     ...prismaBlock,
     ...(derivedBlockFields ?? {}),
     transactions,
+    ethUsdPrice: ethUsdPrice?.price.toNumber(),
   };
 }
 

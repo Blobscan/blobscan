@@ -6,7 +6,8 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
-import { EtherDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { EtherDisplay } from "~/components/Displays/EtherDisplay";
+import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -90,6 +91,7 @@ const Tx: NextPage = () => {
       blobGasMaxFee,
       blobGasMaxUsdFee,
       blobAsCalldataGasFee,
+      ethUsdPrice,
     } = tx;
 
     detailsFields = [
@@ -232,6 +234,13 @@ const Tx: NextPage = () => {
         ),
       }
     );
+
+    if (ethUsdPrice) {
+      detailsFields.push({
+        name: "ETH Price",
+        value: <FiatDisplay amount={ethUsdPrice} />,
+      });
+    }
   }
 
   return (

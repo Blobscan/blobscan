@@ -8,7 +8,8 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { EtherDisplay } from "~/components/Displays/EtherWithGweiDisplay";
+import { EtherDisplay } from "~/components/Displays/EtherDisplay";
+import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
@@ -267,6 +268,15 @@ const Block: NextPage = function () {
         ),
       },
     ];
+
+    if (blockData.ethUsdPrice) {
+      detailsFields.push({
+        name: "ETH Price",
+        helpText:
+          "The price of 1 ETH in USD at the time this block was produced.",
+        value: <FiatDisplay amount={blockData.ethUsdPrice} />,
+      });
+    }
   }
 
   return (
