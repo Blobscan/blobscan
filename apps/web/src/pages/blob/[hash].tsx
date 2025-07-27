@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import NextError from "~/pages/_error";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "@tanstack/react-query";
+import classNames from "classnames";
 
 import type { Decoder } from "@blobscan/blob-decoder";
 import dayjs from "@blobscan/dayjs";
@@ -23,10 +24,8 @@ import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
-import type { Rollup } from "~/types";
 import {
   buildBlockRoute,
   buildTransactionRoute,
@@ -133,19 +132,6 @@ const Blob: NextPage = function () {
   if (blob) {
     const isUnique = blob.transactions.length === 1;
 
-    const rollups = blob.transactions
-      .filter(({ rollup }) => !!rollup)
-      .map(({ rollup }) => rollup as Rollup);
-
-    if (rollups.length > 0) {
-      detailsFields.push({
-        name: "Rollup",
-        value: rollups.map((rollup) => (
-          <RollupBadge key={rollup} rollup={rollup} />
-        )),
-      });
-    }
-
     detailsFields.push({
       name: "Versioned Hash",
       value: (
@@ -166,7 +152,7 @@ const Blob: NextPage = function () {
     }
 
     if (isUnique && blob.transactions[0]) {
-      const { blockNumber, blockTimestamp, txHash, index } =
+      const { blockNumber, blockTimestamp, txHash, index, rollup } =
         blob.transactions[0];
 
       detailsFields.push(
@@ -198,12 +184,20 @@ const Blob: NextPage = function () {
               {formatTimestamp(blockTimestamp)}
             </div>
           ),
-        },
-        {
-          name: "Position In Transaction",
-          value: index,
         }
       );
+
+      if (rollup) {
+        detailsFields.push({
+          name: "Rollup",
+          value: <RollupBadge key={rollup} rollup={rollup} />,
+        });
+      }
+
+      detailsFields.push({
+        name: "Position In Transaction",
+        value: index,
+      });
     }
 
     detailsFields.push(
@@ -235,18 +229,20 @@ const Blob: NextPage = function () {
     }
 
     if (!isUnique) {
+      const rollupTxsExist = blob.transactions.find((tx) => !!tx.rollup);
+
       detailsFields.push({
         name: `Blocks And Transactions (${blob.transactions.length})`,
         value: (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6 md:gap-3">
             {blob.transactions.map(
-              ({ txHash, blockNumber, blockTimestamp }) => (
+              ({ txHash, blockNumber, blockTimestamp, rollup }) => (
                 <div
                   key={`${txHash}-${blockNumber}`}
-                  className="flex max-w-full items-center gap-1 truncate"
+                  className="flex-start flex max-w-full flex-col gap-1 2xl:flex-row 2xl:items-center"
                 >
-                  <div className="flex gap-2">
-                    <div className="flex items-center gap-1 truncate">
+                  <div className="flex w-[100px]">
+                    <div className="flex items-center gap-1">
                       <Link href={buildBlockRoute(blockNumber)}>
                         {blockNumber}
                       </Link>
@@ -256,8 +252,17 @@ const Blob: NextPage = function () {
                       />
                     </div>
                   </div>
-                  <div className="flex w-4/12 gap-2 md:w-4/12 md:max-w-full lg:w-auto">
-                    <Separator />
+                  <div
+                    className={classNames("flex w-full items-center gap-2 ", {
+                      "lg:w-[580px]": !rollupTxsExist,
+                      "lg:w-[600px]": rollupTxsExist,
+                    })}
+                  >
+                    {rollup ? (
+                      <RollupBadge rollup={rollup} compact />
+                    ) : rollupTxsExist ? (
+                      <div className="hidden size-4 md:block" />
+                    ) : null}
                     <div
                       className="flex items-center gap-1 truncate"
                       title={txHash}
@@ -269,16 +274,9 @@ const Blob: NextPage = function () {
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 truncate">
-                    <Separator />
-                    <div>
-                      {dayjs(blockTimestamp).format(
-                        breakpoint === "sm"
-                          ? "YY/MM/DD hh:mm:ss"
-                          : TIMESTAMP_FORMAT
-                      )}
-                    </div>
-                  </div>
+                  {dayjs(blockTimestamp).format(
+                    breakpoint === "sm" ? "YY/MM/DD hh:mm:ss" : TIMESTAMP_FORMAT
+                  )}
                 </div>
               )
             )}
