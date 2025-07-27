@@ -219,7 +219,7 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Storages",
         value: (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {blob.dataStorageReferences.map(({ storage, url }) => (
               <StorageBadge key={storage} storage={storage} url={url} />
             ))}
@@ -234,7 +234,7 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: `Blocks And Transactions (${blob.transactions.length})`,
         value: (
-          <div className="flex flex-col gap-6 md:gap-3">
+          <div className="flex flex-col gap-6 truncate md:gap-3">
             {blob.transactions.map(
               ({ txHash, blockNumber, blockTimestamp, rollup }) => (
                 <div
