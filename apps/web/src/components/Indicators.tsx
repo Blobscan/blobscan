@@ -42,10 +42,13 @@ export const IndicatorsStrip: FC<{ indicators: IndicatorProps[] }> = function ({
   indicators,
 }) {
   return (
-    <div className="flex w-full flex-row items-center justify-start gap-2 overflow-scroll align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:overflow-auto">
+    <div className="flex flex-col items-center justify-start gap-2 overflow-scroll align-middle text-xs text-contentSecondary-light dark:text-contentSecondary-dark sm:h-4 sm:overflow-auto md:flex-row">
       {indicators.map((props, i) => {
         return (
-          <div key={props.name} className="flex flex-row items-center gap-2">
+          <div
+            key={props.name}
+            className="flex flex-row flex-wrap items-center gap-2"
+          >
             <Indicator {...props} />
             <span className="flex">
               {i < indicators.length - 1 ? <Separator /> : ""}
