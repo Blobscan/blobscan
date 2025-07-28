@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -219,7 +219,7 @@ const Blob: NextPage = function () {
       detailsFields.push({
         name: "Storages",
         value: (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {blob.dataStorageReferences.map(({ storage, url }) => (
               <StorageBadge key={storage} storage={storage} url={url} />
             ))}

@@ -5,8 +5,8 @@ import { formatTtl } from "@blobscan/dates";
 
 import { api } from "~/api-client";
 import { formatNumber } from "~/utils";
-import type { IndicatorProps } from "../Indicators";
-import { IndicatorsStrip } from "../Indicators";
+import type { IndicatorProps } from "../Indicator";
+import { Indicator } from "../Indicator";
 
 export const SyncIndicators: FC = function () {
   const { data } = api.state.getAppState.useQuery(undefined, {
@@ -30,5 +30,11 @@ export const SyncIndicators: FC = function () {
     });
   }
 
-  return <IndicatorsStrip indicators={items} />;
+  return (
+    <div className="flex flex-col items-center gap-1 text-xs md:flex-row">
+      {items.map((i) => (
+        <Indicator key={i.name} {...i} />
+      ))}
+    </div>
+  );
 };
