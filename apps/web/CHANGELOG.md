@@ -1,5 +1,30 @@
 # @blobscan/web
 
+## 0.34.0
+
+### Minor Changes
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed ETH USD price on block and tx pages
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed excess blob gas field in block details page
+
+- [#855](https://github.com/Blobscan/blobscan/pull/855) [`09894b1`](https://github.com/Blobscan/blobscan/commit/09894b14a2ca326da41dca4eef9644c272169eed) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob icon to blob price indicator on top bar
+
+- [#859](https://github.com/Blobscan/blobscan/pull/859) [`50d4d9b`](https://github.com/Blobscan/blobscan/commit/50d4d9bb71ca1c8151a8ee37e4ca01e40b1b8733) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed Octant banner
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob gas price in usd and blob gas base fee fields in block details page
+
+### Patch Changes
+
+- [#857](https://github.com/Blobscan/blobscan/pull/857) [`ecfbe3b`](https://github.com/Blobscan/blobscan/commit/ecfbe3bfc9f049be854d0b8062773adef03b6232) Thanks [@PJColombo](https://github.com/PJColombo)! - Aligned block and transaction rows for blobs included in multiple transactions
+
+- [#857](https://github.com/Blobscan/blobscan/pull/857) [`ecfbe3b`](https://github.com/Blobscan/blobscan/commit/ecfbe3bfc9f049be854d0b8062773adef03b6232) Thanks [@PJColombo](https://github.com/PJColombo)! - Added compact rollup badges beside transaction hashes for multi-transaction blobs
+
+- Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b), [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b), [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
+  - @blobscan/db@0.19.0
+  - @blobscan/api@1.0.0
+  - @blobscan/rollups@1.0.0
+
 ## 0.33.0
 
 ### Minor Changes
