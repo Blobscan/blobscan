@@ -1,7 +1,3 @@
-import type { FC } from "react";
-import classNames from "classnames";
-
-import { Separator } from "./Separator";
 import { Skeleton } from "./Skeleton";
 
 export type IndicatorProps = {
