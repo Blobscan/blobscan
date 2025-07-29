@@ -1,6 +1,6 @@
 # @blobscan/api
 
-## 1.0.0
+## 0.26.0
 
 ### Minor Changes
 
@@ -12,8 +12,8 @@
 
 - Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
   - @blobscan/db@0.19.0
-  - @blobscan/blob-propagator@1.0.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/blob-propagator@0.4.1
+  - @blobscan/rollups@0.3.4
 
 ## 0.25.0
 

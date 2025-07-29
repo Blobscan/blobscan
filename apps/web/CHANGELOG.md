@@ -22,8 +22,8 @@
 
 - Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b), [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b), [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
   - @blobscan/db@0.19.0
-  - @blobscan/api@1.0.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/api@0.26.0
+  - @blobscan/rollups@0.3.4
 
 ## 0.33.0
 
