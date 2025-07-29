@@ -1,5 +1,20 @@
 # @blobscan/api
 
+## 0.26.0
+
+### Minor Changes
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob gas price in USD and blob base fee and fee in USD fields to block response
+
+- [#854](https://github.com/Blobscan/blobscan/pull/854) [`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob base and max USD fee fields to tx response
+
+### Patch Changes
+
+- Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
+  - @blobscan/db@0.19.0
+  - @blobscan/blob-propagator@0.4.1
+  - @blobscan/rollups@0.3.4
+
 ## 0.25.0
 
 ### Minor Changes

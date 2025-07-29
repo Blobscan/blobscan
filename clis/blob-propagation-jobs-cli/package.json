@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-propagation-jobs-cli",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "private": true,
   "description": "A CLI that facilitates the managing of blob propagation jobs",
   "main": "./src/index.ts",
@@ -17,9 +17,9 @@
     "with-env:test": "dotenv -e ../../.env.test --"
   },
   "dependencies": {
-    "@blobscan/blob-propagator": "workspace:^0.4.0",
+    "@blobscan/blob-propagator": "workspace:^0.4.1",
     "@blobscan/dayjs": "workspace:^0.1.0",
-    "@blobscan/db": "workspace:^0.18.1",
+    "@blobscan/db": "workspace:^0.19.0",
     "@blobscan/env": "workspace:^0.2.0",
     "@blobscan/zod": "workspace:^0.1.0",
     "bullmq": "^4.13.2",
