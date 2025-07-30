@@ -28,6 +28,7 @@ export const expandedBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
+  effectiveSize: true,
 } satisfies Prisma.BlobSelect;
 
 const expandedBlockSelect = {

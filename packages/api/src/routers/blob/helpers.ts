@@ -32,6 +32,7 @@ export const baseBlobSelect = {
   commitment: true,
   proof: true,
   size: true,
+  effectiveSize: true,
   versionedHash: true,
   dataStorageReferences: {
     select: dataStorageReferenceSelect,
