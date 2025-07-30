@@ -168,6 +168,7 @@ model Blob {
   versionedHash    String   @id @map("versioned_hash")
   commitment       String   @unique
   proof            String
+  effectiveSize    Int      @default(0) @map("effective_size")
   size             Int
   /// @zod.nonnegative()
   firstBlockNumber Int?     @map("first_block_number")
