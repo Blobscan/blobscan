@@ -56,7 +56,7 @@ export function getEIP2028CalldataGas(hexData: string) {
   return gasCost;
 }
 
-export function calculateBlobSize(blob: string) {
+export function calculateBlobBytesSize(blob: string) {
   // Remove 0x prefix
   const blobLength = blob.length - 2;
 
@@ -72,7 +72,7 @@ export function calculateBlobEffectiveSize(blob: string) {
     i--;
   }
 
-  const blobBytesSize = calculateBlobSize(blob);
+  const blobBytesSize = calculateBlobBytesSize(blob);
   const paddingBytes = trailingZeroes / 2;
 
   return blobBytesSize - paddingBytes;
@@ -184,7 +184,7 @@ export function createDBBlobs({
         versionedHash: blob.versionedHash,
         commitment: blob.commitment,
         proof: blob.proof,
-        size: calculateBlobSize(blob.data),
+        size: calculateBlobBytesSize(blob.data),
         effectiveSize: calculateBlobEffectiveSize(blob.data),
         firstBlockNumber: block.number,
       };
