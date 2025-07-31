@@ -214,7 +214,7 @@ const Blob: NextPage = function () {
       },
       { name: "Size", value: formatBytes(blob.size) },
       {
-        name: "Usage Size",
+        name: "Usage",
         value: (
           <div className="flex flex-col">
             <span className="text-sm">{formatBytes(blob.effectiveSize)} </span>

@@ -187,7 +187,7 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Usage Size",
+        name: "Blob Usage",
         helpText:
           "The actual amount of blob data in this block that contains meaningful, non-zero content.",
         value: (

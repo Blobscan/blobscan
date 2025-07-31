@@ -162,7 +162,7 @@ const Tx: NextPage = () => {
         ),
       },
       {
-        name: "Blob Usage Size",
+        name: "Blob Usage",
 
         value: (
           <div className="flex flex-col">
