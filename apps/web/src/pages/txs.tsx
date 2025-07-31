@@ -6,11 +6,14 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { BlobViewToggle } from "~/components/BlobViewToggle";
+import type { BlobView } from "~/components/BlobViewToggle";
 import { Copyable } from "~/components/Copyable";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { PercentageBar } from "~/components/PercentageBar";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/TimestampToggle";
@@ -28,6 +31,7 @@ import {
   formatTimestamp,
   shortenAddress,
   buildBlobRoute,
+  calculatePercentage,
 } from "~/utils";
 
 const Txs: NextPage = function () {
@@ -63,6 +67,7 @@ const Txs: NextPage = function () {
   const { totalTransactions } = countData || {};
   const error = txsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
+  const [blobView, setBlobView] = useState<BlobView>("usage");
   const transactionHeaders = [
     {
       cells: [
@@ -79,11 +84,12 @@ const Txs: NextPage = function () {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "w-[165px]",
+          className: timeFormat === "relative" ? "w-[130px]" : "w-[175px]",
         },
+        { item: "Blobs", className: "w-[70px]" },
         {
-          item: "Blobs",
-          className: "w-[65px]",
+          item: <BlobViewToggle view={blobView} onChange={setBlobView} />,
+          className: blobView === "size" ? "w-[90px]" : "w-[120px]",
         },
         {
           item: "From",
@@ -95,16 +101,16 @@ const Txs: NextPage = function () {
         },
 
         {
-          item: "Blob Base Fee",
-          className: "w-[172px]",
+          item: "Blob Base Fee (Gwei)",
+          className: "w-[140px]",
         },
         {
-          item: "Blob Max Fee",
-          className: "w-[162px]",
+          item: "Blob Max Fee (Gwei)",
+          className: "w-[140px]",
         },
         {
-          item: "Blob Gas Price",
-          className: "2xl:w-full w-[180px]",
+          item: "Blob Gas Price (Gwei)",
+          className: "2xl:w-full w-[140px]",
         },
       ],
     },
@@ -124,163 +130,229 @@ const Txs: NextPage = function () {
             blobGasMaxFee,
             block,
             blockTimestamp,
-          }) => ({
-            cells: [
-              {
-                item:
-                  category === "rollup" && rollup ? (
-                    <RollupBadge rollup={rollup} compact />
-                  ) : (
-                    <></>
+          }) => {
+            const blobSize = blobs.reduce((acc, { size }) => acc + size, 0);
+            const blobUsageSize = blobs.reduce(
+              (acc, { effectiveSize }) => acc + effectiveSize,
+              0
+            );
+            return {
+              cells: [
+                {
+                  item:
+                    category === "rollup" && rollup ? (
+                      <RollupBadge rollup={rollup} compact />
+                    ) : (
+                      <></>
+                    ),
+                },
+                {
+                  item: (
+                    <Copyable value={hash} tooltipText="Copy hash">
+                      <Link href={buildTransactionRoute(hash)}>
+                        {shortenAddress(hash)}
+                      </Link>
+                    </Copyable>
                   ),
-              },
-              {
-                item: (
-                  <Copyable value={hash} tooltipText="Copy hash">
-                    <Link href={buildTransactionRoute(hash)}>
-                      {shortenAddress(hash, 6)}
+                },
+                {
+                  item: (
+                    <Link href={buildBlockRoute(blockNumber)}>
+                      {blockNumber}
                     </Link>
-                  </Copyable>
-                ),
-              },
-              {
-                item: (
-                  <Link href={buildBlockRoute(blockNumber)}>{blockNumber}</Link>
-                ),
-              },
-              {
-                item:
-                  timeFormat === "relative"
-                    ? formatTimestamp(blockTimestamp, true)
-                    : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
-              },
-              {
-                item: blobs.length,
-              },
-              {
-                item: (
-                  <Copyable value={from} tooltipText="Copy the origin address">
-                    <Link href={buildAddressRoute(from)}>
-                      {shortenAddress(from, 6)}
-                    </Link>
-                  </Copyable>
-                ),
-              },
-              {
-                item: (
-                  <Copyable
-                    value={to}
-                    tooltipText="Copy the destination address"
-                  >
-                    <Link href={buildAddressRoute(to)}>
-                      {shortenAddress(to, 6)}
-                    </Link>
-                  </Copyable>
-                ),
-              },
-              {
-                item: (
-                  <div className="truncate">
-                    {formatWei(blobGasBaseFee, { toUnit: "Gwei" })}
-                  </div>
-                ),
-              },
-              {
-                item: (
-                  <div className="truncate">
-                    {formatWei(blobGasMaxFee, { toUnit: "Gwei" })}
-                  </div>
-                ),
-              },
-              {
-                item: (
-                  <div className="truncate">
-                    {formatWei(block.blobGasPrice, { toUnit: "Gwei" })}
-                  </div>
-                ),
-              },
-            ],
-            expandItem: (
-              <Table
-                className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
-                size="xs"
-                alignment="left"
-                headers={[
-                  {
-                    cells: [
-                      {
-                        item: "Position",
-                      },
-                      {
-                        item: "Blob Versioned Hash",
-                      },
-                      {
-                        item: "Size",
-                      },
-                      {
-                        item: "Storages",
-                      },
-                    ],
-                    className: "dark:border-border-dark/20",
-                    sticky: true,
-                  },
-                ]}
-                rows={
-                  blobs
-                    ? blobs.map(
-                        (
-                          { versionedHash, size, dataStorageReferences },
-                          i
-                        ) => ({
-                          cells: [
-                            { item: i },
+                  ),
+                },
+                {
+                  item:
+                    timeFormat === "relative"
+                      ? formatTimestamp(blockTimestamp, true)
+                      : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
+                },
+                { item: blobs.length },
+                {
+                  item:
+                    blobView === "usage" ? (
+                      <div className="relative flex flex-col">
+                        {formatBytes(blobUsageSize, {
+                          hideUnit: true,
+                          unit: "KiB",
+                        })}
+                        <div className="absolute -bottom-3">
+                          <PercentageBar
+                            value={blobUsageSize}
+                            total={blobSize}
+                            compact
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        {formatBytes(blobSize, {
+                          hideUnit: true,
+                          unit: "KiB",
+                        })}
+                      </div>
+                    ),
+                },
+                {
+                  item: (
+                    <Copyable
+                      value={from}
+                      tooltipText="Copy the origin address"
+                    >
+                      <Link href={buildAddressRoute(from)}>
+                        {shortenAddress(from)}
+                      </Link>
+                    </Copyable>
+                  ),
+                },
+                {
+                  item: (
+                    <Copyable
+                      value={to}
+                      tooltipText="Copy the destination address"
+                    >
+                      <Link href={buildAddressRoute(to)}>
+                        {shortenAddress(to)}
+                      </Link>
+                    </Copyable>
+                  ),
+                },
+                {
+                  item: (
+                    <div className="truncate">
+                      {formatWei(blobGasBaseFee, {
+                        toUnit: "Gwei",
+                        hideUnit: true,
+                      })}
+                    </div>
+                  ),
+                },
+                {
+                  item: (
+                    <div className="truncate">
+                      {formatWei(blobGasMaxFee, {
+                        toUnit: "Gwei",
+                        hideUnit: true,
+                      })}
+                    </div>
+                  ),
+                },
+                {
+                  item: (
+                    <div className="truncate">
+                      {formatWei(block.blobGasPrice, {
+                        toUnit: "Gwei",
+                        hideUnit: true,
+                      })}
+                    </div>
+                  ),
+                },
+              ],
+              expandItem: (
+                <Table
+                  className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
+                  size="xs"
+                  alignment="left"
+                  headers={[
+                    {
+                      cells: [
+                        {
+                          item: "Position",
+                        },
+                        {
+                          item: "Blob Versioned Hash",
+                        },
+                        {
+                          item: "Size (KiB)",
+                        },
+                        {
+                          item: "Usage (KiB)",
+                        },
+                        {
+                          item: "Storages",
+                        },
+                      ],
+                      className: "dark:border-border-dark/20",
+                      sticky: true,
+                    },
+                  ]}
+                  rows={
+                    blobs
+                      ? blobs.map(
+                          (
                             {
-                              item: (
-                                <Copyable
-                                  value={versionedHash}
-                                  tooltipText="Copy blob versioned hash"
-                                >
-                                  <Link href={buildBlobRoute(versionedHash)}>
-                                    {versionedHash}
-                                  </Link>
-                                </Copyable>
-                              ),
+                              versionedHash,
+                              size,
+                              dataStorageReferences,
+                              effectiveSize,
                             },
-                            {
-                              item: (
-                                <div className="flex gap-2">
-                                  <span>{formatBytes(size)}</span>
-                                </div>
-                              ),
-                            },
-                            {
-                              item: dataStorageReferences && (
-                                <div className="flex items-center gap-2">
-                                  {dataStorageReferences.map(
-                                    ({ storage, url }) => (
-                                      <StorageBadge
-                                        key={storage}
-                                        storage={storage}
-                                        url={url}
-                                        compact
-                                      />
-                                    )
-                                  )}
-                                </div>
-                              ),
-                            },
-                          ],
-                          className: "dark:border-border-dark/10",
-                        })
-                      )
-                    : undefined
-                }
-              />
-            ),
-          })
+                            i
+                          ) => ({
+                            cells: [
+                              { item: i },
+                              {
+                                item: (
+                                  <Copyable
+                                    value={versionedHash}
+                                    tooltipText="Copy blob versioned hash"
+                                  >
+                                    <Link href={buildBlobRoute(versionedHash)}>
+                                      {versionedHash}
+                                    </Link>
+                                  </Copyable>
+                                ),
+                              },
+                              {
+                                item: formatBytes(size, {
+                                  unit: "KiB",
+                                  hideUnit: true,
+                                }),
+                              },
+                              {
+                                item: (
+                                  <span>
+                                    {formatBytes(effectiveSize, {
+                                      unit: "KiB",
+                                      hideUnit: true,
+                                    })}{" "}
+                                    <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                                      (
+                                      {calculatePercentage(effectiveSize, size)}
+                                      %)
+                                    </span>
+                                  </span>
+                                ),
+                              },
+                              {
+                                item: dataStorageReferences && (
+                                  <div className="flex items-center gap-2">
+                                    {dataStorageReferences.map(
+                                      ({ storage, url }) => (
+                                        <StorageBadge
+                                          key={storage}
+                                          storage={storage}
+                                          url={url}
+                                          compact
+                                        />
+                                      )
+                                    )}
+                                  </div>
+                                ),
+                              },
+                            ],
+                            className: "dark:border-border-dark/10",
+                          })
+                        )
+                      : undefined
+                  }
+                />
+              ),
+            };
+          }
         )
       : undefined;
-  }, [transactions, timeFormat]);
+  }, [transactions, timeFormat, blobView]);
 
   if (error) {
     return (
