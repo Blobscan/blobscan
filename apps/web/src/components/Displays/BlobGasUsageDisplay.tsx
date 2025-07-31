@@ -52,7 +52,6 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
     targetBlobsPerBlock,
     targetBlobGasPerBlock,
   } = networkBlobConfig;
-  const blobGasUsedPercentage = calculatePercentage(blobGasUsed, blobGasLimit);
   const blobGasTarget = calculateBlobGasTarget(
     blobGasUsed,
     targetBlobsPerBlock,
@@ -64,26 +63,12 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
 
   return (
     <div className="flex items-center gap-2">
-      <div className="w-28">
-        {formatNumber(blobGasUsed)}
-        <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-          (
-          {formatNumber(blobGasUsedPercentage, "standard", {
-            maximumFractionDigits: 2,
-          })}
-          %)
-        </span>
-      </div>
+      {formatNumber(blobGasUsed)}
       <div className={`flex items-center gap-2`}>
         <PercentageBar
-          className={
-            isPositive
-              ? "bg-positive-light dark:bg-positive-dark"
-              : isNegative
-              ? "bg-negative-light dark:bg-negative-dark"
-              : "bg-contentTertiary-light dark:bg-contentTertiary-dark"
-          }
-          percentage={blobGasUsedPercentage / 100}
+          color={isPositive ? "green" : isNegative ? "red" : "grey"}
+          value={blobGasUsed}
+          total={blobGasLimit}
           compact={compact}
         />
         <div

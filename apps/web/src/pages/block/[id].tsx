@@ -14,6 +14,7 @@ import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
+import { PercentageBar } from "~/components/PercentageBar";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -81,17 +82,26 @@ const Block: NextPage = function () {
     } = networkBlobConfig;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
 
-    const totalBlockBlobSize = blockData?.transactions.reduce(
+    const totalBlobSize = blockData?.transactions.reduce((acc, { blobs }) => {
+      const totalBlobsSize = blobs.reduce(
+        (blobAcc, { size }) => blobAcc + size,
+        0
+      );
+
+      return acc + totalBlobsSize;
+    }, 0);
+    const totalBlobEffectiveSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
-        const totalBlobsSize = blobs.reduce(
-          (blobAcc, { size }) => blobAcc + size,
+        const totalEffectiveSize = blobs.reduce(
+          (blobAcc, { effectiveSize }) => blobAcc + effectiveSize,
           0
         );
 
-        return acc + totalBlobsSize;
+        return acc + totalEffectiveSize;
       },
       0
     );
+    const blobCount = totalBlobSize / blobSize;
 
     const firstBlobNumber = networkName
       ? getFirstBlobNumber(networkName)
@@ -165,15 +175,28 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob size",
-        helpText: "Total amount of space used for blobs in this block.",
+        name: "Blob Size",
+        helpText: "The total amount of blob data in this block.",
         value: (
-          <div>
-            {formatBytes(totalBlockBlobSize)}
+          <span>
+            {formatBytes(totalBlobSize)}
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(totalBlockBlobSize / blobSize)}{" "}
-              {pluralize("blob", totalBlockBlobSize / blobSize)})
+              ({formatNumber(blobCount)} {pluralize("blob", blobCount)})
             </span>
+          </span>
+        ),
+      },
+      {
+        name: "Blob Usage Size",
+        helpText:
+          "The actual amount of blob data in this block that contains meaningful, non-zero content.",
+        value: (
+          <div className="flex flex-col">
+            {formatBytes(totalBlobEffectiveSize)}
+            <PercentageBar
+              value={totalBlobEffectiveSize}
+              total={totalBlobSize}
+            />
           </div>
         ),
       },

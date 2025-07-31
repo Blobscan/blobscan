@@ -13,6 +13,7 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
+import { PercentageBar } from "~/components/PercentageBar";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
@@ -143,10 +144,14 @@ const Tx: NextPage = () => {
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
+    const totalBlobEffectiveSize = blobs.reduce(
+      (acc, b) => acc + b.effectiveSize,
+      0
+    );
 
     detailsFields.push(
       {
-        name: "Total Blob Size",
+        name: "Blob Size",
         value: (
           <span>
             {formatBytes(totalBlobSize)}{" "}
@@ -156,6 +161,22 @@ const Tx: NextPage = () => {
           </span>
         ),
       },
+      {
+        name: "Blob Usage Size",
+
+        value: (
+          <div className="flex flex-col">
+            <span className="text-sm">
+              {formatBytes(totalBlobEffectiveSize)}{" "}
+            </span>
+            <PercentageBar
+              value={totalBlobEffectiveSize}
+              total={totalBlobSize}
+            />
+          </div>
+        ),
+      },
+
       {
         name: "Blob Gas Price",
         value: (

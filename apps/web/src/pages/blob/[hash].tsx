@@ -24,6 +24,7 @@ import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
+import { PercentageBar } from "~/components/PercentageBar";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import {
@@ -210,10 +211,18 @@ const Blob: NextPage = function () {
       {
         name: "Proof",
         value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
+      },
+      { name: "Size", value: formatBytes(blob.size) },
+      {
+        name: "Usage Size",
+        value: (
+          <div className="flex flex-col">
+            <span className="text-sm">{formatBytes(blob.effectiveSize)} </span>
+            <PercentageBar value={blob.effectiveSize} total={blob.size} />
+          </div>
+        ),
       }
     );
-
-    detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({
