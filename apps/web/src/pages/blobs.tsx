@@ -11,6 +11,7 @@ import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
+import { PercentageBar } from "~/components/PercentageBar";
 import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/TimestampToggle";
 import type { TimestampFormat } from "~/components/TimestampToggle";
@@ -67,28 +68,29 @@ const Blobs: NextPage = function () {
         },
         {
           item: "Versioned Hash",
-          className: "2xl:w-[312px] xl:w-[276px] lg:w-[215px] w-[170px]",
+          className: "w-[170px]",
         },
         {
           item: "Transaction Hash",
-          className: "2xl:w-[318px] xl:w-[276px] lg:w-[218px] w-[172px]",
+          className: "w-[172px]",
         },
         {
           item: "Block Number",
-          className: "2xl:w-[221px] xl:w-[191px] lg:w-[152px] w-[120px]",
+          className: "w-[120px]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "2xl:w-[185px] w-[170px]",
+          className: "w-[150px]",
         },
         {
           item: "Size",
-          className: "2xl:w-[178px] xl:w-[145px] lg:w-[101px] w-[66px]",
+          className: "w-[100px]",
         },
+        { item: "Usage", className: "w-[120px]" },
         {
-          item: "Storage",
+          item: "Storages",
           className: "w-[86px]",
         },
       ],
@@ -100,6 +102,7 @@ const Blobs: NextPage = function () {
         ? blobs.map(
             ({
               versionedHash,
+              effectiveSize,
               size,
               dataStorageReferences,
               txHash,
@@ -160,9 +163,19 @@ const Blobs: NextPage = function () {
                       : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
                 },
                 {
+                  item: formatBytes(size),
+                },
+                {
                   item: (
-                    <div className="flex gap-2">
-                      <span>{formatBytes(size)}</span>
+                    <div className="relative flex flex-col">
+                      {formatBytes(effectiveSize)}
+                      <div className="absolute -bottom-3">
+                        <PercentageBar
+                          value={effectiveSize}
+                          total={size}
+                          compact
+                        />
+                      </div>
                     </div>
                   ),
                 },
