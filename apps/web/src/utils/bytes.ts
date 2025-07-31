@@ -13,11 +13,13 @@ export const BYTE_UNITS = [
   "YiB",
 ] as const;
 
+export type ByteUnit = (typeof BYTE_UNITS)[number];
+
 export type BytesOptions = {
   displayAllDecimals?: boolean;
   decimals?: number;
   hideUnit?: boolean;
-  unit?: (typeof BYTE_UNITS)[number];
+  unit?: ByteUnit;
 };
 
 export function formatBytes(value: Numerish, opts?: BytesOptions): string {

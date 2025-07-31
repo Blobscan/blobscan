@@ -22,6 +22,7 @@ import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import type { TransactionWithExpandedBlockAndBlob } from "~/types";
+import type { ByteUnit } from "~/utils";
 import {
   buildAddressRoute,
   buildBlockRoute,
@@ -33,6 +34,8 @@ import {
   buildBlobRoute,
   calculatePercentage,
 } from "~/utils";
+
+const BYTES_UNIT: ByteUnit = "KiB";
 
 const Txs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
@@ -88,7 +91,13 @@ const Txs: NextPage = function () {
         },
         { item: "Blobs", className: "w-[70px]" },
         {
-          item: <BlobViewToggle view={blobView} onChange={setBlobView} />,
+          item: (
+            <BlobViewToggle
+              bytesUnit={BYTES_UNIT}
+              view={blobView}
+              onChange={setBlobView}
+            />
+          ),
           className: blobView === "size" ? "w-[90px]" : "w-[120px]",
         },
         {
@@ -175,7 +184,7 @@ const Txs: NextPage = function () {
                       <div className="relative flex flex-col">
                         {formatBytes(blobUsageSize, {
                           hideUnit: true,
-                          unit: "KiB",
+                          unit: BYTES_UNIT,
                         })}
                         <div className="absolute -bottom-3">
                           <PercentageBar
@@ -189,7 +198,7 @@ const Txs: NextPage = function () {
                       <div>
                         {formatBytes(blobSize, {
                           hideUnit: true,
-                          unit: "KiB",
+                          unit: BYTES_UNIT,
                         })}
                       </div>
                     ),
@@ -264,10 +273,10 @@ const Txs: NextPage = function () {
                           item: "Blob Versioned Hash",
                         },
                         {
-                          item: "Size (KiB)",
+                          item: `Size (${BYTES_UNIT})`,
                         },
                         {
-                          item: "Usage (KiB)",
+                          item: `Usage (${BYTES_UNIT})`,
                         },
                         {
                           item: "Storages",
@@ -305,7 +314,7 @@ const Txs: NextPage = function () {
                               },
                               {
                                 item: formatBytes(size, {
-                                  unit: "KiB",
+                                  unit: BYTES_UNIT,
                                   hideUnit: true,
                                 }),
                               },
@@ -313,7 +322,7 @@ const Txs: NextPage = function () {
                                 item: (
                                   <span>
                                     {formatBytes(effectiveSize, {
-                                      unit: "KiB",
+                                      unit: BYTES_UNIT,
                                       hideUnit: true,
                                     })}{" "}
                                     <span className="text-contentTertiary-light dark:text-contentTertiary-dark">

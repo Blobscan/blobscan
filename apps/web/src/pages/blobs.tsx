@@ -18,6 +18,7 @@ import type { TimestampFormat } from "~/components/TimestampToggle";
 import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import type { BlobWithExpandedTransaction } from "~/types";
+import type { ByteUnit } from "~/utils";
 import {
   buildBlobRoute,
   buildBlockRoute,
@@ -27,6 +28,8 @@ import {
   formatTimestamp,
   shortenHash,
 } from "~/utils";
+
+const BYTES_UNIT: ByteUnit = "KiB";
 
 const Blobs: NextPage = function () {
   const { paginationParams, filterParams } = useQueryParams();
@@ -85,10 +88,10 @@ const Blobs: NextPage = function () {
           className: "w-[150px]",
         },
         {
-          item: "Size",
+          item: `Size (${BYTES_UNIT})`,
           className: "w-[100px]",
         },
-        { item: "Usage", className: "w-[120px]" },
+        { item: `Usage (${BYTES_UNIT})`, className: "w-[120px]" },
         {
           item: "Storages",
           className: "w-[86px]",
@@ -163,12 +166,18 @@ const Blobs: NextPage = function () {
                       : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
                 },
                 {
-                  item: formatBytes(size),
+                  item: formatBytes(size, {
+                    hideUnit: true,
+                    unit: BYTES_UNIT,
+                  }),
                 },
                 {
                   item: (
                     <div className="relative flex flex-col">
-                      {formatBytes(effectiveSize)}
+                      {formatBytes(effectiveSize, {
+                        hideUnit: true,
+                        unit: BYTES_UNIT,
+                      })}
                       <div className="absolute -bottom-3">
                         <PercentageBar
                           value={effectiveSize}
