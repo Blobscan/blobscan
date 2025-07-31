@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { animated, useSpring } from "@react-spring/web";
-import classNames from "classnames";
+import cn from "classnames";
 
 import type { Numerish } from "~/utils";
 import { calculatePercentage } from "~/utils";
@@ -20,7 +20,7 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
   compact = false,
   color = "purple",
 }) {
-  const barSize = compact ? 48 : 98;
+  const barSize = compact ? 56 : 98;
   const percentage = calculatePercentage(value, total, {
     asFraction: true,
   });
@@ -31,15 +31,18 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
   });
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <div className="relative">
         <div
-          className={`${
-            compact ? "w-12" : "w-24"
-          } h-1 rounded-md bg-primary-200 dark:bg-primary-800`}
+          className={cn("rounded-md bg-primary-200 dark:bg-primary-800", {
+            "h-0.5 w-14": compact,
+            "h-1 w-24": !compact,
+          })}
         />
         <animated.div
-          className={classNames("absolute top-0 h-1 rounded-md", {
+          className={cn("absolute top-0 rounded-md", {
+            "h-1": !compact,
+            "h-0.5": compact,
             "bg-positive-light dark:bg-positive-dark": color === "green",
             "bg-contentTertiary-light dark:bg-contentTertiary-dark":
               color === "grey",
@@ -51,11 +54,16 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
           }}
         />
       </div>
-      {!compact && (
-        <animated.div className="text-contentTertiary-light dark:text-contentTertiary-dark">
-          {barPercentageProps.value.to((x) => `${(x * 100).toFixed(2)}%`)}
-        </animated.div>
-      )}
+      <animated.div
+        className={cn(
+          "text-contentTertiary-light dark:text-contentTertiary-dark",
+          {
+            "text-[10px]": compact,
+          }
+        )}
+      >
+        {barPercentageProps.value.to((x) => `${Number((x * 100).toFixed(2))}%`)}
+      </animated.div>
     </div>
   );
 };
