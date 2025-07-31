@@ -24,7 +24,7 @@ import {
   formatBytes,
   formatNumber,
   formatTimestamp,
-  shortenAddress,
+  shortenHash,
 } from "~/utils";
 
 const Blobs: NextPage = function () {
@@ -122,7 +122,7 @@ const Blobs: NextPage = function () {
                       tooltipText="Copy versioned hash"
                     >
                       <Link href={buildBlobRoute(versionedHash)}>
-                        {shortenAddress(versionedHash, 8)}
+                        {shortenHash(versionedHash, 8)}
                       </Link>
                     </Copyable>
                   ),
@@ -134,7 +134,7 @@ const Blobs: NextPage = function () {
                       tooltipText="Copy transaction hash"
                     >
                       <Link href={buildTransactionRoute(txHash)}>
-                        {shortenAddress(txHash, 8)}
+                        {shortenHash(txHash, 8)}
                       </Link>
                     </Copyable>
                   ),

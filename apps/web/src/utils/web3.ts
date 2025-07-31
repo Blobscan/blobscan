@@ -1,7 +1,7 @@
 const addressRegex = /^0x[a-fA-F0-9]{40}$/;
 
 // This function shortens an Ethereum address by removing characters from the middle.
-export function shortenAddress(address: string, length = 4): string {
+export function shortenHash(address: string, length = 4): string {
   return `0x${address.slice(2, length + 2)}…${address.slice(-length)}`;
 }
 

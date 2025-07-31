@@ -29,7 +29,7 @@ import {
   formatBytes,
   formatNumber,
   formatTimestamp,
-  shortenAddress,
+  shortenHash,
   buildBlobRoute,
   calculatePercentage,
 } from "~/utils";
@@ -150,7 +150,7 @@ const Txs: NextPage = function () {
                   item: (
                     <Copyable value={hash} tooltipText="Copy hash">
                       <Link href={buildTransactionRoute(hash)}>
-                        {shortenAddress(hash)}
+                        {shortenHash(hash)}
                       </Link>
                     </Copyable>
                   ),
@@ -201,7 +201,7 @@ const Txs: NextPage = function () {
                       tooltipText="Copy the origin address"
                     >
                       <Link href={buildAddressRoute(from)}>
-                        {shortenAddress(from)}
+                        {shortenHash(from)}
                       </Link>
                     </Copyable>
                   ),
@@ -213,7 +213,7 @@ const Txs: NextPage = function () {
                       tooltipText="Copy the destination address"
                     >
                       <Link href={buildAddressRoute(to)}>
-                        {shortenAddress(to)}
+                        {shortenHash(to)}
                       </Link>
                     </Copyable>
                   ),

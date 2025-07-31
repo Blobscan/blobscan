@@ -19,7 +19,7 @@ import {
   buildTransactionRoute,
   formatBytes,
   normalizeTimestamp,
-  shortenAddress,
+  shortenHash,
 } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
@@ -120,14 +120,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
                     <div className="flex justify-start gap-0.5">
                       <Link href={buildAddressRoute(from)}>
-                        {isCompact ? shortenAddress(from, 8) : from}
+                        {isCompact ? shortenHash(from, 8) : from}
                       </Link>
                     </div>
                     <ArrowRightIcon className="h-3 w-3" />
                     <div>
                       <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
                         <Link href={buildAddressRoute(to)}>
-                          {isCompact ? shortenAddress(to, 8) : to}
+                          {isCompact ? shortenHash(to, 8) : to}
                         </Link>
                       </div>
                     </div>
