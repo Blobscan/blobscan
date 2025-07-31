@@ -62,9 +62,13 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   const isNegative = targetSign === "-";
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="relative flex flex-col">
       {formatNumber(blobGasUsed)}
-      <div className={`flex items-center gap-2`}>
+      <div
+        className={cn("flex items-center gap-1", {
+          "absolute top-4": compact,
+        })}
+      >
         <PercentageBar
           color={isPositive ? "green" : isNegative ? "red" : "grey"}
           value={blobGasUsed}
@@ -73,15 +77,14 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
         />
         <div
           title={compact ? "Blob Gas Target" : undefined}
-          className={cn(
-            {
-              "text-positive-light dark:text-positive-dark": isPositive,
-              "text-negative-light dark:text-negative-dark": isNegative,
-              "text-contentTertiary-light dark:text-contentTertiary-dark":
-                !isPositive && !isNegative,
-            },
-            "text-xs"
-          )}
+          className={cn({
+            "text-positive-light dark:text-positive-dark": isPositive,
+            "text-negative-light dark:text-negative-dark": isNegative,
+            "text-contentTertiary-light dark:text-contentTertiary-dark":
+              !isPositive && !isNegative,
+            "text-xs": !compact,
+            "text-[10px]": compact,
+          })}
         >
           {targetSign}
           {blobGasTarget > 0 ? blobGasTarget.toFixed(2) : blobGasTarget}%{" "}

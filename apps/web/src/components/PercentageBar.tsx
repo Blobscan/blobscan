@@ -20,7 +20,7 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
   compact = false,
   color = "purple",
 }) {
-  const barSize = compact ? 48 : 96;
+  const barSize = compact ? 48 : 98;
   const percentage = calculatePercentage(value, total, {
     asFraction: true,
   });
@@ -36,10 +36,10 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
         <div
           className={`${
             compact ? "w-12" : "w-24"
-          } h-1.5 rounded-md bg-primary-200 dark:bg-primary-800`}
+          } h-1 rounded-md bg-primary-200 dark:bg-primary-800`}
         />
         <animated.div
-          className={classNames("absolute top-0 h-1.5 rounded-md", {
+          className={classNames("absolute top-0 h-1 rounded-md", {
             "bg-positive-light dark:bg-positive-dark": color === "green",
             "bg-contentTertiary-light dark:bg-contentTertiary-dark":
               color === "grey",
