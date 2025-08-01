@@ -7,8 +7,10 @@ import { formatWei } from "@blobscan/eth-format";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { IconButton } from "~/components/IconButton";
 import { Rotable } from "~/components/Rotable";
+import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Blob, Transaction } from "~/types";
@@ -17,8 +19,10 @@ import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
+  calculatePercentage,
   formatBytes,
   normalizeTimestamp,
+  pluralize,
   shortenHash,
 } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
@@ -40,7 +44,10 @@ type BlobTransactionCardProps = Partial<{
       | "blobGasMaxFee"
     >
   >;
-  blobs: Pick<Blob, "versionedHash" | "size" | "dataStorageReferences">[];
+  blobs: Pick<
+    Blob,
+    "versionedHash" | "size" | "effectiveSize" | "dataStorageReferences"
+  >[];
   compact?: boolean;
   className?: string;
 }>;
@@ -81,6 +88,10 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     breakpoint === "default";
   const displayBlobs = !compact && !!blobsOnTx?.length;
   const totalBlobSize = blobsOnTx?.reduce((acc, { size }) => acc + size, 0);
+  const totalBlobSizeUsage = blobsOnTx?.reduce(
+    (acc, { effectiveSize }) => acc + effectiveSize,
+    0
+  );
 
   return (
     <div>
@@ -161,14 +172,18 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   {blobsOnTx ? (
                     <>
                       <div>
-                        {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
+                        {blobsOnTx.length} {pluralize("Blob", blobsOnTx.length)}
                       </div>
-                      ·
-                      <div>
-                        {totalBlobSize !== undefined
-                          ? formatBytes(totalBlobSize)
-                          : undefined}
-                      </div>
+                      {typeof totalBlobSize !== "undefined" &&
+                        typeof totalBlobSizeUsage !== "undefined" && (
+                          <>
+                            <Separator />
+                            <BlobSizeUsageDisplay
+                              size={totalBlobSize}
+                              sizeUsage={totalBlobSizeUsage}
+                            />
+                          </>
+                        )}
                     </>
                   ) : (
                     <Skeleton width={140} size="xs" />
@@ -206,13 +221,17 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
       {blobsOnTx && (
         <Collapsable opened={opened}>
           <div className="bg-primary-200 pr-4 dark:bg-primary-900">
-            <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr] gap-2 p-2 text-sm">
-              <TableHeader>Index</TableHeader>
+            <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr_2fr] gap-2 p-2 text-sm">
+              <TableHeader>Position</TableHeader>
               <TableHeader>Versioned Hash</TableHeader>
               <TableHeader>Size</TableHeader>
+              <TableHeader>Usage Size</TableHeader>
               <TableHeader>Storages</TableHeader>
               {blobsOnTx.map(
-                ({ dataStorageReferences, versionedHash, size }, i) => (
+                (
+                  { dataStorageReferences, versionedHash, size, effectiveSize },
+                  i
+                ) => (
                   <React.Fragment key={`${versionedHash}-${i}`}>
                     <TableCol>{i}</TableCol>
                     <TableCol>
@@ -226,6 +245,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                       </Copyable>
                     </TableCol>
                     <TableCol>{formatBytes(size)}</TableCol>
+                    <TableCol>
+                      <span>
+                        {formatBytes(effectiveSize)}{" "}
+                        <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                          ({calculatePercentage(effectiveSize, size)}%)
+                        </span>
+                      </span>
+                    </TableCol>
                     <TableCol>
                       {dataStorageReferences && (
                         <div className="flex items-center gap-2">
