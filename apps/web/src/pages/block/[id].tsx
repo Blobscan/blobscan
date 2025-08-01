@@ -207,7 +207,7 @@ const Block: NextPage = function () {
           <BlobGasUsageDisplay
             networkBlobConfig={networkBlobConfig}
             blobGasUsed={blockData.blobGasUsed}
-            compact={isCompact}
+            variant={isCompact ? "minimal" : "detailed"}
           />
         ),
       },

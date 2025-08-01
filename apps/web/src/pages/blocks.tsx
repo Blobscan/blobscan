@@ -236,7 +236,7 @@ const Blocks: NextPage = function () {
                   )}
                   blobGasUsed={blobGasUsed}
                   width={100}
-                  compact
+                  variant
                 />
               ),
             },

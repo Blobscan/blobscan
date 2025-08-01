@@ -10,7 +10,7 @@ type BlobGasUsageDisplayProps = {
   networkBlobConfig: NetworkBlobConfig;
   blobGasUsed: bigint;
   width?: number;
-  compact?: boolean;
+  variant?: "detailed" | "minimal";
 };
 
 function getTargetSign(
@@ -46,7 +46,7 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   networkBlobConfig,
   blobGasUsed,
   width,
-  compact = false,
+  variant = "detailed",
 }) {
   const {
     gasPerBlob,
@@ -59,6 +59,7 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
     targetBlobsPerBlock,
     gasPerBlob
   );
+  const isDetailedMode = variant === "detailed";
   const targetSign = getTargetSign(blobGasUsed, targetBlobGasPerBlock);
   const isPositive = targetSign === "+";
   const isNegative = targetSign === "-";
@@ -67,37 +68,39 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
     <div className="relative flex flex-col">
       <div className="flex items-center gap-1">
         {formatNumber(blobGasUsed)}{" "}
-        <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-          ({calculatePercentage(blobGasUsed, blobGasLimit)}%)
-        </span>
+        {!isDetailedMode && (
+          <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+            ({calculatePercentage(blobGasUsed, blobGasLimit)}%)
+          </span>
+        )}
       </div>
       <div
         className={cn("flex items-center gap-1", {
-          "absolute top-4": compact,
+          "absolute top-4": !isDetailedMode,
         })}
       >
         <PercentageBar
           color={isPositive ? "green" : isNegative ? "red" : "grey"}
           value={blobGasUsed}
           total={blobGasLimit}
-          compact={compact}
-          width={width}
-          hidePercentage
+          compact={!isDetailedMode}
+          width={width ?? 140}
+          hidePercentage={!isDetailedMode}
         />
         <div
-          title={compact ? "Blob Gas Target" : undefined}
+          title={isDetailedMode ? "Blob Gas Target" : undefined}
           className={cn({
             "text-positive-light dark:text-positive-dark": isPositive,
             "text-negative-light dark:text-negative-dark": isNegative,
             "text-contentTertiary-light dark:text-contentTertiary-dark":
               !isPositive && !isNegative,
-            "text-xs": !compact,
-            "text-[10px]": compact,
+            "text-sm": isDetailedMode,
+            "text-[10px]": !isDetailedMode,
           })}
         >
           {targetSign}
-          {blobGasTarget > 0 ? blobGasTarget.toFixed(2) : blobGasTarget}%{" "}
-          {compact ? "" : "Blob Gas Target"}
+          {blobGasTarget > 0 ? Number(blobGasTarget.toFixed(2)) : blobGasTarget}
+          % {isDetailedMode ? "Blob Gas Target" : ""}
         </div>
       </div>
     </div>

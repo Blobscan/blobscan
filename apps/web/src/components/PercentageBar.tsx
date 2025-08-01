@@ -19,7 +19,7 @@ export type PercentageBarProps = {
 export const PercentageBar: FC<PercentageBarProps> = function ({
   value,
   total,
-  compact = false,
+  compact,
   width = 98,
   color = "purple",
   hidePercentage,
@@ -61,18 +61,22 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
         />
       </div>
       {!hidePercentage && (
-        <animated.div
-          className={cn(
-            "text-contentTertiary-light dark:text-contentTertiary-dark",
-            {
-              "text-[10px]": compact,
-            }
-          )}
-        >
-          {barPercentageProps.value.to(
-            (x) => `${Number((x * 100).toFixed(2))}%`
-          )}
-        </animated.div>
+        <>
+          <div className="relative h-3 w-12">
+            <animated.div
+              className={cn(
+                "absolute -bottom-1 text-contentTertiary-light dark:text-contentTertiary-dark",
+                {
+                  "text-[10px]": compact,
+                }
+              )}
+            >
+              {barPercentageProps.value.to(
+                (x) => `${Number((x * 100).toFixed(2))}%`
+              )}
+            </animated.div>
+          </div>
+        </>
       )}
     </div>
   );
