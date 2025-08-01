@@ -9,6 +9,7 @@ import { PercentageBar } from "../PercentageBar";
 type BlobGasUsageDisplayProps = {
   networkBlobConfig: NetworkBlobConfig;
   blobGasUsed: bigint;
+  width?: number;
   compact?: boolean;
 };
 
@@ -44,6 +45,7 @@ function calculateBlobGasTarget(
 export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   networkBlobConfig,
   blobGasUsed,
+  width,
   compact = false,
 }) {
   const {
@@ -63,7 +65,12 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
 
   return (
     <div className="relative flex flex-col">
-      {formatNumber(blobGasUsed)}
+      <div className="flex items-center gap-1">
+        {formatNumber(blobGasUsed)}{" "}
+        <span className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
+          ({calculatePercentage(blobGasUsed, blobGasLimit)}%)
+        </span>
+      </div>
       <div
         className={cn("flex items-center gap-1", {
           "absolute top-4": compact,
@@ -74,6 +81,8 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
           value={blobGasUsed}
           total={blobGasLimit}
           compact={compact}
+          width={width}
+          hidePercentage
         />
         <div
           title={compact ? "Blob Gas Target" : undefined}

@@ -6,6 +6,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -13,7 +14,6 @@ import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
 import { OptimismCard } from "~/components/OptimismCard";
-import { PercentageBar } from "~/components/PercentageBar";
 import { Separator } from "~/components/Separator";
 import { api } from "~/api-client";
 import NextError from "~/pages/_error";
@@ -162,18 +162,14 @@ const Tx: NextPage = () => {
         ),
       },
       {
-        name: "Blob Usage",
+        name: "Blob Size Usage",
 
         value: (
-          <div className="flex flex-col">
-            <span className="text-sm">
-              {formatBytes(totalBlobEffectiveSize)}{" "}
-            </span>
-            <PercentageBar
-              value={totalBlobEffectiveSize}
-              total={totalBlobSize}
-            />
-          </div>
+          <BlobSizeUsageDisplay
+            size={totalBlobSize}
+            sizeUsage={totalBlobEffectiveSize}
+            variant="minimal"
+          />
         ),
       },
 

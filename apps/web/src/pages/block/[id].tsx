@@ -8,13 +8,13 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
 import { NavArrows } from "~/components/NavArrows";
-import { PercentageBar } from "~/components/PercentageBar";
 import { api } from "~/api-client";
 import { getFirstBlobNumber } from "~/content";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -187,17 +187,15 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Usage",
+        name: "Blob Size Usage",
         helpText:
           "The actual amount of blob data in this block that contains meaningful, non-zero content.",
         value: (
-          <div className="flex flex-col">
-            {formatBytes(totalBlobEffectiveSize)}
-            <PercentageBar
-              value={totalBlobEffectiveSize}
-              total={totalBlobSize}
-            />
-          </div>
+          <BlobSizeUsageDisplay
+            size={totalBlobSize}
+            sizeUsage={totalBlobEffectiveSize}
+            variant="minimal"
+          />
         ),
       },
       {

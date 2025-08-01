@@ -19,12 +19,12 @@ import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { Dropdown } from "~/components/Dropdown";
 import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
 import { Link } from "~/components/Link";
-import { PercentageBar } from "~/components/PercentageBar";
 import { api } from "~/api-client";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import {
@@ -214,12 +214,13 @@ const Blob: NextPage = function () {
       },
       { name: "Size", value: formatBytes(blob.size) },
       {
-        name: "Usage",
+        name: "Size Usage",
         value: (
-          <div className="flex flex-col">
-            <span className="text-sm">{formatBytes(blob.effectiveSize)} </span>
-            <PercentageBar value={blob.effectiveSize} total={blob.size} />
-          </div>
+          <BlobSizeUsageDisplay
+            size={blob.size}
+            sizeUsage={blob.effectiveSize}
+            variant="minimal"
+          />
         ),
       }
     );

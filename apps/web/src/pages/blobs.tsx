@@ -7,11 +7,11 @@ import dayjs from "@blobscan/dayjs";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
-import { PercentageBar } from "~/components/PercentageBar";
 import { Skeleton } from "~/components/Skeleton";
 import { TimestampToggle } from "~/components/TimestampToggle";
 import type { TimestampFormat } from "~/components/TimestampToggle";
@@ -23,7 +23,6 @@ import {
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
-  formatBytes,
   formatNumber,
   formatTimestamp,
   shortenHash,
@@ -87,11 +86,8 @@ const Blobs: NextPage = function () {
           ),
           className: "w-[150px]",
         },
-        {
-          item: `Size (${BYTES_UNIT})`,
-          className: "w-[100px]",
-        },
-        { item: `Usage (${BYTES_UNIT})`, className: "w-[120px]" },
+
+        { item: `Blob Size Usage (${BYTES_UNIT})`, className: "w-[180px]" },
         {
           item: "Storages",
           className: "w-[86px]",
@@ -166,26 +162,13 @@ const Blobs: NextPage = function () {
                       : dayjs(blockTimestamp).format("YYYY-MM-DD HH:mm:ss"),
                 },
                 {
-                  item: formatBytes(size, {
-                    hideUnit: true,
-                    unit: BYTES_UNIT,
-                  }),
-                },
-                {
                   item: (
-                    <div className="relative flex flex-col">
-                      {formatBytes(effectiveSize, {
-                        hideUnit: true,
-                        unit: BYTES_UNIT,
-                      })}
-                      <div className="absolute -bottom-3">
-                        <PercentageBar
-                          value={effectiveSize}
-                          total={size}
-                          compact
-                        />
-                      </div>
-                    </div>
+                    <BlobSizeUsageDisplay
+                      size={size}
+                      sizeUsage={effectiveSize}
+                      byteUnit={BYTES_UNIT}
+                      width={130}
+                    />
                   ),
                 },
                 {

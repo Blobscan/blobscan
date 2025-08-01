@@ -6,14 +6,12 @@ import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
-import { BlobViewToggle } from "~/components/BlobViewToggle";
-import type { BlobView } from "~/components/BlobViewToggle";
 import { Copyable } from "~/components/Copyable";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
 import { PaginatedTable } from "~/components/PaginatedTable";
-import { PercentageBar } from "~/components/PercentageBar";
 import { Skeleton } from "~/components/Skeleton";
 import { Table } from "~/components/Table";
 import type { TimestampFormat } from "~/components/TimestampToggle";
@@ -70,7 +68,6 @@ const Txs: NextPage = function () {
   const { totalTransactions } = countData || {};
   const error = txsError ?? countError;
   const [timeFormat, setTimeFormat] = useState<TimestampFormat>("relative");
-  const [blobView, setBlobView] = useState<BlobView>("usage");
   const transactionHeaders = [
     {
       cells: [
@@ -89,16 +86,10 @@ const Txs: NextPage = function () {
           ),
           className: timeFormat === "relative" ? "w-[130px]" : "w-[175px]",
         },
-        { item: "Blobs", className: "w-[70px]" },
+        { item: "Blobs", className: "w-[62px]" },
         {
-          item: (
-            <BlobViewToggle
-              bytesUnit={BYTES_UNIT}
-              view={blobView}
-              onChange={setBlobView}
-            />
-          ),
-          className: blobView === "size" ? "w-[90px]" : "w-[120px]",
+          item: `Blob Size Usage (${BYTES_UNIT})`,
+          className: "w-[148px]",
         },
         {
           item: "From",
@@ -111,15 +102,15 @@ const Txs: NextPage = function () {
 
         {
           item: "Blob Base Fee (Gwei)",
-          className: "w-[140px]",
+          className: "w-[120px]",
         },
         {
           item: "Blob Max Fee (Gwei)",
-          className: "w-[140px]",
+          className: "w-[120px]",
         },
         {
           item: "Blob Gas Price (Gwei)",
-          className: "2xl:w-full w-[140px]",
+          className: "sm:w-full w-[140px]",
         },
       ],
     },
@@ -141,7 +132,7 @@ const Txs: NextPage = function () {
             blockTimestamp,
           }) => {
             const blobSize = blobs.reduce((acc, { size }) => acc + size, 0);
-            const blobUsageSize = blobs.reduce(
+            const blobSizeUsage = blobs.reduce(
               (acc, { effectiveSize }) => acc + effectiveSize,
               0
             );
@@ -179,29 +170,13 @@ const Txs: NextPage = function () {
                 },
                 { item: blobs.length },
                 {
-                  item:
-                    blobView === "usage" ? (
-                      <div className="relative flex flex-col">
-                        {formatBytes(blobUsageSize, {
-                          hideUnit: true,
-                          unit: BYTES_UNIT,
-                        })}
-                        <div className="absolute -bottom-3">
-                          <PercentageBar
-                            value={blobUsageSize}
-                            total={blobSize}
-                            compact
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        {formatBytes(blobSize, {
-                          hideUnit: true,
-                          unit: BYTES_UNIT,
-                        })}
-                      </div>
-                    ),
+                  item: (
+                    <BlobSizeUsageDisplay
+                      size={blobSize}
+                      sizeUsage={blobSizeUsage}
+                      byteUnit={BYTES_UNIT}
+                    />
+                  ),
                 },
                 {
                   item: (
@@ -260,7 +235,7 @@ const Txs: NextPage = function () {
               ],
               expandItem: (
                 <Table
-                  className="mb-4 mt-2 max-h-[420px] rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
+                  className="mb-4 mt-2 rounded-lg bg-primary-50 px-8 dark:bg-primary-800"
                   size="xs"
                   alignment="left"
                   headers={[
@@ -268,18 +243,23 @@ const Txs: NextPage = function () {
                       cells: [
                         {
                           item: "Position",
+                          className: "w-[20px]",
                         },
                         {
                           item: "Blob Versioned Hash",
+                          className: "w-[400px]",
                         },
                         {
                           item: `Size (${BYTES_UNIT})`,
+                          className: "w-[80px] border",
                         },
                         {
-                          item: `Usage (${BYTES_UNIT})`,
+                          item: `Size Usage (${BYTES_UNIT})`,
+                          className: "w-[140px]",
                         },
                         {
                           item: "Storages",
+                          className: "w-[60px]",
                         },
                       ],
                       className: "dark:border-border-dark/20",
@@ -361,7 +341,7 @@ const Txs: NextPage = function () {
           }
         )
       : undefined;
-  }, [transactions, timeFormat, blobView]);
+  }, [transactions, timeFormat]);
 
   if (error) {
     return (

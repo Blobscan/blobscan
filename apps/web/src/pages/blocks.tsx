@@ -8,6 +8,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
+import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -20,7 +21,8 @@ import { api } from "~/api-client";
 import { useQueryParams } from "~/hooks/useQueryParams";
 import NextError from "~/pages/_error";
 import { useEnv } from "~/providers/Env";
-import type { BlockWithExpandedTransactions, Rollup } from "~/types";
+import type { BlockWithExpandedBlobsAndTransactions, Rollup } from "~/types";
+import type { ByteUnit } from "~/utils";
 import {
   buildBlobRoute,
   buildBlockRoute,
@@ -28,6 +30,8 @@ import {
   formatNumber,
   normalizeTimestamp,
 } from "~/utils";
+
+const BYTES_UNIT: ByteUnit = "KiB";
 
 const Blocks: NextPage = function () {
   const { env } = useEnv();
@@ -38,11 +42,13 @@ const Blocks: NextPage = function () {
     data: blocksData,
     isLoading: blocksIsLoading,
     error: blocksError,
-  } = api.block.getAll.useQuery<{ blocks: BlockWithExpandedTransactions[] }>({
+  } = api.block.getAll.useQuery<{
+    blocks: BlockWithExpandedBlobsAndTransactions[];
+  }>({
     ...paginationParams,
     ...filterParams,
     rollups,
-    expand: "transaction",
+    expand: "transaction,blob",
   });
   const {
     data: countData,
@@ -66,37 +72,41 @@ const Blocks: NextPage = function () {
       cells: [
         {
           item: "",
-          className: "w-[100px]",
+          className: "w-[80px]",
         },
         {
           item: "Block number",
-          className: "2xl:w-[187px] lg:w-[158px] w-[118px]",
+          className: "w-[118px]",
         },
         {
           item: (
             <TimestampToggle format={timeFormat} onChange={setTimeFormat} />
           ),
-          className: "2xl:w-[237px] lg:w-[200px] w-[170px]",
+          className: "w-[170px]",
         },
         {
           item: "Slot",
-          className: "2xl:w-[136px] lg:w-[115px] w-[96px]",
+          className: "w-[150px]",
         },
         {
           item: "Txs",
-          className: "2xl:w-[77px] w-[66px]",
+          className: "w-[66px]",
         },
         {
           item: "Blobs",
-          className: "2xl:w-[98px] w-[83px]",
+          className: "w-[83px]",
+        },
+        {
+          item: `Blob Size Usage (${BYTES_UNIT})`,
+          className: "w-[155px]",
         },
         {
           item: "Blob Gas Price",
-          className: "2xl:w-[195px] w-[165px]",
+          className: "w-[165px]",
         },
         {
-          item: "Blob Gas Used",
-          className: "2xl:w-full w-[240px]",
+          item: "Blob Gas Usage",
+          className: "w-[340px]",
         },
       ],
     },
@@ -121,6 +131,12 @@ const Blocks: NextPage = function () {
           (acc, tx) => acc + tx.blobs.length,
           0
         );
+        const blobSize = transactions
+          ?.flatMap((tx) => tx.blobs)
+          .reduce((acc, { size }) => acc + size, 0);
+        const blobSizeUsage = transactions
+          ?.flatMap((tx) => tx.blobs)
+          .reduce((acc, { effectiveSize }) => acc + effectiveSize, 0);
         const txsBlobs = transactions.flatMap((tx) =>
           tx.blobs.map(({ dataStorageReferences, versionedHash }, i) => ({
             transactionHash: tx.hash,
@@ -200,6 +216,15 @@ const Blocks: NextPage = function () {
               ),
             },
             {
+              item: (
+                <BlobSizeUsageDisplay
+                  size={blobSize}
+                  sizeUsage={blobSizeUsage}
+                  byteUnit={BYTES_UNIT}
+                />
+              ),
+            },
+            {
               item: formatWei(blobGasPrice, { toUnit: "Gwei" }),
             },
             {
@@ -210,6 +235,7 @@ const Blocks: NextPage = function () {
                     slot
                   )}
                   blobGasUsed={blobGasUsed}
+                  width={100}
                   compact
                 />
               ),
