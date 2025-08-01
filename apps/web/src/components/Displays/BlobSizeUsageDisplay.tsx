@@ -10,7 +10,8 @@ export interface BlobSizeUsageDisplayProps {
   sizeUsage: number;
   byteUnit?: ByteUnit;
   width?: number;
-  variant?: "detailed" | "minimal";
+  variant?: "minimal" | "inline" | "detailed";
+  hideUnit?: boolean;
 }
 
 export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
@@ -19,28 +20,31 @@ export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
   byteUnit,
   width,
   variant = "detailed",
+  hideUnit,
 }) {
-  const isDetailedMode = variant === "detailed";
+  const isDetailed = variant === "detailed";
+  const isMinimal = variant === "minimal";
+  const isInline = variant === "inline";
 
   return (
     <div
       className={cn("flex flex-col", {
-        relative: isDetailedMode,
+        relative: isDetailed,
       })}
     >
       <span>
         <span>
           {formatBytes(sizeUsage, {
-            hideUnit: isDetailedMode,
+            hideUnit: hideUnit,
             unit: byteUnit,
           })}
         </span>
-        {isDetailedMode && (
+        {!isMinimal && (
           <>
             /
             <span>
               {formatBytes(size, {
-                hideUnit: true,
+                hideUnit,
                 unit: byteUnit,
               })}
             </span>
@@ -51,19 +55,21 @@ export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
           </>
         )}
       </span>
-      <div
-        className={cn({
-          "absolute -bottom-2": isDetailedMode,
-        })}
-      >
-        <PercentageBar
-          value={sizeUsage}
-          total={size}
-          width={width ?? 140}
-          hidePercentage={isDetailedMode}
-          compact={isDetailedMode}
-        />
-      </div>
+      {!isInline && (
+        <div
+          className={cn({
+            "absolute -bottom-2": isDetailed,
+          })}
+        >
+          <PercentageBar
+            value={sizeUsage}
+            total={size}
+            width={width ?? 140}
+            hidePercentage={isDetailed}
+            compact={isDetailed}
+          />
+        </div>
+      )}
     </div>
   );
 };

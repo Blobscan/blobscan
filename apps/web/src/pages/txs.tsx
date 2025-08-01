@@ -175,6 +175,7 @@ const Txs: NextPage = function () {
                       size={blobSize}
                       sizeUsage={blobSizeUsage}
                       byteUnit={BYTES_UNIT}
+                      hideUnit
                     />
                   ),
                 },

@@ -221,6 +221,7 @@ const Blocks: NextPage = function () {
                   size={blobSize}
                   sizeUsage={blobSizeUsage}
                   byteUnit={BYTES_UNIT}
+                  hideUnit
                 />
               ),
             },
@@ -236,7 +237,7 @@ const Blocks: NextPage = function () {
                   )}
                   blobGasUsed={blobGasUsed}
                   width={100}
-                  variant
+                  variant="minimal"
                 />
               ),
             },

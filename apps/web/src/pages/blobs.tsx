@@ -167,6 +167,7 @@ const Blobs: NextPage = function () {
                       size={size}
                       sizeUsage={effectiveSize}
                       byteUnit={BYTES_UNIT}
+                      hideUnit
                       width={130}
                     />
                   ),
