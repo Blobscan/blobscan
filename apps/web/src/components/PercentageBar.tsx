@@ -12,15 +12,18 @@ export type PercentageBarProps = {
   total: Numerish;
   compact?: boolean;
   color?: Color;
+  width?: number;
+  hidePercentage?: boolean;
 };
 
 export const PercentageBar: FC<PercentageBarProps> = function ({
   value,
   total,
   compact = false,
+  width = 98,
   color = "purple",
+  hidePercentage,
 }) {
-  const barSize = compact ? 56 : 98;
   const percentage = calculatePercentage(value, total, {
     asFraction: true,
   });
@@ -34,8 +37,11 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
     <div className="flex items-center gap-1.5">
       <div className="relative">
         <div
+          style={{
+            width,
+          }}
           className={cn("rounded-md bg-primary-200 dark:bg-primary-800", {
-            "h-0.5 w-14": compact,
+            "h-0.5 ": compact,
             "h-1 w-24": !compact,
           })}
         />
@@ -50,20 +56,24 @@ export const PercentageBar: FC<PercentageBarProps> = function ({
             "bg-negative-light dark:bg-negative-dark": color === "red",
           })}
           style={{
-            width: barPercentageProps.value.to((x) => `${x * barSize}px`),
+            width: barPercentageProps.value.to((x) => `${x * width}px`),
           }}
         />
       </div>
-      <animated.div
-        className={cn(
-          "text-contentTertiary-light dark:text-contentTertiary-dark",
-          {
-            "text-[10px]": compact,
-          }
-        )}
-      >
-        {barPercentageProps.value.to((x) => `${Number((x * 100).toFixed(2))}%`)}
-      </animated.div>
+      {!hidePercentage && (
+        <animated.div
+          className={cn(
+            "text-contentTertiary-light dark:text-contentTertiary-dark",
+            {
+              "text-[10px]": compact,
+            }
+          )}
+        >
+          {barPercentageProps.value.to(
+            (x) => `${Number((x * 100).toFixed(2))}%`
+          )}
+        </animated.div>
+      )}
     </div>
   );
 };
