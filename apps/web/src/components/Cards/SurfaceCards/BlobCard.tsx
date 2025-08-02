@@ -75,32 +75,28 @@ const BlobCard: FC<BlobCardProps> = ({
           <Skeleton width={isCompact ? undefined : 740} size="xs" />
         )}
         <div className="flex flex-row items-center gap-2 text-xs">
-          {size && dataStorageReferences ? (
+          {size !== undefined && usageSize !== undefined && (
+            <BlobUsageDisplay
+              blobSize={size}
+              blobUsage={usageSize ?? 0}
+              variant="inline"
+            />
+          )}
+          {!!dataStorageReferences?.length && (
             <>
-              <BlobUsageDisplay
-                blobSize={size}
-                blobUsage={usageSize ?? 0}
-                variant="inline"
-              />
-              {dataStorageReferences.length && (
-                <>
-                  <Separator />
-                  <div className="flex flex-row gap-1">
-                    {dataStorageReferences.map(({ storage, url }) => (
-                      <StorageBadge
-                        key={storage}
-                        storage={storage}
-                        url={url}
-                        size="md"
-                        compact
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
+              <Separator />
+              <div className="flex flex-row gap-1">
+                {dataStorageReferences.map(({ storage, url }) => (
+                  <StorageBadge
+                    key={storage}
+                    storage={storage}
+                    url={url}
+                    size="md"
+                    compact
+                  />
+                ))}
+              </div>
             </>
-          ) : (
-            <Skeleton width={120} size="xs" />
           )}
         </div>
       </div>
