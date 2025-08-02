@@ -64,16 +64,15 @@ export function calculateBlobBytesSize(blob: string) {
 }
 
 export function calculateBlobUsageSize(blob: string) {
-  let trailingZeroes = 0;
+  let paddingBytes = 0;
   let i = blob.length - 1;
 
-  while (i > 0 && blob[i - 1] === "0") {
-    trailingZeroes++;
-    i--;
+  while (i > 1 && blob[i] === "0" && blob[i - 1] === "0") {
+    paddingBytes += 1;
+    i -= 2;
   }
 
   const blobBytesSize = calculateBlobBytesSize(blob);
-  const paddingBytes = trailingZeroes / 2;
 
   return blobBytesSize - paddingBytes;
 }
