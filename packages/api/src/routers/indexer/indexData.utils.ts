@@ -63,7 +63,7 @@ export function calculateBlobBytesSize(blob: string) {
   return blobLength / 2;
 }
 
-export function calculateBlobEffectiveSize(blob: string) {
+export function calculateBlobUsageSize(blob: string) {
   let trailingZeroes = 0;
   let i = blob.length - 1;
 
@@ -185,7 +185,7 @@ export function createDBBlobs({
         commitment: blob.commitment,
         proof: blob.proof,
         size: calculateBlobBytesSize(blob.data),
-        effectiveSize: calculateBlobEffectiveSize(blob.data),
+        usageSize: calculateBlobUsageSize(blob.data),
         firstBlockNumber: block.number,
       };
     }

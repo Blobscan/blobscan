@@ -8,7 +8,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -97,7 +97,7 @@ const Blocks: NextPage = function () {
           className: "w-[83px]",
         },
         {
-          item: `Blob Size Usage (${BYTES_UNIT})`,
+          item: `Blob Usage (${BYTES_UNIT})`,
           className: "w-[155px]",
         },
         {
@@ -131,12 +131,12 @@ const Blocks: NextPage = function () {
           (acc, tx) => acc + tx.blobs.length,
           0
         );
-        const blobSize = transactions
+        const totalBlobSize = transactions
           ?.flatMap((tx) => tx.blobs)
           .reduce((acc, { size }) => acc + size, 0);
-        const blobSizeUsage = transactions
+        const totalBlobUsage = transactions
           ?.flatMap((tx) => tx.blobs)
-          .reduce((acc, { effectiveSize }) => acc + effectiveSize, 0);
+          .reduce((acc, { usageSize }) => acc + usageSize, 0);
         const txsBlobs = transactions.flatMap((tx) =>
           tx.blobs.map(({ dataStorageReferences, versionedHash }, i) => ({
             transactionHash: tx.hash,
@@ -217,9 +217,9 @@ const Blocks: NextPage = function () {
             },
             {
               item: (
-                <BlobSizeUsageDisplay
-                  size={blobSize}
-                  sizeUsage={blobSizeUsage}
+                <BlobUsageDisplay
+                  blobSize={totalBlobSize}
+                  blobUsage={totalBlobUsage}
                   byteUnit={BYTES_UNIT}
                   hideUnit
                 />

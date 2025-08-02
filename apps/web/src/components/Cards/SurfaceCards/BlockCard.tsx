@@ -4,7 +4,7 @@ import type { FC } from "react";
 import { formatWei } from "@blobscan/eth-format";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import type { Block, Rollup } from "~/types";
@@ -37,9 +37,9 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
   const totalBlobSize = transactions
     ?.flatMap((tx) => tx.blobs)
     .reduce((acc, { size }) => acc + (size ?? 0), 0);
-  const totalBlobSizeUsage = transactions
+  const totalBlobUsage = transactions
     ?.flatMap((tx) => tx.blobs)
-    .reduce((acc, { effectiveSize }) => acc + (effectiveSize ?? 0), 0);
+    .reduce((acc, { usageSize }) => acc + (usageSize ?? 0), 0);
   const rollupToAmount =
     transactions?.reduce<Partial<Record<Rollup, number>>>(
       (amounts, { blobs, rollup }) => {
@@ -112,12 +112,12 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
             <span>
               {blobCount} {pluralize("Blob", blobCount ?? 0)}
             </span>
-            {totalBlobSize && totalBlobSizeUsage && (
+            {totalBlobSize && totalBlobUsage && (
               <>
                 <Separator />
-                <BlobSizeUsageDisplay
-                  size={totalBlobSize}
-                  sizeUsage={totalBlobSizeUsage}
+                <BlobUsageDisplay
+                  blobSize={totalBlobSize}
+                  blobUsage={totalBlobUsage}
                   variant="inline"
                 />
               </>

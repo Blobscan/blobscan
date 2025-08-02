@@ -5,18 +5,18 @@ import { calculatePercentage, formatBytes } from "~/utils";
 import type { ByteUnit } from "~/utils";
 import { PercentageBar } from "../PercentageBar";
 
-export interface BlobSizeUsageDisplayProps {
-  size: number;
-  sizeUsage: number;
+export interface BlobUsageDisplayProps {
+  blobSize: number;
+  blobUsage: number;
   byteUnit?: ByteUnit;
   width?: number;
   variant?: "minimal" | "inline" | "detailed";
   hideUnit?: boolean;
 }
 
-export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
-  size,
-  sizeUsage,
+export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
+  blobSize,
+  blobUsage,
   byteUnit,
   width,
   variant = "detailed",
@@ -34,7 +34,7 @@ export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
     >
       <span>
         <span>
-          {formatBytes(sizeUsage, {
+          {formatBytes(blobUsage, {
             hideUnit: hideUnit,
             unit: byteUnit,
           })}
@@ -43,14 +43,14 @@ export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
           <>
             /
             <span>
-              {formatBytes(size, {
+              {formatBytes(blobSize, {
                 hideUnit,
                 unit: byteUnit,
               })}
             </span>
             <span className="text-xs dark:text-contentTertiary-dark">
               {" "}
-              ({calculatePercentage(sizeUsage, size)}%)
+              ({calculatePercentage(blobUsage, blobSize)}%)
             </span>
           </>
         )}
@@ -62,8 +62,8 @@ export const BlobSizeUsageDisplay: FC<BlobSizeUsageDisplayProps> = function ({
           })}
         >
           <PercentageBar
-            value={sizeUsage}
-            total={size}
+            value={blobUsage}
+            total={blobSize}
             width={width ?? 140}
             hidePercentage={isDetailed}
             compact={isDetailed}

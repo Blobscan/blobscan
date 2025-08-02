@@ -7,7 +7,7 @@ import { formatWei } from "@blobscan/eth-format";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -88,7 +88,7 @@ const Txs: NextPage = function () {
         },
         { item: "Blobs", className: "w-[62px]" },
         {
-          item: `Blob Size Usage (${BYTES_UNIT})`,
+          item: `Blob Usage (${BYTES_UNIT})`,
           className: "w-[148px]",
         },
         {
@@ -131,9 +131,12 @@ const Txs: NextPage = function () {
             block,
             blockTimestamp,
           }) => {
-            const blobSize = blobs.reduce((acc, { size }) => acc + size, 0);
-            const blobSizeUsage = blobs.reduce(
-              (acc, { effectiveSize }) => acc + effectiveSize,
+            const totalBlobSize = blobs.reduce(
+              (acc, { size }) => acc + size,
+              0
+            );
+            const totalBlobUsage = blobs.reduce(
+              (acc, { usageSize }) => acc + usageSize,
               0
             );
             return {
@@ -171,9 +174,9 @@ const Txs: NextPage = function () {
                 { item: blobs.length },
                 {
                   item: (
-                    <BlobSizeUsageDisplay
-                      size={blobSize}
-                      sizeUsage={blobSizeUsage}
+                    <BlobUsageDisplay
+                      blobSize={totalBlobSize}
+                      blobUsage={totalBlobUsage}
                       byteUnit={BYTES_UNIT}
                       hideUnit
                     />
@@ -255,7 +258,7 @@ const Txs: NextPage = function () {
                           className: "w-[80px] border",
                         },
                         {
-                          item: `Size Usage (${BYTES_UNIT})`,
+                          item: `Usage (${BYTES_UNIT})`,
                           className: "w-[140px]",
                         },
                         {
@@ -275,7 +278,7 @@ const Txs: NextPage = function () {
                               versionedHash,
                               size,
                               dataStorageReferences,
-                              effectiveSize,
+                              usageSize,
                             },
                             i
                           ) => ({
@@ -302,13 +305,12 @@ const Txs: NextPage = function () {
                               {
                                 item: (
                                   <span>
-                                    {formatBytes(effectiveSize, {
+                                    {formatBytes(usageSize, {
                                       unit: BYTES_UNIT,
                                       hideUnit: true,
                                     })}{" "}
                                     <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                                      (
-                                      {calculatePercentage(effectiveSize, size)}
+                                      ({calculatePercentage(usageSize, size)}
                                       %)
                                     </span>
                                   </span>

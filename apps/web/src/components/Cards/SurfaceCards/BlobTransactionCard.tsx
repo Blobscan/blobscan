@@ -7,7 +7,7 @@ import { formatWei } from "@blobscan/eth-format";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { IconButton } from "~/components/IconButton";
 import { Rotable } from "~/components/Rotable";
 import { Separator } from "~/components/Separator";
@@ -55,7 +55,7 @@ type BlobTransactionCardProps = Partial<{
   >;
   blobs: Pick<
     Blob,
-    "versionedHash" | "size" | "effectiveSize" | "dataStorageReferences"
+    "versionedHash" | "size" | "usageSize" | "dataStorageReferences"
   >[];
   compact?: boolean;
   className?: string;
@@ -85,8 +85,8 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     breakpoint === "default";
   const displayBlobs = !compact && !!blobsOnTx?.length;
   const totalBlobSize = blobsOnTx?.reduce((acc, { size }) => acc + size, 0);
-  const totalBlobSizeUsage = blobsOnTx?.reduce(
-    (acc, { effectiveSize }) => acc + effectiveSize,
+  const totalBlobUsage = blobsOnTx?.reduce(
+    (acc, { usageSize }) => acc + usageSize,
     0
   );
 
@@ -172,12 +172,12 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                         {blobsOnTx.length} {pluralize("Blob", blobsOnTx.length)}
                       </div>
                       {typeof totalBlobSize !== "undefined" &&
-                        typeof totalBlobSizeUsage !== "undefined" && (
+                        typeof totalBlobUsage !== "undefined" && (
                           <>
                             <Separator />
-                            <BlobSizeUsageDisplay
-                              size={totalBlobSize}
-                              sizeUsage={totalBlobSizeUsage}
+                            <BlobUsageDisplay
+                              blobSize={totalBlobSize}
+                              blobUsage={totalBlobUsage}
                             />
                           </>
                         )}
@@ -251,7 +251,7 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
             ]}
             rows={blobsOnTx.map(
               (
-                { dataStorageReferences, versionedHash, size, effectiveSize },
+                { dataStorageReferences, versionedHash, size, usageSize },
                 i
               ) => ({
                 cells: [
@@ -276,9 +276,9 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   {
                     item: (
                       <span>
-                        {formatBytes(effectiveSize, BYTE_OPTS)}{" "}
+                        {formatBytes(usageSize, BYTE_OPTS)}{" "}
                         <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-                          ({calculatePercentage(effectiveSize, size)}%)
+                          ({calculatePercentage(usageSize, size)}%)
                         </span>
                       </span>
                     ),
@@ -320,7 +320,7 @@ export { BlobTransactionCard };
 //     <TableHeader>Storages</TableHeader>
 //     {blobsOnTx.map(
 //       (
-//         { dataStorageReferences, versionedHash, size, effectiveSize },
+//         { dataStorageReferences, versionedHash, size, usageSize },
 //         i
 //       ) => (
 //         <React.Fragment key={`${versionedHash}-${i}`}>
@@ -338,9 +338,9 @@ export { BlobTransactionCard };
 //           <TableCol>{formatBytes(size)}</TableCol>
 //           <TableCol>
 //             <span>
-//               {formatBytes(effectiveSize)}{" "}
+//               {formatBytes(usageSize)}{" "}
 //               <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
-//                 ({calculatePercentage(effectiveSize, size)}%)
+//                 ({calculatePercentage(usageSize, size)}%)
 //               </span>
 //             </span>
 //           </TableCol>

@@ -6,7 +6,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -144,10 +144,7 @@ const Tx: NextPage = () => {
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
-    const totalBlobEffectiveSize = blobs.reduce(
-      (acc, b) => acc + b.effectiveSize,
-      0
-    );
+    const totalBlobUsageSize = blobs.reduce((acc, b) => acc + b.usageSize, 0);
 
     detailsFields.push(
       {
@@ -162,12 +159,12 @@ const Tx: NextPage = () => {
         ),
       },
       {
-        name: "Blob Size Usage",
+        name: "Blob Usage",
 
         value: (
-          <BlobSizeUsageDisplay
-            size={totalBlobSize}
-            sizeUsage={totalBlobEffectiveSize}
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
             variant="minimal"
           />
         ),

@@ -7,7 +7,7 @@ import dayjs from "@blobscan/dayjs";
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Copyable } from "~/components/Copyable";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Filters } from "~/components/Filters";
 import { Header } from "~/components/Header";
 import { Link } from "~/components/Link";
@@ -87,7 +87,7 @@ const Blobs: NextPage = function () {
           className: "w-[150px]",
         },
 
-        { item: `Blob Size Usage (${BYTES_UNIT})`, className: "w-[180px]" },
+        { item: `Blob Usage (${BYTES_UNIT})`, className: "w-[180px]" },
         {
           item: "Storages",
           className: "w-[86px]",
@@ -101,7 +101,7 @@ const Blobs: NextPage = function () {
         ? blobs.map(
             ({
               versionedHash,
-              effectiveSize,
+              usageSize,
               size,
               dataStorageReferences,
               txHash,
@@ -163,9 +163,9 @@ const Blobs: NextPage = function () {
                 },
                 {
                   item: (
-                    <BlobSizeUsageDisplay
-                      size={size}
-                      sizeUsage={effectiveSize}
+                    <BlobUsageDisplay
+                      blobSize={size}
+                      blobUsage={usageSize}
                       byteUnit={BYTES_UNIT}
                       hideUnit
                       width={130}

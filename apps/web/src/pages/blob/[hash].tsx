@@ -19,7 +19,7 @@ import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Dropdown } from "~/components/Dropdown";
 import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
@@ -214,11 +214,11 @@ const Blob: NextPage = function () {
       },
       { name: "Size", value: formatBytes(blob.size) },
       {
-        name: "Size Usage",
+        name: "Usage",
         value: (
-          <BlobSizeUsageDisplay
-            size={blob.size}
-            sizeUsage={blob.effectiveSize}
+          <BlobUsageDisplay
+            blobSize={blob.size}
+            blobUsage={blob.usageSize}
             variant="minimal"
           />
         ),

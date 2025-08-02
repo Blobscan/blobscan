@@ -8,7 +8,7 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -90,14 +90,14 @@ const Block: NextPage = function () {
 
       return acc + totalBlobsSize;
     }, 0);
-    const totalBlobEffectiveSize = blockData?.transactions.reduce(
+    const totalBlobUsageSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
-        const totalEffectiveSize = blobs.reduce(
-          (blobAcc, { effectiveSize }) => blobAcc + effectiveSize,
+        const totalusageSize = blobs.reduce(
+          (blobAcc, { usageSize }) => blobAcc + usageSize,
           0
         );
 
-        return acc + totalEffectiveSize;
+        return acc + totalusageSize;
       },
       0
     );
@@ -187,13 +187,13 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob Size Usage",
+        name: "Blob Usage",
         helpText:
           "The actual amount of blob data in this block that contains meaningful, non-zero content.",
         value: (
-          <BlobSizeUsageDisplay
-            size={totalBlobSize}
-            sizeUsage={totalBlobEffectiveSize}
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
             variant="minimal"
           />
         ),

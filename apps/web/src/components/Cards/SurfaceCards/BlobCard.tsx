@@ -2,7 +2,7 @@ import type { FC } from "react";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
-import { BlobSizeUsageDisplay } from "~/components/Displays/BlobSizeUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
@@ -18,7 +18,7 @@ type BlobCardProps = Partial<{
     | "versionedHash"
     | "commitment"
     | "size"
-    | "effectiveSize"
+    | "usageSize"
     | "dataStorageReferences"
     | "proof"
   > & { rollup?: Rollup | null };
@@ -31,7 +31,7 @@ const BlobCard: FC<BlobCardProps> = ({
     versionedHash,
     commitment,
     size,
-    effectiveSize,
+    usageSize,
     dataStorageReferences,
     proof,
     rollup,
@@ -77,9 +77,9 @@ const BlobCard: FC<BlobCardProps> = ({
         <div className="flex flex-row items-center gap-2 text-xs">
           {size && dataStorageReferences ? (
             <>
-              <BlobSizeUsageDisplay
-                size={size}
-                sizeUsage={effectiveSize ?? 0}
+              <BlobUsageDisplay
+                blobSize={size}
+                blobUsage={usageSize ?? 0}
                 variant="inline"
               />
               {dataStorageReferences.length && (
