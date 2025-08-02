@@ -27,6 +27,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -59,6 +60,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -106,6 +108,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -157,6 +160,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -194,6 +198,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -235,6 +240,7 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     },
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -258,6 +264,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
   },
   {
@@ -276,6 +283,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
   },
   {
@@ -294,6 +302,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
@@ -312,6 +321,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -334,6 +344,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -356,6 +367,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash002",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -378,6 +390,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -396,6 +409,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -418,6 +432,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -436,6 +451,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -458,6 +474,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -480,6 +497,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -507,6 +525,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -525,6 +544,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -547,6 +567,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
 ]
@@ -574,6 +595,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -596,6 +618,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -618,6 +641,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -640,6 +664,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -662,6 +687,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -684,6 +710,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -706,6 +733,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -724,6 +752,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -746,6 +775,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -769,6 +799,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 128000,
     "txHash": "0xd80214f2e7c7271114f372b6a8baaf39bcb364448788f6d8229d2a903edf9272",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01d5cc28986f58db309e0fae63b60ade81a01667721e190ec142051240b5d436",
   },
 ]
@@ -796,6 +827,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
@@ -818,6 +850,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash013",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -840,6 +873,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -862,6 +896,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -884,6 +919,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash012",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -902,6 +938,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1400,
     "txHash": "txHash011",
     "txIndex": 4,
+    "usageSize": 100,
     "versionedHash": "blobHash005",
   },
   {
@@ -924,6 +961,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash010",
     "txIndex": 3,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -946,6 +984,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash009",
     "txIndex": 2,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -964,6 +1003,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash008",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -986,6 +1026,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1009,6 +1050,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1400,
     "txHash": "txHash011",
     "txIndex": 4,
+    "usageSize": 100,
     "versionedHash": "blobHash005",
   },
   {
@@ -1031,6 +1073,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash010",
     "txIndex": 3,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1053,6 +1096,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash009",
     "txIndex": 2,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1071,6 +1115,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash008",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1093,6 +1138,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1115,6 +1161,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash006",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1137,6 +1184,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash006",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1159,6 +1207,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash006",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1181,6 +1230,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash005",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1199,6 +1249,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash005",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1217,6 +1268,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash005",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
 ]
@@ -1244,6 +1296,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash007",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1266,6 +1319,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1284,6 +1338,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1306,6 +1361,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1333,6 +1389,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1351,6 +1408,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1373,6 +1431,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1400,6 +1459,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1418,6 +1478,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1440,6 +1501,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1463,6 +1525,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
   },
   {
@@ -1481,6 +1544,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
   },
   {
@@ -1499,6 +1563,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 131072,
     "txHash": "txHash004",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
   },
   {
@@ -1517,6 +1582,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1539,6 +1605,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1561,6 +1628,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash002",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1583,6 +1651,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1601,6 +1670,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1623,6 +1693,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1646,6 +1717,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1668,6 +1740,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash003",
     "txIndex": 2,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1690,6 +1763,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash002",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
   {
@@ -1712,6 +1786,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1200,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 124,
     "versionedHash": "blobHash003",
   },
   {
@@ -1730,6 +1805,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1100,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash002",
   },
   {
@@ -1752,6 +1828,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1000,
     "txHash": "txHash001",
     "txIndex": 0,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -1770,6 +1847,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -1792,6 +1870,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1814,6 +1893,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1836,6 +1916,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -1854,6 +1935,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -1876,6 +1958,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1898,6 +1981,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1920,6 +2004,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -1942,6 +2027,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
 ]
@@ -1960,6 +2046,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -1982,6 +2069,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -2004,6 +2092,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
   {
@@ -2026,6 +2115,7 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2044,6 +2134,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "size": 1500,
     "txHash": "txHash016",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
   },
   {
@@ -2066,6 +2157,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "size": 1300,
     "txHash": "txHash015",
     "txIndex": 0,
+    "usageSize": 1300,
     "versionedHash": "blobHash004",
   },
 ]
@@ -2093,6 +2185,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "size": 1500,
     "txHash": "0x5be77167b05f39ea8950f11b0da2bdfec6e04055030068b051ac5a43aaf251e9",
     "txIndex": 0,
+    "usageSize": 0,
     "versionedHash": "0x010001c79d78a76fb9b4bab3896ee3ea32f3e2607da7801eb1a92da39d6c1368",
   },
   {
@@ -2115,6 +2208,7 @@ exports[`Blob router > getAll > when getting paginated blob results > should ret
     "size": 1000,
     "txHash": "txHash013",
     "txIndex": 1,
+    "usageSize": 1000,
     "versionedHash": "blobHash001",
   },
 ]
@@ -2215,6 +2309,7 @@ exports[`Blob router > getByBlobId > should get a blob by kzg commitment 1`] = `
       "txIndex": 0,
     },
   ],
+  "usageSize": 1300,
   "versionedHash": "blobHash004",
 }
 `;
@@ -2263,6 +2358,7 @@ exports[`Blob router > getByBlobId > should get a blob by versioned hash 1`] = `
       "txIndex": 0,
     },
   ],
+  "usageSize": 1300,
   "versionedHash": "blobHash004",
 }
 `;

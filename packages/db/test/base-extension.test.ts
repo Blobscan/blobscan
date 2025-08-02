@@ -80,6 +80,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment1",
             proof: "newProof1",
             size: 1400,
+            usageSize: 1350,
             firstBlockNumber: 1001,
           },
           {
@@ -87,6 +88,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment2",
             proof: "newProof2",
             size: 1200,
+            usageSize: 1200,
             firstBlockNumber: 1001,
           },
           {
@@ -94,6 +96,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment3",
             proof: "newProof3",
             size: 1300,
+            usageSize: 1390,
             firstBlockNumber: 1002,
           },
         ];
@@ -137,6 +140,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment",
             proof: "newProof",
             size: 1400,
+            usageSize: 100,
             firstBlockNumber: oldBlob.firstBlockNumber,
           };
 
@@ -187,6 +191,7 @@ describe("Base Extension", () => {
               commitment: blob.commitment,
               proof: blob.proof,
               size: blob.size,
+              usageSize: blob.usageSize,
               versionedHash: blob.versionedHash,
               firstBlockNumber: (blob?.firstBlockNumber ?? 0) + 1,
             },
@@ -209,6 +214,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment001",
             proof: "newProof001",
             size: 1,
+            usageSize: 1,
             firstBlockNumber: 1001,
           },
           {
@@ -216,6 +222,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment002",
             proof: "newProof002",
             size: 2,
+            usageSize: 2,
             firstBlockNumber: 1001,
           },
           {
@@ -223,6 +230,7 @@ describe("Base Extension", () => {
             commitment: "newCommitment003",
             proof: "newProof003",
             size: 3,
+            usageSize: 1,
             firstBlockNumber: 1001,
           },
         ];
@@ -365,6 +373,7 @@ describe("Base Extension", () => {
       proof: "newProof",
       versionedHash: "newHash",
       size: 1000,
+      usageSize: 750,
       firstBlockNumber: 1001,
     };
 

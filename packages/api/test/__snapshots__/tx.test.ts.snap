@@ -19,6 +19,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [],
         "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "size": 1500,
+        "usageSize": 0,
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -64,6 +65,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -80,6 +82,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -96,6 +99,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
     ],
@@ -257,6 +261,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         "dataStorageReferences": [],
         "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "size": 1500,
+        "usageSize": 0,
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -309,6 +314,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -325,6 +331,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
       {
@@ -341,6 +348,7 @@ exports[`Transaction router > getAll > when getting expanded transaction results
         ],
         "proof": "proof004",
         "size": 1300,
+        "usageSize": 1300,
         "versionedHash": "blobHash004",
       },
     ],
@@ -3173,6 +3181,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       ],
       "proof": "proof001",
       "size": 1000,
+      "usageSize": 1000,
       "versionedHash": "blobHash001",
     },
     {
@@ -3185,6 +3194,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       ],
       "proof": "proof002",
       "size": 1100,
+      "usageSize": 1000,
       "versionedHash": "blobHash002",
     },
     {
@@ -3201,6 +3211,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       ],
       "proof": "proof003",
       "size": 1200,
+      "usageSize": 124,
       "versionedHash": "blobHash003",
     },
   ],
@@ -3323,6 +3334,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       ],
       "proof": "proof001",
       "size": 1000,
+      "usageSize": 1000,
       "versionedHash": "blobHash001",
     },
     {
@@ -3335,6 +3347,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       ],
       "proof": "proof002",
       "size": 1100,
+      "usageSize": 1000,
       "versionedHash": "blobHash002",
     },
     {
@@ -3351,6 +3364,7 @@ exports[`Transaction router > getByHash > when getting expanded transaction resu
       ],
       "proof": "proof003",
       "size": 1200,
+      "usageSize": 124,
       "versionedHash": "blobHash003",
     },
   ],
