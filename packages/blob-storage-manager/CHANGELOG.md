@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/db@0.20.0
+
+## 1.0.0
+
+### Patch Changes
+
 - Updated dependencies [[`93dbcc1`](https://github.com/Blobscan/blobscan/commit/93dbcc1f99da33132c0d8ad7f94fd16d4836c12b)]:
   - @blobscan/db@0.19.0
 
