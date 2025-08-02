@@ -112,7 +112,7 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
             <span>
               {blobCount} {pluralize("Blob", blobCount ?? 0)}
             </span>
-            {totalBlobSize && totalBlobUsage && (
+            {totalBlobSize !== undefined && totalBlobUsage !== undefined && (
               <>
                 <Separator />
                 <BlobUsageDisplay
