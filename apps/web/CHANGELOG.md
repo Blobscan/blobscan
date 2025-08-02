@@ -1,5 +1,20 @@
 # @blobscan/web
 
+## 0.35.0
+
+### Minor Changes
+
+- [#861](https://github.com/Blobscan/blobscan/pull/861) [`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage size
+
+### Patch Changes
+
+- [#863](https://github.com/Blobscan/blobscan/pull/863) [`6b640f7`](https://github.com/Blobscan/blobscan/commit/6b640f7c5e52eb7686fb8a45d2e1d87992f6e8ac) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed number formatting logic to truncate values instead of rounding when a specific number of decimal places is provided.
+
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/api@1.0.0
+  - @blobscan/db@0.20.0
+  - @blobscan/rollups@1.0.0
+
 ## 0.34.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # @blobscan/api
 
+## 1.0.0
+
+### Minor Changes
+
+- [#861](https://github.com/Blobscan/blobscan/pull/861) [`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4) Thanks [@PJColombo](https://github.com/PJColombo)! - Added blob usage size
+
+### Patch Changes
+
+- Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
+  - @blobscan/db@0.20.0
+  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/rollups@1.0.0
+
 ## 0.26.0
 
 ### Minor Changes
