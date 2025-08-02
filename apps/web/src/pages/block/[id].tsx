@@ -8,6 +8,7 @@ import { Card } from "~/components/Cards/Card";
 import { BlobTransactionCard } from "~/components/Cards/SurfaceCards/BlobTransactionCard";
 import { Copyable } from "~/components/Copyable";
 import { BlobGasUsageDisplay } from "~/components/Displays/BlobGasUsageDisplay";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -81,17 +82,26 @@ const Block: NextPage = function () {
     } = networkBlobConfig;
     const blobSize = bytesPerFieldElement * fieldElementsPerBlob;
 
-    const totalBlockBlobSize = blockData?.transactions.reduce(
+    const totalBlobSize = blockData?.transactions.reduce((acc, { blobs }) => {
+      const totalBlobsSize = blobs.reduce(
+        (blobAcc, { size }) => blobAcc + size,
+        0
+      );
+
+      return acc + totalBlobsSize;
+    }, 0);
+    const totalBlobUsageSize = blockData?.transactions.reduce(
       (acc, { blobs }) => {
-        const totalBlobsSize = blobs.reduce(
-          (blobAcc, { size }) => blobAcc + size,
+        const totalusageSize = blobs.reduce(
+          (blobAcc, { usageSize }) => blobAcc + usageSize,
           0
         );
 
-        return acc + totalBlobsSize;
+        return acc + totalusageSize;
       },
       0
     );
+    const blobCount = totalBlobSize / blobSize;
 
     const firstBlobNumber = networkName
       ? getFirstBlobNumber(networkName)
@@ -165,16 +175,27 @@ const Block: NextPage = function () {
         ),
       },
       {
-        name: "Blob size",
-        helpText: "Total amount of space used for blobs in this block.",
+        name: "Blob Size",
+        helpText: "The total amount of blob data in this block.",
         value: (
-          <div>
-            {formatBytes(totalBlockBlobSize)}
+          <span>
+            {formatBytes(totalBlobSize)}
             <span className="ml-1 text-contentTertiary-light dark:text-contentTertiary-dark">
-              ({formatNumber(totalBlockBlobSize / blobSize)}{" "}
-              {pluralize("blob", totalBlockBlobSize / blobSize)})
+              ({formatNumber(blobCount)} {pluralize("blob", blobCount)})
             </span>
-          </div>
+          </span>
+        ),
+      },
+      {
+        name: "Blob Usage",
+        helpText:
+          "The actual amount of blob data in this block that contains meaningful, non-zero content.",
+        value: (
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
+            variant="minimal"
+          />
         ),
       },
       {
@@ -186,7 +207,7 @@ const Block: NextPage = function () {
           <BlobGasUsageDisplay
             networkBlobConfig={networkBlobConfig}
             blobGasUsed={blockData.blobGasUsed}
-            compact={isCompact}
+            variant={isCompact ? "minimal" : "detailed"}
           />
         ),
       },

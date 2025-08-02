@@ -6,6 +6,7 @@ import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { Card } from "~/components/Cards/Card";
 import { BlobCard } from "~/components/Cards/SurfaceCards/BlobCard";
 import { Copyable } from "~/components/Copyable";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { EtherDisplay } from "~/components/Displays/EtherDisplay";
 import { FiatDisplay } from "~/components/Displays/FiatDisplay";
 import { DetailsLayout } from "~/components/Layouts/DetailsLayout";
@@ -143,10 +144,11 @@ const Tx: NextPage = () => {
     }
 
     const totalBlobSize = blobs.reduce((acc, b) => acc + b.size, 0);
+    const totalBlobUsageSize = blobs.reduce((acc, b) => acc + b.usageSize, 0);
 
     detailsFields.push(
       {
-        name: "Total Blob Size",
+        name: "Blob Size",
         value: (
           <span>
             {formatBytes(totalBlobSize)}{" "}
@@ -156,6 +158,18 @@ const Tx: NextPage = () => {
           </span>
         ),
       },
+      {
+        name: "Blob Usage",
+
+        value: (
+          <BlobUsageDisplay
+            blobSize={totalBlobSize}
+            blobUsage={totalBlobUsageSize}
+            variant="minimal"
+          />
+        ),
+      },
+
       {
         name: "Blob Gas Price",
         value: (

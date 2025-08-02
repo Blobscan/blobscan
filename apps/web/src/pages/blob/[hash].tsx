@@ -19,6 +19,7 @@ import { ErrorMessage } from "~/components/BlobViewer/ErrorMessage";
 import { Card } from "~/components/Cards/Card";
 import { CopyToClipboard } from "~/components/CopyToClipboard";
 import { Copyable } from "~/components/Copyable";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { Dropdown } from "~/components/Dropdown";
 import type { Option } from "~/components/Dropdown";
 import type { DetailsLayoutProps } from "~/components/Layouts/DetailsLayout";
@@ -210,10 +211,19 @@ const Blob: NextPage = function () {
       {
         name: "Proof",
         value: <Copyable value={blob.proof} tooltipText="Copy proof" />,
+      },
+      { name: "Size", value: formatBytes(blob.size) },
+      {
+        name: "Usage",
+        value: (
+          <BlobUsageDisplay
+            blobSize={blob.size}
+            blobUsage={blob.usageSize}
+            variant="minimal"
+          />
+        ),
       }
     );
-
-    detailsFields.push({ name: "Size", value: formatBytes(blob.size) });
 
     if (blob.dataStorageReferences.length > 0) {
       detailsFields.push({

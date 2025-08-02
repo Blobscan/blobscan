@@ -23,6 +23,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [],
             "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "size": 1500,
+            "usageSize": 0,
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -60,6 +61,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             ],
             "proof": "proof004",
             "size": 1300,
+            "usageSize": 1300,
             "versionedHash": "blobHash004",
           },
           {
@@ -76,6 +78,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             ],
             "proof": "proof004",
             "size": 1300,
+            "usageSize": 1300,
             "versionedHash": "blobHash004",
           },
           {
@@ -92,6 +95,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             ],
             "proof": "proof004",
             "size": 1300,
+            "usageSize": 1300,
             "versionedHash": "blobHash004",
           },
         ],
@@ -135,6 +139,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             "dataStorageReferences": [],
             "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "size": 1500,
+            "usageSize": 0,
             "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
           },
         ],
@@ -189,6 +194,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             ],
             "proof": "proof004",
             "size": 1300,
+            "usageSize": 1300,
             "versionedHash": "blobHash004",
           },
           {
@@ -205,6 +211,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             ],
             "proof": "proof004",
             "size": 1300,
+            "usageSize": 1300,
             "versionedHash": "blobHash004",
           },
           {
@@ -221,6 +228,7 @@ exports[`Block router > getAll > when getting expanded block results > should re
             ],
             "proof": "proof004",
             "size": 1300,
+            "usageSize": 1300,
             "versionedHash": "blobHash004",
           },
         ],
@@ -2785,6 +2793,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           ],
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
           "size": 131072,
+          "usageSize": 0,
           "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
         },
         {
@@ -2797,6 +2806,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           ],
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
           "size": 131072,
+          "usageSize": 0,
           "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
         },
         {
@@ -2809,6 +2819,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           ],
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
           "size": 131072,
+          "usageSize": 0,
           "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],
@@ -2855,6 +2866,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           ],
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab1",
           "size": 131072,
+          "usageSize": 0,
           "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b1",
         },
         {
@@ -2867,6 +2879,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           ],
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab2",
           "size": 131072,
+          "usageSize": 0,
           "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b2",
         },
         {
@@ -2879,6 +2892,7 @@ exports[`Block router > getByBlockId > when getting expanded block results > sho
           ],
           "proof": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ab3",
           "size": 131072,
+          "usageSize": 0,
           "versionedHash": "0x01000000000000000000000000000000000000000000000000000000000000b3",
         },
       ],

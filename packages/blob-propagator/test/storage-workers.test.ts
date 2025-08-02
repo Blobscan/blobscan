@@ -141,6 +141,7 @@ describe("Storage Workers", () => {
     proof: "test-proof",
     insertedAt: new Date(),
     size: 1,
+    usageSize: 1,
     updatedAt: new Date(),
     firstBlockNumber: null,
   };

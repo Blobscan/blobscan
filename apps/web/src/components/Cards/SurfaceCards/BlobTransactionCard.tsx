@@ -7,24 +7,37 @@ import { formatWei } from "@blobscan/eth-format";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
 import { Collapsable } from "~/components/Collapsable";
 import { Copyable } from "~/components/Copyable";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
 import { IconButton } from "~/components/IconButton";
 import { Rotable } from "~/components/Rotable";
+import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
+import { Table } from "~/components/Table";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Blob, Transaction } from "~/types";
+import type { BytesOptions, ByteUnit } from "~/utils";
 import {
   buildAddressRoute,
   buildBlobRoute,
   buildBlockRoute,
   buildTransactionRoute,
+  calculatePercentage,
   formatBytes,
   normalizeTimestamp,
-  shortenAddress,
+  pluralize,
+  shortenHash,
 } from "~/utils";
 import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
+
+const BYTE_UNIT: ByteUnit = "KiB";
+
+const BYTE_OPTS: BytesOptions = {
+  hideUnit: true,
+  unit: BYTE_UNIT,
+};
 
 type BlobTransactionCardProps = Partial<{
   transaction: Partial<
@@ -40,22 +53,13 @@ type BlobTransactionCardProps = Partial<{
       | "blobGasMaxFee"
     >
   >;
-  blobs: Pick<Blob, "versionedHash" | "size" | "dataStorageReferences">[];
+  blobs: Pick<
+    Blob,
+    "versionedHash" | "size" | "usageSize" | "dataStorageReferences"
+  >[];
   compact?: boolean;
   className?: string;
 }>;
-
-const TableCol: FC<{ children: React.ReactNode }> = function ({ children }) {
-  return (
-    <div className="truncate text-surfaceContentSecondary-light dark:text-contentSecondary-dark">
-      {children}
-    </div>
-  );
-};
-
-const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
-  return <div className="truncate text-xs font-semibold">{children}</div>;
-};
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   transaction: {
@@ -81,6 +85,10 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
     breakpoint === "default";
   const displayBlobs = !compact && !!blobsOnTx?.length;
   const totalBlobSize = blobsOnTx?.reduce((acc, { size }) => acc + size, 0);
+  const totalBlobUsage = blobsOnTx?.reduce(
+    (acc, { usageSize }) => acc + usageSize,
+    0
+  );
 
   return (
     <div>
@@ -120,14 +128,14 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   <div className="flex flex-row items-center gap-1 text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
                     <div className="flex justify-start gap-0.5">
                       <Link href={buildAddressRoute(from)}>
-                        {isCompact ? shortenAddress(from, 8) : from}
+                        {isCompact ? shortenHash(from, 8) : from}
                       </Link>
                     </div>
                     <ArrowRightIcon className="h-3 w-3" />
                     <div>
                       <div className="text-contentTertiary-light dark:text-contentTertiary-dark">
                         <Link href={buildAddressRoute(to)}>
-                          {isCompact ? shortenAddress(to, 8) : to}
+                          {isCompact ? shortenHash(to, 8) : to}
                         </Link>
                       </div>
                     </div>
@@ -161,14 +169,18 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                   {blobsOnTx ? (
                     <>
                       <div>
-                        {blobsOnTx.length} Blob{blobsOnTx.length > 1 ? "s" : ""}
+                        {blobsOnTx.length} {pluralize("Blob", blobsOnTx.length)}
                       </div>
-                      ·
-                      <div>
-                        {totalBlobSize !== undefined
-                          ? formatBytes(totalBlobSize)
-                          : undefined}
-                      </div>
+                      {typeof totalBlobSize !== "undefined" &&
+                        typeof totalBlobUsage !== "undefined" && (
+                          <>
+                            <Separator />
+                            <BlobUsageDisplay
+                              blobSize={totalBlobSize}
+                              blobUsage={totalBlobUsage}
+                            />
+                          </>
+                        )}
                     </>
                   ) : (
                     <Skeleton width={140} size="xs" />
@@ -205,17 +217,49 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
       </SurfaceCardBase>
       {blobsOnTx && (
         <Collapsable opened={opened}>
-          <div className="bg-primary-200 pr-4 dark:bg-primary-900">
-            <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr] gap-2 p-2 text-sm">
-              <TableHeader>Index</TableHeader>
-              <TableHeader>Versioned Hash</TableHeader>
-              <TableHeader>Size</TableHeader>
-              <TableHeader>Storages</TableHeader>
-              {blobsOnTx.map(
-                ({ dataStorageReferences, versionedHash, size }, i) => (
-                  <React.Fragment key={`${versionedHash}-${i}`}>
-                    <TableCol>{i}</TableCol>
-                    <TableCol>
+          <Table
+            className="mb-4 mt-2 rounded-b-lg bg-primary-50 px-8 dark:bg-primary-800"
+            size="xs"
+            fixedColumnsWidth
+            alignment="left"
+            headers={[
+              {
+                cells: [
+                  {
+                    item: "Position",
+                    className: "w-[40px]",
+                  },
+                  {
+                    item: "Versioned Hash",
+                    className: "w-[300px]",
+                  },
+                  {
+                    item: `Size (${BYTE_UNIT})`,
+                    className: "w-[100px]",
+                  },
+                  {
+                    item: `Usage Size (${BYTE_UNIT})`,
+                    className: "w-[100px]",
+                  },
+                  {
+                    item: "Storages",
+                    className: "w-[120px]",
+                  },
+                ],
+                className: "dark:border-border-dark/20",
+              },
+            ]}
+            rows={blobsOnTx.map(
+              (
+                { dataStorageReferences, versionedHash, size, usageSize },
+                i
+              ) => ({
+                cells: [
+                  {
+                    item: i,
+                  },
+                  {
+                    item: (
                       <Copyable
                         value={versionedHash}
                         tooltipText="Copy versioned hash"
@@ -224,27 +268,41 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                           {versionedHash}
                         </Link>
                       </Copyable>
-                    </TableCol>
-                    <TableCol>{formatBytes(size)}</TableCol>
-                    <TableCol>
-                      {dataStorageReferences && (
-                        <div className="flex items-center gap-2">
-                          {dataStorageReferences.map(({ storage, url }) => (
-                            <StorageBadge
-                              key={storage}
-                              storage={storage}
-                              url={url}
-                              compact
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </TableCol>
-                  </React.Fragment>
-                )
-              )}
-            </div>
-          </div>
+                    ),
+                  },
+                  {
+                    item: formatBytes(size, BYTE_OPTS),
+                  },
+                  {
+                    item: (
+                      <span>
+                        {formatBytes(usageSize, BYTE_OPTS)}{" "}
+                        <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+                          ({calculatePercentage(usageSize, size)}%)
+                        </span>
+                      </span>
+                    ),
+                  },
+                  {
+                    item: dataStorageReferences?.length ? (
+                      <div className="flex items-center gap-2">
+                        {dataStorageReferences.map(({ storage, url }) => (
+                          <StorageBadge
+                            key={storage}
+                            storage={storage}
+                            url={url}
+                            compact
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-x">Propagating…</span>
+                    ),
+                  },
+                ],
+              })
+            )}
+          />
         </Collapsable>
       )}
     </div>
@@ -252,3 +310,56 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 };
 
 export { BlobTransactionCard };
+
+// <div className="bg-primary-200 pr-4 dark:bg-primary-900">
+//   <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr_2fr] gap-2 p-2 text-sm">
+//     <TableHeader>Position</TableHeader>
+//     <TableHeader>Versioned Hash</TableHeader>
+//     <TableHeader>Size</TableHeader>
+//     <TableHeader>Usage Size</TableHeader>
+//     <TableHeader>Storages</TableHeader>
+//     {blobsOnTx.map(
+//       (
+//         { dataStorageReferences, versionedHash, size, usageSize },
+//         i
+//       ) => (
+//         <React.Fragment key={`${versionedHash}-${i}`}>
+//           <TableCol>{i}</TableCol>
+//           <TableCol>
+//             <Copyable
+//               value={versionedHash}
+//               tooltipText="Copy versioned hash"
+//             >
+//               <Link href={buildBlobRoute(versionedHash)}>
+//                 {versionedHash}
+//               </Link>
+//             </Copyable>
+//           </TableCol>
+//           <TableCol>{formatBytes(size)}</TableCol>
+//           <TableCol>
+//             <span>
+//               {formatBytes(usageSize)}{" "}
+//               <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+//                 ({calculatePercentage(usageSize, size)}%)
+//               </span>
+//             </span>
+//           </TableCol>
+//           <TableCol>
+//             {dataStorageReferences && (
+//               <div className="flex items-center gap-2">
+//                 {dataStorageReferences.map(({ storage, url }) => (
+//                   <StorageBadge
+//                     key={storage}
+//                     storage={storage}
+//                     url={url}
+//                     compact
+//                   />
+//                 ))}
+//               </div>
+//             )}
+//           </TableCol>
+//         </React.Fragment>
+//       )
+//     )}
+//   </div>
+// </div>

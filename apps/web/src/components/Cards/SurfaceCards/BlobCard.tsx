@@ -2,10 +2,12 @@ import type { FC } from "react";
 
 import { RollupBadge } from "~/components/Badges/RollupBadge";
 import { StorageBadge } from "~/components/Badges/StorageBadge";
+import { BlobUsageDisplay } from "~/components/Displays/BlobUsageDisplay";
+import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Blob, Rollup } from "~/types";
-import { buildBlobRoute, formatBytes } from "~/utils";
+import { buildBlobRoute } from "~/utils";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
@@ -13,7 +15,12 @@ import { SurfaceCardBase } from "./SurfaceCardBase";
 type BlobCardProps = Partial<{
   blob: Pick<
     Blob,
-    "versionedHash" | "commitment" | "size" | "dataStorageReferences" | "proof"
+    | "versionedHash"
+    | "commitment"
+    | "size"
+    | "usageSize"
+    | "dataStorageReferences"
+    | "proof"
   > & { rollup?: Rollup | null };
   compact?: boolean;
   className?: string;
@@ -24,6 +31,7 @@ const BlobCard: FC<BlobCardProps> = ({
     versionedHash,
     commitment,
     size,
+    usageSize,
     dataStorageReferences,
     proof,
     rollup,
@@ -66,24 +74,30 @@ const BlobCard: FC<BlobCardProps> = ({
         ) : (
           <Skeleton width={isCompact ? undefined : 740} size="xs" />
         )}
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row items-center gap-2 text-xs">
           {size && dataStorageReferences ? (
             <>
-              <div className="flex gap-2 text-xs">
-                <span>{formatBytes(size)}</span>
-              </div>
-              <span>·</span>
-              <div className="flex flex-row gap-1">
-                {dataStorageReferences.map(({ storage, url }) => (
-                  <StorageBadge
-                    key={storage}
-                    storage={storage}
-                    url={url}
-                    size="md"
-                    compact
-                  />
-                ))}
-              </div>
+              <BlobUsageDisplay
+                blobSize={size}
+                blobUsage={usageSize ?? 0}
+                variant="inline"
+              />
+              {dataStorageReferences.length && (
+                <>
+                  <Separator />
+                  <div className="flex flex-row gap-1">
+                    {dataStorageReferences.map(({ storage, url }) => (
+                      <StorageBadge
+                        key={storage}
+                        storage={storage}
+                        url={url}
+                        size="md"
+                        compact
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </>
           ) : (
             <Skeleton width={120} size="xs" />

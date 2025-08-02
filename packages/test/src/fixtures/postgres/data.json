@@ -448,6 +448,7 @@
       "commitment": "commitment001",
       "proof": "proof001",
       "size": 1000,
+      "usageSize": 1000,
       "firstBlockNumber": 1001,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -457,6 +458,7 @@
       "commitment": "commitment002",
       "proof": "proof002",
       "size": 1100,
+      "usageSize": 1000,
       "firstBlockNumber": 1001,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -466,6 +468,7 @@
       "commitment": "commitment003",
       "proof": "proof003",
       "size": 1200,
+      "usageSize": 124,
       "firstBlockNumber": 1001,
       "insertedAt": "2022-10-16T12:10:00Z",
       "updatedAt": "2022-10-16T12:10:00Z"
@@ -475,6 +478,7 @@
       "commitment": "commitment004",
       "proof": "proof004",
       "size": 1300,
+      "usageSize": 1300,
       "firstBlockNumber": 1007,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
@@ -484,6 +488,7 @@
       "commitment": "commitment005",
       "proof": "proof005",
       "size": 1400,
+      "usageSize": 100,
       "firstBlockNumber": 1004,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
@@ -493,6 +498,7 @@
       "commitment": "commitment006",
       "proof": "proof006",
       "size": 1500,
+      "usageSize": 1496,
       "insertedAt": "2023-05-10T12:10:00Z",
       "updatedAt": "2023-05-10T12:10:00Z"
     },

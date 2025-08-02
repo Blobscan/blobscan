@@ -2,6 +2,8 @@ type FormatMode = "compact" | "standard";
 
 export type Numerish = number | string | bigint;
 
+const SCALE_FACTOR = 1e10;
+
 const NUMBER_FORMAT: Record<FormatMode, Intl.NumberFormatOptions> = {
   compact: {
     notation: "compact",
@@ -91,31 +93,47 @@ export function parseDecimalNumber(value: string) {
 export function calculatePercentage(
   numerator: Numerish,
   denominator: Numerish,
-  opts?: Partial<{ returnComplement: boolean; decimals: number }>
+  opts?: Partial<{
+    asFraction?: boolean;
+    returnComplement: boolean;
+    decimals: number;
+  }>
 ): number {
   const numerator_ = normalizeNumerish(numerator);
   const denominator_ = normalizeNumerish(denominator);
+
   if (denominator_ === 0 || denominator_ === BigInt(0)) {
     return 0;
   }
+
+  const decimals = opts?.decimals ?? 2;
 
   let pct: number;
 
   if (typeof numerator_ === "number" || typeof denominator_ === "number") {
     // Perform normal division for numbers
-    pct = (Number(numerator_) / Number(denominator_)) * 100;
+    pct = Number(numerator_) / Number(denominator_);
   } else {
     // Convert both to BigInt and perform division
     const num = BigInt(numerator_);
     const den = BigInt(denominator_);
-    pct = Number((num * BigInt(100)) / den); // Convert back to number after computation
+    pct = Number((num * BigInt(SCALE_FACTOR)) / den); // Convert back to number after computation
+    pct /= SCALE_FACTOR;
   }
 
-  const decimals = opts?.decimals ?? 2;
+  pct = Number((pct * 100).toFixed(decimals));
 
-  pct = Number(pct.toFixed(decimals));
+  if (opts?.asFraction) {
+    pct /= 100;
+  }
 
-  return opts?.returnComplement ? 100 - pct : pct;
+  if (opts?.returnComplement) {
+    const total = opts?.asFraction ? 1 : 100;
+
+    return total - pct;
+  }
+
+  return pct;
 }
 
 function isNumberArray(arr: unknown[]): arr is number[] {
