@@ -278,6 +278,63 @@ describe("Indexer router", async () => {
       });
 
       describe("when indexing blobs", () => {
+        it("should calculate and store blob size correctly", async () => {
+          const expectedBlobSizes = INPUT.blobs.map((b) => ({
+            versionedHash: b.versionedHash,
+            size: b.data.slice(2).length / 2,
+          }));
+
+          const dbBlobSizes = await authorizedContext.prisma.blob.findMany({
+            select: {
+              versionedHash: true,
+              size: true,
+            },
+            where: {
+              versionedHash: {
+                in: expectedBlobSizes.map((b) => b.versionedHash),
+              },
+            },
+          });
+
+          expect(dbBlobSizes).toEqual(expectedBlobSizes);
+        });
+
+        it("should calculate and store blob usage size correctly", async () => {
+          const expectedBlobUsageSizes = INPUT.blobs.map((b) => {
+            let trailingZeroes = 0;
+            let i = b.data.length - 1;
+
+            while (i > 0 && b.data[i - 1] === "0") {
+              trailingZeroes++;
+              i--;
+            }
+
+            const totalBytes = b.data.slice(2).length / 2;
+            const paddingBytes = trailingZeroes / 2;
+
+            return {
+              versionedHash: b.versionedHash,
+              usageSize: totalBytes - paddingBytes,
+            };
+          });
+
+          const dbBlobUsageSizes = await authorizedContext.prisma.blob.findMany(
+            {
+              select: {
+                versionedHash: true,
+                usageSize: true,
+              },
+              where: {
+                versionedHash: {
+                  in: expectedBlobUsageSizes.map((b) => b.versionedHash),
+                },
+              },
+            }
+          );
+
+          expect(dbBlobUsageSizes).toEqual(expectedBlobUsageSizes);
+        });
+
         it("should index them correctly", async () => {
           const txHashes = INPUT.transactions.map((tx) => tx.hash);
           const indexedBlobs = (
