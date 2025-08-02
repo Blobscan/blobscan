@@ -27,9 +27,12 @@ export const handleReorgedSlots = jwtAuthedProcedure
   .input(inputSchema)
   .output(outputSchema)
   .mutation(async ({ ctx: { prisma }, input: { reorgedSlots } }) => {
+    // 1. Query reorged blocks and their related data
     const reorgedBlocks = await prisma.block.findMany({
       select: {
         hash: true,
+        slot: true,
+        timestamp: true,
         transactions: {
           select: {
             hash: true,
@@ -43,6 +46,7 @@ export const handleReorgedSlots = jwtAuthedProcedure
       },
     });
 
+    // 2. Create transaction fork records
     const result = await prisma.transactionFork.upsertMany(
       reorgedBlocks.flatMap((b) =>
         b.transactions.map((tx) => ({
@@ -51,6 +55,106 @@ export const handleReorgedSlots = jwtAuthedProcedure
         }))
       )
     );
+
+    // 3. Delete reorged block related data to prepare for re-indexing
+    const operations = [];
+
+    // Delete blobsOnTransactions for reorged blocks
+    const reorgedTxHashes = reorgedBlocks.flatMap(b => 
+      b.transactions.map(tx => tx.hash)
+    );
+    
+    if (reorgedTxHashes.length > 0) {
+      operations.push(
+        prisma.blobsOnTransactions.deleteMany({
+          where: {
+            txHash: {
+              in: reorgedTxHashes
+            }
+          }
+        })
+      );
+    }
+
+    // Delete transactions for reorged blocks
+    const reorgedBlockHashes = reorgedBlocks.map(b => b.hash);
+    operations.push(
+      prisma.transaction.deleteMany({
+        where: {
+          blockHash: {
+            in: reorgedBlockHashes
+          }
+        }
+      })
+    );
+
+    // Delete blobDataStorageReference for reorged blocks
+    // Note: We need to query which blobs are only referenced by these reorged blocks
+    const reorgedBlobHashes = await prisma.blob.findMany({
+      where: {
+        transactions: {
+          some: {
+            transaction: {
+              blockHash: {
+                in: reorgedBlockHashes
+              }
+            }
+          }
+        }
+      },
+      include: {
+        transactions: {
+          include: {
+            transaction: {
+              select: { blockHash: true }
+            }
+          }
+        }
+      }
+    });
+
+    // Only delete blobs that are exclusively referenced by reorged blocks
+    const safeToDeleteBlobs = reorgedBlobHashes
+      .filter(blob => blob.transactions.every((btx: any) => 
+        reorgedBlockHashes.includes(btx.transaction.blockHash)
+      ))
+      .map(blob => blob.versionedHash);
+
+    if (safeToDeleteBlobs.length > 0) {
+      operations.push(
+        prisma.blobDataStorageReference.deleteMany({
+          where: {
+            blobHash: {
+              in: safeToDeleteBlobs
+            }
+          }
+        })
+      );
+
+      operations.push(
+        prisma.blob.deleteMany({
+          where: {
+            versionedHash: {
+              in: safeToDeleteBlobs
+            }
+          }
+        })
+      );
+    }
+
+    // Delete reorged blocks
+    operations.push(
+      prisma.block.deleteMany({
+        where: {
+          slot: {
+            in: reorgedSlots
+          }
+        }
+      })
+    );
+
+    // 4. Execute delete operations
+    await prisma.$transaction(operations);
 
     let totalUpdatedSlots: number;
 
