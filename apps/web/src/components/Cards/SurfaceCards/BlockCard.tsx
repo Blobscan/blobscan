@@ -118,7 +118,6 @@ const BlockCard: FC<Partial<BlockCardProps>> = function ({
                 <BlobSizeUsageDisplay
                   size={totalBlobSize}
                   sizeUsage={totalBlobSizeUsage}
-                  byteUnit="MiB"
                   variant="inline"
                 />
               </>
