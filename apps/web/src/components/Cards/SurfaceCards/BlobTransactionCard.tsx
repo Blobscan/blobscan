@@ -12,8 +12,10 @@ import { IconButton } from "~/components/IconButton";
 import { Rotable } from "~/components/Rotable";
 import { Separator } from "~/components/Separator";
 import { Skeleton } from "~/components/Skeleton";
+import { Table } from "~/components/Table";
 import { useBreakpoint } from "~/hooks/useBreakpoint";
 import type { Blob, Transaction } from "~/types";
+import type { BytesOptions, ByteUnit } from "~/utils";
 import {
   buildAddressRoute,
   buildBlobRoute,
@@ -29,6 +31,13 @@ import { RollupBadge } from "../../Badges/RollupBadge";
 import { Link } from "../../Link";
 import { CardField } from "../Card";
 import { SurfaceCardBase } from "./SurfaceCardBase";
+
+const BYTE_UNIT: ByteUnit = "KiB";
+
+const BYTE_OPTS: BytesOptions = {
+  hideUnit: true,
+  unit: BYTE_UNIT,
+};
 
 type BlobTransactionCardProps = Partial<{
   transaction: Partial<
@@ -51,18 +60,6 @@ type BlobTransactionCardProps = Partial<{
   compact?: boolean;
   className?: string;
 }>;
-
-const TableCol: FC<{ children: React.ReactNode }> = function ({ children }) {
-  return (
-    <div className="truncate text-surfaceContentSecondary-light dark:text-contentSecondary-dark">
-      {children}
-    </div>
-  );
-};
-
-const TableHeader: FC<{ children: React.ReactNode }> = function ({ children }) {
-  return <div className="truncate text-xs font-semibold">{children}</div>;
-};
 
 const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
   transaction: {
@@ -220,21 +217,49 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
       </SurfaceCardBase>
       {blobsOnTx && (
         <Collapsable opened={opened}>
-          <div className="bg-primary-200 pr-4 dark:bg-primary-900">
-            <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr_2fr] gap-2 p-2 text-sm">
-              <TableHeader>Position</TableHeader>
-              <TableHeader>Versioned Hash</TableHeader>
-              <TableHeader>Size</TableHeader>
-              <TableHeader>Usage Size</TableHeader>
-              <TableHeader>Storages</TableHeader>
-              {blobsOnTx.map(
-                (
-                  { dataStorageReferences, versionedHash, size, effectiveSize },
-                  i
-                ) => (
-                  <React.Fragment key={`${versionedHash}-${i}`}>
-                    <TableCol>{i}</TableCol>
-                    <TableCol>
+          <Table
+            className="mb-4 mt-2 rounded-b-lg bg-primary-50 px-8 dark:bg-primary-800"
+            size="xs"
+            fixedColumnsWidth
+            alignment="left"
+            headers={[
+              {
+                cells: [
+                  {
+                    item: "Position",
+                    className: "w-[40px]",
+                  },
+                  {
+                    item: "Versioned Hash",
+                    className: "w-[300px]",
+                  },
+                  {
+                    item: `Size (${BYTE_UNIT})`,
+                    className: "w-[100px]",
+                  },
+                  {
+                    item: `Usage Size (${BYTE_UNIT})`,
+                    className: "w-[100px]",
+                  },
+                  {
+                    item: "Storages",
+                    className: "w-[120px]",
+                  },
+                ],
+                className: "dark:border-border-dark/20",
+              },
+            ]}
+            rows={blobsOnTx.map(
+              (
+                { dataStorageReferences, versionedHash, size, effectiveSize },
+                i
+              ) => ({
+                cells: [
+                  {
+                    item: i,
+                  },
+                  {
+                    item: (
                       <Copyable
                         value={versionedHash}
                         tooltipText="Copy versioned hash"
@@ -243,35 +268,41 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
                           {versionedHash}
                         </Link>
                       </Copyable>
-                    </TableCol>
-                    <TableCol>{formatBytes(size)}</TableCol>
-                    <TableCol>
+                    ),
+                  },
+                  {
+                    item: formatBytes(size, BYTE_OPTS),
+                  },
+                  {
+                    item: (
                       <span>
-                        {formatBytes(effectiveSize)}{" "}
+                        {formatBytes(effectiveSize, BYTE_OPTS)}{" "}
                         <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
                           ({calculatePercentage(effectiveSize, size)}%)
                         </span>
                       </span>
-                    </TableCol>
-                    <TableCol>
-                      {dataStorageReferences && (
-                        <div className="flex items-center gap-2">
-                          {dataStorageReferences.map(({ storage, url }) => (
-                            <StorageBadge
-                              key={storage}
-                              storage={storage}
-                              url={url}
-                              compact
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </TableCol>
-                  </React.Fragment>
-                )
-              )}
-            </div>
-          </div>
+                    ),
+                  },
+                  {
+                    item: dataStorageReferences?.length ? (
+                      <div className="flex items-center gap-2">
+                        {dataStorageReferences.map(({ storage, url }) => (
+                          <StorageBadge
+                            key={storage}
+                            storage={storage}
+                            url={url}
+                            compact
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-x">Propagating…</span>
+                    ),
+                  },
+                ],
+              })
+            )}
+          />
         </Collapsable>
       )}
     </div>
@@ -279,3 +310,56 @@ const BlobTransactionCard: FC<BlobTransactionCardProps> = function ({
 };
 
 export { BlobTransactionCard };
+
+// <div className="bg-primary-200 pr-4 dark:bg-primary-900">
+//   <div className="ml-10 grid grid-cols-[1fr_6fr_2fr_2fr_2fr] gap-2 p-2 text-sm">
+//     <TableHeader>Position</TableHeader>
+//     <TableHeader>Versioned Hash</TableHeader>
+//     <TableHeader>Size</TableHeader>
+//     <TableHeader>Usage Size</TableHeader>
+//     <TableHeader>Storages</TableHeader>
+//     {blobsOnTx.map(
+//       (
+//         { dataStorageReferences, versionedHash, size, effectiveSize },
+//         i
+//       ) => (
+//         <React.Fragment key={`${versionedHash}-${i}`}>
+//           <TableCol>{i}</TableCol>
+//           <TableCol>
+//             <Copyable
+//               value={versionedHash}
+//               tooltipText="Copy versioned hash"
+//             >
+//               <Link href={buildBlobRoute(versionedHash)}>
+//                 {versionedHash}
+//               </Link>
+//             </Copyable>
+//           </TableCol>
+//           <TableCol>{formatBytes(size)}</TableCol>
+//           <TableCol>
+//             <span>
+//               {formatBytes(effectiveSize)}{" "}
+//               <span className="text-contentTertiary-light dark:text-contentTertiary-dark">
+//                 ({calculatePercentage(effectiveSize, size)}%)
+//               </span>
+//             </span>
+//           </TableCol>
+//           <TableCol>
+//             {dataStorageReferences && (
+//               <div className="flex items-center gap-2">
+//                 {dataStorageReferences.map(({ storage, url }) => (
+//                   <StorageBadge
+//                     key={storage}
+//                     storage={storage}
+//                     url={url}
+//                     compact
+//                   />
+//                 ))}
+//               </div>
+//             )}
+//           </TableCol>
+//         </React.Fragment>
+//       )
+//     )}
+//   </div>
+// </div>
