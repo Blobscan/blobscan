@@ -1,4 +1,4 @@
-import { normalizeNumerish } from "./number";
+import { normalizeNumerish, toFixedTruncate } from "./number";
 import type { Numerish } from "./number";
 
 export const BYTE_UNITS = [
@@ -42,7 +42,7 @@ export function formatBytes(value: Numerish, opts?: BytesOptions): string {
   const formattedValue = parseFloat(
     displayAllDecimals
       ? convertedValue.toString()
-      : convertedValue.toFixed(decimals_)
+      : toFixedTruncate(convertedValue, decimals_).toString()
   ).toString();
 
   return hideUnit ? formattedValue : `${formattedValue} ${BYTE_UNITS[i]}`;
