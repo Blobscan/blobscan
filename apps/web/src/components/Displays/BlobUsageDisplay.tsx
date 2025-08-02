@@ -37,6 +37,7 @@ export const BlobUsageDisplay: FC<BlobUsageDisplayProps> = function ({
           {formatBytes(blobUsage, {
             hideUnit: hideUnit,
             unit: byteUnit,
+            displayAllDecimals: true,
           })}
         </span>
         {!isMinimal && (

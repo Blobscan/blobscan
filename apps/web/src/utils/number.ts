@@ -121,7 +121,7 @@ export function calculatePercentage(
     pct /= SCALE_FACTOR;
   }
 
-  pct = Number((pct * 100).toFixed(decimals));
+  pct = toFixedTruncate(pct * 100, decimals);
 
   if (opts?.asFraction) {
     pct /= 100;
@@ -181,4 +181,9 @@ export function normalizeNumerish(value: Numerish) {
   }
 
   return value;
+}
+
+export function toFixedTruncate(num: number, decimals: number) {
+  const factor = Math.pow(10, decimals);
+  return Math.floor(num * factor) / factor;
 }
