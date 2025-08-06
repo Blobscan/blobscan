@@ -1,6 +1,6 @@
 {
   "name": "@blobscan/blob-storage-manager",
-  "version": "1.0.0",
+  "version": "0.6.3",
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",

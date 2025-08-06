@@ -5,10 +5,10 @@
 ### Patch Changes
 
 - Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
-  - @blobscan/api@1.0.0
+  - @blobscan/api@0.27.0
   - @blobscan/db@0.20.0
-  - @blobscan/blob-propagator@1.0.0
-  - @blobscan/blob-storage-manager@1.0.0
+  - @blobscan/blob-propagator@0.4.2
+  - @blobscan/blob-storage-manager@0.6.3
   - @blobscan/syncers@0.5.2
 
 ## 0.7.2

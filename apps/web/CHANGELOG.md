@@ -11,9 +11,9 @@
 - [#863](https://github.com/Blobscan/blobscan/pull/863) [`6b640f7`](https://github.com/Blobscan/blobscan/commit/6b640f7c5e52eb7686fb8a45d2e1d87992f6e8ac) Thanks [@PJColombo](https://github.com/PJColombo)! - Fixed number formatting logic to truncate values instead of rounding when a specific number of decimal places is provided.
 
 - Updated dependencies [[`77437ef`](https://github.com/Blobscan/blobscan/commit/77437ef5b3cfd26dfed0becd7d6f313373f8e4f4)]:
-  - @blobscan/api@1.0.0
+  - @blobscan/api@0.27.0
   - @blobscan/db@0.20.0
-  - @blobscan/rollups@1.0.0
+  - @blobscan/rollups@0.3.5
 
 ## 0.34.0
 
