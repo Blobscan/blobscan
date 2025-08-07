@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.36.0
+
+### Minor Changes
+
+- [#866](https://github.com/Blobscan/blobscan/pull/866) [`30e8109`](https://github.com/Blobscan/blobscan/commit/30e8109875d6dbf5bf276862eba253e58b81f250) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed donation address on bottom bar
+
 ## 0.35.0
 
 ### Minor Changes
