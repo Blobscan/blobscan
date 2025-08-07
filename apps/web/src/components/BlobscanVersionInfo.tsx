@@ -1,4 +1,5 @@
 import { env } from "~/env.mjs";
+import { Indicator } from "./Indicator";
 import { Link } from "./Link";
 
 export const BlobscanVersionInfo: React.FC = () => {
@@ -17,14 +18,16 @@ export const BlobscanVersionInfo: React.FC = () => {
 
   return (
     <div className="flex items-center gap-1">
-      <div className="text-xs text-contentTertiary-light dark:text-contentTertiary-dark">
-        Version:
-      </div>
-      <div className="relative">
-        <Link href={url} isExternal>
-          <div className="relative -top-0.5 text-xs">{label}</div>
-        </Link>
-      </div>
+      <Indicator
+        name="Version"
+        value={
+          <div className="relative">
+            <Link href={url} isExternal>
+              <div className="relative -top-0.5 text-xs">{label}</div>
+            </Link>
+          </div>
+        }
+      />
     </div>
   );
 };
