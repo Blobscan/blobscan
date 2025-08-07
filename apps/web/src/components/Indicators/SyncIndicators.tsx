@@ -31,7 +31,7 @@ export const SyncIndicators: FC = function () {
   }
 
   return (
-    <div className="flex flex-col items-center gap-1 text-xs md:flex-row">
+    <div className="flex flex-col items-center gap-1 text-xs md:flex-row md:gap-2.5">
       {items.map((i) => (
         <Indicator key={i.name} {...i} />
       ))}
