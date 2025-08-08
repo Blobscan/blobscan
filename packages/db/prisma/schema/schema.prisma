@@ -1,0 +1,176 @@
+generator client {
+  provider        = "prisma-client-js"
+  // rhel-openssl-1.0.x is required by Vercel
+  binaryTargets   = ["native", "rhel-openssl-1.0.x", "linux-musl-openssl-3.0.x"]
+  previewFeatures = ["tracing", "metrics", "typedSql", "prismaSchemaFolder"]
+}
+
+generator enum {
+  provider = "tsx ./prisma/enum-generator"
+  output   = "../enums/index.ts"
+}
+
+generator zod {
+  provider              = "zod-prisma"
+  output                = "../zod"
+  imports               = "./zod-utils"
+  prismaJsonNullability = false
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model DailyStats {
+  id                         Int       @id @default(autoincrement())
+  day                        DateTime  @db.Date
+  category                   Category?
+  rollup                     Rollup?
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int       @default(0) @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt    @default(0) @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int       @default(0) @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int       @default(0) @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int       @default(0) @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
+
+  @@unique([day, category, rollup])
+  @@map("daily_stats")
+}
+
+model OverallStats {
+  id                         Int       @id @default(autoincrement())
+  category                   Category?
+  rollup                     Rollup?
+  /// @zod.nonnegative()
+  avgBlobAsCalldataFee       Float     @default(0) @map("avg_blob_as_calldata_fee")
+  /// @zod.nonnegative()
+  avgBlobAsCalldataMaxFee    Float     @default(0) @map("avg_blob_as_calldata_max_fee")
+  /// @zod.nonnegative()
+  avgBlobFee                 Float     @default(0) @map("avg_blob_fee")
+  /// @zod.nonnegative()
+  avgBlobGasPrice            Float     @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  avgBlobMaxFee              Float     @default(0) @map("avg_blob_max_fee")
+  /// @zod.nonnegative()
+  avgMaxBlobGasFee           Float     @default(0) @map("avg_max_blob_gas_fee")
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataFee     Decimal   @default(0) @map("total_blob_as_calldata_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataGasUsed Decimal   @default(0) @map("total_blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobAsCalldataMaxFees Decimal   @default(0) @map("total_blob_as_calldata_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice          Decimal   @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobFee               Decimal   @default(0) @map("total_blob_fee") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasUsed           Decimal   @default(0) @map("total_blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxFees           Decimal   @default(0) @map("total_blob_max_fees") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobMaxGasFees        Decimal   @default(0) @map("total_blob_max_gas_fees") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  totalBlobs                 Int       @default(0) @map("total_blobs")
+  /// @zod.nonnegative()
+  totalBlobSize              BigInt    @default(0) @map("total_blob_size")
+  /// @zod.nonnegative()
+  totalBlocks                Int       @default(0) @map("total_blocks")
+  /// @zod.nonnegative()
+  totalTransactions          Int       @default(0) @map("total_transactions")
+  /// @zod.nonnegative()
+  totalUniqueBlobs           Int       @default(0) @map("total_unique_blobs")
+  /// @zod.nonnegative()
+  totalUniqueReceivers       Int       @default(0) @map("total_unique_receivers")
+  /// @zod.nonnegative()
+  totalUniqueSenders         Int       @default(0) @map("total_unique_senders")
+  updatedAt                  DateTime  @default(now()) @map("updated_at")
+
+  @@unique([category, rollup])
+  @@map("overall_stats")
+}
+
+// NextAuth.js Models
+// NOTE: When using postgresql, mysql or sqlserver,
+// uncomment the @db.Text annotations below
+// @see https://next-auth.js.org/schemas/models
+// model Account {
+//     id                String  @id @default(cuid())
+//     userId            String
+//     type              String
+//     provider          String
+//     providerAccountId String
+//     refresh_token     String?  @db.Text
+//     access_token      String?  @db.Text
+//     expires_at        Int?
+//     token_type        String?
+//     scope             String?
+//     id_token          String?  @db.Text
+//     session_state     String?
+//     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//     @@unique([provider, providerAccountId])
+// }
+
+// model Session {
+//     id           String   @id @default(cuid())
+//     sessionToken String   @unique
+//     userId       String
+//     expires      DateTime
+//     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
+
+// model User {
+//     id            String    @id @default(cuid())
+//     name          String?
+//     email         String?   @unique
+//     emailVerified DateTime?
+//     image         String?
+//     accounts      Account[]
+//     sessions      Session[]
+// }
+
+// model VerificationToken {
+//     identifier String
+//     token      String   @unique
+//     expires    DateTime
+
+//     @@unique([identifier, token])
+// }

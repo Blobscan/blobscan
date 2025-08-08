@@ -1,0 +1,62 @@
+model Blob {
+  versionedHash    String   @id @map("versioned_hash")
+  commitment       String   @unique
+  proof            String
+  usageSize        Int      @default(0) @map("usage_size")
+  size             Int
+  /// @zod.nonnegative()
+  firstBlockNumber Int?     @map("first_block_number")
+  insertedAt       DateTime @default(now()) @map("inserted_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
+
+  dataStorageReferences BlobDataStorageReference[]
+  transactions          BlobsOnTransactions[]
+
+  @@index([firstBlockNumber])
+  @@index([proof])
+  @@index([insertedAt])
+  @@map("blob")
+}
+
+model BlobsOnTransactions {
+  blobHash       String   @map("blob_hash")
+  blockHash      String   @map("block_hash")
+  /// @zod.nonnegative()
+  blockNumber    Int      @map("block_number")
+  blockTimestamp DateTime @map("block_timestamp")
+  txHash         String   @map("tx_hash")
+  /// @zod.nonnegative()
+  txIndex        Int      @map("tx_index")
+  /// @zod.nonnegative()
+  index          Int
+
+  blob        Blob        @relation(fields: [blobHash], references: [versionedHash])
+  block       Block       @relation(fields: [blockHash], references: [hash])
+  transaction Transaction @relation(fields: [txHash], references: [hash])
+
+  @@id([txHash, index])
+  @@index([blockTimestamp, txIndex, index])
+  @@index([blockNumber, txIndex, index])
+  @@index([blobHash])
+  @@index([blockHash])
+  @@index([txHash])
+  @@map("blobs_on_transactions")
+}
+
+model BlobData {
+  id   String @id
+  data Bytes
+
+  @@map("blob_data")
+}
+
+model BlobDataStorageReference {
+  blobHash      String      @map("blob_hash")
+  blobStorage   BlobStorage @map("storage")
+  dataReference String      @map("data_reference")
+
+  blob Blob @relation(fields: [blobHash], references: [versionedHash])
+
+  @@id([blobHash, blobStorage])
+  @@map("blob_data_storage_reference")
+}
