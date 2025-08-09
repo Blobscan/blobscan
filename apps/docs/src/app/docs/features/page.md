@@ -12,4 +12,4 @@ nextjs:
 - **Rich analytics dashboard** - Gain insights into blobs, blocks and transactions. View diverse charts and metrics.
 - **Blob API** - Blobscan's API facilitates queries on blobs, their associated blocks and transactions, along with relevant statistics and metrics.
 - **Open source** - Blobscan is open-source and available to everyone. We welcome contributions too. Check out our [issues](https://github.com/Blobscan/blobscan/issues) to see how you can help.
-- **Effortless deployment**: Deploying Blobscan is a breeze. Check out our [installation guide](/docs/installation) for a step-by-step walkthrough.
+- **Effortless deployment**: Deploying Blobscan is a breeze. Check out our [installation guide](../../../app/docs/installation/page.md) for a step-by-step walkthrough.
