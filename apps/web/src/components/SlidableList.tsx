@@ -39,7 +39,7 @@ export const SlidableList: FC<SlidableListProps> = function ({
         opacity: 1,
         height: refMap.get(item)?.offsetHeight ?? 0,
         transform: "translateY(0px)",
-        marginTop: 15,
+        marginTop: 12,
         delay: (items.length - 1 - item.index) * 200,
       }),
     leave: (item) => ({
