@@ -40,16 +40,16 @@ export const SlidableList: FC<SlidableListProps> = function ({
         height: refMap.get(item)?.offsetHeight ?? 0,
         transform: "translateY(0px)",
         marginTop: 15,
-        delay: (items.length - 1 - item.index) * 150,
+        delay: (items.length - 1 - item.index) * 200,
       }),
     leave: (item) => ({
       height: 0,
       opacity: 0,
       transform: `translateY(${(items.length - item.index) * 150}px)`,
-      delay: (items.length - 1 - item.index) * 150, // 80ms per step
+      delay: (items.length - 1 - item.index) * 200,
     }),
     config: {
-      duration: 650,
+      duration: 450,
     },
   });
 

@@ -111,7 +111,7 @@ const Blocks: NextPage = function () {
         { item: `Blob Base Fees (${ETHER_UNIT})`, className: "w-[170px]" },
         {
           item: `Blob Gas Price (${ETHER_UNIT})`,
-          className: "w-[170px]",
+          className: "w-[160px]",
         },
       ],
     },
