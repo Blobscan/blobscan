@@ -196,6 +196,7 @@ const Home: NextPage = () => {
         </div>
         <div className="grid grid-cols-1 items-stretch justify-stretch gap-6 lg:grid-cols-3">
           <Card
+            className="max-h-full"
             header={
               <div className="flex flex-col flex-wrap justify-between gap-3 2xl:flex-row 2xl:items-center">
                 <div>Latest Blocks</div>
@@ -218,14 +219,20 @@ const Home: NextPage = () => {
                   ))}
               </div>
             ) : (
-              <SlidableList
-                items={blocks?.map((b) => ({
-                  id: b.hash,
-                  element: (
-                    <BlockCard className={CARD_HEIGHT} block={b} key={b.hash} />
-                  ),
-                }))}
-              />
+              <div className="h-[650px]">
+                <SlidableList
+                  items={blocks?.map((b) => ({
+                    id: b.hash,
+                    element: (
+                      <BlockCard
+                        className={CARD_HEIGHT}
+                        block={b}
+                        key={b.hash}
+                      />
+                    ),
+                  }))}
+                />
+              </div>
             )}
           </Card>
           <Card
@@ -256,28 +263,30 @@ const Home: NextPage = () => {
                   ))}
               </div>
             ) : (
-              <SlidableList
-                items={transactions.map((tx) => ({
-                  id: tx.hash,
-                  element: (
-                    <BlobTransactionCard
-                      className={CARD_HEIGHT}
-                      key={tx.hash}
-                      transaction={{
-                        from: tx.from,
-                        to: tx.to,
-                        hash: tx.hash,
-                        rollup: tx.rollup,
-                        blockTimestamp: tx.blockTimestamp,
-                        blobGasBaseFee: tx.blobGasBaseFee,
-                        blobGasMaxFee: tx.blobGasMaxFee,
-                      }}
-                      blobs={tx.blobs}
-                      compact
-                    />
-                  ),
-                }))}
-              />
+              <div className="h-[650px]">
+                <SlidableList
+                  items={transactions.map((tx) => ({
+                    id: tx.hash,
+                    element: (
+                      <BlobTransactionCard
+                        className={CARD_HEIGHT}
+                        key={tx.hash}
+                        transaction={{
+                          from: tx.from,
+                          to: tx.to,
+                          hash: tx.hash,
+                          rollup: tx.rollup,
+                          blockTimestamp: tx.blockTimestamp,
+                          blobGasBaseFee: tx.blobGasBaseFee,
+                          blobGasMaxFee: tx.blobGasMaxFee,
+                        }}
+                        blobs={tx.blobs}
+                        compact
+                      />
+                    ),
+                  }))}
+                />
+              </div>
             )}
           </Card>
           <Card
@@ -307,19 +316,21 @@ const Home: NextPage = () => {
                   ))}
               </div>
             ) : (
-              <SlidableList
-                items={blobs.map((b) => ({
-                  id: b.versionedHash,
-                  element: (
-                    <BlobCard
-                      blob={b}
-                      compact
-                      key={b.versionedHash}
-                      className={CARD_HEIGHT}
-                    />
-                  ),
-                }))}
-              />
+              <div className="h-[650px]">
+                <SlidableList
+                  items={blobs.map((b) => ({
+                    id: b.versionedHash,
+                    element: (
+                      <BlobCard
+                        blob={b}
+                        compact
+                        key={b.versionedHash}
+                        className={CARD_HEIGHT}
+                      />
+                    ),
+                  }))}
+                />
+              </div>
             )}
           </Card>
         </div>
