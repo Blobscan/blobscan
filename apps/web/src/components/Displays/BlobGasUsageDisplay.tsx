@@ -63,6 +63,7 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
   const targetSign = getTargetSign(blobGasUsed, targetBlobGasPerBlock);
   const isPositive = targetSign === "+";
   const isNegative = targetSign === "-";
+  const isZero = !isPositive && !isNegative;
 
   return (
     <div className="relative flex flex-col">
@@ -77,6 +78,8 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
       <div
         className={cn("flex items-center gap-1", {
           "absolute top-4": !isDetailedMode,
+          "gap-1": !isZero,
+          "gap-3": isZero,
         })}
       >
         <PercentageBar
@@ -92,8 +95,7 @@ export const BlobGasUsageDisplay: FC<BlobGasUsageDisplayProps> = function ({
           className={cn({
             "text-positive-light dark:text-positive-dark": isPositive,
             "text-negative-light dark:text-negative-dark": isNegative,
-            "text-contentTertiary-light dark:text-contentTertiary-dark":
-              !isPositive && !isNegative,
+            "text-contentTertiary-light dark:text-contentTertiary-dark": isZero,
             "text-sm": isDetailedMode,
             "text-[10px]": !isDetailedMode,
           })}
