@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { NextPage } from "next";
 
+import type { EtherUnit } from "@blobscan/eth-format";
 import { formatWei } from "@blobscan/eth-format";
 import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 
@@ -29,9 +30,11 @@ import {
   buildTransactionRoute,
   formatNumber,
   normalizeTimestamp,
+  shortenHash,
 } from "~/utils";
 
 const BYTES_UNIT: ByteUnit = "KiB";
+const ETHER_UNIT: EtherUnit = "Gwei";
 
 const Blocks: NextPage = function () {
   const { env } = useEnv();
@@ -101,12 +104,14 @@ const Blocks: NextPage = function () {
           className: "w-[155px]",
         },
         {
-          item: "Blob Gas Price",
-          className: "w-[165px]",
-        },
-        {
           item: "Blob Gas Usage",
-          className: "w-[340px]",
+          className: "w-[175px]",
+        },
+
+        { item: `Blob Base Fees (${ETHER_UNIT})`, className: "w-[170px]" },
+        {
+          item: `Blob Gas Price (${ETHER_UNIT})`,
+          className: "w-[170px]",
         },
       ],
     },
@@ -121,6 +126,7 @@ const Blocks: NextPage = function () {
       ({
         blobGasPrice,
         blobGasUsed,
+        blobBaseFee,
         number,
         slot,
         timestamp,
@@ -138,14 +144,18 @@ const Blocks: NextPage = function () {
           ?.flatMap((tx) => tx.blobs)
           .reduce((acc, { usageSize }) => acc + usageSize, 0);
         const txsBlobs = transactions.flatMap((tx) =>
-          tx.blobs.map(({ dataStorageReferences, versionedHash }, i) => ({
-            transactionHash: tx.hash,
-            blobVersionedHash: versionedHash,
-            blobIndex: i,
-            category: tx.category,
-            rollup: tx.rollup,
-            dataStorageReferences,
-          }))
+          tx.blobs.map(
+            ({ dataStorageReferences, versionedHash, size, usageSize }, i) => ({
+              transactionHash: tx.hash,
+              blobVersionedHash: versionedHash,
+              blobIndex: i,
+              category: tx.category,
+              rollup: tx.rollup,
+              dataStorageReferences,
+              size,
+              usageSize,
+            })
+          )
         );
         const rollupToAmount = txsBlobs.reduce<Partial<Record<Rollup, number>>>(
           (amounts, { rollup }) => {
@@ -226,9 +236,6 @@ const Blocks: NextPage = function () {
               ),
             },
             {
-              item: formatWei(blobGasPrice, { toUnit: "Gwei" }),
-            },
-            {
               item: (
                 <BlobGasUsageDisplay
                   networkBlobConfig={getNetworkBlobConfigBySlot(
@@ -241,6 +248,12 @@ const Blocks: NextPage = function () {
                 />
               ),
             },
+            {
+              item: formatWei(blobBaseFee, { toUnit: "Gwei", hideUnit: true }),
+            },
+            {
+              item: formatWei(blobGasPrice, { toUnit: "Gwei", hideUnit: true }),
+            },
           ],
           expandItem: (
             <Table
@@ -250,18 +263,23 @@ const Blocks: NextPage = function () {
               headers={[
                 {
                   cells: [
-                    { item: "" },
+                    { item: "", className: "w-[70px]" },
                     {
                       item: "Tx Hash",
+                      className: "w-[200px]",
                     },
                     {
                       item: "Position",
+                      className: "w-[200px]",
                     },
                     {
                       item: "Blob Versioned Hash",
+                      className: "w-[100px]",
                     },
+                    { item: `Usage (${BYTES_UNIT})` },
                     {
                       item: "Storages",
+                      className: "w-[200px]",
                     },
                   ],
                   className: "dark:border-border-dark/20",
@@ -276,6 +294,8 @@ const Blocks: NextPage = function () {
                   rollup,
                   category,
                   dataStorageReferences,
+                  size,
+                  usageSize,
                 }) => ({
                   cells: [
                     {
@@ -293,7 +313,7 @@ const Blocks: NextPage = function () {
                           tooltipText="Copy transaction hash"
                         >
                           <Link href={buildTransactionRoute(transactionHash)}>
-                            {transactionHash}
+                            {shortenHash(transactionHash, 27)}
                           </Link>
                         </Copyable>
                       ),
@@ -308,9 +328,20 @@ const Blocks: NextPage = function () {
                           tooltipText="Copy blob versioned hash"
                         >
                           <Link href={buildBlobRoute(blobVersionedHash)}>
-                            {blobVersionedHash}
+                            {shortenHash(blobVersionedHash, 27)}
                           </Link>
                         </Copyable>
+                      ),
+                    },
+                    {
+                      item: (
+                        <BlobUsageDisplay
+                          variant="inline"
+                          blobSize={size}
+                          blobUsage={usageSize}
+                          byteUnit={BYTES_UNIT}
+                          hideUnit
+                        />
                       ),
                     },
                     {
