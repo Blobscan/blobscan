@@ -1,5 +1,17 @@
 # @blobscan/web
 
+## 0.37.0
+
+### Minor Changes
+
+- [#870](https://github.com/Blobscan/blobscan/pull/870) [`50117fd`](https://github.com/Blobscan/blobscan/commit/50117fdd48f87759f5e62ef353ff303bde218fea) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob usage size for each block's blob on blocks page
+
+- [#870](https://github.com/Blobscan/blobscan/pull/870) [`50117fd`](https://github.com/Blobscan/blobscan/commit/50117fdd48f87759f5e62ef353ff303bde218fea) Thanks [@PJColombo](https://github.com/PJColombo)! - Displayed blob base fees on blocks page
+
+### Patch Changes
+
+- [#868](https://github.com/Blobscan/blobscan/pull/868) [`c36c314`](https://github.com/Blobscan/blobscan/commit/c36c31418e25a37c2ab7063f59ab659705fbdb85) Thanks [@PJColombo](https://github.com/PJColombo)! - Smoothed `SlidableList` animations on home page.
+
 ## 0.36.0
 
 ### Minor Changes
