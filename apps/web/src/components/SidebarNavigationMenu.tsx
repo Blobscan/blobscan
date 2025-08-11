@@ -20,11 +20,7 @@ export function SidebarNavigationMenu({ className }: { className?: string }) {
   const { env } = useEnv();
   const [open, setOpen] = useState(false);
   const navigationItems = useMemo(
-    () =>
-      getNavigationItems({
-        networkName: env?.PUBLIC_NETWORK_NAME,
-        publicSupportedNetworks: env?.PUBLIC_SUPPORTED_NETWORKS,
-      }),
+    () => getNavigationItems(env?.PUBLIC_NETWORK_NAME),
     [env]
   );
 

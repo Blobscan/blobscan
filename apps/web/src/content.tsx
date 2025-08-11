@@ -14,26 +14,20 @@ import {
   buildBlobsRoute,
   buildAllStatsRoute,
 } from "~/utils";
+import { BLOBSCAN_EXPLORERS } from "./explorers";
+import type { Network } from "./types";
 import type { RenderableIcon } from "./types/icons";
 
-function resolveApiUrl(networkName: string): string {
-  if (networkName === "mainnet") {
-    return "https://api.blobscan.com";
-  }
-
-  return `https://api.${networkName}.blobscan.com`;
-}
-
-const NETWORKS_FIRST_BLOB_NUMBER: Record<string, number> = {
+const NETWORKS_FIRST_BLOB_NUMBER: Record<Network, number> = {
   mainnet: 19426589,
   holesky: 894735,
   sepolia: 5187052,
   gnosis: 32880709,
-  chiado: 0,
+  hoodi: 0,
   devnet: 0,
 };
 
-export function getFirstBlobNumber(networkName: string): number | undefined {
+export function getFirstBlobNumber(networkName: Network): number | undefined {
   return NETWORKS_FIRST_BLOB_NUMBER[networkName];
 }
 
@@ -61,14 +55,10 @@ export function isExpandibleNavigationItem(
   return typeof item === "object" && item !== null && "items" in item;
 }
 
-export const getNavigationItems = ({
-  networkName,
-  publicSupportedNetworks,
-}: {
-  networkName?: string;
-  publicSupportedNetworks?: ExpandibleNavigationSubItem[];
-}): Array<NavigationItem | ExpandibleNavigationItem> => {
-  return [
+export const getNavigationItems = (
+  networkName?: Network
+): Array<NavigationItem | ExpandibleNavigationItem> => {
+  const items = [
     {
       label: "Blockchain",
       icon: Squares2X2Icon,
@@ -93,7 +83,10 @@ export const getNavigationItems = ({
     {
       label: "Networks",
       icon: EthereumIcon,
-      items: publicSupportedNetworks ?? [],
+      items: BLOBSCAN_EXPLORERS.map((e) => ({
+        label: e.label,
+        href: e.url,
+      })),
     },
     {
       label: "Stats",
@@ -103,7 +96,7 @@ export const getNavigationItems = ({
     {
       label: "API",
       icon: CommandLineIcon,
-      href: networkName ? resolveApiUrl(networkName) : "#",
+      href: BLOBSCAN_EXPLORERS.find((e) => e.id === networkName)?.apiUrl ?? "",
     },
     {
       label: "Docs",
@@ -111,4 +104,6 @@ export const getNavigationItems = ({
       href: "https://docs.blobscan.com",
     },
   ];
+
+  return items;
 };
