@@ -1,0 +1,51 @@
+model Transaction {
+  hash                  String   @id
+  fromId                String   @map("from_id")
+  toId                  String   @map("to_id")
+  blockHash             String   @map("block_hash")
+  /// @zod.nonnegative()
+  blockNumber           Int      @map("block_number")
+  blockTimestamp        DateTime @map("block_timestamp")
+  /// @zod.nonnegative()
+  index                 Int?
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  blobGasUsed           Decimal  @map("blob_gas_used") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  maxFeePerBlobGas      Decimal  @map("max_fee_per_blob_gas") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  gasPrice              Decimal  @map("gas_price") @db.Decimal(100, 0)
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  blobAsCalldataGasUsed Decimal  @map("blob_as_calldata_gas_used") @db.Decimal(100, 0)
+  insertedAt            DateTime @default(now()) @map("inserted_at")
+  updatedAt             DateTime @default(now()) @map("updated_at")
+  /// @zod.custom(imports.decodedFieldsSchema)
+  decodedFields         Json     @default("{}") @map("decoded_fields")
+
+  blobs BlobsOnTransactions[]
+  block Block                 @relation(fields: [blockHash], references: [hash])
+  from  Address               @relation("senderAddressRelation", fields: [fromId], references: [address])
+  to    Address               @relation("receiverAddressRelation", fields: [toId], references: [address])
+
+  transactionForks TransactionFork[]
+
+  @@index([blockHash])
+  @@index([blockTimestamp, index])
+  @@index([blockNumber, index])
+  @@index([fromId, blockTimestamp, index])
+  @@index([toId, blockTimestamp, index])
+  @@index([insertedAt])
+  @@map("transaction")
+}
+
+model TransactionFork {
+  hash       String
+  blockHash  String   @map("block_hash")
+  insertedAt DateTime @default(now()) @map("inserted_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  block       Block       @relation(fields: [blockHash], references: [hash])
+  transaction Transaction @relation(fields: [hash], references: [hash])
+
+  @@id([blockHash, hash])
+  @@map("transaction_fork")
+}
