@@ -17,11 +17,6 @@ const booleanSchema = z
   .refine((s) => s === "true" || s === "false")
   .transform((s) => s === "true");
 
-const publicSupportedNetwork = z.object({
-  label: z.string(),
-  href: z.string().url(),
-});
-
 const clientEnvVars = {
   PUBLIC_BEACON_BASE_URL: z.string().url().optional(),
   PUBLIC_EXPLORER_BASE_URL: z.string().url().optional(),
@@ -29,23 +24,6 @@ const clientEnvVars = {
   PUBLIC_SENTRY_DSN_WEB: z.string().url().optional(),
   PUBLIC_POSTHOG_ID: z.string().optional(),
   PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
-  PUBLIC_SUPPORTED_NETWORKS: z
-    .string()
-    .default(
-      '[{"label":"Ethereum Mainnet","href":"https://blobscan.com/"},{"label":"Gnosis","href":"https://gnosis.blobscan.com/"},{"label":"Holesky Testnet","href":"https://holesky.blobscan.com/"},{"label":"Sepolia Testnet","href":"https://sepolia.blobscan.com/"}]'
-    )
-    .transform((value) => JSON.parse(value))
-    .transform((value) => {
-      const res = z.array(publicSupportedNetwork).safeParse(value);
-
-      if (!res.success) {
-        throw new Error(`Failed to parse PUBLIC_SUPPORTED_NETWORKS`, {
-          cause: res.error,
-        });
-      }
-
-      return res.data;
-    }),
   PUBLIC_VERCEL_ANALYTICS_ENABLED: booleanSchema.default("false"),
 };
 
@@ -88,7 +66,6 @@ export const env = createEnv({
     PUBLIC_POSTHOG_HOST: process.env.PUBLIC_POSTHOG_HOST,
     PUBLIC_POSTHOG_ID: process.env.PUBLIC_POSTHOG_ID,
     PUBLIC_SENTRY_DSN_WEB: process.env.PUBLIC_SENTRY_DSN_WEB,
-    PUBLIC_SUPPORTED_NETWORKS: process.env.PUBLIC_SUPPORTED_NETWORKS,
     PUBLIC_VERCEL_ANALYTICS_ENABLED:
       process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED,
 
