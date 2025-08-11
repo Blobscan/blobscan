@@ -1,5 +1,11 @@
 # @blobscan/web
 
+## 0.38.0
+
+### Minor Changes
+
+- [#871](https://github.com/Blobscan/blobscan/pull/871) [`dd8b996`](https://github.com/Blobscan/blobscan/commit/dd8b9968e5af5782e7fe8275301c60cb7ad5a8b3) Thanks [@PJColombo](https://github.com/PJColombo)! - Added Blobscan Hoodi instance to network dropdown
+
 ## 0.37.0
 
 ### Minor Changes
