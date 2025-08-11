@@ -3,7 +3,12 @@ import { Storage } from "@google-cloud/storage";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
+import type {
+  BlobStorageConfig,
+  GetBlobOpts,
+  StoreBlobOpts,
+  UriOpts,
+} from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
@@ -84,9 +89,10 @@ export class GoogleStorage extends BlobStorage {
 
   protected async _storeBlob(
     versionedHash: string,
-    data: Buffer
+    data: Buffer,
+    opts: StoreBlobOpts
   ): Promise<string> {
-    const blobUri = this.getBlobUri(versionedHash);
+    const blobUri = this.getBlobUri(versionedHash, opts?.uri);
 
     await this._storageClient
       .bucket(this._bucketName)
@@ -104,8 +110,10 @@ export class GoogleStorage extends BlobStorage {
     return blobUri;
   }
 
-  getBlobUri(hash: string) {
-    return `${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
+  getBlobUri(hash: string, opts?: UriOpts) {
+    return `${
+      opts?.prefix ? `${opts.prefix}/` : ""
+    }${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
       4,
       6
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;

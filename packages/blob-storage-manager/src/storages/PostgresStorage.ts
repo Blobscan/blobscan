@@ -2,7 +2,7 @@ import type { BlobscanPrismaClient } from "@blobscan/db";
 import { PrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import type { BlobStorageConfig } from "../BlobStorage";
+import type { BlobStorageConfig, StoreBlobOpts, UriOpts } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
@@ -56,8 +56,12 @@ export class PostgresStorage extends BlobStorage {
     }
   }
 
-  protected async _storeBlob(versionedHash: string, data: Buffer) {
-    const id = versionedHash;
+  protected async _storeBlob(
+    versionedHash: string,
+    data: Buffer,
+    { uri: uriOpts }: StoreBlobOpts = {}
+  ) {
+    const id = this.getBlobUri(versionedHash, uriOpts);
 
     await this.client.blobData.upsert({
       create: {
@@ -75,8 +79,14 @@ export class PostgresStorage extends BlobStorage {
     return versionedHash;
   }
 
-  getBlobUri(hash: string) {
-    return hash;
+  getBlobUri(hash: string, opts?: UriOpts) {
+    let uri = hash;
+
+    if (opts?.prefix) {
+      uri = `${opts.prefix}-${uri}`;
+    }
+
+    return uri;
   }
 
   static async create(config: PostgresStorageConfig) {
