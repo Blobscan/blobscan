@@ -19,11 +19,7 @@ import { Icon } from "./Icon";
 export const NavigationMenus: FC = () => {
   const { env } = useEnv();
   const navigationItems = useMemo(
-    () =>
-      getNavigationItems({
-        networkName: env?.PUBLIC_NETWORK_NAME,
-        publicSupportedNetworks: env?.PUBLIC_SUPPORTED_NETWORKS,
-      }),
+    () => getNavigationItems(env?.PUBLIC_NETWORK_NAME),
     [env]
   );
 

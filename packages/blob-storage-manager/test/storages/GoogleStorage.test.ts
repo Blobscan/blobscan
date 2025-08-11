@@ -7,7 +7,7 @@ import { testValidError } from "@blobscan/test";
 import { GoogleStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
 import type { GoogleStorageConfig } from "../../src/storages";
-import { hexToBytes } from "../../src/utils";
+import { bytesToHex, hexToBytes } from "../../src/utils";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH } from "../fixtures";
 
 class GoogleStorageMock extends GoogleStorage {
@@ -116,6 +116,27 @@ describe("GoogleStorage", () => {
     const blob = await storage.getBlob(file);
 
     expect(blob).toEqual(NEW_BLOB_DATA);
+  });
+
+  it("should store a temporary blob", async () => {
+    const blobReference = await storage.storeBlob(
+      NEW_BLOB_HASH,
+      NEW_BLOB_DATA,
+      { asTemporary: true }
+    );
+
+    const res = await fetch(
+      `${env.GOOGLE_STORAGE_API_ENDPOINT}/storage/v1/b/${
+        env.GOOGLE_STORAGE_BUCKET_NAME
+      }/o/${encodeURIComponent(blobReference)}?alt=media`
+    );
+
+    const blobData = await res.arrayBuffer();
+
+    expect(bytesToHex(Buffer.from(blobData))).toBe(NEW_BLOB_DATA);
+    expect(blobReference, "blob temporary uri mismatch").toMatchInlineSnapshot(
+      '"incoming-blobs/1/01/00/ea/0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.bin"'
+    );
   });
 
   it("should return an uri when storing a blob", async () => {

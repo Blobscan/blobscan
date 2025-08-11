@@ -1,13 +1,10 @@
 import { useCallback, useMemo } from "react";
 
-import type {
-  ExternalExplorer,
-  ExternalExplorerId,
-} from "~/external-explorers";
+import type { ExternalExplorer, ExternalExplorerId } from "~/explorers";
 import {
   EXTERNAL_CONSENSUS_EXPLORERS,
   EXTERNAL_EXECUTION_EXPLORERS,
-} from "~/external-explorers";
+} from "~/explorers";
 import { useEnv } from "~/providers/Env";
 
 export type ExplorerResource = {

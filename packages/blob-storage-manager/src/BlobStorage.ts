@@ -12,6 +12,14 @@ export interface GetBlobOpts {
   fileType?: BlobFileType;
 }
 
+export interface StoreBlobOpts {
+  uri?: UriOpts;
+}
+
+export interface UriOpts {
+  prefix?: string;
+}
+
 export abstract class BlobStorage {
   chainId: number;
   name: BlobStorageName;
@@ -23,10 +31,14 @@ export abstract class BlobStorage {
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
-  protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
+  protected abstract _storeBlob(
+    hash: string,
+    data: Buffer,
+    opts?: StoreBlobOpts
+  ): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
 
-  abstract getBlobUri(hash: string): string | undefined;
+  abstract getBlobUri(hash: string, opts?: UriOpts): string | undefined;
 
   protected async healthCheck(): Promise<"OK"> {
     try {
@@ -67,10 +79,18 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeBlob(hash: string, data: string | Buffer): Promise<string> {
+  async storeBlob(
+    hash: string,
+    data: string | Buffer,
+    { asTemporary }: { asTemporary: boolean } = {
+      asTemporary: false,
+    }
+  ): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
-      const res = await this._storeBlob(hash, normalizedData);
+      const res = await this._storeBlob(hash, normalizedData, {
+        uri: asTemporary ? { prefix: "incoming-blobs" } : undefined,
+      });
 
       return res;
     } catch (err) {

@@ -43,3 +43,41 @@ export const EXTERNAL_CONSENSUS_EXPLORERS: ExternalExplorer[] = [
     },
   },
 ];
+
+export const BLOBSCAN_EXPLORERS: {
+  id: Network;
+  label: string;
+  url: string;
+  apiUrl: string;
+}[] = [
+  {
+    id: "mainnet",
+    label: "Ethereum Mainnet",
+    url: "https://blobscan.com",
+    apiUrl: "https://api.blobscan.com",
+  },
+  {
+    id: "gnosis",
+    label: "Gnosis",
+    url: "https://gnosis.blobscan.com",
+    apiUrl: "https://api.gnosis.blobscan.com",
+  },
+  {
+    id: "hoodi",
+    label: "Hoodi Testnet",
+    url: "https://hoodi.blobscan.com",
+    apiUrl: "https://api.hoodi.blobscan.com",
+  },
+  {
+    id: "holesky",
+    label: "Holesky Testnet",
+    url: "https://holesky.blobscan.com",
+    apiUrl: "https://api.holesky.blobscan.com",
+  },
+  {
+    id: "sepolia",
+    label: "Sepolia Testnet",
+    url: "https://sepolia.blobscan.com",
+    apiUrl: "https://api.sepolia.blobscan.com",
+  },
+];
