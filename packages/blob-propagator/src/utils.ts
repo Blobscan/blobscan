@@ -1,6 +1,5 @@
 import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
 
-import type { BlobReference } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
 import { DEFAULT_JOB_OPTIONS } from "./constants";
@@ -32,6 +31,22 @@ export function computeLinearPriority(
   return Math.round(relative * MAX_JOB_PRIORITY);
 }
 
+export function computeJobPriority({
+  blobBlockNumber,
+  highestBlockNumber,
+}: {
+  blobBlockNumber?: number;
+  highestBlockNumber?: number;
+}) {
+  if (!blobBlockNumber) {
+    return 1;
+  }
+
+  return computeLinearPriority(blobBlockNumber, {
+    max: highestBlockNumber ?? blobBlockNumber,
+  });
+}
+
 export function buildJobId(...parts: string[]) {
   return parts.join("-");
 }
@@ -48,7 +63,7 @@ export function createBlobPropagationFlowJob(
   const propagationFlowJobId = buildJobId(workerName, versionedHash);
 
   const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash, blobRetentionMode, {
+    createBlobStorageJob(name, versionedHash, temporaryBlobUri, {
       priority,
     })
   );
@@ -72,7 +87,7 @@ export function createBlobPropagationFlowJob(
 export function createBlobStorageJob(
   storageWorkerName: string,
   versionedHash: string,
-  blobRetentionMode?: BlobRetentionMode,
+  temporaryBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
@@ -82,7 +97,7 @@ export function createBlobStorageJob(
     queueName: storageWorkerName,
     data: {
       versionedHash,
-      blobRetentionMode,
+      temporaryBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -94,7 +109,7 @@ export function createBlobStorageJob(
 }
 
 export async function propagateBlob(
-  { blobRetentionMode, versionedHash }: BlobPropagationJobData,
+  { versionedHash, temporaryBlobUri }: BlobPropagationJobData,
   targetStorageName: BlobStorage,
   {
     blobStorageManager,
@@ -103,55 +118,15 @@ export async function propagateBlob(
   }: BlobPropagationWorkerParams
 ) {
   try {
-    let blobData: string;
-    const uri = temporaryBlobStorage.getBlobUri(versionedHash);
-    const rawUri = uri?.slice(0, -4);
-    const binUri = `${rawUri}.bin`;
-    const txtUri = `${rawUri}.txt`;
-
-    try {
-      // TODO: Remove this. It's a temporary fetching logic while we still have both binary and txt files
-      try {
-        blobData = await temporaryBlobStorage.getBlob(binUri).catch((_) => {
-          return temporaryBlobStorage.getBlob(txtUri);
-        });
-
-        logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
-      } catch (err) {
-        blobData = await blobStorageManager
-          .getBlobByHash(versionedHash)
-          .then(({ data }) => data);
-      }
-    } catch (err) {
-      const blobRefs = await prisma.blobDataStorageReference
-        .findMany({
-          where: {
-            blobHash: versionedHash,
-          },
-        })
-        .then((refs): BlobReference[] =>
-          refs.map((ref) => ({
-            reference: ref.dataReference,
-            storage: ref.blobStorage,
-          }))
-        );
-
-      if (!blobRefs.length) {
-        throw new Error(
-          `No blob storage references found to retrieve data from`
-        );
-      }
-
-      const result = await blobStorageManager.getBlobByReferences(...blobRefs);
-
-      blobData = result.data;
-    }
-
     const targetStorage = blobStorageManager.getStorage(targetStorageName);
 
     if (!targetStorage) {
       throw new Error(`Target storage "${targetStorageName}" not found`);
     }
+
+    const blobData = await temporaryBlobStorage.getBlob(temporaryBlobUri);
+
+    logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
 
     const blobUri = await targetStorage.storeBlob(versionedHash, blobData);
 
@@ -171,13 +146,6 @@ export async function propagateBlob(
         },
       },
     });
-
-    if (blobRetentionMode === "eager") {
-      await Promise.allSettled([
-        temporaryBlobStorage.removeBlob(binUri),
-        temporaryBlobStorage.removeBlob(txtUri),
-      ]);
-    }
 
     return {
       storage: targetStorageName,

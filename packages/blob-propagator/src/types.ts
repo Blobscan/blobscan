@@ -18,6 +18,7 @@ export type BlobPropagationInput = {
 export type BlobPropagationJobData = {
   versionedHash: string;
   blobRetentionMode: BlobRetentionMode;
+  temporaryBlobUri: string;
 };
 
 export type BlobPropagationFinalizerJobData = {

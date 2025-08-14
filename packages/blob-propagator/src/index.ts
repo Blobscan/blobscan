@@ -8,5 +8,6 @@ export * from "./types";
 export {
   createBlobPropagationFlowJob,
   createBlobStorageJob,
+  computeJobPriority,
   buildJobId,
 } from "./utils";
