@@ -7,7 +7,6 @@ import { logger } from "./logger";
 import type {
   BlobPropagationJobData,
   BlobPropagationWorkerParams,
-  BlobRetentionMode,
 } from "./types";
 
 export const MAX_JOB_PRIORITY = 2_097_152;
@@ -56,7 +55,6 @@ export function createBlobPropagationFlowJob(
   storageWorkerNames: string[],
   versionedHash: string,
   temporaryBlobUri: string,
-  blobRetentionMode: BlobRetentionMode,
   opts: Partial<JobsOptions> = {}
 ): FlowJob {
   const { priority, ...restOpts } = opts;
@@ -72,7 +70,6 @@ export function createBlobPropagationFlowJob(
     name: `propagateBlob:${propagationFlowJobId}`,
     queueName: workerName,
     data: {
-      blobRetentionMode,
       temporaryBlobUri,
     },
     opts: {

@@ -40,10 +40,6 @@ export class MockedBlobPropagator extends BlobPropagator {
     return super.createBlobPropagationFlowJob(params);
   }
 
-  getBlobRetentionMode() {
-    return this.blobRetentionMode;
-  }
-
   getFinalizerWorker() {
     return this.finalizerWorker;
   }
@@ -110,7 +106,6 @@ describe("BlobPropagator", () => {
     tmpBlobStorage = tmpStorage as FileSystemStorage;
 
     blobPropagator = await MockedBlobPropagator.create({
-      blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
       blobStorageManager,
       prisma,
       tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
@@ -126,7 +121,6 @@ describe("BlobPropagator", () => {
     it("should return an instance", async () => {
       await expect(
         BlobPropagator.create({
-          blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
           blobStorageManager,
           prisma,
           tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
@@ -137,7 +131,6 @@ describe("BlobPropagator", () => {
 
     it("should return an instance with the highest block number set to the last finalized block", async () => {
       const propagator = await MockedBlobPropagator.create({
-        blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
         blobStorageManager,
         prisma,
         tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
@@ -248,7 +241,6 @@ describe("BlobPropagator", () => {
     it("should have the correct data", () => {
       expect(flowJob.data).toEqual({
         temporaryBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
-        blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
       });
     });
 
@@ -307,7 +299,6 @@ describe("BlobPropagator", () => {
 
       it("should have the correct data", () => {
         const expectedJobData = blobPropagator.getStorageWorkers().map((_) => ({
-          blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
           versionedHash: flowJobBlob.blobHash,
         }));
 

@@ -7,8 +7,6 @@ import type {
 } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
-export type BlobRetentionMode = "eager" | "lazy";
-
 export type BlobPropagationInput = {
   blockNumber?: number;
   versionedHash: string;
@@ -17,7 +15,6 @@ export type BlobPropagationInput = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
-  blobRetentionMode: BlobRetentionMode;
   temporaryBlobUri: string;
 };
 
