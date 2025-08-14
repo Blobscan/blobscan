@@ -20,6 +20,8 @@ export interface UriOpts {
   prefix?: string;
 }
 
+export const TEMPORARY_BLOB_URI_PREFIX = "incoming-blobs";
+
 export abstract class BlobStorage {
   chainId: number;
   name: BlobStorageName;
@@ -89,7 +91,7 @@ export abstract class BlobStorage {
     try {
       const normalizedData = normalizeBlobData(data);
       const res = await this._storeBlob(hash, normalizedData, {
-        uri: asTemporary ? { prefix: "incoming-blobs" } : undefined,
+        uri: asTemporary ? { prefix: TEMPORARY_BLOB_URI_PREFIX } : undefined,
       });
 
       return res;
