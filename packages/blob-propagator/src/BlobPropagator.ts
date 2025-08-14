@@ -367,7 +367,8 @@ export class BlobPropagator {
     try {
       const blobUri = await this.temporaryBlobStorage.storeBlob(
         versionedHash,
-        data
+        data,
+        { asTemporary: true }
       );
 
       return blobUri;
