@@ -34,7 +34,6 @@ import type {
   BlobPropagationInput,
   BlobPropagationWorker,
   BlobPropagationWorkerProcessor,
-  BlobRetentionMode,
 } from "./types";
 import {
   createBlobPropagationFlowJob as _createBlobPropagationFlowJob,
@@ -50,7 +49,6 @@ import {
 } from "./worker-processors";
 
 export type BlobPropagatorConfig = {
-  blobRetentionMode?: BlobRetentionMode;
   blobStorageManager: BlobStorageManager;
   highestBlockNumber?: number;
   tmpBlobStorage: BlobStorageName;
@@ -81,11 +79,9 @@ export class BlobPropagator {
 
   protected jobOptions: Partial<JobsOptions>;
 
-  protected blobRetentionMode: BlobRetentionMode;
   protected highestBlockNumber?: number;
 
   protected constructor({
-    blobRetentionMode = "eager",
     blobStorageManager,
     prisma,
     redisConnectionOrUri,
@@ -166,7 +162,6 @@ export class BlobPropagator {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
     };
-    this.blobRetentionMode = blobRetentionMode;
     this.highestBlockNumber = highestBlockNumber;
 
     logger.info("Blob propagator started successfully");
@@ -270,7 +265,6 @@ export class BlobPropagator {
       storageWorkerNames,
       versionedHash,
       temporalBlobUri,
-      this.blobRetentionMode,
       {
         priority: jobPriority,
       }
