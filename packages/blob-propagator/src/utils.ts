@@ -1,7 +1,5 @@
 import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
 
-import type { BlobStorage } from "@blobscan/db/prisma/enums";
-
 import { DEFAULT_JOB_OPTIONS } from "./constants";
 import { logger } from "./logger";
 import type {
@@ -107,23 +105,13 @@ export function createBlobStorageJob(
 
 export async function propagateBlob(
   { versionedHash, stagingBlobUri }: BlobPropagationJobData,
-  targetStorageName: BlobStorage,
-  {
-    blobStorageManager,
-    prisma,
-    temporaryBlobStorage,
-  }: BlobPropagationWorkerParams
+  { targetBlobStorage, prisma, stagingBlobStorage }: BlobPropagationWorkerParams
 ) {
+  const targetStorageName = targetBlobStorage.name;
   try {
-    const targetStorage = blobStorageManager.getStorage(targetStorageName);
-
-    if (!targetStorage) {
-      throw new Error(`Target storage "${targetStorageName}" not found`);
-    }
-
     let blobData: string;
     try {
-      blobData = await temporaryBlobStorage.getBlob(stagingBlobUri);
+      blobData = await stagingBlobStorage.getBlob(stagingBlobUri);
     } catch (err) {
       const ref = await prisma.blobDataStorageReference.findUnique({
         where: {
@@ -146,7 +134,7 @@ export async function propagateBlob(
 
     logger.debug(`Blob ${versionedHash} retrieved from staging storage`);
 
-    const blobUri = await targetStorage.storeBlob(versionedHash, blobData);
+    const blobUri = await targetBlobStorage.storeBlob(versionedHash, blobData);
 
     await prisma.blobDataStorageReference.upsert({
       create: {

@@ -47,7 +47,7 @@ import {
 export type BlobPropagatorConfig = {
   blobStorageManager: BlobStorageManager;
   highestBlockNumber?: number;
-  tmpBlobStorage: BlobStorageName;
+  stagingBlobStorageName: BlobStorageName;
   prisma: BlobscanPrismaClient;
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
@@ -67,7 +67,7 @@ export const STORAGE_WORKER_PROCESSORS: Record<
 };
 
 export class BlobPropagator {
-  protected temporaryBlobStorage: BlobStorage;
+  protected stagingBlobStorage: BlobStorage;
 
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
@@ -83,7 +83,7 @@ export class BlobPropagator {
     prisma,
     redisConnectionOrUri,
     highestBlockNumber,
-    tmpBlobStorage,
+    stagingBlobStorageName,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
   }: BlobPropagatorConfig) {
@@ -97,16 +97,20 @@ export class BlobPropagator {
       ...workerOptions,
     };
 
-    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
+    const stagingBlobStorage = blobStorageManager.getStorage(
+      stagingBlobStorageName
+    );
 
-    if (!temporaryBlobStorage) {
-      throw new BlobPropagatorCreationError("Temporary blob storage not found");
+    if (!stagingBlobStorage) {
+      throw new BlobPropagatorCreationError(
+        `Staging blob storage ${stagingBlobStorageName} not found`
+      );
     }
 
     const availableStorageNames = blobStorageManager
       .getAllStorages()
       .map((s) => s.name)
-      .filter((name) => name !== tmpBlobStorage)
+      .filter((name) => name !== stagingBlobStorageName)
       .filter((name) => {
         const hasWorkerProcessor = !!STORAGE_WORKER_PROCESSORS[name];
 
@@ -135,12 +139,20 @@ export class BlobPropagator {
           );
         }
 
+        const targetBlobStorage = blobStorageManager.getStorage(storageName);
+
+        if (!targetBlobStorage) {
+          throw new BlobPropagatorCreationError(
+            `Blob storage ${storageName} not found`
+          );
+        }
+
         return this.#createWorker(
           STORAGE_WORKER_NAMES[storageName],
           workerProcessor({
             prisma,
-            blobStorageManager,
-            temporaryBlobStorage,
+            targetBlobStorage,
+            stagingBlobStorage,
           }),
           workerOptions_
         );
@@ -151,12 +163,12 @@ export class BlobPropagator {
 
     this.finalizerWorker = this.#createWorker(
       FINALIZER_WORKER_NAME,
-      finalizerProcessor({ temporaryBlobStorage }),
+      finalizerProcessor({ stagingBlobStorage }),
       workerOptions_
     );
 
     this.blobPropagationFlowProducer = this.#createFlowProducer(connection);
-    this.temporaryBlobStorage = temporaryBlobStorage;
+    this.stagingBlobStorage = stagingBlobStorage;
     this.jobOptions = {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
@@ -185,7 +197,7 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const stagingBlobUri = await this.temporaryBlobStorage.stageBlob(
+      const stagingBlobUri = await this.stagingBlobStorage.stageBlob(
         versionedHash,
         data
       );
@@ -223,7 +235,7 @@ export class BlobPropagator {
 
       const stagingBlobUris = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
-          this.temporaryBlobStorage.storeBlob(versionedHash, data)
+          this.stagingBlobStorage.storeBlob(versionedHash, data)
         )
       );
 
