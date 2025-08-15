@@ -15,13 +15,7 @@ export interface GetBlobOpts {
 export const STAGING_BLOB_URI_PREFIX = "staging-blobs";
 
 export abstract class BlobStorage {
-  chainId: number;
-  name: BlobStorageName;
-
-  constructor(name: BlobStorageName, chainId: number) {
-    this.name = name;
-    this.chainId = chainId;
-  }
+  constructor(readonly name: BlobStorageName, readonly chainId: number) {}
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
