@@ -24,24 +24,23 @@ async function createBlobPropagator() {
       .find((storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE)
   ) {
     try {
-      const tmpStorage = await createStorageFromEnv(
+      const stagingBlobStorage = await createStorageFromEnv(
         env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
       );
 
-      if (tmpStorage) {
-        blobStorageManager.addStorage(tmpStorage);
+      if (stagingBlobStorage) {
+        blobStorageManager.addStorage(stagingBlobStorage);
       }
     } catch (err) {
-      throw new Error(`Failed to create temporary blob storage: ${err}`);
+      throw new Error(`Failed to create staging blob storage: ${err}`);
     }
   }
 
   return BlobPropagator.create({
     blobStorageManager,
     prisma,
-    tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+    stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
     redisConnectionOrUri: env.REDIS_URI,
-    blobRetentionMode: env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE,
   });
 }
 

@@ -57,7 +57,7 @@ export class MockedBlobPropagator extends BlobPropagator {
   }
 
   getTemporaryBlobStorage() {
-    return this.temporaryBlobStorage;
+    return this.stagingBlobStorage;
   }
 
   setHighestBlockNumber(blockNumber?: number) {
@@ -108,7 +108,7 @@ describe("BlobPropagator", () => {
     blobPropagator = await MockedBlobPropagator.create({
       blobStorageManager,
       prisma,
-      tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+      stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
       redisConnectionOrUri: env.REDIS_URI,
     });
 
@@ -123,7 +123,7 @@ describe("BlobPropagator", () => {
         BlobPropagator.create({
           blobStorageManager,
           prisma,
-          tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
           redisConnectionOrUri: env.REDIS_URI,
         })
       ).resolves.toBeDefined();
@@ -133,7 +133,7 @@ describe("BlobPropagator", () => {
       const propagator = await MockedBlobPropagator.create({
         blobStorageManager,
         prisma,
-        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
         redisConnectionOrUri: env.REDIS_URI,
       });
 
@@ -162,7 +162,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorageManager: emptyBlobStorageManager,
           prisma,
-          tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -182,7 +182,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorageManager,
           prisma,
-          tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -206,7 +206,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorageManager: noTmpStorageBlobStorageManager,
           prisma,
-          tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -538,7 +538,7 @@ describe("BlobPropagator", () => {
       closingBlobPropagator = await MockedBlobPropagator.create({
         blobStorageManager,
         prisma,
-        tmpBlobStorage: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
         redisConnectionOrUri: env.REDIS_URI,
       });
     });

@@ -3,7 +3,6 @@ import type { Job, Processor, Queue, Worker } from "bullmq";
 import type {
   BlobReference,
   BlobStorage,
-  BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 
@@ -27,13 +26,13 @@ export type BlobPropagationJob = Job<BlobPropagationJobData>;
 export type BlobPropagationFinalizerJob = Job<BlobPropagationFinalizerJobData>;
 
 export type BlobPropagationWorkerParams = {
-  blobStorageManager: BlobStorageManager;
+  targetBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
-  temporaryBlobStorage: BlobStorage;
+  stagingBlobStorage: BlobStorage;
 };
 
 export type BlobPropagationFinalizerWorkerParams = {
-  temporaryBlobStorage: BlobStorage;
+  stagingBlobStorage: BlobStorage;
 };
 
 export type BlobPropagationWorkerProcessor = (
