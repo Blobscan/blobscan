@@ -1,5 +1,6 @@
 import "./polyfill";
 import fs from "fs";
+import path from "path";
 import { afterAll, beforeAll, beforeEach, vi } from "vitest";
 
 import { fixtures } from "./fixtures";
@@ -31,11 +32,14 @@ beforeEach(async () => {
 afterAll(async () => {
   vi.useRealTimers();
 
-  if (
-    process.env.FILE_SYSTEM_STORAGE_PATH &&
-    fs.existsSync(process.env.FILE_SYSTEM_STORAGE_PATH)
-  ) {
-    fs.rmSync(process.env.FILE_SYSTEM_STORAGE_PATH, { recursive: true });
+  const fsStoragePath = process.env.FILE_SYSTEM_STORAGE_PATH;
+
+  if (fsStoragePath && fs.existsSync(fsStoragePath)) {
+    fs.rmSync(fsStoragePath, { recursive: true });
+  }
+
+  if (fsStoragePath && fs.existsSync("staging-blobs")) {
+    fs.rmSync("staging-blobs", { recursive: true });
   }
 
   await prisma
