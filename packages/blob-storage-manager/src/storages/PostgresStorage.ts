@@ -2,7 +2,7 @@ import type { BlobscanPrismaClient } from "@blobscan/db";
 import { PrismaClient } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import type { BlobStorageConfig, StoreBlobOpts, UriOpts } from "../BlobStorage";
+import type { BlobStorageConfig } from "../BlobStorage";
 import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
@@ -56,37 +56,31 @@ export class PostgresStorage extends BlobStorage {
     }
   }
 
-  protected async _storeBlob(
-    versionedHash: string,
-    data: Buffer,
-    { uri: uriOpts }: StoreBlobOpts = {}
-  ) {
-    const id = this.getBlobUri(versionedHash, uriOpts);
+  protected async _storeBlob(hash: string, data: Buffer) {
+    const uri = this.getBlobUri(hash);
 
     await this.client.blobData.upsert({
       create: {
         data,
-        id,
+        id: uri,
       },
       update: {
         data,
       },
       where: {
-        id,
+        id: uri,
       },
     });
 
-    return versionedHash;
+    return uri;
   }
 
-  getBlobUri(hash: string, opts?: UriOpts) {
-    let uri = hash;
+  protected _stageBlob(): Promise<string> {
+    throw new Error("_stageBlob operation is not allowed");
+  }
 
-    if (opts?.prefix) {
-      uri = `${opts.prefix}-${uri}`;
-    }
-
-    return uri;
+  getBlobUri(hash: string) {
+    return hash;
   }
 
   static async create(config: PostgresStorageConfig) {

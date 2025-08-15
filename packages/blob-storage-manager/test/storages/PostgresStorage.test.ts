@@ -92,22 +92,22 @@ describe("PostgresStorage", () => {
     expect(res?.data ? bytesToHex(res?.data) : "").toBe(HEX_DATA);
   });
 
-  it("should store a temporary blob", async () => {
-    const blobReference = await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
+  // it("should store a temporary blob", async () => {
+  //   const blobReference = await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
 
-    const res = await prisma.blobData.findUnique({
-      where: {
-        id: blobReference,
-      },
-    });
+  //   const res = await prisma.blobData.findUnique({
+  //     where: {
+  //       id: blobReference,
+  //     },
+  //   });
 
-    expect(res?.data ? bytesToHex(res.data) : "", "blob data mismatch").toBe(
-      HEX_DATA
-    );
-    expect(blobReference, "blob uri mismatch").toMatchInlineSnapshot(
-      '"0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174"'
-    );
-  });
+  //   expect(res?.data ? bytesToHex(res.data) : "", "blob data mismatch").toBe(
+  //     HEX_DATA
+  //   );
+  //   expect(blobReference, "blob uri mismatch").toMatchInlineSnapshot(
+  //     '"0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174"'
+  //   );
+  // });
 
   it("should return an uri when storing a blob", async () => {
     const result = await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);

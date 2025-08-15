@@ -15,11 +15,11 @@ export type BlobPropagationInput = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
-  temporaryBlobUri: string;
+  stagingBlobUri: string;
 };
 
 export type BlobPropagationFinalizerJobData = {
-  temporaryBlobUri: string;
+  stagingBlobUri: string;
 };
 
 export type BlobPropagationJob = Job<BlobPropagationJobData>;

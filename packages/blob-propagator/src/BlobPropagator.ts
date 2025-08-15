@@ -5,13 +5,13 @@ import type {
   ConnectionOptions,
   JobsOptions,
   Processor,
+  Queue,
   WorkerOptions,
 } from "bullmq";
 import IORedis from "ioredis";
 
 import type {
   BlobStorage,
-  BlobStorageError,
   BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
@@ -24,11 +24,7 @@ import {
   FINALIZER_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
-import {
-  BlobPropagatorCreationError,
-  BlobPropagatorError,
-  ErrorException,
-} from "./errors";
+import { BlobPropagatorCreationError, BlobPropagatorError } from "./errors";
 import { logger } from "./logger";
 import type {
   BlobPropagationInput,
@@ -76,6 +72,7 @@ export class BlobPropagator {
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
   protected storageWorkers: BlobPropagationWorker[];
+  protected storageQueues: Queue[];
 
   protected jobOptions: Partial<JobsOptions>;
 
@@ -150,6 +147,8 @@ export class BlobPropagator {
       }
     );
 
+    this.storageQueues = [];
+
     this.finalizerWorker = this.#createWorker(
       FINALIZER_WORKER_NAME,
       finalizerProcessor({ temporaryBlobStorage }),
@@ -186,14 +185,14 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const temporalBlobUri = await this.#storeBlobInTemporaryStorage(
+      const stagingBlobUri = await this.temporaryBlobStorage.stageBlob(
         versionedHash,
         data
       );
 
       const flowJob = this.createBlobPropagationFlowJob({
         blockNumber,
-        temporalBlobUri,
+        stagingBlobUri,
         versionedHash,
       });
 
@@ -222,7 +221,7 @@ export class BlobPropagator {
         return blob;
       });
 
-      const temporalBlobUris = await Promise.all(
+      const stagingBlobUris = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
           this.temporaryBlobStorage.storeBlob(versionedHash, data)
         )
@@ -232,7 +231,7 @@ export class BlobPropagator {
         ({ blockNumber, versionedHash }, i) =>
           this.createBlobPropagationFlowJob({
             blockNumber,
-            temporalBlobUri: temporalBlobUris[i] as string,
+            stagingBlobUri: stagingBlobUris[i] as string,
             versionedHash,
           })
       );
@@ -250,11 +249,11 @@ export class BlobPropagator {
 
   protected createBlobPropagationFlowJob({
     blockNumber,
-    temporalBlobUri,
+    stagingBlobUri,
     versionedHash,
   }: {
     blockNumber?: number;
-    temporalBlobUri: string;
+    stagingBlobUri: string;
     versionedHash: string;
   }) {
     const jobPriority = this.#computeJobPriority(blockNumber);
@@ -264,7 +263,7 @@ export class BlobPropagator {
       this.finalizerWorker.name,
       storageWorkerNames,
       versionedHash,
-      temporalBlobUri,
+      stagingBlobUri,
       {
         priority: jobPriority,
       }
@@ -355,23 +354,6 @@ export class BlobPropagator {
     });
 
     return worker;
-  }
-
-  async #storeBlobInTemporaryStorage(versionedHash: string, data: string) {
-    try {
-      const blobUri = await this.temporaryBlobStorage.storeBlob(
-        versionedHash,
-        data,
-        { asTemporary: true }
-      );
-
-      return blobUri;
-    } catch (err) {
-      throw new ErrorException(
-        "Failed to store blob in temporary storage",
-        err as BlobStorageError
-      );
-    }
   }
 
   async #performClosingOperation(operation: () => Promise<void>) {

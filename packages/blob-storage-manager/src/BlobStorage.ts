@@ -12,15 +12,7 @@ export interface GetBlobOpts {
   fileType?: BlobFileType;
 }
 
-export interface StoreBlobOpts {
-  uri?: UriOpts;
-}
-
-export interface UriOpts {
-  prefix?: string;
-}
-
-export const TEMPORARY_BLOB_URI_PREFIX = "incoming-blobs";
+export const STAGING_BLOB_URI_PREFIX = "staging-blobs";
 
 export abstract class BlobStorage {
   chainId: number;
@@ -33,14 +25,11 @@ export abstract class BlobStorage {
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
-  protected abstract _storeBlob(
-    hash: string,
-    data: Buffer,
-    opts?: StoreBlobOpts
-  ): Promise<string>;
+  protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
+  protected abstract _stageBlob(hash: string, data: Buffer): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
 
-  abstract getBlobUri(hash: string, opts?: UriOpts): string | undefined;
+  abstract getBlobUri(hash: string): string | undefined;
 
   protected async healthCheck(): Promise<"OK"> {
     try {
@@ -81,24 +70,33 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeBlob(
-    hash: string,
-    data: string | Buffer,
-    { asTemporary }: { asTemporary: boolean } = {
-      asTemporary: false,
-    }
-  ): Promise<string> {
+  async storeBlob(hash: string, data: string | Buffer): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
-      const res = await this._storeBlob(hash, normalizedData, {
-        uri: asTemporary ? { prefix: TEMPORARY_BLOB_URI_PREFIX } : undefined,
-      });
 
-      return res;
+      const uri = await this._storeBlob(hash, normalizedData);
+
+      return uri;
     } catch (err) {
       throw new BlobStorageError(
         this.constructor.name,
         `Failed to store blob with hash "${hash}"`,
+        err as Error
+      );
+    }
+  }
+
+  async stageBlob(hash: string, data: string | Buffer): Promise<string> {
+    try {
+      const normalizedData = normalizeBlobData(data);
+
+      const uri = await this._stageBlob(hash, normalizedData);
+
+      return uri;
+    } catch (err) {
+      throw new BlobStorageError(
+        this.constructor.name,
+        `Failed to stage blob with hash "${hash}"`,
         err as Error
       );
     }

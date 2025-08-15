@@ -34,7 +34,7 @@ import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
 export class MockedBlobPropagator extends BlobPropagator {
   createBlobPropagationFlowJob(params: {
     blockNumber?: number;
-    temporalBlobUri: string;
+    stagingBlobUri: string;
     versionedHash: string;
   }) {
     return super.createBlobPropagationFlowJob(params);
@@ -229,7 +229,7 @@ describe("BlobPropagator", () => {
     beforeAll(() => {
       flowJob = blobPropagator.createBlobPropagationFlowJob({
         blockNumber: flowJobBlob.blockNumber,
-        temporalBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
+        stagingBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
         versionedHash: flowJobBlob.blobHash,
       });
     });
@@ -240,7 +240,7 @@ describe("BlobPropagator", () => {
 
     it("should have the correct data", () => {
       expect(flowJob.data).toEqual({
-        temporaryBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
+        stagingBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
       });
     });
 
@@ -349,7 +349,7 @@ describe("BlobPropagator", () => {
           const blockNumber = Math.round(MAX_JOB_PRIORITY * 2.3);
           const j = blobPropagator.createBlobPropagationFlowJob({
             versionedHash: "",
-            temporalBlobUri: "",
+            stagingBlobUri: "",
             blockNumber,
           });
           const jobPriority = j.children
@@ -367,7 +367,7 @@ describe("BlobPropagator", () => {
 
         it("should update propagator's highest block number if no block number is provided", () => {
           const j = blobPropagator.createBlobPropagationFlowJob({
-            temporalBlobUri: "",
+            stagingBlobUri: "",
             versionedHash: flowJobBlob.blobHash,
           });
           blobPropagator.getStorageWorkers().forEach((w) => {
@@ -384,7 +384,7 @@ describe("BlobPropagator", () => {
           blobPropagator.createBlobPropagationFlowJob({
             versionedHash: flowJobBlob.blobHash,
             blockNumber: flowJobBlob.blockNumber,
-            temporalBlobUri: "",
+            stagingBlobUri: "",
           });
 
           expect(blobPropagator.getHighestBlockNumber()).toBe(
@@ -398,7 +398,7 @@ describe("BlobPropagator", () => {
           blobPropagator.createBlobPropagationFlowJob({
             versionedHash: flowJobBlob.blobHash,
             blockNumber: higherBlockNumber,
-            temporalBlobUri: "",
+            stagingBlobUri: "",
           });
 
           expect(blobPropagator.getHighestBlockNumber()).toBe(
