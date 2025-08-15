@@ -82,6 +82,10 @@ export class SwarmStorage extends BlobStorage {
     });
   }
 
+  protected _stageBlob(_: string, __: Buffer): Promise<string> {
+    throw new Error('"_stageBlob" operation is not allowed');
+  }
+
   async #sendToChunkstorm(buffer: Buffer) {
     const response = await axios.post(
       `${env.SWARM_CHUNKSTORM_URL}/upload`,

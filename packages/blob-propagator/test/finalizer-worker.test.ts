@@ -60,7 +60,7 @@ describe("Finalizer Worker", () => {
       temporaryBlobStorage: temporalBlobStorage,
     })({
       data: {
-        temporaryBlobUri: blobUri,
+        stagingBlobUri: blobUri,
       },
     } as BlobPropagationFinalizerJob);
 

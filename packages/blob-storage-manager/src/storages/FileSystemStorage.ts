@@ -3,13 +3,8 @@ import path from "path";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import { BlobStorage } from "../BlobStorage";
-import type {
-  BlobStorageConfig,
-  GetBlobOpts,
-  StoreBlobOpts,
-  UriOpts,
-} from "../BlobStorage";
+import { BlobStorage, STAGING_BLOB_URI_PREFIX } from "../BlobStorage";
+import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import {
   bytesToHex,
@@ -61,10 +56,9 @@ export class FileSystemStorage extends BlobStorage {
 
   protected async _storeBlob(
     versionedHash: string,
-    data: Buffer,
-    opts: StoreBlobOpts
+    data: Buffer
   ): Promise<string> {
-    const blobUri = this.getBlobUri(versionedHash, opts?.uri);
+    const blobUri = this.getBlobUri(versionedHash);
     const blobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
     createFullPermissionDirectory(blobDirPath);
@@ -73,13 +67,20 @@ export class FileSystemStorage extends BlobStorage {
     return blobUri;
   }
 
-  getBlobUri(hash: string, opts?: UriOpts) {
-    const blobFilePath = `${
-      opts?.prefix ? `${opts.prefix}/` : ""
-    }${this.chainId.toString()}/${hash.slice(2, 4)}/${hash.slice(
-      4,
-      6
-    )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
+  protected _stageBlob(hash: string, data: Buffer): Promise<string> {
+    const blobUri = path.join(STAGING_BLOB_URI_PREFIX, hash);
+
+    createFullPermissionDirectory(STAGING_BLOB_URI_PREFIX);
+    createFullPermissionBinFile(blobUri, data);
+
+    return Promise.resolve(blobUri);
+  }
+
+  getBlobUri(hash: string) {
+    const blobFilePath = `${this.chainId.toString()}/${hash.slice(
+      2,
+      4
+    )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
 
     return path.join(this.blobDirPath, blobFilePath);
   }

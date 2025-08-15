@@ -54,14 +54,14 @@ export function createBlobPropagationFlowJob(
   workerName: string,
   storageWorkerNames: string[],
   versionedHash: string,
-  temporaryBlobUri: string,
+  stagingBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowJob {
   const { priority, ...restOpts } = opts;
   const propagationFlowJobId = buildJobId(workerName, versionedHash);
 
   const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash, temporaryBlobUri, {
+    createBlobStorageJob(name, versionedHash, stagingBlobUri, {
       priority,
     })
   );
@@ -70,7 +70,7 @@ export function createBlobPropagationFlowJob(
     name: `propagateBlob:${propagationFlowJobId}`,
     queueName: workerName,
     data: {
-      temporaryBlobUri,
+      stagingBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -84,7 +84,7 @@ export function createBlobPropagationFlowJob(
 export function createBlobStorageJob(
   storageWorkerName: string,
   versionedHash: string,
-  temporaryBlobUri: string,
+  stagingBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
@@ -94,7 +94,7 @@ export function createBlobStorageJob(
     queueName: storageWorkerName,
     data: {
       versionedHash,
-      temporaryBlobUri,
+      stagingBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -106,7 +106,7 @@ export function createBlobStorageJob(
 }
 
 export async function propagateBlob(
-  { versionedHash, temporaryBlobUri }: BlobPropagationJobData,
+  { versionedHash, stagingBlobUri }: BlobPropagationJobData,
   targetStorageName: BlobStorage,
   {
     blobStorageManager,
@@ -121,9 +121,30 @@ export async function propagateBlob(
       throw new Error(`Target storage "${targetStorageName}" not found`);
     }
 
-    const blobData = await temporaryBlobStorage.getBlob(temporaryBlobUri);
+    let blobData: string;
+    try {
+      blobData = await temporaryBlobStorage.getBlob(stagingBlobUri);
+    } catch (err) {
+      const ref = await prisma.blobDataStorageReference.findUnique({
+        where: {
+          blobHash_blobStorage: {
+            blobHash: versionedHash,
+            blobStorage: targetStorageName,
+          },
+        },
+      });
 
-    logger.debug(`Blob ${versionedHash} retrieved from temporary storage`);
+      if (ref) {
+        return {
+          storage: targetStorageName,
+          reference: ref.dataReference,
+        };
+      }
+
+      throw new Error(`Failed to retrieve blob from staging storage`);
+    }
+
+    logger.debug(`Blob ${versionedHash} retrieved from staging storage`);
 
     const blobUri = await targetStorage.storeBlob(versionedHash, blobData);
 
