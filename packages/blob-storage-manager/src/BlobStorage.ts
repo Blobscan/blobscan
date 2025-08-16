@@ -12,8 +12,6 @@ export interface GetBlobOpts {
   fileType?: BlobFileType;
 }
 
-export const STAGING_BLOB_URI_PREFIX = "staging-blobs";
-
 export abstract class BlobStorage {
   constructor(readonly name: BlobStorageName, readonly chainId: number) {}
 
@@ -97,6 +95,6 @@ export abstract class BlobStorage {
   }
 
   getStagedBlobUri(hash: string) {
-    return `${STAGING_BLOB_URI_PREFIX}/${hash}`;
+    return `staged-blobs/${hash}`;
   }
 }

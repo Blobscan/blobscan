@@ -4,7 +4,7 @@ import { Storage } from "@google-cloud/storage";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
-import { BlobStorage, STAGING_BLOB_URI_PREFIX } from "../BlobStorage";
+import { BlobStorage } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import { bytesToHex } from "../utils";
 
