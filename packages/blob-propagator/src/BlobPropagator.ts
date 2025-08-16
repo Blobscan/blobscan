@@ -173,14 +173,14 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const stagingBlobUri = await this.stagingBlobStorage.stageBlob(
+      const stagedBlobUri = await this.stagingBlobStorage.stageBlob(
         versionedHash,
         data
       );
 
       const flowJob = this.createBlobPropagationFlowJob({
         blockNumber,
-        stagingBlobUri,
+        stagedBlobUri,
         versionedHash,
       });
 
@@ -209,7 +209,7 @@ export class BlobPropagator {
         return blob;
       });
 
-      const stagingBlobUris = await Promise.all(
+      const stagedBlobUris = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
           this.stagingBlobStorage.stageBlob(versionedHash, data)
         )
@@ -219,7 +219,7 @@ export class BlobPropagator {
         ({ blockNumber, versionedHash }, i) =>
           this.createBlobPropagationFlowJob({
             blockNumber,
-            stagingBlobUri: stagingBlobUris[i] as string,
+            stagedBlobUri: stagedBlobUris[i] as string,
             versionedHash,
           })
       );
@@ -237,11 +237,11 @@ export class BlobPropagator {
 
   protected createBlobPropagationFlowJob({
     blockNumber,
-    stagingBlobUri,
+    stagedBlobUri,
     versionedHash,
   }: {
     blockNumber?: number;
-    stagingBlobUri: string;
+    stagedBlobUri: string;
     versionedHash: string;
   }) {
     const jobPriority = this.#computeJobPriority(blockNumber);
@@ -251,7 +251,7 @@ export class BlobPropagator {
       this.finalizerWorker.name,
       storageWorkerNames,
       versionedHash,
-      stagingBlobUri,
+      stagedBlobUri,
       {
         priority: jobPriority,
       }

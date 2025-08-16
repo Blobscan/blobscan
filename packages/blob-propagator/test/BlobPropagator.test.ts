@@ -33,7 +33,7 @@ import { createBlobStorages, createStorageFromEnv } from "./helpers";
 export class MockedBlobPropagator extends BlobPropagator {
   createBlobPropagationFlowJob(params: {
     blockNumber?: number;
-    stagingBlobUri: string;
+    stagedBlobUri: string;
     versionedHash: string;
   }) {
     return super.createBlobPropagationFlowJob(params);
@@ -84,7 +84,7 @@ class MockedWeaveVMStorage extends WeaveVMStorage {
 
 describe("BlobPropagator", () => {
   let blobStorages: BlobStorage[];
-  let blobStagingStorage: FileSystemStorage;
+  let stagingBlobStorage: FileSystemStorage;
 
   const blob: BlobPropagationInput = {
     versionedHash: "blobVersionedHash",
@@ -96,14 +96,14 @@ describe("BlobPropagator", () => {
   beforeEach(async () => {
     blobStorages = await createBlobStorages();
 
-    blobStagingStorage = (await createStorageFromEnv(
+    stagingBlobStorage = (await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     )) as FileSystemStorage;
 
     blobPropagator = await MockedBlobPropagator.create({
       blobStorages,
       prisma,
-      stagingBlobStorage: blobStagingStorage,
+      stagingBlobStorage,
       redisConnectionOrUri: env.REDIS_URI,
     });
 
@@ -118,7 +118,7 @@ describe("BlobPropagator", () => {
         BlobPropagator.create({
           blobStorages,
           prisma,
-          stagingBlobStorage: blobStagingStorage,
+          stagingBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         })
       ).resolves.toBeDefined();
@@ -128,7 +128,7 @@ describe("BlobPropagator", () => {
       const propagator = await MockedBlobPropagator.create({
         blobStorages,
         prisma,
-        stagingBlobStorage: blobStagingStorage,
+        stagingBlobStorage,
         redisConnectionOrUri: env.REDIS_URI,
       });
 
@@ -147,7 +147,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorages: [],
           prisma,
-          stagingBlobStorage: blobStagingStorage,
+          stagingBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -165,7 +165,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorages: [weavevmStorage],
           prisma,
-          stagingBlobStorage: blobStagingStorage,
+          stagingBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -189,7 +189,7 @@ describe("BlobPropagator", () => {
     beforeAll(() => {
       flowJob = blobPropagator.createBlobPropagationFlowJob({
         blockNumber: flowJobBlob.blockNumber,
-        stagingBlobUri: expectedStagedBlobUri,
+        stagedBlobUri: expectedStagedBlobUri,
         versionedHash: flowJobBlob.blobHash,
       });
     });
@@ -200,7 +200,7 @@ describe("BlobPropagator", () => {
 
     it("should have the correct data", () => {
       expect(flowJob.data).toEqual({
-        stagingBlobUri: expectedStagedBlobUri,
+        stagedBlobUri: expectedStagedBlobUri,
       });
     });
 
@@ -260,7 +260,7 @@ describe("BlobPropagator", () => {
       it("should have the correct data", () => {
         const expectedJobData = blobPropagator.getStorageWorkers().map((_) => ({
           versionedHash: flowJobBlob.blobHash,
-          stagingBlobUri: expectedStagedBlobUri,
+          stagedBlobUri: expectedStagedBlobUri,
         }));
 
         expect(flowJob.children?.map((c) => c.data)).toEqual(expectedJobData);
@@ -310,7 +310,7 @@ describe("BlobPropagator", () => {
           const blockNumber = Math.round(MAX_JOB_PRIORITY * 2.3);
           const j = blobPropagator.createBlobPropagationFlowJob({
             versionedHash: "",
-            stagingBlobUri: "",
+            stagedBlobUri: "",
             blockNumber,
           });
           const jobPriority = j.children
@@ -328,7 +328,7 @@ describe("BlobPropagator", () => {
 
         it("should update propagator's highest block number if no block number is provided", () => {
           const j = blobPropagator.createBlobPropagationFlowJob({
-            stagingBlobUri: "",
+            stagedBlobUri: "",
             versionedHash: flowJobBlob.blobHash,
           });
           blobPropagator.getStorageWorkers().forEach((w) => {
@@ -345,7 +345,7 @@ describe("BlobPropagator", () => {
           blobPropagator.createBlobPropagationFlowJob({
             versionedHash: flowJobBlob.blobHash,
             blockNumber: flowJobBlob.blockNumber,
-            stagingBlobUri: "",
+            stagedBlobUri: "",
           });
 
           expect(blobPropagator.getHighestBlockNumber()).toBe(
@@ -359,7 +359,7 @@ describe("BlobPropagator", () => {
           blobPropagator.createBlobPropagationFlowJob({
             versionedHash: flowJobBlob.blobHash,
             blockNumber: higherBlockNumber,
-            stagingBlobUri: "",
+            stagedBlobUri: "",
           });
 
           expect(blobPropagator.getHighestBlockNumber()).toBe(
@@ -377,10 +377,10 @@ describe("BlobPropagator", () => {
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
-      const blobUri = blobStagingStorage.getBlobUri(blob.versionedHash);
+      const blobUri = stagingBlobStorage.getBlobUri(blob.versionedHash);
 
       try {
-        await blobStagingStorage.removeBlob(blobUri);
+        await stagingBlobStorage.removeBlob(blobUri);
       } catch (_) {
         /* empty */
       }
@@ -389,8 +389,8 @@ describe("BlobPropagator", () => {
     it("should store blob data on staging blob storage", async () => {
       await blobPropagator.propagateBlob(blob);
 
-      const blobUri = blobStagingStorage.getStagedBlobUri(blob.versionedHash);
-      const blobData = await blobStagingStorage.getBlob(blobUri);
+      const blobUri = stagingBlobStorage.getStagedBlobUri(blob.versionedHash);
+      const blobData = await stagingBlobStorage.getBlob(blobUri);
 
       expect(blobData).toEqual(blob.data);
     });
@@ -437,10 +437,10 @@ describe("BlobPropagator", () => {
     afterEach(async () => {
       await Promise.all(
         blobsInput.map(async (b) => {
-          const blobUri = blobStagingStorage.getBlobUri(b.versionedHash);
+          const blobUri = stagingBlobStorage.getBlobUri(b.versionedHash);
 
           try {
-            await blobStagingStorage.removeBlob(blobUri);
+            await stagingBlobStorage.removeBlob(blobUri);
           } catch (_) {
             /* empty */
           }
@@ -454,8 +454,8 @@ describe("BlobPropagator", () => {
       const allBlobDataExists = (
         await Promise.all(
           blobsInput.map(({ versionedHash }) =>
-            blobStagingStorage.getBlob(
-              blobStagingStorage.getStagedBlobUri(versionedHash)
+            stagingBlobStorage.getBlob(
+              stagingBlobStorage.getStagedBlobUri(versionedHash)
             )
           )
         )
@@ -499,7 +499,7 @@ describe("BlobPropagator", () => {
       closingBlobPropagator = await MockedBlobPropagator.create({
         blobStorages,
         prisma,
-        stagingBlobStorage: blobStagingStorage,
+        stagingBlobStorage,
         redisConnectionOrUri: env.REDIS_URI,
       });
     });

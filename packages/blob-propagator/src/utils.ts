@@ -52,14 +52,14 @@ export function createBlobPropagationFlowJob(
   workerName: string,
   storageWorkerNames: string[],
   versionedHash: string,
-  stagingBlobUri: string,
+  stagedBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowJob {
   const { priority, ...restOpts } = opts;
   const propagationFlowJobId = buildJobId(workerName, versionedHash);
 
   const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash, stagingBlobUri, {
+    createBlobStorageJob(name, versionedHash, stagedBlobUri, {
       priority,
     })
   );
@@ -68,7 +68,7 @@ export function createBlobPropagationFlowJob(
     name: `propagateBlob:${propagationFlowJobId}`,
     queueName: workerName,
     data: {
-      stagingBlobUri,
+      stagedBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -82,7 +82,7 @@ export function createBlobPropagationFlowJob(
 export function createBlobStorageJob(
   storageWorkerName: string,
   versionedHash: string,
-  stagingBlobUri: string,
+  stagedBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
@@ -92,7 +92,7 @@ export function createBlobStorageJob(
     queueName: storageWorkerName,
     data: {
       versionedHash,
-      stagingBlobUri,
+      stagedBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -104,14 +104,14 @@ export function createBlobStorageJob(
 }
 
 export async function propagateBlob(
-  { versionedHash, stagingBlobUri }: BlobPropagationJobData,
+  { versionedHash, stagedBlobUri }: BlobPropagationJobData,
   { targetBlobStorage, prisma, stagingBlobStorage }: BlobPropagationWorkerParams
 ) {
   const targetStorageName = targetBlobStorage.name;
   try {
     let blobData: string;
     try {
-      blobData = await stagingBlobStorage.getBlob(stagingBlobUri);
+      blobData = await stagingBlobStorage.getBlob(stagedBlobUri);
     } catch (err) {
       const ref = await prisma.blobDataStorageReference.findUnique({
         where: {

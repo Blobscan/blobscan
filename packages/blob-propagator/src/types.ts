@@ -14,11 +14,11 @@ export type BlobPropagationInput = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
-  stagingBlobUri: string;
+  stagedBlobUri: string;
 };
 
 export type BlobPropagationFinalizerJobData = {
-  stagingBlobUri: string;
+  stagedBlobUri: string;
 };
 
 export type BlobPropagationJob = Job<BlobPropagationJobData>;

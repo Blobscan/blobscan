@@ -70,7 +70,7 @@ function runWorkerTests(
 
       job = {
         data: {
-          stagingBlobUri: blobUri,
+          stagedBlobUri: blobUri,
           versionedHash: blob.versionedHash,
         },
       } as BlobPropagationJob;
@@ -146,7 +146,7 @@ function runWorkerTests(
         const versionedHash = "missingBlobDataFileVersionedHash";
         const jobWithMissingBlobData = {
           data: {
-            stagingBlobUri: "missingBlobDataFileVersionedHash",
+            stagedBlobUri: "missingBlobDataFileVersionedHash",
             versionedHash,
           },
         } as BlobPropagationJob;

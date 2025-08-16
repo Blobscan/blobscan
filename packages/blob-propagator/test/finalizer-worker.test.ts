@@ -47,7 +47,7 @@ describe("Finalizer Worker", () => {
       stagingBlobStorage,
     })({
       data: {
-        stagingBlobUri: blobUri,
+        stagedBlobUri: blobUri,
       },
     } as BlobPropagationFinalizerJob);
 
