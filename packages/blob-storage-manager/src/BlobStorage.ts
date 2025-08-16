@@ -95,4 +95,8 @@ export abstract class BlobStorage {
       );
     }
   }
+
+  getStagedBlobUri(hash: string) {
+    return `${STAGING_BLOB_URI_PREFIX}/${hash}`;
+  }
 }

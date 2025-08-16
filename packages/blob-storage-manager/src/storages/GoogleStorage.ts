@@ -91,7 +91,7 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _stageBlob(hash: string, data: Buffer): Promise<string> {
-    const uri = `${STAGING_BLOB_URI_PREFIX}/${hash}`;
+    const uri = this.getStagedBlobUri(hash);
 
     await this._uploadBlob(uri, data);
 
