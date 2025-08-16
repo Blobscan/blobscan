@@ -5,7 +5,6 @@ import {
   S3Storage,
   SwarmStorage,
   WeaveVMStorage,
-  BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
@@ -102,17 +101,11 @@ function isBlobStorageEnabled(storageName: BlobStorageName) {
   return storageEnabled === true || storageEnabled === "true";
 }
 
-function createBlobStorages() {
+export function createBlobStorages() {
   const enabledBlobStorages = Object.values(BlobStorageName).filter(
     (storageName) => isBlobStorageEnabled(storageName)
   );
   return Promise.all(
     enabledBlobStorages.map((storageName) => createStorageFromEnv(storageName))
   );
-}
-
-export async function createBlobStorageManager(): Promise<BlobStorageManager> {
-  const storages = await createBlobStorages();
-
-  return new BlobStorageManager(storages);
 }

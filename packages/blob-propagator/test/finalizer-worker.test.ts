@@ -1,10 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import "@blobscan/test";
-import type {
-  BlobStorage,
-  BlobStorageManager,
-} from "@blobscan/blob-storage-manager";
+import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { env } from "@blobscan/env";
 import { fixtures } from "@blobscan/test";
 
@@ -13,11 +10,10 @@ import type {
   BlobPropagationFinalizerJob,
 } from "../src/types";
 import { finalizerProcessor } from "../src/worker-processors";
-import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
+import { createStorageFromEnv } from "./helpers";
 
 describe("Finalizer Worker", () => {
-  let blobStorageManager: BlobStorageManager;
-  let temporalBlobStorage: BlobStorage;
+  let stagingBlobStorage: BlobStorage;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const blob = fixtures.blobs[0]!;
@@ -28,28 +24,19 @@ describe("Finalizer Worker", () => {
   };
 
   beforeAll(async () => {
-    blobStorageManager = await createBlobStorageManager();
-
-    const tmpBlobStorage = await createStorageFromEnv(
+    stagingBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
-
-    blobStorageManager.addStorage(tmpBlobStorage);
-
-    temporalBlobStorage = tmpBlobStorage;
   });
 
   beforeEach(async () => {
-    await temporalBlobStorage.storeBlob(
-      blobInput.versionedHash,
-      blobInput.data
-    );
+    await stagingBlobStorage.storeBlob(blobInput.versionedHash, blobInput.data);
   });
 
   it("should remove blob data from temporary blob storage", async () => {
     const blobUri =
-      temporalBlobStorage.getBlobUri(blobInput.versionedHash) ?? "";
-    const beforeStoredBlob = await temporalBlobStorage.getBlob(blobUri);
+      stagingBlobStorage.getBlobUri(blobInput.versionedHash) ?? "";
+    const beforeStoredBlob = await stagingBlobStorage.getBlob(blobUri);
 
     expect(
       beforeStoredBlob,
@@ -57,13 +44,13 @@ describe("Finalizer Worker", () => {
     ).toBeDefined();
 
     await finalizerProcessor({
-      temporaryBlobStorage: temporalBlobStorage,
+      stagingBlobStorage,
     })({
       data: {
         stagingBlobUri: blobUri,
       },
     } as BlobPropagationFinalizerJob);
 
-    await expect(temporalBlobStorage.getBlob(blobUri)).rejects.toThrowError();
+    await expect(stagingBlobStorage.getBlob(blobUri)).rejects.toThrowError();
   });
 });
