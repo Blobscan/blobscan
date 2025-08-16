@@ -3,4 +3,4 @@ import { propagateBlob } from "../utils";
 
 export const swarmProcessor: BlobPropagationWorkerProcessor =
   (processorParams) => (job) =>
-    propagateBlob(job.data, "SWARM", processorParams);
+    propagateBlob(job.data, processorParams);
