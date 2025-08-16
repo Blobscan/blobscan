@@ -10,10 +10,7 @@ import type {
 } from "bullmq";
 import IORedis from "ioredis";
 
-import type {
-  BlobStorage,
-  BlobStorageManager,
-} from "@blobscan/blob-storage-manager";
+import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { createModuleLogger } from "@blobscan/logger";
@@ -45,9 +42,9 @@ import {
 } from "./worker-processors";
 
 export type BlobPropagatorConfig = {
-  blobStorageManager: BlobStorageManager;
   highestBlockNumber?: number;
-  stagingBlobStorageName: BlobStorageName;
+  blobStorages: BlobStorage[];
+  stagingBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
@@ -79,11 +76,11 @@ export class BlobPropagator {
   protected highestBlockNumber?: number;
 
   protected constructor({
-    blobStorageManager,
     prisma,
     redisConnectionOrUri,
     highestBlockNumber,
-    stagingBlobStorageName,
+    blobStorages,
+    stagingBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
   }: BlobPropagatorConfig) {
@@ -97,20 +94,8 @@ export class BlobPropagator {
       ...workerOptions,
     };
 
-    const stagingBlobStorage = blobStorageManager.getStorage(
-      stagingBlobStorageName
-    );
-
-    if (!stagingBlobStorage) {
-      throw new BlobPropagatorCreationError(
-        `Staging blob storage ${stagingBlobStorageName} not found`
-      );
-    }
-
-    const availableStorageNames = blobStorageManager
-      .getAllStorages()
+    const availableStorageNames = blobStorages
       .map((s) => s.name)
-      .filter((name) => name !== stagingBlobStorageName)
       .filter((name) => {
         const hasWorkerProcessor = !!STORAGE_WORKER_PROCESSORS[name];
 
@@ -129,35 +114,26 @@ export class BlobPropagator {
       );
     }
 
-    this.storageWorkers = availableStorageNames.map(
-      (storageName: BlobStorageName) => {
-        const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
+    this.storageWorkers = blobStorages.map((storage) => {
+      const storageName = storage.name;
+      const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
 
-        if (!workerProcessor) {
-          throw new BlobPropagatorCreationError(
-            `Worker processor not defined for storage "${storageName}"`
-          );
-        }
-
-        const targetBlobStorage = blobStorageManager.getStorage(storageName);
-
-        if (!targetBlobStorage) {
-          throw new BlobPropagatorCreationError(
-            `Blob storage ${storageName} not found`
-          );
-        }
-
-        return this.#createWorker(
-          STORAGE_WORKER_NAMES[storageName],
-          workerProcessor({
-            prisma,
-            targetBlobStorage,
-            stagingBlobStorage,
-          }),
-          workerOptions_
+      if (!workerProcessor) {
+        throw new BlobPropagatorCreationError(
+          `Worker processor not defined for storage "${storageName}"`
         );
       }
-    );
+
+      return this.#createWorker(
+        STORAGE_WORKER_NAMES[storageName],
+        workerProcessor({
+          prisma,
+          targetBlobStorage: storage,
+          stagingBlobStorage,
+        }),
+        workerOptions_
+      );
+    });
 
     this.storageQueues = [];
 
@@ -235,7 +211,7 @@ export class BlobPropagator {
 
       const stagingBlobUris = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
-          this.stagingBlobStorage.storeBlob(versionedHash, data)
+          this.stagingBlobStorage.stageBlob(versionedHash, data)
         )
       );
 
