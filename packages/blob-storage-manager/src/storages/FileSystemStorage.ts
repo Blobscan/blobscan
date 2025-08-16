@@ -3,7 +3,7 @@ import path from "path";
 
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
-import { BlobStorage, STAGING_BLOB_URI_PREFIX } from "../BlobStorage";
+import { BlobStorage } from "../BlobStorage";
 import type { BlobStorageConfig, GetBlobOpts } from "../BlobStorage";
 import { StorageCreationError } from "../errors";
 import {
@@ -68,9 +68,10 @@ export class FileSystemStorage extends BlobStorage {
   }
 
   protected _stageBlob(hash: string, data: Buffer): Promise<string> {
-    const blobUri = path.join(STAGING_BLOB_URI_PREFIX, hash);
+    const blobUri = this.getStagedBlobUri(hash);
+    const stagedBlobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
-    createFullPermissionDirectory(STAGING_BLOB_URI_PREFIX);
+    createFullPermissionDirectory(stagedBlobDirPath);
     createFullPermissionBinFile(blobUri, data);
 
     return Promise.resolve(blobUri);
