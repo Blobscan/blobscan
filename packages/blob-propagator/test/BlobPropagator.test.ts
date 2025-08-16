@@ -9,12 +9,11 @@ import {
   vi,
 } from "vitest";
 
-import {
-  PostgresStorage,
-  WeaveVMStorage,
+import { WeaveVMStorage } from "@blobscan/blob-storage-manager";
+import type {
+  BlobStorage,
+  FileSystemStorage,
 } from "@blobscan/blob-storage-manager";
-import { BlobStorageManager } from "@blobscan/blob-storage-manager";
-import type { FileSystemStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 import { fixtures, testValidError } from "@blobscan/test";
@@ -29,7 +28,7 @@ import {
 } from "../src/errors";
 import type { BlobPropagationInput } from "../src/types";
 import { computeLinearPriority, MAX_JOB_PRIORITY } from "../src/utils";
-import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
+import { createBlobStorages, createStorageFromEnv } from "./helpers";
 
 export class MockedBlobPropagator extends BlobPropagator {
   createBlobPropagationFlowJob(params: {
@@ -56,7 +55,7 @@ export class MockedBlobPropagator extends BlobPropagator {
     return this.highestBlockNumber;
   }
 
-  getTemporaryBlobStorage() {
+  getStagingBlobStorage() {
     return this.stagingBlobStorage;
   }
 
@@ -84,8 +83,8 @@ class MockedWeaveVMStorage extends WeaveVMStorage {
 }
 
 describe("BlobPropagator", () => {
-  let blobStorageManager: BlobStorageManager;
-  let tmpBlobStorage: FileSystemStorage;
+  let blobStorages: BlobStorage[];
+  let blobStagingStorage: FileSystemStorage;
 
   const blob: BlobPropagationInput = {
     versionedHash: "blobVersionedHash",
@@ -95,20 +94,16 @@ describe("BlobPropagator", () => {
   let blobPropagator: MockedBlobPropagator;
 
   beforeEach(async () => {
-    blobStorageManager = await createBlobStorageManager();
+    blobStorages = await createBlobStorages();
 
-    const tmpStorage = await createStorageFromEnv(
+    blobStagingStorage = (await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    );
-
-    blobStorageManager.addStorage(tmpStorage);
-
-    tmpBlobStorage = tmpStorage as FileSystemStorage;
+    )) as FileSystemStorage;
 
     blobPropagator = await MockedBlobPropagator.create({
-      blobStorageManager,
+      blobStorages,
       prisma,
-      stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+      stagingBlobStorage: blobStagingStorage,
       redisConnectionOrUri: env.REDIS_URI,
     });
 
@@ -121,9 +116,9 @@ describe("BlobPropagator", () => {
     it("should return an instance", async () => {
       await expect(
         BlobPropagator.create({
-          blobStorageManager,
+          blobStorages,
           prisma,
-          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorage: blobStagingStorage,
           redisConnectionOrUri: env.REDIS_URI,
         })
       ).resolves.toBeDefined();
@@ -131,9 +126,9 @@ describe("BlobPropagator", () => {
 
     it("should return an instance with the highest block number set to the last finalized block", async () => {
       const propagator = await MockedBlobPropagator.create({
-        blobStorageManager,
+        blobStorages,
         prisma,
-        stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        stagingBlobStorage: blobStagingStorage,
         redisConnectionOrUri: env.REDIS_URI,
       });
 
@@ -149,20 +144,10 @@ describe("BlobPropagator", () => {
     testValidError(
       "should throw a valid error when creating it with no blob storages",
       async () => {
-        const postgresStorage = await PostgresStorage.create({
-          chainId: 1,
-          prisma,
-        });
-        const emptyBlobStorageManager = new BlobStorageManager([
-          postgresStorage,
-        ]);
-
-        emptyBlobStorageManager.removeStorage("POSTGRES");
-
         await MockedBlobPropagator.create({
-          blobStorageManager: emptyBlobStorageManager,
+          blobStorages: [],
           prisma,
-          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorage: blobStagingStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -177,36 +162,10 @@ describe("BlobPropagator", () => {
       async () => {
         const weavevmStorage = new MockedWeaveVMStorage();
 
-        const blobStorageManager = new BlobStorageManager([weavevmStorage]);
-
         await MockedBlobPropagator.create({
-          blobStorageManager,
+          blobStorages: [weavevmStorage],
           prisma,
-          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
-          redisConnectionOrUri: env.REDIS_URI,
-        });
-      },
-      BlobPropagatorCreationError,
-      {
-        checkCause: true,
-      }
-    );
-
-    testValidError(
-      "should throw a valid error when creating it with no temporary blob storage",
-      async () => {
-        const postgresStorage = await PostgresStorage.create({
-          chainId: 1,
-          prisma,
-        });
-        const noTmpStorageBlobStorageManager = new BlobStorageManager([
-          postgresStorage,
-        ]);
-
-        await MockedBlobPropagator.create({
-          blobStorageManager: noTmpStorageBlobStorageManager,
-          prisma,
-          stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+          stagingBlobStorage: blobStagingStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -219,6 +178,7 @@ describe("BlobPropagator", () => {
 
   describe("when creating a blob propagation flow job", async () => {
     const flowJobBlob = fixtures.blobsOnTransactions[0];
+    const expectedStagedBlobUri = "expected-staged-blob-uri";
 
     if (!flowJobBlob) {
       throw new Error("No blob to test");
@@ -229,7 +189,7 @@ describe("BlobPropagator", () => {
     beforeAll(() => {
       flowJob = blobPropagator.createBlobPropagationFlowJob({
         blockNumber: flowJobBlob.blockNumber,
-        stagingBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
+        stagingBlobUri: expectedStagedBlobUri,
         versionedHash: flowJobBlob.blobHash,
       });
     });
@@ -240,7 +200,7 @@ describe("BlobPropagator", () => {
 
     it("should have the correct data", () => {
       expect(flowJob.data).toEqual({
-        stagingBlobUri: tmpBlobStorage.getBlobUri(flowJobBlob.blobHash),
+        stagingBlobUri: expectedStagedBlobUri,
       });
     });
 
@@ -300,6 +260,7 @@ describe("BlobPropagator", () => {
       it("should have the correct data", () => {
         const expectedJobData = blobPropagator.getStorageWorkers().map((_) => ({
           versionedHash: flowJobBlob.blobHash,
+          stagingBlobUri: expectedStagedBlobUri,
         }));
 
         expect(flowJob.children?.map((c) => c.data)).toEqual(expectedJobData);
@@ -416,20 +377,20 @@ describe("BlobPropagator", () => {
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
-      const blobUri = tmpBlobStorage.getBlobUri(blob.versionedHash);
+      const blobUri = blobStagingStorage.getBlobUri(blob.versionedHash);
 
       try {
-        await tmpBlobStorage.removeBlob(blobUri);
+        await blobStagingStorage.removeBlob(blobUri);
       } catch (_) {
         /* empty */
       }
     });
 
-    it("should store blob data on temporary blob storage", async () => {
+    it("should store blob data on staging blob storage", async () => {
       await blobPropagator.propagateBlob(blob);
 
-      const blobUri = tmpBlobStorage.getBlobUri(blob.versionedHash);
-      const blobData = await tmpBlobStorage.getBlob(blobUri);
+      const blobUri = blobStagingStorage.getStagedBlobUri(blob.versionedHash);
+      const blobData = await blobStagingStorage.getBlob(blobUri);
 
       expect(blobData).toEqual(blob.data);
     });
@@ -446,15 +407,13 @@ describe("BlobPropagator", () => {
     });
 
     testValidError(
-      "should throw a valid error if the blob failed to be stored in the temporary blob storage",
+      "should throw a valid error if the blob failed to get staged",
       async () => {
-        const temporaryBlobStorage = blobPropagator.getTemporaryBlobStorage();
+        const stagingBlobStorage = blobPropagator.getStagingBlobStorage();
 
-        vi.spyOn(temporaryBlobStorage, "storeBlob").mockImplementationOnce(
-          () => {
-            throw new Error("Internal temporary blob storage error");
-          }
-        );
+        vi.spyOn(stagingBlobStorage, "stageBlob").mockImplementationOnce(() => {
+          throw new Error("Internal temporary blob storage error");
+        });
 
         await blobPropagator.propagateBlob(blob);
       },
@@ -478,10 +437,10 @@ describe("BlobPropagator", () => {
     afterEach(async () => {
       await Promise.all(
         blobsInput.map(async (b) => {
-          const blobUri = tmpBlobStorage.getBlobUri(b.versionedHash);
+          const blobUri = blobStagingStorage.getBlobUri(b.versionedHash);
 
           try {
-            await tmpBlobStorage.removeBlob(blobUri);
+            await blobStagingStorage.removeBlob(blobUri);
           } catch (_) {
             /* empty */
           }
@@ -489,13 +448,15 @@ describe("BlobPropagator", () => {
       );
     });
 
-    it("should store all blobs data in temporary blob storage", async () => {
+    it("should stage all blobs", async () => {
       await blobPropagator.propagateBlobs(blobsInput);
 
       const allBlobDataExists = (
         await Promise.all(
           blobsInput.map(({ versionedHash }) =>
-            tmpBlobStorage.getBlob(tmpBlobStorage.getBlobUri(versionedHash))
+            blobStagingStorage.getBlob(
+              blobStagingStorage.getStagedBlobUri(versionedHash)
+            )
           )
         )
       ).every((blobData) => !!blobData);
@@ -515,10 +476,10 @@ describe("BlobPropagator", () => {
     });
 
     testValidError(
-      "should throw a valid error if some of the blobs failed to be stored in the temporary blob storage",
+      "should throw a valid error if some of the blobs failed to be stored in the staging blob storage",
       async () => {
-        const temporaryBlobStorage = blobPropagator.getTemporaryBlobStorage();
-        vi.spyOn(temporaryBlobStorage, "storeBlob").mockImplementation(() => {
+        const stagingBlobStorage = blobPropagator.getStagingBlobStorage();
+        vi.spyOn(stagingBlobStorage, "stageBlob").mockImplementation(() => {
           throw new Error("Internal temporal blob storage error");
         });
 
@@ -536,9 +497,9 @@ describe("BlobPropagator", () => {
 
     beforeEach(async () => {
       closingBlobPropagator = await MockedBlobPropagator.create({
-        blobStorageManager,
+        blobStorages,
         prisma,
-        stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+        stagingBlobStorage: blobStagingStorage,
         redisConnectionOrUri: env.REDIS_URI,
       });
     });
