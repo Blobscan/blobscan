@@ -1,9 +1,9 @@
 import { BlobPropagator } from "@blobscan/blob-propagator";
+import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import { getBlobStorageManager } from "../blob-storage-manager";
-import { createStorageFromEnv } from "../blob-storage-manager/blob-storages";
+import { createBlobStorages, createStorageFromEnv } from "./blob-storages";
 
 let blobPropagator: BlobPropagator | undefined;
 
@@ -16,30 +16,25 @@ async function getBlobPropagator() {
 }
 
 async function createBlobPropagator() {
-  const blobStorageManager = await getBlobStorageManager();
+  const blobStorages = await createBlobStorages();
+  let stagingBlobStorage: BlobStorage | undefined = blobStorages.find(
+    (storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+  );
 
-  if (
-    !blobStorageManager
-      .getAllStorages()
-      .find((storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE)
-  ) {
+  if (!stagingBlobStorage) {
     try {
-      const stagingBlobStorage = await createStorageFromEnv(
+      stagingBlobStorage = await createStorageFromEnv(
         env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
       );
-
-      if (stagingBlobStorage) {
-        blobStorageManager.addStorage(stagingBlobStorage);
-      }
     } catch (err) {
       throw new Error(`Failed to create staging blob storage: ${err}`);
     }
   }
 
   return BlobPropagator.create({
-    blobStorageManager,
+    blobStorages,
     prisma,
-    stagingBlobStorageName: env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE,
+    stagingBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
   });
 }
