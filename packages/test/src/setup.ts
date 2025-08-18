@@ -1,6 +1,5 @@
 import "./polyfill";
 import fs from "fs";
-import path from "path";
 import { afterAll, beforeAll, beforeEach, vi } from "vitest";
 
 import { fixtures } from "./fixtures";
