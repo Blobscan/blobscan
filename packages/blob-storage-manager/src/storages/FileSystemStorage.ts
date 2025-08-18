@@ -67,8 +67,8 @@ export class FileSystemStorage extends BlobStorage {
     return blobUri;
   }
 
-  protected _stageBlob(hash: string, data: Buffer): Promise<string> {
-    const blobUri = this.getStagedBlobUri(hash);
+  protected _storeIncomingBlob(hash: string, data: Buffer): Promise<string> {
+    const blobUri = this.getIncomingBlobUri(hash);
     const stagedBlobDirPath = blobUri.slice(0, blobUri.lastIndexOf("/"));
 
     createFullPermissionDirectory(stagedBlobDirPath);

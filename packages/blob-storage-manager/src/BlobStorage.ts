@@ -18,7 +18,10 @@ export abstract class BlobStorage {
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
   protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
-  protected abstract _stageBlob(hash: string, data: Buffer): Promise<string>;
+  protected abstract _storeIncomingBlob(
+    hash: string,
+    data: Buffer
+  ): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
 
   abstract getBlobUri(hash: string): string | undefined;
@@ -78,11 +81,14 @@ export abstract class BlobStorage {
     }
   }
 
-  async stageBlob(hash: string, data: string | Buffer): Promise<string> {
+  async storeIncomingBlob(
+    hash: string,
+    data: string | Buffer
+  ): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
 
-      const uri = await this._stageBlob(hash, normalizedData);
+      const uri = await this._storeIncomingBlob(hash, normalizedData);
 
       return uri;
     } catch (err) {
@@ -94,7 +100,7 @@ export abstract class BlobStorage {
     }
   }
 
-  getStagedBlobUri(hash: string) {
-    return `staged-blobs/${hash}`;
+  getIncomingBlobUri(hash: string) {
+    return `incoming-blobs/${this.chainId}/${hash}`;
   }
 }

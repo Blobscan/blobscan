@@ -49,7 +49,7 @@ import { reconciliatorProcessor } from "./worker-processors/reconciliator";
 export type BlobPropagatorConfig = {
   highestBlockNumber?: number;
   blobStorages: BlobStorage[];
-  stagingBlobStorage: BlobStorage;
+  incomingBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
@@ -72,11 +72,11 @@ export const STORAGE_WORKER_PROCESSORS: Record<
   WEAVEVM: undefined,
 };
 
-const RECONCILIATOR_DEFAULT_BATCH_SIZE = 1000;
+const RECONCILIATOR_DEFAULT_BATCH_SIZE = 200;
 const RECONCILIATOR_DEFAULT_CRON_PATTERN = "*/30 * * * *";
 
 export class BlobPropagator {
-  protected stagingBlobStorage: BlobStorage;
+  protected incomingBlobStorage: BlobStorage;
 
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
@@ -92,7 +92,7 @@ export class BlobPropagator {
     redisConnectionOrUri,
     highestBlockNumber,
     blobStorages,
-    stagingBlobStorage,
+    incomingBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
     reconciliatorOpts,
@@ -111,19 +111,19 @@ export class BlobPropagator {
       blobStorages,
       {
         prisma,
-        stagingBlobStorage,
+        incomingBlobStorage,
       },
       workerOptions_
     );
 
     this.finalizerWorker = this.#createWorker(
       FINALIZER_WORKER_NAME,
-      finalizerProcessor({ stagingBlobStorage }),
+      finalizerProcessor({ incomingBlobStorage }),
       workerOptions_
     );
 
     this.blobPropagationFlowProducer = this.#createFlowProducer(connection);
-    this.stagingBlobStorage = stagingBlobStorage;
+    this.incomingBlobStorage = incomingBlobStorage;
     this.jobOptions = {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
@@ -137,7 +137,7 @@ export class BlobPropagator {
         finalizerWorkerName: this.finalizerWorker.name,
         flowProducer: this.blobPropagationFlowProducer,
         prisma,
-        stagingBlobStorage,
+        incomingBlobStorage,
         storageWorkerNames: this.storageWorkers.map((w) => w.name),
       },
       workerOptions_
@@ -178,14 +178,14 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const stagedBlobUri = await this.stagingBlobStorage.stageBlob(
+      const incomingBlobUri = await this.incomingBlobStorage.storeIncomingBlob(
         versionedHash,
         data
       );
 
       const flowJob = this.createBlobPropagationFlowJob({
         blockNumber,
-        stagedBlobUri,
+        incomingBlobUri,
         versionedHash,
       });
 
@@ -214,9 +214,9 @@ export class BlobPropagator {
         return blob;
       });
 
-      const stagedBlobUris = await Promise.all(
+      const incomingBlobUris = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
-          this.stagingBlobStorage.stageBlob(versionedHash, data)
+          this.incomingBlobStorage.storeIncomingBlob(versionedHash, data)
         )
       );
 
@@ -224,7 +224,7 @@ export class BlobPropagator {
         ({ blockNumber, versionedHash }, i) =>
           this.createBlobPropagationFlowJob({
             blockNumber,
-            stagedBlobUri: stagedBlobUris[i] as string,
+            incomingBlobUri: incomingBlobUris[i] as string,
             versionedHash,
           })
       );
@@ -242,11 +242,11 @@ export class BlobPropagator {
 
   protected createBlobPropagationFlowJob({
     blockNumber,
-    stagedBlobUri,
+    incomingBlobUri: incomingBlobUri,
     versionedHash,
   }: {
     blockNumber?: number;
-    stagedBlobUri: string;
+    incomingBlobUri: string;
     versionedHash: string;
   }) {
     const jobPriority = this.#computeJobPriority(blockNumber);
@@ -256,7 +256,7 @@ export class BlobPropagator {
       this.finalizerWorker.name,
       storageWorkerNames,
       versionedHash,
-      stagedBlobUri,
+      incomingBlobUri,
       {
         priority: jobPriority,
       }
@@ -354,15 +354,22 @@ export class BlobPropagator {
     );
     const workerLogger = createModuleLogger("blob-propagator", worker.name);
 
-    worker.on("completed", (_, { flowsCreated: jobsCreated }) => {
-      if (!jobsCreated) {
-        workerLogger.debug("No blobs to reconciliate found");
+    worker.on(
+      "completed",
+      (_, { flowsCreated: jobsCreated, blobTimestamps }) => {
+        if (!jobsCreated) {
+          workerLogger.info("No blobs to reconciliate found");
 
-        return;
+          return;
+        }
+
+        workerLogger.info(
+          `${jobsCreated} jobs recreated; From: ${
+            blobTimestamps?.firstBlob?.toISOString() ?? "-"
+          } To: ${blobTimestamps?.lastBlob?.toISOString() ?? "-"}`
+        );
       }
-
-      workerLogger.info(`${jobsCreated} jobs recreated`);
-    });
+    );
 
     worker.on("failed", (job, err) => {
       workerLogger.error(err);

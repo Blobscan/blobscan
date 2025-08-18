@@ -44,8 +44,8 @@ export class WeaveVMStorage extends BlobStorage {
     throw new Error('"storeBlob" operation is not allowed');
   }
 
-  protected _stageBlob(_: string, __: Buffer): Promise<string> {
-    throw new Error('"stageBlob" operation is not allowed');
+  protected _storeIncomingBlob(_: string, __: Buffer): Promise<string> {
+    throw new Error('"storeIncomingBlob" operation is not allowed');
   }
 
   protected async _removeBlob(_: string): Promise<void> {

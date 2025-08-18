@@ -24,6 +24,6 @@ exports[`BlobPropagator > when propagating a single blob > should throw a valid 
 
 exports[`BlobPropagator > when propagating a single blob > should throw a valid error if the blob failed to get staged 2`] = `[Error: Internal temporary blob storage error]`;
 
-exports[`BlobPropagator > when propagating multiple blobs > should throw a valid error if some of the blobs failed to be stored in the staging blob storage 1`] = `"Blob propagator failed: Failed to propagate blobs with hashes \\"blobVersionedHash1\\", \\"blobVersionedHash2\\""`;
+exports[`BlobPropagator > when propagating multiple blobs > should throw a valid error if some of the blobs failed to be stored in the incoming blob storage 1`] = `"Blob propagator failed: Failed to propagate blobs with hashes \\"blobVersionedHash1\\", \\"blobVersionedHash2\\""`;
 
-exports[`BlobPropagator > when propagating multiple blobs > should throw a valid error if some of the blobs failed to be stored in the staging blob storage 2`] = `[Error: Internal temporal blob storage error]`;
+exports[`BlobPropagator > when propagating multiple blobs > should throw a valid error if some of the blobs failed to be stored in the incoming blob storage 2`] = `[Error: Internal temporal blob storage error]`;

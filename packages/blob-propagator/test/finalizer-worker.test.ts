@@ -13,7 +13,7 @@ import { finalizerProcessor } from "../src/worker-processors";
 import { createStorageFromEnv } from "./helpers";
 
 describe("Finalizer Worker", () => {
-  let stagingBlobStorage: BlobStorage;
+  let incomingBlobStorage: BlobStorage;
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const blob = fixtures.blobs[0]!;
@@ -24,19 +24,22 @@ describe("Finalizer Worker", () => {
   };
 
   beforeAll(async () => {
-    stagingBlobStorage = await createStorageFromEnv(
+    incomingBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
   });
 
   beforeEach(async () => {
-    await stagingBlobStorage.storeBlob(blobInput.versionedHash, blobInput.data);
+    await incomingBlobStorage.storeBlob(
+      blobInput.versionedHash,
+      blobInput.data
+    );
   });
 
   it("should remove blob data from temporary blob storage", async () => {
     const blobUri =
-      stagingBlobStorage.getBlobUri(blobInput.versionedHash) ?? "";
-    const beforeStoredBlob = await stagingBlobStorage.getBlob(blobUri);
+      incomingBlobStorage.getBlobUri(blobInput.versionedHash) ?? "";
+    const beforeStoredBlob = await incomingBlobStorage.getBlob(blobUri);
 
     expect(
       beforeStoredBlob,
@@ -44,13 +47,13 @@ describe("Finalizer Worker", () => {
     ).toBeDefined();
 
     await finalizerProcessor({
-      stagingBlobStorage,
+      incomingBlobStorage,
     })({
       data: {
-        stagedBlobUri: blobUri,
+        incomingBlobUri: blobUri,
       },
     } as BlobPropagationFinalizerJob);
 
-    await expect(stagingBlobStorage.getBlob(blobUri)).rejects.toThrowError();
+    await expect(incomingBlobStorage.getBlob(blobUri)).rejects.toThrowError();
   });
 });
