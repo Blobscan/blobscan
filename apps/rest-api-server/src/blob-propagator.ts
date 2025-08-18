@@ -36,6 +36,9 @@ async function createBlobPropagator() {
     prisma,
     stagingBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
+    reconciliatorOpts: {
+      cronPattern: env.BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN,
+    },
   });
 }
 
