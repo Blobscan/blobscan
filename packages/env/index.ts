@@ -92,7 +92,7 @@ export const env = createEnv({
         .default(7 * 24 * 60 * 60),
       BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN: z
         .string()
-        .default("*/30 * * * *"),
+        .default("0 * * * *"),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
@@ -216,13 +216,7 @@ export const env = createEnv({
     console.log(
       `API configuration: secretKey: ${maskSensitiveData(
         env.SECRET_KEY
-      )} redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
-        env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-      } completedJobsAge=${
-        env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE
-      } seconds failedJobsAge=${
-        env.BLOB_PROPAGATOR_FAILED_JOBS_AGE
-      } seconds Configuration: network=${
+      )} redisUri=${maskPassword(env.REDIS_URI)} Configuration: network=${
         env.NETWORK_NAME
       } sentryEnabled=${!!env.SENTRY_DSN_API} metrics=${
         env.METRICS_ENABLED
@@ -236,7 +230,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob propagator configuration: redisUri=${env.REDIS_URI} temporaryBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE}`
+      `Blob propagator configuration: incomingBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN}`
     );
 
     console.log(
