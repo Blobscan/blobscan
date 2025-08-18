@@ -90,10 +90,9 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
-      BLOB_PROPAGATOR_BLOB_RETENTION_MODE: z
-        .enum(["eager", "lazy"])
-        .default("lazy"),
-
+      BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN: z
+        .string()
+        .default("*/30 * * * *"),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
@@ -219,8 +218,6 @@ export const env = createEnv({
         env.SECRET_KEY
       )} redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
         env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-      } blobRetentionMode=${
-        env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE
       } completedJobsAge=${
         env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE
       } seconds failedJobsAge=${
