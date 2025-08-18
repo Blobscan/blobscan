@@ -640,6 +640,11 @@
       "blobHash": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734",
       "blobStorage": "POSTGRES",
       "dataReference": "0x01f433be851da7e34bf14bf4f21b4c7db4b38afee7ec74d3c576fdce9f8f6734"
+    },
+    {
+      "blobHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+      "blobStorage": "SWARM",
+      "dataReference": "bzz://sfsfsdfsdfsdfs"
     }
   ],
   "blobDatas": [

@@ -47,6 +47,10 @@ export class MockedBlobPropagator extends BlobPropagator {
     return this.storageWorkers;
   }
 
+  getReconciliator() {
+    return this.reconciliator;
+  }
+
   getBlobPropagationFlowProducer() {
     return this.blobPropagationFlowProducer;
   }
@@ -66,10 +70,22 @@ export class MockedBlobPropagator extends BlobPropagator {
   static async create(
     config: Omit<BlobPropagatorConfig, "highestBlockNumber">
   ) {
-    return new MockedBlobPropagator({
+    const { reconciliatorOpts } = config;
+
+    const propagator = new MockedBlobPropagator({
       ...config,
       highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
     });
+
+    const pattern = reconciliatorOpts?.cronPattern ?? "*/30 * * * *";
+
+    await propagator.reconciliator.queue.add("reconciliator-job", null, {
+      repeat: {
+        pattern,
+      },
+    });
+
+    return propagator;
   }
 }
 
@@ -113,30 +129,36 @@ describe("BlobPropagator", () => {
   });
 
   describe("when creating a blob propagator", () => {
-    it("should return an instance", async () => {
-      await expect(
-        BlobPropagator.create({
-          blobStorages,
-          prisma,
-          stagingBlobStorage,
-          redisConnectionOrUri: env.REDIS_URI,
-        })
-      ).resolves.toBeDefined();
+    it("should start reconciliator queue", async () => {
+      const queue = blobPropagator.getReconciliator().queue;
+
+      await expect(queue.isPaused()).resolves.toBeFalsy();
+    });
+
+    it("should start reconciliator worker", () => {
+      const worker = blobPropagator.getReconciliator().worker;
+
+      expect(worker.isRunning()).toBeTruthy();
+    });
+
+    it("should start reconciliator cron job", async () => {
+      const jobs = (
+        await blobPropagator.getReconciliator().queue.getJobs()
+      ).filter((j) => !!j);
+
+      expect(jobs.length, "more than one cron job started").toBe(1);
+
+      const job = jobs[0];
+
+      expect(job?.name).toBe("reconciliator-job");
     });
 
     it("should return an instance with the highest block number set to the last finalized block", async () => {
-      const propagator = await MockedBlobPropagator.create({
-        blobStorages,
-        prisma,
-        stagingBlobStorage,
-        redisConnectionOrUri: env.REDIS_URI,
-      });
-
       const expectedHighestBlockNumber = await prisma.blockchainSyncState
         .findFirst()
         .then((s) => s?.lastFinalizedBlock);
 
-      expect(propagator.getHighestBlockNumber()).toBe(
+      expect(blobPropagator.getHighestBlockNumber()).toBe(
         expectedHighestBlockNumber
       );
     });
@@ -367,11 +389,6 @@ describe("BlobPropagator", () => {
           );
         });
       });
-      // it("should have the correct job names", () => {
-      //   const expectedStorageJobNames = blobPropagator
-      //     .getStorageWorkers()
-      //     .map((w) => `propagateBlob:${w.name}`);
-      // });
     });
   });
 
