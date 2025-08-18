@@ -62,14 +62,14 @@ function runWorkerTests(
 
       targetBlobStorage = workerParams.targetBlobStorage;
 
-      const blobUri = await workerParams.stagingBlobStorage.stageBlob(
+      const blobUri = await workerParams.incomingBlobStorage.storeIncomingBlob(
         blob.versionedHash,
         blob.data
       );
 
       job = {
         data: {
-          stagedBlobUri: blobUri,
+          incomingBlobUri: blobUri,
           versionedHash: blob.versionedHash,
         },
       } as BlobPropagationJob;
@@ -81,7 +81,7 @@ function runWorkerTests(
       });
 
       return async () => {
-        await workerParams.stagingBlobStorage.removeBlob(blobUri);
+        await workerParams.incomingBlobStorage.removeBlob(blobUri);
 
         await prisma.blobDataStorageReference.deleteMany({
           where: {
@@ -140,12 +140,12 @@ function runWorkerTests(
     });
 
     testValidError(
-      "should throw an error if the blob wasn't found in the staging blob storage",
+      "should throw an error if the blob wasn't found in the incoming blob storage",
       async () => {
         const versionedHash = "missingBlobDataFileVersionedHash";
         const jobWithMissingBlobData = {
           data: {
-            stagedBlobUri: "missingBlobDataFileVersionedHash",
+            incomingBlobUri: "missingBlobDataFileVersionedHash",
             versionedHash,
           },
         } as BlobPropagationJob;
@@ -160,7 +160,7 @@ function runWorkerTests(
   });
 }
 describe("Storage Worker", () => {
-  let stagingBlobStorage: BlobStorage;
+  let incomingBlobStorage: BlobStorage;
   const blobVersionedHash = "test-blob-versioned-hash";
   const blobData = "0x1234abcdeff123456789ab34223a4b2c2e";
   let blobStorages: BlobStorage[];
@@ -169,11 +169,11 @@ describe("Storage Worker", () => {
 
   beforeAll(async () => {
     blobStorages = await createBlobStorages();
-    stagingBlobStorage = await createStorageFromEnv(
+    incomingBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
 
-    blobStorages.push(stagingBlobStorage);
+    blobStorages.push(incomingBlobStorage);
   });
 
   afterAll(() => {
@@ -213,7 +213,7 @@ describe("Storage Worker", () => {
 
         return Promise.resolve({
           targetBlobStorage,
-          stagingBlobStorage,
+          incomingBlobStorage,
           prisma,
         });
       },
@@ -242,7 +242,7 @@ describe("Storage Worker", () => {
             return mockedSwarmBlobUri;
           },
         } as SwarmStorage,
-        stagingBlobStorage,
+        incomingBlobStorage,
         prisma,
       });
     },

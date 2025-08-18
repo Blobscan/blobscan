@@ -19,22 +19,22 @@ import { createStorageFromEnv } from "./helpers";
 
 describe("Reconciliator Worker", () => {
   let flowProducer: FlowProducer;
-  let stagingBlobStorage: BlobStorage;
+  let incomingBlobStorage: BlobStorage;
   const batchSize = 2;
 
   const orphanedBlobs: Blob[] = [
     {
       versionedHash:
-        "0x0130000000000000000000000000000000000000000000000000000000000000",
+        "0x0110000000000000000000000000000000000000000000000000000000000b10",
       commitment:
-        "0x30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "0x100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       firstBlockNumber: null,
       proof:
-        "0x330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "0x110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       size: 131072,
       usageSize: 131050,
-      insertedAt: new Date("2024-01-15T00:00:00"),
-      updatedAt: new Date("2024-01-20T00:00:00"),
+      insertedAt: new Date("2024-01-01T00:00:00"),
+      updatedAt: new Date("2024-01-01T00:00:00"),
     },
     {
       versionedHash:
@@ -51,16 +51,16 @@ describe("Reconciliator Worker", () => {
     },
     {
       versionedHash:
-        "0x0110000000000000000000000000000000000000000000000000000000000b10",
+        "0x0130000000000000000000000000000000000000000000000000000000000000",
       commitment:
-        "0x100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "0x30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       firstBlockNumber: null,
       proof:
-        "0x110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "0x330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       size: 131072,
       usageSize: 131050,
-      insertedAt: new Date("2024-01-01T00:00:00"),
-      updatedAt: new Date("2024-01-01T00:00:00"),
+      insertedAt: new Date("2024-01-15T00:00:00"),
+      updatedAt: new Date("2024-01-20T00:00:00"),
     },
   ];
 
@@ -73,7 +73,7 @@ describe("Reconciliator Worker", () => {
       connection,
     });
 
-    stagingBlobStorage = await createStorageFromEnv(
+    incomingBlobStorage = await createStorageFromEnv(
       env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
     );
 
@@ -101,7 +101,7 @@ describe("Reconciliator Worker", () => {
         finalizerWorkerName: FINALIZER_WORKER_NAME,
         flowProducer,
         prisma,
-        stagingBlobStorage,
+        incomingBlobStorage,
         storageWorkerNames: expectedStorageWorkers,
       });
 
@@ -129,7 +129,7 @@ describe("Reconciliator Worker", () => {
       };
     });
 
-    it("should create propagation flows starting from the most recent blobs", () => {
+    it("should create propagation flows starting from the oldest blob", () => {
       const expectedJobIds = orphanedBlobs
         .slice(0, batchSize)
         .map((b) => buildJobId(FINALIZER_WORKER_NAME, b.versionedHash));
@@ -159,7 +159,9 @@ describe("Reconciliator Worker", () => {
         .map((b) => ({
           jobId: buildJobId(FINALIZER_WORKER_NAME, b.versionedHash),
           data: {
-            stagedBlobUri: stagingBlobStorage.getStagedBlobUri(b.versionedHash),
+            incomingBlobUri: incomingBlobStorage.getIncomingBlobUri(
+              b.versionedHash
+            ),
           },
         }));
       const flowJobsData = flows.map((f) => ({
@@ -173,6 +175,10 @@ describe("Reconciliator Worker", () => {
     it("should return the correct result", async () => {
       const expectedProcessorResult: ReconciliatorProcessorResult = {
         flowsCreated: 2,
+        blobTimestamps: {
+          firstBlob: orphanedBlobs[0]?.insertedAt,
+          lastBlob: orphanedBlobs[1]?.insertedAt,
+        },
       };
 
       expect(processorResult).toEqual(expectedProcessorResult);
@@ -185,7 +191,7 @@ describe("Reconciliator Worker", () => {
       finalizerWorkerName: FINALIZER_WORKER_NAME,
       flowProducer,
       prisma,
-      stagingBlobStorage,
+      incomingBlobStorage,
       storageWorkerNames: Object.values(STORAGE_WORKER_NAMES),
     });
 

@@ -90,8 +90,11 @@ export class GoogleStorage extends BlobStorage {
     return uri;
   }
 
-  protected async _stageBlob(hash: string, data: Buffer): Promise<string> {
-    const uri = this.getStagedBlobUri(hash);
+  protected async _storeIncomingBlob(
+    hash: string,
+    data: Buffer
+  ): Promise<string> {
+    const uri = this.getIncomingBlobUri(hash);
 
     await this._uploadBlob(uri, data);
 

@@ -17,24 +17,24 @@ async function getBlobPropagator() {
 
 async function createBlobPropagator() {
   const blobStorages = await createBlobStorages();
-  let stagingBlobStorage: BlobStorage | undefined = blobStorages.find(
+  let incomingBlobStorage: BlobStorage | undefined = blobStorages.find(
     (storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
   );
 
-  if (!stagingBlobStorage) {
+  if (!incomingBlobStorage) {
     try {
-      stagingBlobStorage = await createStorageFromEnv(
+      incomingBlobStorage = await createStorageFromEnv(
         env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
       );
     } catch (err) {
-      throw new Error(`Failed to create staging blob storage: ${err}`);
+      throw new Error(`Failed to create incoming blob storage: ${err}`);
     }
   }
 
   return BlobPropagator.create({
     blobStorages,
     prisma,
-    stagingBlobStorage,
+    incomingBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
     reconciliatorOpts: {
       cronPattern: env.BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN,

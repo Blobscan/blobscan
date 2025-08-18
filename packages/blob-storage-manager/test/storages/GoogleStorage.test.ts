@@ -119,7 +119,10 @@ describe("GoogleStorage", () => {
   });
 
   it("should store a temporary blob", async () => {
-    const blobReference = await storage.stageBlob(NEW_BLOB_HASH, NEW_BLOB_DATA);
+    const blobReference = await storage.storeIncomingBlob(
+      NEW_BLOB_HASH,
+      NEW_BLOB_DATA
+    );
 
     const res = await fetch(
       `${env.GOOGLE_STORAGE_API_ENDPOINT}/storage/v1/b/${
@@ -131,7 +134,7 @@ describe("GoogleStorage", () => {
 
     expect(bytesToHex(Buffer.from(blobData))).toBe(NEW_BLOB_DATA);
     expect(blobReference, "blob temporary uri mismatch").toMatchInlineSnapshot(
-      '"staging-blobs/0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174"'
+      '"incoming-blobs/1/0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174"'
     );
   });
 

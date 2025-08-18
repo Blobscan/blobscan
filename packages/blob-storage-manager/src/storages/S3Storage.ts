@@ -118,8 +118,11 @@ export class S3Storage extends BlobStorage {
     return blobUri;
   }
 
-  protected async _stageBlob(hash: string, data: Buffer): Promise<string> {
-    const blobUri = this.getStagedBlobUri(hash);
+  protected async _storeIncomingBlob(
+    hash: string,
+    data: Buffer
+  ): Promise<string> {
+    const blobUri = this.getIncomingBlobUri(hash);
 
     await this._uploadBlob(blobUri, data);
 

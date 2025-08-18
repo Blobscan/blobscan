@@ -16,7 +16,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobs": [
       {
         "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "size": 1500,
         "usageSize": 0,
@@ -137,7 +142,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -258,7 +268,12 @@ exports[`Transaction router > getAll > when getting expanded transaction results
     "blobs": [
       {
         "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "size": 1500,
         "usageSize": 0,
@@ -611,7 +626,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2521,7 +2541,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2627,7 +2652,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2775,7 +2805,12 @@ exports[`Transaction router > getAll > when getting filtered transaction results
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],
@@ -2881,7 +2916,12 @@ exports[`Transaction router > getAll > when getting paginated transaction result
     "blobGasUsed": 131072n,
     "blobs": [
       {
-        "dataStorageReferences": [],
+        "dataStorageReferences": [
+          {
+            "storage": "swarm",
+            "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+          },
+        ],
         "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
       },
     ],

@@ -82,8 +82,8 @@ export class SwarmStorage extends BlobStorage {
     });
   }
 
-  protected _stageBlob(_: string, __: Buffer): Promise<string> {
-    throw new Error('"stageBlob" operation is not allowed');
+  protected _storeIncomingBlob(_: string, __: Buffer): Promise<string> {
+    throw new Error('"storeIncomingBlob" operation is not allowed');
   }
 
   async #sendToChunkstorm(buffer: Buffer) {
@@ -118,8 +118,8 @@ export class SwarmStorage extends BlobStorage {
     return undefined;
   }
 
-  getStagedBlobUri(_: string): string {
-    throw new Error(`"getStagedBlobUri" operation not allowed`);
+  getIncomingBlobUri(_: string): string {
+    throw new Error(`"getIncomingBlobUri" operation not allowed`);
   }
 
   async #performBeeAPICall<T>(call: () => T) {

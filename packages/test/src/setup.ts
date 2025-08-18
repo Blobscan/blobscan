@@ -37,8 +37,8 @@ afterAll(async () => {
     fs.rmSync(fsStoragePath, { recursive: true });
   }
 
-  if (fsStoragePath && fs.existsSync("staging-blobs")) {
-    fs.rmSync("staging-blobs", { recursive: true });
+  if (fsStoragePath && fs.existsSync("incoming-blobs")) {
+    fs.rmSync("incoming-blobs", { recursive: true });
   }
 
   await prisma

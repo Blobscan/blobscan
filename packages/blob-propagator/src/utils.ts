@@ -52,14 +52,14 @@ export function createBlobPropagationFlowJob(
   workerName: string,
   storageWorkerNames: string[],
   versionedHash: string,
-  stagedBlobUri: string,
+  incomingBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowJob {
   const { priority, ...restOpts } = opts;
   const propagationFlowJobId = buildJobId(workerName, versionedHash);
 
   const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash, stagedBlobUri, {
+    createBlobStorageJob(name, versionedHash, incomingBlobUri, {
       priority,
     })
   );
@@ -68,7 +68,7 @@ export function createBlobPropagationFlowJob(
     name: `propagateBlob:${propagationFlowJobId}`,
     queueName: workerName,
     data: {
-      stagedBlobUri,
+      incomingBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -82,7 +82,7 @@ export function createBlobPropagationFlowJob(
 export function createBlobStorageJob(
   storageWorkerName: string,
   versionedHash: string,
-  stagedBlobUri: string,
+  incomingBlobUri: string,
   opts: Partial<JobsOptions> = {}
 ): FlowChildJob {
   const jobId = buildJobId(storageWorkerName, versionedHash);
@@ -92,7 +92,7 @@ export function createBlobStorageJob(
     queueName: storageWorkerName,
     data: {
       versionedHash,
-      stagedBlobUri,
+      incomingBlobUri,
     },
     opts: {
       ...DEFAULT_JOB_OPTIONS,
@@ -104,14 +104,18 @@ export function createBlobStorageJob(
 }
 
 export async function propagateBlob(
-  { versionedHash, stagedBlobUri }: BlobPropagationJobData,
-  { targetBlobStorage, prisma, stagingBlobStorage }: BlobPropagationWorkerParams
+  { versionedHash, incomingBlobUri }: BlobPropagationJobData,
+  {
+    targetBlobStorage,
+    prisma,
+    incomingBlobStorage,
+  }: BlobPropagationWorkerParams
 ) {
   const targetStorageName = targetBlobStorage.name;
   try {
     let blobData: string;
     try {
-      blobData = await stagingBlobStorage.getBlob(stagedBlobUri);
+      blobData = await incomingBlobStorage.getBlob(incomingBlobUri);
     } catch (err) {
       const ref = await prisma.blobDataStorageReference.findUnique({
         where: {
@@ -129,10 +133,10 @@ export async function propagateBlob(
         };
       }
 
-      throw new Error(`Failed to retrieve blob from staging storage`);
+      throw new Error(`Failed to retrieve blob from incoming storage`);
     }
 
-    logger.debug(`Blob ${versionedHash} retrieved from staging storage`);
+    logger.debug(`Blob ${versionedHash} retrieved from incoming storage`);
 
     const blobUri = await targetBlobStorage.storeBlob(versionedHash, blobData);
 
