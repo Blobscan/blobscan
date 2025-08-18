@@ -1,4 +1,4 @@
-import type { Job, Processor, Queue, Worker } from "bullmq";
+import type { FlowProducer, Job, Processor, Queue, Worker } from "bullmq";
 
 import type {
   BlobReference,
@@ -34,6 +34,26 @@ export type BlobPropagationWorkerParams = {
 export type BlobPropagationFinalizerWorkerParams = {
   stagingBlobStorage: BlobStorage;
 };
+
+export type Reconciliator = {
+  queue: Queue<null>;
+  worker: Worker<null, ReconciliatorProcessorResult>;
+};
+
+export type ReconciliatorProcessorParams = {
+  flowProducer: FlowProducer;
+  prisma: BlobscanPrismaClient;
+  stagingBlobStorage: BlobStorage;
+  batchSize: number;
+  storageWorkerNames: string[];
+  finalizerWorkerName: string;
+};
+
+export type ReconciliatorProcessorResult = { flowsCreated: number };
+
+export type ReconciliatorProcessor = (
+  params: ReconciliatorProcessorParams
+) => Processor<null, ReconciliatorProcessorResult>;
 
 export type BlobPropagationWorkerProcessor = (
   params: BlobPropagationWorkerParams
