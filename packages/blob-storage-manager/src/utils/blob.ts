@@ -39,3 +39,7 @@ export function normalizeBlobData(data: string | Buffer) {
 export function getBlobFileType(uri: string): BlobFileType {
   return uri.endsWith(".txt") ? "text" : "binary";
 }
+
+export function buildIncomingBlobUri(chainId: number | string, hash: string) {
+  return `incoming-blobs/${chainId}/${hash}`;
+}

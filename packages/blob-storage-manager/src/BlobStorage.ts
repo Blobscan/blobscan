@@ -2,7 +2,11 @@ import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import { BlobStorageError } from "./errors";
 import type { BlobFileType } from "./types";
-import { getBlobFileType, normalizeBlobData } from "./utils/blob";
+import {
+  buildIncomingBlobUri,
+  getBlobFileType,
+  normalizeBlobData,
+} from "./utils/blob";
 
 export interface BlobStorageConfig {
   chainId: number;
@@ -101,6 +105,6 @@ export abstract class BlobStorage {
   }
 
   getIncomingBlobUri(hash: string) {
-    return `incoming-blobs/${this.chainId}/${hash}`;
+    return buildIncomingBlobUri(this.chainId, hash);
   }
 }

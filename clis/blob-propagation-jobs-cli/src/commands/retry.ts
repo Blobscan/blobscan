@@ -1,7 +1,7 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import type { QueueHumanName } from "../Context";
+import type { HumanQueueName } from "../Context";
 import { context } from "../context-instance";
 import type { Command } from "../types";
 import { getJobsByBlobHashes } from "../utils";
@@ -36,7 +36,7 @@ export const retry: Command = async function (argv?: string[]) {
     argv,
   }) as {
     help?: boolean;
-    queue?: QueueHumanName[];
+    queue?: HumanQueueName[];
     blobHash?: string[];
   };
 

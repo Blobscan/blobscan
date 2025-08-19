@@ -53,7 +53,6 @@ describe("Create command", () => {
     const consoleLogSpy = vi
       .spyOn(console, "log")
       .mockImplementation(() => void {});
-
     return () => {
       consoleLogSpy.mockRestore();
     };
