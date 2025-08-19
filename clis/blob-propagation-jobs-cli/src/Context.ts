@@ -10,7 +10,7 @@ import {
 } from "@blobscan/blob-propagator";
 import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
-export type QueueHumanName = "FINALIZER" | BlobStorage;
+export type HumanQueueName = "FINALIZER" | BlobStorage;
 
 export class Context {
   #storageQueues: BlobPropagationQueue[];
@@ -42,7 +42,7 @@ export class Context {
   }
 
   getQueue(
-    queueName: QueueHumanName
+    queueName: HumanQueueName
   ): typeof queueName extends "FINALIZER"
     ? Queue
     : BlobPropagationQueue | undefined {
@@ -55,13 +55,13 @@ export class Context {
     );
   }
 
-  getQueues(queueNames: QueueHumanName[]) {
+  getQueues(queueNames: HumanQueueName[]) {
     return queueNames
       .map((queueName) => this.getQueue(queueName))
       .filter((q): q is BlobPropagationQueue => !!q);
   }
 
-  getQueuesOrThrow(queueNames: QueueHumanName[]) {
+  getQueuesOrThrow(queueNames: HumanQueueName[]) {
     const queues = this.getQueues(queueNames);
 
     if (queues.length !== queueNames.length) {

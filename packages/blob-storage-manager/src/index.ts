@@ -3,3 +3,4 @@ export { BlobStorageManager } from "./BlobStorageManager";
 export * from "./errors";
 export * from "./storages";
 export * from "./types";
+export { buildIncomingBlobUri } from "./utils";
