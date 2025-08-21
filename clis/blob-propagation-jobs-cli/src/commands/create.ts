@@ -29,7 +29,7 @@ import {
 
 let spinner = ora().start();
 
-const JOB_BATCH_SIZE = 10_000;
+const JOB_BATCH_SIZE = 1_000;
 
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
