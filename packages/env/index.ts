@@ -92,7 +92,9 @@ export const env = createEnv({
         .default(7 * 24 * 60 * 60),
       BLOB_RECONCILIATOR_CRON_PATTERN: z
         .string()
+        // Every hour
         .default("0 * * * *"),
+      BLOB_RECONCILIATOR_BATCH_SIZE: z.coerce.number().default(200),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),

@@ -21,6 +21,8 @@ async function createBlobPropagator() {
     (storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
   );
 
+  // The incoming blob storage may not be part of the enabled storages since it's meant
+  // to act only as a temporary storage. In that case, we create it separately
   if (!incomingBlobStorage) {
     try {
       incomingBlobStorage = await createStorageFromEnv(
@@ -38,6 +40,7 @@ async function createBlobPropagator() {
     redisConnectionOrUri: env.REDIS_URI,
     reconciliatorOpts: {
       cronPattern: env.BLOB_RECONCILIATOR_CRON_PATTERN,
+      batchSize: env.BLOB_RECONCILIATOR_BATCH_SIZE,
     },
   });
 }

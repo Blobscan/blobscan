@@ -54,10 +54,10 @@ export type BlobPropagatorConfig = {
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
   jobOptions?: Partial<JobsOptions>;
-  reconciliatorOpts?: Partial<{
+  reconciliatorOpts: {
     batchSize: number;
     cronPattern: string;
-  }>;
+  };
 };
 
 export const STORAGE_WORKER_PROCESSORS: Record<
@@ -71,9 +71,6 @@ export const STORAGE_WORKER_PROCESSORS: Record<
   S3: s3Processor,
   WEAVEVM: undefined,
 };
-
-const RECONCILIATOR_DEFAULT_BATCH_SIZE = 200;
-const RECONCILIATOR_DEFAULT_CRON_PATTERN = "*/30 * * * *";
 
 export class BlobPropagator {
   protected incomingBlobStorage: BlobStorage;
@@ -132,8 +129,7 @@ export class BlobPropagator {
 
     this.reconciliator = this.#createReconciliator(
       {
-        batchSize:
-          reconciliatorOpts?.batchSize ?? RECONCILIATOR_DEFAULT_BATCH_SIZE,
+        batchSize: reconciliatorOpts.batchSize,
         finalizerWorkerName: this.finalizerWorker.name,
         flowProducer: this.blobPropagationFlowProducer,
         prisma,
@@ -160,12 +156,9 @@ export class BlobPropagator {
       highestBlockNumber: lastFinalizedBlock,
     });
 
-    const pattern =
-      reconciliatorOpts?.cronPattern ?? RECONCILIATOR_DEFAULT_CRON_PATTERN;
-
     await blobPropagator.reconciliator.queue.add("reconciliator-job", null, {
       repeat: {
-        pattern,
+        pattern: reconciliatorOpts.cronPattern,
       },
     });
 

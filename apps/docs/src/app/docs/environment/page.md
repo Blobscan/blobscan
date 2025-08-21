@@ -85,6 +85,7 @@ nextjs:
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`                      | Remove completed jobs after the specified number of seconds (default: 7 days)                             | No                              | `604800`                                     |
 | `BLOB_PROPAGATOR_TMP_BLOB_STORAGE`                     | Blob storage to use for storing incoming blobs                                                            | No                              | ``                                           |
 | `BLOB_RECONCILIATOR_CRON_PATTERN`                      | Cron pattern for the blob reconciliator worker                                                            | No                              | `0 * * * *` (every 1 hour)                   |
+| `BLOB_RECONCILIATOR_BATCH_SIZE`                        | Maximum number of blobs to process during each run                                                        | No                              | 200                                          |
 | `VITEST_MAINNET_FORK_URL`                              | Mainnet JSON-RPC URL used for starting a local Anvil instance to run tests against                        | No                              | `https://eth.llamarpc.com`                   |
 
 ## Blobscan indexer
