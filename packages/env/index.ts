@@ -90,7 +90,7 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
-      BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN: z
+      BLOB_RECONCILIATOR_CRON_PATTERN: z
         .string()
         .default("0 * * * *"),
       // PostHog
@@ -230,7 +230,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob propagator configuration: incomingBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN}`
+      `Blob propagator configuration: incomingBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_RECONCILIATOR_CRON_PATTERN}`
     );
 
     console.log(

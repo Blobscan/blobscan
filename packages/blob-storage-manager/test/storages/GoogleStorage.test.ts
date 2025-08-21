@@ -134,7 +134,7 @@ describe("GoogleStorage", () => {
 
     expect(bytesToHex(Buffer.from(blobData))).toBe(NEW_BLOB_DATA);
     expect(blobReference, "blob temporary uri mismatch").toMatchInlineSnapshot(
-      '"incoming-blobs/1/0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174"'
+      '"incoming-blobs/1/0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.bin"'
     );
   });
 

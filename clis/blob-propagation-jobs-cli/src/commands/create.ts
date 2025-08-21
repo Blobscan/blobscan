@@ -174,7 +174,7 @@ export const create: Command = async function (argv) {
 
   if (rawBlobHashes?.length) {
     spinner.start(`Checking blob hashes exist…`);
-    const nonDuplicatedBlobHashes = [
+    const uniqueBlobHashes = [
       ...new Set(rawBlobHashes.map((blobHash) => blobHash)),
     ];
 
@@ -186,13 +186,13 @@ export const create: Command = async function (argv) {
       },
       where: {
         blobHash: {
-          in: nonDuplicatedBlobHashes,
+          in: uniqueBlobHashes,
         },
       },
     });
 
-    if (dbBlobs.length !== nonDuplicatedBlobHashes.length) {
-      const notFoundBlobHashes = nonDuplicatedBlobHashes.filter(
+    if (dbBlobs.length !== uniqueBlobHashes.length) {
+      const notFoundBlobHashes = uniqueBlobHashes.filter(
         (hash) => !dbBlobs.find((b) => b.blobHash === hash)
       );
 
@@ -311,7 +311,7 @@ export const create: Command = async function (argv) {
   batchDBBlobs = await prisma.$queryRaw<BlobsQueryResult>`
       SELECT b.blob_hash AS "blobHash", b.block_number AS "blockNumber", b.block_timestamp AS "blockTimestamp"
       FROM blobs_on_transactions b
-      WHERE 
+      WHERE
         ${whereClause}
       ORDER BY
         ${orderByClause}
