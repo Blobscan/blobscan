@@ -10,6 +10,7 @@ import {
   bytesToHex,
   createFullPermissionDirectory,
   createFullPermissionBinFile,
+  buildIncomingBlobUri,
 } from "../utils";
 
 export interface FileSystemStorageConfig extends BlobStorageConfig {
@@ -84,6 +85,12 @@ export class FileSystemStorage extends BlobStorage {
     )}/${hash.slice(4, 6)}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
 
     return path.join(this.blobDirPath, blobFilePath);
+  }
+
+  getIncomingBlobUri(hash: string): string {
+    const incomingBlobFilePath = buildIncomingBlobUri(this.chainId, hash);
+
+    return path.join(this.blobDirPath, incomingBlobFilePath);
   }
 
   static async create(config: FileSystemStorageConfig) {

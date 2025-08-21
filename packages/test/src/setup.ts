@@ -37,10 +37,6 @@ afterAll(async () => {
     fs.rmSync(fsStoragePath, { recursive: true });
   }
 
-  if (fsStoragePath && fs.existsSync("incoming-blobs")) {
-    fs.rmSync("incoming-blobs", { recursive: true });
-  }
-
   await prisma
     .$disconnect()
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
