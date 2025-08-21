@@ -162,7 +162,7 @@ describe("FileSystemStorage", () => {
 
       expect(bytesToHex(bytes), "blob data mismatch").toEqual(NEW_BLOB_DATA);
       expect(blobReference, "temporari URI mismatch").toMatchInlineSnapshot(
-        '"incoming-blobs/1/0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.bin"'
+        '"test-blobscan-blobs/incoming-blobs/1/0x0100eac880c712dba4346c88ab564fa1b79024106f78f732cca49d8a68e4c174.bin"'
       );
     });
 

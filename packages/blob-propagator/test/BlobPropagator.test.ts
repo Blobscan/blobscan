@@ -68,12 +68,19 @@ export class MockedBlobPropagator extends BlobPropagator {
   }
 
   static async create(
-    config: Omit<BlobPropagatorConfig, "highestBlockNumber">
+    config: Omit<
+      BlobPropagatorConfig,
+      "highestBlockNumber" | "reconciliatorOpts"
+    >
   ) {
-    const { reconciliatorOpts } = config;
+    const reconciliatorOpts = {
+      batchSize: 200,
+      cronPattern: "*/30 * * * *",
+    };
 
     const propagator = new MockedBlobPropagator({
       ...config,
+      reconciliatorOpts,
       highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
     });
 
