@@ -200,7 +200,7 @@ describe("BlobPropagator", () => {
 
   describe("when creating a blob propagation flow job", async () => {
     const flowJobBlob = fixtures.blobsOnTransactions[0];
-    const expectedincomingBlobUri = "expected-staged-blob-uri";
+    const expectedincomingBlobUri = "expected-incoming-blob-uri";
 
     if (!flowJobBlob) {
       throw new Error("No blob to test");

@@ -37,7 +37,7 @@ async function createBlobPropagator() {
     incomingBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
     reconciliatorOpts: {
-      cronPattern: env.BLOB_PROPAGATOR_RECONCILIATOR_CRON_PATTERN,
+      cronPattern: env.BLOB_RECONCILIATOR_CRON_PATTERN,
     },
   });
 }

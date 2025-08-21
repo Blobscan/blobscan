@@ -41,5 +41,5 @@ export function getBlobFileType(uri: string): BlobFileType {
 }
 
 export function buildIncomingBlobUri(chainId: number | string, hash: string) {
-  return `incoming-blobs/${chainId}/${hash}`;
+  return `incoming-blobs/${chainId}/${hash}.bin`;
 }
