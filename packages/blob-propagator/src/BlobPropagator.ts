@@ -352,7 +352,7 @@ export class BlobPropagator {
       reconciliatorProcessor(params),
       opts
     );
-    const workerLogger = createModuleLogger("blob-propagator", worker.name);
+    const workerLogger = createModuleLogger("blob-reconciliator", worker.name);
 
     worker.on(
       "completed",
