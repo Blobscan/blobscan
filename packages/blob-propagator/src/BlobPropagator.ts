@@ -379,24 +379,8 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ) {
-    const availableStorageNames = blobStorages
-      .map((s) => s.name)
-      .filter((name) => {
-        const hasWorkerProcessor = !!STORAGE_WORKER_PROCESSORS[name];
-
-        if (!hasWorkerProcessor) {
-          logger.warn(
-            `Worker processor not defined for storage "${name}"; skipping`
-          );
-        }
-
-        return hasWorkerProcessor;
-      });
-
-    if (!availableStorageNames.length) {
-      throw new BlobPropagatorCreationError(
-        "None of the available storages have worker processors defined"
-      );
+    if (!blobStorages.length) {
+      throw new BlobPropagatorCreationError("No blob storage provided");
     }
 
     return blobStorages.map((targetBlobStorage) => {
@@ -405,7 +389,7 @@ export class BlobPropagator {
 
       if (!workerProcessor) {
         throw new BlobPropagatorCreationError(
-          `Worker processor not defined for storage "${storageName}"`
+          `Storage ${storageName} not supported: no worker processor defined`
         );
       }
 
