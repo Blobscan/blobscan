@@ -56,23 +56,27 @@ export class PostgresStorage extends BlobStorage {
     }
   }
 
-  protected async _storeBlob(versionedHash: string, data: Buffer) {
-    const id = versionedHash;
+  protected async _storeBlob(hash: string, data: Buffer) {
+    const uri = this.getBlobUri(hash);
 
     await this.client.blobData.upsert({
       create: {
         data,
-        id,
+        id: uri,
       },
       update: {
         data,
       },
       where: {
-        id,
+        id: uri,
       },
     });
 
-    return versionedHash;
+    return uri;
+  }
+
+  protected _storeIncomingBlob(): Promise<string> {
+    throw new Error('"storeIncomingBlob" operation is not allowed');
   }
 
   getBlobUri(hash: string) {

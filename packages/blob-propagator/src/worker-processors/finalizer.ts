@@ -1,9 +1,7 @@
 import type { BlobPropagationFinalizerWorkerProcessor } from "../types";
 
 export const finalizerProcessor: BlobPropagationFinalizerWorkerProcessor =
-  ({ temporaryBlobStorage: temporalBlobStorage }) =>
+  ({ incomingBlobStorage }) =>
   async (job) => {
-    const { temporaryBlobUri } = job.data;
-
-    await temporalBlobStorage.removeBlob(temporaryBlobUri);
+    await incomingBlobStorage.removeBlob(job.data.incomingBlobUri);
   };

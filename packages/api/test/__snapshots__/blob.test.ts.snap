@@ -21,7 +21,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -83,7 +88,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -173,7 +183,12 @@ exports[`Blob router > getAll > when getting expanded blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -445,7 +460,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -1841,7 +1861,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -1929,7 +1954,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -2040,7 +2070,12 @@ exports[`Blob router > getAll > when getting filtered blob results > should retu
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,
@@ -2128,7 +2163,12 @@ exports[`Blob router > getAll > when getting paginated blob results > should def
     "blockNumber": 1008,
     "blockTimestamp": 2023-08-31T16:00:00.000Z,
     "commitment": "0xb10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "dataStorageReferences": [],
+    "dataStorageReferences": [
+      {
+        "storage": "swarm",
+        "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+      },
+    ],
     "index": 0,
     "proof": "b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
     "size": 1500,

@@ -1,13 +1,10 @@
-import type { Job, Processor, Queue, Worker } from "bullmq";
+import type { FlowProducer, Job, Processor, Queue, Worker } from "bullmq";
 
 import type {
   BlobReference,
   BlobStorage,
-  BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
-
-export type BlobRetentionMode = "eager" | "lazy";
 
 export type BlobPropagationInput = {
   blockNumber?: number;
@@ -17,11 +14,11 @@ export type BlobPropagationInput = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
-  blobRetentionMode: BlobRetentionMode;
+  incomingBlobUri: string;
 };
 
 export type BlobPropagationFinalizerJobData = {
-  temporaryBlobUri: string;
+  incomingBlobUri: string;
 };
 
 export type BlobPropagationJob = Job<BlobPropagationJobData>;
@@ -29,14 +26,37 @@ export type BlobPropagationJob = Job<BlobPropagationJobData>;
 export type BlobPropagationFinalizerJob = Job<BlobPropagationFinalizerJobData>;
 
 export type BlobPropagationWorkerParams = {
-  blobStorageManager: BlobStorageManager;
+  targetBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
-  temporaryBlobStorage: BlobStorage;
+  incomingBlobStorage: BlobStorage;
 };
 
 export type BlobPropagationFinalizerWorkerParams = {
-  temporaryBlobStorage: BlobStorage;
+  incomingBlobStorage: BlobStorage;
 };
+
+export type Reconciliator = {
+  queue: Queue<null>;
+  worker: Worker<null, ReconciliatorProcessorResult>;
+};
+
+export type ReconciliatorProcessorParams = {
+  flowProducer: FlowProducer;
+  prisma: BlobscanPrismaClient;
+  incomingBlobStorage: BlobStorage;
+  batchSize: number;
+  storageWorkerNames: string[];
+  finalizerWorkerName: string;
+};
+
+export type ReconciliatorProcessorResult = {
+  flowsCreated: number;
+  blobTimestamps?: { firstBlob?: Date; lastBlob?: Date };
+};
+
+export type ReconciliatorProcessor = (
+  params: ReconciliatorProcessorParams
+) => Processor<null, ReconciliatorProcessorResult>;
 
 export type BlobPropagationWorkerProcessor = (
   params: BlobPropagationWorkerParams
