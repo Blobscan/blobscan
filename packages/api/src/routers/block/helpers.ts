@@ -1,5 +1,6 @@
 import type { BlobscanPrismaClient, EthUsdPrice, Prisma } from "@blobscan/db";
 import { EthUsdPriceModel } from "@blobscan/db/prisma/zod";
+import type { BlockIdField } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import type {
@@ -183,12 +184,6 @@ export function toResponseBlock(
   };
 }
 
-export type BlockId = "hash" | "number" | "slot";
-export type BlockIdField =
-  | { type: "hash"; value: string }
-  | { type: "number"; value: number }
-  | { type: "slot"; value: number };
-
 function buildBlockWhereClause(
   { type, value }: BlockIdField,
   filters: Filters
@@ -202,6 +197,22 @@ function buildBlockWhereClause(
     }
     case "slot": {
       return { slot: value, transactionForks: filters.blockType };
+    }
+    case "label": {
+      return { transactionForks: filters.blockType };
+    }
+  }
+}
+
+function buildBlockOrderByClause({
+  type,
+  value,
+}: BlockIdField): Prisma.BlockOrderByWithRelationInput | undefined {
+  switch (type) {
+    case "label": {
+      return {
+        number: value === "latest" ? "desc" : "asc",
+      };
     }
   }
 }
@@ -220,13 +231,15 @@ export async function fetchBlock(
 ): Promise<CompletePrismaBlock | undefined> {
   const select = createBlockSelect(expands);
   const where = buildBlockWhereClause(blockId, filters);
+  const orderBy = buildBlockOrderByClause(blockId);
 
   const [prismaBlock, ethUsdPrice] = await Promise.all([
     prisma.block.findFirst({
       select,
       where,
+      orderBy,
     }) as unknown as Promise<CompletePrismaBlock | null>,
-    prisma.block.findEthUsdPrice(blockId.value),
+    prisma.block.findEthUsdPrice(blockId),
   ]);
 
   if (!prismaBlock) {

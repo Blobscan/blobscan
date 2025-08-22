@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 
+import type { BlockIdField } from "@blobscan/db/prisma/zod-utils";
 import { z } from "@blobscan/zod";
 
 import {
@@ -9,7 +10,6 @@ import {
 import { withFilters } from "../../middlewares/withFilters";
 import { publicProcedure } from "../../procedures";
 import { normalize } from "../../utils";
-import type { BlockIdField } from "./helpers";
 import { responseBlockSchema, fetchBlock, toResponseBlock } from "./helpers";
 
 const inputSchema = z
