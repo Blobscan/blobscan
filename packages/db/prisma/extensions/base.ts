@@ -251,7 +251,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         findEthUsdPrice(blockIdOrBlockIdField: BlockId | BlockIdField) {
           let blockIdField: BlockIdField;
 
-          console.log(blockIdOrBlockIdField);
           if (typeof blockIdOrBlockIdField === "object") {
             blockIdField = blockIdOrBlockIdField;
           } else {
@@ -272,7 +271,6 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
 
           switch (type) {
             case "hash": {
-              console.log(value);
               whereClause = Prisma.sql`WHERE b.hash = ${value}`;
               break;
             }
