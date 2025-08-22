@@ -2738,6 +2738,138 @@ exports[`Block router > getByBlockId > should get a reorged block by block numbe
 }
 `;
 
+exports[`Block router > getByBlockId > should get latest block 1`] = `
+{
+  "blobAsCalldataGasUsed": 255000n,
+  "blobBaseFee": 121000000n,
+  "blobBaseUsdFee": undefined,
+  "blobGasPrice": 22n,
+  "blobGasUsdPrice": undefined,
+  "blobGasUsed": 5500000n,
+  "ethUsdPrice": undefined,
+  "excessBlobGas": 15000n,
+  "hash": "0x8000000000000000000000000000000000000000000000000000000000000000",
+  "number": 1008,
+  "slot": 108,
+  "timestamp": 2023-08-31T16:00:00.000Z,
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "dataStorageReferences": [],
+          "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
+        },
+      ],
+      "hash": "txHash016",
+    },
+  ],
+}
+`;
+
+exports[`Block router > getByBlockId > should get oldest block 1`] = `
+{
+  "blobAsCalldataGasUsed": 2042780n,
+  "blobBaseFee": 17301504n,
+  "blobBaseUsdFee": undefined,
+  "blobGasPrice": 22n,
+  "blobGasUsdPrice": undefined,
+  "blobGasUsed": 786432n,
+  "ethUsdPrice": undefined,
+  "excessBlobGas": 15000n,
+  "hash": "0x1000000000000000000000000000000000000000000000000000000000000000",
+  "number": 1001,
+  "slot": 101,
+  "timestamp": 2022-10-16T12:00:00.000Z,
+  "transactions": [
+    {
+      "blobs": [
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+          ],
+          "versionedHash": "blobHash001",
+        },
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+            },
+          ],
+          "versionedHash": "blobHash002",
+        },
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash003.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash003",
+            },
+          ],
+          "versionedHash": "blobHash003",
+        },
+      ],
+      "hash": "txHash001",
+    },
+    {
+      "blobs": [
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+          ],
+          "versionedHash": "blobHash001",
+        },
+      ],
+      "hash": "txHash002",
+    },
+    {
+      "blobs": [
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash001.bin?alt=media",
+            },
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://some-hash-for-blobHash001",
+            },
+          ],
+          "versionedHash": "blobHash001",
+        },
+        {
+          "dataStorageReferences": [
+            {
+              "storage": "google",
+              "url": "http://localhost:4443/storage/v1/b/blobscan-test-bucket/o/1%2Fob%2FHa%2Fsh%2FobHash002.bin?alt=media",
+            },
+          ],
+          "versionedHash": "blobHash002",
+        },
+      ],
+      "hash": "txHash003",
+    },
+  ],
+}
+`;
+
 exports[`Block router > getByBlockId > should get the canonical block when providing a block number matching a reorged block 1`] = `
 {
   "blobAsCalldataGasUsed": 255000n,

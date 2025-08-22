@@ -91,6 +91,22 @@ describe("Block router", async () => {
       expect(result).toMatchSnapshot();
     });
 
+    it("should get latest block", async () => {
+      const result = await blockCaller.getByBlockId({
+        id: "latest",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
+    it("should get oldest block", async () => {
+      const result = await blockCaller.getByBlockId({
+        id: "oldest",
+      });
+
+      expect(result).toMatchSnapshot();
+    });
+
     it("should get a reorged block by block number", async () => {
       const result = await blockCaller.getByBlockId({
         id: "1008",
