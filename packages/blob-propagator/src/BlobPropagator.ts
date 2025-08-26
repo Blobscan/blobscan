@@ -49,7 +49,7 @@ import { reconciliatorProcessor } from "./worker-processors/reconciliator";
 export type BlobPropagatorConfig = {
   highestBlockNumber?: number;
   blobStorages: BlobStorage[];
-  incomingBlobStorage: BlobStorage;
+  primaryBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
@@ -73,7 +73,7 @@ export const STORAGE_WORKER_PROCESSORS: Record<
 };
 
 export class BlobPropagator {
-  protected incomingBlobStorage: BlobStorage;
+  protected primaryBlobStorage: BlobStorage;
 
   protected blobPropagationFlowProducer: FlowProducer;
   protected finalizerWorker: Worker;
@@ -89,7 +89,7 @@ export class BlobPropagator {
     redisConnectionOrUri,
     highestBlockNumber,
     blobStorages,
-    incomingBlobStorage,
+    primaryBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
     reconciliatorOpts,
@@ -108,19 +108,19 @@ export class BlobPropagator {
       blobStorages,
       {
         prisma,
-        incomingBlobStorage,
+        primaryBlobStorage: primaryBlobStorage,
       },
       workerOptions_
     );
 
     this.finalizerWorker = this.#createWorker(
       FINALIZER_WORKER_NAME,
-      finalizerProcessor({ incomingBlobStorage }),
+      finalizerProcessor({ primaryBlobStorage: primaryBlobStorage }),
       workerOptions_
     );
 
     this.blobPropagationFlowProducer = this.#createFlowProducer(connection);
-    this.incomingBlobStorage = incomingBlobStorage;
+    this.primaryBlobStorage = primaryBlobStorage;
     this.jobOptions = {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
@@ -133,7 +133,7 @@ export class BlobPropagator {
         finalizerWorkerName: this.finalizerWorker.name,
         flowProducer: this.blobPropagationFlowProducer,
         prisma,
-        incomingBlobStorage,
+        primaryBlobStorage: primaryBlobStorage,
         storageWorkerNames: this.storageWorkers.map((w) => w.name),
       },
       workerOptions_
@@ -171,14 +171,14 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const incomingBlobUri = await this.incomingBlobStorage.storeIncomingBlob(
+      const blobUri = await this.primaryBlobStorage.storeBlob(
         versionedHash,
         data
       );
 
       const flowJob = this.createBlobPropagationFlowJob({
         blockNumber,
-        incomingBlobUri,
+        blobUri,
         versionedHash,
       });
 
@@ -207,9 +207,9 @@ export class BlobPropagator {
         return blob;
       });
 
-      const incomingBlobUris = await Promise.all(
+      const blobUris = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
-          this.incomingBlobStorage.storeIncomingBlob(versionedHash, data)
+          this.primaryBlobStorage.storeBlob(versionedHash, data)
         )
       );
 
@@ -217,7 +217,7 @@ export class BlobPropagator {
         ({ blockNumber, versionedHash }, i) =>
           this.createBlobPropagationFlowJob({
             blockNumber,
-            incomingBlobUri: incomingBlobUris[i] as string,
+            blobUri: blobUris[i] as string,
             versionedHash,
           })
       );
@@ -235,11 +235,11 @@ export class BlobPropagator {
 
   protected createBlobPropagationFlowJob({
     blockNumber,
-    incomingBlobUri: incomingBlobUri,
+    blobUri,
     versionedHash,
   }: {
     blockNumber?: number;
-    incomingBlobUri: string;
+    blobUri: string;
     versionedHash: string;
   }) {
     const jobPriority = this.#computeJobPriority(blockNumber);
@@ -249,7 +249,7 @@ export class BlobPropagator {
       this.finalizerWorker.name,
       storageWorkerNames,
       versionedHash,
-      incomingBlobUri,
+      blobUri,
       {
         priority: jobPriority,
       }

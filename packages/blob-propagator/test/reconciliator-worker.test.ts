@@ -101,7 +101,7 @@ describe("Reconciliator Worker", () => {
         finalizerWorkerName: FINALIZER_WORKER_NAME,
         flowProducer,
         prisma,
-        incomingBlobStorage,
+        primaryBlobStorage: incomingBlobStorage,
         storageWorkerNames: expectedStorageWorkers,
       });
 
@@ -159,9 +159,7 @@ describe("Reconciliator Worker", () => {
         .map((b) => ({
           jobId: buildJobId(FINALIZER_WORKER_NAME, b.versionedHash),
           data: {
-            incomingBlobUri: incomingBlobStorage.getIncomingBlobUri(
-              b.versionedHash
-            ),
+            blobUri: incomingBlobStorage.getBlobUri(b.versionedHash),
           },
         }));
       const flowJobsData = flows.map((f) => ({
@@ -191,7 +189,7 @@ describe("Reconciliator Worker", () => {
       finalizerWorkerName: FINALIZER_WORKER_NAME,
       flowProducer,
       prisma,
-      incomingBlobStorage,
+      primaryBlobStorage: incomingBlobStorage,
       storageWorkerNames: Object.values(STORAGE_WORKER_NAMES),
     });
 

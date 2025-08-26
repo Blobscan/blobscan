@@ -33,7 +33,7 @@ import { createBlobStorages, createStorageFromEnv } from "./helpers";
 export class MockedBlobPropagator extends BlobPropagator {
   createBlobPropagationFlowJob(params: {
     blockNumber?: number;
-    incomingBlobUri: string;
+    blobUri: string;
     versionedHash: string;
   }) {
     return super.createBlobPropagationFlowJob(params);
@@ -60,7 +60,7 @@ export class MockedBlobPropagator extends BlobPropagator {
   }
 
   getincomingBlobStorage() {
-    return this.incomingBlobStorage;
+    return this.primaryBlobStorage;
   }
 
   setHighestBlockNumber(blockNumber?: number) {
@@ -126,7 +126,7 @@ describe("BlobPropagator", () => {
     blobPropagator = await MockedBlobPropagator.create({
       blobStorages,
       prisma,
-      incomingBlobStorage,
+      primaryBlobStorage: incomingBlobStorage,
       redisConnectionOrUri: env.REDIS_URI,
     });
 
@@ -176,7 +176,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorages: [],
           prisma,
-          incomingBlobStorage,
+          primaryBlobStorage: incomingBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -194,7 +194,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorages: [weavevmStorage],
           prisma,
-          incomingBlobStorage,
+          primaryBlobStorage: incomingBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -207,7 +207,7 @@ describe("BlobPropagator", () => {
 
   describe("when creating a blob propagation flow job", async () => {
     const flowJobBlob = fixtures.blobsOnTransactions[0];
-    const expectedincomingBlobUri = "expected-incoming-blob-uri";
+    const expectedBlobUri = "expected-incoming-blob-uri";
 
     if (!flowJobBlob) {
       throw new Error("No blob to test");
@@ -218,7 +218,7 @@ describe("BlobPropagator", () => {
     beforeAll(() => {
       flowJob = blobPropagator.createBlobPropagationFlowJob({
         blockNumber: flowJobBlob.blockNumber,
-        incomingBlobUri: expectedincomingBlobUri,
+        blobUri: expectedBlobUri,
         versionedHash: flowJobBlob.blobHash,
       });
     });
@@ -229,7 +229,7 @@ describe("BlobPropagator", () => {
 
     it("should have the correct data", () => {
       expect(flowJob.data).toEqual({
-        incomingBlobUri: expectedincomingBlobUri,
+        blobUri: expectedBlobUri,
       });
     });
 
@@ -289,7 +289,7 @@ describe("BlobPropagator", () => {
       it("should have the correct data", () => {
         const expectedJobData = blobPropagator.getStorageWorkers().map((_) => ({
           versionedHash: flowJobBlob.blobHash,
-          incomingBlobUri: expectedincomingBlobUri,
+          blobUri: expectedBlobUri,
         }));
 
         expect(flowJob.children?.map((c) => c.data)).toEqual(expectedJobData);
@@ -339,7 +339,7 @@ describe("BlobPropagator", () => {
           const blockNumber = Math.round(MAX_JOB_PRIORITY * 2.3);
           const j = blobPropagator.createBlobPropagationFlowJob({
             versionedHash: "",
-            incomingBlobUri: "",
+            blobUri: "",
             blockNumber,
           });
           const jobPriority = j.children
@@ -357,7 +357,7 @@ describe("BlobPropagator", () => {
 
         it("should update propagator's highest block number if no block number is provided", () => {
           const j = blobPropagator.createBlobPropagationFlowJob({
-            incomingBlobUri: "",
+            blobUri: "",
             versionedHash: flowJobBlob.blobHash,
           });
           blobPropagator.getStorageWorkers().forEach((w) => {
@@ -374,7 +374,7 @@ describe("BlobPropagator", () => {
           blobPropagator.createBlobPropagationFlowJob({
             versionedHash: flowJobBlob.blobHash,
             blockNumber: flowJobBlob.blockNumber,
-            incomingBlobUri: "",
+            blobUri: "",
           });
 
           expect(blobPropagator.getHighestBlockNumber()).toBe(
@@ -388,7 +388,7 @@ describe("BlobPropagator", () => {
           blobPropagator.createBlobPropagationFlowJob({
             versionedHash: flowJobBlob.blobHash,
             blockNumber: higherBlockNumber,
-            incomingBlobUri: "",
+            blobUri: "",
           });
 
           expect(blobPropagator.getHighestBlockNumber()).toBe(
@@ -410,17 +410,6 @@ describe("BlobPropagator", () => {
       }
     });
 
-    it("should store blob data on incoming blob storage", async () => {
-      await blobPropagator.propagateBlob(blob);
-
-      const blobUri = incomingBlobStorage.getIncomingBlobUri(
-        blob.versionedHash
-      );
-      const blobData = await incomingBlobStorage.getBlob(blobUri);
-
-      expect(blobData).toEqual(blob.data);
-    });
-
     it("should create a blob propagation flow job correctly", async () => {
       const propagatorFlowProducer =
         blobPropagator.getBlobPropagationFlowProducer();
@@ -431,24 +420,6 @@ describe("BlobPropagator", () => {
 
       expect(spy).toHaveBeenCalledOnce();
     });
-
-    testValidError(
-      "should throw a valid error if the blob failed to get staged",
-      async () => {
-        const incomingBlobStorage = blobPropagator.getincomingBlobStorage();
-
-        vi.spyOn(
-          incomingBlobStorage,
-          "storeIncomingBlob"
-        ).mockImplementationOnce(() => {
-          throw new Error("Internal temporary blob storage error");
-        });
-
-        await blobPropagator.propagateBlob(blob);
-      },
-      BlobPropagatorError,
-      { checkCause: true }
-    );
   });
 
   describe("when propagating multiple blobs", () => {
@@ -477,22 +448,6 @@ describe("BlobPropagator", () => {
       );
     });
 
-    it("should stage all blobs", async () => {
-      await blobPropagator.propagateBlobs(blobsInput);
-
-      const allBlobDataExists = (
-        await Promise.all(
-          blobsInput.map(({ versionedHash }) =>
-            incomingBlobStorage.getBlob(
-              incomingBlobStorage.getIncomingBlobUri(versionedHash)
-            )
-          )
-        )
-      ).every((blobData) => !!blobData);
-
-      expect(allBlobDataExists).toBe(true);
-    });
-
     it("should create flow jobs correctly", async () => {
       const blobPropagationFlowProducer =
         blobPropagator.getBlobPropagationFlowProducer();
@@ -503,24 +458,6 @@ describe("BlobPropagator", () => {
 
       expect(spy).toHaveBeenCalled();
     });
-
-    testValidError(
-      "should throw a valid error if some of the blobs failed to be stored in the incoming blob storage",
-      async () => {
-        const incomingBlobStorage = blobPropagator.getincomingBlobStorage();
-        vi.spyOn(incomingBlobStorage, "storeIncomingBlob").mockImplementation(
-          () => {
-            throw new Error("Internal temporal blob storage error");
-          }
-        );
-
-        await blobPropagator.propagateBlobs(blobsInput);
-      },
-      BlobPropagatorError,
-      {
-        checkCause: true,
-      }
-    );
   });
 
   describe("when closing", () => {
@@ -530,7 +467,7 @@ describe("BlobPropagator", () => {
       closingBlobPropagator = await MockedBlobPropagator.create({
         blobStorages,
         prisma,
-        incomingBlobStorage,
+        primaryBlobStorage: incomingBlobStorage,
         redisConnectionOrUri: env.REDIS_URI,
       });
     });

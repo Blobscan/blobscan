@@ -62,14 +62,14 @@ function runWorkerTests(
 
       targetBlobStorage = workerParams.targetBlobStorage;
 
-      const blobUri = await workerParams.incomingBlobStorage.storeIncomingBlob(
+      const blobUri = await workerParams.primaryBlobStorage.storeIncomingBlob(
         blob.versionedHash,
         blob.data
       );
 
       job = {
         data: {
-          incomingBlobUri: blobUri,
+          blobUri: blobUri,
           versionedHash: blob.versionedHash,
         },
       } as BlobPropagationJob;
@@ -81,7 +81,7 @@ function runWorkerTests(
       });
 
       return async () => {
-        await workerParams.incomingBlobStorage.removeBlob(blobUri);
+        await workerParams.primaryBlobStorage.removeBlob(blobUri);
 
         await prisma.blobDataStorageReference.deleteMany({
           where: {
@@ -145,7 +145,7 @@ function runWorkerTests(
         const versionedHash = "missingBlobDataFileVersionedHash";
         const jobWithMissingBlobData = {
           data: {
-            incomingBlobUri: "missingBlobDataFileVersionedHash",
+            blobUri: "missingBlobDataFileVersionedHash",
             versionedHash,
           },
         } as BlobPropagationJob;

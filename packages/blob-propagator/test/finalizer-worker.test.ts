@@ -47,10 +47,10 @@ describe("Finalizer Worker", () => {
     ).toBeDefined();
 
     await finalizerProcessor({
-      incomingBlobStorage,
+      primaryBlobStorage: incomingBlobStorage,
     })({
       data: {
-        incomingBlobUri: blobUri,
+        blobUri: blobUri,
       },
     } as BlobPropagationFinalizerJob);
 

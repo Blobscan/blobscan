@@ -2,11 +2,7 @@ import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 
 import { BlobStorageError } from "./errors";
 import type { BlobFileType } from "./types";
-import {
-  buildIncomingBlobUri,
-  getBlobFileType,
-  normalizeBlobData,
-} from "./utils/blob";
+import { getBlobFileType, normalizeBlobData } from "./utils/blob";
 
 export interface BlobStorageConfig {
   chainId: number;
@@ -22,13 +18,7 @@ export abstract class BlobStorage {
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
   protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
-  protected abstract _storeIncomingBlob(
-    hash: string,
-    data: Buffer
-  ): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
-
-  abstract getBlobUri(hash: string): string | undefined;
 
   protected async healthCheck(): Promise<"OK"> {
     try {
@@ -85,26 +75,10 @@ export abstract class BlobStorage {
     }
   }
 
-  async storeIncomingBlob(
-    hash: string,
-    data: string | Buffer
-  ): Promise<string> {
-    try {
-      const normalizedData = normalizeBlobData(data);
-
-      const uri = await this._storeIncomingBlob(hash, normalizedData);
-
-      return uri;
-    } catch (err) {
-      throw new BlobStorageError(
-        this.constructor.name,
-        `Failed to stage blob with hash "${hash}"`,
-        err as Error
-      );
-    }
-  }
-
-  getIncomingBlobUri(hash: string) {
-    return buildIncomingBlobUri(this.chainId, hash);
+  getBlobUri(_: string): string {
+    throw new BlobStorageError(
+      this.constructor.name,
+      `"getBlobUri" not implemented`
+    );
   }
 }

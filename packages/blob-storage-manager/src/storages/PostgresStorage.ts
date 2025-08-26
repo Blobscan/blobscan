@@ -75,10 +75,6 @@ export class PostgresStorage extends BlobStorage {
     return uri;
   }
 
-  protected _storeIncomingBlob(): Promise<string> {
-    throw new Error('"storeIncomingBlob" operation is not allowed');
-  }
-
   getBlobUri(hash: string) {
     return hash;
   }

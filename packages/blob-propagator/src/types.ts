@@ -14,11 +14,11 @@ export type BlobPropagationInput = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
-  incomingBlobUri: string;
+  blobUri: string;
 };
 
 export type BlobPropagationFinalizerJobData = {
-  incomingBlobUri: string;
+  blobUri: string;
 };
 
 export type BlobPropagationJob = Job<BlobPropagationJobData>;
@@ -28,11 +28,11 @@ export type BlobPropagationFinalizerJob = Job<BlobPropagationFinalizerJobData>;
 export type BlobPropagationWorkerParams = {
   targetBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
-  incomingBlobStorage: BlobStorage;
+  primaryBlobStorage: BlobStorage;
 };
 
 export type BlobPropagationFinalizerWorkerParams = {
-  incomingBlobStorage: BlobStorage;
+  primaryBlobStorage: BlobStorage;
 };
 
 export type Reconciliator = {
@@ -43,7 +43,7 @@ export type Reconciliator = {
 export type ReconciliatorProcessorParams = {
   flowProducer: FlowProducer;
   prisma: BlobscanPrismaClient;
-  incomingBlobStorage: BlobStorage;
+  primaryBlobStorage: BlobStorage;
   batchSize: number;
   storageWorkerNames: string[];
   finalizerWorkerName: string;

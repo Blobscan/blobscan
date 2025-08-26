@@ -82,10 +82,6 @@ export class SwarmStorage extends BlobStorage {
     });
   }
 
-  protected _storeIncomingBlob(_: string, __: Buffer): Promise<string> {
-    throw new Error('"storeIncomingBlob" operation is not allowed');
-  }
-
   async #sendToChunkstorm(buffer: Buffer) {
     const response = await axios.post(
       `${env.SWARM_CHUNKSTORM_URL}/upload`,
@@ -112,14 +108,6 @@ export class SwarmStorage extends BlobStorage {
       }
     );
     return response.reference.toHex();
-  }
-
-  getBlobUri(_: string) {
-    return undefined;
-  }
-
-  getIncomingBlobUri(_: string): string {
-    throw new Error(`"getIncomingBlobUri" operation not allowed`);
   }
 
   async #performBeeAPICall<T>(call: () => T) {

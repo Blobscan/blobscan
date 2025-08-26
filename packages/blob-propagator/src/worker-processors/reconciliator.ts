@@ -4,7 +4,7 @@ import { createBlobPropagationFlowJob } from "../utils";
 export const reconciliatorProcessor: ReconciliatorProcessor = function ({
   flowProducer,
   prisma,
-  incomingBlobStorage,
+  primaryBlobStorage,
   batchSize,
   finalizerWorkerName,
   storageWorkerNames,
@@ -35,7 +35,7 @@ export const reconciliatorProcessor: ReconciliatorProcessor = function ({
         finalizerWorkerName,
         storageWorkerNames,
         b.versionedHash,
-        incomingBlobStorage.getIncomingBlobUri(b.versionedHash)
+        primaryBlobStorage.getBlobUri(b.versionedHash)
       )
     );
 
