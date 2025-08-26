@@ -140,10 +140,6 @@ export const env = createEnv({
       // General storage settings
       PRIMARY_BLOB_STORAGE: blobStorageSchema.default("POSTGRES"),
 
-      // File system storage
-      FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-      FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
-
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
 
@@ -231,11 +227,11 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob propagator configuration: incomingBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_RECONCILIATOR_CRON_PATTERN}`
+      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_RECONCILIATOR_CRON_PATTERN}`
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
@@ -257,15 +253,6 @@ export const env = createEnv({
             ? `swarmChunkstormUrl=${env.SWARM_CHUNKSTORM_URL}`
             : ""
         }, swarmDeferredUpload=${env.SWARM_DEFERRED_UPLOAD}`
-      );
-    }
-
-    if (
-      env.FILE_SYSTEM_STORAGE_ENABLED ||
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    ) {
-      console.log(
-        `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
       );
     }
 

@@ -31,12 +31,6 @@ beforeEach(async () => {
 afterAll(async () => {
   vi.useRealTimers();
 
-  const fsStoragePath = process.env.FILE_SYSTEM_STORAGE_PATH;
-
-  if (fsStoragePath && fs.existsSync(fsStoragePath)) {
-    fs.rmSync(fsStoragePath, { recursive: true });
-  }
-
   await prisma
     .$disconnect()
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

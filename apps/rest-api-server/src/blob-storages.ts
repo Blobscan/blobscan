@@ -1,6 +1,5 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
-  FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
   S3Storage,
@@ -77,12 +76,6 @@ export async function createStorageFromEnv(
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
         prisma,
-      });
-    }
-    case BlobStorageName.FILE_SYSTEM: {
-      return FileSystemStorage.create({
-        chainId,
-        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
       });
     }
     case BlobStorageName.WEAVEVM: {

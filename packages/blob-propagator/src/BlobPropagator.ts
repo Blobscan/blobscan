@@ -37,7 +37,6 @@ import {
   computeLinearPriority,
 } from "./utils";
 import {
-  fileSystemProcessor,
   finalizerProcessor,
   gcsProcessor,
   postgresProcessor,
@@ -67,7 +66,6 @@ export const STORAGE_WORKER_PROCESSORS: Record<
   GOOGLE: gcsProcessor,
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
-  FILE_SYSTEM: fileSystemProcessor,
   S3: s3Processor,
   WEAVEVM: undefined,
 };
