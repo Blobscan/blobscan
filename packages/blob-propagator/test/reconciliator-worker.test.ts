@@ -19,7 +19,7 @@ import { createStorageFromEnv } from "./helpers";
 
 describe("Reconciliator Worker", () => {
   let flowProducer: FlowProducer;
-  let incomingBlobStorage: BlobStorage;
+  let primaryBlobStorage: BlobStorage;
   const batchSize = 2;
 
   const orphanedBlobs: Blob[] = [
@@ -73,9 +73,7 @@ describe("Reconciliator Worker", () => {
       connection,
     });
 
-    incomingBlobStorage = await createStorageFromEnv(
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    );
+    primaryBlobStorage = await createStorageFromEnv(env.PRIMARY_BLOB_STORAGE);
 
     return async () => {
       await flowProducer.close();
@@ -101,7 +99,7 @@ describe("Reconciliator Worker", () => {
         finalizerWorkerName: FINALIZER_WORKER_NAME,
         flowProducer,
         prisma,
-        primaryBlobStorage: incomingBlobStorage,
+        primaryBlobStorage: primaryBlobStorage,
         storageWorkerNames: expectedStorageWorkers,
       });
 
@@ -159,7 +157,7 @@ describe("Reconciliator Worker", () => {
         .map((b) => ({
           jobId: buildJobId(FINALIZER_WORKER_NAME, b.versionedHash),
           data: {
-            blobUri: incomingBlobStorage.getBlobUri(b.versionedHash),
+            blobUri: primaryBlobStorage.getBlobUri(b.versionedHash),
           },
         }));
       const flowJobsData = flows.map((f) => ({
@@ -189,7 +187,7 @@ describe("Reconciliator Worker", () => {
       finalizerWorkerName: FINALIZER_WORKER_NAME,
       flowProducer,
       prisma,
-      primaryBlobStorage: incomingBlobStorage,
+      primaryBlobStorage: primaryBlobStorage,
       storageWorkerNames: Object.values(STORAGE_WORKER_NAMES),
     });
 

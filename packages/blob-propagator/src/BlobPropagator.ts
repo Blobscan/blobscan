@@ -108,14 +108,14 @@ export class BlobPropagator {
       blobStorages,
       {
         prisma,
-        primaryBlobStorage: primaryBlobStorage,
+        primaryBlobStorage,
       },
       workerOptions_
     );
 
     this.finalizerWorker = this.#createWorker(
       FINALIZER_WORKER_NAME,
-      finalizerProcessor({ primaryBlobStorage: primaryBlobStorage }),
+      finalizerProcessor({ primaryBlobStorage }),
       workerOptions_
     );
 
@@ -133,7 +133,7 @@ export class BlobPropagator {
         finalizerWorkerName: this.finalizerWorker.name,
         flowProducer: this.blobPropagationFlowProducer,
         prisma,
-        primaryBlobStorage: primaryBlobStorage,
+        primaryBlobStorage,
         storageWorkerNames: this.storageWorkers.map((w) => w.name),
       },
       workerOptions_

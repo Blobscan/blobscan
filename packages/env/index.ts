@@ -138,8 +138,7 @@ export const env = createEnv({
        */
 
       // General storage settings
-      BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
-        blobStorageSchema.default("FILE_SYSTEM"),
+      PRIMARY_BLOB_STORAGE: blobStorageSchema.default("POSTGRES"),
 
       // File system storage
       FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),

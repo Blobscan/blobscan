@@ -12,7 +12,7 @@ import {
 import { WeaveVMStorage } from "@blobscan/blob-storage-manager";
 import type {
   BlobStorage,
-  FileSystemStorage,
+  PostgresStorage,
 } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
@@ -28,7 +28,7 @@ import {
 } from "../src/errors";
 import type { BlobPropagationInput } from "../src/types";
 import { computeLinearPriority, MAX_JOB_PRIORITY } from "../src/utils";
-import { createBlobStorages, createStorageFromEnv } from "./helpers";
+import { createBlobStorages } from "./helpers";
 
 export class MockedBlobPropagator extends BlobPropagator {
   createBlobPropagationFlowJob(params: {
@@ -59,7 +59,7 @@ export class MockedBlobPropagator extends BlobPropagator {
     return this.highestBlockNumber;
   }
 
-  getincomingBlobStorage() {
+  getPrimaryBlobStorage() {
     return this.primaryBlobStorage;
   }
 
@@ -107,7 +107,7 @@ class MockedWeaveVMStorage extends WeaveVMStorage {
 
 describe("BlobPropagator", () => {
   let blobStorages: BlobStorage[];
-  let incomingBlobStorage: FileSystemStorage;
+  let primaryBlobStorage: PostgresStorage;
 
   const blob: BlobPropagationInput = {
     versionedHash: "blobVersionedHash",
@@ -117,16 +117,19 @@ describe("BlobPropagator", () => {
   let blobPropagator: MockedBlobPropagator;
 
   beforeEach(async () => {
-    blobStorages = await createBlobStorages();
+    const allBlobStorages = await createBlobStorages();
 
-    incomingBlobStorage = (await createStorageFromEnv(
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    )) as FileSystemStorage;
+    blobStorages = allBlobStorages.filter(
+      (b) => b.name !== env.PRIMARY_BLOB_STORAGE
+    );
+    primaryBlobStorage = allBlobStorages.find(
+      (b) => b.name === env.PRIMARY_BLOB_STORAGE
+    ) as PostgresStorage;
 
     blobPropagator = await MockedBlobPropagator.create({
       blobStorages,
       prisma,
-      primaryBlobStorage: incomingBlobStorage,
+      primaryBlobStorage,
       redisConnectionOrUri: env.REDIS_URI,
     });
 
@@ -176,7 +179,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorages: [],
           prisma,
-          primaryBlobStorage: incomingBlobStorage,
+          primaryBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -194,7 +197,7 @@ describe("BlobPropagator", () => {
         await MockedBlobPropagator.create({
           blobStorages: [weavevmStorage],
           prisma,
-          primaryBlobStorage: incomingBlobStorage,
+          primaryBlobStorage,
           redisConnectionOrUri: env.REDIS_URI,
         });
       },
@@ -401,10 +404,10 @@ describe("BlobPropagator", () => {
 
   describe("when propagating a single blob", () => {
     afterEach(async () => {
-      const blobUri = incomingBlobStorage.getBlobUri(blob.versionedHash);
+      const blobUri = primaryBlobStorage.getBlobUri(blob.versionedHash);
 
       try {
-        await incomingBlobStorage.removeBlob(blobUri);
+        await primaryBlobStorage.removeBlob(blobUri);
       } catch (_) {
         /* empty */
       }
@@ -437,10 +440,10 @@ describe("BlobPropagator", () => {
     afterEach(async () => {
       await Promise.all(
         blobsInput.map(async (b) => {
-          const blobUri = incomingBlobStorage.getBlobUri(b.versionedHash);
+          const blobUri = primaryBlobStorage.getBlobUri(b.versionedHash);
 
           try {
-            await incomingBlobStorage.removeBlob(blobUri);
+            await primaryBlobStorage.removeBlob(blobUri);
           } catch (_) {
             /* empty */
           }
@@ -467,7 +470,7 @@ describe("BlobPropagator", () => {
       closingBlobPropagator = await MockedBlobPropagator.create({
         blobStorages,
         prisma,
-        primaryBlobStorage: incomingBlobStorage,
+        primaryBlobStorage,
         redisConnectionOrUri: env.REDIS_URI,
       });
     });

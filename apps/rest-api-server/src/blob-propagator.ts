@@ -3,7 +3,7 @@ import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import { createBlobStorages, createStorageFromEnv } from "./blob-storages";
+import { createBlobStorages } from "./blob-storages";
 
 let blobPropagator: BlobPropagator | undefined;
 
@@ -16,27 +16,22 @@ async function getBlobPropagator() {
 }
 
 async function createBlobPropagator() {
-  const blobStorages = await createBlobStorages();
-  let incomingBlobStorage: BlobStorage | undefined = blobStorages.find(
-    (storage) => storage.name === env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+  const allBlobStorages = await createBlobStorages();
+  const primaryBlobStorage: BlobStorage | undefined = allBlobStorages.find(
+    (storage) => storage.name === env.PRIMARY_BLOB_STORAGE
+  );
+  const blobStorages = allBlobStorages.filter(
+    (b) => b.name !== env.PRIMARY_BLOB_STORAGE
   );
 
-  // The incoming blob storage may not be part of the enabled storages since it's meant
-  // to act only as a temporary storage. In that case, we create it separately
-  if (!incomingBlobStorage) {
-    try {
-      incomingBlobStorage = await createStorageFromEnv(
-        env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-      );
-    } catch (err) {
-      throw new Error(`Failed to create incoming blob storage: ${err}`);
-    }
+  if (!primaryBlobStorage) {
+    throw new Error("Primary blob storage not found");
   }
 
   return BlobPropagator.create({
     blobStorages,
     prisma,
-    incomingBlobStorage,
+    primaryBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
     reconciliatorOpts: {
       cronPattern: env.BLOB_RECONCILIATOR_CRON_PATTERN,
