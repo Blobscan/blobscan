@@ -93,13 +93,6 @@ export const getBlobDataByBlobId = procedure
           }
 
           blobData = bytesToHex(res.data);
-        } else if (blobStorage === "FILE_SYSTEM") {
-          const opts = !isBinaryFile
-            ? { encoding: "utf-8" as const }
-            : undefined;
-          const res = await fs.promises.readFile(dataReference, opts);
-
-          blobData = typeof res === "string" ? res : bytesToHex(res);
         } else {
           const response = await fetch(url);
 

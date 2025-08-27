@@ -438,21 +438,6 @@ describe("Blob router", () => {
           expect(result).toEqual(expectedBlobData);
         });
 
-        it("should fetch data stored as binary from file system", async () => {
-          await prisma.blobDataStorageReference.create({
-            data: {
-              dataReference: blobBinFileName,
-              blobStorage: "FILE_SYSTEM",
-              blobHash,
-            },
-          });
-          const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
-            id: blobHash,
-          });
-
-          expect(result).toEqual(blobData);
-        });
-
         it("should fetch data stored as text", async () => {
           const gcsTxtRef = createBlobDataStorageRef("GOOGLE", "txt");
 
@@ -477,22 +462,6 @@ describe("Blob router", () => {
           });
 
           expect(result).toEqual(expectedBlobData);
-        });
-
-        it("should fetch data stored as txt from file system", async () => {
-          await prisma.blobDataStorageReference.create({
-            data: {
-              dataReference: blobTxtFileName,
-              blobStorage: "FILE_SYSTEM",
-              blobHash,
-            },
-          });
-
-          const result = await authorizedBlobDataCaller.getBlobDataByBlobId({
-            id: blobHash,
-          });
-
-          expect(result).toEqual(blobData);
         });
       });
 

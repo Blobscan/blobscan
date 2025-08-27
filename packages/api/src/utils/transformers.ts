@@ -31,7 +31,6 @@ export function buildBlobDataUrl(
     case "SWARM": {
       return `https://api.gateway.ethswarm.org/bzz/${blobDataUri}`;
     }
-    case "FILE_SYSTEM":
     case "POSTGRES": {
       return `${env.BLOBSCAN_API_BASE_URL}/blobs/${blobDataUri}/data`;
     }
