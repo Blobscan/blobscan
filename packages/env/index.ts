@@ -11,7 +11,6 @@ import {
 const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
 const blobStorageSchema = z.enum([
-  "FILE_SYSTEM",
   "GOOGLE",
   "POSTGRES",
   "SWARM",
