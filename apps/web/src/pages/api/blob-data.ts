@@ -14,8 +14,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ message: "Blob Data URL is required" });
   }
 
-  const isBlobscanStorageRef =
-    storage === "postgres" || storage === "file_system";
+  const isBlobscanStorageRef = storage === "postgres";
 
   let requestInit: RequestInit | undefined;
 

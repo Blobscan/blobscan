@@ -21,11 +21,6 @@ type StorageConfig = {
 };
 
 export const STORAGES: Record<BlobStorage, StorageConfig> = {
-  file_system: {
-    name: "File System",
-    style:
-      "bg-gray-100 hover:bg-gray-200 text-gray-800 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-200",
-  },
   google: {
     style:
       "bg-slate-100 hover:bg-slate-200 text-slate-800 hover:text-slate-900 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-slate-200",
