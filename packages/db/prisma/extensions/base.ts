@@ -12,11 +12,11 @@ import { Prisma } from "@prisma/client";
 
 import { curryPrismaExtensionFnSpan } from "../instrumentation";
 import type { WithoutTimestampFields } from "../types";
+import type { BlockId, BlockIdField } from "../zod-utils";
 import {
   blobCommitmentSchema,
   blobVersionedHashSchema,
-  blockHashSchema,
-  blockNumberSchema,
+  parsedBlockIdSchema,
 } from "../zod-utils";
 
 const NOW_SQL = Prisma.sql`NOW()`;
@@ -248,30 +248,55 @@ export const baseExtension = Prisma.defineExtension((prisma) =>
         },
       },
       block: {
-        findEthUsdPrice(blockId: string | number) {
-          let whereClause: Prisma.Sql;
-          const isBlockNumber =
-            !blockId.toString().startsWith("0x") &&
-            blockNumberSchema.safeParse(blockId).success;
-          const isBlockHash = blockHashSchema.safeParse(blockId).success;
+        findEthUsdPrice(blockIdOrBlockIdField: BlockId | BlockIdField) {
+          let blockIdField: BlockIdField;
 
-          if (!isBlockHash && !isBlockNumber) {
-            throw new Error(
-              `Couldn't retrieve ETH/USD price for block: id "${blockId}" is invalid`
-            );
+          if (typeof blockIdOrBlockIdField === "object") {
+            blockIdField = blockIdOrBlockIdField;
+          } else {
+            const res = parsedBlockIdSchema.safeParse(blockIdOrBlockIdField);
+
+            if (!res.success) {
+              throw new Error(
+                `Couldn't retrieve ETH/USD price for block: id "${blockIdOrBlockIdField}" is invalid`
+              );
+            }
+
+            blockIdField = res.data;
           }
 
-          if (isBlockHash) {
-            whereClause = Prisma.sql`b.hash = ${blockId}`;
-          } else {
-            whereClause = Prisma.sql`b.number = ${blockId}`;
+          const { type, value } = blockIdField;
+          let whereClause: Prisma.Sql = Prisma.empty;
+          let orderBy: Prisma.Sql = Prisma.empty;
+
+          switch (type) {
+            case "hash": {
+              whereClause = Prisma.sql`WHERE b.hash = ${value}`;
+              break;
+            }
+            case "number": {
+              whereClause = Prisma.sql`WHERE b.number = ${value}`;
+              break;
+            }
+            case "slot": {
+              whereClause = Prisma.sql`WHERE b.slot = ${value}`;
+              break;
+            }
+            case "label": {
+              const direction =
+                value === "latest" ? Prisma.sql`DESC` : Prisma.sql`ASC`;
+
+              orderBy = Prisma.sql`ORDER BY b.number ${direction} LIMIT 1`;
+              break;
+            }
           }
 
           return startBlockModelFnSpan("findEthUsdPrice", async () => {
             const ethUsdPrice = await prisma.$queryRaw<EthUsdPrice[]>`
               SELECT p.id, p.price, p.timestamp
               FROM block b join eth_usd_price p on DATE_TRUNC('minute', b.timestamp) = p.timestamp
-              WHERE ${whereClause}
+              ${whereClause}
+              ${orderBy}
             `;
 
             return ethUsdPrice[0];
