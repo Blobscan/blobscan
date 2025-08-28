@@ -1,0 +1,70 @@
+model MetricsGlobalAllTime {
+  id Int @id @default(autoincrement())
+
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  totalBlocks       Int     @default(0) @map("total_blocks")
+
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("metrics_global_all_time")
+}
+
+model MetricsGlobal1h {
+  id   Int      @id @default(autoincrement())
+  date DateTime @db.Date
+
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  totalBlocks       Int     @default(0) @map("total_blocks")
+
+  @@map("metrics_global_1h")
+}
+
+model MetricsGlobal1d {
+  id   Int      @id @default(autoincrement())
+  date DateTime @db.Date
+
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  totalBlocks       Int     @default(0) @map("total_blocks")
+
+  @@map("metrics_global_1d")
+}
+
+model MetricsGlobal1w {
+  id   Int      @id @default(autoincrement())
+  date DateTime @db.Date
+
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  totalBlocks       Int     @default(0) @map("total_blocks")
+
+  @@map("metrics_global_1w")
+}
+
+model MetricsGlobal1mo {
+  id   Int      @id @default(autoincrement())
+  date DateTime @db.Date
+
+  /// @zod.custom(imports.nonNegativeDecimalSchema)
+  totalBlobGasPrice Decimal @default(0) @map("total_blob_gas_price") @db.Decimal(100, 0)
+  /// @zod.nonnegative()
+  avgBlobGasPrice   Float   @default(0) @map("avg_blob_gas_price")
+  /// @zod.nonnegative()
+  totalBlocks       Int     @default(0) @map("total_blocks")
+
+  @@map("metrics_global_1mo")
+}

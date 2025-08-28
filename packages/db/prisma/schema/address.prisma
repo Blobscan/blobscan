@@ -1,0 +1,20 @@
+model Address {
+  address                    String   @id
+  rollup                     Rollup?
+  /// @zod.nonnegative()
+  firstBlockNumberAsReceiver Int?     @map("first_block_number_as_receiver")
+  /// @zod.nonnegative()
+  firstBlockNumberAsSender   Int?     @map("first_block_number_as_sender")
+  insertedAt                 DateTime @default(now()) @map("inserted_at")
+  updatedAt                  DateTime @default(now()) @map("updated_at")
+
+  transactionsAsSender   Transaction[] @relation("senderAddressRelation")
+  transactionsAsReceiver Transaction[] @relation("receiverAddressRelation")
+
+  @@index([address, rollup])
+  @@index([rollup])
+  @@index([firstBlockNumberAsReceiver])
+  @@index([firstBlockNumberAsSender])
+  @@index([insertedAt])
+  @@map("address")
+}

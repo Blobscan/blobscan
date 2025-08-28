@@ -1,0 +1,27 @@
+model BlockchainSyncState {
+  id                       Int     @id @default(autoincrement())
+  /// @zod.nonnegative()
+  lastAggregatedBlock      Int?    @map("last_aggregated_block")
+  /// @zod.nonnegative()
+  lastFinalizedBlock       Int?    @map("last_finalized_block")
+  /// @zod.nonnegative()
+  lastLowerSyncedSlot      Int?    @map("last_lower_synced_slot")
+  /// @zod.nonnegative()
+  lastUpperSyncedSlot      Int?    @map("last_upper_synced_slot")
+  /// @zod.custom(imports.blockHashSchema)
+  lastUpperSyncedBlockRoot String? @map("last_upper_synced_block_root")
+  /// @zod.nonnegative()
+  lastUpperSyncedBlockSlot Int?    @map("last_upper_synced_block_slot")
+
+  @@map("blockchain_sync_state")
+}
+
+//TODO: Rename to SwarmBatchStorage
+model BlobStoragesState {
+  id           Int      @id @default(autoincrement())
+  swarmDataId  String?  @map("swarm_data_id") // TODO: rename to batchId
+  swarmDataTTL Int?     @map("swarm_data_ttl") // TODO: rename to batchTtl
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  @@map("blob_storages_state")
+}
