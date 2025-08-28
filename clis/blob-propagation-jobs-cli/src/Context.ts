@@ -4,17 +4,13 @@ import { Queue } from "bullmq";
 import IORedis from "ioredis";
 
 import type { BlobPropagationQueue } from "@blobscan/blob-propagator";
-import {
-  FINALIZER_WORKER_NAME,
-  STORAGE_WORKER_NAMES,
-} from "@blobscan/blob-propagator";
+import { STORAGE_WORKER_NAMES } from "@blobscan/blob-propagator";
 import type { BlobStorage } from "@blobscan/db/prisma/enums";
 
-export type HumanQueueName = "FINALIZER" | BlobStorage;
+export type HumanQueueName = BlobStorage;
 
 export class Context {
   #storageQueues: BlobPropagationQueue[];
-  #finalizerQueue: BlobPropagationQueue;
   #propagatorFlowProducer: FlowProducer;
 
   constructor(storages: BlobStorage[], redisUri: string) {
@@ -28,28 +24,16 @@ export class Context {
         })
     );
 
-    this.#finalizerQueue = new Queue(FINALIZER_WORKER_NAME, {
-      connection,
-    });
-
     this.#propagatorFlowProducer = new FlowProducer({
       connection,
     });
   }
 
   getAllQueues() {
-    return [...this.#storageQueues, this.#finalizerQueue];
+    return this.#storageQueues;
   }
 
-  getQueue(
-    queueName: HumanQueueName
-  ): typeof queueName extends "FINALIZER"
-    ? Queue
-    : BlobPropagationQueue | undefined {
-    if (queueName === "FINALIZER") {
-      return this.#finalizerQueue;
-    }
-
+  getQueue(queueName: HumanQueueName) {
     return this.#storageQueues.find(
       (q) => q.name === STORAGE_WORKER_NAMES[queueName]
     );
@@ -88,23 +72,19 @@ export class Context {
   }
 
   getJobs(types?: JobType[]) {
-    return Promise.all([
-      ...this.#storageQueues.map((queue) => queue.getJobs(types)),
-      this.#finalizerQueue.getJobs(types),
-    ]).then((jobs) => jobs.flat());
+    return Promise.all(
+      this.#storageQueues.map((queue) => queue.getJobs(types))
+    ).then((jobs) => jobs.flat());
   }
 
   drainQueues() {
-    return Promise.all([
-      this.#storageQueues.map((queue) => queue.drain()),
-      this.#finalizerQueue.drain(),
-    ]);
+    return Promise.all(this.#storageQueues.map((queue) => queue.drain()));
   }
 
   obliterateQueues({ force = false } = {}) {
-    return Promise.all([
-      ...this.getAllQueues().map((queue) => queue.obliterate({ force })),
-    ]);
+    return Promise.all(
+      this.getAllQueues().map((queue) => queue.obliterate({ force }))
+    );
   }
 
   async clearQueues() {
@@ -118,9 +98,6 @@ export class Context {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       teardownPromise = teardownPromise.finally(() => queue.close());
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    teardownPromise.finally(() => this.#finalizerQueue.close());
 
     return teardownPromise;
   }

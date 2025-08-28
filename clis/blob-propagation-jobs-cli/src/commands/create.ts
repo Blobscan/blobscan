@@ -4,10 +4,8 @@ import commandLineUsage from "command-line-usage";
 import ora from "ora";
 
 import {
-  buildIncomingBlobUri,
   computeJobPriority,
   createBlobStorageJob,
-  env,
 } from "@blobscan/blob-propagator";
 import type {
   BlobPropagationJob,
@@ -87,17 +85,12 @@ async function createBlobPropagationJobs(
     const queueName = queue.name;
     spinner = spinner.start(`[${queueName}]: Creating ${blobs.length} jobs…`);
     const jobs = blobs.map(({ blobHash, blockNumber }) =>
-      createBlobStorageJob(
-        queue.name,
-        blobHash,
-        buildIncomingBlobUri(env.CHAIN_ID, blobHash),
-        {
-          priority: computeJobPriority({
-            blobBlockNumber: blockNumber,
-            highestBlockNumber,
-          }),
-        }
-      )
+      createBlobStorageJob(queue.name, blobHash, blobHash, {
+        priority: computeJobPriority({
+          blobBlockNumber: blockNumber,
+          highestBlockNumber,
+        }),
+      })
     );
 
     const batches = Math.ceil(jobs.length / JOB_BATCH_SIZE);
@@ -238,9 +231,9 @@ export const create: Command = async function (argv) {
   let totalJobsCreated = 0;
 
   let batchDBBlobs: BlobsQueryResult = [];
-  const selectedBlobStorages = storageQueues
-    ?.map((q) => q.name.split("-")[0] as HumanQueueName)
-    .filter((q) => q !== "FINALIZER");
+  const selectedBlobStorages = storageQueues?.map(
+    (q) => q.name.split("-")[0] as HumanQueueName
+  );
 
   let filterClause: Prisma.Sql;
   let orderByClause: Prisma.Sql;

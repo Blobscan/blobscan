@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { FlowProducer, Worker, Queue } from "bullmq";
-import type {
-  ConnectionOptions,
-  JobsOptions,
-  Processor,
-  WorkerOptions,
-} from "bullmq";
+import { Worker, Queue } from "bullmq";
+import type { JobsOptions, Processor, WorkerOptions } from "bullmq";
 import IORedis from "ioredis";
 
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
@@ -17,7 +12,6 @@ import { createModuleLogger } from "@blobscan/logger";
 import {
   DEFAULT_JOB_OPTIONS,
   DEFAULT_WORKER_OPTIONS,
-  FINALIZER_WORKER_NAME,
   RECONCILIATOR_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
@@ -25,19 +19,15 @@ import { BlobPropagatorCreationError, BlobPropagatorError } from "./errors";
 import { logger } from "./logger";
 import type {
   BlobPropagationInput,
-  BlobPropagationWorker,
   BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
   Reconciliator,
   ReconciliatorProcessorParams,
   ReconciliatorProcessorResult,
+  StoragePropagator,
 } from "./types";
+import { createBlobPropagationJob, computeLinearPriority } from "./utils";
 import {
-  createBlobPropagationFlowJob as _createBlobPropagationFlowJob,
-  computeLinearPriority,
-} from "./utils";
-import {
-  finalizerProcessor,
   gcsProcessor,
   postgresProcessor,
   s3Processor,
@@ -73,10 +63,8 @@ export const STORAGE_WORKER_PROCESSORS: Record<
 export class BlobPropagator {
   protected primaryBlobStorage: BlobStorage;
 
-  protected blobPropagationFlowProducer: FlowProducer;
-  protected finalizerWorker: Worker;
+  protected propagators: StoragePropagator[];
   protected reconciliator: Reconciliator;
-  protected storageWorkers: BlobPropagationWorker[];
 
   protected jobOptions: Partial<JobsOptions>;
 
@@ -102,7 +90,7 @@ export class BlobPropagator {
       ...workerOptions,
     };
 
-    this.storageWorkers = this.#createStorageWorkers(
+    this.propagators = this.#createPropagators(
       blobStorages,
       {
         prisma,
@@ -111,13 +99,6 @@ export class BlobPropagator {
       workerOptions_
     );
 
-    this.finalizerWorker = this.#createWorker(
-      FINALIZER_WORKER_NAME,
-      finalizerProcessor({ primaryBlobStorage }),
-      workerOptions_
-    );
-
-    this.blobPropagationFlowProducer = this.#createFlowProducer(connection);
     this.primaryBlobStorage = primaryBlobStorage;
     this.jobOptions = {
       ...DEFAULT_JOB_OPTIONS,
@@ -128,11 +109,10 @@ export class BlobPropagator {
     this.reconciliator = this.#createReconciliator(
       {
         batchSize: reconciliatorOpts.batchSize,
-        finalizerWorkerName: this.finalizerWorker.name,
-        flowProducer: this.blobPropagationFlowProducer,
         prisma,
         primaryBlobStorage,
-        storageWorkerNames: this.storageWorkers.map((w) => w.name),
+        propagatorQueues: this.propagators.map(({ queue }) => queue),
+        highestBlockNumber: this.highestBlockNumber,
       },
       workerOptions_
     );
@@ -174,13 +154,21 @@ export class BlobPropagator {
         data
       );
 
-      const flowJob = this.createBlobPropagationFlowJob({
-        blockNumber,
-        blobUri,
-        versionedHash,
+      const queueOperations = this.propagators.map(({ queue }) => {
+        const priority = this.computeJobPriority(blockNumber);
+        const job = createBlobPropagationJob(
+          queue.name,
+          versionedHash,
+          blobUri,
+          {
+            priority,
+          }
+        );
+
+        return queue.add(job.name, job.data, job.opts);
       });
 
-      await this.blobPropagationFlowProducer.add(flowJob);
+      await Promise.all(queueOperations);
     } catch (err) {
       throw new BlobPropagatorError(
         `Failed to propagate blob with hash "${versionedHash}"`,
@@ -211,16 +199,23 @@ export class BlobPropagator {
         )
       );
 
-      const blobPropagationFlowJobs = uniqueBlobs.map(
-        ({ blockNumber, versionedHash }, i) =>
-          this.createBlobPropagationFlowJob({
-            blockNumber,
-            blobUri: blobUris[i] as string,
+      const queueBulkOperations = this.propagators.map(({ queue }) => {
+        const jobs = uniqueBlobs.map(({ blockNumber, versionedHash }, i) => {
+          const priority = this.computeJobPriority(blockNumber);
+          return createBlobPropagationJob(
+            queue.name,
             versionedHash,
-          })
-      );
+            blobUris[i] as string,
+            {
+              priority,
+            }
+          );
+        });
 
-      await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
+        return queue.addBulk(jobs);
+      });
+
+      await Promise.all(queueBulkOperations);
     } catch (err) {
       const blobHashes = blobs.map((b) => `"${b.versionedHash}"`).join(", ");
 
@@ -231,30 +226,7 @@ export class BlobPropagator {
     }
   }
 
-  protected createBlobPropagationFlowJob({
-    blockNumber,
-    blobUri,
-    versionedHash,
-  }: {
-    blockNumber?: number;
-    blobUri: string;
-    versionedHash: string;
-  }) {
-    const jobPriority = this.#computeJobPriority(blockNumber);
-    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
-
-    return _createBlobPropagationFlowJob(
-      this.finalizerWorker.name,
-      storageWorkerNames,
-      versionedHash,
-      blobUri,
-      {
-        priority: jobPriority,
-      }
-    );
-  }
-
-  #computeJobPriority(jobBlockNumber?: number): number {
+  protected computeJobPriority(jobBlockNumber?: number): number {
     if (!jobBlockNumber) {
       return 1;
     }
@@ -271,64 +243,33 @@ export class BlobPropagator {
   async close() {
     let teardownPromise: Promise<void> = Promise.resolve();
 
-    this.storageWorkers.forEach((w) => {
+    this.propagators.forEach(({ worker }) => {
       teardownPromise = teardownPromise.finally(async () => {
-        await this.#performClosingOperation(() => w.close());
+        await this.#performClosingOperation(() => worker.close());
       });
     });
 
-    await teardownPromise
-      .finally(async () => {
-        await this.#performClosingOperation(() => this.finalizerWorker.close());
-      })
-      .finally(async () => {
-        await this.#performClosingOperation(() =>
-          this.blobPropagationFlowProducer.close()
-        );
-      })
+    this.propagators.forEach(({ queue }) => {
+      teardownPromise = teardownPromise.finally(async () => {
+        await this.#performClosingOperation(() => queue.close());
+      });
+    });
+
+    teardownPromise = teardownPromise
       .finally(async () => {
         await this.#performClosingOperation(() =>
           this.reconciliator.worker.close()
         );
       })
       .finally(async () => {
-        await this.#performClosingOperation(
-          async () => await this.reconciliator.queue.obliterate({ force: true })
+        await this.#performClosingOperation(() =>
+          this.reconciliator.queue.obliterate({ force: true })
         );
-      })
-      .finally(async () => {
-        await this.#performClosingOperation(async () => {
-          const redisClient = await this.blobPropagationFlowProducer.client;
-
-          await redisClient.quit();
-        });
       });
 
+    await teardownPromise;
+
     logger.info("Blob propagator closed successfully.");
-  }
-
-  #createFlowProducer(connection?: ConnectionOptions) {
-    /*
-     * Instantiating a new `FlowProducer` appears to create two separate `RedisConnection` instances.
-     * This leads to an issue where one instance remains active, or "dangling", after the `FlowProducer` has been closed.
-     * To prevent this, we now initialize a single `IORedis` instance in advance and use it when creating the `FlowProducer`.
-     * This way, both created connections reference the same `IORedis` instance and can be closed properly.
-     *
-     * See: https://github.com/taskforcesh/bullmq/blob/d7cf6ea60830b69b636648238a51e5f981616d02/src/classes/flow-producer.ts#L111
-     */
-    const blobPropagationFlowProducer = new FlowProducer({
-      connection,
-    });
-    const flowProducerLogger = createModuleLogger(
-      "blob-propagator",
-      "flow-producer"
-    );
-
-    blobPropagationFlowProducer.on("error", (err) => {
-      flowProducerLogger.error(err);
-    });
-
-    return blobPropagationFlowProducer;
   }
 
   #createReconciliator(
@@ -345,24 +286,21 @@ export class BlobPropagator {
     );
     const workerLogger = createModuleLogger("blob-reconciliator", worker.name);
 
-    worker.on(
-      "completed",
-      (_, { flowsCreated: jobsCreated, blobTimestamps }) => {
-        if (!jobsCreated) {
-          workerLogger.info("No blobs to reconciliate found");
+    worker.on("completed", (_, { jobsCreated, blobTimestamps }) => {
+      if (!jobsCreated) {
+        workerLogger.info("No blobs to reconciliate found");
 
-          return;
-        }
-
-        workerLogger.info(
-          `${jobsCreated} jobs recreated; From: ${
-            blobTimestamps?.firstBlob?.toISOString() ?? "-"
-          } To: ${blobTimestamps?.lastBlob?.toISOString() ?? "-"}`
-        );
+        return;
       }
-    );
 
-    worker.on("failed", (job, err) => {
+      workerLogger.info(
+        `${jobsCreated} jobs recreated; From: ${
+          blobTimestamps?.firstBlob?.toISOString() ?? "-"
+        } To: ${blobTimestamps?.lastBlob?.toISOString() ?? "-"}`
+      );
+    });
+
+    worker.on("failed", (_, err) => {
       workerLogger.error(err);
     });
 
@@ -372,11 +310,11 @@ export class BlobPropagator {
     };
   }
 
-  #createStorageWorkers(
+  #createPropagators(
     blobStorages: BlobStorage[],
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
-  ) {
+  ): StoragePropagator[] {
     if (!blobStorages.length) {
       throw new BlobPropagatorCreationError("No blob storage provided");
     }
@@ -391,14 +329,22 @@ export class BlobPropagator {
         );
       }
 
-      return this.#createWorker(
-        STORAGE_WORKER_NAMES[storageName],
+      const workerName = STORAGE_WORKER_NAMES[storageName];
+
+      const queue = new Queue(workerName, opts);
+      const worker = this.#createWorker(
+        workerName,
         workerProcessor({
           ...params,
           targetBlobStorage,
         }),
         opts
       );
+
+      return {
+        queue,
+        worker,
+      };
     });
   }
 

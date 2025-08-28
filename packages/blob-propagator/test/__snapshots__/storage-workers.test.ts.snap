@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Storage Worker > when running the FILE_SYSTEM worker > should throw an error if the blob wasn't found in the incoming blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
-
-exports[`Storage Worker > when running the FILE_SYSTEM worker > should throw an error if the blob wasn't found in the incoming blob storage 2`] = `[Error: Failed to retrieve blob from incoming storage]`;
-
 exports[`Storage Worker > when running the GOOGLE worker > should throw an error if the blob wasn't found in the incoming blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
 
 exports[`Storage Worker > when running the GOOGLE worker > should throw an error if the blob wasn't found in the incoming blob storage 2`] = `[Error: Failed to retrieve blob from incoming storage]`;
+
+exports[`Storage Worker > when running the GOOGLE worker > should throw an error if the blob wasn't found in the primary blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
+
+exports[`Storage Worker > when running the GOOGLE worker > should throw an error if the blob wasn't found in the primary blob storage 2`] = `[Error: Failed to retrieve blob from primary storage]`;
 
 exports[`Storage Worker > when running the POSTGRES worker > should throw an error if the blob wasn't found in the incoming blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
 
@@ -16,6 +16,14 @@ exports[`Storage Worker > when running the S3 worker > should throw an error if 
 
 exports[`Storage Worker > when running the S3 worker > should throw an error if the blob wasn't found in the incoming blob storage 2`] = `[Error: Failed to retrieve blob from incoming storage]`;
 
+exports[`Storage Worker > when running the S3 worker > should throw an error if the blob wasn't found in the primary blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
+
+exports[`Storage Worker > when running the S3 worker > should throw an error if the blob wasn't found in the primary blob storage 2`] = `[Error: Failed to retrieve blob from primary storage]`;
+
 exports[`Storage Worker > when running the SWARM worker > should throw an error if the blob wasn't found in the incoming blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
 
 exports[`Storage Worker > when running the SWARM worker > should throw an error if the blob wasn't found in the incoming blob storage 2`] = `[Error: Failed to retrieve blob from incoming storage]`;
+
+exports[`Storage Worker > when running the SWARM worker > should throw an error if the blob wasn't found in the primary blob storage 1`] = `"Failed to propagate blob with hash \\"missingBlobDataFileVersionedHash\\""`;
+
+exports[`Storage Worker > when running the SWARM worker > should throw an error if the blob wasn't found in the primary blob storage 2`] = `[Error: Failed to retrieve blob from primary storage]`;

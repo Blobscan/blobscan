@@ -1,13 +1,5 @@
-import type { FlowJob, JobsOptions } from "bullmq";
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import type { JobsOptions } from "bullmq";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WeaveVMStorage } from "@blobscan/blob-storage-manager";
 import type {
@@ -18,7 +10,7 @@ import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 import { fixtures, testValidError } from "@blobscan/test";
 
-import { buildJobId, FINALIZER_WORKER_NAME } from "../src";
+import { buildJobId } from "../src";
 import type { BlobPropagatorConfig } from "../src/BlobPropagator";
 import { BlobPropagator } from "../src/BlobPropagator";
 import { DEFAULT_JOB_OPTIONS } from "../src/constants";
@@ -27,32 +19,23 @@ import {
   BlobPropagatorError,
 } from "../src/errors";
 import type { BlobPropagationInput } from "../src/types";
-import { computeLinearPriority, MAX_JOB_PRIORITY } from "../src/utils";
+import {
+  computeLinearPriority,
+  createBlobPropagationJob,
+  MAX_JOB_PRIORITY,
+} from "../src/utils";
 import { createBlobStorages } from "./helpers";
 
 export class MockedBlobPropagator extends BlobPropagator {
-  createBlobPropagationFlowJob(params: {
-    blockNumber?: number;
-    blobUri: string;
-    versionedHash: string;
-  }) {
-    return super.createBlobPropagationFlowJob(params);
+  getJobPriority(blockNumber?: number) {
+    return this.computeJobPriority(blockNumber);
   }
-
-  getFinalizerWorker() {
-    return this.finalizerWorker;
-  }
-
-  getStorageWorkers() {
-    return this.storageWorkers;
+  getPropagators() {
+    return this.propagators;
   }
 
   getReconciliator() {
     return this.reconciliator;
-  }
-
-  getBlobPropagationFlowProducer() {
-    return this.blobPropagationFlowProducer;
   }
 
   getHighestBlockNumber() {
@@ -208,7 +191,7 @@ describe("BlobPropagator", () => {
     );
   });
 
-  describe("when creating a blob propagation flow job", async () => {
+  describe("when storage propagator jobs", async () => {
     const flowJobBlob = fixtures.blobsOnTransactions[0];
     const expectedBlobUri = "expected-incoming-blob-uri";
 
@@ -216,188 +199,134 @@ describe("BlobPropagator", () => {
       throw new Error("No blob to test");
     }
 
-    let flowJob: FlowJob;
+    let propagatorJobs: ReturnType<typeof createBlobPropagationJob>[];
 
-    beforeAll(() => {
-      flowJob = blobPropagator.createBlobPropagationFlowJob({
-        blockNumber: flowJobBlob.blockNumber,
-        blobUri: expectedBlobUri,
-        versionedHash: flowJobBlob.blobHash,
-      });
+    beforeEach(() => {
+      propagatorJobs = blobPropagator.getPropagators().map(({ queue }) =>
+        createBlobPropagationJob(
+          queue.name,
+          flowJobBlob.blobHash,
+          expectedBlobUri,
+          {
+            priority: blobPropagator.getJobPriority(flowJobBlob.blockNumber),
+          }
+        )
+      );
     });
 
-    it("should have the correct queue name", () => {
-      expect(flowJob.queueName).toBe(FINALIZER_WORKER_NAME);
+    it("should have the correct ids", () => {
+      const expectedStorageJobIds = blobPropagator
+        .getPropagators()
+        .map(({ queue }) => buildJobId(queue.name, flowJobBlob.blobHash));
+
+      expect(propagatorJobs?.map((c) => c.opts?.jobId)).toEqual(
+        expectedStorageJobIds
+      );
+    });
+
+    it("should have the correct names", () => {
+      const expectedNames = blobPropagator
+        .getPropagators()
+        .map(
+          ({ queue }) =>
+            `propagate_${buildJobId(queue.name, flowJobBlob.blobHash)}`
+        );
+
+      expect(propagatorJobs?.map((c) => c.name)).toEqual(expectedNames);
+    });
+
+    it("should have the correct queue names", () => {
+      const expectedQueueNames = blobPropagator
+        .getPropagators()
+        .map(({ queue }) => queue.name);
+
+      expect(propagatorJobs.map((c) => c.queueName)).toEqual(
+        expectedQueueNames
+      );
     });
 
     it("should have the correct data", () => {
-      expect(flowJob.data).toEqual({
+      const expectedJobData = blobPropagator.getPropagators().map((_) => ({
+        versionedHash: flowJobBlob.blobHash,
         blobUri: expectedBlobUri,
-      });
-    });
+      }));
 
-    it("should have the correct id", () => {
-      const expectedJobId = buildJobId(
-        blobPropagator.getFinalizerWorker().name,
-        flowJobBlob.blobHash
-      );
-      expect(flowJob.opts?.jobId).toBe(expectedJobId);
-    });
-
-    it("should have the correct name", () => {
-      const expectedJobId = buildJobId(
-        blobPropagator.getFinalizerWorker().name,
-        flowJobBlob.blobHash
-      );
-      expect(flowJob.name).toBe(`propagateBlob:${expectedJobId}`);
+      expect(propagatorJobs.map((c) => c.data)).toEqual(expectedJobData);
     });
 
     it("should have the correct options", () => {
-      const expectedOpts: JobsOptions = DEFAULT_JOB_OPTIONS;
+      const expectedOpts: JobsOptions = {
+        ...DEFAULT_JOB_OPTIONS,
+      };
 
-      const { jobId: _, ...opts } = flowJob.opts ?? {};
-
-      expect(opts).toEqual(expectedOpts);
+      blobPropagator.getPropagators().map(({ queue }) => {
+        const job = propagatorJobs.find((j) => j.queueName === queue.name);
+        const { priority: _, jobId: __, ...restOpts } = job?.opts ?? {};
+        expect(restOpts, `Opts mismatch for job ${job?.name}`).toEqual(
+          expectedOpts
+        );
+      });
     });
 
-    describe("when creating storage jobs", () => {
-      it("should have the correct ids", () => {
-        const expectedStorageJobIds = blobPropagator
-          .getStorageWorkers()
-          .map((w) => buildJobId(w.name, flowJobBlob.blobHash));
+    describe("when computing job priority", () => {
+      it("should set the same priority for every job", () => {
+        expect(propagatorJobs.every((c) => c.opts?.priority)).toBeTruthy();
+      });
 
-        expect(flowJob.children?.map((c) => c.opts?.jobId)).toEqual(
-          expectedStorageJobIds
+      it("should calculate the correct priority", () => {
+        const jobPriority = propagatorJobs[0]?.opts?.priority;
+
+        expect(
+          jobPriority,
+          "priority greater than maximum bullmq priority"
+        ).lessThanOrEqual(MAX_JOB_PRIORITY);
+        expect(jobPriority).toEqual(
+          computeLinearPriority(flowJobBlob.blockNumber, {
+            min: 1,
+            max: blobPropagator.getHighestBlockNumber() ?? 0,
+          })
         );
       });
 
-      it("should have the correct names", () => {
-        const expectedNames = blobPropagator
-          .getStorageWorkers()
-          .map((w) => `storeBlob:${buildJobId(w.name, flowJobBlob.blobHash)}`);
+      it("should calculate the correct priority when job block number exceeds bullmq maximum allowed priority", () => {
+        const highestBlockNumber = MAX_JOB_PRIORITY * 5;
+        blobPropagator.setHighestBlockNumber(highestBlockNumber);
 
-        expect(flowJob.children?.map((c) => c.name)).toEqual(expectedNames);
-      });
+        const blockNumber = Math.round(MAX_JOB_PRIORITY * 2.3);
+        const jobPriority = blobPropagator.getJobPriority(blockNumber);
 
-      it("should have the correct queue names", () => {
-        const expectedQueueNames = blobPropagator
-          .getStorageWorkers()
-          .map((w) => w.name);
-
-        expect(flowJob.children?.map((c) => c.queueName)).toEqual(
-          expectedQueueNames
+        expect(
+          jobPriority,
+          "priority greater than maximum bullmq priority"
+        ).lessThanOrEqual(MAX_JOB_PRIORITY);
+        expect(jobPriority).toBe(
+          computeLinearPriority(blockNumber, { max: highestBlockNumber })
         );
       });
 
-      it("should have the correct data", () => {
-        const expectedJobData = blobPropagator.getStorageWorkers().map((_) => ({
-          versionedHash: flowJobBlob.blobHash,
-          blobUri: expectedBlobUri,
-        }));
+      it("should return highest priority when no block number is provided", () => {
+        const priority = blobPropagator.getJobPriority();
 
-        expect(flowJob.children?.map((c) => c.data)).toEqual(expectedJobData);
+        expect(priority).toBe(1);
       });
 
-      it("should have the correct options", () => {
-        const expectedOpts: JobsOptions = {
-          ...DEFAULT_JOB_OPTIONS,
-          removeDependencyOnFailure: true,
-        };
+      it("should update propagator's highest block number when initially unset", () => {
+        blobPropagator.setHighestBlockNumber();
 
-        blobPropagator.getStorageWorkers().map((w) => {
-          const job = flowJob.children?.find((j) => j.queueName === w.name);
-          const { priority: _, jobId: __, ...restOpts } = job?.opts ?? {};
-          expect(restOpts, `Opts mismatch for job ${job?.name}`).toEqual(
-            expectedOpts
-          );
-        });
+        blobPropagator.getJobPriority(flowJobBlob.blockNumber);
+
+        expect(blobPropagator.getHighestBlockNumber()).toBe(
+          flowJobBlob.blockNumber
+        );
       });
 
-      describe("when computing job priority", () => {
-        it("should set the same priority for every job", () => {
-          expect(flowJob.children?.every((c) => c.opts?.priority)).toBeTruthy();
-        });
+      it("should update highest block number when job block number exceeds it", () => {
+        blobPropagator.setHighestBlockNumber(flowJobBlob.blockNumber - 1);
+        blobPropagator.getJobPriority(flowJobBlob.blockNumber);
 
-        it("should calculate the correct priority", () => {
-          const jobPriority = flowJob.children
-            ? flowJob.children[0]?.opts?.priority
-            : undefined;
-
-          expect(
-            jobPriority,
-            "priority greater than maximum bullmq priority"
-          ).lessThanOrEqual(MAX_JOB_PRIORITY);
-          expect(jobPriority).toEqual(
-            computeLinearPriority(flowJobBlob.blockNumber, {
-              min: 1,
-              max: blobPropagator.getHighestBlockNumber() ?? 0,
-            })
-          );
-        });
-
-        it("should calculate the correct priority when job block number exceeds bullmq maximum allowed priority", () => {
-          const highestBlockNumber = MAX_JOB_PRIORITY * 5;
-          blobPropagator.setHighestBlockNumber(highestBlockNumber);
-
-          const blockNumber = Math.round(MAX_JOB_PRIORITY * 2.3);
-          const j = blobPropagator.createBlobPropagationFlowJob({
-            versionedHash: "",
-            blobUri: "",
-            blockNumber,
-          });
-          const jobPriority = j.children
-            ? j.children[0]?.opts?.priority
-            : undefined;
-
-          expect(
-            jobPriority,
-            "priority greater than maximum bullmq priority"
-          ).lessThanOrEqual(MAX_JOB_PRIORITY);
-          expect(jobPriority).toBe(
-            computeLinearPriority(blockNumber, { max: highestBlockNumber })
-          );
-        });
-
-        it("should update propagator's highest block number if no block number is provided", () => {
-          const j = blobPropagator.createBlobPropagationFlowJob({
-            blobUri: "",
-            versionedHash: flowJobBlob.blobHash,
-          });
-          blobPropagator.getStorageWorkers().forEach((w) => {
-            expect(
-              j.children?.find((c) => c.queueName === w.name)?.opts?.priority,
-              `${w.name} priority mismatch`
-            ).toEqual(1);
-          });
-        });
-
-        it("should update propagator's highest block number when initially unset", () => {
-          blobPropagator.setHighestBlockNumber();
-
-          blobPropagator.createBlobPropagationFlowJob({
-            versionedHash: flowJobBlob.blobHash,
-            blockNumber: flowJobBlob.blockNumber,
-            blobUri: "",
-          });
-
-          expect(blobPropagator.getHighestBlockNumber()).toBe(
-            flowJobBlob.blockNumber
-          );
-        });
-
-        it("should update highest block number when job block number exceeds it", () => {
-          const higherBlockNumber =
-            (blobPropagator.getHighestBlockNumber() ?? 0) + 1;
-          blobPropagator.createBlobPropagationFlowJob({
-            versionedHash: flowJobBlob.blobHash,
-            blockNumber: higherBlockNumber,
-            blobUri: "",
-          });
-
-          expect(blobPropagator.getHighestBlockNumber()).toBe(
-            higherBlockNumber
-          );
-        });
+        expect(blobPropagator.getHighestBlockNumber()).toBe(
+          flowJobBlob.blockNumber
+        );
       });
     });
   });
@@ -413,15 +342,25 @@ describe("BlobPropagator", () => {
       }
     });
 
-    it("should create a blob propagation flow job correctly", async () => {
-      const propagatorFlowProducer =
-        blobPropagator.getBlobPropagationFlowProducer();
+    it("should store blob in primary blob storage", async () => {
+      await blobPropagator.propagateBlob(blob);
 
-      const spy = vi.spyOn(propagatorFlowProducer, "add");
+      const blobUri = primaryBlobStorage.getBlobUri(blob.versionedHash);
+      const storedBlob = await primaryBlobStorage.getBlob(blobUri);
+
+      expect(storedBlob).toEqual(blob.data);
+    });
+
+    it("should create a a propagation job for every available queue", async () => {
+      const propagatorSpies = blobPropagator
+        .getPropagators()
+        .map(({ queue }) => vi.spyOn(queue, "add"));
 
       await blobPropagator.propagateBlob(blob);
 
-      expect(spy).toHaveBeenCalledOnce();
+      propagatorSpies.forEach((spy) => {
+        expect(spy).toHaveBeenCalledOnce();
+      });
     });
   });
 
@@ -452,14 +391,15 @@ describe("BlobPropagator", () => {
     });
 
     it("should create flow jobs correctly", async () => {
-      const blobPropagationFlowProducer =
-        blobPropagator.getBlobPropagationFlowProducer();
-
-      const spy = vi.spyOn(blobPropagationFlowProducer, "addBulk");
+      const propagatorSpies = blobPropagator
+        .getPropagators()
+        .map(({ queue }) => vi.spyOn(queue, "addBulk"));
 
       await blobPropagator.propagateBlobs(blobsInput);
 
-      expect(spy).toHaveBeenCalled();
+      propagatorSpies.forEach((spy) => {
+        expect(spy).toHaveBeenCalled();
+      });
     });
   });
 
@@ -480,32 +420,28 @@ describe("BlobPropagator", () => {
     });
 
     it("should close correctly", async () => {
-      // Flow producer doesn't have a running state, so we need to spy on its close method
-      const flowProducer =
-        closingBlobPropagator.getBlobPropagationFlowProducer();
-      const flowProducerCloseSpy = vi.spyOn(flowProducer, "close");
-
       await closingBlobPropagator.close();
 
-      const finalizerClosed = !closingBlobPropagator
-        .getFinalizerWorker()
-        .isRunning();
-      const storageWorkersClosed = Object.values(
-        closingBlobPropagator.getStorageWorkers()
-      ).every((worker) => !worker.isRunning());
+      const propagators = closingBlobPropagator.getPropagators();
+      const reconciliator = closingBlobPropagator.getReconciliator();
+      const propagatorWorkersClosed = propagators.every(
+        ({ worker }) => !worker.isRunning()
+      );
+      const reconciliatorWorkerClosed = !reconciliator.worker.isRunning();
 
-      expect(finalizerClosed, "Finalizer worker still running").toBe(true);
-      expect(storageWorkersClosed, "Storage workers still running").toBe(true);
+      expect(propagatorWorkersClosed, "Storage workers still running").toBe(
+        true
+      );
       expect(
-        flowProducerCloseSpy,
-        "Flow producer still running"
-      ).toHaveBeenCalled();
+        reconciliatorWorkerClosed,
+        "Reconciliator worker still running"
+      ).toBe(true);
     });
 
     testValidError(
       "should throw a valid error when the storage worker operation fails",
       async () => {
-        const storageWorker = closingBlobPropagator.getStorageWorkers()[0];
+        const storageWorker = closingBlobPropagator.getPropagators()[0]?.worker;
 
         if (!storageWorker) {
           throw new Error("Storage worker not found ");
@@ -524,30 +460,12 @@ describe("BlobPropagator", () => {
     );
 
     testValidError(
-      "should throw a valid error when the finalizer worker closing operation fails",
+      "should throw a valid error when the reconciliator worker closing operation fails",
       async () => {
-        const finalizer = closingBlobPropagator.getFinalizerWorker();
+        const reconciliator = closingBlobPropagator.getReconciliator().worker;
 
-        vi.spyOn(finalizer, "close").mockImplementationOnce(() => {
-          throw new Error("Closing finalizer worker failed");
-        });
-
-        await closingBlobPropagator.close();
-      },
-      BlobPropagatorError,
-      {
-        checkCause: true,
-      }
-    );
-
-    testValidError(
-      "should throw a valid error when the flow producer closing operation fails",
-      async () => {
-        const flowProducer =
-          closingBlobPropagator.getBlobPropagationFlowProducer();
-
-        vi.spyOn(flowProducer, "close").mockImplementationOnce(() => {
-          throw new Error("Closing flow producer failed");
+        vi.spyOn(reconciliator, "close").mockImplementationOnce(() => {
+          throw new Error("Closing reconciliator worker failed");
         });
 
         await closingBlobPropagator.close();

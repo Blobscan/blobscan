@@ -1,12 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BlobPropagator > when closing > should throw a valid error when the finalizer worker closing operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
+exports[`BlobPropagator > when closing > should throw a valid error when the reconciliator worker closing operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
 
-exports[`BlobPropagator > when closing > should throw a valid error when the finalizer worker closing operation fails 2`] = `[Error: Closing finalizer worker failed]`;
-
-exports[`BlobPropagator > when closing > should throw a valid error when the flow producer closing operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
-
-exports[`BlobPropagator > when closing > should throw a valid error when the flow producer closing operation fails 2`] = `[Error: Closing flow producer failed]`;
+exports[`BlobPropagator > when closing > should throw a valid error when the reconciliator worker closing operation fails 2`] = `[Error: Closing reconciliator worker failed]`;
 
 exports[`BlobPropagator > when closing > should throw a valid error when the storage worker operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
 
@@ -19,11 +15,3 @@ exports[`BlobPropagator > when creating a blob propagator > should throw a valid
 exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with no blob storages 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
 
 exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with no blob storages 2`] = `"No blob storage provided"`;
-
-exports[`BlobPropagator > when propagating a single blob > should throw a valid error if the blob failed to get staged 1`] = `"Blob propagator failed: Failed to propagate blob with hash \\"blobVersionedHash\\""`;
-
-exports[`BlobPropagator > when propagating a single blob > should throw a valid error if the blob failed to get staged 2`] = `[Error: Internal temporary blob storage error]`;
-
-exports[`BlobPropagator > when propagating multiple blobs > should throw a valid error if some of the blobs failed to be stored in the incoming blob storage 1`] = `"Blob propagator failed: Failed to propagate blobs with hashes \\"blobVersionedHash1\\", \\"blobVersionedHash2\\""`;
-
-exports[`BlobPropagator > when propagating multiple blobs > should throw a valid error if some of the blobs failed to be stored in the incoming blob storage 2`] = `[Error: Internal temporal blob storage error]`;

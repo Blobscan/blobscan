@@ -24,7 +24,7 @@ import type {
   BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
 } from "../src/types";
-import { createBlobStorages, createStorageFromEnv } from "./helpers";
+import { createBlobStorages } from "./helpers";
 
 function runWorkerTests(
   storageName: BlobStorageName,
@@ -62,7 +62,7 @@ function runWorkerTests(
 
       targetBlobStorage = workerParams.targetBlobStorage;
 
-      const blobUri = await workerParams.primaryBlobStorage.storeIncomingBlob(
+      const blobUri = await workerParams.primaryBlobStorage.storeBlob(
         blob.versionedHash,
         blob.data
       );
@@ -140,7 +140,7 @@ function runWorkerTests(
     });
 
     testValidError(
-      "should throw an error if the blob wasn't found in the incoming blob storage",
+      "should throw an error if the blob wasn't found in the primary blob storage",
       async () => {
         const versionedHash = "missingBlobDataFileVersionedHash";
         const jobWithMissingBlobData = {
@@ -160,7 +160,7 @@ function runWorkerTests(
   });
 }
 describe("Storage Worker", () => {
-  let incomingBlobStorage: BlobStorage;
+  let primaryBlobStorage: BlobStorage;
   const blobVersionedHash = "test-blob-versioned-hash";
   const blobData = "0x1234abcdeff123456789ab34223a4b2c2e";
   let blobStorages: BlobStorage[];
@@ -168,12 +168,14 @@ describe("Storage Worker", () => {
   const mockedSwarmBlobUri = "0xswarm-reference";
 
   beforeAll(async () => {
-    blobStorages = await createBlobStorages();
-    incomingBlobStorage = await createStorageFromEnv(
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    );
+    const allBlobStorages = await createBlobStorages();
 
-    blobStorages.push(incomingBlobStorage);
+    primaryBlobStorage = allBlobStorages.find(
+      (b) => b.name === env.PRIMARY_BLOB_STORAGE
+    ) as BlobStorage;
+    blobStorages = allBlobStorages.filter(
+      (b) => b.name !== env.PRIMARY_BLOB_STORAGE
+    );
   });
 
   afterAll(() => {
@@ -182,16 +184,8 @@ describe("Storage Worker", () => {
 
   const storages: { storage: BlobStorageName; uri: string }[] = [
     {
-      storage: "POSTGRES",
-      uri: blobVersionedHash,
-    },
-    {
       storage: "GOOGLE",
       uri: "1/st/-b/lo/st-blob-versioned-hash.bin",
-    },
-    {
-      storage: "FILE_SYSTEM",
-      uri: "test-blobscan-blobs/1/st/-b/lo/st-blob-versioned-hash.bin",
     },
     {
       storage: "S3",
@@ -213,7 +207,7 @@ describe("Storage Worker", () => {
 
         return Promise.resolve({
           targetBlobStorage,
-          incomingBlobStorage,
+          primaryBlobStorage,
           prisma,
         });
       },
@@ -242,7 +236,7 @@ describe("Storage Worker", () => {
             return mockedSwarmBlobUri;
           },
         } as SwarmStorage,
-        incomingBlobStorage,
+        primaryBlobStorage,
         prisma,
       });
     },

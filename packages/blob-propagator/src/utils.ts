@@ -1,4 +1,4 @@
-import type { FlowChildJob, FlowJob, JobsOptions } from "bullmq";
+import type { JobsOptions } from "bullmq";
 
 import { DEFAULT_JOB_OPTIONS } from "./constants";
 import { logger } from "./logger";
@@ -48,48 +48,17 @@ export function buildJobId(...parts: string[]) {
   return parts.join("-");
 }
 
-export function createBlobPropagationFlowJob(
-  workerName: string,
-  storageWorkerNames: string[],
+export function createBlobPropagationJob(
+  queueName: string,
   versionedHash: string,
   blobUri: string,
   opts: Partial<JobsOptions> = {}
-): FlowJob {
-  const { priority, ...restOpts } = opts;
-  const propagationFlowJobId = buildJobId(workerName, versionedHash);
-
-  const children = storageWorkerNames.map((name) =>
-    createBlobStorageJob(name, versionedHash, blobUri, {
-      priority,
-    })
-  );
+) {
+  const jobId = buildJobId(queueName, versionedHash);
 
   return {
-    name: `propagateBlob:${propagationFlowJobId}`,
-    queueName: workerName,
-    data: {
-      blobUri,
-    },
-    opts: {
-      ...DEFAULT_JOB_OPTIONS,
-      ...restOpts,
-      jobId: propagationFlowJobId,
-    },
-    children,
-  };
-}
-
-export function createBlobStorageJob(
-  storageWorkerName: string,
-  versionedHash: string,
-  blobUri: string,
-  opts: Partial<JobsOptions> = {}
-): FlowChildJob {
-  const jobId = buildJobId(storageWorkerName, versionedHash);
-
-  return {
-    name: `storeBlob:${jobId}`,
-    queueName: storageWorkerName,
+    name: `propagate_${jobId}`,
+    queueName: queueName,
     data: {
       versionedHash,
       blobUri,
@@ -98,7 +67,6 @@ export function createBlobStorageJob(
       ...DEFAULT_JOB_OPTIONS,
       ...opts,
       jobId,
-      removeDependencyOnFailure: true,
     },
   };
 }

@@ -1,17 +1,21 @@
 import type { ReconciliatorProcessor } from "../types";
-import { createBlobPropagationFlowJob } from "../utils";
+import {
+  computeJobPriority,
+  createBlobPropagationJob,
+  MAX_JOB_PRIORITY,
+} from "../utils";
 
 export const reconciliatorProcessor: ReconciliatorProcessor = function ({
-  flowProducer,
   prisma,
   primaryBlobStorage,
   batchSize,
-  finalizerWorkerName,
-  storageWorkerNames,
+  propagatorQueues,
+  highestBlockNumber,
 }) {
   return async function () {
     const dbOrphanedBlobs = await prisma.blob.findMany({
       select: {
+        firstBlockNumber: true,
         versionedHash: true,
         insertedAt: true,
       },
@@ -27,25 +31,36 @@ export const reconciliatorProcessor: ReconciliatorProcessor = function ({
     });
 
     if (!dbOrphanedBlobs.length) {
-      return { flowsCreated: 0 };
+      return { jobsCreated: 0 };
     }
 
-    const jobs = dbOrphanedBlobs.map((b) =>
-      createBlobPropagationFlowJob(
-        finalizerWorkerName,
-        storageWorkerNames,
-        b.versionedHash,
-        primaryBlobStorage.getBlobUri(b.versionedHash)
-      )
-    );
+    const bulkOperations = propagatorQueues.map((q) => {
+      const jobs = dbOrphanedBlobs.map(
+        ({ versionedHash, firstBlockNumber }) => {
+          const priority = firstBlockNumber
+            ? computeJobPriority({
+                highestBlockNumber: highestBlockNumber ?? firstBlockNumber,
+                blobBlockNumber: firstBlockNumber,
+              })
+            : MAX_JOB_PRIORITY;
+          const blobUri = primaryBlobStorage.getBlobUri(versionedHash);
 
-    const createdJobs = await flowProducer.addBulk(jobs);
+          return createBlobPropagationJob(q.name, versionedHash, blobUri, {
+            priority,
+          });
+        }
+      );
+
+      return q.addBulk(jobs);
+    });
+
+    const res = await Promise.all(bulkOperations);
 
     const firstBlob = dbOrphanedBlobs[0];
     const lastBlob = dbOrphanedBlobs[dbOrphanedBlobs.length - 1];
 
     return {
-      flowsCreated: createdJobs.length,
+      jobsCreated: res.flat().length,
       blobTimestamps: {
         firstBlob: firstBlob?.insertedAt,
         lastBlob: lastBlob?.insertedAt,

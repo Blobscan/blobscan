@@ -1,4 +1,4 @@
-import type { FlowProducer, Job, Processor, Queue, Worker } from "bullmq";
+import type { Job, Processor, Queue, Worker } from "bullmq";
 
 import type {
   BlobReference,
@@ -17,13 +17,7 @@ export type BlobPropagationJobData = {
   blobUri: string;
 };
 
-export type BlobPropagationFinalizerJobData = {
-  blobUri: string;
-};
-
 export type BlobPropagationJob = Job<BlobPropagationJobData>;
-
-export type BlobPropagationFinalizerJob = Job<BlobPropagationFinalizerJobData>;
 
 export type BlobPropagationWorkerParams = {
   targetBlobStorage: BlobStorage;
@@ -31,8 +25,11 @@ export type BlobPropagationWorkerParams = {
   primaryBlobStorage: BlobStorage;
 };
 
-export type BlobPropagationFinalizerWorkerParams = {
-  primaryBlobStorage: BlobStorage;
+export type PropagationQueue = Queue<BlobPropagationJobData>;
+
+export type StoragePropagator = {
+  queue: PropagationQueue;
+  worker: Worker<BlobPropagationJobData>;
 };
 
 export type Reconciliator = {
@@ -41,16 +38,15 @@ export type Reconciliator = {
 };
 
 export type ReconciliatorProcessorParams = {
-  flowProducer: FlowProducer;
   prisma: BlobscanPrismaClient;
   primaryBlobStorage: BlobStorage;
   batchSize: number;
-  storageWorkerNames: string[];
-  finalizerWorkerName: string;
+  propagatorQueues: PropagationQueue[];
+  highestBlockNumber?: number;
 };
 
 export type ReconciliatorProcessorResult = {
-  flowsCreated: number;
+  jobsCreated: number;
   blobTimestamps?: { firstBlob?: Date; lastBlob?: Date };
 };
 
@@ -61,10 +57,6 @@ export type ReconciliatorProcessor = (
 export type BlobPropagationWorkerProcessor = (
   params: BlobPropagationWorkerParams
 ) => Processor<BlobPropagationJobData, BlobReference>;
-
-export type BlobPropagationFinalizerWorkerProcessor = (
-  params: BlobPropagationFinalizerWorkerParams
-) => Processor<BlobPropagationFinalizerJobData>;
 
 export type BlobPropagationWorker = Worker<BlobPropagationJobData>;
 

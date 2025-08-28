@@ -1,5 +1,5 @@
-import type { Job, JobNode } from "bullmq";
-import { FlowProducer } from "bullmq";
+import type { Job } from "bullmq";
+import { Queue } from "bullmq";
 import IORedis from "ioredis";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
@@ -8,17 +8,17 @@ import type { Blob } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
-import type { ReconciliatorProcessorResult } from "../src";
-import {
-  buildJobId,
-  FINALIZER_WORKER_NAME,
-  STORAGE_WORKER_NAMES,
+import type {
+  BlobPropagationJob,
+  PropagationQueue,
+  ReconciliatorProcessorResult,
 } from "../src";
+import { buildJobId, STORAGE_WORKER_NAMES } from "../src";
 import { reconciliatorProcessor } from "../src/worker-processors/reconciliator";
 import { createStorageFromEnv } from "./helpers";
 
 describe("Reconciliator Worker", () => {
-  let flowProducer: FlowProducer;
+  let propagatorQueues: PropagationQueue[];
   let primaryBlobStorage: BlobStorage;
   const batchSize = 2;
 
@@ -69,24 +69,28 @@ describe("Reconciliator Worker", () => {
       maxRetriesPerRequest: null,
     });
 
-    flowProducer = new FlowProducer({
-      connection,
-    });
+    propagatorQueues = Object.values(STORAGE_WORKER_NAMES).map(
+      (name) => new Queue(name, { connection })
+    );
 
     primaryBlobStorage = await createStorageFromEnv(env.PRIMARY_BLOB_STORAGE);
 
     return async () => {
-      await flowProducer.close();
+      let teardownPromise = Promise.resolve();
+
+      propagatorQueues.forEach((q) => {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        teardownPromise = teardownPromise.finally(async () => {
+          await q.close();
+        });
+      });
+
+      await teardownPromise;
     };
   });
 
   describe("when having orphaned blobs", () => {
-    const expectedStorageWorkers = [
-      STORAGE_WORKER_NAMES["GOOGLE"],
-      STORAGE_WORKER_NAMES["S3"],
-    ];
-
-    let flows: JobNode[];
+    let jobs: BlobPropagationJob[];
     let processorResult: ReconciliatorProcessorResult;
 
     beforeEach(async () => {
@@ -96,21 +100,18 @@ describe("Reconciliator Worker", () => {
 
       const processor = reconciliatorProcessor({
         batchSize,
-        finalizerWorkerName: FINALIZER_WORKER_NAME,
-        flowProducer,
         prisma,
-        primaryBlobStorage: primaryBlobStorage,
-        storageWorkerNames: expectedStorageWorkers,
+        primaryBlobStorage,
+        propagatorQueues,
       });
 
       processorResult = await processor({} as Job);
 
-      flows = await Promise.all(
-        orphanedBlobs.map((b) =>
-          flowProducer.getFlow({
-            id: buildJobId(FINALIZER_WORKER_NAME, b.versionedHash),
-            queueName: FINALIZER_WORKER_NAME,
-          })
+      jobs = await Promise.all(
+        orphanedBlobs.flatMap((b) =>
+          propagatorQueues.map((q) =>
+            q.getJob(buildJobId(q.name, b.versionedHash))
+          )
         )
       ).then((res) => res.filter((el) => !!el));
 
@@ -121,56 +122,49 @@ describe("Reconciliator Worker", () => {
           },
         });
 
-        await Promise.all(
-          flows.map((f) => f.job.remove({ removeChildren: true }))
-        );
+        try {
+          await Promise.all(
+            jobs.map((j) => j.remove({ removeChildren: true }))
+          );
+        } catch (err) {
+          /* empty */
+        }
       };
     });
 
-    it("should create propagation flows starting from the oldest blob", () => {
+    it("should create propagation jobs starting from the oldest blob", () => {
       const expectedJobIds = orphanedBlobs
         .slice(0, batchSize)
-        .map((b) => buildJobId(FINALIZER_WORKER_NAME, b.versionedHash));
+        .flatMap((b) =>
+          propagatorQueues.map((q) => buildJobId(q.name, b.versionedHash))
+        );
 
-      const jobIds = flows.map((f) => f.job.id);
+      const jobIds = jobs.map((j) => j.id);
 
       expect(jobIds).toEqual(expectedJobIds);
     });
 
-    it("should create propagation flows with children matching the provided storage workers", async () => {
-      const expectedChildren = orphanedBlobs
-        .slice(0, batchSize)
-        .flatMap((b) =>
-          expectedStorageWorkers.map((w) => buildJobId(w, b.versionedHash))
-        );
-
-      const childrenJobIds = flows.flatMap((f) =>
-        f.children?.map((c) => c.job.id)
-      );
-
-      expect(childrenJobIds.sort()).toEqual(expectedChildren.sort());
-    });
-
-    it("should create propagation flows with the correct data", async () => {
-      const expectedFlowJobsData = orphanedBlobs
-        .slice(0, batchSize)
-        .map((b) => ({
-          jobId: buildJobId(FINALIZER_WORKER_NAME, b.versionedHash),
+    it("should create propagation jobs with the correct job data", async () => {
+      const expectedJobsData = orphanedBlobs.slice(0, batchSize).flatMap((b) =>
+        propagatorQueues.map((q) => ({
+          jobId: buildJobId(q.name, b.versionedHash),
           data: {
             blobUri: primaryBlobStorage.getBlobUri(b.versionedHash),
+            versionedHash: b.versionedHash,
           },
-        }));
-      const flowJobsData = flows.map((f) => ({
-        jobId: f.job.id,
-        data: f.job.data,
+        }))
+      );
+      const jobsData = jobs.map((j) => ({
+        jobId: j.id,
+        data: j.data,
       }));
 
-      expect(flowJobsData).toEqual(expectedFlowJobsData);
+      expect(jobsData).toEqual(expectedJobsData);
     });
 
     it("should return the correct result", async () => {
       const expectedProcessorResult: ReconciliatorProcessorResult = {
-        flowsCreated: 2,
+        jobsCreated: 2 * propagatorQueues.length,
         blobTimestamps: {
           firstBlob: orphanedBlobs[0]?.insertedAt,
           lastBlob: orphanedBlobs[1]?.insertedAt,
@@ -184,17 +178,15 @@ describe("Reconciliator Worker", () => {
   it("should return the correct result when no orphaned blob exists", async () => {
     const processor = reconciliatorProcessor({
       batchSize: 1000,
-      finalizerWorkerName: FINALIZER_WORKER_NAME,
-      flowProducer,
       prisma,
       primaryBlobStorage: primaryBlobStorage,
-      storageWorkerNames: Object.values(STORAGE_WORKER_NAMES),
+      propagatorQueues,
     });
 
     const result = await processor({} as Job);
 
     expect(result).toEqual({
-      flowsCreated: 0,
+      jobsCreated: 0,
     });
   });
 });
