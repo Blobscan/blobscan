@@ -2796,7 +2796,12 @@ exports[`Block router > getByBlockId > should get latest block 1`] = `
     {
       "blobs": [
         {
-          "dataStorageReferences": [],
+          "dataStorageReferences": [
+            {
+              "storage": "swarm",
+              "url": "https://api.gateway.ethswarm.org/bzz/bzz://sfsfsdfsdfsdfs",
+            },
+          ],
           "versionedHash": "0xb100000000000000000000000000000000000000000000000000000000000000",
         },
       ],
