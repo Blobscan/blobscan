@@ -11,7 +11,3 @@ exports[`BlobPropagator > when closing > should throw a valid error when the sto
 exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with blob storages without worker processors 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
 
 exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with blob storages without worker processors 2`] = `"Storage WEAVEVM not supported: no worker processor defined"`;
-
-exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with no blob storages 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
-
-exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with no blob storages 2`] = `"No blob storage provided"`;

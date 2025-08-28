@@ -157,22 +157,6 @@ describe("BlobPropagator", () => {
     });
 
     testValidError(
-      "should throw a valid error when creating it with no blob storages",
-      async () => {
-        await MockedBlobPropagator.create({
-          blobStorages: [],
-          prisma,
-          primaryBlobStorage,
-          redisConnectionOrUri: env.REDIS_URI,
-        });
-      },
-      BlobPropagatorCreationError,
-      {
-        checkCause: true,
-      }
-    );
-
-    testValidError(
       "should throw a valid error when creating it with blob storages without worker processors",
       async () => {
         const weavevmStorage = new MockedWeaveVMStorage();
@@ -332,14 +316,40 @@ describe("BlobPropagator", () => {
   });
 
   describe("when propagating a single blob", () => {
-    afterEach(async () => {
-      const blobUri = primaryBlobStorage.getBlobUri(blob.versionedHash);
+    beforeEach(async () => {
+      await prisma.blob.create({
+        data: {
+          commitment: "commitment",
+          proof: "proof",
+          size: 13102,
+          versionedHash: blob.versionedHash,
+        },
+      });
 
-      try {
-        await primaryBlobStorage.removeBlob(blobUri);
-      } catch (_) {
-        /* empty */
-      }
+      return async () => {
+        const blobUri = primaryBlobStorage.getBlobUri(blob.versionedHash);
+
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          await primaryBlobStorage.removeBlob(blobUri).finally(async () => {
+            await prisma.blob.delete({
+              where: {
+                versionedHash: blob.versionedHash,
+              },
+            });
+            await prisma.blobDataStorageReference.delete({
+              where: {
+                blobHash_blobStorage: {
+                  blobHash: blob.versionedHash,
+                  blobStorage: primaryBlobStorage.name,
+                },
+              },
+            });
+          });
+        } catch (_) {
+          /* empty */
+        }
+      };
     });
 
     it("should store blob in primary blob storage", async () => {
@@ -349,6 +359,23 @@ describe("BlobPropagator", () => {
       const storedBlob = await primaryBlobStorage.getBlob(blobUri);
 
       expect(storedBlob).toEqual(blob.data);
+    });
+
+    it("should insert blob primary storage uri in db", async () => {
+      await blobPropagator.propagateBlob(blob);
+
+      const blobUri = primaryBlobStorage.getBlobUri(blob.versionedHash);
+
+      const res = await prisma.blobDataStorageReference.findUnique({
+        where: {
+          blobHash_blobStorage: {
+            blobHash: blob.versionedHash,
+            blobStorage: primaryBlobStorage.name,
+          },
+        },
+      });
+
+      expect(res?.dataReference).toBe(blobUri);
     });
 
     it("should create a a propagation job for every available queue", async () => {
@@ -376,18 +403,45 @@ describe("BlobPropagator", () => {
       },
     ];
 
-    afterEach(async () => {
-      await Promise.all(
-        blobsInput.map(async (b) => {
-          const blobUri = primaryBlobStorage.getBlobUri(b.versionedHash);
+    beforeEach(async () => {
+      await prisma.blob.createMany({
+        data: blobsInput.map((input) => ({
+          commitment: input.versionedHash + "commitment",
+          proof: input.versionedHash + "proof",
+          size: 131072,
+          versionedHash: input.versionedHash,
+        })),
+      });
 
-          try {
-            await primaryBlobStorage.removeBlob(blobUri);
-          } catch (_) {
-            /* empty */
-          }
-        })
-      );
+      return async () => {
+        await Promise.all(
+          blobsInput.map(async (b) => {
+            const blobUri = primaryBlobStorage.getBlobUri(b.versionedHash);
+
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              await primaryBlobStorage.removeBlob(blobUri).finally(async () => {
+                await prisma.blobDataStorageReference.deleteMany({
+                  where: {
+                    blobHash: {
+                      in: blobsInput.map((b) => b.versionedHash),
+                    },
+                  },
+                });
+                await prisma.blob.deleteMany({
+                  where: {
+                    versionedHash: {
+                      in: blobsInput.map((b) => b.versionedHash),
+                    },
+                  },
+                });
+              });
+            } catch (_) {
+              /* empty */
+            }
+          })
+        );
+      };
     });
 
     it("should create flow jobs correctly", async () => {

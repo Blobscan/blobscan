@@ -61,6 +61,7 @@ export const STORAGE_WORKER_PROCESSORS: Record<
 };
 
 export class BlobPropagator {
+  protected prisma: BlobscanPrismaClient;
   protected primaryBlobStorage: BlobStorage;
 
   protected propagators: StoragePropagator[];
@@ -117,6 +118,8 @@ export class BlobPropagator {
       workerOptions_
     );
 
+    this.prisma = prisma;
+
     logger.info("Blob propagator started successfully");
   }
 
@@ -149,17 +152,14 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const blobUri = await this.primaryBlobStorage.storeBlob(
-        versionedHash,
-        data
-      );
+      const blobReference = await this.#storeBlob(versionedHash, data);
 
       const queueOperations = this.propagators.map(({ queue }) => {
         const priority = this.computeJobPriority(blockNumber);
         const job = createBlobPropagationJob(
           queue.name,
           versionedHash,
-          blobUri,
+          blobReference.dataReference,
           {
             priority,
           }
@@ -193,9 +193,9 @@ export class BlobPropagator {
         return blob;
       });
 
-      const blobUris = await Promise.all(
+      const blobReferences = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
-          this.primaryBlobStorage.storeBlob(versionedHash, data)
+          this.#storeBlob(versionedHash, data)
         )
       );
 
@@ -205,7 +205,7 @@ export class BlobPropagator {
           return createBlobPropagationJob(
             queue.name,
             versionedHash,
-            blobUris[i] as string,
+            blobReferences[i]?.dataReference as string,
             {
               priority,
             }
@@ -272,6 +272,31 @@ export class BlobPropagator {
     logger.info("Blob propagator closed successfully.");
   }
 
+  async #storeBlob(versionedHash: string, data: string) {
+    const blobStorage = this.primaryBlobStorage.name;
+    const blobUri = await this.primaryBlobStorage.storeBlob(
+      versionedHash,
+      data
+    );
+
+    return this.prisma.blobDataStorageReference.upsert({
+      create: {
+        blobStorage,
+        blobHash: versionedHash,
+        dataReference: blobUri,
+      },
+      update: {
+        dataReference: blobUri,
+      },
+      where: {
+        blobHash_blobStorage: {
+          blobHash: versionedHash,
+          blobStorage: blobStorage,
+        },
+      },
+    });
+  }
+
   #createReconciliator(
     params: ReconciliatorProcessorParams,
     opts: WorkerOptions
@@ -315,10 +340,6 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
-    if (!blobStorages.length) {
-      throw new BlobPropagatorCreationError("No blob storage provided");
-    }
-
     return blobStorages.map((targetBlobStorage) => {
       const storageName = targetBlobStorage.name;
       const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
