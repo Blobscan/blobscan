@@ -107,12 +107,18 @@ export async function createBlobStorages() {
 
   for (const result of results) {
     if (result.status === "rejected") {
-      logger.warn(result.reason);
+      logger.error(result.reason);
 
       continue;
     }
 
     storages.push(result.value);
+  }
+
+  const failedStorages = results.some((r) => r.status === "rejected");
+
+  if (failedStorages) {
+    throw new Error("Failed to create all enabled blob storages");
   }
 
   return storages;

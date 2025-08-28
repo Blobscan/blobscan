@@ -25,7 +25,9 @@ async function createBlobPropagator() {
   );
 
   if (!primaryBlobStorage) {
-    throw new Error("Primary blob storage not found");
+    throw new Error(
+      `Primary blob storage "${env.PRIMARY_BLOB_STORAGE}" not created`
+    );
   }
 
   return BlobPropagator.create({
