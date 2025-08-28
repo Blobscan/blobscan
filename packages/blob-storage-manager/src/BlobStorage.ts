@@ -75,10 +75,11 @@ export abstract class BlobStorage {
     }
   }
 
-  getBlobUri(_: string): string {
+  getBlobUri(versionedHash: string): string {
     throw new BlobStorageError(
       this.constructor.name,
-      `"getBlobUri" not implemented`
+      `Failed to get blob uri for blob with versioned hash "${versionedHash}"`,
+      new Error(`"getBlobUri" not implemented`)
     );
   }
 }

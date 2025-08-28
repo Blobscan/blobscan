@@ -3,3 +3,7 @@
 exports[`SwarmStorage > should throw a valid error if bee client is not healthy 1`] = `"Storage is not reachable"`;
 
 exports[`SwarmStorage > should throw a valid error if bee client is not healthy 2`] = `[Error: Bee is not healthy: not ok]`;
+
+exports[`SwarmStorage > should throw an error when trying to get an uri 1`] = `"SwarmStorageMock failed: Failed to get blob uri for blob with versioned hash \\"blob-hash\\""`;
+
+exports[`SwarmStorage > should throw an error when trying to get an uri 2`] = `[Error: "getBlobUri" not implemented]`;
