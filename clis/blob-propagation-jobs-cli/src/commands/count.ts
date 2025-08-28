@@ -1,7 +1,7 @@
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 
-import type { QueueHumanName } from "../Context";
+import type { HumanQueueName } from "../Context";
 import { context } from "../context-instance";
 import type { Command } from "../types";
 import { helpOptionDef, queuesOptionDef } from "../utils";
@@ -30,7 +30,7 @@ export const count: Command = async function (argv) {
     argv,
   }) as {
     help?: boolean;
-    queue?: QueueHumanName[];
+    queue?: HumanQueueName[];
   };
 
   if (help) {

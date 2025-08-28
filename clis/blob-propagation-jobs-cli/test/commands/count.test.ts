@@ -66,19 +66,6 @@ describe("Count command", () => {
         },
         queueName: "postgres-worker",
       },
-      {
-        count: {
-          active: 0,
-          completed: 0,
-          delayed: 0,
-          failed: 0,
-          paused: 0,
-          prioritized: 0,
-          waiting: 0,
-          ["waiting-children"]: 0,
-        },
-        queueName: "finalizer-worker",
-      },
     ]);
   });
 });

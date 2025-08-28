@@ -3,7 +3,7 @@ import type commandLineUsage from "command-line-usage";
 import { STORAGE_WORKER_NAMES } from "@blobscan/blob-propagator";
 import dayjs from "@blobscan/dayjs";
 
-const QUEUE_NAMES = ["FINALIZER", ...Object.keys(STORAGE_WORKER_NAMES)];
+const QUEUE_NAMES = Object.keys(STORAGE_WORKER_NAMES);
 
 function isPositiveInteger(value: string | number) {
   const number = Number(value);

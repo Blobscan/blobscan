@@ -104,7 +104,7 @@ describe("BlobStorageManager", () => {
     });
 
     it("should return false if it does not", () => {
-      expect(blobStorageManager.hasStorage("FILE_SYSTEM")).toBeFalsy();
+      expect(blobStorageManager.hasStorage("WEAVEVM")).toBeFalsy();
     });
   });
 
@@ -143,7 +143,7 @@ describe("BlobStorageManager", () => {
         async () => {
           await blobStorageManager.getBlobByReferences({
             reference: "0x6d6f60xa123bc3245cde6b2d64617461",
-            storage: "FILE_SYSTEM",
+            storage: "WEAVEVM",
           });
         },
         BlobStorageManagerError

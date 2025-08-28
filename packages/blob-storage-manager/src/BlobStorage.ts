@@ -13,20 +13,12 @@ export interface GetBlobOpts {
 }
 
 export abstract class BlobStorage {
-  chainId: number;
-  name: BlobStorageName;
-
-  constructor(name: BlobStorageName, chainId: number) {
-    this.name = name;
-    this.chainId = chainId;
-  }
+  constructor(readonly name: BlobStorageName, readonly chainId: number) {}
 
   protected abstract _healthCheck(): Promise<void>;
   protected abstract _getBlob(uri: string, opts?: GetBlobOpts): Promise<string>;
   protected abstract _storeBlob(hash: string, data: Buffer): Promise<string>;
   protected abstract _removeBlob(uri: string): Promise<void>;
-
-  abstract getBlobUri(hash: string): string | undefined;
 
   protected async healthCheck(): Promise<"OK"> {
     try {
@@ -70,9 +62,10 @@ export abstract class BlobStorage {
   async storeBlob(hash: string, data: string | Buffer): Promise<string> {
     try {
       const normalizedData = normalizeBlobData(data);
-      const res = await this._storeBlob(hash, normalizedData);
 
-      return res;
+      const uri = await this._storeBlob(hash, normalizedData);
+
+      return uri;
     } catch (err) {
       throw new BlobStorageError(
         this.constructor.name,
@@ -80,5 +73,13 @@ export abstract class BlobStorage {
         err as Error
       );
     }
+  }
+
+  getBlobUri(versionedHash: string): string {
+    throw new BlobStorageError(
+      this.constructor.name,
+      `Failed to get blob uri for blob with versioned hash "${versionedHash}"`,
+      new Error(`"getBlobUri" not implemented`)
+    );
   }
 }

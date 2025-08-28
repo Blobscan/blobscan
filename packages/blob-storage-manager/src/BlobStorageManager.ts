@@ -87,9 +87,10 @@ export class BlobStorageManager {
   async getBlobByHash(hash: string) {
     const operations = this.#blobStorages
       .map<GetBlobOperation | undefined>((storage) => {
-        const blobUri = storage.getBlobUri(hash);
-
-        if (!blobUri) {
+        let blobUri: string;
+        try {
+          blobUri = storage.getBlobUri(hash);
+        } catch (err_) {
           return;
         }
 

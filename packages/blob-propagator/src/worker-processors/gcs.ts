@@ -3,12 +3,4 @@ import { propagateBlob } from "../utils";
 
 export const gcsProcessor: BlobPropagationWorkerProcessor =
   (processorParams) => (job) =>
-    propagateBlob(
-      {
-        ...job.data,
-        // TODO: Temporary hard-coded mode.
-        blobRetentionMode: "eager",
-      },
-      "GOOGLE",
-      processorParams
-    );
+    propagateBlob(job.data, processorParams);

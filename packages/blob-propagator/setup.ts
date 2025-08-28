@@ -4,13 +4,12 @@ import { afterAll } from "vitest";
 
 import { env } from "@blobscan/env";
 
-import { FINALIZER_WORKER_NAME, STORAGE_WORKER_NAMES } from "./src/constants";
+import { STORAGE_WORKER_NAMES } from "./src/constants";
 
 afterAll(async () => {
   const queues = [
     STORAGE_WORKER_NAMES["GOOGLE"],
     STORAGE_WORKER_NAMES["POSTGRES"],
-    FINALIZER_WORKER_NAME,
   ].map(
     (queueName) =>
       new Queue(queueName, {

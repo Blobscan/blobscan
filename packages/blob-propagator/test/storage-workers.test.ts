@@ -1,6 +1,5 @@
 import {
   afterAll,
-  afterEach,
   beforeAll,
   beforeEach,
   describe,
@@ -9,11 +8,7 @@ import {
   vi,
 } from "vitest";
 
-import type {
-  BlobStorage,
-  BlobStorageManager,
-  SwarmStorage,
-} from "@blobscan/blob-storage-manager";
+import type { BlobStorage, SwarmStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
 import type {
   BlobscanPrismaClient,
@@ -29,23 +24,28 @@ import type {
   BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
 } from "../src/types";
-import { createBlobStorageManager, createStorageFromEnv } from "./helpers";
+import { createBlobStorages } from "./helpers";
 
 function runWorkerTests(
   storageName: BlobStorageName,
   getWorkerParams: () => Promise<BlobPropagationWorkerParams>,
   blob: { versionedHash: string; data: string; blobUri: string }
 ) {
-  const job = {
-    data: {
-      versionedHash: blob.versionedHash,
-    },
-  } as BlobPropagationJob;
-
   describe(`when running the ${storageName} worker`, () => {
     let storageWorkerProcessor: ReturnType<BlobPropagationWorkerProcessor>;
-    let blobStorageManager: BlobStorageManager;
+    let targetBlobStorage: BlobStorage;
     let prisma: BlobscanPrismaClient;
+    let job: BlobPropagationJob;
+    const dbBlob: DBBlob = {
+      versionedHash: blob.versionedHash,
+      commitment: "test-commitment",
+      proof: "test-proof",
+      insertedAt: new Date(),
+      size: 1,
+      usageSize: 1,
+      updatedAt: new Date(),
+      firstBlockNumber: null,
+    };
 
     beforeEach(async () => {
       const workerParams = await getWorkerParams();
@@ -60,20 +60,49 @@ function runWorkerTests(
 
       storageWorkerProcessor = storageWorker(workerParams);
 
-      blobStorageManager = workerParams.blobStorageManager;
+      targetBlobStorage = workerParams.targetBlobStorage;
+
+      const blobUri = await workerParams.primaryBlobStorage.storeBlob(
+        blob.versionedHash,
+        blob.data
+      );
+
+      job = {
+        data: {
+          blobUri: blobUri,
+          versionedHash: blob.versionedHash,
+        },
+      } as BlobPropagationJob;
+
       prisma = workerParams.prisma;
+
+      await prisma.blob.create({
+        data: dbBlob,
+      });
+
+      return async () => {
+        await workerParams.primaryBlobStorage.removeBlob(blobUri);
+
+        await prisma.blobDataStorageReference.deleteMany({
+          where: {
+            blobHash: blob.versionedHash,
+          },
+        });
+
+        await prisma.blob.delete({
+          where: {
+            versionedHash: dbBlob.versionedHash,
+          },
+        });
+      };
     });
 
     it(`propagate the blob to the ${storageName} storage correctly`, async () => {
       await storageWorkerProcessor(job);
 
-      const expectedResult = { storage: storageName, data: blob.data };
-      const result = await blobStorageManager.getBlobByReferences({
-        reference: blob.blobUri,
-        storage: storageName,
-      });
+      const result = await targetBlobStorage.getBlob(blob.blobUri);
 
-      expect(result).toEqual(expectedResult);
+      expect(result).toEqual(blob.data);
     });
 
     it(`should store the ${storageName} blob storage reference in the db once propagated correctly`, async () => {
@@ -111,11 +140,12 @@ function runWorkerTests(
     });
 
     testValidError(
-      "should throw an error if the blob data to be propagated wasn't found in any of the other storages",
+      "should throw an error if the blob wasn't found in the primary blob storage",
       async () => {
         const versionedHash = "missingBlobDataFileVersionedHash";
         const jobWithMissingBlobData = {
           data: {
+            blobUri: "missingBlobDataFileVersionedHash",
             versionedHash,
           },
         } as BlobPropagationJob;
@@ -129,89 +159,55 @@ function runWorkerTests(
     );
   });
 }
-describe("Storage Workers", () => {
-  let tmpBlobStorage: BlobStorage;
+describe("Storage Worker", () => {
+  let primaryBlobStorage: BlobStorage;
   const blobVersionedHash = "test-blob-versioned-hash";
   const blobData = "0x1234abcdeff123456789ab34223a4b2c2e";
-  let bsm: BlobStorageManager;
-
-  const blob: DBBlob = {
-    versionedHash: blobVersionedHash,
-    commitment: "test-commitment",
-    proof: "test-proof",
-    insertedAt: new Date(),
-    size: 1,
-    usageSize: 1,
-    updatedAt: new Date(),
-    firstBlockNumber: null,
-  };
+  let blobStorages: BlobStorage[];
 
   const mockedSwarmBlobUri = "0xswarm-reference";
 
   beforeAll(async () => {
-    bsm = await createBlobStorageManager();
+    const allBlobStorages = await createBlobStorages();
 
-    const tmpStorage = await createStorageFromEnv(
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
+    primaryBlobStorage = allBlobStorages.find(
+      (b) => b.name === env.PRIMARY_BLOB_STORAGE
+    ) as BlobStorage;
+    blobStorages = allBlobStorages.filter(
+      (b) => b.name !== env.PRIMARY_BLOB_STORAGE
     );
-
-    bsm.addStorage(tmpStorage);
-
-    tmpBlobStorage = tmpStorage;
   });
 
   afterAll(() => {
     vi.clearAllMocks();
   });
 
-  beforeEach(async () => {
-    await tmpBlobStorage.storeBlob(blobVersionedHash, blobData);
-    await prisma.blob.create({
-      data: blob,
-    });
-  });
-
-  afterEach(async () => {
-    const blobUri = tmpBlobStorage.getBlobUri(blobVersionedHash);
-
-    if (blobUri) {
-      await tmpBlobStorage.removeBlob(blobUri);
-    }
-
-    await prisma.blobDataStorageReference.deleteMany({
-      where: {
-        blobHash: blobVersionedHash,
-      },
-    });
-    await prisma.blob.delete({
-      where: {
-        versionedHash: blobVersionedHash,
-      },
-    });
-  });
-
   const storages: { storage: BlobStorageName; uri: string }[] = [
-    {
-      storage: "POSTGRES",
-      uri: blobVersionedHash,
-    },
     {
       storage: "GOOGLE",
       uri: "1/st/-b/lo/st-blob-versioned-hash.bin",
     },
     {
-      storage: "FILE_SYSTEM",
-      uri: "test-blobscan-blobs/1/st/-b/lo/st-blob-versioned-hash.bin",
+      storage: "S3",
+      uri: "1/st/-b/lo/st-blob-versioned-hash.bin",
     },
   ];
 
-  storages.forEach(({ storage, uri }) => {
+  storages.forEach(({ storage: storageName, uri }) => {
     runWorkerTests(
-      storage,
+      storageName,
       () => {
+        const targetBlobStorage = blobStorages.find(
+          (storage) => storage.name === storageName
+        );
+
+        if (!targetBlobStorage) {
+          throw new Error(`Blob storage ${storageName} not found`);
+        }
+
         return Promise.resolve({
-          blobStorageManager: bsm,
-          temporaryBlobStorage: tmpBlobStorage,
+          targetBlobStorage,
+          primaryBlobStorage,
           prisma,
         });
       },
@@ -226,26 +222,21 @@ describe("Storage Workers", () => {
   runWorkerTests(
     "SWARM",
     () => {
-      vi.spyOn(bsm, "getStorage").mockImplementation((storage) => {
-        if (storage === "SWARM") {
-          return {
-            getBlob: async (uri) => {
-              if (uri === mockedSwarmBlobUri) {
-                return Promise.resolve(blobData);
-              }
-
-              return Promise.reject(new Error("Blob not found"));
-            },
-            storeBlob: async (_, __) => {
-              return mockedSwarmBlobUri;
-            },
-          } as SwarmStorage;
-        }
-      });
-
       return Promise.resolve({
-        blobStorageManager: bsm,
-        temporaryBlobStorage: tmpBlobStorage,
+        targetBlobStorage: {
+          name: "SWARM",
+          getBlob: async (uri) => {
+            if (uri === mockedSwarmBlobUri) {
+              return Promise.resolve(blobData);
+            }
+
+            return Promise.reject(new Error("Blob not found"));
+          },
+          storeBlob: async (_, __) => {
+            return mockedSwarmBlobUri;
+          },
+        } as SwarmStorage,
+        primaryBlobStorage,
         prisma,
       });
     },

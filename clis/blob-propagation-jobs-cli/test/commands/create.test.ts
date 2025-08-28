@@ -53,7 +53,6 @@ describe("Create command", () => {
     const consoleLogSpy = vi
       .spyOn(console, "log")
       .mockImplementation(() => void {});
-
     return () => {
       consoleLogSpy.mockRestore();
     };
@@ -160,7 +159,7 @@ describe("Create command", () => {
     expect(
       create(["-q", "invalid-storage-name"])
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      `"Invalid queue 'invalid-storage-name'. Valid values are finalizer, file_system, google, postgres, swarm, s3."`
+      `"Invalid queue 'invalid-storage-name'. Valid values are google, postgres, swarm, s3."`
     );
   });
 

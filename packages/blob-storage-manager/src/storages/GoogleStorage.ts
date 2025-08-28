@@ -67,14 +67,14 @@ export class GoogleStorage extends BlobStorage {
   }
 
   protected async _getBlob(uri: string, { fileType }: GetBlobOpts) {
-    const res = await this.getBlobFile(uri).download();
+    const res = await this._getBlobFile(uri).download();
     const [data] = res;
 
     return fileType === "text" ? res.toString() : bytesToHex(data);
   }
 
   protected async _removeBlob(uri: string): Promise<void> {
-    const blobFile = this.getBlobFile(uri);
+    const blobFile = this._getBlobFile(uri);
     const [blobExists] = await blobFile.exists();
 
     if (blobExists) {
@@ -82,26 +82,28 @@ export class GoogleStorage extends BlobStorage {
     }
   }
 
-  protected async _storeBlob(
-    versionedHash: string,
-    data: Buffer
-  ): Promise<string> {
-    const blobUri = this.getBlobUri(versionedHash);
+  protected async _storeBlob(hash: string, data: Buffer): Promise<string> {
+    const uri = this.getBlobUri(hash);
 
-    await this._storageClient
-      .bucket(this._bucketName)
-      .file(blobUri)
-      .save(data, {
-        /**
-         * Sends the whole file in a single HTTP request. It makes the upload faster and simpler.
-         * Recommended for files < 5MB
-         */
-        //
-        resumable: false,
-        contentType: "application/octet-stream",
-      });
+    await this._uploadBlob(uri, data);
 
-    return blobUri;
+    return uri;
+  }
+
+  protected _getBlobFile(uri: string) {
+    return this._storageClient.bucket(this._bucketName).file(uri);
+  }
+
+  protected _uploadBlob(uri: string, data: Buffer) {
+    return this._storageClient.bucket(this._bucketName).file(uri).save(data, {
+      /**
+       * Sends the whole file in a single HTTP request. It makes the upload faster and simpler.
+       * Recommended for files < 5MB
+       */
+      //
+      resumable: false,
+      contentType: "application/octet-stream",
+    });
   }
 
   getBlobUri(hash: string) {
@@ -109,10 +111,6 @@ export class GoogleStorage extends BlobStorage {
       4,
       6
     )}/${hash.slice(6, 8)}/${hash.slice(2)}.bin`;
-  }
-
-  protected getBlobFile(uri: string) {
-    return this._storageClient.bucket(this._bucketName).file(uri);
   }
 
   static async create(config: GoogleStorageConfig) {

@@ -1,6 +1,5 @@
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import {
-  FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
   S3Storage,
@@ -12,7 +11,7 @@ import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { env } from "@blobscan/env";
 import type { Environment } from "@blobscan/env";
 
-import { logger } from "../logger";
+import { logger } from "./logger";
 
 function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
@@ -79,12 +78,6 @@ export async function createStorageFromEnv(
         prisma,
       });
     }
-    case BlobStorageName.FILE_SYSTEM: {
-      return FileSystemStorage.create({
-        chainId,
-        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
-      });
-    }
     case BlobStorageName.WEAVEVM: {
       if (!env.WEAVEVM_STORAGE_API_BASE_URL) {
         throw new Error(
@@ -114,12 +107,18 @@ export async function createBlobStorages() {
 
   for (const result of results) {
     if (result.status === "rejected") {
-      logger.warn(result.reason);
+      logger.error(result.reason);
 
       continue;
     }
 
     storages.push(result.value);
+  }
+
+  const failedStorages = results.some((r) => r.status === "rejected");
+
+  if (failedStorages) {
+    throw new Error("Failed to create all enabled blob storages");
   }
 
   return storages;

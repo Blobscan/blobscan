@@ -6,8 +6,8 @@ exports[`WeavevmStorage > should fail when trying to parse an invalid blob retri
 
 exports[`WeavevmStorage > should fail when trying to remove a blob 1`] = `"WeaveVMStorageMock failed: Failed to remove blob with uri \\"blobHash\\""`;
 
-exports[`WeavevmStorage > should fail when trying to remove a blob 2`] = `[Error: Blob removal operation is not allowed for WeaveVM storage]`;
+exports[`WeavevmStorage > should fail when trying to remove a blob 2`] = `[Error: "_removeBlob" operation is not allowed]`;
 
 exports[`WeavevmStorage > should fail when trying to store a blob 1`] = `"WeaveVMStorageMock failed: Failed to store blob with hash \\"0x01aaeb1f6ac28c7dc38569bced04f3c7d8b8d16ee2f1818b5b15b2004a5a04eb\\""`;
 
-exports[`WeavevmStorage > should fail when trying to store a blob 2`] = `[Error: Blob storage operation is not allowed for WeaveVM storage]`;
+exports[`WeavevmStorage > should fail when trying to store a blob 2`] = `[Error: "storeBlob" operation is not allowed]`;

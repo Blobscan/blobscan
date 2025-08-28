@@ -1,17 +1,20 @@
+import { PRIORITY_LIMIT } from "bullmq";
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
+import ora from "ora";
 
-import { createBlobStorageJob } from "@blobscan/blob-propagator";
+import {
+  computeJobPriority,
+  createBlobStorageJob,
+} from "@blobscan/blob-propagator";
 import type {
   BlobPropagationJob,
   BlobPropagationQueue,
 } from "@blobscan/blob-propagator";
-import dayjs from "@blobscan/dayjs";
-import type { Prisma } from "@blobscan/db";
+import { Prisma } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
 
-import type { QueueHumanName } from "../Context";
+import type { HumanQueueName } from "../Context";
 import { context } from "../context-instance";
 import type { Command } from "../types";
 import {
@@ -22,11 +25,9 @@ import {
   queuesOptionDef,
 } from "../utils";
 
-// TODO: Need to convert it to number explicitly due to ci tests failing
-// with the following error:
-const PRISMA_BATCH_OPERATIONS_MAX_SIZE = parseInt(
-  env.PRISMA_BATCH_OPERATIONS_MAX_SIZE.toString()
-);
+let spinner = ora().start();
+
+const JOB_BATCH_SIZE = 1_000;
 
 const createCommandOptDefs: commandLineArgs.OptionDefinition[] = [
   helpOptionDef,
@@ -68,86 +69,70 @@ export const createCommandUsage = commandLineUsage([
   },
 ]);
 
-function createBlobPropagationJobs(
+async function createBlobPropagationJobs(
   storageQueues: BlobPropagationQueue[],
-  blobHashes: string[]
+  blobs: { blobHash: string; blockNumber: number }[],
+  highestBlockNumber?: number
 ) {
-  return Promise.all(
-    storageQueues.map((q) => {
-      const storageJobs = blobHashes.map((hash) =>
-        createBlobStorageJob(q.name, hash)
+  if (!blobs.length) {
+    return 0;
+  }
+
+  let totalJobsCreated = 0;
+  let queueIndex = 0;
+
+  for (const queue of storageQueues) {
+    const queueName = queue.name;
+    spinner = spinner.start(`[${queueName}]: Creating ${blobs.length} jobs…`);
+    const jobs = blobs.map(({ blobHash, blockNumber }) =>
+      createBlobStorageJob(queue.name, blobHash, blobHash, {
+        priority: computeJobPriority({
+          blobBlockNumber: blockNumber,
+          highestBlockNumber,
+        }),
+      })
+    );
+
+    const batches = Math.ceil(jobs.length / JOB_BATCH_SIZE);
+
+    let queueJobsCreated = 0;
+
+    for (let i = 0; i < batches; i++) {
+      const batchFrom = i * JOB_BATCH_SIZE;
+      const batchTo = batchFrom + Math.min(jobs.length, JOB_BATCH_SIZE);
+      const batchJobs = jobs.slice(batchFrom, batchTo);
+
+      spinner.start(
+        `[${queueName} ${queueIndex + 1}/${storageQueues.length} queues ${
+          i + 1
+        }/${batches} batches]: Creating ${batchJobs.length}…`
       );
 
-      return q.addBulk(storageJobs as BlobPropagationJob[]);
-    })
-  );
-}
+      const createdJobs = await queue.addBulk(
+        batchJobs as BlobPropagationJob[]
+      );
 
-const blockSelect = {
-  number: true,
-} satisfies Prisma.BlockSelect;
+      queueJobsCreated += createdJobs.length;
+    }
 
-type BlockPayload = Prisma.BlockGetPayload<{
-  select: typeof blockSelect;
-}>;
-
-async function findNearestBlock({
-  slotOrDate,
-  limit,
-}: {
-  slotOrDate?: string | number;
-  limit?: "lower" | "upper";
-} = {}) {
-  console.log(
-    `Finding nearest ${limit} block${slotOrDate ? ` for ${slotOrDate}` : ""}…`
-  );
-  let block: BlockPayload | null = null;
-
-  const isLower = limit === "lower";
-  const operator = limit ? (isLower ? "gte" : "lte") : "equals";
-  const sort = limit ? (isLower ? "asc" : "desc") : "asc";
-
-  if (!isNaN(Number(slotOrDate))) {
-    block = await prisma.block.findFirst({
-      select: blockSelect,
-      where: {
-        slot: {
-          [operator]: Number(slotOrDate),
-        },
-      },
-      orderBy: {
-        slot: sort,
-      },
-    });
-  } else if (slotOrDate && dayjs(slotOrDate).utc().isValid()) {
-    const date = dayjs(slotOrDate).utc();
-
-    block = await prisma.block.findFirst({
-      select: blockSelect,
-      where: {
-        timestamp: {
-          [operator]: date.format(),
-        },
-      },
-      orderBy: {
-        timestamp: sort,
-      },
-    });
+    totalJobsCreated += queueJobsCreated;
+    queueIndex++;
   }
 
-  if (!block) {
-    const lowestUppestBlock = await prisma.block.findFirst({
-      select: blockSelect,
-      orderBy: {
-        number: sort,
-      },
-    });
+  spinner.succeed(
+    `${totalJobsCreated}) jobs created for queues ${storageQueues
+      .map((q) => q.name)
+      .join(", ")}`
+  );
 
-    block = lowestUppestBlock;
-  }
-
-  return block?.number;
+  return totalJobsCreated;
 }
+
+type BlobsQueryResult = {
+  blobHash: string;
+  blockNumber: number;
+  blockTimestamp: Date;
+}[];
 
 export const create: Command = async function (argv) {
   const {
@@ -163,7 +148,7 @@ export const create: Command = async function (argv) {
   }) as {
     blobHash?: string[];
     help?: boolean;
-    queue?: QueueHumanName[];
+    queue?: HumanQueueName[];
     fromDate?: string;
     toDate?: string;
     fromBlock?: number;
@@ -179,23 +164,29 @@ export const create: Command = async function (argv) {
   const storageQueues = queueNames
     ? context.getQueuesOrThrow(queueNames)
     : context.getAllStorageQueues();
-  const storageQueueNames = storageQueues.map((q) => q.name).join(", ");
-  let blobHashes: string[];
 
   if (rawBlobHashes?.length) {
-    blobHashes = [...new Set(rawBlobHashes.map((blobHash) => blobHash))];
+    spinner.start(`Checking blob hashes exist…`);
+    const uniqueBlobHashes = [
+      ...new Set(rawBlobHashes.map((blobHash) => blobHash)),
+    ];
 
-    const dbBlobs = await prisma.blob.findMany({
+    const dbBlobs = await prisma.blobsOnTransactions.findMany({
+      distinct: "blobHash",
+      select: {
+        blockNumber: true,
+        blobHash: true,
+      },
       where: {
-        versionedHash: {
-          in: blobHashes,
+        blobHash: {
+          in: uniqueBlobHashes,
         },
       },
     });
 
-    if (dbBlobs.length !== blobHashes.length) {
-      const notFoundBlobHashes = blobHashes.filter(
-        (hash) => !dbBlobs.find((b) => b.versionedHash === hash)
+    if (dbBlobs.length !== uniqueBlobHashes.length) {
+      const notFoundBlobHashes = uniqueBlobHashes.filter(
+        (hash) => !dbBlobs.find((b) => b.blobHash === hash)
       );
 
       throw new Error(
@@ -205,102 +196,131 @@ export const create: Command = async function (argv) {
       );
     }
 
-    console.log(`Creating jobs for storage queues: ${storageQueueNames}…`);
+    spinner = spinner.start(`Creating ${dbBlobs.length} jobs in every queue…`);
 
-    const jobs = await createBlobPropagationJobs(storageQueues, blobHashes);
+    const createdJobsCount = await createBlobPropagationJobs(
+      storageQueues,
+      dbBlobs
+    );
 
-    console.log(`${jobs.length} jobs created`);
+    spinner = spinner.succeed(`${createdJobsCount} jobs created!`);
 
     return;
   }
 
-  let fromBlock: number;
-  let toBlock: number;
-
-  if (fromBlockArg) {
-    fromBlock = fromBlockArg;
-  } else {
-    const nearestBlock = await findNearestBlock({
-      slotOrDate: fromDateArg,
-      limit: "lower",
-    });
-
-    if (!nearestBlock) {
-      console.log("Skipping job creation as database is empty.");
-      return;
-    }
-
-    fromBlock = nearestBlock;
-  }
-
-  if (toBlockArg) {
-    toBlock = toBlockArg;
-  } else {
-    const nearestBlock = await findNearestBlock({
-      slotOrDate: toDateArg,
-      limit: "upper",
-    });
-
-    if (!nearestBlock) {
-      console.log("Skipping job creation as database is empty.");
-      return;
-    }
-
-    toBlock = nearestBlock;
-  }
-
-  console.log(
-    `Creating propagation jobs for blobs between blocks ${fromBlock} and ${toBlock} for storage queues: ${storageQueueNames}…`
+  spinner = spinner.start(
+    "Fetching highest block number for computing job priorities…"
   );
 
-  let batchFromBlock = fromBlock,
-    batchToBlock = Math.min(
-      fromBlock + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-      toBlock
-    );
+  const highestBlock = await prisma.block.findFirstOrThrow({
+    select: {
+      number: true,
+    },
+    take: 1,
+    orderBy: {
+      number: "desc",
+    },
+  });
+
+  spinner = spinner.info(
+    `Highest block: ${highestBlock.number}. There will be up to ${Math.floor(
+      highestBlock.number / PRIORITY_LIMIT
+    )} jobs with the same priority`
+  );
+
   let totalJobsCreated = 0;
-  let blobVersionedHashes = [];
 
-  do {
-    const dbBlobs = await prisma.blobsOnTransactions.findMany({
-      select: {
-        blockNumber: true,
-        blobHash: true,
-      },
-      where: {
-        blockNumber: {
-          lte: batchToBlock,
-          gte: batchFromBlock,
-        },
-      },
-      orderBy: {
-        blockNumber: "asc",
-      },
-    });
+  let batchDBBlobs: BlobsQueryResult = [];
+  const selectedBlobStorages = storageQueues?.map(
+    (q) => q.name.split("-")[0] as HumanQueueName
+  );
 
-    console.log(
-      `Blocks ${batchFromBlock} - ${batchToBlock}: fetched ${dbBlobs.length} blobs`
-    );
+  let filterClause: Prisma.Sql;
+  let orderByClause: Prisma.Sql;
 
-    blobVersionedHashes = [...new Set(dbBlobs.map((b) => b.blobHash))];
+  if (!selectedBlobStorages?.length) {
+    throw new Error(`No storage queue enabled where to create the jobs in`);
+  }
 
-    const jobs = await createBlobPropagationJobs(
-      storageQueues,
-      blobVersionedHashes
-    );
+  const blobStorageSqls = selectedBlobStorages
+    ? selectedBlobStorages.map(
+        (s) => Prisma.sql`r.storage = ${s.toLowerCase()}::blob_storage`
+      )
+    : [];
 
-    console.log(
-      `Block ${batchFromBlock} - ${batchToBlock}: ${jobs.length} jobs created`
-    );
+  const blobStorageClause = Prisma.sql`
+   NOT EXISTS (
+      SELECT 1
+      FROM blob_data_storage_reference r
+      WHERE ${Prisma.join(
+        [
+          Prisma.sql`r.blob_hash = b.blob_hash`,
+          Prisma.join(blobStorageSqls, " AND "),
+        ],
+        " AND "
+      )}
+    )
+  `;
 
-    batchFromBlock = batchToBlock + 1;
-    batchToBlock = Math.min(
-      batchToBlock + PRISMA_BATCH_OPERATIONS_MAX_SIZE,
-      toBlock
-    );
+  if (fromBlockArg || toBlockArg) {
+    if (fromBlockArg && toBlockArg) {
+      filterClause = Prisma.sql`b.block_number BETWEEN ${fromBlockArg} AND ${toBlockArg}`;
+    } else if (fromBlockArg) {
+      filterClause = Prisma.sql`b.block_number >= ${fromBlockArg}`;
+    } else {
+      filterClause = Prisma.sql`b.block_number <= ${toBlockArg}`;
+    }
 
-    totalJobsCreated += blobVersionedHashes.length;
-  } while (blobVersionedHashes.length && batchFromBlock <= toBlock);
+    orderByClause = Prisma.sql`b.block_number DESC`;
+  } else if (fromDateArg || toDateArg) {
+    const fromDateSql = Prisma.sql`${fromDateArg}::timestamp`;
+    const toDateSql = Prisma.sql`${toDateArg}::timestamp`;
 
-  console.log(`Total jobs created: ${totalJobsCreated}`);
+    if (fromDateArg && toDateArg) {
+      filterClause = Prisma.sql`b.block_timestamp BETWEEN ${fromDateSql} AND ${toDateSql}`;
+    } else if (fromDateArg) {
+      filterClause = Prisma.sql`b.block_timestamp >= ${fromDateSql}`;
+    } else {
+      filterClause = Prisma.sql`b.block_timestamp <= ${toDateSql}`;
+    }
+
+    orderByClause = Prisma.sql`b.block_timestamp DESC`;
+  } else {
+    filterClause = Prisma.sql`b.block_number <= ${highestBlock.number}`;
+    orderByClause = Prisma.sql`b.block_number DESC`;
+  }
+
+  const lastBatchBlob = batchDBBlobs[batchDBBlobs.length - 1];
+  const whereClause = Prisma.join([blobStorageClause, filterClause], " AND ");
+
+  spinner = spinner.start(
+    `Fetching blobs from db${
+      lastBatchBlob
+        ? ` starting from ${lastBatchBlob.blockNumber} (${lastBatchBlob.blockTimestamp})`
+        : ""
+    }…`
+  );
+
+  batchDBBlobs = await prisma.$queryRaw<BlobsQueryResult>`
+      SELECT b.blob_hash AS "blobHash", b.block_number AS "blockNumber", b.block_timestamp AS "blockTimestamp"
+      FROM blobs_on_transactions b
+      WHERE
+        ${whereClause}
+      ORDER BY
+        ${orderByClause}
+    `;
+
+  spinner = spinner.info(`${batchDBBlobs.length} blobs found`);
+
+  const jobsCreatedCount = await createBlobPropagationJobs(
+    storageQueues,
+    batchDBBlobs,
+    highestBlock.number
+  );
+
+  totalJobsCreated += jobsCreatedCount;
+
+  spinner = spinner.succeed(
+    `${totalJobsCreated} jobs created to propagate ${batchDBBlobs.length} in every queue!`
+  );
 };

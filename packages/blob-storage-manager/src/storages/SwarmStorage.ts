@@ -110,10 +110,6 @@ export class SwarmStorage extends BlobStorage {
     return response.reference.toHex();
   }
 
-  getBlobUri(_: string) {
-    return undefined;
-  }
-
   async #performBeeAPICall<T>(call: () => T) {
     try {
       const res = await call();

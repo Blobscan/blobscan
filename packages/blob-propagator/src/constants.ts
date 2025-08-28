@@ -13,7 +13,7 @@ export const STORAGE_WORKER_NAMES = Object.values(BlobStorageName)
     {} as Record<BlobStorageName, string>
   );
 
-export const FINALIZER_WORKER_NAME = "finalizer-worker";
+export const RECONCILIATOR_WORKER_NAME = "reconciliator-worker";
 
 export const DEFAULT_JOB_OPTIONS: Omit<JobsOptions, "repeat"> = {
   attempts: 3,
