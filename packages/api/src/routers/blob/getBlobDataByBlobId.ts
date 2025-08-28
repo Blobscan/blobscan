@@ -1,5 +1,4 @@
 import { TRPCError } from "@trpc/server";
-import fs from "fs";
 
 import {
   blobVersionedHashSchema,
