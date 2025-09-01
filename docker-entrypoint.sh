@@ -20,11 +20,25 @@ _main() {
 	elif [ "$1" = 'api' ]; then
 		apply_prisma_migrations --schema schema.prisma
 		node /app/index.js
+	elif [ "$1" = 'blob-propagation' ]; then
+		shift
+		cd /app/clis/blob-propagation-jobs-cli
+		node dist/main.js "$@"
+	elif [ "$1" = 'stats-aggregation' ]; then
+		shift
+		cd /app/clis/stats-aggregation-cli
+		node dist/main.js "$@"
 	elif [ "$1" = '--help' ]; then
 		echo "## Blobscan ##"
 		echo ""
 		echo "Usage:"
-		echo "$0 [web|api]"
+		echo "$0 [web|api|blob-propagation|stats-aggregation]"
+		echo ""
+		echo "Commands:"
+		echo "  web                    Start the web server"
+		echo "  api                    Start the API server"
+		echo "  blob-propagation       Run blob propagation CLI commands"
+		echo "  stats-aggregation      Run stats aggregation CLI commands"
 	else
 		echo "Invalid command: $1"
 		exit 1
