@@ -148,7 +148,7 @@ describe("Blockchain sync state route", async () => {
           await authorizedSyncStateCaller.updateState(newBlockchainSyncState);
 
           const afterBlockchainSyncState =
-            await await authorizedContext.prisma.blockchainSyncState.findFirst();
+            await authorizedContext.prisma.blockchainSyncState.findFirst();
 
           expect(afterBlockchainSyncState).toMatchObject(
             newBlockchainSyncState
