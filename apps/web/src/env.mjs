@@ -41,6 +41,7 @@ export const env = createEnv({
     BLOB_DATA_API_KEY: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     METRICS_ENABLED: booleanSchema.default("false"),
+    REDIS_URI: z.string().default("redis://localhost:6379"),
     TRACES_ENABLED: booleanSchema.default("false"),
     ...clientEnvVars,
   },
@@ -58,6 +59,7 @@ export const env = createEnv({
     BLOB_DATA_API_KEY: process.env.BLOB_DATA_API_KEY,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,
+    REDIS_URI: process.env.REDIS_URI,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
