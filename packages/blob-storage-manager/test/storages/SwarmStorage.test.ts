@@ -4,6 +4,7 @@ import { prisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 import { fixtures, testValidError } from "@blobscan/test";
 
+import { BlobStorageError } from "../../src";
 import { SwarmStorage } from "../../src/storages/SwarmStorage";
 import type { SwarmStorageConfig } from "../../src/storages/SwarmStorage";
 import { NEW_BLOB_DATA, NEW_BLOB_HASH, SWARM_REFERENCE } from "../fixtures";
@@ -52,15 +53,18 @@ describe("SwarmStorage", () => {
     );
   });
 
-  it("should return undefined when trying to get an uri given a blob hash", () => {
-    const uri = storage.getBlobUri("blob-hash");
-
-    expect(uri).toBeUndefined();
-  });
-
   it("should return 'OK' if storage is healthy", async () => {
     await expect(storage.healthCheck()).resolves.toBe("OK");
   });
+
+  testValidError(
+    "should throw an error when trying to get an uri",
+    () => {
+      storage.getBlobUri("blob-hash");
+    },
+    BlobStorageError,
+    { checkCause: true }
+  );
 
   testValidError(
     "should throw a valid error if bee client is not healthy",

@@ -113,17 +113,21 @@ export class S3Storage extends BlobStorage {
   ): Promise<string> {
     const blobUri = this.getBlobUri(versionedHash);
 
+    await this._uploadBlob(blobUri, data);
+
+    return blobUri;
+  }
+
+  protected async _uploadBlob(uri: string, data: Buffer) {
     const command = new PutObjectCommand({
       Bucket: this._bucketName,
-      Key: blobUri,
+      Key: uri,
       Body: data,
       ContentType: "application/octet-stream",
       ACL: "public-read",
     });
 
     await this._s3Client.send(command);
-
-    return blobUri;
   }
 
   protected async _toBuffer(

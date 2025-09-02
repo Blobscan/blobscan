@@ -10,14 +10,25 @@ import {
 
 const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
-const blobStorageSchema = z.enum([
-  "FILE_SYSTEM",
-  "GOOGLE",
-  "POSTGRES",
-  "SWARM",
-  "S3",
-  "WEAVEVM",
-] as const);
+const BLOB_STORAGE = ["GOOGLE", "POSTGRES", "SWARM", "S3", "WEAVEVM"] as const;
+const blobStorageSchema = z.enum(BLOB_STORAGE);
+
+export const blobStorageCoercionSchema = z.string().transform((value, ctx) => {
+  const result = blobStorageSchema.safeParse(value.toUpperCase());
+
+  if (!result.success) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Unknown blob storage "${value}". Supported values are: ${BLOB_STORAGE.map(
+        (s) => s.toLowerCase()
+      ).join(", ")}`,
+    });
+
+    return z.NEVER;
+  }
+
+  return result.data;
+});
 
 const networkSchema = z.enum([
   "mainnet",
@@ -90,10 +101,11 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
-      BLOB_PROPAGATOR_BLOB_RETENTION_MODE: z
-        .enum(["eager", "lazy"])
-        .default("lazy"),
-
+      BLOB_RECONCILIATOR_CRON_PATTERN: z
+        .string()
+        // Every hour
+        .default("0 * * * *"),
+      BLOB_RECONCILIATOR_BATCH_SIZE: z.coerce.number().default(200),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
@@ -137,12 +149,7 @@ export const env = createEnv({
        */
 
       // General storage settings
-      BLOB_PROPAGATOR_TMP_BLOB_STORAGE:
-        blobStorageSchema.default("FILE_SYSTEM"),
-
-      // File system storage
-      FILE_SYSTEM_STORAGE_ENABLED: booleanSchema.default("false"),
-      FILE_SYSTEM_STORAGE_PATH: z.string().default("/tmp/blobscan-blobs"),
+      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema.default("POSTGRES"),
 
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),
@@ -217,15 +224,7 @@ export const env = createEnv({
     console.log(
       `API configuration: secretKey: ${maskSensitiveData(
         env.SECRET_KEY
-      )} redisUri=${maskPassword(env.REDIS_URI)} temporalBlobStorage=${
-        env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-      } blobRetentionMode=${
-        env.BLOB_PROPAGATOR_BLOB_RETENTION_MODE
-      } completedJobsAge=${
-        env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE
-      } seconds failedJobsAge=${
-        env.BLOB_PROPAGATOR_FAILED_JOBS_AGE
-      } seconds Configuration: network=${
+      )} redisUri=${maskPassword(env.REDIS_URI)} Configuration: network=${
         env.NETWORK_NAME
       } sentryEnabled=${!!env.SENTRY_DSN_API} metrics=${
         env.METRICS_ENABLED
@@ -239,11 +238,11 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob propagator configuration: redisUri=${env.REDIS_URI} temporaryBlobStorage=${env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE}`
+      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_RECONCILIATOR_CRON_PATTERN}`
     );
 
     console.log(
-      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, file_system=${env.FILE_SYSTEM_STORAGE_ENABLED} postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
+      `Blob storage manager configuration: chainId=${env.CHAIN_ID}, postgres=${env.POSTGRES_STORAGE_ENABLED}, gcs=${env.GOOGLE_STORAGE_ENABLED}, swarm=${env.SWARM_STORAGE_ENABLED}, s3=${env.S3_STORAGE_ENABLED}, weavevm=${env.WEAVEVM_STORAGE_ENABLED}`
     );
 
     if (env.GOOGLE_STORAGE_ENABLED) {
@@ -265,15 +264,6 @@ export const env = createEnv({
             ? `swarmChunkstormUrl=${env.SWARM_CHUNKSTORM_URL}`
             : ""
         }, swarmDeferredUpload=${env.SWARM_DEFERRED_UPLOAD}`
-      );
-    }
-
-    if (
-      env.FILE_SYSTEM_STORAGE_ENABLED ||
-      env.BLOB_PROPAGATOR_TMP_BLOB_STORAGE
-    ) {
-      console.log(
-        `File system configuration: blobDirPath=${env.FILE_SYSTEM_STORAGE_PATH}`
       );
     }
 

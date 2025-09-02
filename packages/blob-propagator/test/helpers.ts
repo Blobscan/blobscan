@@ -1,11 +1,9 @@
 import {
-  FileSystemStorage,
   GoogleStorage,
   PostgresStorage,
   S3Storage,
   SwarmStorage,
   WeaveVMStorage,
-  BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
@@ -70,12 +68,6 @@ export async function createStorageFromEnv(
         prisma,
       });
     }
-    case BlobStorageName.FILE_SYSTEM: {
-      return FileSystemStorage.create({
-        chainId,
-        blobDirPath: env.FILE_SYSTEM_STORAGE_PATH,
-      });
-    }
     case BlobStorageName.WEAVEVM: {
       if (!env.WEAVEVM_STORAGE_API_BASE_URL) {
         throw new Error(
@@ -102,17 +94,11 @@ function isBlobStorageEnabled(storageName: BlobStorageName) {
   return storageEnabled === true || storageEnabled === "true";
 }
 
-function createBlobStorages() {
+export function createBlobStorages() {
   const enabledBlobStorages = Object.values(BlobStorageName).filter(
     (storageName) => isBlobStorageEnabled(storageName)
   );
   return Promise.all(
     enabledBlobStorages.map((storageName) => createStorageFromEnv(storageName))
   );
-}
-
-export async function createBlobStorageManager(): Promise<BlobStorageManager> {
-  const storages = await createBlobStorages();
-
-  return new BlobStorageManager(storages);
 }

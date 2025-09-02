@@ -8,26 +8,25 @@ nextjs:
 
 ## Blobscan Web
 
-| Variable                       | Description                                                                       | Required | Default value           |
-| ------------------------------ | --------------------------------------------------------------------------------- | -------- | ----------------------- |
-| `BLOB_DATA_API_KEY`            | API key used to authenticate requests to retrieve blob data from the Blobscan API | No       | (empty)                 |
-| `DATABASE_URL`                 | PostgreSQL database URI                                                           | Yes      | (empty)                 |
-| `DIRECT_URL`                   | Direct connection to the database used by Prisma CLI for e.g. migrations.         | Yes      | (empty)                 |
-| `FEEDBACK_WEBHOOK_URL`         | Discord webhook URL for feedback                                                  | No       | (empty)                 |
-| `PUBLIC_NETWORK_NAME`          | Network name                                                                      | No       | mainnet                 |
-| `PUBLIC_EXPLORER_BASE_URL`     | Block explorer URL                                                                | No       | `https://etherscan.io`  |
-| `PUBLIC_BEACON_BASE_URL`       | Beacon explorer URL                                                               | No       | `https://beaconcha.in/` |
-| `NEXT_PUBLIC_BLOBSCAN_RELEASE` | Blobscan version                                                                  | No       | (empty)                 |
-
-| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Enable Vercel analytics | No | `false` |
-| `PUBLIC_SENTRY_DSN_WEB` | Sentry DSN | No | (empty) |
-| `NODE_ENV` | Used in Node.js applications to specify the environment in which the application is running | No | (empty) |
-| `SENTRY_PROJECT` | Sentry project name | No | (empty) |
-| `SENTRY_ORG` | Sentry organization | No | (empty) |
-| `METRICS_ENABLED` | Expose the /metrics endpoint | No | `false` |
-| `TRACES_ENABLED` | Enable instrumentation of functions and sending traces to a collector | No | `false` |
-| `PUBLIC_POSTHOG_ID` | PostHog project API key used for tracking events and analytics | No | (empty) |
-| `PUBLIC_POSTHOG_HOST` | Host URL for the PostHog instance used for analytics tracking | No | `https://us.i.posthog.com` |
+| Variable                               | Description                                                                                 | Required | Default value              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------- | -------- | -------------------------- |
+| `BLOB_DATA_API_KEY`                    | API key used to authenticate requests to retrieve blob data from the Blobscan API           | No       | (empty)                    |
+| `DATABASE_URL`                         | PostgreSQL database URI                                                                     | Yes      | (empty)                    |
+| `DIRECT_URL`                           | Direct connection to the database used by Prisma CLI for e.g. migrations.                   | Yes      | (empty)                    |
+| `FEEDBACK_WEBHOOK_URL`                 | Discord webhook URL for feedback                                                            | No       | (empty)                    |
+| `PUBLIC_NETWORK_NAME`                  | Network name                                                                                | No       | mainnet                    |
+| `PUBLIC_EXPLORER_BASE_URL`             | Block explorer URL                                                                          | No       | `https://etherscan.io`     |
+| `PUBLIC_BEACON_BASE_URL`               | Beacon explorer URL                                                                         | No       | `https://beaconcha.in/`    |
+| `NEXT_PUBLIC_BLOBSCAN_RELEASE`         | Blobscan version                                                                            | No       | (empty)                    |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Enable Vercel analytics                                                                     | No       | `false`                    |
+| `PUBLIC_SENTRY_DSN_WEB`                | Sentry DSN                                                                                  | No       | (empty)                    |
+| `NODE_ENV`                             | Used in Node.js applications to specify the environment in which the application is running | No       | (empty)                    |
+| `SENTRY_PROJECT`                       | Sentry project name                                                                         | No       | (empty)                    |
+| `SENTRY_ORG`                           | Sentry organization                                                                         | No       | (empty)                    |
+| `METRICS_ENABLED`                      | Expose the /metrics endpoint                                                                | No       | `false`                    |
+| `TRACES_ENABLED`                       | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                    |
+| `PUBLIC_POSTHOG_ID`                    | PostHog project API key used for tracking events and analytics                              | No       | (empty)                    |
+| `PUBLIC_POSTHOG_HOST`                  | Host URL for the PostHog instance used for analytics tracking                               | No       | `https://us.i.posthog.com` |
 
 ## Blobscan API
 
@@ -48,6 +47,7 @@ nextjs:
 | `TRACES_ENABLED`                                       | Enable instrumentation of functions and sending traces to a collector                                     | No                              | `false`                                      |
 | `NODE_ENV`                                             | Used in Node.js applications to specify the environment in which the application is running               | No                              | (empty)                                      |
 | `SENTRY_DSN_API`                                       | Sentry DSN                                                                                                | No                              | (empty)                                      |
+| `PRIMARY_BLOB_STORAGE`                                 | Storage where blobs are initially stored before being propagated to other storages                        | No                              | postgres                                     |
 | `GOOGLE_SERVICE_KEY`                                   | Google Cloud service key                                                                                  | No                              | (empty)                                      |
 | `GOOGLE_STORAGE_ENABLED`                               | Store blobs in Google Cloud Storage                                                                       | No                              | `false`                                      |
 | `GOOGLE_STORAGE_API_ENDPOINT`                          | Google Cloud API endpoint (for development)                                                               | No                              | (empty)                                      |
@@ -60,8 +60,6 @@ nextjs:
 | `BEE_ENDPOINT`                                         | Bee endpoint                                                                                              | No                              | (empty)                                      |
 | `SWARM_CHUNKSTORM_ENABLED`                             | Use Chunkstorm to distribute chunks among multiple nodes (increases upload speed)                         | No                              | `false`                                      |
 | `SWARM_CHUNKSTORM_URL`                                 | Chunkstorm server API base url                                                                            | No                              | (empty)                                      |
-| `FILE_SYSTEM_STORAGE_ENABLED`                          | Store blobs in filesystem                                                                                 | No                              | `false`                                      |
-| `FILE_SYSTEM_STORAGE_PATH`                             | Store blobs in this path                                                                                  | No                              | `/tmp/blobscan-blobs`                        |
 | `S3_STORAGE_ENABLED`                                   | Store blobs in AWS S3 or compatible storage                                                               | No                              | `false`                                      |
 | `S3_STORAGE_REGION`                                    | AWS region for S3 storage                                                                                 | If `S3_STORAGE_ENABLED=true`    | (empty)                                      |
 | `S3_STORAGE_BUCKET_NAME`                               | S3 bucket name for blob storage                                                                           | If `S3_STORAGE_ENABLED=true`    | (empty)                                      |
@@ -83,6 +81,8 @@ nextjs:
 | `SWARM_STAMP_CRON_PATTERN`                             | Cron pattern for swarm job                                                                                | No                              | `*/15 * * * *`                               |
 | `BLOB_PROPAGATOR_COMPLETED_JOBS_AGE`                   | Remove completed jobs after the specified number of seconds (default: 1 day)                              | No                              | `86400`                                      |
 | `BLOB_PROPAGATOR_FAILED_JOBS_AGE`                      | Remove completed jobs after the specified number of seconds (default: 7 days)                             | No                              | `604800`                                     |
+| `BLOB_RECONCILIATOR_CRON_PATTERN`                      | Cron pattern for the blob reconciliator worker                                                            | No                              | `0 * * * *` (every 1 hour)                   |
+| `BLOB_RECONCILIATOR_BATCH_SIZE`                        | Maximum number of blobs to process during each run                                                        | No                              | 200                                          |
 | `VITEST_MAINNET_FORK_URL`                              | Mainnet JSON-RPC URL used for starting a local Anvil instance to run tests against                        | No                              | `https://eth.llamarpc.com`                   |
 
 ## Blobscan indexer

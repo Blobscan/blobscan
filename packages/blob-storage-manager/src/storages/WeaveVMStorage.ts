@@ -41,15 +41,11 @@ export class WeaveVMStorage extends BlobStorage {
   }
 
   protected async _storeBlob(_: string, __: Buffer): Promise<string> {
-    throw new Error(
-      "Blob storage operation is not allowed for WeaveVM storage"
-    );
+    throw new Error('"storeBlob" operation is not allowed');
   }
 
   protected async _removeBlob(_: string): Promise<void> {
-    throw new Error(
-      "Blob removal operation is not allowed for WeaveVM storage"
-    );
+    throw new Error('"_removeBlob" operation is not allowed');
   }
 
   getBlobUri(hash: string) {

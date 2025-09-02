@@ -1,19 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { FlowProducer, Worker } from "bullmq";
-import type {
-  ConnectionOptions,
-  JobsOptions,
-  Processor,
-  WorkerOptions,
-} from "bullmq";
+import { Worker, Queue } from "bullmq";
+import type { JobsOptions, Processor, WorkerOptions } from "bullmq";
 import IORedis from "ioredis";
 
-import type {
-  BlobStorage,
-  BlobStorageError,
-  BlobStorageManager,
-} from "@blobscan/blob-storage-manager";
+import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import { createModuleLogger } from "@blobscan/logger";
@@ -21,43 +12,41 @@ import { createModuleLogger } from "@blobscan/logger";
 import {
   DEFAULT_JOB_OPTIONS,
   DEFAULT_WORKER_OPTIONS,
-  FINALIZER_WORKER_NAME,
+  RECONCILIATOR_WORKER_NAME,
   STORAGE_WORKER_NAMES,
 } from "./constants";
-import {
-  BlobPropagatorCreationError,
-  BlobPropagatorError,
-  ErrorException,
-} from "./errors";
+import { BlobPropagatorCreationError, BlobPropagatorError } from "./errors";
 import { logger } from "./logger";
 import type {
   BlobPropagationInput,
-  BlobPropagationWorker,
+  BlobPropagationWorkerParams,
   BlobPropagationWorkerProcessor,
-  BlobRetentionMode,
+  Reconciliator,
+  ReconciliatorProcessorParams,
+  ReconciliatorProcessorResult,
+  StoragePropagator,
 } from "./types";
+import { createBlobPropagationJob, computeLinearPriority } from "./utils";
 import {
-  createBlobPropagationFlowJob as _createBlobPropagationFlowJob,
-  computeLinearPriority,
-} from "./utils";
-import {
-  fileSystemProcessor,
-  finalizerProcessor,
   gcsProcessor,
   postgresProcessor,
   s3Processor,
   swarmProcessor,
 } from "./worker-processors";
+import { reconciliatorProcessor } from "./worker-processors/reconciliator";
 
 export type BlobPropagatorConfig = {
-  blobRetentionMode?: BlobRetentionMode;
-  blobStorageManager: BlobStorageManager;
   highestBlockNumber?: number;
-  tmpBlobStorage: BlobStorageName;
+  blobStorages: BlobStorage[];
+  primaryBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
   redisConnectionOrUri: IORedis | string;
   workerOptions?: Partial<Omit<WorkerOptions, "connection">>;
   jobOptions?: Partial<JobsOptions>;
+  reconciliatorOpts: {
+    batchSize: number;
+    cronPattern: string;
+  };
 };
 
 export const STORAGE_WORKER_PROCESSORS: Record<
@@ -67,32 +56,30 @@ export const STORAGE_WORKER_PROCESSORS: Record<
   GOOGLE: gcsProcessor,
   SWARM: swarmProcessor,
   POSTGRES: postgresProcessor,
-  FILE_SYSTEM: fileSystemProcessor,
   S3: s3Processor,
   WEAVEVM: undefined,
 };
 
 export class BlobPropagator {
-  protected temporaryBlobStorage: BlobStorage;
+  protected prisma: BlobscanPrismaClient;
+  protected primaryBlobStorage: BlobStorage;
 
-  protected blobPropagationFlowProducer: FlowProducer;
-  protected finalizerWorker: Worker;
-  protected storageWorkers: BlobPropagationWorker[];
+  protected propagators: StoragePropagator[];
+  protected reconciliator: Reconciliator;
 
   protected jobOptions: Partial<JobsOptions>;
 
-  protected blobRetentionMode: BlobRetentionMode;
   protected highestBlockNumber?: number;
 
   protected constructor({
-    blobRetentionMode = "eager",
-    blobStorageManager,
     prisma,
     redisConnectionOrUri,
     highestBlockNumber,
-    tmpBlobStorage,
+    blobStorages,
+    primaryBlobStorage,
     jobOptions: jobOptions_ = {},
     workerOptions = {},
+    reconciliatorOpts,
   }: BlobPropagatorConfig) {
     const connection =
       typeof redisConnectionOrUri === "string"
@@ -104,70 +91,34 @@ export class BlobPropagator {
       ...workerOptions,
     };
 
-    const temporaryBlobStorage = blobStorageManager.getStorage(tmpBlobStorage);
-
-    if (!temporaryBlobStorage) {
-      throw new BlobPropagatorCreationError("Temporary blob storage not found");
-    }
-
-    const availableStorageNames = blobStorageManager
-      .getAllStorages()
-      .map((s) => s.name)
-      .filter((name) => name !== tmpBlobStorage)
-      .filter((name) => {
-        const hasWorkerProcessor = !!STORAGE_WORKER_PROCESSORS[name];
-
-        if (!hasWorkerProcessor) {
-          logger.warn(
-            `Worker processor not defined for storage "${name}"; skipping`
-          );
-        }
-
-        return hasWorkerProcessor;
-      });
-
-    if (!availableStorageNames.length) {
-      throw new BlobPropagatorCreationError(
-        "None of the available storages have worker processors defined"
-      );
-    }
-
-    this.storageWorkers = availableStorageNames.map(
-      (storageName: BlobStorageName) => {
-        const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
-
-        if (!workerProcessor) {
-          throw new BlobPropagatorCreationError(
-            `Worker processor not defined for storage "${storageName}"`
-          );
-        }
-
-        return this.#createWorker(
-          STORAGE_WORKER_NAMES[storageName],
-          workerProcessor({
-            prisma,
-            blobStorageManager,
-            temporaryBlobStorage,
-          }),
-          workerOptions_
-        );
-      }
-    );
-
-    this.finalizerWorker = this.#createWorker(
-      FINALIZER_WORKER_NAME,
-      finalizerProcessor({ temporaryBlobStorage }),
+    this.propagators = this.#createPropagators(
+      blobStorages,
+      {
+        prisma,
+        primaryBlobStorage,
+      },
       workerOptions_
     );
 
-    this.blobPropagationFlowProducer = this.#createFlowProducer(connection);
-    this.temporaryBlobStorage = temporaryBlobStorage;
+    this.primaryBlobStorage = primaryBlobStorage;
     this.jobOptions = {
       ...DEFAULT_JOB_OPTIONS,
       ...jobOptions_,
     };
-    this.blobRetentionMode = blobRetentionMode;
     this.highestBlockNumber = highestBlockNumber;
+
+    this.reconciliator = this.#createReconciliator(
+      {
+        batchSize: reconciliatorOpts.batchSize,
+        prisma,
+        primaryBlobStorage,
+        propagatorQueues: this.propagators.map(({ queue }) => queue),
+        highestBlockNumber: this.highestBlockNumber,
+      },
+      workerOptions_
+    );
+
+    this.prisma = prisma;
 
     logger.info("Blob propagator started successfully");
   }
@@ -175,14 +126,24 @@ export class BlobPropagator {
   static async create(
     config: Omit<BlobPropagatorConfig, "highestBlockNumber">
   ) {
-    const lastFinalizedBlock = await config.prisma.blockchainSyncState
+    const { prisma, reconciliatorOpts } = config;
+
+    const lastFinalizedBlock = await prisma.blockchainSyncState
       .findFirst()
       .then((s) => s?.lastFinalizedBlock ?? undefined);
 
-    return new BlobPropagator({
+    const blobPropagator = new BlobPropagator({
       ...config,
       highestBlockNumber: lastFinalizedBlock,
     });
+
+    await blobPropagator.reconciliator.queue.add("reconciliator-job", null, {
+      repeat: {
+        pattern: reconciliatorOpts.cronPattern,
+      },
+    });
+
+    return blobPropagator;
   }
 
   async propagateBlob({
@@ -191,18 +152,23 @@ export class BlobPropagator {
     data,
   }: BlobPropagationInput) {
     try {
-      const temporalBlobUri = await this.#storeBlobInTemporaryStorage(
-        versionedHash,
-        data
-      );
+      const blobReference = await this.#storeBlob(versionedHash, data);
 
-      const flowJob = this.createBlobPropagationFlowJob({
-        blockNumber,
-        temporalBlobUri,
-        versionedHash,
+      const queueOperations = this.propagators.map(({ queue }) => {
+        const priority = this.computeJobPriority(blockNumber);
+        const job = createBlobPropagationJob(
+          queue.name,
+          versionedHash,
+          blobReference.dataReference,
+          {
+            priority,
+          }
+        );
+
+        return queue.add(job.name, job.data, job.opts);
       });
 
-      await this.blobPropagationFlowProducer.add(flowJob);
+      await Promise.all(queueOperations);
     } catch (err) {
       throw new BlobPropagatorError(
         `Failed to propagate blob with hash "${versionedHash}"`,
@@ -227,22 +193,29 @@ export class BlobPropagator {
         return blob;
       });
 
-      const temporalBlobUris = await Promise.all(
+      const blobReferences = await Promise.all(
         uniqueBlobs.map(({ versionedHash, data }) =>
-          this.temporaryBlobStorage.storeBlob(versionedHash, data)
+          this.#storeBlob(versionedHash, data)
         )
       );
 
-      const blobPropagationFlowJobs = uniqueBlobs.map(
-        ({ blockNumber, versionedHash }, i) =>
-          this.createBlobPropagationFlowJob({
-            blockNumber,
-            temporalBlobUri: temporalBlobUris[i] as string,
+      const queueBulkOperations = this.propagators.map(({ queue }) => {
+        const jobs = uniqueBlobs.map(({ blockNumber, versionedHash }, i) => {
+          const priority = this.computeJobPriority(blockNumber);
+          return createBlobPropagationJob(
+            queue.name,
             versionedHash,
-          })
-      );
+            blobReferences[i]?.dataReference as string,
+            {
+              priority,
+            }
+          );
+        });
 
-      await this.blobPropagationFlowProducer.addBulk(blobPropagationFlowJobs);
+        return queue.addBulk(jobs);
+      });
+
+      await Promise.all(queueBulkOperations);
     } catch (err) {
       const blobHashes = blobs.map((b) => `"${b.versionedHash}"`).join(", ");
 
@@ -253,31 +226,7 @@ export class BlobPropagator {
     }
   }
 
-  protected createBlobPropagationFlowJob({
-    blockNumber,
-    temporalBlobUri,
-    versionedHash,
-  }: {
-    blockNumber?: number;
-    temporalBlobUri: string;
-    versionedHash: string;
-  }) {
-    const jobPriority = this.#computeJobPriority(blockNumber);
-    const storageWorkerNames = this.storageWorkers.map((w) => w.name);
-
-    return _createBlobPropagationFlowJob(
-      this.finalizerWorker.name,
-      storageWorkerNames,
-      versionedHash,
-      temporalBlobUri,
-      this.blobRetentionMode,
-      {
-        priority: jobPriority,
-      }
-    );
-  }
-
-  #computeJobPriority(jobBlockNumber?: number): number {
+  protected computeJobPriority(jobBlockNumber?: number): number {
     if (!jobBlockNumber) {
       return 1;
     }
@@ -294,54 +243,130 @@ export class BlobPropagator {
   async close() {
     let teardownPromise: Promise<void> = Promise.resolve();
 
-    this.storageWorkers.forEach((w) => {
+    this.propagators.forEach(({ worker }) => {
       teardownPromise = teardownPromise.finally(async () => {
-        await this.#performClosingOperation(() => w.close());
+        await this.#performClosingOperation(() => worker.close());
       });
     });
 
-    await teardownPromise
-      .finally(async () => {
-        await this.#performClosingOperation(() => this.finalizerWorker.close());
-      })
-      .finally(async () => {
-        await this.#performClosingOperation(async () => {
-          const redisClient = await this.blobPropagationFlowProducer.client;
+    this.propagators.forEach(({ queue }) => {
+      teardownPromise = teardownPromise.finally(async () => {
+        await this.#performClosingOperation(() => queue.close());
+      });
+    });
 
-          await redisClient.quit();
-        });
+    teardownPromise = teardownPromise
+      .finally(async () => {
+        await this.#performClosingOperation(() =>
+          this.reconciliator.worker.close()
+        );
       })
       .finally(async () => {
         await this.#performClosingOperation(() =>
-          this.blobPropagationFlowProducer.close()
+          this.reconciliator.queue.obliterate({ force: true })
         );
       });
+
+    await teardownPromise;
 
     logger.info("Blob propagator closed successfully.");
   }
 
-  #createFlowProducer(connection?: ConnectionOptions) {
-    /*
-     * Instantiating a new `FlowProducer` appears to create two separate `RedisConnection` instances.
-     * This leads to an issue where one instance remains active, or "dangling", after the `FlowProducer` has been closed.
-     * To prevent this, we now initialize a single `IORedis` instance in advance and use it when creating the `FlowProducer`.
-     * This way, both created connections reference the same `IORedis` instance and can be closed properly.
-     *
-     * See: https://github.com/taskforcesh/bullmq/blob/d7cf6ea60830b69b636648238a51e5f981616d02/src/classes/flow-producer.ts#L111
-     */
-    const blobPropagationFlowProducer = new FlowProducer({
-      connection,
-    });
-    const flowProducerLogger = createModuleLogger(
-      "blob-propagator",
-      "flow-producer"
+  async #storeBlob(versionedHash: string, data: string) {
+    const blobStorage = this.primaryBlobStorage.name;
+    const blobUri = await this.primaryBlobStorage.storeBlob(
+      versionedHash,
+      data
     );
 
-    blobPropagationFlowProducer.on("error", (err) => {
-      flowProducerLogger.error(err);
+    return this.prisma.blobDataStorageReference.upsert({
+      create: {
+        blobStorage,
+        blobHash: versionedHash,
+        dataReference: blobUri,
+      },
+      update: {
+        dataReference: blobUri,
+      },
+      where: {
+        blobHash_blobStorage: {
+          blobHash: versionedHash,
+          blobStorage: blobStorage,
+        },
+      },
+    });
+  }
+
+  #createReconciliator(
+    params: ReconciliatorProcessorParams,
+    opts: WorkerOptions
+  ): Reconciliator {
+    const queue = new Queue(RECONCILIATOR_WORKER_NAME, {
+      connection: opts.connection,
+    });
+    const worker = new Worker<null, ReconciliatorProcessorResult>(
+      RECONCILIATOR_WORKER_NAME,
+      reconciliatorProcessor(params),
+      opts
+    );
+    const workerLogger = createModuleLogger("blob-reconciliator", worker.name);
+
+    worker.on("completed", (_, { jobsCreated, blobTimestamps }) => {
+      if (!jobsCreated) {
+        workerLogger.info("No blobs to reconciliate found");
+
+        return;
+      }
+
+      workerLogger.info(
+        `${jobsCreated} jobs recreated; From: ${
+          blobTimestamps?.firstBlob?.toISOString() ?? "-"
+        } To: ${blobTimestamps?.lastBlob?.toISOString() ?? "-"}`
+      );
     });
 
-    return blobPropagationFlowProducer;
+    worker.on("failed", (_, err) => {
+      workerLogger.error(err);
+    });
+
+    return {
+      worker,
+      queue,
+    };
+  }
+
+  #createPropagators(
+    blobStorages: BlobStorage[],
+    params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
+    opts: WorkerOptions
+  ): StoragePropagator[] {
+    return blobStorages.map((targetBlobStorage) => {
+      const storageName = targetBlobStorage.name;
+      const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
+
+      if (!workerProcessor) {
+        throw new BlobPropagatorCreationError(
+          `Storage ${storageName} not supported: no worker processor defined`
+        );
+      }
+
+      const workerName = STORAGE_WORKER_NAMES[storageName];
+
+      const queue = new Queue(workerName, opts);
+      const worker = this.#createWorker(
+        workerName,
+        workerProcessor({
+          ...params,
+          targetBlobStorage,
+        }),
+        opts
+      );
+
+      return {
+        queue,
+        worker,
+      };
+    });
   }
 
   #createWorker(
@@ -361,22 +386,6 @@ export class BlobPropagator {
     });
 
     return worker;
-  }
-
-  async #storeBlobInTemporaryStorage(versionedHash: string, data: string) {
-    try {
-      const blobUri = await this.temporaryBlobStorage.storeBlob(
-        versionedHash,
-        data
-      );
-
-      return blobUri;
-    } catch (err) {
-      throw new ErrorException(
-        "Failed to store blob in temporary storage",
-        err as BlobStorageError
-      );
-    }
   }
 
   async #performClosingOperation(operation: () => Promise<void>) {

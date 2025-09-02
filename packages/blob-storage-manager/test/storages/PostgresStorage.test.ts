@@ -7,6 +7,7 @@ import { testValidError } from "@blobscan/test";
 
 import { PostgresStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";
+import { bytesToHex } from "../../src/utils";
 import { NEW_BLOB_HASH, HEX_DATA } from "../fixtures";
 
 class PostgresStorageMock extends PostgresStorage {
@@ -80,11 +81,15 @@ describe("PostgresStorage", () => {
   });
 
   it("should store a blob", async () => {
-    await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
+    const blobReference = await storage.storeBlob(NEW_BLOB_HASH, HEX_DATA);
 
-    const blob = await storage.getBlob(NEW_BLOB_HASH);
+    const res = await prisma.blobData.findUnique({
+      where: {
+        id: blobReference,
+      },
+    });
 
-    expect(blob).toBe(HEX_DATA);
+    expect(res?.data ? bytesToHex(res?.data) : "").toBe(HEX_DATA);
   });
 
   it("should return an uri when storing a blob", async () => {

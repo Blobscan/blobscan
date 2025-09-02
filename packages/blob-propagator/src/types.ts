@@ -3,11 +3,8 @@ import type { Job, Processor, Queue, Worker } from "bullmq";
 import type {
   BlobReference,
   BlobStorage,
-  BlobStorageManager,
 } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
-
-export type BlobRetentionMode = "eager" | "lazy";
 
 export type BlobPropagationInput = {
   blockNumber?: number;
@@ -17,34 +14,49 @@ export type BlobPropagationInput = {
 
 export type BlobPropagationJobData = {
   versionedHash: string;
-  blobRetentionMode: BlobRetentionMode;
-};
-
-export type BlobPropagationFinalizerJobData = {
-  temporaryBlobUri: string;
+  blobUri: string;
 };
 
 export type BlobPropagationJob = Job<BlobPropagationJobData>;
 
-export type BlobPropagationFinalizerJob = Job<BlobPropagationFinalizerJobData>;
-
 export type BlobPropagationWorkerParams = {
-  blobStorageManager: BlobStorageManager;
+  targetBlobStorage: BlobStorage;
   prisma: BlobscanPrismaClient;
-  temporaryBlobStorage: BlobStorage;
+  primaryBlobStorage: BlobStorage;
 };
 
-export type BlobPropagationFinalizerWorkerParams = {
-  temporaryBlobStorage: BlobStorage;
+export type PropagationQueue = Queue<BlobPropagationJobData>;
+
+export type StoragePropagator = {
+  queue: PropagationQueue;
+  worker: Worker<BlobPropagationJobData>;
 };
+
+export type Reconciliator = {
+  queue: Queue<null>;
+  worker: Worker<null, ReconciliatorProcessorResult>;
+};
+
+export type ReconciliatorProcessorParams = {
+  prisma: BlobscanPrismaClient;
+  primaryBlobStorage: BlobStorage;
+  batchSize: number;
+  propagatorQueues: PropagationQueue[];
+  highestBlockNumber?: number;
+};
+
+export type ReconciliatorProcessorResult = {
+  jobsCreated: number;
+  blobTimestamps?: { firstBlob?: Date; lastBlob?: Date };
+};
+
+export type ReconciliatorProcessor = (
+  params: ReconciliatorProcessorParams
+) => Processor<null, ReconciliatorProcessorResult>;
 
 export type BlobPropagationWorkerProcessor = (
   params: BlobPropagationWorkerParams
 ) => Processor<BlobPropagationJobData, BlobReference>;
-
-export type BlobPropagationFinalizerWorkerProcessor = (
-  params: BlobPropagationFinalizerWorkerParams
-) => Processor<BlobPropagationFinalizerJobData>;
 
 export type BlobPropagationWorker = Worker<BlobPropagationJobData>;
 
