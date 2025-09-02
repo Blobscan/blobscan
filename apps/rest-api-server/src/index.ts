@@ -27,7 +27,7 @@ collectDefaultMetrics();
 printBanner();
 
 async function main() {
-  // const closeSyncers = await setUpSyncers();
+  const closeSyncers = await setUpSyncers();
 
   const blobPropagator = await getBlobPropagator();
 
@@ -72,9 +72,9 @@ async function main() {
       .finally(async () => {
         await blobPropagator.close();
       })
-      // .finally(async () => {
-      //   await closeSyncers();
-      // })
+      .finally(async () => {
+        await closeSyncers();
+      })
       .finally(() => {
         server.close(() => {
           logger.debug("Server shut down successfully");
