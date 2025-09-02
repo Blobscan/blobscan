@@ -10,13 +10,25 @@ import {
 
 const nodeEnvSchema = z.enum(["development", "test", "production"]);
 
-const blobStorageSchema = z.enum([
-  "GOOGLE",
-  "POSTGRES",
-  "SWARM",
-  "S3",
-  "WEAVEVM",
-] as const);
+const BLOB_STORAGE = ["GOOGLE", "POSTGRES", "SWARM", "S3", "WEAVEVM"] as const;
+const blobStorageSchema = z.enum(BLOB_STORAGE);
+
+export const blobStorageCoercionSchema = z.string().transform((value, ctx) => {
+  const result = blobStorageSchema.safeParse(value.toUpperCase());
+
+  if (!result.success) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Unknown blob storage "${value}". Supported values are: ${BLOB_STORAGE.map(
+        (s) => s.toLowerCase()
+      ).join(", ")}`,
+    });
+
+    return z.NEVER;
+  }
+
+  return result.data;
+});
 
 const networkSchema = z.enum([
   "mainnet",
@@ -137,7 +149,7 @@ export const env = createEnv({
        */
 
       // General storage settings
-      PRIMARY_BLOB_STORAGE: blobStorageSchema.default("POSTGRES"),
+      PRIMARY_BLOB_STORAGE: blobStorageCoercionSchema.default("POSTGRES"),
 
       // Postgres blob storage
       POSTGRES_STORAGE_ENABLED: booleanSchema.default("false"),

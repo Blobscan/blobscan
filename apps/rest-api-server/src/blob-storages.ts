@@ -17,8 +17,13 @@ function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
   const storageEnabled = env[storageEnabledKey];
+  const primaryStorageKey = env.PRIMARY_BLOB_STORAGE;
 
-  return storageEnabled === true || storageEnabled === "true";
+  return (
+    storageEnabled === true ||
+    storageEnabled === "true" ||
+    primaryStorageKey === storageName
+  );
 }
 
 export async function createStorageFromEnv(
@@ -105,6 +110,7 @@ export async function createBlobStorages() {
   );
   const storages: BlobStorage[] = [];
 
+  console.log(results);
   for (const result of results) {
     if (result.status === "rejected") {
       logger.error(result.reason);
