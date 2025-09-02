@@ -8,26 +8,25 @@ nextjs:
 
 ## Blobscan Web
 
-| Variable                       | Description                                                                       | Required | Default value           |
-| ------------------------------ | --------------------------------------------------------------------------------- | -------- | ----------------------- |
-| `BLOB_DATA_API_KEY`            | API key used to authenticate requests to retrieve blob data from the Blobscan API | No       | (empty)                 |
-| `DATABASE_URL`                 | PostgreSQL database URI                                                           | Yes      | (empty)                 |
-| `DIRECT_URL`                   | Direct connection to the database used by Prisma CLI for e.g. migrations.         | Yes      | (empty)                 |
-| `FEEDBACK_WEBHOOK_URL`         | Discord webhook URL for feedback                                                  | No       | (empty)                 |
-| `PUBLIC_NETWORK_NAME`          | Network name                                                                      | No       | mainnet                 |
-| `PUBLIC_EXPLORER_BASE_URL`     | Block explorer URL                                                                | No       | `https://etherscan.io`  |
-| `PUBLIC_BEACON_BASE_URL`       | Beacon explorer URL                                                               | No       | `https://beaconcha.in/` |
-| `NEXT_PUBLIC_BLOBSCAN_RELEASE` | Blobscan version                                                                  | No       | (empty)                 |
-
-| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Enable Vercel analytics | No | `false` |
-| `PUBLIC_SENTRY_DSN_WEB` | Sentry DSN | No | (empty) |
-| `NODE_ENV` | Used in Node.js applications to specify the environment in which the application is running | No | (empty) |
-| `SENTRY_PROJECT` | Sentry project name | No | (empty) |
-| `SENTRY_ORG` | Sentry organization | No | (empty) |
-| `METRICS_ENABLED` | Expose the /metrics endpoint | No | `false` |
-| `TRACES_ENABLED` | Enable instrumentation of functions and sending traces to a collector | No | `false` |
-| `PUBLIC_POSTHOG_ID` | PostHog project API key used for tracking events and analytics | No | (empty) |
-| `PUBLIC_POSTHOG_HOST` | Host URL for the PostHog instance used for analytics tracking | No | `https://us.i.posthog.com` |
+| Variable                               | Description                                                                                 | Required | Default value              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------- | -------- | -------------------------- |
+| `BLOB_DATA_API_KEY`                    | API key used to authenticate requests to retrieve blob data from the Blobscan API           | No       | (empty)                    |
+| `DATABASE_URL`                         | PostgreSQL database URI                                                                     | Yes      | (empty)                    |
+| `DIRECT_URL`                           | Direct connection to the database used by Prisma CLI for e.g. migrations.                   | Yes      | (empty)                    |
+| `FEEDBACK_WEBHOOK_URL`                 | Discord webhook URL for feedback                                                            | No       | (empty)                    |
+| `PUBLIC_NETWORK_NAME`                  | Network name                                                                                | No       | mainnet                    |
+| `PUBLIC_EXPLORER_BASE_URL`             | Block explorer URL                                                                          | No       | `https://etherscan.io`     |
+| `PUBLIC_BEACON_BASE_URL`               | Beacon explorer URL                                                                         | No       | `https://beaconcha.in/`    |
+| `NEXT_PUBLIC_BLOBSCAN_RELEASE`         | Blobscan version                                                                            | No       | (empty)                    |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Enable Vercel analytics                                                                     | No       | `false`                    |
+| `PUBLIC_SENTRY_DSN_WEB`                | Sentry DSN                                                                                  | No       | (empty)                    |
+| `NODE_ENV`                             | Used in Node.js applications to specify the environment in which the application is running | No       | (empty)                    |
+| `SENTRY_PROJECT`                       | Sentry project name                                                                         | No       | (empty)                    |
+| `SENTRY_ORG`                           | Sentry organization                                                                         | No       | (empty)                    |
+| `METRICS_ENABLED`                      | Expose the /metrics endpoint                                                                | No       | `false`                    |
+| `TRACES_ENABLED`                       | Enable instrumentation of functions and sending traces to a collector                       | No       | `false`                    |
+| `PUBLIC_POSTHOG_ID`                    | PostHog project API key used for tracking events and analytics                              | No       | (empty)                    |
+| `PUBLIC_POSTHOG_HOST`                  | Host URL for the PostHog instance used for analytics tracking                               | No       | `https://us.i.posthog.com` |
 
 ## Blobscan API
 
