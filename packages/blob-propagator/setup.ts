@@ -2,9 +2,9 @@ import { Queue } from "bullmq";
 import IORedis from "ioredis";
 import { afterAll } from "vitest";
 
-import { env } from "@blobscan/env";
-
 import { STORAGE_WORKER_NAMES } from "./src/constants";
+
+const REDIS_URI = "redis://localhost:6379/1";
 
 afterAll(async () => {
   const queues = [
@@ -13,7 +13,9 @@ afterAll(async () => {
   ].map(
     (queueName) =>
       new Queue(queueName, {
-        connection: new IORedis(env.REDIS_URI, { maxRetriesPerRequest: null }),
+        connection: new IORedis(REDIS_URI, {
+          maxRetriesPerRequest: null,
+        }),
       })
   );
 

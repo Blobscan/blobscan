@@ -15,8 +15,7 @@ import type {
   Blob as DBBlob,
   BlobStorage as BlobStorageName,
 } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { testValidError } from "@blobscan/test";
+import { env, testValidError } from "@blobscan/test";
 
 import { STORAGE_WORKER_PROCESSORS } from "../src/BlobPropagator";
 import type {

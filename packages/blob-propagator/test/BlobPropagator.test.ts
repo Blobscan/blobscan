@@ -7,8 +7,7 @@ import type {
   PostgresStorage,
 } from "@blobscan/blob-storage-manager";
 import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { fixtures, testValidError } from "@blobscan/test";
+import { env, fixtures, testValidError } from "@blobscan/test";
 
 import { buildJobId } from "../src";
 import type { BlobPropagatorConfig } from "../src/BlobPropagator";

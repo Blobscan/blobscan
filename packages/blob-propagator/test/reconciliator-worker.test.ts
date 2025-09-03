@@ -6,7 +6,7 @@ import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { Blob } from "@blobscan/db";
 import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
+import { env } from "@blobscan/test";
 
 import type {
   BlobPropagationJob,

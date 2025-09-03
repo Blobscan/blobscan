@@ -39,6 +39,14 @@ async function createBlobPropagator() {
       cronPattern: env.BLOB_RECONCILIATOR_CRON_PATTERN,
       batchSize: env.BLOB_RECONCILIATOR_BATCH_SIZE,
     },
+    workerOptions: {
+      removeOnComplete: {
+        age: env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE,
+      },
+      removeOnFail: {
+        age: env.BLOB_PROPAGATOR_FAILED_JOBS_AGE,
+      },
+    },
   });
 }
 

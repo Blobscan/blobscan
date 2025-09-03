@@ -1,6 +1,3 @@
-export type { Environment } from "@blobscan/env";
-
-export { env } from "@blobscan/env";
 export * from "./errors";
 export { BlobPropagator } from "./BlobPropagator";
 export { STORAGE_WORKER_NAMES } from "./constants";
