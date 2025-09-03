@@ -105,7 +105,6 @@ export async function createBlobStorages() {
   );
   const storages: BlobStorage[] = [];
 
-  console.log(results);
   for (const result of results) {
     if (result.status === "rejected") {
       logger.error(result.reason);
