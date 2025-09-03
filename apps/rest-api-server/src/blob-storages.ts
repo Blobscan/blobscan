@@ -17,13 +17,8 @@ function isBlobStorageEnabled(storageName: BlobStorageName) {
   const storageEnabledKey =
     `${storageName}_STORAGE_ENABLED` as keyof Environment;
   const storageEnabled = env[storageEnabledKey];
-  const primaryStorageKey = env.PRIMARY_BLOB_STORAGE;
 
-  return (
-    storageEnabled === true ||
-    storageEnabled === "true" ||
-    primaryStorageKey === storageName
-  );
+  return storageEnabled === true || storageEnabled === "true";
 }
 
 export async function createStorageFromEnv(
