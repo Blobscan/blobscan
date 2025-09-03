@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
-import { fixtures, testValidError } from "@blobscan/test";
+import { env, fixtures, testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src";
 import { SwarmStorage } from "../../src/storages/SwarmStorage";

@@ -1,8 +1,7 @@
 import type { Storage } from "@google-cloud/storage";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { env } from "@blobscan/env";
-import { testValidError } from "@blobscan/test";
+import { env, testValidError } from "@blobscan/test";
 
 import { GoogleStorage } from "../../src";
 import { BlobStorageError } from "../../src/errors";

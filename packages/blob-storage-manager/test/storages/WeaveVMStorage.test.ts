@@ -3,8 +3,7 @@ import type { SetupServerApi } from "msw/node";
 import { setupServer } from "msw/node";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { env } from "@blobscan/env";
-import { testValidError } from "@blobscan/test";
+import { env, testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src/errors";
 import { WeaveVMStorage } from "../../src/storages/WeaveVMStorage";
