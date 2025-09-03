@@ -1,5 +1,12 @@
 # @blobscan/syncers
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
+  - @blobscan/db@0.21.0
+
 ## 0.5.2
 
 ### Patch Changes
