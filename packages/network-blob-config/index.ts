@@ -62,7 +62,7 @@ export function getNetworkForkBySlot(
       return slot >= 3710976 ? "pectra" : "dencun";
     }
     case "hoodi": {
-      return slot >= 2048 ? "pectra": "dencun";
+      return slot >= 2048 ? "pectra" : "dencun";
     }
     case "sepolia": {
       return slot >= 7118848 ? "pectra" : "dencun";
@@ -72,8 +72,15 @@ export function getNetworkForkBySlot(
   }
 }
 
-export function getNetworkForkTimestamp(network: Network): number {
-  switch (network) {
+export function getNetworkForkTimestamp(
+  networkIdOrName: Network | number
+): number {
+  const networkName =
+    typeof networkIdOrName === "number"
+      ? getNetworkNameById(networkIdOrName)
+      : networkIdOrName;
+
+  switch (networkName) {
     case "mainnet": {
       return 1710338159;
     }
