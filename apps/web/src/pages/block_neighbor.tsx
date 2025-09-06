@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
 import z from "zod";
 
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 
 const QuerySchema = z.object({
   blockNumber: z.coerce.number().nonnegative().int(),
@@ -9,6 +9,8 @@ const QuerySchema = z.object({
 });
 
 type Query = z.infer<typeof QuerySchema>;
+
+const prisma = getPrisma();
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const result = QuerySchema.safeParse(ctx.query);

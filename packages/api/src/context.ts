@@ -8,7 +8,7 @@ import type {
 } from "@trpc/server/adapters/node-http";
 
 import type { BlobPropagator } from "@blobscan/blob-propagator";
-import { prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 
 import type { ServiceClient } from "./utils";
 import { createServiceClient } from "./utils";
@@ -20,6 +20,7 @@ export type CreateContextOptions =
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
   serviceClient?: ServiceClient;
   blobPropagator?: BlobPropagator;
+  prisma: BlobscanPrismaClient;
 };
 
 export type ServiceApiKeys = Partial<{
@@ -31,22 +32,23 @@ export type ServiceApiKeys = Partial<{
 export type CreateContextParams = {
   blobPropagator?: BlobPropagator;
   chainId: number;
+  prisma: BlobscanPrismaClient;
   enableTracing?: boolean;
   scope: ContextScope;
   serviceApiKeys?: ServiceApiKeys;
 };
 
 export type TRPCInnerContext = {
-  prisma: typeof prisma;
+  prisma: BlobscanPrismaClient;
   blobPropagator?: BlobPropagator;
   apiClient?: ServiceClient;
 };
 
-export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
+export function createTRPCInnerContext(opts: CreateInnerContextOptions) {
   return {
-    prisma,
-    blobPropagator: opts?.blobPropagator,
-    apiClient: opts?.serviceClient,
+    prisma: opts.prisma,
+    blobPropagator: opts.blobPropagator,
+    apiClient: opts.serviceClient,
   };
 }
 
@@ -54,6 +56,7 @@ export type ContextScope = "web" | "rest-api";
 
 export function createTRPCContext({
   blobPropagator,
+  prisma,
   chainId,
   enableTracing,
   scope,
@@ -66,6 +69,7 @@ export function createTRPCContext({
         : undefined;
 
       const innerContext = createTRPCInnerContext({
+        prisma,
         serviceClient,
         blobPropagator,
       });

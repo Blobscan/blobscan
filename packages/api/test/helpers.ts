@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { env } from "@blobscan/test";
 
 import type { createTRPCContext } from "../src/context";
@@ -61,7 +61,7 @@ export async function createTestContext({
     req,
     res,
     apiClient,
-    prisma,
+    prisma: getPrisma(),
     blobPropagator: undefined,
   };
 

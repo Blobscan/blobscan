@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { prisma } from "@blobscan/db";
 import { omitDBTimestampFields, sortByCategoryRollup } from "@blobscan/test";
 
 import { overall, overallCommandUsage } from "../../src/commands/overall";
+import { prisma } from "../../src/prisma";
 import { runHelpArgTests } from "../helpers";
 
 async function assertOverallStats() {

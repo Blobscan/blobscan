@@ -4,15 +4,14 @@ import type {
 } from "@trpc/server/adapters/node-http";
 import { Gauge } from "prom-client";
 
-import { prisma } from "@blobscan/db";
-import type { MetricsClient } from "@blobscan/db";
+import type { BlobscanPrismaClient, MetricsClient } from "@blobscan/db";
 import { api, promRegister } from "@blobscan/open-telemetry";
 
 const scopeName = "blobscan_api";
 
 function hasMetricsClient(
-  p: typeof prisma
-): p is typeof prisma & { $metrics: MetricsClient } {
+  p: BlobscanPrismaClient
+): p is BlobscanPrismaClient & { $metrics: MetricsClient } {
   return p !== null && "$metrics" in p;
 }
 
@@ -58,11 +57,8 @@ export const lastBlockIndexTimestampGauge = registerGauge(
   "Timestamp of the last block indexed by Blobscan"
 );
 
-export async function metricsHandler(
-  _: NodeHTTPRequest,
-  res: NodeHTTPResponse
-) {
-  {
+export function createMetricsHandler(prisma: BlobscanPrismaClient) {
+  return async (_: NodeHTTPRequest, res: NodeHTTPResponse) => {
     try {
       const latestBlock = await prisma.block.findLatest();
       if (latestBlock) {
@@ -88,5 +84,5 @@ export async function metricsHandler(
     res.setHeader("Content-Type", promRegister.contentType);
 
     res.end(appMetrics + prismaMetrics);
-  }
+  };
 }

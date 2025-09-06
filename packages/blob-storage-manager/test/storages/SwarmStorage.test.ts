@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { env, fixtures, testValidError } from "@blobscan/test";
 
 import { BlobStorageError } from "../../src";
@@ -23,6 +23,7 @@ class SwarmStorageMock extends SwarmStorage {
 }
 
 describe("SwarmStorage", () => {
+  const prisma = getPrisma();
   let storage: SwarmStorageMock;
   const beeEndpoint = "bee-endpoint";
 

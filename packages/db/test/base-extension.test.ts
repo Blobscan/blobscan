@@ -11,10 +11,11 @@ import { describe, it, expect, beforeEach } from "vitest";
 
 import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 
-import { prisma } from "../prisma";
+import { getPrisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
 
 describe("Base Extension", () => {
+  const prisma = getPrisma();
   const expectedEmptyInputRes = [
     {
       count: 0,

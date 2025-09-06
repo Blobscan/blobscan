@@ -6,7 +6,7 @@ export type {
   TRPCContext,
 } from "./context";
 
-export { metricsHandler } from "./instrumentation";
+export { createMetricsHandler } from "./instrumentation";
 
 export type { TimeFrame } from "./middlewares/withTimeFrame";
 

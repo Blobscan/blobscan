@@ -4,7 +4,6 @@ import fs from "fs";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { BlobDataStorageReference } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
 import type { DailyStats, Prisma } from "@blobscan/db";
 import { BlobStorage } from "@blobscan/db/prisma/enums";
 import type { Rollup } from "@blobscan/db/prisma/enums";
@@ -404,7 +403,7 @@ describe("Blob router", () => {
             encoding: "utf-8",
           });
 
-          await prisma.blobDataStorageReference.create;
+          await ctx.prisma.blobDataStorageReference.create;
 
           return async () => {
             await Promise.all([
@@ -415,7 +414,7 @@ describe("Blob router", () => {
         });
 
         beforeEach(async () => {
-          await prisma.blobDataStorageReference.deleteMany({
+          await ctx.prisma.blobDataStorageReference.deleteMany({
             where: {
               blobHash: blobHash,
             },
@@ -434,7 +433,7 @@ describe("Blob router", () => {
           const blobBytes = await response.arrayBuffer();
           const expectedBlobData = bytesToHex(blobBytes);
 
-          await prisma.blobDataStorageReference.create({
+          await ctx.prisma.blobDataStorageReference.create({
             data: gcsBinRef,
           });
 
@@ -457,7 +456,7 @@ describe("Blob router", () => {
 
           const expectedBlobData = await response.text();
 
-          await prisma.blobDataStorageReference.create({
+          await ctx.prisma.blobDataStorageReference.create({
             data: gcsTxtRef,
           });
 
@@ -472,7 +471,7 @@ describe("Blob router", () => {
       it("should fetch data stored in Postgres", async () => {
         const blobHash =
           "0x01000000000000000000000000000000000000000000000000000000000000b3";
-        const expectedBlobData = await prisma.blobData
+        const expectedBlobData = await ctx.prisma.blobData
           .findUnique({
             where: {
               id: blobHash,
@@ -490,7 +489,7 @@ describe("Blob router", () => {
       testValidError(
         "should fail when the blob data wasn't retrieved from any of the storages",
         async () => {
-          await prisma.blobDataStorageReference.update({
+          await ctx.prisma.blobDataStorageReference.update({
             data: {
               dataReference: "123131231231231231231",
             },
@@ -501,7 +500,7 @@ describe("Blob router", () => {
               },
             },
           });
-          await prisma.blobDataStorageReference.create({
+          await ctx.prisma.blobDataStorageReference.create({
             data: {
               blobHash: versionedHash,
               blobStorage: "GOOGLE",

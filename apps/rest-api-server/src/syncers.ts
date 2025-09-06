@@ -14,6 +14,7 @@ import {
 } from "@blobscan/syncers";
 
 import { logger } from "./logger";
+import { prisma } from "./prisma";
 import { getNetworkDencunForkSlot } from "./utils";
 
 export async function setUpSyncers() {
@@ -31,6 +32,7 @@ export async function setUpSyncers() {
       syncers.push(
         new SwarmStampSyncer({
           cronPattern: env.SWARM_STAMP_CRON_PATTERN,
+          prisma,
           redisUriOrConnection: connection,
           batchId: env.SWARM_BATCH_ID,
           beeEndpoint: env.BEE_ENDPOINT,
@@ -42,6 +44,7 @@ export async function setUpSyncers() {
   syncers.push(
     new DailyStatsSyncer({
       cronPattern: env.STATS_SYNCER_DAILY_CRON_PATTERN,
+      prisma,
       redisUriOrConnection: connection,
     })
   );
@@ -49,6 +52,7 @@ export async function setUpSyncers() {
   syncers.push(
     new OverallStatsSyncer({
       cronPattern: env.STATS_SYNCER_OVERALL_CRON_PATTERN,
+      prisma,
       redisUriOrConnection: connection,
       lowestSlot:
         env.DENCUN_FORK_SLOT ?? getNetworkDencunForkSlot(env.NETWORK_NAME),
@@ -81,6 +85,7 @@ export async function setUpSyncers() {
     syncers.push(
       new ETHPriceSyncer({
         cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
+        prisma,
         redisUriOrConnection: connection,
         ethUsdPriceFeed,
       })

@@ -3,7 +3,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { PriceFeed } from "@blobscan/price-feed";
 import { fixtures, getViemClient } from "@blobscan/test";
 
@@ -11,11 +11,14 @@ import { env } from "../../env";
 import { ETHPriceSyncer } from "../src";
 import type { ETHPriceSyncerConfig } from "../src/syncers/ETHPriceSyncer";
 
+const prisma = getPrisma();
+
 class EthPriceUpdaterMock extends ETHPriceSyncer {
   constructor({
     ethUsdPriceFeed,
   }: Pick<ETHPriceSyncerConfig, "ethUsdPriceFeed">) {
     super({
+      prisma,
       cronPattern: env.ETH_PRICE_SYNCER_CRON_PATTERN,
       redisUriOrConnection: env.REDIS_URI,
       ethUsdPriceFeed,

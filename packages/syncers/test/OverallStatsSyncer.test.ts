@@ -1,17 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import { OverallStatsSyncer } from "../src/syncers/OverallStatsSyncer";
 import type { OverallStatsSyncerConfig } from "../src/syncers/OverallStatsSyncer";
 
+const prisma = getPrisma();
 class OverallStatsUpdaterMock extends OverallStatsSyncer {
   constructor(config: Partial<OverallStatsSyncerConfig> = {}) {
     const lowestSlot =
       config.lowestSlot ?? fixtures.blockchainSyncState[0]?.lastLowerSyncedSlot;
     super({
       cronPattern: "* * * * *",
+      prisma,
       redisUriOrConnection: "redis://localhost:6379/1",
       ...config,
       lowestSlot,

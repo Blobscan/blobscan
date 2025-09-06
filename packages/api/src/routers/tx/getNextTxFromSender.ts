@@ -1,4 +1,4 @@
-import { prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
 import { z } from "@blobscan/zod";
 
 import { publicProcedure } from "../../procedures";
@@ -11,28 +11,8 @@ const txNeighborSchema = z.object({
 
 type TxNeighborInput = z.infer<typeof txNeighborSchema>;
 
-export const getTxNeighborsProcedure = publicProcedure
-  .input(txNeighborSchema)
-  .query<TxNeighbors>(({ input }) => getTxNeighbors(input));
-
-type TxNeighbors = {
-  next: string | null;
-  prev: string | null;
-};
-
-async function getTxNeighbors(input: TxNeighborInput): Promise<TxNeighbors> {
-  const [next, prev] = await Promise.all([
-    getTxNeighbor(input, "next"),
-    getTxNeighbor(input, "prev"),
-  ]);
-
-  return {
-    next,
-    prev,
-  };
-}
-
 async function getTxNeighbor(
+  prisma: BlobscanPrismaClient,
   input: TxNeighborInput,
   direction: "next" | "prev"
 ): Promise<string | null> {
@@ -79,3 +59,16 @@ async function getTxNeighbor(
 
   return tx.hash;
 }
+export const getTxNeighborsProcedure = publicProcedure
+  .input(txNeighborSchema)
+  .query(async ({ ctx: { prisma }, input }) => {
+    const [next, prev] = await Promise.all([
+      getTxNeighbor(prisma, input, "next"),
+      getTxNeighbor(prisma, input, "prev"),
+    ]);
+
+    return {
+      next,
+      prev,
+    };
+  });

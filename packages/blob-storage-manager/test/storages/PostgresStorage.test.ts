@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import type { BlobscanPrismaClient, PrismaClient } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
+import type { BlobscanPrismaClient } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { env, testValidError } from "@blobscan/test";
 
 import { PostgresStorage } from "../../src";
@@ -10,7 +10,7 @@ import { bytesToHex } from "../../src/utils";
 import { NEW_BLOB_HASH, HEX_DATA } from "../fixtures";
 
 class PostgresStorageMock extends PostgresStorage {
-  constructor(prisma?: PrismaClient | BlobscanPrismaClient) {
+  constructor(prisma?: BlobscanPrismaClient | BlobscanPrismaClient) {
     super({ chainId: env.CHAIN_ID, prisma });
   }
 
@@ -24,6 +24,7 @@ class PostgresStorageMock extends PostgresStorage {
 }
 
 describe("PostgresStorage", () => {
+  const prisma = getPrisma();
   let storage: PostgresStorageMock;
   const expectedStoredBlobHash = "blobHash004";
   const expectedStoredBlobUri = expectedStoredBlobHash;

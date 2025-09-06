@@ -9,7 +9,7 @@ import {
 } from "vitest";
 
 import type { BlobStorage, SwarmStorage } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import type {
   BlobscanPrismaClient,
   Blob as DBBlob,
@@ -159,6 +159,7 @@ function runWorkerTests(
   });
 }
 describe("Storage Worker", () => {
+  const prisma = getPrisma();
   let primaryBlobStorage: BlobStorage;
   const blobVersionedHash = "test-blob-versioned-hash";
   const blobData = "0x1234abcdeff123456789ab34223a4b2c2e";

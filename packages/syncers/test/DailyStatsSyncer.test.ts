@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getDateFromISODateTime, toDailyDate } from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 
 import { DailyStatsSyncer } from "../src/syncers/";
 import { CURRENT_DAY_DATA } from "./DailyStatsSyncer.test.fixtures";
@@ -10,9 +10,14 @@ import {
   indexNewBlock,
 } from "./DailyStatsSyncer.test.utils";
 
+const prisma = getPrisma();
 class DailyStatsSyncerMock extends DailyStatsSyncer {
   constructor(redisUri = process.env.REDIS_URI ?? "") {
-    super({ redisUriOrConnection: redisUri, cronPattern: "* * * * *" });
+    super({
+      prisma,
+      redisUriOrConnection: redisUri,
+      cronPattern: "* * * * *",
+    });
   }
 
   getWorker() {

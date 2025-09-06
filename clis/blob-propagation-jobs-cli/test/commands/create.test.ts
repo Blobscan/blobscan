@@ -1,11 +1,11 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import dayjs from "@blobscan/dayjs";
-import { prisma } from "@blobscan/db";
 import { fixtures } from "@blobscan/test";
 
 import { create, createCommandUsage } from "../../src/commands";
 import { context } from "../../src/context-instance";
+import { prisma } from "../../src/prisma";
 import { argHelpTest, assertCreatedJobs } from "../helpers";
 
 async function fetchBlobHashes({

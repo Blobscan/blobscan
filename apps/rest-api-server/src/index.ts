@@ -7,12 +7,12 @@ import swaggerUi from "swagger-ui-express";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
-import { createTRPCContext, metricsHandler } from "@blobscan/api";
+import { createTRPCContext, createMetricsHandler } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 
 import { appRouter } from "./app-router";
 import { printBanner } from "./banner";
@@ -27,6 +27,8 @@ collectDefaultMetrics();
 printBanner();
 
 async function main() {
+  const prisma = getPrisma();
+  const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
 
   const blobPropagator = await getBlobPropagator();
@@ -61,6 +63,7 @@ async function main() {
         blobPropagator,
         chainId: env.CHAIN_ID,
         enableTracing: env.TRACES_ENABLED,
+        prisma,
         scope: "rest-api",
         serviceApiKeys: {
           blobDataReadKey: env.BLOB_DATA_API_KEY,

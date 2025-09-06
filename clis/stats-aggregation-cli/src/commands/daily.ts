@@ -4,9 +4,9 @@ import commandLineUsage from "command-line-usage";
 import type { DatePeriodLike } from "@blobscan/dayjs";
 import dayjs, { toDailyDatePeriod } from "@blobscan/dayjs";
 import type { DatePeriod } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
 
 import { CommandError } from "../error";
+import { prisma } from "../prisma";
 import type { Command, Operation } from "../types";
 import { commandLog, deleteOptionDef, helpOptionDef } from "../utils";
 

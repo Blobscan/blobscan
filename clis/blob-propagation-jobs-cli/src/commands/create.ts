@@ -11,8 +11,7 @@ import type {
   BlobPropagationJob,
   BlobPropagationQueue,
 } from "@blobscan/blob-propagator";
-import { Prisma } from "@blobscan/db";
-import { prisma } from "@blobscan/db";
+import { getPrisma, Prisma } from "@blobscan/db";
 
 import type { HumanQueueName } from "../Context";
 import { context } from "../context-instance";
@@ -24,6 +23,8 @@ import {
   helpOptionDef,
   queuesOptionDef,
 } from "../utils";
+
+const prisma = getPrisma();
 
 let spinner = ora().start();
 

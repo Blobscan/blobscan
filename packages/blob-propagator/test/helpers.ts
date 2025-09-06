@@ -6,7 +6,7 @@ import {
   WeaveVMStorage,
 } from "@blobscan/blob-storage-manager";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
 import type { Environment } from "@blobscan/test";
 import { env } from "@blobscan/test";
@@ -65,7 +65,7 @@ export async function createStorageFromEnv(
       return SwarmStorage.create({
         chainId,
         beeEndpoint: env.BEE_ENDPOINT,
-        prisma,
+        prisma: getPrisma(),
       });
     }
     case BlobStorageName.WEAVEVM: {

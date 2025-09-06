@@ -1,6 +1,6 @@
 import { BlobPropagator } from "@blobscan/blob-propagator";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
-import { prisma } from "@blobscan/db";
+import { getPrisma } from "@blobscan/db";
 import { env } from "@blobscan/env";
 
 import { createBlobStorages } from "./blob-storages";
@@ -32,7 +32,7 @@ async function createBlobPropagator() {
 
   return BlobPropagator.create({
     blobStorages,
-    prisma,
+    prisma: getPrisma(),
     primaryBlobStorage,
     redisConnectionOrUri: env.REDIS_URI,
     reconciliatorOpts: {
