@@ -8,13 +8,12 @@ import { prisma } from "@blobscan/db";
 import type { DailyStats, Prisma } from "@blobscan/db";
 import { BlobStorage } from "@blobscan/db/prisma/enums";
 import type { Rollup } from "@blobscan/db/prisma/enums";
-import { fixtures, testValidError } from "@blobscan/test";
+import { env, fixtures, testValidError } from "@blobscan/test";
 
 import type { TRPCContext } from "../src/context";
-import { blobRouter } from "../src/routers/blob";
+import { createBlobRouter } from "../src/routers/blob";
 import type { getByBlobId } from "../src/routers/blob/getByBlobId";
 import { bytesToHex, hexToBytes } from "../src/utils";
-import { buildBlobDataUrl } from "../src/utils/transformers";
 import {
   createTestContext,
   generateDailyCounts,
@@ -32,7 +31,14 @@ import { blobIdSchemaTestsSuite } from "./test-suites/schemas";
 
 type GetByIdInput = inferProcedureInput<typeof getByBlobId>;
 
+function buildGoogleBlobDataUrl(dataReference: string) {
+  return `${env.GOOGLE_STORAGE_API_ENDPOINT}/storage/v1/b/${
+    env.GOOGLE_STORAGE_BUCKET_NAME
+  }/o/${encodeURIComponent(dataReference)}?alt=media`;
+}
+
 describe("Blob router", () => {
+  const blobRouter = createBlobRouter();
   let authorizedBlobCaller: ReturnType<typeof blobRouter.createCaller>;
   let blobCaller: ReturnType<typeof blobRouter.createCaller>;
   let ctx: TRPCContext;
@@ -40,7 +46,7 @@ describe("Blob router", () => {
 
   beforeAll(async () => {
     authorizedContext = await createTestContext({
-      apiClient: { type: "weavevm" },
+      apiClient: "load-network",
     });
     ctx = await createTestContext();
 
@@ -325,6 +331,7 @@ describe("Blob router", () => {
   });
 
   describe("getBlobDataByBlobId", () => {
+    let blobDataRouter: ReturnType<typeof createBlobRouter>;
     let blobDataAuthorizedContext: Awaited<
       ReturnType<typeof createTestContext>
     >;
@@ -338,14 +345,17 @@ describe("Blob router", () => {
 
     beforeEach(async () => {
       vi.resetModules();
-      vi.unmock("@blobscan/env");
+      vi.unmock("@blobscan/test");
 
-      blobDataAuthorizedContext = await createTestContext({
-        apiClient: { type: "blob-data" },
+      blobDataRouter = createBlobRouter({
+        blobDataProcedure: { enabled: true, protected: true },
       });
-      authorizedBlobDataCaller = blobRouter.createCaller(
-        blobDataAuthorizedContext
-      );
+      blobDataAuthorizedContext = await createTestContext({
+        apiClient: "blob-data",
+      });
+      authorizedBlobDataCaller = createBlobRouter({
+        blobDataProcedure: { enabled: true, protected: true },
+      }).createCaller(blobDataAuthorizedContext);
     });
 
     describe("when authorized", () => {
@@ -414,10 +424,7 @@ describe("Blob router", () => {
 
         it("should fetch data stored as a binary", async () => {
           const gcsBinRef = createBlobDataStorageRef("GOOGLE", "bin");
-          const gcsUrl = buildBlobDataUrl(
-            gcsBinRef.blobStorage,
-            gcsBinRef.dataReference
-          );
+          const gcsUrl = buildGoogleBlobDataUrl(gcsBinRef.dataReference);
           const response = await fetch(gcsUrl);
 
           if (!response.ok) {
@@ -441,10 +448,7 @@ describe("Blob router", () => {
         it("should fetch data stored as text", async () => {
           const gcsTxtRef = createBlobDataStorageRef("GOOGLE", "txt");
 
-          const gcsUrl = buildBlobDataUrl(
-            gcsTxtRef.blobStorage,
-            gcsTxtRef.dataReference
-          );
+          const gcsUrl = buildGoogleBlobDataUrl(gcsTxtRef.dataReference);
           const response = await fetch(gcsUrl);
 
           if (!response.ok) {
@@ -518,12 +522,12 @@ describe("Blob router", () => {
       testValidError(
         "should fail when no blob data is found for the provided id",
         async () => {
-          blobDataAuthorizedContext = await createTestContext({
-            apiClient: { type: "blob-data" },
-          });
-          authorizedBlobDataCaller = blobRouter.createCaller(
-            blobDataAuthorizedContext
-          );
+          // blobDataAuthorizedContext = await createTestContext({
+          //   apiClient: "blob-data",
+          // });
+          // authorizedBlobDataCaller = blobRouter.createCaller(
+          //   blobDataAuthorizedContext
+          // );
 
           await authorizedBlobDataCaller.getBlobDataByBlobId({
             id: "0x0130c6c0b2ed8e4951560d6c996ccab18486de35aee7a9064c957605c80d90d1",
@@ -540,7 +544,7 @@ describe("Blob router", () => {
     });
 
     it("should fail when calling procedure without auth", async () => {
-      vi.mock("@blobscan/env", async (original) => {
+      vi.mock("@blobscan/test", async (original) => {
         const mod = (await original()) as { env: Record<string, unknown> };
         return {
           ...mod,
@@ -553,7 +557,7 @@ describe("Blob router", () => {
       });
 
       const ctx = await createTestContext();
-      const unauthorizedBlobDataCaller = blobRouter.createCaller(ctx);
+      const unauthorizedBlobDataCaller = blobDataRouter.createCaller(ctx);
 
       await expect(
         unauthorizedBlobDataCaller.getBlobDataByBlobId({

@@ -3,11 +3,13 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { fixtures } from "@blobscan/test";
 import type { z } from "@blobscan/zod";
 
-import { appRouter } from "../src";
+import { createAppRouter } from "../src";
 import type { searchResultsSchema } from "../src/routers/search";
 import { createTestContext } from "./helpers";
 
 type SearchResultsSchema = z.output<typeof searchResultsSchema>;
+
+const appRouter = createAppRouter();
 
 describe("Search procedure", async () => {
   let searchCaller: ReturnType<typeof appRouter.createCaller>;

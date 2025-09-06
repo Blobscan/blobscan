@@ -20,7 +20,7 @@ describe("Blockchain sync state route", async () => {
     const ctx = await createTestContext();
 
     authorizedContext = await createTestContext({
-      apiClient: { type: "indexer" },
+      apiClient: "indexer",
     });
 
     nonAuthorizedSyncStateCaller = blockchainSyncStateRouter.createCaller(ctx);

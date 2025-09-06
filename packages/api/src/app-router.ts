@@ -1,6 +1,7 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
-import { blobRouter } from "./routers/blob";
+import type { BlobRouterConfig } from "./routers/blob";
+import { createBlobRouter } from "./routers/blob";
 import { blobStoragesStateRouter } from "./routers/blob-storages-state";
 import { blockRouter } from "./routers/block";
 import { blockchainSyncStateRouter } from "./routers/blockchain-sync-state";
@@ -13,21 +14,27 @@ import { statsRouter } from "./routers/stats";
 import { transactionRouter } from "./routers/tx";
 import { t } from "./trpc-client";
 
-export const appRouter = t.router({
-  healthcheck,
-  search,
-  blob: blobRouter,
-  blobStoragesState: blobStoragesStateRouter,
-  block: blockRouter,
-  syncState: blockchainSyncStateRouter,
-  ethPrice: ethPriceRouter,
-  indexer: indexerRouter,
-  stats: statsRouter,
-  state: stateRouter,
-  tx: transactionRouter,
-});
+export type AppRouterConfig = {
+  blobRouter: BlobRouterConfig;
+};
 
-export type AppRouter = typeof appRouter;
+export function createAppRouter(config?: AppRouterConfig) {
+  return t.router({
+    healthcheck,
+    search,
+    blob: createBlobRouter(config?.blobRouter),
+    blobStoragesState: blobStoragesStateRouter,
+    block: blockRouter,
+    syncState: blockchainSyncStateRouter,
+    ethPrice: ethPriceRouter,
+    indexer: indexerRouter,
+    stats: statsRouter,
+    state: stateRouter,
+    tx: transactionRouter,
+  });
+}
+
+export type AppRouter = ReturnType<typeof createAppRouter>;
 
 export type AppRouterInputs = inferRouterInputs<AppRouter>;
 

@@ -8,13 +8,13 @@ import { createOpenApiExpressMiddleware } from "trpc-openapi";
 
 import "./bigint";
 import { createTRPCContext, metricsHandler } from "@blobscan/api";
-import { appRouter } from "@blobscan/api";
 import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
 import { prisma } from "@blobscan/db";
 
+import { appRouter } from "./app-router";
 import { printBanner } from "./banner";
 import { getBlobPropagator } from "./blob-propagator";
 import { logger } from "./logger";
@@ -37,7 +37,16 @@ async function main() {
   app.use(bodyParser.json({ limit: "3mb" }));
   app.use(morganMiddleware);
 
-  app.get("/metrics", metricsHandler);
+  app.get("/metrics", (req, res) => {
+    if (!env.METRICS_ENABLED) {
+      res.statusCode = 403;
+      res.end("Metrics are disabled");
+
+      return;
+    }
+
+    return metricsHandler(req, res);
+  });
 
   // Serve Swagger UI with our OpenAPI schema
   app.use("/", swaggerUi.serve);
@@ -50,7 +59,14 @@ async function main() {
       router: appRouter,
       createContext: createTRPCContext({
         blobPropagator,
+        chainId: env.CHAIN_ID,
+        enableTracing: env.TRACES_ENABLED,
         scope: "rest-api",
+        serviceApiKeys: {
+          blobDataReadKey: env.BLOB_DATA_API_KEY,
+          indexerServiceSecret: env.SECRET_KEY,
+          loadNetworkServiceKey: env.WEAVEVM_API_KEY,
+        },
       }),
       onError({ error }) {
         Sentry.captureException(error);

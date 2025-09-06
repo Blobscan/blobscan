@@ -4,3 +4,8 @@ export type Prettify<T> = {
 } & {};
 
 export type PartialOrFull<T> = T | Partial<T>;
+
+export type ProcedureConfig = {
+  enabled: boolean;
+  protected: boolean;
+};

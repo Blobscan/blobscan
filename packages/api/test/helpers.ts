@@ -10,15 +10,14 @@ import type { BlobPropagator } from "@blobscan/blob-propagator";
 import type { DatePeriod } from "@blobscan/dayjs";
 import dayjs, { toDailyDate } from "@blobscan/dayjs";
 import { prisma } from "@blobscan/db";
-import { env } from "@blobscan/env";
+import { env } from "@blobscan/test";
 
 import type { createTRPCContext } from "../src/context";
 import type { ZodExpandEnum } from "../src/middlewares/withExpands";
 import type { FiltersInputSchema } from "../src/middlewares/withFilters";
 import type { WithPaginationSchema } from "../src/middlewares/withPagination";
 import { DEFAULT_PAGE_LIMIT } from "../src/middlewares/withPagination";
-import type { APIClient } from "../src/utils";
-import { retrieveAPIClient } from "../src/utils";
+import type { ServiceClient } from "../src/utils";
 
 type TRPCContext = ReturnType<ReturnType<Awaited<typeof createTRPCContext>>>;
 
@@ -30,7 +29,7 @@ export async function createTestContext({
   apiClient,
   withBlobPropagator = false,
 }: Partial<{
-  apiClient?: APIClient;
+  apiClient?: ServiceClient;
   withBlobPropagator: boolean;
 }> = {}): TRPCContext {
   const req = {
@@ -41,14 +40,12 @@ export async function createTestContext({
   } as NodeHTTPRequest;
 
   if (apiClient) {
-    const type = apiClient.type;
-
-    if (type === "indexer") {
+    if (apiClient === "indexer") {
       const token = jwt.sign("foobar", env.SECRET_KEY);
       req.headers.authorization = `Bearer ${token}`;
-    } else if (type === "weavevm") {
+    } else if (apiClient === "load-network") {
       req.headers.authorization = `Bearer ${env.WEAVEVM_API_KEY}`;
-    } else if (type === "blob-data") {
+    } else if (apiClient === "blob-data") {
       req.headers.authorization = `Bearer ${env.BLOB_DATA_API_KEY}`;
     }
   }
@@ -58,10 +55,12 @@ export async function createTestContext({
   } as NodeHTTPResponse;
 
   const ctx: Awaited<TRPCContext> = {
+    chainId: env.CHAIN_ID,
+    enableTracing: false,
     scope: "rest-api",
     req,
     res,
-    apiClient: retrieveAPIClient(req),
+    apiClient,
     prisma,
     blobPropagator: undefined,
   };

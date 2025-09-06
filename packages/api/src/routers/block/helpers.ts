@@ -15,7 +15,6 @@ import {
   deriveBlockFields,
   deriveTransactionFields,
   normalizeDataStorageReferences,
-  normalizePrismaBlobFields,
   normalizePrismaTransactionFields,
 } from "../../utils/transformers";
 import {
@@ -23,6 +22,8 @@ import {
   baseBlockSchema,
   baseTransactionSchema,
 } from "../../zod-schemas";
+import { dataStorageReferenceRelation } from "../blob/helpers";
+import type { PrismaBlobDataStorageReference } from "../blob/helpers";
 
 const prismaBlockSelect = {
   hash: true,
@@ -34,15 +35,6 @@ const prismaBlockSelect = {
   blobGasPrice: true,
   excessBlobGas: true,
 } satisfies Prisma.BlockSelect;
-
-const dataStorageReferenceSelect = {
-  blobStorage: true,
-  dataReference: true,
-} satisfies Prisma.BlobDataStorageReferenceSelect;
-
-type DataStorageReference = Prisma.BlobDataStorageReferenceGetPayload<{
-  select: typeof dataStorageReferenceSelect;
-}>;
 
 export type PrismaBlock = Prisma.BlockGetPayload<{
   select: typeof prismaBlockSelect;
@@ -59,7 +51,7 @@ export type CompletePrismaBlock = Prettify<
               blobHash: string;
             } & {
               blob: {
-                dataStorageReferences: DataStorageReference[];
+                dataStorageReferences: PrismaBlobDataStorageReference[];
               } & Partial<ExpandedBlob>;
             }
           >[];
@@ -83,15 +75,7 @@ export function createBlockSelect(expands: Expands, filters?: Filters) {
             blobHash: true,
             blob: {
               select: {
-                dataStorageReferences: {
-                  select: {
-                    blobStorage: true,
-                    dataReference: true,
-                  },
-                  orderBy: {
-                    blobStorage: "asc",
-                  },
-                },
+                dataStorageReferences: dataStorageReferenceRelation,
                 ...(blobExpand ?? {}),
               },
             },
@@ -159,19 +143,13 @@ export function toResponseBlock(
           }
         : {}),
       blobs: blobs.map(
-        ({ blobHash, blob: { dataStorageReferences, ...expandedBlob } }) =>
-          Object.keys(expandedBlob)
-            ? normalizePrismaBlobFields({
-                versionedHash: blobHash,
-                dataStorageReferences,
-                ...(expandedBlob as Required<typeof expandedBlob>),
-              })
-            : {
-                versionedHash: blobHash,
-                dataStorageReferences: normalizeDataStorageReferences(
-                  dataStorageReferences
-                ),
-              }
+        ({ blobHash, blob: { dataStorageReferences, ...expandedBlob } }) => ({
+          versionedHash: blobHash,
+          dataStorageReferences: normalizeDataStorageReferences(
+            dataStorageReferences
+          ),
+          ...expandedBlob,
+        })
       ),
     })
   );

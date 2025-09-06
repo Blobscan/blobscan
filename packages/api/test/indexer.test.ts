@@ -11,9 +11,9 @@ import {
 } from "vitest";
 
 import { Category, Rollup } from "@blobscan/db/prisma/enums";
-import { env } from "@blobscan/env";
+import { getNetworkBlobConfigBySlot } from "@blobscan/network-blob-config";
 import { ADDRESS_TO_ROLLUP_MAPPINGS } from "@blobscan/rollups";
-import { omitDBTimestampFields, testValidError } from "@blobscan/test";
+import { env, omitDBTimestampFields, testValidError } from "@blobscan/test";
 
 import { indexerRouter } from "../src/routers/indexer";
 import { calculateBlobGasPrice } from "../src/routers/indexer/indexData.utils";
@@ -33,7 +33,7 @@ describe("Indexer router", async () => {
     const ctx = await createTestContext();
 
     authorizedContext = await createTestContext({
-      apiClient: { type: "indexer" },
+      apiClient: "indexer",
     });
 
     nonAuthorizedIndexerCaller = indexerRouter.createCaller(ctx);
@@ -69,9 +69,13 @@ describe("Indexer router", async () => {
         //   (acc, b) => acc + getEIP2028CalldataGas(b.data),
         //   0
         // );
+        const config = getNetworkBlobConfigBySlot(
+          env.CHAIN_ID,
+          INPUT.block.slot
+        );
         const expectedBlobGasPrice = calculateBlobGasPrice(
-          INPUT.block.slot,
-          BigInt(INPUT.block.excessBlobGas)
+          BigInt(INPUT.block.excessBlobGas),
+          config
         );
 
         // TODO: Fix this test
@@ -399,7 +403,7 @@ describe("Indexer router", async () => {
 
           beforeAll(async () => {
             ctxWithBlobPropagator = await createTestContext({
-              apiClient: { type: "indexer" },
+              apiClient: "indexer",
               withBlobPropagator: true,
             });
 

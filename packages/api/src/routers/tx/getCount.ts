@@ -20,10 +20,14 @@ import { buildStatsWhereClause, requiresDirectCount } from "../../utils/count";
  * The choice depends on the specificity of the filters provided.
  *
  */
-export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
+export async function countTxs(
+  prisma: BlobscanPrismaClient,
+  filters: Filters,
+  chainId: number
+) {
   const { blockFilters = {}, blockType, transactionFilters } = filters;
 
-  if (requiresDirectCount(filters)) {
+  if (requiresDirectCount(filters, chainId)) {
     return prisma.transaction.count({
       where: {
         ...transactionFilters,
@@ -37,7 +41,7 @@ export async function countTxs(prisma: BlobscanPrismaClient, filters: Filters) {
     });
   }
 
-  const where = buildStatsWhereClause(filters);
+  const where = buildStatsWhereClause(filters, chainId);
 
   // Get count by summing daily total transaction stats data if a date range is provided in filters
   if (blockFilters.timestamp) {
@@ -79,8 +83,8 @@ export const getCount = publicProcedure
   .input(inputSchema)
   .use(withFilters)
   .output(outputSchema)
-  .query(async ({ ctx: { filters, prisma } }) => {
-    const txsCount = await countTxs(prisma, filters);
+  .query(async ({ ctx: { filters, prisma, chainId } }) => {
+    const txsCount = await countTxs(prisma, filters, chainId);
 
     return {
       totalTransactions: txsCount,

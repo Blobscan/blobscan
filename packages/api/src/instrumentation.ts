@@ -6,7 +6,6 @@ import { Gauge } from "prom-client";
 
 import { prisma } from "@blobscan/db";
 import type { MetricsClient } from "@blobscan/db";
-import { env } from "@blobscan/env";
 import { api, promRegister } from "@blobscan/open-telemetry";
 
 const scopeName = "blobscan_api";
@@ -64,13 +63,6 @@ export async function metricsHandler(
   res: NodeHTTPResponse
 ) {
   {
-    if (!env.METRICS_ENABLED) {
-      res.statusCode = 404;
-      res.end("Metrics are disabled");
-
-      return;
-    }
-
     try {
       const latestBlock = await prisma.block.findLatest();
       if (latestBlock) {

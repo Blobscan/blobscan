@@ -401,6 +401,11 @@ describe("Base Extension", () => {
         await prisma.blobDataStorageReference.upsertMany(input);
 
         const insertedRefs = await prisma.blobDataStorageReference.findMany({
+          select: {
+            blobHash: true,
+            blobStorage: true,
+            dataReference: true,
+          },
           where: {
             blobHash: newBlob.versionedHash,
           },
@@ -437,6 +442,11 @@ describe("Base Extension", () => {
           new Set(input.map((r) => r.blobHash))
         );
         const updatedRefs = await prisma.blobDataStorageReference.findMany({
+          select: {
+            blobHash: true,
+            blobStorage: true,
+            dataReference: true,
+          },
           where: {
             blobHash: {
               in: updatedBlobVersionedHashes,

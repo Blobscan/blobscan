@@ -46,54 +46,63 @@ export const getAll = publicProcedure
   .input(createExpandsSchema(["transaction", "block"]))
   .use(withExpands)
   .output(outputSchema)
-  .query(async ({ ctx: { filters, expands, pagination, prisma, count } }) => {
-    const { blockFilters = {}, blockType, transactionFilters, sort } = filters;
+  .query(
+    async ({
+      ctx: { filters, expands, pagination, prisma, count, chainId },
+    }) => {
+      const {
+        blockFilters = {},
+        blockType,
+        transactionFilters,
+        sort,
+      } = filters;
 
-    let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
-      {
-        blockTimestamp: sort,
-      };
+      let leadingOrderColumn: Prisma.BlobsOnTransactionsOrderByWithRelationInput =
+        {
+          blockTimestamp: sort,
+        };
 
-    if (blockFilters.number) {
-      leadingOrderColumn = {
-        blockNumber: sort,
+      if (blockFilters.number) {
+        leadingOrderColumn = {
+          blockNumber: sort,
+        };
+      }
+
+      const blobsOnTransactinonsOp = prisma.blobsOnTransactions.findMany({
+        select: createBlobsOnTransactionsSelect(expands),
+        where: {
+          blockNumber: blockFilters.number,
+          blockTimestamp: blockFilters.timestamp,
+          block: {
+            slot: blockFilters.slot,
+            transactionForks: blockType,
+          },
+
+          transaction: transactionFilters,
+        },
+        orderBy: [
+          leadingOrderColumn,
+          { txIndex: sort },
+          {
+            index: sort,
+          },
+        ],
+        ...pagination,
+      });
+      const countOp = count ? countBlobs(prisma, chainId, filters) : undefined;
+
+      const [prismaBlobsOnTxs, totalBlobs] = await Promise.all([
+        blobsOnTransactinonsOp,
+        countOp,
+      ]);
+
+      return {
+        blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
+          toResponseBlobOnTransaction(
+            prismaBlobOnTx as unknown as CompletePrismaBlobOnTransaction
+          )
+        ),
+        ...(count ? { totalBlobs } : {}),
       };
     }
-
-    const blobsOnTransactinonsOp = prisma.blobsOnTransactions.findMany({
-      select: createBlobsOnTransactionsSelect(expands),
-      where: {
-        blockNumber: blockFilters.number,
-        blockTimestamp: blockFilters.timestamp,
-        block: {
-          slot: blockFilters.slot,
-          transactionForks: blockType,
-        },
-
-        transaction: transactionFilters,
-      },
-      orderBy: [
-        leadingOrderColumn,
-        { txIndex: sort },
-        {
-          index: sort,
-        },
-      ],
-      ...pagination,
-    });
-    const countOp = count ? countBlobs(prisma, filters) : undefined;
-
-    const [prismaBlobsOnTxs, totalBlobs] = await Promise.all([
-      blobsOnTransactinonsOp,
-      countOp,
-    ]);
-
-    return {
-      blobs: prismaBlobsOnTxs.map((prismaBlobOnTx) =>
-        toResponseBlobOnTransaction(
-          prismaBlobOnTx as unknown as CompletePrismaBlobOnTransaction
-        )
-      ),
-      ...(count ? { totalBlobs } : {}),
-    };
-  });
+  );

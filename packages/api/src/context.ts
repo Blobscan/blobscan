@@ -10,29 +10,43 @@ import type {
 import type { BlobPropagator } from "@blobscan/blob-propagator";
 import { prisma } from "@blobscan/db";
 
-import type { APIClient } from "./utils";
-import { retrieveAPIClient } from "./utils";
+import type { ServiceClient } from "./utils";
+import { createServiceClient } from "./utils";
 
 export type CreateContextOptions =
   | NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>
   | CreateNextContextOptions;
 
 type CreateInnerContextOptions = Partial<CreateContextOptions> & {
-  apiClient?: APIClient;
+  serviceClient?: ServiceClient;
   blobPropagator?: BlobPropagator;
+};
+
+export type ServiceApiKeys = Partial<{
+  indexerServiceSecret: string;
+  loadNetworkServiceKey: string;
+  blobDataReadKey: string;
+}>;
+
+export type CreateContextParams = {
+  blobPropagator?: BlobPropagator;
+  chainId: number;
+  enableTracing?: boolean;
+  scope: ContextScope;
+  serviceApiKeys?: ServiceApiKeys;
 };
 
 export type TRPCInnerContext = {
   prisma: typeof prisma;
   blobPropagator?: BlobPropagator;
-  apiClient?: APIClient;
+  apiClient?: ServiceClient;
 };
 
 export function createTRPCInnerContext(opts?: CreateInnerContextOptions) {
   return {
     prisma,
     blobPropagator: opts?.blobPropagator,
-    apiClient: opts?.apiClient,
+    apiClient: opts?.serviceClient,
   };
 }
 
@@ -40,22 +54,26 @@ export type ContextScope = "web" | "rest-api";
 
 export function createTRPCContext({
   blobPropagator,
+  chainId,
+  enableTracing,
   scope,
-}: {
-  blobPropagator?: BlobPropagator;
-  scope: ContextScope;
-}) {
+  serviceApiKeys,
+}: CreateContextParams) {
   return async (opts: CreateContextOptions) => {
     try {
-      const apiClient = retrieveAPIClient(opts.req);
+      const serviceClient = serviceApiKeys
+        ? createServiceClient(serviceApiKeys, opts.req)
+        : undefined;
 
       const innerContext = createTRPCInnerContext({
-        apiClient,
+        serviceClient,
         blobPropagator,
       });
 
       return {
         ...innerContext,
+        chainId,
+        enableTracing,
         scope,
         req: opts.req,
         res: opts.res,

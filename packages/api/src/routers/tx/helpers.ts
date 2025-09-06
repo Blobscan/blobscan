@@ -12,7 +12,6 @@ import {
   deriveBlockFields,
   deriveTransactionFields,
   normalizeDataStorageReferences,
-  normalizePrismaBlobFields,
   normalizePrismaTransactionFields,
 } from "../../utils/transformers";
 import {
@@ -20,6 +19,8 @@ import {
   baseBlobSchema,
   baseBlockSchema,
 } from "../../zod-schemas";
+import type { PrismaBlobDataStorageReference } from "../blob/helpers";
+import { dataStorageReferenceRelation } from "../blob/helpers";
 
 const transactionSelect = {
   hash: true,
@@ -42,15 +43,6 @@ const transactionSelect = {
   },
 } satisfies Prisma.TransactionSelect;
 
-const dataStorageReferenceSelect = {
-  blobStorage: true,
-  dataReference: true,
-} satisfies Prisma.BlobDataStorageReferenceSelect;
-
-type DataStorageReference = Prisma.BlobDataStorageReferenceGetPayload<{
-  select: typeof dataStorageReferenceSelect;
-}>;
-
 type PrismaTransaction = Prisma.TransactionGetPayload<{
   select: typeof transactionSelect;
 }>;
@@ -66,7 +58,7 @@ export type CompletePrismaTransaction = Prettify<
     blobs: Prettify<
       { blobHash: string } & {
         blob: {
-          dataStorageReferences: DataStorageReference[];
+          dataStorageReferences: PrismaBlobDataStorageReference[];
         } & Partial<ExpandedBlob>;
       }
     >[];
@@ -91,15 +83,7 @@ export function createTransactionSelect(expands: Expands) {
         blobHash: true,
         blob: {
           select: {
-            dataStorageReferences: {
-              select: {
-                blobStorage: true,
-                dataReference: true,
-              },
-              orderBy: {
-                blobStorage: "asc",
-              },
-            },
+            dataStorageReferences: dataStorageReferenceRelation,
             ...(blobExpand ?? {}),
           },
         },
@@ -145,19 +129,14 @@ export function toResponseTransaction(
     blobGasPrice: block.blobGasPrice,
   });
   const blobs = blobsOnTxs.map(
-    ({ blobHash, blob: { dataStorageReferences, ...restBlob } }) =>
-      Object.keys(restBlob)
-        ? normalizePrismaBlobFields({
-            versionedHash: blobHash,
-            dataStorageReferences,
-            ...(restBlob as Required<typeof restBlob>),
-          })
-        : {
-            versionedHash: blobHash,
-            dataStorageReferences: normalizeDataStorageReferences(
-              dataStorageReferences
-            ),
-          }
+    ({ blobHash, blob: { dataStorageReferences, ...restBlob } }) => ({
+      dataStorageReferences: normalizeDataStorageReferences(
+        dataStorageReferences
+      ),
+      versionedHash: blobHash,
+
+      ...restBlob,
+    })
   );
 
   return {

@@ -35,9 +35,11 @@ export const env = createEnv({
    * built with invalid env vars.
    */
   server: {
+    CHAIN_ID: z.coerce.number().positive().default(1),
     DATABASE_URL: z.string().url(),
     DIRECT_URL: z.string().url(),
     FEEDBACK_WEBHOOK_URL: z.string().optional(),
+    BLOB_DATA_API_ENABLED: booleanSchema.default("true"),
     BLOB_DATA_API_KEY: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     METRICS_ENABLED: booleanSchema.default("false"),
@@ -53,9 +55,11 @@ export const env = createEnv({
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
    */
   runtimeEnv: {
+    CHAIN_ID: process.env.CHAIN_ID,
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
     FEEDBACK_WEBHOOK_URL: process.env.FEEDBACK_WEBHOOK_URL,
+    BLOB_DATA_API_ENABLED: process.env.BLOB_DATA_API_ENABLED,
     BLOB_DATA_API_KEY: process.env.BLOB_DATA_API_KEY,
     METRICS_ENABLED: process.env.METRICS_ENABLED,
     NODE_ENV: process.env.NODE_ENV,

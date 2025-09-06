@@ -4,7 +4,6 @@ import {
   dbCategoryCoercionSchema,
   dbRollupCoercionSchema,
 } from "@blobscan/db/prisma/zod-utils";
-import { env } from "@blobscan/env";
 import { getAddressesByRollup } from "@blobscan/rollups";
 import { z } from "@blobscan/zod";
 
@@ -112,89 +111,91 @@ export function hasCustomFilters(filters: Filters) {
   );
 }
 
-export const withFilters = t.middleware(({ next, input = {} }) => {
-  const filters: Filters = {
-    sort: "desc",
-  };
-
-  const {
-    sort,
-    type,
-    endBlock,
-    endSlot,
-    rollups,
-    category,
-    startBlock,
-    startSlot,
-    startDate,
-    endDate,
-    from,
-    to,
-  } = input as FiltersOutputSchema;
-
-  const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
-  const dateRangeExists = startDate !== undefined || endDate !== undefined;
-  const slotRangeExists = startSlot !== undefined || endSlot !== undefined;
-
-  const blockFilters: Filters["blockFilters"] = {};
-  const transactionFilters: Filters["transactionFilters"] = {};
-
-  if (blockRangeExists) {
-    blockFilters.number = {
-      lte: endBlock,
-      gte: startBlock,
+export const withFilters = t.middleware(
+  ({ next, input = {}, ctx: { chainId } }) => {
+    const filters: Filters = {
+      sort: "desc",
     };
+
+    const {
+      sort,
+      type,
+      endBlock,
+      endSlot,
+      rollups,
+      category,
+      startBlock,
+      startSlot,
+      startDate,
+      endDate,
+      from,
+      to,
+    } = input as FiltersOutputSchema;
+
+    const blockRangeExists = startBlock !== undefined || endBlock !== undefined;
+    const dateRangeExists = startDate !== undefined || endDate !== undefined;
+    const slotRangeExists = startSlot !== undefined || endSlot !== undefined;
+
+    const blockFilters: Filters["blockFilters"] = {};
+    const transactionFilters: Filters["transactionFilters"] = {};
+
+    if (blockRangeExists) {
+      blockFilters.number = {
+        lte: endBlock,
+        gte: startBlock,
+      };
+    }
+
+    if (dateRangeExists) {
+      blockFilters.timestamp = {
+        lt: endDate,
+        gte: startDate,
+      };
+    }
+
+    if (slotRangeExists) {
+      blockFilters.slot = {
+        lte: endSlot,
+        gte: startSlot,
+      };
+    }
+
+    if (to) {
+      transactionFilters.toId = to;
+    }
+
+    if (from?.length) {
+      transactionFilters.fromId = { in: from };
+    }
+
+    if (rollups?.length) {
+      const resolvedAddresses = rollups
+        .flatMap((r) => getAddressesByRollup(r, chainId))
+        .filter((r): r is string => !!r);
+
+      transactionFilters.fromId = { in: resolvedAddresses };
+    } else if (category) {
+      transactionFilters.from = {
+        rollup: category === "ROLLUP" ? { not: null } : null,
+      };
+    }
+
+    filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
+
+    if (Object.keys(blockFilters).length) {
+      filters.blockFilters = blockFilters;
+    }
+
+    if (Object.keys(transactionFilters).length) {
+      filters.transactionFilters = transactionFilters;
+    }
+
+    filters.sort = sort;
+
+    return next({
+      ctx: {
+        filters,
+      },
+    });
   }
-
-  if (dateRangeExists) {
-    blockFilters.timestamp = {
-      lt: endDate,
-      gte: startDate,
-    };
-  }
-
-  if (slotRangeExists) {
-    blockFilters.slot = {
-      lte: endSlot,
-      gte: startSlot,
-    };
-  }
-
-  if (to) {
-    transactionFilters.toId = to;
-  }
-
-  if (from?.length) {
-    transactionFilters.fromId = { in: from };
-  }
-
-  if (rollups?.length) {
-    const resolvedAddresses = rollups
-      .flatMap((r) => getAddressesByRollup(r, env.CHAIN_ID))
-      .filter((r): r is string => !!r);
-
-    transactionFilters.fromId = { in: resolvedAddresses };
-  } else if (category) {
-    transactionFilters.from = {
-      rollup: category === "ROLLUP" ? { not: null } : null,
-    };
-  }
-
-  filters.blockType = type === "reorged" ? { some: {} } : { none: {} };
-
-  if (Object.keys(blockFilters).length) {
-    filters.blockFilters = blockFilters;
-  }
-
-  if (Object.keys(transactionFilters).length) {
-    filters.transactionFilters = transactionFilters;
-  }
-
-  filters.sort = sort;
-
-  return next({
-    ctx: {
-      filters,
-    },
-  });
-});
+);
