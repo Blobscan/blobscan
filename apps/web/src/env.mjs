@@ -45,6 +45,9 @@ export const env = createEnv({
     METRICS_ENABLED: booleanSchema.default("false"),
     REDIS_URI: z.string().default("redis://localhost:6379"),
     TRACES_ENABLED: booleanSchema.default("false"),
+    OTEL_DIAG_ENABLED: z.boolean().default(false),
+    OTLP_AUTH_USERNAME: z.coerce.string().optional(),
+    OTLP_AUTH_PASSWORD: z.string().optional(),
     ...clientEnvVars,
   },
   client: {
@@ -65,6 +68,9 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     REDIS_URI: process.env.REDIS_URI,
     TRACES_ENABLED: process.env.TRACES_ENABLED,
+    OTEL_DIAG_ENABLED: process.env.OTEL_DIAG_ENABLED,
+    OTLP_AUTH_USERNAME: process.env.OTLP_AUTH_USERNAME,
+    OTLP_AUTH_PASSWORD: process.env.OTLP_AUTH_PASSWORD,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
     PUBLIC_EXPLORER_BASE_URL: process.env.PUBLIC_EXPLORER_BASE_URL,
