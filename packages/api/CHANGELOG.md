@@ -1,5 +1,18 @@
 # @blobscan/api
 
+## 1.0.0
+
+### Minor Changes
+
+- [#878](https://github.com/Blobscan/blobscan/pull/878) [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a) Thanks [@PJColombo](https://github.com/PJColombo)! - Added support for retrieving latest and oldest block
+
+### Patch Changes
+
+- Updated dependencies [[`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad), [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad)]:
+  - @blobscan/blob-propagator@1.0.0
+  - @blobscan/db@0.21.0
+  - @blobscan/rollups@1.0.0
+
 ## 0.27.0
 
 ### Minor Changes
