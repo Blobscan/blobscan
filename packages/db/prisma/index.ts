@@ -4,10 +4,12 @@ import { logger } from "@blobscan/logger";
 
 import type { ExtensionConfig as CustomFieldsExtensionConfig } from "./extensions";
 import {
-  baseExtension,
+  upsertManyExtension,
   createCustomFieldsExtension,
   statsExtension,
+  helpersExtension,
 } from "./extensions";
+import { ethUsdPriceExtension } from "./extensions/eth-usd-price";
 
 export type GetPrismaParams = {
   customFieldExtension: CustomFieldsExtensionConfig;
@@ -54,12 +56,15 @@ export function getPrisma(params?: GetPrismaParams) {
 
   if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma_;
 
-  const customFieldExtension = createCustomFieldsExtension(
+  const customFieldsExtension = createCustomFieldsExtension(
     params?.customFieldExtension
   );
+
   return prisma_
-    .$extends(baseExtension)
-    .$extends(customFieldExtension)
+    .$extends(helpersExtension)
+    .$extends(customFieldsExtension)
+    .$extends(ethUsdPriceExtension)
+    .$extends(upsertManyExtension)
     .$extends(statsExtension);
 }
 

@@ -14,7 +14,7 @@ import { fixtures, omitDBTimestampFields } from "@blobscan/test";
 import { getPrisma } from "../prisma";
 import type { WithoutTimestampFields } from "../prisma/types";
 
-describe("Base Extension", () => {
+describe("Upsert Many Extension", () => {
   const prisma = getPrisma();
   const expectedEmptyInputRes = [
     {
@@ -484,16 +484,6 @@ describe("Base Extension", () => {
         await expect(
           prisma.blobDataStorageReference.upsertMany(input)
         ).rejects.toThrowErrorMatchingSnapshot();
-      });
-    });
-  });
-
-  describe("Block model", () => {
-    describe("findLatest()", () => {
-      it("should find the latest block correctly", async () => {
-        const result = await prisma.block.findLatest();
-
-        expect(result).toMatchSnapshot();
       });
     });
   });
