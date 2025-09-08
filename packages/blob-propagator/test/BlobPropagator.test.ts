@@ -161,23 +161,18 @@ describe("BlobPropagator", () => {
       );
     });
 
-    testValidError(
-      "should throw a valid error when creating it with blob storages without worker processors",
-      async () => {
-        const weavevmStorage = new MockedWeaveVMStorage();
+    it("should skip unsupported blob storages", async () => {
+      const weavevmStorage = new MockedWeaveVMStorage();
 
-        await MockedBlobPropagator.create({
-          blobStorages: [weavevmStorage],
-          prisma,
-          primaryBlobStorage,
-          redisConnectionOrUri: env.REDIS_URI,
-        });
-      },
-      BlobPropagatorCreationError,
-      {
-        checkCause: true,
-      }
-    );
+      const blobPropagator = await MockedBlobPropagator.create({
+        blobStorages: [weavevmStorage],
+        prisma,
+        primaryBlobStorage,
+        redisConnectionOrUri: env.REDIS_URI,
+      });
+
+      expect(blobPropagator.getPropagators().length).toBe(0);
+    });
   });
 
   describe("when storage propagator jobs", async () => {

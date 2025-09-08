@@ -348,7 +348,17 @@ export class BlobPropagator {
     params: Omit<BlobPropagationWorkerParams, "targetBlobStorage">,
     opts: WorkerOptions
   ): StoragePropagator[] {
-    return blobStorages.map((targetBlobStorage) => {
+    const supportedBlobStorages = blobStorages.filter((s) => {
+      const workerProcessor = STORAGE_WORKER_PROCESSORS[s.name];
+
+      if (!workerProcessor) {
+        logger.warn(`Skipping torage ${s.name}: no worker processor supported`);
+      }
+
+      return !!workerProcessor;
+    });
+
+    return supportedBlobStorages.map((targetBlobStorage) => {
       const storageName = targetBlobStorage.name;
       const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
 

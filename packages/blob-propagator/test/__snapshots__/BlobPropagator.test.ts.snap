@@ -7,7 +7,3 @@ exports[`BlobPropagator > when closing > should throw a valid error when the rec
 exports[`BlobPropagator > when closing > should throw a valid error when the storage worker operation fails 1`] = `"Blob propagator failed: Failed to perform closing operation"`;
 
 exports[`BlobPropagator > when closing > should throw a valid error when the storage worker operation fails 2`] = `[Error: Closing storage worker failed]`;
-
-exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with blob storages without worker processors 1`] = `"Blob propagator failed: Failed to create blob propagator"`;
-
-exports[`BlobPropagator > when creating a blob propagator > should throw a valid error when creating it with blob storages without worker processors 2`] = `[Error: Storage WEAVEVM not supported: no worker processor defined]`;
