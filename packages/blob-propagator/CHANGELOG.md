@@ -1,5 +1,21 @@
 # @blobscan/blob-propagator
 
+## 1.0.0
+
+### Minor Changes
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Added a new worker to the blob propagator (reconciler) that periodically scans for orphaned blobs (not propagated to any storage) and re-creates propagation jobs to retry propagation.
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Introduced primary blob storage
+
+- [#876](https://github.com/Blobscan/blobscan/pull/876) [`242ac1e`](https://github.com/Blobscan/blobscan/commit/242ac1e782cdb13b1867e199eb8c6c5f1a4d5dad) Thanks [@PJColombo](https://github.com/PJColombo)! - Removed flow jobs and finalizer queue
+
+### Patch Changes
+
+- Updated dependencies [[`3fe35fe`](https://github.com/Blobscan/blobscan/commit/3fe35fe61eb3d2bae5f37e79b9a3921c7e59ba5a)]:
+  - @blobscan/db@0.21.0
+  - @blobscan/blob-storage-manager@1.0.0
+
 ## 0.4.2
 
 ### Patch Changes
