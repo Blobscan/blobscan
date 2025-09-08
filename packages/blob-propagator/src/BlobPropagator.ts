@@ -146,9 +146,11 @@ export class BlobPropagator {
 
       return blobPropagator;
     } catch (err) {
-      const cause = err instanceof Error ? err.message : err;
+      if (err instanceof Error) {
+        throw new BlobPropagatorCreationError(err);
+      }
 
-      throw new BlobPropagatorCreationError(cause);
+      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
     }
   }
 
