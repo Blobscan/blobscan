@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export type BlobStorageConfig = {
+export type BlobUrlFieldParams = {
   gcs?: Partial<{
     apiBaseUrl: string;
     bucketName: string;
@@ -18,14 +18,14 @@ export type BlobStorageConfig = {
 };
 
 export type ExtensionConfig = {
-  blobUrlField?: Partial<BlobStorageConfig>;
+  blobUrlField?: Partial<BlobUrlFieldParams>;
 };
 
 export const createCustomFieldsExtension = ({
   blobUrlField,
 }: ExtensionConfig = {}) => {
   const { gcs, loadNetwork, postgres, s3 } =
-    blobUrlField ?? ({} as BlobStorageConfig);
+    blobUrlField ?? ({} as BlobUrlFieldParams);
   return Prisma.defineExtension({
     name: "Custom Fields",
     result: {

@@ -46,7 +46,7 @@ export const logger = winston.createLogger({
   level: process.env.LOG_LEVEL ?? "info",
   format,
   transports: [new winston.transports.Console()],
-  silent: !!process.env.TEST?.length,
+  silent: process.env.MODE === "test",
 });
 
 export type Logger = typeof logger;
