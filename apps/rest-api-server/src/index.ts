@@ -70,7 +70,7 @@ async function main() {
     await prisma
       .$disconnect()
       .finally(async () => {
-        await blobPropagator.close();
+        await blobPropagator?.close();
       })
       .finally(async () => {
         await closeSyncers();
@@ -93,4 +93,8 @@ async function main() {
   });
 }
 
-main();
+main().catch((err) => {
+  Sentry.captureException(err);
+
+  logger.error(err);
+});
