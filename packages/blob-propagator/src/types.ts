@@ -32,12 +32,12 @@ export type StoragePropagator = {
   worker: Worker<BlobPropagationJobData>;
 };
 
-export type Reconciliator = {
+export type Reconcilier = {
   queue: Queue<null>;
-  worker: Worker<null, ReconciliatorProcessorResult>;
+  worker: Worker<null, ReconcilierProcessorResult>;
 };
 
-export type ReconciliatorProcessorParams = {
+export type ReconcilierProcessorParams = {
   prisma: BlobscanPrismaClient;
   primaryBlobStorage: BlobStorage;
   batchSize: number;
@@ -45,14 +45,14 @@ export type ReconciliatorProcessorParams = {
   highestBlockNumber?: number;
 };
 
-export type ReconciliatorProcessorResult = {
+export type ReconcilierProcessorResult = {
   jobsCreated: number;
   blobTimestamps?: { firstBlob?: Date; lastBlob?: Date };
 };
 
-export type ReconciliatorProcessor = (
-  params: ReconciliatorProcessorParams
-) => Processor<null, ReconciliatorProcessorResult>;
+export type ReconcilierProcessor = (
+  params: ReconcilierProcessorParams
+) => Processor<null, ReconcilierProcessorResult>;
 
 export type BlobPropagationWorkerProcessor = (
   params: BlobPropagationWorkerParams
