@@ -34,8 +34,8 @@ export class MockedBlobPropagator extends BlobPropagator {
     return this.propagators;
   }
 
-  getReconcilier() {
-    return this.reconcilier;
+  getReconciler() {
+    return this.reconciler;
   }
 
   getHighestBlockNumber() {
@@ -53,23 +53,23 @@ export class MockedBlobPropagator extends BlobPropagator {
   static async create(
     config: Omit<
       BlobPropagatorConfig,
-      "highestBlockNumber" | "reconcilierOpts"
+      "highestBlockNumber" | "reconcilerOpts"
     >
   ) {
-    const reconcilierOpts = {
+    const reconcilerOpts = {
       batchSize: 200,
       cronPattern: "*/30 * * * *",
     };
 
     const propagator = new MockedBlobPropagator({
       ...config,
-      reconcilierOpts,
+      reconcilerOpts,
       highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
     });
 
-    const pattern = reconcilierOpts?.cronPattern ?? "*/30 * * * *";
+    const pattern = reconcilerOpts?.cronPattern ?? "*/30 * * * *";
 
-    await propagator.reconcilier.queue.add("reconcilier-job", null, {
+    await propagator.reconciler.queue.add("reconciler-job", null, {
       repeat: {
         pattern,
       },
@@ -122,28 +122,28 @@ describe("BlobPropagator", () => {
   });
 
   describe("when creating a blob propagator", () => {
-    it("should start reconcilier queue", async () => {
-      const queue = blobPropagator.getReconcilier().queue;
+    it("should start reconciler queue", async () => {
+      const queue = blobPropagator.getReconciler().queue;
 
       await expect(queue.isPaused()).resolves.toBeFalsy();
     });
 
-    it("should start reconcilier worker", () => {
-      const worker = blobPropagator.getReconcilier().worker;
+    it("should start reconciler worker", () => {
+      const worker = blobPropagator.getReconciler().worker;
 
       expect(worker.isRunning()).toBeTruthy();
     });
 
-    it("should start reconcilier cron job", async () => {
+    it("should start reconciler cron job", async () => {
       const jobs = (
-        await blobPropagator.getReconcilier().queue.getJobs()
+        await blobPropagator.getReconciler().queue.getJobs()
       ).filter((j) => !!j);
 
       expect(jobs.length, "more than one cron job started").toBe(1);
 
       const job = jobs[0];
 
-      expect(job?.name).toBe("reconcilier-job");
+      expect(job?.name).toBe("reconciler-job");
     });
 
     it("should return an instance with the highest block number set to the last finalized block", async () => {
@@ -477,18 +477,18 @@ describe("BlobPropagator", () => {
       await closingBlobPropagator.close();
 
       const propagators = closingBlobPropagator.getPropagators();
-      const reconcilier = closingBlobPropagator.getReconcilier();
+      const reconciler = closingBlobPropagator.getReconciler();
       const propagatorWorkersClosed = propagators.every(
         ({ worker }) => !worker.isRunning()
       );
-      const reconcilierWorkerClosed = !reconcilier.worker.isRunning();
+      const reconcilerWorkerClosed = !reconciler.worker.isRunning();
 
       expect(propagatorWorkersClosed, "Storage workers still running").toBe(
         true
       );
       expect(
-        reconcilierWorkerClosed,
-        "Reconcilier worker still running"
+        reconcilerWorkerClosed,
+        "Reconciler worker still running"
       ).toBe(true);
     });
 
@@ -514,12 +514,12 @@ describe("BlobPropagator", () => {
     );
 
     testValidError(
-      "should throw a valid error when the reconcilier worker closing operation fails",
+      "should throw a valid error when the reconciler worker closing operation fails",
       async () => {
-        const reconcilier = closingBlobPropagator.getReconcilier().worker;
+        const reconciler = closingBlobPropagator.getReconciler().worker;
 
-        vi.spyOn(reconcilier, "close").mockImplementationOnce(() => {
-          throw new Error("Closing reconcilier worker failed");
+        vi.spyOn(reconciler, "close").mockImplementationOnce(() => {
+          throw new Error("Closing reconciler worker failed");
         });
 
         await closingBlobPropagator.close();

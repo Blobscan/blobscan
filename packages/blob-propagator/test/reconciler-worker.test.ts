@@ -11,13 +11,13 @@ import { env } from "@blobscan/env";
 import type {
   BlobPropagationJob,
   PropagationQueue,
-  ReconcilierProcessorResult,
+  ReconcilerProcessorResult,
 } from "../src";
 import { buildJobId, STORAGE_WORKER_NAMES } from "../src";
-import { reconcilierProcessor } from "../src/worker-processors/reconcilier";
+import { reconcilerProcessor } from "../src/worker-processors/reconciler";
 import { createStorageFromEnv } from "./helpers";
 
-describe("Reconcilier Worker", () => {
+describe("Reconciler Worker", () => {
   let propagatorQueues: PropagationQueue[];
   let primaryBlobStorage: BlobStorage;
   const batchSize = 2;
@@ -91,14 +91,14 @@ describe("Reconcilier Worker", () => {
 
   describe("when having orphaned blobs", () => {
     let jobs: BlobPropagationJob[];
-    let processorResult: ReconcilierProcessorResult;
+    let processorResult: ReconcilerProcessorResult;
 
     beforeEach(async () => {
       await prisma.blob.createMany({
         data: orphanedBlobs,
       });
 
-      const processor = reconcilierProcessor({
+      const processor = reconcilerProcessor({
         batchSize,
         prisma,
         primaryBlobStorage,
@@ -163,7 +163,7 @@ describe("Reconcilier Worker", () => {
     });
 
     it("should return the correct result", async () => {
-      const expectedProcessorResult: ReconcilierProcessorResult = {
+      const expectedProcessorResult: ReconcilerProcessorResult = {
         jobsCreated: 2 * propagatorQueues.length,
         blobTimestamps: {
           firstBlob: orphanedBlobs[0]?.insertedAt,
@@ -176,7 +176,7 @@ describe("Reconcilier Worker", () => {
   });
 
   it("should return the correct result when no orphaned blob exists", async () => {
-    const processor = reconcilierProcessor({
+    const processor = reconcilerProcessor({
       batchSize: 1000,
       prisma,
       primaryBlobStorage: primaryBlobStorage,
