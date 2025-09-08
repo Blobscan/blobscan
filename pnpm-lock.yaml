@@ -458,9 +458,6 @@ importers:
       '@blobscan/db':
         specifier: workspace:^0.20.0
         version: link:../db
-      '@blobscan/env':
-        specifier: workspace:^0.2.0
-        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.3
         version: link:../logger
@@ -646,9 +643,6 @@ importers:
 
   packages/logger:
     dependencies:
-      '@blobscan/env':
-        specifier: workspace:^0.2.0
-        version: link:../env
       '@blobscan/zod':
         specifier: workspace:^0.1.0
         version: link:../zod
@@ -660,9 +654,6 @@ importers:
 
   packages/open-telemetry:
     dependencies:
-      '@blobscan/env':
-        specifier: workspace:^0.2.0
-        version: link:../env
       '@blobscan/logger':
         specifier: workspace:^0.1.3
         version: link:../logger

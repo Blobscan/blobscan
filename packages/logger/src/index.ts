@@ -1,7 +1,5 @@
 import winston from "winston";
 
-import { env } from "@blobscan/env";
-
 function buildErrorCause(err: Error) {
   let msg = `\n - Cause: ${err.message}`;
 
@@ -44,25 +42,12 @@ const format = winston.format.combine(
   })
 );
 
-function createLogger(opts: winston.LoggerOptions = {}) {
-  return winston.createLogger({
-    level: env.LOG_LEVEL,
-    format,
-    transports: [new winston.transports.Console()],
-    silent: env.TEST,
-    ...opts,
-  });
-}
-
-export const logger = createLogger();
-
-export function createModuleLogger(...moduleParts: string[]) {
-  const module = moduleParts.join(":");
-
-  return createLogger({
-    defaultMeta: { module },
-  });
-}
+export const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL ?? "info",
+  format,
+  transports: [new winston.transports.Console()],
+  silent: !!process.env.TEST?.length,
+});
 
 export type Logger = typeof logger;
 

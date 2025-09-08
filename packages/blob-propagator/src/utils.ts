@@ -1,7 +1,8 @@
 import type { JobsOptions } from "bullmq";
 
+import { logger } from "@blobscan/logger";
+
 import { DEFAULT_JOB_OPTIONS } from "./constants";
-import { logger } from "./logger";
 import type {
   BlobPropagationJobData,
   BlobPropagationWorkerParams,

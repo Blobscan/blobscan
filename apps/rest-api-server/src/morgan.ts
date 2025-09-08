@@ -1,6 +1,6 @@
 import morgan from "morgan";
 
-import { logger } from "./logger";
+import { logger } from "@blobscan/logger";
 
 const stream = {
   write: (message: string) => logger.http(message),

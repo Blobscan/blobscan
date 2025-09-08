@@ -4,6 +4,8 @@ import { logger } from "@blobscan/logger";
 
 import { baseExtension, statsExtension } from "./extensions";
 
+// export type GetPrismaParams = {};
+
 export function getPrisma() {
   const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient;

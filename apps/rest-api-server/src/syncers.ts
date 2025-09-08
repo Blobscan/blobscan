@@ -3,6 +3,7 @@ import { createPublicClient, http } from "viem";
 import * as chains from "viem/chains";
 
 import { env } from "@blobscan/env";
+import { logger } from "@blobscan/logger";
 import { PriceFeed } from "@blobscan/price-feed";
 import type { BaseSyncer } from "@blobscan/syncers";
 import {
@@ -13,7 +14,6 @@ import {
   createRedisConnection,
 } from "@blobscan/syncers";
 
-import { logger } from "./logger";
 import { prisma } from "./prisma";
 import { getNetworkDencunForkSlot } from "./utils";
 

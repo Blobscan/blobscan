@@ -13,11 +13,11 @@ import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
 import { getPrisma } from "@blobscan/db";
+import { logger } from "@blobscan/logger";
 
 import { appRouter } from "./app-router";
 import { printBanner } from "./banner";
 import { getBlobPropagator } from "./blob-propagator";
-import { logger } from "./logger";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
 import { setUpSyncers } from "./syncers";
@@ -32,6 +32,8 @@ async function main() {
   const closeSyncers = await setUpSyncers();
 
   const blobPropagator = await getBlobPropagator();
+
+  logger.info("Blob propagator service set up!");
 
   const app = express();
 

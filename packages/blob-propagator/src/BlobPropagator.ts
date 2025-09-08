@@ -7,7 +7,7 @@ import IORedis from "ioredis";
 import type { BlobStorage } from "@blobscan/blob-storage-manager";
 import type { BlobscanPrismaClient } from "@blobscan/db";
 import type { BlobStorage as BlobStorageName } from "@blobscan/db/prisma/enums";
-import { createModuleLogger } from "@blobscan/logger";
+import { logger } from "@blobscan/logger";
 
 import {
   DEFAULT_JOB_OPTIONS,
@@ -16,7 +16,6 @@ import {
   STORAGE_WORKER_NAMES,
 } from "./constants";
 import { BlobPropagatorCreationError, BlobPropagatorError } from "./errors";
-import { logger } from "./logger";
 import type {
   BlobPropagationInput,
   BlobPropagationWorkerParams,
@@ -119,8 +118,6 @@ export class BlobPropagator {
     );
 
     this.prisma = prisma;
-
-    logger.info("Blob propagator started successfully");
   }
 
   static async create(
@@ -268,8 +265,6 @@ export class BlobPropagator {
       });
 
     await teardownPromise;
-
-    logger.info("Blob propagator closed successfully.");
   }
 
   async #storeBlob(versionedHash: string, data: string) {
@@ -309,16 +304,16 @@ export class BlobPropagator {
       reconciliatorProcessor(params),
       opts
     );
-    const workerLogger = createModuleLogger("blob-reconciliator", worker.name);
+    const workerLogger = logger.child({ service: "reconciliator" });
 
     worker.on("completed", (_, { jobsCreated, blobTimestamps }) => {
       if (!jobsCreated) {
-        workerLogger.info("No blobs to reconciliate found");
+        workerLogger?.info("No blobs to reconciliate found");
 
         return;
       }
 
-      workerLogger.info(
+      workerLogger?.info(
         `${jobsCreated} jobs recreated; From: ${
           blobTimestamps?.firstBlob?.toISOString() ?? "-"
         } To: ${blobTimestamps?.lastBlob?.toISOString() ?? "-"}`
@@ -326,7 +321,7 @@ export class BlobPropagator {
     });
 
     worker.on("failed", (_, err) => {
-      workerLogger.error(err);
+      workerLogger?.error(err);
     });
 
     return {
@@ -375,14 +370,14 @@ export class BlobPropagator {
     opts: WorkerOptions = {}
   ) {
     const worker = new Worker(workerName, workerProcessor, opts);
-    const workerLogger = createModuleLogger("blob-propagator", worker.name);
+    const workerLogger = logger.child({ service: workerName });
 
     worker.on("completed", (job) => {
-      workerLogger.debug(`Job ${job.id} completed`);
+      workerLogger?.debug(`Job ${job.id} completed`);
     });
 
     worker.on("failed", (_, err) => {
-      workerLogger.error(err);
+      workerLogger?.error(err);
     });
 
     return worker;

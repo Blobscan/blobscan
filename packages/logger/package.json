@@ -12,7 +12,6 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@blobscan/env": "workspace:^0.2.0",
     "@blobscan/zod": "workspace:^0.1.0",
     "winston": "^3.10.0"
   },
