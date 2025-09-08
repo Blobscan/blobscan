@@ -51,31 +51,36 @@ export class MockedBlobPropagator extends BlobPropagator {
   }
 
   static async create(
-    config: Omit<
-      BlobPropagatorConfig,
-      "highestBlockNumber" | "reconcilerOpts"
-    >
+    config: Omit<BlobPropagatorConfig, "highestBlockNumber" | "reconcilerOpts">
   ) {
-    const reconcilerOpts = {
-      batchSize: 200,
-      cronPattern: "*/30 * * * *",
-    };
+    try {
+      const reconcilerOpts = {
+        batchSize: 200,
+        cronPattern: "*/30 * * * *",
+      };
 
-    const propagator = new MockedBlobPropagator({
-      ...config,
-      reconcilerOpts,
-      highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
-    });
+      const propagator = new MockedBlobPropagator({
+        ...config,
+        reconcilerOpts,
+        highestBlockNumber: fixtures.blockchainSyncState[0]?.lastFinalizedBlock,
+      });
 
-    const pattern = reconcilerOpts?.cronPattern ?? "*/30 * * * *";
+      const pattern = reconcilerOpts?.cronPattern ?? "*/30 * * * *";
 
-    await propagator.reconciler.queue.add("reconciler-job", null, {
-      repeat: {
-        pattern,
-      },
-    });
+      await propagator.reconciler.queue.add("reconciler-job", null, {
+        repeat: {
+          pattern,
+        },
+      });
 
-    return propagator;
+      return propagator;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new BlobPropagatorCreationError(err);
+      }
+
+      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
+    }
   }
 }
 
@@ -486,10 +491,9 @@ describe("BlobPropagator", () => {
       expect(propagatorWorkersClosed, "Storage workers still running").toBe(
         true
       );
-      expect(
-        reconcilerWorkerClosed,
-        "Reconciler worker still running"
-      ).toBe(true);
+      expect(reconcilerWorkerClosed, "Reconciler worker still running").toBe(
+        true
+      );
     });
 
     testValidError(

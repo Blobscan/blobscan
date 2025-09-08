@@ -128,22 +128,30 @@ export class BlobPropagator {
   ) {
     const { prisma, reconcilerOpts } = config;
 
-    const lastFinalizedBlock = await prisma.blockchainSyncState
-      .findFirst()
-      .then((s) => s?.lastFinalizedBlock ?? undefined);
+    try {
+      const lastFinalizedBlock = await prisma.blockchainSyncState
+        .findFirst()
+        .then((s) => s?.lastFinalizedBlock ?? undefined);
 
-    const blobPropagator = new BlobPropagator({
-      ...config,
-      highestBlockNumber: lastFinalizedBlock,
-    });
+      const blobPropagator = new BlobPropagator({
+        ...config,
+        highestBlockNumber: lastFinalizedBlock,
+      });
 
-    await blobPropagator.reconciler.queue.add("reconciler-job", null, {
-      repeat: {
-        pattern: reconcilerOpts.cronPattern,
-      },
-    });
+      await blobPropagator.reconciler.queue.add("reconciler-job", null, {
+        repeat: {
+          pattern: reconcilerOpts.cronPattern,
+        },
+      });
 
-    return blobPropagator;
+      return blobPropagator;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new BlobPropagatorCreationError(err);
+      }
+
+      throw new BlobPropagatorCreationError(`Unknown cause: ${err}`);
+    }
   }
 
   async propagateBlob({
@@ -345,7 +353,7 @@ export class BlobPropagator {
       const workerProcessor = STORAGE_WORKER_PROCESSORS[storageName];
 
       if (!workerProcessor) {
-        throw new BlobPropagatorCreationError(
+        throw new Error(
           `Storage ${storageName} not supported: no worker processor defined`
         );
       }
