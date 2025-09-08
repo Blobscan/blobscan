@@ -25,6 +25,27 @@ type FilterAndPagination = FiltersInputSchema & WithPaginationSchema;
 
 type Entity = "address" | "block" | "transaction" | "blob";
 
+const prisma = getPrisma({
+  customFieldExtension: {
+    blobUrlField: {
+      gcs: {
+        bucketName: env.GOOGLE_STORAGE_BUCKET_NAME,
+        apiBaseUrl: env.GOOGLE_STORAGE_API_ENDPOINT,
+      },
+      loadNetwork: {
+        apiBaseUrl: env.WEAVEVM_STORAGE_API_BASE_URL,
+      },
+      postgres: {
+        apiBaseUrl: env.BLOBSCAN_API_BASE_URL,
+      },
+      s3: {
+        apiBaseUrl: env.S3_STORAGE_ENDPOINT,
+        bucketName: env.S3_STORAGE_BUCKET_NAME,
+      },
+    },
+  },
+});
+
 export async function createTestContext({
   apiClient,
   withBlobPropagator = false,
@@ -61,7 +82,7 @@ export async function createTestContext({
     req,
     res,
     apiClient,
-    prisma: getPrisma(),
+    prisma,
     blobPropagator: undefined,
   };
 
