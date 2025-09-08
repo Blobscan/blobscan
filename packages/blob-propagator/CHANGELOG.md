@@ -1,5 +1,13 @@
 # @blobscan/blob-propagator
 
+## 1.0.1
+
+### Patch Changes
+
+- [#886](https://github.com/Blobscan/blobscan/pull/886) [`427cf7e`](https://github.com/Blobscan/blobscan/commit/427cf7e78a79216fbba04d6e8453d1b38837ab56) Thanks [@PJColombo](https://github.com/PJColombo)! - Skipped unsupported blob storages instead of throwing errors when creating blob propagator
+
+- [#884](https://github.com/Blobscan/blobscan/pull/884) [`53881e0`](https://github.com/Blobscan/blobscan/commit/53881e0ff6e9f371e861395170f61622c9aa06dc) Thanks [@PJColombo](https://github.com/PJColombo)! - Bubbled up blob propagator creation errors
+
 ## 1.0.0
 
 ### Minor Changes
