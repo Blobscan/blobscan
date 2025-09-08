@@ -101,11 +101,11 @@ export const env = createEnv({
       BLOB_PROPAGATOR_FAILED_JOBS_AGE: z.coerce
         .number()
         .default(7 * 24 * 60 * 60),
-      BLOB_RECONCILIATOR_CRON_PATTERN: z
+      BLOB_RECONCILIER_CRON_PATTERN: z
         .string()
         // Every hour
         .default("0 * * * *"),
-      BLOB_RECONCILIATOR_BATCH_SIZE: z.coerce.number().default(200),
+      BLOB_RECONCILIER_BATCH_SIZE: z.coerce.number().default(200),
       // PostHog
       POSTHOG_ID: z.string().optional(),
       POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
@@ -238,7 +238,7 @@ export const env = createEnv({
     );
 
     console.log(
-      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconciliatorCronPattern=${env.BLOB_RECONCILIATOR_CRON_PATTERN}`
+      `Blob propagator configuration: primaryBlobStorage=${env.PRIMARY_BLOB_STORAGE} completedJobsAge=${env.BLOB_PROPAGATOR_COMPLETED_JOBS_AGE} seconds failedJobsAge=${env.BLOB_PROPAGATOR_FAILED_JOBS_AGE} seconds reconcilierCronPattern=${env.BLOB_RECONCILIER_CRON_PATTERN}`
     );
 
     console.log(
