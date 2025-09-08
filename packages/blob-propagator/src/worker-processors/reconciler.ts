@@ -1,11 +1,11 @@
-import type { ReconcilierProcessor } from "../types";
+import type { ReconcilerProcessor } from "../types";
 import {
   computeJobPriority,
   createBlobPropagationJob,
   MAX_JOB_PRIORITY,
 } from "../utils";
 
-export const reconcilierProcessor: ReconcilierProcessor = function ({
+export const reconcilerProcessor: ReconcilerProcessor = function ({
   prisma,
   primaryBlobStorage,
   batchSize,
