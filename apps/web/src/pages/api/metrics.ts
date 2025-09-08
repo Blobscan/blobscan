@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { createMetricsHandler } from "@blobscan/api";
-import { getPrisma } from "@blobscan/db";
 
 import { env } from "~/env.mjs";
+import { prisma } from "~/prisma";
 
-const metricsHandler = createMetricsHandler(getPrisma());
+const metricsHandler = createMetricsHandler(prisma);
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
   if (!env.METRICS_ENABLED) {

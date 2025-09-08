@@ -31,17 +31,6 @@ export type RawBlob = {
   data: string;
 };
 
-const GOOGLE_API_URL = process.env.GOOGLE_STORAGE_API_ENDPOINT ?? "";
-const GOOGLE_BUCKET_NAME =
-  process.env.GOOGLE_STORAGE_BUCKET_NAME ?? "blobscan-production";
-const BLOBSCAN_API_BASE_URL =
-  process.env.BLOBSCAN_API_BASE_URL ?? "http://localhost:3000";
-const LOAD_NETWORK_API_BASE_URL =
-  process.env.WEAVEVM_STORAGE_API_BASE_URL ?? "http://localhost:3000";
-const S3_STORAGE_END_ENDPOINT =
-  process.env.S3_STORAGE_ENDPOINT ?? "http://localhost:3000";
-const S3_STORAGE_BUCKET_NAME = process.env.S3_STORAGE_BUCKET_NAME ?? "";
-
 const startExtensionFnSpan = curryPrismaExtensionFnSpan("base");
 
 const startBlockModelFnSpan = startExtensionFnSpan("block");
@@ -49,34 +38,6 @@ const startBlockModelFnSpan = startExtensionFnSpan("block");
 export const baseExtension = Prisma.defineExtension((prisma) =>
   prisma.$extends({
     name: "Base Extension",
-    result: {
-      blobDataStorageReference: {
-        url: {
-          needs: {
-            blobStorage: true,
-            dataReference: true,
-          },
-          compute({ blobStorage, dataReference }) {
-            switch (blobStorage) {
-              case "GOOGLE":
-                return process.env.MODE === "test"
-                  ? `${GOOGLE_API_URL}/storage/v1/b/${GOOGLE_BUCKET_NAME}/o/${encodeURIComponent(
-                      dataReference
-                    )}?alt=media`
-                  : `https://storage.googleapis.com/${GOOGLE_BUCKET_NAME}/${dataReference}`;
-              case "POSTGRES":
-                return `${BLOBSCAN_API_BASE_URL}/blobs/${dataReference}/data`;
-              case "SWARM":
-                return `https://api.gateway.ethswarm.org/bzz/${dataReference}`;
-              case "WEAVEVM":
-                return `${LOAD_NETWORK_API_BASE_URL}/v1/blob/${dataReference}`;
-              case "S3":
-                return `${S3_STORAGE_END_ENDPOINT}/${S3_STORAGE_BUCKET_NAME}/${dataReference}`;
-            }
-          },
-        },
-      },
-    },
     model: {
       $allModels: {
         zero() {

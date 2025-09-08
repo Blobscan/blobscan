@@ -12,7 +12,6 @@ import { env } from "@blobscan/env";
 import { collectDefaultMetrics } from "@blobscan/open-telemetry";
 
 import "./instrumentation";
-import { getPrisma } from "@blobscan/db";
 import { logger } from "@blobscan/logger";
 
 import { appRouter } from "./app-router";
@@ -20,6 +19,7 @@ import { printBanner } from "./banner";
 import { getBlobPropagator } from "./blob-propagator";
 import { morganMiddleware } from "./morgan";
 import { openApiDocument } from "./openapi";
+import { prisma } from "./prisma";
 import { setUpSyncers } from "./syncers";
 
 collectDefaultMetrics();
@@ -27,7 +27,6 @@ collectDefaultMetrics();
 printBanner();
 
 async function main() {
-  const prisma = getPrisma();
   const metricsHandler = createMetricsHandler(prisma);
   const closeSyncers = await setUpSyncers();
 

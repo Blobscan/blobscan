@@ -48,6 +48,17 @@ export const env = createEnv({
     OTEL_DIAG_ENABLED: z.boolean().default(false),
     OTLP_AUTH_USERNAME: z.coerce.string().optional(),
     OTLP_AUTH_PASSWORD: z.string().optional(),
+
+    BLOBSCAN_API_BASE_URL: z
+      .string()
+      .url()
+      .default(`http://localhost:${process.env.BLOBSCAN_API_PORT ?? 3001}`),
+    GOOGLE_STORAGE_BUCKET_NAME: z.string().optional(),
+    GOOGLE_STORAGE_API_ENDPOINT: z.string().url().optional(),
+    S3_STORAGE_BUCKET_NAME: z.string().optional(),
+    S3_STORAGE_ENDPOINT: z.string().url().optional(),
+    WEAVEVM_STORAGE_API_BASE_URL: z.string().optional(),
+
     ...clientEnvVars,
   },
   client: {
@@ -71,6 +82,13 @@ export const env = createEnv({
     OTEL_DIAG_ENABLED: process.env.OTEL_DIAG_ENABLED,
     OTLP_AUTH_USERNAME: process.env.OTLP_AUTH_USERNAME,
     OTLP_AUTH_PASSWORD: process.env.OTLP_AUTH_PASSWORD,
+
+    BLOBSCAN_API_BASE_URL: process.env.BLOBSCAN_API_BASE_URL,
+    GOOGLE_STORAGE_API_ENDPOINT: process.env.GOOGLE_STORAGE_API_ENDPOINT,
+    GOOGLE_STORAGE_BUCKET_NAME: process.env.GOOGLE_STORAGE_BUCKET_NAME,
+    S3_STORAGE_BUCKET_NAME: process.env.S3_STORAGE_BUCKET_NAME,
+    S3_STORAGE_ENDPOINT: process.env.S3_STORAGE_ENDPOINT,
+    WEAVEVM_STORAGE_API_BASE_URL: process.env.WEAVEVM_STORAGE_API_BASE_URL,
 
     PUBLIC_BEACON_BASE_URL: process.env.PUBLIC_BEACON_BASE_URL,
     PUBLIC_EXPLORER_BASE_URL: process.env.PUBLIC_EXPLORER_BASE_URL,

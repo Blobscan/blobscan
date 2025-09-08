@@ -2,11 +2,18 @@ import { PrismaClient } from "@prisma/client";
 
 import { logger } from "@blobscan/logger";
 
-import { baseExtension, statsExtension } from "./extensions";
+import type { ExtensionConfig as CustomFieldsExtensionConfig } from "./extensions";
+import {
+  baseExtension,
+  createCustomFieldsExtension,
+  statsExtension,
+} from "./extensions";
 
-// export type GetPrismaParams = {};
+export type GetPrismaParams = {
+  customFieldExtension: CustomFieldsExtensionConfig;
+};
 
-export function getPrisma() {
+export function getPrisma(params?: GetPrismaParams) {
   const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient;
   };
@@ -28,7 +35,6 @@ export function getPrisma() {
             ],
     });
 
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
     if (process.env.MODE !== "test") {
       p.$on("query", (e) => {
         logger.debug(`${e.query}\nDuration=${e.duration}ms`);
@@ -48,7 +54,13 @@ export function getPrisma() {
 
   if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma_;
 
-  return prisma_.$extends(baseExtension).$extends(statsExtension);
+  const customFieldExtension = createCustomFieldsExtension(
+    params?.customFieldExtension
+  );
+  return prisma_
+    .$extends(baseExtension)
+    .$extends(customFieldExtension)
+    .$extends(statsExtension);
 }
 
 export type BlobscanPrismaClient = ReturnType<typeof getPrisma>;
