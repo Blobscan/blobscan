@@ -1,3 +1,4 @@
+import { logger } from "@blobscan/logger";
 import { z } from "@blobscan/zod";
 
 import { createAuthedProcedure } from "../../procedures";
@@ -80,6 +81,8 @@ export const indexData = createAuthedProcedure("indexer")
     const dbBlobsOnTransactions = createDBBlobsOnTransactions(input);
     const dbAddress = createDBAddresses(input);
 
+    let p0 = performance.now();
+
     operations.push(
       prisma.block.upsert({
         where: { hash: input.block.hash },
@@ -105,10 +108,31 @@ export const indexData = createAuthedProcedure("indexer")
     // 2. Execute all database operations in a single transaction
     await prisma.$transaction(operations);
 
+    let p1 = performance.now();
+
+    logger.debug(
+      `Block ${input.block.number} stored in DB: ${
+        input.transactions.length
+      } transactions, ${input.blobs.length} blobs inserted! (${p1 - p0}ms)`
+    );
+
+    logger.debug(
+      `Storing ${input.blobs.length} blob data on primary blob storage…`
+    );
+
+    p0 = performance.now();
     // 3. Propagate blobs
     const propagatorInput = input.blobs.map((b) => ({
       ...b,
       blockNumber: input.block.number,
     }));
     await blobPropagator?.propagateBlobs(propagatorInput);
+
+    p1 = performance.now();
+
+    logger.debug(
+      `Block ${input.block.number} blob data stored in primay blob storage: ${
+        propagatorInput.length
+      } blobs uploaded! (${p1 - p0}ms)`
+    );
   });
