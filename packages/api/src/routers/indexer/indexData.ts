@@ -131,7 +131,7 @@ export const indexData = createAuthedProcedure("indexer")
     p1 = performance.now();
 
     logger.debug(
-      `Block ${input.block.number} blob data stored in primay blob storage: ${
+      `Block ${input.block.number} blob data stored in primary blob storage: ${
         propagatorInput.length
       } blobs uploaded! (${p1 - p0}ms)`
     );
