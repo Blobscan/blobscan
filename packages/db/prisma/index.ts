@@ -5,7 +5,7 @@ import { logger } from "@blobscan/logger";
 import type { ExtensionConfig as CustomFieldsExtensionConfig } from "./extensions";
 import {
   upsertManyExtension,
-  createCustomFieldsExtension,
+  createComputedFieldsExtension,
   statsExtension,
   helpersExtension,
 } from "./extensions";
@@ -56,7 +56,7 @@ export function getPrisma(params?: GetPrismaParams) {
 
   if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma_;
 
-  const customFieldsExtension = createCustomFieldsExtension(
+  const customFieldsExtension = createComputedFieldsExtension(
     params?.customFieldExtension
   );
 
